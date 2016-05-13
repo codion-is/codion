@@ -457,10 +457,11 @@ public final class EntityUtil {
     return Util.initializeProxy(Entity.class, new InvocationHandler() {
       @Override
       public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
-        switch (method.getName()) {
-          case "toString": return toStringValue;
-          default: return method.invoke(entity, args);
+        if ("toString".equals(method.getName())) {
+          return toStringValue;
         }
+
+        return method.invoke(entity, args);
       }
     });
   }

@@ -22,4 +22,8 @@
     <orderEntry type="module" module-name="jminor-framework" />
     <orderEntry type="module" module-name="jminor-server-monitor" />
   </component>
+  <component name="sonarModuleSettings">
+    <option name="localAnalysisScripName" value="&lt;PROJECT&gt;" />
+    <option name="serverName" value="&lt;PROJECT&gt;" />
+  </component>
 </module>

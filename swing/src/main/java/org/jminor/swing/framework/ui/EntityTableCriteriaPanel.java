@@ -116,6 +116,9 @@ public final class EntityTableCriteriaPanel extends JPanel {
     return getComponentCount() > 0 && getComponent(0) == advancedCriteriaPanel;
   }
 
+  /**
+   * @return true if this panel has an advanced view which can be toggled on/off
+   */
   public boolean canToggleAdvanced() {
     return advancedCriteriaPanel instanceof AbstractTableColumnSyncPanel || (advancedCriteriaPanel != null && simpleCriteriaPanel != null);
   }

@@ -67,9 +67,11 @@ import java.util.Map;
  * A UI component based on a FilteredTableModel.
  * This panel uses a {@link BorderLayout} and contains a base panel {@link #getBasePanel()}, itself with
  * a {@link BorderLayout}, containing the actual table at location {@link BorderLayout#CENTER}
+ * @param <R> the type representing the rows in the table model
+ * @param <C> type type used to identify columns in the table model
  * @see FilteredTableModel
  */
-public class FilteredTablePanel<T, C> extends JPanel {
+public class FilteredTablePanel<R, C> extends JPanel {
 
   public static final char FILTER_INDICATOR = '*';
 
@@ -86,7 +88,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
   /**
    * The table model
    */
-  private final FilteredTableModel<T, C> tableModel;
+  private final FilteredTableModel<R, C> tableModel;
 
   /**
    * Provides filter panels
@@ -157,7 +159,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
    * Instantiates a new FilteredTablePanel.
    * @param tableModel the table model
    */
-  public FilteredTablePanel(final FilteredTableModel<T, C> tableModel) {
+  public FilteredTablePanel(final FilteredTableModel<R, C> tableModel) {
     this(tableModel, new ColumnCriteriaPanelProvider<C>() {
       @Override
       public ColumnCriteriaPanel<C> createColumnCriteriaPanel(final TableColumn column) {
@@ -173,7 +175,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
    * @param criteriaPanelProvider the column criteria panel provider
    * the column filter models found in the table model
    */
-  public FilteredTablePanel(final FilteredTableModel<T, C> tableModel, final ColumnCriteriaPanelProvider<C> criteriaPanelProvider) {
+  public FilteredTablePanel(final FilteredTableModel<R, C> tableModel, final ColumnCriteriaPanelProvider<C> criteriaPanelProvider) {
     Util.rejectNullValue(tableModel, "tableModel");
     this.tableModel = tableModel;
     this.searchPanelProvider = criteriaPanelProvider;
@@ -219,7 +221,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
   /**
    * @return the TableModel used by this TablePanel
    */
-  public final FilteredTableModel<T, C> getTableModel() {
+  public final FilteredTableModel<R, C> getTableModel() {
     return tableModel;
   }
 

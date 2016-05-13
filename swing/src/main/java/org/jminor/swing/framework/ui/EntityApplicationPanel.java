@@ -80,9 +80,9 @@ import java.util.Map;
 
 /**
  * A central application panel class.
- * @param <Model> the application model type
+ * @param <M> the application model type
  */
-public abstract class EntityApplicationPanel<Model extends SwingEntityApplicationModel>
+public abstract class EntityApplicationPanel<M extends SwingEntityApplicationModel>
         extends JPanel implements ExceptionHandler, MasterDetailPanel {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
@@ -95,7 +95,7 @@ public abstract class EntityApplicationPanel<Model extends SwingEntityApplicatio
   private final List<EntityPanelProvider> supportPanelProviders = new ArrayList<>();
   private final List<EntityPanel> entityPanels = new ArrayList<>();
 
-  private Model applicationModel;
+  private M applicationModel;
   private JTabbedPane applicationTabPane;
 
   private final Event applicationStartedEvent = Events.event();
@@ -135,7 +135,7 @@ public abstract class EntityApplicationPanel<Model extends SwingEntityApplicatio
   /**
    * @return the application model this application panel is based on
    */
-  public final Model getModel() {
+  public final M getModel() {
     return applicationModel;
   }
 
@@ -144,7 +144,7 @@ public abstract class EntityApplicationPanel<Model extends SwingEntityApplicatio
    * @param panelProviders the main application panel providers
    * @return this application panel instance
    */
-  public final EntityApplicationPanel<Model> addEntityPanelProviders(final EntityPanelProvider... panelProviders) {
+  public final EntityApplicationPanel<M> addEntityPanelProviders(final EntityPanelProvider... panelProviders) {
     Util.rejectNullValue(panelProviders, "panelProviders");
     for (final EntityPanelProvider panelProvider : panelProviders) {
       addEntityPanelProvider(panelProvider);
@@ -157,7 +157,7 @@ public abstract class EntityApplicationPanel<Model extends SwingEntityApplicatio
    * @param panelProvider the main application panel provider
    * @return this application panel instance
    */
-  public final EntityApplicationPanel<Model> addEntityPanelProvider(final EntityPanelProvider panelProvider) {
+  public final EntityApplicationPanel<M> addEntityPanelProvider(final EntityPanelProvider panelProvider) {
     entityPanelProviders.add(panelProvider);
     return this;
   }
@@ -167,7 +167,7 @@ public abstract class EntityApplicationPanel<Model extends SwingEntityApplicatio
    * @param panelProviders the support application panel providers
    * @return this application panel instance
    */
-  public final EntityApplicationPanel<Model> addSupportPanelProviders(final EntityPanelProvider... panelProviders) {
+  public final EntityApplicationPanel<M> addSupportPanelProviders(final EntityPanelProvider... panelProviders) {
     Util.rejectNullValue(panelProviders, "panelProviders");
     for (final EntityPanelProvider panelProvider : panelProviders) {
       addSupportPanelProvider(panelProvider);
@@ -180,7 +180,7 @@ public abstract class EntityApplicationPanel<Model extends SwingEntityApplicatio
    * @param panelProvider the support application panel provider
    * @return this application panel instance
    */
-  public final EntityApplicationPanel<Model> addSupportPanelProvider(final EntityPanelProvider panelProvider) {
+  public final EntityApplicationPanel<M> addSupportPanelProvider(final EntityPanelProvider panelProvider) {
     supportPanelProviders.add(panelProvider);
     return this;
   }
@@ -373,7 +373,7 @@ public abstract class EntityApplicationPanel<Model extends SwingEntityApplicatio
 
   /** {@inheritDoc} */
   @Override
-  public final List<? extends MasterDetailPanel> getDetailPanels() {
+  public final List<MasterDetailPanel> getDetailPanels() {
     return Collections.unmodifiableList(entityPanels);
   }
 
@@ -708,7 +708,7 @@ public abstract class EntityApplicationPanel<Model extends SwingEntityApplicatio
    * @throws IllegalStateException if the application model has not been set
    * @throws CancelException in case the initialization is cancelled
    */
-  protected final void initialize(final Model applicationModel) {
+  protected final void initialize(final M applicationModel) {
     Util.rejectNullValue(applicationModel, "applicationModel");
     this.applicationModel = applicationModel;
     clearEntityPanelProviders();
@@ -886,7 +886,7 @@ public abstract class EntityApplicationPanel<Model extends SwingEntityApplicatio
    * @return a List containing the {@link EntityPanel}s to include in this application panel
    * @see #addEntityPanelProvider(EntityPanelProvider)
    */
-  protected List<EntityPanel> initializeEntityPanels(final Model applicationModel) {
+  protected List<EntityPanel> initializeEntityPanels(final M applicationModel) {
     final List<EntityPanel> panels = new ArrayList<>();
     for (final EntityPanelProvider provider : entityPanelProviders) {
       final EntityPanel entityPanel;
@@ -1074,7 +1074,7 @@ public abstract class EntityApplicationPanel<Model extends SwingEntityApplicatio
    * @return an initialized application model
    * @throws CancelException in case the initialization is cancelled
    */
-  protected abstract Model initializeApplicationModel(final EntityConnectionProvider connectionProvider);
+  protected abstract M initializeApplicationModel(final EntityConnectionProvider connectionProvider);
 
   /**
    * Returns the user, either via a login dialog or via override, called during startup

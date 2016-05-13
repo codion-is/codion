@@ -38,6 +38,9 @@ public final class DefaultConnectionPoolStatistics implements ConnectionPoolStat
   private long minimumCheckOutTime;
   private long maximumCheckOutTime;
 
+  /**
+   * @param user the database user the pool is based on
+   */
   public DefaultConnectionPoolStatistics(final User user) {
     this.user = user;
   }

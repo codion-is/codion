@@ -396,14 +396,11 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
         columns.remove(column);
       }
     });
-    columns.sort(new Comparator<TableColumn<Entity, ?>>() {
-      @Override
-      public int compare(final TableColumn<Entity, ?> col1, final TableColumn<Entity, ?> col2) {
-        final Integer first = propertyIDList.indexOf(((PropertyTableColumn) col1).getProperty().getPropertyID());
-        final Integer second = propertyIDList.indexOf(((PropertyTableColumn) col2).getProperty().getPropertyID());
+    columns.sort((col1, col2) -> {
+      final Integer first = propertyIDList.indexOf(((PropertyTableColumn) col1).getProperty().getPropertyID());
+      final Integer second = propertyIDList.indexOf(((PropertyTableColumn) col2).getProperty().getPropertyID());
 
-        return first.compareTo(second);
-      }
+      return first.compareTo(second);
     });
   }
 

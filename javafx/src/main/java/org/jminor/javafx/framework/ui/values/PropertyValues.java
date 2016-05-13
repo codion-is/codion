@@ -4,7 +4,6 @@
 package org.jminor.javafx.framework.ui.values;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.Util;
@@ -376,12 +375,7 @@ public final class PropertyValues {
 
     private EntityLookupSingleValue(final EntityLookupModel lookupModel) {
       this.lookupModel = lookupModel;
-      this.lookupModel.addSelectedEntitiesListener(new EventInfoListener<Collection<Entity>>() {
-        @Override
-        public void eventOccurred(final Collection<Entity> selected) {
-          selectionListener.fire(selected.isEmpty() ? null : selected.iterator().next());
-        }
-      });
+      this.lookupModel.addSelectedEntitiesListener((selected) -> selectionListener.fire(selected.isEmpty() ? null : selected.iterator().next()));
     }
 
     @Override

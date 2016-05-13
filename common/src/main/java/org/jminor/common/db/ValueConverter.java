@@ -7,7 +7,7 @@ package org.jminor.common.db;
  * Converts to and from SQL values, such as integers being used
  * to represent booleans in a database.
  * @param T the type of the value
- * @param V the type of the underlying column
+ * @param C the type of the underlying column
  */
 public interface ValueConverter<T, C> {
 

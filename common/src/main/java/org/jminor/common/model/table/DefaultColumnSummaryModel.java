@@ -75,7 +75,7 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
 
   /** {@inheritDoc} */
   @Override
-  public final List<? extends Summary> getAvailableSummaries() {
+  public final List<Summary> getAvailableSummaries() {
     if (valueProvider.isNumerical()) {
       return Arrays.asList(ColumnSummary.NONE, ColumnSummary.SUM, ColumnSummary.AVERAGE, ColumnSummary.MINIMUM,
               ColumnSummary.MAXIMUM, ColumnSummary.MINIMUM_MAXIMUM);

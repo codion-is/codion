@@ -171,36 +171,6 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     return LEXICAL_COMPARATOR;
   }
 
-  private int compareRows(final R rowOne, final R rowTwo, final C columnIdentifier, final SortingDirective directive) {
-    final Comparable valueOne = getComparable(rowOne, columnIdentifier);
-    final Comparable valueTwo = getComparable(rowTwo, columnIdentifier);
-    final int comparison;
-    // Define null less than everything, except null.
-    if (valueOne == null && valueTwo == null) {
-      comparison = 0;
-    }
-    else if (valueOne == null) {
-      comparison = -1;
-    }
-    else if (valueTwo == null) {
-      comparison = 1;
-    }
-    else {
-      Comparator comparator = columnComparators.get(columnIdentifier);
-      if (comparator == null) {
-        comparator = initializeColumnComparator(columnIdentifier);
-        columnComparators.put(columnIdentifier, comparator);
-      }
-      //noinspection unchecked
-      comparison = comparator.compare(valueOne, valueTwo);
-    }
-    if (comparison != 0) {
-      return directive == SortingDirective.DESCENDING ? -comparison : comparison;
-    }
-
-    return 0;
-  }
-
   private List<Map.Entry<C, SortingState>> getSortingStatesOrderedByPriority() {
     final List<Map.Entry<C, SortingState>> entries = new ArrayList<>();
     for (final Map.Entry<C, SortingState> entry : sortingStates.entrySet()) {
@@ -245,6 +215,50 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     }
 
     return maxPriority + 1;
+  }
+
+  private final class RowComparator implements Comparator<R> {
+    @Override
+    public int compare(final R o1, final R o2) {
+      for (final Map.Entry<C, TableSortModel.SortingState> state : getSortingStatesOrderedByPriority()) {
+        final int comparison = compareRows(o1, o2, state.getKey(), state.getValue().getDirective());
+        if (comparison != 0) {
+          return comparison;
+        }
+      }
+
+      return 0;
+    }
+  }
+
+  private int compareRows(final R rowOne, final R rowTwo, final C columnIdentifier, final SortingDirective directive) {
+    final Comparable valueOne = getComparable(rowOne, columnIdentifier);
+    final Comparable valueTwo = getComparable(rowTwo, columnIdentifier);
+    final int comparison;
+    // Define null less than everything, except null.
+    if (valueOne == null && valueTwo == null) {
+      comparison = 0;
+    }
+    else if (valueOne == null) {
+      comparison = -1;
+    }
+    else if (valueTwo == null) {
+      comparison = 1;
+    }
+    else {
+      Comparator comparator = columnComparators.get(columnIdentifier);
+      if (comparator == null) {
+        comparator = initializeColumnComparator(columnIdentifier);
+        columnComparators.put(columnIdentifier, comparator);
+      }
+      //noinspection unchecked
+      comparison = comparator.compare(valueOne, valueTwo);
+    }
+    if (comparison != 0) {
+      return directive == SortingDirective.DESCENDING ? -comparison : comparison;
+    }
+
+    return 0;
   }
 
   private static final class DefaultSortingState implements SortingState {

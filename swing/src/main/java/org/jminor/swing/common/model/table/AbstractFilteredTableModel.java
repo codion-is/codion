@@ -250,10 +250,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final Collection getValues(final C columnIdentifier, final boolean selectedOnly) {
     final int columnModelIndex = columnModel.getTableColumn(columnIdentifier).getModelIndex();
-    final ListSelectionModel selectionModel = (ListSelectionModel) getSelectionModel();
+    final ListSelectionModel listSelectionModel = (ListSelectionModel) getSelectionModel();
     final Collection values = new ArrayList();
     for (int row = 0; row < getVisibleItemCount(); row++) {
-      if (!selectedOnly || selectionModel.isSelectedIndex(row)) {
+      if (!selectedOnly || listSelectionModel.isSelectedIndex(row)) {
         final Object value = getValueAt(row, columnModelIndex);
         if (value != null) {
           values.add(value);

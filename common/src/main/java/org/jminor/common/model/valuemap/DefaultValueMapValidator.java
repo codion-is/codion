@@ -13,6 +13,8 @@ import org.jminor.common.model.valuemap.exception.ValidationException;
 
 /**
  * A default value map validator implementation, which performs basic null validation.
+ * @param <K> the type identifying the keys in the value map
+ * @param <V> the value map type
  */
 public class DefaultValueMapValidator<K, V extends ValueMap<K, ?>> implements ValueMap.Validator<K, V> {
 

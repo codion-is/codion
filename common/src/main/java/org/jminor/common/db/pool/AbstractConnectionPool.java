@@ -28,12 +28,8 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
 
   private final LinkedList<DefaultConnectionPoolState> fineGrainedCStatistics = new LinkedList<>();
   private boolean collectFineGrainedStatistics = false;
-  private final TaskScheduler fineGrainedStatisticsCollector = new TaskScheduler(new Runnable() {
-    @Override
-    public void run() {
-      addPoolStatistics();
-    }
-  }, FINE_GRAINED_COLLECTION_INTERVAL, TimeUnit.MILLISECONDS);
+  private final TaskScheduler fineGrainedStatisticsCollector = new TaskScheduler(new StatisticsCollector(),
+          FINE_GRAINED_COLLECTION_INTERVAL, TimeUnit.MILLISECONDS);
 
   private final DefaultConnectionPoolCounter counter = new DefaultConnectionPoolCounter();
 
@@ -133,17 +129,6 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
     return counter;
   }
 
-  /**
-   * Adds the current state of the pool to the fine grained connection pool log
-   */
-  private void addPoolStatistics() {
-    synchronized (pool) {
-      final DefaultConnectionPoolState state = fineGrainedCStatistics.removeFirst();
-      state.set(System.currentTimeMillis(), getSize(), getInUse(), getWaiting());
-      fineGrainedCStatistics.addLast(state);
-    }
-  }
-
   private void initializePoolStatistics() {
     for (int i = 0; i < FINE_GRAINED_STATS_SIZE; i++) {
       fineGrainedCStatistics.add(new DefaultConnectionPoolState());
@@ -165,5 +150,24 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
     }
 
     return poolStates;
+  }
+
+  private final class StatisticsCollector implements Runnable {
+
+    @Override
+    public void run() {
+      addPoolStatistics();
+    }
+
+    /**
+     * Adds the current state of the pool to the fine grained connection pool log
+     */
+    private void addPoolStatistics() {
+      synchronized (pool) {
+        final DefaultConnectionPoolState state = fineGrainedCStatistics.removeFirst();
+        state.set(System.currentTimeMillis(), getSize(), getInUse(), getWaiting());
+        fineGrainedCStatistics.addLast(state);
+      }
+    }
   }
 }

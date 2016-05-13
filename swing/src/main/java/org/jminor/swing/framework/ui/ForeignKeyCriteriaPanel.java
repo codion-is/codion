@@ -39,7 +39,7 @@ public final class ForeignKeyCriteriaPanel extends ColumnCriteriaPanel<Property.
             new ForeignKeyInputFieldProvider(model), SearchType.LIKE, SearchType.NOT_LIKE);
   }
 
-  private static final class ForeignKeyInputFieldProvider implements InputFieldProvider<Property.ForeignKeyProperty> {
+  private static final class ForeignKeyInputFieldProvider implements InputFieldProvider {
 
     private final ColumnCriteriaModel<Property.ForeignKeyProperty> model;
 

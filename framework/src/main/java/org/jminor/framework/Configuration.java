@@ -570,7 +570,7 @@ public final class Configuration {
   /**
    * A convenience method for loading this class so that it parses configuration files and such
    */
-  public static void init() {}
+  public static void init() {/*Simply a convenience method for triggering the loading of this class*/}
 
   /**
    * Sets the given configuration value

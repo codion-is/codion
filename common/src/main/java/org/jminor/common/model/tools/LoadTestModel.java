@@ -421,7 +421,9 @@ public abstract class LoadTestModel<T> implements LoadTest {
       try {
         Thread.sleep(maximumThinkTime);
       }
-      catch (final InterruptedException ignored) {/*ignored*/}
+      catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
     }
     exitingDoneEvent.fire();
   }
@@ -713,6 +715,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
       }
       catch (final InterruptedException e) {
         LOG.error("Delay login sleep interrupted", e);
+        Thread.currentThread().interrupt();
       }
     }
   }

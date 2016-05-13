@@ -63,7 +63,7 @@ public final class PropertyCriteriaPanel extends ColumnCriteriaPanel<Property.Co
     }
   }
 
-  private static final class PropertyInputFieldProvider implements InputFieldProvider<Property.ColumnProperty> {
+  private static final class PropertyInputFieldProvider implements InputFieldProvider {
 
     private final ColumnCriteriaModel<Property.ColumnProperty> model;
 
@@ -76,7 +76,7 @@ public final class PropertyCriteriaPanel extends ColumnCriteriaPanel<Property.Co
       if (model.getType() == Types.BOOLEAN && !isUpperBound) {
         return null;//no lower bound field required for booleans
       }
-      final JComponent field = initField();
+      final JComponent field = initializeField();
       bindField(field, isUpperBound);
       if (field instanceof JTextField) { //enter button toggles the filter on/off
         ((JTextField) field).addActionListener(new EnableAction(model));
@@ -85,10 +85,10 @@ public final class PropertyCriteriaPanel extends ColumnCriteriaPanel<Property.Co
       return field;
     }
 
-    private JComponent initField() {
+    private JComponent initializeField() {
       final Property property = model.getColumnIdentifier();
       if (property instanceof Property.ValueListProperty) {
-        return initValueListField((Property.ValueListProperty) property);
+        return initializeValueListField((Property.ValueListProperty) property);
       }
       if (property.isDateOrTime()) {
         return UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) model.getFormat()));
@@ -137,7 +137,7 @@ public final class PropertyCriteriaPanel extends ColumnCriteriaPanel<Property.Co
       }
     }
 
-    private static JComponent initValueListField(final Property.ValueListProperty property) {
+    private static JComponent initializeValueListField(final Property.ValueListProperty property) {
       final ItemComboBoxModel boxModel = new ItemComboBoxModel(property.getValues());
       final SteppedComboBox box = new SteppedComboBox(boxModel);
       MaximumMatch.enable(box);

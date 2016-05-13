@@ -878,7 +878,7 @@ public final class EntityCriteriaUtil {
     }
 
     private static String getInList(final String columnIdentifier, final String value, final int valueCount, final boolean not) {
-      final StringBuilder stringBuilder = new StringBuilder("(").append(columnIdentifier).append((not ? " not in (" : IN_PREFIX));
+      final StringBuilder stringBuilder = new StringBuilder("(").append(columnIdentifier).append(not ? " not in (" : IN_PREFIX);
       int cnt = 1;
       for (int i = 0; i < valueCount; i++) {
         stringBuilder.append(value);
@@ -1085,7 +1085,7 @@ public final class EntityCriteriaUtil {
           keys.add(null);
         }
         else {
-          for (final Object object : ((Collection) value)) {
+          for (final Object object : (Collection) value) {
             keys.add(getKey(object));
           }
         }

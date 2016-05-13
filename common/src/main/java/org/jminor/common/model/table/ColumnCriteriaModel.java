@@ -19,9 +19,6 @@ import java.text.Format;
  */
 public interface ColumnCriteriaModel<K> {
 
-  String UPPER_BOUND_PROPERTY = "upperBound";
-  String LOWER_BOUND_PROPERTY = "lowerBound";
-
   /**
    * @return the column identifier
    */

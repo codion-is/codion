@@ -113,8 +113,8 @@ public abstract class EntityLoadTestModel<ApplicationModel extends EntityApplica
   /**
    * An abstract base class for usage scenarios based on EntityApplicationModel instances
    */
-  public abstract static class AbstractEntityUsageScenario<ApplicationModel extends EntityApplicationModel>
-          extends AbstractUsageScenario<ApplicationModel> {
+  public abstract static class AbstractEntityUsageScenario<M extends EntityApplicationModel>
+          extends AbstractUsageScenario<M> {
 
     /**
      * Instantiates a new AbstractEntityUsageScenario

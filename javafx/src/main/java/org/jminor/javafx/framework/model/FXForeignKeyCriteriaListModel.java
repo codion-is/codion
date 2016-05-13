@@ -62,7 +62,7 @@ public final class FXForeignKeyCriteriaListModel extends DefaultForeignKeyCriter
       try {
         setUpdatingModel(true);
         final Object upper = getUpperBound();
-        if ((upper instanceof Collection && !((Collection) upper).isEmpty())) {
+        if (upper instanceof Collection && !((Collection) upper).isEmpty()) {
           listModel.getSelectionModel().setSelectedItem(((Collection<Entity>) upper).iterator().next());
         }
         else {
@@ -75,7 +75,7 @@ public final class FXForeignKeyCriteriaListModel extends DefaultForeignKeyCriter
     });
     listModel.addRefreshListener(() -> {
       final Object upper = getUpperBound();
-      if ((upper instanceof Collection && !((Collection) upper).isEmpty())) {
+      if (upper instanceof Collection && !((Collection) upper).isEmpty()) {
         listModel.getSelectionModel().setSelectedItem(((Collection<Entity>) upper).iterator().next());
       }
       else {

@@ -44,6 +44,7 @@ public final class EntityGeneratorModel {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityGeneratorModel.class);
 
+  private static final String TYPES_INTEGER = "Types.INTEGER";
   private static final String TABLE_SCHEMA = "TABLE_SCHEM";
   private static final String FOREIGN_KEY_PROPERTY_SUFFIX = "_FK";
   private static final String ENTITY_ID_PREFIX = "T_";
@@ -280,10 +281,10 @@ public final class EntityGeneratorModel {
     if (column.getNullable() == DatabaseMetaData.columnNoNulls && column.getKeySeq() == -1 && column.getForeignKeyColumn() == null) {
       builder.append(Util.LINE_SEPARATOR).append("                .setNullable(false)");
     }
-    if (column.getColumnTypeName().equals("Types.VARCHAR")) {
+    if ("Types.VARCHAR".equals(column.getColumnTypeName())) {
       builder.append(Util.LINE_SEPARATOR).append("                .setMaxLength(").append(column.getColumnSize()).append(")");
     }
-    if (column.getColumnTypeName().equals("Types.DOUBLE") && column.getDecimalDigits() >= 1) {
+    if ("Types.DOUBLE".equals(column.getColumnTypeName()) && column.getDecimalDigits() >= 1) {
       builder.append(Util.LINE_SEPARATOR).append("                .setMaximumFractionDigits(").append(column.getDecimalDigits()).append(")");
     }
     if (!Util.nullOrEmpty(column.getComment())) {
@@ -298,7 +299,7 @@ public final class EntityGeneratorModel {
     final String propertyID = getPropertyID(table, column, false);
     final String caption = getCaption(column);
     if (column.getKeySeq() != -1) {
-      if (column.getColumnTypeName().equals("Types.INTEGER")) {
+      if (TYPES_INTEGER.equals(column.getColumnTypeName())) {
         builder.append(PROPERTIES_COLUMN_PROPERTY).append(propertyID).append(")");
       }
       else {
@@ -344,40 +345,6 @@ public final class EntityGeneratorModel {
     appendEntityDefinition(builder, table);
 
     return builder.toString();
-  }
-
-  private static String translateType(final int sqlType, final int decimalDigits) {
-    switch (sqlType) {
-      case Types.BIGINT:
-        return "Types.BIGINT";
-      case Types.INTEGER:
-      case Types.ROWID:
-      case Types.SMALLINT:
-        return "Types.INTEGER";
-      case Types.CHAR:
-        return "Types.CHAR";
-      case Types.DATE:
-        return "Types.DATE";
-      case Types.DECIMAL:
-      case Types.DOUBLE:
-      case Types.FLOAT:
-      case Types.REAL:
-      case Types.NUMERIC:
-        return decimalDigits == 0 ? "Types.INTEGER" : "Types.DOUBLE";
-      case Types.TIME:
-        return "Types.TIME";
-      case Types.TIMESTAMP:
-        return "Types.TIMESTAMP";
-      case Types.LONGVARCHAR:
-      case Types.VARCHAR:
-        return "Types.VARCHAR";
-      case Types.BLOB:
-        return "Types.BLOB";
-      case Types.BOOLEAN:
-        return "Types.BOOLEAN";
-      default:
-        return null;
-    }
   }
 
   private static final class TableModel extends AbstractFilteredTableModel<Table, Integer> {
@@ -712,6 +679,40 @@ public final class EntityGeneratorModel {
       }
 
       return null;
+    }
+
+    private static String translateType(final int sqlType, final int decimalDigits) {
+      switch (sqlType) {
+        case Types.BIGINT:
+          return "Types.BIGINT";
+        case Types.INTEGER:
+        case Types.ROWID:
+        case Types.SMALLINT:
+          return TYPES_INTEGER;
+        case Types.CHAR:
+          return "Types.CHAR";
+        case Types.DATE:
+          return "Types.DATE";
+        case Types.DECIMAL:
+        case Types.DOUBLE:
+        case Types.FLOAT:
+        case Types.REAL:
+        case Types.NUMERIC:
+          return decimalDigits == 0 ? TYPES_INTEGER : "Types.DOUBLE";
+        case Types.TIME:
+          return "Types.TIME";
+        case Types.TIMESTAMP:
+          return "Types.TIMESTAMP";
+        case Types.LONGVARCHAR:
+        case Types.VARCHAR:
+          return "Types.VARCHAR";
+        case Types.BLOB:
+          return "Types.BLOB";
+        case Types.BOOLEAN:
+          return "Types.BOOLEAN";
+        default:
+          return null;
+      }
     }
   }
 

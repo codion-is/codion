@@ -543,12 +543,12 @@ public final class FXUiUtil {
 
     final DialogPane dialogPane = alert.getDialogPane();
     dialogPane.setExpandableContent(expandableContent);
-    dialogPane.expandedProperty().addListener(value -> {
+    dialogPane.expandedProperty().addListener(value ->
       Platform.runLater(() -> {
         dialogPane.requestLayout();
         dialogPane.getScene().getWindow().sizeToScene();
-      });
-    });
+      })
+    );
 
     Platform.runLater(alert::showAndWait);
   }

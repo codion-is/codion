@@ -141,6 +141,7 @@ public class EntityView extends BorderPane implements ViewTreeNode {
   }
 
   public final void addDetailView(final EntityView detailView) {
+    checkIfInitalized();
     detailViews.add(detailView);
     detailView.setParentView(this);
   }

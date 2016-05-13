@@ -468,6 +468,6 @@ public abstract class EntityTestUnit {
     final double min = property.getMin() == null ? MININUM_RANDOM_NUMBER : property.getMin();
     final double max = property.getMax() == null ? MAXIMUM_RANDOM_NUMBER : property.getMax();
 
-    return Util.roundDouble((RANDOM.nextDouble() * ((max - min))) + min, property.getMaximumFractionDigits());
+    return Util.roundDouble((RANDOM.nextDouble() * (max - min)) + min, property.getMaximumFractionDigits());
   }
 }

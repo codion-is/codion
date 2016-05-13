@@ -18,6 +18,8 @@ import java.util.Properties;
  */
 public final class DerbyDatabase extends AbstractDatabase {
 
+  private static final String SHUTDOWN_ERROR_CODE = "08006";
+
   static final String DRIVER_CLASS_NAME = "org.apache.derby.jdbc.ClientDriver";
   static final String EMBEDDED_DRIVER_CLASS_NAME = "org.apache.derby.jdbc.EmbeddedDriver";
   static final String AUTO_INCREMENT_QUERY = "select IDENTITY_VAL_LOCAL() from ";
@@ -90,7 +92,7 @@ public final class DerbyDatabase extends AbstractDatabase {
                + (authentication == null ? "" : ";" + authentication)).close();
     }
     catch (final SQLException e) {
-      if (!e.getSQLState().equals("08006")) {//08006 is expected on Derby shutdown
+      if (!e.getSQLState().equals(SHUTDOWN_ERROR_CODE)) {//08006 is expected on Derby shutdown
         LOG.error("Embedded Derby database was did not successfully shut down!", e);
       }
     }

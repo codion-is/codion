@@ -836,26 +836,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
   }
 
-  private static List<TableColumn> initializeColumns(final String entityID) {
-    int modelIndex = 0;
-    final List<Property> visibleProperties = Entities.getVisibleProperties(entityID);
-    if (visibleProperties.isEmpty()) {
-      throw new IllegalStateException("No visible properties defined for entity: " + entityID);
-    }
-    final List<TableColumn> columns = new ArrayList<>(visibleProperties.size());
-    for (final Property property : visibleProperties) {
-      final TableColumn column = new TableColumn(modelIndex++);
-      column.setIdentifier(property);
-      column.setHeaderValue(property.getCaption());
-      if (property.getPreferredColumnWidth() > 0) {
-        column.setPreferredWidth(property.getPreferredColumnWidth());
-      }
-      columns.add(column);
-    }
-
-    return columns;
-  }
-
   /**
    * A default sort model implementation based on Entity
    */
@@ -889,6 +869,26 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     @Override
     protected final Comparable getComparable(final Entity entity, final Property property) {
       return (Comparable) entity.get(property);
+    }
+
+    private static List<TableColumn> initializeColumns(final String entityID) {
+      int modelIndex = 0;
+      final List<Property> visibleProperties = Entities.getVisibleProperties(entityID);
+      if (visibleProperties.isEmpty()) {
+        throw new IllegalStateException("No visible properties defined for entity: " + entityID);
+      }
+      final List<TableColumn> columns = new ArrayList<>(visibleProperties.size());
+      for (final Property property : visibleProperties) {
+        final TableColumn column = new TableColumn(modelIndex++);
+        column.setIdentifier(property);
+        column.setHeaderValue(property.getCaption());
+        if (property.getPreferredColumnWidth() > 0) {
+          column.setPreferredWidth(property.getPreferredColumnWidth());
+        }
+        columns.add(column);
+      }
+
+      return columns;
     }
   }
 }

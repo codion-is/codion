@@ -14,19 +14,18 @@ import java.util.List;
 /**
  * Specifies a class responsible for, among other things, coordinating a {@link EntityEditModel} and an {@link EntityTableModel}.
  */
-public interface EntityModel<Model extends EntityModel<Model, EditModel, TableModel>,
-        EditModel extends EntityEditModel, TableModel extends EntityTableModel<EditModel>>
+public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>>
         extends Refreshable, EntityDataProvider {
 
   /**
    * @return the {@link EntityEditModel} instance used by this {@link EntityModel}
    */
-  EditModel getEditModel();
+  E getEditModel();
 
   /**
    * @return the {@link EntityTableModel}, null if none is specified
    */
-  TableModel getTableModel();
+  T getTableModel();
 
   /**
    * @return true if this {@link EntityModel} contains a {@link EntityTableModel}
@@ -36,7 +35,7 @@ public interface EntityModel<Model extends EntityModel<Model, EditModel, TableMo
   /**
    * @return an unmodifiable collection containing the detail models that are currently linked to this model
    */
-  Collection<Model> getLinkedDetailModels();
+  Collection<M> getLinkedDetailModels();
 
   /**
    * Adds the given model to the currently linked detail models. Linked models are updated and filtered according
@@ -44,7 +43,7 @@ public interface EntityModel<Model extends EntityModel<Model, EditModel, TableMo
    * Calling this method with a null argument or a model which is already linked is safe.
    * @param detailModel links the given detail model to this model
    */
-  void addLinkedDetailModel(final Model detailModel);
+  void addLinkedDetailModel(final M detailModel);
 
   /**
    * Removes the given model from the currently linked detail models. Linked models are updated and filtered according
@@ -52,7 +51,7 @@ public interface EntityModel<Model extends EntityModel<Model, EditModel, TableMo
    * Calling this method with a null argument or a model which is not linked is safe.
    * @param detailModel unlinks the given detail model from this model
    */
-  void removeLinkedDetailModel(final Model detailModel);
+  void removeLinkedDetailModel(final M detailModel);
 
   /**
    * Initializes this {@link EntityModel} according to the given foreign key entities.
@@ -76,12 +75,12 @@ public interface EntityModel<Model extends EntityModel<Model, EditModel, TableMo
    * @param entityModel the master entity model
    * @throws IllegalStateException if the master model has already been set
    */
-  void setMasterModel(final Model entityModel);
+  void setMasterModel(final M entityModel);
 
   /**
    * @return the master model, if any
    */
-  Model getMasterModel();
+  M getMasterModel();
 
   /**
    * Adds the given detail model to this model, sets this model as the master model of the
@@ -90,7 +89,7 @@ public interface EntityModel<Model extends EntityModel<Model, EditModel, TableMo
    * any data, via {@link EntityTableModel#setQueryCriteriaRequired(boolean)}
    * @param detailModels the detail models to add
    */
-  void addDetailModels(final Model... detailModels);
+  void addDetailModels(final M... detailModels);
 
   /**
    * Adds the given detail model to this model, sets this model as the master model of the
@@ -100,13 +99,13 @@ public interface EntityModel<Model extends EntityModel<Model, EditModel, TableMo
    * @param detailModel the detail model
    * @return the detail model just added
    */
-  Model addDetailModel(final Model detailModel);
+  M addDetailModel(final M detailModel);
 
   /**
    * @param modelClass the detail model class
    * @return true if this model contains a detail model of the given class
    */
-  boolean containsDetailModel(final Class<? extends Model> modelClass);
+  boolean containsDetailModel(final Class<? extends M> modelClass);
 
   /**
    * @param entityID the entity ID
@@ -118,14 +117,14 @@ public interface EntityModel<Model extends EntityModel<Model, EditModel, TableMo
    * @param detailModel the detail model
    * @return true if this model contains the given detail model
    */
-  boolean containsDetailModel(final Model detailModel);
+  boolean containsDetailModel(final M detailModel);
 
   /**
    * Returns the first detail model of the given type
    * @param modelClass the type of the required {@link EntityModel}
    * @return the detail model of type <code>entityModelClass</code>, null if none is found
    */
-  Model getDetailModel(final Class<? extends Model> modelClass);
+  M getDetailModel(final Class<? extends M> modelClass);
 
   /**
    * Returns a detail model of the given type
@@ -133,12 +132,12 @@ public interface EntityModel<Model extends EntityModel<Model, EditModel, TableMo
    * @return the detail model of type <code>entityModelClass</code>
    * @throws IllegalArgumentException in case no detail model for the given entityID is found
    */
-  Model getDetailModel(final String entityID);
+  M getDetailModel(final String entityID);
 
   /**
    * @return an unmodifiable collection containing the detail models this model contains
    */
-  Collection<? extends Model> getDetailModels();
+  Collection<M> getDetailModels();
 
   /**
    * Indicates that the given detail model is based on the foreign key with the given ID, this becomes
@@ -150,14 +149,14 @@ public interface EntityModel<Model extends EntityModel<Model, EditModel, TableMo
    * @see #initialize(org.jminor.framework.domain.Property.ForeignKeyProperty, java.util.List)
    * @throws IllegalArgumentException in case this EntityModel does not contain the given detail model
    */
-  void setDetailModelForeignKey(final Model detailModel, final String foreignKeyPropertyID);
+  void setDetailModelForeignKey(final M detailModel, final String foreignKeyPropertyID);
 
   /**
    * @param detailModel the detail model
    * @return the {@link org.jminor.framework.domain.Property.ForeignKeyProperty}
    * the given detail model is based on, null if none has been defined
    */
-  Property.ForeignKeyProperty getDetailModelForeignKey(final Model detailModel);
+  Property.ForeignKeyProperty getDetailModelForeignKey(final M detailModel);
 
   /**
    * Refreshes the detail models.

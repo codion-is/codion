@@ -119,10 +119,7 @@ public abstract class EntityEditView extends BorderPane {
 
   protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyID) {
     checkControl(foreignKeyPropertyID);
-    final EntityLookupField lookupField = FXUiUtil.createLookupField(Entities.getForeignKeyProperty(
-            editModel.getEntityID(), foreignKeyPropertyID), editModel);
-
-    return lookupField;
+    return FXUiUtil.createLookupField(Entities.getForeignKeyProperty(editModel.getEntityID(), foreignKeyPropertyID), editModel);
   }
 
   protected final ComboBox<Entity> createForeignKeyComboBox(final String foreignKeyPropertyID) {
@@ -314,7 +311,7 @@ public abstract class EntityEditView extends BorderPane {
     }
     catch (final ValidationException e) {
       FXUiUtil.showExceptionDialog(e);
-      controls.get((String) ((ValidationException) e).getKey());
+      controls.get((String) e.getKey());
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -354,7 +351,7 @@ public abstract class EntityEditView extends BorderPane {
             controls.get(afterInsertFocusPropertyID) :
             controls.get(initialFocusPropertyID);
     if (focusControl != null && focusControl.isFocusTraversable()) {
-      focusControl.requestFocus();//InWindow();
+      focusControl.requestFocus();
     }
     else {
       requestFocus();

@@ -17,7 +17,7 @@ public final class DefaultConnectionPoolState implements ConnectionPoolState, Se
   private int connectionsInUse = -1;
   private int connectionsWaiting = -1;
 
-  public DefaultConnectionPoolState() {}
+  public DefaultConnectionPoolState() {/*For serialization*/}
 
   /**
    * Sets this state

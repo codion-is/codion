@@ -174,6 +174,13 @@ public final class EntityJSONParser implements Serializer<Entity> {
             DateFormats.getDateFormat(JSON_DATE_FORMAT), DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT));
   }
 
+  /**
+   * Serializes the given entity
+   * @param entity the Entity to serialize
+   * @param includeForeignKeyValues if true then foreign key values are also serialized
+   * @return the entity as a serialized string
+   * @throws JSONException in case of an exception
+   */
   public static String serializeEntity(final Entity entity, final boolean includeForeignKeyValues) throws JSONException {
     return serializeEntity(entity, includeForeignKeyValues, DateFormats.getDateFormat(JSON_TIME_FORMAT),
             DateFormats.getDateFormat(JSON_DATE_FORMAT), DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT)).toString();

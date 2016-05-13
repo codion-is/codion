@@ -249,25 +249,20 @@ public final class DateUtil {
     floorTimeFields(calendar);
     calendar.set(Calendar.DAY_OF_MONTH, 1);
     switch (quarter) {
-      case FIRST: {
+      case FIRST:
         calendar.set(Calendar.MONTH, Calendar.JANUARY);
         return calendar.getTime();
-      }
-      case SECOND: {
+      case SECOND:
         calendar.set(Calendar.MONTH, Calendar.APRIL);
         return calendar.getTime();
-      }
-      case THIRD: {
+      case THIRD:
         calendar.set(Calendar.MONTH, Calendar.JULY);
         return calendar.getTime();
-      }
-      case FOURTH: {
+      case FOURTH:
         calendar.set(Calendar.MONTH, Calendar.OCTOBER);
         return calendar.getTime();
-      }
-      default: {
+      default:
         throw new IllegalArgumentException("Not a Quarter: " + quarter);
-      }
     }
   }
 

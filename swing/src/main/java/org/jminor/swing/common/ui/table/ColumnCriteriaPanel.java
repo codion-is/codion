@@ -53,6 +53,7 @@ import java.util.Collection;
 
 /**
  * A UI implementation for ColumnCriteriaModel
+ * @param <K> the type of objects used to identify columns
  */
 public class ColumnCriteriaPanel<K> extends JPanel {
 
@@ -110,7 +111,7 @@ public class ColumnCriteriaPanel<K> extends JPanel {
    */
   public ColumnCriteriaPanel(final ColumnCriteriaModel<K> criteriaModel, final boolean includeToggleEnabledButton,
                              final boolean includeToggleAdvancedCriteriaButton, final SearchType... searchTypes) {
-    this(criteriaModel, includeToggleEnabledButton, includeToggleAdvancedCriteriaButton, new DefaultInputFieldProvider<>(criteriaModel), searchTypes);
+    this(criteriaModel, includeToggleEnabledButton, includeToggleAdvancedCriteriaButton, new DefaultInputFieldProvider(criteriaModel), searchTypes);
   }
 
   /**
@@ -236,6 +237,9 @@ public class ColumnCriteriaPanel<K> extends JPanel {
     }
   }
 
+  /**
+   * Displays this panel in a dialog
+   */
   public final void showDialog() {
     if (isDialogEnabled() && !isDialogVisible()) {
       dialog.setVisible(true);
@@ -244,6 +248,9 @@ public class ColumnCriteriaPanel<K> extends JPanel {
     }
   }
 
+  /**
+   * Hides the dialog showing this panel if visible
+   */
   public final void hideDialog() {
     if (isDialogVisible()) {
       dialog.setVisible(false);
@@ -286,19 +293,24 @@ public class ColumnCriteriaPanel<K> extends JPanel {
     return lowerBoundField;
   }
 
+  /**
+   * @param listener a listener notified each time the advanced criteria state changes
+   */
   public final void addAdvancedCriteriaListener(final EventListener listener) {
     advancedCriteriaState.addListener(listener);
   }
 
+  /**
+   * @param listener the listener to remove
+   */
   public final void removeAdvancedCriteriaListener(final EventListener listener) {
     advancedCriteriaState.removeListener(listener);
   }
 
   /**
    * Provides a upper/lower bound input fields for a ColumnCriteriaPanel
-   * @param <K> the type of column identifiers
    */
-  public interface InputFieldProvider<K> {
+  public interface InputFieldProvider {
 
     /**
      * @param isUpperBound if true then the returned field should be bound
@@ -308,11 +320,11 @@ public class ColumnCriteriaPanel<K> extends JPanel {
     JComponent initializeInputField(final boolean isUpperBound);
   }
 
-  private static final class DefaultInputFieldProvider<K> implements InputFieldProvider<K> {
+  private static final class DefaultInputFieldProvider implements InputFieldProvider {
 
-    private final ColumnCriteriaModel<K> columnCriteriaModel;
+    private final ColumnCriteriaModel<?> columnCriteriaModel;
 
-    private DefaultInputFieldProvider(final ColumnCriteriaModel<K> columnCriteriaModel) {
+    private DefaultInputFieldProvider(final ColumnCriteriaModel<?> columnCriteriaModel) {
       Util.rejectNullValue(columnCriteriaModel, "columnCriteriaModel");
       this.columnCriteriaModel = columnCriteriaModel;
     }

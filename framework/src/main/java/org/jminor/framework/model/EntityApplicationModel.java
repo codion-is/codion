@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * A central application model class.
  */
-public interface EntityApplicationModel<Model extends EntityModel> extends Refreshable {
+public interface EntityApplicationModel<M extends EntityModel> extends Refreshable {
 
   /**
    * Log out from this application model
@@ -40,20 +40,20 @@ public interface EntityApplicationModel<Model extends EntityModel> extends Refre
    * Adds the given entity models to this model.
    * @param entityModels the entity models to add
    */
-  void addEntityModels(final Model... entityModels);
+  void addEntityModels(final M... entityModels);
 
   /**
    * Adds the given entity model to this model
    * @param entityModel the detail model
    * @return the EntityModel model just added
    */
-  Model addEntityModel(final Model entityModel);
+  M addEntityModel(final M entityModel);
 
   /**
    * @param modelClass the application model class
    * @return true if this model contains a EntityModel instance of the given class
    */
-  boolean containsEntityModel(final Class<? extends Model> modelClass);
+  boolean containsEntityModel(final Class<? extends M> modelClass);
 
   /**
    * @param entityID the entity ID
@@ -65,7 +65,7 @@ public interface EntityApplicationModel<Model extends EntityModel> extends Refre
    * @param entityModel the entity model
    * @return true if this model contains the given EntityModel
    */
-  boolean containsEntityModel(final Model entityModel);
+  boolean containsEntityModel(final M entityModel);
 
   /**
    * @return true if any edit model associated with this application model contains
@@ -77,17 +77,17 @@ public interface EntityApplicationModel<Model extends EntityModel> extends Refre
    * @return an unmodifiable List containing the EntityModel instances contained
    * in this EntityApplicationModel
    */
-  List<? extends Model> getEntityModels();
+  List<M> getEntityModels();
 
   /**
    * @param modelClass the model class
    * @return the EntityModel of the given type
    */
-  Model getEntityModel(final Class<? extends Model> modelClass);
+  M getEntityModel(final Class<? extends M> modelClass);
 
   /**
    * @param entityID the entity ID
    * @return the EntityModel based on the given entityID
    */
-  Model getEntityModel(final String entityID);
+  M getEntityModel(final String entityID);
 }

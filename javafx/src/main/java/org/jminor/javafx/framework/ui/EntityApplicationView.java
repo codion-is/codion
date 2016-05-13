@@ -94,7 +94,6 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
       initializeEntitieViews();
       final Scene applicationScene = initializeApplicationScene(stage);
       stage.setOnCloseRequest(event -> savePreferences());
-//      ((VBox) applicationScene.getRoot()).getChildren().addAll(createMainMenu());
       stage.setScene(applicationScene);
 
       stage.show();
@@ -164,7 +163,7 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
     }
 
     return new Scene(tabPane);
-  };
+  }
 
   protected abstract Model initializeApplicationModel(final EntityConnectionProvider connectionProvider);
 

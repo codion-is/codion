@@ -100,13 +100,13 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   /** {@inheritDoc} */
   @Override
   public void moveSelectionDown() {
-
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   /** {@inheritDoc} */
   @Override
   public void moveSelectionUp() {
-
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   /** {@inheritDoc} */

@@ -142,7 +142,7 @@ public class SizedDocument extends PlainDocument {
     }
 
     /**
-     * Validates the given value before it is added to the document
+     * Validates the given value before it is added to the document, provided for subclasses.
      * @param value the value to validate
      * @return true if the value is valid, false otherwise
      */

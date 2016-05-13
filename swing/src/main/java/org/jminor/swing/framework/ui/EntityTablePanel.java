@@ -887,7 +887,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         setupControls();
         initializeTable();
         initializeUI();
-        bindEvents();
+        bindPanelEvents();
         updateStatusMessage();
       }
       finally {
@@ -1388,7 +1388,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
   }
 
-  private void bindEvents() {
+  private void bindPanelEvents() {
     if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isDeleteAllowed()) {
       UiUtil.addKeyEvent(getJTable(), KeyEvent.VK_DELETE, getDeleteSelectedControl());
     }
@@ -1399,8 +1399,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       }
     };
     getEntityTableModel().getSelectionModel().addSelectionChangedListener(statusListener);
-    ((FilteredTableModel) getEntityTableModel()).addFilteringListener(statusListener);
-    ((FilteredTableModel) getEntityTableModel()).addTableDataChangedListener(statusListener);
+    getEntityTableModel().addFilteringListener(statusListener);
+    getEntityTableModel().addTableDataChangedListener(statusListener);
 
     for (final PropertyCriteriaModel criteriaModel : getEntityTableModel().getCriteriaModel().getPropertyCriteriaModels()) {
       criteriaModel.addCriteriaStateListener(new EventListener() {

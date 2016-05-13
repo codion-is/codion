@@ -55,7 +55,7 @@ public interface ColumnSummaryModel {
   /**
    * @return a list containing the available summaries
    */
-  List<? extends Summary> getAvailableSummaries();
+  List<Summary> getAvailableSummaries();
 
   /**
    * @return a string representing the summary value

@@ -2091,10 +2091,10 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   private void setInitialFocus(final boolean afterInsert) {
     final JComponent focusComponent = afterInsert ? getAfterInsertFocusComponent() : getInitialFocusComponent();
     if (focusComponent != null && focusComponent.isFocusable()) {
-      focusComponent.requestFocus();//InWindow();
+      focusComponent.requestFocus();
     }
     else {
-      requestFocus();//InWindow();
+      requestFocus();
     }
   }
 

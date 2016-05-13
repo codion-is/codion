@@ -169,13 +169,9 @@ public class EntityTableView extends TableView<Entity> {
 
   private Menu createSearchMenu() {
     final CheckMenuItem showCriteriaPane = new CheckMenuItem(FrameworkMessages.get(FrameworkMessages.SHOW));
-    showCriteriaPane.selectedProperty().addListener((observable, oldValue, newValue) -> {
-      setCriteriaPaneVisible(newValue);
-    });
+    showCriteriaPane.selectedProperty().addListener((observable, oldValue, newValue) -> setCriteriaPaneVisible(newValue));
     final CheckMenuItem advanced = new CheckMenuItem(FrameworkMessages.get(FrameworkMessages.ADVANCED));
-    advanced.selectedProperty().addListener((observable, oldValue, newValue) -> {
-      setCriteriaPaneAdvanced(newValue);
-    });
+    advanced.selectedProperty().addListener((observable, oldValue, newValue) -> setCriteriaPaneAdvanced(newValue));
     final MenuItem clear = new MenuItem(FrameworkMessages.get(FrameworkMessages.CLEAR));
     clear.setOnAction(event -> listModel.getCriteriaModel().clear());
 
@@ -274,13 +270,14 @@ public class EntityTableView extends TableView<Entity> {
           listModel.refresh();
           event.consume();
           break;
+        default:
+          break;
       }
     });
   }
 
   private void bindEvents() {
     listModel.getSortedList().comparatorProperty().bind(comparatorProperty());
-    final List<Property> properties = Entities.getVisibleProperties(listModel.getEntityID());
     filterText.textProperty().addListener((observable, oldValue, newValue) -> {
       if (Util.nullOrEmpty(newValue)) {
         listModel.setFilterCriteria(new FilterCriteria.AcceptAllCriteria());

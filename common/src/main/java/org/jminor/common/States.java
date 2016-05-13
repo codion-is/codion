@@ -269,14 +269,14 @@ public final class States {
         ((DefaultStateObserver) getObserver()).notifyObservers(getPreviousState(state, !newValue), isActive());
       }
 
+      private boolean getPreviousState(final StateObserver excludeState, final boolean previousValue) {
+        synchronized (lock) {
+          return isActive(conjunction, excludeState, previousValue);
+        }
+      }
+
       private StateObserver getState() {
         return state;
-      }
-    }
-
-    private boolean getPreviousState(final StateObserver excludeState, final boolean previousValue) {
-      synchronized (lock) {
-        return isActive(conjunction, excludeState, previousValue);
       }
     }
   }

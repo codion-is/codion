@@ -10,7 +10,6 @@ import org.jminor.framework.domain.Property;
 import org.jminor.javafx.framework.model.FXEntityListModel;
 
 import javafx.beans.value.ObservableValue;
-import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 
 public final class EntityTableColumn extends FXEntityListModel.PropertyTableColumn {
@@ -47,23 +46,11 @@ public final class EntityTableColumn extends FXEntityListModel.PropertyTableColu
     }
     final ColumnCriteriaModel<? extends Property.SearchableProperty> criteriaModel =
             listModel.getCriteriaModel().getPropertyCriteriaModel(getProperty().getPropertyID());
-    final PropertyCriteriaView criteriaView = new PropertyCriteriaView(criteriaModel);
-    criteriaView.prefWidthProperty().setValue(getWidth());
-    widthProperty().addListener((observable, oldValue, newValue) -> {
-      criteriaView.prefWidthProperty().set(newValue.doubleValue());
-    });
-    widthProperty().addListener((observable, oldValue, newValue) -> {
-      criteriaView.prefWidthProperty().set(newValue.doubleValue());
-    });
+    final PropertyCriteriaView view = new PropertyCriteriaView(criteriaModel);
+    view.prefWidthProperty().setValue(getWidth());
+    widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));
+    widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));
 
-    return criteriaView;
-  }
-
-  private Pane createCenterPane(final FXEntityListModel listModel) {
-    if (getProperty() instanceof Property.SearchableProperty) {
-      return criteriaView;
-    }
-
-    return new Pane();
+    return view;
   }
 }

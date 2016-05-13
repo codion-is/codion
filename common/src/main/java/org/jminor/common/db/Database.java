@@ -15,6 +15,9 @@ import java.util.Properties;
  */
 public interface Database {
 
+  /**
+   * The available database types
+   */
   enum Type {
     DERBY, H2, HSQL, MYSQL, ORACLE, POSTGRESQL, SQLSERVER, OTHER
   }

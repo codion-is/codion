@@ -334,7 +334,9 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
     try {
       Thread.sleep(random.nextInt(maximumRetryWaitPeriod));
     }
-    catch (final InterruptedException ignored) {/*ignored*/}
+    catch (final InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
   }
 
   private boolean isNewConnectionWarranted(final long elapsedTime) {

@@ -21,5 +21,5 @@ public final class SwingMessages {
 
   private SwingMessages() {}
 
-  public static void init() {}
+  public static void init() {/*A convenience method for triggering a loading of this class*/}
 }

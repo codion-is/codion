@@ -160,9 +160,9 @@ public class UtilTest {
 
   @Test
   public void countLines() throws IOException {
-    assertEquals(44, Util.countLines("jminor-common.iml"));
-    assertEquals(44, Util.countLines(new File("jminor-common.iml")));
-    assertEquals(41, Util.countLines(new File("jminor-common.iml"), "<"));
+    assertEquals(125, Util.countLines("src/test/sql/create_h2_db.sql"));
+    assertEquals(125, Util.countLines(new File("src/test/sql/create_h2_db.sql")));
+    assertEquals(116, Util.countLines(new File("src/test/sql/create_h2_db.sql"), ");"));
   }
 
   @Test

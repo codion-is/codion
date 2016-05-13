@@ -9,8 +9,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
  * Specifies a class which provides EntityModel, EntityTableModel and EntityEditModel
  * instances for a given entityID.
  */
-public interface EntityModelProvider<Model extends EntityModel<Model, EditModel, TableModel>,
-        EditModel extends EntityEditModel, TableModel extends EntityTableModel<EditModel>> {
+public interface EntityModelProvider<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
 
   /**
    * @return the entityID of the models provided by this model provider
@@ -23,14 +22,14 @@ public interface EntityModelProvider<Model extends EntityModel<Model, EditModel,
    * @param detailModel if true the model should be configured as a detail model
    * @return the entity model instance
    */
-  Model createModel(final EntityConnectionProvider connectionProvider, final boolean detailModel);
+  M createModel(final EntityConnectionProvider connectionProvider, final boolean detailModel);
 
   /**
    * Creates a {@link EntityEditModel} instance, based on the given connection provider
    * @param connectionProvider the connection provider
    * @return the edit model instance
    */
-  EditModel createEditModel(final EntityConnectionProvider connectionProvider);
+  E createEditModel(final EntityConnectionProvider connectionProvider);
 
   /**
    * Creates a {@link EntityTableModel} instance, based on the given connection provider
@@ -38,7 +37,7 @@ public interface EntityModelProvider<Model extends EntityModel<Model, EditModel,
    * @param detailModel if true the model should be configured as a detail model
    * @return the table model instance
    */
-  TableModel createTableModel(final EntityConnectionProvider connectionProvider, final boolean detailModel);
+  T createTableModel(final EntityConnectionProvider connectionProvider, final boolean detailModel);
 
   /**
    * Sets the model class
@@ -46,7 +45,7 @@ public interface EntityModelProvider<Model extends EntityModel<Model, EditModel,
    * @return this EntityModelProvider instance
    * @throws java.lang.IllegalArgumentException in case modelClass is null
    */
-  EntityModelProvider<Model, EditModel, TableModel> setModelClass(final Class<? extends Model> modelClass);
+  EntityModelProvider<M, E, T> setModelClass(final Class<? extends M> modelClass);
 
   /**
    * Sets the edit model class
@@ -54,7 +53,7 @@ public interface EntityModelProvider<Model extends EntityModel<Model, EditModel,
    * @return this EntityModelProvider instance
    * @throws java.lang.IllegalArgumentException in case editModelClass is null
    */
-  EntityModelProvider<Model, EditModel, TableModel> setEditModelClass(final Class<? extends EditModel> editModelClass);
+  EntityModelProvider<M, E, T> setEditModelClass(final Class<? extends E> editModelClass);
 
   /**
    * Sets the table model class
@@ -62,32 +61,32 @@ public interface EntityModelProvider<Model extends EntityModel<Model, EditModel,
    * @return this EntityModelProvider instance
    * @throws java.lang.IllegalArgumentException in case tableModelClass is null
    */
-  EntityModelProvider<Model, EditModel, TableModel> setTableModelClass(final Class<? extends TableModel> tableModelClass);
+  EntityModelProvider<M, E, T> setTableModelClass(final Class<? extends T> tableModelClass);
 
   /**
    * @param detailModelProvider an EntityModelProvider providing a detail model
    * @return this EntityModelProvider instance
    */
-  EntityModelProvider<Model, EditModel, TableModel> addDetailModelProvider(final EntityModelProvider<Model, EditModel, TableModel> detailModelProvider);
+  EntityModelProvider<M, E, T> addDetailModelProvider(final EntityModelProvider<M, E, T> detailModelProvider);
 
   /**
    * @param detailModelProvider the detail model provider
    * @return true if this model provider contains the given detail model provider
    */
-  boolean containsDetailModelProvider(final EntityModelProvider<Model, EditModel, TableModel> detailModelProvider);
+  boolean containsDetailModelProvider(final EntityModelProvider<M, E, T> detailModelProvider);
 
   /**
    * @return the class of the {@link EntityModel}s provided
    */
-  Class<? extends Model> getModelClass();
+  Class<? extends M> getModelClass();
 
   /**
    * @return the class of the {@link EntityEditModel}s provided
    */
-  Class<? extends EditModel> getEditModelClass();
+  Class<? extends E> getEditModelClass();
 
   /**
    * @return the class of the {@link EntityTableModel}s provided
    */
-  Class<? extends TableModel> getTableModelClass();
+  Class<? extends T> getTableModelClass();
 }
