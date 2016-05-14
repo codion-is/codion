@@ -66,12 +66,12 @@ public class SwingFilteredTableColumnModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullColumns() {
-    new SwingFilteredTableColumnModel<>(null, new ArrayList<ColumnCriteriaModel<Integer>>());
+    new SwingFilteredTableColumnModel<>(null, new ArrayList<>());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNoColumns() {
-    new SwingFilteredTableColumnModel<>(new ArrayList<TableColumn>(), new ArrayList<ColumnCriteriaModel<Integer>>());
+    new SwingFilteredTableColumnModel<>(new ArrayList<>(), new ArrayList<>());
   }
 
   @Test

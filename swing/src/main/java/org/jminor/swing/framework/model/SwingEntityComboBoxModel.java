@@ -257,7 +257,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
       public void eventOccurred() {
         final Entity selectedEntity = foreignKeyModel.getSelectedValue();
         setForeignKeyFilterEntities(foreignKeyPropertyID,
-                selectedEntity == null ? new ArrayList<Entity>(0) : Collections.singletonList(selectedEntity));
+                selectedEntity == null ? new ArrayList<>(0) : Collections.singletonList(selectedEntity));
       }
     });
     addSelectionListener(new EventListener() {

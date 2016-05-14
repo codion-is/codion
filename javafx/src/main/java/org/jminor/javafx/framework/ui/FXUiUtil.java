@@ -544,10 +544,10 @@ public final class FXUiUtil {
     final DialogPane dialogPane = alert.getDialogPane();
     dialogPane.setExpandableContent(expandableContent);
     dialogPane.expandedProperty().addListener(value ->
-      Platform.runLater(() -> {
-        dialogPane.requestLayout();
-        dialogPane.getScene().getWindow().sizeToScene();
-      })
+            Platform.runLater(() -> {
+              dialogPane.requestLayout();
+              dialogPane.getScene().getWindow().sizeToScene();
+            })
     );
 
     Platform.runLater(alert::showAndWait);
@@ -638,40 +638,39 @@ public final class FXUiUtil {
         });
       }
     }
-  }
 
-  private static boolean isValid(final Property property, final String value) {
-    final int maxLength = property.getMaxLength();
-    if (maxLength > -1 && value != null && value.length() > maxLength) {
-      return false;
-    }
-    final Format format = property.getFormat();
-    Object parsedValue = null;
-    try {
-      if (format != null && value != null) {
-        parsedValue = PropertyValues.parseStrict(format, value);
+    private static boolean isValid(final Property property, final String value) {
+      final int maxLength = property.getMaxLength();
+      if (maxLength > -1 && value != null && value.length() > maxLength) {
+        return false;
       }
-    }
-    catch (final NumberFormatException | ParseException e) {
-      return false;
-    }
-    if (parsedValue != null && property.isNumerical() && !isWithinRange(property, (Number) parsedValue)) {
-      return false;
-    }
-    if (parsedValue instanceof Double && !Util.equal(parsedValue,
-            Util.roundDouble((Double) parsedValue, property.getMaximumFractionDigits()))) {
-      return false;
+      final Format format = property.getFormat();
+      Object parsedValue = null;
+      try {
+        if (format != null && value != null) {
+          parsedValue = PropertyValues.parseStrict(format, value);
+        }
+      }
+      catch (final NumberFormatException | ParseException e) {
+        return false;
+      }
+      if (parsedValue != null && property.isNumerical() && !isWithinRange(property, (Number) parsedValue)) {
+        return false;
+      }
+      if (parsedValue instanceof Double && !Util.equal(parsedValue,
+              Util.roundDouble((Double) parsedValue, property.getMaximumFractionDigits()))) {
+        return false;
+      }
+
+      return true;
     }
 
+    private static boolean isWithinRange(final Property property, final Number value) {
+      final double min = property.getMin() != null ? Math.min(property.getMin(), 0) : Double.NEGATIVE_INFINITY;
+      final double max = property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax();
+      final double doubleValue = value.doubleValue();
 
-    return true;
-  }
-
-  private static boolean isWithinRange(final Property property, final Number value) {
-    final double min = property.getMin() != null ? Math.min(property.getMin(), 0) : Double.NEGATIVE_INFINITY;
-    final double max = property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax();
-    final double doubleValue = value.doubleValue();
-
-    return doubleValue >= min && doubleValue <= max;
+      return doubleValue >= min && doubleValue <= max;
+    }
   }
 }

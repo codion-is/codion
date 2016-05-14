@@ -375,7 +375,7 @@ public final class PropertyValues {
 
     private EntityLookupSingleValue(final EntityLookupModel lookupModel) {
       this.lookupModel = lookupModel;
-      this.lookupModel.addSelectedEntitiesListener((selected) -> selectionListener.fire(selected.isEmpty() ? null : selected.iterator().next()));
+      this.lookupModel.addSelectedEntitiesListener(selected -> selectionListener.fire(selected.isEmpty() ? null : selected.iterator().next()));
     }
 
     @Override

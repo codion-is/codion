@@ -37,6 +37,6 @@ public class JasperReportsWrapperTest {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(User.UNIT_TEST_USER,
             new H2Database("JasperReportsWrapperTest.fillJdbcReportInvalidReport", System.getProperty("jminor.db.initScript")));
     EntityReportUtil.fillReport(new JasperReportsWrapper("build/test/non_existing.jasper",
-            new HashMap<String, Object>()), connectionProvider).getResult();
+            new HashMap<>()), connectionProvider).getResult();
   }
 }

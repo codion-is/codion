@@ -84,7 +84,7 @@ public final class EntityCriteriaPanel extends JPanel {
 
   private JList initializePropertyList(final EntityTableCriteriaModel criteriaModel, final JPanel editorPanel) {
     final List<PropertyCriteriaModel> searchCriteria = getSortedCriteria(criteriaModel);
-    final JList<PropertyCriteriaModel> propertyList = new JList<>(new DefaultListModel<PropertyCriteriaModel>());
+    final JList<PropertyCriteriaModel> propertyList = new JList<>(new DefaultListModel<>());
     for (final PropertyCriteriaModel model : searchCriteria) {
       ((DefaultListModel<PropertyCriteriaModel>) propertyList.getModel()).addElement(model);
       model.addCriteriaStateListener(new RepaintListener(propertyList));

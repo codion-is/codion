@@ -6,8 +6,10 @@ package org.jminor.framework.model;
 import org.jminor.framework.db.EntityConnectionProvider;
 
 /**
- * Specifies a class which provides EntityModel, EntityTableModel and EntityEditModel
- * instances for a given entityID.
+ * Specifies a class which provides EntityModel, EntityTableModel and EntityEditModel instances for a given entityID.
+ * @param <M> the type of {@link EntityModel} provided
+ * @param <E> the type of {@link EntityEditModel} provided
+ * @param <T> the type of {@link EntityTableModel} provided
  */
 public interface EntityModelProvider<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
 

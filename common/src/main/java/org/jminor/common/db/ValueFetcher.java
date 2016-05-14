@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 /**
  * Fetches a single value from a result set.
- * @param T the type of the value being fetched
+ * @param <T> the type of the value being fetched
  */
 public interface ValueFetcher<T> {
 

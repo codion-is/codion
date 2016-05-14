@@ -47,7 +47,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
   private final ItemRandomizer<T> model;
   private final JPanel configPanel = new JPanel(UiUtil.createGridLayout(0, 1));
-  private final JList<ItemRandomizer.RandomItem<T>> itemList = new JList<>(new DefaultListModel<ItemRandomizer.RandomItem<T>>());
+  private final JList<ItemRandomizer.RandomItem<T>> itemList = new JList<>(new DefaultListModel<>());
   private final Event selectedItemChangedEvent = Events.event();
 
   /**

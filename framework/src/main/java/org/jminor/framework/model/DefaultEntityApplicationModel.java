@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * A central application model class.
+ * @param <M> the {@link DefaultEntityModel} type this application model is based on
  */
 public abstract class DefaultEntityApplicationModel<M extends DefaultEntityModel> implements EntityApplicationModel<M> {
 

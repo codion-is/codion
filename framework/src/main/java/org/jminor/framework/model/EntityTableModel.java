@@ -20,6 +20,7 @@ import java.util.Map;
 
 /**
  * Specifies a table model containing {@link Entity} objects
+ * @param <E> the type of {@link EntityEditModel} used by this {@link EntityTableModel}
  */
 public interface EntityTableModel<E extends EntityEditModel> extends EntityDataProvider, FilteredModel<Entity>, Refreshable {
 

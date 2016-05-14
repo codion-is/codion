@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * A central application model class.
+ * @param <M> the type of {@link EntityModel} used by this application model
  */
 public interface EntityApplicationModel<M extends EntityModel> extends Refreshable {
 

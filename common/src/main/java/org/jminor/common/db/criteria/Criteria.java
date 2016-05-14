@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * A generic interface for objects serving as where conditions in database queries
- * @param <T> the type used as keys mapping the property values
+ * @param <T> the type used to describe the criteria values
  */
 public interface Criteria<T> {
   /**

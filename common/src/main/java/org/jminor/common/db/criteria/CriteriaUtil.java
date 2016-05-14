@@ -136,7 +136,7 @@ public final class CriteriaUtil {
    * @throws IllegalArgumentException in case any of the parameters are null
    */
   public static <T> Criteria<T> stringCriteria(final String criteriaString, final List values, final List<T> keys) {
-    return new StringCriteria<T>(criteriaString, values, keys);
+    return new StringCriteria<>(criteriaString, values, keys);
   }
 
   private static final class DefaultCriteriaSet<T> implements CriteriaSet<T>, Serializable {

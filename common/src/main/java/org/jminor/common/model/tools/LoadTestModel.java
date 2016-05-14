@@ -559,19 +559,6 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /**
-   * Selects a random scenario and runs it with the given application
-   * @param application the application for running the next scenario
-   * @return the name of the scenario that was run
-   */
-  private String performWork(final T application) {
-    Util.rejectNullValue(application, "application");
-    final String scenarioName = scenarioChooser.getRandomItem().getName();
-    runScenario(scenarioName, application);
-
-    return scenarioName;
-  }
-
-  /**
    * Removes a single application
    */
   private void removeApplication() {
@@ -693,7 +680,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
       final long currentTimeNano = System.nanoTime();
       String scenarioName = null;
       try {
-        scenarioName = loadTestModel.performWork(application);
+        scenarioName = performWork(application);
       }
       finally {
         loadTestModel.counter.incrementWorkRequests();
@@ -705,6 +692,18 @@ public abstract class LoadTestModel<T> implements LoadTest {
           loadTestModel.counter.incrementDelayedWorkRequests();
         }
       }
+    }
+
+    /**
+     * Selects a random scenario and runs it with the given application
+     * @param application the application for running the next scenario
+     * @return the name of the scenario that was run
+     */
+    private String performWork(final T application) {
+      final String scenarioName = loadTestModel.scenarioChooser.getRandomItem().getName();
+      loadTestModel.runScenario(scenarioName, application);
+
+      return scenarioName;
     }
 
     private void delayLogin() {
@@ -935,7 +934,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     private void addScenarioDuration(final String scenarioName, final int duration) {
       synchronized (scenarioDurations) {
         if (!scenarioDurations.containsKey(scenarioName)) {
-          scenarioDurations.put(scenarioName, new ArrayList<Integer>());
+          scenarioDurations.put(scenarioName, new ArrayList<>());
         }
         scenarioDurations.get(scenarioName).add(duration);
       }

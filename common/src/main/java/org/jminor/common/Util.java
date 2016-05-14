@@ -442,7 +442,7 @@ public class Util {
     rejectNullValue(key, KEY);
     rejectNullValue(map, "map");
     if (!map.containsKey(key)) {
-      map.put(key, new ArrayList<V>());
+      map.put(key, new ArrayList<>());
     }
 
     map.get(key).add(value);

@@ -278,7 +278,7 @@ public class EntityUtilTest {
     assertTrue(propertyValues.containsAll(values));
 
     assertEquals(0, EntityUtil.getDistinctValues(TestDomain.DEPARTMENT_ID, null, true).size());
-    assertEquals(0, EntityUtil.getDistinctValues(TestDomain.DEPARTMENT_ID, new ArrayList<Entity>(), true).size());
+    assertEquals(0, EntityUtil.getDistinctValues(TestDomain.DEPARTMENT_ID, new ArrayList<>(), true).size());
   }
 
   @Test

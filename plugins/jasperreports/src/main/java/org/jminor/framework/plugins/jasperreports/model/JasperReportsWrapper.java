@@ -34,7 +34,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
   private final String reportPath;
   private final Map<String, Object> reportParameters;
   private static final boolean CACHE_REPORTS = Configuration.getBooleanValue(Configuration.CACHE_REPORTS);
-  private static final Map<String, JasperReport> REPORT_CACHE = Collections.synchronizedMap(new HashMap<String, JasperReport>());
+  private static final Map<String, JasperReport> REPORT_CACHE = Collections.synchronizedMap(new HashMap<>());
 
   public JasperReportsWrapper(final String reportPath) {
     this(reportPath, Collections.emptyMap());

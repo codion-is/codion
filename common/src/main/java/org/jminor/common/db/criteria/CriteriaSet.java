@@ -5,6 +5,7 @@ package org.jminor.common.db.criteria;
 
 /**
  * An interface encapsulating a set of Criteria objects, that should be either AND'ed or OR'ed together in a query context
+ * @param <T> the type used to describe the criteria values
  */
 public interface CriteriaSet<T> extends Criteria<T> {
 

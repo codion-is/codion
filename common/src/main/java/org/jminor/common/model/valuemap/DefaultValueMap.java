@@ -48,7 +48,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
    * Instantiates a new empty instance
    */
   public DefaultValueMap() {
-    this(new HashMap<K, V>(), null);
+    this(new HashMap<>(), null);
   }
 
   /**

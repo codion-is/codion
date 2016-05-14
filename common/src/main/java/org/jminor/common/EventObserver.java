@@ -5,7 +5,7 @@ package org.jminor.common;
 
 /**
  * Specifies an Event observer, managing listeners for an Event.
- * @param T the type of info propagated with events
+ * @param <T> the type of info propagated with events
  */
 public interface EventObserver<T> {
 

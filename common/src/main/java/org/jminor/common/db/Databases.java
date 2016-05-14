@@ -21,8 +21,8 @@ import java.util.Map;
  */
 public final class Databases {
 
-  private static final Map<String, DatabaseConnection.Operation> OPERATIONS = Collections.synchronizedMap(new HashMap<String, DatabaseConnection.Operation>());
-  private static final Map<String, String> INSERT_HINTS = Collections.synchronizedMap(new HashMap<String, String>());
+  private static final Map<String, DatabaseConnection.Operation> OPERATIONS = Collections.synchronizedMap(new HashMap<>());
+  private static final Map<String, String> INSERT_HINTS = Collections.synchronizedMap(new HashMap<>());
 
   private Databases() {}
 
@@ -212,9 +212,16 @@ public final class Databases {
     }
   }
 
+  /**
+   * Annotation for a database operation id, specifying the operation class name
+   */
   @Target(ElementType.FIELD)
   @Retention(RetentionPolicy.RUNTIME)
   public @interface Operation {
+
+    /**
+     * @return the operation class name
+     */
     String className();
   }
 }

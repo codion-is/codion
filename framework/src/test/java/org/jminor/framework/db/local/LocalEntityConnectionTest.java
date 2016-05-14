@@ -91,7 +91,7 @@ public class LocalEntityConnectionTest {
       connection.beginTransaction();
       final Entity.Key key = Entities.key(TestDomain.T_DEPARTMENT);
       key.put(TestDomain.DEPARTMENT_ID, 40);
-      connection.delete(new ArrayList<Entity.Key>());
+      connection.delete(new ArrayList<>());
       connection.delete(Collections.singletonList(key));
       try {
         connection.selectSingle(key);
@@ -148,7 +148,7 @@ public class LocalEntityConnectionTest {
 
   @Test
   public void selectDependentEntities() throws Exception {
-    final Map<String, Collection<Entity>> empty = connection.selectDependentEntities(new ArrayList<Entity>());
+    final Map<String, Collection<Entity>> empty = connection.selectDependentEntities(new ArrayList<>());
     assertTrue(empty.isEmpty());
     final List<Entity> accounting = connection.selectMany(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     final Map<String, Collection<Entity>> emps = connection.selectDependentEntities(accounting);
@@ -183,7 +183,7 @@ public class LocalEntityConnectionTest {
 
   @Test
   public void selectMany() throws Exception {
-    List<Entity> result = connection.selectMany(new ArrayList<Entity.Key>());
+    List<Entity> result = connection.selectMany(new ArrayList<>());
     assertTrue(result.isEmpty());
     result = connection.selectMany(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID, 10, 20);
     assertEquals(2, result.size());
@@ -317,13 +317,13 @@ public class LocalEntityConnectionTest {
 
   @Test
   public void insert() throws DatabaseException {
-    final List<Entity.Key> pks = connection.insert(new ArrayList<Entity>());
+    final List<Entity.Key> pks = connection.insert(new ArrayList<>());
     assertTrue(pks.isEmpty());
   }
 
   @Test
   public void update() throws DatabaseException {
-    final List<Entity> updated = connection.update(new ArrayList<Entity>());
+    final List<Entity> updated = connection.update(new ArrayList<>());
     assertTrue(updated.isEmpty());
   }
 

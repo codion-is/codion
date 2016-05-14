@@ -88,7 +88,7 @@ public abstract class EntityTestUnit {
   public final void testEntity(final String entityID) throws DatabaseException {
     connection.beginTransaction();
     try {
-      initializeReferencedEntities(entityID, new HashSet<String>());
+      initializeReferencedEntities(entityID, new HashSet<>());
       Entity testEntity = null;
       if (!Entities.isReadOnly(entityID)) {
         testEntity = testInsert(Util.rejectNullValue(initializeTestEntity(entityID), "test entity"));

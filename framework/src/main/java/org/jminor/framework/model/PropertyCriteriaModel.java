@@ -9,6 +9,7 @@ import org.jminor.framework.domain.Property;
 
 /**
  * A base interface for a column criteria based on a property.
+ * @param <T> the type of {@link Property} this criteria model is based on
  */
 public interface PropertyCriteriaModel<T extends Property.SearchableProperty> extends ColumnCriteriaModel<T> {
 

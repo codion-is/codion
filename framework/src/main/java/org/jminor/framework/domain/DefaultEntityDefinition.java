@@ -712,7 +712,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   private void linkProperties(final String parentPropertyID, final String derivedPropertyID) {
     if (!linkedProperties.containsKey(parentPropertyID)) {
-      linkedProperties.put(parentPropertyID, new HashSet<String>());
+      linkedProperties.put(parentPropertyID, new HashSet<>());
     }
     linkedProperties.get(parentPropertyID).add(derivedPropertyID);
   }

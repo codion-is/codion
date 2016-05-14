@@ -24,7 +24,7 @@ public final class ConnectionPools {
   /**
    * The available connection pools
    */
-  private static final Map<User, ConnectionPool> CONNECTION_POOLS = Collections.synchronizedMap(new HashMap<User, ConnectionPool>());
+  private static final Map<User, ConnectionPool> CONNECTION_POOLS = Collections.synchronizedMap(new HashMap<>());
 
   private ConnectionPools() {}
 

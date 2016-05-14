@@ -38,6 +38,7 @@ public final class EntityLookupField extends TextField {
     setPromptText(Messages.get(Messages.SEARCH_FIELD_HINT));
     tooltipProperty().setValue(new Tooltip(model.getDescription()));
     setOnKeyPressed(new LookupKeyHandler());
+    focusedProperty().addListener((observable, oldValue, newValue) -> handleFocusChanged(newValue));
     updateColors();
   }
 
@@ -99,6 +100,18 @@ public final class EntityLookupField extends TextField {
   private void updateColors() {
 //    final boolean validBackground = model.searchStringRepresentsSelected() || (searchHint != null && searchHint.isHintTextVisible());
 //    setBackground(validBackground ? validBackgroundColor : invalidBackgroundColor);
+  }
+
+  private void handleFocusChanged(final Boolean hasFocus) {
+    if (!hasFocus) {
+      if (getText().length() == 0) {
+        getModel().setSelectedEntity(null);
+      }
+      else if (!performingLookup && !model.searchStringRepresentsSelected()) {
+        performLookup(false);
+      }
+      updateColors();
+    }
   }
 
   private class LookupKeyHandler implements EventHandler<KeyEvent> {

@@ -142,7 +142,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   private List<ConnectionPoolState> getFineGrainedStatistics(final long since) {
     final List<ConnectionPoolState> poolStates;
     synchronized (pool) {
-      poolStates = new LinkedList<ConnectionPoolState>(fineGrainedCStatistics);
+      poolStates = new LinkedList<>(fineGrainedCStatistics);
     }
     final ListIterator<ConnectionPoolState> iterator = poolStates.listIterator();
     while (iterator.hasNext() && iterator.next().getTimestamp() < since) {

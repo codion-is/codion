@@ -39,12 +39,8 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
   private final Collection<DatabaseConnection> inUse = new ArrayList<>();
   private final Random random = new Random();
 
-  private final TaskScheduler poolCleanupScheduler = new TaskScheduler(new Runnable() {
-    @Override
-    public void run() {
-      cleanPool();
-    }
-  }, DEFAULT_CLEANUP_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
+  private final TaskScheduler poolCleanupScheduler = new TaskScheduler(new CleanupTask(),
+          DEFAULT_CLEANUP_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
 
   private volatile int minimumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE / 2;
   private volatile int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
@@ -62,7 +58,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
    * @throws DatabaseException in case of an exception while constructing the initial connections
    */
   DefaultConnectionPool(final DatabaseConnectionProvider connectionProvider) throws DatabaseException {
-    super(new ArrayDeque<DatabaseConnection>(), connectionProvider.getUser());
+    super(new ArrayDeque<>(), connectionProvider.getUser());
     this.connectionProvider = connectionProvider;
     initializeConnections();
   }
@@ -348,19 +344,26 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
     }
   }
 
-  private void cleanPool() {
-    final long currentTime = System.currentTimeMillis();
-    synchronized (pool) {
-      final int inUseCount = inUse.size();
-      final Collection<DatabaseConnection> pooledConnections = new ArrayList<>(pool);
-      for (final DatabaseConnection connection : pooledConnections) {
-        if (pool.size() + inUseCount <= minimumPoolSize) {
-          return;
-        }
-        if (currentTime - connection.getPoolTime() > pooledConnectionTimeout) {
-          connectionProvider.destroyConnection(connection);//todo could be spun off in a thread, if the operation is expensive
-          getCounter().incrementConnectionsDestroyedCounter();
-          pool.remove(connection);
+  private final class CleanupTask implements Runnable {
+    @Override
+    public void run() {
+      cleanPool();
+    }
+
+    private void cleanPool() {
+      final long currentTime = System.currentTimeMillis();
+      synchronized (pool) {
+        final int inUseCount = inUse.size();
+        final Collection<DatabaseConnection> pooledConnections = new ArrayList<>(pool);
+        for (final DatabaseConnection connection : pooledConnections) {
+          if (pool.size() + inUseCount <= minimumPoolSize) {
+            return;
+          }
+          if (currentTime - connection.getPoolTime() > pooledConnectionTimeout) {
+            connectionProvider.destroyConnection(connection);//todo could be spun off in a thread, if the operation is expensive
+            getCounter().incrementConnectionsDestroyedCounter();
+            pool.remove(connection);
+          }
         }
       }
     }

@@ -264,7 +264,7 @@ public final class DefaultEntityEditModelTest {
   @Test
   public void insert() throws Exception {
     try {
-      assertTrue(employeeEditModel.insert(new ArrayList<Entity>()).isEmpty());
+      assertTrue(employeeEditModel.insert(new ArrayList<>()).isEmpty());
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
       employeeEditModel.setValue(TestDomain.EMP_COMMISSION, 1000d);
       employeeEditModel.setValue(TestDomain.EMP_HIREDATE, DateUtil.floorDate(new Date()));
@@ -320,7 +320,7 @@ public final class DefaultEntityEditModelTest {
   public void update() throws Exception {
     try {
       assertTrue(employeeEditModel.update().isEmpty());
-      assertTrue(employeeEditModel.update(new ArrayList<Entity>()).isEmpty());
+      assertTrue(employeeEditModel.update(new ArrayList<>()).isEmpty());
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER"));
       employeeEditModel.setValue(TestDomain.EMP_NAME, "BJORN");
@@ -354,7 +354,7 @@ public final class DefaultEntityEditModelTest {
   @Test
   public void delete() throws Exception {
     try {
-      assertTrue(employeeEditModel.delete(new ArrayList<Entity>()).isEmpty());
+      assertTrue(employeeEditModel.delete(new ArrayList<>()).isEmpty());
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER"));
       final List<Entity> toDelete = Collections.singletonList(employeeEditModel.getEntityCopy());

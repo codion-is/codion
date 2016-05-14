@@ -31,13 +31,13 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
-  private final transient Map<UUID, ClientConnectionInfo<T>> connections = Collections.synchronizedMap(new HashMap<UUID, ClientConnectionInfo<T>>());
-  private final transient Map<String, LoginProxy> loginProxies = Collections.synchronizedMap(new HashMap<String, LoginProxy>());
-  private final transient LoginProxy defaultLoginProxy = new DefaultLoginProxy();
-  private final transient Map<String, ConnectionValidator> connectionValidators = Collections.synchronizedMap(new HashMap<String, ConnectionValidator>());
-  private final transient ConnectionValidator defaultConnectionValidator = new DefaultConnectionValidator();
+  private final Map<UUID, ClientConnectionInfo<T>> connections = Collections.synchronizedMap(new HashMap<>());
+  private final Map<String, LoginProxy> loginProxies = Collections.synchronizedMap(new HashMap<>());
+  private final LoginProxy defaultLoginProxy = new DefaultLoginProxy();
+  private final Map<String, ConnectionValidator> connectionValidators = Collections.synchronizedMap(new HashMap<>());
+  private final ConnectionValidator defaultConnectionValidator = new DefaultConnectionValidator();
 
-  private final transient ServerInfo serverInfo;
+  private final ServerInfo serverInfo;
   private volatile int connectionLimit = -1;
   private volatile boolean shuttingDown = false;
 

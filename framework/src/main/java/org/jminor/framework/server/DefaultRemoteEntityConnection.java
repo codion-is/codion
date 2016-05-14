@@ -120,7 +120,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   /**
    * Contains the active remote connections, that is, those connections that are in the process of serving a request
    */
-  private static final List<DefaultRemoteEntityConnection> ACTIVE_CONNECTIONS = Collections.synchronizedList(new ArrayList<DefaultRemoteEntityConnection>());
+  private static final List<DefaultRemoteEntityConnection> ACTIVE_CONNECTIONS = Collections.synchronizedList(new ArrayList<>());
 
   private static final String GET_CONNECTION = "getConnection";
   private static final String RETURN_CONNECTION = "returnConnection";

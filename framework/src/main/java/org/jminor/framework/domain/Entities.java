@@ -749,7 +749,7 @@ public final class Entities {
     for (final Map.Entry<Field, Annotation> entry : propertyAnnotations.entrySet()) {
       final Property.Column propertyColumn = (Property.Column) entry.getValue();
       if (entityID.equals(propertyColumn.entityID())) {
-        ret.add(new AbstractMap.SimpleEntry<Field, Property.Column>(entry.getKey(), (Property.Column) entry.getValue()));
+        ret.add(new AbstractMap.SimpleEntry<>(entry.getKey(), (Property.Column) entry.getValue()));
       }
     }
 
