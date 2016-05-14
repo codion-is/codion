@@ -10,5 +10,8 @@ import org.jminor.common.model.Refreshable;
  */
 public interface PropertyComboBoxModel extends Refreshable {
 
+  /**
+   * @return true if the contents of this combo box model have been cleared
+   */
   boolean isCleared();
 }

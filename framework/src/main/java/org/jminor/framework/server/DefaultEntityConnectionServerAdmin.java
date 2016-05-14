@@ -515,6 +515,11 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
             + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
   }
 
+  /**
+   * Starts the server administered by this admin class
+   * @return the admin instance
+   * @throws RemoteException in case of an exception
+   */
   public static synchronized DefaultEntityConnectionServerAdmin startServer() throws RemoteException {
     final Integer serverPort = (Integer) Configuration.getValue(Configuration.SERVER_PORT);
     if (serverPort == null) {
