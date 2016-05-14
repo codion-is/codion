@@ -74,18 +74,7 @@ final class LocalEntityConnection implements EntityConnection {
   /**
    * A result packer for fetching blobs from a result set containing a single blob column
    */
-  private static final ResultPacker<Blob> BLOB_RESULT_PACKER = new ResultPacker<Blob>() {
-    @Override
-    public List<Blob> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Blob> blobs = new ArrayList<>();
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        blobs.add(resultSet.getBlob(1));
-      }
-
-      return blobs;
-    }
-  };
+  private static final ResultPacker<Blob> BLOB_RESULT_PACKER = new BlobPacker();
 
   private final DatabaseConnection connection;
 
@@ -1258,6 +1247,19 @@ final class LocalEntityConnection implements EntityConnection {
 
     public List<Property.ColumnProperty> getForeignKeyProperties() {
       return foreignKeyProperties;
+    }
+  }
+
+  private static final class BlobPacker implements ResultPacker<Blob> {
+    @Override
+    public List<Blob> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
+      final List<java.sql.Blob> blobs = new ArrayList<>();
+      int counter = 0;
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+        blobs.add(resultSet.getBlob(1));
+      }
+
+      return blobs;
     }
   }
 
