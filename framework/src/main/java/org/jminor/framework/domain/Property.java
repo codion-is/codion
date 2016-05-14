@@ -622,10 +622,21 @@ public interface Property extends Attribute {
    */
   interface AuditUserProperty extends AuditProperty {}
 
+  /**
+   * Annotation for the underlying column name for properties
+   */
   @Target(ElementType.FIELD)
   @Retention(RetentionPolicy.RUNTIME)
   @interface Column {
+
+    /**
+     * @return the entityID of the entity this column belongs to
+     */
     String entityID();
+
+    /**
+     * @return the name of the underlying column
+     */
     String columnName();
   }
 }

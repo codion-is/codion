@@ -276,29 +276,24 @@ public final class DateUtil {
     final Calendar calendar = Calendar.getInstance();
     floorTimeFields(calendar);
     switch (quarter) {
-      case FIRST: {
+      case FIRST:
         calendar.set(Calendar.MONTH, Calendar.MARCH);
         calendar.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
         return calendar.getTime();
-      }
-      case SECOND: {
+      case SECOND:
         calendar.set(Calendar.MONTH, Calendar.JUNE);
         calendar.set(Calendar.DAY_OF_MONTH, THIRTIETH);
         return calendar.getTime();
-      }
-      case THIRD: {
+      case THIRD:
         calendar.set(Calendar.MONTH, Calendar.SEPTEMBER);
         calendar.set(Calendar.DAY_OF_MONTH, THIRTIETH);
         return calendar.getTime();
-      }
-      case FOURTH: {
+      case FOURTH:
         calendar.set(Calendar.MONTH, Calendar.DECEMBER);
         calendar.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
         return calendar.getTime();
-      }
-      default: {
+      default:
         throw new IllegalArgumentException("Not a Quarter: " + quarter);
-      }
     }
   }
 

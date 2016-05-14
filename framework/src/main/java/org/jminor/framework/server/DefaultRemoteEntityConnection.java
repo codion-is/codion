@@ -480,14 +480,6 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
     return REQUEST_COUNTER.getRequestsPerSecond();
   }
 
-  private void setActive() {
-    ACTIVE_CONNECTIONS.add(this);
-  }
-
-  private void setInactive() {
-    ACTIVE_CONNECTIONS.remove(this);
-  }
-
   private EntityConnection initializeProxy() {
     return Util.initializeProxy(EntityConnection.class, new RemoteConnectionHandler(this));
   }
@@ -607,7 +599,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
       Exception exception = null;
       try {
         MDC.put(LOG_IDENTIFIER_PROPERTY, remoteEntityConnection.logIdentifier);
-        remoteEntityConnection.setActive();
+        ACTIVE_CONNECTIONS.add(remoteEntityConnection);
         REQUEST_COUNTER.incrementRequestsPerSecondCounter();
         if (methodLogger.isEnabled()) {
           methodLogger.logAccess(methodName, args);
@@ -623,7 +615,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
         throw exception;
       }
       finally {
-        remoteEntityConnection.setInactive();
+        ACTIVE_CONNECTIONS.remove(remoteEntityConnection);
         remoteEntityConnection.returnConnection();
         if (methodLogger.isEnabled()) {
           final MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);

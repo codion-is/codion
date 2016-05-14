@@ -790,17 +790,56 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
     Object getBackgroundColor(final Entity entity, final Property property);
   }
 
+  /**
+   * Annotation for entityID domain model fields, containing database related information about the entity
+   */
   @Target(ElementType.FIELD)
   @Retention(RetentionPolicy.RUNTIME)
   @interface Table {
+
+    /**
+     * @return the underlying table name
+     */
     String tableName() default "";
+
+    /**
+     * @return the table or view to use when selecting entites
+     */
     String selectTableName() default "";
+
+    /**
+     * @return the query to use when selecting entities
+     */
     String selectQuery() default "";
+
+    /**
+     * @return true if the the select query contains a where clause
+     */
     boolean selectQueryContainsWhereClause() default false;
+
+    /**
+     * @return the order by clause to use by default
+     */
     String orderByClause() default "";
+
+    /**
+     * @return the having clause to use
+     */
     String havingClause() default "";
+
+    /**
+     * @return the key generator type
+     */
     Entity.KeyGenerator.Type keyGenerator() default KeyGenerator.Type.NONE;
+
+    /**
+     * @return the id source for the key generator
+     */
     String keyGeneratorSource() default "";
+
+    /**
+     * @return the column to use in case of the auto increment key generator
+     */
     String keyGeneratorIncrementColumnName() default "";
   }
 }

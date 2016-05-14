@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * A class for running multiple EntityApplicationModel instances for load testing purposes.
  */
-public abstract class EntityLoadTestModel<ApplicationModel extends EntityApplicationModel> extends LoadTestModel<ApplicationModel> {
+public abstract class EntityLoadTestModel<M extends EntityApplicationModel> extends LoadTestModel<M> {
 
   /**
    * Instantiates a new EntityLoadTestModel.
@@ -23,7 +23,7 @@ public abstract class EntityLoadTestModel<ApplicationModel extends EntityApplica
    * @param user the default user
    * @param usageScenarios the usage scenarios
    */
-  public EntityLoadTestModel(final User user, final Collection<? extends UsageScenario<ApplicationModel>> usageScenarios) {
+  public EntityLoadTestModel(final User user, final Collection<? extends UsageScenario<M>> usageScenarios) {
     super(user, usageScenarios, Configuration.getIntValue(Configuration.LOAD_TEST_THINKTIME),
             Configuration.getIntValue(Configuration.LOAD_TEST_LOGIN_DELAY),
             Configuration.getIntValue(Configuration.LOAD_TEST_BATCH_SIZE));
@@ -102,13 +102,13 @@ public abstract class EntityLoadTestModel<ApplicationModel extends EntityApplica
 
   /** {@inheritDoc} */
   @Override
-  protected final void disconnectApplication(final ApplicationModel application) {
+  protected final void disconnectApplication(final M application) {
     application.getConnectionProvider().disconnect();
   }
 
   /** {@inheritDoc} */
   @Override
-  protected abstract ApplicationModel initializeApplication();
+  protected abstract M initializeApplication();
 
   /**
    * An abstract base class for usage scenarios based on EntityApplicationModel instances
