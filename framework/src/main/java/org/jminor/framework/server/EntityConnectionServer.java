@@ -55,21 +55,10 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
   private static final String FROM_CLASSPATH = "' from classpath";
 
-  private final transient AuxiliaryServer webServer;
-  private final transient Database database;
-  private final transient TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new Runnable() {
-    @Override
-    public void run() {
-      try {
-        if (getConnectionCount() > 0) {
-          maintainConnections();
-        }
-      }
-      catch (final RemoteException e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }, DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
+  private final AuxiliaryServer webServer;
+  private final Database database;
+  private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
+          DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
   private final int registryPort;
   private final boolean sslEnabled;
   private final boolean clientLoggingEnabled;
@@ -542,5 +531,19 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
     catch (final RemoteException ignored) {/*ignored*/}
 
     return exception;
+  }
+
+  private final class MaintenanceTask implements Runnable {
+    @Override
+    public void run() {
+      try {
+        if (getConnectionCount() > 0) {
+          maintainConnections();
+        }
+      }
+      catch (final RemoteException e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 }

@@ -216,8 +216,7 @@
     <delete dir="build/demos"/>
   </target>
 
-  <target name="sonar" depends="run_unit_tests"
-          description="Runs a Sonar analysis on the project, reusing unit test reports">
+  <target name="sonar" depends="run_unit_tests" description="Runs a Sonar analysis on the project">
     <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml" classpathref="lib.ant.util"/>
     <sonar:sonar/>
   </target>
