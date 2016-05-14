@@ -206,13 +206,11 @@ final class LocalEntityConnection implements EntityConnection {
           final String entityID = entity.getEntityID();
           final Property.ColumnProperty firstPrimaryKeyProperty = Entities.getPrimaryKeyProperties(entityID).get(0);
           final Entity.KeyGenerator keyGenerator = Entities.getKeyGenerator(entityID);
-          final boolean includeReadOnly = false;
-          final boolean includeNonUpdatable = true;
-          final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
-                  !keyGenerator.getType().isAutoIncrement(), includeReadOnly, includeNonUpdatable);
+          final List<Property.ColumnProperty> insertColumnProperties = Entities.getColumnProperties(entityID,
+                  !keyGenerator.getType().isAutoIncrement(), false, true);
           keyGenerator.beforeInsert(entity, firstPrimaryKeyProperty, connection);
 
-          populateStatementPropertiesAndValues(true, entity, columnProperties, statementProperties, statementValues);
+          populateStatementPropertiesAndValues(true, entity, insertColumnProperties, statementProperties, statementValues);
 
           insertSQL = createInsertSQL(entityID, statementProperties);
           statement = prepareStatement(insertSQL);
@@ -260,14 +258,11 @@ final class LocalEntityConnection implements EntityConnection {
         for (final Map.Entry<String, Collection<Entity>> mappedEntitiesMapEntry : mappedEntities.entrySet()) {
           final String entityID = mappedEntitiesMapEntry.getKey();
           final String tableName = Entities.getTableName(entityID);
-          final boolean includePrimaryKeyProperties = true;
-          final boolean includeReadOnlyProperties = false;
-          final boolean includeNonUpdatableProperties = false;
-          final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
-                  includePrimaryKeyProperties, includeReadOnlyProperties, includeNonUpdatableProperties);
+          final List<Property.ColumnProperty> updateColumnProperties =
+                  Entities.getColumnProperties(entityID, true, false, false);
 
           for (final Entity entity : mappedEntitiesMapEntry.getValue()) {
-            populateStatementPropertiesAndValues(false, entity, columnProperties, statementProperties, statementValues);
+            populateStatementPropertiesAndValues(false, entity, updateColumnProperties, statementProperties, statementValues);
 
             final EntityCriteria criteria = EntityCriteriaUtil.criteria(entity.getOriginalKey());
             updateSQL = createUpdateSQL(tableName, statementProperties, criteria);
