@@ -5,7 +5,6 @@
     <conf name="compile"/>
     <conf name="runtime" extends="compile"/>
     <conf name="test" extends="runtime"/>
-    <conf name="runtime.server" extends="test"/>
     <conf name="sources"/>
     <conf name="javadoc"/>
   </configurations>

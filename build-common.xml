@@ -177,7 +177,7 @@
     <publish resolver="install-local-publish"/>
   </target>
 
-  <target name="install-dependencies">
+  <target name="install_dependencies">
     <antcall target="depend.${ant.project.name}">
       <param name="dependency.target" value="install"/>
     </antcall>

@@ -79,30 +79,4 @@
     </javadoc>
   </target>
 
-  <target name="create_demo_h2db"
-          description="Recreates the demo h2 database, which contains the EmpDept, Petstore, Chinook and World schemas, used by unit tests and demo applications">
-    <delete dir="${db.h2.dir}"/>
-    <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.test" dir="../demos">
-      <arg line="-url jdbc:h2:file:${db.h2.dir}/${db.h2.name} -showResults -script create_h2_db.sql"/>
-    </java>
-  </target>
-
-  <!--<target name="deploy_generator" depends="dist, create_demo_h2db"-->
-  <!--description="Deploys the entity generator to the path defined by the 'deploy.generator.path' property">-->
-  <!--<mkdir dir="${deploy.generator.path}"/>-->
-  <!--<copy file="${dist}/jminor/jminor.jar"-->
-  <!--tofile="${deploy.generator.path}/lib/jminor-${version}.jar"/>-->
-  <!--<copy todir="${deploy.generator.path}/lib">-->
-  <!--<fileset dir="${lib}/runtime.client"/>-->
-  <!--</copy>-->
-  <!--<copy todir="${deploy.generator.path}">-->
-  <!--<fileset dir="${basedir}/resources/entity_generator/"/>-->
-  <!--</copy>-->
-  <!--<copy todir="${deploy.generator.path}/h2db">-->
-  <!--<fileset dir="${db.h2.dir}"/>-->
-  <!--</copy>-->
-  <!--<copy file="${deploy.generator.policy}" todir="${deploy.generator.config.path}"/>-->
-  <!--<chmod dir="${deploy.generator.path}" perm="u+x" type="file" includes="*.sh"/>-->
-  <!--</target>-->
-
 </project>
