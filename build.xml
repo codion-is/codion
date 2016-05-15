@@ -162,13 +162,22 @@
     <subant target="run_unit_tests" buildpath="demos"/>
   </target>
 
-  <target name="publish" depends="clear_ivy_cache" description="Publishes all project artifacts">
-    <subant target="publish" buildpath="common"/>
-    <subant target="publish" buildpath="framework"/>
-    <subant target="publish" buildpath="swing"/>
-    <subant target="publish" buildpath="javafx"/>
-    <subant target="publish" buildpath="server-monitor"/>
-    <subant target="publish" buildpath="plugins"/>
+  <target name="deploy" depends="clear_ivy_cache" description="Publishes all project artifacts to a remote repository">
+    <subant target="deploy" buildpath="common"/>
+    <subant target="deploy" buildpath="framework"/>
+    <subant target="deploy" buildpath="swing"/>
+    <subant target="deploy" buildpath="javafx"/>
+    <subant target="deploy" buildpath="server-monitor"/>
+    <subant target="deploy" buildpath="plugins"/>
+  </target>
+
+  <target name="install" description="Publishes all project artifacts to a local repository">
+    <subant target="install" buildpath="common"/>
+    <subant target="install" buildpath="framework"/>
+    <subant target="install" buildpath="swing"/>
+    <subant target="install" buildpath="javafx"/>
+    <subant target="install" buildpath="server-monitor"/>
+    <subant target="install" buildpath="plugins"/>
   </target>
 
   <target name="clear_ivy_cache" description="Clears JMinor from the ivy cache">

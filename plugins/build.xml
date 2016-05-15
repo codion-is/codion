@@ -36,13 +36,22 @@
     <subant target="dist" buildpath="tomcat-pool"/>
   </target>
 
-  <target name="publish">
-    <subant target="publish" buildpath="imagepanel"/>
-    <subant target="publish" buildpath="jasperreports"/>
-    <subant target="publish" buildpath="json"/>
-    <subant target="publish" buildpath="nextreports"/>
-    <subant target="publish" buildpath="rest"/>
-    <subant target="publish" buildpath="tomcat-pool"/>
+  <target name="deploy">
+    <subant target="deploy" buildpath="imagepanel"/>
+    <subant target="deploy" buildpath="jasperreports"/>
+    <subant target="deploy" buildpath="json"/>
+    <subant target="deploy" buildpath="nextreports"/>
+    <subant target="deploy" buildpath="rest"/>
+    <subant target="deploy" buildpath="tomcat-pool"/>
+  </target>
+
+  <target name="install">
+    <subant target="install" buildpath="imagepanel"/>
+    <subant target="install" buildpath="jasperreports"/>
+    <subant target="install" buildpath="json"/>
+    <subant target="install" buildpath="nextreports"/>
+    <subant target="install" buildpath="rest"/>
+    <subant target="install" buildpath="tomcat-pool"/>
   </target>
 
   <target name="run_unit_tests">

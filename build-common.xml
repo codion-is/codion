@@ -2,6 +2,8 @@
 
   <property file="${project.root}/build.properties"/>
 
+  <import file="build-macros.xml"/>
+
   <path id="lib.ant.util">
     <fileset dir="${project.root}/${lib}/ant"/>
   </path>
@@ -20,6 +22,23 @@
     <fileset dir="${lib}/test"/>
   </path>
 
+  <available property="build.installed" file="${project.root}/${lib}/ant/ivy-2.4.0.jar"/>
+
+  <target name="build-install" unless="build.installed">
+    <mkdir dir="${project.root}/${lib}/ant"/>
+    <get src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.4.0/ivy-2.4.0.jar"
+         dest="${project.root}/${lib}/ant/ivy-2.4.0.jar" skipexisting="true"/>
+    <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="lib.ant.util"/>
+    <ivy:settings file="${project.root}/ivysettings.xml"/>
+    <ivy:resolve file="${project.root}/build-ivy.xml"/>
+    <ivy:retrieve pattern="${project.root}/${lib}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
+  </target>
+
+  <target name="build-initialize" depends="build-install">
+    <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="lib.ant.util"/>
+    <ivy:settings file="${project.root}/ivysettings.xml"/>
+  </target>
+
   <condition property="keystore.available">
     <available file="${resources.security}/JMinorServerKeystore"/>
   </condition>
@@ -36,17 +55,8 @@
     <delete dir="${test}"/>
   </target>
 
-  <target name="resolve_libraries"
+  <target name="resolve_libraries" depends="build-initialize"
           description="Resolves all libraries according to ivy.xml">
-    <!--handle ant build libraries-->
-    <mkdir dir="${project.root}/${lib}/ant"/>
-    <get src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.4.0/ivy-2.4.0.jar"
-         dest="${project.root}/${lib}/ant/ivy-2.4.0.jar" skipexisting="true"/>
-    <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="lib.ant.util"/>
-    <ivy:settings file="${project.root}/ivysettings.xml"/>
-    <ivy:resolve file="${project.root}/build-ivy.xml"/>
-    <ivy:retrieve pattern="${project.root}/${lib}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
-    <!--handle module dependencies-->
     <ivy:resolve file="ivy.xml"/>
     <ivy:retrieve pattern="${lib}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
   </target>
@@ -164,24 +174,12 @@
          manifest="${build.main}/META-INF/MANIFEST.MF"/>
   </target>
 
-  <target name="publish" depends="dist" description="Publishes the module artifacts after running unit tests">
-    <fail unless="version">Version information not set</fail>
-    <copy file="ivy.xml" tofile="ivy.xml.bak" overwrite="true"/>
-    <ivy:settings file="${project.root}/ivysettings.xml"/>
-    <ivy:resolve/>
-    <ivy:deliver deliverpattern="ivy.xml" pubrevision="${version}"/>
-    <ivy:makepom ivyfile="ivy.xml" pomfile="${dist}/${ant.project.name}.pom">
-      <mapping conf="compile" scope="compile" />
-      <mapping conf="runtime" scope="runtime" />
-      <mapping conf="test" scope="test" />
-      <mapping conf="sources" scope="sources" />
-      <mapping conf="javadoc" scope="javadoc" />
-    </ivy:makepom>
-    <ivy:publish pubrevision="${version}" status="${release.status}" resolver="publish.${release.status}"
-                 overwrite="true" forcedeliver="true">
-      <artifacts pattern="${dist}/[artifact].[ext]"/>
-    </ivy:publish>
-    <move file="ivy.xml.bak" tofile="ivy.xml"/>
+  <target name="deploy" depends="dist" description="Publishes the module artifacts to a remote repository">
+    <publish resolver="deploy.${release.status}"/>
+  </target>
+
+  <target name="install" depends="dist" description="Publishes the module artifacts to a local repository">
+    <publish resolver="install-local-publish"/>
   </target>
 
   <target name="report">
@@ -221,23 +219,4 @@
     <copy file="${resources.security}/JMinorClientTruststore" tofile="${resources.security}/JMinorServerMonitorTruststore"/>
     <delete file="${resources.security}/JMinorServer.cer"/>
   </target>
-
-  <macrodef name="dist_module">
-    <attribute name="module-name"/>
-    <attribute name="includes" default=""/>
-    <attribute name="excludes" default=""/>
-    <attribute name="build.basedir" default="${build.main}"/>
-    <attribute name="src.basedir" default="${src.main}"/>
-    <sequential>
-      <jar jarfile="${dist}/@{module-name}/@{module-name}.jar" basedir="@{build.basedir}"
-           manifest="${build.main}/META-INF/MANIFEST.MF"
-           includes="@{includes}" excludes="@{excludes}"/>
-      <jar jarfile="${dist}/@{module-name}/@{module-name}-sources.jar" basedir="@{src.basedir}"
-           manifest="${build.main}/META-INF/MANIFEST.MF"
-           includes="@{includes}" excludes="@{excludes}"/>
-      <jar jarfile="${dist}/@{module-name}/@{module-name}-javadoc.jar" basedir="${javadoc}"
-           manifest="${build.main}/META-INF/MANIFEST.MF"
-           includes="@{includes}" excludes="@{excludes}"/>
-    </sequential>
-  </macrodef>
 </project>

@@ -42,16 +42,28 @@
     <copy file="${basedir}/../changelog.txt" todir="${dist}"/>
   </target>
 
-  <target name="publish" depends="dist"
-          description="Publish all module artifacts">
+  <target name="deploy" depends="dist"
+          description="deploy all module artifacts">
     <fail unless="version">Version information not set</fail>
-    <subant target="publish" buildpath="${basedir}/modules/framework-db-core"/>
-    <subant target="publish" buildpath="${basedir}/modules/framework-db-local"/>
-    <subant target="publish" buildpath="${basedir}/modules/framework-db-remote"/>
-    <subant target="publish" buildpath="${basedir}/modules/framework-db-test"/>
-    <subant target="publish" buildpath="${basedir}/modules/framework-model"/>
-    <subant target="publish" buildpath="${basedir}/modules/framework-model-unittests"/>
-    <subant target="publish" buildpath="${basedir}/modules/framework-server"/>
+    <subant target="deploy" buildpath="${basedir}/modules/framework-db-core"/>
+    <subant target="deploy" buildpath="${basedir}/modules/framework-db-local"/>
+    <subant target="deploy" buildpath="${basedir}/modules/framework-db-remote"/>
+    <subant target="deploy" buildpath="${basedir}/modules/framework-db-test"/>
+    <subant target="deploy" buildpath="${basedir}/modules/framework-model"/>
+    <subant target="deploy" buildpath="${basedir}/modules/framework-model-unittests"/>
+    <subant target="deploy" buildpath="${basedir}/modules/framework-server"/>
+  </target>
+
+  <target name="install" depends="dist"
+          description="install all module artifacts">
+    <fail unless="version">Version information not set</fail>
+    <subant target="install" buildpath="${basedir}/modules/framework-db-core"/>
+    <subant target="install" buildpath="${basedir}/modules/framework-db-local"/>
+    <subant target="install" buildpath="${basedir}/modules/framework-db-remote"/>
+    <subant target="install" buildpath="${basedir}/modules/framework-db-test"/>
+    <subant target="install" buildpath="${basedir}/modules/framework-model"/>
+    <subant target="install" buildpath="${basedir}/modules/framework-model-unittests"/>
+    <subant target="install" buildpath="${basedir}/modules/framework-server"/>
   </target>
 
   <target name="javadoc" depends="build" unless="skip.javadoc"

@@ -4265,3 +4265,4 @@
   AbstractServer, bug fixed, added user authentication when retrieving an existing connection
   Database.Type enum introduced
   Sonar run
+  Build file refactoring, publish split into install and deploy, local m2 repository added to ivysettings

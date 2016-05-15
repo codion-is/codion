@@ -69,14 +69,24 @@
     <!--<copy file="${basedir}/../changelog.txt" todir="${dist}"/>-->
   </target>
 
-  <target name="publish" depends="dist"
-          description="Publish all project artifacts">
-    <subant target="publish" buildpath="${basedir}/modules/swing-common-model"/>
-    <subant target="publish" buildpath="${basedir}/modules/swing-common-ui"/>
-    <subant target="publish" buildpath="${basedir}/modules/swing-client-model"/>
-    <subant target="publish" buildpath="${basedir}/modules/swing-client-ui"/>
-    <subant target="publish" buildpath="${basedir}/modules/swing-client-test"/>
-    <subant target="publish" buildpath="${basedir}/modules/swing-client-bundle"/>
+  <target name="deploy" depends="dist"
+          description="deploy all project artifacts">
+    <subant target="deploy" buildpath="${basedir}/modules/swing-common-model"/>
+    <subant target="deploy" buildpath="${basedir}/modules/swing-common-ui"/>
+    <subant target="deploy" buildpath="${basedir}/modules/swing-client-model"/>
+    <subant target="deploy" buildpath="${basedir}/modules/swing-client-ui"/>
+    <subant target="deploy" buildpath="${basedir}/modules/swing-client-test"/>
+    <subant target="deploy" buildpath="${basedir}/modules/swing-client-bundle"/>
+  </target>
+
+  <target name="install" depends="dist"
+          description="install all project artifacts">
+    <subant target="install" buildpath="${basedir}/modules/swing-common-model"/>
+    <subant target="install" buildpath="${basedir}/modules/swing-common-ui"/>
+    <subant target="install" buildpath="${basedir}/modules/swing-client-model"/>
+    <subant target="install" buildpath="${basedir}/modules/swing-client-ui"/>
+    <subant target="install" buildpath="${basedir}/modules/swing-client-test"/>
+    <subant target="install" buildpath="${basedir}/modules/swing-client-bundle"/>
   </target>
 
   <!--<target name="deploy_generator" depends="dist, create_demo_h2db"-->

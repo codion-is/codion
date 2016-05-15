@@ -7,23 +7,34 @@
   <settings defaultResolver="main" />
   <credentials host="${artifactory.host}" realm="Artifactory Realm" username="${artifactory.username}" passwd="${artifactory.password}" />
   <resolvers>
-    <chain name="main">
-      <ibiblio name="libs-release" m2compatible="true"
-               root="http://${artifactory.host}:${artifactory.port}/artifactory/libs-release"/>
-      <ibiblio name="libs-release-local" m2compatible="true"
-               root="http://${artifactory.host}:${artifactory.port}/artifactory/libs-release-local"/>
-      <ibiblio name="libs-snapshot-local" m2compatible="true"
-               root="http://${artifactory.host}:${artifactory.port}/artifactory/libs-snapshot-local"/>
-      <ibiblio name="ext-snapshot-local" m2compatible="true"
-               root="http://${artifactory.host}:${artifactory.port}/artifactory/ext-snapshot-local"/>
-      <url name="publish.snapshot">
-        <artifact pattern="http://${artifactory.host}:${artifactory.port}/artifactory/libs-snapshot-local/[orgPath]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]"/>
-        <ivy pattern="http://${artifactory.host}:${artifactory.port}/artifactory/libs-snapshot-local/[orgPath]/[module]/[revision]/ivy-[revision].xml" />
-      </url>
-      <url name="publish.release">
-        <artifact pattern="http://${artifactory.host}:${artifactory.port}/artifactory/libs-release-local/[orgPath]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]"/>
-        <ivy pattern="http://${artifactory.host}:${artifactory.port}/artifactory/libs-release-local/[orgPath]/[module]/[revision]/ivy-[revision].xml" />
-      </url>
+    <ibiblio name="install-local" m2compatible="true" root="file://${user.home}/.m2/repository/" changingPattern=".*SNAPSHOT"/>
+    <filesystem name="install-local-publish" m2compatible="true">
+      <artifact pattern="${user.home}/.m2/repository/[orgPath]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]"/>
+    </filesystem>
+
+    <url name="deploy.snapshot">
+      <artifact pattern="http://${artifactory.host}:${artifactory.port}/artifactory/libs-snapshot-local/[orgPath]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]"/>
+      <ivy pattern="http://${artifactory.host}:${artifactory.port}/artifactory/libs-snapshot-local/[orgPath]/[module]/[revision]/ivy-[revision].xml" />
+    </url>
+    <url name="deploy.release">
+      <artifact pattern="http://${artifactory.host}:${artifactory.port}/artifactory/libs-release-local/[orgPath]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]"/>
+      <ivy pattern="http://${artifactory.host}:${artifactory.port}/artifactory/libs-release-local/[orgPath]/[module]/[revision]/ivy-[revision].xml" />
+    </url>
+
+    <ibiblio name="libs-release" m2compatible="true"
+             root="http://${artifactory.host}:${artifactory.port}/artifactory/libs-release"/>
+    <ibiblio name="libs-release-local" m2compatible="true"
+             root="http://${artifactory.host}:${artifactory.port}/artifactory/libs-release-local"/>
+    <ibiblio name="libs-snapshot-local" m2compatible="true"
+             root="http://${artifactory.host}:${artifactory.port}/artifactory/libs-snapshot-local"/>
+    <ibiblio name="ext-snapshot-local" m2compatible="true"
+             root="http://${artifactory.host}:${artifactory.port}/artifactory/ext-snapshot-local"/>
+
+    <chain name="main" changingPattern=".*SNAPSHOT">
+      <resolver ref="libs-release"/>
+      <resolver ref="ext-snapshot-local"/>
+      <resolver ref="install-local"/>
+      <resolver ref="libs-release-local"/>
     </chain>
   </resolvers>
 </ivy-settings>
