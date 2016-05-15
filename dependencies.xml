@@ -28,36 +28,36 @@
 
   <target name="depend.jminor-framework-server-monitor"
           depends="depend.jminor-common, depend.jminor-swing">
-    <ant dir="${dependencies.basedir}/server-monitor" inheritAll="false"/>
+    <ant dir="${dependencies.basedir}/server-monitor" target="${dependency.target}" inheritAll="false"/>
   </target>
 
   <target name="depend.jminor-plugin-imagepanel"
           depends="depend.jminor-common, depend.jminor-framework, depend.jminor-swing">
-    <ant dir="${dependencies.basedir}/plugins/imagepanel" inheritAll="false"/>
+    <ant dir="${dependencies.basedir}/plugins/imagepanel" target="${dependency.target}" inheritAll="false"/>
   </target>
 
   <target name="depend.jminor-plugin-jasperreports"
           depends="depend.jminor-common, depend.jminor-framework, depend.jminor-swing">
-    <ant dir="${dependencies.basedir}/plugins/jasperreports" inheritAll="false"/>
+    <ant dir="${dependencies.basedir}/plugins/jasperreports" target="${dependency.target}" inheritAll="false"/>
   </target>
 
   <target name="depend.jminor-plugin-json"
           depends="depend.jminor-common, depend.jminor-framework">
-    <ant dir="${dependencies.basedir}/plugins/json" inheritAll="false"/>
+    <ant dir="${dependencies.basedir}/plugins/json" target="${dependency.target}" inheritAll="false"/>
   </target>
 
   <target name="depend.jminor-plugin-nextreports"
           depends="depend.jminor-common, depend.jminor-framework, depend.jminor-swing">
-    <ant dir="${dependencies.basedir}/plugins/nextreports" inheritAll="false"/>
+    <ant dir="${dependencies.basedir}/plugins/nextreports" target="${dependency.target}" inheritAll="false"/>
   </target>
 
   <target name="depend.jminor-plugin-rest"
           depends="depend.jminor-common, depend.jminor-framework, depend.jminor-plugin-json">
-    <ant dir="${dependencies.basedir}/plugins/rest" inheritAll="false"/>
+    <ant dir="${dependencies.basedir}/plugins/rest" target="${dependency.target}" inheritAll="false"/>
   </target>
 
   <target name="depend.jminor-plugin-tomcat-pool"
           depends="depend.jminor-common">
-    <ant dir="${dependencies.basedir}/plugins/tomcat-pool" inheritAll="false"/>
+    <ant dir="${dependencies.basedir}/plugins/tomcat-pool" target="${dependency.target}" inheritAll="false"/>
   </target>
 </project>
