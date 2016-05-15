@@ -7,9 +7,9 @@
   <settings defaultResolver="main" />
   <credentials host="${artifactory.host}" realm="Artifactory Realm" username="${artifactory.username}" passwd="${artifactory.password}" />
   <resolvers>
-    <ibiblio name="install-local" m2compatible="true" root="file://${user.home}/.m2/repository/" changingPattern=".*SNAPSHOT"/>
+    <ibiblio name="install-local" m2compatible="true" root="file://${ivy.local.repository.root}/" changingPattern=".*SNAPSHOT"/>
     <filesystem name="install-local-publish" m2compatible="true">
-      <artifact pattern="${user.home}/.m2/repository/[orgPath]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]"/>
+      <artifact pattern="${ivy.local.repository.root}/[orgPath]/[module]/[revision]/[module]-[revision](-[classifier]).[ext]"/>
     </filesystem>
 
     <url name="deploy.snapshot">

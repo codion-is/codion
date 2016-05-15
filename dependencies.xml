@@ -2,11 +2,6 @@
 <project name="dependencies" default="depend.all">
   <dirname property="dependencies.basedir" file="${ant.file.dependencies}"/>
 
-  <target name="depend.all"
-          depends="depend.jminor-common, depend.jminor-framework, depend.jminor-swing,
-          depend.jminor-javafx, depend.jminor-framework-server-monitor">
-  </target>
-
   <target name="depend.jminor-common">
     <ant dir="${dependencies.basedir}/common" target="${dependency.target}" inheritAll="false"/>
   </target>

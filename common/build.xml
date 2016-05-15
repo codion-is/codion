@@ -8,8 +8,7 @@
     <format property="build.date" pattern="yyyy.MM.dd HH:mm"/>
   </tstamp>
 
-  <target name="build" depends="common.build"
-          description="Compiles all source files">
+  <target name="build" depends="common.build" description="Creates a version file before building">
     <concat destfile="${build.main}/org/jminor/common/version.txt">${version}-build ${build.date}</concat>
   </target>
 
