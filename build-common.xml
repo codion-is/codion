@@ -2,6 +2,7 @@
 
   <property file="${project.root}/build.properties"/>
 
+  <import file="dependencies.xml"/>
   <import file="build-macros.xml"/>
 
   <path id="lib.ant.util">
@@ -174,12 +175,24 @@
          manifest="${build.main}/META-INF/MANIFEST.MF"/>
   </target>
 
+  <target name="dist.dependencies">
+    <antcall target="depend.${ant.project.name}">
+      <param name="dependency.target" value="dist"/>
+    </antcall>
+  </target>
+
   <target name="deploy" depends="dist" description="Publishes the module artifacts to a remote repository">
     <publish resolver="deploy.${release.status}"/>
   </target>
 
   <target name="install" depends="dist" description="Publishes the module artifacts to a local repository">
     <publish resolver="install-local-publish"/>
+  </target>
+
+  <target name="install.dependencies">
+    <antcall target="depend.${ant.project.name}">
+      <param name="dependency.target" value="install"/>
+    </antcall>
   </target>
 
   <target name="report">
