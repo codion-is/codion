@@ -40,6 +40,7 @@ import java.util.List;
 
 /**
  * A default UI for the ItemRandomizer class.
+ * @param <T> the type of items being randomized
  */
 public final class ItemRandomizerPanel<T> extends JPanel {
 

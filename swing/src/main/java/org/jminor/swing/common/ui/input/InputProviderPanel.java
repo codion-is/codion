@@ -24,6 +24,8 @@ import java.awt.event.KeyEvent;
 
 /**
  * A panel for presenting a InputProvider.
+ * @param <T> the input value type
+ * @param <K> the type of the input component
  */
 public final class InputProviderPanel<T, K extends JComponent> extends JPanel implements InputProvider<T, K> {
 

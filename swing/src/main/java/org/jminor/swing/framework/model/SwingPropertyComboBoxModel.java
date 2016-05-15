@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * A combo box model based on a single entity property.
+ * @param <T> the type of values in this combo box model
  */
 public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T> implements PropertyComboBoxModel {
 

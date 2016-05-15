@@ -45,6 +45,8 @@ public final class EntityGeneratorModel {
   private static final Logger LOG = LoggerFactory.getLogger(EntityGeneratorModel.class);
 
   private static final String TYPES_INTEGER = "Types.INTEGER";
+  private static final String PUBLIC_STATIC_FINAL_STRING = "public static final String ";
+  private static final String EQUALS = " = \"";
   private static final String TABLE_SCHEMA = "TABLE_SCHEM";
   private static final String FOREIGN_KEY_PROPERTY_SUFFIX = "_FK";
   private static final String ENTITY_ID_PREFIX = "T_";
@@ -231,15 +233,15 @@ public final class EntityGeneratorModel {
 
   private static String getConstants(final Table table) {
     final String schemaName = table.getSchemaName();
-    final StringBuilder builder = new StringBuilder("public static final String ").append(getEntityID(table))
-            .append(" = \"").append(schemaName.toLowerCase()).append(".").append(table.getTableName().toLowerCase())
+    final StringBuilder builder = new StringBuilder(PUBLIC_STATIC_FINAL_STRING).append(getEntityID(table))
+            .append(EQUALS).append(schemaName.toLowerCase()).append(".").append(table.getTableName().toLowerCase())
             .append("\";").append(Util.LINE_SEPARATOR);
     for (final Column column : table.getColumns()) {
-      builder.append("public static final String ").append(getPropertyID(table, column, false))
-              .append(" = \"").append(column.getColumnName().toLowerCase()).append("\";").append(Util.LINE_SEPARATOR);
+      builder.append(PUBLIC_STATIC_FINAL_STRING).append(getPropertyID(table, column, false))
+              .append(EQUALS).append(column.getColumnName().toLowerCase()).append("\";").append(Util.LINE_SEPARATOR);
       if (column.foreignKeyColumn != null) {
-        builder.append("public static final String ").append(getPropertyID(table, column, true))
-                .append(" = \"").append(column.getColumnName().toLowerCase())
+        builder.append(PUBLIC_STATIC_FINAL_STRING).append(getPropertyID(table, column, true))
+                .append(EQUALS).append(column.getColumnName().toLowerCase())
                 .append(FOREIGN_KEY_PROPERTY_SUFFIX.toLowerCase()).append("\";").append(Util.LINE_SEPARATOR);
       }
     }

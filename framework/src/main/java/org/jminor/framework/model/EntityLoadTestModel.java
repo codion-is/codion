@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * A class for running multiple EntityApplicationModel instances for load testing purposes.
+ * @param <M> the application model type used by this load test model
  */
 public abstract class EntityLoadTestModel<M extends EntityApplicationModel> extends LoadTestModel<M> {
 
@@ -112,6 +113,7 @@ public abstract class EntityLoadTestModel<M extends EntityApplicationModel> exte
 
   /**
    * An abstract base class for usage scenarios based on EntityApplicationModel instances
+   * @param <M> the application model type used by this usage scenario
    */
   public abstract static class AbstractEntityUsageScenario<M extends EntityApplicationModel>
           extends AbstractUsageScenario<M> {

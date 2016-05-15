@@ -861,7 +861,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
       final StringBuilder stringBuilder = new StringBuilder();
       int i = 0;
       for (final Property.ColumnProperty property : getProperties()) {
-        stringBuilder.append(property.getPropertyID()).append(":").append(get(property.getPropertyID()));
+        stringBuilder.append(property.getPropertyID()).append(":").append(super.get(property.getPropertyID()));
         if (i++ < getPropertyCount() - 1) {
           stringBuilder.append(",");
         }
@@ -995,7 +995,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
     private void writeObject(final ObjectOutputStream stream) throws IOException {
       stream.writeObject(definition.getEntityID());
       for (final Property property : definition.getPrimaryKeyProperties()) {
-        stream.writeObject(get(property.getPropertyID()));
+        stream.writeObject(super.get(property.getPropertyID()));
       }
     }
 
@@ -1009,7 +1009,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
       compositeKey = properties.size() > 1;
       singleIntegerKey = !compositeKey && properties.get(0).isInteger();
       for (final Property property : properties) {
-        put(property.getPropertyID(), stream.readObject());
+        super.put(property.getPropertyID(), stream.readObject());
       }
     }
 

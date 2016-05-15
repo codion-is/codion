@@ -83,10 +83,11 @@ public final class EntityCriteriaPanel extends JPanel {
   }
 
   private JList initializePropertyList(final EntityTableCriteriaModel criteriaModel, final JPanel editorPanel) {
-    final List<PropertyCriteriaModel> searchCriteria = getSortedCriteria(criteriaModel);
-    final JList<PropertyCriteriaModel> propertyList = new JList<>(new DefaultListModel<>());
+    final List<PropertyCriteriaModel<? extends Property.SearchableProperty>> searchCriteria = getSortedCriteria(criteriaModel);
+    final JList<PropertyCriteriaModel<? extends Property.SearchableProperty>> propertyList = new JList<>(new DefaultListModel<>());
     for (final PropertyCriteriaModel model : searchCriteria) {
-      ((DefaultListModel<PropertyCriteriaModel>) propertyList.getModel()).addElement(model);
+      ((DefaultListModel<PropertyCriteriaModel<? extends Property.SearchableProperty>>)
+              propertyList.getModel()).addElement(model);
       model.addCriteriaStateListener(new RepaintListener(propertyList));
     }
     propertyList.setCellRenderer(new CriteriaListCellRenderer());
@@ -97,8 +98,10 @@ public final class EntityCriteriaPanel extends JPanel {
     return propertyList;
   }
 
-  private List<PropertyCriteriaModel> getSortedCriteria(final EntityTableCriteriaModel criteriaModel) {
-    final List<PropertyCriteriaModel> criteria = new ArrayList<>(criteriaModel.getPropertyCriteriaModels());
+  private List<PropertyCriteriaModel<? extends Property.SearchableProperty>> getSortedCriteria(
+          final EntityTableCriteriaModel criteriaModel) {
+    final List<PropertyCriteriaModel<? extends Property.SearchableProperty>> criteria =
+            new ArrayList<>(criteriaModel.getPropertyCriteriaModels());
     Collections.sort(criteria, new CriteriaModelComparator());
 
     return criteria;
@@ -130,12 +133,14 @@ public final class EntityCriteriaPanel extends JPanel {
     }
   }
 
-  private static final class CriteriaModelComparator implements Comparator<PropertyCriteriaModel>, Serializable {
+  private static final class CriteriaModelComparator implements
+          Comparator<PropertyCriteriaModel<? extends Property.SearchableProperty>>, Serializable {
     private static final long serialVersionUID = 1;
     @Override
-    public int compare(final PropertyCriteriaModel o1, final PropertyCriteriaModel o2) {
-      final Property propertyOne = (Property) o1.getColumnIdentifier();
-      final Property propertyTwo = (Property) o2.getColumnIdentifier();
+    public int compare(final PropertyCriteriaModel<? extends Property.SearchableProperty> o1,
+                       final PropertyCriteriaModel<? extends Property.SearchableProperty> o2) {
+      final Property propertyOne = o1.getColumnIdentifier();
+      final Property propertyTwo = o2.getColumnIdentifier();
       if (propertyOne.getCaption() != null && propertyTwo.getCaption() != null) {
         return propertyOne.getCaption().compareTo(propertyTwo.getCaption());
       }

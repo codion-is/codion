@@ -11,6 +11,7 @@ import java.util.Comparator;
 
 /**
  * A ComboBoxModel implementation based on the {@link Item} class.
+ * @param <T> the type of value wrapped by this combo box models items
  */
 public class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<T>> {
 

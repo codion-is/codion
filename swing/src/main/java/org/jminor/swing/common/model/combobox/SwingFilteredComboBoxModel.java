@@ -24,6 +24,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * A default {@link FilteredComboBoxModel} implementation.
+ * @param <T> the type of values in this combo box model
  */
 public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, ComboBoxModel<T> {
 

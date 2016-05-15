@@ -159,26 +159,6 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     return LEXICAL_COMPARATOR;
   }
 
-  private List<Map.Entry<C, SortingState>> getSortingStatesOrderedByPriority() {
-    final List<Map.Entry<C, SortingState>> entries = new ArrayList<>();
-    for (final Map.Entry<C, SortingState> entry : sortingStates.entrySet()) {
-      if (!EMPTY_SORTING_STATE.equals(entry.getValue())) {
-        entries.add(entry);
-      }
-    }
-    Collections.sort(entries, new Comparator<Map.Entry<C, SortingState>>() {
-      @Override
-      public int compare(final Map.Entry<C, SortingState> o1, final Map.Entry<C, SortingState> o2) {
-        final Integer priorityOne = o1.getValue().getPriority();
-        final Integer priorityTwo = o2.getValue().getPriority();
-
-        return priorityOne.compareTo(priorityTwo);
-      }
-    });
-
-    return entries;
-  }
-
   private SortingState getSortingState(final C columnIdentifier) {
     final SortingState state = sortingStates.get(columnIdentifier);
     if (state == null) {
@@ -246,6 +226,26 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
       }
 
       return 0;
+    }
+
+    private List<Map.Entry<C, SortingState>> getSortingStatesOrderedByPriority() {
+      final List<Map.Entry<C, SortingState>> entries = new ArrayList<>();
+      for (final Map.Entry<C, SortingState> entry : sortingStates.entrySet()) {
+        if (!EMPTY_SORTING_STATE.equals(entry.getValue())) {
+          entries.add(entry);
+        }
+      }
+      Collections.sort(entries, new Comparator<Map.Entry<C, SortingState>>() {
+        @Override
+        public int compare(final Map.Entry<C, SortingState> o1, final Map.Entry<C, SortingState> o2) {
+          final Integer priorityOne = o1.getValue().getPriority();
+          final Integer priorityTwo = o2.getValue().getPriority();
+
+          return priorityOne.compareTo(priorityTwo);
+        }
+      });
+
+      return entries;
     }
   }
 

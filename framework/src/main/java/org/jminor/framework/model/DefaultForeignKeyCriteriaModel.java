@@ -89,11 +89,11 @@ public class DefaultForeignKeyCriteriaModel extends DefaultColumnCriteriaModel<P
 
   /** {@inheritDoc} */
   @Override
-  public void refresh() {}
+  public void refresh() {/*Nothing to refresh in this default implementation*/}
 
   /** {@inheritDoc} */
   @Override
-  public void clear() {}
+  public void clear() {/*Nothing to clear in this default implementation*/}
 
   protected boolean isUpdatingModel() {
     return updatingModel;

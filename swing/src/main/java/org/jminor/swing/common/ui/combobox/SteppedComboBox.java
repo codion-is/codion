@@ -12,7 +12,7 @@ import java.awt.Rectangle;
 /**
  * A JComboBox which automatically sets the popup width according to the largest value in the combo box.
  * Slightly modified, automatic popup size according to getDisplaySize().
- * @param V the type of values contained in this combo box
+ * @param <V> the type of values contained in this combo box
  * @author Nobuo Tamemasa
  */
 public class SteppedComboBox<V> extends JComboBox<V> {

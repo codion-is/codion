@@ -12,6 +12,7 @@ import java.util.Comparator;
 
 /**
  * A ComboBoxModel extension that allows filtering via FilterCriteria objects.
+ * @param <T> the type of the combo box model elements
  * @see org.jminor.common.model.FilterCriteria
  * @see #setFilterCriteria(org.jminor.common.model.FilterCriteria)
  */
