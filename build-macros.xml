@@ -1,18 +1,34 @@
 <project name="macros" xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:jacoco="antlib:org.jacoco.ant">
   <macrodef name="dist_module">
-    <attribute name="module-name"/>
+    <attribute name="module-name" default="${ant.project.name}"/>
     <attribute name="includes" default=""/>
     <attribute name="excludes" default=""/>
     <attribute name="build.basedir" default="${build.main}"/>
     <attribute name="src.basedir" default="${src.main}"/>
     <sequential>
-      <jar jarfile="${dist}/@{module-name}/@{module-name}.jar" basedir="@{build.basedir}"
+      <tstamp/>
+      <mkdir dir="${build.main}/META-INF"/>
+      <manifest file="build/main/META-INF/MANIFEST.MF">
+        <attribute name="Specification-Title" value="${ant.project.name}"/>
+        <attribute name="Specification-Version" value="${version}"/>
+        <attribute name="Specification-Vendor" value="JMinor"/>
+        <attribute name="Implementation-Title" value="${ant.project.name}"/>
+        <attribute name="Implementation-Version" value="${version}"/>
+        <attribute name="Implementation-Vendor" value="JMinor"/>
+        <attribute name="Implementation-Vendor-Id" value="org.jminor"/>
+        <attribute name="Implementation-URL" value="http://jminor.org"/>
+        <attribute name="Build-Jdk" value="${java.version}"/>
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Build-Time" value="${DSTAMP}${TSTAMP}"/>
+      </manifest>
+      <mkdir dir="${dist}"/>
+      <jar jarfile="${dist}/@{module-name}.jar" basedir="@{build.basedir}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
-      <jar jarfile="${dist}/@{module-name}/@{module-name}-sources.jar" basedir="@{src.basedir}"
+      <jar jarfile="${dist}/@{module-name}-sources.jar" basedir="@{src.basedir}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
-      <jar jarfile="${dist}/@{module-name}/@{module-name}-javadoc.jar" basedir="${javadoc}"
+      <jar jarfile="${dist}/@{module-name}-javadoc.jar" basedir="${javadoc}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
     </sequential>

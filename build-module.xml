@@ -1,14 +1,11 @@
 <project name="jminor-module" xmlns:ivy="antlib:org.apache.ivy.ant">
 
-  <property name="dist" value="../../dist/${ant.project.name}"/>
+  <property name="dist" value="../../dist"/>
   <property name="project.root" value="../../.."/>
   <property file="${project.root}/build.properties"/>
   <property file="${project.root}/user.properties"/>
 
   <import file="build-macros.xml"/>
-
-  <property name="ivy.pom.version" value="${version}"/>
-  <property name="ivy.pom.url" value="http://jminor.org"/>
 
   <target name="deploy">
     <publish resolver="deploy.${release.status}"/>

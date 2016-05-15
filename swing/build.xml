@@ -3,7 +3,7 @@
   <property name="project.root" value="../"/>
   <import file="../build-common.xml"/>
 
-  <target name="dist" depends="common.dist"
+  <target name="dist" depends="build, javadoc"
           description="Builds all distribution jar files in the dist directory">
     <dist_module module-name="jminor-swing-common-model"
                  includes="org/jminor/swing/common/model/**,
@@ -17,7 +17,7 @@
     <dist_module module-name="jminor-swing-client-test"
                  includes="org/jminor/swing/framework/testing/**"/>
 
-    <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle.jar"
+    <jar jarfile="${dist}/jminor-swing-client-bundle.jar"
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${lib}/runtime/" includes="
               jminor-common-core-${version}.jar,
@@ -28,12 +28,12 @@
               jminor-framework-db-local-${version}.jar,
               jminor-framework-db-remote-${version}.jar"/>
       <zipgroupfileset dir="${dist}" includes="
-              jminor-swing-common-model/jminor-swing-common-model.jar,
-              jminor-swing-common-ui/jminor-swing-common-ui.jar,
-              jminor-swing-client-model/jminor-swing-client-model.jar,
-              jminor-swing-client-ui/jminor-swing-client-ui.jar"/>
+              jminor-swing-common-model.jar,
+              jminor-swing-common-ui.jar,
+              jminor-swing-client-model.jar,
+              jminor-swing-client-ui.jar"/>
     </jar>
-    <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle-sources.jar"
+    <jar jarfile="${dist}/jminor-swing-client-bundle-sources.jar"
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${lib}/sources/" includes="
               jminor-common-core-${version}.jar,
@@ -44,12 +44,12 @@
               jminor-framework-db-local-${version}.jar,
               jminor-framework-db-remote-${version}.jar"/>
       <zipgroupfileset dir="${dist}" includes="
-              jminor-swing-common-model/jminor-swing-common-model-sources.jar,
-              jminor-swing-common-ui/jminor-swing-common-ui-sources.jar,
-              jminor-swing-client-model/jminor-swing-client-model-sources.jar,
-              jminor-swing-client-ui/jminor-swing-client-ui-sources.jar"/>
+              jminor-swing-common-model-sources.jar,
+              jminor-swing-common-ui-sources.jar,
+              jminor-swing-client-model-sources.jar,
+              jminor-swing-client-ui-sources.jar"/>
     </jar>
-    <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle-javadoc.jar"
+    <jar jarfile="${dist}/jminor-swing-client-bundle-javadoc.jar"
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${lib}/javadoc/" includes="
               jminor-common-core-${version}.jar,
@@ -60,13 +60,11 @@
               jminor-framework-db-local-${version}.jar,
               jminor-framework-db-remote-${version}.jar"/>
       <zipgroupfileset dir="${dist}" includes="
-              jminor-swing-common-model/jminor-swing-common-model-javadoc.jar,
-              jminor-swing-common-ui/jminor-swing-common-ui-javadoc.jar,
-              jminor-swing-client-model/jminor-swing-client-model-javadoc.jar,
-              jminor-swing-client-ui/jminor-swing-client-ui-javadoc.jar"/>
+              jminor-swing-common-model-javadoc.jar,
+              jminor-swing-common-ui-javadoc.jar,
+              jminor-swing-client-model-javadoc.jar,
+              jminor-swing-client-ui-javadoc.jar"/>
     </jar>
-
-    <!--<copy file="${basedir}/../changelog.txt" todir="${dist}"/>-->
   </target>
 
   <target name="deploy" depends="dist"

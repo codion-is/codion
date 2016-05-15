@@ -5,6 +5,9 @@
   <import file="dependencies.xml"/>
   <import file="build-macros.xml"/>
 
+  <property name="ivy.pom.version" value="${version}"/>
+  <property name="ivy.pom.url" value="http://jminor.org"/>
+
   <path id="lib.ant.util">
     <fileset dir="${project.root}/.lib/ant"/>
   </path>
@@ -144,29 +147,8 @@
     </javadoc>
   </target>
 
-  <target name="dist" depends="clean, build, javadoc">
-    <tstamp />
-    <mkdir dir="${build.main}/META-INF"/>
-    <manifest file="build/main/META-INF/MANIFEST.MF">
-      <attribute name="Specification-Title" value="${ant.project.name}"/>
-      <attribute name="Specification-Version" value="${version}"/>
-      <attribute name="Specification-Vendor" value="JMinor"/>
-      <attribute name="Implementation-Title" value="${ant.project.name}"/>
-      <attribute name="Implementation-Version" value="${version}"/>
-      <attribute name="Implementation-Vendor" value="JMinor"/>
-      <attribute name="Implementation-Vendor-Id" value="org.jminor"/>
-      <attribute name="Implementation-URL" value="http://jminor.org"/>
-      <attribute name="Build-Jdk" value="${java.version}"/>
-      <attribute name="Built-By" value="${user.name}"/>
-      <attribute name="Build-Time" value="${DSTAMP}${TSTAMP}"/>
-    </manifest>
-    <mkdir dir="${dist}"/>
-    <jar jarfile="dist/${ant.project.name}.jar" basedir="${build.main}"
-         manifest="${build.main}/META-INF/MANIFEST.MF"/>
-    <jar jarfile="dist/${ant.project.name}-sources.jar" basedir="${src.main}"
-         manifest="${build.main}/META-INF/MANIFEST.MF"/>
-    <jar jarfile="dist/${ant.project.name}-javadoc.jar" basedir="${javadoc}"
-         manifest="${build.main}/META-INF/MANIFEST.MF"/>
+  <target name="dist" depends="build, javadoc">
+    <dist_module/>
   </target>
 
   <target name="deploy" depends="dist" description="Publishes the module artifacts to a remote repository">
