@@ -3,10 +3,6 @@
   <property name="project.root" value="../"/>
   <import file="../build-common.xml"/>
 
-  <path id="lib.runtime.server">
-    <fileset dir="${lib}/runtime.server"/>
-  </path>
-
   <target name="dist" depends="common.dist"
           description="Builds all distribution jar files in the dist directory">
     <dist_module module-name="jminor-framework-db-core"
