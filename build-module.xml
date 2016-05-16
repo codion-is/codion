@@ -1,6 +1,5 @@
 <project name="jminor-module" xmlns:ivy="antlib:org.apache.ivy.ant">
 
-  <property name="dist" value="../../dist"/>
   <property name="project.root" value="../../.."/>
   <property file="${project.root}/build.properties"/>
   <property file="${project.root}/user.properties"/>
@@ -8,10 +7,10 @@
   <import file="build-macros.xml"/>
 
   <target name="deploy">
-    <publish resolver="deploy.${release.status}"/>
+    <publish resolver="deploy.${release.status}" artifact-dir="../../${dist}"/>
   </target>
 
   <target name="install">
-    <publish resolver="install-local-publish"/>
+    <publish resolver="install-local-publish" artifact-dir="../../${dist}"/>
   </target>
 </project>

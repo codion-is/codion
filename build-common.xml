@@ -152,11 +152,11 @@
   </target>
 
   <target name="deploy" depends="dist" description="Publishes the module artifacts to a remote repository">
-    <publish resolver="deploy.${release.status}"/>
+    <publish resolver="deploy.${release.status}" artifact-dir="${dist}"/>
   </target>
 
   <target name="install" depends="dist" description="Publishes the module artifacts to a local repository">
-    <publish resolver="install-local-publish"/>
+    <publish resolver="install-local-publish" artifact-dir="${dist}"/>
   </target>
 
   <target name="install_dependencies">
