@@ -57,21 +57,25 @@
     <subant target="dist" buildpath="framework"/>
     <subant target="create_keystore" buildpath="framework"/>
 
-    <copy file="common/${dist}/jminor-common-core/jminor-common-core.jar"
+    <copy file="common/${dist}/jminor-common-core.jar"
           tofile="${deploy.server.path}/lib/jminor-common-core-${version}.jar"/>
-    <copy file="common/${dist}/jminor-common-db/jminor-common-db.jar"
+    <copy file="common/${dist}/jminor-common-db.jar"
           tofile="${deploy.server.path}/lib/jminor-common-db-${version}.jar"/>
-    <copy file="common/${dist}/jminor-common-model/jminor-common-model.jar"
+    <copy file="common/${dist}/jminor-common-model.jar"
           tofile="${deploy.server.path}/lib/jminor-common-model-${version}.jar"/>
-    <copy file="common/${dist}/jminor-common-server/jminor-common-server.jar"
+    <copy file="common/${dist}/jminor-common-server.jar"
           tofile="${deploy.server.path}/lib/jminor-common-server-${version}.jar"/>
 
-    <copy file="framework/${dist}/jminor-framework-server/jminor-framework-server.jar"
+    <copy file="framework/${dist}/jminor-framework-server.jar"
           tofile="${deploy.server.path}/lib/jminor-framework-server-${version}.jar"/>
-    <copy file="framework/${dist}/jminor-framework-db-core/jminor-framework-db-core.jar"
+    <copy file="framework/${dist}/jminor-framework-db-core.jar"
           tofile="${deploy.server.path}/lib/jminor-framework-db-core-${version}.jar"/>
-    <copy file="framework/${dist}/jminor-framework-db-local/jminor-framework-db-local.jar"
+    <copy file="framework/${dist}/jminor-framework-db-local.jar"
           tofile="${deploy.server.path}/lib/jminor-framework-db-local-${version}.jar"/>
+
+    <copy todir="${deploy.server.path}/lib">
+      <fileset dir="framework/${lib}/test" includes="h2*.jar"/>
+    </copy>
 
     <subant target="dist" buildpath="demos"/>
     <copy file="demos/chinook/dist/chinook-domain.jar" todir="${deploy.server.path}/lib"/>
