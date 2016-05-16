@@ -35,7 +35,7 @@
     <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="lib.ant.util"/>
     <ivy:settings file="${project.root}/ivysettings.xml"/>
     <ivy:resolve file="${project.root}/build-ivy.xml"/>
-    <ivy:retrieve pattern="${project.root}/.lib/[conf]/[artifact]-[revision].[ext]" sync="true"/>
+    <ivy:retrieve pattern="${project.root}/${ant.lib}/[artifact]-[revision].[ext]" sync="true"/>
   </target>
 
   <target name="clean">
