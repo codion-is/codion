@@ -61,22 +61,4 @@
     <subant target="install" buildpath="${basedir}/modules/framework-model-unittests"/>
     <subant target="install" buildpath="${basedir}/modules/framework-server"/>
   </target>
-
-  <target name="javadoc" depends="build" unless="skip.javadoc"
-          description="Generates framework javadocs">
-    <delete dir="${javadoc}" includeEmptyDirs="true"/>
-    <mkdir dir="${javadoc}"/>
-    <javadoc destdir="${javadoc}" sourcepath="${src.main}" packagenames="org.jminor.*" Encoding="UTF-8"
-             docencoding="UTF-8" author="true" version="true" use="true"
-             windowtitle="JMinor v${version} API" doctitle="JMinor v${version} API"
-             group="Db org.jminor.framework.db*,
-                    Domain org.jminor.framework.domain*,
-                    Client model org.jminor.framework.model*,
-                    Swing client org.jminor.swing*,
-                    Server org.jminor.framework.server*">
-      <classpath refid="lib.compile"/>
-      <link href="http://download.oracle.com/javase/8/docs/api/"/>
-    </javadoc>
-  </target>
-
 </project>

@@ -4,7 +4,7 @@
   <property file="build.properties"/>
 
   <path id="lib.ant.util">
-    <fileset dir=".lib/ant"/>
+    <fileset dir="${ant.lib}"/>
   </path>
 
   <path id="lib.framework.test">
@@ -43,12 +43,48 @@
     </path>
   </path>
 
+  <condition property="keystore.available">
+    <available file="framework/${resources.security}/JMinorServerKeystore"/>
+  </condition>
+
   <target name="create_demo_h2db"
           description="Recreates the demo h2 database, which contains the EmpDept, Petstore, Chinook and World schemas, used by unit tests and demo applications">
     <delete dir="${db.h2.dir}"/>
     <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.framework.test" dir="demos">
       <arg line="-url jdbc:h2:file:${db.h2.dir}/${db.h2.name} -showResults -script create_h2_db.sql"/>
     </java>
+  </target>
+
+  <target name="create_keystore" unless="keystore.available"
+          description="Creates a client/server keystore for running the demos">
+    <genkey alias="JMinorServer" keyalg="RSA" storepass="${demo.server.keystorePassword}" validity="365"
+            keystore="framework/${resources.security}/JMinorServerKeystore">
+      <dname>
+        <param name="CN" value="Dummy"/>
+        <param name="OU" value="dummy"/>
+        <param name="O" value="dummy.org"/>
+        <param name="C" value="DU"/>
+      </dname>
+    </genkey>
+    <exec executable="${java.bin}/keytool" failonerror="true">
+      <arg value="-exportcert"/>
+      <arg line="-keystore framework/${resources.security}/JMinorServerKeystore"/>
+      <arg line="-alias JMinorServer"/>
+      <arg line="-storepass ${demo.server.keystorePassword}"/>
+      <arg line="-rfc"/>
+      <arg line="-file framework/${resources.security}/JMinorServer.cer"/>
+    </exec>
+    <exec executable="${java.bin}/keytool" failonerror="true">
+      <arg value="-import"/>
+      <arg line="-alias JMinorServer"/>
+      <arg line="-storepass ${demo.server.keystorePassword}"/>
+      <arg line="-file framework/${resources.security}/JMinorServer.cer"/>
+      <arg line="-keystore framework/${resources.security}/JMinorClientTruststore"/>
+      <arg line="-noprompt"/>
+    </exec>
+    <copy file="framework/${resources.security}/JMinorClientTruststore"
+          tofile="framework/${resources.security}/JMinorServerMonitorTruststore"/>
+    <delete file="framework/${resources.security}/JMinorServer.cer"/>
   </target>
 
   <target name="deploy_server" depends="create_demo_h2db"
