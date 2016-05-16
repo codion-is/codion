@@ -3,8 +3,7 @@
   <property name="project.root" value="../"/>
   <import file="../build-common.xml"/>
 
-  <target name="package" depends="build, javadoc"
-          description="Builds all distribution jar files in the dist directory">
+  <target name="package" depends="build, javadoc">
     <package_module module-name="jminor-framework-db-core"
                     includes="org/jminor/framework/Configuration.class,
                     org/jminor/framework/db/*,

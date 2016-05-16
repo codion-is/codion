@@ -93,11 +93,10 @@
     <delete file="framework/${resources.security}/JMinorServer.cer"/>
   </target>
 
-  <target name="deploy_server" depends="create_demo_h2db"
+  <target name="deploy_server" depends="create_keystore, create_demo_h2db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
     <subant target="package" buildpath="common"/>
     <subant target="package" buildpath="framework"/>
-    <subant target="create_keystore" buildpath="framework"/>
 
     <copy file="common/${dist}/jminor-common-core.jar"
           tofile="${deploy.server.path}/lib/jminor-common-core-${version}.jar"/>
@@ -120,20 +119,20 @@
     </copy>
 
     <subant target="package" buildpath="demos"/>
-    <copy file="demos/chinook/dist/chinook-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="demos/empdept/dist/empdept-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="demos/petstore/dist/petstore-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="demos/world/dist/world-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="demos/chinook/${dist}/chinook-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="demos/empdept/${dist}/empdept-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="demos/petstore/${dist}/petstore-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="demos/world/${dist}/world-domain.jar" todir="${deploy.server.path}/lib"/>
 
     <subant target="package" buildpath="plugins"/>
-    <copy file="plugins/jasperreports/dist/jminor-plugin-jasperreports.jar"
+    <copy file="plugins/jasperreports/${dist}/jminor-plugin-jasperreports.jar"
           tofile="${deploy.server.path}/lib/jminor-plugin-jasperreports-${version}.jar"/>
     <copy todir="${deploy.server.path}/lib">
       <fileset dir="plugins/jasperreports/lib/runtime" excludes="*jminor*"/>
     </copy>
-    <copy file="plugins/rest/dist/jminor-plugin-rest.jar"
+    <copy file="plugins/rest/${dist}/jminor-plugin-rest.jar"
           tofile="${deploy.server.path}/lib/jminor-plugin-rest-${version}.jar"/>
-    <copy file="plugins/json/dist/jminor-plugin-json.jar"
+    <copy file="plugins/json/${dist}/jminor-plugin-json.jar"
           tofile="${deploy.server.path}/lib/jminor-plugin-json-${version}.jar"/>
     <copy todir="${deploy.server.path}/lib">
       <fileset dir="plugins/rest/lib/runtime" excludes="*jminor*"/>
@@ -157,9 +156,8 @@
     </copy>
   </target>
 
-  <target name="deploy_server_monitor"
+  <target name="deploy_server_monitor" depends="create_keystore"
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
-    <subant target="create_keystore" buildpath="framework"/>
     <subant target="package" buildpath="server-monitor"/>
 
     <copy file="server-monitor/${dist}/jminor-framework-server-monitor.jar"
@@ -175,9 +173,8 @@
     <chmod dir="${deploy.server.monitor.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
-  <target name="deploy_demos"
+  <target name="deploy_demos" depends="create_keystore"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
-    <subant target="create_keystore" buildpath="framework"/>
     <subant target="deploy" buildpath="demos"/>
     <delete dir="${deploy.demos.dir}"/>
     <deploy_demo_app demo-name="chinook"/>

@@ -63,10 +63,10 @@
     <attribute name="demo-name"/>
     <sequential>
       <copy todir="${deploy.demos.dir}/web/@{demo-name}">
-        <fileset dir="demos/@{demo-name}/dist/deployment/web"/>
+        <fileset dir="demos/@{demo-name}/${dist}/deployment/web"/>
       </copy>
       <copy todir="${deploy.demos.dir}/local/@{demo-name}">
-        <fileset dir="demos/@{demo-name}/dist/deployment/local"/>
+        <fileset dir="demos/@{demo-name}/${dist}/deployment/local"/>
       </copy>
     </sequential>
   </macrodef>

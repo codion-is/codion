@@ -12,8 +12,7 @@
     <concat destfile="${build.main}/org/jminor/common/version.txt">${version}-build ${build.date}</concat>
   </target>
 
-  <target name="package" depends="build, javadoc"
-          description="Builds all distribution jar files in the dist directory">
+  <target name="package" depends="build, javadoc">
     <package_module module-name="jminor-common-core"
                     includes="org/jminor/common/*.*,
                     org/jminor/common/i18n/**,
