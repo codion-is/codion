@@ -68,7 +68,20 @@
       <copy todir="${deploy.demos.dir}/local/@{demo-name}">
         <fileset dir="demos/@{demo-name}/${package}/deployment/local"/>
       </copy>
-      <chmod dir="demos/@{demo-name}/${package}/deployment/local" perm="u+x" type="file" includes="**/*.sh"/>
+      <chmod dir="${deploy.demos.dir}/local/@{demo-name}" perm="u+x" type="file" includes="**/*.sh"/>
+    </sequential>
+  </macrodef>
+
+  <path id="lib.framework.test">
+    <fileset dir="framework/${lib}/test"/>
+  </path>
+
+  <macrodef name="run_h2_script">
+    <attribute name="script"/>
+    <sequential>
+      <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.framework.test" outputproperty="devnull">
+        <arg line="-url jdbc:h2:file:${db.h2.dir}/${db.h2.name} -showResults -script @{script}"/>
+      </java>
     </sequential>
   </macrodef>
 </project>

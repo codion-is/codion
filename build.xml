@@ -9,10 +9,6 @@
     <fileset dir="${ant.lib}"/>
   </path>
 
-  <path id="lib.framework.test">
-    <fileset dir="framework/${lib}/test"/>
-  </path>
-
   <path id="lib.runtime.server">
     <fileset dir="framework/${lib}/test"/>
     <fileset dir="framework/${package}"
@@ -56,9 +52,10 @@
   <target name="create_demo_h2db"
           description="Recreates the demo h2 database, which contains the EmpDept, Petstore, Chinook and World schemas, used by unit tests and demo applications">
     <delete dir="${db.h2.dir}"/>
-    <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.framework.test" dir="demos">
-      <arg line="-url jdbc:h2:file:${db.h2.dir}/${db.h2.name} -showResults -script create_h2_db.sql"/>
-    </java>
+    <run_h2_script script="demos/chinook/src/main/sql/create_schema.sql"/>
+    <run_h2_script script="demos/empdept/src/main/sql/create_schema.sql"/>
+    <run_h2_script script="demos/petstore/src/main/sql/create_schema.sql"/>
+    <run_h2_script script="demos/world/src/main/sql/create_schema.sql"/>
   </target>
 
   <target name="create_keystore" unless="keystore.available"
@@ -275,8 +272,8 @@
     <subant target="build" buildpath="demos"/>
     <!--todo reports, copy to temp loc-->
     <!--<copy todir="build/demos/reports" flatten="true">-->
-      <!--<fileset dir="demos/chinook/build/reports" includes="**/*.jasper"/>-->
-      <!--<fileset dir="demos/empdept/build/reports" includes="**/*.jasper"/>-->
+    <!--<fileset dir="demos/chinook/build/reports" includes="**/*.jasper"/>-->
+    <!--<fileset dir="demos/empdept/build/reports" includes="**/*.jasper"/>-->
     <!--</copy>-->
     <java classname="org.jminor.framework.server.DefaultEntityConnectionServerAdmin" fork="yes" dir="demos">
       <classpath>
@@ -310,16 +307,16 @@
   </target>
 
   <!--<target name="run_generator" depends="build"-->
-          <!--description="Runs the entity generator">-->
-    <!--<java classname="org.jminor.swing.framework.generator.ui.EntityGeneratorPanel" fork="yes">-->
-      <!--<classpath>-->
-        <!--<path refid="build.main"/>-->
-        <!--<path refid="lib.runtime.client"/>-->
-      <!--</classpath>-->
-      <!--<jvmarg value="-Djminor.db.type=h2"/>-->
-      <!--<jvmarg value="-Djminor.db.host=h2db/h2"/>-->
-      <!--<jvmarg value="-Djminor.db.embedded=true"/>-->
-    <!--</java>-->
+  <!--description="Runs the entity generator">-->
+  <!--<java classname="org.jminor.swing.framework.generator.ui.EntityGeneratorPanel" fork="yes">-->
+  <!--<classpath>-->
+  <!--<path refid="build.main"/>-->
+  <!--<path refid="lib.runtime.client"/>-->
+  <!--</classpath>-->
+  <!--<jvmarg value="-Djminor.db.type=h2"/>-->
+  <!--<jvmarg value="-Djminor.db.host=h2db/h2"/>-->
+  <!--<jvmarg value="-Djminor.db.embedded=true"/>-->
+  <!--</java>-->
   <!--</target>-->
 
 </project>
