@@ -1,4 +1,4 @@
-<project name="jminor-demo">
+<project name="demo">
 
   <property name="project.root" value="../../"/>
   <property name="junit.db.initScript" value="src/main/sql/create_schema.sql"/>
@@ -29,7 +29,7 @@
 
   <target name="run_local" depends="build"
           description="Runs the demo application with a local db connection">
-    <java classname="${client.main.class}" fork="yes" dir="${basedir}">
+    <java classname="${client.main.class}" fork="yes">
       <classpath>
         <pathelement path="${build.main}"/>
         <path refid="lib.runtime"/>

@@ -45,13 +45,17 @@
     </path>
   </path>
 
+  <condition property="demo.db.available">
+    <available file="${db.h2.dir}/${db.h2.name}.mv.db"/>
+  </condition>
+
   <condition property="keystore.available">
     <available file="framework/${resources.security}/JMinorServerKeystore"/>
   </condition>
 
-  <target name="create_demo_h2db"
-          description="Recreates the demo h2 database, which contains the EmpDept, Petstore, Chinook and World schemas, used by unit tests and demo applications">
-    <delete dir="${db.h2.dir}"/>
+  <target name="create_demo_db" unless="demo.db.available"
+          description="Creates the demo h2 database in case id doesn't already exist, which contains the EmpDept,
+          Petstore, Chinook and World schemas, used by unit tests and demo applications">
     <run_h2_script script="demos/chinook/src/main/sql/create_schema.sql"/>
     <run_h2_script script="demos/empdept/src/main/sql/create_schema.sql"/>
     <run_h2_script script="demos/petstore/src/main/sql/create_schema.sql"/>
@@ -90,7 +94,7 @@
     <delete file="framework/${resources.security}/JMinorServer.cer"/>
   </target>
 
-  <target name="deploy_server" depends="create_keystore, create_demo_h2db"
+  <target name="deploy_server" depends="create_keystore, create_demo_db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
     <subant target="package" buildpath="common"/>
     <subant target="package" buildpath="framework"/>
@@ -266,15 +270,10 @@
     </delete>
   </target>
 
-  <target name="run_server" depends="create_keystore" description="Runs the RMI server">
+  <target name="run_server" depends="create_keystore, create_demo_db" description="Runs the RMI server">
     <subant target="install_with_dependencies" buildpath="framework"/>
     <subant target="build" buildpath="plugins"/>
     <subant target="build" buildpath="demos"/>
-    <!--todo reports, copy to temp loc-->
-    <!--<copy todir="build/demos/reports" flatten="true">-->
-    <!--<fileset dir="demos/chinook/build/reports" includes="**/*.jasper"/>-->
-    <!--<fileset dir="demos/empdept/build/reports" includes="**/*.jasper"/>-->
-    <!--</copy>-->
     <java classname="org.jminor.framework.server.DefaultEntityConnectionServerAdmin" fork="yes" dir="demos">
       <classpath>
         <path refid="lib.runtime.server"/>
@@ -282,13 +281,9 @@
         <path refid="build.demos.main"/>
         <path refid="lib.plugins"/>
       </classpath>
-      <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
-      <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
-      <jvmarg value="-Djminor.db.port=${demo.db.port}"/>
-      <jvmarg value="-Djminor.db.sid=${demo.db.sid}"/>
-      <jvmarg value="-Djminor.db.embedded=${demo.db.embedded}"/>
-      <jvmarg value="-Djminor.db.embeddedInMemory=${demo.db.embeddedInMemory}"/>
-      <jvmarg value="-Djminor.db.initScript=create_h2_db.sql"/>
+      <jvmarg value="-Djminor.db.type=h2"/>
+      <jvmarg value="-Djminor.db.host=${basedir}/.h2db/h2"/>
+      <jvmarg value="-Djminor.db.embedded=true"/>
       <jvmarg value="-Djminor.server.pooling.initial=scott:tiger"/>
       <jvmarg value="-Djminor.server.clientLoggingEnabled=true"/>
       <jvmarg value="-Djminor.server.port=2222"/>
