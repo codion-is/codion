@@ -1,4 +1,4 @@
-<project name="jminor-parent" xmlns:sonar="antlib:org.sonar.ant" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="jminor-parent" default="install" xmlns:sonar="antlib:org.sonar.ant" xmlns:ivy="antlib:org.apache.ivy.ant">
 
   <property file="user.properties"/>
   <property file="build.properties"/>
