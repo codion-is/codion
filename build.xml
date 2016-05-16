@@ -8,11 +8,15 @@
   </path>
 
   <path id="lib.framework.test">
-    <fileset dir="framework/${lib}/test/"/>
+    <fileset dir="framework/${lib}/test"/>
   </path>
 
   <path id="lib.runtime.server">
-    <fileset dir="framework/${lib}/runtime.server/"/>
+    <fileset dir="framework/${lib}/test"/>
+    <fileset dir="framework/${dist}"
+             includes="jminor-framework-server.jar,
+             jminor-framework-db-core.jar,
+             jminor-framework-db-local.jar"/>
   </path>
 
   <path id="build.demos.main">
@@ -266,9 +270,8 @@
     </delete>
   </target>
 
-  <target name="run_server" description="Runs the RMI server">
-    <subant target="create_keystore" buildpath="framework"/>
-    <subant target="retrieve_libraries" buildpath="framework"/>
+  <target name="run_server" depends="create_keystore" description="Runs the RMI server">
+    <subant target="install_with_dependencies" buildpath="framework"/>
     <subant target="build" buildpath="plugins"/>
     <subant target="build" buildpath="demos"/>
     <!--todo reports, copy to temp loc-->
