@@ -303,7 +303,6 @@
       <jvmarg value="-Djavax.net.ssl.keyStorePassword=${demo.server.keystorePassword}"/>
       <jvmarg value="-Djava.rmi.server.hostname=localhost"/>
     </java>
-    <delete dir="build/demos"/>
   </target>
 
   <target name="sonar" depends="run_unit_tests" description="Runs a Sonar analysis on the project">
