@@ -16,12 +16,12 @@
     <subant target="build" buildpath="world"/>
   </target>
 
-  <target name="dist">
-    <subant target="dist" buildpath="chinook"/>
-    <subant target="dist" buildpath="empdept"/>
-    <subant target="dist" buildpath="petstore"/>
-    <subant target="dist" buildpath="schemabrowser"/>
-    <subant target="dist" buildpath="world"/>
+  <target name="package">
+    <subant target="package" buildpath="chinook"/>
+    <subant target="package" buildpath="empdept"/>
+    <subant target="package" buildpath="petstore"/>
+    <subant target="package" buildpath="schemabrowser"/>
+    <subant target="package" buildpath="world"/>
   </target>
 
   <target name="deploy">

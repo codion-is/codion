@@ -1,5 +1,6 @@
 <project name="macros" xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:jacoco="antlib:org.jacoco.ant">
-  <macrodef name="dist_module">
+
+  <macrodef name="package_module">
     <attribute name="module-name" default="${ant.project.name}"/>
     <attribute name="includes" default=""/>
     <attribute name="excludes" default=""/>

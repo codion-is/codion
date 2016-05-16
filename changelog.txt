@@ -4267,3 +4267,4 @@
   Sonar run
   Build file refactoring, publish split into install and deploy, local m2 repository added to ivysettings
   Ant build dependency management set up
+  Build target dist renamed to package

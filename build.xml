@@ -95,8 +95,8 @@
 
   <target name="deploy_server" depends="create_demo_h2db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
-    <subant target="dist" buildpath="common"/>
-    <subant target="dist" buildpath="framework"/>
+    <subant target="package" buildpath="common"/>
+    <subant target="package" buildpath="framework"/>
     <subant target="create_keystore" buildpath="framework"/>
 
     <copy file="common/${dist}/jminor-common-core.jar"
@@ -119,13 +119,13 @@
       <fileset dir="framework/${lib}/test" includes="h2*.jar"/>
     </copy>
 
-    <subant target="dist" buildpath="demos"/>
+    <subant target="package" buildpath="demos"/>
     <copy file="demos/chinook/dist/chinook-domain.jar" todir="${deploy.server.path}/lib"/>
     <copy file="demos/empdept/dist/empdept-domain.jar" todir="${deploy.server.path}/lib"/>
     <copy file="demos/petstore/dist/petstore-domain.jar" todir="${deploy.server.path}/lib"/>
     <copy file="demos/world/dist/world-domain.jar" todir="${deploy.server.path}/lib"/>
 
-    <subant target="dist" buildpath="plugins"/>
+    <subant target="package" buildpath="plugins"/>
     <copy file="plugins/jasperreports/dist/jminor-plugin-jasperreports.jar"
           tofile="${deploy.server.path}/lib/jminor-plugin-jasperreports-${version}.jar"/>
     <copy todir="${deploy.server.path}/lib">
@@ -160,7 +160,7 @@
   <target name="deploy_server_monitor"
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <subant target="create_keystore" buildpath="framework"/>
-    <subant target="dist" buildpath="server-monitor"/>
+    <subant target="package" buildpath="server-monitor"/>
 
     <copy file="server-monitor/${dist}/jminor-framework-server-monitor.jar"
           tofile="${deploy.server.monitor.path}/lib/jminor-framework-server-monitor-${version}.jar"/>
@@ -187,7 +187,7 @@
     <deploy_demo_app demo-name="world"/>
   </target>
 
-  <!--<target name="deploy_generator" depends="dist, create_demo_h2db"-->
+  <!--<target name="deploy_generator" depends="package, create_demo_h2db"-->
   <!--description="Deploys the entity generator to the path defined by the 'deploy.generator.path' property">-->
   <!--<mkdir dir="${deploy.generator.path}"/>-->
   <!--<copy file="${dist}/jminor/jminor.jar"-->
@@ -225,14 +225,14 @@
     <subant target="build" buildpath="demos"/>
   </target>
 
-  <target name="dist" description="Distributes all modules">
-    <subant target="dist" buildpath="common"/>
-    <subant target="dist" buildpath="framework"/>
-    <subant target="dist" buildpath="swing"/>
-    <subant target="dist" buildpath="javafx"/>
-    <subant target="dist" buildpath="server-monitor"/>
-    <subant target="dist" buildpath="plugins"/>
-    <subant target="dist" buildpath="demos"/>
+  <target name="package" description="Packages all modules">
+    <subant target="package" buildpath="common"/>
+    <subant target="package" buildpath="framework"/>
+    <subant target="package" buildpath="swing"/>
+    <subant target="package" buildpath="javafx"/>
+    <subant target="package" buildpath="server-monitor"/>
+    <subant target="package" buildpath="plugins"/>
+    <subant target="package" buildpath="demos"/>
   </target>
 
   <target name="run_unit_tests" description="Runs unit tests for all modules">

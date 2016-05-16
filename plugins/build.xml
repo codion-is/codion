@@ -27,13 +27,13 @@
     <subant target="javadoc" buildpath="tomcat-pool"/>
   </target>
 
-  <target name="dist">
-    <subant target="dist" buildpath="imagepanel"/>
-    <subant target="dist" buildpath="jasperreports"/>
-    <subant target="dist" buildpath="json"/>
-    <subant target="dist" buildpath="nextreports"/>
-    <subant target="dist" buildpath="rest"/>
-    <subant target="dist" buildpath="tomcat-pool"/>
+  <target name="package">
+    <subant target="package" buildpath="imagepanel"/>
+    <subant target="package" buildpath="jasperreports"/>
+    <subant target="package" buildpath="json"/>
+    <subant target="package" buildpath="nextreports"/>
+    <subant target="package" buildpath="rest"/>
+    <subant target="package" buildpath="tomcat-pool"/>
   </target>
 
   <target name="deploy">

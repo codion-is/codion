@@ -143,15 +143,15 @@
     </javadoc>
   </target>
 
-  <target name="dist" depends="build, javadoc">
-    <dist_module/>
+  <target name="package" depends="build, javadoc">
+    <package_module/>
   </target>
 
-  <target name="deploy" depends="dist" description="Publishes the module artifacts to a remote repository">
+  <target name="deploy" depends="package" description="Publishes the module artifacts to a remote repository">
     <publish resolver="deploy.${release.status}" artifact-dir="${dist}"/>
   </target>
 
-  <target name="install" depends="dist" description="Publishes the module artifacts to a local repository">
+  <target name="install" depends="package" description="Publishes the module artifacts to a local repository">
     <publish resolver="install-local-publish" artifact-dir="${dist}"/>
   </target>
 

@@ -3,42 +3,42 @@
   <property name="project.root" value="../"/>
   <import file="../build-common.xml"/>
 
-  <target name="dist" depends="build, javadoc"
+  <target name="package" depends="build, javadoc"
           description="Builds all distribution jar files in the dist directory">
-    <dist_module module-name="jminor-framework-db-core"
-                 includes="org/jminor/framework/Configuration.class,
-                 org/jminor/framework/db/*,
-                 org/jminor/framework/db/criteria/*,
-                 org/jminor/framework/domain/*,
-                 org/jminor/framework/i18n/**"
-                 excludes="org/jminor/framework/db/remote*,
-                 org/jminor/framework/db/local*,"/>
-    <dist_module module-name="jminor-framework-db-local"
-                 includes="org/jminor/framework/db/local/*"/>
-    <dist_module module-name="jminor-framework-db-remote"
-                 includes="org/jminor/framework/db/remote/*"/>
-    <dist_module module-name="jminor-framework-db-test"
-                 includes="org/jminor/framework/testing/EntityTestUnit*"/>
-    <dist_module module-name="jminor-framework-model"
-                 includes="org/jminor/framework/model/*"/>
-    <dist_module module-name="jminor-framework-model-unittests"
-                 includes="org/jminor/common/model/tools/LoadTestModelTest*,
-                 org/jminor/framework/domain/TestDomain*,
-                 org/jminor/framework/model/Abstract*,
-                 org/jminor/framework/db/EntityConnectionProvidersTest*,
-                 org/jminor/framework/server/EntityConnectionServerTest*,
-                 org/jminor/framework/server/TestConnectionValidator*
-                 org/jminor/framework/server/TestLoginProxy*"
-                 build.basedir="${build.test}"
-                 src.basedir="${src.test}"/>
-    <dist_module module-name="jminor-framework-server"
-                 includes="org/jminor/framework/Configuration.class,
-                 org/jminor/framework/server/*"/>
+    <package_module module-name="jminor-framework-db-core"
+                    includes="org/jminor/framework/Configuration.class,
+                    org/jminor/framework/db/*,
+                    org/jminor/framework/db/criteria/*,
+                    org/jminor/framework/domain/*,
+                    org/jminor/framework/i18n/**"
+                    excludes="org/jminor/framework/db/remote*,
+                    org/jminor/framework/db/local*,"/>
+    <package_module module-name="jminor-framework-db-local"
+                    includes="org/jminor/framework/db/local/*"/>
+    <package_module module-name="jminor-framework-db-remote"
+                    includes="org/jminor/framework/db/remote/*"/>
+    <package_module module-name="jminor-framework-db-test"
+                    includes="org/jminor/framework/testing/EntityTestUnit*"/>
+    <package_module module-name="jminor-framework-model"
+                    includes="org/jminor/framework/model/*"/>
+    <package_module module-name="jminor-framework-model-unittests"
+                    includes="org/jminor/common/model/tools/LoadTestModelTest*,
+                    org/jminor/framework/domain/TestDomain*,
+                    org/jminor/framework/model/Abstract*,
+                    org/jminor/framework/db/EntityConnectionProvidersTest*,
+                    org/jminor/framework/server/EntityConnectionServerTest*,
+                    org/jminor/framework/server/TestConnectionValidator*
+                    org/jminor/framework/server/TestLoginProxy*"
+                    build.basedir="${build.test}"
+                    src.basedir="${src.test}"/>
+    <package_module module-name="jminor-framework-server"
+                    includes="org/jminor/framework/Configuration.class,
+                    org/jminor/framework/server/*"/>
 
     <copy file="${basedir}/../changelog.txt" todir="${dist}"/>
   </target>
 
-  <target name="deploy" depends="dist"
+  <target name="deploy" depends="package"
           description="deploy all module artifacts">
     <fail unless="version">Version information not set</fail>
     <subant target="deploy" buildpath="${basedir}/modules/framework-db-core"/>
@@ -50,7 +50,7 @@
     <subant target="deploy" buildpath="${basedir}/modules/framework-server"/>
   </target>
 
-  <target name="install" depends="dist"
+  <target name="install" depends="package"
           description="install all module artifacts">
     <fail unless="version">Version information not set</fail>
     <subant target="install" buildpath="${basedir}/modules/framework-db-core"/>

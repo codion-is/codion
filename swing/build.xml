@@ -3,19 +3,19 @@
   <property name="project.root" value="../"/>
   <import file="../build-common.xml"/>
 
-  <target name="dist" depends="build, javadoc"
+  <target name="package" depends="build, javadoc"
           description="Builds all distribution jar files in the dist directory">
-    <dist_module module-name="jminor-swing-common-model"
-                 includes="org/jminor/swing/common/model/**,
-                 org/jminor/swing/SwingConfiguration.class"/>
-    <dist_module module-name="jminor-swing-common-ui"
-                 includes="org/jminor/swing/common/ui/**"/>
-    <dist_module module-name="jminor-swing-client-model"
-                 includes="org/jminor/swing/framework/model/**"/>
-    <dist_module module-name="jminor-swing-client-ui"
-                 includes="org/jminor/swing/framework/ui/**"/>
-    <dist_module module-name="jminor-swing-client-test"
-                 includes="org/jminor/swing/framework/testing/**"/>
+    <package_module module-name="jminor-swing-common-model"
+                    includes="org/jminor/swing/common/model/**,
+                    org/jminor/swing/SwingConfiguration.class"/>
+    <package_module module-name="jminor-swing-common-ui"
+                    includes="org/jminor/swing/common/ui/**"/>
+    <package_module module-name="jminor-swing-client-model"
+                    includes="org/jminor/swing/framework/model/**"/>
+    <package_module module-name="jminor-swing-client-ui"
+                    includes="org/jminor/swing/framework/ui/**"/>
+    <package_module module-name="jminor-swing-client-test"
+                    includes="org/jminor/swing/framework/testing/**"/>
 
     <jar jarfile="${dist}/jminor-swing-client-bundle.jar"
          manifest="${build.main}/META-INF/MANIFEST.MF">
@@ -67,7 +67,7 @@
     </jar>
   </target>
 
-  <target name="deploy" depends="dist"
+  <target name="deploy" depends="package"
           description="deploy all project artifacts">
     <subant target="deploy" buildpath="${basedir}/modules/swing-common-model"/>
     <subant target="deploy" buildpath="${basedir}/modules/swing-common-ui"/>
@@ -77,7 +77,7 @@
     <subant target="deploy" buildpath="${basedir}/modules/swing-client-bundle"/>
   </target>
 
-  <target name="install" depends="dist"
+  <target name="install" depends="package"
           description="install all project artifacts">
     <subant target="install" buildpath="${basedir}/modules/swing-common-model"/>
     <subant target="install" buildpath="${basedir}/modules/swing-common-ui"/>
@@ -87,7 +87,7 @@
     <subant target="install" buildpath="${basedir}/modules/swing-client-bundle"/>
   </target>
 
-  <!--<target name="deploy_generator" depends="dist, create_demo_h2db"-->
+  <!--<target name="deploy_generator" depends="package, create_demo_h2db"-->
   <!--description="Deploys the entity generator to the path defined by the 'deploy.generator.path' property">-->
   <!--<mkdir dir="${deploy.generator.path}"/>-->
   <!--<copy file="${dist}/jminor/jminor.jar"-->
