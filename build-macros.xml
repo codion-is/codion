@@ -57,4 +57,16 @@
       <move file="ivy.xml.bak" tofile="ivy.xml"/>
     </sequential>
   </macrodef>
+
+  <macrodef name="deploy_demo_app">
+    <attribute name="demo-name"/>
+    <sequential>
+      <copy todir="${deploy.demos.dir}/web/@{demo-name}">
+        <fileset dir="demos/@{demo-name}/dist/deployment/web"/>
+      </copy>
+      <copy todir="${deploy.demos.dir}/local/@{demo-name}">
+        <fileset dir="demos/@{demo-name}/dist/deployment/local"/>
+      </copy>
+    </sequential>
+  </macrodef>
 </project>

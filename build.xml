@@ -3,6 +3,8 @@
   <property file="user.properties"/>
   <property file="build.properties"/>
 
+  <import file="build-macros.xml"/>
+
   <path id="lib.ant.util">
     <fileset dir="${ant.lib}"/>
   </path>
@@ -322,17 +324,5 @@
       <!--<jvmarg value="-Djminor.db.embedded=true"/>-->
     <!--</java>-->
   <!--</target>-->
-
-  <macrodef name="deploy_demo_app">
-    <attribute name="demo-name"/>
-    <sequential>
-      <copy todir="${deploy.demos.dir}/web/@{demo-name}">
-        <fileset dir="demos/@{demo-name}/dist/deployment/web"/>
-      </copy>
-      <copy todir="${deploy.demos.dir}/local/@{demo-name}">
-        <fileset dir="demos/@{demo-name}/dist/deployment/local"/>
-      </copy>
-    </sequential>
-  </macrodef>
 
 </project>
