@@ -1,4 +1,4 @@
-<project name="jminor-demos" default="build" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:jacoco="antlib:org.jacoco.ant">
+<project name="jminor-demos">
 
   <target name="clean">
     <subant target="clean" buildpath="chinook"/>
