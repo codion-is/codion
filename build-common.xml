@@ -41,7 +41,7 @@
   <target name="clean">
     <delete dir="${build.root}"/>
     <delete dir="${javadoc}"/>
-    <delete dir="${dist}"/>
+    <delete dir="${package}"/>
     <delete dir="${test}"/>
   </target>
 
@@ -148,11 +148,11 @@
   </target>
 
   <target name="deploy" depends="package" description="Publishes the module artifacts to a remote repository">
-    <publish resolver="deploy.${release.status}" artifact-dir="${dist}"/>
+    <publish resolver="deploy.${release.status}" artifact-dir="${package}"/>
   </target>
 
   <target name="install" depends="package" description="Publishes the module artifacts to a local repository">
-    <publish resolver="install-local-publish" artifact-dir="${dist}"/>
+    <publish resolver="install-local-publish" artifact-dir="${package}"/>
   </target>
 
   <target name="install_with_dependencies">

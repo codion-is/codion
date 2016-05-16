@@ -34,7 +34,7 @@
                     includes="org/jminor/framework/Configuration.class,
                     org/jminor/framework/server/*"/>
 
-    <copy file="${basedir}/../changelog.txt" todir="${dist}"/>
+    <copy file="${basedir}/../changelog.txt" todir="${package}"/>
   </target>
 
   <target name="deploy" depends="package"

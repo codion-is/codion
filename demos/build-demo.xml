@@ -5,7 +5,7 @@
   <import file="../build-common.xml"/>
 
   <target name="package" depends="common.package">
-    <jar jarfile="${dist}/${ant.project.name}-domain.jar" basedir="build/main"
+    <jar jarfile="${package}/${ant.project.name}-domain.jar" basedir="build/main"
          includes="org/jminor/framework/demos/${ant.project.name}/domain/**/*,
          org/jminor/framework/demos/${ant.project.name}/server/**/*"
          manifest="${build.main}/META-INF/MANIFEST.MF"/>
@@ -22,7 +22,7 @@
     <!--<remove regexp="org.jminor.framework.domain.Entity.Table" />-->
     <!--<remove regexp="org.jminor.framework.domain.Property.Column" />-->
     <!--</purgeannotationrefs>-->
-    <!--<jar jarfile="${dist}/${ant.project.name}-domain-remote.jar" basedir="build/main"-->
+    <!--<jar jarfile="${package}/${ant.project.name}-domain-remote.jar" basedir="build/main"-->
     <!--includes="org/jminor/framework/demos/${ant.project.name}/domain/**/*"-->
     <!--manifest="${build.main}/META-INF/MANIFEST.MF"/>-->
   </target>
@@ -79,61 +79,61 @@
 
   <target name="deploy" depends="package">
     <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpathref="lib.ant.util"/>
-    <delete dir="${dist}/deployment"/>
+    <delete dir="${package}/deployment"/>
     <!--create uber-jar-->
-    <mkdir dir="${dist}/deployment/libtmp"/>
-    <unzip dest="${dist}/deployment/libtmp">
+    <mkdir dir="${package}/deployment/libtmp"/>
+    <unzip dest="${package}/deployment/libtmp">
       <fileset dir="lib/runtime">
         <include name="**/*.jar"/>
       </fileset>
     </unzip>
-    <zip destfile="${dist}/deployment/${ant.project.name}.jar">
-      <zipfileset src="${dist}/${ant.project.name}.jar" excludes="**/META-INF/**/*"/>
-      <zipfileset dir="${dist}/deployment/libtmp" excludes="**/META-INF/**/*"/>
+    <zip destfile="${package}/deployment/${ant.project.name}.jar">
+      <zipfileset src="${package}/${ant.project.name}.jar" excludes="**/META-INF/**/*"/>
+      <zipfileset dir="${package}/deployment/libtmp" excludes="**/META-INF/**/*"/>
       <zipfileset file="src/main/config/logback.xml"/>
       <zipfileset file="../../framework/resources/security/JMinorClientTruststore"/>
     </zip>
-    <delete dir="${dist}/deployment/libtmp"/>
+    <delete dir="${package}/deployment/libtmp"/>
 
     <!--create web deployment, webstart and getdown-->
-    <mkdir dir="${dist}/deployment/web"/>
-    <copy file="${dist}/deployment/${ant.project.name}.jar" todir="${dist}/deployment/web"/>
-    <zip destfile="${dist}/deployment/web/${ant.project.name}.jar" update="true">
+    <mkdir dir="${package}/deployment/web"/>
+    <copy file="${package}/deployment/${ant.project.name}.jar" todir="${package}/deployment/web"/>
+    <zip destfile="${package}/deployment/web/${ant.project.name}.jar" update="true">
       <zipfileset dir="src/main/config/" includes="${ant.project.name}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
     </zip>
-    <signjar jar="${dist}/deployment/web/${ant.project.name}.jar" alias="${jar.sign.alias}"
+    <signjar jar="${package}/deployment/web/${ant.project.name}.jar" alias="${jar.sign.alias}"
              storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
-    <copy file="src/main/config/${ant.project.name}.jnlp" todir="${dist}/deployment/web" failonerror="false"/>
-    <copy file="src/main/config/getdown.txt" todir="${dist}/deployment/web"/>
-    <copy file="../../common/docs/jminor.org/jminor_logo_2.png" tofile="${dist}/deployment/web/jminor.png"/>
-    <copy file="../../common/docs/jminor.org/jminor_logo_medium.png" tofile="${dist}/deployment/web/jminor-getdown.png"/>
+    <copy file="src/main/config/${ant.project.name}.jnlp" todir="${package}/deployment/web" failonerror="false"/>
+    <copy file="src/main/config/getdown.txt" todir="${package}/deployment/web"/>
+    <copy file="../../common/docs/jminor.org/jminor_logo_2.png" tofile="${package}/deployment/web/jminor.png"/>
+    <copy file="../../common/docs/jminor.org/jminor_logo_medium.png" tofile="${package}/deployment/web/jminor-getdown.png"/>
 
     <!--getdown-->
-    <getdown_digest appdir="${dist}/deployment/web"/>
-    <copy todir="${dist}/deployment/web/getdown.tmp/${ant.project.name}" file="../../.lib/ant/getdown-${getdown.version}.jar"/>
-    <concat destfile="${dist}/deployment/web/getdown.tmp/${ant.project.name}/getdown.txt">appbase = http://jminor.no-ip.org/demos/${ant.project.name}/</concat>
-    <concat destfile="${dist}/deployment/web/getdown.tmp/${ant.project.name}.sh">java -jar ${ant.project.name}/getdown-${getdown.version}.jar ${ant.project.name}</concat>
-    <copy file="${dist}/deployment/web/getdown.tmp/${ant.project.name}.sh" tofile="${dist}/deployment/web/getdown.tmp/${ant.project.name}.bat"/>
-    <zip destfile="${dist}/deployment/web/${ant.project.name}-getdown.zip" basedir="${dist}/deployment/web/getdown.tmp"/>
-    <delete dir="${dist}/deployment/web/getdown.tmp"/>
+    <getdown_digest appdir="${package}/deployment/web"/>
+    <copy todir="${package}/deployment/web/getdown.tmp/${ant.project.name}" file="../../.lib/ant/getdown-${getdown.version}.jar"/>
+    <concat destfile="${package}/deployment/web/getdown.tmp/${ant.project.name}/getdown.txt">appbase = http://jminor.no-ip.org/demos/${ant.project.name}/</concat>
+    <concat destfile="${package}/deployment/web/getdown.tmp/${ant.project.name}.sh">java -jar ${ant.project.name}/getdown-${getdown.version}.jar ${ant.project.name}</concat>
+    <copy file="${package}/deployment/web/getdown.tmp/${ant.project.name}.sh" tofile="${package}/deployment/web/getdown.tmp/${ant.project.name}.bat"/>
+    <zip destfile="${package}/deployment/web/${ant.project.name}-getdown.zip" basedir="${package}/deployment/web/getdown.tmp"/>
+    <delete dir="${package}/deployment/web/getdown.tmp"/>
 
     <!--create local deployment-->
-    <mkdir dir="${dist}/deployment/local"/>
-    <copy todir="${dist}/deployment/local">
-      <file file="${dist}/deployment/${ant.project.name}.jar"/>
+    <mkdir dir="${package}/deployment/local"/>
+    <copy todir="${package}/deployment/local">
+      <file file="${package}/deployment/${ant.project.name}.jar"/>
       <fileset dir="src/main/config" includes="**/*.sh, **/*.bat"/>
     </copy>
-    <chmod dir="${dist}/deployment/local" perm="u+x" type="file" includes="**/*.sh"/>
-    <copy todir="${dist}/deployment/local/config">
+    <chmod dir="${package}/deployment/local" perm="u+x" type="file" includes="**/*.sh"/>
+    <copy todir="${package}/deployment/local/config">
       <fileset dir="src/main/config" includes="**/*.config"/>
     </copy>
-    <zip destfile="${dist}/deployment/local/${ant.project.name}.jar" update="true">
+    <zip destfile="${package}/deployment/local/${ant.project.name}.jar" update="true">
       <zipfileset dir="build/reports" includes="**/*.jasper" prefix="reports" erroronmissingdir="false"/>
       <zipfileset file="src/main/sql/create_schema.sql" erroronmissingdir="false"/>
     </zip>
-    <zip destfile="${dist}/deployment/web/${ant.project.name}-local.zip">
-      <zipfileset dir="${dist}/deployment/local"/>
+    <zip destfile="${package}/deployment/web/${ant.project.name}-local.zip">
+      <zipfileset dir="${package}/deployment/local"/>
     </zip>
-    <delete file="${dist}/deployment/${ant.project.name}.jar"/>
+    <delete file="${package}/deployment/${ant.project.name}.jar"/>
   </target>
 </project>

@@ -15,7 +15,7 @@
 
   <path id="lib.runtime.server">
     <fileset dir="framework/${lib}/test"/>
-    <fileset dir="framework/${dist}"
+    <fileset dir="framework/${package}"
              includes="jminor-framework-server.jar,
              jminor-framework-db-core.jar,
              jminor-framework-db-local.jar"/>
@@ -98,20 +98,20 @@
     <subant target="package" buildpath="common"/>
     <subant target="package" buildpath="framework"/>
 
-    <copy file="common/${dist}/jminor-common-core.jar"
+    <copy file="common/${package}/jminor-common-core.jar"
           tofile="${deploy.server.path}/lib/jminor-common-core-${version}.jar"/>
-    <copy file="common/${dist}/jminor-common-db.jar"
+    <copy file="common/${package}/jminor-common-db.jar"
           tofile="${deploy.server.path}/lib/jminor-common-db-${version}.jar"/>
-    <copy file="common/${dist}/jminor-common-model.jar"
+    <copy file="common/${package}/jminor-common-model.jar"
           tofile="${deploy.server.path}/lib/jminor-common-model-${version}.jar"/>
-    <copy file="common/${dist}/jminor-common-server.jar"
+    <copy file="common/${package}/jminor-common-server.jar"
           tofile="${deploy.server.path}/lib/jminor-common-server-${version}.jar"/>
 
-    <copy file="framework/${dist}/jminor-framework-server.jar"
+    <copy file="framework/${package}/jminor-framework-server.jar"
           tofile="${deploy.server.path}/lib/jminor-framework-server-${version}.jar"/>
-    <copy file="framework/${dist}/jminor-framework-db-core.jar"
+    <copy file="framework/${package}/jminor-framework-db-core.jar"
           tofile="${deploy.server.path}/lib/jminor-framework-db-core-${version}.jar"/>
-    <copy file="framework/${dist}/jminor-framework-db-local.jar"
+    <copy file="framework/${package}/jminor-framework-db-local.jar"
           tofile="${deploy.server.path}/lib/jminor-framework-db-local-${version}.jar"/>
 
     <copy todir="${deploy.server.path}/lib">
@@ -119,20 +119,20 @@
     </copy>
 
     <subant target="package" buildpath="demos"/>
-    <copy file="demos/chinook/${dist}/chinook-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="demos/empdept/${dist}/empdept-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="demos/petstore/${dist}/petstore-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="demos/world/${dist}/world-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="demos/chinook/${package}/chinook-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="demos/empdept/${package}/empdept-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="demos/petstore/${package}/petstore-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="demos/world/${package}/world-domain.jar" todir="${deploy.server.path}/lib"/>
 
     <subant target="package" buildpath="plugins"/>
-    <copy file="plugins/jasperreports/${dist}/jminor-plugin-jasperreports.jar"
+    <copy file="plugins/jasperreports/${package}/jminor-plugin-jasperreports.jar"
           tofile="${deploy.server.path}/lib/jminor-plugin-jasperreports-${version}.jar"/>
     <copy todir="${deploy.server.path}/lib">
       <fileset dir="plugins/jasperreports/lib/runtime" excludes="*jminor*"/>
     </copy>
-    <copy file="plugins/rest/${dist}/jminor-plugin-rest.jar"
+    <copy file="plugins/rest/${package}/jminor-plugin-rest.jar"
           tofile="${deploy.server.path}/lib/jminor-plugin-rest-${version}.jar"/>
-    <copy file="plugins/json/${dist}/jminor-plugin-json.jar"
+    <copy file="plugins/json/${package}/jminor-plugin-json.jar"
           tofile="${deploy.server.path}/lib/jminor-plugin-json-${version}.jar"/>
     <copy todir="${deploy.server.path}/lib">
       <fileset dir="plugins/rest/lib/runtime" excludes="*jminor*"/>
@@ -160,7 +160,7 @@
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <subant target="package" buildpath="server-monitor"/>
 
-    <copy file="server-monitor/${dist}/jminor-framework-server-monitor.jar"
+    <copy file="server-monitor/${package}/jminor-framework-server-monitor.jar"
           tofile="${deploy.server.monitor.path}/lib/jminor-framework-server-monitor-${version}.jar"/>
     <copy todir="${deploy.server.monitor.path}/lib">
       <fileset dir="server-monitor/${lib}/runtime"/>
@@ -187,7 +187,7 @@
   <!--<target name="deploy_generator" depends="package, create_demo_h2db"-->
   <!--description="Deploys the entity generator to the path defined by the 'deploy.generator.path' property">-->
   <!--<mkdir dir="${deploy.generator.path}"/>-->
-  <!--<copy file="${dist}/jminor/jminor.jar"-->
+  <!--<copy file="${package}/jminor/jminor.jar"-->
   <!--tofile="${deploy.generator.path}/lib/jminor-${version}.jar"/>-->
   <!--<copy todir="${deploy.generator.path}/lib">-->
   <!--<fileset dir="${lib}/runtime.client"/>-->

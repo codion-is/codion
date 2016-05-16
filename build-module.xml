@@ -7,10 +7,10 @@
   <import file="build-macros.xml"/>
 
   <target name="deploy">
-    <publish resolver="deploy.${release.status}" artifact-dir="../../${dist}"/>
+    <publish resolver="deploy.${release.status}" artifact-dir="../../${package}"/>
   </target>
 
   <target name="install">
-    <publish resolver="install-local-publish" artifact-dir="../../${dist}"/>
+    <publish resolver="install-local-publish" artifact-dir="../../${package}"/>
   </target>
 </project>

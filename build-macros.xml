@@ -2,10 +2,10 @@
 
   <macrodef name="package_module">
     <attribute name="module-name" default="${ant.project.name}"/>
-    <attribute name="includes" default=""/>
-    <attribute name="excludes" default=""/>
     <attribute name="build.basedir" default="${build.main}"/>
     <attribute name="src.basedir" default="${src.main}"/>
+    <attribute name="includes" default=""/>
+    <attribute name="excludes" default=""/>
     <sequential>
       <tstamp/>
       <mkdir dir="${build.main}/META-INF"/>
@@ -22,14 +22,14 @@
         <attribute name="Built-By" value="${user.name}"/>
         <attribute name="Build-Time" value="${DSTAMP}${TSTAMP}"/>
       </manifest>
-      <mkdir dir="${dist}"/>
-      <jar jarfile="${dist}/@{module-name}.jar" basedir="@{build.basedir}"
+      <mkdir dir="${package}"/>
+      <jar jarfile="${package}/@{module-name}.jar" basedir="@{build.basedir}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
-      <jar jarfile="${dist}/@{module-name}-sources.jar" basedir="@{src.basedir}"
+      <jar jarfile="${package}/@{module-name}-sources.jar" basedir="@{src.basedir}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
-      <jar jarfile="${dist}/@{module-name}-javadoc.jar" basedir="${javadoc}"
+      <jar jarfile="${package}/@{module-name}-javadoc.jar" basedir="${javadoc}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
     </sequential>
@@ -63,11 +63,12 @@
     <attribute name="demo-name"/>
     <sequential>
       <copy todir="${deploy.demos.dir}/web/@{demo-name}">
-        <fileset dir="demos/@{demo-name}/${dist}/deployment/web"/>
+        <fileset dir="demos/@{demo-name}/${package}/deployment/web"/>
       </copy>
       <copy todir="${deploy.demos.dir}/local/@{demo-name}">
-        <fileset dir="demos/@{demo-name}/${dist}/deployment/local"/>
+        <fileset dir="demos/@{demo-name}/${package}/deployment/local"/>
       </copy>
+      <chmod dir="demos/@{demo-name}/${package}/deployment/local" perm="u+x" type="file" includes="**/*.sh"/>
     </sequential>
   </macrodef>
 </project>
