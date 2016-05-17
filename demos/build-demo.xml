@@ -4,27 +4,39 @@
   <property name="junit.db.initScript" value="src/main/sql/create_schema.sql"/>
   <import file="../build-common.xml"/>
 
-  <target name="package" depends="common.package">
-    <jar jarfile="${package}/${ant.project.name}-domain.jar" basedir="build/main"
-         includes="org/jminor/framework/demos/${ant.project.name}/domain/**/*,
-         org/jminor/framework/demos/${ant.project.name}/server/**/*"
-         manifest="${build.main}/META-INF/MANIFEST.MF"/>
+  <available property="reports.available" file="src/main/reports"/>
 
-    <!--create anothor domain jar file without annotations using the purgeannotationrefs library-->
-    <!--<taskdef resource="org/dyndns/fichtner/purgeannotationrefs/tasks/antlib.xml"-->
-    <!--classpathref="lib.ant.util"/>-->
+  <target name="package" depends="common.package">
+  <jar jarfile="${package}/${ant.project.name}-domain.jar" basedir="build/main"
+       includes="org/jminor/framework/demos/${ant.project.name}/domain/**/*,
+         org/jminor/framework/demos/${ant.project.name}/server/**/*"
+       manifest="${build.main}/META-INF/MANIFEST.MF"/>
+    <!--Create anothor domain jar file without annotations using the purgeannotationrefs library-->
+    <!--<taskdef resource="org/dyndns/fichtner/purgeannotationrefs/tasks/antlib.xml" classpathref="lib.ant.util"/>-->
     <!--<purgeannotationrefs>-->
-    <!--<src>-->
-    <!--<fileset dir="build/main">-->
-    <!--<filename name="org/jminor/framework/demos/${ant.project.name}/domain/**/*.class" />-->
-    <!--</fileset>-->
-    <!--</src>-->
-    <!--<remove regexp="org.jminor.framework.domain.Entity.Table" />-->
-    <!--<remove regexp="org.jminor.framework.domain.Property.Column" />-->
+      <!--<src>-->
+        <!--<fileset dir="${build.main}">-->
+          <!--<filename name="org/jminor/framework/demos/${ant.project.name}/domain/**/*.class" />-->
+        <!--</fileset>-->
+      <!--</src>-->
+      <!--<remove regexp="org.jminor.framework.domain.Entity.Table" />-->
+      <!--<remove regexp="org.jminor.framework.domain.Property.Column" />-->
     <!--</purgeannotationrefs>-->
-    <!--<jar jarfile="${package}/${ant.project.name}-domain-remote.jar" basedir="build/main"-->
-    <!--includes="org/jminor/framework/demos/${ant.project.name}/domain/**/*"-->
-    <!--manifest="${build.main}/META-INF/MANIFEST.MF"/>-->
+    <!--<jar jarfile="${package}/${ant.project.name}-domain-remote.jar" basedir="${build.main}"-->
+         <!--includes="org/jminor/framework/demos/${ant.project.name}/domain/**/*"-->
+         <!--manifest="${build.main}/META-INF/MANIFEST.MF"/>-->
+  </target>
+
+  <target name="build" depends="common.build">
+    <antcall target="build_reports"/>
+  </target>
+
+  <target name="build_reports" depends="common.build" if="reports.available">
+    <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
+      <classpath refid="lib.test"/>
+    </taskdef>
+    <mkdir dir="build/reports"/>
+    <jrc srcdir="src/main/reports" includes="**/*.jrxml" destdir="build/reports"/>
   </target>
 
   <target name="run_local" depends="build"

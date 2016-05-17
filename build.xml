@@ -17,6 +17,12 @@
              jminor-framework-db-local.jar"/>
   </path>
 
+  <path id="lib.runtime.server.monitor">
+    <fileset dir="server-monitor/${lib}/runtime"/>
+    <fileset dir="server-monitor/${package}"
+             includes="jminor-framework-server-monitor.jar"/>
+  </path>
+
   <path id="build.demos.main">
     <pathelement path="demos/chinook/build/main"/>
     <pathelement path="demos/empdept/build/main"/>
@@ -271,7 +277,7 @@
   </target>
 
   <target name="run_server" depends="create_keystore, create_demo_db" description="Runs the RMI server">
-    <subant target="install_with_dependencies" buildpath="framework"/>
+    <subant target="package" buildpath="framework"/>
     <subant target="build" buildpath="plugins"/>
     <subant target="build" buildpath="demos"/>
     <java classname="org.jminor.framework.server.DefaultEntityConnectionServerAdmin" fork="yes" dir="demos">
@@ -293,6 +299,18 @@
       <jvmarg value="-Djava.security.policy=${deploy.server.policy}"/>
       <jvmarg value="-Djavax.net.ssl.keyStorePassword=${demo.server.keystorePassword}"/>
       <jvmarg value="-Djava.rmi.server.hostname=localhost"/>
+    </java>
+  </target>
+
+  <target name="run_server_monitor" description="Runs the RMI server monitor">
+    <subant target="package" buildpath="server-monitor"/>
+    <java classname="org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel" fork="yes">
+      <classpath>
+        <path refid="lib.runtime.server.monitor"/>
+      </classpath>
+      <jvmarg value="-Djminor.server.hostname=localhost"/>
+      <jvmarg value="-Djavax.net.ssl.trustStore=framework/resources/security/JMinorServerMonitorTruststore"/>
+      <jvmarg value="-Djava.security.policy=framework/resources/security/jminor_server_monitor.policy"/>
     </java>
   </target>
 

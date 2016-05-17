@@ -1,20 +1,4 @@
 <project name="jminor-framework-server-monitor">
   <property name="project.root" value="../"/>
   <import file="../build-common.xml"/>
-
-  <path id="lib.runtime.server.monitor">
-    <path location="${build.main}"/>
-    <fileset dir="${lib}/runtime"/>
-  </path>
-
-  <target name="run_server_monitor" depends="common.build" description="Runs the RMI server monitor">
-    <java classname="org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel" fork="yes">
-      <classpath>
-        <path refid="lib.runtime.server.monitor"/>
-      </classpath>
-      <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djavax.net.ssl.trustStore=../framework/resources/security/JMinorServerMonitorTruststore"/>
-      <jvmarg value="-Djava.security.policy=../framework/resources/security/jminor_server_monitor.policy"/>
-    </java>
-  </target>
 </project>
