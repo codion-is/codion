@@ -622,21 +622,35 @@ public final class EntityUiUtil {
    */
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
                                          final boolean readOnly) {
-    return createTextArea(property, editModel, readOnly, -1, -1, null);
+    return createTextArea(property, editModel, -1, -1, readOnly);
   }
 
   /**
    * Creates a text area based on the given property
    * @param property the property
    * @param editModel the edit model to bind with the value
-   * @param readOnly if true then the value is read only
    * @param rows the number of rows
    * @param columns the number of columns
+   * @param readOnly if true then the value is read only
+   * @return a text area
+   */
+  public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
+                                         final int rows, final int columns, final boolean readOnly) {
+    return createTextArea(property, editModel, rows, columns, readOnly, null);
+  }
+
+  /**
+   * Creates a text area based on the given property
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @param rows the number of rows
+   * @param columns the number of columns
+   * @param readOnly if true then the value is read only
    * @param enabledState a state indicating when the text area should be enabled
    * @return a text area
    */
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
-                                         final boolean readOnly, final int rows, final int columns,
+                                         final int rows, final int columns, final boolean readOnly,
                                          final StateObserver enabledState) {
     Util.rejectNullValue(property, PROPERTY_PARAM_NAME);
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);

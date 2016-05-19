@@ -1038,22 +1038,34 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @return a JTextArea bound to the property
    */
   protected final JTextArea createTextArea(final String propertyID, final int rows, final int columns) {
-    return createTextArea(propertyID, readOnly(propertyID), rows, columns, null);
+    return createTextArea(propertyID, rows, columns, readOnly(propertyID));
   }
 
   /**
    * Creates a JTextArea component bound to the property identified by <code>propertyID</code>.
    * @param propertyID the ID of the property to bind
-   * @param readOnly if true the component will be read only
    * @param rows the number of rows in the text area
    * @param columns the number of columns in the text area
+   * @param readOnly if true the component will be read only
+   * @return a JTextArea bound to the property
+   */
+  protected final JTextArea createTextArea(final String propertyID, final int rows, final int columns, final boolean readOnly) {
+    return createTextArea(propertyID, rows, columns, readOnly, null);
+  }
+
+  /**
+   * Creates a JTextArea component bound to the property identified by <code>propertyID</code>.
+   * @param propertyID the ID of the property to bind
+   * @param rows the number of rows in the text area
+   * @param columns the number of columns in the text area
+   * @param readOnly if true the component will be read only
    * @param enabledState a state indicating when this text area should be enabled
    * @return a JTextArea bound to the property
    */
-  protected final JTextArea createTextArea(final String propertyID, final boolean readOnly, final int rows, final int columns,
+  protected final JTextArea createTextArea(final String propertyID, final int rows, final int columns, final boolean readOnly,
                                            final StateObserver enabledState) {
     final Property property = Entities.getProperty(editModel.getEntityID(), propertyID);
-    final JTextArea textArea = EntityUiUtil.createTextArea(property, editModel, readOnly, rows, columns, enabledState);
+    final JTextArea textArea = EntityUiUtil.createTextArea(property, editModel, rows, columns, readOnly, enabledState);
     setComponent(propertyID, textArea);
 
     return textArea;

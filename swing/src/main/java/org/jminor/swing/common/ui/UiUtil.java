@@ -1560,7 +1560,7 @@ public final class UiUtil {
                                         final Action buttonAction, final JPanel northPanel, final Runnable task) {
     final JProgressBar bar = new JProgressBar();
     bar.setIndeterminate(true);
-    bar.setPreferredSize(new Dimension(DEFAULT_PROGRESS_BAR_WIDTH, bar.getPreferredSize().height));
+    setPreferredWidth(bar, DEFAULT_PROGRESS_BAR_WIDTH);
     final JDialog dialog = new JDialog(UiUtil.getParentWindow(dialogParent), progressBarTitle, Dialog.ModalityType.APPLICATION_MODAL);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     dialog.setLayout(createBorderLayout());
@@ -2105,7 +2105,7 @@ public final class UiUtil {
       exceptionField.setEnabled(false);
       final JLabel messageLabel = new JLabel(
               Messages.get(Messages.MESSAGE) + ": ", SwingConstants.LEFT);
-      messageLabel.setPreferredSize(new Dimension(MESSAGE_LABEL_WIDTH, messageLabel.getPreferredSize().height));
+      setPreferredWidth(messageLabel, MESSAGE_LABEL_WIDTH);
       messageArea = new JTextArea();
       messageArea.setEnabled(false);
       messageArea.setLineWrap(true);
