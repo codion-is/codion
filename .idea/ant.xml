@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AntConfiguration">
+    <buildFile url="file://$PROJECT_DIR$/common/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/framework/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/swing/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/javafx/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/server-monitor/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/plugins/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/plugins/imagepanel/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/plugins/jasperreports/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/plugins/json/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/plugins/nextreports/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/plugins/rest/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/plugins/tomcat-pool/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/demos/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/demos/chinook/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/demos/empdept/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/demos/petstore/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/demos/schemabrowser/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/demos/world/build.xml" />
+  </component>
+</project>
