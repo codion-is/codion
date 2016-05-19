@@ -101,6 +101,14 @@ public final class DateInputPanel extends JPanel {
   }
 
   /**
+   * Sets the date in the input field, clears the field if {@code date} is null.
+   * @param date the date to set
+   */
+  public void setDate(final Date date) {
+    inputField.setText(date == null ? "" : dateFormat.format(date));
+  }
+
+  /**
    * @return the format pattern
    */
   public String getFormatPattern() {

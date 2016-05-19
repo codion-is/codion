@@ -9,6 +9,7 @@ import org.jminor.common.States;
 import org.junit.Test;
 
 import javax.swing.JFormattedTextField;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -17,17 +18,29 @@ import static org.junit.Assert.*;
 public class DateInputPanelTest {
 
   @Test
-  public void test() throws Exception {
-    final Date now = new Date();
-    final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-    final DateInputPanel panel = new DateInputPanel(now, format);
+  public void constructor() throws Exception {
+    final DateInputPanel panel = new DateInputPanel(new Date(), new SimpleDateFormat("dd.MM.yyyy"));
     assertEquals("dd.MM.yyyy", panel.getFormatPattern());
     assertNotNull(panel.getInputField());
     assertNotNull(panel.getButton());
+  }
 
+  @Test
+  public void setText() throws ParseException {
+    final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+    final DateInputPanel panel = new DateInputPanel(null, format);
     panel.getInputField().setText("01.03.2010");
-
     assertEquals(format.parse("01.03.2010"), panel.getDate());
+  }
+
+  @Test
+  public void setDate() throws ParseException {
+    final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+    final DateInputPanel panel = new DateInputPanel(null, format);
+    panel.setDate(format.parse("03.04.2010"));
+    assertEquals("03.04.2010", panel.getInputField().getText());
+    panel.setDate(null);
+    assertEquals("__.__.____", panel.getInputField().getText());
   }
 
   @Test(expected = IllegalArgumentException.class)
