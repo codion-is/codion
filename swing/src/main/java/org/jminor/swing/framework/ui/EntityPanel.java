@@ -1069,6 +1069,23 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   protected void initialize() {/*Provided for subclasses*/}
 
   /**
+   * Creates the control panel or component to place next to the edit panel, containing controls for managing
+   * records, such as insert, update and delete.
+   * Only called if {@link #includeControlPanel} returns true.
+   * By default the control panel provided by the edit panel is returned.
+   * @return the control panel for managing records
+   * @see EntityEditPanel#createControlPanel(boolean)
+   * @see EntityEditPanel#createControlToolBar(int)
+   * @see Configuration#TOOLBAR_BUTTONS
+   */
+  protected JComponent createEditControlPanel() {
+    final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
+            controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
+    return Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
+              editPanel.createControlToolBar(JToolBar.VERTICAL) : editPanel.createControlPanel(alignment == FlowLayout.CENTER);
+  }
+
+  /**
    * @param masterPanel the panel serving as master panel for this entity panel
    * @throws IllegalStateException in case a master panel has already been set
    */
@@ -1165,13 +1182,13 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private void initializeEditControlPanel() {
     editPanel.initializePanel();
     editControlPanel.setMinimumSize(new Dimension(0, 0));
-    final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) || controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
+    final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
+            controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
     final JPanel propertyBase = new JPanel(UiUtil.createFlowLayout(alignment));
     propertyBase.add(editPanel);
     editControlPanel.add(propertyBase, BorderLayout.CENTER);
     if (includeControlPanel) {
-      final JComponent controlPanel = Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
-              editPanel.createControlToolBar(JToolBar.VERTICAL) : editPanel.createControlPanel(alignment == FlowLayout.CENTER);
+      final JComponent controlPanel = createEditControlPanel();
       if (controlPanel != null) {
         editControlPanel.add(controlPanel, controlPanelConstraints);
       }

@@ -4270,3 +4270,4 @@
   Build target dist renamed to package
   DateInputPanel.setDate() added
   EntityEditPanel, EntityUiUtil, createTextArea() minor signature changes
+  EntityPanel.createEditControlPanel() added
