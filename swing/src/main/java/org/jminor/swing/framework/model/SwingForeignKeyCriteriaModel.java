@@ -3,6 +3,7 @@
  */
 package org.jminor.swing.framework.model;
 
+import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -49,11 +50,11 @@ public final class SwingForeignKeyCriteriaModel extends DefaultForeignKeyCriteri
   }
 
   private void bindComboBoxEvents() {
-    entityComboBoxModel.addSelectionListener(new EventListener() {
+    entityComboBoxModel.addSelectionListener(new EventInfoListener<Entity>() {
       @Override
-      public void eventOccurred() {
+      public void eventOccurred(final Entity selected) {
         if (!isUpdatingModel()) {
-          setUpperBound(entityComboBoxModel.getSelectedValue());
+          setUpperBound(selected);
         }
       }
     });

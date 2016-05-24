@@ -5,7 +5,6 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
-import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.States;
@@ -367,10 +366,10 @@ public final class EntityLookupField extends JTextField {
         propertyBasePanel.add(initializePropertyPanel(entry.getValue()), entry.getKey().getPropertyID());
       }
       if (propertyComboBoxModel.getSize() > 0) {
-        propertyComboBoxModel.addSelectionListener(new EventListener() {
+        propertyComboBoxModel.addSelectionListener(new EventInfoListener<Property.ColumnProperty>() {
           @Override
-          public void eventOccurred() {
-            ((CardLayout) propertyBasePanel.getLayout()).show(propertyBasePanel, propertyComboBoxModel.getSelectedValue().getPropertyID());
+          public void eventOccurred(final Property.ColumnProperty selected) {
+            ((CardLayout) propertyBasePanel.getLayout()).show(propertyBasePanel, selected.getPropertyID());
           }
         });
         propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));

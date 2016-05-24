@@ -4,6 +4,7 @@
 package org.jminor.swing.common.model.combobox;
 
 import org.jminor.common.Event;
+import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.model.FilterCriteria;
@@ -30,7 +31,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   private static final FilterCriteria ACCEPT_ALL_CRITERIA = new FilterCriteria.AcceptAllCriteria();
 
-  private final Event selectionChangedEvent = Events.event();
+  private final Event<T> selectionChangedEvent = Events.event();
   private final Event filteringDoneEvent = Events.event();
 
   private final List<T> visibleItems = new ArrayList<>();
@@ -329,7 +330,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
       selectedItem = toSelect;
     }
     fireContentsChanged();
-    selectionChangedEvent.fire();
+    selectionChangedEvent.fire(selectedItem);
   }
 
   /** {@inheritDoc} */
@@ -389,14 +390,14 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   /** {@inheritDoc} */
   @Override
-  public final void addSelectionListener(final EventListener listener) {
-    selectionChangedEvent.addListener(listener);
+  public final void addSelectionListener(final EventInfoListener<T> listener) {
+    selectionChangedEvent.addInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSelectionListener(final EventListener listener) {
-    selectionChangedEvent.removeListener(listener);
+  public final void removeSelectionListener(final EventInfoListener listener) {
+    selectionChangedEvent.removeInfoListener(listener);
   }
 
   /**

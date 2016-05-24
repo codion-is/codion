@@ -3,6 +3,7 @@
  */
 package org.jminor.swing.common.model.combobox;
 
+import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.model.FilterCriteria;
 
@@ -114,9 +115,9 @@ public class SwingFilteredComboBoxModelTest {
   @Test
   public void testSelection() {
     final AtomicInteger selectionChangedCounter = new AtomicInteger();
-    final EventListener selectionListener = new EventListener() {
+    final EventInfoListener<String> selectionListener = new EventInfoListener<String>() {
       @Override
-      public void eventOccurred() {
+      public void eventOccurred(final String info) {
         selectionChangedCounter.incrementAndGet();
       }
     };

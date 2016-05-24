@@ -4,6 +4,7 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.common.Event;
+import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.db.exception.DatabaseException;
@@ -252,18 +253,16 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     if (!Util.nullOrEmpty(filterEntities)) {
       foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
     }
-    foreignKeyModel.addSelectionListener(new EventListener() {
+    foreignKeyModel.addSelectionListener(new EventInfoListener<Entity>() {
       @Override
-      public void eventOccurred() {
-        final Entity selectedEntity = foreignKeyModel.getSelectedValue();
+      public void eventOccurred(final Entity selected) {
         setForeignKeyFilterEntities(foreignKeyPropertyID,
-                selectedEntity == null ? new ArrayList<>(0) : Collections.singletonList(selectedEntity));
+                selected == null ? new ArrayList<>(0) : Collections.singletonList(selected));
       }
     });
-    addSelectionListener(new EventListener() {
+    addSelectionListener(new EventInfoListener<Entity>() {
       @Override
-      public void eventOccurred() {
-        final Entity selected = getSelectedValue();
+      public void eventOccurred(final Entity selected) {
         if (selected != null) {
           foreignKeyModel.setSelectedEntityByKey(selected.getReferencedKey(foreignKeyProperty));
         }

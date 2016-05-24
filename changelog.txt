@@ -4271,3 +4271,4 @@
   DateInputPanel.setDate() added
   EntityEditPanel, EntityUiUtil, createTextArea() minor signature changes
   EntityPanel.createEditControlPanel() added
+  FilteredComboBoxModel.addSelectionListener() now takes EventInfoListener as parameter
