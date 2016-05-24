@@ -4,6 +4,7 @@
 package org.jminor.swing.common.model.table;
 
 import org.jminor.common.Event;
+import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.State;
@@ -28,7 +29,7 @@ import java.util.List;
 public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel implements SelectionModel<R>, ListSelectionModel {
 
   private final Event selectionChangedEvent = Events.event();
-  private final Event selectedIndexChangedEvent = Events.event();
+  private final Event<Integer> selectedIndexChangedEvent = Events.event();
   private final State selectionEmptyState = States.state(true);
   private final State multipleSelectionState = States.state(false);
   private final State singleSelectionState = States.state(false);
@@ -297,7 +298,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     final int minSelIndex = getMinSelectionIndex();
     if (selectedIndex != minSelIndex) {
       selectedIndex = minSelIndex;
-      selectedIndexChangedEvent.fire();
+      selectedIndexChangedEvent.fire(selectedIndex);
     }
     if (!(isAdjusting || isUpdatingSelection)) {
       selectionChangedEvent.fire();
@@ -306,14 +307,14 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
 
   /** {@inheritDoc} */
   @Override
-  public void addSelectedIndexListener(final EventListener listener) {
-    selectedIndexChangedEvent.addListener(listener);
+  public void addSelectedIndexListener(final EventInfoListener<Integer> listener) {
+    selectedIndexChangedEvent.addInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void removeSelectedIndexListener(final EventListener listener) {
-    selectedIndexChangedEvent.addListener(listener);
+  public void removeSelectedIndexListener(final EventInfoListener listener) {
+    selectedIndexChangedEvent.removeInfoListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -325,7 +326,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   /** {@inheritDoc} */
   @Override
   public void removeSelectionChangedListener(final EventListener listener) {
-    selectionChangedEvent.addListener(listener);
+    selectionChangedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */

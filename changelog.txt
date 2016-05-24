@@ -4272,3 +4272,4 @@
   EntityEditPanel, EntityUiUtil, createTextArea() minor signature changes
   EntityPanel.createEditControlPanel() added
   FilteredComboBoxModel.addSelectionListener() now takes EventInfoListener as parameter
+  SelectionModel.addSelectedIndexListener() now takes EventInfoListener as parameter

@@ -468,7 +468,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   @Override
   protected void bindSelectionModelEvents() {
     super.bindSelectionModelEvents();
-    getSelectionModel().addSelectedIndexListener(() -> {
+    getSelectionModel().addSelectedIndexListener(index -> {
       if (editModel != null) {
         editModel.setEntity(getSelectionModel().getSelectedItem());
       }

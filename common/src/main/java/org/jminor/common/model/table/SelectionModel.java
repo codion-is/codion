@@ -3,6 +3,7 @@
  */
 package org.jminor.common.model.table;
 
+import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.StateObserver;
 
@@ -43,12 +44,12 @@ public interface SelectionModel<R> {
   /**
    * @param listener a listener to be notified each time the selected index changes
    */
-  void addSelectedIndexListener(final EventListener listener);
+  void addSelectedIndexListener(final EventInfoListener<Integer> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedIndexListener(final EventListener listener);
+  void removeSelectedIndexListener(final EventInfoListener listener);
 
   /**
    * Moves all selected indexes down one index, wraps around.

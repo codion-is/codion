@@ -4,6 +4,7 @@
 package org.jminor.swing.common.ui.table;
 
 import org.jminor.common.Event;
+import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.i18n.Messages;
@@ -590,11 +591,11 @@ public class FilteredTablePanel<R, C> extends JPanel {
         table.getTableHeader().repaint();
       }
     });
-    tableModel.getSelectionModel().addSelectedIndexListener(new EventListener() {
+    tableModel.getSelectionModel().addSelectedIndexListener(new EventInfoListener<Integer>() {
       @Override
-      public void eventOccurred() {
+      public void eventOccurred(final Integer selected) {
         if (scrollToSelectedItem && !tableModel.getSelectionModel().isSelectionEmpty()) {
-          scrollToCoordinate(tableModel.getSelectionModel().getSelectedIndex(), table.getSelectedColumn());
+          scrollToCoordinate(selected, table.getSelectedColumn());
         }
       }
     });

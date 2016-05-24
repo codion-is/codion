@@ -709,9 +709,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
         }
       }
     });
-    getSelectionModel().addSelectedIndexListener(new EventListener() {
+    getSelectionModel().addSelectedIndexListener(new EventInfoListener<Integer>() {
       @Override
-      public void eventOccurred() {
+      public void eventOccurred(final Integer selected) {
         final Entity itemToSelect = getSelectionModel().isSelectionEmpty() ? null : getSelectionModel().getSelectedItem();
         editModel.setEntity(itemToSelect);
       }

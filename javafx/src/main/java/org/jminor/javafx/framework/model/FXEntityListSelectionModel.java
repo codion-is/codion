@@ -4,6 +4,7 @@
 package org.jminor.javafx.framework.model;
 
 import org.jminor.common.Event;
+import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.State;
@@ -23,7 +24,7 @@ import java.util.List;
 public final class FXEntityListSelectionModel implements SelectionModel<Entity> {
 
   private final Event selectionChangedEvent = Events.event();
-  private final Event selectedIndexChangedEvent = Events.event();
+  private final Event<Integer> selectedIndexChangedEvent = Events.event();
   private final State selectionEmptyState = States.state(true);
   private final State multipleSelectionState = States.state(false);
   private final State singleSelectionState = States.state(false);
@@ -87,14 +88,14 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
 
   /** {@inheritDoc} */
   @Override
-  public void addSelectedIndexListener(final EventListener listener) {
-    selectedIndexChangedEvent.addListener(listener);
+  public void addSelectedIndexListener(final EventInfoListener<Integer> listener) {
+    selectedIndexChangedEvent.addInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void removeSelectedIndexListener(final EventListener listener) {
-    selectedIndexChangedEvent.removeListener(listener);
+  public void removeSelectedIndexListener(final EventInfoListener listener) {
+    selectedIndexChangedEvent.removeInfoListener(listener);
   }
 
   /** {@inheritDoc} */

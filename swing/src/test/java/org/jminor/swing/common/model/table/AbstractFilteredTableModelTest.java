@@ -3,7 +3,9 @@
  */
 package org.jminor.swing.common.model.table;
 
+import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
+import org.jminor.common.Events;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.common.model.table.DefaultColumnCriteriaModel;
@@ -500,8 +502,9 @@ public final class AbstractFilteredTableModelTest {
         events.incrementAndGet();
       }
     };
+    final EventInfoListener infoListener = Events.infoListener(listener);
     final SwingTableSelectionModel<String> selectionModel = (SwingTableSelectionModel<String>) tableModel.getSelectionModel();
-    selectionModel.addSelectedIndexListener(listener);
+    selectionModel.addSelectedIndexListener(infoListener);
     selectionModel.addSelectionChangedListener(listener);
 
     assertFalse(selectionModel.getSingleSelectionObserver().isActive());
@@ -618,7 +621,7 @@ public final class AbstractFilteredTableModelTest {
     assertNull(selectionModel.getSelectedItem());
 
     selectionModel.clearSelection();
-    selectionModel.removeSelectedIndexListener(listener);
+    selectionModel.removeSelectedIndexListener(infoListener);
     selectionModel.removeSelectionChangedListener(listener);
   }
 
