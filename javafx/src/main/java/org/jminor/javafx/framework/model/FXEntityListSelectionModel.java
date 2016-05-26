@@ -322,6 +322,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
         final int newSelectedIndex = newValue.intValue();
         if (selectedIndex != newSelectedIndex) {
           selectedIndex = newSelectedIndex;
+          selectionChangedEvent.fire();
           selectedIndexChangedEvent.fire(selectedIndex);
           selectedItemChangedEvent.fire(getSelectedItem());
           selectedItemsChangedEvent.fire(getSelectedItems());
