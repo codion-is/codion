@@ -30,6 +30,8 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
 
   private final Event selectionChangedEvent = Events.event();
   private final Event<Integer> selectedIndexChangedEvent = Events.event();
+  private final Event<R> selectedItemChangedEvent = Events.event();
+  private final Event<List<R>> selectedItemsChangedEvent = Events.event();
   private final State selectionEmptyState = States.state(true);
   private final State multipleSelectionState = States.state(false);
   private final State singleSelectionState = States.state(false);
@@ -38,6 +40,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
    * true while the selection is being updated
    */
   private boolean isUpdatingSelection = false;
+
   /**
    * Holds the topmost (minimum) selected index
    */
@@ -299,9 +302,11 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     if (selectedIndex != minSelIndex) {
       selectedIndex = minSelIndex;
       selectedIndexChangedEvent.fire(selectedIndex);
+      selectedItemChangedEvent.fire(getSelectedItem());
     }
     if (!(isAdjusting || isUpdatingSelection)) {
       selectionChangedEvent.fire();
+      selectedItemsChangedEvent.fire(getSelectedItems());
     }
   }
 
@@ -327,6 +332,30 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   @Override
   public void removeSelectionChangedListener(final EventListener listener) {
     selectionChangedEvent.removeListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void addSelectedItemListener(final EventInfoListener<R> listener) {
+    selectedItemChangedEvent.addInfoListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void removeSelectedItemListener(final EventInfoListener listener) {
+    selectedItemChangedEvent.removeInfoListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void addSelectedItemsListener(final EventInfoListener<List<R>> listener) {
+    selectedItemsChangedEvent.addInfoListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void removeSelectedItemsListener(final EventInfoListener listener) {
+    selectedItemsChangedEvent.removeInfoListener(listener);
   }
 
   /** {@inheritDoc} */

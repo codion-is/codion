@@ -4273,3 +4273,6 @@
   EntityPanel.createEditControlPanel() added
   FilteredComboBoxModel.addSelectionListener() now takes EventInfoListener as parameter
   SelectionModel.addSelectedIndexListener() now takes EventInfoListener as parameter
+  SelectionModel.addSelectedItemsListener() added along with remove
+  SelectionModel.addSelectedItemListener() added along with remove
+  Some ivysettings.xml improvement

@@ -23,18 +23,13 @@
 
     <ibiblio name="libs-release" m2compatible="true"
              root="http://${artifactory.host}:${artifactory.port}/artifactory/libs-release"/>
-    <ibiblio name="libs-release-local" m2compatible="true"
-             root="http://${artifactory.host}:${artifactory.port}/artifactory/libs-release-local"/>
-    <ibiblio name="libs-snapshot-local" m2compatible="true"
+    <ibiblio name="libs-snapshot" m2compatible="true"
              root="http://${artifactory.host}:${artifactory.port}/artifactory/libs-snapshot-local"/>
-    <ibiblio name="ext-snapshot-local" m2compatible="true"
-             root="http://${artifactory.host}:${artifactory.port}/artifactory/ext-snapshot-local"/>
 
     <chain name="main" changingPattern=".*SNAPSHOT">
-      <resolver ref="libs-release"/>
-      <resolver ref="ext-snapshot-local"/>
       <resolver ref="install-local"/>
-      <resolver ref="libs-release-local"/>
+      <resolver ref="libs-snapshot"/>
+      <resolver ref="libs-release"/>
     </chain>
   </resolvers>
 </ivy-settings>

@@ -267,11 +267,16 @@
     <subant target="install" buildpath="plugins"/>
   </target>
 
-  <target name="clear_ivy_cache" description="Clears JMinor from the ivy cache and local m2 repository">
+  <target name="clear_ivy_cache" description="Clears JMinor from the ivy cache">
     <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="lib.ant.util"/>
     <ivy:configure/>
     <delete includeemptydirs="true">
       <fileset dir="${ivy.cache.dir}" includes="org.jminor/**/*" erroronmissingdir="false"/>
+    </delete>
+  </target>
+
+  <target name="clear_ivy_local_repository" description="Clears JMinor from the local ivy repository">
+    <delete includeemptydirs="true">
       <fileset dir="${ivy.local.repository.root}/org/" includes="jminor/**/*" erroronmissingdir="false"/>
     </delete>
   </target>

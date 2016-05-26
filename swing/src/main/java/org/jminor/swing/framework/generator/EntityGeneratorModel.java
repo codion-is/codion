@@ -4,6 +4,7 @@
 package org.jminor.swing.framework.generator;
 
 import org.jminor.common.Event;
+import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.db.Database;
@@ -169,12 +170,12 @@ public final class EntityGeneratorModel {
   }
 
   private void bindEvents() {
-    tableModel.getSelectionModel().addSelectionChangedListener(new EventListener() {
+    tableModel.getSelectionModel().addSelectedItemsListener(new EventInfoListener<List<Table>>() {
       @Override
-      public void eventOccurred() {
+      public void eventOccurred(final List<Table> selected) {
         try {
           refreshStartedEvent.fire();
-          generateDefinitions(tableModel.getSelectionModel().getSelectedItems());
+          generateDefinitions(selected);
         }
         finally {
           refreshEndedEvent.fire();

@@ -506,6 +506,8 @@ public final class AbstractFilteredTableModelTest {
     final SwingTableSelectionModel<String> selectionModel = (SwingTableSelectionModel<String>) tableModel.getSelectionModel();
     selectionModel.addSelectedIndexListener(infoListener);
     selectionModel.addSelectionChangedListener(listener);
+    selectionModel.addSelectedItemListener(infoListener);
+    selectionModel.addSelectedItemsListener(infoListener);
 
     assertFalse(selectionModel.getSingleSelectionObserver().isActive());
     assertTrue(selectionModel.getSelectionEmptyObserver().isActive());
@@ -623,6 +625,8 @@ public final class AbstractFilteredTableModelTest {
     selectionModel.clearSelection();
     selectionModel.removeSelectedIndexListener(infoListener);
     selectionModel.removeSelectionChangedListener(listener);
+    selectionModel.removeSelectedItemListener(infoListener);
+    selectionModel.removeSelectedItemsListener(infoListener);
   }
 
   @Test

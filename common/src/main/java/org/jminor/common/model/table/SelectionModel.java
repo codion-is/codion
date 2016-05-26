@@ -52,6 +52,26 @@ public interface SelectionModel<R> {
   void removeSelectedIndexListener(final EventInfoListener listener);
 
   /**
+   * @param listener a listener to be notified each time the selected item changes
+   */
+  void addSelectedItemListener(final EventInfoListener<R> listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeSelectedItemListener(final EventInfoListener listener);
+
+  /**
+   * @param listener a listener to be notified each time the selected items change
+   */
+  void addSelectedItemsListener(final EventInfoListener<List<R>> listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeSelectedItemsListener(final EventInfoListener listener);
+
+  /**
    * Moves all selected indexes down one index, wraps around.
    * If the selection is empty the first item in this model is selected.
    * @see #addSelectionChangedListener(EventListener)
