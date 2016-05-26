@@ -34,7 +34,7 @@ import java.util.Objects;
 public class ObservableEntityList extends SimpleListProperty<Entity>
         implements ObservableList<Entity>, FilteredModel<Entity>, Refreshable {
 
-  private static final String NO_SELECTION_MODEL_HAS_BEEN_SET = "No selection model has been set";
+  private static final String SELECTION_MODEL_HAS_NOT_BEEN_SET = "Selection model has not been set";
 
   private final String entityID;
   private final EntityConnectionProvider connectionProvider;
@@ -99,35 +99,27 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     bindSelectionModelEvents();
   }
 
-  public final SelectionModel<Entity> getSelectionModel() {
-    if (selectionModel == null) {
-      throw new IllegalStateException(NO_SELECTION_MODEL_HAS_BEEN_SET);
-    }
-    return selectionModel;
-  }
-
   public final void addRefreshListener(final EventListener listener) {
     refreshEvent.addListener(listener);
   }
 
+  public final SelectionModel<Entity> getSelectionModel() {
+    checkIfSelectionModelHasBeenSet();
+    return selectionModel;
+  }
+
   public final StateObserver getSelectionEmptyObserver() {
-    if (selectionModel == null) {
-      throw new IllegalStateException(NO_SELECTION_MODEL_HAS_BEEN_SET);
-    }
+    checkIfSelectionModelHasBeenSet();
     return selectionModel.getSelectionEmptyObserver();
   }
 
   public final StateObserver getSingleSelectionObserver() {
-    if (selectionModel == null) {
-      throw new IllegalStateException(NO_SELECTION_MODEL_HAS_BEEN_SET);
-    }
+    checkIfSelectionModelHasBeenSet();
     return selectionModel.getSingleSelectionObserver();
   }
 
   public final StateObserver getMultipleSelectionObserver() {
-    if (selectionModel == null) {
-      throw new IllegalStateException(NO_SELECTION_MODEL_HAS_BEEN_SET);
-    }
+    checkIfSelectionModelHasBeenSet();
     return selectionModel.getMultipleSelectionObserver();
   }
 
@@ -251,5 +243,11 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   protected void bindSelectionModelEvents() {
     selectionModel.addSelectionChangedListener(selectionChangedEvent);
+  }
+
+  private void checkIfSelectionModelHasBeenSet() {
+    if (selectionModel == null) {
+      throw new IllegalStateException(SELECTION_MODEL_HAS_NOT_BEEN_SET);
+    }
   }
 }
