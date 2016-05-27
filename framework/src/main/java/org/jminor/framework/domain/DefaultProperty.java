@@ -3,11 +3,12 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.Util;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
 import org.jminor.common.db.ValueFetcher;
+import org.jminor.common.model.FormatUtil;
 import org.jminor.common.model.Item;
-import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 
 import java.sql.ResultSet;
@@ -485,7 +486,7 @@ class DefaultProperty implements Property {
    */
   Object prepareValue(final Object value) {
     if (value != null && isDouble()) {
-      return Util.roundDouble((Double) value, getMaximumFractionDigits());
+      return org.jminor.common.Util.roundDouble((Double) value, getMaximumFractionDigits());
     }
 
     return value;
@@ -504,7 +505,7 @@ class DefaultProperty implements Property {
       }
     }
     else if (isNumerical()) {
-      final NumberFormat numberFormat = Util.getNonGroupingNumberFormat(isInteger());
+      final NumberFormat numberFormat = FormatUtil.getNonGroupingNumberFormat(isInteger());
       if (isDouble()) {
         numberFormat.setMaximumFractionDigits(Configuration.getIntValue(Configuration.MAXIMUM_FRACTION_DIGITS));
       }
@@ -512,7 +513,7 @@ class DefaultProperty implements Property {
       return numberFormat;
     }
 
-    return Util.NULL_FORMAT;
+    return FormatUtil.NULL_FORMAT;
   }
 
   /**

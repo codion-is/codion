@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.plugins.json;
 
+import org.jminor.common.Util;
 import org.jminor.common.model.Serializer;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;

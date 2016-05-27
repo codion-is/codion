@@ -4,8 +4,8 @@
 package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.ExceptionUtil;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
@@ -171,6 +171,6 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
     if (e instanceof CancelException) {
       return;
     }
-    FXUiUtil.showExceptionDialog(Util.unwrapAndLog(e, RuntimeException.class, LOG));
+    FXUiUtil.showExceptionDialog(ExceptionUtil.unwrapAndLog(e, RuntimeException.class, LOG));
   }
 }

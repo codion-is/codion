@@ -3,98 +3,44 @@
  */
 package org.jminor.common;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.Closeable;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.nio.charset.Charset;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 
 /**
  * A base utility class with no external dependencies
  */
 public class Util {
 
+  private static final Logger LOG = LoggerFactory.getLogger(Util.class);
+
+  private static final int K = 1024;
+  private static final int TEN = 10;
+
   /**
    * The line separator for the current system
    */
   public static final String LINE_SEPARATOR = System.getProperty("line.separator");
-  private static final int K = 1024;
-  protected static final String KEY = "key";
+
+  /**
+   * The file separator for the current system
+   */
+  public static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
   protected Util() {}
-
-  /**
-   * Fetch the entire contents of a resource text file, and return it in a String, using the default Charset.
-   * @param resourceClass the resource class
-   * @param resourceName the name of the resource to retrieve
-   * @return the contents of the resource file
-   * @throws IOException in case an IOException occurs
-   */
-  public static String getTextFileContents(final Class resourceClass, final String resourceName) throws IOException {
-    return getTextFileContents(resourceClass, resourceName, Charset.defaultCharset());
-  }
-
-  /**
-   * Fetch the entire contents of a resource textfile, and return it in a String.
-   * @param resourceClass the resource class
-   * @param resourceName the name of the resource to retrieve
-   * @param charset the Charset to use when reading the file contents
-   * @return the contents of the resource file
-   * @throws IOException in case an IOException occurs
-   */
-  public static String getTextFileContents(final Class resourceClass, final String resourceName, final Charset charset) throws IOException {
-    Objects.requireNonNull(resourceClass, "resourceClass");
-    Objects.requireNonNull(resourceName, "resourceName");
-    final InputStream inputStream = resourceClass.getResourceAsStream(resourceName);
-    if (inputStream == null) {
-      throw new FileNotFoundException("Resource not found: '" + resourceName + "'");
-    }
-
-    return getTextFileContents(inputStream, charset);
-  }
-
-  /**
-   * Fetch the entire contents of a textfile, and return it in a String
-   * @param filename the name of the file
-   * @param charset the charset to use
-   * @return the file contents as a String
-   * @throws IOException in case of an exception
-   */
-  public static String getTextFileContents(final String filename, final Charset charset) throws IOException {
-    Objects.requireNonNull(filename, "filename");
-    return getTextFileContents(new FileInputStream(new File(filename)), charset);
-  }
-
-  /**
-   * Fetch the entire contents of an InputStream, and return it in a String
-   * @param inputStream the input stream to read
-   * @param charset the charset to use
-   * @return the stream contents as a String
-   * @throws IOException in case of an exception
-   */
-  public static String getTextFileContents(final InputStream inputStream, final Charset charset) throws IOException {
-    Objects.requireNonNull(inputStream, "inputStream");
-    final StringBuilder contents = new StringBuilder();
-    try (final BufferedReader input = new BufferedReader(new InputStreamReader(inputStream, charset))) {
-      String line = input.readLine();
-      while (line != null) {
-        contents.append(line);
-        contents.append(LINE_SEPARATOR);
-        line = input.readLine();
-      }
-    }
-
-    return contents.toString();
-  }
 
   /**
    * @param strings the strings to check
@@ -269,37 +215,94 @@ public class Util {
   }
 
   /**
-   * Pads the given string with the given pad character until a length of <code>length</code> has been reached
-   * @param string the string to pad
-   * @param length the desired length
-   * @param padChar the character to use for padding
-   * @param left if true then the padding is added on the strings left side, otherwise the right side
-   * @return the padded string
+   * Throws an IllegalArgumentException if the given string value is null or empty
+   * @param value the string value
+   * @param valueName the name of the value to include in the error message
+   * @return the string value
    */
-  public static String padString(final String string, final int length, final char padChar, final boolean left) {
-    Objects.requireNonNull(string, "string");
-    if (string.length() >= length) {
-      return string;
+  public static String rejectNullOrEmpty(final String value, final String valueName) {
+    if (value == null || value.isEmpty()) {
+      throw new IllegalArgumentException(valueName + " is null or empty");
     }
 
-    final StringBuilder stringBuilder = new StringBuilder(string);
-    while (stringBuilder.length() < length) {
-      if (left) {
-        stringBuilder.insert(0, padChar);
+    return value;
+  }
+
+  /**
+   * Rounds the given double to <code>places</code> decimal places
+   * @param d the double to round
+   * @param places the number of decimal places
+   * @return the rounded value
+   */
+  public static double roundDouble(final double d, final int places) {
+    return Math.round(d * Math.pow(TEN, (double) places)) / Math.pow(TEN, (double) places);
+  }
+
+  /**
+   * Closes the given Closeable instances, swallowing any Exceptions that occur
+   * @param closeables the closeables to close
+   */
+  public static void closeSilently(final Closeable... closeables) {
+    if (closeables == null) {
+      return;
+    }
+    for (final Closeable closeable : closeables) {
+      try {
+        if (closeable != null) {
+          closeable.close();
+        }
       }
-      else {
-        stringBuilder.append(padChar);
+      catch (final Exception ignored) {/*ignored*/}
+    }
+  }
+
+  /**
+   * @return a String containing all system properties, one per line
+   */
+  public static String getSystemProperties() {
+    try {
+      final SecurityManager manager = System.getSecurityManager();
+      if (manager != null) {
+        manager.checkPropertiesAccess();
       }
     }
+    catch (final SecurityException e) {
+      LOG.error(e.getMessage(), e);
+      return "";
+    }
+    final Properties props = System.getProperties();
+    final Enumeration propNames = props.propertyNames();
+    final List<String> orderedPropertyNames = new ArrayList<>(props.size());
+    while (propNames.hasMoreElements()) {
+      orderedPropertyNames.add((String) propNames.nextElement());
+    }
 
-    return stringBuilder.toString();
+    Collections.sort(orderedPropertyNames);
+    final StringBuilder propsString = new StringBuilder();
+    for (final String key : orderedPropertyNames) {
+      propsString.append(key).append(": ").append(props.getProperty(key)).append("\n");
+    }
+
+    return propsString.toString();
+  }
+
+  /**
+   * Initializes a proxy instance for the given class, using the class loader of that class
+   * @param clazz the class to proxy
+   * @param invocationHandler the invocation handler to use
+   * @param <T> the type
+   * @return a proxy for the given class
+   */
+  @SuppressWarnings({"unchecked"})
+  public static <T> T initializeProxy(final Class<T> clazz, final InvocationHandler invocationHandler) {
+    return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {clazz}, invocationHandler);
   }
 
   /**
    * Provides objects of type K, derived from a value of type V, for hashing said value via .hashCode().
    * @param <K> the type of the object to use for key generation via .hashCode()
    * @param <V> the value type
-   * @see org.jminor.common.model.Util#map(java.util.Collection, MapKeyProvider)
+   * @see Util#map(java.util.Collection, MapKeyProvider)
    */
   public interface MapKeyProvider<K, V> {
     K getKey(final V value);
@@ -414,7 +417,7 @@ public class Util {
 
   private static <K, V> void map(final Map<K, Collection<V>> map, final V value, final K key) {
     Objects.requireNonNull(value, "value");
-    Objects.requireNonNull(key, KEY);
+    Objects.requireNonNull(key, "key");
     Objects.requireNonNull(map, "map");
     if (!map.containsKey(key)) {
       map.put(key, new ArrayList<>());

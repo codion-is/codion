@@ -5,7 +5,8 @@ package org.jminor.javafx.framework.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.Util;
+import org.jminor.common.model.PreferencesUtil;
+import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
@@ -379,7 +380,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   public final void savePreferences() {
     if (Configuration.getBooleanValue(Configuration.USE_CLIENT_PREFERENCES)) {
       try {
-        Util.putUserPreference(getUserPreferencesKey(), createPreferences().toString());
+        PreferencesUtil.putUserPreference(getUserPreferencesKey(), createPreferences().toString());
       }
       catch (final Exception e) {
         LOG.error("Error while saving preferences", e);
@@ -417,7 +418,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
     final String[][] header = {headerValues.toArray(new String[headerValues.size()])};
 
-    return Util.getDelimitedString(header, EntityUtil.getStringValueArray(properties,
+    return TextUtil.getDelimitedString(header, EntityUtil.getStringValueArray(properties,
             getSelectionModel().isSelectionEmpty() ? getVisibleItems() : getSelectionModel().getSelectedItems()),
             String.valueOf(delimiter));
   }
@@ -507,7 +508,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   private void applyPreferences() {
     if (Configuration.getBooleanValue(Configuration.USE_CLIENT_PREFERENCES)) {
-      final String preferencesString = Util.getUserPreference(getUserPreferencesKey(), "");
+      final String preferencesString = PreferencesUtil.getUserPreference(getUserPreferencesKey(), "");
       try {
         if (preferencesString.length() > 0) {
           final org.json.JSONObject preferences = new org.json.JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS);

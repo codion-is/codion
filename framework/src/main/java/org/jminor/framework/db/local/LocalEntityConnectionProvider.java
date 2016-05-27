@@ -3,10 +3,11 @@
  */
 package org.jminor.framework.db.local;
 
+import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
+import org.jminor.common.model.ExceptionUtil;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
@@ -136,7 +137,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
         return method.invoke(connection, args);
       }
       catch (final Exception e) {
-        exception = Util.unwrapAndLog(e, InvocationTargetException.class, LOG);
+        exception = ExceptionUtil.unwrapAndLog(e, InvocationTargetException.class, LOG);
         throw exception;
       }
       finally {

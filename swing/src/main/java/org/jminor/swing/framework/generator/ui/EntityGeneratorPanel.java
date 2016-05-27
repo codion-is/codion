@@ -4,9 +4,9 @@
 package org.jminor.swing.framework.generator.ui;
 
 import org.jminor.common.EventListener;
+import org.jminor.common.Util;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.swing.common.ui.LoginPanel;
 import org.jminor.swing.common.ui.UiUtil;

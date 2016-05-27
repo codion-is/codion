@@ -4,8 +4,8 @@
 package org.jminor.framework.demos.empdept.client.ui;
 
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.table.ColumnSummary;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -56,7 +56,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   public void importJSON() throws Exception {
     final File file = UiUtil.selectFile(this, null);
     UiUtil.displayInDialog(this, EntityTablePanel.createStaticEntityTablePanel(new EntityJSONParser().deserialize(
-            Util.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider()), "Import");
+            TextUtil.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider()), "Import");
   }
 
   @Override

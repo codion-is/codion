@@ -5,7 +5,7 @@ package org.jminor.swing.framework.server.monitor;
 
 import org.jminor.common.Event;
 import org.jminor.common.Events;
-import org.jminor.common.model.Util;
+import org.jminor.common.Util;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;

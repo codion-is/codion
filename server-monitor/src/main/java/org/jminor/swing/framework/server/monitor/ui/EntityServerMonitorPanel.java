@@ -6,7 +6,8 @@ package org.jminor.swing.framework.server.monitor.ui;
 import org.jminor.common.Event;
 import org.jminor.common.Events;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.Util;
+import org.jminor.common.model.PreferencesUtil;
+import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.swing.common.ui.DefaultExceptionHandler;
 import org.jminor.swing.common.ui.UiUtil;
@@ -46,7 +47,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   private static final String JDK_PREFERENCE_KEY = EntityServerMonitorPanel.class.getSimpleName() + ".jdkPathPreferenceKey";
   private static final double SCREEN_SIZE_RATIO = 0.75;
   private static final int MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
-  private static String jdkDir = Util.getUserPreference(JDK_PREFERENCE_KEY, null);
+  private static String jdkDir = PreferencesUtil.getUserPreference(JDK_PREFERENCE_KEY, null);
 
   private final Event<Boolean> alwaysOnTopChangedEvent = Events.event();
   private final EntityServerMonitor model;
@@ -133,7 +134,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   public static synchronized void setJDKDir(final JComponent dialogParent) {
     try {
       jdkDir = UiUtil.selectDirectory(dialogParent, jdkDir, "Set JDK home").getAbsolutePath();
-      Util.putUserPreference(JDK_PREFERENCE_KEY, jdkDir);
+      PreferencesUtil.putUserPreference(JDK_PREFERENCE_KEY, jdkDir);
     }
     catch (final CancelException ignored) {/*ignored*/}
   }
@@ -211,7 +212,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   public static void main(final String[] arguments) {
-    Util.resolveTrustStoreFromClasspath(EntityServerMonitorPanel.class.getSimpleName());
+    ServerUtil.resolveTrustStoreFromClasspath(EntityServerMonitorPanel.class.getSimpleName());
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {

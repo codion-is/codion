@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.plugins.tomcat.pool;
 
+import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.exception.DatabaseException;
@@ -10,7 +11,6 @@ import org.jminor.common.db.pool.AbstractConnectionPool;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;

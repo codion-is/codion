@@ -4,8 +4,9 @@
 package org.jminor.swing.common.ui.tools;
 
 import org.jminor.common.EventListener;
+import org.jminor.common.Util;
+import org.jminor.common.model.ExceptionUtil;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.ItemRandomizer;
 import org.jminor.common.model.tools.LoadTest;
 import org.jminor.common.model.tools.LoadTestModel;
@@ -467,7 +468,7 @@ public final class LoadTestPanel extends JPanel {
       getExceptionsTextArea().replaceRange("", 0, getExceptionsTextArea().getDocument().getLength());
       final List<LoadTest.ScenarioException> exceptions = getScenario().getExceptions();
       for (final LoadTest.ScenarioException exception : exceptions) {
-        final Exception root = Util.unwrapAndLog((Exception) exception.getCause(), UndeclaredThrowableException.class, null);
+        final Exception root = ExceptionUtil.unwrapAndLog((Exception) exception.getCause(), UndeclaredThrowableException.class, null);
         getExceptionsTextArea().append(root.toString());
         getExceptionsTextArea().append(Util.LINE_SEPARATOR);
         getExceptionsTextArea().append(Util.LINE_SEPARATOR);

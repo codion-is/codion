@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.textfield;
 
-import org.jminor.common.model.Util;
+import org.jminor.common.model.FormatUtil;
 
 import java.text.NumberFormat;
 
@@ -16,7 +16,7 @@ public final class LongField extends NumberField {
    * Instantiates a new LongField.
    */
   public LongField() {
-    this(Util.getNonGroupingNumberFormat(true));
+    this(FormatUtil.getNonGroupingNumberFormat(true));
   }
 
   /**
@@ -24,7 +24,7 @@ public final class LongField extends NumberField {
    * @param columns the number of columns
    */
   public LongField(final int columns) {
-    this(Util.getNonGroupingNumberFormat(true), columns);
+    this(FormatUtil.getNonGroupingNumberFormat(true), columns);
   }
 
   /**

@@ -3,14 +3,23 @@
  */
 package org.jminor.framework;
 
-import org.jminor.common.model.Util;
+import org.jminor.common.Util;
 import org.jminor.common.model.Version;
 import org.jminor.common.model.formats.DateFormats;
+import org.jminor.common.server.ServerUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.rmi.registry.Registry;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -19,6 +28,8 @@ import java.util.Properties;
  * the application is initialized, before EntityApplicationPanel.startApplication().
  */
 public final class Configuration {
+
+  private static final Logger LOG = LoggerFactory.getLogger(Configuration.class);
 
   /**
    * A prefix used to name server admin instances
@@ -550,6 +561,21 @@ public final class Configuration {
    * Default value: true if required JSON library is found on classpath, false otherwise
    */
   public static final String USE_CLIENT_PREFERENCES = "jminor.client.useClientPreferences";
+  /**
+   * Specifies the main configuration file.<br>
+   * Value type: String<br>
+   * Default value: null
+   * @see #parseConfigurationFile()
+   */
+  public static final String CONFIGURATION_FILE = "jminor.configurationFile";
+  /**
+   * Add a property with this name in the main configuration file and specify a comma separated list
+   * of additional configuration files that should be parsed along with the main configuration file.<br>
+   * Value type: String<br>
+   * Default value: null
+   * @see #parseConfigurationFile()
+   */
+  public static final String ADDITIONAL_CONFIGURATION_FILES = "jminor.additionalConfigurationFiles";
 
   private static final int DEFAULT_LOAD_TEST_THINKTIME = 2000;
   private static final int DEFAULT_LOAD_TEST_BATCH_SIZE = 10;
@@ -692,7 +718,7 @@ public final class Configuration {
   }
 
   static {
-    Util.parseConfigurationFile();
+    parseConfigurationFile();
     //default settings
     PROPERTIES.put(LOAD_TEST_THINKTIME, DEFAULT_LOAD_TEST_THINKTIME);
     PROPERTIES.put(LOAD_TEST_BATCH_SIZE, DEFAULT_LOAD_TEST_BATCH_SIZE);
@@ -807,7 +833,7 @@ public final class Configuration {
     parseStringProperty(WEB_SERVER_DOCUMENT_ROOT, PROPERTIES);
     parseIntegerProperty(WEB_SERVER_PORT, PROPERTIES);
     parseStringProperty(WEB_SERVER_IMPLEMENTATION_CLASS, PROPERTIES);
-    parseStringProperty(Util.JAVAX_NET_NET_TRUSTSTORE, PROPERTIES);
+    parseStringProperty(ServerUtil.JAVAX_NET_NET_TRUSTSTORE, PROPERTIES);
     parseBooleanProperty(CACHE_REPORTS, PROPERTIES);
     parseBooleanProperty(STRICT_FOREIGN_KEYS, PROPERTIES);
     parseBooleanProperty(SHOW_DETAIL_PANEL_CONTROLS, PROPERTIES);
@@ -859,6 +885,72 @@ public final class Configuration {
     final String value = System.getProperty(property);
     if (value != null) {
       properties.put(property, value);
+    }
+  }
+
+  /**
+   * Parses the configuration file specified by the {@link #CONFIGURATION_FILE} property,
+   * adding the resulting properties via System.setProperty(key, value).
+   * Also parses any configuration files specified by {@link #ADDITIONAL_CONFIGURATION_FILES}.
+   * @see #CONFIGURATION_FILE
+   */
+  public static void parseConfigurationFile() {
+    parseConfigurationFile(System.getProperty(CONFIGURATION_FILE));
+  }
+
+  /**
+   * Parses the given configuration file adding the resulting properties via System.setProperty(key, value).
+   * If a file with the given name is not found on the classpath we try to locate it on the filesystem,
+   * relative to user.dir, if the file is not found a RuntimeException is thrown.
+   * If the {@link #ADDITIONAL_CONFIGURATION_FILES} property is found, the files specified are parsed as well,
+   * note that the actual property value is not added to the system properties.
+   * @param filename the configuration filename
+   * @throws IllegalArgumentException in case the configuration file is not found
+   * @see #CONFIGURATION_FILE
+   */
+  public static void parseConfigurationFile(final String filename) {
+    if (filename != null) {
+      InputStream inputStream = null;
+      String additionalConfigurationFiles = null;
+      try {
+        inputStream = ClassLoader.getSystemResourceAsStream(filename);
+        if (inputStream == null) {//not on classpath
+          final File configurationFile = new File(System.getProperty("user.dir") + File.separator + filename);
+          if (!configurationFile.exists()) {
+            throw new IllegalArgumentException("Configuration file not found on classpath (" + filename + ") or as a file (" + configurationFile.getPath() + ")");
+          }
+          inputStream = new FileInputStream(configurationFile);
+          LOG.debug("Reading configuration file from filesystem: {}", filename);
+        }
+        else {
+          LOG.debug("Reading configuration file from classpath: {}", filename);
+        }
+        final Properties properties = new Properties();
+        properties.load(inputStream);
+        for (final Map.Entry entry : properties.entrySet()) {
+          final Object key = entry.getKey();
+          final String value = (String) properties.get(key);
+          LOG.debug("{} -> {}", key, value);
+          if (key.equals(ADDITIONAL_CONFIGURATION_FILES)) {
+            additionalConfigurationFiles = value;
+          }
+          else {
+            System.setProperty((String) key, value);
+          }
+        }
+      }
+      catch (final IOException e) {
+        throw new RuntimeException(e);
+      }
+      finally {
+        org.jminor.common.Util.closeSilently(inputStream);
+      }
+      if (additionalConfigurationFiles != null) {
+        final String[] configurationFiles = additionalConfigurationFiles.split(",");
+        for (final String configurationFile : configurationFiles) {
+          parseConfigurationFile(configurationFile.trim());
+        }
+      }
     }
   }
 }

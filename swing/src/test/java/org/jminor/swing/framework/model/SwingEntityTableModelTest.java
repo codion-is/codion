@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.model.Util;
+import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Entities;
@@ -222,7 +222,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals(170, column.getPreferredWidth());
 
     model.clearPreferences();
-    Util.flushUserPreferences();
+    PreferencesUtil.flushUserPreferences();
   }
 
   public static final class EntityTableModelTmp extends SwingEntityTableModel {

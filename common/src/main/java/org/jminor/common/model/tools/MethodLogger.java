@@ -5,6 +5,7 @@ package org.jminor.common.model.tools;
 
 import org.jminor.common.Util;
 import org.jminor.common.model.DateUtil;
+import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.formats.DateFormats;
 
 import java.io.IOException;
@@ -418,7 +419,7 @@ public final class MethodLogger {
      * @return a string representation of this log entry
      */
     public String toString(final int indentation) {
-      final String indentString = indentation > 0 ? Util.padString("", indentation, '\t', false) : "";
+      final String indentString = indentation > 0 ? TextUtil.padString("", indentation, '\t', false) : "";
       final StringBuilder stringBuilder = new StringBuilder();
       final DateFormat timestampFormat = TIMESTAMP_FORMAT.get();
       if (isComplete()) {

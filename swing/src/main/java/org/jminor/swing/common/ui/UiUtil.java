@@ -11,11 +11,13 @@ import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
+import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.DaemonThreadFactory;
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.Util;
+import org.jminor.common.model.FileUtil;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -221,7 +223,7 @@ public final class UiUtil {
     final JTextField txt = new JTextField(8);
     txt.setEditable(false);
     txt.setHorizontalAlignment(JTextField.CENTER);
-    Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory()).scheduleWithFixedDelay(new Runnable() {
+    Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory()).scheduleWithFixedDelay(new Runnable() {
       @Override
       public void run() {
         txt.setText(Util.getMemoryUsageString());
@@ -2019,7 +2021,7 @@ public final class UiUtil {
         @Override
         public void actionPerformed(final ActionEvent e) {
           try {
-            Util.writeFile(detailsArea.getText(), selectFileToSave(detailsArea, null, null));
+            FileUtil.writeFile(detailsArea.getText(), selectFileToSave(detailsArea, null, null));
           }
           catch (final CancelException ignored) {/*ignored*/}
           catch (final IOException ex) {

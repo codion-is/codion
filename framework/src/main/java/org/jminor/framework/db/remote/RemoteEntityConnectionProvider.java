@@ -3,9 +3,10 @@
  */
 package org.jminor.framework.db.remote;
 
+import org.jminor.common.Util;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.ExceptionUtil;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.Version;
 import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.Server;
@@ -83,7 +84,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     this.clientID = Objects.requireNonNull(clientID, "clientID");
     this.clientTypeID = Objects.requireNonNull(clientTypeID, "clientTypeID");
     this.clientVersion = clientVersion;
-    Util.resolveTrustStoreFromClasspath(clientTypeID);
+    ServerUtil.resolveTrustStoreFromClasspath(clientTypeID);
   }
 
   /** {@inheritDoc} */
@@ -205,7 +206,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
         return remoteMethod.invoke(remote, args);
       }
       catch (final Exception e) {
-        throw Util.unwrapAndLog(e, InvocationTargetException.class, null);
+        throw ExceptionUtil.unwrapAndLog(e, InvocationTargetException.class, null);
       }
     }
 

@@ -5,7 +5,7 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.Util;
+import org.jminor.common.model.FileUtil;
 import org.jminor.common.model.valuemap.ValueChange;
 
 import org.junit.Test;
@@ -46,8 +46,8 @@ public class DefaultEntityTest {
     final Entity entity = getDetailEntity(10, 34, 23.4, originalStringValue, new Date(), new Timestamp(System.currentTimeMillis()), true, referencedEntityValue);
     entity.put(TestDomain.DETAIL_STRING, "a new String value");
     final File tmp = File.createTempFile("DefaultEntityTest", "serialization");
-    Util.serializeToFile(Collections.singletonList(entity), tmp);
-    final List<Object> fromFile = Util.deserializeFromFile(tmp);
+    FileUtil.serializeToFile(Collections.singletonList(entity), tmp);
+    final List<Object> fromFile = FileUtil.deserializeFromFile(tmp);
     assertEquals(1, fromFile.size());
     final Entity entityFromFile = (Entity) fromFile.get(0);
     assertTrue(entity.valuesEqual(entityFromFile));
@@ -57,8 +57,8 @@ public class DefaultEntityTest {
 
     final Entity.Key key = entity.getKey();
     final File tmp2 = File.createTempFile("DefaultEntityTest", "serialization");
-    Util.serializeToFile(Collections.singletonList(key), tmp2);
-    final List<Object> keyFromFile = Util.deserializeFromFile(tmp2);
+    FileUtil.serializeToFile(Collections.singletonList(key), tmp2);
+    final List<Object> keyFromFile = FileUtil.deserializeFromFile(tmp2);
     assertEquals(1, keyFromFile.size());
     assertEquals(key, keyFromFile.get(0));
   }

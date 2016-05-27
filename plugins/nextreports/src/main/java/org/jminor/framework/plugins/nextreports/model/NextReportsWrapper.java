@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.plugins.nextreports.model;
 
+import org.jminor.common.Util;
 import org.jminor.common.db.Database;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;

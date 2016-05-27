@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.Util;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.DefaultValueMapValidator;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.RangeValidationException;

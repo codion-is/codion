@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.model.Util;
+import org.jminor.common.model.TextUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
@@ -26,7 +26,7 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
 
   private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
 
-  private final Comparator<String> comparator = Util.getSpaceAwareCollator();
+  private final Comparator<String> comparator = TextUtil.getSpaceAwareCollator();
 
   private final String caption;
   private boolean refreshOnInit = true;

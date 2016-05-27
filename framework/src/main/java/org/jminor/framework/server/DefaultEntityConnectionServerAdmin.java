@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server;
 
+import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Databases;
@@ -11,7 +12,6 @@ import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.Version;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
@@ -574,7 +574,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
     final String sid = System.getProperty(Database.DATABASE_SID);
     final String host = System.getProperty(Database.DATABASE_HOST);
     final String serverName = Configuration.SERVER_ADMIN_PREFIX + initializeServerName(host, sid);
-    Util.resolveTrustStoreFromClasspath(DefaultEntityConnectionServerAdmin.class.getSimpleName());
+    ServerUtil.resolveTrustStoreFromClasspath(DefaultEntityConnectionServerAdmin.class.getSimpleName());
     try {
       final Registry registry = ServerUtil.getRegistry(registryPort);
       final EntityConnectionServerAdmin serverAdmin = (EntityConnectionServerAdmin) registry.lookup(serverName);

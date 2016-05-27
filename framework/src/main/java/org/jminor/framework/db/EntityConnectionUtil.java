@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.db;
 
+import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.ProgressReporter;
-import org.jminor.common.model.Util;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entity;
 

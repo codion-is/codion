@@ -5,8 +5,8 @@ package org.jminor.common;
 
 import org.junit.Test;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
+import java.io.Closeable;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,6 +18,74 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 public final class UtilTest {
+
+  @Test
+  public void roundDouble() {
+    final Double d = 5.1234567;
+    assertEquals(new Double(5.1), new Double(Util.roundDouble(d, 1)));
+    assertEquals(new Double(5.12), new Double(Util.roundDouble(d, 2)));
+    assertEquals(new Double(5.123), new Double(Util.roundDouble(d, 3)));
+    assertEquals(new Double(5.1235), new Double(Util.roundDouble(d, 4)));
+    assertEquals(new Double(5.12346), new Double(Util.roundDouble(d, 5)));
+    assertEquals(new Double(5.123457), new Double(Util.roundDouble(d, 6)));
+    assertEquals(new Double(5.1234567), new Double(Util.roundDouble(d, 7)));
+  }
+
+  @Test
+  public void closeSilently() {
+    Util.closeSilently((Closeable) null);
+    Util.closeSilently((Closeable[]) null);
+    Util.closeSilently(null, null);
+  }
+
+  @Test
+  public void getGetMethod() throws NoSuchMethodException {
+    final Bean bean = new Bean();
+    Method getMethod = Util.getGetMethod(boolean.class, "booleanValue", bean);
+    assertEquals("isBooleanValue", getMethod.getName());
+    getMethod = Util.getGetMethod(int.class, "intValue", bean);
+    assertEquals("getIntValue", getMethod.getName());
+  }
+
+  @Test
+  public void getGetMethodBoolean() throws NoSuchMethodException {
+    final Bean bean = new Bean();
+    final Method getMethod = Util.getGetMethod(boolean.class, "anotherBooleanValue", bean);
+    assertEquals("getAnotherBooleanValue", getMethod.getName());
+  }
+
+  @Test
+  public void getSetMethod() throws NoSuchMethodException {
+    final Bean bean = new Bean();
+    Method setMethod = Util.getSetMethod(boolean.class, "booleanValue", bean);
+    assertEquals("setBooleanValue", setMethod.getName());
+    setMethod = Util.getSetMethod(int.class, "intValue", bean);
+    assertEquals("setIntValue", setMethod.getName());
+  }
+
+  @Test(expected = NoSuchMethodException.class)
+  public void getGetMethodInvalidMethod() throws NoSuchMethodException {
+    final Bean bean = new Bean();
+    Util.getGetMethod(boolean.class, "invalidValue", bean);
+  }
+
+  @Test(expected = NoSuchMethodException.class)
+  public void getSetMethodInvalidMethod() throws NoSuchMethodException {
+    final Bean bean = new Bean();
+    Util.getSetMethod(boolean.class, "invalidValue", bean);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getSetMethodNoProperty() throws NoSuchMethodException {
+    final Bean bean = new Bean();
+    Util.getSetMethod(boolean.class, "", bean);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getGetMethodNoProperty() throws NoSuchMethodException {
+    final Bean bean = new Bean();
+    Util.getGetMethod(boolean.class, "", bean);
+  }
 
   @Test
   public void getArrayContentsAsString() throws Exception {
@@ -37,14 +105,6 @@ public final class UtilTest {
     list.add(4);
     final String res = Util.getCollectionContentsAsString(list, false);
     assertEquals("Integer list as string should work", "1, 2, 3, 4", res);
-  }
-
-  @Test
-  public void getTextFileContents() throws IOException {
-    final String contents = "<project name=\"jminor-common-core\">" + Util.LINE_SEPARATOR +
-            "  <import file=\"../../../build-module.xml\"/>" + Util.LINE_SEPARATOR +
-            "</project>" + Util.LINE_SEPARATOR;
-    assertEquals(contents, Util.getTextFileContents("modules/common-core/build.xml", Charset.defaultCharset()));
   }
 
   @Test
@@ -86,5 +146,31 @@ public final class UtilTest {
     assertFalse(Util.nullOrEmpty("asdf", "wefs"));
 
     assertFalse(Util.nullOrEmpty(map));
+  }
+
+  public static final class Bean {
+    boolean booleanValue;
+    boolean anotherBooleanValue;
+    int intValue;
+
+    public boolean isBooleanValue() {
+      return booleanValue;
+    }
+
+    public void setBooleanValue(final boolean booleanValue) {
+      this.booleanValue = booleanValue;
+    }
+
+    public boolean getAnotherBooleanValue() {
+      return anotherBooleanValue;
+    }
+
+    public int getIntValue() {
+      return intValue;
+    }
+
+    public void setIntValue(final int intValue) {
+      this.intValue = intValue;
+    }
   }
 }

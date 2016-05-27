@@ -6,13 +6,15 @@ package org.jminor.framework.server;
 import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
+import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolException;
+import org.jminor.common.model.DaemonThreadFactory;
+import org.jminor.common.model.ExceptionUtil;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
@@ -610,7 +612,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
         return method.invoke(connection, args);
       }
       catch (final Exception e) {
-        exception = Util.unwrapAndLog(e, InvocationTargetException.class, LOG,
+        exception = ExceptionUtil.unwrapAndLog(e, InvocationTargetException.class, LOG,
                 Collections.<Class<? extends Exception>>singletonList(ConnectionPoolException.NoConnectionAvailable.class));
         throw exception;
       }
@@ -632,7 +634,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
     private static final double THOUSAND = 1000d;
 
-    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory());
+    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory());
     private long requestsPerSecondTime = System.currentTimeMillis();
     private int requestsPerSecond = 0;
     private int requestsPerSecondCounter = 0;

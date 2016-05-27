@@ -6,9 +6,10 @@ package org.jminor.swing.common.ui;
 import org.jminor.common.Event;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
+import org.jminor.common.Util;
 import org.jminor.common.Value;
+import org.jminor.common.model.FormatUtil;
 import org.jminor.common.model.Item;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.swing.common.model.DocumentAdapter;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
@@ -177,7 +178,7 @@ public final class UiValues {
       else {
         this.formatter = null;
       }
-      this.format = format == null ? Util.NULL_FORMAT : format;
+      this.format = format == null ? FormatUtil.NULL_FORMAT : format;
       if (immediateUpdate) {
         document.addDocumentListener(new DocumentAdapter() {
           @Override

@@ -5,7 +5,7 @@ package org.jminor.swing.common.ui.control;
 
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
-import org.jminor.common.model.Util;
+import org.jminor.common.Util;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;

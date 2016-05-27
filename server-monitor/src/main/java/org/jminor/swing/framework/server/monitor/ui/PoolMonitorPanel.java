@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
-import org.jminor.common.model.Util;
+import org.jminor.common.Util;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.server.monitor.ConnectionPoolMonitor;
 import org.jminor.swing.framework.server.monitor.PoolMonitor;

@@ -3,10 +3,10 @@
  */
 package org.jminor.swing.common.ui;
 
+import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.Util;
 
 import javax.swing.JComponent;
 import java.awt.Window;

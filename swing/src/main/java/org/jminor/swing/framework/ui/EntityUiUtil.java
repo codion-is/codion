@@ -8,11 +8,12 @@ import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.StateObserver;
+import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.Util;
+import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.valuemap.EditModelValues;
 import org.jminor.common.model.valuemap.ValueChange;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -990,7 +991,7 @@ public final class EntityUiUtil {
   }
 
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.ColumnProperty> primaryKeyProperties) {
-    Util.collate(primaryKeyProperties);
+    TextUtil.collate(primaryKeyProperties);
     for (final Property.ColumnProperty property : primaryKeyProperties) {
       final boolean modified = entity.isModified(property.getPropertyID());
       String value = "[PK] " + property.getPropertyID() + ": " + entity.getAsString(property.getPropertyID());
@@ -1008,7 +1009,7 @@ public final class EntityUiUtil {
                                              final EntityConnectionProvider connectionProvider,
                                              final List<Property.ForeignKeyProperty> fkProperties) {
     try {
-      Util.collate(fkProperties);
+      TextUtil.collate(fkProperties);
       final Entity.Validator validator = Entities.getValidator(entity.getEntityID());
       for (final Property.ForeignKeyProperty property : fkProperties) {
         final boolean fkValueNull = entity.isForeignKeyNull(property);
@@ -1063,7 +1064,7 @@ public final class EntityUiUtil {
   }
 
   private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties) {
-    Util.collate(properties);
+    TextUtil.collate(properties);
     final int maxValueLength = 20;
     final Entity.Validator validator = Entities.getValidator(entity.getEntityID());
     for (final Property property : properties) {

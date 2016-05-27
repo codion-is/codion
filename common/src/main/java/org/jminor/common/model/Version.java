@@ -28,7 +28,7 @@ public final class Version implements Comparable<Version>, Serializable {
 
   static {
     try {
-      VERSION = parse(org.jminor.common.Util.getTextFileContents(org.jminor.common.Util.class, VERSION_FILE));
+      VERSION = parse(TextUtil.getTextFileContents(org.jminor.common.Util.class, VERSION_FILE));
     }
     catch (final IOException e) {
       throw new RuntimeException(e);

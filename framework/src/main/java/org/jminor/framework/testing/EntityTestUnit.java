@@ -7,8 +7,8 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Item;
+import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueProvider;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -432,7 +432,7 @@ public abstract class EntityTestUnit {
   private static String getRandomString(final Property property) {
     final int length = property.getMaxLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : property.getMaxLength();
 
-    return Util.createRandomString(length, length);
+    return TextUtil.createRandomString(length, length);
   }
 
   private static Date getRandomDate() {
@@ -469,6 +469,6 @@ public abstract class EntityTestUnit {
     final double min = property.getMin() == null ? MININUM_RANDOM_NUMBER : property.getMin();
     final double max = property.getMax() == null ? MAXIMUM_RANDOM_NUMBER : property.getMax();
 
-    return Util.roundDouble((RANDOM.nextDouble() * (max - min)) + min, property.getMaximumFractionDigits());
+    return org.jminor.common.Util.roundDouble((RANDOM.nextDouble() * (max - min)) + min, property.getMaximumFractionDigits());
   }
 }

@@ -5,8 +5,8 @@ package org.jminor.framework.demos.empdept.rest;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.LoadTestModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -143,7 +143,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
         final List<Entity> queryEntities = EntityJSONParser.deserializeEntities(queryResult);
 
         final Entity entity = queryEntities.get(new Random().nextInt(queryEntities.size()));
-        entity.put(EmpDept.DEPARTMENT_LOCATION, Util.createRandomString(10, 13));
+        entity.put(EmpDept.DEPARTMENT_LOCATION, TextUtil.createRandomString(10, 13));
         builder = createURIBuilder();
         builder.addParameter("entities", EntityJSONParser.serializeEntities(Collections.singletonList(entity), false));
         response = client.execute(new HttpPut(builder.build()));

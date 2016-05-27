@@ -4,6 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.EventListener;
+import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.AuthenticationException;
 import org.jminor.common.db.exception.DatabaseException;
@@ -11,7 +12,6 @@ import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.TaskScheduler;
 import org.jminor.common.server.AbstractServer;
 import org.jminor.common.server.ClientInfo;

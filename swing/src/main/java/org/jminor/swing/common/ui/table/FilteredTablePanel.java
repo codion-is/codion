@@ -8,7 +8,7 @@ import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.Util;
+import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.swing.common.model.DocumentAdapter;
 import org.jminor.swing.common.model.table.FilteredTableModel;
@@ -413,7 +413,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
       private final Collator collator = Collator.getInstance();
       @Override
       public int compare(final TableColumn o1, final TableColumn o2) {
-        return Util.collateSansSpaces(collator, o1.getIdentifier().toString(), o2.getIdentifier().toString());
+        return TextUtil.collateSansSpaces(collator, o1.getIdentifier().toString(), o2.getIdentifier().toString());
       }
     });
     final List<JCheckBox> checkBoxes = new ArrayList<>();

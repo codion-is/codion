@@ -8,7 +8,7 @@ import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.model.FilterCriteria;
-import org.jminor.common.model.Util;
+import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 
 import javax.swing.ComboBoxModel;
@@ -456,7 +456,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     private static final long serialVersionUID = 1;
 
     private final T nullValue;
-    private final Comparator comparator = Util.getSpaceAwareCollator();
+    private final Comparator comparator = TextUtil.getSpaceAwareCollator();
 
     SortComparator(final T nullValue) {
       this.nullValue = nullValue;

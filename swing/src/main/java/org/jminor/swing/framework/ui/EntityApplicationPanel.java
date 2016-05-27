@@ -8,10 +8,12 @@ import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.StateObserver;
+import org.jminor.common.Util;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.PreferencesUtil;
+import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.Version;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -412,7 +414,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
     try {
       savePreferences();
-      Util.flushUserPreferences();
+      PreferencesUtil.flushUserPreferences();
     }
     catch (final Exception e) {
       LOG.debug("Exception while saving preferences", e);
@@ -667,7 +669,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws IOException in case of an IO exception
    */
   protected String getHelpText() throws IOException {
-    return Util.getTextFileContents(EntityApplicationPanel.class, TIPS_AND_TRICKS_FILE);
+    return TextUtil.getTextFileContents(EntityApplicationPanel.class, TIPS_AND_TRICKS_FILE);
   }
 
   /**
@@ -1087,7 +1089,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected User getUser(final String frameCaption, final User defaultUser, final ImageIcon applicationIcon) {
     final String defaultUserName = Configuration.getValue(Configuration.USERNAME_PREFIX) + System.getProperty("user.name");
-    final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? new User(Util.getDefaultUserName(getApplicationIdentifier(),
+    final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? new User(PreferencesUtil.getDefaultUserName(getApplicationIdentifier(),
             defaultUserName), null) : defaultUser);
     final String loginTitle = (!Util.nullOrEmpty(frameCaption) ? (frameCaption + " - ") : "") + Messages.get(Messages.LOGIN);
     final User user = loginPanel.showLoginPanel(null, loginTitle, applicationIcon);
@@ -1103,7 +1105,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param username the username
    */
   protected void saveDefaultUserName(final String username) {
-    Util.setDefaultUserName(getApplicationIdentifier(), username);
+    PreferencesUtil.setDefaultUserName(getApplicationIdentifier(), username);
   }
 
   /**

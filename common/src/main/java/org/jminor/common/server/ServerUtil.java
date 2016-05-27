@@ -3,12 +3,17 @@
  */
 package org.jminor.common.server;
 
+import org.jminor.common.Util;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Version;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
@@ -26,7 +31,12 @@ import java.util.UUID;
  */
 public final class ServerUtil {
 
+  /**
+   * The system property key for specifying a ssl truststore
+   */
+  public static final String JAVAX_NET_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
   private static final Logger LOG = LoggerFactory.getLogger(ServerUtil.class);
+  private static final int INPUT_BUFFER_SIZE = 8192;
 
   private ServerUtil() {}
 
@@ -128,6 +138,48 @@ public final class ServerUtil {
     }
 
     return servers;
+  }
+
+  /**
+   * Reads the trust store specified by "javax.net.ssl.trustStore" from the classpath, copies it
+   * to a temporary file and sets the trust store property so that it points to that temporary file.
+   * If the trust store file specified is not found on the classpath this method has no effect.
+   * @param temporaryFileNamePrefix the prefix to use for the temporary filename
+   */
+  public static void resolveTrustStoreFromClasspath(final String temporaryFileNamePrefix) {
+    final String value = System.getProperty(JAVAX_NET_NET_TRUSTSTORE);
+    if (Util.nullOrEmpty(value)) {
+      LOG.debug("No trust store specified via {}", JAVAX_NET_NET_TRUSTSTORE);
+      return;
+    }
+    FileOutputStream out = null;
+    InputStream in = null;
+    try {
+      final ClassLoader loader = Util.class.getClassLoader();
+      in = loader.getResourceAsStream(value);
+      if (in == null) {
+        LOG.debug("Specified trust store not found on classpath: {}", value);
+        return;
+      }
+      final File file = File.createTempFile(temporaryFileNamePrefix, "tmp");
+      file.deleteOnExit();
+      out = new FileOutputStream(file);
+      final byte[] buf = new byte[INPUT_BUFFER_SIZE];
+      int br = in.read(buf);
+      while (br > 0) {
+        out.write(buf, 0, br);
+        br = in.read(buf);
+      }
+      LOG.debug("Classpath trust store resolved to file: {} -> {}", JAVAX_NET_NET_TRUSTSTORE, file);
+
+      System.setProperty(JAVAX_NET_NET_TRUSTSTORE, file.getPath());
+    }
+    catch (final IOException e) {
+      throw new RuntimeException(e);
+    }
+    finally {
+      Util.closeSilently(out, in);
+    }
   }
 
   private static <T extends Remote> Server<T> checkServer(final Server<T> server, final int requestedPort) throws RemoteException {

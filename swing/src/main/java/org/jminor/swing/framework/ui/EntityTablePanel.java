@@ -9,13 +9,14 @@ import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
+import org.jminor.common.Util;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Conjunction;
+import org.jminor.common.model.FileUtil;
 import org.jminor.common.model.Serializer;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -607,7 +608,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public final void exportSelected() {
     try {
       final List<Entity> selected = getEntityTableModel().getSelectionModel().getSelectedItems();
-      Util.writeFile(EntityUtil.getEntitySerializer().serialize(selected), UiUtil.selectFileToSave(this, null, null));
+      FileUtil.writeFile(EntityUtil.getEntitySerializer().serialize(selected), UiUtil.selectFileToSave(this, null, null));
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
     }
     catch (IOException | CancelException | Serializer.SerializeException e) {

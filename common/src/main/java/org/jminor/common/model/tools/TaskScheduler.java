@@ -6,7 +6,7 @@ package org.jminor.common.model.tools;
 import org.jminor.common.Event;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
-import org.jminor.common.model.Util;
+import org.jminor.common.model.DaemonThreadFactory;
 
 import java.util.Objects;
 import java.util.concurrent.Executors;
@@ -64,7 +64,7 @@ public final class TaskScheduler {
    * @param timeUnit the time unit to use
    */
   public TaskScheduler(final Runnable task, final int interval, final int initialDelay, final TimeUnit timeUnit) {
-    this(task, interval, initialDelay, timeUnit, new Util.DaemonThreadFactory());
+    this(task, interval, initialDelay, timeUnit, new DaemonThreadFactory());
   }
 
   /**

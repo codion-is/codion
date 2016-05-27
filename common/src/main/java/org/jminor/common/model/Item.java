@@ -12,7 +12,7 @@ import java.util.Objects;
  */
 public class Item<T> implements Comparable<Item> {
 
-  private final Comparator<String> collator = Util.getSpaceAwareCollator();
+  private final Comparator<String> collator = TextUtil.getSpaceAwareCollator();
   private final T item;
   private final String caption;
 

@@ -6,7 +6,7 @@ package org.jminor.swing.common.model.table;
 import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
-import org.jminor.common.model.Util;
+import org.jminor.common.model.TextUtil;
 
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
       return o1.compareTo(o2);
     }
   };
-  private static final Comparator LEXICAL_COMPARATOR = Util.getSpaceAwareCollator();
+  private static final Comparator LEXICAL_COMPARATOR = TextUtil.getSpaceAwareCollator();
 
   private static final SortingState EMPTY_SORTING_STATE = new DefaultSortingState(SortingDirective.UNSORTED, -1);
 

@@ -3,6 +3,8 @@
  */
 package org.jminor.common.model;
 
+import org.jminor.common.Util;
+
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DateFormat;
