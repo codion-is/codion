@@ -14,7 +14,7 @@ public final class FXForeignKeyCriteriaListModel extends DefaultForeignKeyCriter
   private final ObservableEntityList listModel;
 
   /**
-   * Constructs a DefaultForeignKeyCriteriaModel instance
+   * Constructs a FXForeignKeyCriteriaListModel instance
    * @param property the property
    * @param listModel the list model to use
    */
@@ -36,17 +36,13 @@ public final class FXForeignKeyCriteriaListModel extends DefaultForeignKeyCriter
     return listModel;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public final void refresh() {
     listModel.refresh();
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  /** {@inheritDoc} */
   @Override
   public final void clear() {
     listModel.clear();
