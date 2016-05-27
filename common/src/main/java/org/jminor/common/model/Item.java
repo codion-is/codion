@@ -4,6 +4,7 @@
 package org.jminor.common.model;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * A class encapsulating an item and caption.
@@ -28,10 +29,10 @@ public class Item<T> implements Comparable<Item> {
    * Instantiates a new Item.
    * @param item the item, may be null
    * @param caption the caption
-   * @throws IllegalArgumentException if caption is null
+   * @throws NullPointerException if caption is null
    */
   public Item(final T item, final String caption) {
-    Util.rejectNullValue(caption, "caption");
+    Objects.requireNonNull(caption, "caption");
     this.item = item;
     this.caption = caption;
   }
@@ -61,7 +62,7 @@ public class Item<T> implements Comparable<Item> {
   /** {@inheritDoc} */
   @Override
   public final boolean equals(final Object obj) {
-    return obj instanceof Item && Util.equal(item, ((Item) obj).item);
+    return obj instanceof Item && Objects.equals(item, ((Item) obj).item);
   }
 
   /** {@inheritDoc} */

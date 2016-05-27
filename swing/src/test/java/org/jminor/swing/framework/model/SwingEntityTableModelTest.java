@@ -82,10 +82,11 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   public void nonMatchingCriteriaModelEntityID() {
     final EntityTableCriteriaModel criteriaModel = new DefaultEntityTableCriteriaModel(TestDomain.T_DEPARTMENT, null,
             new DefaultPropertyFilterModelProvider(), new DefaultPropertyCriteriaModelProvider());
-    new SwingEntityTableModel(TestDomain.T_EMP, null, null, criteriaModel);
+    new SwingEntityTableModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER,
+            new SwingEntityTableModel.DefaultEntityTableSortModel(TestDomain.T_EMP), criteriaModel);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void nullCriteriaModel() {
     new SwingEntityTableModel(TestDomain.T_EMP, null);
   }

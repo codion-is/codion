@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -59,7 +60,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    */
   public LocalEntityConnectionProvider(final User user, final Database database, final boolean scheduleValidityCheck) {
     super(user, scheduleValidityCheck);
-    Util.rejectNullValue(database, "database");
+    Objects.requireNonNull(database, "database");
     this.database = database;
     this.connectionProperties.put(Database.USER_PROPERTY, user.getUsername());
     this.connectionProperties.put(Database.PASSWORD_PROPERTY, user.getPassword());

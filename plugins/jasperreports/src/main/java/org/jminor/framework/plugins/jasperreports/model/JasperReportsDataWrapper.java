@@ -3,10 +3,11 @@
  */
 package org.jminor.framework.plugins.jasperreports.model;
 
-import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
 
 import net.sf.jasperreports.engine.JRDataSource;
+
+import java.util.Objects;
 
 /**
  * A Jasper Reports data wrapper.
@@ -16,7 +17,7 @@ public final class JasperReportsDataWrapper implements ReportDataWrapper<JRDataS
   private final JRDataSource dataSource;
 
   public JasperReportsDataWrapper(final JRDataSource dataSource) {
-    Util.rejectNullValue(dataSource, "dataSource");
+    Objects.requireNonNull(dataSource, "dataSource");
     this.dataSource = dataSource;
   }
 

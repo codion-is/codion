@@ -111,6 +111,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.concurrent.Executors;
@@ -1220,7 +1221,7 @@ public final class UiUtil {
    * @param component the component
    * @param keyEvent the key event
    * @param action the action
-   * @throws IllegalArgumentException in case <code>component</code>, <code>action</code> or the action name is null
+   * @throws NullPointerException in case <code>component</code>, <code>action</code> or the action name is null
    * @see KeyStroke#getKeyStroke(int, int, boolean)
    */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final Action action) {
@@ -1235,7 +1236,7 @@ public final class UiUtil {
    * @param keyEvent the key event
    * @param modifiers the modifiers
    * @param action the action
-   * @throws IllegalArgumentException in case <code>component</code>, <code>action</code> or the action name is null
+   * @throws NullPointerException in case <code>component</code>, <code>action</code> or the action name is null
    * @see KeyStroke#getKeyStroke(int, int, boolean)
    */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers,
@@ -1252,7 +1253,7 @@ public final class UiUtil {
    * @param modifiers the modifiers
    * @param condition the condition
    * @param action the action
-   * @throws IllegalArgumentException in case <code>component</code>, <code>action</code> or the action name is null
+   * @throws NullPointerException in case <code>component</code>, <code>action</code> or the action name is null
    * @see KeyStroke#getKeyStroke(int, int, boolean)
    */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
@@ -1269,12 +1270,12 @@ public final class UiUtil {
    * @param condition the condition
    * @param onKeyRelease the onKeyRelease condition
    * @param action the action, if null then the action binding is removed
-   * @throws IllegalArgumentException in case <code>component</code> or the action name is null
+   * @throws NullPointerException in case <code>component</code> or the action name is null
    * @see KeyStroke#getKeyStroke(int, int, boolean)
    */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
                                  final boolean onKeyRelease, final Action action) {
-    Util.rejectNullValue(component, "component");
+    Objects.requireNonNull(component, "component");
     Object actionName = null;
     if (action != null) {
       actionName = action.getValue(Action.NAME);

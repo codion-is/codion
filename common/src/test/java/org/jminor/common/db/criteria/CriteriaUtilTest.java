@@ -79,17 +79,17 @@ public final class CriteriaUtilTest {
     assertEquals(1, criteria.getValues().size());
   }
 
-  @Test (expected = IllegalArgumentException.class)
+  @Test (expected = NullPointerException.class)
   public void stringCriteriaNullCriteriaString() {
     CriteriaUtil.stringCriteria(null);
   }
 
-  @Test (expected = IllegalArgumentException.class)
+  @Test (expected = NullPointerException.class)
   public void stringCriteriaNullValues() {
     CriteriaUtil.stringCriteria("some is null", null, Collections.<String>emptyList());
   }
 
-  @Test (expected = IllegalArgumentException.class)
+  @Test (expected = NullPointerException.class)
   public void stringCriteriaNullKeys() {
     CriteriaUtil.stringCriteria("some is null", Collections.emptyList(), null);
   }

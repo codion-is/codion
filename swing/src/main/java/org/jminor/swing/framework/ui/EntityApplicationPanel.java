@@ -77,6 +77,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A central application panel class.
@@ -145,7 +146,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return this application panel instance
    */
   public final EntityApplicationPanel<M> addEntityPanelProviders(final EntityPanelProvider... panelProviders) {
-    Util.rejectNullValue(panelProviders, "panelProviders");
+    Objects.requireNonNull(panelProviders, "panelProviders");
     for (final EntityPanelProvider panelProvider : panelProviders) {
       addEntityPanelProvider(panelProvider);
     }
@@ -168,7 +169,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return this application panel instance
    */
   public final EntityApplicationPanel<M> addSupportPanelProviders(final EntityPanelProvider... panelProviders) {
-    Util.rejectNullValue(panelProviders, "panelProviders");
+    Objects.requireNonNull(panelProviders, "panelProviders");
     for (final EntityPanelProvider panelProvider : panelProviders) {
       addSupportPanelProvider(panelProvider);
     }
@@ -709,7 +710,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case the initialization is cancelled
    */
   protected final void initialize(final M applicationModel) {
-    Util.rejectNullValue(applicationModel, "applicationModel");
+    Objects.requireNonNull(applicationModel, "applicationModel");
     this.applicationModel = applicationModel;
     clearEntityPanelProviders();
     setupEntityPanelProviders();
@@ -1284,7 +1285,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     private EntityDependencyTreeNode(final String domainID, final String entityID) {
       super(entityID);
       this.domainID = domainID;
-      Util.rejectNullValue(entityID, "entityID");
+      Objects.requireNonNull(entityID, "entityID");
     }
 
     /**

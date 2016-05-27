@@ -51,6 +51,7 @@ import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A UI component based on the EntityLookupModel.
@@ -97,7 +98,7 @@ public final class EntityLookupField extends JTextField {
    * @param lookupOnKeyRelease if true then lookup is performed on key release, otherwise it is performed on keyPressed.
    */
   public EntityLookupField(final EntityLookupModel lookupModel, final boolean lookupOnKeyRelease) {
-    Util.rejectNullValue(lookupModel, "lookupModel");
+    Objects.requireNonNull(lookupModel, "lookupModel");
     this.model = lookupModel;
     this.settingsPanel = new SettingsPanel(lookupModel);
     linkToModel();

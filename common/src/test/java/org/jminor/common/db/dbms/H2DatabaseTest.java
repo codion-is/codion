@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 public class H2DatabaseTest {
 
-  @Test (expected = IllegalArgumentException.class)
+  @Test (expected = NullPointerException.class)
   public void getSequenceSQLNullSequence() {
     new H2Database("host", "1234", "sid").getSequenceSQL(null);
   }

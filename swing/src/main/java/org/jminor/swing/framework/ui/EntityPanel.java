@@ -5,7 +5,6 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.EventListener;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.EntityUtil;
@@ -58,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
@@ -235,7 +235,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param entityModel the EntityModel
    */
   public EntityPanel(final SwingEntityModel entityModel) {
-    this(entityModel, Entities.getCaption(Util.rejectNullValue(entityModel, "entityModel").getEntityID()));
+    this(entityModel, Entities.getCaption(Objects.requireNonNull(entityModel, "entityModel").getEntityID()));
   }
 
   /**
@@ -304,7 +304,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    */
   public EntityPanel(final SwingEntityModel entityModel, final String caption, final EntityEditPanel editPanel,
                      final EntityTablePanel tablePanel) {
-    Util.rejectNullValue(entityModel, "entityModel");
+    Objects.requireNonNull(entityModel, "entityModel");
     this.entityModel = entityModel;
     this.caption = caption == null ? Entities.getCaption(entityModel.getEntityID()) : caption;
     this.editPanel = editPanel;
@@ -402,7 +402,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @return this entity panel
    */
   public final EntityPanel addDetailPanels(final EntityPanel... detailPanels) {
-    Util.rejectNullValue(detailPanels, "detailPanels");
+    Objects.requireNonNull(detailPanels, "detailPanels");
     for (final EntityPanel detailPanel : detailPanels) {
       addDetailPanel(detailPanel);
     }
@@ -1090,7 +1090,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @throws IllegalStateException in case a master panel has already been set
    */
   protected final void setMasterPanel(final EntityPanel masterPanel) {
-    Util.rejectNullValue(masterPanel, "masterPanel");
+    Objects.requireNonNull(masterPanel, "masterPanel");
     if (this.masterPanel != null) {
       throw new IllegalStateException("Master panel has already been set for " + this);
     }

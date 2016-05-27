@@ -23,7 +23,7 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
   /**
    * Logs in the given user
    * @param user the user to login
-   * @throws IllegalArgumentException in case user is null
+   * @throws NullPointerException in case user is null
    */
   void login(final User user);
 

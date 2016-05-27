@@ -4,10 +4,10 @@
 package org.jminor.swing.common.model.combobox;
 
 import org.jminor.common.model.Item;
-import org.jminor.common.model.Util;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * A ComboBoxModel implementation based on the {@link Item} class.
@@ -43,7 +43,7 @@ public class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<T>> {
    */
   public final int indexOf(final T item) {
     for (int i = 0; i < getSize(); i++) {
-      if (Util.equal(getElementAt(i).getItem(), item)) {
+      if (Objects.equals(getElementAt(i).getItem(), item)) {
         return i;
       }
     }

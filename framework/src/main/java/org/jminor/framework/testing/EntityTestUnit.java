@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 import static org.junit.Assert.*;
@@ -91,7 +92,7 @@ public abstract class EntityTestUnit {
       initializeReferencedEntities(entityID, new HashSet<>());
       Entity testEntity = null;
       if (!Entities.isReadOnly(entityID)) {
-        testEntity = testInsert(Util.rejectNullValue(initializeTestEntity(entityID), "test entity"));
+        testEntity = testInsert(Objects.requireNonNull(initializeTestEntity(entityID), "test entity"));
         assertNotNull(testEntity.toString());
         testUpdate(testEntity);
       }
@@ -142,7 +143,7 @@ public abstract class EntityTestUnit {
    * @return the entity with randomized values
    */
   public static Entity randomize(final Entity entity, final boolean includePrimaryKey, final Map<String, Entity> referenceEntities) {
-    Util.rejectNullValue(entity, ENTITY_PARAM);
+    Objects.requireNonNull(entity, ENTITY_PARAM);
     populateEntity(entity, Entities.getColumnProperties(entity.getEntityID(), includePrimaryKey, false, true),
             new ValueProvider<Property, Object>() {
               @Override
@@ -336,7 +337,7 @@ public abstract class EntityTestUnit {
         assertTrue("Values of property " + property + " should be equal after update ["
                 + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
                 + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]",
-                Util.equal(beforeUpdate, afterUpdate));
+                Objects.equals(beforeUpdate, afterUpdate));
       }
     }
   }
@@ -382,7 +383,7 @@ public abstract class EntityTestUnit {
    * @return a random value
    */
   private static Object getRandomValue(final Property property, final Map<String, Entity> referenceEntities) {
-    Util.rejectNullValue(property, "property");
+    Objects.requireNonNull(property, "property");
     if (property instanceof Property.ForeignKeyProperty) {
       return getReferenceEntity((Property.ForeignKeyProperty) property, referenceEntities);
     }

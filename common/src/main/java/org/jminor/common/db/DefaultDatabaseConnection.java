@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.tools.MethodLogger;
@@ -13,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Objects;
 
 /**
  * A default DatabaseConnection implementation, which wraps a standard JDBC Connection object.
@@ -52,8 +52,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    */
   public DefaultDatabaseConnection(final Database database, final User user,
                                    final int validityCheckTimeout) throws DatabaseException {
-    Util.rejectNullValue(database, "database");
-    Util.rejectNullValue(user, "user");
+    Objects.requireNonNull(database, "database");
+    Objects.requireNonNull(user, "user");
     this.database = database;
     this.user = user;
     this.validityCheckTimeout = validityCheckTimeout;
@@ -83,8 +83,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    */
   public DefaultDatabaseConnection(final Database database, final Connection connection,
                                    final int validityCheckTimeout) throws DatabaseException {
-    Util.rejectNullValue(database, "database");
-    Util.rejectNullValue(connection, "connection");
+    Objects.requireNonNull(database, "database");
+    Objects.requireNonNull(connection, "connection");
     this.database = database;
     this.validityCheckTimeout = validityCheckTimeout;
     initialize(connection);

@@ -7,7 +7,6 @@ import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.model.FilterCriteria;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.DefaultColumnSummaryModel;
@@ -28,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -97,10 +97,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * Instantiates a new table model.
    * @param sortModel the sort model to use
    * @param columnFilterModels the column filter models
-   * @throws IllegalArgumentException in case <code>columnModel</code> is null
+   * @throws NullPointerException in case <code>columnModel</code> is null
    */
   public AbstractFilteredTableModel(final TableSortModel<R, C> sortModel, final Collection<? extends ColumnCriteriaModel<C>> columnFilterModels) {
-    Util.rejectNullValue(sortModel, "sortModel");
+    Objects.requireNonNull(sortModel, "sortModel");
     this.sortModel = sortModel;
     this.columnModel = new SwingFilteredTableColumnModel<>(sortModel.getColumns(), columnFilterModels);
     this.selectionModel = new SwingTableSelectionModel<>(this);

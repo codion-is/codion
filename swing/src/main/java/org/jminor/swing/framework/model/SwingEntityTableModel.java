@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A TableModel implementation for displaying and working with entities.
@@ -138,12 +139,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @param connectionProvider the db provider
    * @param criteriaModel the criteria model
    * @param sortModel the sort model
-   * @throws IllegalArgumentException if <code>criteriaModel</code> is null or the criteria model entityID
-   * does not match the one supplied as parameter
+   * @throws NullPointerException in case criteriaModel is null
+   * @throws IllegalArgumentException if <code>criteriaModel</code> entityID does not match the one supplied as parameter
    */
   public SwingEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider,
                                final TableSortModel<Entity, Property> sortModel, final EntityTableCriteriaModel criteriaModel) {
-    super(sortModel, Util.rejectNullValue(criteriaModel, "criteriaModel").getPropertyFilterModels());
+    super(sortModel, Objects.requireNonNull(criteriaModel, "criteriaModel").getPropertyFilterModels());
     if (!criteriaModel.getEntityID().equals(entityID)) {
       throw new IllegalArgumentException("Entity ID mismatch, criteriaModel: " + criteriaModel.getEntityID()
               + ", tableModel: " + entityID);
@@ -164,7 +165,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final void setEditModel(final SwingEntityEditModel editModel) {
-    Util.rejectNullValue(editModel, "editModel");
+    Objects.requireNonNull(editModel, "editModel");
     if (this.editModel != null) {
       throw new IllegalStateException("Edit model has already been set for table model: " + this);
     }
@@ -230,7 +231,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public SwingEntityTableModel setInsertAction(final InsertAction insertAction) {
-    Util.rejectNullValue(insertAction, "insertAction");
+    Objects.requireNonNull(insertAction, "insertAction");
     this.insertAction = insertAction;
     return this;
   }
@@ -393,7 +394,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public void setForeignKeyCriteriaValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
-    Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
+    Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
     if (criteriaModel.setCriteriaValues(foreignKeyProperty.getPropertyID(), foreignKeyValues)) {
       refresh();
     }
@@ -488,7 +489,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final void update(final List<Entity> entities) throws ValidationException, DatabaseException {
-    Util.rejectNullValue(entities, "entities");
+    Objects.requireNonNull(entities, "entities");
     if (!isUpdateAllowed()) {
       throw new IllegalStateException("Updating is not allowed via this table model");
     }
@@ -603,11 +604,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @param entity the entity
    * @param property the property
    * @return the value of the given property for the given entity for display
-   * @throws IllegalArgumentException in case entity or property is null
+   * @throws NullPointerException in case entity or property is null
    */
   protected Object getValue(final Entity entity, final Property property) {
-    Util.rejectNullValue(entity, "entity");
-    Util.rejectNullValue(property, "property");
+    Objects.requireNonNull(entity, "entity");
+    Objects.requireNonNull(property, "property");
     if (property instanceof Property.ValueListProperty || property instanceof Property.ForeignKeyProperty) {
       return entity.getAsString(property);
     }

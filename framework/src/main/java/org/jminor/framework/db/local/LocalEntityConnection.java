@@ -49,6 +49,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -294,7 +295,7 @@ final class LocalEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public void delete(final EntityCriteria criteria) throws DatabaseException {
-    Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
+    Objects.requireNonNull(criteria, CRITERIA_PARAM_NAME);
     checkReadOnly(criteria.getEntityID());
 
     PreparedStatement statement = null;
@@ -419,7 +420,7 @@ final class LocalEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Object> selectValues(final String propertyID, final EntityCriteria criteria) throws DatabaseException {
-    Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
+    Objects.requireNonNull(criteria, CRITERIA_PARAM_NAME);
     if (Entities.getSelectQuery(criteria.getEntityID()) != null) {
       throw new UnsupportedOperationException("selectValues is not implemented for entities with custom select queries");
     }
@@ -456,7 +457,7 @@ final class LocalEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public int selectRowCount(final EntityCriteria criteria) throws DatabaseException {
-    Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
+    Objects.requireNonNull(criteria, CRITERIA_PARAM_NAME);
     final String selectSQL;
     final String entitySelectQuery = Entities.getSelectQuery(criteria.getEntityID());
     if (entitySelectQuery == null) {
@@ -774,7 +775,7 @@ final class LocalEntityConnection implements EntityConnection {
   }
 
   private List<Entity> doSelectMany(final EntitySelectCriteria criteria, final int currentForeignKeyFetchDepth) throws DatabaseException {
-    Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
+    Objects.requireNonNull(criteria, CRITERIA_PARAM_NAME);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     String selectSQL = null;
@@ -1127,7 +1128,7 @@ final class LocalEntityConnection implements EntityConnection {
    * @return a query for deleting the entities specified by the given criteria
    */
   private static String createDeleteSQL(final EntityCriteria criteria) {
-    Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
+    Objects.requireNonNull(criteria, CRITERIA_PARAM_NAME);
     final String whereClause = criteria.getWhereClause();
     return "delete from " + Entities.getTableName(criteria.getEntityID()) +
             (whereClause.length() > 0 ? WHERE_SPACE_PREFIX + whereClause : "");

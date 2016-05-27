@@ -30,17 +30,17 @@ public final class DefaultEntityLookupModelTest {
   private EntityLookupModel lookupModel;
   private Collection<Property.ColumnProperty> lookupProperties;
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullEntityID() {
     new DefaultEntityLookupModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER, new ArrayList<>());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullConnectionProvider() {
     new DefaultEntityLookupModel(TestDomain.T_EMP, null, new ArrayList<>());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullLookupProperties() {
     new DefaultEntityLookupModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER, null);
   }

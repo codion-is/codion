@@ -24,7 +24,7 @@ public class JasperReportsEntityDataSourceTest {
     TestDomain.init();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullIterator() {
     new JasperReportsEntityDataSource(null);
   }

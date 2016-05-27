@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -71,7 +72,7 @@ public final class EntityUtil {
    * @return a List of entities that have been modified
    */
   public static List<Entity> getModifiedEntities(final Collection<Entity> entities) {
-    Util.rejectNullValue(entities, ENTITIES_PARAM);
+    Objects.requireNonNull(entities, ENTITIES_PARAM);
     final List<Entity> modifiedEntities = new ArrayList<>();
     for (final Entity entity : entities) {
       if (entity.isModified()) {
@@ -88,7 +89,7 @@ public final class EntityUtil {
    * @return the mapped entities
    */
   public static Map<Entity.Key, Entity> mapToKey(final Collection<Entity> entities) {
-    Util.rejectNullValue(entities, ENTITIES_PARAM);
+    Objects.requireNonNull(entities, ENTITIES_PARAM);
     final Map<Entity.Key, Entity> entityMap = new HashMap<>();
     for (final Entity entity : entities) {
       entityMap.put(entity.getKey(), entity);
@@ -111,7 +112,7 @@ public final class EntityUtil {
    * @return a List containing the primary keys of the given entities
    */
   public static List<Entity.Key> getKeys(final Collection<Entity> entities, final boolean originalValue) {
-    Util.rejectNullValue(entities, ENTITIES_PARAM);
+    Objects.requireNonNull(entities, ENTITIES_PARAM);
     final List<Entity.Key> keys = new ArrayList<>(entities.size());
     for (final Entity entity : entities) {
       keys.add(originalValue ? entity.getOriginalKey() : entity.getKey());
@@ -127,7 +128,7 @@ public final class EntityUtil {
    * @return the actual property values of the given keys
    */
   public static <T> Collection<T> getValues(final Collection<Entity.Key> keys) {
-    Util.rejectNullValue(keys, "keys");
+    Objects.requireNonNull(keys, "keys");
     final List<T> list = new ArrayList<>(keys.size());
     for (final Entity.Key key : keys) {
       list.add((T) key.get(key.getFirstProperty().getPropertyID()));
@@ -183,7 +184,7 @@ public final class EntityUtil {
    */
   public static <T> Collection<T> getValues(final Property property, final Collection<Entity> entities,
                                             final boolean includeNullValues) {
-    Util.rejectNullValue(entities, ENTITIES_PARAM);
+    Objects.requireNonNull(entities, ENTITIES_PARAM);
     final List<T> values = new ArrayList<>(entities.size());
     for (final Entity entity : entities) {
       if (includeNullValues) {
@@ -264,7 +265,7 @@ public final class EntityUtil {
    */
   public static Map<Entity.Key, Object> put(final String propertyID, final Object value,
                                             final Collection<Entity> entities) {
-    Util.rejectNullValue(entities, ENTITIES_PARAM);
+    Objects.requireNonNull(entities, ENTITIES_PARAM);
     final Map<Entity.Key, Object> oldValues = new HashMap<>(entities.size());
     for (final Entity entity : entities) {
       oldValues.put(entity.getKey(), entity.put(propertyID, value));
@@ -355,7 +356,7 @@ public final class EntityUtil {
    * @param properties the properties to sort
    */
   public static void sort(final List<? extends Property> properties) {
-    Util.rejectNullValue(properties, "properties");
+    Objects.requireNonNull(properties, "properties");
     final Collator collator = Collator.getInstance();
     Collections.sort(properties, new Comparator<Property>() {
       @Override
@@ -396,7 +397,7 @@ public final class EntityUtil {
    * @return deep copies of the entities, in the same order as they are received
    */
   public static List<Entity> copyEntities(final List<Entity> entities) {
-    Util.rejectNullValue(entities, ENTITIES_PARAM);
+    Objects.requireNonNull(entities, ENTITIES_PARAM);
     final List<Entity> copies = new ArrayList<>(entities.size());
     for (final Entity entity : entities) {
       copies.add((Entity) entity.getCopy());
@@ -472,7 +473,7 @@ public final class EntityUtil {
    * @return the same entity instance
    */
   public static Entity putNull(final Entity entity) {
-    Util.rejectNullValue(entity, "entity");
+    Objects.requireNonNull(entity, "entity");
     for (final Property property : Entities.getProperties(entity.getEntityID(), true)) {
       entity.put(property, null);
     }
@@ -521,7 +522,7 @@ public final class EntityUtil {
    * @return true if the value is missing or the original value differs from the one in the comparison entity
    */
   static boolean isValueMissingOrModified(final Entity entity, final Entity comparison, final String propertyID) {
-    return !entity.containsKey(propertyID) || !Util.equal(comparison.get(propertyID), entity.getOriginal(propertyID));
+    return !entity.containsKey(propertyID) || !Objects.equals(comparison.get(propertyID), entity.getOriginal(propertyID));
   }
 
   /**
@@ -587,8 +588,8 @@ public final class EntityUtil {
      * @param entityID the ID of the entity represented by the given bean class
      */
     public final void setEntityID(final Class beanClass, final String entityID) {
-      Util.rejectNullValue(beanClass, BEAN_CLASS_PARAM);
-      Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
+      Objects.requireNonNull(beanClass, BEAN_CLASS_PARAM);
+      Objects.requireNonNull(entityID, ENTITY_ID_PARAM);
       entityIDMap.put(beanClass, entityID);
     }
 
@@ -597,7 +598,7 @@ public final class EntityUtil {
      * @return the entityID of the entity represented by the given bean class, null if none is specified
      */
     public final String getEntityID(final Class beanClass) {
-      Util.rejectNullValue(beanClass, BEAN_CLASS_PARAM);
+      Objects.requireNonNull(beanClass, BEAN_CLASS_PARAM);
       return entityIDMap.get(beanClass);
     }
 
@@ -607,7 +608,7 @@ public final class EntityUtil {
      * @throws IllegalArgumentException in case no bean class has been defined for the given entityID
      */
     public final Class getBeanClass(final String entityID) {
-      Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
+      Objects.requireNonNull(entityID, ENTITY_ID_PARAM);
       for (final Map.Entry<Class, String> entry : entityIDMap.entrySet()) {
         if (entry.getValue().equals(entityID)) {
           return entry.getKey();
@@ -625,9 +626,9 @@ public final class EntityUtil {
      * @throws NoSuchMethodException if the required setter/getter methods are not found
      */
     public final void setProperty(final Class beanClass, final String propertyID, final String propertyName) throws NoSuchMethodException {
-      Util.rejectNullValue(beanClass, BEAN_CLASS_PARAM);
-      Util.rejectNullValue(propertyID, PROPERTY_ID_PARAM);
-      Util.rejectNullValue(propertyName, PROPERTY_NAME_PARAM);
+      Objects.requireNonNull(beanClass, BEAN_CLASS_PARAM);
+      Objects.requireNonNull(propertyID, PROPERTY_ID_PARAM);
+      Objects.requireNonNull(propertyName, PROPERTY_NAME_PARAM);
       Map<String, GetterSetter> beanPropertyMap = propertyMap.get(beanClass);
       if (beanPropertyMap == null) {
         beanPropertyMap = new HashMap<>();
@@ -644,7 +645,7 @@ public final class EntityUtil {
      * @return a Map mapping bean property names to propertyIDs for the given bean class
      */
     public final Map<String, GetterSetter> getPropertyMap(final Class beanClass) {
-      Util.rejectNullValue(beanClass, BEAN_CLASS_PARAM);
+      Objects.requireNonNull(beanClass, BEAN_CLASS_PARAM);
       return propertyMap.get(beanClass);
     }
 

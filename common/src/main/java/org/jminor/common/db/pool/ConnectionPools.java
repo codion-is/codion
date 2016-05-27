@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnectionProvider;
 import org.jminor.common.db.DatabaseConnections;
@@ -15,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A factory class for providing and managing ConnectionPool instances
@@ -40,8 +40,8 @@ public final class ConnectionPools {
   public static synchronized void initializeConnectionPools(final Class<? extends ConnectionPoolProvider> connectionPoolProviderClass,
                                                             final Database database, final Collection<User> users,
                                                             final int validityCheckTimeout) throws DatabaseException, ClassNotFoundException {
-    Util.rejectNullValue(database, "database");
-    Util.rejectNullValue(users, "users");
+    Objects.requireNonNull(database, "database");
+    Objects.requireNonNull(users, "users");
     for (final User user : users) {
       final ConnectionPoolProvider poolProvider = initializeConnectionPoolProvider(connectionPoolProviderClass, database, user, validityCheckTimeout);
       CONNECTION_POOLS.put(user, poolProvider.createConnectionPool(user, database));

@@ -10,13 +10,13 @@ import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
-import org.jminor.common.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A default ValueMapEditModel implementation, handling value change events and validation
@@ -71,11 +71,11 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
   /** {@inheritDoc} */
   @Override
   public final void setValue(final K key, final V value) {
-    Util.rejectNullValue(key, KEY);
+    Objects.requireNonNull(key, KEY);
     final boolean initialization = !valueMap.containsKey(key);
     final Object oldValue = valueMap.get(key);
     valueMap.put(key, value);
-    if (!Util.equal(value, oldValue)) {
+    if (!Objects.equals(value, oldValue)) {
       notifyValueChange(key, ValueChanges.valueChange(key, value, oldValue, initialization));
     }
   }
@@ -133,7 +133,7 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
   /** {@inheritDoc} */
   @Override
   public final boolean isValid(final K key) {
-    Util.rejectNullValue(key, KEY);
+    Objects.requireNonNull(key, KEY);
     try {
       validator.validate(valueMap, key);
       return true;
@@ -158,7 +158,7 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
   /** {@inheritDoc} */
   @Override
   public final EventObserver<ValueChange<K, ?>> getValueObserver(final K key) {
-    Util.rejectNullValue(key, KEY);
+    Objects.requireNonNull(key, KEY);
     return getValueChangeEvent(key).getObserver();
   }
 

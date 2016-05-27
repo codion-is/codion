@@ -20,35 +20,6 @@ import static org.junit.Assert.*;
 public final class UtilTest {
 
   @Test
-  public void testRejectNullValue() {
-    Util.rejectNullValue("value", "value");
-    try {
-      Util.rejectNullValue(null, "value");
-    }
-    catch (final IllegalArgumentException ignored) {/*ignored*/}
-  }
-
-  @Test
-  public void isEqual() {
-    Object one = null;
-    Object two = null;
-    assertTrue(Util.equal(one, two));
-
-    one = new Object();
-    assertFalse(Util.equal(one, two));
-    two = new Object();
-    assertFalse(Util.equal(one, two));
-
-    two = one;
-    assertTrue(Util.equal(one, two));
-  }
-
-  @Test
-  public void equal() throws Exception {
-    assertTrue("Two null values should be equal", Util.equal(null, null));
-  }
-
-  @Test
   public void getArrayContentsAsString() throws Exception {
     assertEquals("", Util.getArrayContentsAsString(null, true));
     String res = Util.getArrayContentsAsString(new Object[] {1, 2,new Object[] {3, 4}}, false);

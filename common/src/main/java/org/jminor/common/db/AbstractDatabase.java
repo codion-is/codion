@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -95,8 +96,8 @@ public abstract class AbstractDatabase implements Database {
    */
   public AbstractDatabase(final Type databaseType, final String driverClassName, final String host, final String port,
                           final String sid, final boolean embedded) {
-    Util.rejectNullValue(databaseType, "databaseType");
-    Util.rejectNullValue(driverClassName, "driverClassName");
+    Objects.requireNonNull(databaseType, "databaseType");
+    Objects.requireNonNull(driverClassName, "driverClassName");
     loadDriver(driverClassName);
     this.databaseType = databaseType;
     this.driverClassName = driverClassName;
@@ -145,7 +146,7 @@ public abstract class AbstractDatabase implements Database {
   /** {@inheritDoc} */
   @Override
   public final Connection createConnection(final User user) throws DatabaseException {
-    Util.rejectNullValue(user, "user");
+    Objects.requireNonNull(user, "user");
     if (Util.nullOrEmpty(user.getUsername())) {
       throw new IllegalArgumentException("Username must be specified");
     }
@@ -254,7 +255,7 @@ public abstract class AbstractDatabase implements Database {
    * @param driverClassName the class name
    */
   private static void loadDriver(final String driverClassName) {
-    Util.rejectNullValue(driverClassName, "driverClassName");
+    Objects.requireNonNull(driverClassName, "driverClassName");
     try {
       Class.forName(driverClassName);
     }

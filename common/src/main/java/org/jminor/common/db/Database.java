@@ -120,7 +120,7 @@ public interface Database {
    * Returns a query string for retrieving the last automatically generated id from the given id source
    * @param idSource the source for the id, for example a sequence name or in the case of Derby, the name of the table auto generating the value
    * @return a query string for retrieving the last auto-increment value from idSource
-   * @throws IllegalArgumentException in case <code>idSource</code> is required and is null
+   * @throws NullPointerException in case <code>idSource</code> is required and is null
    */
   String getAutoIncrementValueSQL(final String idSource);
 
@@ -128,7 +128,7 @@ public interface Database {
    * @param sequenceName the name of the sequence
    * @return a query for selecting the next value from the given sequence
    * @throws UnsupportedOperationException in case the underlying database does not support sequences
-   * @throws IllegalArgumentException in case <code>sequenceName</code> is null
+   * @throws NullPointerException in case <code>sequenceName</code> is null
    */
   String getSequenceSQL(final String sequenceName);
 

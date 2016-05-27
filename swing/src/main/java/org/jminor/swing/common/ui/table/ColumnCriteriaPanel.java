@@ -12,7 +12,6 @@ import org.jminor.common.Value;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.UiUtil;
@@ -50,6 +49,7 @@ import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * A UI implementation for ColumnCriteriaModel
@@ -141,7 +141,7 @@ public class ColumnCriteriaPanel<K> extends JPanel {
   public ColumnCriteriaPanel(final ColumnCriteriaModel<K> criteriaModel, final boolean includeToggleEnabledButton,
                              final boolean includeToggleAdvancedCriteriaButton, final JComponent upperBoundField,
                              final JComponent lowerBoundField, final SearchType... searchTypes) {
-    Util.rejectNullValue(criteriaModel, "criteriaModel");
+    Objects.requireNonNull(criteriaModel, "criteriaModel");
     this.criteriaModel = criteriaModel;
     this.searchTypes = searchTypes == null ? Arrays.asList(SearchType.values()) : Arrays.asList(searchTypes);
     this.searchTypeCombo = initializeSearchTypeComboBox();
@@ -325,7 +325,7 @@ public class ColumnCriteriaPanel<K> extends JPanel {
     private final ColumnCriteriaModel<?> columnCriteriaModel;
 
     private DefaultInputFieldProvider(final ColumnCriteriaModel<?> columnCriteriaModel) {
-      Util.rejectNullValue(columnCriteriaModel, "columnCriteriaModel");
+      Objects.requireNonNull(columnCriteriaModel, "columnCriteriaModel");
       this.columnCriteriaModel = columnCriteriaModel;
     }
 

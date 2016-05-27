@@ -9,6 +9,7 @@ import org.jminor.common.model.Conjunction;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A factory class for State objects.
@@ -42,7 +43,7 @@ public final class States {
    * @return a new State.AggregateState
    */
   public static State.AggregateState aggregateState(final Conjunction conjunction, final StateObserver... stateObservers) {
-    Util.rejectNullValue(conjunction, "conjunction");
+    Objects.requireNonNull(conjunction, "conjunction");
     return new DefaultAggregateState(conjunction, stateObservers);
   }
 
@@ -193,7 +194,7 @@ public final class States {
 
     @Override
     public void addState(final StateObserver state) {
-      Util.rejectNullValue(state, "state");
+      Objects.requireNonNull(state, "state");
       synchronized (lock) {
         if (findListener(state) == null) {
           final boolean wasActive = isActive();
@@ -205,7 +206,7 @@ public final class States {
 
     @Override
     public void removeState(final StateObserver state) {
-      Util.rejectNullValue(state, "state");
+      Objects.requireNonNull(state, "state");
       synchronized (lock) {
         final boolean wasActive = isActive();
         final AggregateStateListener listener = findListener(state);

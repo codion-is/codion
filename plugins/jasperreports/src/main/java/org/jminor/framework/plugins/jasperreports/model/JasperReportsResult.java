@@ -3,12 +3,12 @@
  */
 package org.jminor.framework.plugins.jasperreports.model;
 
-import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportResult;
 
 import net.sf.jasperreports.engine.JasperPrint;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A Jasper Reports result wrapper.
@@ -18,7 +18,7 @@ public final class JasperReportsResult implements ReportResult<JasperPrint>, Ser
   private final JasperPrint jasperPrint;
 
   public JasperReportsResult(final JasperPrint jasperPrint) {
-    Util.rejectNullValue(jasperPrint, "jasperPrint");
+    Objects.requireNonNull(jasperPrint, "jasperPrint");
     this.jasperPrint = jasperPrint;
   }
 

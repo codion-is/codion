@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A default EntityTableCriteriaModel implementation
@@ -59,7 +60,7 @@ public class DefaultEntityTableCriteriaModel implements EntityTableCriteriaModel
   public DefaultEntityTableCriteriaModel(final String entityID, final EntityConnectionProvider connectionProvider,
                                          final PropertyFilterModelProvider filterModelProvider,
                                          final PropertyCriteriaModelProvider criteriaModelProvider) {
-    Util.rejectNullValue(entityID, entityID);
+    Objects.requireNonNull(entityID, entityID);
     this.entityID = entityID;
     initializeFilterModels(entityID, filterModelProvider);
     initializeColumnPropertyCriteriaModels(entityID, criteriaModelProvider);

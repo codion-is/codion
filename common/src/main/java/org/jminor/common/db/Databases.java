@@ -3,8 +3,6 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.Util;
-
 import java.io.Serializable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,6 +11,7 @@ import java.lang.annotation.Target;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Provides Database implementations based on system settings.
@@ -133,7 +132,7 @@ public final class Databases {
    * @throws IllegalStateException in case a insert hint has already been set for the given table
    */
   public static void setInsertHint(final String tableName, final String insertHint) {
-    Util.rejectNullValue(insertHint, "insertHint");
+    Objects.requireNonNull(insertHint, "insertHint");
     final String currentInsertHint = INSERT_HINTS.get(tableName);
     if (currentInsertHint != null) {
       throw new IllegalStateException("Insert hint already set for table '" + tableName + "': " + currentInsertHint);

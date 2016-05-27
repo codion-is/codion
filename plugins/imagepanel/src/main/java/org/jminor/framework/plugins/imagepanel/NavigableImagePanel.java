@@ -1,6 +1,5 @@
 package org.jminor.framework.plugins.imagepanel;
 
-import org.jminor.common.Util;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.domain.Entity;
 import org.jminor.swing.common.ui.UiUtil;
@@ -33,6 +32,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * <code>NavigableImagePanel</code> is a lightweight container displaying
@@ -340,7 +340,7 @@ public final class NavigableImagePanel extends JPanel {
    */
   public static void showImage(final String imagePath, final JComponent dialogParent,
                                final Collection<String> acceptedFileTypes) throws IOException {
-    Util.rejectNullValue(imagePath, "imagePath");
+    Objects.requireNonNull(imagePath, "imagePath");
     if (imagePath.length() == 0) {
       return;
     }
@@ -387,7 +387,7 @@ public final class NavigableImagePanel extends JPanel {
    * @see NavigableImagePanel#showImage(String, JComponent)
    */
   public static Control getViewImageControl(final EntityTablePanel tablePanel, final String imagePathPropertyID) {
-    Util.rejectNullValue(imagePathPropertyID, "imagePathPropertyID");
+    Objects.requireNonNull(imagePathPropertyID, "imagePathPropertyID");
     return new Control() {
       @Override
       public void actionPerformed(final ActionEvent e) {

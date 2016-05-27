@@ -161,12 +161,12 @@ public final class SwingEntityModelTest
             EntityConnectionProvidersTest.CONNECTION_PROVIDER));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullEntityID() {
     new SwingEntityModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullConnectionProvider() {
     new SwingEntityModel(TestDomain.T_EMP, null);
   }

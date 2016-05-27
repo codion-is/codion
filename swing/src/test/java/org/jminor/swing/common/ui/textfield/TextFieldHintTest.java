@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 
 public class TextFieldHintTest {
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void enableNullTextField() {
     TextFieldHint.enable(null, "test");
   }
@@ -26,7 +26,7 @@ public class TextFieldHintTest {
     TextFieldHint.enable(new JTextField(), "");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void enableNullForegroundColor() {
     TextFieldHint.enable(new JTextField(), "test", null);
   }

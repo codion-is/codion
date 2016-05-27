@@ -7,7 +7,6 @@ import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChange;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -19,6 +18,7 @@ import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 
@@ -67,8 +67,8 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
           getForeignKeyComboBoxModel(EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria<Entity>() {
             @Override
             public boolean include(final Entity item) {
-              return (Util.equal(item.getForeignKey(EMPLOYEE_DEPARTMENT_FK), info.getNewValue())
-                      && !Util.equal(item, getEntityCopy()));
+              return Objects.equals(item.getForeignKey(EMPLOYEE_DEPARTMENT_FK), info.getNewValue())
+                      && !Objects.equals(item, getEntityCopy());
             }
           });
         }

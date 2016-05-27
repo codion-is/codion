@@ -6,7 +6,6 @@ package org.jminor.swing.common.model.table;
 import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.Events;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.table.ColumnCriteriaModel;
 
 import javax.swing.event.ChangeEvent;
@@ -22,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A TableColumnModel handling hidden columns
@@ -138,7 +138,7 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
   /** {@inheritDoc} */
   @Override
   public final TableColumn getTableColumn(final C identifier) {
-    Util.rejectNullValue(identifier, "identifier");
+    Objects.requireNonNull(identifier, "identifier");
     for (final TableColumn column : columns) {
       if (identifier.equals(column.getIdentifier())) {
         return column;
@@ -151,7 +151,7 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
   /** {@inheritDoc} */
   @Override
   public boolean containsColumn(final C identifier) {
-    Util.rejectNullValue(identifier, "identifier");
+    Objects.requireNonNull(identifier, "identifier");
     for (final TableColumn column : columns) {
       if (identifier.equals(column.getIdentifier())) {
         return true;

@@ -12,7 +12,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Conjunction;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;
@@ -69,6 +68,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A UI component based on a {@link EntityEditModel}.
@@ -168,7 +168,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * null or an empty String array will result in no controls being initialized
    */
   public EntityEditPanel(final SwingEntityEditModel editModel, final String... controlKeys) {
-    this.editModel = Util.rejectNullValue(editModel, "editModel");
+    this.editModel = Objects.requireNonNull(editModel, "editModel");
     if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE)) {
       ACTIVE_STATE_GROUP.addState(activeState);
     }

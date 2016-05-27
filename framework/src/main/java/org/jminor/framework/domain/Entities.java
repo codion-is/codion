@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A {@link Entity} factory class
@@ -57,7 +58,7 @@ public final class Entities {
    * @return a new {@link Entity} instance
    */
   public static Entity entity(final Entity.Key key) {
-    return new DefaultEntity(DefaultEntityDefinition.getDefinition(key.getEntityID()), Util.rejectNullValue(key, "key"));
+    return new DefaultEntity(DefaultEntityDefinition.getDefinition(key.getEntityID()), Objects.requireNonNull(key, "key"));
   }
 
   /**
@@ -418,7 +419,7 @@ public final class Entities {
    * in the entity identified by <code>entityID</code>
    */
   public static List<Property> getVisibleProperties(final String entityID) {
-    Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
+    Objects.requireNonNull(entityID, ENTITY_ID_PARAM);
     return DefaultEntityDefinition.getDefinition(entityID).getVisibleProperties();
   }
 
@@ -463,8 +464,8 @@ public final class Entities {
    * @throws IllegalArgumentException in case no such property exists
    */
   public static Property getProperty(final String entityID, final String propertyID) {
-    Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
-    Util.rejectNullValue(propertyID, PROPERTY_ID_PARAM);
+    Objects.requireNonNull(entityID, ENTITY_ID_PARAM);
+    Objects.requireNonNull(propertyID, PROPERTY_ID_PARAM);
     final Property property = getProperties(entityID).get(propertyID);
     if (property == null) {
       throw new IllegalArgumentException("Property '" + propertyID + "' not found in entity: " + entityID);
@@ -480,7 +481,7 @@ public final class Entities {
    * the entity identified by <code>entityID</code>
    */
   public static List<Property> getProperties(final String entityID, final Collection<String> propertyIDs) {
-    Util.rejectNullValue(propertyIDs, PROPERTY_ID_PARAM);
+    Objects.requireNonNull(propertyIDs, PROPERTY_ID_PARAM);
     return getProperties(entityID, propertyIDs.toArray(new String[propertyIDs.size()]));
   }
 
@@ -491,8 +492,8 @@ public final class Entities {
    * the entity identified by <code>entityID</code>
    */
   public static List<Property> getProperties(final String entityID, final String... propertyIDs) {
-    Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
-    Util.rejectNullValue(propertyIDs, PROPERTY_ID_PARAM);
+    Objects.requireNonNull(entityID, ENTITY_ID_PARAM);
+    Objects.requireNonNull(propertyIDs, PROPERTY_ID_PARAM);
     final List<Property> properties = new ArrayList<>();
     for (final String propertyID : propertyIDs) {
       properties.add(getProperty(entityID, propertyID));
@@ -882,7 +883,7 @@ public final class Entities {
     /** {@inheritDoc} */
     @Override
     public String toString(final Entity entity) {
-      Util.rejectNullValue(entity, ENTITY_PARAM);
+      Objects.requireNonNull(entity, ENTITY_PARAM);
       final StringBuilder builder = new StringBuilder();
       for (final ValueProvider valueProvider : valueProviders) {
         builder.append(valueProvider.toString(entity));
@@ -897,7 +898,7 @@ public final class Entities {
      * @return this {@link StringProvider} instance
      */
     public StringProvider addValue(final String propertyID) {
-      Util.rejectNullValue(propertyID, PROPERTY_ID_PARAM);
+      Objects.requireNonNull(propertyID, PROPERTY_ID_PARAM);
       valueProviders.add(new StringValueProvider(propertyID));
       return this;
     }
@@ -909,8 +910,8 @@ public final class Entities {
      * @return this {@link StringProvider} instance
      */
     public StringProvider addFormattedValue(final String propertyID, final Format format) {
-      Util.rejectNullValue(propertyID, PROPERTY_ID_PARAM);
-      Util.rejectNullValue(format, "format");
+      Objects.requireNonNull(propertyID, PROPERTY_ID_PARAM);
+      Objects.requireNonNull(format, "format");
       valueProviders.add(new FormattedValueProvider(propertyID, format));
       return this;
     }
@@ -923,8 +924,8 @@ public final class Entities {
      * @return this {@link StringProvider} instance
      */
     public StringProvider addForeignKeyValue(final String foreignKeyPropertyID, final String propertyID) {
-      Util.rejectNullValue(foreignKeyPropertyID, "foreignKeyPropertyID");
-      Util.rejectNullValue(propertyID, PROPERTY_ID_PARAM);
+      Objects.requireNonNull(foreignKeyPropertyID, "foreignKeyPropertyID");
+      Objects.requireNonNull(propertyID, PROPERTY_ID_PARAM);
       valueProviders.add(new ForeignKeyValueProvider(foreignKeyPropertyID, propertyID));
       return this;
     }
@@ -1029,7 +1030,7 @@ public final class Entities {
      * @param entityID the ID of the entities to validate
      */
     public Validator(final String entityID) {
-      Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
+      Objects.requireNonNull(entityID, ENTITY_ID_PARAM);
       this.entityID = entityID;
     }
 
@@ -1070,7 +1071,7 @@ public final class Entities {
      */
     @Override
     public void validate(final Entity entity) throws ValidationException {
-      Util.rejectNullValue(entity, ENTITY_PARAM);
+      Objects.requireNonNull(entity, ENTITY_PARAM);
       for (final Property property : getProperties(entityID).values()) {
         if (!property.isReadOnly()) {
           validate(entity, property.getPropertyID());
@@ -1081,7 +1082,7 @@ public final class Entities {
     /** {@inheritDoc} */
     @Override
     public void validate(final Entity entity, final String propertyID) throws ValidationException {
-      Util.rejectNullValue(entity, ENTITY_PARAM);
+      Objects.requireNonNull(entity, ENTITY_PARAM);
       final Property property = entity.getProperty(propertyID);
       if (performNullValidation && !isForeignKeyProperty(property)) {
         performNullValidation(entity, property);
@@ -1094,8 +1095,8 @@ public final class Entities {
     /** {@inheritDoc} */
     @Override
     public final void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
-      Util.rejectNullValue(entity, ENTITY_PARAM);
-      Util.rejectNullValue(property, "property");
+      Objects.requireNonNull(entity, ENTITY_PARAM);
+      Objects.requireNonNull(property, "property");
       if (entity.isValueNull(property.getPropertyID())) {
         return;
       }
@@ -1114,8 +1115,8 @@ public final class Entities {
     /** {@inheritDoc} */
     @Override
     public final void performNullValidation(final Entity entity, final Property property) throws NullValidationException {
-      Util.rejectNullValue(entity, ENTITY_PARAM);
-      Util.rejectNullValue(property, "property");
+      Objects.requireNonNull(entity, ENTITY_PARAM);
+      Objects.requireNonNull(property, "property");
       if (!isNullable(entity, property.getPropertyID()) && entity.isValueNull(property.getPropertyID())) {
         if ((entity.getKey().isNull() || entity.getOriginalKey().isNull()) && !(property instanceof Property.ForeignKeyProperty)) {
           //a new entity being inserted, allow null for columns with default values and auto generated primary key values

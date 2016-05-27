@@ -11,6 +11,7 @@ import javax.swing.event.DocumentEvent;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.Objects;
 
 /**
  * Implements a hint text for text fields, that is, text that is shown
@@ -30,11 +31,11 @@ public final class TextFieldHint {
    * @param hintForegroundColor the font color for the hint text
    */
   private TextFieldHint(final JTextField txtField, final String hintText, final Color hintForegroundColor) {
-    Util.rejectNullValue(txtField, "txtField");
+    Objects.requireNonNull(txtField, "txtField");
     if (Util.nullOrEmpty(hintText)) {
       throw new IllegalArgumentException("Hint text is null or empty");
     }
-    Util.rejectNullValue(hintForegroundColor, "hintForegroundColor");
+    Objects.requireNonNull(hintForegroundColor, "hintForegroundColor");
     this.txtField = txtField;
     this.hintText = hintText;
     this.defaultForegroundColor = txtField.getForeground();

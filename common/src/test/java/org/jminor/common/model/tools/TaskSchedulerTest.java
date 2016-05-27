@@ -29,17 +29,17 @@ public class TaskSchedulerTest {
     new TaskScheduler(runnable, 1, -1, TimeUnit.SECONDS);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullTask() {
     new TaskScheduler(null, 1, 1, TimeUnit.SECONDS);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullTimUnit() {
     new TaskScheduler(runnable, 1, 1, null);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullThreadFactory() {
     new TaskScheduler(runnable, 1, 1, TimeUnit.SECONDS, null);
   }

@@ -102,7 +102,7 @@ public final class DefaultEntityEditModelTest {
     new TestEntityEditModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullConnectionProvider() {
     new TestEntityEditModel("entityID", null);
   }

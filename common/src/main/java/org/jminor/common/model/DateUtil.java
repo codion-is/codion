@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * A static utility class for date handling.<br>
@@ -121,7 +122,7 @@ public final class DateUtil {
    * @param fields the fields to floor
    */
   public static void floorFields(final Calendar calendar, final Integer... fields) {
-    Util.rejectNullValue(calendar, "calendar");
+    Objects.requireNonNull(calendar, "calendar");
     if (fields != null) {
       for (final Integer field : fields) {
         calendar.set(field, 0);
@@ -303,8 +304,8 @@ public final class DateUtil {
    * @return the number of days in the given interval, including the from and to dates
    */
   public static int numberOfDaysInRange(final Date from, final Date to) {
-    Util.rejectNullValue(from, "from");
-    Util.rejectNullValue(to, "to");
+    Objects.requireNonNull(from, "from");
+    Objects.requireNonNull(to, "to");
     final Calendar fromCalendar = Calendar.getInstance();
     fromCalendar.setTime(from);
     final Calendar toCalendar = Calendar.getInstance();
@@ -343,7 +344,7 @@ public final class DateUtil {
    * @return a String representing the mask to use in JFormattedTextFields, i.e. "##-##-####"
    */
   public static String getDateMask(final SimpleDateFormat dateFormat) {
-    Util.rejectNullValue(dateFormat, "dateFormat");
+    Objects.requireNonNull(dateFormat, "dateFormat");
     final String datePattern = dateFormat.toPattern();
     final StringBuilder stringBuilder = new StringBuilder(datePattern.length());
     for (final Character character : datePattern.toCharArray()) {

@@ -8,7 +8,6 @@ import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.Util;
 import org.jminor.swing.common.ui.UiUtil;
 
 import javax.swing.AbstractAction;
@@ -21,6 +20,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.Objects;
 
 /**
  * A panel for presenting a InputProvider.
@@ -44,7 +44,7 @@ public final class InputProviderPanel<T, K extends JComponent> extends JPanel im
    * @param inputProvider the InputProvider to use
    */
   public InputProviderPanel(final String caption, final InputProvider<T, K> inputProvider) {
-    Util.rejectNullValue(inputProvider, "inputProvider");
+    Objects.requireNonNull(inputProvider, "inputProvider");
     this.inputProvider = inputProvider;
     this.okButton = createButton(Messages.get(Messages.OK), Messages.get(Messages.OK_MNEMONIC), JOptionPane.OK_OPTION);
     this.cancelButton = createButton(Messages.get(Messages.CANCEL), Messages.get(Messages.CANCEL_MNEMONIC), JOptionPane.CANCEL_OPTION);

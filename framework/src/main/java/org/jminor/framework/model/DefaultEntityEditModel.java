@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A default {@link EntityEditModel} implementation
@@ -135,8 +136,8 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
    */
   public DefaultEntityEditModel(final String entityID, final EntityConnectionProvider connectionProvider, final Entity.Validator validator) {
     super(Entities.entity(entityID), validator);
-    Util.rejectNullValue(entityID, "entityID");
-    Util.rejectNullValue(connectionProvider, "connectionProvider");
+    Objects.requireNonNull(entityID, "entityID");
+    Objects.requireNonNull(connectionProvider, "connectionProvider");
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
     this.readOnly = Entities.isReadOnly(entityID);
@@ -379,7 +380,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
   /** {@inheritDoc} */
   @Override
   public final List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException {
-    Util.rejectNullValue(entities, ENTITIES);
+    Objects.requireNonNull(entities, ENTITIES);
     if (entities.isEmpty()) {
       return Collections.emptyList();
     }
@@ -399,7 +400,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
   /** {@inheritDoc} */
   @Override
   public final List<Entity> update(final List<Entity> entities) throws DatabaseException, ValidationException {
-    Util.rejectNullValue(entities, ENTITIES);
+    Objects.requireNonNull(entities, ENTITIES);
     if (entities.isEmpty()) {
       return Collections.emptyList();
     }
@@ -440,7 +441,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
   /** {@inheritDoc} */
   @Override
   public final List<Entity> delete(final List<Entity> entities) throws DatabaseException {
-    Util.rejectNullValue(entities, ENTITIES);
+    Objects.requireNonNull(entities, ENTITIES);
     if (entities.isEmpty()) {
       return Collections.emptyList();
     }
@@ -515,14 +516,14 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
   /** {@inheritDoc} */
   @Override
   public final EntityLookupModel getForeignKeyLookupModel(final String foreignKeyPropertyID) {
-    Util.rejectNullValue(foreignKeyPropertyID, FOREIGN_KEY_PROPERTY_ID);
+    Objects.requireNonNull(foreignKeyPropertyID, FOREIGN_KEY_PROPERTY_ID);
     return getForeignKeyLookupModel(Entities.getForeignKeyProperty(entityID, foreignKeyPropertyID));
   }
 
   /** {@inheritDoc} */
   @Override
   public final EntityLookupModel getForeignKeyLookupModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Util.rejectNullValue(foreignKeyProperty, FOREIGN_KEY_PROPERTY);
+    Objects.requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY);
     EntityLookupModel entityLookupModel = entityLookupModels.get(foreignKeyProperty);
     if (entityLookupModel == null) {
       entityLookupModel = createForeignKeyLookupModel(foreignKeyProperty);
@@ -838,7 +839,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
   }
 
   private boolean valueModified(final Property property) {
-    return !Util.equal(getValue(property.getPropertyID()), getDefaultValue(property));
+    return !Objects.equals(getValue(property.getPropertyID()), getDefaultValue(property));
   }
 
   private void bindEventsInternal() {

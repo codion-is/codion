@@ -63,6 +63,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A UI component based on a FilteredTableModel.
@@ -177,7 +178,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * the column filter models found in the table model
    */
   public FilteredTablePanel(final FilteredTableModel<R, C> tableModel, final ColumnCriteriaPanelProvider<C> criteriaPanelProvider) {
-    Util.rejectNullValue(tableModel, "tableModel");
+    Objects.requireNonNull(tableModel, "tableModel");
     this.tableModel = tableModel;
     this.searchPanelProvider = criteriaPanelProvider;
     this.table = initializeJTable();

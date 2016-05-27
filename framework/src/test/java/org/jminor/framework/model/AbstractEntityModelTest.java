@@ -9,7 +9,6 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -23,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.Assert.*;
 
@@ -69,7 +69,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     ((FilteredModel<Entity>) deptTableModel).setFilterCriteria(new FilterCriteria<Entity>() {
       @Override
       public boolean include(final Entity item) {
-        return !Util.equal(80, item.get(TestDomain.DEPARTMENT_ID));
+        return !Objects.equals(80, item.get(TestDomain.DEPARTMENT_ID));
       }
     });
 
@@ -106,7 +106,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     assertTrue(departmentModel.getTableModel().getRowCount() == 0);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullEditModelNullTableModel() {
     new DefaultEntityModel((DefaultEntityEditModel) null, null);
   }

@@ -178,7 +178,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertNull(tableModel.getEntityByKey(pk2));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void setEditModelNullValue() {
     final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.setEditModel(null);

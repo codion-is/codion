@@ -7,12 +7,12 @@ import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.TaskScheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -55,7 +55,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
    * @param scheduleValidityCheck if true then a connection validity check is run every 10 seconds
    */
   public AbstractEntityConnectionProvider(final User user, final boolean scheduleValidityCheck) {
-    Util.rejectNullValue(user, "user");
+    Objects.requireNonNull(user, "user");
     this.user = user;
     this.scheduleValidityCheck = scheduleValidityCheck;
     if (this.scheduleValidityCheck) {
@@ -78,7 +78,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   /** {@inheritDoc} */
   @Override
   public final synchronized void setUser(final User user) {
-    if (Util.equal(user, this.user)) {
+    if (Objects.equals(user, this.user)) {
       return;
     }
     disconnect();

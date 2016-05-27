@@ -4,7 +4,6 @@
 package org.jminor.swing.common.ui;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.Util;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -20,6 +19,7 @@ import javax.swing.text.PlainDocument;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.util.Objects;
 
 /**
  * A panel that includes a JTextField in a BorderLayout.CENTER position and a button in BorderLayout.EAST
@@ -39,7 +39,7 @@ public final class TextInputPanel extends JPanel {
    * Instantiates a new TextInputPanel.
    * @param textField the text field
    * @param dialogTitle the input dialog title
-   * @throws IllegalArgumentException in case textComponent is null
+   * @throws NullPointerException in case textComponent is null
    */
   public TextInputPanel(final JTextField textField, final String dialogTitle) {
     this(textField, dialogTitle, null);
@@ -50,7 +50,7 @@ public final class TextInputPanel extends JPanel {
    * @param textField the text field
    * @param dialogTitle the input dialog title
    * @param txtAreaSize the input text area size
-   * @throws IllegalArgumentException in case textComponent is null
+   * @throws NullPointerException in case textComponent is null
    */
   public TextInputPanel(final JTextField textField, final String dialogTitle,
                         final Dimension txtAreaSize) {
@@ -63,11 +63,11 @@ public final class TextInputPanel extends JPanel {
    * @param dialogTitle the input dialog title
    * @param txtAreaSize the input text area size
    * @param buttonFocusable if true then the input button is focusable
-   * @throws IllegalArgumentException in case textComponent is null
+   * @throws NullPointerException in case textComponent is null
    */
   public TextInputPanel(final JTextField textField, final String dialogTitle,
                         final Dimension txtAreaSize, final boolean buttonFocusable) {
-    Util.rejectNullValue(textField, "textComponent");
+    Objects.requireNonNull(textField, "textComponent");
     this.dialogTitle = dialogTitle;
     this.textField = textField;
     this.txtAreaSize = txtAreaSize == null ? UiUtil.getScreenSizeRatio(DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO) : txtAreaSize;
@@ -92,7 +92,7 @@ public final class TextInputPanel extends JPanel {
 
   /**
    * @param text the text to set
-   * @throws IllegalArgumentException in case the text length exceeds maxLength
+   * @throws NullPointerException in case the text length exceeds maxLength
    * @see #getMaxLength()
    */
   public void setText(final String text) {

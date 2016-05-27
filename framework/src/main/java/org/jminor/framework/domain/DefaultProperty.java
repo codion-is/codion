@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A default Property implementation
@@ -135,7 +136,7 @@ class DefaultProperty implements Property {
    * @param caption the caption of this property, if this is null then this property is defined as hidden
    */
   DefaultProperty(final String propertyID, final int type, final String caption) {
-    Util.rejectNullValue(propertyID, "propertyID");
+    Objects.requireNonNull(propertyID, "propertyID");
     this.propertyID = propertyID;
     this.hashCode = propertyID.hashCode();
     this.type = type;
@@ -416,7 +417,7 @@ class DefaultProperty implements Property {
   /** {@inheritDoc} */
   @Override
   public final Property setFormat(final Format format) {
-    Util.rejectNullValue(format, "format");
+    Objects.requireNonNull(format, "format");
     if (isNumerical() && !(format instanceof NumberFormat)) {
       throw new IllegalArgumentException("NumberFormat expected for numerical property: " + propertyID);
     }
@@ -576,7 +577,7 @@ class DefaultProperty implements Property {
 
     @Override
     public ColumnProperty setColumnName(final String columnName) {
-      this.columnName = Util.rejectNullValue(columnName, "columnName");
+      this.columnName = Objects.requireNonNull(columnName, "columnName");
       return this;
     }
 
@@ -746,7 +747,7 @@ class DefaultProperty implements Property {
 
     @Override
     public final ColumnProperty setValueConverter(final ValueConverter<Object, Object> valueConverter) {
-      Util.rejectNullValue(valueConverter, "valueConverter");
+      Objects.requireNonNull(valueConverter, "valueConverter");
       this.valueConverter = valueConverter;
       return this;
     }
@@ -926,7 +927,7 @@ class DefaultProperty implements Property {
     DefaultForeignKeyProperty(final String propertyID, final String caption, final String referencedEntityID,
                               final ColumnProperty[] referenceProperties, final String[] referencedPropertyIDs) {
       super(propertyID, Types.REF, caption);
-      Util.rejectNullValue(referencedEntityID, "referencedEntityID");
+      Objects.requireNonNull(referencedEntityID, "referencedEntityID");
       validateParameters(propertyID, referencedEntityID, referenceProperties, referencedPropertyIDs);
       for (int i = 0; i < referenceProperties.length; i++) {
         final ColumnProperty referenceProperty = referenceProperties[i];
@@ -1012,7 +1013,7 @@ class DefaultProperty implements Property {
         throw new IllegalArgumentException("No reference properties specified");
       }
       for (final Property referenceProperty : referenceProperties) {
-        Util.rejectNullValue(referenceProperty, "referenceProperty");
+        Objects.requireNonNull(referenceProperty, "referenceProperty");
         if (referenceProperty.getPropertyID().equals(propertyID)) {
           throw new IllegalArgumentException(referencedEntityID + ", reference propertyID is the same as parent propertyID: " + propertyID);
         }
@@ -1256,10 +1257,10 @@ class DefaultProperty implements Property {
 
     @Override
     public Boolean fromColumnValue(final Object columnValue) {
-      if (Util.equal(trueValue, columnValue)) {
+      if (Objects.equals(trueValue, columnValue)) {
         return true;
       }
-      else if (Util.equal(falseValue, columnValue)) {
+      else if (Objects.equals(falseValue, columnValue)) {
         return false;
       }
 

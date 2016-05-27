@@ -50,6 +50,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A default UI component for the LoadTestModel class.
@@ -85,7 +86,7 @@ public final class LoadTestPanel extends JPanel {
    * @param pluginPanel a panel to add as a plugin panel
    */
   public LoadTestPanel(final LoadTest loadTestModel, final JPanel pluginPanel) {
-    Util.rejectNullValue(loadTestModel, "loadTestModel");
+    Objects.requireNonNull(loadTestModel, "loadTestModel");
     this.loadTestModel = loadTestModel;
     this.pluginPanel = pluginPanel;
     this.scenarioPanel = initializeScenarioPanel();

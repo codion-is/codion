@@ -7,6 +7,7 @@ import org.jminor.common.Util;
 import org.jminor.common.db.AbstractDatabase;
 
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -40,14 +41,14 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getAutoIncrementValueSQL(final String idSource) {
-    Util.rejectNullValue(idSource, "idSource");
+    Objects.requireNonNull(idSource, "idSource");
     return "select currval('" + idSource + "')";
   }
 
   /** {@inheritDoc} */
   @Override
   public String getSequenceSQL(final String sequenceName) {
-    Util.rejectNullValue(sequenceName, "sequenceName");
+    Objects.requireNonNull(sequenceName, "sequenceName");
     return "select nextval('" + sequenceName + "')";
   }
 

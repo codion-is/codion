@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db.criteria;
 
-import org.jminor.common.Util;
 import org.jminor.common.model.Conjunction;
 
 import java.io.IOException;
@@ -15,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A factory class for Criteria instances
@@ -120,7 +120,7 @@ public final class CriteriaUtil {
    * @param criteriaString the criteria string without the WHERE keyword
    * @param <T> the criteria key type
    * @return a new Criteria instance
-   * @throws IllegalArgumentException in case the criteria string is null
+   * @throws NullPointerException in case the criteria string is null
    */
   public static <T> Criteria<T> stringCriteria(final String criteriaString) {
     return stringCriteria(criteriaString, Collections.emptyList(), Collections.<T>emptyList());
@@ -133,7 +133,7 @@ public final class CriteriaUtil {
    * @param keys the keys required by this criteria string, in the same order as their respective values
    * @param <T> the criteria key type
    * @return a new Criteria instance
-   * @throws IllegalArgumentException in case any of the parameters are null
+   * @throws NullPointerException in case any of the parameters are null
    */
   public static <T> Criteria<T> stringCriteria(final String criteriaString, final List values, final List<T> keys) {
     return new StringCriteria<>(criteriaString, values, keys);
@@ -230,9 +230,9 @@ public final class CriteriaUtil {
     private List<T> keys;
 
     private StringCriteria(final String criteriaString, final List values, final List<T> keys) {
-      this.criteriaString = Util.rejectNullValue(criteriaString, "criteriaString");
-      this.values = Util.rejectNullValue(values, "values");
-      this.keys = Util.rejectNullValue(keys, "keys");
+      this.criteriaString = Objects.requireNonNull(criteriaString, "criteriaString");
+      this.values = Objects.requireNonNull(values, "values");
+      this.keys = Objects.requireNonNull(keys, "keys");
     }
 
     @Override

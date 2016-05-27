@@ -41,6 +41,7 @@ import java.text.DateFormat;
 import java.text.Format;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * A factory class for Value instances based on UI components
@@ -393,7 +394,7 @@ public final class UiValues {
 
     private DateUIValue(final JFormattedTextField textComponent, final Format format, final int sqlType,
                         final boolean immediateUpdate) {
-      super(textComponent, Util.rejectNullValue(format, "format"), immediateUpdate);
+      super(textComponent, Objects.requireNonNull(format, "format"), immediateUpdate);
       if (sqlType != Types.DATE && sqlType != Types.TIMESTAMP && sqlType != Types.TIME) {
         throw new IllegalArgumentException("DateUIValue only applicable to: Types.DATE, Types.TIMESTAMP and Types.TIME");
       }

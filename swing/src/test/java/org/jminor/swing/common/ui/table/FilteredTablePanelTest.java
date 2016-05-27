@@ -25,7 +25,7 @@ public class FilteredTablePanelTest {
     assertNotNull(panel.getSearchField());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullTableModel() {
     new FilteredTablePanel<String, Integer>(null, null);
   }

@@ -11,7 +11,6 @@ import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
-import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
 import org.jminor.common.model.DateUtil;
@@ -21,6 +20,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.Format;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -67,7 +67,7 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
    */
   public DefaultColumnCriteriaModel(final K columnIdentifier, final int type, final String wildcard,
                                     final Format format) {
-    Util.rejectNullValue(columnIdentifier, "columnIdentifier");
+    Objects.requireNonNull(columnIdentifier, "columnIdentifier");
     this.columnIdentifier = columnIdentifier;
     this.type = type;
     this.wildcard = wildcard;
@@ -191,7 +191,7 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
   /** {@inheritDoc} */
   @Override
   public final void setSearchType(final SearchType searchType) {
-    Util.rejectNullValue(searchType, "searchType");
+    Objects.requireNonNull(searchType, "searchType");
     checkLock();
     searchTypeValue.set(searchType);
   }

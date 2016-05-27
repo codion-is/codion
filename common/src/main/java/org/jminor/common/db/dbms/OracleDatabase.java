@@ -10,6 +10,7 @@ import org.jminor.common.i18n.Messages;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -71,14 +72,14 @@ public final class OracleDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getAutoIncrementValueSQL(final String idSource) {
-    Util.rejectNullValue(idSource, "idSource");
+    Objects.requireNonNull(idSource, "idSource");
     return "select " + idSource + ".currval from dual";
   }
 
   /** {@inheritDoc} */
   @Override
   public String getSequenceSQL(final String sequenceName) {
-    Util.rejectNullValue(sequenceName, "sequenceName");
+    Objects.requireNonNull(sequenceName, "sequenceName");
     return "select " + sequenceName + ".nextval from dual";
   }
 

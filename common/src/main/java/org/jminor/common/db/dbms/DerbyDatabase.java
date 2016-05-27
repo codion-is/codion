@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -63,7 +64,7 @@ public final class DerbyDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getAutoIncrementValueSQL(final String idSource) {
-    Util.rejectNullValue(idSource, "idSource");
+    Objects.requireNonNull(idSource, "idSource");
     return AUTO_INCREMENT_QUERY + idSource;
   }
 

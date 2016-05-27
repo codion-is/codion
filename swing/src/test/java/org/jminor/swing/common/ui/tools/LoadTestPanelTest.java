@@ -23,7 +23,7 @@ public class LoadTestPanelTest {
     model.exit();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullModel() {
     new LoadTestPanel(null);
   }

@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A static utility class.
@@ -184,8 +185,8 @@ public final class DatabaseUtil {
    * @return true if the connection is valid
    */
   public static boolean isValid(final Connection connection, final Database database, final int timeoutInSeconds) {
-    Util.rejectNullValue(connection, "connection");
-    Util.rejectNullValue(database, "database");
+    Objects.requireNonNull(connection, "connection");
+    Objects.requireNonNull(database, "database");
     try {
       if (database.supportsIsValid()) {
         return connection.isValid(timeoutInSeconds);

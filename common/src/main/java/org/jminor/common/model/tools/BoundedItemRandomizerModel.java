@@ -3,10 +3,9 @@
  */
 package org.jminor.common.model.tools;
 
-import org.jminor.common.Util;
-
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Objects;
 
 /**
  * A ItemRandomizer with the added constraint that the total item weights can not exceed a defined maximum.
@@ -42,7 +41,7 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
     if (boundedWeight <= 0) {
       throw new IllegalArgumentException("Bounded weight must be a positive integer");
     }
-    Util.rejectNullValue(items, "items");
+    Objects.requireNonNull(items, "items");
     if (items.isEmpty()) {
       throw new IllegalArgumentException("Items must not be empty");
     }

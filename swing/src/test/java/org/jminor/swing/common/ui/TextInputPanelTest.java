@@ -26,7 +26,7 @@ public class TextInputPanelTest {
     assertEquals("just", txtField.getText());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullTextComponent() {
     new TextInputPanel(null, "");
   }

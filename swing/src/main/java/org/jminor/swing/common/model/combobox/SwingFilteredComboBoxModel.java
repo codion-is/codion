@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -318,7 +319,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   @Override
   public final void setSelectedItem(final Object anItem) {
     final T toSelect = translateSelectionItem(anItem);
-    if (!allowSelectionChange(toSelect) || Util.equal(selectedItem, toSelect)) {
+    if (!allowSelectionChange(toSelect) || Objects.equals(selectedItem, toSelect)) {
       return;
     }
 
@@ -348,14 +349,14 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   /** {@inheritDoc} */
   @Override
   public final void addListDataListener(final ListDataListener listener) {
-    Util.rejectNullValue(listener, "listener");
+    Objects.requireNonNull(listener, "listener");
     listDataListeners.add(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeListDataListener(final ListDataListener listener) {
-    Util.rejectNullValue(listener, "listener");
+    Objects.requireNonNull(listener, "listener");
     listDataListeners.remove(listener);
   }
 

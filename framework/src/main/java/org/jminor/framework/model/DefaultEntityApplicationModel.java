@@ -4,13 +4,13 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnectionProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A central application model class.
@@ -24,10 +24,10 @@ public abstract class DefaultEntityApplicationModel<M extends DefaultEntityModel
   /**
    * Instantiates a new DefaultEntityApplicationModel
    * @param connectionProvider the EntityConnectionProvider instance
-   * @throws IllegalArgumentException in case connectionProvider is null
+   * @throws NullPointerException in case connectionProvider is null
    */
   public DefaultEntityApplicationModel(final EntityConnectionProvider connectionProvider) {
-    Util.rejectNullValue(connectionProvider, "connectionProvider");
+    Objects.requireNonNull(connectionProvider, "connectionProvider");
     this.connectionProvider = connectionProvider;
     try {
       loadDomainModel();
@@ -40,7 +40,7 @@ public abstract class DefaultEntityApplicationModel<M extends DefaultEntityModel
   /** {@inheritDoc} */
   @Override
   public final void login(final User user) {
-    Util.rejectNullValue(user, "user");
+    Objects.requireNonNull(user, "user");
     connectionProvider.setUser(user);
     for (final M entityModel : entityModels) {
       entityModel.refresh();
@@ -71,7 +71,7 @@ public abstract class DefaultEntityApplicationModel<M extends DefaultEntityModel
   /** {@inheritDoc} */
   @Override
   public final void addEntityModels(final M... entityModels) {
-    Util.rejectNullValue(entityModels, "entityModels");
+    Objects.requireNonNull(entityModels, "entityModels");
     for (final M entityModel : entityModels) {
       addEntityModel(entityModel);
     }

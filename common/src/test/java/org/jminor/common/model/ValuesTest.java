@@ -14,6 +14,7 @@ import org.jminor.common.Values;
 
 import org.junit.Test;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
@@ -28,7 +29,7 @@ public class ValuesTest {
   }
 
   public void setIntegerValue(final Integer integerValue) {
-    if (!Util.equal(this.integerValue, integerValue)) {
+    if (!Objects.equals(this.integerValue, integerValue)) {
       this.integerValue = integerValue;
       integerValueChange.fire(integerValue);
     }
@@ -175,7 +176,7 @@ public class ValuesTest {
     Values.beanValue(this, "nonexistent", Integer.class, integerValueChange.getObserver());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void beanValueNoOwner() {
     Values.beanValue(null, "integerValue", Integer.class, integerValueChange.getObserver());
   }
@@ -185,7 +186,7 @@ public class ValuesTest {
     Values.beanValue(this, null, Integer.class, integerValueChange.getObserver());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void beanValueNoValueClass() {
     Values.beanValue(this, "integerValue", null, integerValueChange.getObserver());
   }

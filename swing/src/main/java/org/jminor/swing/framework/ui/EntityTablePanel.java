@@ -96,6 +96,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * The EntityTablePanel is a UI class based on the EntityTableModel class.
@@ -783,7 +784,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public static Collection<Entity> selectEntities(final SwingEntityTableModel lookupModel, final JComponent dialogOwner,
                                                   final boolean singleSelection, final String dialogTitle,
                                                   final Dimension preferredSize) {
-    Util.rejectNullValue(lookupModel, "lookupModel");
+    Objects.requireNonNull(lookupModel, "lookupModel");
     final Collection<Entity> selected = new ArrayList<>();
     final JDialog dialog = new JDialog(UiUtil.getParentWindow(dialogOwner), dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

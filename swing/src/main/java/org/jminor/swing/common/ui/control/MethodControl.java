@@ -8,11 +8,11 @@ import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.StateObserver;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.Util;
 
 import java.awt.event.ActionEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * A Control class for binding an action to a parameterless method via reflection.
@@ -45,8 +45,8 @@ public final class MethodControl extends Control {
    */
   public MethodControl(final String name, final Object owner, final String methodName, final StateObserver enabledState) {
     super(name, enabledState);
-    Util.rejectNullValue(owner, "owner");
-    Util.rejectNullValue(methodName, "methodName");
+    Objects.requireNonNull(owner, "owner");
+    Objects.requireNonNull(methodName, "methodName");
     this.owner = owner;
     try {
       this.method = owner.getClass().getMethod(methodName);

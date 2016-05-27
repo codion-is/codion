@@ -75,7 +75,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final void setEditModel(final FXEntityEditModel editModel) {
-    Util.rejectNullValue(editModel, "editModel");
+    Objects.requireNonNull(editModel, "editModel");
     if (this.editModel != null) {
       throw new IllegalStateException("Edit model has already been set");
     }

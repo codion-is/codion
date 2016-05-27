@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Executors;
@@ -98,7 +99,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
             sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     try {
-      this.database = Util.rejectNullValue(database, "database");
+      this.database = Objects.requireNonNull(database, "database");
       this.registryPort = registryPort;
       this.sslEnabled = sslEnabled;
       this.clientLoggingEnabled = clientLoggingEnabled;

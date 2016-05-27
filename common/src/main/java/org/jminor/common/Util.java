@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A base utility class with no external dependencies
@@ -51,8 +52,8 @@ public class Util {
    * @throws IOException in case an IOException occurs
    */
   public static String getTextFileContents(final Class resourceClass, final String resourceName, final Charset charset) throws IOException {
-    rejectNullValue(resourceClass, "resourceClass");
-    rejectNullValue(resourceName, "resourceName");
+    Objects.requireNonNull(resourceClass, "resourceClass");
+    Objects.requireNonNull(resourceName, "resourceName");
     final InputStream inputStream = resourceClass.getResourceAsStream(resourceName);
     if (inputStream == null) {
       throw new FileNotFoundException("Resource not found: '" + resourceName + "'");
@@ -69,7 +70,7 @@ public class Util {
    * @throws IOException in case of an exception
    */
   public static String getTextFileContents(final String filename, final Charset charset) throws IOException {
-    rejectNullValue(filename, "filename");
+    Objects.requireNonNull(filename, "filename");
     return getTextFileContents(new FileInputStream(new File(filename)), charset);
   }
 
@@ -81,7 +82,7 @@ public class Util {
    * @throws IOException in case of an exception
    */
   public static String getTextFileContents(final InputStream inputStream, final Charset charset) throws IOException {
-    rejectNullValue(inputStream, "inputStream");
+    Objects.requireNonNull(inputStream, "inputStream");
     final StringBuilder contents = new StringBuilder();
     try (final BufferedReader input = new BufferedReader(new InputStreamReader(inputStream, charset))) {
       String line = input.readLine();
@@ -93,22 +94,6 @@ public class Util {
     }
 
     return contents.toString();
-  }
-
-  /**
-   * Throws an IllegalArgumentException complaining about <code>valueName</code> being null
-   * @param <T> type value type
-   * @param value the value to check
-   * @param valueName the name of the value being checked
-   * @throws IllegalArgumentException if value is null
-   * @return the value in case it was not null
-   */
-  public static <T> T rejectNullValue(final T value, final String valueName) {
-    if (value == null) {
-      throw new IllegalArgumentException(valueName + " is null");
-    }
-
-    return value;
   }
 
   /**
@@ -126,16 +111,6 @@ public class Util {
     }
 
     return false;
-  }
-
-  /**
-   * True if the given objects are equal or if both are null
-   * @param one the first object
-   * @param two the second object
-   * @return true if the given objects are equal or if both are null
-   */
-  public static boolean equal(final Object one, final Object two) {
-    return one == null && two == null || !(one == null ^ two == null) && one.equals(two);
   }
 
   /**
@@ -181,8 +156,8 @@ public class Util {
    * @return a LinkedHashMap with the values mapped to their respective key values, respecting the iteration order of the given collection
    */
   public static <K, V> LinkedHashMap<K, Collection<V>> map(final Collection<V> values, final MapKeyProvider<K, V> keyProvider) {
-    rejectNullValue(values, "values");
-    rejectNullValue(keyProvider, "keyProvider");
+    Objects.requireNonNull(values, "values");
+    Objects.requireNonNull(keyProvider, "keyProvider");
     final LinkedHashMap<K, Collection<V>> map = new LinkedHashMap<>(values.size());
     for (final V value : values) {
       map(map, value, keyProvider.getKey(value));
@@ -196,7 +171,7 @@ public class Util {
    * @return true if the given class is found on the classpath
    */
   public static boolean onClasspath(final String className) {
-    rejectNullValue(className, "className");
+    Objects.requireNonNull(className, "className");
     try {
       Class.forName(className);
       return true;
@@ -302,7 +277,7 @@ public class Util {
    * @return the padded string
    */
   public static String padString(final String string, final int length, final char padChar, final boolean left) {
-    rejectNullValue(string, "string");
+    Objects.requireNonNull(string, "string");
     if (string.length() >= length) {
       return string;
     }
@@ -373,7 +348,7 @@ public class Util {
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   public static Method getSetMethod(final Class valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
-    rejectNullValue(valueOwner, "valueOwner");
+    Objects.requireNonNull(valueOwner, "valueOwner");
     return getSetMethod(valueType, property, valueOwner.getClass());
   }
 
@@ -385,9 +360,9 @@ public class Util {
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   public static Method getSetMethod(final Class valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
-    rejectNullValue(valueType, "valueType");
-    rejectNullValue(property, "property");
-    rejectNullValue(ownerClass, "ownerClass");
+    Objects.requireNonNull(valueType, "valueType");
+    Objects.requireNonNull(property, "property");
+    Objects.requireNonNull(ownerClass, "ownerClass");
     if (property.length() == 0) {
       throw new IllegalArgumentException("Property must be specified");
     }
@@ -403,7 +378,7 @@ public class Util {
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   public static Method getGetMethod(final Class valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
-    rejectNullValue(valueOwner, "valueOwner");
+    Objects.requireNonNull(valueOwner, "valueOwner");
     return getGetMethod(valueType, property, valueOwner.getClass());
   }
 
@@ -415,9 +390,9 @@ public class Util {
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   public static Method getGetMethod(final Class valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
-    rejectNullValue(valueType, "valueType");
-    rejectNullValue(property, "property");
-    rejectNullValue(ownerClass, "ownerClass");
+    Objects.requireNonNull(valueType, "valueType");
+    Objects.requireNonNull(property, "property");
+    Objects.requireNonNull(ownerClass, "ownerClass");
     if (property.length() == 0) {
       throw new IllegalArgumentException("Property must be specified");
     }
@@ -438,9 +413,9 @@ public class Util {
   }
 
   private static <K, V> void map(final Map<K, Collection<V>> map, final V value, final K key) {
-    rejectNullValue(value, "value");
-    rejectNullValue(key, KEY);
-    rejectNullValue(map, "map");
+    Objects.requireNonNull(value, "value");
+    Objects.requireNonNull(key, KEY);
+    Objects.requireNonNull(map, "map");
     if (!map.containsKey(key)) {
       map.put(key, new ArrayList<>());
     }

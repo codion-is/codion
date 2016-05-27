@@ -3,7 +3,6 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.Util;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Version;
 
@@ -21,6 +20,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -143,10 +143,10 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
     if (shuttingDown) {
       throw ServerException.loginException("Server is shutting down");
     }
-    Util.rejectNullValue(connectionInfo, "connectionInfo");
-    Util.rejectNullValue(connectionInfo.getUser(), "user");
-    Util.rejectNullValue(connectionInfo.getClientID(), "clientID");
-    Util.rejectNullValue(connectionInfo.getClientTypeID(), "clientTypeID");
+    Objects.requireNonNull(connectionInfo, "connectionInfo");
+    Objects.requireNonNull(connectionInfo.getUser(), "user");
+    Objects.requireNonNull(connectionInfo.getClientID(), "clientID");
+    Objects.requireNonNull(connectionInfo.getClientTypeID(), "clientTypeID");
 
     getConnectionValidator(connectionInfo.getClientTypeID()).validate(connectionInfo);
     final LoginProxy loginProxy = getLoginProxy(connectionInfo.getClientTypeID());
@@ -288,8 +288,8 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
   protected abstract void doDisconnect(final T connection) throws RemoteException;
 
   private void validateUserCredentials(final User loginUser, final User currentConnectionUser) throws ServerException.AuthenticationException {
-    if (!Util.equal(loginUser.getUsername(), currentConnectionUser.getUsername())
-            || !Util.equal(loginUser.getPassword(), currentConnectionUser.getPassword())) {
+    if (!Objects.equals(loginUser.getUsername(), currentConnectionUser.getUsername())
+            || !Objects.equals(loginUser.getPassword(), currentConnectionUser.getPassword())) {
       throw ServerException.authenticationException("Authentication failed");
     }
   }

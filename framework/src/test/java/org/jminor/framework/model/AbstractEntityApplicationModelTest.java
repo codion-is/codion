@@ -38,7 +38,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     model.login(User.UNIT_TEST_USER);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullConnectionProvider() {
     new DefaultEntityApplicationModel(null) {
       @Override
@@ -46,7 +46,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     };
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void loginNullUser() {
     final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER) {
       @Override

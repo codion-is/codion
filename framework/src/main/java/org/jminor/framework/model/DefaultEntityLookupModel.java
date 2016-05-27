@@ -35,6 +35,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A default EntityLookupModel implementation
@@ -87,9 +88,9 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    */
   public DefaultEntityLookupModel(final String entityID, final EntityConnectionProvider connectionProvider,
                                   final Collection<Property.ColumnProperty> lookupProperties) {
-    Util.rejectNullValue(entityID, "entityID");
-    Util.rejectNullValue(connectionProvider, "connectionProvider");
-    Util.rejectNullValue(lookupProperties, "lookupProperties");
+    Objects.requireNonNull(entityID, "entityID");
+    Objects.requireNonNull(connectionProvider, "connectionProvider");
+    Objects.requireNonNull(lookupProperties, "lookupProperties");
     validateLookupProperties(entityID, lookupProperties);
     this.connectionProvider = connectionProvider;
     this.entityID = entityID;
@@ -120,7 +121,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /** {@inheritDoc} */
   @Override
   public void setResultSorter(final Comparator<Entity> resultSorter) {
-    Util.rejectNullValue(resultSorter, "resultSorter");
+    Objects.requireNonNull(resultSorter, "resultSorter");
     this.resultSorter = resultSorter;
   }
 

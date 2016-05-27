@@ -32,7 +32,7 @@ public class DateUtilTest {
             DateUtil.isDateValid("03.10.1975", false, DateFormats.getDateFormat(DateFormats.SHORT_DOT)));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void floorFieldsNullCalendar() {
     DateUtil.floorFields(null);
   }

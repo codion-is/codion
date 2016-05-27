@@ -129,7 +129,7 @@ public class DefaultColumnCriteriaModelTest {
       model.setSearchType(null);
       fail();
     }
-    catch (final IllegalArgumentException ignored) {/*ignored*/}
+    catch (final NullPointerException ignored) {/*ignored*/}
     model.setSearchType(SearchType.OUTSIDE_RANGE);
     assertEquals(2, searchTypeCounter.get());
     model.removeSearchTypeListener(searchTypeListener);

@@ -3,9 +3,10 @@
  */
 package org.jminor.swing.framework.model;
 
-import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.model.DefaultEntityModel;
+
+import java.util.Objects;
 
 public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
@@ -14,8 +15,8 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
    * @param connectionProvider a EntityConnectionProvider
    */
   public SwingEntityModel(final String entityID, final EntityConnectionProvider connectionProvider) {
-    this(new SwingEntityEditModel(Util.rejectNullValue(entityID, "entityID"),
-            Util.rejectNullValue(connectionProvider, "connectionProvider")));
+    this(new SwingEntityEditModel(Objects.requireNonNull(entityID, "entityID"),
+            Objects.requireNonNull(connectionProvider, "connectionProvider")));
   }
 
   /**

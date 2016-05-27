@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -78,9 +79,9 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
                                         final String clientTypeID, final Version clientVersion,
                                         final boolean scheduleValidityCheck) {
     super(user, scheduleValidityCheck);
-    this.serverHostName = Util.rejectNullValue(serverHostName, "serverHostName");
-    this.clientID = Util.rejectNullValue(clientID, "clientID");
-    this.clientTypeID = Util.rejectNullValue(clientTypeID, "clientTypeID");
+    this.serverHostName = Objects.requireNonNull(serverHostName, "serverHostName");
+    this.clientID = Objects.requireNonNull(clientID, "clientID");
+    this.clientTypeID = Objects.requireNonNull(clientTypeID, "clientTypeID");
     this.clientVersion = clientVersion;
     Util.resolveTrustStoreFromClasspath(clientTypeID);
   }

@@ -9,7 +9,6 @@ import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.ItemRandomizer;
 import org.jminor.common.model.tools.ItemRandomizerModel;
 import org.jminor.swing.common.ui.UiUtil;
@@ -37,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A default UI for the ItemRandomizer class.
@@ -54,10 +54,10 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   /**
    * Instantiates a new RandomItemPanel.
    * @param itemRandomizer the ItemRandomizer to base this panel on
-   * @throws IllegalArgumentException in case itemRandomizer is null
+   * @throws NullPointerException in case itemRandomizer is null
    */
   public ItemRandomizerPanel(final ItemRandomizer<T> itemRandomizer) {
-    Util.rejectNullValue(itemRandomizer, "itemRandomizer");
+    Objects.requireNonNull(itemRandomizer, "itemRandomizer");
     this.model = itemRandomizer;
     initializeUI();
   }

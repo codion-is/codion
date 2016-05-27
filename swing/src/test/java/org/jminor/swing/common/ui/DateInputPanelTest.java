@@ -43,12 +43,12 @@ public class DateInputPanelTest {
     assertEquals("__.__.____", panel.getInputField().getText());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullInputField() {
     new DateInputPanel(null, new SimpleDateFormat("dd.MM.yyyy"), true, null);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullDateFormat() {
     new DateInputPanel(new JFormattedTextField(), null, true, null);
   }

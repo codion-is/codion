@@ -6,6 +6,7 @@ package org.jminor.common.db.dbms;
 import org.jminor.common.Util;
 import org.jminor.common.db.AbstractDatabase;
 
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -53,7 +54,7 @@ public final class HSQLDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getSequenceSQL(final String sequenceName) {
-    Util.rejectNullValue(sequenceName, "sequenceName");
+    Objects.requireNonNull(sequenceName, "sequenceName");
     return SEQUENCE_VALUE_QUERY + sequenceName;
   }
 

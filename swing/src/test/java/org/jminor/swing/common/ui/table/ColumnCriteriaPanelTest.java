@@ -33,7 +33,7 @@ public class ColumnCriteriaPanelTest {
     assertFalse(panel.isAdvancedCriteriaEnabled());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullCriteriaModel() {
     new ColumnCriteriaPanel<String>(null, true, true, (SearchType) null);
   }

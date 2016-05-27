@@ -8,7 +8,6 @@ import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.Version;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;
@@ -27,6 +26,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -385,7 +385,7 @@ public final class EntityCriteriaUtil {
      * @see EntityKeyCriteria
      */
     private DefaultEntityCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria) {
-      Util.rejectNullValue(entityID, "entityID");
+      Objects.requireNonNull(entityID, "entityID");
       this.entityID = entityID;
       this.criteria = criteria;
     }
@@ -658,7 +658,7 @@ public final class EntityCriteriaUtil {
      */
     private EntityKeyCriteria(final List<Property.ColumnProperty> properties, final Collection<Entity.Key> keys) {
       criteria = CriteriaUtil.criteriaSet(Conjunction.OR);
-      Util.rejectNullValue(keys, "keys");
+      Objects.requireNonNull(keys, "keys");
       if (keys.isEmpty()) {
         throw new IllegalArgumentException("EntityKeyCriteria requires at least one key");
       }
@@ -772,8 +772,8 @@ public final class EntityCriteriaUtil {
      * @param value the value, can be a Collection
      */
     private PropertyCriteria(final Property.ColumnProperty property, final SearchType searchType, final Object value) {
-      Util.rejectNullValue(property, "property");
-      Util.rejectNullValue(searchType, "searchType");
+      Objects.requireNonNull(property, "property");
+      Objects.requireNonNull(searchType, "searchType");
       if (value instanceof Collection) {
         this.values = (Collection) value;
       }
@@ -956,8 +956,8 @@ public final class EntityCriteriaUtil {
     private boolean isNullCriteria;
 
     private ForeignKeyCriteria(final Property.ForeignKeyProperty property, final SearchType searchType, final Object value) {
-      Util.rejectNullValue(property, "property");
-      Util.rejectNullValue(searchType, "searchType");
+      Objects.requireNonNull(property, "property");
+      Objects.requireNonNull(searchType, "searchType");
       this.property = property;
       this.searchType = searchType;
       this.values = getEntityKeys(value);
@@ -1121,12 +1121,12 @@ public final class EntityCriteriaUtil {
     private LinkedHashMap<String, SortOrder> propertySortOrder = new LinkedHashMap<>();
 
     private OrderBy(final String entityID) {
-      Util.rejectNullValue(entityID, "entityID");
+      Objects.requireNonNull(entityID, "entityID");
       this.entityID = entityID;
     }
 
     private OrderBy add(final String propertyID, final SortOrder order) {
-      Util.rejectNullValue(propertyID, "propertyID");
+      Objects.requireNonNull(propertyID, "propertyID");
       if (propertySortOrder.containsKey(propertyID)) {
         throw new IllegalArgumentException("Order by already contains the given property: " + propertyID);
       }

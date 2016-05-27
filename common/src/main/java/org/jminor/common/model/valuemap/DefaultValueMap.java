@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -74,7 +75,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   public V put(final K key, final V value) {
     final boolean initialization = !values.containsKey(key);
     final V previousValue = values.put(key, value);
-    if (!initialization && Util.equal(previousValue, value)) {
+    if (!initialization && Objects.equals(previousValue, value)) {
       return value;
     }
     if (!initialization) {
@@ -122,7 +123,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     }
 
     for (final K key : otherMap.keySet()) {
-      if (!containsKey(key) || !Util.equal(otherMap.get(key), get(key))) {
+      if (!containsKey(key) || !Objects.equals(otherMap.get(key), get(key))) {
         return false;
       }
     }
@@ -397,7 +398,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   private void updateOriginalValue(final K key, final V value, final V previousValue) {
     final boolean modified = isModified(key);
-    if (modified && Util.equal(getOriginal(key), value)) {
+    if (modified && Objects.equals(getOriginal(key), value)) {
       removeOriginalValue(key);//we're back to the original value
     }
     else if (!modified) {//only the first original value is kept

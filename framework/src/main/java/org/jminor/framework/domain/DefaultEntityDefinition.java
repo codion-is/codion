@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -116,7 +117,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private Entity.ToString stringProvider = new Entity.ToString() {
     @Override
     public String toString(final Entity entity) {
-      Util.rejectNullValue(entity, "entity");
+      Objects.requireNonNull(entity, "entity");
       return entityID + ": " + entity.getKey();
     }
   };
@@ -188,7 +189,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   DefaultEntityDefinition(final String entityID, final String tableName, final Property... propertyDefinitions) {
     Util.rejectNullOrEmpty(entityID, "entityID");
     Util.rejectNullOrEmpty(tableName, "tableName");
-    Util.rejectNullValue(propertyDefinitions, "entityDefinitions");
+    Objects.requireNonNull(propertyDefinitions, "entityDefinitions");
     this.domainID = entityID;
     this.entityID = entityID;
     this.caption = entityID;
@@ -243,7 +244,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setCaption(final String caption) {
-    Util.rejectNullValue(caption, "caption");
+    Objects.requireNonNull(caption, "caption");
     this.caption = caption;
     return this;
   }
@@ -296,7 +297,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setKeyGenerator(final Entity.KeyGenerator keyGenerator) {
-    Util.rejectNullValue(keyGenerator, "keyGenerator");
+    Objects.requireNonNull(keyGenerator, "keyGenerator");
     this.keyGenerator = keyGenerator;
     this.keyGeneratorType = keyGenerator.getType();
     return this;
@@ -311,7 +312,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setKeyGeneratorType(final Entity.KeyGenerator.Type keyGeneratorType) {
-    Util.rejectNullValue(keyGeneratorType, "keyGeneratorType");
+    Objects.requireNonNull(keyGeneratorType, "keyGeneratorType");
     this.keyGeneratorType = keyGeneratorType;
     return this;
   }
@@ -325,7 +326,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setOrderByClause(final String orderByClause) {
-    Util.rejectNullValue(orderByClause, "orderByClause");
+    Objects.requireNonNull(orderByClause, "orderByClause");
     this.orderByClause = orderByClause;
     return this;
   }
@@ -339,7 +340,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setGroupByClause(final String groupByClause) {
-    Util.rejectNullValue(groupByClause, "groupByClause");
+    Objects.requireNonNull(groupByClause, "groupByClause");
     if (this.groupByClause != null) {
       throw new IllegalStateException("Group by clause has already been set: " + this.groupByClause);
     }
@@ -356,7 +357,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setHavingClause(final String havingClause) {
-    Util.rejectNullValue(havingClause, "havingClause");
+    Objects.requireNonNull(havingClause, "havingClause");
     if (this.havingClause != null) {
       throw new IllegalStateException("Having clause has already been set: " + this.havingClause);
     }
@@ -373,7 +374,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setSelectTableName(final String selectTableName) {
-    Util.rejectNullValue(selectTableName, "selectTableName");
+    Objects.requireNonNull(selectTableName, "selectTableName");
     this.selectTableName = selectTableName;
     return this;
   }
@@ -393,7 +394,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setSelectQuery(final String selectQuery, final boolean containsWhereClause) {
-    Util.rejectNullValue(selectQuery, "selectQuery");
+    Objects.requireNonNull(selectQuery, "selectQuery");
     this.selectQuery = selectQuery;
     this.selectQueryContainsWhereClause = containsWhereClause;
     return this;
@@ -408,7 +409,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setStringProvider(final Entity.ToString stringProvider) {
-    Util.rejectNullValue(stringProvider, "stringProvider");
+    Objects.requireNonNull(stringProvider, "stringProvider");
     this.stringProvider = stringProvider;
     return this;
   }
@@ -422,7 +423,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setComparator(final Comparator<Entity> comparator) {
-    Util.rejectNullValue(comparator, "comparator");
+    Objects.requireNonNull(comparator, "comparator");
     this.comparator = comparator;
     return this;
   }
@@ -439,7 +440,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setSearchPropertyIDs(final String... searchPropertyIDs) {
-    Util.rejectNullValue(searchPropertyIDs, "searchPropertyIDs");
+    Objects.requireNonNull(searchPropertyIDs, "searchPropertyIDs");
     for (final String propertyID : searchPropertyIDs) {
       final Property property = properties.get(propertyID);
       if (property == null) {
@@ -598,8 +599,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public int compareTo(final Entity entity, final Entity entityToCompare) {
-    Util.rejectNullValue(entity, "entity");
-    Util.rejectNullValue(entityToCompare, "entityToCompare");
+    Objects.requireNonNull(entity, "entity");
+    Objects.requireNonNull(entityToCompare, "entityToCompare");
     return comparator.compare(entity, entityToCompare);
   }
 
@@ -1023,7 +1024,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     private EntityResultPacker(final String entityID, final Collection<Property.ColumnProperty> columnProperties,
                                final Collection<Property.TransientProperty> transientProperties,
                                final int propertyCount) {
-      Util.rejectNullValue(entityID, "entityID");
+      Objects.requireNonNull(entityID, "entityID");
       this.entityID = entityID;
       this.properties = columnProperties;
       this.transientProperties = transientProperties;
@@ -1042,7 +1043,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
      */
     @Override
     public List<Entity> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      Util.rejectNullValue(resultSet, "resultSet");
+      Objects.requireNonNull(resultSet, "resultSet");
       final List<Entity> entities = new ArrayList<>();
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {

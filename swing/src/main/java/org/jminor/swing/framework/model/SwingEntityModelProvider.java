@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.framework.model;
 
-import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.model.EntityModelProvider;
 
@@ -12,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A default {@link EntityModelProvider} implementation.
@@ -56,7 +56,7 @@ public class SwingEntityModelProvider
   /** {@inheritDoc} */
   @Override
   public final SwingEntityModelProvider setModelClass(final Class<? extends SwingEntityModel> modelClass) {
-    Util.rejectNullValue(modelClass, "modelClass");
+    Objects.requireNonNull(modelClass, "modelClass");
     this.modelClass = modelClass;
     return this;
   }
@@ -64,7 +64,7 @@ public class SwingEntityModelProvider
   /** {@inheritDoc} */
   @Override
   public final SwingEntityModelProvider setEditModelClass(final Class<? extends SwingEntityEditModel> editModelClass) {
-    Util.rejectNullValue(editModelClass, "editModelClass");
+    Objects.requireNonNull(editModelClass, "editModelClass");
     this.editModelClass = editModelClass;
     return this;
   }
@@ -72,7 +72,7 @@ public class SwingEntityModelProvider
   /** {@inheritDoc} */
   @Override
   public final SwingEntityModelProvider setTableModelClass(final Class<? extends SwingEntityTableModel> tableModelClass) {
-    Util.rejectNullValue(tableModelClass, "tableModelClass");
+    Objects.requireNonNull(tableModelClass, "tableModelClass");
     this.tableModelClass = tableModelClass;
     return this;
   }

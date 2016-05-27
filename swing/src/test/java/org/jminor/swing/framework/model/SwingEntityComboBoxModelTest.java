@@ -7,7 +7,6 @@ import org.jminor.common.EventListener;
 import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.FilterCriteria;
-import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entities;
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
@@ -35,12 +35,12 @@ public final class SwingEntityComboBoxModelTest {
     comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullEntityID() {
     new SwingEntityComboBoxModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullConnectionProvider() {
     new SwingEntityComboBoxModel(TestDomain.T_EMP, null);
   }
@@ -89,7 +89,7 @@ public final class SwingEntityComboBoxModelTest {
     boolean kingFound = false;
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
       final Entity item = comboBoxModel.getElementAt(i);
-      if (Util.equal(item.get(TestDomain.EMP_NAME), "KING")) {
+      if (Objects.equals(item.get(TestDomain.EMP_NAME), "KING")) {
         kingFound = true;
       }
       else {
@@ -126,7 +126,7 @@ public final class SwingEntityComboBoxModelTest {
     assertEquals(clark, comboBoxModel.getSelectedValue());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void setSelectedEntityByPrimaryKeyNullValue() {
     comboBoxModel.setSelectedEntityByKey(null);
   }

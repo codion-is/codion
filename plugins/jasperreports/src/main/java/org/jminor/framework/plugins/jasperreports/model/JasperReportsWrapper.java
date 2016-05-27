@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.plugins.jasperreports.model;
 
-import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
@@ -25,6 +24,7 @@ import java.sql.Connection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A Jasper Reports wrapper.
@@ -41,8 +41,8 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
   }
 
   public JasperReportsWrapper(final String reportPath, final Map<String, Object> reportParameters) {
-    Util.rejectNullValue(reportPath, "reportPath");
-    Util.rejectNullValue(reportParameters, "reportParameters");
+    Objects.requireNonNull(reportPath, "reportPath");
+    Objects.requireNonNull(reportParameters, "reportParameters");
     this.reportPath = reportPath;
     this.reportParameters = reportParameters;
   }
@@ -56,7 +56,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
   /** {@inheritDoc} */
   @Override
   public ReportResult<JasperPrint> fillReport(final Connection connection) throws ReportException {
-    Util.rejectNullValue(connection, "connection");
+    Objects.requireNonNull(connection, "connection");
     try {
       final JasperReport report = loadJasperReport(reportPath);
       return new JasperReportsResult(JasperFillManager.fillReport(report, reportParameters, connection));
@@ -69,7 +69,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
   /** {@inheritDoc} */
   @Override
   public ReportResult<JasperPrint> fillReport(final ReportDataWrapper<JRDataSource> dataWrapper) throws ReportException {
-    Util.rejectNullValue(dataWrapper, "dataWrapper");
+    Objects.requireNonNull(dataWrapper, "dataWrapper");
     try {
       final JasperReport report = loadJasperReport(reportPath);
       return new JasperReportsResult(JasperFillManager.fillReport(report, reportParameters, dataWrapper.getDataSource()));
@@ -99,7 +99,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
    * @throws IllegalArgumentException in case the report path is not specified
    */
   public static JasperReport loadJasperReport(final String reportPath) throws JRException, MalformedURLException {
-    Util.rejectNullValue(reportPath, "reportPath");
+    Objects.requireNonNull(reportPath, "reportPath");
     if (reportPath.length() == 0) {
       throw new IllegalArgumentException("Empty report path");
     }

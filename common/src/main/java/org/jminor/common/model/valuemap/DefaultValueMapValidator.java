@@ -6,10 +6,11 @@ package org.jminor.common.model.valuemap;
 import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
-import org.jminor.common.Util;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
+
+import java.util.Objects;
 
 /**
  * A default value map validator implementation, which performs basic null validation.
@@ -41,7 +42,7 @@ public class DefaultValueMapValidator<K, V extends ValueMap<K, ?>> implements Va
   /** {@inheritDoc} */
   @Override
   public void validate(final V valueMap) throws ValidationException {
-    Util.rejectNullValue(valueMap, "valueMap");
+    Objects.requireNonNull(valueMap, "valueMap");
     for (final K key : valueMap.keySet()) {
       validate(valueMap, key);
     }
@@ -50,7 +51,7 @@ public class DefaultValueMapValidator<K, V extends ValueMap<K, ?>> implements Va
   /** {@inheritDoc} */
   @Override
   public void validate(final V valueMap, final K key) throws ValidationException {
-    Util.rejectNullValue(valueMap, "valueMap");
+    Objects.requireNonNull(valueMap, "valueMap");
     if (valueMap.isValueNull(key) && !isNullable(valueMap, key)) {
       throw new NullValidationException(key, Messages.get(Messages.VALUE_MISSING) + ": " + key);
     }

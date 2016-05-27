@@ -3,11 +3,11 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.Util;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Version;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -53,9 +53,9 @@ public final class ClientUtil {
 
     private DefaultConnectionInfo(final User user, final UUID clientID, final String clientTypeID,
                                   final Version clientVersion, final Version frameworkVersion) {
-      this.user = Util.rejectNullValue(user, "user");
-      this.clientID = Util.rejectNullValue(clientID, "clientID");
-      this.clientTypeID = Util.rejectNullValue(clientTypeID, "clientTypeID");
+      this.user = Objects.requireNonNull(user, "user");
+      this.clientID = Objects.requireNonNull(clientID, "clientID");
+      this.clientTypeID = Objects.requireNonNull(clientTypeID, "clientTypeID");
       this.clientVersion = clientVersion;
       this.frameworkVersion = frameworkVersion;
     }

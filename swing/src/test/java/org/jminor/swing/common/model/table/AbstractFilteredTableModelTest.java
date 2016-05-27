@@ -129,7 +129,7 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(4, tableModel.indexOf("c"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void nullColumnModel() {
     new AbstractFilteredTableModel<String, Integer>(null, null) {
       @Override
@@ -515,13 +515,13 @@ public final class AbstractFilteredTableModelTest {
 
     tableModel.refresh();
     selectionModel.setSelectedIndex(2);
-    assertEquals(2, events.get());
+    assertEquals(4, events.get());
     assertTrue(selectionModel.getSingleSelectionObserver().isActive());
     assertFalse(selectionModel.getSelectionEmptyObserver().isActive());
     assertFalse(selectionModel.getMultipleSelectionObserver().isActive());
     assertEquals(2, selectionModel.getSelectedIndex());
     selectionModel.moveSelectionDown();
-    assertEquals(6, events.get());
+    assertEquals(12, events.get());
     assertEquals(3, selectionModel.getSelectedIndex());
     selectionModel.moveSelectionUp();
     selectionModel.moveSelectionUp();

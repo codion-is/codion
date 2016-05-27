@@ -16,6 +16,7 @@ import java.sql.Types;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.Assert.*;
 
@@ -73,7 +74,7 @@ public class DefaultEntityTest {
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
     test.setAs(testEntity);
-    assertTrue("Entities should be equal after .setAs()", Util.equal(test, testEntity));
+    assertTrue("Entities should be equal after .setAs()", Objects.equals(test, testEntity));
     assertTrue("Entity property values should be equal after .setAs()", test.valuesEqual(testEntity));
 
     //assure that no cached foreign key values linger
@@ -198,7 +199,7 @@ public class DefaultEntityTest {
     //test copy()
     final Entity test2 = (Entity) testEntity.getCopy();
     assertFalse("Entity copy should not be == the original", test2 == testEntity);
-    assertTrue("Entities should be equal after .getCopy()", Util.equal(test2, testEntity));
+    assertTrue("Entities should be equal after .getCopy()", Objects.equals(test2, testEntity));
     assertTrue("Entity property values should be equal after .getCopy()", test2.valuesEqual(testEntity));
     assertFalse("This should be a deep copy",
             testEntity.getForeignKey(TestDomain.DETAIL_ENTITY_FK) == test2.getForeignKey(TestDomain.DETAIL_ENTITY_FK));

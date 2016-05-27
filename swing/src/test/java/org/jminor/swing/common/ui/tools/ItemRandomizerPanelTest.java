@@ -19,7 +19,7 @@ public class ItemRandomizerPanelTest {
     assertEquals(model, panel.getModel());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void constructorNullModel() {
     new ItemRandomizerPanel<String>(null);
   }

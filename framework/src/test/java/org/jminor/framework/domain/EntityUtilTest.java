@@ -140,49 +140,49 @@ public class EntityUtilTest {
     beanMapper.getBeanClass("entityID");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void setEntityIDNullBeanClass() {
     final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
     beanMapper.setEntityID(null, "entityID");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void setEntityIDNullEntityID() {
     final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
     beanMapper.setEntityID(EmployeeBean.class, null);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void getEntityIDNullBeanClass() {
     final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
     beanMapper.getEntityID(null);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void getBeanClassNullEntityID() {
     final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
     beanMapper.getBeanClass(null);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void getPropertyMapNullBeanClass() {
     final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
     beanMapper.getPropertyMap(null);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void setPropertyNullBeanClass() throws NoSuchMethodException {
     final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
     beanMapper.setProperty(null, "", "");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void setPropertyNullPropertyID() throws NoSuchMethodException {
     final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
     beanMapper.setProperty(EmployeeBean.class, null, "");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void setPropertyNullPropertyName() throws NoSuchMethodException {
     final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
     beanMapper.setProperty(EmployeeBean.class, "", null);

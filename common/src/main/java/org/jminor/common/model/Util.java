@@ -36,6 +36,7 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.ThreadFactory;
@@ -99,7 +100,7 @@ public final class Util extends org.jminor.common.Util {
    * @return true if the host is reachable
    */
   public static boolean isHostReachable(final String host, final int timeout) {
-    rejectNullValue(host, "host");
+    Objects.requireNonNull(host, "host");
     try {
       return InetAddress.getByName(host).isReachable(timeout);
     }
@@ -114,7 +115,7 @@ public final class Util extends org.jminor.common.Util {
    * @return the user preference associated with the given key
    */
   public static String getUserPreference(final String key, final String defaultValue) {
-    rejectNullValue(key, KEY);
+    Objects.requireNonNull(key, KEY);
     return getUserPreferences().get(key, defaultValue);
   }
 
@@ -123,7 +124,7 @@ public final class Util extends org.jminor.common.Util {
    * @param value the preference value to associate with the given key
    */
   public static void putUserPreference(final String key, final String value) {
-    rejectNullValue(key, KEY);
+    Objects.requireNonNull(key, KEY);
     getUserPreferences().put(key, value);
   }
 
@@ -132,7 +133,7 @@ public final class Util extends org.jminor.common.Util {
    * @param key the key to use to identify the preference to remove
    */
   public static void removeUserPreference(final String key) {
-    rejectNullValue(key, KEY);
+    Objects.requireNonNull(key, KEY);
     getUserPreferences().remove(key);
   }
 
@@ -151,7 +152,7 @@ public final class Util extends org.jminor.common.Util {
    * @return the default username
    */
   public static String getDefaultUserName(final String applicationIdentifier, final String defaultName) {
-    rejectNullValue(applicationIdentifier, "applicationIdentifier");
+    Objects.requireNonNull(applicationIdentifier, "applicationIdentifier");
     return getUserPreference(applicationIdentifier + "." + PREFERENCE_DEFAULT_USERNAME, defaultName);
   }
 
@@ -161,7 +162,7 @@ public final class Util extends org.jminor.common.Util {
    * @param username the username
    */
   public static void setDefaultUserName(final String applicationIdentifier, final String username) {
-    rejectNullValue(applicationIdentifier, "applicationIdentifier");
+    Objects.requireNonNull(applicationIdentifier, "applicationIdentifier");
     putUserPreference(applicationIdentifier + "." + PREFERENCE_DEFAULT_USERNAME, username);
   }
 
@@ -297,9 +298,9 @@ public final class Util extends org.jminor.common.Util {
   }
 
   public static String getDelimitedString(final String[][] headers, final String[][] data, final String delimiter) {
-    rejectNullValue(headers, "headers");
-    rejectNullValue(data, "data");
-    rejectNullValue(delimiter, "delimiter");
+    Objects.requireNonNull(headers, "headers");
+    Objects.requireNonNull(data, "data");
+    Objects.requireNonNull(delimiter, "delimiter");
     final StringBuilder contents = new StringBuilder();
     for (final String[] header : headers) {
       for (int j = 0; j < header.length; j++) {
@@ -348,8 +349,8 @@ public final class Util extends org.jminor.common.Util {
    * @throws IOException in case of an exception
    */
   public static void writeFile(final String contents, final File file, final boolean append) throws IOException {
-    rejectNullValue(contents, "contents");
-    rejectNullValue(file, "file");
+    Objects.requireNonNull(contents, "contents");
+    Objects.requireNonNull(file, "file");
     try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file, append))) {
       writer.write(contents);
     }
@@ -427,7 +428,7 @@ public final class Util extends org.jminor.common.Util {
    * @throws IOException in case of an exception
    */
   public static byte[] getBytesFromFile(final File file) throws IOException {
-    rejectNullValue(file, "file");
+    Objects.requireNonNull(file, "file");
     try (final InputStream inputStream = new FileInputStream(file)) {
       // Get the size of the file
       final long length = file.length();
@@ -574,9 +575,9 @@ public final class Util extends org.jminor.common.Util {
    * @return the collation result
    */
   public static int collateSansSpaces(final Collator collator, final String stringOne, final String stringTwo) {
-    rejectNullValue(collator, "collator");
-    rejectNullValue(stringOne, "stringOne");
-    rejectNullValue(stringTwo, "stringTwo");
+    Objects.requireNonNull(collator, "collator");
+    Objects.requireNonNull(stringOne, "stringOne");
+    Objects.requireNonNull(stringTwo, "stringTwo");
 
     return collator.compare(stringOne.replaceAll(SPACE, UNDERSCORE), stringTwo.replaceAll(SPACE, UNDERSCORE));
   }

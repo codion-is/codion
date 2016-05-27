@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A class providing EntityPanel instances.
@@ -78,9 +79,9 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
    */
   public EntityPanelProvider(final String entityID, final String caption, final Class<? extends SwingEntityModel> entityModelClass,
                              final Class<? extends EntityPanel> entityPanelClass) {
-    Util.rejectNullValue(entityID, "entityID");
-    Util.rejectNullValue(entityModelClass, "entityModelClass");
-    Util.rejectNullValue(entityPanelClass, "entityPanelClass");
+    Objects.requireNonNull(entityID, "entityID");
+    Objects.requireNonNull(entityModelClass, "entityModelClass");
+    Objects.requireNonNull(entityPanelClass, "entityPanelClass");
     this.caption = caption;
     this.panelClass = entityPanelClass;
     this.modelProvider = new SwingEntityModelProvider(entityID, entityModelClass);
@@ -100,7 +101,7 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
    * @param caption the panel caption to use
    */
   public EntityPanelProvider (final SwingEntityModelProvider modelProvider, final String caption) {
-    Util.rejectNullValue(modelProvider, "modelProvider");
+    Objects.requireNonNull(modelProvider, "modelProvider");
     this.modelProvider = modelProvider;
     this.caption = caption;
   }
@@ -304,7 +305,7 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
    * @return an EntityPanel based on this provider configuration
    */
   public final EntityPanel createPanel(final EntityConnectionProvider connectionProvider, final boolean detailPanel) {
-    Util.rejectNullValue(connectionProvider, "connectionProvider");
+    Objects.requireNonNull(connectionProvider, "connectionProvider");
     try {
       final SwingEntityModel entityModel = modelProvider.createModel(connectionProvider, detailPanel);
 

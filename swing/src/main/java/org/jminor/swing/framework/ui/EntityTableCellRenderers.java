@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.model.Util;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityTableModel;
 
@@ -14,6 +13,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
 import java.text.Format;
+import java.util.Objects;
 
 /**
  * Provides TableCellRenderer implementations for EntityTablePanels
@@ -53,7 +53,7 @@ public final class EntityTableCellRenderers {
    * @see org.jminor.framework.domain.Entity.Definition#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
    */
   public static EntityTableCellRenderer getTableCellRenderer(final EntityTableModel tableModel, final Property property) {
-    if (!Util.equal(tableModel.getEntityID(), property.getEntityID())) {
+    if (!Objects.equals(tableModel.getEntityID(), property.getEntityID())) {
       throw new IllegalArgumentException("Property " + property + " not found in entity : " + tableModel.getEntityID());
     }
     if (property.isBoolean()) {
@@ -64,7 +64,7 @@ public final class EntityTableCellRenderers {
   }
 
   private static Color shade(final Color color, final int amount) {
-    Util.rejectNullValue(color, "color");
+    Objects.requireNonNull(color, "color");
     int r = color.getRed();
     int g = color.getGreen();
     int b = color.getBlue();
@@ -113,8 +113,8 @@ public final class EntityTableCellRenderers {
      */
     public DefaultEntityTableCellRenderer(final EntityTableModel tableModel, final Property property, final Format format,
                                           final int horizontalAlignment) {
-      this.tableModel = Util.rejectNullValue(tableModel, "tableModel");
-      this.property = Util.rejectNullValue(property, "property");
+      this.tableModel = Objects.requireNonNull(tableModel, "tableModel");
+      this.property = Objects.requireNonNull(property, "property");
       this.format = format == null ? property.getFormat() : format;
       setHorizontalAlignment(horizontalAlignment);
     }

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A class encapsulating a username and password.
@@ -30,7 +31,7 @@ public final class User implements Serializable {
    * @param password the password
    */
   public User(final String username, final String password) {
-    org.jminor.common.Util.rejectNullValue(username, "username");
+    Objects.requireNonNull(username, "username");
     this.username = username;
     this.password = password;
   }

@@ -4276,3 +4276,5 @@
   SelectionModel.addSelectedItemsListener() added along with remove
   SelectionModel.addSelectedItemListener() added along with remove
   Some ivysettings.xml improvement
+  Usages of Util.rejectNullValue() and Util.equal() replaced with Objects.requireNonNull() and Objects.equals() respectively
+  Util.rejectNullValue() and equal() removed

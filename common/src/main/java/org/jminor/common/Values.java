@@ -4,6 +4,7 @@
 package org.jminor.common;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * A factory class for Value objects
@@ -86,7 +87,7 @@ public final class Values {
 
     @Override
     public void set(final V value) {
-      if (!Util.equal(this.value, value)) {
+      if (!Objects.equals(this.value, value)) {
         this.value = value;
         changeEvent.fire(this.value);
       }
@@ -111,8 +112,8 @@ public final class Values {
     private Method setMethod;
 
     private BeanValue(final Object valueOwner, final String propertyName, final Class<?> valueClass, final EventObserver<V> changeEvent) {
-      Util.rejectNullValue(valueOwner, "valueOwner");
-      Util.rejectNullValue(valueClass, "valueClass");
+      Objects.requireNonNull(valueOwner, "valueOwner");
+      Objects.requireNonNull(valueClass, "valueClass");
       if (Util.nullOrEmpty(propertyName)) {
         throw new IllegalArgumentException("propertyName is null or an empty string");
       }
@@ -233,8 +234,8 @@ public final class Values {
      * @param readOnly if true then this link will be uni-directional
      */
     private ValueLink(final Value<V> originalValue, final Value<V> linkedValue, final boolean readOnly) {
-      this.originalValue = Util.rejectNullValue(originalValue, "originalValue");
-      this.linkedValue = Util.rejectNullValue(linkedValue, "linkedValue");
+      this.originalValue = Objects.requireNonNull(originalValue, "originalValue");
+      this.linkedValue = Objects.requireNonNull(linkedValue, "linkedValue");
       this.linkedValue.set(this.originalValue.get());
       bindEvents(originalValue, linkedValue, readOnly);
     }

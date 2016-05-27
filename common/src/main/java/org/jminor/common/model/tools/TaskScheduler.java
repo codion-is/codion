@@ -8,6 +8,7 @@ import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.model.Util;
 
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -82,11 +83,11 @@ public final class TaskScheduler {
     if (initialDelay < 0) {
       throw new IllegalArgumentException("Initial delay can not be negative");
     }
-    this.task = Util.rejectNullValue(task, "task");
+    this.task = Objects.requireNonNull(task, "task");
     this.interval = interval;
     this.initialDelay = initialDelay;
-    this.timeUnit = Util.rejectNullValue(timeUnit, "timeUnit");
-    this.threadFactory = Util.rejectNullValue(threadFactory, "threadFactory");
+    this.timeUnit = Objects.requireNonNull(timeUnit, "timeUnit");
+    this.threadFactory = Objects.requireNonNull(threadFactory, "threadFactory");
   }
 
   /**

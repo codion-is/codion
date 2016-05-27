@@ -4,12 +4,13 @@
 package org.jminor.swing.framework.testing;
 
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
+
+import java.util.Objects;
 
 /**
  * A base class for testing a {@link EntityEditPanel}
@@ -28,9 +29,9 @@ public abstract class EntityEditPanelTestUnit {
    */
   protected EntityEditPanelTestUnit(final Class<? extends EntityEditPanel> editPanelClass,
                                     final String entityID, final User user) {
-    Util.rejectNullValue(editPanelClass, "editPanelClass");
-    Util.rejectNullValue(entityID, "entityID");
-    Util.rejectNullValue(user, "user");
+    Objects.requireNonNull(editPanelClass, "editPanelClass");
+    Objects.requireNonNull(entityID, "entityID");
+    Objects.requireNonNull(user, "user");
     this.connectionProvider = EntityConnectionProviders.connectionProvider(user, getClass().getName());
     this.editPanelClass = editPanelClass;
     this.entityID = entityID;

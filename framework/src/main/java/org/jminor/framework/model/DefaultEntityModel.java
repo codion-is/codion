@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -109,7 +110,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @param tableModel the table model
    */
   public DefaultEntityModel(final E editModel, final T tableModel) {
-    Util.rejectNullValue(editModel, "editModel");
+    Objects.requireNonNull(editModel, "editModel");
     this.entityID = editModel.getEntityID();
     this.connectionProvider = editModel.getConnectionProvider();
     this.editModel = editModel;
@@ -176,7 +177,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /** {@inheritDoc} */
   @Override
   public final void addDetailModels(final M... detailModels) {
-    Util.rejectNullValue(detailModels, "detailModels");
+    Objects.requireNonNull(detailModels, "detailModels");
     for (final M detailModel : detailModels) {
       addDetailModel(detailModel);
     }
@@ -285,7 +286,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /** {@inheritDoc} */
   @Override
   public final void setDetailModelForeignKey(final M detailModel, final String foreignKeyPropertyID) {
-    Util.rejectNullValue(detailModel, "detailModel");
+    Objects.requireNonNull(detailModel, "detailModel");
     if (!containsDetailModel(detailModel)) {
       throw new IllegalArgumentException(this + " does not contain detail model: " + detailModel);
     }

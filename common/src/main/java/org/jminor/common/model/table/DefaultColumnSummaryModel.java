@@ -7,11 +7,11 @@ import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
-import org.jminor.common.Util;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A default ColumnSummaryModel implementation.
@@ -60,7 +60,7 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
     if (isLocked()) {
       throw new IllegalStateException("Summary model is locked");
     }
-    Util.rejectNullValue(summary, "summary");
+    Objects.requireNonNull(summary, "summary");
     if (!this.summary.equals(summary)) {
       this.summary = summary;
       summaryChangedEvent.fire(this.summary);

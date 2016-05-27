@@ -5,7 +5,6 @@ package org.jminor.swing.common.ui.control;
 
 import org.jminor.common.EventListener;
 import org.jminor.common.StateObserver;
-import org.jminor.common.model.Util;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -22,6 +21,7 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import java.awt.GridLayout;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Provides UI controls based on the Control class and its descendants.
@@ -347,7 +347,7 @@ public final class ControlProvider {
   }
 
   public static void iterate(final ControlIterator controlIterator, final ControlSet controlSet) {
-    Util.rejectNullValue(controlIterator, "controlIterator");
+    Objects.requireNonNull(controlIterator, "controlIterator");
     for (final Action action : controlSet.getActions()) {
       if (action == null) {
         controlIterator.handleSeparator();

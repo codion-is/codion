@@ -657,7 +657,7 @@ public final class FXUiUtil {
       if (parsedValue != null && property.isNumerical() && !isWithinRange(property, (Number) parsedValue)) {
         return false;
       }
-      if (parsedValue instanceof Double && !Util.equal(parsedValue,
+      if (parsedValue instanceof Double && !Objects.equals(parsedValue,
               Util.roundDouble((Double) parsedValue, property.getMaximumFractionDigits()))) {
         return false;
       }

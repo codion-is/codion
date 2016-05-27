@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 
 /**
  * A factory class for Event objects.
@@ -124,7 +125,7 @@ public final class Events {
 
     @Override
     public void addInfoListener(final EventInfoListener<T> listener) {
-      Util.rejectNullValue(listener, "listener");
+      Objects.requireNonNull(listener, "listener");
       synchronized (lock) {
         getInfoListeners().add(listener);
       }
@@ -139,7 +140,7 @@ public final class Events {
 
     @Override
     public void addListener(final EventListener listener) {
-      Util.rejectNullValue(listener, "listener");
+      Objects.requireNonNull(listener, "listener");
       synchronized (lock) {
         getListeners().add(listener);
       }

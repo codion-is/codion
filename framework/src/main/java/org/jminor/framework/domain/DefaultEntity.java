@@ -4,7 +4,6 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.EventInfoListener;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.DefaultValueMap;
 import org.jminor.common.model.valuemap.ValueChange;
 
@@ -19,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents a row in a database table, providing access to the column values via the {@link org.jminor.common.model.valuemap.ValueMap} interface.
@@ -123,7 +123,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   /** {@inheritDoc} */
   @Override
   public Property getProperty(final String propertyID) {
-    Util.rejectNullValue(propertyID, PROPERTY_ID_PARAM);
+    Objects.requireNonNull(propertyID, PROPERTY_ID_PARAM);
     final Property property = definition.getProperties().get(propertyID);
     if (property == null) {
       throw new IllegalArgumentException("Property " + propertyID + " not found in entity: " + definition.getEntityID());
@@ -181,7 +181,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
    */
   @Override
   public Object get(final Property property) {
-    Util.rejectNullValue(property, PROPERTY_PARAM);
+    Objects.requireNonNull(property, PROPERTY_PARAM);
     if (property instanceof Property.DenormalizedViewProperty) {
       return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
     }
@@ -211,7 +211,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
    */
   @Override
   public boolean isValueNull(final Property property) {
-    Util.rejectNullValue(property, PROPERTY_PARAM);
+    Objects.requireNonNull(property, PROPERTY_PARAM);
     if (property instanceof Property.ForeignKeyProperty) {
       return isForeignKeyNull((Property.ForeignKeyProperty) property);
     }
@@ -358,9 +358,9 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   /** {@inheritDoc} */
   @Override
   public boolean valuesEqual(final Entity entity) {
-    Util.rejectNullValue(entity, "entity");
+    Objects.requireNonNull(entity, "entity");
     for (final Property property : definition.getProperties().values()) {
-      if (property instanceof Property.ColumnProperty && !Util.equal(get(property), entity.get(property))) {
+      if (property instanceof Property.ColumnProperty && !Objects.equals(get(property), entity.get(property))) {
         return false;
       }
     }
@@ -426,7 +426,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   /** {@inheritDoc} */
   @Override
   public Key getReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
+    Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
     final String propertyID = foreignKeyProperty.getPropertyID();
     Key referencedPrimaryKey = getCachedReferencedKey(propertyID);
     if (referencedPrimaryKey != null) {
@@ -444,7 +444,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   /** {@inheritDoc} */
   @Override
   public boolean containsKey(final Property property) {
-    return containsKey(Util.rejectNullValue(property, PROPERTY_PARAM).getPropertyID());
+    return containsKey(Objects.requireNonNull(property, PROPERTY_PARAM).getPropertyID());
   }
 
   /**
@@ -454,7 +454,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
    */
   @Override
   public boolean isForeignKeyNull(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
+    Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
     for (final Property property : foreignKeyProperty.getReferenceProperties()) {
       if (isValueNull(property.getPropertyID())) {
         return true;
@@ -674,7 +674,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
    */
   private Object put(final DefaultProperty property, final Object value, final boolean validateType,
                      final Map<String, Definition> entityDefinitions) {
-    Util.rejectNullValue(property, PROPERTY_PARAM);
+    Objects.requireNonNull(property, PROPERTY_PARAM);
     validateValue(this, property, value);
     if (validateType) {
       validateType(property, value);
@@ -746,7 +746,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
     if (property instanceof Property.ForeignKeyProperty) {
       final String fkPropertyEntityID = ((Property.ForeignKeyProperty) property).getReferencedEntityID();
       final String actualEntityID = ((Entity) value).getEntityID();
-      if (!Util.equal(fkPropertyEntityID, actualEntityID)) {
+      if (!Objects.equals(fkPropertyEntityID, actualEntityID)) {
         throw new IllegalArgumentException("Entity of type " + fkPropertyEntityID + " expected for property " + property + ", got: " + actualEntityID);
       }
     }
@@ -770,7 +770,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   private static boolean primaryKeysEqual(final DefaultEntity entity1, final Entity entity2) {
     if (entity1.getEntityID().equals(entity2.getEntityID())) {
       for (final Property.ColumnProperty property : entity1.definition.getPrimaryKeyProperties()) {
-        if (!Util.equal(entity1.get(property.getPropertyID()), entity2.get(property.getPropertyID()))) {
+        if (!Objects.equals(entity1.get(property.getPropertyID()), entity2.get(property.getPropertyID()))) {
           return false;
         }
       }
@@ -909,7 +909,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
           return otherKey.isSingleIntegerKey() && hashCode() == otherKey.hashCode() && entityID.equals(otherKey.getEntityID());
         }
         //single non-integer key
-        return !otherKey.isCompositeKey() && entityID.equals(otherKey.getEntityID()) && Util.equal(getFirstValue(), otherKey.getFirstValue());
+        return !otherKey.isCompositeKey() && entityID.equals(otherKey.getEntityID()) && Objects.equals(getFirstValue(), otherKey.getFirstValue());
       }
 
       return false;

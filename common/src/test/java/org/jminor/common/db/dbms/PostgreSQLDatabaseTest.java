@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 
 public class PostgreSQLDatabaseTest {
 
-  @Test (expected = IllegalArgumentException.class)
+  @Test (expected = NullPointerException.class)
   public void getSequenceSQLNullSequence() {
     new PostgreSQLDatabase("host", "1234", "sid").getSequenceSQL(null);
   }

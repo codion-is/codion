@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -91,8 +92,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    * @param connectionProvider a EntityConnectionProvider instance
    */
   public SwingEntityComboBoxModel(final String entityID, final EntityConnectionProvider connectionProvider) {
-    Util.rejectNullValue(entityID, "entityID");
-    Util.rejectNullValue(connectionProvider, "connectionProvider");
+    Objects.requireNonNull(entityID, "entityID");
+    Objects.requireNonNull(connectionProvider, "connectionProvider");
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
     this.selectCriteria = initializeSelectCriteria(entityID);
@@ -164,7 +165,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   /** {@inheritDoc} */
   @Override
   public final void setSelectedEntityByKey(final Entity.Key key) {
-    Util.rejectNullValue(key, "key");
+    Objects.requireNonNull(key, "key");
     final int indexOfKey = getIndexOfKey(key);
     if (indexOfKey >= 0) {
       setSelectedItem(getElementAt(indexOfKey));
@@ -330,7 +331,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    * @return the entities to present in this EntityComboBoxModel
    */
   protected List<Entity> performQuery(final EntitySelectCriteria selectCriteria) {
-    Util.rejectNullValue(selectCriteria, "selectCriteria");
+    Objects.requireNonNull(selectCriteria, "selectCriteria");
     try {
       return connectionProvider.getConnection().selectMany(selectCriteria);
     }

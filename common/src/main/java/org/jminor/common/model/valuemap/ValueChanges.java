@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.valuemap;
 
-import org.jminor.common.Util;
+import java.util.Objects;
 
 /**
  * Factory class for {@link ValueChange} instances
@@ -57,7 +57,7 @@ public final class ValueChanges {
      * @param initialization true if the value was being initialized, as in, no previous value exists
      */
     private DefaultValueChange(final K key, final V newValue, final V oldValue, final boolean initialization) {
-      Util.rejectNullValue(key, "key");
+      Objects.requireNonNull(key, "key");
       this.key = key;
       this.newValue = newValue;
       this.oldValue = oldValue;

@@ -31,12 +31,12 @@ public final class PropertiesTest {
     Properties.foreignKeyProperty(propertyID, "caption", "referencedEntityID", Properties.columnProperty(propertyID));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void foreignKeyPropertyWithoutReferenceProperty() {
     Properties.foreignKeyProperty("propertyID", "caption", "referencedEntityID", null);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void foreignKeyPropertyWithoutReferenceEntityID() {
     Properties.foreignKeyProperty("propertyID", "caption", null, Properties.columnProperty("col"));
   }
@@ -81,7 +81,7 @@ public final class PropertiesTest {
     assertEquals("hello", Properties.columnProperty("propertyID").setColumnName("hello").getColumnName());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void setColumnNameNull() {
     Properties.columnProperty("propertyID").setColumnName(null);
   }
@@ -148,7 +148,7 @@ public final class PropertiesTest {
     assertEquals("id2", foreignKeyProperty.getReferencedPropertyID(columnProperty2));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void foreignKeyPropertyNullProperty() {
     Properties.foreignKeyProperty("id", "caption", "entityID", null);
   }

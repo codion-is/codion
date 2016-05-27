@@ -5,7 +5,6 @@ package org.jminor.swing.common.ui;
 
 import org.jminor.common.StateObserver;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.Util;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -18,6 +17,7 @@ import java.awt.event.FocusEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * A panel for displaying a formatted text field and a button activating a calendar for date input.
@@ -47,8 +47,8 @@ public final class DateInputPanel extends JPanel {
   public DateInputPanel(final JFormattedTextField inputField, final SimpleDateFormat dateFormat,
                         final boolean includeButton, final StateObserver enabledState) {
     super(new BorderLayout());
-    Util.rejectNullValue(inputField, "inputField");
-    Util.rejectNullValue(dateFormat, "dateFormat");
+    Objects.requireNonNull(inputField, "inputField");
+    Objects.requireNonNull(dateFormat, "dateFormat");
     this.inputField = inputField;
     this.dateFormat = dateFormat;
     add(inputField, BorderLayout.CENTER);

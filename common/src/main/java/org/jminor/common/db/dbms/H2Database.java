@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -118,7 +119,7 @@ public final class H2Database extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getSequenceSQL(final String sequenceName) {
-    Util.rejectNullValue(sequenceName, "sequenceName");
+    Objects.requireNonNull(sequenceName, "sequenceName");
     return SEQUENCE_VALUE_QUERY + sequenceName;
   }
 

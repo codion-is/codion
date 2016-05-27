@@ -7,7 +7,6 @@ import org.jminor.common.db.dbms.H2Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.ProgressReporter;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.domain.Entity;
@@ -21,6 +20,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -64,7 +64,7 @@ public class EntityConnectionUtilTest {
     final List<Entity> employees = DESTINATION_CONNECTION.selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP));
     boolean zeroIdFound = false;
     for (final Entity emp : employees) {
-      if (Util.equal(emp.get(TestDomain.EMP_ID), 0)) {
+      if (Objects.equals(emp.get(TestDomain.EMP_ID), 0)) {
         zeroIdFound = true;
       }
     }
