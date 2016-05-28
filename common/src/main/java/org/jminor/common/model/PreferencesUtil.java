@@ -7,15 +7,21 @@ import java.util.Objects;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+/**
+ * A utility class for working with user preferences
+ */
 public final class PreferencesUtil {
 
   /**
    * The name of the preferences key used to save the default username
    */
   public static final String PREFERENCE_DEFAULT_USERNAME = "jminor.username";
-  protected static final String KEY = "key";
+
+  private static final String KEY = "key";
 
   private static Preferences userPreferences;
+
+  private PreferencesUtil() {}
 
   /**
    * Retrieves the default username for the given application identifier saved in preferences, if any

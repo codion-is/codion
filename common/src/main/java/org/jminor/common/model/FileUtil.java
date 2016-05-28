@@ -20,6 +20,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A utility class for working with files
+ */
 public final class FileUtil {
 
   private FileUtil() {}

@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+/**
+ * A utility class for working with text
+ */
 public final class TextUtil {
 
   private static final Random RANDOM = new Random();

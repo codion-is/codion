@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- * A static utility class for date handling.<br>
+ * A static utility class for date handling.
  */
 public final class DateUtil {
 
