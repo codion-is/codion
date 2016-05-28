@@ -5,7 +5,7 @@ package org.jminor.common;
 
 /**
  * Specifies an Event observer, managing listeners for an Event.
- * @param <T> the type of info propagated with events
+ * @param <T> the type of info propagated with this observers event
  */
 public interface EventObserver<T> {
 
@@ -29,7 +29,7 @@ public interface EventObserver<T> {
    * a second time has no effect.
    * Adding a listener does not prevent it from being garbage collected.
    * @param listener the listener to add
-   * @throws IllegalArgumentException in case listener is null
+   * @throws NullPointerException in case listener is null
    */
   void addInfoListener(final EventInfoListener<T> listener);
 

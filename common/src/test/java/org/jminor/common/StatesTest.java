@@ -24,52 +24,23 @@ public class StatesTest {
         stateChangeCounter.incrementAndGet();
       }
     };
-    final AtomicInteger activationCounter = new AtomicInteger();
-    final EventListener activationListener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        activationCounter.incrementAndGet();
-      }
-    };
-    final AtomicInteger deactivationCounter = new AtomicInteger();
-    final EventListener deactivationListener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        deactivationCounter.incrementAndGet();
-      }
-    };
     state.addListener(stateChangeListener);
-    state.addActivateListener(activationListener);
-    state.addDeactivateListener(deactivationListener);
-    //these have no effect, coverage whoring
+    //this has no effect, coverage whoring
     state.getObserver().addListener(stateChangeListener);
-    state.getObserver().addActivateListener(activationListener);
-    state.getObserver().addDeactivateListener(deactivationListener);
 
     state.setActive(true);
-    assertEquals(1, activationCounter.get());
     assertEquals(1, stateChangeCounter.get());
     state.setActive(false);
     assertEquals(2, stateChangeCounter.get());
-    assertEquals(1, activationCounter.get());
-    assertEquals(1, deactivationCounter.get());
     state.setActive(true);
     assertEquals(3, stateChangeCounter.get());
-    assertEquals(2, activationCounter.get());
     state.setActive(false);
-    assertEquals(2, deactivationCounter.get());
-    state.removeActivateListener(activationListener);
-    state.removeDeactivateListener(activationListener);
     state.removeListener(stateChangeListener);
-    //these have no effect, coverage whoring
-    state.getObserver().removeActivateListener(activationListener);
-    state.getObserver().removeDeactivateListener(activationListener);
+    //this has no effect, coverage whoring
     state.getObserver().removeListener(stateChangeListener);
 
     state.setActive(false);
     state.setActive(true);
-    assertEquals(2, activationCounter.get());
-    assertEquals(2, deactivationCounter.get());
     assertEquals(4, stateChangeCounter.get());
   }
 
@@ -291,47 +262,24 @@ public class StatesTest {
         stateChangeEvents.incrementAndGet();
       }
     });
-    final AtomicInteger stateActivatedEvents = new AtomicInteger();
-    aggregate.addActivateListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        stateActivatedEvents.incrementAndGet();
-      }
-    });
-    final AtomicInteger stateDeactivatedEvents = new AtomicInteger();
-    aggregate.addDeactivateListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        stateDeactivatedEvents.incrementAndGet();
-      }
-    });
-
     assertTrue(aggregate.isActive());
 
     aggregate.removeState(stateTwo);
 
     assertFalse(aggregate.isActive());
     assertEquals(1, stateChangeEvents.get());
-    assertEquals(1, stateDeactivatedEvents.get());
-    assertEquals(0, stateActivatedEvents.get());
 
     aggregate.addState(stateTwo);
     assertTrue(aggregate.isActive());
     assertEquals(2, stateChangeEvents.get());
-    assertEquals(1, stateDeactivatedEvents.get());
-    assertEquals(1, stateActivatedEvents.get());
 
     aggregate.removeState(stateOne);
     assertTrue(aggregate.isActive());
     assertEquals(2, stateChangeEvents.get());
-    assertEquals(1, stateDeactivatedEvents.get());
-    assertEquals(1, stateActivatedEvents.get());
 
     aggregate.addState(stateOne);
     stateTwo.setActive(false);
     assertFalse(aggregate.isActive());
     assertEquals(3, stateChangeEvents.get());
-    assertEquals(2, stateDeactivatedEvents.get());
-    assertEquals(1, stateActivatedEvents.get());
   }
 }

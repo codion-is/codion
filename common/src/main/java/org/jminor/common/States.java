@@ -110,26 +110,6 @@ public final class States {
     }
 
     @Override
-    public final void addActivateListener(final EventListener listener) {
-      getObserver().addActivateListener(listener);
-    }
-
-    @Override
-    public final void removeActivateListener(final EventListener listener) {
-      getObserver().removeActivateListener(listener);
-    }
-
-    @Override
-    public final void addDeactivateListener(final EventListener listener) {
-      getObserver().addDeactivateListener(listener);
-    }
-
-    @Override
-    public final void removeDeactivateListener(final EventListener listener) {
-      getObserver().removeDeactivateListener(listener);
-    }
-
-    @Override
     public final void addListener(final EventListener listener) {
       getObserver().addListener(listener);
     }
@@ -289,10 +269,7 @@ public final class States {
     private final boolean reversed;
 
     private Event<Boolean> stateChangedEvent;
-    private Event stateActivatedEvent;
-    private Event stateDeactivatedEvent;
-
-    private DefaultStateObserver reversedStateObserver = null;
+    private DefaultStateObserver reversedStateObserver;
 
     private DefaultStateObserver(final StateObserver stateObserver, final boolean reversed) {
       this.stateObserver = stateObserver;
@@ -348,46 +325,6 @@ public final class States {
       getChangeObserver().removeInfoListener(listener);
     }
 
-    @Override
-    public void addActivateListener(final EventListener listener) {
-      getStateActivatedEvent().addListener(listener);
-    }
-
-    @Override
-    public void removeActivateListener(final EventListener listener) {
-      getStateActivatedEvent().removeListener(listener);
-    }
-
-    @Override
-    public void addDeactivateListener(final EventListener listener) {
-      getStateDeactivatedEvent().addListener(listener);
-    }
-
-    @Override
-    public void removeDeactivateListener(final EventListener listener) {
-      getStateDeactivatedEvent().removeListener(listener);
-    }
-
-    private Event getStateActivatedEvent() {
-      synchronized (lock) {
-        if (stateActivatedEvent == null) {
-          stateActivatedEvent = Events.event();
-        }
-
-        return stateActivatedEvent;
-      }
-    }
-
-    private Event getStateDeactivatedEvent() {
-      synchronized (lock) {
-        if (stateDeactivatedEvent == null) {
-          stateDeactivatedEvent = Events.event();
-        }
-
-        return stateDeactivatedEvent;
-      }
-    }
-
     private void notifyObservers(final boolean previousValue, final boolean newValue) {
       synchronized (lock) {
         if (previousValue != newValue) {
@@ -396,16 +333,6 @@ public final class States {
           }
           if (reversedStateObserver != null) {
             reversedStateObserver.notifyObservers(newValue, previousValue);
-          }
-          if (newValue) {
-            if (stateActivatedEvent != null) {
-              stateActivatedEvent.fire();
-            }
-          }
-          else {
-            if (stateDeactivatedEvent != null) {
-              stateDeactivatedEvent.fire();
-            }
           }
         }
       }

@@ -4279,3 +4279,4 @@
   Usages of Util.rejectNullValue() and Util.equal() replaced with Objects.requireNonNull() and Objects.equals() respectively
   Util.rejectNullValue() and equal() removed
   org.jminor.common.model.Util broken up into TextUtil, PreferencesUtil and FormatUtil, rest moved to common.Util
+  StateObserver.addActivateListener() and addDeactivateListener() removed

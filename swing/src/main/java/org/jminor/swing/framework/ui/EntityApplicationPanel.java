@@ -1145,17 +1145,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private void bindEventsInternal() {
-    final StateObserver connected = applicationModel.getConnectionProvider().getConnectedObserver();
-    connected.addActivateListener(new EventListener() {
+    applicationModel.getConnectionProvider().getConnectedObserver().addInfoListener(new EventInfoListener<Boolean>() {
       @Override
-      public void eventOccurred() {
-        setParentWindowTitle(frameTitle);
-      }
-    });
-    connected.addDeactivateListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        setParentWindowTitle(frameTitle + " - " + Messages.get(Messages.NOT_CONNECTED));
+      public void eventOccurred(final Boolean active) {
+        setParentWindowTitle(active ? frameTitle : frameTitle + " - " + Messages.get(Messages.NOT_CONNECTED));
       }
     });
   }
