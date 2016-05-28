@@ -86,7 +86,7 @@ public final class TextUtilTest {
 
   @Test
   public void getDelimitedString() {
-    final String result = "test\ttest2" + org.jminor.common.Util.LINE_SEPARATOR + "data1\tdata2" + Util.LINE_SEPARATOR + "data3\tdata4" + Util.LINE_SEPARATOR;
+    final String result = "test\ttest2" + Util.LINE_SEPARATOR + "data1\tdata2" + Util.LINE_SEPARATOR + "data3\tdata4" + Util.LINE_SEPARATOR;
     assertEquals(result, TextUtil.getDelimitedString(new String[][]{new String[]{"test", "test2"}},
             new String[][]{new String[]{"data1", "data2"}, new String[]{"data3", "data4"}}, "\t"));
   }

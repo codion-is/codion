@@ -3,6 +3,8 @@
  */
 package org.jminor.common.model;
 
+import org.jminor.common.Util;
+
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -28,7 +30,7 @@ public final class Version implements Comparable<Version>, Serializable {
 
   static {
     try {
-      VERSION = parse(TextUtil.getTextFileContents(org.jminor.common.Util.class, VERSION_FILE));
+      VERSION = parse(TextUtil.getTextFileContents(Util.class, VERSION_FILE));
     }
     catch (final IOException e) {
       throw new RuntimeException(e);

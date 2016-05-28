@@ -486,7 +486,7 @@ class DefaultProperty implements Property {
    */
   Object prepareValue(final Object value) {
     if (value != null && isDouble()) {
-      return org.jminor.common.Util.roundDouble((Double) value, getMaximumFractionDigits());
+      return Util.roundDouble((Double) value, getMaximumFractionDigits());
     }
 
     return value;

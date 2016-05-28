@@ -207,7 +207,7 @@ public final class TextUtil {
           contents.append(delimiter);
         }
       }
-      contents.append(org.jminor.common.Util.LINE_SEPARATOR);
+      contents.append(Util.LINE_SEPARATOR);
     }
 
     for (int i = 0; i < data.length; i++) {
@@ -219,7 +219,7 @@ public final class TextUtil {
         }
       }
       if (i < someData.length) {
-        contents.append(org.jminor.common.Util.LINE_SEPARATOR);
+        contents.append(Util.LINE_SEPARATOR);
       }
     }
 

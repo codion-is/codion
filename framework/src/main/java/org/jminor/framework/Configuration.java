@@ -931,7 +931,7 @@ public final class Configuration {
           final Object key = entry.getKey();
           final String value = (String) properties.get(key);
           LOG.debug("{} -> {}", key, value);
-          if (key.equals(ADDITIONAL_CONFIGURATION_FILES)) {
+          if (ADDITIONAL_CONFIGURATION_FILES.equals(key)) {
             additionalConfigurationFiles = value;
           }
           else {
@@ -943,7 +943,7 @@ public final class Configuration {
         throw new RuntimeException(e);
       }
       finally {
-        org.jminor.common.Util.closeSilently(inputStream);
+        Util.closeSilently(inputStream);
       }
       if (additionalConfigurationFiles != null) {
         final String[] configurationFiles = additionalConfigurationFiles.split(",");
