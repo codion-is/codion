@@ -10,11 +10,12 @@ import org.jminor.common.model.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -113,7 +114,7 @@ public final class ServerUtil {
   }
 
   private static <T extends Remote> List<Server<T>> getServers(final String hostNames, final String serverNamePrefix,
-                                         final int registryPort, final int serverPort) throws RemoteException {
+                                                               final int registryPort, final int serverPort) throws RemoteException {
     final List<Server<T>> servers = new ArrayList<>();
     for (final String serverHostName : hostNames.split(",")) {
       LOG.info("Searching for servers,  host: \"{}\", server name prefix: \"{}\", server port: {}, registry port {}",
@@ -152,33 +153,20 @@ public final class ServerUtil {
       LOG.debug("No trust store specified via {}", JAVAX_NET_NET_TRUSTSTORE);
       return;
     }
-    FileOutputStream out = null;
-    InputStream in = null;
-    try {
-      final ClassLoader loader = Util.class.getClassLoader();
-      in = loader.getResourceAsStream(value);
-      if (in == null) {
+    try (final InputStream inputStream = Util.class.getClassLoader().getResourceAsStream(value)) {
+      if (inputStream == null) {
         LOG.debug("Specified trust store not found on classpath: {}", value);
         return;
       }
       final File file = File.createTempFile(temporaryFileNamePrefix, "tmp");
+      Files.write(file.toPath(), getBytes(inputStream));
       file.deleteOnExit();
-      out = new FileOutputStream(file);
-      final byte[] buf = new byte[INPUT_BUFFER_SIZE];
-      int br = in.read(buf);
-      while (br > 0) {
-        out.write(buf, 0, br);
-        br = in.read(buf);
-      }
-      LOG.debug("Classpath trust store resolved to file: {} -> {}", JAVAX_NET_NET_TRUSTSTORE, file);
+      LOG.debug("Classpath trust store written to file: {} -> {}", JAVAX_NET_NET_TRUSTSTORE, file);
 
       System.setProperty(JAVAX_NET_NET_TRUSTSTORE, file.getPath());
     }
     catch (final IOException e) {
       throw new RuntimeException(e);
-    }
-    finally {
-      Util.closeSilently(out, in);
     }
   }
 
@@ -186,7 +174,7 @@ public final class ServerUtil {
     final Server.ServerInfo serverInfo = server.getServerInfo();
     if (requestedPort != -1 && serverInfo.getServerPort() != requestedPort) {
       LOG.error("Server \"{}\" is serving on port {}, requested port was {}",
-            new Object[] {serverInfo.getServerName(), serverInfo.getServerPort(), requestedPort});
+              new Object[] {serverInfo.getServerName(), serverInfo.getServerPort(), requestedPort});
       return null;
     }
     if (server.connectionsAvailable()) {
@@ -208,6 +196,18 @@ public final class ServerUtil {
         return 1;
       }
     }
+  }
+
+  private static byte[] getBytes(final InputStream stream) throws IOException {
+    final ByteArrayOutputStream os = new ByteArrayOutputStream();
+    final byte[] buffer = new byte[INPUT_BUFFER_SIZE];
+    int line = 0;
+    while ((line = stream.read(buffer)) != -1) {
+      os.write(buffer, 0, line);
+    }
+    os.flush();
+
+    return os.toByteArray();
   }
 
   private static final class DefaultClientInfo implements ClientInfo, Serializable {

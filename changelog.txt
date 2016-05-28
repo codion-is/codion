@@ -4280,3 +4280,5 @@
   Util.rejectNullValue() and equal() removed
   org.jminor.common.model.Util broken up into TextUtil, PreferencesUtil and FormatUtil, rest moved to common.Util
   StateObserver.addActivateListener() and addDeactivateListener() removed
+  ServerUtil.resolveTrustStoreFromClasspath() refactored
+  Util.getArray/CollectionContentsAsString() moved to TextUtil

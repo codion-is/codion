@@ -19,6 +19,7 @@ import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.TextUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -95,7 +96,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     this.connectionProvider = connectionProvider;
     this.entityID = entityID;
     this.lookupProperties = lookupProperties;
-    this.description = Util.getCollectionContentsAsString(getLookupProperties(), false);
+    this.description = TextUtil.getCollectionContentsAsString(getLookupProperties(), false);
     initializeDefaultSettings();
     bindEventsInternal();
   }

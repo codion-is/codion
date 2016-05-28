@@ -266,7 +266,7 @@
     <subant target="deploy" buildpath="plugins"/>
   </target>
 
-  <target name="install" description="Publishes all project artifacts to a local repository">
+  <target name="install" depends="clear_ivy_cache" description="Publishes all project artifacts to a local repository">
     <subant target="install" buildpath="common"/>
     <subant target="install" buildpath="framework"/>
     <subant target="install" buildpath="swing"/>

@@ -7,8 +7,8 @@ import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
-import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.valuemap.DefaultValueMapEditModel;
 import org.jminor.common.model.valuemap.ValueChange;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
@@ -411,7 +411,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
       throw new UnsupportedOperationException("This model does not allow updating!");
     }
 
-    LOG.debug("{} - update {}", this, Util.getCollectionContentsAsString(entities, false));
+    LOG.debug("{} - update {}", this, TextUtil.getCollectionContentsAsString(entities, false));
 
     final List<Entity> modifiedEntities = getModifiedEntities(entities);
     if (modifiedEntities.isEmpty()) {
@@ -452,7 +452,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
       throw new UnsupportedOperationException("This model does not allow deleting!");
     }
 
-    LOG.debug("{} - delete {}", this, Util.getCollectionContentsAsString(entities, false));
+    LOG.debug("{} - delete {}", this, TextUtil.getCollectionContentsAsString(entities, false));
 
     fireBeforeDeleteEvent(new DefaultDeleteEvent(entities));
 
@@ -814,7 +814,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
       throw new UnsupportedOperationException("This model does not allow inserting!");
     }
 
-    LOG.debug("{} - insert {}", this, Util.getCollectionContentsAsString(entities, false));
+    LOG.debug("{} - insert {}", this, TextUtil.getCollectionContentsAsString(entities, false));
 
     fireBeforeInsertEvent(new DefaultInsertEvent(entities));
     validate(entities);

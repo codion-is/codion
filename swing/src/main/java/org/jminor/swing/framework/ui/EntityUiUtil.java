@@ -8,7 +8,6 @@ import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.StateObserver;
-import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
 import org.jminor.common.db.exception.DatabaseException;
@@ -1060,7 +1059,7 @@ public final class EntityUiUtil {
       columnNames.add(referenceProperty.getColumnName());
     }
 
-    return Util.getArrayContentsAsString(columnNames.toArray(), false);
+    return TextUtil.getArrayContentsAsString(columnNames.toArray(), false);
   }
 
   private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties) {

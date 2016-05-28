@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.Util;
+import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.User;
 import org.jminor.common.model.tools.MethodLogger;
 
@@ -164,7 +164,7 @@ public final class DatabaseUtil {
                                         final Exception exception, final MethodLogger.Entry entry) {
     final StringBuilder logMessage = new StringBuilder(user.toString()).append("\n");
     if (entry == null) {
-      logMessage.append(sqlStatement == null ? "no sql statement" : sqlStatement).append(", ").append(Util.getCollectionContentsAsString(values, false));
+      logMessage.append(sqlStatement == null ? "no sql statement" : sqlStatement).append(", ").append(TextUtil.getCollectionContentsAsString(values, false));
     }
     else {
       logMessage.append(entry.toString(1));

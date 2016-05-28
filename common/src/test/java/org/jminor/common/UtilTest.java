@@ -7,12 +7,10 @@ import org.junit.Test;
 
 import java.io.Closeable;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -85,26 +83,6 @@ public final class UtilTest {
   public void getGetMethodNoProperty() throws NoSuchMethodException {
     final Bean bean = new Bean();
     Util.getGetMethod(boolean.class, "", bean);
-  }
-
-  @Test
-  public void getArrayContentsAsString() throws Exception {
-    assertEquals("", Util.getArrayContentsAsString(null, true));
-    String res = Util.getArrayContentsAsString(new Object[] {1, 2,new Object[] {3, 4}}, false);
-    assertEquals("Integer array as string should work", "1, 2, 3, 4", res);
-    res = Util.getArrayContentsAsString(new Object[] {1, 2,new Object[] {3, 4}}, true);
-    assertEquals("Integer array as string should work", "1\n2\n3\n4\n", res);
-  }
-
-  @Test
-  public void getListContentsAsString() throws Exception {
-    final List<Integer> list = new ArrayList<>();
-    list.add(1);
-    list.add(2);
-    list.add(3);
-    list.add(4);
-    final String res = Util.getCollectionContentsAsString(list, false);
-    assertEquals("Integer list as string should work", "1, 2, 3, 4", res);
   }
 
   @Test

@@ -8,6 +8,9 @@ import org.slf4j.Logger;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * Utility class for exception logging
+ */
 public final class ExceptionUtil {
 
   private ExceptionUtil() {}

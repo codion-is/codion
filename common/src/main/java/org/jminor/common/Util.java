@@ -40,7 +40,7 @@ public class Util {
    */
   public static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
-  protected Util() {}
+  private Util() {}
 
   /**
    * @param strings the strings to check
@@ -132,7 +132,7 @@ public class Util {
    * using <code>propertyName</code> in the error message, as in: "propertyName is required"
    * @param propertyName the name of the property that is required
    * @param value the value
-   * @throws RuntimeException in case the value is null
+   * @throws RuntimeException in case value is null or empty
    */
   public static void require(final String propertyName, final String value) {
     if (nullOrEmpty(value)) {
@@ -172,46 +172,6 @@ public class Util {
     }
 
     return false;
-  }
-
-  /**
-   * @param collection the collection
-   * @param onePerLine if true then each item is put on a separate line, otherwise a comma separator is used
-   * @return the collection contents as a string (using toString())
-   */
-  public static String getCollectionContentsAsString(final Collection<?> collection, final boolean onePerLine) {
-    if (collection == null) {
-      return "";
-    }
-
-    return getArrayContentsAsString(collection.toArray(), onePerLine);
-  }
-
-  /**
-   * @param items the items
-   * @param onePerLine if true then each item is put on a separate line, otherwise a comma separator is used
-   * @return the array contents as a string (using toString())
-   */
-  public static String getArrayContentsAsString(final Object[] items, final boolean onePerLine) {
-    if (items == null) {
-      return "";
-    }
-
-    final StringBuilder stringBuilder = new StringBuilder();
-    for (int i = 0; i < items.length; i++) {
-      final Object item = items[i];
-      if (item instanceof Object[]) {
-        stringBuilder.append(getArrayContentsAsString((Object[]) item, onePerLine));
-      }
-      else if (!onePerLine) {
-        stringBuilder.append(item).append(i < items.length - 1 ? ", " : "");
-      }
-      else {
-        stringBuilder.append(item).append("\n");
-      }
-    }
-
-    return stringBuilder.toString();
   }
 
   /**
@@ -305,6 +265,10 @@ public class Util {
    * @see Util#map(java.util.Collection, MapKeyProvider)
    */
   public interface MapKeyProvider<K, V> {
+    /**
+     * @param value the value being mapped
+     * @return a map key for the given value
+     */
     K getKey(final V value);
   }
 
