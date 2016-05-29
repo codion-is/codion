@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.EventListener;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.AuthenticationException;
@@ -374,15 +373,12 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
         connection = new DefaultRemoteEntityConnection(connectionPool, database, clientInfo, getServerInfo().getServerPort(),
                 clientLoggingEnabled, sslEnabled);
       }
-      connection.addDisconnectListener(new EventListener() {
-        @Override
-        public void eventOccurred() {
-          try {
-            disconnect(connection.getClientInfo().getClientID());
-          }
-          catch (final RemoteException ex) {
-            LOG.error(ex.getMessage(), ex);
-          }
+      connection.addDisconnectListener(() -> {
+        try {
+          disconnect(connection.getClientInfo().getClientID());
+        }
+        catch (final RemoteException ex) {
+          LOG.error(ex.getMessage(), ex);
         }
       });
       LOG.debug("{} connected", clientInfo);
@@ -446,17 +442,14 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
     try {
       final AuxiliaryServer auxiliaryServer = (AuxiliaryServer) Class.forName(webServerClassName).getConstructor(
               Server.class, String.class, Integer.class).newInstance(this, webDocumentRoot, webServerPort);
-      Executors.newSingleThreadExecutor().submit(new Runnable() {
-        @Override
-        public void run() {
-          LOG.info("Starting web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
-          try {
-            auxiliaryServer.startServer();
-          }
-          catch (final Exception e) {
-            LOG.error(e.getMessage(), e);
-            LOG.error("Trying to start web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
-          }
+      Executors.newSingleThreadExecutor().submit(() -> {
+        LOG.info("Starting web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
+        try {
+          auxiliaryServer.startServer();
+        }
+        catch (final Exception e) {
+          LOG.error(e.getMessage(), e);
+          LOG.error("Trying to start web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
         }
       }).get();
 

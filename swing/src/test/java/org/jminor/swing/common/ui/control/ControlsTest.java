@@ -4,7 +4,6 @@
 package org.jminor.swing.common.ui.control;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
 import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.States;
@@ -105,12 +104,7 @@ public final class ControlsTest {
   public void eventControl() {
     final Event<ActionEvent> event = Events.event();
     final Collection<ActionEvent> firedEvents = new ArrayList<>();
-    event.addInfoListener(new EventInfoListener<ActionEvent>() {
-      @Override
-      public void eventOccurred(final ActionEvent info) {
-        firedEvents.add(info);
-      }
-    });
+    event.addInfoListener(firedEvents::add);
     final Control control = Controls.eventControl(event);
     final ActionEvent actionEvent = new ActionEvent(this, 0, "command");
     control.actionPerformed(actionEvent);

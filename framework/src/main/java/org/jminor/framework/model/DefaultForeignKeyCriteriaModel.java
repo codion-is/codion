@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.EventInfoListener;
-import org.jminor.common.EventListener;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.model.table.DefaultColumnCriteriaModel;
 import org.jminor.framework.Configuration;
@@ -118,29 +116,23 @@ public class DefaultForeignKeyCriteriaModel extends DefaultColumnCriteriaModel<P
   }
 
   private void bindLookupModelEvents() {
-    entityLookupModel.addSelectedEntitiesListener(new EventInfoListener<Collection<Entity>>() {
-      @Override
-      public void eventOccurred(final Collection<Entity> selectedEntities) {
-        try {
-          setUpdatingModel(true);
-          setUpperBound(selectedEntities.isEmpty() ? null : selectedEntities);
-        }
-        finally {
-          setUpdatingModel(false);
-        }
+    entityLookupModel.addSelectedEntitiesListener(selectedEntities -> {
+      try {
+        setUpdatingModel(true);
+        setUpperBound(selectedEntities.isEmpty() ? null : selectedEntities);
+      }
+      finally {
+        setUpdatingModel(false);
       }
     });
-    addUpperBoundListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        if (!isUpdatingModel()) {//noinspection unchecked
-          final Object upperBound = getUpperBound();
-          if (upperBound instanceof Entity) {
-            entityLookupModel.setSelectedEntities(Collections.singletonList((Entity) upperBound));
-          }
-          else {//noinspection unchecked
-            entityLookupModel.setSelectedEntities((Collection<Entity>) upperBound);
-          }
+    addUpperBoundListener(() -> {
+      if (!isUpdatingModel()) {//noinspection unchecked
+        final Object upperBound = getUpperBound();
+        if (upperBound instanceof Entity) {
+          entityLookupModel.setSelectedEntities(Collections.singletonList((Entity) upperBound));
+        }
+        else {//noinspection unchecked
+          entityLookupModel.setSelectedEntities((Collection<Entity>) upperBound);
         }
       }
     });

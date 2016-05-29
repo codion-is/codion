@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import java.sql.Types;
 import java.text.NumberFormat;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -17,12 +16,7 @@ public final class PropertiesTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void derivedPropertyWithoutLinkedProperties() {
-    Properties.derivedProperty("propertyID", Types.INTEGER, "caption", new Property.DerivedProperty.Provider() {
-      @Override
-      public Object getValue(final Map<String, Object> linkedValues) {
-        return null;
-      }
-    });
+    Properties.derivedProperty("propertyID", Types.INTEGER, "caption", linkedValues -> null);
   }
 
   @Test(expected = IllegalArgumentException.class)

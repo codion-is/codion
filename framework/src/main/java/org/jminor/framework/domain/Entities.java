@@ -763,13 +763,8 @@ public final class Entities {
     setTableConfiguration(entityTable, definition);
     setKeyGenerator(definition, entityTable);
     try {
-      final LinkedHashMap<String, Collection<Property.ColumnProperty>> columnProperties = Util.map(
-              definition.getColumnProperties(), new Util.MapKeyProvider<String, Property.ColumnProperty>() {
-                @Override
-                public String getKey(final Property.ColumnProperty value) {
-                  return value.getPropertyID();
-                }
-              });
+      final LinkedHashMap<String, Collection<Property.ColumnProperty>> columnProperties =
+              Util.map(definition.getColumnProperties(), Property::getPropertyID);
       for (final Map.Entry<Field, Property.Column> propertyColumn : entityColumnAnnotations) {
         final String propertyID = (String) propertyColumn.getKey().get(null);
         final Property.ColumnProperty property = columnProperties.get(propertyID).iterator().next();

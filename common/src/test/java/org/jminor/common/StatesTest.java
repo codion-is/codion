@@ -18,12 +18,7 @@ public class StatesTest {
     final State state = States.state();
     state.getChangeObserver();
     final AtomicInteger stateChangeCounter = new AtomicInteger();
-    final EventListener stateChangeListener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        stateChangeCounter.incrementAndGet();
-      }
-    };
+    final EventListener stateChangeListener = stateChangeCounter::incrementAndGet;
     state.addListener(stateChangeListener);
     //this has no effect, coverage whoring
     state.getObserver().addListener(stateChangeListener);
@@ -47,26 +42,11 @@ public class StatesTest {
   @Test
   public void reversedState() {
     final AtomicInteger stateCounter = new AtomicInteger();
-    final EventListener listener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        stateCounter.incrementAndGet();
-      }
-    };
+    final EventListener listener = stateCounter::incrementAndGet;
     final AtomicInteger reversedStateCounter = new AtomicInteger();
-    final EventListener reversedListener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        reversedStateCounter.incrementAndGet();
-      }
-    };
+    final EventListener reversedListener = reversedStateCounter::incrementAndGet;
     final AtomicInteger reversedReversedStateCounter = new AtomicInteger();
-    final EventListener reversedReversedListener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        reversedReversedStateCounter.incrementAndGet();
-      }
-    };
+    final EventListener reversedReversedListener = reversedReversedStateCounter::incrementAndGet;
     final State state = States.state();
     final StateObserver reversed = state.getReversedObserver();
     final StateObserver reversedReversed = reversed.getReversedObserver();
@@ -222,12 +202,7 @@ public class StatesTest {
     final State three = States.state();
 
     final State aggregateAnd = States.aggregateState(Conjunction.AND, one, two, three);
-    aggregateAnd.addInfoListener(new EventInfoListener<Boolean>() {
-      @Override
-      public void eventOccurred(final Boolean newValue) {
-        assertEquals(aggregateAnd.isActive(), newValue);
-      }
-    });
+    aggregateAnd.addInfoListener(newValue -> assertEquals(aggregateAnd.isActive(), newValue));
     one.setActive(true);
     two.setActive(true);
     three.setActive(true);
@@ -236,12 +211,7 @@ public class StatesTest {
     three.setActive(false);
 
     final State aggregateOr = States.aggregateState(Conjunction.OR, one, two, three);
-    aggregateOr.addInfoListener(new EventInfoListener<Boolean>() {
-      @Override
-      public void eventOccurred(final Boolean newValue) {
-        assertEquals(aggregateOr.isActive(), newValue);
-      }
-    });
+    aggregateOr.addInfoListener(newValue -> assertEquals(aggregateOr.isActive(), newValue));
     one.setActive(true);
     one.setActive(false);
     two.setActive(true);
@@ -256,12 +226,7 @@ public class StatesTest {
     final State stateTwo = States.state(true);
     final State.AggregateState aggregate = States.aggregateState(Conjunction.OR, stateOne, stateTwo);
     final AtomicInteger stateChangeEvents = new AtomicInteger();
-    aggregate.addListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        stateChangeEvents.incrementAndGet();
-      }
-    });
+    aggregate.addListener(stateChangeEvents::incrementAndGet);
     assertTrue(aggregate.isActive());
 
     aggregate.removeState(stateTwo);

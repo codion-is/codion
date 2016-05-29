@@ -125,11 +125,6 @@ public final class ConnectionPools {
    * @return a default connection pool provider
    */
   private static ConnectionPoolProvider createDefaultConnectionPoolProvider(final DatabaseConnectionProvider connectionProvider) {
-    return new ConnectionPoolProvider() {
-      @Override
-      public ConnectionPool createConnectionPool(final User user, final Database database) throws DatabaseException {
-        return new DefaultConnectionPool(connectionProvider);
-      }
-    };
+    return (user, database) -> new DefaultConnectionPool(connectionProvider);
   }
 }

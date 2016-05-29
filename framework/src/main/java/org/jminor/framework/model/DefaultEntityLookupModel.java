@@ -5,7 +5,6 @@ package org.jminor.framework.model;
 
 import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
-import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
@@ -313,18 +312,9 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   private void bindEventsInternal() {
-    searchStringValue.getObserver().addListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        searchStringRepresentsSelectedState.setActive(searchStringRepresentsSelected());
-      }
-    });
-    multipleItemSeparatorValue.getObserver().addListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        refreshSearchText();
-      }
-    });
+    searchStringValue.getObserver().addListener(() ->
+            searchStringRepresentsSelectedState.setActive(searchStringRepresentsSelected()));
+    multipleItemSeparatorValue.getObserver().addListener(this::refreshSearchText);
   }
 
   private String toString(final Collection<Entity> entities) {

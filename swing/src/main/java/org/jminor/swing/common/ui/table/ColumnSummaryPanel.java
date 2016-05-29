@@ -3,8 +3,6 @@
  */
 package org.jminor.swing.common.ui.table;
 
-import org.jminor.common.EventInfoListener;
-import org.jminor.common.EventListener;
 import org.jminor.common.model.table.ColumnSummaryModel;
 
 import javax.swing.AbstractAction;
@@ -31,13 +29,10 @@ public final class ColumnSummaryPanel extends JPanel {
    */
   public ColumnSummaryPanel(final ColumnSummaryModel model) {
     this.model = model;
-    model.addSummaryValueListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        final String summaryText = model.getSummaryText();
-        txtSummary.setText(summaryText);
-        txtSummary.setToolTipText(summaryText.length() != 0 ? (model.getSummary() + ": " + summaryText) : summaryText);
-      }
+    model.addSummaryValueListener(() -> {
+      final String summaryText = model.getSummaryText();
+      txtSummary.setText(summaryText);
+      txtSummary.setToolTipText(summaryText.length() != 0 ? (model.getSummary() + ": " + summaryText) : summaryText);
     });
     initialize();
   }
@@ -76,12 +71,7 @@ public final class ColumnSummaryPanel extends JPanel {
           model.setSummary(summary);
         }
       });
-      model.addSummaryListener(new EventInfoListener<ColumnSummaryModel.Summary>() {
-        @Override
-        public void eventOccurred(final ColumnSummaryModel.Summary newSummary) {
-          item.setSelected(newSummary.equals(summary));
-        }
-      });
+      model.addSummaryListener(newSummary -> item.setSelected(newSummary.equals(summary)));
       item.setSelected(model.getSummary().equals(summary));
       group.add(item);
       popupMenu.add(item);

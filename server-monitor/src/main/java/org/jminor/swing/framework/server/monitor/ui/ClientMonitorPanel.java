@@ -17,8 +17,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
@@ -56,19 +54,16 @@ public final class ClientMonitorPanel extends JPanel {
 
   private void initializeUI() {
     setLayout(UiUtil.createBorderLayout());
-    clientInstanceList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-      @Override
-      public void valueChanged(final ListSelectionEvent e) {
-        try {
-          final ClientInstanceMonitor clientMonitor = clientInstanceList.getSelectedValue();
-          if (clientMonitor != null) {
-            clientInstancePanel.setModel(clientMonitor);
-            repaint();
-          }
+    clientInstanceList.getSelectionModel().addListSelectionListener(e -> {
+      try {
+        final ClientInstanceMonitor clientMonitor = clientInstanceList.getSelectedValue();
+        if (clientMonitor != null) {
+          clientInstancePanel.setModel(clientMonitor);
+          repaint();
         }
-        catch (final RemoteException ex) {
-          throw new RuntimeException(ex);
-        }
+      }
+      catch (final RemoteException ex) {
+        throw new RuntimeException(ex);
       }
     });
     clientInstanceList.setComponentPopupMenu(initializePopupMenu());

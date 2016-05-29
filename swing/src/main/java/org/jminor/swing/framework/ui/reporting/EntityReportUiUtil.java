@@ -81,16 +81,13 @@ public final class EntityReportUiUtil {
    * @param frameTitle the title to display on the frame
    */
   public static void viewReport(final ReportResult reportResult, final ReportUIWrapper uiWrapper, final String frameTitle) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        final JFrame frame = new JFrame(frameTitle == null ? FrameworkMessages.get(FrameworkMessages.REPORT_PRINTER) : frameTitle);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.getContentPane().add(uiWrapper.createReportComponent(reportResult));
-        UiUtil.resizeWindow(frame, SCREEN_SIZE_RATIO, MINIMUM_REPORT_WINDOW_SIZE);
-        UiUtil.centerWindow(frame);
-        frame.setVisible(true);
-      }
+    SwingUtilities.invokeLater(() -> {
+      final JFrame frame = new JFrame(frameTitle == null ? FrameworkMessages.get(FrameworkMessages.REPORT_PRINTER) : frameTitle);
+      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      frame.getContentPane().add(uiWrapper.createReportComponent(reportResult));
+      UiUtil.resizeWindow(frame, SCREEN_SIZE_RATIO, MINIMUM_REPORT_WINDOW_SIZE);
+      UiUtil.centerWindow(frame);
+      frame.setVisible(true);
     });
   }
 }

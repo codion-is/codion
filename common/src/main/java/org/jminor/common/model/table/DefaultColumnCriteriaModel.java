@@ -537,18 +537,15 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
   }
 
   private void bindEvents() {
-    final EventListener autoEnableListener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        if (autoEnable) {
-          final boolean upperBoundNull = upperBoundValue.get() == null;
-          final boolean lowerBoundNull = lowerBoundValue.get() == null;
-          if (searchTypeValue.get().getValues().equals(SearchType.Values.TWO)) {
-            setEnabled(!lowerBoundNull && !upperBoundNull);
-          }
-          else {
-            setEnabled(!upperBoundNull);
-          }
+    final EventListener autoEnableListener = () -> {
+      if (autoEnable) {
+        final boolean upperBoundNull = upperBoundValue.get() == null;
+        final boolean lowerBoundNull = lowerBoundValue.get() == null;
+        if (searchTypeValue.get().getValues().equals(SearchType.Values.TWO)) {
+          setEnabled(!lowerBoundNull && !upperBoundNull);
+        }
+        else {
+          setEnabled(!upperBoundNull);
         }
       }
     };
@@ -558,12 +555,8 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
     lowerBoundValue.getObserver().addListener(criteriaStateChangedEvent);
     searchTypeValue.getObserver().addListener(criteriaStateChangedEvent);
     enabledState.addListener(criteriaStateChangedEvent);
-    searchTypeValue.getObserver().addListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        lowerBoundRequiredState.setActive(getSearchType().getValues().equals(SearchType.Values.TWO));
-      }
-    });
+    searchTypeValue.getObserver().addListener(() ->
+            lowerBoundRequiredState.setActive(getSearchType().getValues().equals(SearchType.Values.TWO)));
   }
 
   private void checkLock() {

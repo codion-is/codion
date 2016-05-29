@@ -3,8 +3,6 @@
  */
 package org.jminor.common.model.tools;
 
-import org.jminor.common.EventListener;
-
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
@@ -14,10 +12,7 @@ import static org.junit.Assert.*;
 
 public class TaskSchedulerTest {
 
-  private final Runnable runnable = new Runnable() {
-    @Override
-    public void run() {}
-  };
+  private final Runnable runnable = () -> {};
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNegativeInterval() {
@@ -52,12 +47,7 @@ public class TaskSchedulerTest {
   @Test
   public void startStop() throws InterruptedException {
     final AtomicInteger counter = new AtomicInteger();
-    final TaskScheduler scheduler = new TaskScheduler(new Runnable() {
-      @Override
-      public void run() {
-        counter.incrementAndGet();
-      }
-    }, 5, TimeUnit.MILLISECONDS);
+    final TaskScheduler scheduler = new TaskScheduler(counter::incrementAndGet, 5, TimeUnit.MILLISECONDS);
     assertFalse(scheduler.isRunning());
     scheduler.start();
     assertTrue(scheduler.isRunning());
@@ -70,12 +60,7 @@ public class TaskSchedulerTest {
     Thread.sleep(25);
     assertEquals(currentCount, counter.get());
     final AtomicInteger intervalCounter = new AtomicInteger(0);
-    scheduler.getIntervalObserver().addListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        intervalCounter.incrementAndGet();
-      }
-    });
+    scheduler.getIntervalObserver().addListener(intervalCounter::incrementAndGet);
     scheduler.setInterval(4);//implicit start
     assertEquals(1, intervalCounter.get());
     assertTrue(scheduler.isRunning());

@@ -83,10 +83,7 @@ public class EntityConnectionUtilTest {
 
     final List<Entity> source = sourceConnection.selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT));
     final List<Entity.Key> dest = new ArrayList<>();
-    final ProgressReporter progressReporter = new ProgressReporter() {
-      @Override
-      public void reportProgress(final int currentProgress) {}
-    };
+    final ProgressReporter progressReporter = currentProgress -> {};
     EntityConnectionUtil.batchInsert(DESTINATION_CONNECTION, source, dest, 2, progressReporter);
     assertEquals(sourceConnection.selectRowCount(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT)),
             DESTINATION_CONNECTION.selectRowCount(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT)));

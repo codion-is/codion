@@ -122,12 +122,7 @@ public class LocalEntityConnectionTest {
   public void fillReport() throws Exception {
     final Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", Arrays.asList(10, 20));
-    final ReportResult reportResult = new ReportResult() {
-      @Override
-      public Object getResult() {
-        return "result";
-      }
-    };
+    final ReportResult reportResult = () -> "result";
     final ReportResult print = connection.fillReport(new ReportWrapper() {
       @Override
       public String getReportName() {

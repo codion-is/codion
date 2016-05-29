@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.common.ui.control;
 
-import org.jminor.common.EventListener;
 import org.jminor.common.StateObserver;
 
 import javax.swing.Action;
@@ -235,12 +234,7 @@ public final class ControlProvider {
       final StateObserver enabledState = controlSet.getEnabledObserver();
       if (enabledState != null) {
         menu.setEnabled(enabledState.isActive());
-        enabledState.addListener(new EventListener() {
-          @Override
-          public void eventOccurred() {
-            menu.setEnabled(enabledState.isActive());
-          }
-        });
+        enabledState.addListener(() -> menu.setEnabled(enabledState.isActive()));
       }
       final Icon icon = controlSet.getIcon();
       if (icon != null) {

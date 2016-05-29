@@ -14,8 +14,6 @@ import org.jminor.framework.plugins.json.EntityJSONParser;
 import org.jminor.framework.server.DefaultEntityConnectionServerAdmin;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
@@ -27,7 +25,6 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
-import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.junit.AfterClass;
@@ -101,13 +98,11 @@ public class EntityRESTServiceTest {
     client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(new BasicHttpClientConnectionManager())
-            .addInterceptorFirst(new HttpRequestInterceptor() {
-              @Override
-              public void process(final HttpRequest request, final HttpContext httpContext) throws HttpException, IOException {
-                final User user = new User("who", "areu");
-                request.setHeader(EntityRESTService.AUTHORIZATION, BASIC + DatatypeConverter.printBase64Binary((user.getUsername() + ":" + user.getPassword()).getBytes()));
-                request.setHeader("Content-Type", MediaType.APPLICATION_JSON);
-              }
+            .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
+              final User user = new User("who", "areu");
+              request.setHeader(EntityRESTService.AUTHORIZATION,
+                      BASIC + DatatypeConverter.printBase64Binary((user.getUsername() + ":" + user.getPassword()).getBytes()));
+              request.setHeader("Content-Type", MediaType.APPLICATION_JSON);
             })
             .build();
     uriBuilder = createURIBuilder();
@@ -120,13 +115,11 @@ public class EntityRESTServiceTest {
     client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(new BasicHttpClientConnectionManager())
-            .addInterceptorFirst(new HttpRequestInterceptor() {
-              @Override
-              public void process(final HttpRequest request, final HttpContext httpContext) throws HttpException, IOException {
-                final User user = User.UNIT_TEST_USER;
-                request.setHeader(EntityRESTService.AUTHORIZATION, BASIC + DatatypeConverter.printBase64Binary((user.getUsername() + ":" + user.getPassword()).getBytes()));
-                request.setHeader("Content-Type", MediaType.APPLICATION_JSON);
-              }
+            .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
+              final User user = User.UNIT_TEST_USER;
+              request.setHeader(EntityRESTService.AUTHORIZATION,
+                      BASIC + DatatypeConverter.printBase64Binary((user.getUsername() + ":" + user.getPassword()).getBytes()));
+              request.setHeader("Content-Type", MediaType.APPLICATION_JSON);
             })
             .build();
 

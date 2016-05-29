@@ -5,9 +5,7 @@ package org.jminor.framework.demos.empdept.domain;
 
 import org.jminor.common.model.Item;
 import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Properties;
-import org.jminor.framework.domain.Property;
 
 import java.awt.Color;
 import java.sql.Types;
@@ -99,16 +97,12 @@ public class EmpDept {
             .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME)
             .setStringProvider(new Entities.StringProvider(EMPLOYEE_NAME))
             .setCaption(getString(EMPLOYEE))
-            .setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
-              /*provide a custom background color for managers*/
-              @Override
-              public Color getBackgroundColor(final Entity entity, final Property property) {
-                if (property.is(EMPLOYEE_JOB) && "MANAGER".equals(entity.get(EMPLOYEE_JOB))) {
-                  return Color.CYAN;
-                }
-
-                return null;
+            .setBackgroundColorProvider((entity, property) -> {
+              if (property.is(EMPLOYEE_JOB) && "MANAGER".equals(entity.get(EMPLOYEE_JOB))) {
+                return Color.CYAN;
               }
+
+              return null;
             });
   }
 

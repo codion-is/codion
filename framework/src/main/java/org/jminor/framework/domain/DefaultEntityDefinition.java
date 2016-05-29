@@ -767,14 +767,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
         primaryKeyProperties.add((Property.ColumnProperty) property);
       }
     }
-    Collections.sort(primaryKeyProperties, new Comparator<Property.ColumnProperty>() {
-      @Override
-      public int compare(final Property.ColumnProperty pk1, final Property.ColumnProperty pk2) {
-        final Integer index1 = pk1.getPrimaryKeyIndex();
-        final Integer index2 = pk2.getPrimaryKeyIndex();
+    Collections.sort(primaryKeyProperties, (pk1, pk2) -> {
+      final Integer index1 = pk1.getPrimaryKeyIndex();
+      final Integer index2 = pk2.getPrimaryKeyIndex();
 
-        return index1.compareTo(index2);
-      }
+      return index1.compareTo(index2);
     });
 
     return primaryKeyProperties;

@@ -4,7 +4,6 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.Util;
@@ -523,44 +522,19 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   private void bindEventsInternal() {
-    final EventListener initializer = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        initializeDetailModels();
-      }
-    };
+    final EventListener initializer = this::initializeDetailModels;
     linkedDetailModelsChangedEvent.addListener(initializer);
     if (containsTableModel()) {
       getTableModel().addSelectionChangedListener(initializer);
     }
     else {
-      getEditModel().addEntitySetListener(new EventInfoListener<Entity>() {
-        @Override
-        public void eventOccurred(final Entity entity) {
-          initializeDetailModels();
-        }
-      });
+      getEditModel().addEntitySetListener(entity -> initializeDetailModels());
     }
   }
 
   private void bindMasterModelEvents() {
-    masterModel.getEditModel().addAfterInsertListener(new EventInfoListener<EntityEditModel.InsertEvent>() {
-      @Override
-      public void eventOccurred(final EntityEditModel.InsertEvent info) {
-        handleMasterInsert(info);
-      }
-    });
-    masterModel.getEditModel().addAfterUpdateListener(new EventInfoListener<EntityEditModel.UpdateEvent>() {
-      @Override
-      public void eventOccurred(final EntityEditModel.UpdateEvent info) {
-        handleMasterUpdate(info);
-      }
-    });
-    masterModel.getEditModel().addAfterDeleteListener(new EventInfoListener<EntityEditModel.DeleteEvent>() {
-      @Override
-      public void eventOccurred(final EntityEditModel.DeleteEvent info) {
-        handleMasterDelete(info);
-      }
-    });
+    masterModel.getEditModel().addAfterInsertListener(this::handleMasterInsert);
+    masterModel.getEditModel().addAfterUpdateListener(this::handleMasterUpdate);
+    masterModel.getEditModel().addAfterDeleteListener(this::handleMasterDelete);
   }
 }

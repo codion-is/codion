@@ -24,42 +24,12 @@ public class DefaultColumnCriteriaModelTest {
   final AtomicInteger enabledCounter = new AtomicInteger();
   final AtomicInteger clearCounter = new AtomicInteger();
 
-  final EventListener upperBoundListener = new EventListener() {
-    @Override
-    public void eventOccurred() {
-      upperBoundCounter.incrementAndGet();
-    }
-  };
-  final EventListener lowerBoundListener = new EventListener() {
-    @Override
-    public void eventOccurred() {
-      lowerBoundCounter.incrementAndGet();
-    }
-  };
-  final EventListener criteriaStateListener = new EventListener() {
-    @Override
-    public void eventOccurred() {
-      searchStateCounter.incrementAndGet();
-    }
-  };
-  final EventInfoListener<SearchType> searchTypeListener = new EventInfoListener<SearchType>() {
-    @Override
-    public void eventOccurred(final SearchType info) {
-      searchTypeCounter.incrementAndGet();
-    }
-  };
-  final EventListener enabledListener = new EventListener() {
-    @Override
-    public void eventOccurred() {
-      enabledCounter.incrementAndGet();
-    }
-  };
-  final EventListener clearListener = new EventListener() {
-    @Override
-    public void eventOccurred() {
-      clearCounter.incrementAndGet();
-    }
-  };
+  final EventListener upperBoundListener = upperBoundCounter::incrementAndGet;
+  final EventListener lowerBoundListener = lowerBoundCounter::incrementAndGet;
+  final EventListener criteriaStateListener = searchStateCounter::incrementAndGet;
+  final EventInfoListener<SearchType> searchTypeListener = info -> searchTypeCounter.incrementAndGet();
+  final EventListener enabledListener = enabledCounter::incrementAndGet;
+  final EventListener clearListener = clearCounter::incrementAndGet;
 
   @Test
   public void testSetBounds() {

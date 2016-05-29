@@ -91,14 +91,8 @@ public class DefaultColumnSummaryModelTest {
     testIntModel.setSummary(ColumnSummary.SUM);
     assertEquals(ColumnSummary.SUM, testIntModel.getSummary());
     assertTrue(testIntModel.getAvailableSummaries().size() > 0);
-    final EventListener listener = new EventListener() {
-      @Override
-      public void eventOccurred() {}
-    };
-    final EventInfoListener<ColumnSummaryModel.Summary> summaryListener = new EventInfoListener<ColumnSummaryModel.Summary>() {
-      @Override
-      public void eventOccurred(final ColumnSummaryModel.Summary info) {}
-    };
+    final EventListener listener = () -> {};
+    final EventInfoListener<ColumnSummaryModel.Summary> summaryListener = info -> {};
     testIntModel.addSummaryValueListener(listener);
     testIntModel.addSummaryListener(summaryListener);
     testIntModel.removeSummaryValueListener(listener);

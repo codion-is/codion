@@ -16,8 +16,6 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 import org.apache.tomcat.jdbc.pool.Validator;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -53,32 +51,26 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
 
     private DataSourceWrapper(final Database database, final User user, final DataSource dataSource) {
       super(dataSource, user);
-      dataSource.setDataSource(Util.initializeProxy(javax.sql.DataSource.class, new InvocationHandler() {
-        @Override
-        public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-          if ("getConnection".equals(method.getName())) {
-            try {
-              final Connection connection = database.createConnection(user);
-              getCounter().incrementConnectionsCreatedCounter();
+      dataSource.setDataSource(Util.initializeProxy(javax.sql.DataSource.class, (proxy, method, args) -> {
+        if ("getConnection".equals(method.getName())) {
+          try {
+            final Connection connection = database.createConnection(user);
+            getCounter().incrementConnectionsCreatedCounter();
 
-              return Util.initializeProxy(Connection.class, new InvocationHandler() {
-                @Override
-                public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-                  if ("close".equals(method.getName())) {
-                    getCounter().incrementConnectionsDestroyedCounter();
-                  }
+            return Util.initializeProxy(Connection.class, (proxy1, method1, args1) -> {
+              if ("close".equals(method1.getName())) {
+                getCounter().incrementConnectionsDestroyedCounter();
+              }
 
-                  return method.invoke(connection, args);
-                }
-              });
-            }
-            catch (final DatabaseException e) {
-              throw e.getCause();
-            }
+              return method1.invoke(connection, args1);
+            });
           }
-
-          throw new NoSuchMethodException(method.toString());
+          catch (final DatabaseException e) {
+            throw e.getCause();
+          }
         }
+
+        throw new NoSuchMethodException(method.toString());
       }));
     }
 

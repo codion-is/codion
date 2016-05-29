@@ -4,7 +4,6 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.StateObserver;
@@ -46,7 +45,6 @@ import org.jminor.swing.common.ui.input.IntInputProvider;
 import org.jminor.swing.common.ui.input.LongInputProvider;
 import org.jminor.swing.common.ui.input.TextInputProvider;
 import org.jminor.swing.common.ui.input.ValueListInputProvider;
-import org.jminor.swing.common.ui.table.ColumnCriteriaPanel;
 import org.jminor.swing.common.ui.table.FilteredTablePanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
@@ -218,13 +216,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @param criteriaPanel the criteria panel
    */
   public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityTableCriteriaPanel criteriaPanel) {
-    super((FilteredTableModel<Entity, Property>) tableModel, new ColumnCriteriaPanelProvider<Property>() {
-      @Override
-      public ColumnCriteriaPanel<Property> createColumnCriteriaPanel(final TableColumn column) {
-        return new PropertyFilterPanel(tableModel.getCriteriaModel().getPropertyFilterModel(
-                ((Property) column.getIdentifier()).getPropertyID()), true, true);
-      }
-    });
+    super((FilteredTableModel<Entity, Property>) tableModel, column ->
+            new PropertyFilterPanel(tableModel.getCriteriaModel().getPropertyFilterModel(
+                    ((Property) column.getIdentifier()).getPropertyID()), true, true));
     this.criteriaPanel = criteriaPanel;
     if (criteriaPanel != null) {
       this.criteriaScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -811,12 +805,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     model.getEditModel().setReadOnly(true);
     final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel);
     entityTablePanel.initializePanel();
-    entityTablePanel.addTableDoubleClickListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        if (!lookupModel.getSelectionModel().isSelectionEmpty()) {
-          okAction.actionPerformed(null);
-        }
+    entityTablePanel.addTableDoubleClickListener(() -> {
+      if (!lookupModel.getSelectionModel().isSelectionEmpty()) {
+        okAction.actionPerformed(null);
       }
     });
     entityTablePanel.setCriteriaPanelVisible(true);
@@ -1327,12 +1318,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       getBasePanel().add(criteriaScrollPane, BorderLayout.NORTH);
       if (criteriaPanel.canToggleAdvanced()) {
         criteriaScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
-        criteriaPanel.addAdvancedListener(new EventInfoListener<Boolean>() {
-          @Override
-          public void eventOccurred(final Boolean info) {
-            if (isCriteriaPanelVisible()) {
-              revalidate();
-            }
+        criteriaPanel.addAdvancedListener(info -> {
+          if (isCriteriaPanelVisible()) {
+            revalidate();
           }
         });
       }
@@ -1394,33 +1382,20 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isDeleteAllowed()) {
       UiUtil.addKeyEvent(getJTable(), KeyEvent.VK_DELETE, getDeleteSelectedControl());
     }
-    final EventListener statusListener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        updateStatusMessage();
-      }
-    };
+    final EventListener statusListener = this::updateStatusMessage;
     getEntityTableModel().getSelectionModel().addSelectionChangedListener(statusListener);
     getEntityTableModel().addFilteringListener(statusListener);
     getEntityTableModel().addTableDataChangedListener(statusListener);
 
     for (final PropertyCriteriaModel criteriaModel : getEntityTableModel().getCriteriaModel().getPropertyCriteriaModels()) {
-      criteriaModel.addCriteriaStateListener(new EventListener() {
-        @Override
-        public void eventOccurred() {
-          getJTable().getTableHeader().repaint();
-          getJTable().repaint();
-        }
+      criteriaModel.addCriteriaStateListener(() -> {
+        getJTable().getTableHeader().repaint();
+        getJTable().repaint();
       });
     }
 
     if (getEntityTableModel().hasEditModel()) {
-      getEntityTableModel().getEditModel().addEntitiesChangedListener(new EventListener() {
-        @Override
-        public void eventOccurred() {
-          getJTable().repaint();
-        }
-      });
+      getEntityTableModel().getEditModel().addEntitiesChangedListener(() -> getJTable().repaint());
     }
   }
 
@@ -1438,23 +1413,19 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final TableCellRenderer defaultHeaderRenderer = header.getDefaultRenderer();
     final Font defaultFont = getJTable().getFont();
     final Font searchFont = new Font(defaultFont.getName(), Font.BOLD, defaultFont.getSize());
-    header.setDefaultRenderer(new TableCellRenderer() {
-      @Override
-      public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
-                                                     final boolean hasFocus, final int row, final int column) {
-        final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
-                hasFocus, row, column);
-        final EntityTableModel tableModel = getEntityTableModel();
-        final TableColumn tableColumn = ((FilteredTableModel) tableModel).getColumnModel().getColumn(column);
-        final TableCellRenderer renderer = tableColumn.getCellRenderer();
-        final Property property = (Property) tableColumn.getIdentifier();
-        final boolean indicateSearch = renderer instanceof EntityTableCellRenderer
-                && ((EntityTableCellRenderer) renderer).isIndicateCriteria()
-                && tableModel.getCriteriaModel().isEnabled(property.getPropertyID());
-        label.setFont(indicateSearch ? searchFont : defaultFont);
+    header.setDefaultRenderer((table, value, isSelected, hasFocus, row, column) -> {
+      final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
+              hasFocus, row, column);
+      final EntityTableModel tableModel1 = getEntityTableModel();
+      final TableColumn tableColumn = ((FilteredTableModel) tableModel1).getColumnModel().getColumn(column);
+      final TableCellRenderer renderer = tableColumn.getCellRenderer();
+      final Property property = (Property) tableColumn.getIdentifier();
+      final boolean indicateSearch = renderer instanceof EntityTableCellRenderer
+              && ((EntityTableCellRenderer) renderer).isIndicateCriteria()
+              && tableModel1.getCriteriaModel().isEnabled(property.getPropertyID());
+      label.setFont(indicateSearch ? searchFont : defaultFont);
 
-        return label;
-      }
+      return label;
     });
     header.setFocusable(false);
     header.setReorderingAllowed(Configuration.getBooleanValue(Configuration.ALLOW_COLUMN_REORDERING));

@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.framework.model;
 
-import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DatabaseException;
@@ -35,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -664,68 +662,29 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   private void bindEventsInternal() {
-    getColumnModel().addColumnHiddenListener(new EventInfoListener<Property>() {
-      @Override
-      public void eventOccurred(final Property info) {
-        handleColumnHidden(info);
-      }
-    });
-    criteriaModel.addSimpleCriteriaListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        refresh();
-      }
-    });
+    getColumnModel().addColumnHiddenListener(this::handleColumnHidden);
+    criteriaModel.addSimpleCriteriaListener(this::refresh);
   }
 
   private void bindEditModelEventsInternal() {
-    editModel.addAfterInsertListener(new EventInfoListener<EntityEditModel.InsertEvent>() {
-      @Override
-      public void eventOccurred(final EntityEditModel.InsertEvent info) {
-        handleInsert(info);
+    editModel.addAfterInsertListener(this::handleInsert);
+    editModel.addAfterUpdateListener(this::handleUpdate);
+    editModel.addAfterDeleteListener(this::handleDeleteInternal);
+    editModel.addAfterRefreshListener(this::refresh);
+    editModel.addEntitySetListener(info -> {
+      if (info == null && !getSelectionModel().isSelectionEmpty()) {
+        getSelectionModel().clearSelection();
       }
     });
-    editModel.addAfterUpdateListener(new EventInfoListener<EntityEditModel.UpdateEvent>() {
-      @Override
-      public void eventOccurred(final EntityEditModel.UpdateEvent info) {
-        handleUpdate(info);
-      }
-    });
-    editModel.addAfterDeleteListener(new EventInfoListener<EntityEditModel.DeleteEvent>() {
-      @Override
-      public void eventOccurred(final EntityEditModel.DeleteEvent info) {
-        handleDeleteInternal(info);
-      }
-    });
-    editModel.addAfterRefreshListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        refresh();
-      }
-    });
-    editModel.addEntitySetListener(new EventInfoListener<Entity>() {
-      @Override
-      public void eventOccurred(final Entity info) {
-        if (info == null && !getSelectionModel().isSelectionEmpty()) {
-          getSelectionModel().clearSelection();
-        }
-      }
-    });
-    getSelectionModel().addSelectedIndexListener(new EventInfoListener<Integer>() {
-      @Override
-      public void eventOccurred(final Integer selected) {
-        final Entity itemToSelect = getSelectionModel().isSelectionEmpty() ? null : getSelectionModel().getSelectedItem();
-        editModel.setEntity(itemToSelect);
-      }
+    getSelectionModel().addSelectedIndexListener(selected -> {
+      final Entity itemToSelect = getSelectionModel().isSelectionEmpty() ? null : getSelectionModel().getSelectedItem();
+      editModel.setEntity(itemToSelect);
     });
 
-    addTableModelListener(new TableModelListener() {
-      @Override
-      public void tableChanged(final TableModelEvent e) {
-        //if the selected record is being updated via the table model refresh the one in the edit model
-        if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == getSelectionModel().getSelectedIndex()) {
-          editModel.setEntity(getSelectionModel().getSelectedItem());
-        }
+    addTableModelListener(e -> {
+      //if the selected record is being updated via the table model refresh the one in the edit model
+      if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == getSelectionModel().getSelectedIndex()) {
+        editModel.setEntity(getSelectionModel().getSelectedItem());
       }
     });
   }

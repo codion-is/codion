@@ -3,8 +3,6 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.EventInfoListener;
-import org.jminor.common.EventListener;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
@@ -2077,26 +2075,13 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
         EntityUiUtil.showEntityMenu(getEditModel().getEntityCopy(), EntityEditPanel.this, new Point(x, y), getEditModel().getConnectionProvider());
       }
     });
-    editModel.addBeforeRefreshListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        UiUtil.setWaitCursor(true, EntityEditPanel.this);
-      }
-    });
-    editModel.addAfterRefreshListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        UiUtil.setWaitCursor(false, EntityEditPanel.this);
-      }
-    });
-    editModel.addConfirmSetEntityObserver(new EventInfoListener<State>() {
-      @Override
-      public void eventOccurred(final State confirmationState) {
-        final int result = JOptionPane.showConfirmDialog(UiUtil.getParentWindow(EntityEditPanel.this),
-                FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING), FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
-                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-        confirmationState.setActive(result == JOptionPane.YES_OPTION);
-      }
+    editModel.addBeforeRefreshListener(() -> UiUtil.setWaitCursor(true, EntityEditPanel.this));
+    editModel.addAfterRefreshListener(() -> UiUtil.setWaitCursor(false, EntityEditPanel.this));
+    editModel.addConfirmSetEntityObserver(confirmationState -> {
+      final int result = JOptionPane.showConfirmDialog(UiUtil.getParentWindow(EntityEditPanel.this),
+              FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING), FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
+              JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+      confirmationState.setActive(result == JOptionPane.YES_OPTION);
     });
   }
 
@@ -2141,12 +2126,9 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
     public void actionPerformed(final ActionEvent e) {
       final EntityEditPanel editPanel = panelProvider.createEditPanel(dataProvider.getConnectionProvider());
       editPanel.initializePanel();
-      editPanel.getEditModel().addAfterInsertListener(new EventInfoListener<EntityEditModel.InsertEvent>() {
-        @Override
-        public void eventOccurred(final EntityEditModel.InsertEvent info) {
-          lastInsertedEntities.clear();
-          lastInsertedEntities.addAll(info.getInsertedEntities());
-        }
+      editPanel.getEditModel().addAfterInsertListener(info -> {
+        lastInsertedEntities.clear();
+        lastInsertedEntities.addAll(info.getInsertedEntities());
       });
       final JOptionPane pane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
       final JDialog dialog = pane.createDialog(component, panelProvider.getCaption());

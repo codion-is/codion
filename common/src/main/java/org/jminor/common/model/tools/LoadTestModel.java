@@ -169,16 +169,13 @@ public abstract class LoadTestModel<T> implements LoadTest {
     this.scenarioChooser = initializeScenarioChooser();
     this.counter = new Counter(this.usageScenarios);
     initializeChartData();
-    this.updateChartDataScheduler = new TaskScheduler(new Runnable() {
-      @Override
-      public void run() {
-        if (shuttingDown || paused) {
-          return;
-        }
-        counter.updateRequestsPerSecond();
-        if (collectChartData && !paused) {
-          updateChartData();
-        }
+    this.updateChartDataScheduler = new TaskScheduler(() -> {
+      if (shuttingDown || paused) {
+        return;
+      }
+      counter.updateRequestsPerSecond();
+      if (collectChartData && !paused) {
+        updateChartData();
       }
     }, DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
   }

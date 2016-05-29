@@ -69,12 +69,7 @@ public class DefaultValueMapValidatorTest {
   public void revalidate() {
     final AtomicInteger counter = new AtomicInteger();
     final DefaultValueMapValidator<String, ValueMap<String, Integer>> validator = new DefaultValueMapValidator<>();
-    final EventListener listener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        counter.incrementAndGet();
-      }
-    };
+    final EventListener listener = counter::incrementAndGet;
     validator.addRevalidationListener(listener);
     validator.revalidate();
     assertEquals(1, counter.get());

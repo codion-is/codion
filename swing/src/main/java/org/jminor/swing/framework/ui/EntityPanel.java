@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.EventListener;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;
@@ -35,8 +34,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -1262,12 +1259,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     for (final EntityPanel detailPanel : detailEntityPanels) {
       tabbedPane.addTab(detailPanel.caption, detailPanel);
     }
-    tabbedPane.addChangeListener(new ChangeListener() {
-      @Override
-      public void stateChanged(final ChangeEvent e) {
-        getTabbedDetailPanel().activatePanel();
-      }
-    });
+    tabbedPane.addChangeListener(e -> getTabbedDetailPanel().activatePanel());
     if (showDetailPanelControls) {
       tabbedPane.addMouseListener(new MouseAdapter() {
         @Override
@@ -1500,18 +1492,8 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   private void bindEvents() {
-    entityModel.addBeforeRefreshListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        UiUtil.setWaitCursor(true, EntityPanel.this);
-      }
-    });
-    entityModel.addAfterRefreshListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        UiUtil.setWaitCursor(false, EntityPanel.this);
-      }
-    });
+    entityModel.addBeforeRefreshListener(() -> UiUtil.setWaitCursor(true, EntityPanel.this));
+    entityModel.addAfterRefreshListener(() -> UiUtil.setWaitCursor(false, EntityPanel.this));
     addComponentListener(new EntityPanelComponentAdapter());
   }
 
@@ -1617,21 +1599,11 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private final class EntityPanelComponentAdapter extends ComponentAdapter {
     @Override
     public void componentHidden(final ComponentEvent e) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          setFilterPanelsVisible(false);
-        }
-      });
+      SwingUtilities.invokeLater(() -> setFilterPanelsVisible(false));
     }
     @Override
     public void componentShown(final ComponentEvent e) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          setFilterPanelsVisible(true);
-        }
-      });
+      SwingUtilities.invokeLater(() -> setFilterPanelsVisible(true));
     }
   }
 }

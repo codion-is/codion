@@ -25,8 +25,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -34,7 +32,6 @@ import javax.swing.text.JTextComponent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
@@ -145,12 +142,7 @@ public final class UiValues {
       }
       else {
         try {
-          SwingUtilities.invokeAndWait(new Runnable() {
-            @Override
-            public void run() {
-              setInternal(value);
-            }
-          });
+          SwingUtilities.invokeAndWait(() -> setInternal(value));
         }
         catch (final Exception e) {
           throw new RuntimeException(e);
@@ -422,12 +414,7 @@ public final class UiValues {
 
     private ToggleUIValue(final ButtonModel buttonModel) {
       this.buttonModel = buttonModel;
-      buttonModel.addItemListener(new ItemListener() {
-        @Override
-        public void itemStateChanged(final ItemEvent e) {
-          fireChangeEvent();
-        }
-      });
+      buttonModel.addItemListener(e -> fireChangeEvent());
     }
 
     @Override
@@ -457,12 +444,9 @@ public final class UiValues {
 
     private SelectedItemUIValue(final JComboBox<V> comboBox) {
       this.comboBox = comboBox;
-      comboBox.addItemListener(new ItemListener() {
-        @Override
-        public void itemStateChanged(final ItemEvent e) {
-          if (e.getStateChange() == ItemEvent.SELECTED) {
-            fireChangeEvent();
-          }
+      comboBox.addItemListener(e -> {
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+          fireChangeEvent();
         }
       });
     }
@@ -491,12 +475,7 @@ public final class UiValues {
 
     private IntSpinnerUIValue(final SpinnerNumberModel spinnerModel) {
       this.spinnerModel = spinnerModel;
-      this.spinnerModel.addChangeListener(new ChangeListener() {
-        @Override
-        public void stateChanged(final ChangeEvent e) {
-          fireChangeEvent();
-        }
-      });
+      this.spinnerModel.addChangeListener(e -> fireChangeEvent());
     }
 
     @Override

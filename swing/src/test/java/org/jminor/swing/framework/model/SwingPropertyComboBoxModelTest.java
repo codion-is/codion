@@ -4,7 +4,6 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
@@ -26,12 +25,7 @@ public final class SwingPropertyComboBoxModelTest {
     final Property.ColumnProperty property = Entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
     comboBoxModel = new SwingPropertyComboBoxModel(TestDomain.T_DEPARTMENT,
             EntityConnectionProvidersTest.CONNECTION_PROVIDER, property, null);
-    refreshEvent.addListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        comboBoxModel.refresh();
-      }
-    });
+    refreshEvent.addListener(comboBoxModel::refresh);
   }
 
   @Test

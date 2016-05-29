@@ -3,8 +3,6 @@
  */
 package org.jminor.swing.framework.model;
 
-import org.jminor.common.EventInfoListener;
-import org.jminor.common.EventListener;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.DefaultForeignKeyCriteriaModel;
@@ -50,36 +48,14 @@ public final class SwingForeignKeyCriteriaModel extends DefaultForeignKeyCriteri
   }
 
   private void bindComboBoxEvents() {
-    entityComboBoxModel.addSelectionListener(new EventInfoListener<Entity>() {
-      @Override
-      public void eventOccurred(final Entity selected) {
-        if (!isUpdatingModel()) {
-          setUpperBound(selected);
-        }
+    entityComboBoxModel.addSelectionListener(selected -> {
+      if (!isUpdatingModel()) {
+        setUpperBound(selected);
       }
     });
-    addUpperBoundListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        try {
-          setUpdatingModel(true);
-          final Object upper = getUpperBound();
-          if (upper instanceof Collection && !((Collection) upper).isEmpty()) {
-            entityComboBoxModel.setSelectedItem((Entity) ((Collection) upper).iterator().next());
-          }
-          else {
-            entityComboBoxModel.setSelectedItem((Entity) upper);
-          }
-        }
-        finally {
-          setUpdatingModel(false);
-        }
-      }
-    });
-
-    entityComboBoxModel.addRefreshListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
+    addUpperBoundListener(() -> {
+      try {
+        setUpdatingModel(true);
         final Object upper = getUpperBound();
         if (upper instanceof Collection && !((Collection) upper).isEmpty()) {
           entityComboBoxModel.setSelectedItem((Entity) ((Collection) upper).iterator().next());
@@ -87,6 +63,19 @@ public final class SwingForeignKeyCriteriaModel extends DefaultForeignKeyCriteri
         else {
           entityComboBoxModel.setSelectedItem((Entity) upper);
         }
+      }
+      finally {
+        setUpdatingModel(false);
+      }
+    });
+
+    entityComboBoxModel.addRefreshListener(() -> {
+      final Object upper = getUpperBound();
+      if (upper instanceof Collection && !((Collection) upper).isEmpty()) {
+        entityComboBoxModel.setSelectedItem((Entity) ((Collection) upper).iterator().next());
+      }
+      else {
+        entityComboBoxModel.setSelectedItem((Entity) upper);
       }
     });
   }

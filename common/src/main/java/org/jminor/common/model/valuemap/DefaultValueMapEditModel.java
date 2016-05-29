@@ -223,14 +223,11 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
   }
 
   private void bindEvents() {
-    valueMap.addValueListener(new EventInfoListener<ValueChange<K, ?>>() {
-      @Override
-      public void eventOccurred(final ValueChange<K, ?> valueChange) {
-        validState.setActive(validator.isValid(valueMap));
-        final Event<ValueChange<K, ?>> valueChangeEvent = valueChangeEventMap.get(valueChange.getKey());
-        if (valueChangeEvent != null) {
-          valueChangeEvent.fire(valueChange);
-        }
+    valueMap.addValueListener(valueChange -> {
+      validState.setActive(validator.isValid(valueMap));
+      final Event<ValueChange<K, ?>> valueChangeEvent = valueChangeEventMap.get(valueChange.getKey());
+      if (valueChangeEvent != null) {
+        valueChangeEvent.fire(valueChange);
       }
     });
   }

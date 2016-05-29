@@ -25,16 +25,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -96,23 +89,14 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    */
   private void initializeUI() {
     final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<>(model.getItems());
-    Collections.sort(items, new Comparator<ItemRandomizer.RandomItem<T>>() {
-      @Override
-      public int compare(final ItemRandomizer.RandomItem<T> o1, final ItemRandomizer.RandomItem<T> o2) {
-        return o1.getItem().toString().compareTo(o2.getItem().toString());
-      }
-    });
+    Collections.sort(items, (o1, o2) -> o1.getItem().toString().compareTo(o2.getItem().toString()));
     for (final ItemRandomizer.RandomItem<T> item : items) {
       ((DefaultListModel<ItemRandomizer.RandomItem<T>>) itemList.getModel()).addElement(item);
     }
     itemList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-    itemList.addListSelectionListener(new ListSelectionListener() {
-      @Override
-      @SuppressWarnings({"unchecked"})
-      public void valueChanged(final ListSelectionEvent e) {
-        handleSelectionChanged();
-        selectedItemChangedEvent.fire();
-      }
+    itemList.addListSelectionListener(e -> {
+      handleSelectionChanged();
+      selectedItemChangedEvent.fire();
     });
     setLayout(UiUtil.createBorderLayout());
     add(new JScrollPane(itemList), BorderLayout.CENTER);
@@ -202,12 +186,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     private EnabledUIValue(final ButtonModel buttonModel) {
       this.buttonModel = buttonModel;
-      buttonModel.addItemListener(new ItemListener() {
-        @Override
-        public void itemStateChanged(final ItemEvent e) {
-          changeEvent.fire();
-        }
-      });
+      buttonModel.addItemListener(e -> changeEvent.fire());
     }
 
     @Override
@@ -255,12 +234,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     private WeightUIValue(final SpinnerNumberModel spinnerModel) {
       this.spinnerModel = spinnerModel;
-      spinnerModel.addChangeListener(new ChangeListener() {
-        @Override
-        public void stateChanged(final ChangeEvent e) {
-          changeEvent.fire((Integer) spinnerModel.getValue());
-        }
-      });
+      spinnerModel.addChangeListener(e -> changeEvent.fire((Integer) spinnerModel.getValue()));
     }
 
     @Override

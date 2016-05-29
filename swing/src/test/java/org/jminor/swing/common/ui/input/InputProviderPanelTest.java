@@ -33,12 +33,7 @@ public class InputProviderPanelTest {
     assertEquals("hello", panel.getValue());
     assertFalse(panel.isInputAccepted());
     final AtomicInteger eventCounter = new AtomicInteger();
-    final EventInfoListener<Integer> listener = new EventInfoListener<Integer>() {
-      @Override
-      public void eventOccurred(final Integer info) {
-        eventCounter.incrementAndGet();
-      }
-    };
+    final EventInfoListener<Integer> listener = info -> eventCounter.incrementAndGet();
     panel.addButtonClickListener(listener);
     panel.getOkButton().doClick();
     assertTrue(panel.isInputAccepted());

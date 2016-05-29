@@ -20,24 +20,9 @@ public class DefaultValueMapEditModelTest {
     final AtomicInteger valueChangeCounter = new AtomicInteger();
     final AtomicInteger valueSetCounter = new AtomicInteger();
 
-    final EventInfoListener<ValueChange<String, ?>> anyValueChangeListener = new EventInfoListener<ValueChange<String, ?>>() {
-      @Override
-      public void eventOccurred(final ValueChange info) {
-        anyValueChangeCounter.incrementAndGet();
-      }
-    };
-    final EventInfoListener<ValueChange<String, ?>> valueChangeListener = new EventInfoListener<ValueChange<String, ?>>() {
-      @Override
-      public void eventOccurred(final ValueChange info) {
-        valueChangeCounter.incrementAndGet();
-      }
-    };
-    final EventInfoListener<ValueChange<String, ?>> valueSetListener = new EventInfoListener<ValueChange<String, ?>>() {
-      @Override
-      public void eventOccurred(final ValueChange<String, ?> info) {
-        valueSetCounter.incrementAndGet();
-      }
-    };
+    final EventInfoListener<ValueChange<String, ?>> anyValueChangeListener = info -> anyValueChangeCounter.incrementAndGet();
+    final EventInfoListener<ValueChange<String, ?>> valueChangeListener = info -> valueChangeCounter.incrementAndGet();
+    final EventInfoListener<ValueChange<String, ?>> valueSetListener = info -> valueSetCounter.incrementAndGet();
 
     final ValueMapEditModel model = new DefaultValueMapEditModel<>(new DefaultValueMap<>(), new DefaultValueMapValidator<String, ValueMap<String, ?>>() {
       @Override

@@ -7,7 +7,6 @@ import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
-import org.jminor.common.StateObserver;
 import org.jminor.common.Util;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
@@ -57,8 +56,6 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
@@ -753,12 +750,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       controlSet.add(new Control(caption) {
         @Override
         public void actionPerformed(final ActionEvent e) {
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              showEntityPanelDialog(panelProvider);
-            }
-          });
+          SwingUtilities.invokeLater(() -> showEntityPanelDialog(panelProvider));
         }
       });
     }
@@ -851,22 +843,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     applicationTabPane = new JTabbedPane(SwingConfiguration.getIntValue(SwingConfiguration.TAB_PLACEMENT));
     applicationTabPane.setFocusable(false);
     applicationTabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
-    applicationTabPane.addChangeListener(new ChangeListener() {
-      @Override
-      public void stateChanged(final ChangeEvent e) {
-        ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel();
-      }
-    });
+    applicationTabPane.addChangeListener(e -> ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel());
     for (final EntityPanel entityPanel : entityPanels) {
       applicationTabPane.addTab(entityPanel.getCaption(), entityPanel);
       if (entityPanel.getEditPanel() != null) {
-        entityPanel.getEditPanel().getActiveObserver().addListener(new EventListener() {
-          @Override
-          public void eventOccurred() {
-            if (entityPanel.getEditPanel().isActive()) {
-              LOG.debug("{} selectApplicationTab", entityPanel.getEditModel().getEntityID());
-              applicationTabPane.setSelectedComponent(entityPanel);
-            }
+        entityPanel.getEditPanel().getActiveObserver().addListener(() -> {
+          if (entityPanel.getEditPanel().isActive()) {
+            LOG.debug("{} selectApplicationTab", entityPanel.getEditModel().getEntityID());
+            applicationTabPane.setSelectedComponent(entityPanel);
           }
         });
       }
@@ -1136,21 +1120,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Sets the uncaught exception handler, override to add specific uncaught exception handling
    */
   private void setUncaughtExceptionHandler() {
-    Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-      @Override
-      public void uncaughtException(final Thread t, final Throwable e) {
-        DefaultExceptionHandler.getInstance().handleException(e, UiUtil.getParentWindow(EntityApplicationPanel.this));
-      }
-    });
+    Thread.setDefaultUncaughtExceptionHandler((t, e) ->
+            DefaultExceptionHandler.getInstance().handleException(e, UiUtil.getParentWindow(EntityApplicationPanel.this)));
   }
 
   private void bindEventsInternal() {
-    applicationModel.getConnectionProvider().getConnectedObserver().addInfoListener(new EventInfoListener<Boolean>() {
-      @Override
-      public void eventOccurred(final Boolean active) {
-        setParentWindowTitle(active ? frameTitle : frameTitle + " - " + Messages.get(Messages.NOT_CONNECTED));
-      }
-    });
+    applicationModel.getConnectionProvider().getConnectedObserver().addInfoListener(active ->
+            setParentWindowTitle(active ? frameTitle : frameTitle + " - " + Messages.get(Messages.NOT_CONNECTED)));
   }
 
   private JFrame startApplicationInternal(final String frameCaption, final String iconName, final boolean maximize,

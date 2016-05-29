@@ -4,7 +4,6 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
 import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.States;
@@ -44,11 +43,9 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -169,18 +166,8 @@ public final class EntityLookupField extends JTextField {
 
   private void linkToModel() {
     Values.link(model.getSearchStringValue(), UiValues.textValue(this, null, true));
-    model.getSearchStringValue().getObserver().addInfoListener(new EventInfoListener<String>() {
-      @Override
-      public void eventOccurred(final String info) {
-        updateColors();
-      }
-    });
-    model.addSelectedEntitiesListener(new EventInfoListener<Collection<Entity>>() {
-      @Override
-      public void eventOccurred(final Collection<Entity> info) {
-        setCaretPosition(0);
-      }
-    });
+    model.getSearchStringValue().getObserver().addInfoListener(info -> updateColors());
+    model.addSelectedEntitiesListener(info -> setCaretPosition(0));
   }
 
   private void addEscapeListener() {
@@ -309,12 +296,7 @@ public final class EntityLookupField extends JTextField {
    * @see #lookupEnabledState
    */
   private void enableLookup() {
-    final Timer timer = new Timer(ENABLE_LOOKUP_DELAY, new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        lookupEnabledState.setActive(true);
-      }
-    });
+    final Timer timer = new Timer(ENABLE_LOOKUP_DELAY, e -> lookupEnabledState.setActive(true));
     timer.setRepeats(false);
     timer.start();
   }
@@ -367,12 +349,8 @@ public final class EntityLookupField extends JTextField {
         propertyBasePanel.add(initializePropertyPanel(entry.getValue()), entry.getKey().getPropertyID());
       }
       if (propertyComboBoxModel.getSize() > 0) {
-        propertyComboBoxModel.addSelectionListener(new EventInfoListener<Property.ColumnProperty>() {
-          @Override
-          public void eventOccurred(final Property.ColumnProperty selected) {
-            ((CardLayout) propertyBasePanel.getLayout()).show(propertyBasePanel, selected.getPropertyID());
-          }
-        });
+        propertyComboBoxModel.addSelectionListener(selected ->
+                ((CardLayout) propertyBasePanel.getLayout()).show(propertyBasePanel, selected.getPropertyID()));
         propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
       }
 

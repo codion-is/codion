@@ -4,7 +4,6 @@
 package org.jminor.swing.common.ui.table;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.i18n.Messages;
@@ -35,8 +34,6 @@ import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
@@ -162,12 +159,9 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * @param tableModel the table model
    */
   public FilteredTablePanel(final FilteredTableModel<R, C> tableModel) {
-    this(tableModel, new ColumnCriteriaPanelProvider<C>() {
-      @Override
-      public ColumnCriteriaPanel<C> createColumnCriteriaPanel(final TableColumn column) {
-        //noinspection unchecked
-        return new ColumnCriteriaPanel<>(tableModel.getColumnModel().getColumnFilterModel((C) column.getIdentifier()), true, true);
-      }
+    this(tableModel, column -> {
+      //noinspection unchecked
+      return new ColumnCriteriaPanel<>(tableModel.getColumnModel().getColumnFilterModel((C) column.getIdentifier()), true, true);
     });
   }
 
@@ -190,12 +184,9 @@ public class FilteredTablePanel<R, C> extends JPanel {
     this.summaryPanel = new FilteredTableSummaryPanel(tableModel);
     this.summaryBasePanel = new JPanel(new BorderLayout());
     this.summaryScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    this.tableScrollPane.getViewport().addChangeListener(new ChangeListener() {
-      @Override
-      public void stateChanged(final ChangeEvent e) {
-        horizontalTableScrollBar.setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
-        revalidate();
-      }
+    this.tableScrollPane.getViewport().addChangeListener(e -> {
+      horizontalTableScrollBar.setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
+      revalidate();
     });
     this.summaryScrollPane.getHorizontalScrollBar().setModel(horizontalTableScrollBar.getModel());
     basePanel.add(summaryBasePanel, BorderLayout.SOUTH);
@@ -586,47 +577,26 @@ public class FilteredTablePanel<R, C> extends JPanel {
 
   @SuppressWarnings({"unchecked"})
   private void bindEvents() {
-    tableModel.addSortingListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        table.getTableHeader().repaint();
+    tableModel.addSortingListener(() -> table.getTableHeader().repaint());
+    tableModel.getSelectionModel().addSelectedIndexListener(selected -> {
+      if (scrollToSelectedItem && !tableModel.getSelectionModel().isSelectionEmpty()) {
+        scrollToCoordinate(selected, table.getSelectedColumn());
       }
     });
-    tableModel.getSelectionModel().addSelectedIndexListener(new EventInfoListener<Integer>() {
-      @Override
-      public void eventOccurred(final Integer selected) {
-        if (scrollToSelectedItem && !tableModel.getSelectionModel().isSelectionEmpty()) {
-          scrollToCoordinate(selected, table.getSelectedColumn());
-        }
-      }
-    });
-    tableModel.addRefreshStartedListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        UiUtil.setWaitCursor(true, FilteredTablePanel.this);
-      }
-    });
-    tableModel.addRefreshDoneListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        UiUtil.setWaitCursor(false, FilteredTablePanel.this);
-      }
-    });
+    tableModel.addRefreshStartedListener(() -> UiUtil.setWaitCursor(true, FilteredTablePanel.this));
+    tableModel.addRefreshDoneListener(() -> UiUtil.setWaitCursor(false, FilteredTablePanel.this));
     for (final TableColumn column : tableModel.getColumnModel().getAllColumns()) {
       final ColumnCriteriaModel model = tableModel.getColumnModel().getColumnFilterModel((C) column.getIdentifier());
       if (model != null) {
-        model.addCriteriaStateListener(new EventListener() {
-          @Override
-          public void eventOccurred() {
-            if (model.isEnabled()) {
-              addFilterIndicator(column);
-            }
-            else {
-              removeFilterIndicator(column);
-            }
-
-            getJTable().getTableHeader().repaint();
+        model.addCriteriaStateListener(() -> {
+          if (model.isEnabled()) {
+            addFilterIndicator(column);
           }
+          else {
+            removeFilterIndicator(column);
+          }
+
+          getJTable().getTableHeader().repaint();
         });
         if (model.isEnabled()) {
           addFilterIndicator(column);

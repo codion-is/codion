@@ -5,7 +5,6 @@ package org.jminor.swing.common.ui;
 
 import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
-import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.State;
@@ -84,7 +83,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -223,12 +221,8 @@ public final class UiUtil {
     final JTextField txt = new JTextField(8);
     txt.setEditable(false);
     txt.setHorizontalAlignment(JTextField.CENTER);
-    Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory()).scheduleWithFixedDelay(new Runnable() {
-      @Override
-      public void run() {
-        txt.setText(Util.getMemoryUsageString());
-      }
-    }, 0, updateIntervalMilliseconds, TimeUnit.MILLISECONDS);
+    Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory()).scheduleWithFixedDelay(() ->
+            txt.setText(Util.getMemoryUsageString()), 0, updateIntervalMilliseconds, TimeUnit.MILLISECONDS);
 
     return txt;
   }
@@ -599,12 +593,7 @@ public final class UiUtil {
   public static Action linkToEnabledState(final StateObserver enabledState, final Action action) {
     if (enabledState != null && action != null) {
       action.setEnabled(enabledState.isActive());
-      enabledState.addListener(new EventListener() {
-        @Override
-        public void eventOccurred() {
-          action.setEnabled(enabledState.isActive());
-        }
-      });
+      enabledState.addListener(() -> action.setEnabled(enabledState.isActive()));
     }
 
     return action;
@@ -633,13 +622,10 @@ public final class UiUtil {
         if (includeFocusable) {
           component.setFocusable(enabledState.isActive());
         }
-        enabledState.addListener(new EventListener() {
-          @Override
-          public void eventOccurred() {
-            component.setEnabled(enabledState.isActive());
-            if (includeFocusable) {
-              component.setFocusable(enabledState.isActive());
-            }
+        enabledState.addListener(() -> {
+          component.setEnabled(enabledState.isActive());
+          if (includeFocusable) {
+            component.setFocusable(enabledState.isActive());
           }
         });
       }
@@ -949,22 +935,12 @@ public final class UiUtil {
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            textComponent.selectAll();
-          }
-        });
+        SwingUtilities.invokeLater(textComponent::selectAll);
       }
 
       @Override
       public void focusLost(final FocusEvent e) {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            textComponent.select(0, 0);
-          }
-        });
+        SwingUtilities.invokeLater(() -> textComponent.select(0, 0));
       }
     });
 
@@ -980,12 +956,7 @@ public final class UiUtil {
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            textComponent.setCaretPosition(0);
-          }
-        });
+        SwingUtilities.invokeLater(() -> textComponent.setCaretPosition(0));
       }
     });
 
@@ -1001,12 +972,7 @@ public final class UiUtil {
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            textComponent.setCaretPosition(textComponent.getText().length());
-          }
-        });
+        SwingUtilities.invokeLater(() -> textComponent.setCaretPosition(textComponent.getText().length()));
       }
     });
 
@@ -1174,12 +1140,7 @@ public final class UiUtil {
       }
     });
     if (closeObserver != null) {
-      closeObserver.addListener(new EventListener() {
-        @Override
-        public void eventOccurred() {
-          closeIfConfirmed(confirmCloseListener, dialog);
-        }
-      });
+      closeObserver.addListener(() -> closeIfConfirmed(confirmCloseListener, dialog));
     }
     dialog.setLayout(createBorderLayout());
     dialog.add(component, BorderLayout.CENTER);
@@ -1476,20 +1437,17 @@ public final class UiUtil {
    * @param onFocusAction the action to run when the focus has been requested
    */
   public static void addInitialFocusHack(final JComponent component, final Action onFocusAction) {
-    component.addHierarchyListener(new HierarchyListener() {
-      @Override
-      public void hierarchyChanged(final HierarchyEvent e) {
-        if (component.isShowing() && (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
-          SwingUtilities.getWindowAncestor(component).addWindowFocusListener(new WindowAdapter() {
-            @Override
-            public void windowGainedFocus(final WindowEvent evt) {
-              component.requestFocusInWindow();
-              if (onFocusAction != null) {
-                onFocusAction.actionPerformed(new ActionEvent(component, 0, "onFocusAction"));
-              }
+    component.addHierarchyListener(e -> {
+      if (component.isShowing() && (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
+        SwingUtilities.getWindowAncestor(component).addWindowFocusListener(new WindowAdapter() {
+          @Override
+          public void windowGainedFocus(final WindowEvent evt) {
+            component.requestFocusInWindow();
+            if (onFocusAction != null) {
+              onFocusAction.actionPerformed(new ActionEvent(component, 0, "onFocusAction"));
             }
-          });
-        }
+          }
+        });
       }
     });
   }
@@ -1576,12 +1534,7 @@ public final class UiUtil {
     }
     dialog.pack();
     UiUtil.centerWindow(dialog);
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        dialog.setVisible(true);
-      }
-    });
+    SwingUtilities.invokeLater(() -> dialog.setVisible(true));
 
     final class Finisher implements Runnable {
       private final Exception exception;
@@ -1602,18 +1555,15 @@ public final class UiUtil {
       }
     }
 
-    Executors.newSingleThreadExecutor().execute(new Runnable() {
-      @Override
-      public void run() {
-        Exception exception = null;
-        try {
-          task.run();
-        }
-        catch (final Exception ex) {
-          exception = ex;
-        }
-        SwingUtilities.invokeLater(new Finisher(exception));
+    Executors.newSingleThreadExecutor().execute(() -> {
+      Exception exception = null;
+      try {
+        task.run();
       }
+      catch (final Exception ex) {
+        exception = ex;
+      }
+      SwingUtilities.invokeLater(new Finisher(exception));
     });
   }
 
@@ -1654,12 +1604,7 @@ public final class UiUtil {
         new ExceptionDialog(window).showForThrowable(title, message, throwable, modal);
       }
       else {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            new ExceptionDialog(window).showForThrowable(title, message, throwable, modal);
-          }
-        });
+        SwingUtilities.invokeAndWait(() -> new ExceptionDialog(window).showForThrowable(title, message, throwable, modal));
       }
     }
     catch (final Exception e) {
@@ -1698,12 +1643,7 @@ public final class UiUtil {
     }
     else {
       dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-      closeEvent.addListener(new EventListener() {
-        @Override
-        public void eventOccurred() {
-          disposeActionListener.actionPerformed(null);
-        }
-      });
+      closeEvent.addListener(() -> disposeActionListener.actionPerformed(null));
     }
     if (onClosedAction != null) {
       dialog.addWindowListener(new WindowAdapter() {
@@ -2070,12 +2010,7 @@ public final class UiUtil {
 
     private void bindEvents() {
       setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-      showDetailsState.addInfoListener(new EventInfoListener<Boolean>() {
-        @Override
-        public void eventOccurred(final Boolean value) {
-          initializeDetailView(value);
-        }
-      });
+      showDetailsState.addInfoListener(this::initializeDetailView);
     }
 
     private void initializeDetailView(final boolean show) {

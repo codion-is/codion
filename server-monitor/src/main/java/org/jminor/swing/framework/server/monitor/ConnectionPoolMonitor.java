@@ -54,12 +54,8 @@ public final class ConnectionPoolMonitor {
   private final YIntervalSeries averageCheckOutTime = new YIntervalSeries("Average check out time");
   private final YIntervalSeriesCollection checkOutTimeCollection = new YIntervalSeriesCollection();
 
-  private final TaskScheduler updateScheduler = new TaskScheduler(new Runnable() {
-    @Override
-    public void run() {
-      updateStatistics();
-    }
-  }, Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
+  private final TaskScheduler updateScheduler = new TaskScheduler(this::updateStatistics,
+          Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
 
   private long lastStatisticsUpdateTime = 0;
 

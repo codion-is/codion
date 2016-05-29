@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db.tools;
 
-import org.jminor.common.EventListener;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnections;
@@ -44,12 +43,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
   public QueryLoadTestModel(final Database database, final User user, final Collection<? extends QueryScenario> scenarios) throws DatabaseException {
     super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE, DEFAULT_QUERY_WARNING_TIME_MS);
     this.pool = ConnectionPools.createDefaultConnectionPool(DatabaseConnections.connectionProvider(database, user));
-    addExitListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        pool.close();
-      }
-    });
+    addExitListener(pool::close);
   }
 
   /**

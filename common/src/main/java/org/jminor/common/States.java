@@ -363,12 +363,7 @@ public final class States {
         members.add(new WeakReference<>(state));
       }
       updateAccordingToState(state);
-      state.addListener(new EventListener() {
-        @Override
-        public void eventOccurred() {
-          updateAccordingToState(state);
-        }
-      });
+      state.addListener(() -> updateAccordingToState(state));
     }
 
     private void updateAccordingToState(final State state) {

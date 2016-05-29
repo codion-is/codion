@@ -80,12 +80,7 @@ public final class DefaultEntityLookupModelTest {
 
   @Test
   public void setToStringProvider() {
-    lookupModel.setToStringProvider(new Entity.ToString() {
-      @Override
-      public String toString(final Entity entity) {
-        return entity.getAsString(TestDomain.EMP_JOB);
-      }
-    });
+    lookupModel.setToStringProvider(entity -> entity.getAsString(TestDomain.EMP_JOB));
     final Entity employee = Entities.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_NAME, "Darri");
     employee.put(TestDomain.EMP_JOB, "CLERK");

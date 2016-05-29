@@ -15,12 +15,7 @@ public class EventsTest {
   public void test() throws Exception {
     final Event event = Events.event();
     final AtomicInteger counter = new AtomicInteger();
-    final EventListener listener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        counter.incrementAndGet();
-      }
-    };
+    final EventListener listener = counter::incrementAndGet;
     event.addListener(listener);
     event.fire();
     assertTrue("EventListener should have been notified on .fire()", counter.get() == 1);

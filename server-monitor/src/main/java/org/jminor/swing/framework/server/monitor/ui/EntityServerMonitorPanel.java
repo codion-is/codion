@@ -60,12 +60,8 @@ public final class EntityServerMonitorPanel extends JPanel {
   public EntityServerMonitorPanel() throws RemoteException {
     this(new EntityServerMonitor(Configuration.getStringValue(Configuration.SERVER_HOST_NAME),
             Configuration.getIntValue(Configuration.REGISTRY_PORT)));
-    Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-      @Override
-      public void uncaughtException(final Thread t, final Throwable e) {
-        DefaultExceptionHandler.getInstance().handleException(e, UiUtil.getParentWindow(EntityServerMonitorPanel.this));
-      }
-    });
+    Thread.setDefaultUncaughtExceptionHandler((t, e) ->
+            DefaultExceptionHandler.getInstance().handleException(e, UiUtil.getParentWindow(EntityServerMonitorPanel.this)));
   }
 
   /**
@@ -213,18 +209,15 @@ public final class EntityServerMonitorPanel extends JPanel {
 
   public static void main(final String[] arguments) {
     ServerUtil.resolveTrustStoreFromClasspath(EntityServerMonitorPanel.class.getSimpleName());
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-          new EntityServerMonitorPanel().showFrame();
-        }
-        catch (final Exception e) {
-          LOG.error(e.getMessage(), e);
-          UiUtil.showExceptionDialog(null, "Error during startup", e);
-          System.exit(1);
-        }
+    SwingUtilities.invokeLater(() -> {
+      try {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        new EntityServerMonitorPanel().showFrame();
+      }
+      catch (final Exception e) {
+        LOG.error(e.getMessage(), e);
+        UiUtil.showExceptionDialog(null, "Error during startup", e);
+        System.exit(1);
       }
     });
   }

@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
-import org.jminor.common.EventInfoListener;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
@@ -54,25 +53,19 @@ public final class HostMonitorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    model.addServerAddedListener(new EventInfoListener<ServerMonitor>() {
-      @Override
-      public void eventOccurred(final ServerMonitor serverMonitor) {
-        try {
-          addServerTab(serverMonitor);
-        }
-        catch (final RemoteException e) {
-          throw new RuntimeException(e);
-        }
+    model.addServerAddedListener(serverMonitor -> {
+      try {
+        addServerTab(serverMonitor);
+      }
+      catch (final RemoteException e) {
+        throw new RuntimeException(e);
       }
     });
-    model.addServerRemovedListener(new EventInfoListener<ServerMonitor>() {
-      @Override
-      public void eventOccurred(final ServerMonitor serverMonitor) {
-        for (int i = 0; i < serverPane.getTabCount(); i++) {
-          final ServerMonitorPanel panel = (ServerMonitorPanel) serverPane.getComponentAt(i);
-          if (panel.getModel() == serverMonitor) {
-            removeServerTab(panel);
-          }
+    model.addServerRemovedListener(serverMonitor -> {
+      for (int i = 0; i < serverPane.getTabCount(); i++) {
+        final ServerMonitorPanel panel = (ServerMonitorPanel) serverPane.getComponentAt(i);
+        if (panel.getModel() == serverMonitor) {
+          removeServerTab(panel);
         }
       }
     });

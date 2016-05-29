@@ -103,12 +103,7 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void filterContents() {
     tableModel.refresh();
-    tableModel.setFilterCriteria(new FilterCriteria<String>() {
-      @Override
-      public boolean include(final String item) {
-        return !item.equals("b") && !item.equals("f");
-      }
-    });
+    tableModel.setFilterCriteria(item -> !item.equals("b") && !item.equals("f"));
     assertFalse(tableModel.contains("b", false));
     assertTrue(tableModel.contains("b", true));
     tableModel.addItemsAt(Collections.singletonList("f"), 0);
@@ -147,24 +142,9 @@ public final class AbstractFilteredTableModelTest {
     final AtomicInteger started = new AtomicInteger();
     final AtomicInteger done = new AtomicInteger();
     final AtomicInteger cleared = new AtomicInteger();
-    final EventListener startListener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        started.incrementAndGet();
-      }
-    };
-    final EventListener doneListener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        done.incrementAndGet();
-      }
-    };
-    final EventListener clearedListener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        cleared.incrementAndGet();
-      }
-    };
+    final EventListener startListener = started::incrementAndGet;
+    final EventListener doneListener = done::incrementAndGet;
+    final EventListener clearedListener = cleared::incrementAndGet;
     tableModel.addRefreshStartedListener(startListener);
     tableModel.addRefreshDoneListener(doneListener);
     tableModel.addTableModelClearedListener(clearedListener);
@@ -181,12 +161,7 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void removeItems() {
     final AtomicInteger events = new AtomicInteger();
-    final EventListener listener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        events.incrementAndGet();
-      }
-    };
+    final EventListener listener = events::incrementAndGet;
     tableModel.addTableDataChangedListener(listener);
     tableModel.refresh();
     assertEquals(1, events.get());
@@ -208,12 +183,7 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void removeItemsRange() {
     final AtomicInteger events = new AtomicInteger();
-    final EventListener listener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        events.incrementAndGet();
-      }
-    };
+    final EventListener listener = events::incrementAndGet;
     tableModel.addTableDataChangedListener(listener);
     tableModel.refresh();
     assertEquals(1, events.get());
@@ -311,12 +281,7 @@ public final class AbstractFilteredTableModelTest {
     point = testModel.findNextItemCoordinate(0, true, "(?i)B");
     assertEquals(new Point(1, 3), point);
 
-    FilterCriteria<Object> criteria = new FilterCriteria<Object>() {
-      @Override
-      public boolean include(final Object item) {
-        return item.equals("b") || item.equals("e");
-      }
-    };
+    FilterCriteria<Object> criteria = item -> item.equals("b") || item.equals("e");
 
     point = testModel.findNextItemCoordinate(4, false, criteria);
     assertEquals(new Point(1, 3), point);
@@ -348,12 +313,7 @@ public final class AbstractFilteredTableModelTest {
     point = testModel.findNextItemCoordinate(0, true, "(?i)B");
     assertEquals(new Point(0, 3), point);
 
-    criteria = new FilterCriteria<Object>() {
-      @Override
-      public boolean include(final Object item) {
-        return item.equals("b") || item.equals("e");
-      }
-    };
+    criteria = item -> item.equals("b") || item.equals("e");
 
     point = testModel.findNextItemCoordinate(4, false, criteria);
     assertEquals(new Point(0, 3), point);
@@ -371,11 +331,8 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void customSorting() {
-    final AbstractFilteredTableModel<String, Integer> tableModel = createTestModel(new Comparator<String>() {
-      @Override
-      public int compare(final String o1, final String o2) {
-        return o2.compareTo(o1);//reverse order
-      }
+    final AbstractFilteredTableModel<String, Integer> tableModel = createTestModel((o1, o2) -> {
+      return o2.compareTo(o1);//reverse order
     });
     tableModel.refresh();
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
@@ -387,12 +344,7 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void testSorting() {
     final AtomicInteger actionsPerformed = new AtomicInteger();
-    final EventListener listener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        actionsPerformed.incrementAndGet();
-      }
-    };
+    final EventListener listener = actionsPerformed::incrementAndGet;
     tableModel.addSortingListener(listener);
 
     tableModel.refresh();
@@ -496,12 +448,7 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void testSelection() {
     final AtomicInteger events = new AtomicInteger();
-    final EventListener listener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        events.incrementAndGet();
-      }
-    };
+    final EventListener listener = events::incrementAndGet;
     final EventInfoListener infoListener = Events.infoListener(listener);
     final SwingTableSelectionModel<String> selectionModel = (SwingTableSelectionModel<String>) tableModel.getSelectionModel();
     selectionModel.addSelectedIndexListener(infoListener);
@@ -680,24 +627,14 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void setFilterCriteria() {
     tableModel.refresh();
-    tableModel.setFilterCriteria(new FilterCriteria<String>() {
-      @Override
-      public boolean include(final String item) {
-        return false;
-      }
-    });
+    tableModel.setFilterCriteria(item -> false);
     assertTrue(tableModel.getRowCount() == 0);
   }
 
   @Test
   public void testFiltering() throws Exception {
     final AtomicInteger done = new AtomicInteger();
-    final EventListener listener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        done.incrementAndGet();
-      }
-    };
+    final EventListener listener = done::incrementAndGet;
     tableModel.addFilteringListener(listener);
 
     tableModel.refresh();

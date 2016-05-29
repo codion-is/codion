@@ -4,7 +4,6 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.Util;
@@ -70,21 +69,18 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   private boolean strictForeignKeyFiltering = true;
 
-  private final FilterCriteria<Entity> foreignKeyFilterCriteria = new FilterCriteria<Entity>() {
-    @Override
-    public boolean include(final Entity item) {
-      for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
-        final Entity foreignKeyValue = item.getForeignKey(entry.getKey());
-        if (foreignKeyValue == null) {
-          return !strictForeignKeyFiltering;
-        }
-        if (!entry.getValue().contains(foreignKeyValue)) {
-          return false;
-        }
+  private final FilterCriteria<Entity> foreignKeyFilterCriteria = item -> {
+    for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
+      final Entity foreignKeyValue = item.getForeignKey(entry.getKey());
+      if (foreignKeyValue == null) {
+        return !strictForeignKeyFiltering;
       }
-
-      return true;
+      if (!entry.getValue().contains(foreignKeyValue)) {
+        return false;
+      }
     }
+
+    return true;
   };
 
   /**
@@ -99,12 +95,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     this.selectCriteria = initializeSelectCriteria(entityID);
     setStaticData(Entities.isStaticData(entityID));
     final FilterCriteria<Entity> superCriteria = super.getFilterCriteria();
-    setFilterCriteria(new FilterCriteria<Entity>() {
-      @Override
-      public boolean include(final Entity item) {
-        return superCriteria.include(item) && foreignKeyFilterCriteria.include(item);
-      }
-    });
+    setFilterCriteria(item -> superCriteria.include(item) && foreignKeyFilterCriteria.include(item));
   }
 
   /** {@inheritDoc} */
@@ -254,19 +245,11 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     if (!Util.nullOrEmpty(filterEntities)) {
       foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
     }
-    foreignKeyModel.addSelectionListener(new EventInfoListener<Entity>() {
-      @Override
-      public void eventOccurred(final Entity selected) {
-        setForeignKeyFilterEntities(foreignKeyPropertyID,
-                selected == null ? new ArrayList<>(0) : Collections.singletonList(selected));
-      }
-    });
-    addSelectionListener(new EventInfoListener<Entity>() {
-      @Override
-      public void eventOccurred(final Entity selected) {
-        if (selected != null) {
-          foreignKeyModel.setSelectedEntityByKey(selected.getReferencedKey(foreignKeyProperty));
-        }
+    foreignKeyModel.addSelectionListener(selected -> setForeignKeyFilterEntities(foreignKeyPropertyID,
+            selected == null ? new ArrayList<>(0) : Collections.singletonList(selected)));
+    addSelectionListener(selected -> {
+      if (selected != null) {
+        foreignKeyModel.setSelectedEntityByKey(selected.getReferencedKey(foreignKeyProperty));
       }
     });
     addRefreshListener(new ForeignKeyModelRefreshListener(foreignKeyModel));

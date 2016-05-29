@@ -3,9 +3,7 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.EventInfoListener;
 import org.jminor.common.model.valuemap.DefaultValueMap;
-import org.jminor.common.model.valuemap.ValueChange;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -497,14 +495,11 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   @Override
   protected void handleValueChangedEventInitialized() {
     if (definition.hasLinkedProperties()) {
-      addValueListener(new EventInfoListener<ValueChange<String, ?>>() {
-        @Override
-        public void eventOccurred(final ValueChange<String, ?> valueChange) {
-          final Collection<String> linkedPropertyIDs = definition.getLinkedPropertyIDs(valueChange.getKey());
-          for (final String propertyID : linkedPropertyIDs) {
-            final Object linkedValue = get(propertyID);
-            notifyValueChange(propertyID, linkedValue, linkedValue, false);
-          }
+      addValueListener(valueChange -> {
+        final Collection<String> linkedPropertyIDs = definition.getLinkedPropertyIDs(valueChange.getKey());
+        for (final String propertyID : linkedPropertyIDs) {
+          final Object linkedValue = get(propertyID);
+          notifyValueChange(propertyID, linkedValue, linkedValue, false);
         }
       });
     }

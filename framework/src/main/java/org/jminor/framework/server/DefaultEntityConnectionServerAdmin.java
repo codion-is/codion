@@ -483,30 +483,23 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   }
 
   private Runnable getShutdownHook() {
-    return new Runnable() {
-      @Override
-      public void run() {
-        if (server.isShuttingDown()) {
-          return;
-        }
-        try {
-          shutdown();
-        }
-        catch (final RemoteException e) {
-          LOG.error("Exception during shutdown", e);
-        }
+    return () -> {
+      if (server.isShuttingDown()) {
+        return;
+      }
+      try {
+        shutdown();
+      }
+      catch (final RemoteException e) {
+        LOG.error("Exception during shutdown", e);
       }
     };
   }
 
   private void initializeGarbageCollectionListener() {
     for (final GarbageCollectorMXBean collectorMXBean : ManagementFactory.getGarbageCollectorMXBeans()) {
-      ((NotificationEmitter) collectorMXBean).addNotificationListener(new GCNotifactionListener(), new NotificationFilter() {
-        @Override
-        public boolean isNotificationEnabled(final Notification notification) {
-          return notification.getType().equals(GarbageCollectionNotificationInfo.GARBAGE_COLLECTION_NOTIFICATION);
-        }
-      }, null);
+      ((NotificationEmitter) collectorMXBean).addNotificationListener(new GCNotifactionListener(), (NotificationFilter) notification ->
+              notification.getType().equals(GarbageCollectionNotificationInfo.GARBAGE_COLLECTION_NOTIFICATION), null);
     }
   }
 

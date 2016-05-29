@@ -12,9 +12,7 @@ import org.jminor.framework.db.EntityConnection;
 import java.awt.Color;
 import java.sql.Types;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 public final class TestDomain {
 
@@ -31,14 +29,11 @@ public final class TestDomain {
             Properties.primaryKeyProperty(MASTER_ID, Types.BIGINT),
             Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
             Properties.columnProperty(MASTER_CODE, Types.INTEGER))
-            .setComparator(new Comparator<Entity>() {
-              @Override
-              public int compare(final Entity o1, final Entity o2) {
-                final Integer code1 = o1.getInteger(MASTER_CODE);
-                final Integer code2 = o2.getInteger(MASTER_CODE);
+            .setComparator((o1, o2) -> {
+              final Integer code1 = o1.getInteger(MASTER_CODE);
+              final Integer code2 = o2.getInteger(MASTER_CODE);
 
-                return code1.compareTo(code2);
-              }
+              return code1.compareTo(code2);
             })
             .setStringProvider(new Entities.StringProvider(MASTER_NAME));
   }
@@ -87,16 +82,13 @@ public final class TestDomain {
             Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_ENTITY_FK,
                     Entities.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE),
             Properties.valueListProperty(DETAIL_INT_VALUE_LIST, Types.INTEGER, DETAIL_INT_VALUE_LIST, ITEMS),
-            Properties.derivedProperty(DETAIL_INT_DERIVED, Types.INTEGER, DETAIL_INT_DERIVED, new Property.DerivedProperty.Provider() {
-              @Override
-              public Object getValue(final Map<String, Object> linkedValues) {
-                final Integer intValue = (Integer) linkedValues.get(DETAIL_INT);
-                if (intValue == null) {
-                  return null;
-                }
-
-                return intValue * 10;
+            Properties.derivedProperty(DETAIL_INT_DERIVED, Types.INTEGER, DETAIL_INT_DERIVED, linkedValues -> {
+              final Integer intValue = (Integer) linkedValues.get(DETAIL_INT);
+              if (intValue == null) {
+                return null;
               }
+
+              return intValue * 10;
             }, DETAIL_INT))
             .setSmallDataset(true)
             .setStringProvider(new Entities.StringProvider(DETAIL_STRING));
@@ -170,16 +162,12 @@ public final class TestDomain {
             .setStringProvider(new Entities.StringProvider(EMP_NAME))
             .setSearchPropertyIDs(EMP_NAME, EMP_JOB)
             .setCaption("Employee")
-            .setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
-              /*provide a custom background color for managers*/
-              @Override
-              public Color getBackgroundColor(final Entity entity, final Property property) {
-                if (property.is(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {
-                  return Color.CYAN;
-                }
-
-                return null;
+            .setBackgroundColorProvider((entity, property) -> {
+              if (property.is(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {
+                return Color.CYAN;
               }
+
+              return null;
             });
   }
 

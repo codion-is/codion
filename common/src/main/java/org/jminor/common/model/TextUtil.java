@@ -130,13 +130,8 @@ public final class TextUtil {
    * using the default Collator, taking spaces into account.
    */
   public static <T> Comparator<T> getSpaceAwareCollator() {
-    return new Comparator<T>() {
-      private final Collator collator = Collator.getInstance();
-      @Override
-      public int compare(final T o1, final T o2) {
-        return collateSansSpaces(collator, o1.toString(), o2.toString());
-      }
-    };
+    final Collator collator = Collator.getInstance();
+    return (o1, o2) -> collateSansSpaces(collator, o1.toString(), o2.toString());
   }
 
   /**
@@ -145,12 +140,7 @@ public final class TextUtil {
    * @param list the list
    */
   public static void collateSansSpaces(final Collator collator, final List<?> list) {
-    Collections.sort(list, new Comparator<Object>() {
-      @Override
-      public int compare(final Object o1, final Object o2) {
-        return collateSansSpaces(collator, o1.toString(), o2.toString());
-      }
-    });
+    Collections.sort(list, (o1, o2) -> collateSansSpaces(collator, o1.toString(), o2.toString()));
   }
 
   /**

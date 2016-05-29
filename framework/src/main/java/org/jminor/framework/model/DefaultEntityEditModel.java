@@ -10,7 +10,6 @@ import org.jminor.common.States;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.valuemap.DefaultValueMapEditModel;
-import org.jminor.common.model.valuemap.ValueChange;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.model.valuemap.ValueProvider;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -107,12 +106,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
   /**
    * Provides the values when a default entity is created
    */
-  private final ValueProvider<Property, Object> defaultValueProvider = new ValueProvider<Property, Object>() {
-    @Override
-    public Object get(final Property property) {
-      return getDefaultValue(property);
-    }
-  };
+  private final ValueProvider<Property, Object> defaultValueProvider = this::getDefaultValue;
 
   /**
    * Holds the read only status of this edit model
@@ -846,12 +840,9 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
     afterDeleteEvent.addListener(entitiesChangedEvent);
     afterInsertEvent.addListener(entitiesChangedEvent);
     afterUpdateEvent.addListener(entitiesChangedEvent);
-    getEntity().addValueListener(new EventInfoListener<ValueChange<String, ?>>() {
-      @Override
-      public void eventOccurred(final ValueChange<String, ?> info) {
-        primaryKeyNullState.setActive(getEntity().isKeyNull());
-        entityNewState.setActive(isEntityNew());
-      }
+    getEntity().addValueListener(info -> {
+      primaryKeyNullState.setActive(getEntity().isKeyNull());
+      entityNewState.setActive(isEntityNew());
     });
   }
 
@@ -861,7 +852,8 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
     private final String entityID;
     private final String propertyID;
 
-    private PropertyValueProvider(final EntityConnectionProvider connectionProvider, final String entityID, final String propertyID) {
+    private PropertyValueProvider(final EntityConnectionProvider connectionProvider, final String entityID,
+                                  final String propertyID) {
       this.connectionProvider = connectionProvider;
       this.entityID = entityID;
       this.propertyID = propertyID;

@@ -140,20 +140,14 @@ public final class DefaultEntityEditModelTest {
     assertTrue(employeeEditModel.getAllowUpdateObserver().isActive());
     assertTrue(employeeEditModel.getAllowDeleteObserver().isActive());
 
-    final EventInfoListener infoListener = new EventInfoListener() {
-      @Override
-      public void eventOccurred(final Object info) {}
-    };
+    final EventInfoListener infoListener = info -> {};
     employeeEditModel.addAfterDeleteListener(infoListener);
     employeeEditModel.addAfterInsertListener(infoListener);
     employeeEditModel.addAfterUpdateListener(infoListener);
     employeeEditModel.addBeforeDeleteListener(infoListener);
     employeeEditModel.addBeforeInsertListener(infoListener);
     employeeEditModel.addBeforeUpdateListener(infoListener);
-    final EventListener listener = new EventListener() {
-      @Override
-      public void eventOccurred() {}
-    };
+    final EventListener listener = () -> {};
     employeeEditModel.addEntitiesChangedListener(listener);
     employeeEditModel.addBeforeRefreshListener(listener);
     employeeEditModel.addAfterRefreshListener(listener);
@@ -281,12 +275,8 @@ public final class DefaultEntityEditModelTest {
 
       employeeEditModel.setValue(TestDomain.EMP_DEPARTMENT_FK, department);
 
-      employeeEditModel.addAfterInsertListener(new EventInfoListener<EntityEditModel.InsertEvent>() {
-        @Override
-        public void eventOccurred(final EntityEditModel.InsertEvent info) {
-          assertEquals(department, info.getInsertedEntities().get(0).get(TestDomain.EMP_DEPARTMENT_FK));
-        }
-      });
+      employeeEditModel.addAfterInsertListener(info ->
+              assertEquals(department, info.getInsertedEntities().get(0).get(TestDomain.EMP_DEPARTMENT_FK)));
       employeeEditModel.setInsertAllowed(false);
       assertFalse(employeeEditModel.isInsertAllowed());
       try {
@@ -325,12 +315,8 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER"));
       employeeEditModel.setValue(TestDomain.EMP_NAME, "BJORN");
       final List<Entity> toUpdate = Collections.singletonList(employeeEditModel.getEntityCopy());
-      final EventInfoListener<EntityEditModel.UpdateEvent> listener = new EventInfoListener<EntityEditModel.UpdateEvent>() {
-        @Override
-        public void eventOccurred(final EntityEditModel.UpdateEvent info) {
-          assertEquals(toUpdate, new ArrayList<>(info.getUpdatedEntities().values()));
-        }
-      };
+      final EventInfoListener<EntityEditModel.UpdateEvent> listener = info ->
+              assertEquals(toUpdate, new ArrayList<>(info.getUpdatedEntities().values()));
       employeeEditModel.addAfterUpdateListener(listener);
       employeeEditModel.setUpdateAllowed(false);
       assertFalse(employeeEditModel.isUpdateAllowed());
@@ -358,12 +344,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER"));
       final List<Entity> toDelete = Collections.singletonList(employeeEditModel.getEntityCopy());
-      employeeEditModel.addAfterDeleteListener(new EventInfoListener<EntityEditModel.DeleteEvent>() {
-        @Override
-        public void eventOccurred(final EntityEditModel.DeleteEvent info) {
-          assertEquals(toDelete, info.getDeletedEntities());
-        }
-      });
+      employeeEditModel.addAfterDeleteListener(info -> assertEquals(toDelete, info.getDeletedEntities()));
       employeeEditModel.setDeleteAllowed(false);
       assertFalse(employeeEditModel.isDeleteAllowed());
       try {
@@ -416,18 +397,8 @@ public final class DefaultEntityEditModelTest {
     Configuration.setValue(Configuration.WARN_ABOUT_UNSAVED_DATA, true);
     employeeEditModel.setValuePersistent(TestDomain.EMP_DEPARTMENT_FK, false);
 
-    final EventInfoListener<State> alwaysConfirmListener = new EventInfoListener<State>() {
-      @Override
-      public void eventOccurred(final State info) {
-        info.setActive(true);
-      }
-    };
-    final EventInfoListener<State> alwaysDenyListener = new EventInfoListener<State>() {
-      @Override
-      public void eventOccurred(final State info) {
-        info.setActive(false);
-      }
-    };
+    final EventInfoListener<State> alwaysConfirmListener = info -> info.setActive(true);
+    final EventInfoListener<State> alwaysDenyListener = info -> info.setActive(false);
 
     employeeEditModel.addConfirmSetEntityObserver(alwaysConfirmListener);
     final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");

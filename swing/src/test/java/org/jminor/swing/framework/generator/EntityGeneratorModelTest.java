@@ -133,12 +133,7 @@ public class EntityGeneratorModelTest {
   public void address() {
     assertNotNull(model.getDocument());
     final AtomicInteger counter = new AtomicInteger();
-    final EventListener listener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        counter.incrementAndGet();
-      }
-    };
+    final EventListener listener = counter::incrementAndGet;
     model.addRefreshStartedListener(listener);
     model.addRefreshDoneListener(listener);
 

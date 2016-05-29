@@ -14,10 +14,7 @@ public final class DaemonThreadFactoryTest {
   @Test
   public void daemonThreadFactory() {
     final ThreadFactory factory = new DaemonThreadFactory();
-    final Thread thread = factory.newThread(new Runnable() {
-      @Override
-      public void run() {}
-    });
+    final Thread thread = factory.newThread(() -> {});
     assertTrue(thread.isDaemon());
   }
 }

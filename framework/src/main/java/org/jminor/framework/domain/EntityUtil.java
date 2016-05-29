@@ -10,7 +10,6 @@ import org.jminor.common.model.valuemap.ValueProvider;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Types;
@@ -283,12 +282,7 @@ public final class EntityUtil {
    * @return a Map of entities mapped to property value
    */
   public static <K> LinkedHashMap<K, Collection<Entity>> mapToValue(final String propertyID, final Collection<Entity> entities) {
-    return Util.map(entities, new Util.MapKeyProvider<K, Entity>() {
-      @Override
-      public K getKey(final Entity value) {
-        return (K) value.get(propertyID);
-      }
-    });
+    return Util.map(entities, value -> (K) value.get(propertyID));
   }
 
   /**
@@ -298,12 +292,7 @@ public final class EntityUtil {
    * @return a Map of entities mapped to entityID
    */
   public static LinkedHashMap<String, Collection<Entity>> mapToEntityID(final Collection<Entity> entities) {
-    return Util.map(entities, new Util.MapKeyProvider<String, Entity>() {
-      @Override
-      public String getKey(final Entity value) {
-        return value.getEntityID();
-      }
-    });
+    return Util.map(entities, Entity::getEntityID);
   }
 
   /**
@@ -313,12 +302,7 @@ public final class EntityUtil {
    * @return a Map of entity keys mapped to entityID
    */
   public static LinkedHashMap<String, Collection<Entity.Key>> mapKeysToEntityID(final Collection<Entity.Key> keys) {
-    return Util.map(keys, new Util.MapKeyProvider<String, Entity.Key>() {
-      @Override
-      public String getKey(final Entity.Key value) {
-        return value.getEntityID();
-      }
-    });
+    return Util.map(keys, Entity.Key::getEntityID);
   }
 
   /**
@@ -455,15 +439,12 @@ public final class EntityUtil {
    */
   public static Entity createToStringEntity(final String entityID, final String toStringValue) {
     final Entity entity = Entities.entity(entityID);
-    return Util.initializeProxy(Entity.class, new InvocationHandler() {
-      @Override
-      public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
-        if ("toString".equals(method.getName())) {
-          return toStringValue;
-        }
-
-        return method.invoke(entity, args);
+    return Util.initializeProxy(Entity.class, (proxy, method, args) -> {
+      if ("toString".equals(method.getName())) {
+        return toStringValue;
       }
+
+      return method.invoke(entity, args);
     });
   }
 

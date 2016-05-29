@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.empdept.beans.ui;
 
-import org.jminor.common.EventListener;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
@@ -30,17 +29,14 @@ public class DepartmentEditPanel extends EntityEditPanel {
     txtDepartmentNumber.setColumns(10);
 
     //we don't allow editing of the department number since it's a primary key
-    getEditModel().getPrimaryKeyNullObserver().addListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        if (getEditModel().isEntityNew()) {
-          txtDepartmentNumber.setEnabled(true);
-          setInitialFocusProperty(EmpDept.DEPARTMENT_ID);
-        }
-        else {
-          txtDepartmentNumber.setEnabled(false);
-          setInitialFocusProperty(EmpDept.DEPARTMENT_NAME);
-        }
+    getEditModel().getPrimaryKeyNullObserver().addListener(() -> {
+      if (getEditModel().isEntityNew()) {
+        txtDepartmentNumber.setEnabled(true);
+        setInitialFocusProperty(EmpDept.DEPARTMENT_ID);
+      }
+      else {
+        txtDepartmentNumber.setEnabled(false);
+        setInitialFocusProperty(EmpDept.DEPARTMENT_NAME);
       }
     });
 

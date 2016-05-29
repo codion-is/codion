@@ -20,12 +20,7 @@ public class ItemRandomizerModelTest {
     final Object three = "three";
 
     final AtomicInteger weightChangeCounter = new AtomicInteger();
-    final EventListener weightListener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        weightChangeCounter.incrementAndGet();
-      }
-    };
+    final EventListener weightListener = weightChangeCounter::incrementAndGet;
 
     final ItemRandomizerModel<Object> model = new ItemRandomizerModel<>(0, one, two, three);
     model.getWeightsObserver().addListener(weightListener);

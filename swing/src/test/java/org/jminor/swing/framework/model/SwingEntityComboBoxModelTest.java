@@ -134,12 +134,7 @@ public final class SwingEntityComboBoxModelTest {
   @Test
   public void test() throws DatabaseException {
     final AtomicInteger refreshed = new AtomicInteger();
-    final EventListener refreshListener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        refreshed.incrementAndGet();
-      }
-    };
+    final EventListener refreshListener = refreshed::incrementAndGet;
     comboBoxModel.addRefreshListener(refreshListener);
     assertEquals(TestDomain.T_EMP, comboBoxModel.getEntityID());
     comboBoxModel.setStaticData(false);

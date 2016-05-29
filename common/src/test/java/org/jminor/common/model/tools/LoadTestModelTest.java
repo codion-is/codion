@@ -3,7 +3,6 @@
  */
 package org.jminor.common.model.tools;
 
-import org.jminor.common.EventListener;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 
@@ -157,12 +156,7 @@ public class LoadTestModelTest {
     assertEquals(0, model.getApplicationCount());
 
     final AtomicInteger exitCounter = new AtomicInteger(0);
-    model.addExitListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        exitCounter.incrementAndGet();
-      }
-    });
+    model.addExitListener(exitCounter::incrementAndGet);
     model.exit();
     assertEquals(1, exitCounter.get());
   }

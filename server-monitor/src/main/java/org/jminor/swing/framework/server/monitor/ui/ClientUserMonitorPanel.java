@@ -25,12 +25,8 @@ import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.rmi.RemoteException;
 
 /**
@@ -74,22 +70,12 @@ public final class ClientUserMonitorPanel extends JPanel {
     final JList clientTypeList = new JList<>(model.getClientTypeListModel());
 
     clientTypeList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    clientTypeList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-      @Override
-      public void valueChanged(final ListSelectionEvent e) {
-        clientTypeMonitorPanel.setModel((ClientMonitor) clientTypeList.getSelectedValue());
-      }
-    });
+    clientTypeList.getSelectionModel().addListSelectionListener(e -> clientTypeMonitorPanel.setModel((ClientMonitor) clientTypeList.getSelectedValue()));
 
     final JList userList = new JList<>(model.getUserListModel());
 
     userList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    userList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-      @Override
-      public void valueChanged(final ListSelectionEvent e) {
-        clientTypeMonitorPanel.setModel((ClientMonitor) userList.getSelectedValue());
-      }
-    });
+    userList.getSelectionModel().addListSelectionListener(e -> clientTypeMonitorPanel.setModel((ClientMonitor) userList.getSelectedValue()));
 
     final JPanel clientTypeBase = new JPanel(UiUtil.createBorderLayout());
     final JScrollPane clientTypeScroller = new JScrollPane(clientTypeList);
@@ -163,15 +149,12 @@ public final class ClientUserMonitorPanel extends JPanel {
   private JComponent initializeMaintenanceIntervalComponent() throws RemoteException {
     cmbMaintenance = new JComboBox<>(new Integer[] {1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,120,180,340,6000,10000});
     cmbMaintenance.setSelectedItem(model.getMaintenanceInterval());
-    cmbMaintenance.addItemListener(new ItemListener() {
-      @Override
-      public void itemStateChanged(final ItemEvent e) {
-        try {
-          model.setMaintenanceInterval((Integer) cmbMaintenance.getSelectedItem());
-        }
-        catch (final RemoteException ex) {
-          handleException(ex);
-        }
+    cmbMaintenance.addItemListener(e -> {
+      try {
+        model.setMaintenanceInterval((Integer) cmbMaintenance.getSelectedItem());
+      }
+      catch (final RemoteException ex) {
+        handleException(ex);
       }
     });
 

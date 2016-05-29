@@ -31,12 +31,7 @@ public final class Events {
    * @return a listener causing the given info listener to be fired with null info on each occurrence
    */
   public static EventListener listener(final EventInfoListener<?> listener) {
-    return new EventListener() {
-      @Override
-      public void eventOccurred() {
-        listener.eventOccurred(null);
-      }
-    };
+    return () -> listener.eventOccurred(null);
   }
 
   /**
@@ -45,12 +40,7 @@ public final class Events {
    * @return a info listener causing the given listener to be fired on each occurrence
    */
   public static <T> EventInfoListener<T> infoListener(final EventListener listener) {
-    return new EventInfoListener<T>() {
-      @Override
-      public void eventOccurred(final T info) {
-        listener.eventOccurred();
-      }
-    };
+    return info -> listener.eventOccurred();
   }
 
   private static final class DefaultEvent<T> implements Event<T> {

@@ -4,7 +4,6 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.StateObserver;
@@ -14,7 +13,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.valuemap.EditModelValues;
-import org.jminor.common.model.valuemap.ValueChange;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -354,12 +352,9 @@ public final class EntityUiUtil {
     textField.setFocusable(false);
     textField.setToolTipText(foreignKeyProperty.getDescription());
     final Event<String> valueChangeEvent = Events.event();
-    editModel.addValueListener(foreignKeyProperty.getPropertyID(), new EventInfoListener<ValueChange<String, ?>>() {
-      @Override
-      public void eventOccurred(final ValueChange<String, ?> info) {
-        final Entity value = (Entity) info.getNewValue();
-        valueChangeEvent.fire(value == null ? "" : value.toString());
-      }
+    editModel.addValueListener(foreignKeyProperty.getPropertyID(), info -> {
+      final Entity value = (Entity) info.getNewValue();
+      valueChangeEvent.fire(value == null ? "" : value.toString());
     });
     ValueLinks.textValueLink(textField, new Value<String>() {
       @Override
@@ -1143,12 +1138,7 @@ public final class EntityUiUtil {
 
     private LookupUIValue(final EntityLookupModel lookupModel) {
       this.lookupModel = lookupModel;
-      this.lookupModel.addSelectedEntitiesListener(new EventInfoListener<Collection<Entity>>() {
-        @Override
-        public void eventOccurred(final Collection<Entity> selected) {
-          changeEvent.eventOccurred(selected.isEmpty() ? null : selected.iterator().next());
-        }
-      });
+      this.lookupModel.addSelectedEntitiesListener(selected -> changeEvent.eventOccurred(selected.isEmpty() ? null : selected.iterator().next()));
     }
 
     @Override

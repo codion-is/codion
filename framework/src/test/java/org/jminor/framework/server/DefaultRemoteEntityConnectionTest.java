@@ -20,7 +20,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
@@ -110,16 +109,13 @@ public class DefaultRemoteEntityConnectionTest {
       assertTrue(boundNames.contains(serviceName));
 
       final DefaultRemoteEntityConnection finalAdapter = adapter;
-      final EntityConnection proxy = Util.initializeProxy(EntityConnection.class, new InvocationHandler() {
-        @Override
-        public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
-          final Method remoteMethod = RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
-          try {
-            return remoteMethod.invoke(finalAdapter, args);
-          }
-          catch (final InvocationTargetException ie) {
-            throw (Exception) ie.getTargetException();
-          }
+      final EntityConnection proxy = Util.initializeProxy(EntityConnection.class, (proxy1, method, args) -> {
+        final Method remoteMethod = RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
+        try {
+          return remoteMethod.invoke(finalAdapter, args);
+        }
+        catch (final InvocationTargetException ie) {
+          throw (Exception) ie.getTargetException();
         }
       });
 

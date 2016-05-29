@@ -4,7 +4,6 @@
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.Value;
@@ -42,12 +41,7 @@ public final class EditModelValues {
     private EditModelValue(final ValueMapEditModel editModel, final Object key) {
       this.editModel = editModel;
       this.key = key;
-      this.editModel.getValueObserver(key).addInfoListener(new EventInfoListener<ValueChange<Object, ?>>() {
-        @Override
-        public void eventOccurred(final ValueChange info) {
-          changeEvent.fire((V) info.getNewValue());
-        }
-      });
+      this.editModel.getValueObserver(key).addInfoListener(info -> changeEvent.fire((V) info.getNewValue()));
     }
 
     @Override

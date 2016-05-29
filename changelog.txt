@@ -4282,3 +4282,5 @@
   StateObserver.addActivateListener() and addDeactivateListener() removed
   ServerUtil.resolveTrustStoreFromClasspath() refactored
   Util.getArray/CollectionContentsAsString() moved to TextUtil
+0.10.4
+  Source updated to Java 8

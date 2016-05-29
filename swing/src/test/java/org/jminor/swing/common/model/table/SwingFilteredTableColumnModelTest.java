@@ -25,18 +25,8 @@ public class SwingFilteredTableColumnModelTest {
     final FilteredTableColumnModel<Integer> testModel = createTestModel();
     final Collection<Object> hidden = new ArrayList<>();
     final Collection<Object> shown = new ArrayList<>();
-    final EventInfoListener<Integer> hideListener = new EventInfoListener<Integer>() {
-      @Override
-      public void eventOccurred(final Integer info) {
-        hidden.add(info);
-      }
-    };
-    final EventInfoListener<Integer> showListener = new EventInfoListener<Integer>() {
-      @Override
-      public void eventOccurred(final Integer info) {
-        shown.add(info);
-      }
-    };
+    final EventInfoListener<Integer> hideListener = hidden::add;
+    final EventInfoListener<Integer> showListener = shown::add;
     testModel.addColumnHiddenListener(hideListener);
     testModel.addColumnShownListener(showListener);
 

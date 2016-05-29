@@ -178,12 +178,7 @@ public final class Values {
 
     private StateValue(final State state) {
       this.state = state;
-      state.addListener(new EventListener() {
-        @Override
-        public void eventOccurred() {
-          changeEvent.fire(state.isActive());
-        }
-      });
+      state.addListener(() -> changeEvent.fire(state.isActive()));
     }
 
     @Override
@@ -242,33 +237,27 @@ public final class Values {
 
     private void bindEvents(final Value<V> originalValue, final Value<V> linkedValue, final boolean readOnly) {
       if (originalValue.getObserver() != null) {
-        originalValue.getObserver().addListener(new EventListener() {
-          @Override
-          public void eventOccurred() {
-            if (!isUpdatingOriginal) {
-              try {
-                isUpdatingLinked = true;
-                linkedValue.set(originalValue.get());
-              }
-              finally {
-                isUpdatingLinked = false;
-              }
+        originalValue.getObserver().addListener(() -> {
+          if (!isUpdatingOriginal) {
+            try {
+              isUpdatingLinked = true;
+              linkedValue.set(originalValue.get());
+            }
+            finally {
+              isUpdatingLinked = false;
             }
           }
         });
       }
       if (!readOnly && linkedValue.getObserver() != null) {
-        linkedValue.getObserver().addListener(new EventListener() {
-          @Override
-          public void eventOccurred() {
-            if (!isUpdatingLinked) {
-              try {
-                isUpdatingOriginal = true;
-                originalValue.set(linkedValue.get());
-              }
-              finally {
-                isUpdatingOriginal = false;
-              }
+        linkedValue.getObserver().addListener(() -> {
+          if (!isUpdatingLinked) {
+            try {
+              isUpdatingOriginal = true;
+              originalValue.set(linkedValue.get());
+            }
+            finally {
+              isUpdatingOriginal = false;
             }
           }
         });

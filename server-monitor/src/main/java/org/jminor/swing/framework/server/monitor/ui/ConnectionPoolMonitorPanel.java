@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
-import org.jminor.common.EventListener;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.model.tools.TaskScheduler;
@@ -136,12 +135,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    model.getStatisticsObserver().addListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        updateView();
-      }
-    });
+    model.getStatisticsObserver().addListener(this::updateView);
   }
 
   private JPanel getConfigurationPanel() {

@@ -5,7 +5,6 @@ package org.jminor.swing.framework.server.monitor;
 
 import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
-import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.server.Server;
 import org.jminor.framework.Configuration;
@@ -56,12 +55,7 @@ public final class HostMonitor {
     for (final Server.ServerInfo serverInfo : getEntityServers(hostName, registryPort)) {
       if (!containsServerMonitor(serverInfo.getServerID())) {
         final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInfo, registryPort);
-        serverMonitor.addServerShutDownListener(new EventListener() {
-          @Override
-          public void eventOccurred() {
-            removeServer(serverMonitor);
-          }
-        });
+        serverMonitor.addServerShutDownListener(() -> removeServer(serverMonitor));
         addServer(serverMonitor);
       }
     }

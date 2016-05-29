@@ -28,14 +28,11 @@ public final class DatabaseMonitor {
   private final XYSeries deletesPerSecond = new XYSeries("Deletes per second");
   private final XYSeriesCollection queriesPerSecondCollection = new XYSeriesCollection();
 
-  private final TaskScheduler updateScheduler = new TaskScheduler(new Runnable() {
-    @Override
-    public void run() {
-      try {
-        updateStatistics();
-      }
-      catch (final RemoteException ignored) {/*ignored*/}
+  private final TaskScheduler updateScheduler = new TaskScheduler(() -> {
+    try {
+      updateStatistics();
     }
+    catch (final RemoteException ignored) {/*ignored*/}
   }, Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
 
   public DatabaseMonitor(final EntityConnectionServerAdmin server) throws RemoteException {

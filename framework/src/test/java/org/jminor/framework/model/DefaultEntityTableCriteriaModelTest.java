@@ -74,12 +74,7 @@ public class DefaultEntityTableCriteriaModelTest {
   @Test
   public void searchStateListener() {
     final AtomicInteger counter = new AtomicInteger();
-    final EventListener listener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        counter.incrementAndGet();
-      }
-    };
+    final EventListener listener = counter::incrementAndGet;
     criteriaModel.addCriteriaStateListener(listener);
     criteriaModel.getPropertyCriteriaModel(TestDomain.EMP_COMMISSION).setEnabled(true);
     assertEquals(1, counter.get());

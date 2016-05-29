@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.common.ui.tools;
 
-import org.jminor.common.EventListener;
 import org.jminor.common.Util;
 import org.jminor.common.model.ExceptionUtil;
 import org.jminor.common.model.User;
@@ -169,12 +168,7 @@ public final class LoadTestPanel extends JPanel {
   private ItemRandomizerPanel initializeScenarioPanel() {
     final ItemRandomizerPanel<LoadTestModel.UsageScenario> panel = new ItemRandomizerPanel<>(loadTestModel.getScenarioChooser());
     panel.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
-    panel.addSelectedItemListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        handleScenarioSelected();
-      }
-    });
+    panel.addSelectedItemListener(this::handleScenarioSelected);
 
     return panel;
   }
@@ -185,12 +179,7 @@ public final class LoadTestPanel extends JPanel {
     txtUsername.setColumns(LARGE_TEXT_FIELD_COLUMNS);
     final JTextField txtPassword = new JPasswordField(user.getPassword());
     txtPassword.setColumns(LARGE_TEXT_FIELD_COLUMNS);
-    final ActionListener userInfoListener = new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        loadTestModel.setUser(new User(txtUsername.getText(), txtPassword.getText()));
-      }
-    };
+    final ActionListener userInfoListener = e -> loadTestModel.setUser(new User(txtUsername.getText(), txtPassword.getText()));
     txtUsername.addActionListener(userInfoListener);
     txtPassword.addActionListener(userInfoListener);
     final FlexibleGridLayout layout = UiUtil.createFlexibleGridLayout(2, 2, true, false);

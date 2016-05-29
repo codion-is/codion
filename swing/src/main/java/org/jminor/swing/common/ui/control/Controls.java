@@ -18,8 +18,6 @@ import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 /**
  * A factory class for Control objects.
@@ -234,12 +232,7 @@ public final class Controls {
 
     private BooleanValue(final ButtonModel buttonModel) {
       this.buttonModel = buttonModel;
-      buttonModel.addItemListener(new ItemListener() {
-        @Override
-        public void itemStateChanged(final ItemEvent e) {
-          changeEvent.fire();
-        }
-      });
+      buttonModel.addItemListener(e -> changeEvent.fire());
     }
 
     @Override
@@ -258,12 +251,7 @@ public final class Controls {
       }
       else {
         try {
-          SwingUtilities.invokeAndWait(new Runnable() {
-            @Override
-            public void run() {
-              setValue(value);
-            }
-          });
+          SwingUtilities.invokeAndWait(() -> setValue(value));
         }
         catch (final Exception e) {
           throw new RuntimeException(e);

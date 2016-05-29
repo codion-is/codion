@@ -4,8 +4,6 @@
 package org.jminor.common.model;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
-import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.States;
@@ -43,18 +41,10 @@ public class ValuesTest {
   public void value() {
     final AtomicInteger eventCounter = new AtomicInteger();
     final Value<Integer> intValue = Values.value(42);
-    intValue.getObserver().addListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        eventCounter.incrementAndGet();
-      }
-    });
-    intValue.getObserver().addInfoListener(new EventInfoListener<Integer>() {
-      @Override
-      public void eventOccurred(final Integer info) {
-        if (eventCounter.get() != 2) {
-          assertNotNull(info);
-        }
+    intValue.getObserver().addListener(eventCounter::incrementAndGet);
+    intValue.getObserver().addInfoListener(info -> {
+      if (eventCounter.get() != 2) {
+        assertNotNull(info);
       }
     });
     intValue.set(42);
@@ -75,19 +65,9 @@ public class ValuesTest {
     final Value<Integer> modelValue = Values.beanValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue);
-    modelValue.getObserver().addListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        modelValueEventCounter.incrementAndGet();
-      }
-    });
+    modelValue.getObserver().addListener(modelValueEventCounter::incrementAndGet);
     final AtomicInteger uiValueEventCounter = new AtomicInteger();
-    uiValue.getObserver().addListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        uiValueEventCounter.incrementAndGet();
-      }
-    });
+    uiValue.getObserver().addListener(uiValueEventCounter::incrementAndGet);
     assertEquals(Integer.valueOf(42), uiValue.get());
     assertEquals(0, modelValueEventCounter.get());
     assertEquals(0, uiValueEventCounter.get());
@@ -119,19 +99,9 @@ public class ValuesTest {
     final Value<Integer> modelValue = Values.beanValue(this, "intValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue, true);
-    modelValue.getObserver().addListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        modelValueEventCounter.incrementAndGet();
-      }
-    });
+    modelValue.getObserver().addListener(modelValueEventCounter::incrementAndGet);
     final AtomicInteger uiValueEventCounter = new AtomicInteger();
-    uiValue.getObserver().addListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        uiValueEventCounter.incrementAndGet();
-      }
-    });
+    uiValue.getObserver().addListener(uiValueEventCounter::incrementAndGet);
     assertEquals(Integer.valueOf(42), uiValue.get());
     assertEquals(0, modelValueEventCounter.get());
     assertEquals(0, uiValueEventCounter.get());

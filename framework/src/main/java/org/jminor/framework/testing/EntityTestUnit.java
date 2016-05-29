@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -114,12 +113,7 @@ public abstract class EntityTestUnit {
    * @return a Entity instance containing randomized values, based on the property definitions
    */
   public static Entity createRandomEntity(final String entityID, final Map<String, Entity> referenceEntities) {
-    return createEntity(entityID, new ValueProvider<Property, Object>() {
-      @Override
-      public Object get(final Property property) {
-        return getRandomValue(property, referenceEntities);
-      }
-    });
+    return createEntity(entityID, property -> getRandomValue(property, referenceEntities));
   }
 
   /**
@@ -146,12 +140,7 @@ public abstract class EntityTestUnit {
   public static Entity randomize(final Entity entity, final boolean includePrimaryKey, final Map<String, Entity> referenceEntities) {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     populateEntity(entity, Entities.getColumnProperties(entity.getEntityID(), includePrimaryKey, false, true),
-            new ValueProvider<Property, Object>() {
-              @Override
-              public Object get(final Property property) {
-                return getRandomValue(property, referenceEntities);
-              }
-            });
+            property -> getRandomValue(property, referenceEntities));
 
     return entity;
   }
@@ -262,13 +251,7 @@ public abstract class EntityTestUnit {
   private void initializeReferencedEntities(final String entityID, final Collection<String> visited) throws DatabaseException {
     visited.add(entityID);
     final List<Property.ForeignKeyProperty> foreignKeyProperties = new ArrayList<>(Entities.getForeignKeyProperties(entityID));
-    Collections.sort(foreignKeyProperties, new Comparator<Property.ForeignKeyProperty>() {
-      //we initialize the self references last, to insure that all required reference entities have been initialized
-      @Override//before trying to initialize an instance of this entity
-      public int compare(final Property.ForeignKeyProperty o1, final Property.ForeignKeyProperty o2) {
-        return o1.getReferencedEntityID().equals(entityID) ? 1 : 0;
-      }
-    });
+    Collections.sort(foreignKeyProperties, (o1, o2) -> o1.getReferencedEntityID().equals(entityID) ? 1 : 0);
     for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityID)) {
       final String referencedEntityID = foreignKeyProperty.getReferencedEntityID();
       if (!visited.contains(referencedEntityID)) {

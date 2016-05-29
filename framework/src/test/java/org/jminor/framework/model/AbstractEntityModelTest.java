@@ -6,7 +6,6 @@ package org.jminor.framework.model;
 import org.jminor.common.EventListener;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -66,12 +65,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     final Entity operations = deptTableModel.getSelectionModel().getSelectedItem();
     assertEquals(80, operations.get(TestDomain.DEPARTMENT_ID));
 
-    ((FilteredModel<Entity>) deptTableModel).setFilterCriteria(new FilterCriteria<Entity>() {
-      @Override
-      public boolean include(final Entity item) {
-        return !Objects.equals(80, item.get(TestDomain.DEPARTMENT_ID));
-      }
-    });
+    ((FilteredModel<Entity>) deptTableModel).setFilterCriteria(item ->
+            !Objects.equals(80, item.get(TestDomain.DEPARTMENT_ID)));
 
     deptEditModel.setEntity(operations);
     deptEditModel.setValue(TestDomain.DEPARTMENT_ID, 40);
@@ -144,16 +139,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     assertNotNull(departmentModel.getTableModel());
     assertTrue(departmentModel.containsTableModel());
 
-    final EventListener linkedListener = new EventListener() {
-      @Override
-      public void eventOccurred() {}
-    };
-    final EventListener listener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        eventCount++;
-      }
-    };
+    final EventListener linkedListener = () -> {};
+    final EventListener listener = () -> eventCount++;
     departmentModel.addLinkedDetailModelsListener(linkedListener);
     departmentModel.addBeforeRefreshListener(listener);
     departmentModel.addAfterRefreshListener(listener);

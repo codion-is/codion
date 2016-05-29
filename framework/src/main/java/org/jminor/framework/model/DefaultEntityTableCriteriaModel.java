@@ -329,12 +329,9 @@ public class DefaultEntityTableCriteriaModel implements EntityTableCriteriaModel
 
   private void bindEvents() {
     for (final PropertyCriteriaModel criteriaModel : propertyCriteriaModels.values()) {
-      criteriaModel.addCriteriaStateListener(new EventListener() {
-        @Override
-        public void eventOccurred() {
-          criteriaStateChangedState.setActive(!rememberedCriteriaState.equals(getCriteriaModelState()));
-          criteriaStateChangedEvent.fire();
-        }
+      criteriaModel.addCriteriaStateListener(() -> {
+        criteriaStateChangedState.setActive(!rememberedCriteriaState.equals(getCriteriaModelState()));
+        criteriaStateChangedEvent.fire();
       });
     }
   }

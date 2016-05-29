@@ -24,12 +24,7 @@ import java.util.Objects;
  */
 public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, C> {
 
-  private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new Comparator<Comparable<Object>>() {
-    @Override
-    public int compare(final Comparable<Object> o1, final Comparable<Object> o2) {
-      return o1.compareTo(o2);
-    }
-  };
+  private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = Comparable::compareTo;
   private static final Comparator LEXICAL_COMPARATOR = TextUtil.getSpaceAwareCollator();
 
   private static final SortingState EMPTY_SORTING_STATE = new DefaultSortingState(SortingDirective.UNSORTED, -1);
@@ -236,14 +231,11 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
           entries.add(entry);
         }
       }
-      Collections.sort(entries, new Comparator<Map.Entry<C, SortingState>>() {
-        @Override
-        public int compare(final Map.Entry<C, SortingState> o1, final Map.Entry<C, SortingState> o2) {
-          final Integer priorityOne = o1.getValue().getPriority();
-          final Integer priorityTwo = o2.getValue().getPriority();
+      Collections.sort(entries, (o1, o2) -> {
+        final Integer priorityOne = o1.getValue().getPriority();
+        final Integer priorityTwo = o2.getValue().getPriority();
 
-          return priorityOne.compareTo(priorityTwo);
-        }
+        return priorityOne.compareTo(priorityTwo);
       });
 
       return entries;

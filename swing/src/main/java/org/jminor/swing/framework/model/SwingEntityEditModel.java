@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.framework.model;
 
-import org.jminor.common.EventListener;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.Configuration;
@@ -161,12 +160,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     ((FilteredComboBoxModel) model).setNullValue(getValidator().isNullable(getEntity(), property.getPropertyID()) ?
             (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM) : null);
     model.refresh();
-    addEntitiesChangedListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        model.refresh();
-      }
-    });
+    addEntitiesChangedListener(model::refresh);
 
     return model;
   }

@@ -41,8 +41,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Types;
@@ -347,12 +345,7 @@ public class ColumnCriteriaPanel<K> extends JPanel {
       }
 
       if (field instanceof JTextField) {//enter button toggles the filter on/off
-        ((JTextField) field).addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            columnCriteriaModel.setEnabled(!columnCriteriaModel.isEnabled());
-          }
-        });
+        ((JTextField) field).addActionListener(e -> columnCriteriaModel.setEnabled(!columnCriteriaModel.isEnabled()));
       }
 
       return field;
@@ -411,25 +404,19 @@ public class ColumnCriteriaPanel<K> extends JPanel {
    * Binds events to relevant GUI actions
    */
   private void bindEvents() {
-    advancedCriteriaState.addListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        initializePanel();
-        if (toggleAdvancedCriteria != null) {
-          toggleAdvancedCriteria.requestFocusInWindow();
-        }
-        else {
-          upperBoundField.requestFocusInWindow();
-        }
+    advancedCriteriaState.addListener(() -> {
+      initializePanel();
+      if (toggleAdvancedCriteria != null) {
+        toggleAdvancedCriteria.requestFocusInWindow();
+      }
+      else {
+        upperBoundField.requestFocusInWindow();
       }
     });
-    criteriaModel.addLowerBoundRequiredListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        initializePanel();
-        revalidate();
-        searchTypeCombo.requestFocusInWindow();
-      }
+    criteriaModel.addLowerBoundRequiredListener(() -> {
+      initializePanel();
+      revalidate();
+      searchTypeCombo.requestFocusInWindow();
     });
   }
 
@@ -568,12 +555,7 @@ public class ColumnCriteriaPanel<K> extends JPanel {
     dialog.getContentPane().add(criteriaPanel);
     dialog.pack();
 
-    addAdvancedCriteriaListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        dialog.pack();
-      }
-    });
+    addAdvancedCriteriaListener(() -> dialog.pack());
 
     dialog.addWindowListener(new WindowAdapter() {
       @Override

@@ -772,74 +772,26 @@ class DefaultProperty implements Property {
       }
       switch (property.columnType) {
         case Types.INTEGER:
-          return new ValueFetcher() {
-            @Override
-            public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return property.fromColumnValue(getInteger(resultSet, property.selectIndex));
-            }
-          };
+          return (ValueFetcher) resultSet -> property.fromColumnValue(getInteger(resultSet, property.selectIndex));
         case Types.BIGINT:
-          return new ValueFetcher() {
-            @Override
-            public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return property.fromColumnValue(getLong(resultSet, property.selectIndex));
-            }
-          };
+          return (ValueFetcher) resultSet -> property.fromColumnValue(getLong(resultSet, property.selectIndex));
         case Types.DOUBLE:
-          return new ValueFetcher() {
-            @Override
-            public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return property.fromColumnValue(getDouble(resultSet, property.selectIndex));
-            }
-          };
+          return (ValueFetcher) resultSet -> property.fromColumnValue(getDouble(resultSet, property.selectIndex));
         case Types.DATE:
-          return new ValueFetcher() {
-            @Override
-            public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return property.fromColumnValue(getDate(resultSet, property.selectIndex));
-            }
-          };
+          return (ValueFetcher) resultSet -> property.fromColumnValue(getDate(resultSet, property.selectIndex));
         case Types.TIMESTAMP:
-          return new ValueFetcher() {
-            @Override
-            public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return property.fromColumnValue(getTimestamp(resultSet, property.selectIndex));
-            }
-          };
+          return (ValueFetcher) resultSet -> property.fromColumnValue(getTimestamp(resultSet, property.selectIndex));
         case Types.TIME:
-          return new ValueFetcher() {
-            @Override
-            public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return property.fromColumnValue(getTime(resultSet, property.selectIndex));
-            }
-          };
+          return (ValueFetcher) resultSet -> property.fromColumnValue(getTime(resultSet, property.selectIndex));
         case Types.VARCHAR:
-          return new ValueFetcher() {
-            @Override
-            public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return property.fromColumnValue(getString(resultSet, property.selectIndex));
-            }
-          };
+          return (ValueFetcher) resultSet -> property.fromColumnValue(getString(resultSet, property.selectIndex));
         case Types.BOOLEAN:
-          return new ValueFetcher() {
-            @Override
-            public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return property.fromColumnValue(getBoolean(resultSet, property.selectIndex));
-            }
-          };
+          return (ValueFetcher) resultSet -> property.fromColumnValue(getBoolean(resultSet, property.selectIndex));
         case Types.CHAR:
-          return new ValueFetcher() {
-            @Override
-            public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return property.fromColumnValue(getCharacter(resultSet, property.selectIndex));
-            }
-          };
+          return (ValueFetcher) resultSet -> property.fromColumnValue(getCharacter(resultSet, property.selectIndex));
         case Types.BLOB:
-          return new ValueFetcher() {
-            @Override
-            public Object fetchValue(final ResultSet resultSet) {
-              return null;//blob columns are handled specifically
-            }
+          return (ValueFetcher) resultSet -> {
+            return null;//blob columns are handled specifically
           };
         default:
           throw new IllegalArgumentException("Unsupported SQL value type: " + property.columnType);

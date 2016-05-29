@@ -640,12 +640,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
     private int requestsPerSecondCounter = 0;
 
     private RequestCounter() {
-      executorService.scheduleWithFixedDelay(new Runnable() {
-        @Override
-        public void run() {
-          updateRequestsPerSecond();
-        }
-      }, 0, DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL, TimeUnit.MILLISECONDS);
+      executorService.scheduleWithFixedDelay(this::updateRequestsPerSecond, 0, DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL, TimeUnit.MILLISECONDS);
     }
 
     private void updateRequestsPerSecond() {

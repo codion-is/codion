@@ -17,8 +17,6 @@ import org.jminor.framework.plugins.rest.EntityRESTService;
 import org.jminor.swing.common.ui.tools.LoadTestPanel;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
@@ -29,7 +27,6 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 import javax.swing.UIManager;
@@ -54,13 +51,10 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
             .setConnectTimeout(2000)
             .build();
 
-  private final HttpRequestInterceptor requestInterceptor = new HttpRequestInterceptor() {
-    @Override
-    public void process(final HttpRequest request, final HttpContext httpContext) throws HttpException, IOException {
-      final User user = getUser();
-      request.setHeader(EntityRESTService.AUTHORIZATION, BASIC + DatatypeConverter.printBase64Binary((user.getUsername() + ":" + user.getPassword()).getBytes()));
-      request.setHeader("Content-Type", MediaType.APPLICATION_JSON);
-    }
+  private final HttpRequestInterceptor requestInterceptor = (request, httpContext) -> {
+    final User user1 = getUser();
+    request.setHeader(EntityRESTService.AUTHORIZATION, BASIC + DatatypeConverter.printBase64Binary((user1.getUsername() + ":" + user1.getPassword()).getBytes()));
+    request.setHeader("Content-Type", MediaType.APPLICATION_JSON);
   };
 
   static {

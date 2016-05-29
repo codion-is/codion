@@ -3,10 +3,8 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.EventInfoListener;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.FileUtil;
-import org.jminor.common.model.valuemap.ValueChange;
 
 import org.junit.Test;
 
@@ -368,13 +366,10 @@ public class DefaultEntityTest {
     employee.put(TestDomain.EMP_NAME, "noname");
     assertEquals(employee.get(TestDomain.EMP_NAME), "noname");
 
-    employee.addValueListener(new EventInfoListener<ValueChange<String, ?>>() {
-      @Override
-      public void eventOccurred(final ValueChange info) {
-        if (info.getKey().equals(TestDomain.EMP_DEPARTMENT_FK)) {
-          assertTrue(employee.isValueNull(TestDomain.EMP_DEPARTMENT_FK));
-          assertTrue(employee.isValueNull(TestDomain.EMP_DEPARTMENT));
-        }
+    employee.addValueListener(info -> {
+      if (info.getKey().equals(TestDomain.EMP_DEPARTMENT_FK)) {
+        assertTrue(employee.isValueNull(TestDomain.EMP_DEPARTMENT_FK));
+        assertTrue(employee.isValueNull(TestDomain.EMP_DEPARTMENT));
       }
     });
     employee.put(TestDomain.EMP_DEPARTMENT_FK, null);

@@ -5,8 +5,6 @@ import javax.swing.JComboBox;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
@@ -35,12 +33,9 @@ class CompletionDocument extends PlainDocument {
     model = comboBox.getModel();
     editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
     editor.setDocument(this);
-    comboBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (!selecting) {
-          highlightCompletedText(0);
-        }
+    comboBox.addActionListener(e -> {
+      if (!selecting) {
+        highlightCompletedText(0);
       }
     });
     editor.addKeyListener(new MatchKeyAdapter(showPopupOnMatch));

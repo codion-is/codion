@@ -13,8 +13,6 @@ import org.jminor.common.model.table.DefaultColumnSummaryModel;
 import org.jminor.common.model.table.SelectionModel;
 
 import javax.swing.ListSelectionModel;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.Point;
@@ -560,35 +558,15 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       return new RegexFilterCriteria<>(searchText);
     }
 
-    return new FilterCriteria<Object>() {
-      @Override
-      public boolean include(final Object item) {
-        return !(item == null || searchText == null) && item.toString().toLowerCase().contains(searchText.toLowerCase());
-      }
-    };
+    return item -> !(item == null || searchText == null) && item.toString().toLowerCase().contains(searchText.toLowerCase());
   }
 
   private void bindEventsInternal() {
-    addTableModelListener(new TableModelListener() {
-      @Override
-      public void tableChanged(final TableModelEvent e) {
-        tableDataChangedEvent.fire();
-      }
-    });
+    addTableModelListener(e -> tableDataChangedEvent.fire());
     for (final ColumnCriteriaModel criteriaModel : columnModel.getColumnFilterModels()) {
-      criteriaModel.addCriteriaStateListener(new EventListener() {
-        @Override
-        public void eventOccurred() {
-          filterContents();
-        }
-      });
+      criteriaModel.addCriteriaStateListener(this::filterContents);
     }
-    sortModel.addSortingStateChangedListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        sortContents();
-      }
-    });
+    sortModel.addSortingStateChangedListener(this::sortContents);
   }
 
   private Point findColumnValue(final Enumeration<TableColumn> visibleColumns, final int row, final FilterCriteria<Object> criteria) {

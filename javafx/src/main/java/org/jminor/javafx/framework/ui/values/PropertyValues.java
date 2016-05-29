@@ -282,12 +282,7 @@ public final class PropertyValues {
 
     public BooleanPropertyValue(final BooleanProperty booleanProperty) {
       this.booleanProperty = booleanProperty;
-      this.booleanProperty.addListener(new ChangeListener<Boolean>() {
-        @Override
-        public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
-          changeEvent.fire(newValue);
-        }
-      });
+      this.booleanProperty.addListener((observable, oldValue, newValue) -> changeEvent.fire(newValue));
     }
 
     @Override
@@ -313,11 +308,8 @@ public final class PropertyValues {
 
     public SelectedValue(final SingleSelectionModel<V> selectionModel) {
       this.selectionModel = selectionModel;
-      this.selectionModel.selectedItemProperty().addListener(new ChangeListener<V>() {
-        @Override
-        public void changed(final ObservableValue<? extends V> observable, final V oldValue, final V newValue) {
-          changeEvent.fire(newValue);
-        }
+      this.selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        changeEvent.fire(newValue);
       });
     }
 
@@ -344,12 +336,8 @@ public final class PropertyValues {
 
     public SelectedItemValue(final SelectionModel<Item> selectionModel) {
       this.selectionModel = selectionModel;
-      selectionModel.selectedItemProperty().addListener(new ChangeListener<Item>() {
-        @Override
-        public void changed(final ObservableValue<? extends Item> observable, final Item oldValue, final Item newValue) {
-          changeEvent.fire(newValue.getItem());
-        }
-      });
+      selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) ->
+              changeEvent.fire(newValue.getItem()));
     }
 
     @Override

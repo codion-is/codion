@@ -5,7 +5,6 @@ package org.jminor.swing.common.model.combobox;
 
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
-import org.jminor.common.model.FilterCriteria;
 
 import org.junit.After;
 import org.junit.Before;
@@ -91,17 +90,14 @@ public class SwingFilteredComboBoxModelTest {
     assertEquals(SIGGI + " should be at index 4, got " + testModel.getElementAt(4), SIGGI, testModel.getElementAt(4));
     assertEquals(TOMAS + " should be at index 5, got " + testModel.getElementAt(5), TOMAS, testModel.getElementAt(5));
 
-    testModel.setSortComparator(new Comparator<String>() {
-      @Override
-      public int compare(final String o1, final String o2) {
-        if (o1 == null) {
-          return -1;
-        }
-        if (o2 == null) {
-          return 1;
-        }
-        return o2.compareTo(o1);
+    testModel.setSortComparator((o1, o2) -> {
+      if (o1 == null) {
+        return -1;
       }
+      if (o2 == null) {
+        return 1;
+      }
+      return o2.compareTo(o1);
     });
     assertNotNull(testModel.getSortComparator());
 
@@ -115,12 +111,7 @@ public class SwingFilteredComboBoxModelTest {
   @Test
   public void testSelection() {
     final AtomicInteger selectionChangedCounter = new AtomicInteger();
-    final EventInfoListener<String> selectionListener = new EventInfoListener<String>() {
-      @Override
-      public void eventOccurred(final String info) {
-        selectionChangedCounter.incrementAndGet();
-      }
-    };
+    final EventInfoListener<String> selectionListener = info -> selectionChangedCounter.incrementAndGet();
     testModel.addSelectionListener(selectionListener);
     testModel.setSelectedItem(BJORN);
     assertEquals(1, selectionChangedCounter.get());
@@ -144,12 +135,7 @@ public class SwingFilteredComboBoxModelTest {
   @Test
   public void filterWithSelection() {
     testModel.setSelectedItem(BJORN);
-    testModel.setFilterCriteria(new FilterCriteria<String>() {
-      @Override
-      public boolean include(final String item) {
-        return !item.equals(BJORN);
-      }
-    });
+    testModel.setFilterCriteria(item -> !item.equals(BJORN));
     assertEquals(NULL, testModel.getSelectedItem());
     assertNull(testModel.getSelectedValue());
 
@@ -157,12 +143,7 @@ public class SwingFilteredComboBoxModelTest {
     testModel.setFilterSelectedItem(false);
     assertFalse(testModel.isFilterSelectedItem());
     testModel.setSelectedItem(BJORN);
-    testModel.setFilterCriteria(new FilterCriteria<String>() {
-      @Override
-      public boolean include(final String item) {
-        return !item.equals(BJORN);
-      }
-    });
+    testModel.setFilterCriteria(item -> !item.equals(BJORN));
     assertNotNull(testModel.getSelectedItem());
     assertEquals(BJORN, testModel.getSelectedValue());
   }
@@ -170,46 +151,21 @@ public class SwingFilteredComboBoxModelTest {
   @Test
   public void setFilterCriteria() {
     final AtomicInteger filteringEndedCounter = new AtomicInteger();
-    final EventListener filteringEndedListener = new EventListener() {
-      @Override
-      public void eventOccurred() {
-        filteringEndedCounter.incrementAndGet();
-      }
-    };
+    final EventListener filteringEndedListener = filteringEndedCounter::incrementAndGet;
     testModel.addListDataListener(listDataListener);
     testModel.addFilteringListener(filteringEndedListener);
 
-    testModel.setFilterCriteria(new FilterCriteria<String>() {
-      @Override
-      public boolean include(final String item) {
-        return false;
-      }
-    });
+    testModel.setFilterCriteria(item -> false);
     assertEquals(1, filteringEndedCounter.get());
     assertEquals("The model should only include the null value item", 1, testModel.getSize());
-    testModel.setFilterCriteria(new FilterCriteria<String>() {
-      @Override
-      public boolean include(final String item) {
-        return true;
-      }
-    });
+    testModel.setFilterCriteria(item -> true);
     assertEquals(2, filteringEndedCounter.get());
     assertEquals("The model should be full", 6, testModel.getSize());
-    testModel.setFilterCriteria(new FilterCriteria<String>() {
-      @Override
-      public boolean include(final String item) {
-        return !item.equals(ANNA);
-      }
-    });
+    testModel.setFilterCriteria(item -> !item.equals(ANNA));
     assertEquals("The model should contain 5 items", 5, testModel.getSize());
     assertTrue("The model should not contain '" + ANNA + "'", !testModel.isVisible(ANNA));
     assertTrue(testModel.isFiltered(ANNA));
-    testModel.setFilterCriteria(new FilterCriteria<String>() {
-      @Override
-      public boolean include(final String item) {
-        return item.equals(ANNA);
-      }
-    });
+    testModel.setFilterCriteria(item -> item.equals(ANNA));
     assertEquals("The model should only contain 2 items", 2, testModel.getSize());
     assertTrue("The model should only contain '" + ANNA + "'", testModel.isVisible(ANNA));
 
@@ -232,12 +188,7 @@ public class SwingFilteredComboBoxModelTest {
   @Test
   public void removeItem() {
     //remove filtered item
-    testModel.setFilterCriteria(new FilterCriteria<String>() {
-      @Override
-      public boolean include(final String item) {
-        return !item.equals(BJORN);
-      }
-    });
+    testModel.setFilterCriteria(item -> !item.equals(BJORN));
     testModel.removeItem(BJORN);
     testModel.setFilterCriteria(null);
     assertFalse(BJORN + " should no longer be in the model", testModel.isVisible(BJORN));
@@ -251,12 +202,7 @@ public class SwingFilteredComboBoxModelTest {
   public void addItem() {
     testModel.clear();
     //add filtered item
-    testModel.setFilterCriteria(new FilterCriteria<String>() {
-      @Override
-      public boolean include(final String item) {
-        return !item.equals(BJORN);
-      }
-    });
+    testModel.setFilterCriteria(item -> !item.equals(BJORN));
     testModel.addItem(BJORN);
     assertFalse(BJORN + " should be filtered", testModel.isVisible(BJORN));
 

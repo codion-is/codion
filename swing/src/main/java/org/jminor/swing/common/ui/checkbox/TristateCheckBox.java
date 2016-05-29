@@ -13,8 +13,6 @@ import javax.swing.ButtonModel;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.plaf.ActionMapUIResource;
 import java.awt.AWTEvent;
 import java.awt.EventQueue;
@@ -88,12 +86,7 @@ public final class TristateCheckBox extends JCheckBox {
 
     //Listen for enable changes
     if (model instanceof TristateButtonModel) {
-      model.addChangeListener(new ChangeListener() {
-        @Override
-        public void stateChanged(final ChangeEvent e) {
-          TristateCheckBox.this.setFocusable(getModel().isEnabled());
-        }
-      });
+      model.addChangeListener(e -> TristateCheckBox.this.setFocusable(getModel().isEnabled()));
     }
   }
 

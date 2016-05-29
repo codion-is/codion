@@ -47,12 +47,7 @@ public final class ClientUserMonitor {
   private static final int CLIENT_HOST_COLUMN = 2;
   private static final int LAST_SEEN_COLUMN = 3;
   private static final int CONNECTION_COUNT_COLUMN = 4;
-  private static final Comparator<User> USER_COMPARATOR = new Comparator<User>() {
-    @Override
-    public int compare(final User u1, final User u2) {
-      return u1.getUsername().compareToIgnoreCase(u2.getUsername());
-    }
-  };
+  private static final Comparator<User> USER_COMPARATOR = (u1, u2) -> u1.getUsername().compareToIgnoreCase(u2.getUsername());
 
   private final EntityConnectionServerAdmin server;
   private final Event<Integer> connectionTimeoutChangedEvent = Events.event();
@@ -60,15 +55,12 @@ public final class ClientUserMonitor {
   private final DefaultListModel<ClientMonitor> userListModel = new DefaultListModel<>();
   private final FilteredTableModel<UserInfo, Integer> userHistoryTableModel = new UserHistoryTableModel();
 
-  private final TaskScheduler updateScheduler = new TaskScheduler(new Runnable() {
-    @Override
-    public void run() {
-      try {
-        userHistoryTableModel.refresh();
-      }
-      catch (final Exception e) {
-        LOG.error("Error while refreshing user history table model", e);
-      }
+  private final TaskScheduler updateScheduler = new TaskScheduler(() -> {
+    try {
+      userHistoryTableModel.refresh();
+    }
+    catch (final Exception e) {
+      LOG.error("Error while refreshing user history table model", e);
     }
   }, Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
 

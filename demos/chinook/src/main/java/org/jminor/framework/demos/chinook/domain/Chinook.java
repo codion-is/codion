@@ -11,7 +11,6 @@ import org.jminor.framework.domain.Property;
 
 import java.sql.Types;
 import java.text.NumberFormat;
-import java.util.Map;
 
 public class Chinook {
 
@@ -255,19 +254,16 @@ public class Chinook {
   public static final String T_TRACK = "track@chinook";
 
   public static final Property.DerivedProperty.Provider TRACK_MIN_SEC_PROVIDER =
-          new Property.DerivedProperty.Provider() {
-            @Override
-            public Object getValue(final Map<String, Object> linkedValues) {
-              final Integer milliseconds = (Integer) linkedValues.get(TRACK_MILLISECONDS);
-              if (milliseconds == null || milliseconds <= 0) {
-                return "";
-              }
-
-              final int seconds = ((milliseconds / 1000) % 60);
-              final int minutes = ((milliseconds / 1000) / 60);
-
-              return minutes + " min " + seconds + " sec";
+          linkedValues -> {
+            final Integer milliseconds = (Integer) linkedValues.get(TRACK_MILLISECONDS);
+            if (milliseconds == null || milliseconds <= 0) {
+              return "";
             }
+
+            final int seconds = ((milliseconds / 1000) % 60);
+            final int minutes = ((milliseconds / 1000) / 60);
+
+            return minutes + " min " + seconds + " sec";
           };
 
   static {
@@ -374,17 +370,14 @@ public class Chinook {
   public static final String T_INVOICELINE = "invoiceline@chinook";
 
   public static final Property.DerivedProperty.Provider INVOICELINE_TOTAL_PROVIDER =
-          new Property.DerivedProperty.Provider() {
-            @Override
-            public Object getValue(final Map<String, Object> linkedValues) {
-              final Integer quantity = (Integer) linkedValues.get(INVOICELINE_QUANTITY);
-              final Double unitPrice = (Double) linkedValues.get(INVOICELINE_UNITPRICE);
-              if (unitPrice == null || quantity == null) {
-                return null;
-              }
-
-              return quantity * unitPrice;
+          linkedValues -> {
+            final Integer quantity = (Integer) linkedValues.get(INVOICELINE_QUANTITY);
+            final Double unitPrice = (Double) linkedValues.get(INVOICELINE_UNITPRICE);
+            if (unitPrice == null || quantity == null) {
+              return null;
             }
+
+            return quantity * unitPrice;
           };
 
   static {

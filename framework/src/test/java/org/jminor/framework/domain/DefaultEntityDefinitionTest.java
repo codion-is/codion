@@ -11,7 +11,6 @@ import java.awt.Color;
 import java.sql.Types;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -20,12 +19,7 @@ public class DefaultEntityDefinitionTest {
   @Test
   public void test() {
     final Entities.StringProvider stringProvider = new Entities.StringProvider("name");
-    final Comparator<Entity> comparator = new Comparator<Entity>() {
-      @Override
-      public int compare(final Entity o1, final Entity o2) {
-        return 0;
-      }
-    };
+    final Comparator<Entity> comparator = (o1, o2) -> 0;
     final Entity.Definition definition = new DefaultEntityDefinition("entityID", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR))
@@ -89,12 +83,8 @@ public class DefaultEntityDefinitionTest {
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR),
             Properties.columnProperty("info", Types.VARCHAR),
-            Properties.derivedProperty("derived", Types.VARCHAR, null, new Property.DerivedProperty.Provider() {
-              @Override
-              public Object getValue(final Map<String, Object> linkedValues) {
-                return ((String) linkedValues.get("name")) + linkedValues.get("info");
-              }
-            }, "name", "info"));
+            Properties.derivedProperty("derived", Types.VARCHAR, null, linkedValues ->
+                    ((String) linkedValues.get("name")) + linkedValues.get("info"), "name", "info"));
     Collection<String> linked = definition.getLinkedPropertyIDs("name");
     assertTrue(linked.contains("derived"));
     assertEquals(1, linked.size());
@@ -175,12 +165,7 @@ public class DefaultEntityDefinitionTest {
             Properties.primaryKeyProperty("pk"),
             Properties.columnProperty("1"),
             Properties.columnProperty("2"),
-            Properties.derivedProperty("der", Types.INTEGER, "cap", new Property.DerivedProperty.Provider() {
-              @Override
-              public Object getValue(final Map<String, Object> linkedValues) {
-                return null;
-              }
-            }, "1", "2"));
+            Properties.derivedProperty("der", Types.INTEGER, "cap", linkedValues -> null, "1", "2"));
     assertTrue(def.hasLinkedProperties("1"));
     assertTrue(def.hasLinkedProperties("2"));
   }
@@ -191,12 +176,7 @@ public class DefaultEntityDefinitionTest {
             Properties.primaryKeyProperty("propertyID"));
     final Entity entity = Entities.entity("entity");
     assertNull(def.getBackgroundColor(entity, entity.getKey().getFirstProperty()));
-    def.setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
-      @Override
-      public Color getBackgroundColor(final Entity entity, final Property property) {
-        return Color.BLUE;
-      }
-    });
+    def.setBackgroundColorProvider((entity1, property) -> Color.BLUE);
     assertEquals(Color.BLUE, def.getBackgroundColor(entity, entity.getKey().getFirstProperty()));
   }
 
@@ -207,12 +187,7 @@ public class DefaultEntityDefinitionTest {
     final Entity entity = Entities.entity("entityToString");
     entity.put("propertyID", 1);
     assertEquals("entityToString: propertyID:1", entity.toString());
-    def.setStringProvider(new Entity.ToString() {
-      @Override
-      public String toString(final Entity valueMap) {
-        return "test";
-      }
-    });
+    def.setStringProvider(valueMap -> "test");
     //the toString value is cached, so we need to clear it by setting a value
     entity.put("propertyID", 2);
     assertEquals("test", entity.toString());

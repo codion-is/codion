@@ -4,7 +4,6 @@
 package org.jminor.swing.framework.generator;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.Util;
@@ -171,16 +170,13 @@ public final class EntityGeneratorModel {
   }
 
   private void bindEvents() {
-    tableModel.getSelectionModel().addSelectedItemsListener(new EventInfoListener<List<Table>>() {
-      @Override
-      public void eventOccurred(final List<Table> selected) {
-        try {
-          refreshStartedEvent.fire();
-          generateDefinitions(selected);
-        }
-        finally {
-          refreshEndedEvent.fire();
-        }
+    tableModel.getSelectionModel().addSelectedItemsListener(selected -> {
+      try {
+        refreshStartedEvent.fire();
+        generateDefinitions(selected);
+      }
+      finally {
+        refreshEndedEvent.fire();
       }
     });
     Runtime.getRuntime().addShutdownHook(new Thread() {

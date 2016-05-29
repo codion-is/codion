@@ -31,15 +31,12 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
    */
   public SwingPropertyComboBoxModel(final String entityID, final EntityConnectionProvider connectionProvider,
                                     final Property.ColumnProperty property, final T nullValue) {
-    this(new ValueCollectionProvider<T>() {
-      @Override
-      public Collection<T> values() {
-        try {
-          return (Collection<T>) connectionProvider.getConnection().selectValues(property.getPropertyID(), EntityCriteriaUtil.criteria(entityID));
-        }
-        catch (final DatabaseException e) {
-          throw new RuntimeException(e);
-        }
+    this(() -> {
+      try {
+        return (Collection<T>) connectionProvider.getConnection().selectValues(property.getPropertyID(), EntityCriteriaUtil.criteria(entityID));
+      }
+      catch (final DatabaseException e) {
+        throw new RuntimeException(e);
       }
     }, nullValue);
   }

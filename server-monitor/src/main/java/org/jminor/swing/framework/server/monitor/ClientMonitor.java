@@ -19,12 +19,7 @@ import java.util.List;
  */
 public final class ClientMonitor {
 
-  private static final Comparator<ClientInfo> CLIENT_INFO_COMPARATOR = new Comparator<ClientInfo>() {
-    @Override
-    public int compare(final ClientInfo c1, final ClientInfo c2) {
-      return c1.getUser().getUsername().compareToIgnoreCase(c2.getUser().getUsername());
-    }
-  };
+  private static final Comparator<ClientInfo> CLIENT_INFO_COMPARATOR = (c1, c2) -> c1.getUser().getUsername().compareToIgnoreCase(c2.getUser().getUsername());
   private final EntityConnectionServerAdmin server;
   private final String clientTypeID;
   private final User user;
