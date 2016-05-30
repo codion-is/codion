@@ -26,6 +26,10 @@ import java.util.Random;
  */
 public final class TextUtil {
 
+  public enum Alignment {
+    LEFT, RIGHT
+  }
+
   private static final Random RANDOM = new Random();
   private static final String SPACE = " ";
   private static final String UNDERSCORE = "_";
@@ -163,10 +167,10 @@ public final class TextUtil {
    * @param string the string to pad
    * @param length the desired length
    * @param padChar the character to use for padding
-   * @param left if true then the padding is added on the strings left side, otherwise the right side
+   * @param alignment the padding alignment, left or right side
    * @return the padded string
    */
-  public static String padString(final String string, final int length, final char padChar, final boolean left) {
+  public static String padString(final String string, final int length, final char padChar, final Alignment alignment) {
     Objects.requireNonNull(string, "string");
     if (string.length() >= length) {
       return string;
@@ -174,7 +178,7 @@ public final class TextUtil {
 
     final StringBuilder stringBuilder = new StringBuilder(string);
     while (stringBuilder.length() < length) {
-      if (left) {
+      if (alignment.equals(Alignment.LEFT)) {
         stringBuilder.insert(0, padChar);
       }
       else {
@@ -201,14 +205,14 @@ public final class TextUtil {
     }
 
     for (int i = 0; i < data.length; i++) {
-      final String[] someData = data[i];
-      for (int j = 0; j < someData.length; j++) {
-        contents.append(someData[j]);
-        if (j < someData.length - 1) {
+      final String[] line = data[i];
+      for (int j = 0; j < line.length; j++) {
+        contents.append(line[j]);
+        if (j < line.length - 1) {
           contents.append(delimiter);
         }
       }
-      if (i < someData.length) {
+      if (i < data.length - 1) {
         contents.append(Util.LINE_SEPARATOR);
       }
     }

@@ -4284,3 +4284,5 @@
   Util.getArray/CollectionContentsAsString() moved to TextUtil
 0.10.4
   Source updated to Java 8
+  TextUtil.padString() now uses Alignment enum instead of boolean switch
+  TextUtil.getDelimitedString() bug fixed

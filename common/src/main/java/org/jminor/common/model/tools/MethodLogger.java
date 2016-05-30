@@ -419,7 +419,7 @@ public final class MethodLogger {
      * @return a string representation of this log entry
      */
     public String toString(final int indentation) {
-      final String indentString = indentation > 0 ? TextUtil.padString("", indentation, '\t', false) : "";
+      final String indentString = indentation > 0 ? TextUtil.padString("", indentation, '\t', TextUtil.Alignment.RIGHT) : "";
       final StringBuilder stringBuilder = new StringBuilder();
       final DateFormat timestampFormat = TIMESTAMP_FORMAT.get();
       if (isComplete()) {
