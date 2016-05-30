@@ -33,7 +33,7 @@ public final class TextUtil {
   private static final Random RANDOM = new Random();
   private static final String SPACE = " ";
   private static final String UNDERSCORE = "_";
-  private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  private static final String ALPHA_NUMERIC = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
   private TextUtil() {}
 
@@ -112,7 +112,7 @@ public final class TextUtil {
     final StringBuilder sb = new StringBuilder();
     final int length = minLength == maxLength ? minLength : RANDOM.nextInt(maxLength - minLength) + minLength;
     for( int i = 0; i < length; i++ ) {
-      sb.append(AB.charAt(RANDOM.nextInt(AB.length())));
+      sb.append(ALPHA_NUMERIC.charAt(RANDOM.nextInt(ALPHA_NUMERIC.length())));
     }
 
     return sb.toString();
