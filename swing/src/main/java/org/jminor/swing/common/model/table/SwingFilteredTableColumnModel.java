@@ -206,11 +206,11 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
 
   /**
    * Converts the index of the column in the table model at
-   * <code>modelColumnIndex</code> to the index of the column
+   * {@code modelColumnIndex} to the index of the column
    * in the view. Returns the index of the
    * corresponding column in the view; returns -1 if this column is not
-   * being displayed.  If <code>modelColumnIndex</code> is less than zero,
-   * this returns <code>modelColumnIndex</code>.
+   * being displayed.  If {@code modelColumnIndex} is less than zero,
+   * this returns {@code modelColumnIndex}.
    * @param modelColumnIndex the index of the column in the model
    * @return the index of the corresponding column in the view
    */

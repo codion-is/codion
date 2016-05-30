@@ -10,7 +10,7 @@ package org.jminor.common;
 public interface EventObserver<T> {
 
   /**
-   * Adds <code>listener</code> to this EventObserver, adding the same listener
+   * Adds {@code listener} to this EventObserver, adding the same listener
    * a second time has no effect.
    * Adding a listener does not prevent it from being garbage collected.
    * @param listener the listener to add
@@ -19,13 +19,13 @@ public interface EventObserver<T> {
   void addListener(final EventListener listener);
 
   /**
-   * Removes <code>listener</code> from this EventObserver
+   * Removes {@code listener} from this EventObserver
    * @param listener the listener to remove
    */
   void removeListener(final EventListener listener);
 
   /**
-   * Adds <code>listener</code> to this EventObserver, adding the same listener
+   * Adds {@code listener} to this EventObserver, adding the same listener
    * a second time has no effect.
    * Adding a listener does not prevent it from being garbage collected.
    * @param listener the listener to add
@@ -34,7 +34,7 @@ public interface EventObserver<T> {
   void addInfoListener(final EventInfoListener<T> listener);
 
   /**
-   * Removes <code>listener</code> from this EventObserver
+   * Removes {@code listener} from this EventObserver
    * @param listener the listener to remove
    */
   void removeInfoListener(final EventInfoListener listener);

@@ -95,7 +95,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * Instantiates a new table model.
    * @param sortModel the sort model to use
    * @param columnFilterModels the column filter models
-   * @throws NullPointerException in case <code>columnModel</code> is null
+   * @throws NullPointerException in case {@code columnModel} is null
    */
   public AbstractFilteredTableModel(final TableSortModel<R, C> sortModel, final Collection<? extends ColumnCriteriaModel<C>> columnFilterModels) {
     Objects.requireNonNull(sortModel, "sortModel");

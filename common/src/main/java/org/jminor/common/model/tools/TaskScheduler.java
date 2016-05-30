@@ -100,7 +100,7 @@ public final class TaskScheduler {
   /**
    * Sets the new task interval and re-schedules the task, note that if the scheduler was stopped it will be restarted.
    * @param interval the interval
-   * @throws IllegalArgumentException in case <code>interval</code> isn't a positive integer
+   * @throws IllegalArgumentException in case {@code interval} isn't a positive integer
    */
   public void setInterval(final int interval) {
     if (interval <= 0) {

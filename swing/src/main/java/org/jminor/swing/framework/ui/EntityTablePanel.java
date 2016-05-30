@@ -198,7 +198,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private boolean includePopupMenu = true;
 
   /**
-   * True after <code>initializePanel()</code> has been called
+   * True after {@code initializePanel()} has been called
    */
   private boolean panelInitialized = false;
 
@@ -399,7 +399,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   /**
    * @param controlCode the control code
-   * @return the control associated with <code>controlCode</code>
+   * @return the control associated with {@code controlCode}
    * @throws IllegalArgumentException in case no control is associated with the given control code
    */
   public final Control getControl(final String controlCode) {
@@ -915,7 +915,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Adds a popup menu to <code>table</code>, null or an empty ControlSet mean no popup menu
+   * Adds a popup menu to {@code table}, null or an empty ControlSet mean no popup menu
    * @param table the table
    * @param popupControls a ControlSet specifying the controls in the popup menu
    */
@@ -943,9 +943,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Associates <code>control</code> with <code>controlCode</code>
+   * Associates {@code control} with {@code controlCode}
    * @param controlCode the control code
-   * @param control the control to associate with <code>controlCode</code>
+   * @param control the control to associate with {@code controlCode}
    */
   protected final void setControl(final String controlCode, final Control control) {
     if (control == null) {
@@ -1132,7 +1132,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * Remember to return with a call to super.getInputProviderInputProvider().
    * @param property the property for which to get the InputProvider
    * @param toUpdate the entities that are about to be updated
-   * @return the InputProvider handling input for <code>property</code>
+   * @return the InputProvider handling input for {@code property}
    * @see #updateSelectedEntities(org.jminor.framework.domain.Property)
    */
   protected InputProvider getInputProvider(final Property property, final List<Entity> toUpdate) {
@@ -1239,7 +1239,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Initializes the south panel toolbar, by default based on <code>getToolbarControls()</code>
+   * Initializes the south panel toolbar, by default based on {@code getToolbarControls()}
    * @return the toolbar to add to the south panel
    */
   protected JToolBar initializeToolbar() {

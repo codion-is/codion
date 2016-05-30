@@ -214,7 +214,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private boolean disposeEditDialogOnEscape = Configuration.getBooleanValue(Configuration.DISPOSE_EDIT_DIALOG_ON_ESCAPE);
 
   /**
-   * True after <code>initializePanel()</code> has been called
+   * True after {@code initializePanel()} has been called
    */
   private boolean panelInitialized = false;
 
@@ -409,7 +409,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /**
    * Adds the given detail panel, and adds the detail model to the underlying
-   * model if it does not contain it already, and then sets <code>includeDetailPanelTabPane</code>
+   * model if it does not contain it already, and then sets {@code includeDetailPanelTabPane}
    * to true
    * @param detailPanel the detail panel to add
    * @return this entity panel
@@ -425,7 +425,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /**
    * Initializes this EntityPanels UI, in case of some specific initialization code you can override the
-   * <code>initialize()</code> method and add your code there.
+   * {@code initialize()} method and add your code there.
    * This method marks this panel as initialized which prevents it from running again, whether or not an exception occurs.
    * @return this EntityPanel instance
    * @see #initialize()
@@ -509,7 +509,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * Returns the detail panel for the given <code>entityID</code>, if one is available
+   * Returns the detail panel for the given {@code entityID}, if one is available
    * @param entityID the entity ID of the detail panel to retrieve
    * @return the detail panel of the given type
    * @throws IllegalArgumentException in case the panel was not found
@@ -525,7 +525,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * Returns true if this panel contains a detail panel for the given <code>entityID</code>
+   * Returns true if this panel contains a detail panel for the given {@code entityID}
    * @param entityID the entityID
    * @return true if a detail panel for the given entityID is found
    */
@@ -1359,7 +1359,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * Initializes a ControlSet containing a control for setting the state to <code>status</code> on each detail panel.
+   * Initializes a ControlSet containing a control for setting the state to {@code status} on each detail panel.
    * @param status the status
    * @return a ControlSet for controlling the state of the detail panels
    */

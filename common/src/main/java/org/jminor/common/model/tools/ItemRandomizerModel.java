@@ -166,7 +166,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   }
 
   /**
-   * Returns the RandomItem associated with <code>item</code>.
+   * Returns the RandomItem associated with {@code item}.
    * @param item the item
    * @return the RandomItem
    * @throws RuntimeException in case the item is not found
