@@ -125,7 +125,7 @@ public final class Controls {
   }
 
   /**
-   * Creates a toggle control based on the boolean property <code>beanPropertyName</code> in the owner object
+   * Creates a toggle control based on the boolean property {@code beanPropertyName} in the owner object
    * @param owner the owner object
    * @param beanPropertyName the name of the boolean bean property, must have a public setter and getter
    * @param caption the control caption
@@ -136,7 +136,7 @@ public final class Controls {
   }
 
   /**
-   * Creates a toggle control based on the boolean property <code>beanPropertyName</code> in the owner object
+   * Creates a toggle control based on the boolean property {@code beanPropertyName} in the owner object
    * @param owner the owner object
    * @param beanPropertyName the name of the boolean bean property, must have a public setter and getter
    * @param caption the control caption
@@ -149,7 +149,7 @@ public final class Controls {
   }
 
   /**
-   * Creates a toggle control based on the boolean property <code>beanPropertyName</code> in the owner object
+   * Creates a toggle control based on the boolean property {@code beanPropertyName} in the owner object
    * @param owner the owner object
    * @param beanPropertyName the name of the boolean bean property, must have a public setter and getter
    * @param caption the control caption
@@ -163,7 +163,7 @@ public final class Controls {
   }
 
   /**
-   * Creates a toggle control based on the boolean property <code>beanPropertyName</code> in the owner object
+   * Creates a toggle control based on the boolean property {@code beanPropertyName} in the owner object
    * @param owner the owner object
    * @param beanPropertyName the name of the boolean bean property, must have a public setter and getter
    * @param caption the control caption

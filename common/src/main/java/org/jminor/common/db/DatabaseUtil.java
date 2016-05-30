@@ -171,7 +171,7 @@ public final class DatabaseUtil {
   }
 
   /**
-   * Returns true if the given connection is valid, if the underlying driver supports <code>isValid()</code>
+   * Returns true if the given connection is valid, if the underlying driver supports {@code isValid()}
    * it is used, otherwise a simple query is run
    * @param connection the connection to validate
    * @param database the underlying database implementation

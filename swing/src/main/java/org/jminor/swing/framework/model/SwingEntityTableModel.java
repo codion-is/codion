@@ -139,7 +139,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @param criteriaModel the criteria model
    * @param sortModel the sort model
    * @throws NullPointerException in case criteriaModel is null
-   * @throws IllegalArgumentException if <code>criteriaModel</code> entityID does not match the one supplied as parameter
+   * @throws IllegalArgumentException if {@code criteriaModel} entityID does not match the one supplied as parameter
    */
   public SwingEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider,
                                final TableSortModel<Entity, Property> sortModel, final EntityTableCriteriaModel criteriaModel) {

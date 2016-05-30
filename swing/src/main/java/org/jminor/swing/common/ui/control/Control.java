@@ -70,7 +70,7 @@ public class Control extends AbstractAction {
   }
 
   /**
-   * Unsupported, the enabled state of Controls is based on their <code>enabledObserver</code>
+   * Unsupported, the enabled state of Controls is based on their {@code enabledObserver}
    * @throws UnsupportedOperationException always
    */
   @Override

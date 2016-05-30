@@ -137,7 +137,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
 
   /**
    * @param since the time
-   * @return stats collected since <code>since</code>
+   * @return stats collected since {@code since}
    */
   private List<ConnectionPoolState> getFineGrainedStatistics(final long since) {
     final List<ConnectionPoolState> poolStates;

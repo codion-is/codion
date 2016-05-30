@@ -7,7 +7,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 /**
- * A simple document adapter, combining the <code>insertUpdate</code> and <code>removeUpdate</code> into <code>contentsChanged</code>
+ * A simple document adapter, combining the {@code insertUpdate} and {@code removeUpdate} into {@code contentsChanged}
  */
 public abstract class DocumentAdapter implements DocumentListener {
 

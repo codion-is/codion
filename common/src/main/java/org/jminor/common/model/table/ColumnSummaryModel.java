@@ -114,7 +114,7 @@ public interface ColumnSummaryModel {
     boolean isDouble();
 
     /**
-     * @return true if the values provided by <code>getValues()</code> is a subset of the total available values
+     * @return true if the values provided by {@code getValues()} is a subset of the total available values
      */
     boolean isValueSubset();
 

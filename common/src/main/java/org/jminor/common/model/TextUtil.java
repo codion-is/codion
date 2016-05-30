@@ -163,7 +163,7 @@ public final class TextUtil {
   }
 
   /**
-   * Pads the given string with the given pad character until a length of <code>length</code> has been reached
+   * Pads the given string with the given pad character until a length of {@code length} has been reached
    * @param string the string to pad
    * @param length the desired length
    * @param padChar the character to use for padding

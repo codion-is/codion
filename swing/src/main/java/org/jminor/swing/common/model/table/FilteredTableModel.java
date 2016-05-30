@@ -105,7 +105,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModelPr
   /**
    * @param columnIdentifier the identifier of the column for which to retrieve the values
    * @param selectedOnly if true only values from the selected rows are returned
-   * @return the non-null values of the column identified by <code>columnIdentifier</code> from the rows in the table model
+   * @return the non-null values of the column identified by {@code columnIdentifier} from the rows in the table model
    */
   Collection getValues(final C columnIdentifier, final boolean selectedOnly);
 

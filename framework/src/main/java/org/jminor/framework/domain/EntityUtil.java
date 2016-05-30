@@ -198,8 +198,8 @@ public final class EntityUtil {
   }
 
   /**
-   * Returns a Collection containing the distinct values of <code>propertyID</code> from the given entities, excluding null values.
-   * If the <code>entities</code> list is null an empty Collection is returned.
+   * Returns a Collection containing the distinct values of {@code propertyID} from the given entities, excluding null values.
+   * If the {@code entities} list is null an empty Collection is returned.
    * @param <T> the value type
    * @param propertyID the ID of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the values
@@ -210,8 +210,8 @@ public final class EntityUtil {
   }
 
   /**
-   * Returns a Collection containing the distinct values of <code>propertyID</code> from the given entities.
-   * If the <code>entities</code> list is null an empty Collection is returned.
+   * Returns a Collection containing the distinct values of {@code propertyID} from the given entities.
+   * If the {@code entities} list is null an empty Collection is returned.
    * @param <T> the value type
    * @param propertyID the ID of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the values
@@ -255,7 +255,7 @@ public final class EntityUtil {
   }
 
   /**
-   * Sets the value of the property with ID <code>propertyID</code> to <code>value</code>
+   * Sets the value of the property with ID {@code propertyID} to {@code value}
    * in the given entities
    * @param propertyID the ID of the property for which to set the value
    * @param value the value
@@ -274,7 +274,7 @@ public final class EntityUtil {
   }
 
   /**
-   * Returns a LinkedHashMap containing the given entities mapped to the value of the property with ID <code>propertyID</code>,
+   * Returns a LinkedHashMap containing the given entities mapped to the value of the property with ID {@code propertyID},
    * respecting the iteration order of the given collection
    * @param <K> the key type
    * @param propertyID the ID of the property which value should be used for mapping
@@ -657,7 +657,7 @@ public final class EntityUtil {
     /**
      * Transforms the given beans into a Entities according to the information found in this EntityBeanMapper instance
      * @param beans the beans to transform
-     * @return a List containing the Entities derived from the given beans, an empty List if <code>beans</code> is null or empty
+     * @return a List containing the Entities derived from the given beans, an empty List if {@code beans} is null or empty
      * @throws NoSuchMethodException if a required getter method is not found in the bean class
      * @throws java.lang.reflect.InvocationTargetException in case an exception is thrown during a bean method call
      * @throws IllegalAccessException if a required method is not accessible
@@ -678,7 +678,7 @@ public final class EntityUtil {
     /**
      * Transforms the given entity into a bean according to the information found in this EntityBeanMapper instance
      * @param entity the entity to transform
-     * @return a bean derived from the given entity, null if <code>entity</code> is null
+     * @return a bean derived from the given entity, null if {@code entity} is null
      * @throws NoSuchMethodException if a required setter method is not found in the bean class
      * @throws InvocationTargetException in case an exception is thrown during a bean method call
      * @throws IllegalAccessException if a required method is not accessible
@@ -704,7 +704,7 @@ public final class EntityUtil {
     /**
      * Transforms the given entities into beans according to the information found in this EntityBeanMapper instance
      * @param entities the entities to transform
-     * @return a List containing the beans derived from the given entities, an empty List if <code>entities</code> is null or empty
+     * @return a List containing the beans derived from the given entities, an empty List if {@code entities} is null or empty
      * @throws NoSuchMethodException if a required setter method is not found in the bean class
      * @throws InvocationTargetException in case an exception is thrown during a bean method call
      * @throws IllegalAccessException if a required method is not accessible

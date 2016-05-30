@@ -389,8 +389,8 @@ public final class MethodLogger {
 
     /**
      * Returns the duration of the method call this entry represents,
-     * this value is 0 or undefined until <code>setExitTime()</code>
-     * has been called, this can be checked via <code>isComplete()</code>.
+     * this value is 0 or undefined until {@code setExitTime()}
+     * has been called, this can be checked via {@code isComplete()}.
      * @return the duration of the method call this entry represents
      */
     public long getDelta() {
@@ -399,8 +399,8 @@ public final class MethodLogger {
 
     /**
      * Returns the duration of the method call this entry represents in nanoseconds,
-     * this value is 0 or undefined until <code>setExitTime()</code>
-     * has been called, this can be checked via <code>isComplete()</code>.
+     * this value is 0 or undefined until {@code setExitTime()}
+     * has been called, this can be checked via {@code isComplete()}.
      * @return the duration of the method call this entry represents
      */
     public long getDeltaNano() {

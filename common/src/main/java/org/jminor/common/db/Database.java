@@ -120,7 +120,7 @@ public interface Database {
    * Returns a query string for retrieving the last automatically generated id from the given id source
    * @param idSource the source for the id, for example a sequence name or in the case of Derby, the name of the table auto generating the value
    * @return a query string for retrieving the last auto-increment value from idSource
-   * @throws NullPointerException in case <code>idSource</code> is required and is null
+   * @throws NullPointerException in case {@code idSource} is required and is null
    */
   String getAutoIncrementValueSQL(final String idSource);
 
@@ -128,7 +128,7 @@ public interface Database {
    * @param sequenceName the name of the sequence
    * @return a query for selecting the next value from the given sequence
    * @throws UnsupportedOperationException in case the underlying database does not support sequences
-   * @throws NullPointerException in case <code>sequenceName</code> is null
+   * @throws NullPointerException in case {@code sequenceName} is null
    */
   String getSequenceSQL(final String sequenceName);
 
@@ -142,9 +142,9 @@ public interface Database {
   /**
    * In the case of embedded databases the user login info can be appended
    * to the connection url, this method should return that string in case
-   * the dbms requires it and <code>connectionProperties</code> contains
+   * the dbms requires it and {@code connectionProperties} contains
    * the username and password info, otherwise it should be safe to return null.
-   * This method is usually used in <code>getURL()</code> and <code>onDisconnect()</code>.
+   * This method is usually used in {@code getURL()} and {@code onDisconnect()}.
    * @param connectionProperties the connection properties
    * @return an authentication string to append to the connection url,
    * f.ex. user=scott;password=tiger, null if none is required
@@ -180,7 +180,7 @@ public interface Database {
 
   /**
    * Returns a user friendly error message for the given exception,
-   * otherwise simply return the message from <code>exception</code>
+   * otherwise simply return the message from {@code exception}
    * @param exception the underlying SQLException
    * @return the message assigned to the given exception
    */

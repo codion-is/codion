@@ -147,7 +147,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   private boolean requestFocusAfterInsert = true;
 
   /**
-   * True after <code>initializePanel()</code> has been called
+   * True after {@code initializePanel()} has been called
    */
   private boolean panelInitialized = false;
 
@@ -395,7 +395,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
 
   /**
    * @param controlCode the control code
-   * @return the control associated with <code>controlCode</code>
+   * @return the control associated with {@code controlCode}
    * @throws IllegalArgumentException in case no control is associated with the given control code
    */
   public final Control getControl(final String controlCode) {
@@ -723,8 +723,8 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   //#############################################################################################
 
   /**
-   * Creates a new Action which shows the edit panel provided by <code>panelProvider</code> and if an insert is performed
-   * selects the new entity in the <code>lookupField</code>.
+   * Creates a new Action which shows the edit panel provided by {@code panelProvider} and if an insert is performed
+   * selects the new entity in the {@code lookupField}.
    * @param comboBox the combo box in which to select the new entity, if created
    * @param panelProvider the EntityPanelProvider for providing the EntityEditPanel to use for creating the new entity
    * @return the Action
@@ -734,8 +734,8 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a new Action which shows the edit panel provided by <code>panelProvider</code> and if an insert is performed
-   * selects the new entity in the <code>lookupField</code>.
+   * Creates a new Action which shows the edit panel provided by {@code panelProvider} and if an insert is performed
+   * selects the new entity in the {@code lookupField}.
    * @param lookupField the lookup field in which to select the new entity, if created
    * @param panelProvider the EntityPanelProvider for providing the EntityEditPanel to use for creating the new entity
    * @return the Action
@@ -812,9 +812,9 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Associates <code>control</code> with <code>controlCode</code>
+   * Associates {@code control} with {@code controlCode}
    * @param controlCode the control code
-   * @param control the control to associate with <code>controlCode</code>
+   * @param control the control to associate with {@code controlCode}
    */
   protected final void setControl(final String controlCode, final Control control) {
     if (control == null) {
@@ -924,7 +924,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
 
   /**
    * Creates a panel containing a label and the component associated with the given property.
-   * The label text is the caption of the property identified by <code>propertyID</code>.
+   * The label text is the caption of the property identified by {@code propertyID}.
    * The default layout of the resulting panel is with the label on top and inputComponent below.
    * @param propertyID the id of the property from which to retrieve the label caption
    * @return a panel containing a label and a component
@@ -941,10 +941,10 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
 
   /**
    * Creates a panel containing a label and the given component.
-   * The label text is the caption of the property identified by <code>propertyID</code>.
-   * The default layout of the resulting panel is with the label on top and <code>inputComponent</code> below.
+   * The label text is the caption of the property identified by {@code propertyID}.
+   * The default layout of the resulting panel is with the label on top and {@code inputComponent} below.
    * @param propertyID the id of the property from which to retrieve the label caption
-   * @param inputComponent a component bound to the property with id <code>propertyID</code>
+   * @param inputComponent a component bound to the property with id {@code propertyID}
    * @return a panel containing a label and a component
    */
   protected final JPanel createPropertyPanel(final String propertyID, final JComponent inputComponent) {
@@ -953,10 +953,10 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
 
   /**
    * Creates a panel containing a label and the given component.
-   * The label text is the caption of the property identified by <code>propertyID</code>.
+   * The label text is the caption of the property identified by {@code propertyID}.
    * @param propertyID the id of the property from which to retrieve the label caption
-   * @param inputComponent a component bound to the property with id <code>propertyID</code>
-   * @param labelOnTop if true then the label is positioned above <code>inputComponent</code>,
+   * @param inputComponent a component bound to the property with id {@code propertyID}
+   * @param labelOnTop if true then the label is positioned above {@code inputComponent},
    * otherwise it uses FlowLayout.LEADING in a FlowLayout.
    * @return a panel containing a label and a component
    */
@@ -967,10 +967,10 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
 
   /**
    * Creates a panel containing a label and the given component.
-   * The label text is the caption of the property identified by <code>propertyID</code>.
+   * The label text is the caption of the property identified by {@code propertyID}.
    * @param propertyID the id of the property from which to retrieve the label caption
-   * @param inputComponent a component bound to the property with id <code>propertyID</code>
-   * @param labelOnTop if true then the label is positioned above <code>inputComponent</code>,
+   * @param inputComponent a component bound to the property with id {@code propertyID}
+   * @param labelOnTop if true then the label is positioned above {@code inputComponent},
    * otherwise it uses FlowLayout.LEADING in a FlowLayout.
    * @param labelAlignment the label alignment
    * @return a panel containing a label and a component
@@ -982,10 +982,10 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a panel containing a label component and the <code>inputComponent</code> with the label
+   * Creates a panel containing a label component and the {@code inputComponent} with the label
    * component positioned above the input component.
    * @param labelComponent the label component
-   * @param inputComponent a component bound to the property with id <code>propertyID</code>
+   * @param inputComponent a component bound to the property with id {@code propertyID}
    * @return a panel containing a label and a component
    */
   protected final JPanel createPropertyPanel(final JComponent labelComponent, final JComponent inputComponent) {
@@ -993,10 +993,10 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a panel containing a label component and the <code>inputComponent</code>.
+   * Creates a panel containing a label component and the {@code inputComponent}.
    * @param labelComponent the label component
-   * @param inputComponent a component bound to the property with id <code>propertyID</code>
-   * @param labelOnTop if true then the label is positioned above <code>inputComponent</code>,
+   * @param inputComponent a component bound to the property with id {@code propertyID}
+   * @param labelOnTop if true then the label is positioned above {@code inputComponent},
    * otherwise it uses FlowLayout.LEADING in a FlowLayout.
    * @return a panel containing a label and a component
    */
@@ -1020,7 +1020,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a JTextArea component bound to the property identified by <code>propertyID</code>.
+   * Creates a JTextArea component bound to the property identified by {@code propertyID}.
    * @param propertyID the ID of the property to bind
    * @return a JTextArea bound to the property
    */
@@ -1029,7 +1029,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a JTextArea component bound to the property identified by <code>propertyID</code>.
+   * Creates a JTextArea component bound to the property identified by {@code propertyID}.
    * @param propertyID the ID of the property to bind
    * @param rows the number of rows in the text area
    * @param columns the number of columns in the text area
@@ -1040,7 +1040,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a JTextArea component bound to the property identified by <code>propertyID</code>.
+   * Creates a JTextArea component bound to the property identified by {@code propertyID}.
    * @param propertyID the ID of the property to bind
    * @param rows the number of rows in the text area
    * @param columns the number of columns in the text area
@@ -1052,7 +1052,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a JTextArea component bound to the property identified by <code>propertyID</code>.
+   * Creates a JTextArea component bound to the property identified by {@code propertyID}.
    * @param propertyID the ID of the property to bind
    * @param rows the number of rows in the text area
    * @param columns the number of columns in the text area
@@ -1070,7 +1070,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a TextInputPanel bound to the property identified by <code>propertyID</code>.
+   * Creates a TextInputPanel bound to the property identified by {@code propertyID}.
    * @param propertyID the ID of the property to bind
    * @return a TextInputPanel bound to the property
    */
@@ -1079,7 +1079,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a TextInputPanel bound to the property identified by <code>propertyID</code>.
+   * Creates a TextInputPanel bound to the property identified by {@code propertyID}.
    * @param propertyID the ID of the property to bind
    * @param readOnly if true the component will be read only
    * @return a TextInputPanel bound to the property
@@ -1089,7 +1089,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a TextInputPanel bound to the property identified by <code>propertyID</code>.
+   * Creates a TextInputPanel bound to the property identified by {@code propertyID}.
    * @param propertyID the ID of the property to bind
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
@@ -1102,7 +1102,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a TextInputPanel bound to the property identified by <code>propertyID</code>.
+   * Creates a TextInputPanel bound to the property identified by {@code propertyID}.
    * @param propertyID the ID of the property to bind
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
@@ -1117,7 +1117,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a TextInputPanel bound to the property identified by <code>propertyID</code>.
+   * Creates a TextInputPanel bound to the property identified by {@code propertyID}.
    * @param property the property to bind
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
@@ -1130,7 +1130,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a TextInputPanel bound to the property identified by <code>propertyID</code>.
+   * Creates a TextInputPanel bound to the property identified by {@code propertyID}.
    * @param property the property to bind
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
@@ -1148,7 +1148,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
 
   /**
    * Creates a new DateInputPanel using the default short date format, bound to the property
-   * identified by <code>propertyID</code>.
+   * identified by {@code propertyID}.
    * @param propertyID the ID of the property for which to create the panel
    * @return a DateInputPanel using the default short date format
    * @see org.jminor.framework.Configuration#DATE_FORMAT
@@ -1158,7 +1158,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
+   * Creates a new DateInputPanel bound to the property identified by {@code propertyID}.
    * @param propertyID the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @return a DateInputPanel using the default short date format
@@ -1170,7 +1170,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
+   * Creates a new DateInputPanel bound to the property identified by {@code propertyID}.
    * @param propertyID the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
@@ -1182,7 +1182,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
+   * Creates a new DateInputPanel bound to the property identified by {@code propertyID}.
    * @param propertyID the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
@@ -1196,7 +1196,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
+   * Creates a new DateInputPanel bound to the property identified by {@code propertyID}.
    * @param property the property for which to create the panel
    * @return a DateInputPanel bound to the property
    */
@@ -1243,7 +1243,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a JTextField bound to the property identified by <code>propertyID</code>
+   * Creates a JTextField bound to the property identified by {@code propertyID}
    * @param propertyID the ID of the property to bind
    * @return a text field bound to the property
    */
@@ -1252,7 +1252,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a JTextField bound to the property identified by <code>propertyID</code>
+   * Creates a JTextField bound to the property identified by {@code propertyID}
    * @param propertyID the ID of the property to bind
    * @param readOnly if true the component will be read only
    * @return a text field bound to the property
@@ -1262,7 +1262,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a JTextField bound to the property identified by <code>propertyID</code>
+   * Creates a JTextField bound to the property identified by {@code propertyID}
    * @param propertyID the ID of the property to bind
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
@@ -1275,7 +1275,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a JTextField bound to the property identified by <code>propertyID</code>
+   * Creates a JTextField bound to the property identified by {@code propertyID}
    * @param propertyID the ID of the property to bind
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
@@ -1289,7 +1289,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a JTextField bound to the property identified by <code>propertyID</code>
+   * Creates a JTextField bound to the property identified by {@code propertyID}
    * @param propertyID the ID of the property to bind
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
@@ -1305,14 +1305,14 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a JTextField bound to the property identified by <code>propertyID</code>
+   * Creates a JTextField bound to the property identified by {@code propertyID}
    * @param propertyID the ID of the property to bind
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @param enabledState a state for controlling the enabled state of the component
-   * @param valueIncludesLiteralCharacters only applicable if <code>maskString</code> is specified
+   * @param valueIncludesLiteralCharacters only applicable if {@code maskString} is specified
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final String propertyID, final boolean readOnly,
@@ -1379,7 +1379,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * otherwise it is updated when the component looses focus.
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @param enabledState a state for controlling the enabled state of the component
-   * @param valueIncludesLiteralCharacters only applicable if <code>maskString</code> is specified
+   * @param valueIncludesLiteralCharacters only applicable if {@code maskString} is specified
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final Property property, final boolean readOnly,
@@ -1393,7 +1393,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a JCheckBox bound to the property identified by <code>propertyID</code>
+   * Creates a JCheckBox bound to the property identified by {@code propertyID}
    * @param propertyID the ID of the property to bind
    * @return a JCheckBox bound to the property
    */
@@ -1402,7 +1402,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a JCheckBox bound to the property identified by <code>propertyID</code>
+   * Creates a JCheckBox bound to the property identified by {@code propertyID}
    * @param propertyID the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return a JCheckBox bound to the property
@@ -1412,7 +1412,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a JCheckBox bound to the property identified by <code>propertyID</code>
+   * Creates a JCheckBox bound to the property identified by {@code propertyID}
    * @param propertyID the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @param includeCaption specifies whether or not the caption should be included
@@ -1458,7 +1458,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a TristateCheckBox bound to the property identified by <code>propertyID</code>
+   * Creates a TristateCheckBox bound to the property identified by {@code propertyID}
    * @param propertyID the ID of the property to bind
    * @return a TristateCheckBox bound to the property
    */
@@ -1467,7 +1467,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a TristateCheckBox bound to the property identified by <code>propertyID</code>
+   * Creates a TristateCheckBox bound to the property identified by {@code propertyID}
    * @param propertyID the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return a TristateCheckBox bound to the property
@@ -1477,7 +1477,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a TristateCheckBox bound to the property identified by <code>propertyID</code>
+   * Creates a TristateCheckBox bound to the property identified by {@code propertyID}
    * @param propertyID the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @param includeCaption specifies whether or not the caption should be included
@@ -1523,7 +1523,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Create a JComboBox for the property identified by <code>propertyID</code>, containing
+   * Create a JComboBox for the property identified by {@code propertyID}, containing
    * values for the boolean values: true, false, null
    * @param propertyID the ID of the property to bind
    * @return JComboBox for the given property
@@ -1533,7 +1533,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Create a JComboBox for the property identified by <code>propertyID</code>, containing
+   * Create a JComboBox for the property identified by {@code propertyID}, containing
    * values for the boolean values: true, false, null
    * @param propertyID the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
@@ -1568,7 +1568,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a SteppedComboBox bound to the property identified by <code>propertyID</code>
+   * Creates a SteppedComboBox bound to the property identified by {@code propertyID}
    * @param propertyID the ID of the property to bind
    * @param comboBoxModel the ComboBoxModel
    * @param maximumMatch true if maximum match should be used
@@ -1581,7 +1581,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a SteppedComboBox bound to the property identified by <code>propertyID</code>
+   * Creates a SteppedComboBox bound to the property identified by {@code propertyID}
    * @param propertyID the ID of the property to bind
    * @param comboBoxModel the ComboBoxModel
    * @param maximumMatch true if maximum match should be used
@@ -1733,7 +1733,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates an editable SteppedComboBox bound to the property identified by <code>propertyID</code>
+   * Creates an editable SteppedComboBox bound to the property identified by {@code propertyID}
    * @param propertyID the ID of the property to bind
    * @param comboBoxModel the ComboBoxModel
    * @return an editable SteppedComboBox bound the the property
@@ -1743,7 +1743,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates an editable SteppedComboBox bound to the property identified by <code>propertyID</code>
+   * Creates an editable SteppedComboBox bound to the property identified by {@code propertyID}
    * @param propertyID the ID of the property to bind
    * @param comboBoxModel the ComboBoxModel
    * @param enabledState a state for controlling the enabled state of the component
@@ -1771,7 +1771,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a SteppedComboBox bound to the property identified by <code>propertyID</code>, the combo box
+   * Creates a SteppedComboBox bound to the property identified by {@code propertyID}, the combo box
    * contains the underlying values of the property
    * @param propertyID the ID of the property to bind
    * @return a SteppedComboBox bound to the property
@@ -1781,7 +1781,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a SteppedComboBox bound to the property identified by <code>propertyID</code>, the combo box
+   * Creates a SteppedComboBox bound to the property identified by {@code propertyID}, the combo box
    * contains the underlying values of the property
    * @param propertyID the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
@@ -1792,7 +1792,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a SteppedComboBox bound to the property identified by <code>propertyID</code>, the combo box
+   * Creates a SteppedComboBox bound to the property identified by {@code propertyID}, the combo box
    * contains the underlying values of the property
    * @param propertyID the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
@@ -1843,7 +1843,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a EntityComboBox bound to the foreign key property identified by <code>foreignKeyPropertyID</code>
+   * Creates a EntityComboBox bound to the foreign key property identified by {@code foreignKeyPropertyID}
    * @param foreignKeyPropertyID the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return a EntityComboBox bound to the property
@@ -1854,7 +1854,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates an EntityComboBox bound to the foreign key property identified by <code>foreignKeyPropertyID</code>
+   * Creates an EntityComboBox bound to the foreign key property identified by {@code foreignKeyPropertyID}
    * @param foreignKeyPropertyID the ID of the foreign key property to bind
    * combination used to create new instances of the entity this EntityComboBox is based on
    * EntityComboBox is focusable
@@ -1891,7 +1891,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates an EntityLookupField bound to the property identified by <code>propertyID</code>, the property
+   * Creates an EntityLookupField bound to the property identified by {@code propertyID}, the property
    * must be an Property.ForeignKeyProperty
    * @param foreignKeyPropertyID the ID of the foreign key property to bind
    * @return an EntityLookupField bound the property
@@ -1901,7 +1901,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates an EntityLookupField bound to the property identified by <code>propertyID</code>, the property
+   * Creates an EntityLookupField bound to the property identified by {@code propertyID}, the property
    * must be an Property.ForeignKeyProperty
    * @param foreignKeyPropertyID the ID of the foreign key property to bind
    * @param enabledState a state for controlling the enabled state of the component
@@ -1916,7 +1916,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates an EntityLookupField bound to the property identified by <code>propertyID</code>, the property
+   * Creates an EntityLookupField bound to the property identified by {@code propertyID}, the property
    * must be an Property.ForeignKeyProperty
    * @param foreignKeyPropertyID the ID of the foreign key property to bind
    * @param lookupPropertyIDs the IDs of the properties to use in the lookup
@@ -1928,7 +1928,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates an EntityLookupField bound to the property identified by <code>propertyID</code>, the property
+   * Creates an EntityLookupField bound to the property identified by {@code propertyID}, the property
    * must be an Property.ForeignKeyProperty
    * @param foreignKeyPropertyID the ID of the foreign key property to bind
    * @param enabledState a state for controlling the enabled state of the component
@@ -1976,7 +1976,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates an uneditable JTextField bound to the property identified by <code>propertyID</code>
+   * Creates an uneditable JTextField bound to the property identified by {@code propertyID}
    * @param propertyID the ID of the property to bind
    * @return an uneditable JTextField bound to the property
    */
@@ -1997,7 +1997,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a JLabel with a caption from the property identified by <code>propertyID</code>
+   * Creates a JLabel with a caption from the property identified by {@code propertyID}
    * @param propertyID the ID of the property from which to retrieve the caption
    * @return a JLabel for the given property
    */
@@ -2006,7 +2006,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a JLabel with a caption from the given property identified by <code>propertyID</code>
+   * Creates a JLabel with a caption from the given property identified by {@code propertyID}
    * @param propertyID the ID of the property from which to retrieve the caption
    * @param horizontalAlignment the horizontal text alignment
    * @return a JLabel for the given property
@@ -2017,8 +2017,8 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
 
   /**
    * Initializes the default controls available to this EntityEditPanel by mapping them to their respective
-   * control codes (EntityEditPanel.INSERT, UPDATE etc) via the <code>setControl(String, Control) method,
-   * these can then be retrieved via the <code>getControl(String)</code> method.
+   * control codes (EntityEditPanel.INSERT, UPDATE etc) via the {@code setControl(String, Control) method,
+   * these can then be retrieved via the {@code getControl(String)} method.
    * @param controlKeys the control keys for which controls should be initialized
    * @see org.jminor.swing.common.ui.control.Control
    * @see #setControl(String, org.jminor.swing.common.ui.control.Control)

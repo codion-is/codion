@@ -195,8 +195,8 @@ public abstract class AbstractDatabase implements Database {
 
   /**
    * Returns a string containing authentication info to append to the connection URL,
-   * based on the values found in <code>connectionProperties</code>.
-   * This default implementation returns the following assuming that <code>connectionProperties</code>
+   * based on the values found in {@code connectionProperties}.
+   * This default implementation returns the following assuming that {@code connectionProperties}
    * contains values for both "user" and "password" keys:
    * user=scott;password=tiger
    * The password clause is not included if no password is provided

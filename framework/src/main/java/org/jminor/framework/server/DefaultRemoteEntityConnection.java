@@ -442,7 +442,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
   /**
    * @param timeout the number of milliseconds
-   * @return true if this connection has been inactive for <code>timeout</code> milliseconds or longer
+   * @return true if this connection has been inactive for {@code timeout} milliseconds or longer
    */
   boolean hasBeenInactive(final int timeout) {
     return System.currentTimeMillis() - lastAccessTime > timeout;

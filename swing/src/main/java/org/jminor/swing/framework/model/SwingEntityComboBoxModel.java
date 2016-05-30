@@ -47,7 +47,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private final EntityConnectionProvider connectionProvider;
 
   /**
-   * true if the data should only be fetched once, unless <code>forceRefresh()</code> is called
+   * true if the data should only be fetched once, unless {@code forceRefresh()} is called
    */
   private boolean staticData = false;
 

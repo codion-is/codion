@@ -29,7 +29,7 @@ public interface EntityTableCriteriaModel extends FilterCriteria<Entity>, Refres
   String getEntityID();
 
   /**
-   * Sets the search criteria values of the criteria model associated with the property identified by <code>propertyID</code>
+   * Sets the search criteria values of the criteria model associated with the property identified by {@code propertyID}
    * @param propertyID the ID of the property
    * @param values the search criteria values
    * @return true if the search state changed as a result of this method call, false otherwise
@@ -37,7 +37,7 @@ public interface EntityTableCriteriaModel extends FilterCriteria<Entity>, Refres
   boolean setCriteriaValues(final String propertyID, final Collection<?> values);
 
   /**
-   * Sets the criteria value of the PropertyFilterModel associated with the property identified by <code>propertyID</code>.
+   * Sets the criteria value of the PropertyFilterModel associated with the property identified by {@code propertyID}.
    * @param propertyID the id of the property
    * @param value the criteria value
    */
@@ -67,7 +67,7 @@ public interface EntityTableCriteriaModel extends FilterCriteria<Entity>, Refres
 
   /**
    * @param propertyID the column propertyID
-   * @return true if the PropertyCriteriaModel behind column with index <code>columnIndex</code> is enabled
+   * @return true if the PropertyCriteriaModel behind column with index {@code columnIndex} is enabled
    */
   boolean isEnabled(final String propertyID);
 
@@ -96,7 +96,7 @@ public interface EntityTableCriteriaModel extends FilterCriteria<Entity>, Refres
 
   /**
    * @return the conjunction to be used when multiple column criteria are active,
-   * the default is <code>Conjunction.AND</code>
+   * the default is {@code Conjunction.AND}
    * @see Conjunction
    */
   Conjunction getConjunction();
@@ -110,7 +110,7 @@ public interface EntityTableCriteriaModel extends FilterCriteria<Entity>, Refres
   /**
    * @param propertyID the id of the property for which to check for the PropertyCriteriaModel
    * @return true if this EntityTableCriteriaModel contains a PropertyCriteriaModel associated
-   * with the property identified by <code>propertyID</code>
+   * with the property identified by {@code propertyID}
    */
   boolean containsPropertyCriteriaModel(final String propertyID);
 
@@ -121,7 +121,7 @@ public interface EntityTableCriteriaModel extends FilterCriteria<Entity>, Refres
 
   /**
    * @param propertyID the id of the property for which to retrieve the PropertyCriteriaModel
-   * @return the PropertyCriteriaModel associated with the property identified by <code>propertyID</code>
+   * @return the PropertyCriteriaModel associated with the property identified by {@code propertyID}
    * @throws IllegalArgumentException in case no criteria model is available
    * @see #containsPropertyCriteriaModel(String)
    */
@@ -139,15 +139,15 @@ public interface EntityTableCriteriaModel extends FilterCriteria<Entity>, Refres
   Collection<ColumnCriteriaModel<Property>> getPropertyFilterModels();
 
   /**
-   * The PropertyFilterModel associated with the property identified by <code>propertyID</code>
+   * The PropertyFilterModel associated with the property identified by {@code propertyID}
    * @param propertyID the id of the property for which to retrieve the PropertyFilterModel
-   * @return the PropertyFilterModel for the property with id <code>propertyID</code>, null if none is found
+   * @return the PropertyFilterModel for the property with id {@code propertyID}, null if none is found
    */
   ColumnCriteriaModel<Property> getPropertyFilterModel(final String propertyID);
 
   /**
    * @param propertyID column propertyID
-   * @return true if the PropertyFilterModel behind column with index <code>columnIndex</code> is enabled
+   * @return true if the PropertyFilterModel behind column with index {@code columnIndex} is enabled
    */
   boolean isFilterEnabled(final String propertyID);
 

@@ -29,7 +29,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
   void removeSelectionListener(final EventInfoListener listener);
 
   /**
-   * Resets the contents of this model using the values found in <code>contents</code>,
+   * Resets the contents of this model using the values found in {@code contents},
    * if contents is null then the model is considered to be cleared.
    * @param contents the contents to display in this combo box model
    * @see #isCleared()
@@ -74,8 +74,8 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
 
   /**
    * Sets the Comparator used when sorting the items visible in this model and sorts the model accordingly.
-   * This Comparator must take into account the null value if a <code>nullValueString</code> is specified.
-   * If a null <code>sortComparator</code> is provided no sorting will be performed.
+   * This Comparator must take into account the null value if a {@code nullValueString} is specified.
+   * If a null {@code sortComparator} is provided no sorting will be performed.
    * @param sortComparator the Comparator, null if the contents of this model should not be sorted
    */
   void setSortComparator(Comparator<? super T> sortComparator);

@@ -303,7 +303,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   /**
-   * @return the selected item, N.B. this can include the <code>nullValue</code>
+   * @return the selected item, N.B. this can include the {@code nullValue}
    * in case it has been set, {@link #getSelectedValue()} is usually what you want
    */
   @Override

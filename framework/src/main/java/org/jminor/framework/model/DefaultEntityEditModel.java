@@ -114,7 +114,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
   private boolean readOnly;
 
   /**
-   * Instantiates a new {@link DefaultEntityEditModel} based on the entity identified by <code>entityID</code>.
+   * Instantiates a new {@link DefaultEntityEditModel} based on the entity identified by {@code entityID}.
    * @param entityID the ID of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
@@ -123,7 +123,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
   }
 
   /**
-   * Instantiates a new {@link DefaultEntityEditModel} based on the entity identified by <code>entityID</code>.
+   * Instantiates a new {@link DefaultEntityEditModel} based on the entity identified by {@code entityID}.
    * @param entityID the ID of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use

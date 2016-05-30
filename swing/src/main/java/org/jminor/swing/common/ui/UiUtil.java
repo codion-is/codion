@@ -658,7 +658,7 @@ public final class UiUtil {
   }
 
   /**
-   * Resizes the given window so that it is <code>screenSizeRatio</code> percent of the current screen size
+   * Resizes the given window so that it is {@code screenSizeRatio} percent of the current screen size
    * @param window the window to resize
    * @param screenSizeRatio the screen size ratio
    */
@@ -667,7 +667,7 @@ public final class UiUtil {
   }
 
   /**
-   * Resizes the given window so that it is <code>screenSizeRatio</code> percent of the current screen size,
+   * Resizes the given window so that it is {@code screenSizeRatio} percent of the current screen size,
    * within the given minimum size
    * @param window the window to resize
    * @param screenSizeRatio the screen size ratio
@@ -868,7 +868,7 @@ public final class UiUtil {
   }
 
   /**
-   * Makes <code>textField</code> convert all lower case input to upper case
+   * Makes {@code textField} convert all lower case input to upper case
    * @param textField the text field
    * @return the text field
    */
@@ -884,7 +884,7 @@ public final class UiUtil {
   }
 
   /**
-   * Makes <code>textField</code> convert all upper case input to lower case
+   * Makes {@code textField} convert all upper case input to lower case
    * @param textField the text field
    * @return the text field
    */
@@ -1184,7 +1184,7 @@ public final class UiUtil {
    * @param component the component
    * @param keyEvent the key event
    * @param action the action
-   * @throws NullPointerException in case <code>component</code>, <code>action</code> or the action name is null
+   * @throws NullPointerException in case {@code component}, {@code action} or the action name is null
    * @see KeyStroke#getKeyStroke(int, int, boolean)
    */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final Action action) {
@@ -1199,7 +1199,7 @@ public final class UiUtil {
    * @param keyEvent the key event
    * @param modifiers the modifiers
    * @param action the action
-   * @throws NullPointerException in case <code>component</code>, <code>action</code> or the action name is null
+   * @throws NullPointerException in case {@code component}, {@code action} or the action name is null
    * @see KeyStroke#getKeyStroke(int, int, boolean)
    */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers,
@@ -1216,7 +1216,7 @@ public final class UiUtil {
    * @param modifiers the modifiers
    * @param condition the condition
    * @param action the action
-   * @throws NullPointerException in case <code>component</code>, <code>action</code> or the action name is null
+   * @throws NullPointerException in case {@code component}, {@code action} or the action name is null
    * @see KeyStroke#getKeyStroke(int, int, boolean)
    */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
@@ -1226,14 +1226,14 @@ public final class UiUtil {
 
   /**
    * Links the given action to the given key event on the given component via inputMap/actionMap, using the name
-   * of the action as key for the actionMap, if <code>action</code> is null the binding is removed
+   * of the action as key for the actionMap, if {@code action} is null the binding is removed
    * @param component the component
    * @param keyEvent the key event
    * @param modifiers the modifiers
    * @param condition the condition
    * @param onKeyRelease the onKeyRelease condition
    * @param action the action, if null then the action binding is removed
-   * @throws NullPointerException in case <code>component</code> or the action name is null
+   * @throws NullPointerException in case {@code component} or the action name is null
    * @see KeyStroke#getKeyStroke(int, int, boolean)
    */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
@@ -1487,7 +1487,7 @@ public final class UiUtil {
 
   /**
    * Runs the given Runnable instance while displaying a simple indeterminate progress bar, along with a button based
-   * on the <code>buttonAction</code> parameter, if specified
+   * on the {@code buttonAction} parameter, if specified
    * Any exception thrown from the task is caught and displayed, rendering the execution unsuccessful.
    * @param dialogParent the dialog parent
    * @param progressBarTitle the progress bar title
@@ -1505,7 +1505,7 @@ public final class UiUtil {
 
   /**
    * Runs the given Runnable instance while displaying a simple indeterminate progress bar, along with a button based
-   * on the <code>buttonAction</code> parameter, if specified
+   * on the {@code buttonAction} parameter, if specified
    * Any exception thrown from the task is caught and displayed, rendering the execution unsuccessful.
    * @param dialogParent the dialog parent
    * @param progressBarTitle the progress bar title
@@ -1760,7 +1760,7 @@ public final class UiUtil {
     }
 
     /**
-     * Transfers focus according the the value of <code>backward</code>
+     * Transfers focus according the the value of {@code backward}
      * @param e the action event
      */
     @Override

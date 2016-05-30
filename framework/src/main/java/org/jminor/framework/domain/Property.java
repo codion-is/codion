@@ -188,7 +188,7 @@ public interface Property extends Attribute {
    * i.e. 1234567 shown as 1.234.567 or 1,234,567 depending on locale.
    * By default grouping is not used.
    * Only applicable to numerical properties.
-   * This setting is overridden during subsequent calls to <code>setFormat</code>
+   * This setting is overridden during subsequent calls to {@code setFormat}
    * @param useGrouping if true then number grouping is used
    * @return this Property instance
    */
@@ -312,7 +312,7 @@ public interface Property extends Attribute {
 
     /**
      * @param value the SQL value Object to translate from
-     * @return the value of SQL <code>value</code>
+     * @return the value of SQL {@code value}
      */
     Object fromColumnValue(final Object value);
 

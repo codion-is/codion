@@ -59,7 +59,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
 
   /**
    * @param propertyID the ID of the property for which to retrieve the value
-   * @return the value of the property identified by <code>propertyID</code>,
+   * @return the value of the property identified by {@code propertyID},
    * assuming it is a String
    * @throws ClassCastException if the value is not a String instance
    */
@@ -67,7 +67,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
 
   /**
    * @param propertyID the ID of the property for which to retrieve the value
-   * @return the value of the property identified by <code>propertyID</code>,
+   * @return the value of the property identified by {@code propertyID},
    * assuming it is an Integer
    * @throws ClassCastException if the value is not a Integer instance
    */
@@ -75,7 +75,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
 
   /**
    * @param propertyID the ID of the property for which to retrieve the value
-   * @return the value of the property identified by <code>propertyID</code>,
+   * @return the value of the property identified by {@code propertyID},
    * assuming it is a Character
    * @throws ClassCastException if the value is not a Character instance
    */
@@ -83,7 +83,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
 
   /**
    * @param propertyID the ID of the property for which to retrieve the value
-   * @return the value of the property identified by <code>propertyID</code>,
+   * @return the value of the property identified by {@code propertyID},
    * assuming it is a Double. Rounds the value before returning it in case
    * maximumFractionDigits have been specified.
    * @throws ClassCastException if the value is not a Double instance
@@ -93,7 +93,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
 
   /**
    * @param propertyID the ID of the date property for which to retrieve the value
-   * @return the value of the property identified by <code>propertyID</code>,
+   * @return the value of the property identified by {@code propertyID},
    * assuming it is a Date
    * @throws ClassCastException if the value is not a Date instance
    */
@@ -101,7 +101,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
 
   /**
    * @param propertyID the ID of the date property for which to retrieve the value
-   * @return the value of the property identified by <code>propertyID</code>,
+   * @return the value of the property identified by {@code propertyID},
    * assuming it is a Timestamp
    * @throws ClassCastException if the value is not a Timestamp instance
    */
@@ -109,7 +109,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
 
   /**
    * @param propertyID the ID of the property for which to retrieve the value
-   * @return the value of the property identified by <code>propertyID</code>,
+   * @return the value of the property identified by {@code propertyID},
    * assuming it is a Boolean
    * @throws ClassCastException if the value is not a Boolean instance
    */
@@ -118,14 +118,14 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
   /**
    * @param propertyID the ID of the property for which to retrieve the formatted value
    * @param format the format object
-   * @return the value of the property identified by <code>propertyID</code>, formatted with <code>format</code>
+   * @return the value of the property identified by {@code propertyID}, formatted with {@code format}
    */
   String getFormatted(final String propertyID, final Format format);
 
   /**
    * @param property the property for which to retrieve the formatted value
    * @param format the format object
-   * @return the value of the given property, formatted with <code>format</code>
+   * @return the value of the given property, formatted with {@code format}
    */
   String getFormatted(final Property property, final Format format);
 
@@ -133,7 +133,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
    * This method returns a String representation of the value associated with the given property,
    * if the property has a format it is used.
    * @param property the property for which to retrieve the value
-   * @return a String representation of the value of <code>property</code>
+   * @return a String representation of the value of {@code property}
    * @see #getFormatted(Property, java.text.Format)
    */
   String getAsString(final Property property);
@@ -145,7 +145,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
    * been loaded, an "empty" entity is returned, containing only the primary
    * key value. Null is returned only if the actual reference property is null.
    * @param foreignKeyPropertyID the ID of the property for which to retrieve the value
-   * @return the value of the property identified by <code>propertyID</code>,
+   * @return the value of the property identified by {@code propertyID},
    * assuming it is an Entity
    * @throws IllegalArgumentException if the property is not a foreign key property
    * @see #isLoaded(String)
@@ -298,9 +298,9 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
    * PrimaryKeyGenerators fall into two categories, one in which the primary key value is
    * fetched or generated before the record is inserted and one where the underlying database
    * automatically sets the primary key value on insert, f.ex. with a table trigger or identity columns.
-   * Implementations should implement either <code>beforeInsert()</code> or <code>afterInsert()</code>
-   * and leave the other one empty. <code>isAutoIncrement()</code> returns true if the database
-   * generates primary key values automatically, this implies that <code>afterInsert()</code>
+   * Implementations should implement either {@code beforeInsert()} or {@code afterInsert()}
+   * and leave the other one empty. {@code isAutoIncrement()} returns true if the database
+   * generates primary key values automatically, this implies that {@code afterInsert()}
    * should be used, fetching the generated primary key value and updating the entity instance accordingly.
    */
   interface KeyGenerator {

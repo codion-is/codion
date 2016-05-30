@@ -28,7 +28,7 @@ public interface ValueMapEditModel<K, V> {
    * Adds a listener notified each time the value associated with the given key is set via
    * {@link ValueMapEditModel#setValue(Object, Object)}, note that this event is only fired when the the value changes
    * @param key the key for which to monitor value changes
-   * @param listener a listener notified each time the value of <code>key</code> is set via this model
+   * @param listener a listener notified each time the value of {@code key} is set via this model
    */
   void addValueSetListener(final K key, final EventInfoListener<ValueChange<K, ?>> listener);
 
@@ -41,7 +41,7 @@ public interface ValueMapEditModel<K, V> {
   /**
    * Adds a listener notified each time the value associated with the given key changes
    * @param key the key for which to monitor value changes
-   * @param listener a listener notified each time the value of <code>key</code> changes
+   * @param listener a listener notified each time the value of {@code key} changes
    */
   void addValueListener(final K key, final EventInfoListener<ValueChange<K, ?>> listener);
 
@@ -58,7 +58,7 @@ public interface ValueMapEditModel<K, V> {
 
   /**
    * @param key the key for which to retrieve the event
-   * @return an EventObserver notified when the value of <code>key</code> changes
+   * @return an EventObserver notified when the value of {@code key} changes
    */
   EventObserver<ValueChange<K, ?>> getValueObserver(K key);
 
@@ -121,7 +121,7 @@ public interface ValueMapEditModel<K, V> {
   void validate(final Collection<? extends ValueMap<K, V>> valueMaps) throws ValidationException;
 
   /**
-   * Returns true if the value associated with the given key is valid, using the <code>validate</code> method
+   * Returns true if the value associated with the given key is valid, using the {@code validate} method
    * @param key the key the value is associated with
    * @return true if the value is valid
    * @see #validate(Object)

@@ -24,7 +24,7 @@ public interface FilteredModel<T> {
   void removeFilteringListener(final EventListener listener);
 
   /**
-   * Filters the table according to the criteria returned by <code>getFilterCriteria()</code>.
+   * Filters the table according to the criteria returned by {@code getFilterCriteria()}.
    * If no filter criteria is specified this method does nothing.
    * This method does not interfere with the internal ordering of the visible items.
    * @see #getFilterCriteria()

@@ -44,9 +44,9 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
   }
 
   /**
-   * Returns the table value of the property identified by <code>jrField.getName()</code>
+   * Returns the table value of the property identified by {@code jrField.getName()}
    * @param jrField the report field which value to retrieve
-   * @return the value of the property identified by <code>jrField.getName()</code>
+   * @return the value of the property identified by {@code jrField.getName()}
    * @throws net.sf.jasperreports.engine.JRException in case of an exception
    * @see org.jminor.framework.domain.Entity#get(org.jminor.framework.domain.Property)
    */

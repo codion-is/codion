@@ -26,7 +26,7 @@ public final class EntityConnectionUtil {
    * @param includePrimaryKeys if true primary key values are included, if false then they are assumed to be auto-generated
    * @param entityIDs the IDs of the entity types to copy
    * @throws DatabaseException in case of a db exception
-   * @throws IllegalArgumentException if <code>batchSize</code> is not a positive integer
+   * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
    */
   public static void copyEntities(final EntityConnection source, final EntityConnection destination, final int batchSize,
                                   final boolean includePrimaryKeys, final String... entityIDs) throws DatabaseException {
@@ -42,14 +42,14 @@ public final class EntityConnectionUtil {
   }
 
   /**
-   * Inserts the given entities, performing a commit after each <code>batchSize</code> number of inserts.
+   * Inserts the given entities, performing a commit after each {@code batchSize} number of inserts.
    * @param connection the entity connection to use when inserting
    * @param entities the entities to insert
    * @param committed after the call this list will contain the primary keys of successfully inserted entities
    * @param batchSize the commit batch size
    * @param progressReporter if specified this will be used to report batch progress
    * @throws DatabaseException in case of an exception
-   * @throws IllegalArgumentException if <code>batchSize</code> is not a positive integer
+   * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
    */
   public static void batchInsert(final EntityConnection connection, final List<Entity> entities,
                                  final List<Entity.Key> committed, final int batchSize,

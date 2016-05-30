@@ -69,7 +69,7 @@ public final class DateUtil {
 
   /**
    * @param date the Date object to floor
-   * @return a Time object with the same time of day as <code>date</code>, except the Calendar.YEAR,
+   * @return a Time object with the same time of day as {@code date}, except the Calendar.YEAR,
    * Calendar.MONTH and Calendar.DATE fields are set to 1970, january and 1 respectively
    */
   public static Time floorTime(final Date date) {
@@ -84,7 +84,7 @@ public final class DateUtil {
 
   /**
    * @param date the Date object to floor
-   * @return a Date object with the same date as <code>date</code>, except the Calendar.HOUR_OF_DAY,
+   * @return a Date object with the same date as {@code date}, except the Calendar.HOUR_OF_DAY,
    * Calendar.MINUTE, Calendar.SECOND and Calendar.MILLISECOND fields are set to zero
    */
   public static Date floorDate(final Date date) {
@@ -97,7 +97,7 @@ public final class DateUtil {
 
   /**
    * @param timestamp the Timestamp object to floor
-   * @return a Timestamp object with the same time as <code>timestamp</code>
+   * @return a Timestamp object with the same time as {@code timestamp}
    * except the Calendar.SECOND and Calendar.MILLISECOND fields are set to zero
    */
   public static Timestamp floorTimestamp(final Timestamp timestamp) {
@@ -175,7 +175,7 @@ public final class DateUtil {
 
   /**
    * @param toAdd the number of months to add to the current month
-   * @return the first day of the month <code>toAdd</code> from the current month
+   * @return the first day of the month {@code toAdd} from the current month
    */
   public static Date getFirstDayOfMonth(final int toAdd) {
     final Calendar calendar = Calendar.getInstance();
@@ -188,7 +188,7 @@ public final class DateUtil {
 
   /**
    * @param toAdd the number of months to add to the current month
-   * @return the last day of the month <code>toAdd</code> from the current month
+   * @return the last day of the month {@code toAdd} from the current month
    */
   public static Date getLastDayOfMonth(final int toAdd) {
     final Calendar calendar = Calendar.getInstance();

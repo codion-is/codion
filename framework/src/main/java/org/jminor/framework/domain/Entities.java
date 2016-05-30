@@ -84,7 +84,7 @@ public final class Entities {
   }
 
   /**
-   * Defines a new entity, by default the <code>entityID</code> is used as the underlying table name
+   * Defines a new entity, by default the {@code entityID} is used as the underlying table name
    * @param entityID the ID uniquely identifying the entity
    * @param propertyDefinitions the {@link Property} objects to base this entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
@@ -173,7 +173,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return a String array containing the IDs of the properties used as default search properties
-   * for entities identified by <code>entityID</code>
+   * for entities identified by {@code entityID}
    */
   public static Collection<String> getSearchPropertyIDs(final String entityID) {
     return DefaultEntityDefinition.getDefinition(entityID).getSearchPropertyIDs();
@@ -229,7 +229,7 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @return a list containing the primary key properties of the entity identified by <code>entityID</code>
+   * @return a list containing the primary key properties of the entity identified by {@code entityID}
    */
   public static List<Property.ColumnProperty> getPrimaryKeyProperties(final String entityID) {
     return DefaultEntityDefinition.getDefinition(entityID).getPrimaryKeyProperties();
@@ -237,7 +237,7 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @return true if the entity identified by <code>entityID</code> is read only
+   * @return true if the entity identified by {@code entityID} is read only
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static boolean isReadOnly(final String entityID) {
@@ -246,7 +246,7 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @return true if the entity identified by <code>entityID</code> is based on a small dataset
+   * @return true if the entity identified by {@code entityID} is based on a small dataset
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static boolean isSmallDataset(final String entityID) {
@@ -255,7 +255,7 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @return true if the entity identified by <code>entityID</code> is based on static data
+   * @return true if the entity identified by {@code entityID} is based on static data
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static boolean isStaticData(final String entityID) {
@@ -288,7 +288,7 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @return the name of the table used to select entities identified by <code>entityID</code>
+   * @return the name of the table used to select entities identified by {@code entityID}
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static String getSelectTableName(final String entityID) {
@@ -297,7 +297,7 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @return the name of the table on which entities identified by <code>entityID</code> are based
+   * @return the name of the table on which entities identified by {@code entityID} are based
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static String getTableName(final String entityID) {
@@ -306,7 +306,7 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @return the sql query used when selecting entities identified by <code>entityID</code>
+   * @return the sql query used when selecting entities identified by {@code entityID}
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static String getSelectQuery(final String entityID) {
@@ -323,7 +323,7 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @return the query string used to select entities identified by <code>entityID</code>
+   * @return the query string used to select entities identified by {@code entityID}
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static String getSelectColumnsString(final String entityID) {
@@ -332,7 +332,7 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @return the primary key generator for entities identified by <code>entityID</code>
+   * @return the primary key generator for entities identified by {@code entityID}
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static Entity.KeyGenerator getKeyGenerator(final String entityID) {
@@ -341,7 +341,7 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @return the type of primary key generator used by entities identified by <code>entityID</code>
+   * @return the type of primary key generator used by entities identified by {@code entityID}
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static Entity.KeyGenerator.Type getKeyGeneratorType(final String entityID) {
@@ -387,13 +387,13 @@ public final class Entities {
   }
 
   /**
-   * Retrieves the column properties comprising the entity identified by <code>entityID</code>
+   * Retrieves the column properties comprising the entity identified by {@code entityID}
    * @param entityID the entity ID
    * @param includePrimaryKeyProperties if true primary key properties are included
    * @param includeReadOnly if true then properties that are marked as 'read only' are included
    * @param includeNonUpdatable if true then non updatable properties are included
    * @return a list containing the database properties (properties that map to database columns) comprising
-   * the entity identified by <code>entityID</code>
+   * the entity identified by {@code entityID}
    */
   public static List<Property.ColumnProperty> getColumnProperties(final String entityID,
                                                                   final boolean includePrimaryKeyProperties,
@@ -416,7 +416,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return a list containing the visible (non-hidden) properties
-   * in the entity identified by <code>entityID</code>
+   * in the entity identified by {@code entityID}
    */
   public static List<Property> getVisibleProperties(final String entityID) {
     Objects.requireNonNull(entityID, ENTITY_ID_PARAM);
@@ -460,7 +460,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @param propertyID the property ID
-   * @return the property identified by <code>propertyID</code> in the entity identified by <code>entityID</code>
+   * @return the property identified by {@code propertyID} in the entity identified by {@code entityID}
    * @throws IllegalArgumentException in case no such property exists
    */
   public static Property getProperty(final String entityID, final String propertyID) {
@@ -477,8 +477,8 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @param propertyIDs the IDs of the properties to retrieve
-   * @return a list containing the properties identified by <code>propertyIDs</code>, found in
-   * the entity identified by <code>entityID</code>
+   * @return a list containing the properties identified by {@code propertyIDs}, found in
+   * the entity identified by {@code entityID}
    */
   public static List<Property> getProperties(final String entityID, final Collection<String> propertyIDs) {
     Objects.requireNonNull(propertyIDs, PROPERTY_ID_PARAM);
@@ -488,8 +488,8 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @param propertyIDs the IDs of the properties to retrieve
-   * @return a list containing the properties identified by <code>propertyIDs</code>, found in
-   * the entity identified by <code>entityID</code>
+   * @return a list containing the properties identified by {@code propertyIDs}, found in
+   * the entity identified by {@code entityID}
    */
   public static List<Property> getProperties(final String entityID, final String... propertyIDs) {
     Objects.requireNonNull(entityID, ENTITY_ID_PARAM);
@@ -505,7 +505,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @param includeHidden true if hidden properties should be included in the result
-   * @return a collection containing the properties found in the entity identified by <code>entityID</code>
+   * @return a collection containing the properties found in the entity identified by {@code entityID}
    */
   public static Collection<Property> getProperties(final String entityID, final boolean includeHidden) {
     return includeHidden ? getProperties(entityID).values() : getVisibleProperties(entityID);
@@ -513,7 +513,7 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @return a collection containing all database properties found in the entity identified by <code>entityID</code>,
+   * @return a collection containing all database properties found in the entity identified by {@code entityID},
    * that is, properties that map to database columns
    */
   public static Collection<Property.ColumnProperty> getColumnProperties(final String entityID) {
@@ -522,7 +522,7 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @return a collection containing all transient database properties found in the entity identified by <code>entityID</code>,
+   * @return a collection containing all transient database properties found in the entity identified by {@code entityID},
    * that is, properties that do not map to database columns
    */
   public static Collection<Property.TransientProperty> getTransientProperties(final String entityID) {
@@ -532,7 +532,7 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @return a collection containing all the foreign key properties found in the entity
-   * identified by <code>entityID</code>
+   * identified by {@code entityID}
    */
   public static Collection<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID) {
     return DefaultEntityDefinition.getDefinition(entityID).getForeignKeyProperties();
@@ -549,8 +549,8 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @param foreignKeyPropertyID the foreign key id
-   * @return a collection containing all denormalized properties of the entity identified by <code>entityID</code>
-   * which source is the entity identified by <code>propertyOwnerEntityID</code>
+   * @return a collection containing all denormalized properties of the entity identified by {@code entityID}
+   * which source is the entity identified by {@code propertyOwnerEntityID}
    */
   public static Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String entityID,
                                                                                     final String foreignKeyPropertyID) {
@@ -560,16 +560,16 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @param foreignKeyPropertyID the foreign key id
-   * @return true if the entity identified by <code>entityID</code> contains denormalized properties
-   * which source is the entity identified by <code>propertyOwnerEntityID</code>
+   * @return true if the entity identified by {@code entityID} contains denormalized properties
+   * which source is the entity identified by {@code propertyOwnerEntityID}
    */
   public static boolean hasDenormalizedProperties(final String entityID, final String foreignKeyPropertyID) {
     return DefaultEntityDefinition.getDefinition(entityID).hasDenormalizedProperties(foreignKeyPropertyID);
   }
 
   /**
-   * Returns true if the property identified by <code>propertyID</code> in the entity identified
-   * by <code>entityID</code> has any linked properties, that is properties which
+   * Returns true if the property identified by {@code propertyID} in the entity identified
+   * by {@code entityID} has any linked properties, that is properties which
    * values depend on the value of the given property
    * @param entityID the entityID
    * @param propertyID the propertyID
@@ -580,8 +580,8 @@ public final class Entities {
   }
 
   /**
-   * Returns the IDs of any properties which values are linked to the property identified by <code>propertyID</code>
-   * in the entity identified by <code>entityID</code>
+   * Returns the IDs of any properties which values are linked to the property identified by {@code propertyID}
+   * in the entity identified by {@code entityID}
    * @param entityID the entityID
    * @param propertyID the propertyID
    * @return the IDs of any properties which values are linked to the given property
@@ -845,15 +845,15 @@ public final class Entities {
    * "key3" -&#62; value3
    * "key4" -&#62; {Entity instance with a single mapping "refKey" -&#62; refValue}
    * </pre>
-   * <code>
+   * {@code
    * Entities.StringProvider provider = new Entities.StringProvider();<br>
    * provider.addText("key1=").addValue("key1").addText(", key3='").addValue("key3")<br>
    *         .addText("' foreign key value=").addForeignKeyValue("key4", "refKey");<br>
    * System.out.println(provider.toString(entity));<br>
-   * </code>
+   * }
    * <br>
    * outputs the following String:<br><br>
-   * <code>key1=value1, key3='value3' foreign key value=refValue</code>
+   * {@code key1=value1, key3='value3' foreign key value=refValue}
    */
   public static final class StringProvider implements Entity.ToString {
 
@@ -1037,7 +1037,7 @@ public final class Entities {
 
     /**
      * Returns true if the given property accepts a null value for the given entity,
-     * by default this method simply returns <code>property.isNullable()</code>
+     * by default this method simply returns {@code property.isNullable()}
      * @param entity the entity being validated
      * @param key the property ID
      * @return true if the property accepts a null value

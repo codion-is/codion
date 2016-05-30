@@ -192,7 +192,7 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
   }
 
   /**
-   * Sets the LoginProxy for the given client type id, if <code>loginProxy</code> is null
+   * Sets the LoginProxy for the given client type id, if {@code loginProxy} is null
    * the login proxy is removed.
    * @param clientTypeID the client type ID with which to associate the given login proxy
    * @param loginProxy the login proxy
@@ -213,7 +213,7 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
   }
 
   /**
-   * Sets the ConnectionValidator for the given client type id, if <code>connectionValidator</code> is null
+   * Sets the ConnectionValidator for the given client type id, if {@code connectionValidator} is null
    * the connection validator is removed.
    * @param clientTypeID the client type ID with which to associate the given connection validator
    * @param connectionValidator the connection validator

@@ -16,7 +16,7 @@ public final class EditModelValues {
   private EditModelValues() {}
 
   /**
-   * Instantiates a new Value based on the value identified by <code>key</code> in
+   * Instantiates a new Value based on the value identified by {@code key} in
    * the given value map edit model
    * @param editModel the value map edit model
    * @param key the key of the value

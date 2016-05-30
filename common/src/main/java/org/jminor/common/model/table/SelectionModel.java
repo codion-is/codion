@@ -92,13 +92,13 @@ public interface SelectionModel<R> {
   int getSelectedIndex();
 
   /**
-   * Selects the item at <code>index</code>
+   * Selects the item at {@code index}
    * @param index the index
    */
   void addSelectedIndex(final int index);
 
   /**
-   * Clears the selection and selects the item at <code>index</code>
+   * Clears the selection and selects the item at {@code index}
    * @param index the index
    */
   void setSelectedIndex(final int index);

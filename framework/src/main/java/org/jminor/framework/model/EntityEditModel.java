@@ -33,7 +33,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
 
   /**
    * Copies the values from the given {@link Entity} into the underlying
-   * {@link Entity} being edited by this edit model. If <code>entity</code>
+   * {@link Entity} being edited by this edit model. If {@code entity}
    * is null then the entity being edited is populated with default values
    * @param entity the entity
    */
@@ -88,7 +88,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
 
   /**
    * For every field referencing the given foreign key values, replaces that foreign key instance with
-   * the corresponding entity from <code>foreignKeyValues</code>, useful when property
+   * the corresponding entity from {@code foreignKeyValues}, useful when property
    * values have been changed in the referenced entity that must be reflected in the edit model.
    * @param foreignKeyEntityID the entity ID of the foreign key values
    * @param foreignKeyValues the new foreign key entities
@@ -168,7 +168,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
 
   /**
    * @param foreignKeyPropertyID the ID of the property for which to retrieve the {@link EntityLookupModel}
-   * @return the {@link EntityLookupModel} associated with the <code>property</code>, if no lookup model
+   * @return the {@link EntityLookupModel} associated with the {@code property}, if no lookup model
    * has been initialized for the given property, a new one is created and associated with
    * the property, to be returned the next time this method is called
    */
@@ -176,7 +176,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
 
   /**
    * @param foreignKeyProperty the foreign key property for which to retrieve the {@link EntityLookupModel}
-   * @return the {@link EntityLookupModel} associated with the <code>property</code>, if no lookup model
+   * @return the {@link EntityLookupModel} associated with the {@code property}, if no lookup model
    * has been initialized for the given property, a new one is created and associated with
    * the property, to be returned the next time this method is called
    */
@@ -186,8 +186,8 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * Returns the default value for the given property, used when initializing a new default entity for this edit model.
    * This method is only called for properties that are non-denormalized and are not part of a foreign key.
    * If the default value of a property should be the last value used, call {@link #setValuePersistent(String, boolean)}
-   * with <code>true</code> for the given property or override {@link #isValuePersistent} so that it
-   * returns <code>true</code> for that property in case the value should persist.
+   * with {@code true} for the given property or override {@link #isValuePersistent} so that it
+   * returns {@code true} for that property in case the value should persist.
    * @param property the property
    * @return the default value for the property
    * @see Property#setDefaultValue(Object)

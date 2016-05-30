@@ -245,7 +245,7 @@ public final class ControlSet extends Control {
   }
 
   /**
-   * Adds all action found in <code>controlSet</code> to this control set
+   * Adds all action found in {@code controlSet} to this control set
    * @param controlSet the source set
    */
   public void addAll(final ControlSet controlSet) {

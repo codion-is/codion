@@ -22,7 +22,7 @@ public interface ValueConverter<T, C> {
 
   /**
    * @param columnValue the SQL value to translate from
-   * @return the value of SQL <code>columnValue</code>
+   * @return the value of SQL {@code columnValue}
    */
   T fromColumnValue(final C columnValue);
 }

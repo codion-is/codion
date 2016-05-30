@@ -471,7 +471,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
   }
 
   /**
-   * Checks the credentials provided by <code>clientInfo</code> against the credentials
+   * Checks the credentials provided by {@code clientInfo} against the credentials
    * found in the connection pool user, assuming the user names match
    * @param connectionPoolUser the connection pool user credentials
    * @param user the user credentials to check

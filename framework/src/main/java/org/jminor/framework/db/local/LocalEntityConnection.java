@@ -752,7 +752,7 @@ final class LocalEntityConnection implements EntityConnection {
    * @param entities the entities to check, mapped to entityID
    * @throws DatabaseException in case of a database exception
    * @throws RecordModifiedException in case an entity has been modified, if an entity has been deleted,
-   * the <code>modifiedRow</code> provided by the exception is null
+   * the {@code modifiedRow} provided by the exception is null
    */
   private void lockAndCheckForUpdate(final Map<String, Collection<Entity>> entities) throws DatabaseException {
     for (final Map.Entry<String, Collection<Entity>> entry : entities.entrySet()) {

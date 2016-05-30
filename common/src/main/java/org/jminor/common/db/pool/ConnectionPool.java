@@ -41,7 +41,7 @@ public interface ConnectionPool {
   void close();
 
   /**
-   * Retrives usage statistics for the connection pool since time <code>since</code>.
+   * Retrives usage statistics for the connection pool since time {@code since}.
    * @param since the time from which statistics should be retrieved
    * @return connection pool usage statistics
    */
@@ -144,7 +144,7 @@ public interface ConnectionPool {
 
   /**
    * @param value the time to wait before creating a new connection in ms
-   * @throws IllegalArgumentException in case value is negative or larger than <code>maximumCheckOutTime</code>
+   * @throws IllegalArgumentException in case value is negative or larger than {@code maximumCheckOutTime}
    */
   void setNewConnectionThreshold(final int value);
 

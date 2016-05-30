@@ -74,7 +74,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   void setEditModel(final E editModel);
 
   /**
-   * Sets <code>foreignKeyValues</code> as the search criteria values for the given foreignKeyProperty
+   * Sets {@code foreignKeyValues} as the search criteria values for the given foreignKeyProperty
    * and refreshes this table model.
    * @param foreignKeyProperty the ID of the foreign key property
    * @param foreignKeyValues the entities to use as criteria values
@@ -83,7 +83,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
 
   /**
    * For every entity in this table model, replaces the foreign key instance bearing the primary
-   * key with the corresponding entity from <code>foreignKeyValues</code>, useful when property
+   * key with the corresponding entity from {@code foreignKeyValues}, useful when property
    * values have been changed in the referenced entity that must be reflected in the table model.
    * @param foreignKeyEntityID the entity ID of the foreign key values
    * @param foreignKeyValues the foreign key entities
@@ -155,7 +155,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   EntityTableModel<E> setBatchUpdateAllowed(final boolean batchUpdateAllowed);
 
   /**
-   * Returns the {@link ColumnSummaryModel} associated with the property identified by <code>propertyID</code>
+   * Returns the {@link ColumnSummaryModel} associated with the property identified by {@code propertyID}
    * @param propertyID the ID of the property
    * @return the {@link ColumnSummaryModel} for the given property ID
    */
@@ -253,14 +253,14 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   EntityTableModel<E> setInsertAction(final InsertAction insertAction);
 
   /**
-   * Finds entities according to the values in <code>keys</code>
+   * Finds entities according to the values in {@code keys}
    * @param keys the primary key values to use as condition
-   * @return the entities having the primary key values as in <code>keys</code>
+   * @return the entities having the primary key values as in {@code keys}
    */
   Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys);
 
   /**
-   * Sets the selected entities according to the primary keys in <code>primaryKeys</code>
+   * Sets the selected entities according to the primary keys in {@code primaryKeys}
    * @param keys the primary keys of the entities to select
    */
   void setSelectedByKey(final Collection<Entity.Key> keys);

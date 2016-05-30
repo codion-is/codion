@@ -41,7 +41,7 @@ public final class SwingConfiguration {
   public static final String TAB_PLACEMENT = "jminor.client.tabPlacement";
 
   /**
-   * Specifies if EntityPanels opened via the <code>EntityApplicationPanel.showEntityPanelDialog</code> method
+   * Specifies if EntityPanels opened via the {@code EntityApplicationPanel.showEntityPanelDialog} method
    * should be persisted, or kept in memory, when the dialog is closed.<br>
    * Value type: Boolean<br>
    * Default value: false

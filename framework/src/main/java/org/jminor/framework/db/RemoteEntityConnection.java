@@ -161,8 +161,8 @@ public interface RemoteEntityConnection extends Remote {
    * @param entityID the entity type
    * @param propertyID the ID of the property to use as a condition
    * @param value the value to use in the condition
-   * @return an entity of the type <code>entityID</code>, having the
-   * value of <code>propertyID</code> as <code>value</code>
+   * @return an entity of the type {@code entityID}, having the
+   * value of {@code propertyID} as {@code value}
    * @throws DatabaseException in case of a db exception
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws RemoteException in case of a remote exception
@@ -172,7 +172,7 @@ public interface RemoteEntityConnection extends Remote {
   /**
    * Selects a single entity by key
    * @param key the key of the entity to select
-   * @return an entity having the key <code>key</code>
+   * @return an entity having the key {@code key}
    * @throws DatabaseException in case of a db exception
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws RemoteException in case of a remote exception
@@ -191,9 +191,9 @@ public interface RemoteEntityConnection extends Remote {
   Entity selectSingle(final EntitySelectCriteria criteria) throws RemoteException, DatabaseException;
 
   /**
-   * Returns entities according to <code>keys</code>
+   * Returns entities according to {@code keys}
    * @param keys the keys used in the condition
-   * @return entities according to <code>keys</code>
+   * @return entities according to {@code keys}
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
@@ -209,11 +209,11 @@ public interface RemoteEntityConnection extends Remote {
   List<Entity> selectMany(final EntitySelectCriteria criteria) throws RemoteException, DatabaseException;
 
   /**
-   * Selects entities according to one property (<code>propertyID</code>), using <code>values</code> as a condition
+   * Selects entities according to one property ({@code propertyID}), using {@code values} as a condition
    * @param entityID the entity type
    * @param propertyID the ID of the condition property
    * @param values the property values to use as condition
-   * @return entities of the type <code>entityID</code> according to <code>propertyID</code> and <code>values</code>
+   * @return entities of the type {@code entityID} according to {@code propertyID} and {@code values}
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
@@ -222,7 +222,7 @@ public interface RemoteEntityConnection extends Remote {
   /**
    * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityIDs
    * @param entities the entities for which to retrieve dependencies
-   * @return the entities that depend on <code>entities</code>
+   * @return the entities that depend on {@code entities}
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
@@ -249,7 +249,7 @@ public interface RemoteEntityConnection extends Remote {
   ReportResult fillReport(final ReportWrapper reportWrapper) throws RemoteException, DatabaseException, ReportException;
 
   /**
-   * Writes <code>blobData</code> in the blob field specified by the property identified by <code>propertyID</code>
+   * Writes {@code blobData} in the blob field specified by the property identified by {@code propertyID}
    * for the given entity
    * @param primaryKey the primary key of the entity for which to write the blob field
    * @param blobPropertyID the ID of the blob property
@@ -260,7 +260,7 @@ public interface RemoteEntityConnection extends Remote {
   void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final byte[] blobData) throws RemoteException, DatabaseException;
 
   /**
-   * Reads the blob specified by the property identified by <code>propertyID</code> from the given entity
+   * Reads the blob specified by the property identified by {@code propertyID} from the given entity
    * @param primaryKey the primary key of the entity
    * @param blobPropertyID the ID of the blob property
    * @return a byte array containing the blob data

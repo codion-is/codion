@@ -215,7 +215,7 @@ public abstract class EntityTestUnit {
   protected abstract void loadDomainModel();
 
   /**
-   * This method should return an instance of the entity specified by <code>entityID</code>
+   * This method should return an instance of the entity specified by {@code entityID}
    * @param entityID the entityID for which to initialize an entity instance
    * @return the entity instance to use for testing the entity type
    */
@@ -233,7 +233,7 @@ public abstract class EntityTestUnit {
   }
 
   /**
-   * This method should return <code>testEntity</code> in a modified state
+   * This method should return {@code testEntity} in a modified state
    * @param testEntity the entity to modify
    */
   protected void modifyEntity(final Entity testEntity) {
@@ -241,7 +241,7 @@ public abstract class EntityTestUnit {
   }
 
   /**
-   * Initializes the entities referenced by the entity identified by <code>entityID</code>
+   * Initializes the entities referenced by the entity identified by {@code entityID}
    * @param entityID the ID of the entity for which to initialize the referenced entities
    * @param visited the entityIDs already visited
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
@@ -281,9 +281,9 @@ public abstract class EntityTestUnit {
   }
 
   /**
-   * Tests selecting the given entity, if <code>testEntity</code> is null
+   * Tests selecting the given entity, if {@code testEntity} is null
    * then selecting many entities is tested.
-   * @param entityID the entityID in case <code>testEntity</code> is null
+   * @param entityID the entityID in case {@code testEntity} is null
    * @param testEntity the entity to test selecting
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */

@@ -35,7 +35,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   private String toString;
 
   /**
-   * Caches the result of <code>getReferencedKey</code> method
+   * Caches the result of {@code getReferencedKey} method
    */
   private Map<String, Key> referencedKeyCache;
 
@@ -160,7 +160,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
 
   /**
    * @param key the ID of the property for which to retrieve the value
-   * @return the value of the property identified by <code>propertyID</code>
+   * @return the value of the property identified by {@code propertyID}
    */
   @Override
   public Object get(final String key) {
@@ -329,7 +329,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
 
   /**
    * @param propertyID the ID of the property for which to retrieve the value
-   * @return a String representation of the value of the property identified by <code>propertyID</code>
+   * @return a String representation of the value of the property identified by {@code propertyID}
    * @see #getFormatted(Property, java.text.Format)
    */
   @Override
@@ -377,7 +377,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
 
   /**
    * @param entity the entity to compare with
-   * @return the compare result from comparing <code>entity</code> with this Entity instance
+   * @return the compare result from comparing {@code entity} with this Entity instance
    * @see Definition#setComparator(java.util.Comparator)
    */
   @Override
@@ -514,9 +514,9 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   }
 
   /**
-   * Sets the values of the properties used in the reference to the corresponding values found in <code>referencedEntity</code>.
+   * Sets the values of the properties used in the reference to the corresponding values found in {@code referencedEntity}.
    * Example: EntityOne references EntityTwo via entityTwoID, after a call to this method the EntityOne.entityTwoID
-   * property has the value of EntityTwos primary key property. If <code>referencedEntity</code> is null then
+   * property has the value of EntityTwos primary key property. If {@code referencedEntity} is null then
    * the corresponding reference values are set to null.
    * @param foreignKeyProperty the entity reference property
    * @param referencedEntity the referenced entity
@@ -723,7 +723,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   }
 
   /**
-   * Performs a basic data validation of <code>value</code>, checking if the <code>value</code> data type is
+   * Performs a basic data validation of {@code value}, checking if the {@code value} data type is
    * consistent with the data type of this property.
    * @param value the value to validate
    * @param property the property

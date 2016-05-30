@@ -80,7 +80,7 @@ public class Util {
   /**
    * Maps the given values according to the keys provided by the given key provider,
    * keeping the iteration order of the given collection.
-   * <code>
+   * {@code
    * class Person {
    *   String name;
    *   Integer age;
@@ -94,7 +94,7 @@ public class Util {
    *   }
    * };
    * Map&#60;Integer, Collection&#60;Person&#62;&#62; personsByAge = Util.map(persons, ageKeyProvider);
-   * </code>
+   * }
    * @param values the values to map
    * @param keyProvider the object providing keys for values
    * @param <K> the key type
@@ -129,7 +129,7 @@ public class Util {
 
   /**
    * Throws a RuntimeException in case the given string value is null or an empty string,
-   * using <code>propertyName</code> in the error message, as in: "propertyName is required"
+   * using {@code propertyName} in the error message, as in: "propertyName is required"
    * @param propertyName the name of the property that is required
    * @param value the value
    * @throws RuntimeException in case value is null or empty
@@ -189,7 +189,7 @@ public class Util {
   }
 
   /**
-   * Rounds the given double to <code>places</code> decimal places
+   * Rounds the given double to {@code places} decimal places
    * @param d the double to round
    * @param places the number of decimal places
    * @return the rounded value

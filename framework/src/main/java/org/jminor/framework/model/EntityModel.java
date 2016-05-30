@@ -125,14 +125,14 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   /**
    * Returns the first detail model of the given type
    * @param modelClass the type of the required {@link EntityModel}
-   * @return the detail model of type <code>entityModelClass</code>, null if none is found
+   * @return the detail model of type {@code entityModelClass}, null if none is found
    */
   M getDetailModel(final Class<? extends M> modelClass);
 
   /**
    * Returns a detail model of the given type
    * @param entityID the entity ID of the required EntityModel
-   * @return the detail model of type <code>entityModelClass</code>
+   * @return the detail model of type {@code entityModelClass}
    * @throws IllegalArgumentException in case no detail model for the given entityID is found
    */
   M getDetailModel(final String entityID);
@@ -146,7 +146,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Indicates that the given detail model is based on the foreign key with the given ID, this becomes
    * practical when a detail model is based on an entity which contains multiple foreign keys to the
    * same master entity. When initializing this detail model only the value for that foreignKeyProperty is set.
-   * If <code>foreignKeyPropertyID</code> is null the association is removed.
+   * If {@code foreignKeyPropertyID} is null the association is removed.
    * @param detailModel the detail model
    * @param foreignKeyPropertyID the foreign key property ID
    * @see #initialize(org.jminor.framework.domain.Property.ForeignKeyProperty, java.util.List)

@@ -234,7 +234,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Performs a login, fetching user information via <code>getUser</code>
+   * Performs a login, fetching user information via {@code getUser}
    * @throws CancelException in case the login is cancelled
    * @see #getUser(String, User, javax.swing.ImageIcon)
    */
