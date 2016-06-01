@@ -4287,3 +4287,4 @@
   TextUtil.padString() now uses Alignment enum instead of boolean switch
   TextUtil.getDelimitedString() bug fixed
   <code></code> replaced with {@code } in javadoc
+  ServerMonitor, thread stats not cleared on reset

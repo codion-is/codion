@@ -204,6 +204,8 @@ public final class ServerMonitor {
     maxMemorySeries.clear();
     connectionCountSeries.clear();
     connectionLimitSeries.clear();
+    threadCountSeries.clear();
+    daemonThreadCountSeries.clear();
   }
 
   public void refreshDomainList() throws RemoteException {
