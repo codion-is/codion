@@ -52,7 +52,7 @@ import static org.jminor.common.model.User.parseUser;
 /**
  * The remote server class, responsible for handling requests for RemoteEntityConnections.
  */
-public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEntityConnection> implements EntityServer {
+public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEntityConnection> implements EntityConnectionServer {
 
   private static final long serialVersionUID = 1;
 
@@ -89,6 +89,7 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
    * Constructs a new EntityConnectionServer and binds it to a registry on the given port
    * @param serverName the serverName
    * @param serverPort the port on which to make the server accessible
+   * @param serverAdminPort the port on which to make the server admin interface accessible
    * @param registryPort the registry port to use
    * @param database the Database implementation
    * @param sslEnabled if true then ssl is enabled
@@ -102,11 +103,12 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
    * @param clientLoggingEnabled if true then client logging is enabled on startup
    * @param connectionTimeout the idle connection timeout
    * @param clientSpecificConnectionTimeouts client specific connection timeouts, mapped to clientTypeID
+   * @param adminUser the admin user
    * @throws RemoteException in case of a remote exception
    * @throws RuntimeException in case the domain model classes are not found on the classpath or if the
    * jdbc driver class is not found or in case of an exception while constructing the initial pooled connections
    */
-  public DefaultEntityConnectionServer(final String serverName, final int serverPort, final int registryPort, final Database database,
+  public DefaultEntityConnectionServer(final String serverName, final int serverPort, final int serverAdminPort, final int registryPort, final Database database,
                                        final boolean sslEnabled, final int connectionLimit, final Collection<String> domainModelClassNames,
                                        final Collection<String> loginProxyClassNames, final Collection<String> connectionValidatorClassNames,
                                        final Collection<User> initialPoolUsers, final String webDocumentRoot, final Integer webServerPort,
@@ -132,7 +134,7 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
       loadConnectionValidators(connectionValidatorClassNames);
       setConnectionLimit(connectionLimit);
       webServer = startWebServer(webDocumentRoot, webServerPort);
-      serverAdmin = new DefaultEntityConnectionServerAdmin(this, serverPort);
+      serverAdmin = new DefaultEntityConnectionServerAdmin(this, serverAdminPort);
     }
     catch (final Throwable t) {
       throw logShutdownAndReturn(new RuntimeException(t), this);
@@ -489,9 +491,10 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
     if (serverPort == null) {
       throw new IllegalArgumentException("Configuration property '" + Configuration.SERVER_PORT + "' is required");
     }
-    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT);
+    final Integer registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT);
+    final Integer serverAdminPort = Configuration.getIntValue(Configuration.SERVER_ADMIN_PORT);
     final boolean sslEnabled = Configuration.getBooleanValue(Configuration.SERVER_CONNECTION_SSL_ENABLED);
-    final int connectionLimit = Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT);
+    final Integer connectionLimit = Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT);
     final Database database = Databases.createInstance();
     final String serverName = initializeServerName(database.getHost(), database.getSid());
 
@@ -502,13 +505,13 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
     final String webDocumentRoot = Configuration.getStringValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
     final Integer webServerPort = Configuration.getIntValue(Configuration.WEB_SERVER_PORT);
     final boolean clientLoggingEnabled = Configuration.getBooleanValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED);
-    final int connectionTimeout = Configuration.getIntValue(Configuration.SERVER_CONNECTION_TIMEOUT);
+    final Integer connectionTimeout = Configuration.getIntValue(Configuration.SERVER_CONNECTION_TIMEOUT);
     final Map<String, Integer> clientTimeouts = getClientTimeoutValues();
     final String adminUserString = Configuration.getStringValue(Configuration.SERVER_ADMIN_USER);
     final User adminUser = Util.nullOrEmpty(adminUserString) ? null : parseUser(adminUserString);
     DefaultEntityConnectionServer server = null;
     try {
-      server = new DefaultEntityConnectionServer(serverName, serverPort, registryPort, database,
+      server = new DefaultEntityConnectionServer(serverName, serverPort, serverAdminPort, registryPort, database,
               sslEnabled, connectionLimit, domainModelClassNames, loginProxyClassNames, connectionValidationClassNames,
               getPoolUsers(initialPoolUsers), webDocumentRoot, webServerPort, clientLoggingEnabled, connectionTimeout,
               clientTimeouts, adminUser);
@@ -541,7 +544,7 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
     ServerUtil.resolveTrustStoreFromClasspath(DefaultEntityConnectionServerAdmin.class.getSimpleName());
     try {
       final Registry registry = ServerUtil.getRegistry(registryPort);
-      final EntityServer server = (EntityServer) registry.lookup(serverName);
+      final EntityConnectionServer server = (EntityConnectionServer) registry.lookup(serverName);
       final EntityConnectionServerAdmin serverAdmin = server.getServerAdmin(adminUser);
       final String shutDownInfo = serverName + " found in registry on port: " + registryPort + ", shutting down";
       LOG.info(shutDownInfo);
@@ -568,6 +571,7 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
    * @throws ClassNotFoundException in case the domain model classes required for the server is not found or
    * if the jdbc driver class is not found
    * @throws DatabaseException in case of an exception while constructing the initial pooled connections
+   * @throws ServerException.AuthenticationException in case of missing or incorrect admin user information
    */
   public static void main(final String[] arguments) throws RemoteException, ClassNotFoundException, DatabaseException,
           ServerException.AuthenticationException {

@@ -13,8 +13,8 @@ import org.jminor.common.model.tools.TaskScheduler;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.server.EntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
-import org.jminor.framework.server.EntityServer;
 
 import ch.qos.logback.classic.Level;
 import org.jfree.data.xy.XYSeries;
@@ -272,8 +272,8 @@ public final class ServerMonitor {
   private EntityConnectionServerAdmin connectServer(final String serverName) throws RemoteException, ServerException.AuthenticationException {
     final long time = System.currentTimeMillis();
     try {
-      final EntityServer server =
-              (EntityServer) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
+      final EntityConnectionServer server =
+              (EntityConnectionServer) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
       final EntityConnectionServerAdmin serverAdmin = server.getServerAdmin(serverAdminUser);
       //just some simple call to validate the remote connection
       serverAdmin.getUsedMemory();

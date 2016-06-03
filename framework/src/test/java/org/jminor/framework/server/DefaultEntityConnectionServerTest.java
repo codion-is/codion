@@ -257,6 +257,7 @@ public class DefaultEntityConnectionServerTest {
   private static void configure() {
     Configuration.setValue(Configuration.REGISTRY_PORT, 2221);
     Configuration.setValue(Configuration.SERVER_PORT, 2223);
+    Configuration.setValue(Configuration.SERVER_ADMIN_PORT, 2223);
     Configuration.setValue(Configuration.SERVER_ADMIN_USER, "scott:tiger");
     Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
     Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername() + ":" + User.UNIT_TEST_USER.getPassword());
@@ -275,6 +276,7 @@ public class DefaultEntityConnectionServerTest {
   private static void deconfigure() {
     Configuration.setValue(Configuration.REGISTRY_PORT, Registry.REGISTRY_PORT);
     Configuration.clearValue(Configuration.SERVER_PORT);
+    Configuration.clearValue(Configuration.SERVER_ADMIN_PORT);
     Configuration.clearValue(Configuration.SERVER_ADMIN_USER);
     Configuration.clearValue(Configuration.SERVER_HOST_NAME);
     Configuration.clearValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL);

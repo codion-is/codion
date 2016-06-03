@@ -24,24 +24,29 @@ import javax.management.NotificationEmitter;
 import javax.management.NotificationFilter;
 import javax.management.NotificationListener;
 import javax.management.openmbean.CompositeData;
+import javax.rmi.ssl.SslRMIClientSocketFactory;
+import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.io.Serializable;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.rmi.RemoteException;
+import java.rmi.server.RMISocketFactory;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
 /**
  * Implements the EntityConnectionServerAdmin interface, providing admin access to a EntityConnectionServer instance.
  */
-public final class DefaultEntityConnectionServerAdmin implements EntityConnectionServerAdmin {
+public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObject implements EntityConnectionServerAdmin {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityConnectionServerAdmin.class);
 
@@ -61,8 +66,12 @@ public final class DefaultEntityConnectionServerAdmin implements EntityConnectio
    * @param server the server to administer
    * @param serverAdminPort the port on which to make the server admin available
    * @throws RemoteException in case of an exception
+   * @throws NullPointerException in case {@code serverAdminPort} or {@code server} are not specified
    */
-  public DefaultEntityConnectionServerAdmin(final DefaultEntityConnectionServer server, final int serverAdminPort) throws RemoteException {
+  public DefaultEntityConnectionServerAdmin(final DefaultEntityConnectionServer server, final Integer serverAdminPort) throws RemoteException {
+    super(Objects.requireNonNull(serverAdminPort),
+            Objects.requireNonNull(server).isSslEnabled() ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
+            server.isSslEnabled() ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.server = server;
     this.serverName = server.getServerInfo().getServerName();
     initializeGarbageCollectionListener();

@@ -252,6 +252,7 @@ public class EntityRESTServiceTest {
     Configuration.setValue(Configuration.REGISTRY_PORT, 2221);
     Configuration.setValue(Configuration.SERVER_CONNECTION_SSL_ENABLED, false);
     Configuration.setValue(Configuration.SERVER_PORT, 2223);
+    Configuration.setValue(Configuration.SERVER_ADMIN_PORT, 2223);
     Configuration.setValue(Configuration.SERVER_ADMIN_USER, "scott:tiger");
     Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
     Configuration.setValue("java.rmi.server.hostname", "localhost");
@@ -264,6 +265,7 @@ public class EntityRESTServiceTest {
     Configuration.setValue(Configuration.REGISTRY_PORT, Registry.REGISTRY_PORT);
     Configuration.setValue(Configuration.SERVER_CONNECTION_SSL_ENABLED, true);
     Configuration.clearValue(Configuration.SERVER_PORT);
+    Configuration.clearValue(Configuration.SERVER_ADMIN_PORT);
     Configuration.clearValue(Configuration.SERVER_ADMIN_USER);
     Configuration.clearValue(Configuration.SERVER_HOST_NAME);
     Configuration.clearValue("java.rmi.server.hostname");

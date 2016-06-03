@@ -4290,3 +4290,4 @@
   ServerMonitor, thread stats not cleared on reset
 0.10.5
   EntityConnectionServer refactoring, access to admin interface moved to the server itself with user authentication
+  DefaultEntityConnectionServer refactoring continued, Configuration.SERVER_ADMIN_PORT reintroduced

@@ -113,6 +113,13 @@ public final class Configuration {
   public static final String SERVER_PORT = "jminor.server.port";
 
   /**
+   * The port on which the server should export the remote admin interface<br>
+   * Value type: Integer<br>
+   * Default value: none
+   */
+  public static final String SERVER_ADMIN_PORT = "jminor.server.admin.port";
+
+  /**
    * Specifies a username:password combination representing the server admin user<br>
    * Example: scott:tiger
    */
@@ -801,6 +808,7 @@ public final class Configuration {
     parseStringProperty(REMOTE_CONNECTION_PROVIDER, PROPERTIES);
     parseStringProperty(SERVER_ADMIN_USER, PROPERTIES);
     parseIntegerProperty(SERVER_PORT, PROPERTIES);
+    parseIntegerProperty(SERVER_ADMIN_PORT, PROPERTIES);
     parseStringProperty(SERVER_HOST_NAME, PROPERTIES);
     parseStringProperty(REPORT_PATH, PROPERTIES);
     parseIntegerProperty(REGISTRY_PORT, PROPERTIES);
