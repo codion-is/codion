@@ -287,9 +287,10 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
    */
   protected abstract void doDisconnect(final T connection) throws RemoteException;
 
-  private void validateUserCredentials(final User loginUser, final User currentConnectionUser) throws ServerException.AuthenticationException {
-    if (!Objects.equals(loginUser.getUsername(), currentConnectionUser.getUsername())
-            || !Objects.equals(loginUser.getPassword(), currentConnectionUser.getPassword())) {
+  protected final void validateUserCredentials(final User userToCheck, final User requiredUser) throws ServerException.AuthenticationException {
+    if (userToCheck == null || requiredUser == null
+            || !Objects.equals(userToCheck.getUsername(), requiredUser.getUsername())
+            || !Objects.equals(userToCheck.getPassword(), requiredUser.getPassword())) {
       throw ServerException.authenticationException("Authentication failed");
     }
   }

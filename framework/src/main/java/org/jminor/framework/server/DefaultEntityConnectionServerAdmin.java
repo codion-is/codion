@@ -6,18 +6,13 @@ package org.jminor.framework.server;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseUtil;
-import org.jminor.common.db.Databases;
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Version;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
 import org.jminor.common.server.Server;
-import org.jminor.common.server.ServerUtil;
-import org.jminor.framework.Configuration;
 
 import ch.qos.logback.classic.Level;
 import com.sun.management.GarbageCollectionNotificationInfo;
@@ -29,21 +24,13 @@ import javax.management.NotificationEmitter;
 import javax.management.NotificationFilter;
 import javax.management.NotificationListener;
 import javax.management.openmbean.CompositeData;
-import javax.rmi.ssl.SslRMIClientSocketFactory;
-import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.io.Serializable;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
-import java.rmi.NoSuchObjectException;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.Registry;
-import java.rmi.server.RMISocketFactory;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,30 +41,19 @@ import java.util.UUID;
 /**
  * Implements the EntityConnectionServerAdmin interface, providing admin access to a EntityConnectionServer instance.
  */
-public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObject implements EntityConnectionServerAdmin {
+public final class DefaultEntityConnectionServerAdmin implements EntityConnectionServerAdmin {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityConnectionServerAdmin.class);
 
   private static final long serialVersionUID = 1;
 
-  private static final int USERNAME_PASSWORD_SPLIT_COUNT = 2;
   private static final int GC_INFO_MAX_LENGTH = 100;
-
-  private static final String START = "start";
-  private static final String STOP = "stop";
-  private static final String SHUTDOWN = "shutdown";
-  private static final String RESTART = "restart";
-
-  static {
-    Configuration.init();
-  }
 
   /**
    * The server being administrated
    */
-  private final EntityConnectionServer server;
+  private final DefaultEntityConnectionServer server;
   private final String serverName;
-  private final Thread shutdownHook;
   private final LinkedList<GcEvent> gcEventList = new LinkedList();
 
   /**
@@ -86,25 +62,10 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
    * @param serverAdminPort the port on which to make the server admin available
    * @throws RemoteException in case of an exception
    */
-  public DefaultEntityConnectionServerAdmin(final EntityConnectionServer server, final int serverAdminPort) throws RemoteException {
-    super(serverAdminPort,
-            server.isSslEnabled() ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
-            server.isSslEnabled() ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
+  public DefaultEntityConnectionServerAdmin(final DefaultEntityConnectionServer server, final int serverAdminPort) throws RemoteException {
     this.server = server;
     this.serverName = server.getServerInfo().getServerName();
-    this.shutdownHook = new Thread(getShutdownHook());
-    Runtime.getRuntime().addShutdownHook(this.shutdownHook);
     initializeGarbageCollectionListener();
-  }
-
-  /**
-   * Binds this admin instance to the registry
-   * @throws RemoteException in case of an exception
-   */
-  public void bindToRegistry() throws RemoteException {
-    final int registryPort = server.getRegistryPort();
-    ServerUtil.initializeRegistry(registryPort);
-    ServerUtil.getRegistry(registryPort).rebind(Configuration.SERVER_ADMIN_PREFIX + serverName, this);
   }
 
   /** {@inheritDoc} */
@@ -202,36 +163,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   /** {@inheritDoc} */
   @Override
   public void shutdown() throws RemoteException {
-    try {
-      ServerUtil.getRegistry(server.getRegistryPort()).unbind(serverName);
-    }
-    catch (final NotBoundException ignored) {/*ignored*/}
-    try {
-      ServerUtil.getRegistry(server.getRegistryPort()).unbind(Configuration.SERVER_ADMIN_PREFIX + serverName);
-    }
-    catch (final NotBoundException ignored) {/*ignored*/}
-
-    final String shutdownInfo = serverName + " removed from registry";
-    LOG.info(shutdownInfo);
-    System.out.println(shutdownInfo);
-
-    LOG.info("Shutting down server");
     server.shutdown();
-    try {
-      UnicastRemoteObject.unexportObject(this, true);
-    }
-    catch (final NoSuchObjectException ignored) {/*ignored*/}
-    try {
-      Runtime.getRuntime().removeShutdownHook(shutdownHook);
-    }
-    catch (final IllegalStateException e) {/*Shutdown in progress*/}
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void restart() throws RemoteException {
-    shutdown();
-    startServer();
   }
 
   /** {@inheritDoc} */
@@ -472,178 +404,13 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   /** {@inheritDoc} */
   @Override
   public Map<String,String> getEntityDefinitions() {
-    return EntityConnectionServer.getEntityDefinitions();
-  }
-
-  /**
-   * @return the server instance being administered
-   */
-  EntityConnectionServer getServer() {
-    return server;
-  }
-
-  private Runnable getShutdownHook() {
-    return () -> {
-      if (server.isShuttingDown()) {
-        return;
-      }
-      try {
-        shutdown();
-      }
-      catch (final RemoteException e) {
-        LOG.error("Exception during shutdown", e);
-      }
-    };
+    return DefaultEntityConnectionServer.getEntityDefinitions();
   }
 
   private void initializeGarbageCollectionListener() {
     for (final GarbageCollectorMXBean collectorMXBean : ManagementFactory.getGarbageCollectorMXBeans()) {
       ((NotificationEmitter) collectorMXBean).addNotificationListener(new GCNotifactionListener(), (NotificationFilter) notification ->
               notification.getType().equals(GarbageCollectionNotificationInfo.GARBAGE_COLLECTION_NOTIFICATION), null);
-    }
-  }
-
-  private static String initializeServerName(final String databaseHost, final String sid) {
-    return Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX) + " " + Version.getVersionString()
-            + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
-  }
-
-  /**
-   * Starts the server administered by this admin class
-   * @return the admin instance
-   * @throws RemoteException in case of an exception
-   */
-  public static synchronized DefaultEntityConnectionServerAdmin startServer() throws RemoteException {
-    final Integer serverPort = (Integer) Configuration.getValue(Configuration.SERVER_PORT);
-    if (serverPort == null) {
-      throw new IllegalArgumentException("Configuration property '" + Configuration.SERVER_PORT + "' is required");
-    }
-    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT);
-    final int serverAdminPort = Configuration.getIntValue(Configuration.SERVER_ADMIN_PORT);
-    final boolean sslEnabled = Configuration.getBooleanValue(Configuration.SERVER_CONNECTION_SSL_ENABLED);
-    final int connectionLimit = Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT);
-    final Database database = Databases.createInstance();
-    final String serverName = initializeServerName(database.getHost(), database.getSid());
-
-    final Collection<String> domainModelClassNames = Configuration.parseCommaSeparatedValues(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
-    final Collection<String> loginProxyClassNames = Configuration.parseCommaSeparatedValues(Configuration.SERVER_LOGIN_PROXY_CLASSES);
-    final Collection<String> connectionValidationClassNames = Configuration.parseCommaSeparatedValues(Configuration.SERVER_CONNECTION_VALIDATOR_CLASSES);
-    final Collection<String> initialPoolUsers = Configuration.parseCommaSeparatedValues(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
-    final String webDocumentRoot = Configuration.getStringValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
-    final Integer webServerPort = Configuration.getIntValue(Configuration.WEB_SERVER_PORT);
-    final boolean clientLoggingEnabled = Configuration.getBooleanValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED);
-    final int connectionTimeout = Configuration.getIntValue(Configuration.SERVER_CONNECTION_TIMEOUT);
-    final Map<String, Integer> clientTimeouts = getClientTimeoutValues();
-    EntityConnectionServer server = null;
-    DefaultEntityConnectionServerAdmin admin = null;
-    try {
-      server = new EntityConnectionServer(serverName, serverPort, registryPort, database,
-              sslEnabled, connectionLimit, domainModelClassNames, loginProxyClassNames, connectionValidationClassNames,
-              getPoolUsers(initialPoolUsers), webDocumentRoot, webServerPort, clientLoggingEnabled, connectionTimeout,
-              clientTimeouts);
-      admin = new DefaultEntityConnectionServerAdmin(server, serverAdminPort);
-      server.bindToRegistry();
-      admin.bindToRegistry();
-
-      return admin;
-    }
-    catch (final Exception e) {
-      LOG.error("Exception on binding server to registry", e);
-      if (admin != null) {
-        admin.shutdown();
-      }
-      if (server != null) {
-        server.shutdown();
-      }
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
-   * Connects to the server and shuts it down
-   */
-  static synchronized void shutdownServer() {
-    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT);
-    final String sid = System.getProperty(Database.DATABASE_SID);
-    final String host = System.getProperty(Database.DATABASE_HOST);
-    final String serverName = Configuration.SERVER_ADMIN_PREFIX + initializeServerName(host, sid);
-    ServerUtil.resolveTrustStoreFromClasspath(DefaultEntityConnectionServerAdmin.class.getSimpleName());
-    try {
-      final Registry registry = ServerUtil.getRegistry(registryPort);
-      final EntityConnectionServerAdmin serverAdmin = (EntityConnectionServerAdmin) registry.lookup(serverName);
-      final String shutDownInfo = serverName + " found in registry on port: " + registryPort + ", shutting down";
-      LOG.info(shutDownInfo);
-      System.out.println(shutDownInfo);
-      serverAdmin.shutdown();
-    }
-    catch (final RemoteException e) {
-      System.out.println("Unable to shutdown server: " + e.getMessage());
-      LOG.error("Error on shutdown", e);
-    }
-    catch (final NotBoundException e) {
-      System.out.println(serverName + " not bound to registry on port: " + registryPort);
-    }
-  }
-
-  private static Collection<User> getPoolUsers(final Collection<String> poolUsers) {
-    final Collection<User> users = new ArrayList<>();
-    for (final String usernamePassword : poolUsers) {
-      final String[] split = splitString(usernamePassword);
-      users.add(new User(split[0], split[1]));
-    }
-
-    return users;
-  }
-
-  private static Map<String, Integer> getClientTimeoutValues() {
-    final Collection<String> values = Configuration.parseCommaSeparatedValues(Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT);
-
-    return getClientTimeouts(values);
-  }
-
-  private static Map<String, Integer> getClientTimeouts(final Collection<String> values) {
-    final Map<String, Integer> timeoutMap = new HashMap<>();
-    for (final String clientTimeout : values) {
-      final String[] split = splitString(clientTimeout);
-      timeoutMap.put(split[0], Integer.parseInt(split[1]));
-    }
-
-    return timeoutMap;
-  }
-
-  private static String[] splitString(final String usernamePassword) {
-    final String[] splitResult = usernamePassword.split(":");
-    if (splitResult.length < USERNAME_PASSWORD_SPLIT_COUNT) {
-      throw new IllegalArgumentException("Expecting a ':' delimiter");
-    }
-
-    return splitResult;
-  }
-
-  /**
-   * If no arguments are supplied a new EntityConnectionServer with a server admin interface is started.
-   * @param arguments 'start' (or no argument) starts the server, 'stop' or 'shutdown' causes a running server to be shut down and 'restart' restarts the server
-   * @throws RemoteException in case of a remote exception during service export
-   * @throws ClassNotFoundException in case the domain model classes required for the server is not found or
-   * if the jdbc driver class is not found
-   * @throws DatabaseException in case of an exception while constructing the initial pooled connections
-   */
-  public static void main(final String[] arguments) throws RemoteException, ClassNotFoundException, DatabaseException {
-    final String argument = arguments.length == 0 ? START : arguments[0];
-    switch (argument) {
-      case START:
-        startServer();
-        break;
-      case STOP:
-      case SHUTDOWN:
-        shutdownServer();
-        break;
-      case RESTART:
-        shutdownServer();
-        startServer();
-        break;
-      default:
-        throw new IllegalArgumentException("Unknown argument '" + argument + "'");
     }
   }
 

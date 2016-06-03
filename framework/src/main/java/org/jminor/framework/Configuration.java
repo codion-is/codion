@@ -32,11 +32,6 @@ public final class Configuration {
   private static final Logger LOG = LoggerFactory.getLogger(Configuration.class);
 
   /**
-   * A prefix used to name server admin instances
-   */
-  public static final String SERVER_ADMIN_PREFIX = "Admin - ";
-
-  /**
    * Indicates a local database connection
    * @see #CLIENT_CONNECTION_TYPE
    */
@@ -118,11 +113,10 @@ public final class Configuration {
   public static final String SERVER_PORT = "jminor.server.port";
 
   /**
-   * The port on which the server should export the remote admin interface<br>
-   * Value type: Integer<br>
-   * Default value: 3333
+   * Specifies a username:password combination representing the server admin user<br>
+   * Example: scott:tiger
    */
-  public static final String SERVER_ADMIN_PORT = "jminor.server.admin.port";
+  public static final String SERVER_ADMIN_USER = "jminor.server.admin.user";
 
   /**
    * The initial connection logging status on the server, either true (on) or false (off)<br>
@@ -583,7 +577,6 @@ public final class Configuration {
   private static final int DEFAULT_SERVER_CONNECTION_LIMIT = -1;
   private static final int DEFAULT_SERVER_CONNECTION_TIMEOUT = 120000;
   private static final int DEFAULT_SERVER_CONNECTION_LOG_SIZE = 40;
-  private static final int DEFAULT_SERVER_ADMIN_PORT = 3333;
   private static final int DEFAULT_FOREIGN_KEY_FETCH_DEPTH = 1;
   private static final int DEFAULT_WEB_SERVER_PORT = 80;
   private static final int DEFAULT_MAXIMUM_FRACTION_DIGITS = 10;
@@ -733,7 +726,6 @@ public final class Configuration {
     PROPERTIES.put(SERVER_CONNECTION_TIMEOUT, DEFAULT_SERVER_CONNECTION_TIMEOUT);
     PROPERTIES.put(SERVER_CONNECTION_LOG_SIZE, DEFAULT_SERVER_CONNECTION_LOG_SIZE);
     PROPERTIES.put(SERVER_CONNECTION_SSL_ENABLED, true);
-    PROPERTIES.put(SERVER_ADMIN_PORT, DEFAULT_SERVER_ADMIN_PORT);
     PROPERTIES.put(SERVER_HOST_NAME, "localhost");
     PROPERTIES.put(REGISTRY_PORT, Registry.REGISTRY_PORT);
     PROPERTIES.put(TIMESTAMP_FORMAT, "dd-MM-yyyy HH:mm");
@@ -807,7 +799,7 @@ public final class Configuration {
     parseBooleanProperty(PERFORM_NULL_VALIDATION, PROPERTIES);
     parseBooleanProperty(PERSIST_FOREIGN_KEY_VALUES, PROPERTIES);
     parseStringProperty(REMOTE_CONNECTION_PROVIDER, PROPERTIES);
-    parseIntegerProperty(SERVER_ADMIN_PORT, PROPERTIES);
+    parseStringProperty(SERVER_ADMIN_USER, PROPERTIES);
     parseIntegerProperty(SERVER_PORT, PROPERTIES);
     parseStringProperty(SERVER_HOST_NAME, PROPERTIES);
     parseStringProperty(REPORT_PATH, PROPERTIES);

@@ -31,12 +31,6 @@ public interface EntityConnectionServerAdmin extends Remote {
   void shutdown() throws RemoteException;
 
   /**
-   * Restarts the server
-   * @throws RemoteException in case of a communication error
-   */
-  void restart() throws RemoteException;
-
-  /**
    * @return the database URL
    * @throws RemoteException in case of a communication error
    */

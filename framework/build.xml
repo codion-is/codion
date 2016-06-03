@@ -25,7 +25,7 @@
                     org/jminor/framework/domain/TestDomain*,
                     org/jminor/framework/model/Abstract*,
                     org/jminor/framework/db/EntityConnectionProvidersTest*,
-                    org/jminor/framework/server/EntityConnectionServerTest*,
+                    org/jminor/framework/server/DefaultEntityConnectionServerTest*,
                     org/jminor/framework/server/TestConnectionValidator*
                     org/jminor/framework/server/TestLoginProxy*"
                     build.basedir="${build.test}"

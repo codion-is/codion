@@ -7,7 +7,7 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.server.EntityConnectionServerTest;
+import org.jminor.framework.server.DefaultEntityConnectionServerTest;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -26,12 +26,12 @@ public class RemoteEntityConnectionProviderTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    EntityConnectionServerTest.setUp();
+    DefaultEntityConnectionServerTest.setUp();
   }
 
   @AfterClass
   public static void tearDown() throws Exception {
-    EntityConnectionServerTest.tearDown();
+    DefaultEntityConnectionServerTest.tearDown();
   }
 
   @Test
@@ -57,7 +57,7 @@ public class RemoteEntityConnectionProviderTest {
 
     EntityConnection db3 = provider.getConnection();
     assertTrue(db3.isConnected());
-    EntityConnectionServerTest.getServerAdmin().disconnect(provider.getClientID());
+    DefaultEntityConnectionServerTest.getServerAdmin().disconnect(provider.getClientID());
     assertFalse(db3.isConnected());
 
     db3 = provider.getConnection();
@@ -67,7 +67,7 @@ public class RemoteEntityConnectionProviderTest {
     provider.disconnect();
     assertEquals("localhost" + " - " + Messages.get(Messages.NOT_CONNECTED), provider.getDescription());
     db3 = provider.getConnection();
-    assertEquals(EntityConnectionServerTest.getServerAdmin().getServerInfo().getServerName() + "@localhost", provider.getDescription());
+    assertEquals(DefaultEntityConnectionServerTest.getServerAdmin().getServerInfo().getServerName() + "@localhost", provider.getDescription());
     db3.disconnect();
   }
 }

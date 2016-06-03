@@ -9,7 +9,7 @@ import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.DefaultEntityApplicationModel;
 import org.jminor.framework.model.EntityLoadTestModel;
-import org.jminor.framework.server.EntityConnectionServerTest;
+import org.jminor.framework.server.DefaultEntityConnectionServerTest;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -25,13 +25,13 @@ public class EntityLoadTestModelTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    EntityConnectionServerTest.setUp();
+    DefaultEntityConnectionServerTest.setUp();
     Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, "remote");
   }
 
   @AfterClass
   public static void tearDown() throws Exception {
-    EntityConnectionServerTest.tearDown();
+    DefaultEntityConnectionServerTest.tearDown();
     Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, CONNECTION_TYPE_BEFORE_TEST);
   }
 

@@ -75,6 +75,24 @@ public final class User implements Serializable {
     return username.hashCode();
   }
 
+  /**
+   * Parses a User from a string, containing the username and password with a ':' as delimiter, f.ex. "user:pass".
+   * Both username and password must be non-empty.
+   * @param userPassword the username and password string
+   * @return a User with the given username and password
+   */
+  public static User parseUser(final String userPassword) {
+    final String[] split = Objects.requireNonNull(userPassword).split(":");
+    if (split.length < 2) {
+      throw new IllegalArgumentException("Expecting a string with a single ':' as delimiter");
+    }
+    if (split[0].isEmpty() || split[1].isEmpty()) {
+      throw new IllegalArgumentException("Both username and password are required");
+    }
+
+    return new User(split[0], split[1]);
+  }
+
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     stream.writeObject(username);
     stream.writeObject(password);

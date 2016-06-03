@@ -32,11 +32,12 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 
-public class EntityConnectionServerTest {
+public class DefaultEntityConnectionServerTest {
 
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
 
-  private static EntityConnectionServer server;
+  private static final User ADMIN_USER = new User("scott", "tiger");
+  private static DefaultEntityConnectionServer server;
   private static DefaultEntityConnectionServerAdmin admin;
 
   public static EntityConnectionServerAdmin getServerAdmin() {
@@ -46,15 +47,13 @@ public class EntityConnectionServerTest {
   @BeforeClass
   public static synchronized void setUp() throws Exception {
     configure();
-    EntityConnectionServerTest.admin = DefaultEntityConnectionServerAdmin.startServer();
-    EntityConnectionServerTest.server = admin.getServer();
+    DefaultEntityConnectionServerTest.server = DefaultEntityConnectionServer.startServer();
+    admin = (DefaultEntityConnectionServerAdmin) server.getServerAdmin(ADMIN_USER);
   }
 
   @AfterClass
   public static synchronized void tearDown() throws Exception {
-    EntityConnectionServerTest.admin.shutdown();
-    deconfigure();
-    admin = null;
+    server.shutdown();
     server = null;
   }
 
@@ -135,8 +134,6 @@ public class EntityConnectionServerTest {
     admin.setConnectionLimit(2);
     providerTwo.getConnection();
     assertEquals(2, admin.getConnectionCount());
-
-    admin.getServer().getServerLoad();
 
     providerOne.disconnect();
     assertEquals(1, admin.getConnectionCount());
@@ -235,7 +232,6 @@ public class EntityConnectionServerTest {
 
   @Test
   public void coverAdmin() throws RemoteException {
-    final EntityConnectionServerAdmin admin = getServerAdmin();
     admin.getActiveConnectionCount();
     admin.getAllocatedMemory();
     admin.setConnectionTimeout(30);
@@ -261,7 +257,7 @@ public class EntityConnectionServerTest {
   private static void configure() {
     Configuration.setValue(Configuration.REGISTRY_PORT, 2221);
     Configuration.setValue(Configuration.SERVER_PORT, 2223);
-    Configuration.setValue(Configuration.SERVER_ADMIN_PORT, 2223);
+    Configuration.setValue(Configuration.SERVER_ADMIN_USER, "scott:tiger");
     Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
     Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername() + ":" + User.UNIT_TEST_USER.getPassword());
     Configuration.setValue(Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT, "ClientTypeID:10000");
@@ -279,7 +275,7 @@ public class EntityConnectionServerTest {
   private static void deconfigure() {
     Configuration.setValue(Configuration.REGISTRY_PORT, Registry.REGISTRY_PORT);
     Configuration.clearValue(Configuration.SERVER_PORT);
-    Configuration.clearValue(Configuration.SERVER_ADMIN_PORT);
+    Configuration.clearValue(Configuration.SERVER_ADMIN_USER);
     Configuration.clearValue(Configuration.SERVER_HOST_NAME);
     Configuration.clearValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
     Configuration.clearValue(Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT);

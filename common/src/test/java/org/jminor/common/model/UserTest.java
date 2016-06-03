@@ -25,4 +25,26 @@ public class UserTest {
     assertEquals("scott".hashCode(), user.hashCode());
     assertEquals(new User("scott", null), user);
   }
+
+  @Test
+  public void parseUser() {
+    final User user = User.parseUser("scott:tiger");
+    assertEquals("scott", user.getUsername());
+    assertEquals("tiger", user.getPassword());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void parseUserNoUsername() {
+    User.parseUser(":tiger");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void parseUserNoPassword() {
+    User.parseUser("scott:");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void parseUserNoUserInfo() {
+    User.parseUser("");
+  }
 }

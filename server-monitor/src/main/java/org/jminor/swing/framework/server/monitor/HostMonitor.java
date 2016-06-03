@@ -6,9 +6,11 @@ package org.jminor.swing.framework.server.monitor;
 import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.Events;
+import org.jminor.common.model.User;
 import org.jminor.common.server.Server;
+import org.jminor.common.server.ServerException;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.server.EntityConnectionServerAdmin;
+import org.jminor.framework.server.EntityServer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,7 @@ public final class HostMonitor {
 
   private final Event serverAddedEvent = Events.event();
   private final Event serverRemovedEvent = Events.event();
+  private final Event<List<User>> requestCredentialsEvent = Events.event();
 
   private final String hostName;
   private final int registryPort;
@@ -52,12 +55,17 @@ public final class HostMonitor {
 
   public void refresh() throws RemoteException {
     removeUnreachableServers();
-    for (final Server.ServerInfo serverInfo : getEntityServers(hostName, registryPort)) {
-      if (!containsServerMonitor(serverInfo.getServerID())) {
-        final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInfo, registryPort);
-        serverMonitor.addServerShutDownListener(() -> removeServer(serverMonitor));
-        addServer(serverMonitor);
+    try {
+      for (final Server.ServerInfo serverInfo : getEntityServers(hostName, registryPort)) {
+        if (!containsServerMonitor(serverInfo.getServerID())) {
+          final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInfo, registryPort, new User("scott", "tiger"));
+          serverMonitor.addServerShutDownListener(() -> removeServer(serverMonitor));
+          addServer(serverMonitor);
+        }
       }
+    }
+    catch (final ServerException.AuthenticationException e) {
+      throw new RuntimeException(e);
     }
   }
 
@@ -114,9 +122,8 @@ public final class HostMonitor {
       }
       for (final String name : boundNames) {
         LOG.debug("HostMonitor found server '{}'", name);
-        final EntityConnectionServerAdmin serverAdmin =
-              (EntityConnectionServerAdmin) LocateRegistry.getRegistry(serverHostName, registryPort).lookup(name);
-        servers.add(serverAdmin.getServerInfo());
+        final EntityServer server = (EntityServer) LocateRegistry.getRegistry(serverHostName, registryPort).lookup(name);
+        servers.add(server.getServerInfo());
       }
     }
     catch (final RemoteException | NotBoundException e) {
@@ -129,8 +136,9 @@ public final class HostMonitor {
   private static Collection<String> getEntityServers(final Registry registry) throws RemoteException {
     final List<String> serverNames = new ArrayList<>();
     final String[] boundNames = registry.list();
+    final String serverNamePrefix = Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX);
     for (final String name : boundNames) {
-      if (name.startsWith(Configuration.SERVER_ADMIN_PREFIX)) {
+      if (name.startsWith(serverNamePrefix)) {
         serverNames.add(name);
       }
     }

@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.server.monitor.ui;
 
 import org.jminor.framework.Configuration;
-import org.jminor.framework.server.EntityConnectionServerTest;
+import org.jminor.framework.server.DefaultEntityConnectionServerTest;
 import org.jminor.swing.framework.server.monitor.ConnectionPoolMonitor;
 import org.jminor.swing.framework.server.monitor.DatabaseMonitor;
 import org.jminor.swing.framework.server.monitor.EntityServerMonitor;
@@ -18,12 +18,12 @@ public class EntityServerMonitorPanelTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    EntityConnectionServerTest.setUp();
+    DefaultEntityConnectionServerTest.setUp();
   }
 
   @AfterClass
   public static void tearDown() throws Exception {
-    EntityConnectionServerTest.tearDown();
+    DefaultEntityConnectionServerTest.tearDown();
   }
 
   @Test

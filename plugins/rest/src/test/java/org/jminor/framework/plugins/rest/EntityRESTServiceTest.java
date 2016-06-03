@@ -11,7 +11,8 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.plugins.json.EntityJSONParser;
-import org.jminor.framework.server.DefaultEntityConnectionServerAdmin;
+import org.jminor.framework.server.DefaultEntityConnectionServer;
+import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpRequestInterceptor;
@@ -50,12 +51,14 @@ import static org.junit.Assert.assertTrue;
 public class EntityRESTServiceTest {
 
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
+  private static final User ADMIN_USER = new User("scott", "tiger");
   private static final String BASIC = "Basic ";
   private static final String HTTP = "http";
   private static String HOSTNAME;
-  private static String REST_BASEURL ;
+  private static String REST_BASEURL;
 
-  private static DefaultEntityConnectionServerAdmin admin;
+  private static DefaultEntityConnectionServer server;
+  private static EntityConnectionServerAdmin admin;
 
   static {
     TestDomain.init();
@@ -66,12 +69,13 @@ public class EntityRESTServiceTest {
     configure();
     HOSTNAME = Configuration.getStringValue(Configuration.SERVER_HOST_NAME);
     REST_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities/";
-    admin = DefaultEntityConnectionServerAdmin.startServer();
+    server = DefaultEntityConnectionServer.startServer();
+    admin = server.getServerAdmin(ADMIN_USER);
   }
 
   @AfterClass
   public static synchronized void tearDown() throws Exception {
-    admin.shutdown();
+    server.shutdown();
     deconfigure();
   }
 
@@ -248,7 +252,7 @@ public class EntityRESTServiceTest {
     Configuration.setValue(Configuration.REGISTRY_PORT, 2221);
     Configuration.setValue(Configuration.SERVER_CONNECTION_SSL_ENABLED, false);
     Configuration.setValue(Configuration.SERVER_PORT, 2223);
-    Configuration.setValue(Configuration.SERVER_ADMIN_PORT, 2223);
+    Configuration.setValue(Configuration.SERVER_ADMIN_USER, "scott:tiger");
     Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
     Configuration.setValue("java.rmi.server.hostname", "localhost");
     Configuration.setValue("java.security.policy", "resources/security/all_permissions.policy");
@@ -260,7 +264,7 @@ public class EntityRESTServiceTest {
     Configuration.setValue(Configuration.REGISTRY_PORT, Registry.REGISTRY_PORT);
     Configuration.setValue(Configuration.SERVER_CONNECTION_SSL_ENABLED, true);
     Configuration.clearValue(Configuration.SERVER_PORT);
-    Configuration.clearValue(Configuration.SERVER_ADMIN_PORT);
+    Configuration.clearValue(Configuration.SERVER_ADMIN_USER);
     Configuration.clearValue(Configuration.SERVER_HOST_NAME);
     Configuration.clearValue("java.rmi.server.hostname");
     Configuration.clearValue("java.security.policy");

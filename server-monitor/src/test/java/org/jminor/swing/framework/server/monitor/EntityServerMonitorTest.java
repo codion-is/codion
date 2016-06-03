@@ -7,7 +7,7 @@ import org.jminor.common.model.User;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
-import org.jminor.framework.server.EntityConnectionServerTest;
+import org.jminor.framework.server.DefaultEntityConnectionServerTest;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -22,12 +22,12 @@ public class EntityServerMonitorTest {
   @BeforeClass
   public static void setUp() throws Exception {
     Configuration.setValue(Configuration.SERVER_CONNECTION_SSL_ENABLED, false);
-    EntityConnectionServerTest.setUp();
+    DefaultEntityConnectionServerTest.setUp();
   }
 
   @AfterClass
   public static void tearDown() throws Exception {
-    EntityConnectionServerTest.tearDown();
+    DefaultEntityConnectionServerTest.tearDown();
   }
 
   @Test

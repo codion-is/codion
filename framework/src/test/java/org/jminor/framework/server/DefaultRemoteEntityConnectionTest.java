@@ -35,12 +35,12 @@ public class DefaultRemoteEntityConnectionTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    EntityConnectionServerTest.setUp();
+    DefaultEntityConnectionServerTest.setUp();
   }
 
   @AfterClass
   public static void tearDown() throws Exception {
-    EntityConnectionServerTest.tearDown();
+    DefaultEntityConnectionServerTest.tearDown();
   }
 
   @Test(expected = DatabaseException.class)

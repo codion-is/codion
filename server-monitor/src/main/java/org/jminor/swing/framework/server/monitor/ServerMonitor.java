@@ -7,12 +7,14 @@ import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
-import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.User;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.model.tools.TaskScheduler;
 import org.jminor.common.server.Server;
+import org.jminor.common.server.ServerException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
+import org.jminor.framework.server.EntityServer;
 
 import ch.qos.logback.classic.Level;
 import org.jfree.data.xy.XYSeries;
@@ -50,6 +52,7 @@ public final class ServerMonitor {
   private final Server.ServerInfo serverInfo;
   private final int registryPort;
   private final EntityConnectionServerAdmin server;
+  private final User serverAdminUser;
 
   private final TaskScheduler updateScheduler = new TaskScheduler(new Runnable() {
     @Override
@@ -91,10 +94,13 @@ public final class ServerMonitor {
   private final XYSeries daemonThreadCountSeries = new XYSeries("Daemon Threads");
   private final XYSeriesCollection threadCountCollection = new XYSeriesCollection();
 
-  public ServerMonitor(final String hostName, final Server.ServerInfo serverInfo, final int registryPort) throws RemoteException {
+  public ServerMonitor(final String hostName, final Server.ServerInfo serverInfo, final int registryPort,
+                       final User serverAdminUser)
+          throws RemoteException, ServerException.AuthenticationException {
     this.hostName = hostName;
     this.serverInfo = serverInfo;
     this.registryPort = registryPort;
+    this.serverAdminUser = serverAdminUser;
     this.server = connectServer(serverInfo.getServerName());
     connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
     memoryUsageCollection.addSeries(maxMemorySeries);
@@ -233,15 +239,6 @@ public final class ServerMonitor {
     serverShutDownEvent.fire();
   }
 
-  public void restartServer() throws DatabaseException, ClassNotFoundException {
-    shutdown();
-    try {
-      server.restart();
-    }
-    catch (final RemoteException ignored) {/*ignored*/}
-    serverShutDownEvent.fire();
-  }
-
   public boolean isServerReachable() {
     try {
       server.getUsedMemory();
@@ -272,11 +269,12 @@ public final class ServerMonitor {
     return loggingLevelChangedEvent.getObserver();
   }
 
-  private EntityConnectionServerAdmin connectServer(final String serverName) throws RemoteException {
+  private EntityConnectionServerAdmin connectServer(final String serverName) throws RemoteException, ServerException.AuthenticationException {
     final long time = System.currentTimeMillis();
     try {
-      final EntityConnectionServerAdmin serverAdmin =
-              (EntityConnectionServerAdmin) LocateRegistry.getRegistry(hostName, registryPort).lookup(Configuration.SERVER_ADMIN_PREFIX + serverName);
+      final EntityServer server =
+              (EntityServer) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
+      final EntityConnectionServerAdmin serverAdmin = server.getServerAdmin(serverAdminUser);
       //just some simple call to validate the remote connection
       serverAdmin.getUsedMemory();
       LOG.info("ServerMonitor connected to server: {}", serverName);
