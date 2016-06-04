@@ -63,6 +63,31 @@ public class DefaultEntityConnectionServerTest {
             UUID.randomUUID(), getClass().getSimpleName()).getConnection();
   }
 
+  @Test(expected = ServerException.AuthenticationException.class)
+  public void getServerAdminEmptyPassword() throws ServerException.AuthenticationException {
+    server.getServerAdmin(new User("test", ""));
+  }
+
+  @Test(expected = ServerException.AuthenticationException.class)
+  public void getServerAdminNullPassword() throws ServerException.AuthenticationException {
+    server.getServerAdmin(new User("test", null));
+  }
+
+  @Test(expected = ServerException.AuthenticationException.class)
+  public void getServerAdminWrongPassword() throws ServerException.AuthenticationException {
+    server.getServerAdmin(new User("test", "test"));
+  }
+
+  @Test(expected = ServerException.AuthenticationException.class)
+  public void getServerAdminEmptyUsername() throws ServerException.AuthenticationException {
+    server.getServerAdmin(new User("", "test"));
+  }
+
+  @Test(expected = ServerException.AuthenticationException.class)
+  public void getServerAdminWrongUsername() throws ServerException.AuthenticationException {
+    server.getServerAdmin(new User("test", "test"));
+  }
+
   @Test
   public void test() throws Exception {
     final RemoteEntityConnectionProvider providerOne = new RemoteEntityConnectionProvider("localhost",
