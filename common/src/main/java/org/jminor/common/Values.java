@@ -173,12 +173,11 @@ public final class Values {
    * A boolean value based on a State
    */
   private static final class StateValue implements Value<Boolean> {
+
     private final State state;
-    private final Event<Boolean> changeEvent = Events.event();
 
     private StateValue(final State state) {
       this.state = state;
-      state.addListener(() -> changeEvent.fire(state.isActive()));
     }
 
     @Override
@@ -193,7 +192,7 @@ public final class Values {
 
     @Override
     public EventObserver<Boolean> getObserver() {
-      return changeEvent.getObserver();
+      return state.getObserver();
     }
   }
 
@@ -237,30 +236,34 @@ public final class Values {
 
     private void bindEvents(final Value<V> originalValue, final Value<V> linkedValue, final boolean readOnly) {
       if (originalValue.getObserver() != null) {
-        originalValue.getObserver().addListener(() -> {
-          if (!isUpdatingOriginal) {
-            try {
-              isUpdatingLinked = true;
-              linkedValue.set(originalValue.get());
-            }
-            finally {
-              isUpdatingLinked = false;
-            }
-          }
-        });
+        originalValue.getObserver().addListener(() -> updateLinkedvalue(originalValue, linkedValue));
       }
       if (!readOnly && linkedValue.getObserver() != null) {
-        linkedValue.getObserver().addListener(() -> {
-          if (!isUpdatingLinked) {
-            try {
-              isUpdatingOriginal = true;
-              originalValue.set(linkedValue.get());
-            }
-            finally {
-              isUpdatingOriginal = false;
-            }
-          }
-        });
+        linkedValue.getObserver().addListener(() -> updateOriginalValue(originalValue, linkedValue));
+      }
+    }
+
+    private void updateOriginalValue(final Value<V> originalValue, final Value<V> linkedValue) {
+      if (!isUpdatingLinked) {
+        try {
+          isUpdatingOriginal = true;
+          originalValue.set(linkedValue.get());
+        }
+        finally {
+          isUpdatingOriginal = false;
+        }
+      }
+    }
+
+    private void updateLinkedvalue(final Value<V> originalValue, final Value<V> linkedValue) {
+      if (!isUpdatingOriginal) {
+        try {
+          isUpdatingLinked = true;
+          linkedValue.set(originalValue.get());
+        }
+        finally {
+          isUpdatingLinked = false;
+        }
       }
     }
   }
