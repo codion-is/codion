@@ -4,7 +4,7 @@
 package org.jminor.framework;
 
 import org.jminor.common.Util;
-import org.jminor.common.model.Version;
+import org.jminor.common.Version;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.server.ServerUtil;
 

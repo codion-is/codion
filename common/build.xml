@@ -14,15 +14,9 @@
   <target name="package" depends="build, javadoc">
     <package_module module-name="jminor-common-core"
                     includes="org/jminor/common/*.*,
-                    org/jminor/common/i18n/**,
-                    org/jminor/common/model/Conjunction*,
-                    org/jminor/common/model/User*,
-                    org/jminor/common/model/Version*"/>
+                    org/jminor/common/i18n/**"/>
     <package_module module-name="jminor-common-model"
-                    includes="org/jminor/common/model/**"
-                    excludes="org/jminor/common/model/Conjunction*,
-                    org/jminor/common/model/User*,
-                    org/jminor/common/model/Version*"/>
+                    includes="org/jminor/common/model/**"/>
     <package_module module-name="jminor-common-db"
                     includes="org/jminor/common/db/**"/>
     <package_module module-name="jminor-common-server"

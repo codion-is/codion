@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.schemabrowser.testing;
 
+import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel;

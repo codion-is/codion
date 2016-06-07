@@ -1,12 +1,14 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
+package org.jminor.common;
 
-import org.jminor.common.Util;
-
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.util.Objects;
 
 /**
  * A simple version class for semantic versioning (http://semver.org)
@@ -29,8 +31,11 @@ public final class Version implements Comparable<Version>, Serializable {
   private static final Version VERSION;
 
   static {
-    try {
-      VERSION = parse(TextUtil.getTextFileContents(Util.class, VERSION_FILE));
+    try (final BufferedReader input = new BufferedReader(new InputStreamReader(
+            Objects.requireNonNull(Util.class.getResourceAsStream(VERSION_FILE),
+                    "Version file is missing (org.jminor.common.version.txt"),
+            Charset.defaultCharset()))) {
+      VERSION = parse(input.readLine());
     }
     catch (final IOException e) {
       throw new RuntimeException(e);

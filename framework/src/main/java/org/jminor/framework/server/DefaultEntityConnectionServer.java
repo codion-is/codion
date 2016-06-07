@@ -3,7 +3,9 @@
  */
 package org.jminor.framework.server;
 
+import org.jminor.common.User;
 import org.jminor.common.Util;
+import org.jminor.common.Version;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.AuthenticationException;
@@ -11,8 +13,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
 import org.jminor.common.db.pool.ConnectionPools;
-import org.jminor.common.model.User;
-import org.jminor.common.model.Version;
 import org.jminor.common.model.tools.TaskScheduler;
 import org.jminor.common.server.AbstractServer;
 import org.jminor.common.server.ClientInfo;
@@ -47,7 +47,7 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static org.jminor.common.model.User.parseUser;
+import static org.jminor.common.User.parseUser;
 
 /**
  * The remote server class, responsible for handling requests for RemoteEntityConnections.

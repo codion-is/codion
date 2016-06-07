@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db.criteria;
 
-import org.jminor.common.model.Conjunction;
+import org.jminor.common.Conjunction;
 
 import org.junit.Test;
 

@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.model.User;
-import org.jminor.common.model.Version;
+import org.jminor.common.User;
+import org.jminor.common.Version;
 import org.jminor.framework.Configuration;
 
 import java.lang.reflect.InvocationTargetException;

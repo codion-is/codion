@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.framework.server.monitor;
 
+import org.jminor.common.User;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
-import org.jminor.common.model.User;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import java.rmi.RemoteException;

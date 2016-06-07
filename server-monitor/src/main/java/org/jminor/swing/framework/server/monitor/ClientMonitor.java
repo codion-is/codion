@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.server.monitor;
 
-import org.jminor.common.model.User;
+import org.jminor.common.User;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 

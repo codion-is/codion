@@ -3,8 +3,6 @@
  */
 package org.jminor.common;
 
-import org.jminor.common.model.Conjunction;
-
 /**
  * A class encapsulating a simple boolean state.
  */

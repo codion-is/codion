@@ -1,6 +1,6 @@
 package org.jminor.framework.server;
 
-import org.jminor.common.model.User;
+import org.jminor.common.User;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
 import org.jminor.framework.db.RemoteEntityConnection;

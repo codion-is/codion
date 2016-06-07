@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.world.domain;
 
+import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.User;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.testing.EntityTestUnit;

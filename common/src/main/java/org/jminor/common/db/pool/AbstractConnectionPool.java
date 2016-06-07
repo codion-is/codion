@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.model.User;
+import org.jminor.common.User;
 import org.jminor.common.model.tools.TaskScheduler;
 
 import java.util.LinkedList;
