@@ -247,7 +247,7 @@
     <subant target="package" buildpath="plugins"/>
   </target>
 
-  <target name="run_unit_tests" depends="install" description="Runs unit tests for all modules">
+  <target name="run_unit_tests" depends="install, create_keystore" description="Runs unit tests for all modules">
     <subant target="run_unit_tests" buildpath="common"/>
     <subant target="run_unit_tests" buildpath="framework"/>
     <subant target="run_unit_tests" buildpath="swing"/>
@@ -267,7 +267,7 @@
     <subant target="deploy" buildpath="plugins"/>
   </target>
 
-  <target name="install" depends="clear_ivy_cache" description="Publishes all project artifacts to a local repository">
+  <target name="install" depends="clear_ivy_local_repository" description="Publishes all project artifacts to a local repository">
     <subant target="install" buildpath="common"/>
     <subant target="install" buildpath="framework"/>
     <subant target="install" buildpath="swing"/>
