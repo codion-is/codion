@@ -49,8 +49,6 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static org.jminor.common.model.User.parseUser;
-
 /**
  * The remote server class, responsible for handling requests for RemoteEntityConnections.
  */
@@ -512,7 +510,7 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
     final Integer connectionTimeout = Configuration.getIntValue(Configuration.SERVER_CONNECTION_TIMEOUT);
     final Map<String, Integer> clientTimeouts = getClientTimeoutValues();
     final String adminUserString = Configuration.getStringValue(Configuration.SERVER_ADMIN_USER);
-    final User adminUser = Util.nullOrEmpty(adminUserString) ? null : parseUser(adminUserString);
+    final User adminUser = Util.nullOrEmpty(adminUserString) ? null : User.parseUser(adminUserString);
     if (adminUser == null) {
       LOG.info("No admin user specified");
     }
@@ -550,7 +548,7 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
     if (Util.nullOrEmpty(adminUserString)) {
       throw ServerException.authenticationException("No admin user specified");
     }
-    final User adminUser = parseUser(adminUserString);
+    final User adminUser = User.parseUser(adminUserString);
     ServerUtil.resolveTrustStoreFromClasspath(DefaultEntityConnectionServerAdmin.class.getSimpleName());
     try {
       final Registry registry = ServerUtil.getRegistry(registryPort);
@@ -611,7 +609,7 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
   private static Collection<User> getPoolUsers(final Collection<String> poolUsers) {
     final Collection<User> users = new ArrayList<>();
     for (final String usernamePassword : poolUsers) {
-      users.add(parseUser(usernamePassword));
+      users.add(User.parseUser(usernamePassword));
     }
 
     return users;

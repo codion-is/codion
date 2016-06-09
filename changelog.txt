@@ -4295,3 +4295,4 @@
   SwingEntityTableModel, replaceEntitiesByKey() no longer calls filterContents()
   DefaultEntityConnectionServer bug fixed, now unexports admin interface
   EntityConnectionServer removed, functionality moved to org.jminor.common.server.Server
+  HostMonitor, hardcoded admin user removed

@@ -6,6 +6,8 @@ package org.jminor.swing.framework.server.monitor;
 import org.jminor.common.Event;
 import org.jminor.common.Events;
 import org.jminor.common.Util;
+import org.jminor.common.model.User;
+import org.jminor.framework.Configuration;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -16,6 +18,13 @@ import java.util.Collection;
  * A monitor for the EntityConnectionServer
  */
 public final class EntityServerMonitor {
+
+  private static final User ADMIN_USER;
+
+  static {
+    final String adminUserString = Configuration.getStringValue(Configuration.SERVER_ADMIN_USER);
+    ADMIN_USER = User.parseUser(adminUserString);
+  }
 
   private final Event<String> hostAddedEvent = Events.event();
   private final Event hostRemovedEvent = Events.event();
@@ -32,7 +41,7 @@ public final class EntityServerMonitor {
   }
 
   public void addHost(final String hostname, final int registryPort) throws RemoteException {
-    hostMonitors.add(new HostMonitor(hostname, registryPort));
+    hostMonitors.add(new HostMonitor(hostname, registryPort, ADMIN_USER));
     hostAddedEvent.fire(hostname);
   }
 
