@@ -133,9 +133,8 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
   /** {@inheritDoc} */
   @Override
   public final boolean isValid(final K key) {
-    Objects.requireNonNull(key, KEY);
     try {
-      validator.validate(valueMap, key);
+      validator.validate(valueMap, Objects.requireNonNull(key, KEY));
       return true;
     }
     catch (final ValidationException e) {
@@ -158,8 +157,7 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
   /** {@inheritDoc} */
   @Override
   public final EventObserver<ValueChange<K, ?>> getValueObserver(final K key) {
-    Objects.requireNonNull(key, KEY);
-    return getValueChangeEvent(key).getObserver();
+    return getValueChangeEvent(Objects.requireNonNull(key, KEY)).getObserver();
   }
 
   /** {@inheritDoc} */

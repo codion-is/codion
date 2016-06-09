@@ -41,8 +41,7 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
     if (boundedWeight <= 0) {
       throw new IllegalArgumentException("Bounded weight must be a positive integer");
     }
-    Objects.requireNonNull(items, "items");
-    if (items.isEmpty()) {
+    if (Objects.requireNonNull(items, "items").isEmpty()) {
       throw new IllegalArgumentException("Items must not be empty");
     }
 

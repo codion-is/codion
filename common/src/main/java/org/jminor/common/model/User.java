@@ -31,8 +31,7 @@ public final class User implements Serializable {
    * @param password the password
    */
   public User(final String username, final String password) {
-    Objects.requireNonNull(username, "username");
-    this.username = username;
+    this.username = Objects.requireNonNull(username, "username");
     this.password = password;
   }
 

@@ -117,9 +117,8 @@ public class Util {
    * @return true if the given class is found on the classpath
    */
   public static boolean onClasspath(final String className) {
-    Objects.requireNonNull(className, "className");
     try {
-      Class.forName(className);
+      Class.forName(Objects.requireNonNull(className, "className"));
       return true;
     }
     catch (final ClassNotFoundException e) {
@@ -315,8 +314,7 @@ public class Util {
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   public static Method getSetMethod(final Class valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
-    Objects.requireNonNull(valueOwner, "valueOwner");
-    return getSetMethod(valueType, property, valueOwner.getClass());
+    return getSetMethod(valueType, property, Objects.requireNonNull(valueOwner, "valueOwner").getClass());
   }
 
   /**

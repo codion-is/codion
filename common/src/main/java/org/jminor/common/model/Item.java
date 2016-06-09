@@ -32,9 +32,8 @@ public class Item<T> implements Comparable<Item> {
    * @throws NullPointerException if caption is null
    */
   public Item(final T item, final String caption) {
-    Objects.requireNonNull(caption, "caption");
     this.item = item;
-    this.caption = caption;
+    this.caption = Objects.requireNonNull(caption, "caption");
   }
 
   /**

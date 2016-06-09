@@ -43,7 +43,6 @@ public final class States {
    * @return a new State.AggregateState
    */
   public static State.AggregateState aggregateState(final Conjunction conjunction, final StateObserver... stateObservers) {
-    Objects.requireNonNull(conjunction, "conjunction");
     return new DefaultAggregateState(conjunction, stateObservers);
   }
 
@@ -142,7 +141,7 @@ public final class States {
     private final Conjunction conjunction;
 
     private DefaultAggregateState(final Conjunction conjunction) {
-      this.conjunction = conjunction;
+      this.conjunction = Objects.requireNonNull(conjunction, "conjunction");
     }
 
     private DefaultAggregateState(final Conjunction conjunction, final StateObserver... states) {

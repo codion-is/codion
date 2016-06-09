@@ -346,8 +346,7 @@ public final class DateUtil {
    * @return a String representing the mask to use in JFormattedTextFields, i.e. "##-##-####"
    */
   public static String getDateMask(final SimpleDateFormat dateFormat) {
-    Objects.requireNonNull(dateFormat, "dateFormat");
-    final String datePattern = dateFormat.toPattern();
+    final String datePattern = Objects.requireNonNull(dateFormat, "dateFormat").toPattern();
     final StringBuilder stringBuilder = new StringBuilder(datePattern.length());
     for (final Character character : datePattern.toCharArray()) {
       stringBuilder.append(Character.isLetter(character) ? "#" : character);

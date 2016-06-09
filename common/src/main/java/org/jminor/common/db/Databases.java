@@ -132,12 +132,11 @@ public final class Databases {
    * @throws IllegalStateException in case a insert hint has already been set for the given table
    */
   public static void setInsertHint(final String tableName, final String insertHint) {
-    Objects.requireNonNull(insertHint, "insertHint");
-    final String currentInsertHint = INSERT_HINTS.get(tableName);
+    final String currentInsertHint = INSERT_HINTS.get(Objects.requireNonNull(tableName, "tableName"));
     if (currentInsertHint != null) {
       throw new IllegalStateException("Insert hint already set for table '" + tableName + "': " + currentInsertHint);
     }
-    INSERT_HINTS.put(tableName, insertHint);
+    INSERT_HINTS.put(tableName, Objects.requireNonNull(insertHint, "insertHint"));
   }
 
   /**

@@ -30,8 +30,8 @@ public final class PreferencesUtil {
    * @return the default username
    */
   public static String getDefaultUserName(final String applicationIdentifier, final String defaultName) {
-    Objects.requireNonNull(applicationIdentifier, "applicationIdentifier");
-    return getUserPreference(applicationIdentifier + "." + PREFERENCE_DEFAULT_USERNAME, defaultName);
+    return getUserPreference(Objects.requireNonNull(applicationIdentifier, "applicationIdentifier")
+            + "." + PREFERENCE_DEFAULT_USERNAME, defaultName);
   }
 
   /**
@@ -50,8 +50,7 @@ public final class PreferencesUtil {
    * @return the user preference associated with the given key
    */
   public static String getUserPreference(final String key, final String defaultValue) {
-    Objects.requireNonNull(key, KEY);
-    return getUserPreferences().get(key, defaultValue);
+    return getUserPreferences().get(Objects.requireNonNull(key, KEY), defaultValue);
   }
 
   /**
@@ -59,8 +58,7 @@ public final class PreferencesUtil {
    * @param value the preference value to associate with the given key
    */
   public static void putUserPreference(final String key, final String value) {
-    Objects.requireNonNull(key, KEY);
-    getUserPreferences().put(key, value);
+    getUserPreferences().put(Objects.requireNonNull(key, KEY), value);
   }
 
   /**
@@ -68,8 +66,7 @@ public final class PreferencesUtil {
    * @param key the key to use to identify the preference to remove
    */
   public static void removeUserPreference(final String key) {
-    Objects.requireNonNull(key, KEY);
-    getUserPreferences().remove(key);
+    getUserPreferences().remove(Objects.requireNonNull(key, KEY));
   }
 
   /**
