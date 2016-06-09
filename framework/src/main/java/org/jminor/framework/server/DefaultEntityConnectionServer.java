@@ -35,6 +35,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -387,6 +388,7 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
     if (database.isEmbedded()) {
       database.shutdownEmbedded(null);
     }//todo does not work when shutdown requires user authentication, jminor.db.shutdownUser hmmm
+    UnicastRemoteObject.unexportObject(serverAdmin, true);
   }
 
   /** {@inheritDoc} */
