@@ -67,8 +67,7 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
    */
   public DefaultColumnCriteriaModel(final K columnIdentifier, final int type, final String wildcard,
                                     final Format format) {
-    Objects.requireNonNull(columnIdentifier, "columnIdentifier");
-    this.columnIdentifier = columnIdentifier;
+    this.columnIdentifier = Objects.requireNonNull(columnIdentifier, "columnIdentifier");
     this.type = type;
     this.wildcard = wildcard;
     this.format = format;
@@ -191,9 +190,8 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
   /** {@inheritDoc} */
   @Override
   public final void setSearchType(final SearchType searchType) {
-    Objects.requireNonNull(searchType, "searchType");
     checkLock();
-    searchTypeValue.set(searchType);
+    searchTypeValue.set(Objects.requireNonNull(searchType, "searchType"));
   }
 
   /** {@inheritDoc} */

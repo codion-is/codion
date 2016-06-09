@@ -52,10 +52,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    */
   public DefaultDatabaseConnection(final Database database, final User user,
                                    final int validityCheckTimeout) throws DatabaseException {
-    Objects.requireNonNull(database, "database");
-    Objects.requireNonNull(user, "user");
-    this.database = database;
-    this.user = user;
+    this.database = Objects.requireNonNull(database, "database");
+    this.user = Objects.requireNonNull(user, "user");
     this.validityCheckTimeout = validityCheckTimeout;
     initialize(database.createConnection(user));
   }
@@ -83,11 +81,9 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    */
   public DefaultDatabaseConnection(final Database database, final Connection connection,
                                    final int validityCheckTimeout) throws DatabaseException {
-    Objects.requireNonNull(database, "database");
-    Objects.requireNonNull(connection, "connection");
-    this.database = database;
+    this.database = Objects.requireNonNull(database, "database");
     this.validityCheckTimeout = validityCheckTimeout;
-    initialize(connection);
+    initialize(Objects.requireNonNull(connection, "connection"));
     this.user = getUser(connection);
   }
 

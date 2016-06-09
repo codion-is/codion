@@ -115,9 +115,8 @@ public final class Events {
 
     @Override
     public void addInfoListener(final EventInfoListener<T> listener) {
-      Objects.requireNonNull(listener, "listener");
       synchronized (lock) {
-        getInfoListeners().add(listener);
+        getInfoListeners().add(Objects.requireNonNull(listener, "listener"));
       }
     }
 
@@ -130,9 +129,8 @@ public final class Events {
 
     @Override
     public void addListener(final EventListener listener) {
-      Objects.requireNonNull(listener, "listener");
       synchronized (lock) {
-        getListeners().add(listener);
+        getListeners().add(Objects.requireNonNull(listener, "listener"));
       }
     }
 

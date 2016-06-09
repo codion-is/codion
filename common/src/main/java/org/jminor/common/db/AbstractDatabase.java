@@ -96,10 +96,8 @@ public abstract class AbstractDatabase implements Database {
    */
   public AbstractDatabase(final Type databaseType, final String driverClassName, final String host, final String port,
                           final String sid, final boolean embedded) {
-    Objects.requireNonNull(databaseType, "databaseType");
-    Objects.requireNonNull(driverClassName, "driverClassName");
     loadDriver(driverClassName);
-    this.databaseType = databaseType;
+    this.databaseType = Objects.requireNonNull(databaseType, "databaseType");
     this.driverClassName = driverClassName;
     this.host = host;
     this.port = port;
@@ -146,8 +144,7 @@ public abstract class AbstractDatabase implements Database {
   /** {@inheritDoc} */
   @Override
   public final Connection createConnection(final User user) throws DatabaseException {
-    Objects.requireNonNull(user, "user");
-    if (Util.nullOrEmpty(user.getUsername())) {
+    if (Util.nullOrEmpty(Objects.requireNonNull(user, "user").getUsername())) {
       throw new IllegalArgumentException("Username must be specified");
     }
     final Properties connectionProperties = new Properties();
@@ -255,9 +252,8 @@ public abstract class AbstractDatabase implements Database {
    * @param driverClassName the class name
    */
   private static void loadDriver(final String driverClassName) {
-    Objects.requireNonNull(driverClassName, "driverClassName");
     try {
-      Class.forName(driverClassName);
+      Class.forName(Objects.requireNonNull(driverClassName, "driverClassName"));
     }
     catch (final ClassNotFoundException e) {
       LOG.warn(driverClassName + " not found on classpath", e);

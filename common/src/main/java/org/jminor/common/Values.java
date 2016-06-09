@@ -112,13 +112,11 @@ public final class Values {
     private Method setMethod;
 
     private BeanValue(final Object valueOwner, final String propertyName, final Class<?> valueClass, final EventObserver<V> changeEvent) {
-      Objects.requireNonNull(valueOwner, "valueOwner");
-      Objects.requireNonNull(valueClass, "valueClass");
       if (Util.nullOrEmpty(propertyName)) {
         throw new IllegalArgumentException("propertyName is null or an empty string");
       }
       try {
-        this.valueOwner = valueOwner;
+        this.valueOwner = Objects.requireNonNull(valueOwner, "valueOwner");
         this.changeEvent = changeEvent;
         this.getMethod = Util.getGetMethod(valueClass, propertyName, valueOwner);
       }
