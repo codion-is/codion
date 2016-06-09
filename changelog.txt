@@ -4293,5 +4293,6 @@
   DefaultEntityConnectionServer refactoring continued, Configuration.SERVER_ADMIN_PORT reintroduced
   Server monitor, added framework-db-remote module to dependencies due to the above
   SwingEntityTableModel, replaceEntitiesByKey() no longer calls filterContents()
+  DefaultEntityConnectionServer bug fixed, now unexports admin interface
 0.10.6
   Conjunction, Version and User moved from common.model to common
