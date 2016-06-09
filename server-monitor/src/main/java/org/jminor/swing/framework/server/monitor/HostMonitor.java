@@ -36,11 +36,13 @@ public final class HostMonitor {
 
   private final String hostName;
   private final int registryPort;
+  private final User adminUser;
   private final Collection<ServerMonitor> serverMonitors = new ArrayList<>();
 
-  public HostMonitor(final String hostName, final int registryPort) throws RemoteException {
+  public HostMonitor(final String hostName, final int registryPort, final User adminUser) throws RemoteException {
     this.hostName = hostName;
     this.registryPort = registryPort;
+    this.adminUser = adminUser;
     refresh();
   }
 
@@ -57,7 +59,7 @@ public final class HostMonitor {
     try {
       for (final Server.ServerInfo serverInfo : getEntityServers(hostName, registryPort)) {
         if (!containsServerMonitor(serverInfo.getServerID())) {
-          final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInfo, registryPort, new User("scott", "tiger"));
+          final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInfo, registryPort, adminUser);
           serverMonitor.addServerShutDownListener(() -> removeServer(serverMonitor));
           addServer(serverMonitor);
         }
