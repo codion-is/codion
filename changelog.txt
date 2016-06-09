@@ -4294,5 +4294,6 @@
   Server monitor, added framework-db-remote module to dependencies due to the above
   SwingEntityTableModel, replaceEntitiesByKey() no longer calls filterContents()
   DefaultEntityConnectionServer bug fixed, now unexports admin interface
+  EntityConnectionServer removed, functionality moved to org.jminor.common.server.Server
 0.10.6
   Conjunction, Version and User moved from common.model to common

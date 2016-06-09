@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Objects;
 import java.util.UUID;
@@ -39,7 +40,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   private final UUID clientID;
   private final String clientTypeID;
   private final Version clientVersion;
-  private Server<RemoteEntityConnection> server;
+  private Server<RemoteEntityConnection, Remote> server;
   private Server.ServerInfo serverInfo;
 
   /**
@@ -149,7 +150,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @throws java.rmi.NotBoundException if no server is reachable or if the servers found are not using the specified port
    * @throws java.rmi.RemoteException in case of remote exceptions
    */
-  private Server<RemoteEntityConnection> getServer() throws RemoteException, NotBoundException {
+  private Server<RemoteEntityConnection, Remote> getServer() throws RemoteException, NotBoundException {
     boolean unreachable = false;
     try {
       if (this.server != null) {

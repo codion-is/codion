@@ -3,6 +3,7 @@
  */
 package org.jminor.common.server;
 
+import org.jminor.common.User;
 import org.jminor.common.Version;
 
 import java.rmi.Remote;
@@ -12,20 +13,30 @@ import java.util.UUID;
 /**
  * A server for serving remote interfaces
  * @param <T> the type of remote interface this server supplies to clients
+ * @param <A> the type of the admin interface this server supplies
  */
-public interface Server<T extends Remote> extends Remote {
+public interface Server<T extends Remote, A extends Remote> extends Remote {
 
   /**
    * Establishes a connection to this Server
    * @param connectionInfo the information required for establishing a connection
    * @return a remote connection instance
-   * @throws RemoteException in case of a RemoteException
+   * @throws RemoteException in case of a communitation error
    * @throws ServerException.ServerFullException in case the server isn't accepting more connections
    * @throws ServerException.LoginException in case the login fails
    * @throws ServerException.ConnectionValidationException in case connection validation fails
    */
   T connect(final ConnectionInfo connectionInfo) throws RemoteException,
           ServerException.ServerFullException, ServerException.LoginException, ServerException.ConnectionValidationException;
+
+  /**
+   * Returns the admin intarface used to administer this server
+   * @param user the admin user credentials
+   * @return the admin interface
+   * @throws RemoteException in case of a communitation error
+   * @throws ServerException.AuthenticationException in case authentication fails
+   */
+  A getServerAdmin(final User user) throws RemoteException, ServerException.AuthenticationException ;
 
   /**
    * Disconnects the connection identified by the given key.

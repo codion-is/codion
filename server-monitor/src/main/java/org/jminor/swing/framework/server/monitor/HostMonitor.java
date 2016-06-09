@@ -10,7 +10,6 @@ import org.jminor.common.User;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.server.EntityConnectionServer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,7 +121,7 @@ public final class HostMonitor {
       }
       for (final String name : boundNames) {
         LOG.debug("HostMonitor found server '{}'", name);
-        final EntityConnectionServer server = (EntityConnectionServer) LocateRegistry.getRegistry(serverHostName, registryPort).lookup(name);
+        final Server server = (Server) LocateRegistry.getRegistry(serverHostName, registryPort).lookup(name);
         servers.add(server.getServerInfo());
       }
     }

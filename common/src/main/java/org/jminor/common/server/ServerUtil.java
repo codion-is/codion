@@ -96,14 +96,16 @@ public final class ServerUtil {
    * @param registryPort the port on which to lookup the registry
    * @param serverPort the required server port, -1 for any port
    * @param <T> the Remote object type served by the server
+   * @param <A> the server admin type supplied by the server
    * @return the servers having a name with the given prefix
    * @throws RemoteException in case of a remote exception
    * @throws NotBoundException in case no such server is found
    */
-  public static <T extends Remote> Server<T> getServer(final String serverHostName, final String serverNamePrefix,
-                                                       final int registryPort, final int serverPort)
+  public static <T extends Remote, A extends Remote> Server<T, A> getServer(final String serverHostName,
+                                                                            final String serverNamePrefix,
+                                                                            final int registryPort, final int serverPort)
           throws RemoteException, NotBoundException {
-    final List<Server<T>> servers = getServers(serverHostName, serverNamePrefix, registryPort, serverPort);
+    final List<Server<T, A>> servers = getServers(serverHostName, serverNamePrefix, registryPort, serverPort);
     if (!servers.isEmpty()) {
       return servers.get(0);
     }
@@ -113,9 +115,11 @@ public final class ServerUtil {
     }
   }
 
-  private static <T extends Remote> List<Server<T>> getServers(final String hostNames, final String serverNamePrefix,
-                                                               final int registryPort, final int serverPort) throws RemoteException {
-    final List<Server<T>> servers = new ArrayList<>();
+  private static <T extends Remote, A extends Remote> List<Server<T, A>> getServers(final String hostNames,
+                                                                                    final String serverNamePrefix,
+                                                                                    final int registryPort, final int serverPort)
+          throws RemoteException {
+    final List<Server<T, A>> servers = new ArrayList<>();
     for (final String serverHostName : hostNames.split(",")) {
       LOG.info("Searching for servers,  host: \"{}\", server name prefix: \"{}\", server port: {}, registry port {}",
               new Object[] {serverHostName, serverNamePrefix, serverPort, registryPort});
@@ -124,7 +128,7 @@ public final class ServerUtil {
         if (name.startsWith(serverNamePrefix)) {
           LOG.info("Found server \"{}\"", name);
           try {
-            final Server<T> server = checkServer((Server<T>) registry.lookup(name), serverPort);
+            final Server<T, A> server = checkServer((Server<T, A>) registry.lookup(name), serverPort);
             if (server != null) {
               LOG.info("Adding server \"{}\"", name);
               servers.add(server);
@@ -170,7 +174,8 @@ public final class ServerUtil {
     }
   }
 
-  private static <T extends Remote> Server<T> checkServer(final Server<T> server, final int requestedPort) throws RemoteException {
+  private static <T extends Remote, A extends Remote> Server<T, A> checkServer(final Server<T, A> server,
+                                                                               final int requestedPort) throws RemoteException {
     final Server.ServerInfo serverInfo = server.getServerInfo();
     if (requestedPort != -1 && serverInfo.getServerPort() != requestedPort) {
       LOG.error("Server \"{}\" is serving on port {}, requested port was {}",
@@ -185,10 +190,10 @@ public final class ServerUtil {
     return null;
   }
 
-  private static final class ServerComparator<T extends Remote> implements Comparator<Server<T>>, Serializable {
+  private static final class ServerComparator<T extends Remote, A extends Remote> implements Comparator<Server<T, A>>, Serializable {
     private static final long serialVersionUID = 1;
     @Override
-    public int compare(final Server<T> o1, final Server<T> o2) {
+    public int compare(final Server<T, A> o1, final Server<T, A> o2) {
       try {
         return Integer.valueOf(o1.getServerLoad()).compareTo(o2.getServerLoad());
       }
