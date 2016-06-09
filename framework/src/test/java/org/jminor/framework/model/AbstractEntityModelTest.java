@@ -72,6 +72,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     deptEditModel.setValue(TestDomain.DEPARTMENT_ID, 40);
     deptEditModel.update();
 
+    deptTableModel.filterContents();
+
     assertTrue(deptTableModel.getFilteredItems().isEmpty());
   }
 

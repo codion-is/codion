@@ -701,7 +701,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   /**
-   * Replace the entities identified by the Entity.Key map keys with their respective value
+   * Replace the entities identified by the Entity.Key map keys with their respective value.
+   * Note that this does not trigger {@link #filterContents()}, that must be done explicitly.
    * @param entityMap the entities to replace mapped to the corresponding primary key found in this table model
    */
   private void replaceEntitiesByKey(final Map<Entity.Key, Entity> entityMap) {
@@ -722,7 +723,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
         break;
       }
     }
-    filterContents();
   }
 
   private void handleDeleteInternal(final EntityEditModel.DeleteEvent deleteEvent) {
