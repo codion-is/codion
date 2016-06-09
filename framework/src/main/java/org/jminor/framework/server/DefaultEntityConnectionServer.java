@@ -111,12 +111,14 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
    * @throws RuntimeException in case the domain model classes are not found on the classpath or if the
    * jdbc driver class is not found or in case of an exception while constructing the initial pooled connections
    */
-  public DefaultEntityConnectionServer(final String serverName, final int serverPort, final int serverAdminPort, final int registryPort, final Database database,
-                                       final boolean sslEnabled, final int connectionLimit, final Collection<String> domainModelClassNames,
+  public DefaultEntityConnectionServer(final String serverName, final int serverPort, final int serverAdminPort,
+                                       final int registryPort, final Database database, final boolean sslEnabled,
+                                       final int connectionLimit, final Collection<String> domainModelClassNames,
                                        final Collection<String> loginProxyClassNames, final Collection<String> connectionValidatorClassNames,
-                                       final Collection<User> initialPoolUsers, final String webDocumentRoot, final Integer webServerPort,
-                                       final boolean clientLoggingEnabled, final int connectionTimeout,
-                                       final Map<String, Integer> clientSpecificConnectionTimeouts, final User adminUser)
+                                       final Collection<User> initialPoolUsers, final String webDocumentRoot,
+                                       final Integer webServerPort, final boolean clientLoggingEnabled,
+                                       final int connectionTimeout, final Map<String, Integer> clientSpecificConnectionTimeouts,
+                                       final User adminUser)
           throws RemoteException {
     super(serverPort, serverName,
             sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
@@ -512,7 +514,13 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
     final Integer connectionTimeout = Configuration.getIntValue(Configuration.SERVER_CONNECTION_TIMEOUT);
     final Map<String, Integer> clientTimeouts = getClientTimeoutValues();
     final String adminUserString = Configuration.getStringValue(Configuration.SERVER_ADMIN_USER);
-    final User adminUser = Util.nullOrEmpty(adminUserString) ? null : parseUser(adminUserString);
+    final User adminUser = Util.nullOrEmpty(adminUserString) ? null : User.parseUser(adminUserString);
+    if (adminUser == null) {
+      LOG.info("No admin user specified");
+    }
+    else {
+      LOG.info("Admin user: " + adminUser);
+    }
     DefaultEntityConnectionServer server = null;
     try {
       server = new DefaultEntityConnectionServer(serverName, serverPort, serverAdminPort, registryPort, database,

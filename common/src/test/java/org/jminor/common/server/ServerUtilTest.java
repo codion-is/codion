@@ -3,7 +3,7 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.model.User;
+import org.jminor.common.User;
 
 import org.junit.After;
 import org.junit.Before;
