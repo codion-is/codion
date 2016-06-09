@@ -513,6 +513,12 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
     final Map<String, Integer> clientTimeouts = getClientTimeoutValues();
     final String adminUserString = Configuration.getStringValue(Configuration.SERVER_ADMIN_USER);
     final User adminUser = Util.nullOrEmpty(adminUserString) ? null : parseUser(adminUserString);
+    if (adminUser == null) {
+      LOG.info("No admin user specified");
+    }
+    else {
+      LOG.info("Admin user: " + adminUser);
+    }
     DefaultEntityConnectionServer server = null;
     try {
       server = new DefaultEntityConnectionServer(serverName, serverPort, serverAdminPort, registryPort, database,
