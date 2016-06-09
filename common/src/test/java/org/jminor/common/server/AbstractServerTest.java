@@ -261,7 +261,7 @@ public class AbstractServerTest {
     ClientInfo getClientInfo() throws RemoteException;
   }
 
-  private static final class TestServer extends AbstractServer<ServerTest> {
+  private static final class TestServer extends AbstractServer<ServerTest, Remote> {
 
     private TestServer(final int serverPort, final String serverName) throws RemoteException {
       super(serverPort, serverName);
@@ -270,6 +270,11 @@ public class AbstractServerTest {
     @Override
     protected ServerTest doConnect(final ClientInfo clientInfo) {
       return new ServerTestImpl(clientInfo);
+    }
+
+    @Override
+    public Remote getServerAdmin(final User user) throws RemoteException, ServerException.AuthenticationException {
+      return null;
     }
 
     @Override

@@ -3,6 +3,8 @@
  */
 package org.jminor.common.server;
 
+import org.jminor.common.model.User;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +29,8 @@ public class ServerUtilTest {
     server = new AbstractServer(12345, SERVER_NAME) {
       @Override
       protected Remote doConnect(final ClientInfo clientInfo) {return null;}
+      @Override
+      public Remote getServerAdmin(final User user) throws RemoteException, ServerException.AuthenticationException {return null;}
       @Override
       protected void doDisconnect(final Remote connection) {}
       @Override

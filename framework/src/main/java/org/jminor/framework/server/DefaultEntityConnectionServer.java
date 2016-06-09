@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
@@ -53,7 +54,8 @@ import static org.jminor.common.model.User.parseUser;
 /**
  * The remote server class, responsible for handling requests for RemoteEntityConnections.
  */
-public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEntityConnection> implements EntityConnectionServer {
+public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEntityConnection, Remote>
+        implements Server<RemoteEntityConnection, Remote> {
 
   private static final long serialVersionUID = 1;
 
@@ -148,7 +150,7 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
    * @throws ServerException.AuthenticationException in case authentication fails
    */
   @Override
-  public EntityConnectionServerAdmin getServerAdmin(final User user) throws ServerException.AuthenticationException {
+  public Remote getServerAdmin(final User user) throws ServerException.AuthenticationException {
     validateUserCredentials(user, adminUser);
 
     return serverAdmin;
@@ -546,8 +548,8 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
     ServerUtil.resolveTrustStoreFromClasspath(DefaultEntityConnectionServerAdmin.class.getSimpleName());
     try {
       final Registry registry = ServerUtil.getRegistry(registryPort);
-      final EntityConnectionServer server = (EntityConnectionServer) registry.lookup(serverName);
-      final EntityConnectionServerAdmin serverAdmin = server.getServerAdmin(adminUser);
+      final Server server = (Server) registry.lookup(serverName);
+      final EntityConnectionServerAdmin serverAdmin = (EntityConnectionServerAdmin) server.getServerAdmin(adminUser);
       final String shutDownInfo = serverName + " found in registry on port: " + registryPort + ", shutting down";
       LOG.info(shutDownInfo);
       System.out.println(shutDownInfo);
