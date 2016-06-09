@@ -4296,5 +4296,6 @@
   DefaultEntityConnectionServer bug fixed, now unexports admin interface
   EntityConnectionServer removed, functionality moved to org.jminor.common.server.Server
   HostMonitor, hardcoded admin user removed
+  Server monitor, removed framework-db-remote module from dependencies due to the above
 0.10.6
   Conjunction, Version and User moved from common.model to common
