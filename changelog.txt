@@ -4299,3 +4299,4 @@
   Server monitor, removed framework-db-remote module from dependencies due to the above
   org.jminor.common, inlined a few Objects.requireNonNull() calls
   Unnecessary logback core and or classic dependencies removed from some modules
+  Explicit logback core and classic dependencies added to framework modules

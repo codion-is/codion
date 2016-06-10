@@ -25,6 +25,8 @@
     <dependency org="org.jminor" name="jminor-framework-db-core" rev="${version}"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.3"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.3" conf="runtime->master"/>
 
     <dependency org="org.json" name="json" rev="20090211"/>
 
