@@ -268,8 +268,9 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
    * @return the server log for the given connection
    */
   ClientLog getClientLog(final UUID clientID) {
-    if (containsConnection(clientID)) {
-      return ((DefaultRemoteEntityConnection) getConnection(clientID)).getClientLog();
+    final DefaultRemoteEntityConnection connection = (DefaultRemoteEntityConnection) getConnection(clientID);
+    if (connection != null) {
+      return connection.getClientLog();
     }
 
     return null;
@@ -280,10 +281,9 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
    * @return true if logging is enabled for the given client
    */
   boolean isLoggingEnabled(final UUID clientID) {
-    for (final RemoteEntityConnection connection : getConnections().values()) {
-      if (((DefaultRemoteEntityConnection) connection).getClientInfo().getClientID().equals(clientID)) {
-        return ((DefaultRemoteEntityConnection) connection).isLoggingEnabled();
-      }
+    final DefaultRemoteEntityConnection connection = (DefaultRemoteEntityConnection) getConnection(clientID);
+    if (connection != null) {
+      return connection.isLoggingEnabled();
     }
 
     return false;
@@ -294,11 +294,9 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
    * @param status the new logging status
    */
   void setLoggingEnabled(final UUID clientID, final boolean status) {
-    for (final RemoteEntityConnection connection : getConnections().values()) {
-      if (((DefaultRemoteEntityConnection) connection).getClientInfo().getClientID().equals(clientID)) {
-        ((DefaultRemoteEntityConnection) connection).setLoggingEnabled(status);
-        return;
-      }
+    final DefaultRemoteEntityConnection connection = (DefaultRemoteEntityConnection) getConnection(clientID);
+    if (connection != null) {
+      connection.setLoggingEnabled(status);
     }
   }
 

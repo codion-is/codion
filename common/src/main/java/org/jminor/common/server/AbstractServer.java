@@ -97,7 +97,12 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
    */
   public final T getConnection(final UUID clientID) {
     synchronized (connections) {
-      return connections.get(clientID).getConnection();
+      final ClientConnectionInfo<T> connectionInfo = connections.get(clientID);
+      if (connectionInfo != null) {
+        return connectionInfo.getConnection();
+      }
+
+      return null;
     }
   }
 
