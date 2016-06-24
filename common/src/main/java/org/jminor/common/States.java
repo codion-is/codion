@@ -79,9 +79,11 @@ public final class States {
     @Override
     public void setActive(final boolean active) {
       synchronized (lock) {
-        final boolean previousValue = this.active;
-        this.active = active;
-        ((DefaultStateObserver) getObserver()).notifyObservers(previousValue, active);
+        if (this.active != active) {
+          final boolean previousValue = this.active;
+          this.active = active;
+          ((DefaultStateObserver) getObserver()).notifyObservers(previousValue, active);
+        }
       }
     }
 

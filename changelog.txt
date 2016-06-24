@@ -4300,3 +4300,5 @@
   org.jminor.common, inlined a few Objects.requireNonNull() calls
   Unnecessary logback core and or classic dependencies removed from some modules
   Explicit logback core and classic dependencies added to framework modules
+  States, state no longer fires change event on a call to setActive() if the actual state does not change
+  SwingEntityEditModel, bug fixed, add- and removeForeignKeyValues() created unnecessary combobox models
