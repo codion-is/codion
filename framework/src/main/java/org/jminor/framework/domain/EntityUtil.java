@@ -17,7 +17,6 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -342,11 +341,8 @@ public final class EntityUtil {
   public static void sort(final List<? extends Property> properties) {
     Objects.requireNonNull(properties, "properties");
     final Collator collator = Collator.getInstance();
-    Collections.sort(properties, new Comparator<Property>() {
-      @Override
-      public int compare(final Property o1, final Property o2) {
-        return collator.compare(o1.toString().toLowerCase(), o2.toString().toLowerCase());
-      }
+    Collections.sort(properties, (o1, o2) -> {
+      return collator.compare(o1.toString().toLowerCase(), o2.toString().toLowerCase());
     });
   }
 
