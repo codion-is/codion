@@ -4302,5 +4302,7 @@
   Explicit logback core and classic dependencies added to framework modules
   States, state no longer fires change event on a call to setActive() if the actual state does not change
   SwingEntityEditModel, bug fixed, add- and removeForeignKeyValues() created unnecessary combobox models
+  AbstractServer, getConnection() fixed, did not fulfill doc contract
+  DefaultEntityConnectionServer, minor optimization based on the above change
 0.10.6
   Conjunction, Version and User moved from common.model to common
