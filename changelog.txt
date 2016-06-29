@@ -4304,3 +4304,4 @@
   SwingEntityEditModel, bug fixed, add- and removeForeignKeyValues() created unnecessary combobox models
   AbstractServer, getConnection() fixed, did not fulfill doc contract
   DefaultEntityConnectionServer, minor optimization based on the above change
+  DefaultRemoteEntityConnection, removed unnecessary call to isConnected() during disconnect
