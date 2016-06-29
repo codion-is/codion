@@ -224,10 +224,10 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   /** {@inheritDoc} */
   @Override
   public void disconnect() {
-    if (!isConnected()) {
-      return;
-    }
     synchronized (connectionProxy) {
+      if (!connected) {
+        return;
+      }
       connected = false;
       try {
         UnicastRemoteObject.unexportObject(this, true);
