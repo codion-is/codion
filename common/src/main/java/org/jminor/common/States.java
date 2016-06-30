@@ -9,6 +9,7 @@ import org.jminor.common.model.Conjunction;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
 
 /**
@@ -369,10 +370,11 @@ public final class States {
 
     private void updateAccordingToState(final State state) {
       synchronized (members) {
-        for (final WeakReference reference : members.toArray(new WeakReference[members.size()])) {
-          final State referredState = (State) reference.get();
+        final ListIterator<WeakReference<State>> iterator = members.listIterator();
+        while (iterator.hasNext()) {
+          final State referredState = iterator.next().get();
           if (referredState == null) {//remove this dead weak reference
-            members.remove(reference);
+            iterator.remove();
           }
           else if (state.isActive() && !state.equals(referredState)) {
             referredState.setActive(false);
