@@ -4305,5 +4305,6 @@
   AbstractServer, getConnection() fixed, did not fulfill doc contract
   DefaultEntityConnectionServer, minor optimization based on the above change
   DefaultRemoteEntityConnection, removed unnecessary call to isConnected() during disconnect
+  States.DefaultGroup, minor refactoring removing unnecessary array creation
 0.10.6
   Conjunction, Version and User moved from common.model to common
