@@ -4306,3 +4306,4 @@
   DefaultEntityConnectionServer, minor optimization based on the above change
   DefaultRemoteEntityConnection, removed unnecessary call to isConnected() during disconnect
   States.DefaultGroup, minor refactoring removing unnecessary array creation
+  EntityEditPanel, overloaded createEditPanelAction() with EntitiesInsertedListener callback, some refactoring involved

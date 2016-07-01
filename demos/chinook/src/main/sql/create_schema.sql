@@ -7,21 +7,24 @@ create table chinook.genre
 (
     genreid identity not null,
     name varchar(120) not null,
-    constraint pk_genre primary key (genreid)
+    constraint pk_genre primary key (genreid),
+    constraint uk_genre unique (name)
 );
 
 create table chinook.mediatype
 (
     mediatypeid identity not null,
     name varchar(120) not null,
-    constraint pk_mediatype primary key (mediatypeid)
+    constraint pk_mediatype primary key (mediatypeid),
+    constraint uk_mediatype unique (name)
 );
 
 create table chinook.artist
 (
     artistid identity not null,
     name varchar(120) not null,
-    constraint pk_artist primary key (artistid)
+    constraint pk_artist primary key (artistid),
+    constraint uk_artist unique (name)
 );
 
 create table chinook.album
