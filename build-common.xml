@@ -54,8 +54,8 @@
   </target>
 
   <target name="build" depends="retrieve_libraries" description="Builds this module">
-    <mkdir dir="build/main"/>
-    <javac destdir="build/main" debug="${build.debuginfo}" includeantruntime="false">
+    <mkdir dir="${build.main}"/>
+    <javac destdir="${build.main}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.main}"/>
       <classpath>
         <path refid="lib.compile"/>
@@ -64,7 +64,7 @@
     <copy todir="${build.main}">
       <fileset dir="${src.main}" excludes="**/*.java"/>
     </copy>
-    <mkdir dir="build/test"/>
+    <mkdir dir="${build.test}"/>
     <javac destdir="${build.test}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.test}"/>
       <classpath>
