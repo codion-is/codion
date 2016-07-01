@@ -3,7 +3,7 @@
  */
 package org.jminor.javafx.framework.model;
 
-import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.TextUtil;
@@ -11,14 +11,14 @@ import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.model.DefaultEntityTableCriteriaModel;
+import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.EntityEditModel;
-import org.jminor.framework.model.EntityTableCriteriaModel;
+import org.jminor.framework.model.EntityTableConditionModel;
 import org.jminor.framework.model.EntityTableModel;
 
 import javafx.collections.ObservableList;
@@ -41,35 +41,35 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   private static final Logger LOG = LoggerFactory.getLogger(FXEntityListModel.class);
 
-  private final EntityTableCriteriaModel criteriaModel;
+  private final EntityTableConditionModel conditionModel;
 
   private FXEntityEditModel editModel;
   private ObservableList<? extends TableColumn<Entity, ?>> columns;
   private List<PropertyTableColumn> initialColumns;
 
   private InsertAction insertAction = InsertAction.ADD_TOP;
-  private boolean queryCriteriaRequired = false;
+  private boolean queryConditionRequired = false;
   private boolean queryConfigurationAllowed = true;
   private boolean batchUpdateAllowed = true;
   private boolean removeEntitiesOnDelete = true;
   private int fetchCount = -1;
 
   public FXEntityListModel(final String entityID, final EntityConnectionProvider connectionProvider) {
-    this(entityID, connectionProvider, new DefaultEntityTableCriteriaModel(entityID, connectionProvider,
-            null, new FXCriteriaModelProvider()));
+    this(entityID, connectionProvider, new DefaultEntityTableConditionModel(entityID, connectionProvider,
+            null, new FXConditionModelProvider()));
   }
 
   public FXEntityListModel(final String entityID, final EntityConnectionProvider connectionProvider,
-                           final EntityTableCriteriaModel criteriaModel) {
+                           final EntityTableConditionModel conditionModel) {
     super(entityID, connectionProvider);
-    if (!criteriaModel.getEntityID().equals(entityID)) {
-      throw new IllegalArgumentException("Entity ID mismatch, criteriaModel: " + criteriaModel.getEntityID()
+    if (!conditionModel.getEntityID().equals(entityID)) {
+      throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + conditionModel.getEntityID()
               + ", tableModel: " + entityID);
     }
     if (Entities.getVisibleProperties(entityID).isEmpty()) {
       throw new IllegalStateException("No visible properties defined for entity: " + entityID);
     }
-    this.criteriaModel = criteriaModel;
+    this.conditionModel = conditionModel;
     bindEvents();
   }
 
@@ -107,27 +107,27 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableCriteriaModel getCriteriaModel() {
-    return criteriaModel;
+  public final EntityTableConditionModel getConditionModel() {
+    return conditionModel;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isQueryCriteriaRequired() {
-    return queryCriteriaRequired;
+  public final boolean isQueryConditionRequired() {
+    return queryConditionRequired;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final FXEntityListModel setQueryCriteriaRequired(final boolean value) {
-    this.queryCriteriaRequired = value;
+  public final FXEntityListModel setQueryConditionRequired(final boolean value) {
+    this.queryConditionRequired = value;
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setForeignKeyCriteriaValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> entities) {
-    if (criteriaModel.setCriteriaValues(foreignKeyProperty.getPropertyID(), entities)) {
+  public final void setForeignKeyConditionValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> entities) {
+    if (conditionModel.setConditionValues(foreignKeyProperty.getPropertyID(), entities)) {
       refresh();
     }
   }
@@ -426,14 +426,14 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   protected List<Entity> queryContents() {
-    final Criteria<Property.ColumnProperty> criteria = criteriaModel.getTableCriteria();
-    if (criteria == null && queryCriteriaRequired) {
+    final Condition<Property.ColumnProperty> condition = conditionModel.getTableCondition();
+    if (condition == null && queryConditionRequired) {
       return new ArrayList<>();
     }
 
     try {
-      return getConnectionProvider().getConnection().selectMany(EntityCriteriaUtil.selectCriteria(getEntityID(),
-              criteria, getOrderByClause(), fetchCount));
+      return getConnectionProvider().getConnection().selectMany(EntityConditions.selectCondition(getEntityID(),
+              condition, getOrderByClause(), fetchCount));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -575,7 +575,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   private void bindEvents() {
-    addRefreshListener(criteriaModel::rememberCurrentCriteriaState);
+    addRefreshListener(conditionModel::rememberCurrentConditionState);
   }
 
   public static class PropertyTableColumn extends TableColumn<Entity, Object> {

@@ -4,7 +4,7 @@
 package org.jminor.swing.common.model.table;
 
 import org.jminor.common.EventInfoListener;
-import org.jminor.common.model.table.ColumnCriteriaModel;
+import org.jminor.common.model.table.ColumnConditionModel;
 
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -68,14 +68,14 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
 
   /**
    * @param columnIdentifier the column identifier
-   * @return the ColumnCriteriaModel at the given column index
+   * @return the ColumnConditionModel at the given column index
    */
-  ColumnCriteriaModel<C> getColumnFilterModel(final C columnIdentifier);
+  ColumnConditionModel<C> getColumnFilterModel(final C columnIdentifier);
 
   /**
    * @return the ColumnFilterModel instances
    */
-  Collection<ColumnCriteriaModel<C>> getColumnFilterModels();
+  Collection<ColumnConditionModel<C>> getColumnFilterModels();
 
   /**
    * @param listener a listener to be notified each time a column is hidden

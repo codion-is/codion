@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.model.table.ColumnCriteriaModel;
+import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.domain.Property;
 
 /**
@@ -13,7 +13,7 @@ public class DefaultPropertyFilterModelProvider implements PropertyFilterModelPr
 
   /** {@inheritDoc} */
   @Override
-  public ColumnCriteriaModel<Property> initializePropertyFilterModel(final Property property) {
+  public ColumnConditionModel<Property> initializePropertyFilterModel(final Property property) {
     return new DefaultPropertyFilterModel(property);
   }
 }

@@ -94,7 +94,7 @@ public final class EntityLookupField extends TextField {
 
   private void showEmptyResultMessage() {
     Platform.runLater(new Alert(Alert.AlertType.INFORMATION,
-            FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA), ButtonType.OK)::showAndWait);
+            FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION), ButtonType.OK)::showAndWait);
   }
 
   private void updateColors() {

@@ -32,7 +32,7 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
   private boolean refreshOnInit = true;
   private EntityPanel.PanelState detailPanelState = EntityPanel.PanelState.EMBEDDED;
   private double detailSplitPanelResizeWeight = DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT;
-  private boolean tableCriteriaPanelVisible = Configuration.getBooleanValue(Configuration.TABLE_CRITERIA_PANEL_VISIBLE);
+  private boolean tableConditionPanelVisible = Configuration.getBooleanValue(Configuration.TABLE_CONDITION_PANEL_VISIBLE);
 
   private Class<? extends EntityPanel> panelClass = EntityPanel.class;
   private Class<? extends EntityTablePanel> tablePanelClass = EntityTablePanel.class;
@@ -168,18 +168,18 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
   }
 
   /**
-   * @return whether or not the table criteria panel is made visible when the panel is initialized
+   * @return whether or not the table condition panel is made visible when the panel is initialized
    */
-  public final boolean isTableCriteriaPanelVisible() {
-    return tableCriteriaPanelVisible;
+  public final boolean isTableConditionPanelVisible() {
+    return tableConditionPanelVisible;
   }
 
   /**
-   * @param tableCriteriaPanelVisible if true then the table criteria panel is made visible when the panel is initialized
+   * @param tableConditionPanelVisible if true then the table condition panel is made visible when the panel is initialized
    * @return this EntityPanelProvider instance
    */
-  public final EntityPanelProvider setTableCriteriaPanelVisible(final boolean tableCriteriaPanelVisible) {
-    this.tableCriteriaPanelVisible = tableCriteriaPanelVisible;
+  public final EntityPanelProvider setTableConditionPanelVisible(final boolean tableConditionPanelVisible) {
+    this.tableConditionPanelVisible = tableConditionPanelVisible;
     return this;
   }
 
@@ -330,8 +330,8 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
     }
     try {
       final EntityPanel entityPanel = initializePanel(model);
-      if (entityPanel.getTablePanel() != null && tableCriteriaPanelVisible) {
-        entityPanel.getTablePanel().setCriteriaPanelVisible(tableCriteriaPanelVisible);
+      if (entityPanel.getTablePanel() != null && tableConditionPanelVisible) {
+        entityPanel.getTablePanel().setConditionPanelVisible(tableConditionPanelVisible);
       }
       if (!detailPanelProviders.isEmpty()) {
         entityPanel.setDetailPanelState(detailPanelState);

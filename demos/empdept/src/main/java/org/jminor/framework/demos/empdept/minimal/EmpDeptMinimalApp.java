@@ -5,9 +5,9 @@ package org.jminor.framework.demos.empdept.minimal;
 
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.SearchType;
+import org.jminor.common.model.ConditionType;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
@@ -92,7 +92,7 @@ public class EmpDeptMinimalApp {
     }
 
     /**
-     * We override this method to add a query criteria to the manager combo box model
+     * We override this method to add a query condition to the manager combo box model
      * so that is only shows managers.
      */
     @Override
@@ -100,8 +100,8 @@ public class EmpDeptMinimalApp {
             final Property.ForeignKeyProperty foreignKeyProperty) {
       final EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
       if (foreignKeyProperty.is("mgr_fk")) {
-        comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(
-                "scott.emp", "job", SearchType.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
+        comboBoxModel.setEntitySelectCondition(EntityConditions.selectCondition(
+                "scott.emp", "job", ConditionType.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
         comboBoxModel.refresh();
       }
 

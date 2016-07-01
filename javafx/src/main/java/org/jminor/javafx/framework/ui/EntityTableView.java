@@ -6,7 +6,7 @@ package org.jminor.javafx.framework.ui;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.FilterCriteria;
+import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -60,12 +60,12 @@ public class EntityTableView extends TableView<Entity> {
     bindEvents();
   }
 
-  public final void setCriteriaPaneVisible(final boolean visible) {
-    getColumns().forEach(column -> ((EntityTableColumn) column).setCriteriaViewVisible(visible));
+  public final void setConditionPaneVisible(final boolean visible) {
+    getColumns().forEach(column -> ((EntityTableColumn) column).setConditionViewVisible(visible));
   }
 
-  public final void setCriteriaPaneAdvanced(final boolean advanced) {
-    getColumns().forEach(column -> ((EntityTableColumn) column).setCriteriaViewAdvanced(advanced));
+  public final void setConditionPaneAdvanced(final boolean advanced) {
+    getColumns().forEach(column -> ((EntityTableColumn) column).setConditionViewAdvanced(advanced));
   }
 
   public final void deleteSelected() {
@@ -126,7 +126,7 @@ public class EntityTableView extends TableView<Entity> {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.REFRESH));
     button.setOnAction(event -> listModel.refresh());
     FXUiUtil.link(button.disableProperty(),
-            listModel.getCriteriaModel().getCriteriaStateObserver().getReversedObserver());
+            listModel.getConditionModel().getConditionStateObserver().getReversedObserver());
 
     return button;
   }
@@ -168,15 +168,15 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private Menu createSearchMenu() {
-    final CheckMenuItem showCriteriaPane = new CheckMenuItem(FrameworkMessages.get(FrameworkMessages.SHOW));
-    showCriteriaPane.selectedProperty().addListener((observable, oldValue, newValue) -> setCriteriaPaneVisible(newValue));
+    final CheckMenuItem showConditionPane = new CheckMenuItem(FrameworkMessages.get(FrameworkMessages.SHOW));
+    showConditionPane.selectedProperty().addListener((observable, oldValue, newValue) -> setConditionPaneVisible(newValue));
     final CheckMenuItem advanced = new CheckMenuItem(FrameworkMessages.get(FrameworkMessages.ADVANCED));
-    advanced.selectedProperty().addListener((observable, oldValue, newValue) -> setCriteriaPaneAdvanced(newValue));
+    advanced.selectedProperty().addListener((observable, oldValue, newValue) -> setConditionPaneAdvanced(newValue));
     final MenuItem clear = new MenuItem(FrameworkMessages.get(FrameworkMessages.CLEAR));
-    clear.setOnAction(event -> listModel.getCriteriaModel().clear());
+    clear.setOnAction(event -> listModel.getConditionModel().clear());
 
     final Menu searchMenu = new Menu(FrameworkMessages.get(FrameworkMessages.SEARCH));
-    searchMenu.getItems().add(showCriteriaPane);
+    searchMenu.getItems().add(showConditionPane);
     searchMenu.getItems().add(advanced);
     searchMenu.getItems().add(clear);
 
@@ -280,10 +280,10 @@ public class EntityTableView extends TableView<Entity> {
     listModel.getSortedList().comparatorProperty().bind(comparatorProperty());
     filterText.textProperty().addListener((observable, oldValue, newValue) -> {
       if (Util.nullOrEmpty(newValue)) {
-        listModel.setFilterCriteria(new FilterCriteria.AcceptAllCriteria());
+        listModel.setFilterCondition(new FilterCondition.AcceptAllCondition());
       }
       else {
-        listModel.setFilterCriteria(item -> {
+        listModel.setFilterCondition(item -> {
           boolean found = false;
           for (final TableColumn<Entity, ?> column : getColumns()) {
             final Object value = column.getCellObservableValue(item).getValue();

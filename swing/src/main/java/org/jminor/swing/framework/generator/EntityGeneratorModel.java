@@ -13,7 +13,7 @@ import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.table.DefaultColumnCriteriaModel;
+import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.AbstractTableSortModel;
 
@@ -370,8 +370,8 @@ public final class EntityGeneratorModel {
             return rowObject.getTableName();
           }
         }
-      }, Arrays.asList(new DefaultColumnCriteriaModel<>(0, Types.VARCHAR, "%"),
-              new DefaultColumnCriteriaModel<>(1, Types.VARCHAR, "%")));
+      }, Arrays.asList(new DefaultColumnConditionModel<>(0, Types.VARCHAR, "%"),
+              new DefaultColumnConditionModel<>(1, Types.VARCHAR, "%")));
       this.metaData = metaData;
       this.schema = schema;
       this.catalog = catalog;

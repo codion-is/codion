@@ -6,9 +6,9 @@ package org.jminor.swing.common.model.table;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
-import org.jminor.common.model.FilterCriteria;
-import org.jminor.common.model.table.ColumnCriteriaModel;
-import org.jminor.common.model.table.DefaultColumnCriteriaModel;
+import org.jminor.common.model.FilterCondition;
+import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.common.model.table.DefaultColumnConditionModel;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public final class AbstractFilteredTableModelTest {
   public static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<String, Integer> {
 
     private TestAbstractFilteredTableModel(final AbstractTableSortModel<String, Integer> sortModel,
-                                           final List<ColumnCriteriaModel<Integer>> columnFilterModels) {
+                                           final List<ColumnConditionModel<Integer>> columnFilterModels) {
       super(sortModel, columnFilterModels);
     }
 
@@ -67,7 +67,7 @@ public final class AbstractFilteredTableModelTest {
   public static TestAbstractFilteredTableModel createTestModel(final Comparator<String> customComparator) {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnCriteriaModel<Integer> filterModel = new DefaultColumnCriteriaModel<>(0, Types.VARCHAR, "%");
+    final ColumnConditionModel<Integer> filterModel = new DefaultColumnConditionModel<>(0, Types.VARCHAR, "%");
     return new TestAbstractFilteredTableModel(new AbstractTableSortModel<String, Integer>(Collections.singletonList(column)) {
       @Override
       public Class getColumnClass(final Integer columnIdentifier) {
@@ -103,14 +103,14 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void filterContents() {
     tableModel.refresh();
-    tableModel.setFilterCriteria(item -> !item.equals("b") && !item.equals("f"));
+    tableModel.setFilterCondition(item -> !item.equals("b") && !item.equals("f"));
     assertFalse(tableModel.contains("b", false));
     assertTrue(tableModel.contains("b", true));
     tableModel.addItemsAt(Collections.singletonList("f"), 0);
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
     assertFalse(tableModel.contains("f", false));
     assertTrue(tableModel.contains("f", true));
-    tableModel.setFilterCriteria(null);
+    tableModel.setFilterCondition(null);
     assertTrue(tableModel.contains("b", false));
     assertTrue(tableModel.contains("f", false));
   }
@@ -281,11 +281,11 @@ public final class AbstractFilteredTableModelTest {
     point = testModel.findNextItemCoordinate(0, true, "(?i)B");
     assertEquals(new Point(1, 3), point);
 
-    FilterCriteria<Object> criteria = item -> item.equals("b") || item.equals("e");
+    FilterCondition<Object> condition = item -> item.equals("b") || item.equals("e");
 
-    point = testModel.findNextItemCoordinate(4, false, criteria);
+    point = testModel.findNextItemCoordinate(4, false, condition);
     assertEquals(new Point(1, 3), point);
-    point = testModel.findNextItemCoordinate(point.y - 1, false, criteria);
+    point = testModel.findNextItemCoordinate(point.y - 1, false, condition);
     assertEquals(new Point(1, 0), point);
 
     testModel.getSortModel().setSortingDirective(1, SortingDirective.ASCENDING, false);
@@ -313,11 +313,11 @@ public final class AbstractFilteredTableModelTest {
     point = testModel.findNextItemCoordinate(0, true, "(?i)B");
     assertEquals(new Point(0, 3), point);
 
-    criteria = item -> item.equals("b") || item.equals("e");
+    condition = item -> item.equals("b") || item.equals("e");
 
-    point = testModel.findNextItemCoordinate(4, false, criteria);
+    point = testModel.findNextItemCoordinate(4, false, condition);
     assertEquals(new Point(0, 3), point);
-    point = testModel.findNextItemCoordinate(point.y - 1, false, criteria);
+    point = testModel.findNextItemCoordinate(point.y - 1, false, condition);
     assertEquals(new Point(0, 0), point);
   }
 
@@ -625,9 +625,9 @@ public final class AbstractFilteredTableModelTest {
   }
 
   @Test
-  public void setFilterCriteria() {
+  public void setFilterCondition() {
     tableModel.refresh();
-    tableModel.setFilterCriteria(item -> false);
+    tableModel.setFilterCondition(item -> false);
     assertTrue(tableModel.getRowCount() == 0);
   }
 
@@ -639,7 +639,7 @@ public final class AbstractFilteredTableModelTest {
 
     tableModel.refresh();
     assertTrue("Model should contain all entities", tableModelContainsAll(ITEMS, false, tableModel));
-    assertNotNull(tableModel.getFilterCriteria());
+    assertNotNull(tableModel.getFilterCondition());
 
     //test filters
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("a");

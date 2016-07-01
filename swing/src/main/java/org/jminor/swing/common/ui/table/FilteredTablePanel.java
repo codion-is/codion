@@ -8,7 +8,7 @@ import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.TextUtil;
-import org.jminor.common.model.table.ColumnCriteriaModel;
+import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.swing.common.model.DocumentAdapter;
 import org.jminor.swing.common.model.table.FilteredTableModel;
 import org.jminor.swing.common.model.table.SortingDirective;
@@ -92,12 +92,12 @@ public class FilteredTablePanel<R, C> extends JPanel {
   /**
    * Provides filter panels
    */
-  private final ColumnCriteriaPanelProvider<C> searchPanelProvider;
+  private final ColumnConditionPanelProvider<C> conditionPanelProvider;
 
   /**
    * the property filter panels
    */
-  private final Map<TableColumn, ColumnCriteriaPanel<C>> columnFilterPanels = new HashMap<>();
+  private final Map<TableColumn, ColumnConditionPanel<C>> columnFilterPanels = new HashMap<>();
 
   /**
    * the column summary panel
@@ -140,7 +140,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
   private Point lastSearchResultCoordinate = NULL_POINT;
 
   /**
-   * The text field used for entering the search criteria
+   * The text field used for entering the search condition
    */
   private final JTextField searchField;
 
@@ -161,20 +161,20 @@ public class FilteredTablePanel<R, C> extends JPanel {
   public FilteredTablePanel(final FilteredTableModel<R, C> tableModel) {
     this(tableModel, column -> {
       //noinspection unchecked
-      return new ColumnCriteriaPanel<>(tableModel.getColumnModel().getColumnFilterModel((C) column.getIdentifier()), true, true);
+      return new ColumnConditionPanel<>(tableModel.getColumnModel().getColumnFilterModel((C) column.getIdentifier()), true, true);
     });
   }
 
   /**
    * Instantiates a new FilteredTablePanel.
    * @param tableModel the table model
-   * @param criteriaPanelProvider the column criteria panel provider
+   * @param conditionPanelProvider the column condition panel provider
    * the column filter models found in the table model
    */
-  public FilteredTablePanel(final FilteredTableModel<R, C> tableModel, final ColumnCriteriaPanelProvider<C> criteriaPanelProvider) {
+  public FilteredTablePanel(final FilteredTableModel<R, C> tableModel, final ColumnConditionPanelProvider<C> conditionPanelProvider) {
     Objects.requireNonNull(tableModel, "tableModel");
     this.tableModel = tableModel;
-    this.searchPanelProvider = criteriaPanelProvider;
+    this.conditionPanelProvider = conditionPanelProvider;
     this.table = initializeJTable();
     this.tableScrollPane = new JScrollPane(table);
     this.horizontalTableScrollBar = tableScrollPane.getHorizontalScrollBar();
@@ -201,7 +201,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * @param value true if the active filter panels should be shown, false if they should be hidden
    */
   public final void setFilterPanelsVisible(final boolean value) {
-    for (final ColumnCriteriaPanel columnFilterPanel : columnFilterPanels.values()) {
+    for (final ColumnConditionPanel columnFilterPanel : columnFilterPanels.values()) {
       if (value) {
         columnFilterPanel.showDialog();
       }
@@ -226,7 +226,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
   }
 
   /**
-   * @return the text field used to enter a search criteria
+   * @return the text field used to enter a search condition
    * @see #initializeSearchField()
    */
   public final JTextField getSearchField() {
@@ -586,9 +586,9 @@ public class FilteredTablePanel<R, C> extends JPanel {
     tableModel.addRefreshStartedListener(() -> UiUtil.setWaitCursor(true, FilteredTablePanel.this));
     tableModel.addRefreshDoneListener(() -> UiUtil.setWaitCursor(false, FilteredTablePanel.this));
     for (final TableColumn column : tableModel.getColumnModel().getAllColumns()) {
-      final ColumnCriteriaModel model = tableModel.getColumnModel().getColumnFilterModel((C) column.getIdentifier());
+      final ColumnConditionModel model = tableModel.getColumnModel().getColumnFilterModel((C) column.getIdentifier());
       if (model != null) {
-        model.addCriteriaStateListener(() -> {
+        model.addConditionStateListener(() -> {
           if (model.isEnabled()) {
             addFilterIndicator(column);
           }
@@ -613,13 +613,13 @@ public class FilteredTablePanel<R, C> extends JPanel {
     final int index = tableModel.getColumnModel().getColumnIndexAtX(event.getX());
     final TableColumn column = tableModel.getColumnModel().getColumn(index);
     if (!columnFilterPanels.containsKey(column)) {
-      columnFilterPanels.put(column, searchPanelProvider.createColumnCriteriaPanel(column));
+      columnFilterPanels.put(column, conditionPanelProvider.createColumnConditionPanel(column));
     }
 
     toggleFilterPanel(event.getLocationOnScreen(), columnFilterPanels.get(column), table);
   }
 
-  private static void toggleFilterPanel(final Point position, final ColumnCriteriaPanel columnFilterPanel,
+  private static void toggleFilterPanel(final Point position, final ColumnConditionPanel columnFilterPanel,
                                         final Container parent) {
     if (columnFilterPanel.isDialogEnabled()) {
       columnFilterPanel.disableDialog();
@@ -654,16 +654,16 @@ public class FilteredTablePanel<R, C> extends JPanel {
   }
 
   /**
-   * Responsible for creating {@link ColumnCriteriaPanel}s
+   * Responsible for creating {@link ColumnConditionPanel}s
    * @param <C> the type used as column identifier
    */
-  public interface ColumnCriteriaPanelProvider<C> {
+  public interface ColumnConditionPanelProvider<C> {
     /**
-     * Creates a ColumnCriteriaPanel for the given column
+     * Creates a ColumnConditionPanel for the given column
      * @param column the column
-     * @return a ColumnCriteriaPanel
+     * @return a ColumnConditionPanel
      */
-    ColumnCriteriaPanel<C> createColumnCriteriaPanel(final TableColumn column);
+    ColumnConditionPanel<C> createColumnConditionPanel(final TableColumn column);
   }
 
   private final class MouseSortHandler extends MouseAdapter {

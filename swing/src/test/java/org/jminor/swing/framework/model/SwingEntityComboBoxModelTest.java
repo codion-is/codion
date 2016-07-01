@@ -4,11 +4,11 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.common.EventListener;
-import org.jminor.common.db.criteria.CriteriaUtil;
+import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.FilterCriteria;
+import org.jminor.common.model.FilterCondition;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -100,13 +100,13 @@ public final class SwingEntityComboBoxModelTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void setEntitySelectCriteriaEntityIDMismatch() {
-    comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT));
+  public void setEntitySelectConditionEntityIDMismatch() {
+    comboBoxModel.setEntitySelectCondition(EntityConditions.selectCondition(TestDomain.T_DEPARTMENT));
   }
 
   @Test
-  public void setEntitySelectCriteriaNullValueDefaultCriteria() {
-    comboBoxModel.setEntitySelectCriteria(null);
+  public void setEntitySelectConditionNullValueDefaultCondition() {
+    comboBoxModel.setEntitySelectCondition(null);
   }
 
   @Test
@@ -117,7 +117,7 @@ public final class SwingEntityComboBoxModelTest {
     assertEquals(clark, comboBoxModel.getSelectedValue());
     comboBoxModel.setSelectedItem(null);
     assertNull(comboBoxModel.getSelectedValue());
-    comboBoxModel.setFilterCriteria(new FilterCriteria.RejectAllCriteria<>());
+    comboBoxModel.setFilterCondition(new FilterCondition.RejectAllCondition<>());
     comboBoxModel.setSelectedEntityByKey(clark.getKey());
     assertEquals(clark, comboBoxModel.getSelectedValue());
     final Entity.Key nobodyPK = Entities.key(TestDomain.T_EMP);
@@ -152,8 +152,8 @@ public final class SwingEntityComboBoxModelTest {
     comboBoxModel.clear();
     assertTrue(comboBoxModel.getSize() == 0);
 
-    comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP,
-            CriteriaUtil.<Property.ColumnProperty>stringCriteria(" ename = 'CLARK'")));
+    comboBoxModel.setEntitySelectCondition(EntityConditions.selectCondition(TestDomain.T_EMP,
+            Conditions.<Property.ColumnProperty>stringCondition(" ename = 'CLARK'")));
     comboBoxModel.setForeignKeyFilterEntities(TestDomain.EMP_DEPARTMENT_FK, null);
 
     comboBoxModel.forceRefresh();

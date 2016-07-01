@@ -594,7 +594,7 @@ public final class Entities {
    * Returns the foreign key properties referencing entities of the given type
    * @param entityID the ID of the entity from which to retrieve the foreign key properties
    * @param referenceEntityID the ID of the reference entity
-   * @return a List containing the properties, an empty list is returned in case no properties fit the criteria
+   * @return a List containing the properties, an empty list is returned in case no properties fit the condition
    */
   public static List<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID, final String referenceEntityID) {
     final List<Property.ForeignKeyProperty> properties = new ArrayList<>();

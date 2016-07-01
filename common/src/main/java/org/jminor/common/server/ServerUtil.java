@@ -90,7 +90,7 @@ public final class ServerUtil {
 
   /**
    * Retrieves a Server from a registry running on the given host, using the
-   * given server name prefix as a criteria. Returns the first server satisfying the criteria.
+   * given server name prefix as a condition. Returns the first server satisfying the condition.
    * @param serverHostName the name of the host
    * @param serverNamePrefix the server name prefix, an empty string results in all servers being returned
    * @param registryPort the port on which to lookup the registry

@@ -10,8 +10,8 @@ import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.common.model.tools.MethodLogger;
-import org.jminor.framework.db.criteria.EntityCriteria;
-import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.db.condition.EntityCondition;
+import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Entity;
 
 import java.util.Collection;
@@ -124,24 +124,24 @@ public interface EntityConnection {
   void delete(final List<Entity.Key> entityKeys) throws DatabaseException;
 
   /**
-   * Deletes the entities specified by the given criteria
+   * Deletes the entities specified by the given condition
    * Performs a commit unless a transaction is open.
-   * @param criteria the criteria specifying the entities to delete
+   * @param condition the condition specifying the entities to delete
    * @throws DatabaseException in case of a db exception
    */
-  void delete(final EntityCriteria criteria) throws DatabaseException;
+  void delete(final EntityCondition condition) throws DatabaseException;
 
   /**
    * Selects ordered and distinct non-null values of the given property, note that the given property
    * must be of type {@link org.jminor.framework.domain.Property.ColumnProperty}.
    * @param propertyID the ID of the property
-   * @param criteria the criteria
+   * @param condition the condition
    * @return the values in the given column (Property)
    * @throws DatabaseException in case of a db exception
    * @throws IllegalArgumentException in case the given property is not a column based property
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
-  List<Object> selectValues(final String propertyID, final EntityCriteria criteria) throws DatabaseException;
+  List<Object> selectValues(final String propertyID, final EntityCondition condition) throws DatabaseException;
 
   /**
    * Selects a single entity
@@ -165,14 +165,14 @@ public interface EntityConnection {
   Entity selectSingle(final Entity.Key key) throws DatabaseException;
 
   /**
-   * Selects a single entity according to the specified criteria, throws a DatabaseException
-   * if the criteria results in more than one entity
-   * @param criteria the criteria specifying the entity to select
-   * @return the entities according to the given criteria
+   * Selects a single entity according to the specified condition, throws a DatabaseException
+   * if the condition results in more than one entity
+   * @param condition the condition specifying the entity to select
+   * @return the entities according to the given condition
    * @throws DatabaseException in case of a db exception or if many records were found
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
    */
-  Entity selectSingle(final EntitySelectCriteria criteria) throws DatabaseException;
+  Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException;
 
   /**
    * Returns entities according to {@code keys}
@@ -183,12 +183,12 @@ public interface EntityConnection {
   List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException;
 
   /**
-   * Selects entities according to the specified criteria
-   * @param criteria the criteria specifying which entities to select
-   * @return entities according to the given criteria
+   * Selects entities according to the specified condition
+   * @param condition the condition specifying which entities to select
+   * @return entities according to the given condition
    * @throws DatabaseException in case of a db exception
    */
-  List<Entity> selectMany(final EntitySelectCriteria criteria) throws DatabaseException;
+  List<Entity> selectMany(final EntitySelectCondition condition) throws DatabaseException;
 
   /**
    * Selects entities according to one property ({@code propertyID}), using {@code values} as a condition
@@ -209,12 +209,12 @@ public interface EntityConnection {
   Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException;
 
   /**
-   * Selects the number of rows returned according to the given criteria
-   * @param criteria the search criteria
-   * @return the number of rows fitting the given criteria
+   * Selects the number of rows returned according to the given condition
+   * @param condition the search condition
+   * @return the number of rows fitting the given condition
    * @throws DatabaseException in case of a db exception
    */
-  int selectRowCount(final EntityCriteria criteria) throws DatabaseException;
+  int selectRowCount(final EntityCondition condition) throws DatabaseException;
 
   /**
    * Takes a ReportWrapper object using a JDBC datasource and returns an initialized ReportResult object

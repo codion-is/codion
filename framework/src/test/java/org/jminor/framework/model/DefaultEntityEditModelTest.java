@@ -15,7 +15,7 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -153,7 +153,7 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.addAfterRefreshListener(listener);
 
     assertEquals(TestDomain.T_EMP, employeeEditModel.getEntityID());
-    assertEquals(employeeEditModel.getConnectionProvider().getConnection().selectValues(TestDomain.EMP_JOB, EntityCriteriaUtil.criteria(TestDomain.T_EMP)),
+    assertEquals(employeeEditModel.getConnectionProvider().getConnection().selectValues(TestDomain.EMP_JOB, EntityConditions.condition(TestDomain.T_EMP)),
             employeeEditModel.getValueProvider(jobProperty).values());
 
     employeeEditModel.refresh();

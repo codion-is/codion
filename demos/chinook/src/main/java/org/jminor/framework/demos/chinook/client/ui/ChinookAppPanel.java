@@ -109,7 +109,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPane
     final EntityPanel invoiceLinePanel = new EntityPanel(invoiceLineModel, new InvoiceLineEditPanel(invoiceLineModel.getEditModel()));
     final EntityTablePanel invoiceLineTablePanel = invoiceLinePanel.getTablePanel();
     invoiceLineTablePanel.setIncludeSouthPanel(false);
-    invoiceLineTablePanel.setIncludeCriteriaPanel(false);
+    invoiceLineTablePanel.setIncludeConditionPanel(false);
     invoiceLineTablePanel.getJTable().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     invoiceLineTablePanel.setPreferredSize(new Dimension(360, 40));
     invoiceLineTablePanel.getTableModel().getColumnModel().setColumnVisible(Entities.getProperty(T_INVOICELINE, INVOICELINE_INVOICEID_FK), false);

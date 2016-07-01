@@ -4,8 +4,8 @@
 package org.jminor.swing.common.model.table;
 
 import org.jminor.common.EventInfoListener;
-import org.jminor.common.model.table.ColumnCriteriaModel;
-import org.jminor.common.model.table.DefaultColumnCriteriaModel;
+import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.common.model.table.DefaultColumnConditionModel;
 
 import org.junit.Test;
 
@@ -117,7 +117,7 @@ public class SwingFilteredTableColumnModelTest {
   private FilteredTableColumnModel<Integer> createTestModel() {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnCriteriaModel<Integer> filterModel = new DefaultColumnCriteriaModel<>(0, Types.VARCHAR, "%");
+    final ColumnConditionModel<Integer> filterModel = new DefaultColumnConditionModel<>(0, Types.VARCHAR, "%");
 
     return new SwingFilteredTableColumnModel<>(Collections.singletonList(column), Collections.singletonList(filterModel));
   }

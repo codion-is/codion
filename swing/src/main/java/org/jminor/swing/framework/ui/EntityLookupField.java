@@ -55,8 +55,8 @@ import java.util.Objects;
  *
  * The lookup is triggered by the ENTER key and behaves in the following way:
  * If the lookup result is empty a message is shown, if a single entity fits the
- * criteria then that entity is selected, otherwise a list containing the entities
- * fitting the criteria is shown in a dialog allowing either a single or multiple
+ * condition then that entity is selected, otherwise a list containing the entities
+ * fitting the condition is shown in a dialog allowing either a single or multiple
  * selection based on the lookup model settings.
  *
  * @see EntityLookupModel
@@ -278,7 +278,7 @@ public final class EntityLookupField extends JTextField {
     UiUtil.addKeyEvent(okButton, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, true, new OKAction(okButton, closeEvent));
     final JPanel btnBase = new JPanel(UiUtil.createFlowLayout(FlowLayout.CENTER));
     btnBase.add(okButton);
-    final JLabel messageLabel = new JLabel(FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
+    final JLabel messageLabel = new JLabel(FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION));
     messageLabel.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, 0, BORDER_SIZE));
     final JPanel messagePanel = new JPanel(UiUtil.createBorderLayout());
     messagePanel.add(messageLabel, BorderLayout.CENTER);

@@ -14,7 +14,7 @@ import org.jminor.common.model.valuemap.ValueProvider;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
@@ -294,7 +294,7 @@ public abstract class EntityTestUnit {
               testEntity.equals(tmp));
     }
     else {
-      connection.selectMany(EntityCriteriaUtil.selectCriteria(entityID, SELECT_FETCH_COUNT));
+      connection.selectMany(EntityConditions.selectCondition(entityID, SELECT_FETCH_COUNT));
     }
   }
 

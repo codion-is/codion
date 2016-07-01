@@ -6,8 +6,8 @@ package org.jminor.framework.demos.chinook.server;
 import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
@@ -24,10 +24,10 @@ public final class UpdateTotalsProcedure extends AbstractProcedure<EntityConnect
   public void execute(final EntityConnection entityConnection, final Object... arguments) throws DatabaseException {
     try {
       entityConnection.beginTransaction();
-      final EntitySelectCriteria selectCriteria = EntityCriteriaUtil.selectCriteria(Chinook.T_INVOICE);
-      selectCriteria.setForUpdate(true);
-      selectCriteria.setForeignKeyFetchDepthLimit(0);
-      final List<Entity> invoices = entityConnection.selectMany(selectCriteria);
+      final EntitySelectCondition selectCondition = EntityConditions.selectCondition(Chinook.T_INVOICE);
+      selectCondition.setForUpdate(true);
+      selectCondition.setForeignKeyFetchDepthLimit(0);
+      final List<Entity> invoices = entityConnection.selectMany(selectCondition);
       for (final Entity invoice : invoices) {
         invoice.put(Chinook.INVOICE_TOTAL, invoice.get(Chinook.INVOICE_TOTAL_SUB));
       }

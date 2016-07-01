@@ -23,8 +23,8 @@ import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.RemoteEntityConnection;
-import org.jminor.framework.db.criteria.EntityCriteria;
-import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.db.condition.EntityCondition;
+import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.domain.Entity;
 
@@ -242,9 +242,9 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
   /** {@inheritDoc} */
   @Override
-  public int selectRowCount(final EntityCriteria criteria) throws DatabaseException {
+  public int selectRowCount(final EntityCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectRowCount(criteria);
+      return connectionProxy.selectRowCount(condition);
     }
   }
 
@@ -330,17 +330,17 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
   /** {@inheritDoc} */
   @Override
-  public void delete(final EntityCriteria criteria) throws DatabaseException {
+  public void delete(final EntityCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
-      connectionProxy.delete(criteria);
+      connectionProxy.delete(condition);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<Object> selectValues(final String propertyID, final EntityCriteria criteria) throws RemoteException, DatabaseException {
+  public List<Object> selectValues(final String propertyID, final EntityCondition condition) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectValues(propertyID, criteria);
+      return connectionProxy.selectValues(propertyID, condition);
     }
   }
 
@@ -362,9 +362,9 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
   /** {@inheritDoc} */
   @Override
-  public Entity selectSingle(final EntitySelectCriteria criteria) throws DatabaseException {
+  public Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectSingle(criteria);
+      return connectionProxy.selectSingle(condition);
     }
   }
 
@@ -378,9 +378,9 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DatabaseException {
+  public List<Entity> selectMany(final EntitySelectCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectMany(criteria);
+      return connectionProxy.selectMany(condition);
     }
   }
 

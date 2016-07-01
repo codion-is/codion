@@ -3,19 +3,19 @@
  */
 package org.jminor.swing.framework.model;
 
-import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.PreferencesUtil;
-import org.jminor.common.model.table.ColumnCriteriaModel;
+import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.AbstractEntityTableModelTest;
-import org.jminor.framework.model.DefaultEntityTableCriteriaModel;
-import org.jminor.framework.model.DefaultPropertyCriteriaModelProvider;
+import org.jminor.framework.model.DefaultEntityTableConditionModel;
+import org.jminor.framework.model.DefaultPropertyConditionModelProvider;
 import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
-import org.jminor.framework.model.EntityTableCriteriaModel;
+import org.jminor.framework.model.EntityTableConditionModel;
 import org.jminor.swing.common.model.table.SortingDirective;
 
 import org.junit.Test;
@@ -79,22 +79,22 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void nonMatchingCriteriaModelEntityID() {
-    final EntityTableCriteriaModel criteriaModel = new DefaultEntityTableCriteriaModel(TestDomain.T_DEPARTMENT, null,
-            new DefaultPropertyFilterModelProvider(), new DefaultPropertyCriteriaModelProvider());
+  public void nonMatchingConditionModelEntityID() {
+    final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, null,
+            new DefaultPropertyFilterModelProvider(), new DefaultPropertyConditionModelProvider());
     new SwingEntityTableModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER,
-            new SwingEntityTableModel.DefaultEntityTableSortModel(TestDomain.T_EMP), criteriaModel);
+            new SwingEntityTableModel.DefaultEntityTableSortModel(TestDomain.T_EMP), conditionModel);
   }
 
   @Test(expected = NullPointerException.class)
-  public void nullCriteriaModel() {
+  public void nullConditionModel() {
     new SwingEntityTableModel(TestDomain.T_EMP, null);
   }
 
   @Test
   public void testFiltering() {
     testModel.refresh();
-    final ColumnCriteriaModel<Property> filterModel = testModel.getCriteriaModel().getPropertyFilterModel(TestDomain.DETAIL_STRING);
+    final ColumnConditionModel<Property> filterModel = testModel.getConditionModel().getPropertyFilterModel(TestDomain.DETAIL_STRING);
     filterModel.setLikeValue("a");
     testModel.filterContents();
   }
@@ -234,7 +234,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
       setEditModel(new SwingEntityEditModel(TestDomain.T_DETAIL, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
     }
     @Override
-    protected List<Entity> performQuery(final Criteria criteria) {
+    protected List<Entity> performQuery(final Condition condition) {
       return Arrays.asList(entities);
     }
   }

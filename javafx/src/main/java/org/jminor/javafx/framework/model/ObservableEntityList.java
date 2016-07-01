@@ -8,13 +8,13 @@ import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.StateObserver;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.FilterCriteria;
+import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.SelectionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 
@@ -47,8 +47,8 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   private FXEntityListSelectionModel selectionModel;
 
-  private EntitySelectCriteria selectCriteria;
-  private FilterCriteria<Entity> filterCriteria;
+  private EntitySelectCondition selectCondition;
+  private FilterCondition<Entity> filterCondition;
 
   public ObservableEntityList(final String entityID, final EntityConnectionProvider connectionProvider) {
     super(FXCollections.observableArrayList());
@@ -56,7 +56,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     this.connectionProvider = connectionProvider;
     this.filteredList = new FilteredList<>(this);
     this.sortedList = new SortedList<>(filteredList, Entities.getComparator(entityID));
-    this.selectCriteria = EntityCriteriaUtil.selectCriteria(entityID, Entities.getOrderByClause(entityID));
+    this.selectCondition = EntityConditions.selectCondition(entityID, Entities.getOrderByClause(entityID));
   }
 
   public final String getEntityID() {
@@ -147,7 +147,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   /** {@inheritDoc} */
   @Override
   public final boolean isFiltered(final Entity item) {
-    return filterCriteria != null && filterCriteria.include(item);
+    return filterCondition != null && filterCondition.include(item);
   }
 
   /** {@inheritDoc} */
@@ -188,22 +188,20 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   }
 
   /** {@inheritDoc} */
-  @Override
-  public final FilterCriteria<Entity> getFilterCriteria() {
-    return filterCriteria;
+  public final FilterCondition<Entity> getFilterCondition() {
+    return filterCondition;
   }
 
   /** {@inheritDoc} */
-  @Override
-  public final void setFilterCriteria(final FilterCriteria<Entity> filterCriteria) {
-    this.filterCriteria = filterCriteria;
+  public final void setFilterCondition(final FilterCondition<Entity> filterCondition) {
+    this.filterCondition = filterCondition;
     filterContents();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void filterContents() {
-    filteredList.setPredicate(entity -> filterCriteria == null || filterCriteria.include(entity));
+    filteredList.setPredicate(entity -> filterCondition == null || filterCondition.include(entity));
     filteringDoneEvent.fire();
   }
 
@@ -219,22 +217,22 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     filteringDoneEvent.removeListener(listener);
   }
 
-  public final void setEntitySelectCriteria(final EntitySelectCriteria entitySelectCriteria) {
-    if (entitySelectCriteria != null && !entitySelectCriteria.getEntityID().equals(entityID)) {
-      throw new IllegalArgumentException("EntitySelectCriteria entityID mismatch, " + entityID
-              + " expected, got " + entitySelectCriteria.getEntityID());
+  public final void setEntitySelectCondition(final EntitySelectCondition entitySelectCondition) {
+    if (entitySelectCondition != null && !entitySelectCondition.getEntityID().equals(entityID)) {
+      throw new IllegalArgumentException("EntitySelectCondition entityID mismatch, " + entityID
+              + " expected, got " + entitySelectCondition.getEntityID());
     }
-    if (entitySelectCriteria == null) {
-      this.selectCriteria = EntityCriteriaUtil.selectCriteria(entityID, Entities.getOrderByClause(entityID));
+    if (entitySelectCondition == null) {
+      this.selectCondition = EntityConditions.selectCondition(entityID, Entities.getOrderByClause(entityID));
     }
     else {
-      this.selectCriteria = entitySelectCriteria;
+      this.selectCondition = entitySelectCondition;
     }
   }
 
   protected List<Entity> queryContents() {
     try {
-      return connectionProvider.getConnection().selectMany(selectCriteria);
+      return connectionProvider.getConnection().selectMany(selectCondition);
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);

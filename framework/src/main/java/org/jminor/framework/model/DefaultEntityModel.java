@@ -194,7 +194,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     this.detailModels.add(detailModel);
     detailModel.setMasterModel((M) this);
     if (detailModel.containsTableModel()) {
-      detailModel.getTableModel().setQueryCriteriaRequired(true);
+      detailModel.getTableModel().setQueryConditionRequired(true);
     }
 
     return detailModel;
@@ -365,7 +365,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public final void initialize(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {
     if (containsTableModel()) {
-      tableModel.setForeignKeyCriteriaValues(foreignKeyProperty, foreignKeyValues);
+      tableModel.setForeignKeyConditionValues(foreignKeyProperty, foreignKeyValues);
     }
     handleInitialization(foreignKeyProperty, foreignKeyValues);
   }
@@ -470,7 +470,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
       if (foreignKeyProperty == null) {
         foreignKeyProperty = Entities.getForeignKeyProperties(entityID, masterModel.getEntityID()).get(0);
       }
-      tableModel.setForeignKeyCriteriaValues(foreignKeyProperty, insertEvent.getInsertedEntities());
+      tableModel.setForeignKeyConditionValues(foreignKeyProperty, insertEvent.getInsertedEntities());
     }
   }
 

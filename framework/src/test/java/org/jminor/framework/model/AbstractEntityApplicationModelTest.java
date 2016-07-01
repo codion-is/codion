@@ -27,7 +27,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     model.addEntityModels(createDepartmentModel());
     final EntityModel deptModel = model.getEntityModel(TestDomain.T_DEPARTMENT);
     assertNotNull(deptModel);
-    deptModel.getDetailModel(TestDomain.T_EMP).getTableModel().setQueryCriteriaRequired(false);
+    deptModel.getDetailModel(TestDomain.T_EMP).getTableModel().setQueryConditionRequired(false);
     assertEquals(1, model.getEntityModels().size());
     assertNotNull(deptModel);
     assertEquals(User.UNIT_TEST_USER, model.getUser());

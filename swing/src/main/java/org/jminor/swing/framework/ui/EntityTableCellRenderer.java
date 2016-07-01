@@ -7,20 +7,20 @@ import javax.swing.table.TableCellRenderer;
 
 /**
  * A TableCellRenderer with the added options of visually displaying if a
- * cell (or column) is involved in a criteria and showing its contents in a tooltip
+ * cell (or column) is involved in a condition and showing its contents in a tooltip
  */
 public interface EntityTableCellRenderer extends TableCellRenderer {
 
   /**
-   * @return true if the criteria state should be represented visually
+   * @return true if the condition state should be represented visually
    */
-  boolean isIndicateCriteria();
+  boolean isIndicateCondition();
 
   /**
-   * If true then columns involved in a criteria have different background color
+   * If true then columns involved in a condition have different background color
    * @param indicateSearch the value
    */
-  void setIndicateCriteria(final boolean indicateSearch);
+  void setIndicateCondition(final boolean indicateSearch);
 
   /**
    * @return if true then the cell data is added as a tool tip for the cell

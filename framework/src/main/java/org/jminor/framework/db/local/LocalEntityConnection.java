@@ -12,19 +12,19 @@ import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
-import org.jminor.common.db.criteria.CriteriaUtil;
+import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
-import org.jminor.common.model.SearchType;
+import org.jminor.common.model.ConditionType;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.criteria.EntityCriteria;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.db.condition.EntityCondition;
+import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
@@ -60,7 +60,7 @@ import java.util.Set;
  *
  * EntityConnection connection = new LocalEntityConnection(database, user, true, true, 2);
  *
- * List<Entity> entities = connection.selectMany(EntityCriteriaUtil.selectCriteria("entityID"));
+ * List<Entity> entities = connection.selectMany(EntityConditions.selectCondition("entityID"));
  *
  * connection.disconnect();
  * </pre>
@@ -68,7 +68,7 @@ import java.util.Set;
 final class LocalEntityConnection implements EntityConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(LocalEntityConnection.class);
-  private static final String CRITERIA_PARAM_NAME = "criteria";
+  private static final String CONDITION_PARAM_NAME = "condition";
   private static final String WHERE = "where ";
   private static final String WHERE_SPACE_PREFIX = " where ";
 
@@ -265,10 +265,10 @@ final class LocalEntityConnection implements EntityConnection {
           for (final Entity entity : mappedEntitiesMapEntry.getValue()) {
             populateStatementPropertiesAndValues(false, entity, updateColumnProperties, statementProperties, statementValues);
 
-            final EntityCriteria criteria = EntityCriteriaUtil.criteria(entity.getOriginalKey());
-            updateSQL = createUpdateSQL(tableName, statementProperties, criteria);
-            statementProperties.addAll(criteria.getValueKeys());
-            statementValues.addAll(criteria.getValues());
+            final EntityCondition condition = EntityConditions.condition(entity.getOriginalKey());
+            updateSQL = createUpdateSQL(tableName, statementProperties, condition);
+            statementProperties.addAll(condition.getValueKeys());
+            statementValues.addAll(condition.getValues());
             statement = prepareStatement(updateSQL);
             executePreparedUpdate(statement, updateSQL, statementProperties, statementValues);
 
@@ -294,22 +294,22 @@ final class LocalEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public void delete(final EntityCriteria criteria) throws DatabaseException {
-    Objects.requireNonNull(criteria, CRITERIA_PARAM_NAME);
-    checkReadOnly(criteria.getEntityID());
+  public void delete(final EntityCondition condition) throws DatabaseException {
+    Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
+    checkReadOnly(condition.getEntityID());
 
     PreparedStatement statement = null;
     String deleteSQL = null;
     synchronized (connection) {
       try {
-        deleteSQL = createDeleteSQL(criteria);
+        deleteSQL = createDeleteSQL(condition);
         statement = prepareStatement(deleteSQL);
-        executePreparedUpdate(statement, deleteSQL, criteria.getValueKeys(), criteria.getValues());
+        executePreparedUpdate(statement, deleteSQL, condition.getValueKeys(), condition.getValues());
         commitIfTransactionIsNotOpen();
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(DatabaseUtil.createLogMessage(getUser(), deleteSQL, criteria.getValues(), e, null));
+        LOG.error(DatabaseUtil.createLogMessage(getUser(), deleteSQL, condition.getValues(), e, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
@@ -333,15 +333,15 @@ final class LocalEntityConnection implements EntityConnection {
         for (final String entityID : mappedKeys.keySet()) {
           checkReadOnly(entityID);
         }
-        final List<Entity.Key> criteriaKeys = new ArrayList<>();
+        final List<Entity.Key> conditionKeys = new ArrayList<>();
         for (final Map.Entry<String, Collection<Entity.Key>> mappedKeysEntry : mappedKeys.entrySet()) {
-          criteriaKeys.addAll(mappedKeysEntry.getValue());
-          final EntityCriteria criteria = EntityCriteriaUtil.criteria(criteriaKeys);
-          deleteSQL = createDeleteSQL(criteria);
+          conditionKeys.addAll(mappedKeysEntry.getValue());
+          final EntityCondition condition = EntityConditions.condition(conditionKeys);
+          deleteSQL = createDeleteSQL(condition);
           statement = prepareStatement(deleteSQL);
-          executePreparedUpdate(statement, deleteSQL, criteria.getValueKeys(), criteria.getValues());
+          executePreparedUpdate(statement, deleteSQL, condition.getValueKeys(), condition.getValues());
           statement.close();
-          criteriaKeys.clear();
+          conditionKeys.clear();
         }
         commitIfTransactionIsNotOpen();
       }
@@ -359,19 +359,19 @@ final class LocalEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DatabaseException {
-    return selectSingle(EntityCriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, value));
+    return selectSingle(EntityConditions.selectCondition(entityID, propertyID, ConditionType.LIKE, value));
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final Entity.Key key) throws DatabaseException {
-    return selectSingle(EntityCriteriaUtil.selectCriteria(key));
+    return selectSingle(EntityConditions.selectCondition(key));
   }
 
   /** {@inheritDoc} */
   @Override
-  public Entity selectSingle(final EntitySelectCriteria criteria) throws DatabaseException {
-    final List<Entity> entities = selectMany(criteria);
+  public Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException {
+    final List<Entity> entities = selectMany(condition);
     if (entities.isEmpty()) {
       throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
     }
@@ -389,22 +389,22 @@ final class LocalEntityConnection implements EntityConnection {
       return new ArrayList<>(0);
     }
 
-    return selectMany(EntityCriteriaUtil.selectCriteria(keys));
+    return selectMany(EntityConditions.selectCondition(keys));
   }
 
   /** {@inheritDoc} */
   @Override
   public List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws DatabaseException {
-    return selectMany(EntityCriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, Arrays.asList(values)));
+    return selectMany(EntityConditions.selectCondition(entityID, propertyID, ConditionType.LIKE, Arrays.asList(values)));
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DatabaseException {
+  public List<Entity> selectMany(final EntitySelectCondition condition) throws DatabaseException {
     synchronized (connection) {
       try {
-        final List<Entity> result = doSelectMany(criteria, 0);
-        if (!isTransactionOpen() && !criteria.isForUpdate()) {
+        final List<Entity> result = doSelectMany(condition, 0);
+        if (!isTransactionOpen() && !condition.isForUpdate()) {
           commitQuietly();
         }
 
@@ -419,24 +419,24 @@ final class LocalEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public List<Object> selectValues(final String propertyID, final EntityCriteria criteria) throws DatabaseException {
-    Objects.requireNonNull(criteria, CRITERIA_PARAM_NAME);
-    if (Entities.getSelectQuery(criteria.getEntityID()) != null) {
+  public List<Object> selectValues(final String propertyID, final EntityCondition condition) throws DatabaseException {
+    Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
+    if (Entities.getSelectQuery(condition.getEntityID()) != null) {
       throw new UnsupportedOperationException("selectValues is not implemented for entities with custom select queries");
     }
-    final Property.ColumnProperty property = Entities.getColumnProperty(criteria.getEntityID(), propertyID);
+    final Property.ColumnProperty property = Entities.getColumnProperty(condition.getEntityID(), propertyID);
     final String columnName = property.getColumnName();
-    final EntityCriteria entityCriteria = EntityCriteriaUtil.criteria(criteria.getEntityID(),
-            CriteriaUtil.criteriaSet(Conjunction.AND, criteria.getCriteria(), CriteriaUtil.stringCriteria(columnName + " is not null")));
-    final String selectSQL = createSelectSQL(Entities.getSelectTableName(criteria.getEntityID()), "distinct " + columnName,
-            WHERE + entityCriteria.getWhereClause(), columnName);
+    final EntityCondition entityCondition = EntityConditions.condition(condition.getEntityID(),
+            Conditions.conditionSet(Conjunction.AND, condition.getCondition(), Conditions.stringCondition(columnName + " is not null")));
+    final String selectSQL = createSelectSQL(Entities.getSelectTableName(condition.getEntityID()), "distinct " + columnName,
+            WHERE + entityCondition.getWhereClause(), columnName);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     DatabaseUtil.QUERY_COUNTER.count(selectSQL);
     synchronized (connection) {
       try {
         statement = prepareStatement(selectSQL);
-        resultSet = executePreparedSelect(statement, selectSQL, criteria);
+        resultSet = executePreparedSelect(statement, selectSQL, condition);
         final List<Object> result = property.getResultPacker().pack(resultSet, -1);
         commitIfTransactionIsNotOpen();
 
@@ -444,7 +444,7 @@ final class LocalEntityConnection implements EntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, Arrays.asList(propertyID, criteria), e, null));
+        LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, Arrays.asList(propertyID, condition), e, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
@@ -456,18 +456,18 @@ final class LocalEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public int selectRowCount(final EntityCriteria criteria) throws DatabaseException {
-    Objects.requireNonNull(criteria, CRITERIA_PARAM_NAME);
+  public int selectRowCount(final EntityCondition condition) throws DatabaseException {
+    Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
     final String selectSQL;
-    final String entitySelectQuery = Entities.getSelectQuery(criteria.getEntityID());
+    final String entitySelectQuery = Entities.getSelectQuery(condition.getEntityID());
     if (entitySelectQuery == null) {
-      final String whereClause = criteria.getWhereClause();
-      selectSQL = createSelectSQL(Entities.getSelectTableName(criteria.getEntityID()), "count(*)",
+      final String whereClause = condition.getWhereClause();
+      selectSQL = createSelectSQL(Entities.getSelectTableName(condition.getEntityID()), "count(*)",
               whereClause.length() == 0 ? "" : WHERE + whereClause, null);
     }
     else {
-      final boolean containsWhereClause = Entities.selectQueryContainsWhereClause(criteria.getEntityID());
-      final String whereClause = criteria.getWhereClause();
+      final boolean containsWhereClause = Entities.selectQueryContainsWhereClause(condition.getEntityID());
+      final String whereClause = condition.getWhereClause();
       String tableClause = "(" + entitySelectQuery;
       if (whereClause.length() > 0) {
         tableClause += containsWhereClause ? " and " + whereClause : WHERE_SPACE_PREFIX + whereClause;
@@ -481,7 +481,7 @@ final class LocalEntityConnection implements EntityConnection {
     synchronized (connection) {
       try {
         statement = prepareStatement(selectSQL);
-        resultSet = executePreparedSelect(statement, selectSQL, criteria);
+        resultSet = executePreparedSelect(statement, selectSQL, condition);
         final List<Integer> result = DatabaseUtil.INTEGER_RESULT_PACKER.pack(resultSet, -1);
         commitIfTransactionIsNotOpen();
         if (result.isEmpty()) {
@@ -492,7 +492,7 @@ final class LocalEntityConnection implements EntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
+        LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, condition.getValues(), e, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
@@ -512,7 +512,7 @@ final class LocalEntityConnection implements EntityConnection {
 
     final Set<Dependency> dependencies = resolveEntityDependencies(entities.iterator().next().getEntityID());
     for (final Dependency dependency : dependencies) {
-      final List<Entity> dependentEntities = selectMany(EntityCriteriaUtil.selectCriteria(dependency.getEntityID(),
+      final List<Entity> dependentEntities = selectMany(EntityConditions.selectCondition(dependency.getEntityID(),
               dependency.getForeignKeyProperties(), EntityUtil.getKeys(entities)));
       if (!dependentEntities.isEmpty()) {
         dependencyMap.put(dependency.entityID, dependentEntities);
@@ -605,9 +605,9 @@ final class LocalEntityConnection implements EntityConnection {
       throw new IllegalArgumentException("Property " + property.getPropertyID() + " in entity " +
               primaryKey.getEntityID() + " does not have column type BLOB");
     }
-    final EntityCriteria criteria = EntityCriteriaUtil.criteria(primaryKey);
+    final EntityCondition condition = EntityConditions.condition(primaryKey);
     final String sql = "update " + Entities.getTableName(primaryKey.getEntityID()) + " set " + property.getColumnName() +
-            " = ?" + WHERE_SPACE_PREFIX + criteria.getWhereClause();
+            " = ?" + WHERE_SPACE_PREFIX + condition.getWhereClause();
     final List<Object> values = new ArrayList<>();
     final List<Property.ColumnProperty> properties = new ArrayList<>();
     DatabaseUtil.QUERY_COUNTER.count(sql);
@@ -618,9 +618,9 @@ final class LocalEntityConnection implements EntityConnection {
       try {
         logAccess("writeBlob", new Object[]{sql});
         values.add(null);//the blob value, set explicitly later
-        values.addAll(criteria.getValues());
+        values.addAll(condition.getValues());
         properties.add(property);
-        properties.addAll(criteria.getValueKeys());
+        properties.addAll(condition.getValueKeys());
 
         statement = prepareStatement(sql);
         setParameterValues(statement, values, properties);
@@ -657,15 +657,15 @@ final class LocalEntityConnection implements EntityConnection {
     PreparedStatement statement = null;
     SQLException exception = null;
     ResultSet resultSet = null;
-    final EntityCriteria criteria = EntityCriteriaUtil.criteria(primaryKey);
+    final EntityCondition condition = EntityConditions.condition(primaryKey);
     final String sql = "select " + property.getColumnName() + " from " +
-            Entities.getTableName(primaryKey.getEntityID()) + WHERE_SPACE_PREFIX + criteria.getWhereClause();
+            Entities.getTableName(primaryKey.getEntityID()) + WHERE_SPACE_PREFIX + condition.getWhereClause();
     DatabaseUtil.QUERY_COUNTER.count(sql);
     synchronized (connection) {
       try {
         logAccess("readBlob", new Object[]{sql});
         statement = prepareStatement(sql);
-        setParameterValues(statement, criteria.getValues(), criteria.getValueKeys());
+        setParameterValues(statement, condition.getValues(), condition.getValueKeys());
 
         resultSet = statement.executeQuery();
         final List<Blob> result = BLOB_RESULT_PACKER.pack(resultSet, 1);
@@ -678,7 +678,7 @@ final class LocalEntityConnection implements EntityConnection {
       catch (final SQLException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(DatabaseUtil.createLogMessage(getUser(), sql, criteria.getValues(), exception, null));
+        LOG.error(DatabaseUtil.createLogMessage(getUser(), sql, condition.getValues(), exception, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
@@ -686,7 +686,7 @@ final class LocalEntityConnection implements EntityConnection {
         DatabaseUtil.closeSilently(resultSet);
         final MethodLogger.Entry logEntry = logExit("readBlob", exception, null);
         if (LOG.isDebugEnabled()) {
-          LOG.debug(DatabaseUtil.createLogMessage(getUser(), sql, criteria.getValues(), exception, logEntry));
+          LOG.debug(DatabaseUtil.createLogMessage(getUser(), sql, condition.getValues(), exception, logEntry));
         }
       }
     }
@@ -720,8 +720,8 @@ final class LocalEntityConnection implements EntityConnection {
   }
 
   /**
-   * @param limitForeignKeyFetchDepth false to override the fetch depth limit provided by criteria
-   * @see org.jminor.framework.db.criteria.EntitySelectCriteria#setForeignKeyFetchDepthLimit(int)
+   * @param limitForeignKeyFetchDepth false to override the fetch depth limit provided by condition
+   * @see EntitySelectCondition#setForeignKeyFetchDepthLimit(int)
    */
   public void setLimitForeignKeyFetchDepth(final boolean limitForeignKeyFetchDepth) {
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
@@ -757,9 +757,9 @@ final class LocalEntityConnection implements EntityConnection {
   private void lockAndCheckForUpdate(final Map<String, Collection<Entity>> entities) throws DatabaseException {
     for (final Map.Entry<String, Collection<Entity>> entry : entities.entrySet()) {
       final List<Entity.Key> originalKeys = EntityUtil.getKeys(entry.getValue(), true);
-      final EntitySelectCriteria selectForUpdateCriteria = EntityCriteriaUtil.selectCriteria(originalKeys);
-      selectForUpdateCriteria.setForUpdate(true);
-      final List<Entity> currentValues = doSelectMany(selectForUpdateCriteria, 0);
+      final EntitySelectCondition selectForUpdateCondition = EntityConditions.selectCondition(originalKeys);
+      selectForUpdateCondition.setForUpdate(true);
+      final List<Entity> currentValues = doSelectMany(selectForUpdateCondition, 0);
       final Map<Entity.Key, Entity> mappedEntities = EntityUtil.mapToKey(currentValues);
       for (final Entity entity : entry.getValue()) {
         final Entity current = mappedEntities.get(entity.getOriginalKey());
@@ -774,24 +774,24 @@ final class LocalEntityConnection implements EntityConnection {
     }
   }
 
-  private List<Entity> doSelectMany(final EntitySelectCriteria criteria, final int currentForeignKeyFetchDepth) throws DatabaseException {
-    Objects.requireNonNull(criteria, CRITERIA_PARAM_NAME);
+  private List<Entity> doSelectMany(final EntitySelectCondition condition, final int currentForeignKeyFetchDepth) throws DatabaseException {
+    Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     String selectSQL = null;
     try {
-      selectSQL = getSelectSQL(criteria, connection.getDatabase());
+      selectSQL = getSelectSQL(condition, connection.getDatabase());
       statement = prepareStatement(selectSQL);
-      resultSet = executePreparedSelect(statement, selectSQL, criteria);
-      final List<Entity> result = packResult(criteria, resultSet);
-      if (!criteria.isForUpdate()) {
-        setForeignKeys(result, criteria, currentForeignKeyFetchDepth);
+      resultSet = executePreparedSelect(statement, selectSQL, condition);
+      final List<Entity> result = packResult(condition, resultSet);
+      if (!condition.isForUpdate()) {
+        setForeignKeys(result, condition, currentForeignKeyFetchDepth);
       }
 
       return result;
     }
     catch (final SQLException e) {
-      LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
+      LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, condition.getValues(), e, null));
       throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e), selectSQL);
     }
     finally {
@@ -803,22 +803,22 @@ final class LocalEntityConnection implements EntityConnection {
   /**
    * Selects the entities referenced by the given entities via foreign keys and sets those
    * as their respective foreign key values. This is done recursively for the entities referenced
-   * by the foreign keys as well, until the criteria fetch depth limit is reached.
+   * by the foreign keys as well, until the condition fetch depth limit is reached.
    * @param entities the entities for which to set the foreign key entity values
-   * @param criteria the criteria
+   * @param condition the condition
    * @param currentForeignKeyFetchDepth the current foreign key fetch depth
    * @throws DatabaseException in case of a database exception
    * @see #setLimitForeignKeyFetchDepth(boolean)
-   * @see org.jminor.framework.db.criteria.EntitySelectCriteria#setForeignKeyFetchDepthLimit(int)
+   * @see EntitySelectCondition#setForeignKeyFetchDepthLimit(int)
    */
-  private void setForeignKeys(final List<Entity> entities, final EntitySelectCriteria criteria, final int currentForeignKeyFetchDepth) throws DatabaseException {
+  private void setForeignKeys(final List<Entity> entities, final EntitySelectCondition condition, final int currentForeignKeyFetchDepth) throws DatabaseException {
     if (Util.nullOrEmpty(entities)) {
       return;
     }
     final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entities.get(0).getEntityID());
     for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      final int criteriaFetchDepthLimit = criteria.getForeignKeyFetchDepthLimit(foreignKeyProperty.getPropertyID());
-      if (!limitForeignKeyFetchDepth || currentForeignKeyFetchDepth < criteriaFetchDepthLimit) {
+      final int conditionFetchDepthLimit = condition.getForeignKeyFetchDepthLimit(foreignKeyProperty.getPropertyID());
+      if (!limitForeignKeyFetchDepth || currentForeignKeyFetchDepth < conditionFetchDepthLimit) {
         try {
           logAccess("setForeignKeys", new Object[] {foreignKeyProperty});
           final Collection<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
@@ -828,9 +828,9 @@ final class LocalEntityConnection implements EntityConnection {
             }
           }
           else {
-            final EntitySelectCriteria referencedEntitiesCriteria = EntityCriteriaUtil.selectCriteria(referencedPrimaryKeys);
-            referencedEntitiesCriteria.setForeignKeyFetchDepthLimit(criteriaFetchDepthLimit);
-            final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCriteria, currentForeignKeyFetchDepth + 1);
+            final EntitySelectCondition referencedEntitiesCondition = EntityConditions.selectCondition(referencedPrimaryKeys);
+            referencedEntitiesCondition.setForeignKeyFetchDepthLimit(conditionFetchDepthLimit);
+            final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCondition, currentForeignKeyFetchDepth + 1);
             final Map<Entity.Key, Entity> mappedReferencedEntities = EntityUtil.mapToKey(referencedEntities);
             for (final Entity entity : entities) {
               final Entity.Key referencedKey = entity.getReferencedKey(foreignKeyProperty);
@@ -881,13 +881,13 @@ final class LocalEntityConnection implements EntityConnection {
   }
 
   private ResultSet executePreparedSelect(final PreparedStatement statement, final String sqlStatement,
-                                          final EntityCriteria criteria) throws SQLException {
+                                          final EntityCondition condition) throws SQLException {
     SQLException exception = null;
     DatabaseUtil.QUERY_COUNTER.count(sqlStatement);
-    final List<?> values = criteria.getValues();
+    final List<?> values = condition.getValues();
     try {
       logAccess("executePreparedSelect", values == null ? new Object[]{sqlStatement} : new Object[]{sqlStatement, values});
-      setParameterValues(statement, values, criteria.getValueKeys());
+      setParameterValues(statement, values, condition.getValueKeys());
 
       return statement.executeQuery();
     }
@@ -913,12 +913,12 @@ final class LocalEntityConnection implements EntityConnection {
     }
   }
 
-  private List<Entity> packResult(final EntitySelectCriteria criteria, final ResultSet resultSet) throws SQLException {
+  private List<Entity> packResult(final EntitySelectCondition condition, final ResultSet resultSet) throws SQLException {
     List<Entity> result = null;
     SQLException packingException = null;
     try {
       logAccess("packResult", new Object[0]);
-      result = Entities.getResultPacker(criteria.getEntityID()).pack(resultSet, criteria.getFetchCount());
+      result = Entities.getResultPacker(condition.getEntityID()).pack(resultSet, condition.getFetchCount());
     }
     catch (final SQLException e) {
       packingException = e;
@@ -1022,8 +1022,8 @@ final class LocalEntityConnection implements EntityConnection {
     return keySet;
   }
 
-  private static String getSelectSQL(final EntitySelectCriteria criteria, final Database database) {
-    final String entityID = criteria.getEntityID();
+  private static String getSelectSQL(final EntitySelectCondition condition, final Database database) {
+    final String entityID = condition.getEntityID();
     boolean containsWhereClause = false;
     String selectSQL = Entities.getSelectQuery(entityID);
     if (selectSQL == null) {
@@ -1034,15 +1034,15 @@ final class LocalEntityConnection implements EntityConnection {
     }
 
     final StringBuilder queryBuilder = new StringBuilder(selectSQL);
-    final String whereClause = criteria.getWhereClause();
+    final String whereClause = condition.getWhereClause();
     if (whereClause.length() > 0) {
       queryBuilder.append(containsWhereClause ? " and " : WHERE_SPACE_PREFIX).append(whereClause);
     }
-    if (criteria.isForUpdate()) {
+    if (condition.isForUpdate()) {
       addForUpdate(database, queryBuilder);
     }
     else {
-      addGroupHavingOrderByAndLimitClauses(criteria, queryBuilder);
+      addGroupHavingOrderByAndLimitClauses(condition, queryBuilder);
     }
 
     return queryBuilder.toString();
@@ -1055,8 +1055,8 @@ final class LocalEntityConnection implements EntityConnection {
     }
   }
 
-  private static void addGroupHavingOrderByAndLimitClauses(final EntitySelectCriteria criteria, final StringBuilder queryBuilder) {
-    final String entityID = criteria.getEntityID();
+  private static void addGroupHavingOrderByAndLimitClauses(final EntitySelectCondition condition, final StringBuilder queryBuilder) {
+    final String entityID = condition.getEntityID();
     final String groupByClause = Entities.getGroupByClause(entityID);
     if (groupByClause != null) {
       queryBuilder.append(" group by ").append(groupByClause);
@@ -1065,16 +1065,16 @@ final class LocalEntityConnection implements EntityConnection {
     if (havingClause != null) {
       queryBuilder.append(" having ").append(havingClause);
     }
-    final String orderByClause = criteria.getOrderByClause();
+    final String orderByClause = condition.getOrderByClause();
     if (orderByClause != null) {
       queryBuilder.append(" order by ").append(orderByClause);
     }
-    if (criteria.getLimit() > 0) {
+    if (condition.getLimit() > 0) {
       queryBuilder.append(" limit ");
-      queryBuilder.append(criteria.getLimit());
-      if (criteria.getOffset() > 0) {
+      queryBuilder.append(condition.getLimit());
+      if (condition.getOffset() > 0) {
         queryBuilder.append(" offset ");
-        queryBuilder.append(criteria.getOffset());
+        queryBuilder.append(condition.getOffset());
       }
     }
   }
@@ -1082,11 +1082,11 @@ final class LocalEntityConnection implements EntityConnection {
   /**
    * @param tableName the table name
    * @param updateProperties the properties being updated
-   * @param criteria the primary key criteria for the given entity
+   * @param condition the primary key condition for the given entity
    * @return a query for updating this entity instance
    */
   private static String createUpdateSQL(final String tableName, final Collection<Property.ColumnProperty> updateProperties,
-                                        final EntityCriteria criteria) {
+                                        final EntityCondition condition) {
     final StringBuilder sql = new StringBuilder("update ");
     sql.append(tableName).append(" set ");
     int columnIndex = 0;
@@ -1097,7 +1097,7 @@ final class LocalEntityConnection implements EntityConnection {
       }
     }
 
-    return sql.append(WHERE_SPACE_PREFIX).append(criteria.getWhereClause()).toString();
+    return sql.append(WHERE_SPACE_PREFIX).append(condition.getWhereClause()).toString();
   }
 
   /**
@@ -1124,13 +1124,13 @@ final class LocalEntityConnection implements EntityConnection {
   }
 
   /**
-   * @param criteria the EntityCriteria instance
-   * @return a query for deleting the entities specified by the given criteria
+   * @param condition the {@link EntityCondition} instance
+   * @return a query for deleting the entities specified by the given condition
    */
-  private static String createDeleteSQL(final EntityCriteria criteria) {
-    Objects.requireNonNull(criteria, CRITERIA_PARAM_NAME);
-    final String whereClause = criteria.getWhereClause();
-    return "delete from " + Entities.getTableName(criteria.getEntityID()) +
+  private static String createDeleteSQL(final EntityCondition condition) {
+    Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
+    final String whereClause = condition.getWhereClause();
+    return "delete from " + Entities.getTableName(condition.getEntityID()) +
             (whereClause.length() > 0 ? WHERE_SPACE_PREFIX + whereClause : "");
   }
 
@@ -1271,8 +1271,8 @@ final class LocalEntityConnection implements EntityConnection {
       }
 
       final StringBuilder builder = new StringBuilder();
-      if (argument instanceof EntityCriteria) {
-        builder.append(getEntityCriteriaString((EntityCriteria) argument));
+      if (argument instanceof EntityCondition) {
+        builder.append(getEntityConditionString((EntityCondition) argument));
       }
       else if (argument instanceof Object[] && ((Object[]) argument).length > 0) {
         builder.append("[").append(toString((Object[]) argument)).append("]");
@@ -1293,14 +1293,14 @@ final class LocalEntityConnection implements EntityConnection {
       return builder.toString();
     }
 
-    private String getEntityCriteriaString(final EntityCriteria criteria) {
+    private String getEntityConditionString(final EntityCondition condition) {
       final StringBuilder builder = new StringBuilder();
-      builder.append(criteria.getEntityID());
-      final String whereClause = criteria.getWhereClause();
+      builder.append(condition.getEntityID());
+      final String whereClause = condition.getWhereClause();
       if (!Util.nullOrEmpty(whereClause)) {
         builder.append(",").append(WHERE_SPACE_PREFIX).append(whereClause);
       }
-      final List<?> values = criteria.getValues();
+      final List<?> values = condition.getValues();
       if (values != null) {
         builder.append(", ").append(toString(values));
       }

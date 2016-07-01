@@ -82,7 +82,7 @@ public final class EntityTableCellRenderers {
     private final Property property;
     private final Format format;
 
-    private boolean indicateCriteria = true;
+    private boolean indicateCondition = true;
     private boolean tooltipData = false;
 
     /**
@@ -121,14 +121,14 @@ public final class EntityTableCellRenderers {
 
     /** {@inheritDoc} */
     @Override
-    public final boolean isIndicateCriteria() {
-      return indicateCriteria;
+    public final boolean isIndicateCondition() {
+      return indicateCondition;
     }
 
     /** {@inheritDoc} */
     @Override
-    public final void setIndicateCriteria(final boolean indicateCriteria) {
-      this.indicateCriteria = indicateCriteria;
+    public final void setIndicateCondition(final boolean indicateCondition) {
+      this.indicateCondition = indicateCondition;
     }
 
     /** {@inheritDoc} */
@@ -155,12 +155,12 @@ public final class EntityTableCellRenderers {
         return this;
       }
 
-      final boolean propertyCriteriaEnabled = tableModel.getCriteriaModel().isEnabled(property.getPropertyID());
-      final boolean propertyFilterEnabled = tableModel.getCriteriaModel().isFilterEnabled(property.getPropertyID());
-      final boolean showCriteria = indicateCriteria && (propertyCriteriaEnabled || propertyFilterEnabled);
+      final boolean propertyConditionEnabled = tableModel.getConditionModel().isEnabled(property.getPropertyID());
+      final boolean propertyFilterEnabled = tableModel.getConditionModel().isFilterEnabled(property.getPropertyID());
+      final boolean showCondition = indicateCondition && (propertyConditionEnabled || propertyFilterEnabled);
       final Color cellColor = (Color) tableModel.getPropertyBackgroundColor(row, property);
-      if (showCriteria) {
-        setBackground(getCriteriaEnabledColor(row, propertyCriteriaEnabled, propertyFilterEnabled, cellColor));
+      if (showCondition) {
+        setBackground(getConditionEnabledColor(row, propertyConditionEnabled, propertyFilterEnabled, cellColor));
       }
       else {
         if (cellColor != null) {
@@ -188,9 +188,9 @@ public final class EntityTableCellRenderers {
       }
     }
 
-    private static Color getCriteriaEnabledColor(final int row, final boolean propertyCriteriaEnabled,
-                                                 final boolean propertyFilterEnabled, final Color cellColor) {
-      final boolean doubleShade = propertyCriteriaEnabled && propertyFilterEnabled;
+    private static Color getConditionEnabledColor(final int row, final boolean propertyConditionEnabled,
+                                                  final boolean propertyFilterEnabled, final Color cellColor) {
+      final boolean doubleShade = propertyConditionEnabled && propertyFilterEnabled;
       if (cellColor != null) {
         return shade(cellColor, doubleShade ? SHADE_AMOUNT * 2 : SHADE_AMOUNT);
       }

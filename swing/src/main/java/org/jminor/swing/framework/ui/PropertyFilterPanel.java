@@ -3,21 +3,21 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.model.SearchType;
-import org.jminor.common.model.table.ColumnCriteriaModel;
+import org.jminor.common.model.ConditionType;
+import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.domain.Property;
-import org.jminor.swing.common.ui.table.ColumnCriteriaPanel;
+import org.jminor.swing.common.ui.table.ColumnConditionPanel;
 
 /**
  * A column filter panel based on properties.
  */
-public final class PropertyFilterPanel extends ColumnCriteriaPanel<Property> {
+public final class PropertyFilterPanel extends ColumnConditionPanel<Property> {
 
   /**
    * Instantiates a new PropertyFilterPanel.
    * @param model the model to base this panel on
    */
-  public PropertyFilterPanel(final ColumnCriteriaModel<Property> model) {
+  public PropertyFilterPanel(final ColumnConditionModel<Property> model) {
     this(model, false, false);
   }
 
@@ -27,17 +27,17 @@ public final class PropertyFilterPanel extends ColumnCriteriaPanel<Property> {
    * @param includeToggleFilterEnabledButton if true an activation button is include
    * @param includeToggleAdvancedFilterButton if true an advanced toggle button is include
    */
-  public PropertyFilterPanel(final ColumnCriteriaModel<Property> model, final boolean includeToggleFilterEnabledButton,
+  public PropertyFilterPanel(final ColumnConditionModel<Property> model, final boolean includeToggleFilterEnabledButton,
                              final boolean includeToggleAdvancedFilterButton) {
     super(model, includeToggleFilterEnabledButton, includeToggleAdvancedFilterButton, getSearchTypes(model));
   }
 
-  private static SearchType[] getSearchTypes(final ColumnCriteriaModel<Property> model) {
+  private static ConditionType[] getSearchTypes(final ColumnConditionModel<Property> model) {
     if (model.getColumnIdentifier().isBoolean()) {
-      return new SearchType[] {SearchType.LIKE};
+      return new ConditionType[] {ConditionType.LIKE};
     }
     else {
-      return SearchType.values();
+      return ConditionType.values();
     }
   }
 }

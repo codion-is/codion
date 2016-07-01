@@ -4309,3 +4309,5 @@
   EntityEditPanel, overloaded createEditPanelAction() with EntitiesInsertedListener callback, some refactoring involved
 0.10.6
   Conjunction, Version and User moved from common.model to common
+  Major renaming, all things Criteria are now Condition
+  SearchType renamed ConditionType, moved to org.jminor.common.db.condition

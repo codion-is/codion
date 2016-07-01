@@ -6,7 +6,7 @@ package org.jminor.framework.model;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.StateObserver;
 import org.jminor.common.Value;
-import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.db.condition.Condition;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A interface responsible for doing entity lookups based on a set of criteria properties.
+ * A interface responsible for doing entity lookups based on a set of condition properties.
  */
 public interface EntityLookupModel extends EntityDataProvider {
 
@@ -92,19 +92,19 @@ public interface EntityLookupModel extends EntityDataProvider {
   boolean searchStringRepresentsSelected();
 
   /**
-   * Performs a query based on the select criteria
-   * @return a list containing the entities fulfilling the current criteria
+   * Performs a query based on the select condition
+   * @return a list containing the entities fulfilling the current condition
    */
   List<Entity> performQuery();
 
   /**
-   * Sets the additional lookup criteria to use when performing the next lookup.
-   * This criteria is AND'ed to the actual lookup criteria.
+   * Sets the additional lookup condition to use when performing the next lookup.
+   * This condition is AND'ed to the actual lookup condition.
    * NOTE, this does not affect the currently selected value(s), if any.
-   * @param additionalLookupCriteria the additional lookup criteria
+   * @param additionalLookupCondition the additional lookup condition
    * @return this EntityLookupModel instance
    */
-  EntityLookupModel setAdditionalLookupCriteria(final Criteria<Property.ColumnProperty> additionalLookupCriteria);
+  EntityLookupModel setAdditionalLookupCondition(final Condition<Property.ColumnProperty> additionalLookupCondition);
 
   /**
    * Override the default toString() for lookup elements when displayed

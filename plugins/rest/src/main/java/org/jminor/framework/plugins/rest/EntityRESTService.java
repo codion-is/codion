@@ -6,16 +6,16 @@ package org.jminor.framework.plugins.rest;
 import org.jminor.common.Conjunction;
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.criteria.CriteriaSet;
-import org.jminor.common.db.criteria.CriteriaUtil;
+import org.jminor.common.db.condition.Condition;
+import org.jminor.common.db.condition.ConditionSet;
+import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.SearchType;
+import org.jminor.common.model.ConditionType;
 import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
 import org.jminor.framework.db.RemoteEntityConnection;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
@@ -80,12 +80,12 @@ public final class EntityRESTService extends Application {
   @Path(BY_VALUE_PATH)
   public Response select(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
                          @QueryParam("entityID") final String entityID,
-                         @QueryParam("searchType") final SearchType searchType,
+                         @QueryParam("conditionType") final ConditionType conditionType,
                          @QueryParam("values") final String values) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
       return Response.ok(EntityJSONParser.serializeEntities(connection.selectMany(
-              EntityCriteriaUtil.selectCriteria(entityID, createPropertyCriteria(entityID, searchType, values))), false)).build();
+              EntityConditions.selectCondition(entityID, createPropertyCondition(entityID, conditionType, values))), false)).build();
     }
     catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();
@@ -153,11 +153,11 @@ public final class EntityRESTService extends Application {
   @Path(BY_VALUE_PATH)
   public Response delete(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
                          @QueryParam("entityID") final String entityID,
-                         @QueryParam("searchType") final SearchType searchType,
+                         @QueryParam("conditionType") final ConditionType conditionType,
                          @QueryParam("values") final String values) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      connection.delete(EntityCriteriaUtil.criteria(entityID, createPropertyCriteria(entityID, searchType, values)));
+      connection.delete(EntityConditions.condition(entityID, createPropertyCondition(entityID, conditionType, values)));
 
       return Response.ok().build();
     }
@@ -227,18 +227,18 @@ public final class EntityRESTService extends Application {
     }
   }
 
-  private static CriteriaSet<Property.ColumnProperty> createPropertyCriteria(final String entityID, final SearchType searchType,
-                                                                             final String values) throws JSONException, ParseException {
-    if (searchType == null || Util.nullOrEmpty(values)) {
+  private static ConditionSet<Property.ColumnProperty> createPropertyCondition(final String entityID, final ConditionType conditionType,
+                                                                               final String values) throws JSONException, ParseException {
+    if (conditionType == null || Util.nullOrEmpty(values)) {
       return null;
     }
     final JSONObject jsonObject = new JSONObject(values);
-    final CriteriaSet<Property.ColumnProperty> set = CriteriaUtil.criteriaSet(Conjunction.AND);
+    final ConditionSet<Property.ColumnProperty> set = Conditions.conditionSet(Conjunction.AND);
     for (final String propertyID : JSONObject.getNames(jsonObject)) {
       final Property.ColumnProperty property = Entities.getColumnProperty(entityID, propertyID);
-      final Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.propertyCriteria(property,
-              searchType, EntityJSONParser.parseValue(property, jsonObject));
-      set.add(criteria);
+      final Condition<Property.ColumnProperty> condition = EntityConditions.propertyCondition(property,
+              conditionType, EntityJSONParser.parseValue(property, jsonObject));
+      set.add(condition);
     }
 
     return set;

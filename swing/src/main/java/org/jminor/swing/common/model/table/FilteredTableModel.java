@@ -4,7 +4,7 @@
 package org.jminor.swing.common.model.table;
 
 import org.jminor.common.EventListener;
-import org.jminor.common.model.FilterCriteria;
+import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnSummaryModel;
@@ -111,28 +111,28 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModelPr
 
   /**
    * Returns a Point denoting the row (point.y) and column index (point.x) of the first value to fulfill
-   * the given search criteria.
+   * the given search condition.
    * @param fromIndex the row index to start searching at, if this is larger than the size of
    * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
    * @param forward if true then the search is forward (towards higher row indexes), backwards otherwise
    * @param searchText the text to search by
    * @return the search result coordinate, null if nothing was found
    * @see #isRegularExpressionSearch()
-   * @see org.jminor.common.model.FilterCriteria#include(Object)
+   * @see FilterCondition#include(Object)
    */
   Point findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText);
 
   /**
    * Returns a Point denoting the row (point.y) and column index (point.x) of the first value to fulfill
-   * the given search criteria.
+   * the given search condition.
    * @param fromIndex the row index to start searching at, if this is larger than the size of
    * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
    * @param forward if true then the search is forward (towards higher row indexes), backwards otherwise
-   * @param criteria the search criteria
+   * @param condition the search condition
    * @return the search result coordinate, null if nothing was found
-   * @see org.jminor.common.model.FilterCriteria#include(Object)
+   * @see FilterCondition#include(Object)
    */
-  Point findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCriteria<Object> criteria);
+  Point findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCondition<Object> condition);
 
   /**
    * @return true if regular expressions should be used when searching this table model

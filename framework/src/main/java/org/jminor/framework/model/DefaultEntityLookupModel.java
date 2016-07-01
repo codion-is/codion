@@ -13,16 +13,16 @@ import org.jminor.common.States;
 import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
-import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.criteria.CriteriaSet;
-import org.jminor.common.db.criteria.CriteriaUtil;
+import org.jminor.common.db.condition.Condition;
+import org.jminor.common.db.condition.ConditionSet;
+import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.SearchType;
+import org.jminor.common.model.ConditionType;
 import org.jminor.common.model.TextUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -75,7 +75,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   private final Value<Boolean> multipleSelectionAllowedValue = Values.value(true);
 
   private Entity.ToString toStringProvider = null;
-  private Criteria<Property.ColumnProperty> additionalLookupCriteria;
+  private Condition<Property.ColumnProperty> additionalLookupCondition;
   private Comparator<Entity> resultSorter = new EntityComparator();
   private String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
   private String description;
@@ -187,8 +187,9 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public final EntityLookupModel setAdditionalLookupCriteria(final Criteria<Property.ColumnProperty> additionalLookupCriteria) {
-    this.additionalLookupCriteria = additionalLookupCriteria;
+  public final EntityLookupModel setAdditionalLookupCondition(final Condition<Property.ColumnProperty>
+                                                                       additionalLookupCondition) {
+    this.additionalLookupCondition = additionalLookupCondition;
     return this;
   }
 
@@ -240,7 +241,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
       throw new IllegalStateException("No lookup properties defined for lookup model: " + entityID);
     }
     try {
-      final List<Entity> result = connectionProvider.getConnection().selectMany(getEntitySelectCriteria());
+      final List<Entity> result = connectionProvider.getConnection().selectMany(getEntitySelectCondition());
       if (resultSorter != null) {
         Collections.sort(result, resultSorter);
       }
@@ -283,11 +284,11 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   /**
-   * @return a criteria based on this lookup model including any additional lookup criteria
-   * @see #setAdditionalLookupCriteria(org.jminor.common.db.criteria.Criteria)
+   * @return a condition based on this lookup model including any additional lookup condition
+   * @see #setAdditionalLookupCondition(Condition)
    */
-  private EntitySelectCriteria getEntitySelectCriteria() {
-    final CriteriaSet<Property.ColumnProperty> baseCriteria = CriteriaUtil.criteriaSet(Conjunction.OR);
+  private EntitySelectCondition getEntitySelectCondition() {
+    final ConditionSet<Property.ColumnProperty> baseCondition = Conditions.conditionSet(Conjunction.OR);
     final String[] lookupTexts = multipleSelectionAllowedValue.get() ? searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
     for (final Property.ColumnProperty lookupProperty : lookupProperties) {
       for (final String rawLookupText : lookupTexts) {
@@ -296,12 +297,12 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
         final boolean caseSensitive = propertyLookupSettings.get(lookupProperty).getCaseSensitiveValue().get();
         final String lookupText = rawLookupText.trim();
         final String modifiedLookupText = searchStringValue.get().equals(wildcard) ? wildcard : ((wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : ""));
-        baseCriteria.add(EntityCriteriaUtil.propertyCriteria(lookupProperty, SearchType.LIKE, caseSensitive, modifiedLookupText));
+        baseCondition.add(EntityConditions.propertyCondition(lookupProperty, ConditionType.LIKE, caseSensitive, modifiedLookupText));
       }
     }
 
-    return EntityCriteriaUtil.selectCriteria(entityID, additionalLookupCriteria == null ? baseCriteria :
-                    CriteriaUtil.criteriaSet(Conjunction.AND, additionalLookupCriteria, baseCriteria),
+    return EntityConditions.selectCondition(entityID, additionalLookupCondition == null ? baseCondition :
+                    Conditions.conditionSet(Conjunction.AND, additionalLookupCondition, baseCondition),
             Entities.getOrderByClause(getEntityID()));
   }
 

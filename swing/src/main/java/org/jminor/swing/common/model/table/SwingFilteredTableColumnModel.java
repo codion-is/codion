@@ -6,7 +6,7 @@ package org.jminor.swing.common.model.table;
 import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.Events;
-import org.jminor.common.model.table.ColumnCriteriaModel;
+import org.jminor.common.model.table.ColumnConditionModel;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
@@ -43,9 +43,9 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
   private final Map<C, TableColumn> hiddenColumns = new HashMap<>();
 
   /**
-   * The ColumnCriteriaModels used for filtering
+   * The ColumnConditionModels used for filtering
    */
-  private final Map<C, ColumnCriteriaModel<C>> columnFilterModels = new HashMap<>();
+  private final Map<C, ColumnConditionModel<C>> columnFilterModels = new HashMap<>();
 
   /**
    * Caches the column indexes in the model
@@ -58,7 +58,7 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
    * @param columns the columns to base this model on
    * @param columnFilterModels the filter models if any
    */
-  public SwingFilteredTableColumnModel(final List<TableColumn> columns, final Collection<? extends ColumnCriteriaModel<C>> columnFilterModels) {
+  public SwingFilteredTableColumnModel(final List<TableColumn> columns, final Collection<? extends ColumnConditionModel<C>> columnFilterModels) {
     if (columns == null || columns.isEmpty()) {
       throw new IllegalArgumentException("One or more columns must be specified");
     }
@@ -69,7 +69,7 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
       addColumn(column);
     }
     if (columnFilterModels != null) {
-      for (final ColumnCriteriaModel<C> columnFilterModel : columnFilterModels) {
+      for (final ColumnConditionModel<C> columnFilterModel : columnFilterModels) {
         this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
       }
     }
@@ -163,13 +163,13 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
 
   /** {@inheritDoc} */
   @Override
-  public final ColumnCriteriaModel<C> getColumnFilterModel(final C columnIdentifier) {
+  public final ColumnConditionModel<C> getColumnFilterModel(final C columnIdentifier) {
     return columnFilterModels.get(columnIdentifier);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Collection<ColumnCriteriaModel<C>> getColumnFilterModels() {
+  public Collection<ColumnConditionModel<C>> getColumnFilterModels() {
     return columnFilterModels.values();
   }
 

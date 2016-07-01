@@ -74,12 +74,12 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   void setEditModel(final E editModel);
 
   /**
-   * Sets {@code foreignKeyValues} as the search criteria values for the given foreignKeyProperty
+   * Sets {@code foreignKeyValues} as the search condition values for the given foreignKeyProperty
    * and refreshes this table model.
    * @param foreignKeyProperty the ID of the foreign key property
-   * @param foreignKeyValues the entities to use as criteria values
+   * @param foreignKeyValues the entities to use as condition values
    */
-  void setForeignKeyCriteriaValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues);
+  void setForeignKeyConditionValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues);
 
   /**
    * For every entity in this table model, replaces the foreign key instance bearing the primary
@@ -118,9 +118,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   EntityTableModel<E> setQueryConfigurationAllowed(final boolean value);
 
   /**
-   * @return the {@link EntityTableCriteriaModel} instance used by this table model
+   * @return the {@link EntityTableConditionModel} instance used by this table model
    */
-  EntityTableCriteriaModel getCriteriaModel();
+  EntityTableConditionModel getConditionModel();
 
   /**
    * @return true if this model has an edit model and that edit model allows deletion of records
@@ -217,16 +217,16 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   void deleteSelected() throws DatabaseException;
 
   /**
-   * @return whether to show all underlying entities when no criteria is applied.
+   * @return whether to show all underlying entities when no condition is applied.
    */
-  boolean isQueryCriteriaRequired();
+  boolean isQueryConditionRequired();
 
   /**
    * @param value if set to true then all underlying entities are shown
-   * when no criteria is applied, which can be problematic in the case of huge datasets.
+   * when no condition is applied, which can be problematic in the case of huge datasets.
    * @return this table model instance
    */
-  EntityTableModel<E> setQueryCriteriaRequired(final boolean value);
+  EntityTableModel<E> setQueryConditionRequired(final boolean value);
 
   /**
    * @return true if entities that are deleted via the associated edit model

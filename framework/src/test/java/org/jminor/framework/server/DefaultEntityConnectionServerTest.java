@@ -16,7 +16,7 @@ import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.RemoteEntityConnection;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.TestDomain;
 
@@ -124,7 +124,7 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(1, users.size());
     assertEquals(User.UNIT_TEST_USER, users.iterator().next());
 
-    providerTwo.getConnection().selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP)
+    providerTwo.getConnection().selectMany(EntityConditions.selectCondition(TestDomain.T_EMP)
             .orderByAscending(TestDomain.EMP_NAME));
 
     final Database.Statistics stats = admin.getDatabaseStatistics();

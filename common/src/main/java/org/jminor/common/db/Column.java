@@ -3,8 +3,6 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.model.Attribute;
-
 /**
  * Describes a database column
  */
@@ -28,7 +26,7 @@ public interface Column extends Attribute {
   boolean isUpdatable();
 
   /**
-   * @return true if this column can be used in search criteria, or where clauses
+   * @return true if this column can be used in search condition, or where clauses
    */
   boolean isSearchable();
 }

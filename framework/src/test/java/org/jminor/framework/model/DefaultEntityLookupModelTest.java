@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.db.criteria.CriteriaUtil;
-import org.jminor.common.model.SearchType;
+import org.jminor.common.db.condition.Conditions;
+import org.jminor.common.model.ConditionType;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -181,23 +181,23 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getCaseSensitiveValue().set(true);
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPostfixValue().set(true);
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPostfixValue().set(true);
-    lookupModel.setAdditionalLookupCriteria(
-            EntityCriteriaUtil.propertyCriteria(Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB),
-                    SearchType.NOT_LIKE, "MANAGER"));
+    lookupModel.setAdditionalLookupCondition(
+            EntityConditions.propertyCondition(Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB),
+                    ConditionType.NOT_LIKE, "MANAGER"));
     result = lookupModel.performQuery();
     assertTrue("Result should contain john", contains(result, "John"));
     assertFalse("Result should not contain johnson", contains(result, "johnson"));
   }
 
   @Test
-  public void setAdditionalLookupCriteria() {
+  public void setAdditionalLookupCondition() {
     lookupModel.getMultipleSelectionAllowedValue().set(false);
     lookupModel.setWildcard("%");
     lookupModel.setSearchString("johnson");
     List<Entity> result = lookupModel.performQuery();
     assertTrue("A single result should be returned", result.size() == 1);
     lookupModel.setSelectedEntities(result);
-    lookupModel.setAdditionalLookupCriteria(CriteriaUtil.<Property.ColumnProperty>stringCriteria("1 = 2"));
+    lookupModel.setAdditionalLookupCondition(Conditions.<Property.ColumnProperty>stringCondition("1 = 2"));
     assertEquals(1, lookupModel.getSelectedEntities().size());
     result = lookupModel.performQuery();
     assertTrue("No result should be returned", result.isEmpty());

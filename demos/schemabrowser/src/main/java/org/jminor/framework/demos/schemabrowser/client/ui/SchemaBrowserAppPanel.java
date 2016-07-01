@@ -44,7 +44,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 
   public static void main(final String[] args) {
     SwingConfiguration.setValue(SwingConfiguration.TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_ALL_COLUMNS);
-    Configuration.setValue(Configuration.TABLE_CRITERIA_PANEL_VISIBLE, true);
+    Configuration.setValue(Configuration.TABLE_CONDITION_PANEL_VISIBLE, true);
     new SchemaBrowserAppPanel().startApplication("Schema Browser", null, false, UiUtil.getScreenSizeRatio(0.5), new User("scott", "tiger"));
   }
 

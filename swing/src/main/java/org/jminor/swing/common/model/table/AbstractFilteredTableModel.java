@@ -6,8 +6,8 @@ package org.jminor.swing.common.model.table;
 import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
-import org.jminor.common.model.FilterCriteria;
-import org.jminor.common.model.table.ColumnCriteriaModel;
+import org.jminor.common.model.FilterCondition;
+import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.DefaultColumnSummaryModel;
 import org.jminor.common.model.table.SelectionModel;
@@ -82,9 +82,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
 
   /**
-   * the filter criteria used by this model
+   * the filter condition used by this model
    */
-  private FilterCriteria<R> filterCriteria;
+  private FilterCondition<R> filterCondition;
 
   /**
    * true if searching the table model should be done via regular expressions
@@ -97,12 +97,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @param columnFilterModels the column filter models
    * @throws NullPointerException in case {@code columnModel} is null
    */
-  public AbstractFilteredTableModel(final TableSortModel<R, C> sortModel, final Collection<? extends ColumnCriteriaModel<C>> columnFilterModels) {
+  public AbstractFilteredTableModel(final TableSortModel<R, C> sortModel, final Collection<? extends ColumnConditionModel<C>> columnFilterModels) {
     Objects.requireNonNull(sortModel, "sortModel");
     this.sortModel = sortModel;
     this.columnModel = new SwingFilteredTableColumnModel<>(sortModel.getColumns(), columnFilterModels);
     this.selectionModel = new SwingTableSelectionModel<>(this);
-    this.filterCriteria = new DefaultFilterCriteria<>(this.columnModel.getColumnFilterModels());
+    this.filterCondition = new DefaultFilterCondition<>(this.columnModel.getColumnFilterModels());
     bindEventsInternal();
   }
 
@@ -168,15 +168,15 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final Point findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText) {
-    return findNextItemCoordinate(fromIndex, forward, getSearchCriteria(searchText));
+    return findNextItemCoordinate(fromIndex, forward, getSearchCondition(searchText));
   }
 
   /** {@inheritDoc} */
   @Override
-  public final Point findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCriteria<Object> criteria) {
+  public final Point findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCondition<Object> condition) {
     if (forward) {
       for (int row = fromIndex >= getVisibleItemCount() ? 0 : fromIndex; row < getVisibleItemCount(); row++) {
-        final Point point = findColumnValue(columnModel.getColumns(), row, criteria);
+        final Point point = findColumnValue(columnModel.getColumns(), row, condition);
         if (point != null) {
           return point;
         }
@@ -184,7 +184,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
     else {
       for (int row = fromIndex < 0 ? getVisibleItemCount() - 1 : fromIndex; row >= 0; row--) {
-        final Point point = findColumnValue(columnModel.getColumns(), row, criteria);
+        final Point point = findColumnValue(columnModel.getColumns(), row, condition);
         if (point != null) {
           return point;
         }
@@ -317,10 +317,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       final List<R> selectedItems = selectionModel.getSelectedItems();
       visibleItems.addAll(filteredItems);
       filteredItems.clear();
-      if (filterCriteria != null) {
+      if (filterCondition != null) {
         for (final ListIterator<R> iterator = visibleItems.listIterator(); iterator.hasNext();) {
           final R item = iterator.next();
-          if (!filterCriteria.include(item)) {
+          if (!filterCondition.include(item)) {
             filteredItems.add(item);
             iterator.remove();
           }
@@ -336,15 +336,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
-  @Override
-  public final FilterCriteria<R> getFilterCriteria() {
-    return filterCriteria;
+  public final FilterCondition<R> getFilterCondition() {
+    return filterCondition;
   }
 
   /** {@inheritDoc} */
-  @Override
-  public final void setFilterCriteria(final FilterCriteria<R> filterCriteria) {
-    this.filterCriteria = filterCriteria;
+  public final void setFilterCondition(final FilterCondition<R> filterCondition) {
+    this.filterCondition = filterCondition;
     filterContents();
   }
 
@@ -496,7 +494,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   protected final void addItems(final List<R> items, final boolean atFront) {
     int index = 0;
     for (final R item : items) {
-      if (filterCriteria.include(item)) {
+      if (filterCondition.include(item)) {
         if (atFront) {
           visibleItems.add(index++, item);
         }
@@ -523,7 +521,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   protected final void addItems(final List<R> items, final int index) {
     int counter = 0;
     for (final R item : items) {
-      if (filterCriteria.include(item)) {
+      if (filterCondition.include(item)) {
         visibleItems.add(index + counter++, item);
       }
       else {
@@ -551,11 +549,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /**
    * @param searchText the search text
-   * @return a FilterCriteria based on the given search text
+   * @return a FilterCondition based on the given search text
    */
-  protected final FilterCriteria<Object> getSearchCriteria(final String searchText) {
+  protected final FilterCondition<Object> getSearchCondition(final String searchText) {
     if (regularExpressionSearch) {
-      return new RegexFilterCriteria<>(searchText);
+      return new RegexFilterCondition<>(searchText);
     }
 
     return item -> !(item == null || searchText == null) && item.toString().toLowerCase().contains(searchText.toLowerCase());
@@ -563,16 +561,16 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   private void bindEventsInternal() {
     addTableModelListener(e -> tableDataChangedEvent.fire());
-    for (final ColumnCriteriaModel criteriaModel : columnModel.getColumnFilterModels()) {
-      criteriaModel.addCriteriaStateListener(this::filterContents);
+    for (final ColumnConditionModel conditionModel : columnModel.getColumnFilterModels()) {
+      conditionModel.addConditionStateListener(this::filterContents);
     }
     sortModel.addSortingStateChangedListener(this::sortContents);
   }
 
-  private Point findColumnValue(final Enumeration<TableColumn> visibleColumns, final int row, final FilterCriteria<Object> criteria) {
+  private Point findColumnValue(final Enumeration<TableColumn> visibleColumns, final int row, final FilterCondition<Object> condition) {
     int index = 0;
     while (visibleColumns.hasMoreElements()) {
-      if (criteria.include(getSearchValueAt(row, visibleColumns.nextElement()))) {
+      if (condition.include(getSearchValueAt(row, visibleColumns.nextElement()))) {
         return new Point(index, row);
       }
       index++;
@@ -581,20 +579,20 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     return null;
   }
 
-  private static final class RegexFilterCriteria<T> implements FilterCriteria<T> {
+  private static final class RegexFilterCondition<T> implements FilterCondition<T> {
 
     private final Pattern pattern;
 
     /**
-     * Instantiates a new RegexFilterCriteria.
+     * Instantiates a new RegexFilterCondition.
      * @param patternString the regex pattern
      */
-    private RegexFilterCriteria(final String patternString) {
+    private RegexFilterCondition(final String patternString) {
       this.pattern = Pattern.compile(patternString);
     }
 
     /**
-     * Returns true if the regex pattern is valid and the given item passes the criteria.
+     * Returns true if the regex pattern is valid and the given item passes the condition.
      * @param item the item
      * @return true if the item should be included
      */
@@ -604,17 +602,17 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
   }
 
-  private static final class DefaultFilterCriteria<R, C> implements FilterCriteria<R> {
+  private static final class DefaultFilterCondition<R, C> implements FilterCondition<R> {
 
-    private final Collection<? extends ColumnCriteriaModel<C>> columnFilters;
+    private final Collection<? extends ColumnConditionModel<C>> columnFilters;
 
-    private DefaultFilterCriteria(final Collection<? extends ColumnCriteriaModel<C>> columnFilters) {
+    private DefaultFilterCondition(final Collection<? extends ColumnConditionModel<C>> columnFilters) {
       this.columnFilters = columnFilters;
     }
 
     @Override
     public boolean include(final R item) {
-      for (final ColumnCriteriaModel columnFilter : columnFilters) {
+      for (final ColumnConditionModel columnFilter : columnFilters) {
         if (!columnFilter.include(item)) {
           return false;
         }

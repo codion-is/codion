@@ -42,7 +42,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     final SwingEntityModelProvider departmentModelProvider = new SwingEntityModelProvider(T_DEPARTMENT) {
       @Override
       protected void configureModel(final SwingEntityModel entityModel) {
-        entityModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().setQueryCriteriaRequired(false);
+        entityModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().setQueryConditionRequired(false);
       }
     };
     departmentModelProvider.addDetailModelProvider(employeeModelProvider);

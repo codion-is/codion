@@ -197,7 +197,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       }
 
       LOG.debug("{}: rollback transaction;", user.getUsername());
-      logAccess("rollbackTransaction", new Object[0]);
+      logAccess("rollbackTransaction", null);
       connection.rollback();
     }
     catch (final SQLException e) {
@@ -219,7 +219,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       }
 
       LOG.debug("{}: commit transaction;", user.getUsername());
-      logAccess("commitTransaction", new Object[0]);
+      logAccess("commitTransaction", null);
       connection.commit();
     }
     catch (final SQLException e) {
@@ -245,9 +245,9 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
 
     LOG.debug("{}: commit;", user.getUsername());
-    logAccess("commit", new Object[0]);
     SQLException exception = null;
     try {
+      logAccess("commit", null);
       connection.commit();
     }
     catch (final SQLException e) {
@@ -268,7 +268,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
 
     LOG.debug("{}: rollback;", user.getUsername());
-    logAccess("rollback", new Object[0]);
+    logAccess("rollback", null);
     SQLException exception = null;
     try {
       connection.rollback();

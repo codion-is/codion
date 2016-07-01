@@ -177,7 +177,7 @@ public class EntityView extends BorderPane implements ViewTreeNode {
           break;
         case S:
           if (tableView != null && event.isControlDown()) {
-            tableView.setCriteriaPaneVisible(true);
+            tableView.setConditionPaneVisible(true);
             tableView.requestFocus();
             event.consume();
           }

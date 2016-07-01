@@ -6,11 +6,11 @@ package org.jminor.framework.model;
 import org.jminor.common.EventListener;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.ConditionType;
 import org.jminor.common.model.FilteredModel;
-import org.jminor.common.model.SearchType;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.TestDomain;
@@ -65,7 +65,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     final Entity operations = deptTableModel.getSelectionModel().getSelectedItem();
     assertEquals(80, operations.get(TestDomain.DEPARTMENT_ID));
 
-    ((FilteredModel<Entity>) deptTableModel).setFilterCriteria(item ->
+    ((FilteredModel<Entity>) deptTableModel).setFilterCondition(item ->
             !Objects.equals(80, item.get(TestDomain.DEPARTMENT_ID)));
 
     deptEditModel.setEntity(operations);
@@ -168,8 +168,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
     final EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-    final List<Entity> salesEmployees = connection.selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, SearchType.LIKE, department));
+    final List<Entity> salesEmployees = connection.selectMany(EntityConditions.selectCondition(TestDomain.T_EMP,
+            TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, department));
     assertTrue("Number of employees for department should not be 0", salesEmployees.size() > 0);
     departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
     final List<Entity> employeesFromDetailModel =
@@ -220,7 +220,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     editModel.setValue(TestDomain.DEPARTMENT_LOCATION, "Loc");
     final List<Entity> inserted = editModel.insert();
     final Entity upperBoundEntity;
-    final Object upperBound = employeeModel.getTableModel().getCriteriaModel().getPropertyCriteriaModel(TestDomain.EMP_DEPARTMENT_FK).getUpperBound();
+    final Object upperBound = employeeModel.getTableModel().getConditionModel().getPropertyConditionModel(TestDomain.EMP_DEPARTMENT_FK).getUpperBound();
     if (upperBound instanceof Collection) {
       upperBoundEntity = (Entity) ((Collection) upperBound).iterator().next();
     }

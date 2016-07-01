@@ -135,37 +135,37 @@ public class SwingFilteredComboBoxModelTest {
   @Test
   public void filterWithSelection() {
     testModel.setSelectedItem(BJORN);
-    testModel.setFilterCriteria(item -> !item.equals(BJORN));
+    testModel.setFilterCondition(item -> !item.equals(BJORN));
     assertEquals(NULL, testModel.getSelectedItem());
     assertNull(testModel.getSelectedValue());
 
-    testModel.setFilterCriteria(null);
+    testModel.setFilterCondition(null);
     testModel.setFilterSelectedItem(false);
     assertFalse(testModel.isFilterSelectedItem());
     testModel.setSelectedItem(BJORN);
-    testModel.setFilterCriteria(item -> !item.equals(BJORN));
+    testModel.setFilterCondition(item -> !item.equals(BJORN));
     assertNotNull(testModel.getSelectedItem());
     assertEquals(BJORN, testModel.getSelectedValue());
   }
 
   @Test
-  public void setFilterCriteria() {
+  public void setFilterCondition() {
     final AtomicInteger filteringEndedCounter = new AtomicInteger();
     final EventListener filteringEndedListener = filteringEndedCounter::incrementAndGet;
     testModel.addListDataListener(listDataListener);
     testModel.addFilteringListener(filteringEndedListener);
 
-    testModel.setFilterCriteria(item -> false);
+    testModel.setFilterCondition(item -> false);
     assertEquals(1, filteringEndedCounter.get());
     assertEquals("The model should only include the null value item", 1, testModel.getSize());
-    testModel.setFilterCriteria(item -> true);
+    testModel.setFilterCondition(item -> true);
     assertEquals(2, filteringEndedCounter.get());
     assertEquals("The model should be full", 6, testModel.getSize());
-    testModel.setFilterCriteria(item -> !item.equals(ANNA));
+    testModel.setFilterCondition(item -> !item.equals(ANNA));
     assertEquals("The model should contain 5 items", 5, testModel.getSize());
     assertTrue("The model should not contain '" + ANNA + "'", !testModel.isVisible(ANNA));
     assertTrue(testModel.isFiltered(ANNA));
-    testModel.setFilterCriteria(item -> item.equals(ANNA));
+    testModel.setFilterCondition(item -> item.equals(ANNA));
     assertEquals("The model should only contain 2 items", 2, testModel.getSize());
     assertTrue("The model should only contain '" + ANNA + "'", testModel.isVisible(ANNA));
 
@@ -188,9 +188,9 @@ public class SwingFilteredComboBoxModelTest {
   @Test
   public void removeItem() {
     //remove filtered item
-    testModel.setFilterCriteria(item -> !item.equals(BJORN));
+    testModel.setFilterCondition(item -> !item.equals(BJORN));
     testModel.removeItem(BJORN);
-    testModel.setFilterCriteria(null);
+    testModel.setFilterCondition(null);
     assertFalse(BJORN + " should no longer be in the model", testModel.isVisible(BJORN));
 
     //remove visible item
@@ -202,7 +202,7 @@ public class SwingFilteredComboBoxModelTest {
   public void addItem() {
     testModel.clear();
     //add filtered item
-    testModel.setFilterCriteria(item -> !item.equals(BJORN));
+    testModel.setFilterCondition(item -> !item.equals(BJORN));
     testModel.addItem(BJORN);
     assertFalse(BJORN + " should be filtered", testModel.isVisible(BJORN));
 
@@ -210,7 +210,7 @@ public class SwingFilteredComboBoxModelTest {
     testModel.addItem(KALLI);
     assertTrue(KALLI + " should not be filtered", testModel.isVisible(KALLI));
 
-    testModel.setFilterCriteria(null);
+    testModel.setFilterCondition(null);
     assertTrue(BJORN + " should not be filtered", testModel.isVisible(BJORN));
   }
 

@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.common.EventListener;
-import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.TextUtil;
@@ -12,16 +12,16 @@ import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.DefaultEntityTableCriteriaModel;
+import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
 import org.jminor.framework.model.EntityEditModel;
-import org.jminor.framework.model.EntityTableCriteriaModel;
+import org.jminor.framework.model.EntityTableConditionModel;
 import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.AbstractTableSortModel;
@@ -87,9 +87,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private SwingEntityEditModel editModel;
 
   /**
-   * The criteria model
+   * The condition model
    */
-  private final EntityTableCriteriaModel criteriaModel;
+  private final EntityTableConditionModel conditionModel;
 
   /**
    * the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched
@@ -102,9 +102,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private boolean queryConfigurationAllowed = true;
 
   /**
-   * If true then querying should be disabled if no criteria is specified
+   * If true then querying should be disabled if no condition is specified
    */
-  private boolean queryCriteriaRequired = false;
+  private boolean queryConditionRequired = false;
 
   /**
    * If true then items deleted via the edit model are removed from this table model
@@ -122,35 +122,35 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private boolean batchUpdateAllowed = true;
 
   /**
-   * Instantiates a new DefaultEntityTableModel with default column and criteria models.
+   * Instantiates a new DefaultEntityTableModel with default column and condition models.
    * @param entityID the entity ID
    * @param connectionProvider the db provider
    */
   public SwingEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     this(entityID, connectionProvider, new DefaultEntityTableSortModel(entityID),
-            new DefaultEntityTableCriteriaModel(entityID, connectionProvider,
-                    new DefaultPropertyFilterModelProvider(), new SwingPropertyCriteriaModelProvider()));
+            new DefaultEntityTableConditionModel(entityID, connectionProvider,
+                    new DefaultPropertyFilterModelProvider(), new SwingPropertyConditionModelProvider()));
   }
 
   /**
    * Instantiates a new DefaultEntityTableModel.
    * @param entityID the entity ID
    * @param connectionProvider the db provider
-   * @param criteriaModel the criteria model
+   * @param conditionModel the condition model
    * @param sortModel the sort model
-   * @throws NullPointerException in case criteriaModel is null
-   * @throws IllegalArgumentException if {@code criteriaModel} entityID does not match the one supplied as parameter
+   * @throws NullPointerException in case conditionModel is null
+   * @throws IllegalArgumentException if {@code conditionModel} entityID does not match the one supplied as parameter
    */
   public SwingEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider,
-                               final TableSortModel<Entity, Property> sortModel, final EntityTableCriteriaModel criteriaModel) {
-    super(sortModel, Objects.requireNonNull(criteriaModel, "criteriaModel").getPropertyFilterModels());
-    if (!criteriaModel.getEntityID().equals(entityID)) {
-      throw new IllegalArgumentException("Entity ID mismatch, criteriaModel: " + criteriaModel.getEntityID()
+                               final TableSortModel<Entity, Property> sortModel, final EntityTableConditionModel conditionModel) {
+    super(sortModel, Objects.requireNonNull(conditionModel, "conditionModel").getPropertyFilterModels());
+    if (!conditionModel.getEntityID().equals(entityID)) {
+      throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + conditionModel.getEntityID()
               + ", tableModel: " + entityID);
     }
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
-    this.criteriaModel = criteriaModel;
+    this.conditionModel = conditionModel;
     bindEventsInternal();
     applyPreferences();
   }
@@ -210,14 +210,14 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isQueryCriteriaRequired() {
-    return queryCriteriaRequired;
+  public final boolean isQueryConditionRequired() {
+    return queryConditionRequired;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final SwingEntityTableModel setQueryCriteriaRequired(final boolean value) {
-    this.queryCriteriaRequired = value;
+  public final SwingEntityTableModel setQueryConditionRequired(final boolean value) {
+    this.queryConditionRequired = value;
     return this;
   }
 
@@ -256,8 +256,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableCriteriaModel getCriteriaModel() {
-    return criteriaModel;
+  public final EntityTableConditionModel getConditionModel() {
+    return conditionModel;
   }
 
   /** {@inheritDoc} */
@@ -392,9 +392,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public void setForeignKeyCriteriaValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
+  public void setForeignKeyConditionValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
     Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-    if (criteriaModel.setCriteriaValues(foreignKeyProperty.getPropertyID(), foreignKeyValues)) {
+    if (conditionModel.setConditionValues(foreignKeyProperty.getPropertyID(), foreignKeyValues)) {
       refresh();
     }
   }
@@ -565,10 +565,10 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   protected final void doRefresh() {
     try {
       LOG.debug("{} refreshing", this);
-      final List<Entity> queryResult = performQuery(criteriaModel.getTableCriteria());
+      final List<Entity> queryResult = performQuery(conditionModel.getTableCondition());
       clear();
       addItems(queryResult, false);
-      criteriaModel.rememberCurrentCriteriaState();
+      conditionModel.rememberCurrentConditionState();
     }
     finally {
       LOG.debug("{} refreshing done", this);
@@ -578,17 +578,17 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /**
    * Queries for the data used to populate this EntityTableModel when it is refreshed,
    * using the order by clause returned by {@link #getOrderByClause()}
-   * @param criteria a criteria
-   * @return entities selected from the database according the the query criteria.
-   * @see EntityTableCriteriaModel#getTableCriteria()
+   * @param condition a condition
+   * @return entities selected from the database according the the query condition.
+   * @see EntityTableConditionModel#getTableCondition()
    */
-  protected List<Entity> performQuery(final Criteria<Property.ColumnProperty> criteria) {
-    if (criteria == null && queryCriteriaRequired) {
+  protected List<Entity> performQuery(final Condition<Property.ColumnProperty> condition) {
+    if (condition == null && queryConditionRequired) {
       return new ArrayList<>();
     }
 
     try {
-      return connectionProvider.getConnection().selectMany(EntityCriteriaUtil.selectCriteria(entityID, criteria,
+      return connectionProvider.getConnection().selectMany(EntityConditions.selectCondition(entityID, condition,
               getOrderByClause(), fetchCount));
     }
     catch (final DatabaseException e) {
@@ -663,7 +663,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   private void bindEventsInternal() {
     getColumnModel().addColumnHiddenListener(this::handleColumnHidden);
-    criteriaModel.addSimpleCriteriaListener(this::refresh);
+    conditionModel.addSimpleConditionListener(this::refresh);
   }
 
   private void bindEditModelEventsInternal() {
@@ -733,8 +733,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   private void handleColumnHidden(final Property property) {
-    //disable the criteria model for the column to be hidden, to prevent confusion
-    criteriaModel.setEnabled(property.getPropertyID(), false);
+    //disable the condition model for the column to be hidden, to prevent confusion
+    conditionModel.setEnabled(property.getPropertyID(), false);
   }
 
   private org.json.JSONObject createPreferences() throws Exception {

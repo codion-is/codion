@@ -75,8 +75,8 @@ public final class FrameworkMessages {
   public static final String APPLY = "apply";
   public static final String APPLY_MNEMONIC = "apply_mnemonic";
   public static final String SHOW = "show";
-  public static final String NO_RESULTS_FROM_CRITERIA = "no_results_from_criteria";
-  public static final String SHOW_CRITERIA_PANEL = "show_criteria_panel";
+  public static final String NO_RESULTS_FROM_CONDITION = "no_results_from_condition";
+  public static final String SHOW_CONDITION_PANEL = "show_condition_panel";
   public static final String SET_LOG_LEVEL = "set_log_level";
   public static final String SET_LOG_LEVEL_DESC = "set_log_level_desc";
   public static final String NONE_FOUND = "none_found";
@@ -97,7 +97,7 @@ public final class FrameworkMessages {
   public static final String TOGGLE_DETAIL_TIP = "toggle_detail";
   public static final String TOGGLE_EDIT_TIP = "toggle_edit";
   public static final String FILTER_SETTINGS = "filter_settings";
-  public static final String REQUIRE_QUERY_CRITERIA = "require_query_criteria";
+  public static final String REQUIRE_QUERY_CONDITION = "require_query_condition";
   public static final String SELECT_ENTITY = "select_entity";
   public static final String ADVANCED = "advanced";
   public static final String APPLICATION_TREE = "view_application_tree";

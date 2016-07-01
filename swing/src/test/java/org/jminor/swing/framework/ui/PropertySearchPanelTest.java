@@ -3,12 +3,12 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.model.SearchType;
+import org.jminor.common.model.ConditionType;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
-import org.jminor.framework.model.DefaultPropertyCriteriaModel;
-import org.jminor.framework.model.PropertyCriteriaModel;
+import org.jminor.framework.model.DefaultPropertyConditionModel;
+import org.jminor.framework.model.PropertyConditionModel;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,12 +26,12 @@ public class PropertySearchPanelTest {
 
   @Test
   public void createWithInitializedModel() {
-    final PropertyCriteriaModel<Property.ColumnProperty> criteriaModel =
-            new DefaultPropertyCriteriaModel(Entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME));
-    criteriaModel.setUpperBound("DALLAS");
-    criteriaModel.setSearchType(SearchType.LIKE);
-    criteriaModel.setEnabled(true);
-    final PropertyCriteriaPanel searchPanel = new PropertyCriteriaPanel(criteriaModel);
+    final PropertyConditionModel<Property.ColumnProperty> conditionModel =
+            new DefaultPropertyConditionModel(Entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME));
+    conditionModel.setUpperBound("DALLAS");
+    conditionModel.setSearchType(ConditionType.LIKE);
+    conditionModel.setEnabled(true);
+    final PropertyConditionPanel searchPanel = new PropertyConditionPanel(conditionModel);
     assertEquals("DALLAS", ((JTextField) searchPanel.getUpperBoundField()).getText());
   }
 }

@@ -3,7 +3,7 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.common.model.table.ColumnCriteriaModel;
+import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -14,13 +14,13 @@ import javafx.util.Callback;
 
 public final class EntityTableColumn extends FXEntityListModel.PropertyTableColumn {
 
-  private final PropertyCriteriaView criteriaView;
+  private final PropertyConditionView conditionView;
 
   public EntityTableColumn(final FXEntityListModel listModel, final Property property,
                            final EntityConnectionProvider connectionProvider,
                            final Callback<CellDataFeatures<Entity, Object>, ObservableValue<Object>> cellValueFactory) {
     super(property);
-    this.criteriaView = initializeCriteriaView(listModel);
+    this.conditionView = initializeConditionView(listModel);
     setCellValueFactory(cellValueFactory);
     final int preferredWidth = property.getPreferredColumnWidth();
     if (preferredWidth > 0) {
@@ -28,25 +28,25 @@ public final class EntityTableColumn extends FXEntityListModel.PropertyTableColu
     }
   }
 
-  public void setCriteriaViewAdvanced(final boolean advanced) {
-    if (criteriaView != null) {
-      criteriaView.setAdvanced(advanced);
+  public void setConditionViewAdvanced(final boolean advanced) {
+    if (conditionView != null) {
+      conditionView.setAdvanced(advanced);
     }
   }
 
-  public void setCriteriaViewVisible(final boolean visible) {
-    if (criteriaView != null) {
-      setGraphic(visible ? criteriaView : null);
+  public void setConditionViewVisible(final boolean visible) {
+    if (conditionView != null) {
+      setGraphic(visible ? conditionView : null);
     }
   }
 
-  private PropertyCriteriaView initializeCriteriaView(final FXEntityListModel listModel) {
+  private PropertyConditionView initializeConditionView(final FXEntityListModel listModel) {
     if (!(getProperty() instanceof Property.SearchableProperty)) {
       return null;
     }
-    final ColumnCriteriaModel<? extends Property.SearchableProperty> criteriaModel =
-            listModel.getCriteriaModel().getPropertyCriteriaModel(getProperty().getPropertyID());
-    final PropertyCriteriaView view = new PropertyCriteriaView(criteriaModel);
+    final ColumnConditionModel<? extends Property.SearchableProperty> conditionModel =
+            listModel.getConditionModel().getPropertyConditionModel(getProperty().getPropertyID());
+    final PropertyConditionView view = new PropertyConditionView(conditionModel);
     view.prefWidthProperty().setValue(getWidth());
     widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));
     widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.model.table.DefaultColumnCriteriaModel;
+import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -12,7 +12,7 @@ import org.jminor.framework.domain.Property;
  * A class for filtering a set of entities based on a property.
  */
 @SuppressWarnings({"unchecked"})
-public class DefaultPropertyFilterModel extends DefaultColumnCriteriaModel<Property> {
+public class DefaultPropertyFilterModel extends DefaultColumnConditionModel<Property> {
 
   /**
    * Instantiates a new DefaultPropertyFilterModel

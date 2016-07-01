@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.demos.empdept.beans;
 
-import org.jminor.common.model.SearchType;
+import org.jminor.common.model.ConditionType;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityComboBoxModel;
@@ -32,8 +32,8 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
       managerModel.setNullValue(EntityUtil.createToStringEntity(T_EMPLOYEE, getString(NONE)));
       managerModel.setFilterSelectedItem(false);
       //Only show the president and managers
-      managerModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(T_EMPLOYEE, EMPLOYEE_JOB,
-              SearchType.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
+      managerModel.setEntitySelectCondition(EntityConditions.selectCondition(T_EMPLOYEE, EMPLOYEE_JOB,
+              ConditionType.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
 
       return managerModel;
     }
@@ -54,7 +54,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
     addValueListener(EMPLOYEE_DEPARTMENT_FK, info -> {
       //only show managers in the same department as the active entity
       if (containsComboBoxModel(EMPLOYEE_MGR_FK)) {
-        getForeignKeyComboBoxModel(EMPLOYEE_MGR_FK).setFilterCriteria(item -> Objects.equals(item.getForeignKey(EMPLOYEE_DEPARTMENT_FK), info.getNewValue())
+        getForeignKeyComboBoxModel(EMPLOYEE_MGR_FK).setFilterCondition(item -> Objects.equals(item.getForeignKey(EMPLOYEE_DEPARTMENT_FK), info.getNewValue())
                 && !Objects.equals(item, getEntityCopy()));
       }
     });

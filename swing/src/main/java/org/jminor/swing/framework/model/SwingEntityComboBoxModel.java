@@ -8,10 +8,10 @@ import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.FilterCriteria;
+import org.jminor.common.model.FilterCondition;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
@@ -57,9 +57,9 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private boolean forceRefresh = false;
 
   /**
-   * the EntitySelectCriteria used to filter the data when queried
+   * the EntitySelectCondition used to filter the data when queried
    */
-  private EntitySelectCriteria selectCriteria;
+  private EntitySelectCondition selectCondition;
 
   /**
    * A map of entities used to filter the contents of this model by foreign key value.
@@ -69,7 +69,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   private boolean strictForeignKeyFiltering = true;
 
-  private final FilterCriteria<Entity> foreignKeyFilterCriteria = item -> {
+  private final FilterCondition<Entity> foreignKeyFilterCondition = item -> {
     for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
       final Entity foreignKeyValue = item.getForeignKey(entry.getKey());
       if (foreignKeyValue == null) {
@@ -92,10 +92,10 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     Objects.requireNonNull(connectionProvider, "connectionProvider");
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
-    this.selectCriteria = initializeSelectCriteria(entityID);
+    this.selectCondition = initializeSelectCondition(entityID);
     setStaticData(Entities.isStaticData(entityID));
-    final FilterCriteria<Entity> superCriteria = super.getFilterCriteria();
-    setFilterCriteria(item -> superCriteria.include(item) && foreignKeyFilterCriteria.include(item));
+    final FilterCondition<Entity> superCondition = super.getFilterCondition();
+    setFilterCondition(item -> superCondition.include(item) && foreignKeyFilterCondition.include(item));
   }
 
   /** {@inheritDoc} */
@@ -171,16 +171,16 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   /** {@inheritDoc} */
   @Override
-  public final void setEntitySelectCriteria(final EntitySelectCriteria entitySelectCriteria) {
-    if (entitySelectCriteria != null && !entitySelectCriteria.getEntityID().equals(entityID)) {
-      throw new IllegalArgumentException("EntitySelectCriteria entityID mismatch, " + entityID
-              + " expected, got " + entitySelectCriteria.getEntityID());
+  public final void setEntitySelectCondition(final EntitySelectCondition entitySelectCondition) {
+    if (entitySelectCondition != null && !entitySelectCondition.getEntityID().equals(entityID)) {
+      throw new IllegalArgumentException("EntitySelectCondition entityID mismatch, " + entityID
+              + " expected, got " + entitySelectCondition.getEntityID());
     }
-    if (entitySelectCriteria == null) {
-      this.selectCriteria = initializeSelectCriteria(entityID);
+    if (entitySelectCondition == null) {
+      this.selectCondition = initializeSelectCondition(entityID);
     }
     else {
-      this.selectCriteria = entitySelectCriteria;
+      this.selectCondition = entitySelectCondition;
     }
   }
 
@@ -301,7 +301,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
         return super.initializeContents();
       }
 
-      return performQuery(selectCriteria);
+      return performQuery(selectCondition);
     }
     finally {
       refreshDoneEvent.fire();
@@ -310,21 +310,21 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   /**
    * Retrieves the entities to present in this EntityComboBoxModel
-   * @param selectCriteria the criteria to base the query on
+   * @param selectCondition the condition to base the query on
    * @return the entities to present in this EntityComboBoxModel
    */
-  protected List<Entity> performQuery(final EntitySelectCriteria selectCriteria) {
-    Objects.requireNonNull(selectCriteria, "selectCriteria");
+  protected List<Entity> performQuery(final EntitySelectCondition selectCondition) {
+    Objects.requireNonNull(selectCondition, "selectCondition");
     try {
-      return connectionProvider.getConnection().selectMany(selectCriteria);
+      return connectionProvider.getConnection().selectMany(selectCondition);
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
 
-  private EntitySelectCriteria initializeSelectCriteria(final String entityID) {
-    return EntityCriteriaUtil.selectCriteria(entityID, Entities.getOrderByClause(entityID));
+  private EntitySelectCondition initializeSelectCondition(final String entityID) {
+    return EntityConditions.selectCondition(entityID, Entities.getOrderByClause(entityID));
   }
 
   private int getIndexOfKey(final Entity.Key primaryKey) {

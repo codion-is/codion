@@ -24,28 +24,28 @@ public interface FilteredModel<T> {
   void removeFilteringListener(final EventListener listener);
 
   /**
-   * Filters the table according to the criteria returned by {@code getFilterCriteria()}.
-   * If no filter criteria is specified this method does nothing.
+   * Filters the table according to the condition returned by {@code getFilterCondition()}.
+   * If no filter condition is specified this method does nothing.
    * This method does not interfere with the internal ordering of the visible items.
-   * @see #getFilterCriteria()
-   * @see #setFilterCriteria(FilterCriteria)
+   * @see #getFilterCondition()
+   * @see #setFilterCondition(FilterCondition)
    * @see #addFilteringListener(EventListener)
    */
   void filterContents();
 
   /**
-   * Returns the filter criteria defined by this model, this returns
-   * a "accept all" criteria if no criteria is defined.
-   * @return the filter criteria
-   * @see FilterCriteria.AcceptAllCriteria
+   * Returns the filter condition defined by this model, this returns
+   * a "accept all" condition if no condition is defined.
+   * @return the filter condition
+   * @see FilterCondition.AcceptAllCondition
    */
-  FilterCriteria<T> getFilterCriteria();
+  FilterCondition<T> getFilterCondition();
 
   /**
-   * Sets the filter criteria and filters the model
-   * @param filterCriteria the FilterCriteria to use
+   * Sets the filter condition and filters the model
+   * @param filterCondition the FilterCondition to use
    */
-  void setFilterCriteria(final FilterCriteria<T> filterCriteria);
+  void setFilterCondition(final FilterCondition<T> filterCondition);
 
   /**
    * @return an unmodifiable view of the visible items

@@ -12,7 +12,7 @@ import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.RemoteEntityConnection;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.local.LocalEntityConnectionTest;
 import org.jminor.framework.domain.TestDomain;
 
@@ -119,7 +119,7 @@ public class DefaultRemoteEntityConnectionTest {
         }
       });
 
-      proxy.selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP));
+      proxy.selectMany(EntityConditions.selectCondition(TestDomain.T_EMP));
     }
     finally {
       if (registry != null) {

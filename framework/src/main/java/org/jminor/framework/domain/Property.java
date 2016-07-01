@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.db.Attribute;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
-import org.jminor.common.model.Attribute;
 import org.jminor.common.model.Item;
 
 import java.lang.annotation.ElementType;
@@ -278,7 +278,7 @@ public interface Property extends Attribute {
   boolean isReadOnly();
 
   /**
-   * Specifies a property that can be include in database search criteria
+   * Specifies a property that can be include in database search condition
    */
   interface SearchableProperty extends Property {}
 
@@ -340,7 +340,7 @@ public interface Property extends Attribute {
     ColumnProperty setColumnHasDefaultValue(final boolean columnHasDefaultValue);
 
     /**
-     * @param searchable true if this column can be included in search criteria
+     * @param searchable true if this column can be included in search condition
      * @return this Property instance
      */
     ColumnProperty setSearchable(final boolean searchable);

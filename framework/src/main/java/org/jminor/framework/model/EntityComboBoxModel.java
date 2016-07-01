@@ -5,7 +5,7 @@ package org.jminor.framework.model;
 
 import org.jminor.common.EventListener;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Entity;
 
 import java.util.Collection;
@@ -94,10 +94,10 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
   boolean isStaticData();
 
   /**
-   * Sets the criteria to use when querying data
-   * @param entitySelectCriteria the criteria
+   * Sets the condition to use when querying data
+   * @param entitySelectCondition the condition
    */
-  void setEntitySelectCriteria(final EntitySelectCriteria entitySelectCriteria);
+  void setEntitySelectCondition(final EntitySelectCondition entitySelectCondition);
 
   /**
    * @param listener a listener to be notified each time this model is refreshed

@@ -10,7 +10,7 @@ import org.jminor.common.Events;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Util;
-import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
@@ -26,7 +26,7 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableModel;
-import org.jminor.framework.model.PropertyCriteriaModel;
+import org.jminor.framework.model.PropertyConditionModel;
 import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.model.table.FilteredTableModel;
 import org.jminor.swing.common.ui.DefaultExceptionHandler;
@@ -136,8 +136,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public static final String CLEAR = "clear";
   public static final String REFRESH = "refresh";
   public static final String TOGGLE_SUMMARY_PANEL = "toggleSummaryPanel";
-  public static final String TOGGLE_CRITERIA_PANEL = "toggleCriteriaPanel";
-  public static final String CRITERIA_PANEL_VISIBLE = "criteriaPanelVisible";
+  public static final String TOGGLE_CONDITION_PANEL = "toggleConditionPanel";
+  public static final String CONDITION_PANEL_VISIBLE = "conditionPanelVisible";
   public static final String CLEAR_SELECTION = "clearSelection";
   public static final String MOVE_SELECTION_UP = "moveSelectionUp";
   public static final String MOVE_SELECTION_DOWN = "moveSelectionDown";
@@ -150,19 +150,19 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private static final String TRIPLEDOT = "...";
 
   private final Event tableDoubleClickedEvent = Events.event();
-  private final Event<Boolean> criteriaPanelVisibilityChangedEvent = Events.event();
+  private final Event<Boolean> conditionPanelVisibilityChangedEvent = Events.event();
 
   private final Map<String, Control> controlMap = new HashMap<>();
 
   /**
-   * the criteria panel
+   * the condition panel
    */
-  private final EntityTableCriteriaPanel criteriaPanel;
+  private final EntityTableConditionPanel conditionPanel;
 
   /**
-   * the scroll pane used for the criteria panel
+   * the scroll pane used for the condition panel
    */
-  private final JScrollPane criteriaScrollPane;
+  private final JScrollPane conditionScrollPane;
 
   /**
    * the toolbar containing the refresh button
@@ -188,9 +188,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private boolean includeSouthPanel = true;
 
   /**
-   * specifies whether or not to include the criteria panel
+   * specifies whether or not to include the condition panel
    */
-  private boolean includeCriteriaPanel = true;
+  private boolean includeConditionPanel = true;
 
   /**
    * specifies whether or not to include a popup menu
@@ -207,24 +207,24 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @param tableModel the EntityTableModel instance
    */
   public EntityTablePanel(final SwingEntityTableModel tableModel) {
-    this(tableModel, new EntityTableCriteriaPanel(tableModel));
+    this(tableModel, new EntityTableConditionPanel(tableModel));
   }
 
   /**
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
-   * @param criteriaPanel the criteria panel
+   * @param conditionPanel the condition panel
    */
-  public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityTableCriteriaPanel criteriaPanel) {
+  public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityTableConditionPanel conditionPanel) {
     super((FilteredTableModel<Entity, Property>) tableModel, column ->
-            new PropertyFilterPanel(tableModel.getCriteriaModel().getPropertyFilterModel(
+            new PropertyFilterPanel(tableModel.getConditionModel().getPropertyFilterModel(
                     ((Property) column.getIdentifier()).getPropertyID()), true, true));
-    this.criteriaPanel = criteriaPanel;
-    if (criteriaPanel != null) {
-      this.criteriaScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    this.conditionPanel = conditionPanel;
+    if (conditionPanel != null) {
+      this.conditionScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     }
     else {
-      this.criteriaScrollPane = null;
+      this.conditionScrollPane = null;
     }
     this.statusMessageLabel = initializeStatusMessageLabel();
     this.refreshToolBar = initializeRefreshToolbar();
@@ -279,13 +279,13 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * @param value true if the criteria panel should be included
+   * @param value true if the condition panel should be included
    * @see #initializePanel()
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  public final void setIncludeCriteriaPanel(final boolean value) {
+  public final void setIncludeConditionPanel(final boolean value) {
     checkIfInitialized();
-    this.includeCriteriaPanel = value;
+    this.includeConditionPanel = value;
   }
 
   /**
@@ -316,11 +316,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       return;
     }
 
-    final EntityCriteriaPanel panel;
+    final EntityConditionPanel panel;
     AbstractAction action;
     try {
       UiUtil.setWaitCursor(true, this);
-      panel = new EntityCriteriaPanel(getEntityTableModel());
+      panel = new EntityConditionPanel(getEntityTableModel());
       action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.APPLY)) {
         @Override
         public void actionPerformed(final ActionEvent e) {
@@ -336,58 +336,58 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Hides or shows the column criteria panel for this EntityTablePanel
-   * @param visible if true the criteria panel is shown, if false it is hidden
+   * Hides or shows the column condition panel for this EntityTablePanel
+   * @param visible if true the condition panel is shown, if false it is hidden
    */
-  public final void setCriteriaPanelVisible(final boolean visible) {
-    if (visible && isCriteriaPanelVisible()) {
+  public final void setConditionPanelVisible(final boolean visible) {
+    if (visible && isConditionPanelVisible()) {
       return;
     }
 
-    if (criteriaScrollPane != null) {
-      criteriaScrollPane.getViewport().setView(visible ? criteriaPanel : null);
+    if (conditionScrollPane != null) {
+      conditionScrollPane.getViewport().setView(visible ? conditionPanel : null);
       if (refreshToolBar != null) {
         refreshToolBar.setVisible(visible);
       }
       revalidate();
-      criteriaPanelVisibilityChangedEvent.fire(visible);
+      conditionPanelVisibilityChangedEvent.fire(visible);
     }
   }
 
   /**
-   * @return true if the criteria panel is visible, false if it is hidden
+   * @return true if the condition panel is visible, false if it is hidden
    */
-  public final boolean isCriteriaPanelVisible() {
-    return criteriaScrollPane != null && criteriaScrollPane.getViewport().getView() == criteriaPanel;
+  public final boolean isConditionPanelVisible() {
+    return conditionScrollPane != null && conditionScrollPane.getViewport().getView() == conditionPanel;
   }
 
   /**
-   * @return the criteria panel being used by this EntityTablePanel
+   * @return the condition panel being used by this EntityTablePanel
    */
-  public final EntityTableCriteriaPanel getCriteriaPanel() {
-    return criteriaPanel;
+  public final EntityTableConditionPanel getConditionPanel() {
+    return conditionPanel;
   }
 
   /**
-   * Toggles the criteria panel through the states hidden, visible and in case it is a EntityTableCriteriaPanel, advanced
+   * Toggles the condition panel through the states hidden, visible and in case it is a EntityTableConditionPanel, advanced
    */
-  public final void toggleCriteriaPanel() {
-    if (criteriaPanel.canToggleAdvanced()) {
-      if (isCriteriaPanelVisible()) {
-        if (criteriaPanel.isAdvanced()) {
-          setCriteriaPanelVisible(false);
+  public final void toggleConditionPanel() {
+    if (conditionPanel.canToggleAdvanced()) {
+      if (isConditionPanelVisible()) {
+        if (conditionPanel.isAdvanced()) {
+          setConditionPanelVisible(false);
         }
         else {
-          criteriaPanel.setAdvanced(true);
+          conditionPanel.setAdvanced(true);
         }
       }
       else {
-        criteriaPanel.setAdvanced(false);
-        setCriteriaPanelVisible(true);
+        conditionPanel.setAdvanced(false);
+        setConditionPanelVisible(true);
       }
     }
     else {
-      setCriteriaPanelVisible(!isCriteriaPanelVisible());
+      setConditionPanelVisible(!isConditionPanelVisible());
     }
   }
 
@@ -629,10 +629,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Initializes the button used to toggle the criteria panel state (hidden, visible and advanced)
-   * @return a criteria panel toggle button
+   * Initializes the button used to toggle the condition panel state (hidden, visible and advanced)
+   * @return a condition panel toggle button
    */
-  public final Control getToggleCriteriaPanelControl() {
+  public final Control getToggleConditionPanelControl() {
     if (!getEntityTableModel().isQueryConfigurationAllowed()) {
       return null;
     }
@@ -640,11 +640,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final Control toggleControl = new Control() {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        toggleCriteriaPanel();
+        toggleConditionPanel();
       }
     };
     toggleControl.setIcon(Images.loadImage(Images.IMG_FILTER_16));
-    toggleControl.setDescription(FrameworkMessages.get(FrameworkMessages.SHOW_CRITERIA_PANEL));
+    toggleControl.setDescription(FrameworkMessages.get(FrameworkMessages.SHOW_CONDITION_PANEL));
 
     return toggleControl;
   }
@@ -684,17 +684,17 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * @param listener a listener notified each time the criteria panel visibility changes
+   * @param listener a listener notified each time the condition panel visibility changes
    */
-  public final void addCriteriaPanelVisibleListener(final EventListener listener) {
-    criteriaPanelVisibilityChangedEvent.addListener(listener);
+  public final void addConditionPanelVisibleListener(final EventListener listener) {
+    conditionPanelVisibilityChangedEvent.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeCriteriaPanelVisibleListener(final EventListener listener) {
-    criteriaPanelVisibilityChangedEvent.removeListener(listener);
+  public final void removeConditionPanelVisibleListener(final EventListener listener) {
+    conditionPanelVisibilityChangedEvent.removeListener(listener);
   }
 
   /**
@@ -738,7 +738,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
                                                               final String entityID) {
     final SwingEntityTableModel tableModel = new SwingEntityTableModel(entityID, connectionProvider) {
       @Override
-      protected List<Entity> performQuery(final Criteria<Property.ColumnProperty> criteria) {
+      protected List<Entity> performQuery(final Condition<Property.ColumnProperty> condition) {
         return new ArrayList<>(entities);
       }
     };
@@ -810,7 +810,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         okAction.actionPerformed(null);
       }
     });
-    entityTablePanel.setCriteriaPanelVisible(true);
+    entityTablePanel.setConditionPanelVisible(true);
     if (singleSelection) {
       entityTablePanel.getJTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
@@ -825,7 +825,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         }
         else {
           JOptionPane.showMessageDialog(UiUtil.getParentWindow(entityTablePanel),
-                  FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
+                  FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION));
         }
       }
     };
@@ -961,8 +961,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     if (controlMap.containsKey(TOGGLE_SUMMARY_PANEL)) {
       toolbarControls.add(controlMap.get(TOGGLE_SUMMARY_PANEL));
     }
-    if (controlMap.containsKey(TOGGLE_CRITERIA_PANEL)) {
-      toolbarControls.add(controlMap.get(TOGGLE_CRITERIA_PANEL));
+    if (controlMap.containsKey(TOGGLE_CONDITION_PANEL)) {
+      toolbarControls.add(controlMap.get(TOGGLE_CONDITION_PANEL));
     }
     if (controlMap.containsKey(CONFIGURE_QUERY)) {
       toolbarControls.add(controlMap.get(CONFIGURE_QUERY));
@@ -1040,7 +1040,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         popupControls.addSeparator();
         separatorRequired = false;
       }
-      addCriteriaControls(popupControls);
+      addConditionControls(popupControls);
     }
     if (separatorRequired) {
       popupControls.addSeparator();
@@ -1062,14 +1062,14 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
   }
 
-  private void addCriteriaControls(final ControlSet popupControls) {
+  private void addConditionControls(final ControlSet popupControls) {
     popupControls.add(controlMap.get(CONFIGURE_QUERY));
-    if (criteriaPanel != null) {
+    if (conditionPanel != null) {
       final ControlSet controls = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
-      if (controlMap.containsKey(CRITERIA_PANEL_VISIBLE)) {
-        controls.add(getControl(CRITERIA_PANEL_VISIBLE));
+      if (controlMap.containsKey(CONDITION_PANEL_VISIBLE)) {
+        controls.add(getControl(CONDITION_PANEL_VISIBLE));
       }
-      final ControlSet searchPanelControls = criteriaPanel.getControls();
+      final ControlSet searchPanelControls = conditionPanel.getControls();
       if (searchPanelControls != null) {
         controls.addAll(searchPanelControls);
       }
@@ -1087,9 +1087,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     return printControls;
   }
 
-  protected final Control getCriteriaPanelControl() {
-    return Controls.toggleControl(this, "criteriaPanelVisible",
-            FrameworkMessages.get(FrameworkMessages.SHOW), criteriaPanelVisibilityChangedEvent);
+  protected final Control getConditionPanelControl() {
+    return Controls.toggleControl(this, "conditionPanelVisible",
+            FrameworkMessages.get(FrameworkMessages.SHOW), conditionPanelVisibilityChangedEvent);
   }
 
   protected final ControlSet getCopyControlSet() {
@@ -1268,7 +1268,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
     if (getEntityTableModel().isQueryConfigurationAllowed()) {
       setControl(CONFIGURE_QUERY, getConfigureQueryControl());
-      setControl(CRITERIA_PANEL_VISIBLE, getCriteriaPanelControl());
+      setControl(CONDITION_PANEL_VISIBLE, getConditionPanelControl());
     }
     setControl(CLEAR, getClearControl());
     setControl(REFRESH, getRefreshControl());
@@ -1278,8 +1278,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
     setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
     setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
-    if (includeCriteriaPanel && criteriaPanel != null) {
-      setControl(TOGGLE_CRITERIA_PANEL, getToggleCriteriaPanelControl());
+    if (includeConditionPanel && conditionPanel != null) {
+      setControl(TOGGLE_CONDITION_PANEL, getToggleConditionPanelControl());
     }
     setControl(PRINT_TABLE, getPrintTableControl());
     setControl(CLEAR_SELECTION, getClearSelectionControl());
@@ -1314,12 +1314,12 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   private void initializeUI() {
-    if (includeCriteriaPanel && criteriaScrollPane != null) {
-      getBasePanel().add(criteriaScrollPane, BorderLayout.NORTH);
-      if (criteriaPanel.canToggleAdvanced()) {
-        criteriaScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
-        criteriaPanel.addAdvancedListener(info -> {
-          if (isCriteriaPanelVisible()) {
+    if (includeConditionPanel && conditionScrollPane != null) {
+      getBasePanel().add(conditionScrollPane, BorderLayout.NORTH);
+      if (conditionPanel.canToggleAdvanced()) {
+        conditionScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
+        conditionPanel.addAdvancedListener(info -> {
+          if (isConditionPanelVisible()) {
             revalidate();
           }
         });
@@ -1347,7 +1347,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = keyStroke.toString().replace("pressed ", "");
     final Control refresh = Controls.methodControl(getEntityTableModel(), REFRESH, null,
-            getEntityTableModel().getCriteriaModel().getCriteriaStateObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
+            getEntityTableModel().getConditionModel().getConditionStateObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
             + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 
     final InputMap inputMap = getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
@@ -1387,8 +1387,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     getEntityTableModel().addFilteringListener(statusListener);
     getEntityTableModel().addTableDataChangedListener(statusListener);
 
-    for (final PropertyCriteriaModel criteriaModel : getEntityTableModel().getCriteriaModel().getPropertyCriteriaModels()) {
-      criteriaModel.addCriteriaStateListener(() -> {
+    for (final PropertyConditionModel conditionModel : getEntityTableModel().getConditionModel().getPropertyConditionModels()) {
+      conditionModel.addConditionStateListener(() -> {
         getJTable().getTableHeader().repaint();
         getJTable().repaint();
       });
@@ -1421,8 +1421,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       final TableCellRenderer renderer = tableColumn.getCellRenderer();
       final Property property = (Property) tableColumn.getIdentifier();
       final boolean indicateSearch = renderer instanceof EntityTableCellRenderer
-              && ((EntityTableCellRenderer) renderer).isIndicateCriteria()
-              && tableModel1.getCriteriaModel().isEnabled(property.getPropertyID());
+              && ((EntityTableCellRenderer) renderer).isIndicateCondition()
+              && tableModel1.getConditionModel().isEnabled(property.getPropertyID());
       label.setFont(indicateSearch ? searchFont : defaultFont);
 
       return label;
