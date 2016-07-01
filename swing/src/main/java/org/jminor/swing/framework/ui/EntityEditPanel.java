@@ -12,15 +12,14 @@ import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityComboBoxModel;
-import org.jminor.framework.model.EntityDataProvider;
 import org.jminor.framework.model.EntityEditModel;
-import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.common.ui.DateInputPanel;
 import org.jminor.swing.common.ui.DefaultExceptionHandler;
 import org.jminor.swing.common.ui.ExceptionHandler;
@@ -730,7 +729,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @return the Action
    */
   public static Action createEditPanelAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
-    return new CreateEntityAction(comboBox, panelProvider);
+    return new InsertEntityAction(comboBox, panelProvider);
   }
 
   /**
@@ -741,7 +740,21 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @return the Action
    */
   public static Action createEditPanelAction(final EntityLookupField lookupField, final EntityPanelProvider panelProvider) {
-    return new CreateEntityAction(lookupField, panelProvider);
+    return new InsertEntityAction(lookupField, panelProvider);
+  }
+
+  /**
+   * Creates a new Action which shows the edit panel provided by {@code panelProvider} and if an insert is performed
+   * {@code listener} is notified.
+   * @param component this component used as dialog parent, receives the focus after insert
+   * @param panelProvider the EntityPanelProvider for providing the EntityEditPanel to use for creating the new entity
+   * @param connectionProvider the connection provider
+   * @param listener the listener notified when insert has been performed
+   * @return the Action
+   */
+  public static Action createEditPanelAction(final JComponent component, final EntityPanelProvider panelProvider,
+                                             final EntityConnectionProvider connectionProvider, final EntitiesInsertedListener listener) {
+    return new InsertEntityAction(component, panelProvider, connectionProvider, listener);
   }
 
   /**
@@ -2100,31 +2113,44 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
     return property.isReadOnly() || (property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).isUpdatable());
   }
 
-  private static final class CreateEntityAction extends AbstractAction {
+  public interface EntitiesInsertedListener {
+    void entitiesInserted(final List<Entity> entities);
+  }
+
+  private static final class InsertEntityAction extends AbstractAction {
 
     private final JComponent component;
-    private final EntityDataProvider dataProvider;
     private final EntityPanelProvider panelProvider;
+    private final EntityConnectionProvider connectionProvider;
+    private final EntitiesInsertedListener listener;
     private final List<Entity> lastInsertedEntities = new ArrayList<>();
 
-    private CreateEntityAction(final JComponent component, final EntityPanelProvider panelProvider) {
+    private InsertEntityAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
+      this(comboBox, panelProvider, ((EntityComboBoxModel) comboBox.getModel()).getConnectionProvider(), entities -> {
+          final EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) comboBox.getModel();
+          comboBoxModel.refresh();
+          comboBoxModel.setSelectedItem(entities.get(0));
+      });
+    }
+
+    private InsertEntityAction(final EntityLookupField lookupField, final EntityPanelProvider panelProvider) {
+      this(lookupField, panelProvider, lookupField.getModel().getConnectionProvider(), entities -> {
+        lookupField.getModel().setSelectedEntities(entities);
+      });
+    }
+
+    private InsertEntityAction(final JComponent component, final EntityPanelProvider panelProvider,
+                               final EntityConnectionProvider connectionProvider, final EntitiesInsertedListener listener) {
       super("", Images.loadImage(Images.IMG_ADD_16));
       this.component = component;
-      if (component instanceof EntityComboBox) {
-        this.dataProvider = (EntityComboBoxModel) ((EntityComboBox) component).getModel();
-      }
-      else if (component instanceof EntityLookupField) {
-        this.dataProvider = ((EntityLookupField) component).getModel();
-      }
-      else {
-        throw new IllegalArgumentException("EntityComboBox or EntityLookupField expected, got: " + component);
-      }
       this.panelProvider = panelProvider;
+      this.connectionProvider = connectionProvider;
+      this.listener = listener;
     }
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-      final EntityEditPanel editPanel = panelProvider.createEditPanel(dataProvider.getConnectionProvider());
+      final EntityEditPanel editPanel = panelProvider.createEditPanel(connectionProvider);
       editPanel.initializePanel();
       editPanel.getEditModel().addAfterInsertListener(info -> {
         lastInsertedEntities.clear();
@@ -2138,13 +2164,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
       if (pane.getValue() != null && pane.getValue().equals(0)) {
         final boolean insertPerformed = editPanel.insert();//todo exception during insert, f.ex validation failure not handled
         if (insertPerformed && !lastInsertedEntities.isEmpty()) {
-          if (dataProvider instanceof EntityComboBoxModel) {
-            ((EntityComboBoxModel) dataProvider).refresh();
-            ((EntityComboBoxModel) dataProvider).setSelectedItem(lastInsertedEntities.get(0));
-          }
-          else if (dataProvider instanceof EntityLookupModel) {
-            ((EntityLookupModel) dataProvider).setSelectedEntities(lastInsertedEntities);
-          }
+          listener.entitiesInserted(lastInsertedEntities);
         }
       }
       component.requestFocusInWindow();
