@@ -3,6 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
+import org.jminor.common.Conjunction;
 import org.jminor.common.Event;
 import org.jminor.common.Events;
 import org.jminor.common.State;
@@ -10,7 +11,6 @@ import org.jminor.common.States;
 import org.jminor.common.Util;
 import org.jminor.common.Values;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.Conjunction;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;

@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.db.local;
 
+import org.jminor.common.User;
 import org.jminor.common.db.AbstractFunction;
 import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.Database;
@@ -15,7 +16,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.User;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;

@@ -3,7 +3,9 @@
  */
 package org.jminor.framework.server;
 
+import org.jminor.common.User;
 import org.jminor.common.Util;
+import org.jminor.common.Version;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.AuthenticationException;
@@ -11,8 +13,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
 import org.jminor.common.db.pool.ConnectionPools;
-import org.jminor.common.model.User;
-import org.jminor.common.model.Version;
 import org.jminor.common.model.tools.TaskScheduler;
 import org.jminor.common.server.AbstractServer;
 import org.jminor.common.server.ClientInfo;
@@ -109,12 +109,14 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
    * @throws RuntimeException in case the domain model classes are not found on the classpath or if the
    * jdbc driver class is not found or in case of an exception while constructing the initial pooled connections
    */
-  public DefaultEntityConnectionServer(final String serverName, final int serverPort, final int serverAdminPort, final int registryPort, final Database database,
-                                       final boolean sslEnabled, final int connectionLimit, final Collection<String> domainModelClassNames,
+  public DefaultEntityConnectionServer(final String serverName, final int serverPort, final int serverAdminPort,
+                                       final int registryPort, final Database database, final boolean sslEnabled,
+                                       final int connectionLimit, final Collection<String> domainModelClassNames,
                                        final Collection<String> loginProxyClassNames, final Collection<String> connectionValidatorClassNames,
-                                       final Collection<User> initialPoolUsers, final String webDocumentRoot, final Integer webServerPort,
-                                       final boolean clientLoggingEnabled, final int connectionTimeout,
-                                       final Map<String, Integer> clientSpecificConnectionTimeouts, final User adminUser)
+                                       final Collection<User> initialPoolUsers, final String webDocumentRoot,
+                                       final Integer webServerPort, final boolean clientLoggingEnabled,
+                                       final int connectionTimeout, final Map<String, Integer> clientSpecificConnectionTimeouts,
+                                       final User adminUser)
           throws RemoteException {
     super(serverPort, serverName,
             sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),

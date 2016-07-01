@@ -1,6 +1,6 @@
 package org.jminor.framework.server;
 
-import org.jminor.common.model.User;
+import org.jminor.common.User;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.LoginProxy;
 import org.jminor.common.server.ServerException;

@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.common.Conjunction;
 import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
@@ -14,7 +15,6 @@ import org.jminor.common.Util;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.db.criteria.CriteriaUtil;
-import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.table.ColumnCriteriaModel;

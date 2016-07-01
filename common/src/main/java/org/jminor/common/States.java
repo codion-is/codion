@@ -4,7 +4,6 @@
 package org.jminor.common;
 
 //todo fix this
-import org.jminor.common.model.Conjunction;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

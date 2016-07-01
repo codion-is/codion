@@ -3,13 +3,13 @@
  */
 package org.jminor.swing.framework.ui;
 
+import org.jminor.common.Conjunction;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;

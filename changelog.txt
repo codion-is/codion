@@ -4307,3 +4307,5 @@
   DefaultRemoteEntityConnection, removed unnecessary call to isConnected() during disconnect
   States.DefaultGroup, minor refactoring removing unnecessary array creation
   EntityEditPanel, overloaded createEditPanelAction() with EntitiesInsertedListener callback, some refactoring involved
+0.10.6
+  Conjunction, Version and User moved from common.model to common

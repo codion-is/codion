@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.empdept.testing;
 
+import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.User;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;

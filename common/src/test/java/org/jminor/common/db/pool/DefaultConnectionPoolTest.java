@@ -3,10 +3,10 @@
  */
 package org.jminor.common.db.pool;
 
+import org.jminor.common.User;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseConnectionsTest;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.User;
 
 import org.junit.Test;
 
