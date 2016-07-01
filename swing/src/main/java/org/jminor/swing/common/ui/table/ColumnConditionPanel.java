@@ -3,15 +3,15 @@
  */
 package org.jminor.swing.common.ui.table;
 
+import org.jminor.common.DateUtil;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
+import org.jminor.common.Item;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Value;
-import org.jminor.common.model.ConditionType;
-import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.Item;
+import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.UiUtil;
@@ -78,7 +78,7 @@ public class ColumnConditionPanel<K> extends JPanel {
    * A JToggleButton for toggling advanced/simple search
    */
   private final JToggleButton toggleAdvancedCondition;
-  private final JComboBox searchTypeCombo;
+  private final JComboBox conditionTypeCombo;
   private final JComponent upperBoundField;
   private final JComponent lowerBoundField;
 
@@ -142,7 +142,7 @@ public class ColumnConditionPanel<K> extends JPanel {
     Objects.requireNonNull(conditionModel, "conditionModel");
     this.conditionModel = conditionModel;
     this.conditionTypes = conditionTypes == null ? Arrays.asList(ConditionType.values()) : Arrays.asList(conditionTypes);
-    this.searchTypeCombo = initializeSearchTypeComboBox();
+    this.conditionTypeCombo = initializeConditionTypeComboBox();
     this.upperBoundField = upperBoundField;
     this.lowerBoundField = lowerBoundField;
     if (includeToggleEnabledButton) {
@@ -416,7 +416,7 @@ public class ColumnConditionPanel<K> extends JPanel {
     conditionModel.addLowerBoundRequiredListener(() -> {
       initializePanel();
       revalidate();
-      searchTypeCombo.requestFocusInWindow();
+      conditionTypeCombo.requestFocusInWindow();
     });
   }
 
@@ -429,7 +429,7 @@ public class ColumnConditionPanel<K> extends JPanel {
     }
   }
 
-  private JComboBox initializeSearchTypeComboBox() {
+  private JComboBox initializeConditionTypeComboBox() {
     final ItemComboBoxModel<ConditionType> comboBoxModel = new ItemComboBoxModel<>();
     for (final ConditionType type : ConditionType.values()) {
       if (conditionTypes.contains(type)) {
@@ -437,7 +437,7 @@ public class ColumnConditionPanel<K> extends JPanel {
       }
     }
     final JComboBox<ConditionType> comboBox = new SteppedComboBox(comboBoxModel);
-    ValueLinks.selectedItemValueLink(comboBox, conditionModel, "searchType", ConditionType.class, (EventObserver) conditionModel.getSearchTypeObserver());
+    ValueLinks.selectedItemValueLink(comboBox, conditionModel, "conditionType", ConditionType.class, (EventObserver) conditionModel.getConditionTypeObserver());
     comboBox.setRenderer(new DefaultListCellRenderer() {
       @Override
       public Component getListCellRendererComponent(final JList list, final Object value, final int index,
@@ -506,7 +506,7 @@ public class ColumnConditionPanel<K> extends JPanel {
     }
 
     final JPanel controlPanel = new JPanel(new BorderLayout(1, 1));
-    controlPanel.add(searchTypeCombo, BorderLayout.CENTER);
+    controlPanel.add(conditionTypeCombo, BorderLayout.CENTER);
     if (toggleEnabled != null) {
       controlPanel.add(toggleEnabled, BorderLayout.EAST);
     }
@@ -524,7 +524,7 @@ public class ColumnConditionPanel<K> extends JPanel {
 
   private void linkComponentsToLockedState() {
     final StateObserver stUnlocked = conditionModel.getLockedObserver().getReversedObserver();
-    UiUtil.linkToEnabledState(stUnlocked, searchTypeCombo);
+    UiUtil.linkToEnabledState(stUnlocked, conditionTypeCombo);
     UiUtil.linkToEnabledState(stUnlocked, upperBoundField);
     if (lowerBoundField != null) {
       UiUtil.linkToEnabledState(stUnlocked, lowerBoundField);

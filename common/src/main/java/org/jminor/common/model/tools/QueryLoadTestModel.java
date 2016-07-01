@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db.tools;
+package org.jminor.common.model.tools;
 
 import org.jminor.common.User;
 import org.jminor.common.Util;
@@ -11,7 +11,6 @@ import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPools;
-import org.jminor.common.model.tools.LoadTestModel;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

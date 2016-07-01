@@ -15,10 +15,10 @@
     <package_module module-name="jminor-common-core"
                     includes="org/jminor/common/*.*,
                     org/jminor/common/i18n/**"/>
-    <package_module module-name="jminor-common-model"
-                    includes="org/jminor/common/model/**"/>
     <package_module module-name="jminor-common-db"
                     includes="org/jminor/common/db/**"/>
+    <package_module module-name="jminor-common-model"
+                    includes="org/jminor/common/model/**"/>
     <package_module module-name="jminor-common-server"
                     includes="org/jminor/common/server/**"/>
   </target>
@@ -26,16 +26,16 @@
   <target name="deploy" depends="package" description="Publish all project artifacts">
     <fail unless="version">Version information not set</fail>
     <subant target="deploy" buildpath="${basedir}/modules/common-core"/>
-    <subant target="deploy" buildpath="${basedir}/modules/common-model"/>
     <subant target="deploy" buildpath="${basedir}/modules/common-db"/>
+    <subant target="deploy" buildpath="${basedir}/modules/common-model"/>
     <subant target="deploy" buildpath="${basedir}/modules/common-server"/>
   </target>
 
   <target name="install" depends="package" description="Install all project artifacts">
     <fail unless="version">Version information not set</fail>
     <subant target="install" buildpath="${basedir}/modules/common-core"/>
-    <subant target="install" buildpath="${basedir}/modules/common-model"/>
     <subant target="install" buildpath="${basedir}/modules/common-db"/>
+    <subant target="install" buildpath="${basedir}/modules/common-model"/>
     <subant target="install" buildpath="${basedir}/modules/common-server"/>
   </target>
 </project>

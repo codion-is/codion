@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.demos.empdept.rest;
 
+import org.jminor.common.TextUtil;
 import org.jminor.common.User;
+import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.ConditionType;
-import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.tools.LoadTestModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -163,7 +163,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
         final URIBuilder builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
                 .addParameter("entityID", EmpDept.T_DEPARTMENT)
-                .addParameter("searchType", ConditionType.NOT_LIKE.toString())
+                .addParameter("conditionType", ConditionType.NOT_LIKE.toString())
                 .addParameter("values", "{\"dname\":\"ACCOUNTING\"}");
         final HttpResponse response = client.execute(new HttpGet(builder.build()));
         final String queryResult = getContentStream(response.getEntity());
@@ -189,7 +189,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
         URIBuilder builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
                 .addParameter("entityID", EmpDept.T_DEPARTMENT)
-                .addParameter("searchType", ConditionType.NOT_LIKE.toString())
+                .addParameter("conditionType", ConditionType.NOT_LIKE.toString())
                 .addParameter("values", "{\"dname\":\"ACCOUNTING\"}");
 
         HttpResponse response = client.execute(new HttpGet(builder.build()));
@@ -199,7 +199,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
         builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
                 .addParameter("entityID", EmpDept.T_EMPLOYEE)
-                .addParameter("searchType", ConditionType.LIKE.toString())
+                .addParameter("conditionType", ConditionType.LIKE.toString())
                 .addParameter("values", "{\"deptno\":\"" + queryEntities.get(new Random().nextInt(queryEntities.size())).getAsString(EmpDept.DEPARTMENT_ID) + "\"}");
 
         response = client.execute(new HttpGet(builder.build()));

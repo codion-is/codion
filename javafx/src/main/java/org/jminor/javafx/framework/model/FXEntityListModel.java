@@ -3,10 +3,10 @@
  */
 package org.jminor.javafx.framework.model;
 
+import org.jminor.common.TextUtil;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.PreferencesUtil;
-import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;

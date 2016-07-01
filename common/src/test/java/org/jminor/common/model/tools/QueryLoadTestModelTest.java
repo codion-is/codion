@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db.tools;
+package org.jminor.common.model.tools;
 
 import org.jminor.common.User;
 import org.jminor.common.db.DatabasesTest;

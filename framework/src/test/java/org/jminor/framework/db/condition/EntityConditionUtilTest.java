@@ -4,8 +4,8 @@
 package org.jminor.framework.db.condition;
 
 import org.jminor.common.db.condition.Condition;
+import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.db.condition.Conditions;
-import org.jminor.common.model.ConditionType;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;

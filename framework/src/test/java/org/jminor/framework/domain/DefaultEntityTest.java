@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.FileUtil;
+import org.jminor.common.DateUtil;
+import org.jminor.common.FileUtil;
 
 import org.junit.Test;
 

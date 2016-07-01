@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.empdept.beans;
 
-import org.jminor.common.model.ConditionType;
+import org.jminor.common.db.condition.ConditionType;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.EntityUtil;

@@ -3,7 +3,7 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.model.tools.MethodLogger;
+import org.jminor.common.MethodLogger;
 
 import java.io.Serializable;
 import java.util.List;

@@ -4,9 +4,9 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.EventListener;
+import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.ConditionType;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.db.EntityConnection;

@@ -8,7 +8,7 @@ import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.StateObserver;
 import org.jminor.common.Value;
-import org.jminor.common.model.ConditionType;
+import org.jminor.common.db.condition.ConditionType;
 
 import java.text.Format;
 
@@ -83,7 +83,7 @@ public interface ColumnConditionModel<K> {
   void setUpperBound(final Object upper);
 
   /**
-   * A shortcut method for setting the upper bound value, searchType to LIKE
+   * A shortcut method for setting the upper bound value, conditionType to LIKE
    * and enabling this model in case of a non-null value.
    * @param value the value to use as condition
    */
@@ -107,12 +107,12 @@ public interface ColumnConditionModel<K> {
   /**
    * @return the search type
    */
-  ConditionType getSearchType();
+  ConditionType getConditionType();
 
   /**
    * @param conditionType the search type
    */
-  void setSearchType(final ConditionType conditionType);
+  void setConditionType(final ConditionType conditionType);
 
   /**
    * @return true if the current search type requires a lower bound value to be specified,
@@ -167,9 +167,9 @@ public interface ColumnConditionModel<K> {
   EventObserver<Boolean> getEnabledObserver();
 
   /**
-   * @return an observer notified each time the search type changes
+   * @return an observer notified each time the condition type changes
    */
-  EventObserver<ConditionType> getSearchTypeObserver();
+  EventObserver<ConditionType> getConditionTypeObserver();
 
   /**
    * @param listener a listener to be notified each time the enabled state changes
@@ -182,14 +182,14 @@ public interface ColumnConditionModel<K> {
   void removeEnabledListener(final EventListener listener);
 
   /**
-   * @param listener a listener to be notified each time the search type changes
+   * @param listener a listener to be notified each time the condition type changes
    */
-  void addSearchTypeListener(final EventInfoListener<ConditionType> listener);
+  void addConditionTypeListener(final EventInfoListener<ConditionType> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSearchTypeListener(final EventInfoListener listener);
+  void removeConditionTypeListener(final EventInfoListener listener);
 
   /**
    * @param listener a listener to be notified each time the lower bound changes

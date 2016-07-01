@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.model.TextUtil;
+import org.jminor.common.TextUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;

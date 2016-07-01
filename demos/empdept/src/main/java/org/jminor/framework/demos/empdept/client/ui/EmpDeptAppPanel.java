@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.demos.empdept.client.ui;
 
+import org.jminor.common.TextUtil;
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.table.ColumnSummary;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;

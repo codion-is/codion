@@ -3,13 +3,13 @@
  */
 package org.jminor.framework.testing;
 
+import org.jminor.common.DateUtil;
+import org.jminor.common.Item;
+import org.jminor.common.TextUtil;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordNotFoundException;
-import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.Item;
-import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.valuemap.ValueProvider;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;

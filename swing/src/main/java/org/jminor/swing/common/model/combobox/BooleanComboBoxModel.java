@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.common.model.combobox;
 
+import org.jminor.common.Item;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.Item;
 
 import java.util.Arrays;
 

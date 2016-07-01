@@ -1,14 +1,7 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
-
-import org.jminor.common.Event;
-import org.jminor.common.Events;
-import org.jminor.common.State;
-import org.jminor.common.States;
-import org.jminor.common.Value;
-import org.jminor.common.Values;
+package org.jminor.common;
 
 import org.junit.Test;
 

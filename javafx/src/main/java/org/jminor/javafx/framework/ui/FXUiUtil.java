@@ -4,6 +4,7 @@
 package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.EventObserver;
+import org.jminor.common.Item;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
@@ -13,7 +14,6 @@ import org.jminor.common.Value;
 import org.jminor.common.Values;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.Item;
 import org.jminor.common.model.valuemap.EditModelValues;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;

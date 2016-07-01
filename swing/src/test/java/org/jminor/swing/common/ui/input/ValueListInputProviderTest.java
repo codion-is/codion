@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.input;
 
-import org.jminor.common.model.Item;
+import org.jminor.common.Item;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 
 import org.junit.Test;

@@ -11,7 +11,7 @@ import org.jminor.framework.model.EntityComboBoxModel;
 import java.util.Collection;
 
 /**
- * A {@link ForeignKeyConditionModel} based around a {@link EntityComboBoxModel}
+ * A {@link org.jminor.framework.model.ForeignKeyConditionModel} based around a {@link EntityComboBoxModel}
  */
 public final class SwingForeignKeyConditionModel extends DefaultForeignKeyConditionModel {
 

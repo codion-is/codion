@@ -49,7 +49,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
   public final String toString() {
     final StringBuilder stringBuilder = new StringBuilder(getColumnIdentifier().getPropertyID());
     if (isEnabled()) {
-      stringBuilder.append(getSearchType());
+      stringBuilder.append(getConditionType());
       stringBuilder.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
       stringBuilder.append(getLowerBound() != null ? toString(getLowerBound()) : "null");
     }
@@ -79,10 +79,10 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
   public final Condition<Property.ColumnProperty> getCondition() {
     final Object upperBound = getUpperBound();
     if (upperBound instanceof Collection) {
-      return EntityConditions.foreignKeyCondition(getColumnIdentifier(), getSearchType(), (Collection) upperBound);
+      return EntityConditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), (Collection) upperBound);
     }
 
-    return EntityConditions.foreignKeyCondition(getColumnIdentifier(), getSearchType(), Collections.singletonList(upperBound));
+    return EntityConditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), Collections.singletonList(upperBound));
   }
 
   /** {@inheritDoc} */

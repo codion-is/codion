@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.Item;
 import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.Item;
 import org.jminor.framework.db.EntityConnection;
 
 import java.awt.Color;

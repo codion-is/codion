@@ -20,8 +20,8 @@
 
   <dependencies defaultconf="compile">
     <dependency org="org.jminor" name="jminor-common-core" rev="${version}" conf="sources->sources;javadoc->javadoc"/>
-    <dependency org="org.jminor" name="jminor-common-model" rev="${version}" conf="sources->sources;javadoc->javadoc"/>
     <dependency org="org.jminor" name="jminor-common-db" rev="${version}" conf="sources->sources;javadoc->javadoc"/>
+    <dependency org="org.jminor" name="jminor-common-model" rev="${version}" conf="sources->sources;javadoc->javadoc"/>
     <dependency org="org.jminor" name="jminor-common-server" rev="${version}" conf="sources->sources;javadoc->javadoc"/>
 
     <dependency org="org.jminor" name="jminor-framework-db-core" rev="${version}" conf="sources->sources;javadoc->javadoc"/>

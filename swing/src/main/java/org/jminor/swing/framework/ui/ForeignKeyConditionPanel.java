@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.model.ConditionType;
+import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityComboBoxModel;

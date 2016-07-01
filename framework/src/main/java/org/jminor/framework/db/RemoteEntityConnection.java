@@ -3,13 +3,13 @@
  */
 package org.jminor.framework.db;
 
+import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
-import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Entity;

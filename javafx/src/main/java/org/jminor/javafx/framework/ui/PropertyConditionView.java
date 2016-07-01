@@ -3,11 +3,11 @@
  */
 package org.jminor.javafx.framework.ui;
 
+import org.jminor.common.Item;
 import org.jminor.common.State;
 import org.jminor.common.States;
 import org.jminor.common.Values;
-import org.jminor.common.model.ConditionType;
-import org.jminor.common.model.Item;
+import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -30,7 +30,7 @@ import java.util.Collection;
 public final class PropertyConditionView extends BorderPane {
 
   private final ColumnConditionModel<? extends Property.SearchableProperty> model;
-  private final Pane searchTypePane;
+  private final Pane conditionTypePane;
   private final Pane topPane;
   private final Label header;
   private final CheckBox enabledBox;
@@ -47,7 +47,7 @@ public final class PropertyConditionView extends BorderPane {
     this.upperBoundControl = createUpperBoundControl();
     this.lowerBoundControl = createLowerBoundControl();
     this.topPane = createTopPane();
-    this.searchTypePane = createSearchTypePane();
+    this.conditionTypePane = createConditionTypePane();
     setTop(topPane);
     initializeUI();
     bindEvents();
@@ -65,8 +65,8 @@ public final class PropertyConditionView extends BorderPane {
     return pane;
   }
 
-  private BorderPane createSearchTypePane() {
-    final BorderPane pane = new BorderPane(createSearchTypeComboBox());
+  private BorderPane createConditionTypePane() {
+    final BorderPane pane = new BorderPane(createConditionTypeComboBox());
     final Label filler = new Label();
     pane.setRight(filler);
 
@@ -80,11 +80,11 @@ public final class PropertyConditionView extends BorderPane {
     return checkBoxPane;
   }
 
-  private ComboBox<Item<ConditionType>> createSearchTypeComboBox() {
+  private ComboBox<Item<ConditionType>> createConditionTypeComboBox() {
     final ComboBox<Item<ConditionType>> comboBox = new ComboBox<>(
-            FXCollections.observableArrayList(getSearchTypes(model.getColumnIdentifier())));
-    comboBox.getSelectionModel().select(new Item<>(model.getSearchType()));
-    comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> model.setSearchType(newValue.getItem()));
+            FXCollections.observableArrayList(getConditionTypes(model.getColumnIdentifier())));
+    comboBox.getSelectionModel().select(new Item<>(model.getConditionType()));
+    comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> model.setConditionType(newValue.getItem()));
     comboBox.maxWidthProperty().set(Double.MAX_VALUE);
     comboBox.minWidthProperty().set(0);
     FXUiUtil.link(comboBox.disableProperty(), model.getLockedObserver());
@@ -163,7 +163,7 @@ public final class PropertyConditionView extends BorderPane {
 
   private Pane createAdvancedView() {
     final BorderPane borderPane = new BorderPane();
-    borderPane.setTop(searchTypePane);
+    borderPane.setTop(conditionTypePane);
     if (model.isLowerBoundRequired()) {
       final GridPane gridPane = new GridPane();
       gridPane.addColumn(0, lowerBoundControl);
@@ -177,7 +177,7 @@ public final class PropertyConditionView extends BorderPane {
     return borderPane;
   }
 
-  private static Collection<Item<ConditionType>> getSearchTypes(final Property property) {
+  private static Collection<Item<ConditionType>> getConditionTypes(final Property property) {
     final Collection<Item<ConditionType>> types = new ArrayList<>();
     if (property instanceof Property.ForeignKeyProperty) {
       types.add(new Item<>(ConditionType.LIKE, ConditionType.LIKE.getCaption()));

@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.model.ConditionType;
+import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.domain.Property;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
@@ -29,10 +29,10 @@ public final class PropertyFilterPanel extends ColumnConditionPanel<Property> {
    */
   public PropertyFilterPanel(final ColumnConditionModel<Property> model, final boolean includeToggleFilterEnabledButton,
                              final boolean includeToggleAdvancedFilterButton) {
-    super(model, includeToggleFilterEnabledButton, includeToggleAdvancedFilterButton, getSearchTypes(model));
+    super(model, includeToggleFilterEnabledButton, includeToggleAdvancedFilterButton, getConditionTypes(model));
   }
 
-  private static ConditionType[] getSearchTypes(final ColumnConditionModel<Property> model) {
+  private static ConditionType[] getConditionTypes(final ColumnConditionModel<Property> model) {
     if (model.getColumnIdentifier().isBoolean()) {
       return new ConditionType[] {ConditionType.LIKE};
     }

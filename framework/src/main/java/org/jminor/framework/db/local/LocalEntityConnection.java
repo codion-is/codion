@@ -4,6 +4,7 @@
 package org.jminor.framework.db.local;
 
 import org.jminor.common.Conjunction;
+import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
@@ -12,15 +13,14 @@ import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
+import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
-import org.jminor.common.model.ConditionType;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
-import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntityConditions;

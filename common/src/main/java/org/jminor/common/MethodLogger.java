@@ -1,12 +1,7 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model.tools;
-
-import org.jminor.common.Util;
-import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.TextUtil;
-import org.jminor.common.model.formats.DateFormats;
+package org.jminor.common;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -264,7 +259,8 @@ public final class MethodLogger {
   public static final class Entry implements Serializable {
 
     private static final long serialVersionUID = 1;
-    private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = DateUtil.getThreadLocalDateFormat(DateFormats.EXACT_TIMESTAMP);
+    private static final String TIMESTAMP_FORMAT_STRING = "yyyy-MM-dd HH:mm:ss.SSS";
+    private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = DateUtil.getThreadLocalDateFormat(TIMESTAMP_FORMAT_STRING);
     private static final NumberFormat MICROSECONDS_FORMAT = NumberFormat.getIntegerInstance();
 
     private LinkedList<Entry> subEntries = new LinkedList<>();

@@ -7,8 +7,8 @@ import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
+import org.jminor.common.TextUtil;
 import org.jminor.common.model.FilterCondition;
-import org.jminor.common.model.TextUtil;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 
 import javax.swing.ComboBoxModel;

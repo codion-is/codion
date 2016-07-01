@@ -4,7 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.db.condition.Condition;
-import org.jminor.common.model.ConditionType;
+import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.condition.EntityConditions;
@@ -34,7 +34,7 @@ public class DefaultPropertyConditionModel extends DefaultColumnConditionModel<P
   public final String toString() {
     final StringBuilder stringBuilder = new StringBuilder(getColumnIdentifier().getPropertyID());
     if (isEnabled()) {
-      stringBuilder.append(getSearchType());
+      stringBuilder.append(getConditionType());
       stringBuilder.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
       stringBuilder.append(getLowerBound() != null ? toString(getLowerBound()) : "null");
     }
@@ -45,9 +45,9 @@ public class DefaultPropertyConditionModel extends DefaultColumnConditionModel<P
   /** {@inheritDoc} */
   @Override
   public final Condition<Property.ColumnProperty> getCondition() {
-    return getSearchType().getValues().equals(ConditionType.Values.TWO) ?
-            EntityConditions.propertyCondition(getColumnIdentifier(), getSearchType(), isCaseSensitive(), Arrays.asList(getLowerBound(), getUpperBound())) :
-            EntityConditions.propertyCondition(getColumnIdentifier(), getSearchType(), isCaseSensitive(), getUpperBound());
+    return getConditionType().getValues().equals(ConditionType.Values.TWO) ?
+            EntityConditions.propertyCondition(getColumnIdentifier(), getConditionType(), isCaseSensitive(), Arrays.asList(getLowerBound(), getUpperBound())) :
+            EntityConditions.propertyCondition(getColumnIdentifier(), getConditionType(), isCaseSensitive(), getUpperBound());
   }
 
   private static String toString(final Object object) {

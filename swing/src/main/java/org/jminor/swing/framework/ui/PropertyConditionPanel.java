@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.framework.ui;
 
+import org.jminor.common.DateUtil;
 import org.jminor.common.Value;
-import org.jminor.common.model.ConditionType;
-import org.jminor.common.model.DateUtil;
+import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.PropertyConditionModel;
@@ -51,10 +51,10 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
   public PropertyConditionPanel(final PropertyConditionModel<Property.ColumnProperty> model,
                                 final boolean includeToggleEnabledButton, final boolean includeToggleAdvancedConditionButton) {
     super(model, includeToggleEnabledButton, includeToggleAdvancedConditionButton,
-            new PropertyInputFieldProvider(model), getSearchTypes(model));
+            new PropertyInputFieldProvider(model), getConditionTypes(model));
   }
 
-  private static ConditionType[] getSearchTypes(final PropertyConditionModel<Property.ColumnProperty> model) {
+  private static ConditionType[] getConditionTypes(final PropertyConditionModel<Property.ColumnProperty> model) {
     if (model.getColumnIdentifier().isBoolean()) {
       return new ConditionType[] {ConditionType.LIKE};
     }

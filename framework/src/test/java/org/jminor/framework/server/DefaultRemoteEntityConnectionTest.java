@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.server;
 
+import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.ServerUtil;

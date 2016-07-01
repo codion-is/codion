@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.model.combobox;
 
-import org.jminor.common.model.Item;
+import org.jminor.common.Item;
 
 import java.util.Collection;
 import java.util.Comparator;

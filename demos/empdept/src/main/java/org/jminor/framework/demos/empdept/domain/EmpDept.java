@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.empdept.domain;
 
-import org.jminor.common.model.Item;
+import org.jminor.common.Item;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Properties;
 

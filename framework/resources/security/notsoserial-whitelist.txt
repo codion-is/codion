@@ -75,7 +75,7 @@ org.jminor.common.User
 org.jminor.common.Version
 org.jminor.common.db.condition.Conditions$DefaultConditionSet
 org.jminor.common.db.condition.Conditions$StringCondition
-org.jminor.common.db.condition.SearchType
+org.jminor.common.db.condition.ConditionType
 org.jminor.common.server.ClientUtil$DefaultConnectionInfo
 org.jminor.framework.db.condition.EntityConditions$DefaultEntityCondition
 org.jminor.framework.db.condition.EntityConditions$DefaultEntitySelectCondition

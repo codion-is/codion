@@ -3,9 +3,9 @@
  */
 package org.jminor.common.db;
 
+import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.tools.MethodLogger;
 
 import java.sql.Connection;
 import java.sql.SQLException;

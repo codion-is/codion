@@ -5,7 +5,7 @@ package org.jminor.common.model.table;
 
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
-import org.jminor.common.model.ConditionType;
+import org.jminor.common.db.condition.ConditionType;
 
 import org.junit.Test;
 
@@ -19,15 +19,15 @@ import static org.junit.Assert.*;
 public class DefaultColumnConditionModelTest {
   final AtomicInteger upperBoundCounter = new AtomicInteger();
   final AtomicInteger lowerBoundCounter = new AtomicInteger();
-  final AtomicInteger searchStateCounter = new AtomicInteger();
-  final AtomicInteger searchTypeCounter = new AtomicInteger();
+  final AtomicInteger conditionStateCounter = new AtomicInteger();
+  final AtomicInteger conditionTypeCounter = new AtomicInteger();
   final AtomicInteger enabledCounter = new AtomicInteger();
   final AtomicInteger clearCounter = new AtomicInteger();
 
   final EventListener upperBoundListener = upperBoundCounter::incrementAndGet;
   final EventListener lowerBoundListener = lowerBoundCounter::incrementAndGet;
-  final EventListener conditionStateListener = searchStateCounter::incrementAndGet;
-  final EventInfoListener<ConditionType> searchTypeListener = info -> searchTypeCounter.incrementAndGet();
+  final EventListener conditionStateListener = conditionStateCounter::incrementAndGet;
+  final EventInfoListener<ConditionType> conditionTypeListener = info -> conditionTypeCounter.incrementAndGet();
   final EventListener enabledListener = enabledCounter::incrementAndGet;
   final EventListener clearListener = clearCounter::incrementAndGet;
 
@@ -42,12 +42,12 @@ public class DefaultColumnConditionModelTest {
     model.addClearedListener(clearListener);
 
     model.setUpperBound("hello");
-    assertEquals(1, searchStateCounter.get());
+    assertEquals(1, conditionStateCounter.get());
     assertFalse(model.isEnabled());
     assertEquals(1, upperBoundCounter.get());
     assertEquals("hello", model.getUpperBound());
     model.setLowerBound("hello");
-    assertEquals(2, searchStateCounter.get());
+    assertEquals(2, conditionStateCounter.get());
     assertEquals(1, lowerBoundCounter.get());
     assertEquals("hello", model.getLowerBound());
 
@@ -88,21 +88,21 @@ public class DefaultColumnConditionModelTest {
   }
 
   @Test
-  public void testSearchType() {
+  public void testConditionType() {
     final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", Types.VARCHAR, "%");
-    model.addSearchTypeListener(searchTypeListener);
-    assertEquals(ConditionType.LIKE, model.getSearchType());
-    model.setSearchType(ConditionType.LESS_THAN);
-    assertEquals(1, searchTypeCounter.get());
-    assertEquals(ConditionType.LESS_THAN, model.getSearchType());
+    model.addConditionTypeListener(conditionTypeListener);
+    assertEquals(ConditionType.LIKE, model.getConditionType());
+    model.setConditionType(ConditionType.LESS_THAN);
+    assertEquals(1, conditionTypeCounter.get());
+    assertEquals(ConditionType.LESS_THAN, model.getConditionType());
     try {
-      model.setSearchType(null);
+      model.setConditionType(null);
       fail();
     }
     catch (final NullPointerException ignored) {/*ignored*/}
-    model.setSearchType(ConditionType.OUTSIDE_RANGE);
-    assertEquals(2, searchTypeCounter.get());
-    model.removeSearchTypeListener(searchTypeListener);
+    model.setConditionType(ConditionType.OUTSIDE_RANGE);
+    assertEquals(2, conditionTypeCounter.get());
+    model.removeConditionTypeListener(conditionTypeListener);
   }
 
   @Test
@@ -158,37 +158,37 @@ public class DefaultColumnConditionModelTest {
   }
 
   @Test(expected = IllegalStateException.class)
-  public void setSearchTypeLocked() {
+  public void setConditionTypeLocked() {
     final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", Types.VARCHAR, "%");
     model.setLocked(true);
-    model.setSearchType(ConditionType.NOT_LIKE);
+    model.setConditionType(ConditionType.NOT_LIKE);
   }
 
   @Test
   public void include() {
     final DefaultColumnConditionModel<String> conditionModel = new DefaultColumnConditionModel<>("test", Types.INTEGER, "%");
     conditionModel.setUpperBound(10);
-    conditionModel.setSearchType(ConditionType.LIKE);
+    conditionModel.setConditionType(ConditionType.LIKE);
     assertFalse(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertFalse(conditionModel.include(11));
 
-    conditionModel.setSearchType(ConditionType.NOT_LIKE);
+    conditionModel.setConditionType(ConditionType.NOT_LIKE);
     assertTrue(conditionModel.include(9));
     assertFalse(conditionModel.include(10));
     assertTrue(conditionModel.include(11));
 
-    conditionModel.setSearchType(ConditionType.GREATER_THAN);
+    conditionModel.setConditionType(ConditionType.GREATER_THAN);
     assertFalse(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertTrue(conditionModel.include(11));
 
-    conditionModel.setSearchType(ConditionType.LESS_THAN);
+    conditionModel.setConditionType(ConditionType.LESS_THAN);
     assertTrue(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertFalse(conditionModel.include(11));
 
-    conditionModel.setSearchType(ConditionType.WITHIN_RANGE);
+    conditionModel.setConditionType(ConditionType.WITHIN_RANGE);
     conditionModel.setLowerBound(6);
     assertTrue(conditionModel.include(6));
     assertTrue(conditionModel.include(7));
@@ -197,7 +197,7 @@ public class DefaultColumnConditionModelTest {
     assertFalse(conditionModel.include(11));
     assertFalse(conditionModel.include(5));
 
-    conditionModel.setSearchType(ConditionType.OUTSIDE_RANGE);
+    conditionModel.setConditionType(ConditionType.OUTSIDE_RANGE);
     assertTrue(conditionModel.include(6));
     assertFalse(conditionModel.include(7));
     assertFalse(conditionModel.include(9));

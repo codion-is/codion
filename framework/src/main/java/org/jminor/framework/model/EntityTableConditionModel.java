@@ -8,7 +8,7 @@ import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.StateObserver;
 import org.jminor.common.db.condition.Condition;
-import org.jminor.common.model.ConditionType;
+import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnConditionModel;

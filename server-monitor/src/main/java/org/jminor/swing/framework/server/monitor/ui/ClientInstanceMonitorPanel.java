@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
+import org.jminor.common.MethodLogger;
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.common.server.ClientLog;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlProvider;

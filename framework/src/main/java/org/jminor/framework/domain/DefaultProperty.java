@@ -3,12 +3,12 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.FormatUtil;
+import org.jminor.common.Item;
 import org.jminor.common.Util;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
 import org.jminor.common.db.ValueFetcher;
-import org.jminor.common.model.FormatUtil;
-import org.jminor.common.model.Item;
 import org.jminor.framework.Configuration;
 
 import java.sql.ResultSet;

@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.Item;
 import org.jminor.common.db.Attribute;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
-import org.jminor.common.model.Item;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.db.condition.Conditions;
-import org.jminor.common.model.ConditionType;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;

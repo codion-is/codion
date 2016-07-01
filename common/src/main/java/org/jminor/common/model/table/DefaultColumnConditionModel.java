@@ -3,6 +3,7 @@
  */
 package org.jminor.common.model.table;
 
+import org.jminor.common.DateUtil;
 import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
@@ -13,8 +14,7 @@ import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
-import org.jminor.common.model.ConditionType;
-import org.jminor.common.model.DateUtil;
+import org.jminor.common.db.condition.ConditionType;
 
 import java.sql.Timestamp;
 import java.sql.Types;
@@ -31,7 +31,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
   private final Value upperBoundValue = Values.value();
   private final Value lowerBoundValue = Values.value();
-  private final Value<ConditionType> searchTypeValue = Values.value(ConditionType.LIKE);
+  private final Value<ConditionType> conditionTypeValue = Values.value(ConditionType.LIKE);
   private final Event conditionStateChangedEvent = Events.event();
   private final Event conditionModelClearedEvent = Events.event();
 
@@ -119,7 +119,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   /** {@inheritDoc} */
   @Override
   public final void setLikeValue(final Comparable value) {
-    setSearchType(ConditionType.LIKE);
+    setConditionType(ConditionType.LIKE);
     setUpperBound(value);
     final boolean enableSearch = value != null;
     if (enabledState.isActive() != enableSearch) {
@@ -183,15 +183,15 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
   /** {@inheritDoc} */
   @Override
-  public final ConditionType getSearchType() {
-    return searchTypeValue.get();
+  public final ConditionType getConditionType() {
+    return conditionTypeValue.get();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setSearchType(final ConditionType conditionType) {
+  public final void setConditionType(final ConditionType conditionType) {
     checkLock();
-    searchTypeValue.set(Objects.requireNonNull(conditionType, "conditionType"));
+    conditionTypeValue.set(Objects.requireNonNull(conditionType, "conditionType"));
   }
 
   /** {@inheritDoc} */
@@ -259,7 +259,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
     setEnabled(false);
     setUpperBound(null);
     setLowerBound(null);
-    setSearchType(ConditionType.LIKE);
+    setConditionType(ConditionType.LIKE);
     conditionModelClearedEvent.fire();
   }
 
@@ -361,20 +361,20 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
   /** {@inheritDoc} */
   @Override
-  public final void addSearchTypeListener(final EventInfoListener<ConditionType> listener) {
-    searchTypeValue.getObserver().addInfoListener(listener);
+  public final void addConditionTypeListener(final EventInfoListener<ConditionType> listener) {
+    conditionTypeValue.getObserver().addInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSearchTypeListener(final EventInfoListener listener) {
-    searchTypeValue.getObserver().removeInfoListener(listener);
+  public final void removeConditionTypeListener(final EventInfoListener listener) {
+    conditionTypeValue.getObserver().removeInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver<ConditionType> getSearchTypeObserver() {
-    return searchTypeValue.getObserver();
+  public final EventObserver<ConditionType> getConditionTypeObserver() {
+    return conditionTypeValue.getObserver();
   }
 
   /** {@inheritDoc} */
@@ -395,7 +395,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
       toCompare = DateUtil.floorTimestamp((Timestamp) toCompare);
     }
 
-    switch (searchTypeValue.get()) {
+    switch (conditionTypeValue.get()) {
       case LIKE:
         return includeLike(toCompare);
       case NOT_LIKE:
@@ -409,7 +409,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
       case OUTSIDE_RANGE:
         return includeOutsideRange(toCompare);
       default:
-        throw new IllegalArgumentException("Undefined search type: " + searchTypeValue.get());
+        throw new IllegalArgumentException("Undefined search type: " + conditionTypeValue.get());
     }
   }
 
@@ -539,7 +539,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
       if (autoEnable) {
         final boolean upperBoundNull = upperBoundValue.get() == null;
         final boolean lowerBoundNull = lowerBoundValue.get() == null;
-        if (searchTypeValue.get().getValues().equals(ConditionType.Values.TWO)) {
+        if (conditionTypeValue.get().getValues().equals(ConditionType.Values.TWO)) {
           setEnabled(!lowerBoundNull && !upperBoundNull);
         }
         else {
@@ -551,10 +551,10 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
     lowerBoundValue.getObserver().addListener(autoEnableListener);
     upperBoundValue.getObserver().addListener(conditionStateChangedEvent);
     lowerBoundValue.getObserver().addListener(conditionStateChangedEvent);
-    searchTypeValue.getObserver().addListener(conditionStateChangedEvent);
+    conditionTypeValue.getObserver().addListener(conditionStateChangedEvent);
     enabledState.addListener(conditionStateChangedEvent);
-    searchTypeValue.getObserver().addListener(() ->
-            lowerBoundRequiredState.setActive(getSearchType().getValues().equals(ConditionType.Values.TWO)));
+    conditionTypeValue.getObserver().addListener(() ->
+            lowerBoundRequiredState.setActive(getConditionType().getValues().equals(ConditionType.Values.TWO)));
   }
 
   private void checkLock() {

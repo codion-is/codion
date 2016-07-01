@@ -1,9 +1,7 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
-
-import org.jminor.common.Util;
+package org.jminor.common;
 
 import org.junit.Test;
 
