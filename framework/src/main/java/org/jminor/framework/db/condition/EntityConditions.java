@@ -4,12 +4,10 @@
 package org.jminor.framework.db.condition;
 
 import org.jminor.common.Conjunction;
-import org.jminor.common.Version;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.condition.ConditionSet;
 import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.db.condition.Conditions;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
@@ -36,8 +34,6 @@ public final class EntityConditions {
 
   private static final int IN_CLAUSE_LIMIT = 100;//JDBC limit
   private static final String IN_PREFIX = " in (";
-  //todo remove when time is right
-  private static final Version V0_9_11 = new Version(0, 9, 11);
 
   private EntityConditions() {}
 
@@ -601,14 +597,8 @@ public final class EntityConditions {
     }
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
-      final Version serverVersion = (Version) Configuration.getValue(Configuration.REMOTE_SERVER_VERSION);
-      if (serverVersion != null && serverVersion.compareTo(V0_9_11) >= 0) {
-        stream.writeObject(orderBy);
-        stream.writeObject(orderByClause);
-      }
-      else {
-        stream.writeObject(orderBy != null ? orderBy.getOrderByClause() : orderByClause);
-      }
+      stream.writeObject(orderBy);
+      stream.writeObject(orderByClause);
       stream.writeInt(fetchCount);
       stream.writeBoolean(forUpdate);
       stream.writeObject(foreignKeyFetchDepthLimits);

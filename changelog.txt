@@ -4313,3 +4313,4 @@
   SearchType renamed ConditionType, moved to org.jminor.common.db.condition
   SearchType renamed to ConditionType and moved to common.db.condition
   org.jminor.common refactored, now model depends on db not the other way around
+  EntityConditions.DefaultEntitySelectCondition, removed version compatability hack
