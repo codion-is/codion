@@ -341,9 +341,7 @@ public final class EntityUtil {
   public static void sort(final List<? extends Property> properties) {
     Objects.requireNonNull(properties, "properties");
     final Collator collator = Collator.getInstance();
-    Collections.sort(properties, (o1, o2) -> {
-      return collator.compare(o1.toString().toLowerCase(), o2.toString().toLowerCase());
-    });
+    Collections.sort(properties, (o1, o2) -> collator.compare(o1.toString().toLowerCase(), o2.toString().toLowerCase()));
   }
 
   /**
