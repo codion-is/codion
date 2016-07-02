@@ -28,7 +28,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * A default {@link FilteredComboBoxModel} implementation.
  * @param <T> the type of values in this combo box model
  */
-public class SwingFilteredComboBoxModel<T> implements ComboBoxModel<T> {
+public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, ComboBoxModel<T> {
 
   private static final FilterCondition ACCEPT_ALL_CONDITION = new FilterCondition.AcceptAllCondition();
 
@@ -84,22 +84,26 @@ public class SwingFilteredComboBoxModel<T> implements ComboBoxModel<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void refresh() {
     setContents(initializeContents());
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void clear() {
     setSelectedItem(null);
     setContents(null);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isCleared() {
     return cleared;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setContents(final Collection<? extends T> contents) {
     filteredItems.clear();
     visibleItems.clear();
@@ -114,6 +118,7 @@ public class SwingFilteredComboBoxModel<T> implements ComboBoxModel<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void filterContents() {
     try {
       visibleItems.addAll(filteredItems);
@@ -141,6 +146,7 @@ public class SwingFilteredComboBoxModel<T> implements ComboBoxModel<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List<T> getVisibleItems() {
     if (nullValue == null) {
       return Collections.unmodifiableList(visibleItems);
@@ -150,11 +156,13 @@ public class SwingFilteredComboBoxModel<T> implements ComboBoxModel<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List<T> getFilteredItems() {
     return Collections.unmodifiableList(filteredItems);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List<T> getAllItems() {
     final List<T> entities = new ArrayList<>(getVisibleItems());
     entities.addAll(filteredItems);
@@ -163,6 +171,7 @@ public class SwingFilteredComboBoxModel<T> implements ComboBoxModel<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setFilterCondition(final FilterCondition<T> filterCondition) {
     if (filterCondition == null) {
       this.filterCondition = ACCEPT_ALL_CONDITION;
@@ -174,21 +183,25 @@ public class SwingFilteredComboBoxModel<T> implements ComboBoxModel<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final FilterCondition<T> getFilterCondition() {
     return filterCondition;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getFilteredItemCount() {
     return filteredItems.size();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getVisibleItemCount() {
     return visibleItems.size();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isVisible(final T item) {
     if (item == null) {
       return nullValue != null;
@@ -198,11 +211,13 @@ public class SwingFilteredComboBoxModel<T> implements ComboBoxModel<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isFiltered(final T item) {
     return filteredItems.contains(item);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addItem(final T item) {
     if (filterCondition.include(item)) {
       visibleItems.add(item);
@@ -214,6 +229,7 @@ public class SwingFilteredComboBoxModel<T> implements ComboBoxModel<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeItem(final T item) {
     if (visibleItems.contains(item)) {
       visibleItems.remove(item);
@@ -226,6 +242,7 @@ public class SwingFilteredComboBoxModel<T> implements ComboBoxModel<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean contains(final T item, final boolean includeFiltered) {
     final boolean ret = visibleItems.contains(item);
     if (!ret && includeFiltered) {
@@ -236,6 +253,7 @@ public class SwingFilteredComboBoxModel<T> implements ComboBoxModel<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Comparator<? super T> getSortComparator() {
     return sortComparator;
   }
@@ -247,11 +265,13 @@ public class SwingFilteredComboBoxModel<T> implements ComboBoxModel<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final T getNullValue() {
     return nullValue;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setNullValue(final T nullValue) {
     this.nullValue = nullValue;
     if (selectedItem == null) {
@@ -260,16 +280,19 @@ public class SwingFilteredComboBoxModel<T> implements ComboBoxModel<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isNullValueSelected() {
     return selectedItem == null && nullValue != null;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isSelectionEmpty() {
     return getSelectedValue() == null;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final T getSelectedValue() {
     if (isNullValueSelected()) {
       return null;
@@ -282,6 +305,7 @@ public class SwingFilteredComboBoxModel<T> implements ComboBoxModel<T> {
    * @return the selected item, N.B. this can include the {@code nullValue}
    * in case it has been set, {@link #getSelectedValue()} is usually what you want
    */
+  @Override
   public final T getSelectedItem() {
     if (selectedItem == null && nullValue != null) {
       return nullValue;
@@ -291,6 +315,7 @@ public class SwingFilteredComboBoxModel<T> implements ComboBoxModel<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setSelectedItem(final Object anItem) {
     final T toSelect = translateSelectionItem(anItem);
     if (!allowSelectionChange(toSelect) || Objects.equals(selectedItem, toSelect)) {
@@ -309,11 +334,13 @@ public class SwingFilteredComboBoxModel<T> implements ComboBoxModel<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setFilterSelectedItem(final boolean value) {
     this.filterSelectedItem = value;
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isFilterSelectedItem() {
     return filterSelectedItem;
   }
@@ -350,21 +377,25 @@ public class SwingFilteredComboBoxModel<T> implements ComboBoxModel<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addFilteringListener(final EventListener listener) {
     filteringDoneEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeFilteringListener(final EventListener listener) {
     filteringDoneEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addSelectionListener(final EventInfoListener<T> listener) {
     selectionChangedEvent.addInfoListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeSelectionListener(final EventInfoListener listener) {
     selectionChangedEvent.removeInfoListener(listener);
   }
