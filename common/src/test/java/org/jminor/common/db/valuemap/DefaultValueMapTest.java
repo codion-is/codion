@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model.valuemap;
+package org.jminor.common.db.valuemap;
 
 import org.jminor.common.EventInfoListener;
 

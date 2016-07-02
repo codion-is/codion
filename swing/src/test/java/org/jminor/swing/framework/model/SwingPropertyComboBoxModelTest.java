@@ -5,11 +5,11 @@ package org.jminor.swing.framework.model;
 
 import org.jminor.common.Event;
 import org.jminor.common.Events;
-import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
+import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 public final class SwingPropertyComboBoxModelTest {
 
-  private final FilteredComboBoxModel comboBoxModel;
+  private final SwingFilteredComboBoxModel comboBoxModel;
   private final Event refreshEvent = Events.event();
 
   public SwingPropertyComboBoxModelTest() {

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model.valuemap.exception;
+package org.jminor.common.db.valuemap.exception;
 
 /**
  * An exception used to indicate that a null value was being associated with

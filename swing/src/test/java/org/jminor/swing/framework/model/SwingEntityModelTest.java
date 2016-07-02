@@ -4,9 +4,9 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.valuemap.EditModelValues;
-import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Entities;

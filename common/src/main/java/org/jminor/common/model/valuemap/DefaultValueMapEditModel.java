@@ -10,7 +10,10 @@ import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
-import org.jminor.common.model.valuemap.exception.ValidationException;
+import org.jminor.common.db.valuemap.ValueChange;
+import org.jminor.common.db.valuemap.ValueChanges;
+import org.jminor.common.db.valuemap.ValueMap;
+import org.jminor.common.db.valuemap.exception.ValidationException;
 
 import java.util.Collection;
 import java.util.Collections;

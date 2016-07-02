@@ -5,11 +5,11 @@ package org.jminor.framework.model;
 
 import org.jminor.common.EventListener;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.SelectionModel;
-import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 

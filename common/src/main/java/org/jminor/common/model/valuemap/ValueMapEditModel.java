@@ -6,7 +6,9 @@ package org.jminor.common.model.valuemap;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.StateObserver;
-import org.jminor.common.model.valuemap.exception.ValidationException;
+import org.jminor.common.db.valuemap.ValueChange;
+import org.jminor.common.db.valuemap.ValueMap;
+import org.jminor.common.db.valuemap.exception.ValidationException;
 
 import java.util.Collection;
 

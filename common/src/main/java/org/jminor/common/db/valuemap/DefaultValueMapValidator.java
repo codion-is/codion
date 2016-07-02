@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model.valuemap;
+package org.jminor.common.db.valuemap;
 
 import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
+import org.jminor.common.db.valuemap.exception.NullValidationException;
+import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.valuemap.exception.NullValidationException;
-import org.jminor.common.model.valuemap.exception.ValidationException;
 
 import java.util.Objects;
 

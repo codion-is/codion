@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model.valuemap;
+package org.jminor.common.db.valuemap;
 
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.StateObserver;
-import org.jminor.common.model.valuemap.exception.ValidationException;
+import org.jminor.common.db.valuemap.exception.ValidationException;
 
 import java.util.Set;
 
@@ -158,7 +158,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
   /**
    * Returns an EventObserver notified each time a value changes, with a {@link ValueChange} argument.
    * @return an EventObserver notified when a value changes.
-   * @see org.jminor.common.model.valuemap.ValueChange
+   * @see ValueChange
    */
   EventObserver<ValueChange<K, ?>> getValueObserver();
 
@@ -166,7 +166,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * Adds a listener notified each time a value changes
    * Adding the same listener multiple times has no effect.
    * @param valueListener the listener
-   * @see org.jminor.common.model.valuemap.ValueChange
+   * @see ValueChange
    */
   void addValueListener(final EventInfoListener<ValueChange<K, ?>> valueListener);
 

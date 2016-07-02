@@ -6,7 +6,7 @@ package org.jminor.framework.domain;
 import org.jminor.common.Serializer;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.RecordModifiedException;
-import org.jminor.common.model.valuemap.ValueProvider;
+import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.i18n.FrameworkMessages;
 

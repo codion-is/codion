@@ -3,7 +3,8 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.model.valuemap.DefaultValueMap;
+import org.jminor.common.db.valuemap.DefaultValueMap;
+import org.jminor.common.db.valuemap.ValueMap;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -19,7 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Represents a row in a database table, providing access to the column values via the {@link org.jminor.common.model.valuemap.ValueMap} interface.
+ * Represents a row in a database table, providing access to the column values via the {@link ValueMap} interface.
  */
 final class DefaultEntity extends DefaultValueMap<String, Object> implements Entity, Serializable, Comparable<Entity> {
 

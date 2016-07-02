@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.valuemap.ValueCollectionProvider;
+import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Property;

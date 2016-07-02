@@ -7,10 +7,10 @@ import org.jminor.common.Util;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
-import org.jminor.common.model.valuemap.DefaultValueMapValidator;
-import org.jminor.common.model.valuemap.exception.NullValidationException;
-import org.jminor.common.model.valuemap.exception.RangeValidationException;
-import org.jminor.common.model.valuemap.exception.ValidationException;
+import org.jminor.common.db.valuemap.DefaultValueMapValidator;
+import org.jminor.common.db.valuemap.exception.NullValidationException;
+import org.jminor.common.db.valuemap.exception.RangeValidationException;
+import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.i18n.FrameworkMessages;
 

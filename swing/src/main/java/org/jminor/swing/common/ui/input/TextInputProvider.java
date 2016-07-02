@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.input;
 
-import org.jminor.common.model.valuemap.ValueCollectionProvider;
+import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.textfield.SizedDocument;

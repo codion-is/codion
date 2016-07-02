@@ -5,10 +5,10 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.ResultPacker;
-import org.jminor.common.model.valuemap.ValueMap;
-import org.jminor.common.model.valuemap.exception.NullValidationException;
-import org.jminor.common.model.valuemap.exception.RangeValidationException;
-import org.jminor.common.model.valuemap.exception.ValidationException;
+import org.jminor.common.db.valuemap.ValueMap;
+import org.jminor.common.db.valuemap.exception.NullValidationException;
+import org.jminor.common.db.valuemap.exception.RangeValidationException;
+import org.jminor.common.db.valuemap.exception.ValidationException;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -407,7 +407,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
     /**
      * Validates the given Entity objects.
      * @param entities the entities to validate
-     * @throws org.jminor.common.model.valuemap.exception.ValidationException in case the validation fails
+     * @throws ValidationException in case the validation fails
      */
     void validate(final Collection<Entity> entities) throws ValidationException;
 
@@ -415,7 +415,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
      * Performs a null validation on the given property
      * @param entity the entity
      * @param property the property
-     * @throws org.jminor.common.model.valuemap.exception.NullValidationException in case the property value is null and the property is not nullable
+     * @throws NullValidationException in case the property value is null and the property is not nullable
      * @see Property#isNullable()
      */
     void performNullValidation(final Entity entity, final Property property) throws NullValidationException;
@@ -424,7 +424,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
      * Performs a range validation on the given property
      * @param entity the entity
      * @param property the property
-     * @throws org.jminor.common.model.valuemap.exception.RangeValidationException in case the value of the given property is outside the legal range
+     * @throws RangeValidationException in case the value of the given property is outside the legal range
      * @see org.jminor.framework.domain.Property#setMax(double)
      * @see org.jminor.framework.domain.Property#setMin(double)
      */

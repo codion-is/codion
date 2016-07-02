@@ -8,11 +8,11 @@ import org.jminor.common.EventListener;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.valuemap.ValueCollectionProvider;
+import org.jminor.common.db.valuemap.ValueMap;
+import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.Refreshable;
-import org.jminor.common.model.valuemap.ValueCollectionProvider;
-import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.ValueMapEditModel;
-import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -229,7 +229,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * according to the primary key of the inserted entity
    * @return a list containing the inserted entity
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
-   * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
+   * @throws ValidationException in case validation fails
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
   List<Entity> insert() throws DatabaseException, ValidationException;
@@ -251,7 +251,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @return the updated entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
-   * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
+   * @throws ValidationException in case validation fails
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
   List<Entity> update() throws DatabaseException, ValidationException;

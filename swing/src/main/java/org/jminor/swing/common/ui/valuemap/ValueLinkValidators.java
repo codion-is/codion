@@ -4,8 +4,8 @@
 package org.jminor.swing.common.ui.valuemap;
 
 import org.jminor.common.Util;
+import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.valuemap.ValueMapEditModel;
-import org.jminor.common.model.valuemap.exception.ValidationException;
 
 import javax.swing.JComponent;
 import javax.swing.JTextField;

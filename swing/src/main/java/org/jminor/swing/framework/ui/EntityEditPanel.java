@@ -9,8 +9,8 @@ import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
+import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
@@ -759,7 +759,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
 
   /**
    * for overriding, called before insert/update
-   * @throws org.jminor.common.model.valuemap.exception.ValidationException in case of a validation failure
+   * @throws ValidationException in case of a validation failure
    */
   protected void validateData() throws ValidationException {}
 

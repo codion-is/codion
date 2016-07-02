@@ -10,7 +10,7 @@ import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordNotFoundException;
-import org.jminor.common.model.valuemap.ValueProvider;
+import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
