@@ -484,8 +484,8 @@ public final class DefaultEntityConnectionServer extends AbstractServer<RemoteEn
   }
 
   /**
-   * Starts the server administered by this admin class
-   * @return the admin instance
+   * Starts the server
+   * @return the server instance
    * @throws RemoteException in case of an exception
    */
   public static synchronized DefaultEntityConnectionServer startServer() throws RemoteException {
