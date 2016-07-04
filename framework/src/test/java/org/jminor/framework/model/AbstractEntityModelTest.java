@@ -4,7 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.EventListener;
-import org.jminor.common.db.condition.ConditionType;
+import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.CancelException;
@@ -169,7 +169,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     final EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
     final List<Entity> salesEmployees = connection.selectMany(EntityConditions.selectCondition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, department));
+            TestDomain.EMP_DEPARTMENT_FK, Condition.Type.LIKE, department));
     assertTrue("Number of employees for department should not be 0", salesEmployees.size() > 0);
     departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
     final List<Entity> employeesFromDetailModel =

@@ -5,7 +5,7 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.DateUtil;
 import org.jminor.common.Value;
-import org.jminor.common.db.condition.ConditionType;
+import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.PropertyConditionModel;
@@ -54,12 +54,12 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
             new PropertyInputFieldProvider(model), getConditionTypes(model));
   }
 
-  private static ConditionType[] getConditionTypes(final PropertyConditionModel<Property.ColumnProperty> model) {
+  private static Condition.Type[] getConditionTypes(final PropertyConditionModel<Property.ColumnProperty> model) {
     if (model.getColumnIdentifier().isBoolean()) {
-      return new ConditionType[] {ConditionType.LIKE};
+      return new Condition.Type[] {Condition.Type.LIKE};
     }
     else {
-      return ConditionType.values();
+      return Condition.Type.values();
     }
   }
 

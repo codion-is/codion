@@ -8,7 +8,7 @@ import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.StateObserver;
 import org.jminor.common.Value;
-import org.jminor.common.db.condition.ConditionType;
+import org.jminor.common.db.condition.Condition;
 
 import java.text.Format;
 
@@ -107,12 +107,12 @@ public interface ColumnConditionModel<K> {
   /**
    * @return the search type
    */
-  ConditionType getConditionType();
+  Condition.Type getConditionType();
 
   /**
    * @param conditionType the search type
    */
-  void setConditionType(final ConditionType conditionType);
+  void setConditionType(final Condition.Type conditionType);
 
   /**
    * @return true if the current search type requires a lower bound value to be specified,
@@ -169,7 +169,7 @@ public interface ColumnConditionModel<K> {
   /**
    * @return an observer notified each time the condition type changes
    */
-  EventObserver<ConditionType> getConditionTypeObserver();
+  EventObserver<Condition.Type> getConditionTypeObserver();
 
   /**
    * @param listener a listener to be notified each time the enabled state changes
@@ -184,7 +184,7 @@ public interface ColumnConditionModel<K> {
   /**
    * @param listener a listener to be notified each time the condition type changes
    */
-  void addConditionTypeListener(final EventInfoListener<ConditionType> listener);
+  void addConditionTypeListener(final EventInfoListener<Condition.Type> listener);
 
   /**
    * @param listener the listener to remove

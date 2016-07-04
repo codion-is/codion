@@ -24,71 +24,71 @@ public final class Conditions {
   private Conditions() {}
 
   /**
-   * Initializes a new {@link ConditionSet} instance
+   * Initializes a new {@link Condition.Set} instance
    * @param conjunction the Conjunction to use
    * @param <T> the Condition key type
-   * @return a new ConditionSet instance
+   * @return a new {@link Condition.Set} instance
    */
-  public static <T> ConditionSet<T> conditionSet(final Conjunction conjunction) {
+  public static <T> Condition.Set<T> conditionSet(final Conjunction conjunction) {
     return conditionSet(conjunction, (Condition) null);
   }
 
   /**
-   * Initializes a new ConditionSet instance
+   * Initializes a new {@link Condition.Set} instance
    * @param conjunction the Conjunction to use
    * @param condition the condition
    * @param <T> the condition key type
-   * @return a new ConditionSet instance
+   * @return a new {@link Condition.Set} instance
    */
-  public static <T> ConditionSet<T> conditionSet(final Conjunction conjunction, final Condition<T> condition) {
+  public static <T> Condition.Set<T> conditionSet(final Conjunction conjunction, final Condition<T> condition) {
     return conditionSet(conjunction, condition, null);
   }
 
   /**
-   * Initializes a new ConditionSet instance
+   * Initializes a new {@link Condition.Set} instance
    * @param conjunction the Conjunction to use
    * @param firstCondition the first condition
    * @param secondCondition the second condition
    * @param <T> the condition key type
-   * @return a new ConditionSet instance
+   * @return a new {@link Condition.Set} instance
    */
-  public static <T> ConditionSet<T> conditionSet(final Conjunction conjunction, final Condition<T> firstCondition,
-                                                 final Condition<T> secondCondition) {
+  public static <T> Condition.Set<T> conditionSet(final Conjunction conjunction, final Condition<T> firstCondition,
+                                                  final Condition<T> secondCondition) {
     return conditionSet(conjunction, firstCondition, secondCondition, null);
   }
 
   /**
-   * Initializes a new ConditionSet instance
+   * Initializes a new {@link Condition.Set} instance
    * @param conjunction the Conjunction to use
    * @param firstCondition the first condition
    * @param secondCondition the second condition
    * @param thirdCondition the third condition
    * @param <T> the condition key type
-   * @return a new ConditionSet instance
+   * @return a new {@link Condition.Set} instance
    */
-  public static <T> ConditionSet<T> conditionSet(final Conjunction conjunction, final Condition<T> firstCondition,
-                                                 final Condition<T> secondCondition, final Condition<T> thirdCondition) {
+  public static <T> Condition.Set<T> conditionSet(final Conjunction conjunction, final Condition<T> firstCondition,
+                                                  final Condition<T> secondCondition, final Condition<T> thirdCondition) {
     return conditionSet(conjunction, firstCondition, secondCondition, thirdCondition, null);
   }
 
   /**
-   * Initializes a new ConditionSet instance
+   * Initializes a new {@link Condition.Set} instance
    * @param conjunction the Conjunction to use
    * @param firstCondition the first condition
    * @param secondCondition the second condition
    * @param thirdCondition the third condition
    * @param fourthCondition the fourth condition
    * @param <T> the condition key type
-   * @return a new ConditionSet instance
+   * @return a new {@link Condition.Set} instance
    */
-  public static <T> ConditionSet<T> conditionSet(final Conjunction conjunction, final Condition<T> firstCondition,
-                                                 final Condition<T> secondCondition, final Condition<T> thirdCondition,
-                                                 final Condition<T> fourthCondition) {
+  public static <T> Condition.Set<T> conditionSet(final Conjunction conjunction, final Condition<T> firstCondition,
+                                                  final Condition<T> secondCondition, final Condition<T> thirdCondition,
+                                                  final Condition<T> fourthCondition) {
     return conditionSet(conjunction, firstCondition, secondCondition, thirdCondition, fourthCondition, null);
   }
 
   /**
-   * Initializes a new ConditionSet instance
+   * Initializes a new {@link Condition.Set} instance
    * @param conjunction the Conjunction to use
    * @param firstCondition the first condition
    * @param secondCondition the second condition
@@ -96,24 +96,24 @@ public final class Conditions {
    * @param fourthCondition the fourth condition
    * @param fifthCondition the fifth condition
    * @param <T> the condition key type
-   * @return a new ConditionSet instance
+   * @return a {@link Condition.Set} instance
    */
-  public static <T> ConditionSet<T> conditionSet(final Conjunction conjunction, final Condition<T> firstCondition,
-                                                 final Condition<T> secondCondition, final Condition<T> thirdCondition,
-                                                 final Condition<T> fourthCondition, final Condition<T> fifthCondition) {
+  public static <T> Condition.Set<T> conditionSet(final Conjunction conjunction, final Condition<T> firstCondition,
+                                                  final Condition<T> secondCondition, final Condition<T> thirdCondition,
+                                                  final Condition<T> fourthCondition, final Condition<T> fifthCondition) {
     return conditionSet(conjunction, Arrays.asList(firstCondition, secondCondition, thirdCondition, fourthCondition,
             fifthCondition));
   }
 
   /**
-   * Initializes a new ConditionSet instance
+   * Initializes a new {@link Condition.Set} instance
    * @param conjunction the conjunction to use
    * @param condition the Condition objects to be included in this set
    * @param <T> the condition key type
-   * @return a new Condition instance
+   * @return a new {@link Condition.Set} instance
    */
-  public static <T> ConditionSet<T> conditionSet(final Conjunction conjunction, final Collection<Condition<T>> condition) {
-    return new DefaultConditionSet<>(conjunction, condition);
+  public static <T> Condition.Set<T> conditionSet(final Conjunction conjunction, final Collection<Condition<T>> condition) {
+    return new DefaultSet<>(conjunction, condition);
   }
 
   /**
@@ -140,14 +140,14 @@ public final class Conditions {
     return new StringCondition<>(conditionString, values, keys);
   }
 
-  private static final class DefaultConditionSet<T> implements ConditionSet<T>, Serializable {
+  private static final class DefaultSet<T> implements Condition.Set<T>, Serializable {
 
     private static final long serialVersionUID = 1;
 
     private Conjunction conjunction;
     private List<Condition<T>> conditionList = new ArrayList<>();
 
-    private DefaultConditionSet(final Conjunction conjunction, final Collection<Condition<T>> condition) {
+    private DefaultSet(final Conjunction conjunction, final Collection<Condition<T>> condition) {
       this.conjunction = conjunction;
       for (final Condition<T> criterion : condition) {
         add(criterion);

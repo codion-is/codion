@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.db.condition.ConditionType;
+import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.domain.Property;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
@@ -32,12 +32,12 @@ public final class PropertyFilterPanel extends ColumnConditionPanel<Property> {
     super(model, includeToggleFilterEnabledButton, includeToggleAdvancedFilterButton, getConditionTypes(model));
   }
 
-  private static ConditionType[] getConditionTypes(final ColumnConditionModel<Property> model) {
+  private static Condition.Type[] getConditionTypes(final ColumnConditionModel<Property> model) {
     if (model.getColumnIdentifier().isBoolean()) {
-      return new ConditionType[] {ConditionType.LIKE};
+      return new Condition.Type[] {Condition.Type.LIKE};
     }
     else {
-      return ConditionType.values();
+      return Condition.Type.values();
     }
   }
 }

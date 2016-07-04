@@ -8,7 +8,6 @@ import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.StateObserver;
 import org.jminor.common.db.condition.Condition;
-import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnConditionModel;
@@ -130,7 +129,7 @@ public interface EntityTableConditionModel extends FilterCondition<Entity>, Refr
 
   /**
    * Clears the search state of all PropertyConditionModels, disables them and
-   * resets the search type to {@link ConditionType#LIKE}
+   * resets the search type to {@link Condition.Type#LIKE}
    */
   void clearPropertyConditionModels();
 

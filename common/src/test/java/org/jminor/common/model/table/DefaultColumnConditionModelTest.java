@@ -5,7 +5,7 @@ package org.jminor.common.model.table;
 
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
-import org.jminor.common.db.condition.ConditionType;
+import org.jminor.common.db.condition.Condition;
 
 import org.junit.Test;
 
@@ -27,7 +27,7 @@ public class DefaultColumnConditionModelTest {
   final EventListener upperBoundListener = upperBoundCounter::incrementAndGet;
   final EventListener lowerBoundListener = lowerBoundCounter::incrementAndGet;
   final EventListener conditionStateListener = conditionStateCounter::incrementAndGet;
-  final EventInfoListener<ConditionType> conditionTypeListener = info -> conditionTypeCounter.incrementAndGet();
+  final EventInfoListener<Condition.Type> conditionTypeListener = info -> conditionTypeCounter.incrementAndGet();
   final EventListener enabledListener = enabledCounter::incrementAndGet;
   final EventListener clearListener = clearCounter::incrementAndGet;
 
@@ -91,16 +91,16 @@ public class DefaultColumnConditionModelTest {
   public void testConditionType() {
     final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", Types.VARCHAR, "%");
     model.addConditionTypeListener(conditionTypeListener);
-    assertEquals(ConditionType.LIKE, model.getConditionType());
-    model.setConditionType(ConditionType.LESS_THAN);
+    assertEquals(Condition.Type.LIKE, model.getConditionType());
+    model.setConditionType(Condition.Type.LESS_THAN);
     assertEquals(1, conditionTypeCounter.get());
-    assertEquals(ConditionType.LESS_THAN, model.getConditionType());
+    assertEquals(Condition.Type.LESS_THAN, model.getConditionType());
     try {
       model.setConditionType(null);
       fail();
     }
     catch (final NullPointerException ignored) {/*ignored*/}
-    model.setConditionType(ConditionType.OUTSIDE_RANGE);
+    model.setConditionType(Condition.Type.OUTSIDE_RANGE);
     assertEquals(2, conditionTypeCounter.get());
     model.removeConditionTypeListener(conditionTypeListener);
   }
@@ -161,34 +161,34 @@ public class DefaultColumnConditionModelTest {
   public void setConditionTypeLocked() {
     final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", Types.VARCHAR, "%");
     model.setLocked(true);
-    model.setConditionType(ConditionType.NOT_LIKE);
+    model.setConditionType(Condition.Type.NOT_LIKE);
   }
 
   @Test
   public void include() {
     final DefaultColumnConditionModel<String> conditionModel = new DefaultColumnConditionModel<>("test", Types.INTEGER, "%");
     conditionModel.setUpperBound(10);
-    conditionModel.setConditionType(ConditionType.LIKE);
+    conditionModel.setConditionType(Condition.Type.LIKE);
     assertFalse(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertFalse(conditionModel.include(11));
 
-    conditionModel.setConditionType(ConditionType.NOT_LIKE);
+    conditionModel.setConditionType(Condition.Type.NOT_LIKE);
     assertTrue(conditionModel.include(9));
     assertFalse(conditionModel.include(10));
     assertTrue(conditionModel.include(11));
 
-    conditionModel.setConditionType(ConditionType.GREATER_THAN);
+    conditionModel.setConditionType(Condition.Type.GREATER_THAN);
     assertFalse(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertTrue(conditionModel.include(11));
 
-    conditionModel.setConditionType(ConditionType.LESS_THAN);
+    conditionModel.setConditionType(Condition.Type.LESS_THAN);
     assertTrue(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertFalse(conditionModel.include(11));
 
-    conditionModel.setConditionType(ConditionType.WITHIN_RANGE);
+    conditionModel.setConditionType(Condition.Type.WITHIN_RANGE);
     conditionModel.setLowerBound(6);
     assertTrue(conditionModel.include(6));
     assertTrue(conditionModel.include(7));
@@ -197,7 +197,7 @@ public class DefaultColumnConditionModelTest {
     assertFalse(conditionModel.include(11));
     assertFalse(conditionModel.include(5));
 
-    conditionModel.setConditionType(ConditionType.OUTSIDE_RANGE);
+    conditionModel.setConditionType(Condition.Type.OUTSIDE_RANGE);
     assertTrue(conditionModel.include(6));
     assertFalse(conditionModel.include(7));
     assertFalse(conditionModel.include(9));

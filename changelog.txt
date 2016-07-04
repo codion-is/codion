@@ -4317,3 +4317,5 @@
   FilteredComboBoxModel interface removed, had a single implementation
   Most of org.jminor.common.model.valuemap moved to org.jminor.common.db.valuemap
   FilteredComboBoxModel reintroduced, too quick on the delete trigger
+  ConditionType is now Condition.Type
+  ConditionSet is now Condition.Set

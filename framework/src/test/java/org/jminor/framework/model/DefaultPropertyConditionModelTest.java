@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.db.condition.ConditionType;
+import org.jminor.common.db.condition.Condition;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
@@ -22,18 +22,18 @@ public class DefaultPropertyConditionModelTest {
     final Property.ColumnProperty property = (Property.ColumnProperty) Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
     final PropertyConditionModel model = new DefaultPropertyConditionModel(property);
     assertEquals(property, model.getColumnIdentifier());
-    model.setConditionType(ConditionType.LIKE);
+    model.setConditionType(Condition.Type.LIKE);
     assertFalse(model.isLowerBoundRequired());
     model.setUpperBound("upper");
     assertEquals(property.getPropertyID() + " like ?", model.getCondition().getWhereClause());
-    model.setConditionType(ConditionType.NOT_LIKE);
+    model.setConditionType(Condition.Type.NOT_LIKE);
     assertEquals(property.getPropertyID() + " not like ?", model.getCondition().getWhereClause());
-    model.setConditionType(ConditionType.GREATER_THAN);
+    model.setConditionType(Condition.Type.GREATER_THAN);
     assertEquals(property.getPropertyID() + " >= ?", model.getCondition().getWhereClause());
-    model.setConditionType(ConditionType.LESS_THAN);
+    model.setConditionType(Condition.Type.LESS_THAN);
     assertEquals(property.getPropertyID() + " <= ?", model.getCondition().getWhereClause());
 
-    model.setConditionType(ConditionType.WITHIN_RANGE);
+    model.setConditionType(Condition.Type.WITHIN_RANGE);
     assertTrue(model.isLowerBoundRequired());
     model.setLowerBound("lower");
     List values = model.getCondition().getValues();
@@ -41,12 +41,12 @@ public class DefaultPropertyConditionModelTest {
     assertTrue(values.contains("lower"));
     assertEquals("(" + property.getPropertyID() + " >= ? and " + property.getPropertyID() + " <= ?)", model.getCondition().getWhereClause());
 
-    model.setConditionType(ConditionType.LIKE);
+    model.setConditionType(Condition.Type.LIKE);
     model.setAutomaticWildcard(true);
     values = model.getCondition().getValues();
     assertTrue(values.contains("%upper%"));
     assertEquals(property.getPropertyID() + " like ?", model.getCondition().getWhereClause());
-    model.setConditionType(ConditionType.NOT_LIKE);
+    model.setConditionType(Condition.Type.NOT_LIKE);
     assertEquals(property.getPropertyID() + " not like ?", model.getCondition().getWhereClause());
   }
 }

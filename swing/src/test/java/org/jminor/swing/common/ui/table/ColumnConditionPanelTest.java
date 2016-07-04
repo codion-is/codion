@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.table;
 
-import org.jminor.common.db.condition.ConditionType;
+import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
 
@@ -35,6 +35,6 @@ public class ColumnConditionPanelTest {
 
   @Test(expected = NullPointerException.class)
   public void constructorNullConditionModel() {
-    new ColumnConditionPanel<String>(null, true, true, (ConditionType) null);
+    new ColumnConditionPanel<String>(null, true, true, (Condition.Type) null);
   }
 }

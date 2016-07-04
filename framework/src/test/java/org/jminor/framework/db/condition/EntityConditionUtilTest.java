@@ -4,7 +4,6 @@
 package org.jminor.framework.db.condition;
 
 import org.jminor.common.db.condition.Condition;
-import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.db.condition.Conditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -38,7 +37,7 @@ public class EntityConditionUtilTest {
     condition = EntityConditions.condition(Collections.singletonList(entity.getKey()));
     assertKeyCondition(condition);
 
-    condition = EntityConditions.condition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, ConditionType.NOT_LIKE, "DEPT");
+    condition = EntityConditions.condition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, Condition.Type.NOT_LIKE, "DEPT");
     assertCondition(condition);
   }
 
@@ -53,11 +52,11 @@ public class EntityConditionUtilTest {
     condition = EntityConditions.selectCondition(Collections.singletonList(entity.getKey()));
     assertKeyCondition(condition);
 
-    condition = EntityConditions.selectCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, ConditionType.NOT_LIKE, "DEPT");
+    condition = EntityConditions.selectCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, Condition.Type.NOT_LIKE, "DEPT");
     assertCondition(condition);
 
     final Condition<Property.ColumnProperty> critOne = EntityConditions.propertyCondition(TestDomain.T_DEPARTMENT,
-            TestDomain.DEPARTMENT_LOCATION, ConditionType.LIKE, "New York");
+            TestDomain.DEPARTMENT_LOCATION, Condition.Type.LIKE, "New York");
 
     condition = EntityConditions.selectCondition(TestDomain.T_DEPARTMENT, critOne, TestDomain.DEPARTMENT_NAME);
     assertEquals(-1, condition.getFetchCount());
@@ -69,7 +68,7 @@ public class EntityConditionUtilTest {
   @Test
   public void propertyCondition() {
     final Condition<Property.ColumnProperty> critOne = EntityConditions.propertyCondition(TestDomain.T_DEPARTMENT,
-            TestDomain.DEPARTMENT_LOCATION, ConditionType.LIKE, true, "New York");
+            TestDomain.DEPARTMENT_LOCATION, Condition.Type.LIKE, true, "New York");
     assertEquals("loc like ?", critOne.getWhereClause());
     assertNotNull(critOne);
   }
@@ -77,7 +76,7 @@ public class EntityConditionUtilTest {
   @Test
   public void foreignKeyConditionNull() {
     final Condition<Property.ColumnProperty> condition = EntityConditions.foreignKeyCondition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, (Entity.Key) null);
+            TestDomain.EMP_DEPARTMENT_FK, Condition.Type.LIKE, (Entity.Key) null);
     assertEquals("deptno is null", condition.getWhereClause());
   }
 
@@ -86,17 +85,17 @@ public class EntityConditionUtilTest {
     final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, 10);
     Condition<Property.ColumnProperty> condition = EntityConditions.foreignKeyCondition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, department);
+            TestDomain.EMP_DEPARTMENT_FK, Condition.Type.LIKE, department);
     assertEquals("deptno = ?", condition.getWhereClause());
 
     final Entity department2 = Entities.entity(TestDomain.T_DEPARTMENT);
     department2.put(TestDomain.DEPARTMENT_ID, 11);
     condition = EntityConditions.foreignKeyCondition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, Arrays.asList(department, department2));
+            TestDomain.EMP_DEPARTMENT_FK, Condition.Type.LIKE, Arrays.asList(department, department2));
     assertEquals("(deptno in (?, ?))", condition.getWhereClause());
 
     condition = EntityConditions.foreignKeyCondition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, ConditionType.NOT_LIKE, Arrays.asList(department, department2));
+            TestDomain.EMP_DEPARTMENT_FK, Condition.Type.NOT_LIKE, Arrays.asList(department, department2));
     assertEquals("(deptno not in (?, ?))", condition.getWhereClause());
   }
 
@@ -105,7 +104,7 @@ public class EntityConditionUtilTest {
     final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, 10);
     final Condition<Property.ColumnProperty> condition = EntityConditions.foreignKeyCondition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, ConditionType.LIKE, department.getKey());
+            TestDomain.EMP_DEPARTMENT_FK, Condition.Type.LIKE, department.getKey());
     assertEquals("deptno = ?", condition.getWhereClause());
   }
 

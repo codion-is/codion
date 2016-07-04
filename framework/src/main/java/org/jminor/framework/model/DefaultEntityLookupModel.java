@@ -15,8 +15,6 @@ import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
 import org.jminor.common.db.condition.Condition;
-import org.jminor.common.db.condition.ConditionSet;
-import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.Configuration;
@@ -288,7 +286,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    * @see #setAdditionalLookupCondition(Condition)
    */
   private EntitySelectCondition getEntitySelectCondition() {
-    final ConditionSet<Property.ColumnProperty> baseCondition = Conditions.conditionSet(Conjunction.OR);
+    final Condition.Set<Property.ColumnProperty> baseCondition = Conditions.conditionSet(Conjunction.OR);
     final String[] lookupTexts = multipleSelectionAllowedValue.get() ? searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
     for (final Property.ColumnProperty lookupProperty : lookupProperties) {
       for (final String rawLookupText : lookupTexts) {
@@ -297,7 +295,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
         final boolean caseSensitive = propertyLookupSettings.get(lookupProperty).getCaseSensitiveValue().get();
         final String lookupText = rawLookupText.trim();
         final String modifiedLookupText = searchStringValue.get().equals(wildcard) ? wildcard : ((wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : ""));
-        baseCondition.add(EntityConditions.propertyCondition(lookupProperty, ConditionType.LIKE, caseSensitive, modifiedLookupText));
+        baseCondition.add(EntityConditions.propertyCondition(lookupProperty, Condition.Type.LIKE, caseSensitive, modifiedLookupText));
       }
     }
 

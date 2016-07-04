@@ -4,7 +4,6 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.db.condition.Condition;
-import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.condition.EntityConditions;
@@ -45,7 +44,7 @@ public class DefaultPropertyConditionModel extends DefaultColumnConditionModel<P
   /** {@inheritDoc} */
   @Override
   public final Condition<Property.ColumnProperty> getCondition() {
-    return getConditionType().getValues().equals(ConditionType.Values.TWO) ?
+    return getConditionType().getValues().equals(Condition.Type.Values.TWO) ?
             EntityConditions.propertyCondition(getColumnIdentifier(), getConditionType(), isCaseSensitive(), Arrays.asList(getLowerBound(), getUpperBound())) :
             EntityConditions.propertyCondition(getColumnIdentifier(), getConditionType(), isCaseSensitive(), getUpperBound());
   }

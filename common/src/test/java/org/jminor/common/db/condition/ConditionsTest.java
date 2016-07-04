@@ -20,10 +20,10 @@ import static org.junit.Assert.assertEquals;
 
 public final class ConditionsTest {
 
-  private static final ConditionSet AND_SET = Conditions.conditionSet(Conjunction.AND, new TestCondition(), new TestCondition());
-  private static final ConditionSet<Object> OR_SET = Conditions.conditionSet(Conjunction.OR, new TestCondition(), new TestCondition());
-  private static final ConditionSet<Object> AND_OR_AND_SET = Conditions.conditionSet(Conjunction.AND, AND_SET, OR_SET);
-  private static final ConditionSet<Object> AND_OR_OR_SET = Conditions.conditionSet(Conjunction.OR, AND_SET, OR_SET);
+  private static final Condition.Set AND_SET = Conditions.conditionSet(Conjunction.AND, new TestCondition(), new TestCondition());
+  private static final Condition.Set<Object> OR_SET = Conditions.conditionSet(Conjunction.OR, new TestCondition(), new TestCondition());
+  private static final Condition.Set<Object> AND_OR_AND_SET = Conditions.conditionSet(Conjunction.AND, AND_SET, OR_SET);
+  private static final Condition.Set<Object> AND_OR_OR_SET = Conditions.conditionSet(Conjunction.OR, AND_SET, OR_SET);
 
   @Test
   public void andSet() {
@@ -50,7 +50,7 @@ public final class ConditionsTest {
 
   @Test
   public void getConditionCount() {
-    ConditionSet<Object> set = Conditions.conditionSet(Conjunction.OR);
+    Condition.Set<Object> set = Conditions.conditionSet(Conjunction.OR);
     assertEquals(0, set.getConditionCount());
     assertEquals("", set.getWhereClause());
 

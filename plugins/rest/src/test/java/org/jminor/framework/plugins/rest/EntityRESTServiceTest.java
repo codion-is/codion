@@ -4,7 +4,7 @@
 package org.jminor.framework.plugins.rest;
 
 import org.jminor.common.User;
-import org.jminor.common.db.condition.ConditionType;
+import org.jminor.common.db.condition.Condition;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;
@@ -186,7 +186,7 @@ public class EntityRESTServiceTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath(EntityRESTService.BY_VALUE_PATH)
             .addParameter("entityID", TestDomain.T_DEPARTMENT)
-            .addParameter("conditionType", ConditionType.LIKE.toString())
+            .addParameter("conditionType", Condition.Type.LIKE.toString())
             .addParameter("values", "{\"dname\":\"New name\"}");
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
@@ -207,7 +207,7 @@ public class EntityRESTServiceTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath(EntityRESTService.BY_VALUE_PATH)
             .addParameter("entityID", TestDomain.T_DEPARTMENT)
-            .addParameter("conditionType", ConditionType.LIKE.toString())
+            .addParameter("conditionType", Condition.Type.LIKE.toString())
             .addParameter("values", "{\"deptno\":\"-42\"}");
     response = client.execute(new HttpDelete(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());

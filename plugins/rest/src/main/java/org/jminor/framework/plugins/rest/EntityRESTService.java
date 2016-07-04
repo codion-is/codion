@@ -7,8 +7,6 @@ import org.jminor.common.Conjunction;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.condition.Condition;
-import org.jminor.common.db.condition.ConditionSet;
-import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.server.ClientUtil;
@@ -80,7 +78,7 @@ public final class EntityRESTService extends Application {
   @Path(BY_VALUE_PATH)
   public Response select(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
                          @QueryParam("entityID") final String entityID,
-                         @QueryParam("conditionType") final ConditionType conditionType,
+                         @QueryParam("conditionType") final Condition.Type conditionType,
                          @QueryParam("values") final String values) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
@@ -153,7 +151,7 @@ public final class EntityRESTService extends Application {
   @Path(BY_VALUE_PATH)
   public Response delete(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
                          @QueryParam("entityID") final String entityID,
-                         @QueryParam("conditionType") final ConditionType conditionType,
+                         @QueryParam("conditionType") final Condition.Type conditionType,
                          @QueryParam("values") final String values) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
@@ -227,13 +225,13 @@ public final class EntityRESTService extends Application {
     }
   }
 
-  private static ConditionSet<Property.ColumnProperty> createPropertyCondition(final String entityID, final ConditionType conditionType,
-                                                                               final String values) throws JSONException, ParseException {
+  private static Condition.Set<Property.ColumnProperty> createPropertyCondition(final String entityID, final Condition.Type conditionType,
+                                                                                final String values) throws JSONException, ParseException {
     if (conditionType == null || Util.nullOrEmpty(values)) {
       return null;
     }
     final JSONObject jsonObject = new JSONObject(values);
-    final ConditionSet<Property.ColumnProperty> set = Conditions.conditionSet(Conjunction.AND);
+    final Condition.Set<Property.ColumnProperty> set = Conditions.conditionSet(Conjunction.AND);
     for (final String propertyID : JSONObject.getNames(jsonObject)) {
       final Property.ColumnProperty property = Entities.getColumnProperty(entityID, propertyID);
       final Condition<Property.ColumnProperty> condition = EntityConditions.propertyCondition(property,

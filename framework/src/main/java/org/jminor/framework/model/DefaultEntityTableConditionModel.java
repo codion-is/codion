@@ -13,8 +13,6 @@ import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Util;
 import org.jminor.common.db.condition.Condition;
-import org.jminor.common.db.condition.ConditionSet;
-import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnConditionModel;
@@ -214,7 +212,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   /** {@inheritDoc} */
   @Override
   public final Condition<Property.ColumnProperty> getTableCondition() {
-    final ConditionSet<Property.ColumnProperty> conditionSet = Conditions.conditionSet(conjunction);
+    final Condition.Set<Property.ColumnProperty> conditionSet = Conditions.conditionSet(conjunction);
     for (final PropertyConditionModel<? extends Property.SearchableProperty> conditionModel : propertyConditionModels.values()) {
       if (conditionModel.isEnabled()) {
         conditionSet.add(conditionModel.getCondition());
@@ -341,7 +339,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
       final PropertyConditionModel conditionModel = getPropertyConditionModel(searchProperty.getPropertyID());
       conditionModel.setCaseSensitive(false);
       conditionModel.setUpperBound(searchTextWithWildcards);
-      conditionModel.setConditionType(ConditionType.LIKE);
+      conditionModel.setConditionType(Condition.Type.LIKE);
       conditionModel.setEnabled(true);
     }
   }

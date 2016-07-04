@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.empdept.beans;
 
-import org.jminor.common.db.condition.ConditionType;
+import org.jminor.common.db.condition.Condition;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.EntityUtil;
@@ -33,7 +33,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
       managerModel.setFilterSelectedItem(false);
       //Only show the president and managers
       managerModel.setEntitySelectCondition(EntityConditions.selectCondition(T_EMPLOYEE, EMPLOYEE_JOB,
-              ConditionType.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
+              Condition.Type.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
 
       return managerModel;
     }

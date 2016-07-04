@@ -10,7 +10,6 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.condition.Condition;
-import org.jminor.common.db.condition.ConditionType;
 import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.dbms.H2Database;
 import org.jminor.common.db.exception.DatabaseException;
@@ -229,13 +228,13 @@ public class LocalEntityConnectionTest {
     int rowCount = connection.selectRowCount(EntityConditions.condition(TestDomain.T_DEPARTMENT));
     assertEquals(4, rowCount);
     Condition<Property.ColumnProperty> deptNoCondition = EntityConditions.propertyCondition(TestDomain.T_DEPARTMENT,
-            TestDomain.DEPARTMENT_ID, ConditionType.GREATER_THAN, 30);
+            TestDomain.DEPARTMENT_ID, Condition.Type.GREATER_THAN, 30);
     rowCount = connection.selectRowCount(EntityConditions.condition(TestDomain.T_DEPARTMENT, deptNoCondition));
     assertEquals(2, rowCount);
 
     rowCount = connection.selectRowCount(EntityConditions.condition(JOINED_QUERY_ENTITY_ID));
     assertEquals(16, rowCount);
-    deptNoCondition = EntityConditions.propertyCondition(JOINED_QUERY_ENTITY_ID, "d.deptno", ConditionType.GREATER_THAN, 30);
+    deptNoCondition = EntityConditions.propertyCondition(JOINED_QUERY_ENTITY_ID, "d.deptno", Condition.Type.GREATER_THAN, 30);
     rowCount = connection.selectRowCount(EntityConditions.condition(JOINED_QUERY_ENTITY_ID, deptNoCondition));
     assertEquals(4, rowCount);
   }
@@ -336,7 +335,7 @@ public class LocalEntityConnectionTest {
     assertEquals("SALES", result.get(3));
 
     result = connection.selectValues(TestDomain.DEPARTMENT_NAME, EntityConditions.condition(TestDomain.T_DEPARTMENT,
-            TestDomain.DEPARTMENT_ID, ConditionType.LIKE, 10));
+            TestDomain.DEPARTMENT_ID, Condition.Type.LIKE, 10));
     assertTrue(result.contains("ACCOUNTING"));
     assertFalse(result.contains("SALES"));
   }
@@ -347,7 +346,7 @@ public class LocalEntityConnectionTest {
     final EntityConnection connection2 = initializeConnection();
     final String originalLocation;
     try {
-      final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, ConditionType.LIKE, "SALES");
+      final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "SALES");
       condition.setForUpdate(true);
 
       Entity sales = connection.selectSingle(condition);
@@ -386,7 +385,7 @@ public class LocalEntityConnectionTest {
     connection.setOptimisticLocking(true);
     final Entity allen;
     try {
-      final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_EMP, TestDomain.EMP_NAME, ConditionType.LIKE, "ALLEN");
+      final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_EMP, TestDomain.EMP_NAME, Condition.Type.LIKE, "ALLEN");
 
       allen = connection.selectSingle(condition);
 

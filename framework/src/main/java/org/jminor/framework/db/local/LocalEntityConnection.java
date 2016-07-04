@@ -13,7 +13,7 @@ import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
-import org.jminor.common.db.condition.ConditionType;
+import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
@@ -131,7 +131,7 @@ final class LocalEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public Type getType() {
-    return Type.LOCAL;
+    return EntityConnection.Type.LOCAL;
   }
 
   /** {@inheritDoc} */
@@ -359,7 +359,7 @@ final class LocalEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DatabaseException {
-    return selectSingle(EntityConditions.selectCondition(entityID, propertyID, ConditionType.LIKE, value));
+    return selectSingle(EntityConditions.selectCondition(entityID, propertyID, Condition.Type.LIKE, value));
   }
 
   /** {@inheritDoc} */
@@ -395,7 +395,7 @@ final class LocalEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws DatabaseException {
-    return selectMany(EntityConditions.selectCondition(entityID, propertyID, ConditionType.LIKE, Arrays.asList(values)));
+    return selectMany(EntityConditions.selectCondition(entityID, propertyID, Condition.Type.LIKE, Arrays.asList(values)));
   }
 
   /** {@inheritDoc} */
