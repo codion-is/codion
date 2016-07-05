@@ -29,7 +29,7 @@ import java.util.Collection;
 
 public final class PropertyConditionView extends BorderPane {
 
-  private final ColumnConditionModel<? extends Property.SearchableProperty> model;
+  private final ColumnConditionModel<? extends Property> model;
   private final Pane conditionTypePane;
   private final Pane topPane;
   private final Label header;
@@ -39,7 +39,7 @@ public final class PropertyConditionView extends BorderPane {
   private final Control lowerBoundControl;
   private final State advancedCondition = States.state();
 
-  public PropertyConditionView(final ColumnConditionModel<? extends Property.SearchableProperty> model) {
+  public PropertyConditionView(final ColumnConditionModel<? extends Property> model) {
     this.model = model;
     this.header = new Label(model.getColumnIdentifier().getCaption());
     this.enabledBox = createEnabledBox();

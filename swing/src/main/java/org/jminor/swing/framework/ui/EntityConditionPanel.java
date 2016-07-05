@@ -83,11 +83,10 @@ public final class EntityConditionPanel extends JPanel {
   }
 
   private JList initializePropertyList(final EntityTableConditionModel conditionModel, final JPanel editorPanel) {
-    final List<PropertyConditionModel<? extends Property.SearchableProperty>> searchCondition = getSortedConditions(conditionModel);
-    final JList<PropertyConditionModel<? extends Property.SearchableProperty>> propertyList = new JList<>(new DefaultListModel<>());
+    final List<PropertyConditionModel<? extends Property>> searchCondition = getSortedConditions(conditionModel);
+    final JList<PropertyConditionModel<? extends Property>> propertyList = new JList<>(new DefaultListModel<>());
     for (final PropertyConditionModel model : searchCondition) {
-      ((DefaultListModel<PropertyConditionModel<? extends Property.SearchableProperty>>)
-              propertyList.getModel()).addElement(model);
+      ((DefaultListModel<PropertyConditionModel<? extends Property>>) propertyList.getModel()).addElement(model);
       model.addConditionStateListener(new RepaintListener(propertyList));
     }
     propertyList.setCellRenderer(new ConditionListCellRenderer());
@@ -98,9 +97,8 @@ public final class EntityConditionPanel extends JPanel {
     return propertyList;
   }
 
-  private List<PropertyConditionModel<? extends Property.SearchableProperty>> getSortedConditions(
-          final EntityTableConditionModel conditionModel) {
-    final List<PropertyConditionModel<? extends Property.SearchableProperty>> conditionModels =
+  private List<PropertyConditionModel<? extends Property>> getSortedConditions(final EntityTableConditionModel conditionModel) {
+    final List<PropertyConditionModel<? extends Property>> conditionModels =
             new ArrayList<>(conditionModel.getPropertyConditionModels());
     Collections.sort(conditionModels, new ConditionModelComparator());
 
@@ -134,11 +132,11 @@ public final class EntityConditionPanel extends JPanel {
   }
 
   private static final class ConditionModelComparator implements
-          Comparator<PropertyConditionModel<? extends Property.SearchableProperty>>, Serializable {
+          Comparator<PropertyConditionModel<? extends Property>>, Serializable {
     private static final long serialVersionUID = 1;
     @Override
-    public int compare(final PropertyConditionModel<? extends Property.SearchableProperty> o1,
-                       final PropertyConditionModel<? extends Property.SearchableProperty> o2) {
+    public int compare(final PropertyConditionModel<? extends Property> o1,
+                       final PropertyConditionModel<? extends Property> o2) {
       final Property propertyOne = o1.getColumnIdentifier();
       final Property propertyTwo = o2.getColumnIdentifier();
       if (propertyOne.getCaption() != null && propertyTwo.getCaption() != null) {

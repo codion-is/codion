@@ -41,7 +41,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   private final String entityID;
   private final Map<String, ColumnConditionModel<Property>> propertyFilterModels = new LinkedHashMap<>();
-  private final Map<String, PropertyConditionModel<? extends Property.SearchableProperty>> propertyConditionModels = new HashMap<>();
+  private final Map<String, PropertyConditionModel<? extends Property>> propertyConditionModels = new HashMap<>();
   private Condition<Property.ColumnProperty> additionalCondition;
   private Conjunction conjunction = Conjunction.AND;
   private String rememberedConditionState = "";
@@ -144,7 +144,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final Collection<PropertyConditionModel<? extends Property.SearchableProperty>> getPropertyConditionModels() {
+  public final Collection<PropertyConditionModel<? extends Property>> getPropertyConditionModels() {
     return Collections.unmodifiableCollection(propertyConditionModels.values());
   }
 
@@ -156,7 +156,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final PropertyConditionModel<? extends Property.SearchableProperty> getPropertyConditionModel(final String propertyID) {
+  public final PropertyConditionModel<? extends Property> getPropertyConditionModel(final String propertyID) {
     if (propertyConditionModels.containsKey(propertyID)) {
       return propertyConditionModels.get(propertyID);
     }
@@ -214,7 +214,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   @Override
   public final Condition<Property.ColumnProperty> getTableCondition() {
     final Condition.Set<Property.ColumnProperty> conditionSet = Conditions.conditionSet(conjunction);
-    for (final PropertyConditionModel<? extends Property.SearchableProperty> conditionModel : propertyConditionModels.values()) {
+    for (final PropertyConditionModel<? extends Property> conditionModel : propertyConditionModels.values()) {
       if (conditionModel.isEnabled()) {
         conditionSet.add(conditionModel.getCondition());
       }
@@ -338,7 +338,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
     final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
     final String searchTextWithWildcards = wildcard + searchString + wildcard;
     final Collection<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(entityID);
-    for (final Property searchProperty : searchProperties) {
+    for (final Property.ColumnProperty searchProperty : searchProperties) {
       final PropertyConditionModel conditionModel = getPropertyConditionModel(searchProperty.getPropertyID());
       conditionModel.setCaseSensitive(false);
       conditionModel.setUpperBound(searchTextWithWildcards);

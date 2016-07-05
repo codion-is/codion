@@ -4322,3 +4322,4 @@
 0.10.7
   PropertyConditionModelProvider refactored to get rid of wildcard return type
   Sonar run
+  Property.SearchableProperty removed

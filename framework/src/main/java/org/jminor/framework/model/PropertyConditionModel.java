@@ -11,7 +11,7 @@ import org.jminor.framework.domain.Property;
  * A base interface for a column condition based on a property.
  * @param <T> the type of {@link Property} this condition model is based on
  */
-public interface PropertyConditionModel<T extends Property.SearchableProperty> extends ColumnConditionModel<T> {
+public interface PropertyConditionModel<T extends Property> extends ColumnConditionModel<T> {
 
   /**
    * @return a condition object based on this condition model

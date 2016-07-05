@@ -41,16 +41,18 @@ public final class EntityTableColumn extends FXEntityListModel.PropertyTableColu
   }
 
   private PropertyConditionView initializeConditionView(final FXEntityListModel listModel) {
-    if (!(getProperty() instanceof Property.SearchableProperty)) {
-      return null;
-    }
-    final ColumnConditionModel<? extends Property.SearchableProperty> conditionModel =
-            listModel.getConditionModel().getPropertyConditionModel(getProperty().getPropertyID());
-    final PropertyConditionView view = new PropertyConditionView(conditionModel);
-    view.prefWidthProperty().setValue(getWidth());
-    widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));
-    widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));
+    final Property property = getProperty();
+    if (property instanceof Property.ColumnProperty || property instanceof Property.ForeignKeyProperty) {
+      final ColumnConditionModel<? extends Property> conditionModel =
+              listModel.getConditionModel().getPropertyConditionModel(getProperty().getPropertyID());
+      final PropertyConditionView view = new PropertyConditionView(conditionModel);
+      view.prefWidthProperty().setValue(getWidth());
+      widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));
+      widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));
 
-    return view;
+      return view;
+    }
+
+    return null;
   }
 }

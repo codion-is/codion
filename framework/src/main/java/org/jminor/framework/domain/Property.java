@@ -278,14 +278,9 @@ public interface Property extends Attribute {
   boolean isReadOnly();
 
   /**
-   * Specifies a property that can be include in database search condition
-   */
-  interface SearchableProperty extends Property {}
-
-  /**
    * Specifies a property based on a table column
    */
-  interface ColumnProperty extends SearchableProperty, org.jminor.common.db.Column {
+  interface ColumnProperty extends Property, org.jminor.common.db.Column {
 
     /**
      * @return the data type of the underlying column, usually the same as {@link #getType()}
@@ -443,7 +438,7 @@ public interface Property extends Attribute {
    * e.g.: Properties.foreignKeyProperty("reference_fk", Properties.columnProperty("reference_id")), where "reference_id" is the
    * actual name of the column involved in the reference, but "reference_fk" is simply a descriptive property ID
    */
-  interface ForeignKeyProperty extends SearchableProperty {
+  interface ForeignKeyProperty extends Property {
 
     /**
      * @return true if all reference properties comprising this

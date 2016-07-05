@@ -117,7 +117,7 @@ public interface EntityTableConditionModel extends FilterCondition<Entity>, Refr
   /**
    * @return a Collection containing the PropertyConditionModels available in this table condition model
    */
-  Collection<PropertyConditionModel<? extends Property.SearchableProperty>> getPropertyConditionModels();
+  Collection<PropertyConditionModel<? extends Property>> getPropertyConditionModels();
 
   /**
    * @param propertyID the id of the property for which to retrieve the PropertyConditionModel
@@ -125,7 +125,7 @@ public interface EntityTableConditionModel extends FilterCondition<Entity>, Refr
    * @throws IllegalArgumentException in case no condition model is available
    * @see #containsPropertyConditionModel(String)
    */
-  PropertyConditionModel<? extends Property.SearchableProperty> getPropertyConditionModel(final String propertyID);
+  PropertyConditionModel<? extends Property> getPropertyConditionModel(final String propertyID);
 
   /**
    * Clears the search state of all PropertyConditionModels, disables them and

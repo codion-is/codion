@@ -659,7 +659,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
                 "' does not match the number of primary key properties in the referenced entity '" + foreignKeyProperty.getReferencedEntityID() + "'");
       }
     }
-    for (final Property referenceProperty : referenceProperties) {
+    for (final Property.ColumnProperty referenceProperty : referenceProperties) {
       if (!(referenceProperty instanceof Property.MirrorProperty)) {
         if (properties.containsKey(referenceProperty.getPropertyID())) {
           throw new IllegalArgumentException("Property with ID " + referenceProperty.getPropertyID()
