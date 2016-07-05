@@ -32,7 +32,6 @@ public final class HostMonitor {
 
   private final Event serverAddedEvent = Events.event();
   private final Event serverRemovedEvent = Events.event();
-  private final Event<List<User>> requestCredentialsEvent = Events.event();
 
   private final String hostName;
   private final int registryPort;

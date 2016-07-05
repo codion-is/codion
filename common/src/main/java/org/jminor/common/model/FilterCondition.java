@@ -17,6 +17,7 @@ public interface FilterCondition<T> {
 
   /**
    * A convenience condition class which always returns true
+   * @param <T> the type of items this condition filters.
    */
   final class AcceptAllCondition<T> implements FilterCondition<T> {
     /**
@@ -31,6 +32,7 @@ public interface FilterCondition<T> {
 
   /**
    * A convenience condition class which always returns false
+   * @param <T> the type of items this condition filters.
    */
   final class RejectAllCondition<T> implements FilterCondition<T> {
     /**

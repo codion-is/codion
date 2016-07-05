@@ -259,6 +259,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setSortComparator(final Comparator<? super T> sortComparator) {
     this.sortComparator = sortComparator;
     sortVisibleItems();

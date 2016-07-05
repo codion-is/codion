@@ -4319,3 +4319,6 @@
   FilteredComboBoxModel reintroduced, too quick on the delete trigger
   ConditionType is now Condition.Type
   ConditionSet is now Condition.Set
+0.10.7
+  PropertyConditionModelProvider refactored to get rid of wildcard return type
+  Sonar run

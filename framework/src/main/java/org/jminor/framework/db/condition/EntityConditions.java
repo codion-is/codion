@@ -399,6 +399,7 @@ public final class EntityConditions {
       return entityID;
     }
 
+    @Override
     public Condition<Property.ColumnProperty> getCondition() {
       return condition;
     }
@@ -471,6 +472,7 @@ public final class EntityConditions {
       this.fetchCount = fetchCount;
     }
 
+    @Override
     public Condition<Property.ColumnProperty> getCondition() {
       return condition.getCondition();
     }

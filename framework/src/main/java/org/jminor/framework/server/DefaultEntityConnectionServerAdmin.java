@@ -58,7 +58,6 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
    * The server being administrated
    */
   private final DefaultEntityConnectionServer server;
-  private final String serverName;
   private final LinkedList<GcEvent> gcEventList = new LinkedList();
 
   /**
@@ -73,7 +72,6 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
             Objects.requireNonNull(server).isSslEnabled() ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             server.isSslEnabled() ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.server = server;
-    this.serverName = server.getServerInfo().getServerName();
     initializeGarbageCollectionListener();
   }
 

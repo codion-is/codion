@@ -66,6 +66,13 @@ public final class FileUtil {
     }
   }
 
+  /**
+   * @param headers any headers to write first
+   * @param data the data
+   * @param delimiter the delimiter
+   * @param file the file to write to
+   * @throws IOException in case of an exception
+   */
   public static void writeDelimitedFile(final String[][] headers, final String[][] data, final String delimiter,
                                         final File file) throws IOException {
     writeFile(TextUtil.getDelimitedString(headers, data, delimiter), file);

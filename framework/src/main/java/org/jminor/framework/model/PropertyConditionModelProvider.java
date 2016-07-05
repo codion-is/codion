@@ -14,10 +14,19 @@ public interface PropertyConditionModelProvider {
   /**
    * Initializes a PropertyConditionModel for the given property
    * @param property the Property for which to create a PropertyConditionModel
-   * @param connectionProvider the EntityConnectionProvider instance to use in case the property is a ForeignKeyProperty
-   * @return a PropertyConditionModel for the given property, null if this property is not searchable or if searching
+   * @return a PropertyConditionModel for the given property, null if searching
    * should not be allowed for this property
    */
-  PropertyConditionModel<? extends Property.SearchableProperty> initializePropertyConditionModel(
-          final Property.SearchableProperty property, final EntityConnectionProvider connectionProvider);
+  PropertyConditionModel<Property.ColumnProperty> initializePropertyConditionModel(
+          final Property.ColumnProperty property);
+
+  /**
+   * Initializes a PropertyConditionModel for the given property
+   * @param property the Property for which to create a PropertyConditionModel
+   * @param connectionProvider the EntityConnectionProvider instance to use
+   * @return a PropertyConditionModel for the given property, null if searching
+   * should not be allowed for this property
+   */
+  PropertyConditionModel<Property.ForeignKeyProperty> initializeForeignKeyConditionModel(
+          final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider);
 }

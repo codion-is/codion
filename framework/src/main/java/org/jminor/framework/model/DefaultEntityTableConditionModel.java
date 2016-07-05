@@ -143,6 +143,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Collection<PropertyConditionModel<? extends Property.SearchableProperty>> getPropertyConditionModels() {
     return Collections.unmodifiableCollection(propertyConditionModels.values());
   }
@@ -239,11 +240,13 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getSimpleConditionString() {
     return simpleConditionString;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setSimpleConditionString(final String simpleConditionString) {
     this.simpleConditionString = simpleConditionString == null ? "" : simpleConditionString;
     clearPropertyConditionModels();
@@ -370,8 +373,8 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   private void initializeColumnPropertyConditionModels(final String entityID, final PropertyConditionModelProvider conditionModelProvider) {
     for (final Property.ColumnProperty columnProperty : Entities.getColumnProperties(entityID)) {
       if (!columnProperty.isForeignKeyProperty() && !columnProperty.isAggregateColumn()) {
-        final PropertyConditionModel<? extends Property.SearchableProperty> conditionModel =
-                conditionModelProvider.initializePropertyConditionModel(columnProperty, null);
+        final PropertyConditionModel<Property.ColumnProperty> conditionModel =
+                conditionModelProvider.initializePropertyConditionModel(columnProperty);
         if (conditionModel != null) {
           this.propertyConditionModels.put(conditionModel.getColumnIdentifier().getPropertyID(), conditionModel);
         }
@@ -382,8 +385,8 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   private void initializeForeignKeyPropertyConditionModels(final String entityID, final EntityConnectionProvider connectionProvider,
                                                            final PropertyConditionModelProvider conditionModelProvider) {
     for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityID)) {
-      final PropertyConditionModel<? extends Property.SearchableProperty> conditionModel =
-              conditionModelProvider.initializePropertyConditionModel(foreignKeyProperty, connectionProvider);
+      final PropertyConditionModel<Property.ForeignKeyProperty> conditionModel =
+              conditionModelProvider.initializeForeignKeyConditionModel(foreignKeyProperty, connectionProvider);
       if (conditionModel != null) {
         this.propertyConditionModels.put(conditionModel.getColumnIdentifier().getPropertyID(), conditionModel);
       }

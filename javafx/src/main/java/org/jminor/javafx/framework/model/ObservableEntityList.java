@@ -188,11 +188,13 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   }
 
   /** {@inheritDoc} */
+  @Override
   public final FilterCondition<Entity> getFilterCondition() {
     return filterCondition;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setFilterCondition(final FilterCondition<Entity> filterCondition) {
     this.filterCondition = filterCondition;
     filterContents();

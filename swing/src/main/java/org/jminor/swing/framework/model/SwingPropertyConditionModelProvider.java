@@ -20,18 +20,15 @@ public class SwingPropertyConditionModelProvider extends DefaultPropertyConditio
 
   /** {@inheritDoc} */
   @Override
-  public PropertyConditionModel<? extends Property.SearchableProperty> initializePropertyConditionModel(
-          final Property.SearchableProperty property, final EntityConnectionProvider connectionProvider) {
-    if (property instanceof Property.ForeignKeyProperty) {
-      final Property.ForeignKeyProperty foreignKeyProperty = (Property.ForeignKeyProperty) property;
-      if (Entities.isSmallDataset(foreignKeyProperty.getReferencedEntityID())) {
-        final EntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
-        comboBoxModel.setNullValue(EntityUtil.createToStringEntity(foreignKeyProperty.getReferencedEntityID(), ""));
+  public PropertyConditionModel<Property.ForeignKeyProperty> initializeForeignKeyConditionModel(final Property
+          .ForeignKeyProperty foreignKeyProperty, final EntityConnectionProvider connectionProvider) {
+    if (Entities.isSmallDataset(foreignKeyProperty.getReferencedEntityID())) {
+      final EntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
+      comboBoxModel.setNullValue(EntityUtil.createToStringEntity(foreignKeyProperty.getReferencedEntityID(), ""));
 
-        return new SwingForeignKeyConditionModel(foreignKeyProperty, comboBoxModel);
-      }
+      return new SwingForeignKeyConditionModel(foreignKeyProperty, comboBoxModel);
     }
 
-    return super.initializePropertyConditionModel(property, connectionProvider);
+    return super.initializeForeignKeyConditionModel(foreignKeyProperty, connectionProvider);
   }
 }

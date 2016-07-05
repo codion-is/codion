@@ -24,6 +24,9 @@ import java.util.Random;
  */
 public final class TextUtil {
 
+  /**
+   * Left or right alignment
+   */
   public enum Alignment {
     LEFT, RIGHT
   }
@@ -187,6 +190,12 @@ public final class TextUtil {
     return stringBuilder.toString();
   }
 
+  /**
+   * @param headers the headers
+   * @param data the data
+   * @param delimiter the delimiter
+   * @return a String comprised of the given headers and data with the given delimiter
+   */
   public static String getDelimitedString(final String[][] headers, final String[][] data, final String delimiter) {
     Objects.requireNonNull(headers, "headers");
     Objects.requireNonNull(data, "data");
@@ -257,11 +266,14 @@ public final class TextUtil {
    */
   public static String getTextFileContents(final String filename, final Charset charset) throws IOException {
     Objects.requireNonNull(filename, "filename");
-    return getTextFileContents(new FileInputStream(new File(filename)), charset);
+    try (final FileInputStream inputStream = new FileInputStream(new File(filename))) {
+      return getTextFileContents(inputStream, charset);
+    }
   }
 
   /**
-   * Fetch the entire contents of an InputStream, and return it in a String
+   * Fetch the entire contents of an InputStream, and return it in a String.
+   * Does not close the stream.
    * @param inputStream the input stream to read
    * @param charset the charset to use
    * @return the stream contents as a String

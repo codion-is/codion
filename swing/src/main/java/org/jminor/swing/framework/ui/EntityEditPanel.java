@@ -2134,9 +2134,8 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
     }
 
     private InsertEntityAction(final EntityLookupField lookupField, final EntityPanelProvider panelProvider) {
-      this(lookupField, panelProvider, lookupField.getModel().getConnectionProvider(), entities -> {
-        lookupField.getModel().setSelectedEntities(entities);
-      });
+      this(lookupField, panelProvider, lookupField.getModel().getConnectionProvider(), entities ->
+              lookupField.getModel().setSelectedEntities(entities));
     }
 
     private InsertEntityAction(final JComponent component, final EntityPanelProvider panelProvider,

@@ -14,21 +14,15 @@ public class DefaultPropertyConditionModelProvider implements PropertyConditionM
 
   /** {@inheritDoc} */
   @Override
-  public PropertyConditionModel<? extends Property.SearchableProperty> initializePropertyConditionModel(
-          final Property.SearchableProperty property, final EntityConnectionProvider connectionProvider) {
-    if (property instanceof Property.ForeignKeyProperty) {
-      return initializeForeignKeyConditionModel((Property.ForeignKeyProperty) property, connectionProvider);
-    }
-    else if (property instanceof Property.ColumnProperty) {
-      return new DefaultPropertyConditionModel((Property.ColumnProperty) property);
-    }
-
-    throw new IllegalArgumentException("Not a searchable property (Property.ColumnProperty or Property.ForeignKeyProperty): " + property);
+  public PropertyConditionModel<Property.ColumnProperty> initializePropertyConditionModel(
+          final Property.ColumnProperty property) {
+    return new DefaultPropertyConditionModel((Property.ColumnProperty) property);
   }
 
-  private PropertyConditionModel<? extends Property.SearchableProperty> initializeForeignKeyConditionModel(
+  /** {@inheritDoc} */
+  @Override
+  public PropertyConditionModel<Property.ForeignKeyProperty> initializeForeignKeyConditionModel(
           final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
-
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getReferencedEntityID(),
             connectionProvider, Entities.getSearchProperties(property.getReferencedEntityID()));
     lookupModel.getMultipleSelectionAllowedValue().set(true);
