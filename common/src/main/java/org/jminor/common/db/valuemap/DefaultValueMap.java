@@ -85,7 +85,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
     if (valueChangedEvent != null) {
       notifyValueChange(key, value, previousValue, initialization);
     }
-    handleSet(key, value, previousValue, initialization);
+    handlePut(key, value, previousValue, initialization);
 
     return previousValue;
   }
@@ -251,7 +251,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
       for (final K key : sourceValueKeys) {
         final V value = copy(sourceMap.get(key));
         values.put(key, value);
-        handleSet(key, value, null, true);
+        handlePut(key, value, null, true);
       }
       if (sourceMap.isModified()) {
         originalValues = new HashMap<>();
@@ -367,13 +367,13 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
   }
 
   /**
-   * Called after a value has been set. This base implementation does nothing.
+   * Called after a value has been put. This base implementation does nothing.
    * @param key the key
    * @param value the value
    * @param previousValue the previous value
    * @param initialization true if the value was being initialized
    */
-  protected void handleSet(final K key, final V value, final V previousValue, final boolean initialization) {/*Provided for subclasses*/}
+  protected void handlePut(final K key, final V value, final V previousValue, final boolean initialization) {/*Provided for subclasses*/}
 
   /**
    * Called after a value has been removed from this map. This base implementation does nothing.

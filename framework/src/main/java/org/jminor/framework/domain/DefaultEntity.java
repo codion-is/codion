@@ -978,7 +978,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
 
     @Override
-    protected void handleSet(final Property.ColumnProperty key, final Object value, final Object previousValue,
+    protected void handlePut(final Property.ColumnProperty key, final Object value, final Object previousValue,
                              final boolean initialization) {
       hashCodeDirty = true;
       if (singleIntegerKey) {
