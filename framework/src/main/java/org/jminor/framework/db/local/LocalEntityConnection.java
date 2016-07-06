@@ -976,7 +976,7 @@ final class LocalEntityConnection implements EntityConnection {
     }
   }
 
-  private static void setParameterValues(final PreparedStatement statement, final List<?> values,
+  private static void setParameterValues(final PreparedStatement statement, final List values,
                                          final List<Property.ColumnProperty> parameterProperties) throws SQLException {
     if (Util.nullOrEmpty(values) || statement.getParameterMetaData().getParameterCount() == 0) {
       return;
@@ -1107,8 +1107,7 @@ final class LocalEntityConnection implements EntityConnection {
    */
   private static String createInsertSQL(final String entityID, final Collection<Property.ColumnProperty> insertProperties) {
     final String tableName = Entities.getTableName(entityID);
-    final StringBuilder sql = new StringBuilder("insert ").append(getInsertHint(tableName))
-            .append("into ").append(tableName).append("(");
+    final StringBuilder sql = new StringBuilder("insert ").append("into ").append(tableName).append("(");
     final StringBuilder columnValues = new StringBuilder(") values(");
     int columnIndex = 0;
     for (final Property.ColumnProperty property : insertProperties) {
@@ -1216,16 +1215,6 @@ final class LocalEntityConnection implements EntityConnection {
     }
 
     return dependencies;
-  }
-
-  private static String getInsertHint(final String tableName) {
-    final String insertHint = Databases.getInsertHint(tableName);
-    if (Util.nullOrEmpty(insertHint)) {
-      return "";
-    }
-    else {
-      return insertHint + " ";
-    }
   }
 
   private static final class Dependency {
