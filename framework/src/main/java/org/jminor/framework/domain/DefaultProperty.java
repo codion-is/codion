@@ -819,7 +819,7 @@ class DefaultProperty implements Property {
     private static Double getDouble(final ResultSet resultSet, final int columnIndex) throws SQLException {
       final double value = resultSet.getDouble(columnIndex);
 
-      return value == 0 && resultSet.wasNull() ? null : value;
+      return Double.compare(value, 0) == 0 && resultSet.wasNull() ? null : value;
     }
 
     private static String getString(final ResultSet resultSet, final int columnIndex) throws SQLException {

@@ -822,7 +822,7 @@ public final class NavigableImagePanel extends JPanel {
       return;
     }
 
-    if (scale == 0.0) {
+    if (Double.compare(scale, 0) == 0) {
       initializeParams();
     }
 
