@@ -113,7 +113,7 @@ public class EntityConditionUtilTest {
     final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_DEPARTMENT,
             Conditions.stringCondition("department name is not null"), TestDomain.DEPARTMENT_NAME, -1);
     assertEquals(0, condition.getValues().size());
-    assertEquals(0, condition.getValueKeys().size());
+    assertEquals(0, condition.getColumns().size());
     assertEquals(condition.getOrderByClause(), TestDomain.DEPARTMENT_NAME);
   }
 
@@ -134,17 +134,17 @@ public class EntityConditionUtilTest {
     assertEquals(TestDomain.T_DEPARTMENT, condition.getEntityID());
     assertEquals("deptno = ?", condition.getWhereClause());
     assertEquals(1, condition.getValues().size());
-    assertEquals(1, condition.getValueKeys().size());
+    assertEquals(1, condition.getColumns().size());
     assertEquals(10, condition.getValues().get(0));
-    assertEquals(TestDomain.DEPARTMENT_ID, condition.getValueKeys().get(0).getPropertyID());
+    assertEquals(TestDomain.DEPARTMENT_ID, condition.getColumns().get(0).getPropertyID());
   }
 
   private void assertCondition(final EntityCondition condition) {
     assertEquals(TestDomain.T_DEPARTMENT, condition.getEntityID());
     assertEquals("dname not like ?", condition.getWhereClause());
     assertEquals(1, condition.getValues().size());
-    assertEquals(1, condition.getValueKeys().size());
+    assertEquals(1, condition.getColumns().size());
     assertEquals("DEPT", condition.getValues().get(0));
-    assertEquals(TestDomain.DEPARTMENT_NAME, condition.getValueKeys().get(0).getPropertyID());
+    assertEquals(TestDomain.DEPARTMENT_NAME, condition.getColumns().get(0).getPropertyID());
   }
 }

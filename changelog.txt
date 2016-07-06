@@ -4327,3 +4327,4 @@
   EntityTableConditionModel.setConditionValues() removed wildcard type
   MasterDetailPanel.getDetailPanels() removed wildcard type
   Floating point comparison now done with Double.compare()
+  Condition now Column based, Condition.getValueKeys() renamed to getColumns()

@@ -390,8 +390,8 @@ public final class EntityConditions {
     }
 
     @Override
-    public List<Property.ColumnProperty> getValueKeys() {
-      return condition == null ? null : condition.getValueKeys();
+    public List<Property.ColumnProperty> getColumns() {
+      return condition == null ? null : condition.getColumns();
     }
 
     @Override
@@ -483,8 +483,8 @@ public final class EntityConditions {
     }
 
     @Override
-    public List<Property.ColumnProperty> getValueKeys() {
-      return condition.getValueKeys();
+    public List<Property.ColumnProperty> getColumns() {
+      return condition.getColumns();
     }
 
     @Override
@@ -662,8 +662,8 @@ public final class EntityConditions {
     }
 
     @Override
-    public List<Property.ColumnProperty> getValueKeys() {
-      return conditionSet.getValueKeys();
+    public List<Property.ColumnProperty> getColumns() {
+      return conditionSet.getColumns();
     }
 
     @Override
@@ -785,7 +785,7 @@ public final class EntityConditions {
     }
 
     @Override
-    public List<Property.ColumnProperty> getValueKeys() {
+    public List<Property.ColumnProperty> getColumns() {
       if (isNullCondition) {
         return Collections.emptyList();
       }//null condition, uses 'x is null', not 'x = ?'
@@ -956,7 +956,7 @@ public final class EntityConditions {
     }
 
     @Override
-    public List<Property.ColumnProperty> getValueKeys() {
+    public List<Property.ColumnProperty> getColumns() {
       if (isNullCondition) {
         return Collections.emptyList();
       }//null condition, uses 'x is null', not 'x = ?'
@@ -1005,10 +1005,10 @@ public final class EntityConditions {
 
     private List<Property.ColumnProperty> getForeignKeyValueProperties() {
       if (values.size() > 1) {
-        return createMultipleCompositeForeignKeyCondition().getValueKeys();
+        return createMultipleCompositeForeignKeyCondition().getColumns();
       }
 
-      return createSingleForeignKeyCondition(values.iterator().next()).getValueKeys();
+      return createSingleForeignKeyCondition(values.iterator().next()).getColumns();
     }
 
     private Condition<Property.ColumnProperty> createMultipleCompositeForeignKeyCondition() {

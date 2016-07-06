@@ -267,7 +267,7 @@ final class LocalEntityConnection implements EntityConnection {
 
             final EntityCondition condition = EntityConditions.condition(entity.getOriginalKey());
             updateSQL = createUpdateSQL(tableName, statementProperties, condition);
-            statementProperties.addAll(condition.getValueKeys());
+            statementProperties.addAll(condition.getColumns());
             statementValues.addAll(condition.getValues());
             statement = prepareStatement(updateSQL);
             executePreparedUpdate(statement, updateSQL, statementProperties, statementValues);
@@ -304,7 +304,7 @@ final class LocalEntityConnection implements EntityConnection {
       try {
         deleteSQL = createDeleteSQL(condition);
         statement = prepareStatement(deleteSQL);
-        executePreparedUpdate(statement, deleteSQL, condition.getValueKeys(), condition.getValues());
+        executePreparedUpdate(statement, deleteSQL, condition.getColumns(), condition.getValues());
         commitIfTransactionIsNotOpen();
       }
       catch (final SQLException e) {
@@ -339,7 +339,7 @@ final class LocalEntityConnection implements EntityConnection {
           final EntityCondition condition = EntityConditions.condition(conditionKeys);
           deleteSQL = createDeleteSQL(condition);
           statement = prepareStatement(deleteSQL);
-          executePreparedUpdate(statement, deleteSQL, condition.getValueKeys(), condition.getValues());
+          executePreparedUpdate(statement, deleteSQL, condition.getColumns(), condition.getValues());
           statement.close();
           conditionKeys.clear();
         }
@@ -620,7 +620,7 @@ final class LocalEntityConnection implements EntityConnection {
         values.add(null);//the blob value, set explicitly later
         values.addAll(condition.getValues());
         properties.add(property);
-        properties.addAll(condition.getValueKeys());
+        properties.addAll(condition.getColumns());
 
         statement = prepareStatement(sql);
         setParameterValues(statement, values, properties);
@@ -665,7 +665,7 @@ final class LocalEntityConnection implements EntityConnection {
       try {
         logAccess("readBlob", new Object[]{sql});
         statement = prepareStatement(sql);
-        setParameterValues(statement, condition.getValues(), condition.getValueKeys());
+        setParameterValues(statement, condition.getValues(), condition.getColumns());
 
         resultSet = statement.executeQuery();
         final List<Blob> result = BLOB_RESULT_PACKER.pack(resultSet, 1);
@@ -887,7 +887,7 @@ final class LocalEntityConnection implements EntityConnection {
     final List<?> values = condition.getValues();
     try {
       logAccess("executePreparedSelect", values == null ? new Object[]{sqlStatement} : new Object[]{sqlStatement, values});
-      setParameterValues(statement, values, condition.getValueKeys());
+      setParameterValues(statement, values, condition.getColumns());
 
       return statement.executeQuery();
     }

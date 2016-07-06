@@ -3,6 +3,7 @@
  */
 package org.jminor.common.db.condition;
 
+import org.jminor.common.db.Column;
 import org.jminor.common.i18n.Messages;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  * A generic interface for objects serving as where conditions in database queries
  * @param <T> the type used to describe the condition values
  */
-public interface Condition<T> {
+public interface Condition<T extends Column> {
   /**
    * Returns a condition clause based on this Condition, note that this
    * clause contains the ? substitute character instead of the actual values.
@@ -28,17 +29,17 @@ public interface Condition<T> {
   List getValues();
 
   /**
-   * @return a list of T describing the values this condition is based on, in the same
+   * @return a list of T describing the columns this condition is based on, in the same
    * order as their respective values appear in the condition clause.
    * An empty list is returned in case no values are specified.
    */
-  List<T> getValueKeys();
+  List<T> getColumns();
 
   /**
    * An interface encapsulating a set of Condition objects, that should be either AND'ed or OR'ed together in a query context
    * @param <T> the type used to describe the condition values
    */
-  interface Set<T> extends Condition<T> {
+  interface Set<T extends Column> extends Condition<T> {
 
     /**
      * Adds a new Condition object to this set, adding a null condition has no effect

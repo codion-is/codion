@@ -4,6 +4,7 @@
 package org.jminor.common.db.condition;
 
 import org.jminor.common.Conjunction;
+import org.jminor.common.db.Column;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -29,7 +30,7 @@ public final class Conditions {
    * @param <T> the Condition key type
    * @return a new {@link Condition.Set} instance
    */
-  public static <T> Condition.Set<T> conditionSet(final Conjunction conjunction) {
+  public static <T extends Column> Condition.Set<T> conditionSet(final Conjunction conjunction) {
     return conditionSet(conjunction, (Condition) null);
   }
 
@@ -37,10 +38,10 @@ public final class Conditions {
    * Initializes a new {@link Condition.Set} instance
    * @param conjunction the Conjunction to use
    * @param condition the condition
-   * @param <T> the condition key type
+   * @param <T> the condition column type
    * @return a new {@link Condition.Set} instance
    */
-  public static <T> Condition.Set<T> conditionSet(final Conjunction conjunction, final Condition<T> condition) {
+  public static <T extends Column> Condition.Set<T> conditionSet(final Conjunction conjunction, final Condition<T> condition) {
     return conditionSet(conjunction, condition, null);
   }
 
@@ -49,11 +50,11 @@ public final class Conditions {
    * @param conjunction the Conjunction to use
    * @param firstCondition the first condition
    * @param secondCondition the second condition
-   * @param <T> the condition key type
+   * @param <T> the condition column type
    * @return a new {@link Condition.Set} instance
    */
-  public static <T> Condition.Set<T> conditionSet(final Conjunction conjunction, final Condition<T> firstCondition,
-                                                  final Condition<T> secondCondition) {
+  public static <T extends Column> Condition.Set<T> conditionSet(final Conjunction conjunction, final Condition<T> firstCondition,
+                                                                 final Condition<T> secondCondition) {
     return conditionSet(conjunction, firstCondition, secondCondition, null);
   }
 
@@ -63,11 +64,11 @@ public final class Conditions {
    * @param firstCondition the first condition
    * @param secondCondition the second condition
    * @param thirdCondition the third condition
-   * @param <T> the condition key type
+   * @param <T> the condition column type
    * @return a new {@link Condition.Set} instance
    */
-  public static <T> Condition.Set<T> conditionSet(final Conjunction conjunction, final Condition<T> firstCondition,
-                                                  final Condition<T> secondCondition, final Condition<T> thirdCondition) {
+  public static <T extends Column> Condition.Set<T> conditionSet(final Conjunction conjunction, final Condition<T> firstCondition,
+                                                                 final Condition<T> secondCondition, final Condition<T> thirdCondition) {
     return conditionSet(conjunction, firstCondition, secondCondition, thirdCondition, null);
   }
 
@@ -78,12 +79,12 @@ public final class Conditions {
    * @param secondCondition the second condition
    * @param thirdCondition the third condition
    * @param fourthCondition the fourth condition
-   * @param <T> the condition key type
+   * @param <T> the condition column type
    * @return a new {@link Condition.Set} instance
    */
-  public static <T> Condition.Set<T> conditionSet(final Conjunction conjunction, final Condition<T> firstCondition,
-                                                  final Condition<T> secondCondition, final Condition<T> thirdCondition,
-                                                  final Condition<T> fourthCondition) {
+  public static <T extends Column> Condition.Set<T> conditionSet(final Conjunction conjunction, final Condition<T> firstCondition,
+                                                                 final Condition<T> secondCondition, final Condition<T> thirdCondition,
+                                                                 final Condition<T> fourthCondition) {
     return conditionSet(conjunction, firstCondition, secondCondition, thirdCondition, fourthCondition, null);
   }
 
@@ -95,12 +96,12 @@ public final class Conditions {
    * @param thirdCondition the third condition
    * @param fourthCondition the fourth condition
    * @param fifthCondition the fifth condition
-   * @param <T> the condition key type
+   * @param <T> the condition column type
    * @return a {@link Condition.Set} instance
    */
-  public static <T> Condition.Set<T> conditionSet(final Conjunction conjunction, final Condition<T> firstCondition,
-                                                  final Condition<T> secondCondition, final Condition<T> thirdCondition,
-                                                  final Condition<T> fourthCondition, final Condition<T> fifthCondition) {
+  public static <T extends Column> Condition.Set<T> conditionSet(final Conjunction conjunction, final Condition<T> firstCondition,
+                                                                 final Condition<T> secondCondition, final Condition<T> thirdCondition,
+                                                                 final Condition<T> fourthCondition, final Condition<T> fifthCondition) {
     return conditionSet(conjunction, Arrays.asList(firstCondition, secondCondition, thirdCondition, fourthCondition,
             fifthCondition));
   }
@@ -109,21 +110,21 @@ public final class Conditions {
    * Initializes a new {@link Condition.Set} instance
    * @param conjunction the conjunction to use
    * @param condition the Condition objects to be included in this set
-   * @param <T> the condition key type
+   * @param <T> the condition column type
    * @return a new {@link Condition.Set} instance
    */
-  public static <T> Condition.Set<T> conditionSet(final Conjunction conjunction, final Collection<Condition<T>> condition) {
+  public static <T extends Column> Condition.Set<T> conditionSet(final Conjunction conjunction, final Collection<Condition<T>> condition) {
     return new DefaultSet<>(conjunction, condition);
   }
 
   /**
    * Instantiates a new Condition based on the given condition string
    * @param conditionString the condition string without the WHERE keyword
-   * @param <T> the condition key type
+   * @param <T> the condition column type
    * @return a new Condition instance
    * @throws NullPointerException in case the condition string is null
    */
-  public static <T> Condition<T> stringCondition(final String conditionString) {
+  public static <T extends Column> Condition<T> stringCondition(final String conditionString) {
     return stringCondition(conditionString, Collections.emptyList(), Collections.<T>emptyList());
   }
 
@@ -132,15 +133,15 @@ public final class Conditions {
    * @param conditionString the condition string without the WHERE keyword
    * @param values the values required by this condition string
    * @param keys the keys required by this condition string, in the same order as their respective values
-   * @param <T> the condition key type
+   * @param <T> the condition column type
    * @return a new Condition instance
    * @throws NullPointerException in case any of the parameters are null
    */
-  public static <T> Condition<T> stringCondition(final String conditionString, final List values, final List<T> keys) {
+  public static <T extends Column> Condition<T> stringCondition(final String conditionString, final List values, final List<T> keys) {
     return new StringCondition<>(conditionString, values, keys);
   }
 
-  private static final class DefaultSet<T> implements Condition.Set<T>, Serializable {
+  private static final class DefaultSet<T extends Column> implements Condition.Set<T>, Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -195,13 +196,13 @@ public final class Conditions {
     }
 
     @Override
-    public List<T> getValueKeys() {
-      final List<T> keys = new ArrayList<>();
+    public List<T> getColumns() {
+      final List<T> columns = new ArrayList<>();
       for (final Condition<T> condition : conditionList) {
-        keys.addAll(condition.getValueKeys());
+        columns.addAll(condition.getColumns());
       }
 
-      return keys;
+      return columns;
     }
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
@@ -222,18 +223,18 @@ public final class Conditions {
     }
   }
 
-  private static final class StringCondition<T> implements Condition<T>, Serializable {
+  private static final class StringCondition<T extends Column> implements Condition<T>, Serializable {
 
     private static final long serialVersionUID = 1;
 
     private String conditionString;
     private List values;
-    private List<T> keys;
+    private List<T> columns;
 
-    private StringCondition(final String conditionString, final List values, final List<T> keys) {
+    private StringCondition(final String conditionString, final List values, final List<T> columns) {
       this.conditionString = Objects.requireNonNull(conditionString, "conditionString");
       this.values = Objects.requireNonNull(values, "values");
-      this.keys = Objects.requireNonNull(keys, "keys");
+      this.columns = Objects.requireNonNull(columns, "keys");
     }
 
     @Override
@@ -247,8 +248,8 @@ public final class Conditions {
     }
 
     @Override
-    public List<T> getValueKeys() {
-      return keys;
+    public List<T> getColumns() {
+      return columns;
     }
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
@@ -257,8 +258,8 @@ public final class Conditions {
       for (final Object value : values) {
         stream.writeObject(value);
       }
-      stream.writeInt(keys.size());
-      for (final T key : keys) {
+      stream.writeInt(columns.size());
+      for (final T key : columns) {
         stream.writeObject(key);
       }
     }
@@ -271,9 +272,9 @@ public final class Conditions {
         values.add(stream.readObject());
       }
       final int keyCount = stream.readInt();
-      keys = new ArrayList<>(keyCount);
+      columns = new ArrayList<>(keyCount);
       for (int i = 0; i < keyCount; i++) {
-        keys.add((T) stream.readObject());
+        columns.add((T) stream.readObject());
       }
     }
   }
