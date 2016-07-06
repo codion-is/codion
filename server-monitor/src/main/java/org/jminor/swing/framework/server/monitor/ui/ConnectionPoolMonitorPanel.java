@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
+import org.jminor.common.TaskScheduler;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.model.tools.TaskScheduler;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.ControlProvider;

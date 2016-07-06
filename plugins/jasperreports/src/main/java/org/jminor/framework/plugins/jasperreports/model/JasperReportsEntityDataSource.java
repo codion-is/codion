@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.plugins.jasperreports.model;
 
+import org.jminor.common.db.Attribute;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.framework.domain.Entity;
 
@@ -51,7 +52,7 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
    * @param jrField the report field which value to retrieve
    * @return the value of the property identified by {@code jrField.getName()}
    * @throws net.sf.jasperreports.engine.JRException in case of an exception
-   * @see org.jminor.framework.domain.Entity#get(org.jminor.framework.domain.Property)
+   * @see org.jminor.framework.domain.Entity#get(Attribute)
    */
   @Override
   public Object getFieldValue(final JRField jrField) throws JRException {

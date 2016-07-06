@@ -223,8 +223,7 @@ public final class EntityUiUtil {
     }
 
     final JCheckBox checkBox = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
-    ValueLinks.toggleValueLink(checkBox.getModel(),
-            EditModelValues.<Boolean>value(editModel, property.getPropertyID()), false);
+    ValueLinks.toggleValueLink(checkBox.getModel(), EditModelValues.<Boolean>value(editModel, property), false);
     UiUtil.linkToEnabledState(enabledState, checkBox);
     if (property.getDescription() != null) {
       checkBox.setToolTipText(property.getDescription());
@@ -258,7 +257,7 @@ public final class EntityUiUtil {
     }
 
     final TristateCheckBox checkBox = new TristateCheckBox(includeCaption ? property.getCaption() : null);
-    ValueLinks.toggleValueLink(checkBox.getModel(), EditModelValues.<Boolean>value(editModel, property.getPropertyID()), false);
+    ValueLinks.toggleValueLink(checkBox.getModel(), EditModelValues.<Boolean>value(editModel, property), false);
     UiUtil.linkToEnabledState(enabledState, checkBox);
     if (property.getDescription() != null) {
       checkBox.setToolTipText(property.getDescription());
@@ -324,7 +323,7 @@ public final class EntityUiUtil {
     final EntityComboBoxModel boxModel = ((SwingEntityEditModel) editModel).getForeignKeyComboBoxModel(foreignKeyProperty);
     boxModel.refresh();
     final EntityComboBox comboBox = new EntityComboBox(boxModel);
-    ValueLinks.selectedItemValueLink(comboBox, EditModelValues.<Entity>value(editModel, foreignKeyProperty.getPropertyID()));
+    ValueLinks.selectedItemValueLink(comboBox, EditModelValues.<Entity>value(editModel, foreignKeyProperty));
     UiUtil.linkToEnabledState(enabledState, comboBox);
     addComboBoxCompletion(comboBox);
     comboBox.setToolTipText(foreignKeyProperty.getDescription());
@@ -352,7 +351,7 @@ public final class EntityUiUtil {
     textField.setFocusable(false);
     textField.setToolTipText(foreignKeyProperty.getDescription());
     final Event<String> valueChangeEvent = Events.event();
-    editModel.addValueListener(foreignKeyProperty.getPropertyID(), info -> {
+    editModel.addValueListener(foreignKeyProperty, info -> {
       final Entity value = (Entity) info.getNewValue();
       valueChangeEvent.fire(value == null ? "" : value.toString());
     });
@@ -439,8 +438,7 @@ public final class EntityUiUtil {
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       lookupField.setTransferFocusOnEnter();
     }
-    Values.link(EditModelValues.<Entity>value(editModel, foreignKeyProperty.getPropertyID()),
-            new LookupUIValue(lookupField.getModel()));
+    Values.link(EditModelValues.<Entity>value(editModel, foreignKeyProperty), new LookupUIValue(lookupField.getModel()));
     UiUtil.linkToEnabledState(enabledState, lookupField);
     lookupField.setToolTipText(foreignKeyProperty.getDescription());
     UiUtil.selectAllOnFocusGained(lookupField);
@@ -534,7 +532,7 @@ public final class EntityUiUtil {
     checkProperty(property, editModel);
     final SteppedComboBox comboBox = new SteppedComboBox(model);
     comboBox.setEditable(editable);
-    ValueLinks.selectedItemValueLink(comboBox, EditModelValues.value(editModel, property.getPropertyID()));
+    ValueLinks.selectedItemValueLink(comboBox, EditModelValues.value(editModel, property));
     UiUtil.linkToEnabledState(enabledState, comboBox);
     comboBox.setToolTipText(property.getDescription());
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
@@ -665,8 +663,8 @@ public final class EntityUiUtil {
       UiUtil.linkToEnabledState(enabledState, textArea);
     }
 
-    ValueLinks.textValueLink(textArea, EditModelValues.<String>value(editModel, property.getPropertyID()), null, true, readOnly);
-    ValueLinkValidators.addValidator(property.getPropertyID(), textArea, editModel);
+    ValueLinks.textValueLink(textArea, EditModelValues.<String>value(editModel, property), null, true, readOnly);
+    ValueLinkValidators.addValidator(property, textArea, editModel);
     textArea.setToolTipText(property.getDescription());
 
     return textArea;
@@ -733,31 +731,30 @@ public final class EntityUiUtil {
     Objects.requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
     checkProperty(property, editModel);
     final JTextField textField = initializeTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
-    final String propertyID = property.getPropertyID();
     if (property.isString()) {
-      ValueLinks.textValueLink(textField, EditModelValues.<String>value(editModel, propertyID), null, immediateUpdate, readOnly);
+      ValueLinks.textValueLink(textField, EditModelValues.<String>value(editModel, property), null, immediateUpdate, readOnly);
     }
     else if (property.isInteger()) {
-      ValueLinks.intValueLink((IntField) textField, EditModelValues.<Integer>value(editModel, propertyID), false, readOnly, immediateUpdate);
+      ValueLinks.intValueLink((IntField) textField, EditModelValues.<Integer>value(editModel, property), false, readOnly, immediateUpdate);
     }
     else if (property.isDouble()) {
-      ValueLinks.doubleValueLink((DoubleField) textField, EditModelValues.<Double>value(editModel, propertyID), false, readOnly, immediateUpdate);
+      ValueLinks.doubleValueLink((DoubleField) textField, EditModelValues.<Double>value(editModel, property), false, readOnly, immediateUpdate);
     }
     else if (property.isLong()) {
-      ValueLinks.longValueLink((LongField) textField, EditModelValues.<Long>value(editModel, propertyID), false, readOnly, immediateUpdate);
+      ValueLinks.longValueLink((LongField) textField, EditModelValues.<Long>value(editModel, property), false, readOnly, immediateUpdate);
     }
     else if (property.isDateOrTime()) {
-      ValueLinks.dateValueLink((JFormattedTextField) textField, EditModelValues.<Date>value(editModel, propertyID),
+      ValueLinks.dateValueLink((JFormattedTextField) textField, EditModelValues.<Date>value(editModel, property),
               readOnly, (SimpleDateFormat) property.getFormat(), property.getType(), immediateUpdate);
     }
     else {
       throw new IllegalArgumentException("Not a text based property: " + property);
     }
     if (property.isString() && formatMaskString != null) {
-      ValueLinkValidators.addFormattedValidator(property.getPropertyID(), textField, editModel);
+      ValueLinkValidators.addFormattedValidator(property, textField, editModel);
     }
     else {
-      ValueLinkValidators.addValidator(property.getPropertyID(), textField, editModel);
+      ValueLinkValidators.addValidator(property, textField, editModel);
     }
 
     return textField;
@@ -987,8 +984,8 @@ public final class EntityUiUtil {
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.ColumnProperty> primaryKeyProperties) {
     TextUtil.collate(primaryKeyProperties);
     for (final Property.ColumnProperty property : primaryKeyProperties) {
-      final boolean modified = entity.isModified(property.getPropertyID());
-      String value = "[PK] " + property.getPropertyID() + ": " + entity.getAsString(property.getPropertyID());
+      final boolean modified = entity.isModified(property);
+      String value = "[PK] " + property.getPropertyID() + ": " + entity.getAsString(property);
       if (modified) {
         value += getOriginalValue(entity, property);
       }
@@ -1009,7 +1006,7 @@ public final class EntityUiUtil {
         final boolean fkValueNull = entity.isForeignKeyNull(property);
         final boolean isLoaded = entity.isLoaded(property.getPropertyID());
         final boolean valid = isValid(validator, entity, property);
-        final boolean modified = entity.isModified(property.getPropertyID());
+        final boolean modified = entity.isModified(property);
         final String toolTipText = getReferenceColumnNames(property);
         if (!fkValueNull) {
           final Entity referencedEntity;
@@ -1018,7 +1015,7 @@ public final class EntityUiUtil {
           }
           else {
             referencedEntity = connectionProvider.getConnection().selectSingle(entity.getReferencedKey(property));
-            entity.remove(property.getPropertyID());
+            entity.remove(property);
             entity.put(property, referencedEntity);
           }
           String text = "[FK" + (isLoaded ? "] " : "+] ") + property.getCaption() + ": " + referencedEntity.toString();
@@ -1063,14 +1060,14 @@ public final class EntityUiUtil {
     final Entity.Validator validator = Entities.getValidator(entity.getEntityID());
     for (final Property property : properties) {
       final boolean valid = isValid(validator, entity, property);
-      final boolean modified = entity.isModified(property.getPropertyID());
+      final boolean modified = entity.isModified(property);
       final boolean isForeignKeyProperty = property instanceof Property.ColumnProperty
               && ((Property.ColumnProperty) property).isForeignKeyProperty();
       if (!isForeignKeyProperty && !(property instanceof Property.ForeignKeyProperty)) {
         final String prefix = "[" + property.getTypeClass().getSimpleName().substring(0, 1)
                 + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
                 + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
-        final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getAsString(property.getPropertyID());
+        final String value = entity.isValueNull(property) ? "<null>" : entity.getAsString(property);
         final boolean longValue = value != null && value.length() > maxValueLength;
         String caption = prefix + property + ": " + (longValue ? value.substring(0, maxValueLength) + "..." : value);
         if (modified) {
@@ -1103,14 +1100,14 @@ public final class EntityUiUtil {
   }
 
   private static String getOriginalValue(final Entity entity, final Property property) {
-    final Object originalValue = entity.getOriginal(property.getPropertyID());
+    final Object originalValue = entity.getOriginal(property);
 
     return " | " + (originalValue == null ? "<null>" : originalValue.toString());
   }
 
   private static boolean isValid(final Entity.Validator validator, final Entity entity, final Property property) {
     try {
-      validator.validate(entity, property.getPropertyID());
+      validator.validate(entity, property);
       return true;
     }
     catch (final ValidationException e) {

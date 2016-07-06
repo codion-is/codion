@@ -3,6 +3,7 @@
  */
 package org.jminor.swing.common.ui;
 
+import org.jminor.common.DaemonThreadFactory;
 import org.jminor.common.DateUtil;
 import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
@@ -17,7 +18,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.DaemonThreadFactory;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;

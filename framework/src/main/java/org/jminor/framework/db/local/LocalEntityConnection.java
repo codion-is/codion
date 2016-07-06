@@ -1176,7 +1176,7 @@ final class LocalEntityConnection implements EntityConnection {
     for (final Property.ColumnProperty property : columnProperties) {
       final Object value = entity.get(property);
       final boolean insertingAndNonNull = inserting && value != null;
-      final boolean updatingAndModified = !inserting && entity.isModified(property.getPropertyID());
+      final boolean updatingAndModified = !inserting && entity.isModified(property);
       if (insertingAndNonNull || updatingAndModified) {
         properties.add(property);
         values.add(value);
@@ -1312,11 +1312,11 @@ final class LocalEntityConnection implements EntityConnection {
       final StringBuilder builder = new StringBuilder();
       builder.append(entity.getEntityID()).append(" {");
       for (final Property.ColumnProperty property : Entities.getColumnProperties(entity.getEntityID(), true, true, true)) {
-        final boolean modified = entity.isModified(property.getPropertyID());
+        final boolean modified = entity.isModified(property);
         if (property.isPrimaryKeyProperty() || modified) {
           final StringBuilder valueString = new StringBuilder();
           if (modified) {
-            valueString.append(entity.getOriginal(property.getPropertyID())).append("->");
+            valueString.append(entity.getOriginal(property)).append("->");
           }
           valueString.append(entity.get(property.getPropertyID()));
           builder.append(property.getPropertyID()).append(":").append(valueString).append(",");

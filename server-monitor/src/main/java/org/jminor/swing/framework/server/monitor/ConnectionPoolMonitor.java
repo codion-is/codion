@@ -6,11 +6,11 @@ package org.jminor.swing.framework.server.monitor;
 import org.jminor.common.Event;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
+import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolState;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
-import org.jminor.common.model.tools.TaskScheduler;
 import org.jminor.framework.Configuration;
 
 import org.jfree.data.xy.XYDataset;

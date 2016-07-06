@@ -3,6 +3,8 @@
  */
 package org.jminor.common.db.valuemap;
 
+import org.jminor.common.db.Attribute;
+
 import java.util.Objects;
 
 /**
@@ -22,11 +24,11 @@ public final class ValueChanges {
    * @param initialization true if the value was being initialized
    * @return a new {@link ValueChange} instance
    */
-  public static <K, V> ValueChange<K, V> valueChange(final K key, final V newValue, final V oldValue, final boolean initialization) {
+  public static <K extends Attribute, V> ValueChange<K, V> valueChange(final K key, final V newValue, final V oldValue, final boolean initialization) {
     return new DefaultValueChange<>(key, newValue, oldValue, initialization);
   }
 
-  private static final class DefaultValueChange<K, V> implements ValueChange<K, V> {
+  private static final class DefaultValueChange<K extends Attribute, V> implements ValueChange<K, V> {
 
     /**
      * The key identifying the value having changed

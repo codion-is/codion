@@ -7,6 +7,7 @@ import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.StateObserver;
+import org.jminor.common.db.Attribute;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 
 import java.util.Set;
@@ -14,14 +15,14 @@ import java.util.Set;
 /**
  * An interface describing an object mapping values to keys, null values are allowed.
  * A ValueMap keeps track of the first value associated with a given key, so that if a value
- * is modified, {@link #getOriginal(Object)} returns that original value and
- * {@link #isModified(Object)} returns true until the value is either saved via
- * {@link #save(Object)} or reverted to its original value via {@link #revert(Object)},
- * note that setting the original value manually has the same effect as calling {@link #revert(Object)}
+ * is modified, {@link #getOriginal(Attribute)} returns that original value and
+ * {@link #isModified(Attribute)} returns true until the value is either saved via
+ * {@link #save(Attribute)} or reverted to its original value via {@link #revert(Attribute)},
+ * note that setting the original value manually has the same effect as calling {@link #revert(Attribute)}
  * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
-public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProvider<V> {
+public interface ValueMap<K extends Attribute, V> extends ValueProvider<K, V>, ValueCollectionProvider<V> {
 
   /**
    * Maps the given value to the given key, returning the old value if any.
@@ -181,7 +182,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * @param <K> the type identifying the keys in the value map
    * @param <V> the value map type
    */
-  interface Validator<K, V extends ValueMap<K, ?>> {
+  interface Validator<K extends Attribute, V extends ValueMap<K, ?>> {
 
     /**
      * @param valueMap the value map

@@ -6,6 +6,7 @@ package org.jminor.common.db.valuemap;
 import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
+import org.jminor.common.db.Attribute;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
@@ -17,7 +18,7 @@ import java.util.Objects;
  * @param <K> the type identifying the keys in the value map
  * @param <V> the value map type
  */
-public class DefaultValueMapValidator<K, V extends ValueMap<K, ?>> implements ValueMap.Validator<K, V> {
+public class DefaultValueMapValidator<K extends Attribute, V extends ValueMap<K, ?>> implements ValueMap.Validator<K, V> {
 
   private final Event revalidateEvent = Events.event();
 

@@ -212,7 +212,7 @@ public final class DefaultEntityEditModelTest {
     //test validation
     try {
       employeeEditModel.setValue(TestDomain.EMP_COMMISSION, 50d);
-      employeeEditModel.validate(TestDomain.EMP_COMMISSION);
+      employeeEditModel.validate(Entities.getProperty(TestDomain.T_EMP, TestDomain.EMP_COMMISSION));
       fail("Validation should fail on invalid commission value");
     }
     catch (final ValidationException e) {

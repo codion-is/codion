@@ -540,9 +540,9 @@ public interface Property extends Attribute {
   interface DerivedProperty extends TransientProperty {
 
     /**
-     * @return the IDs of properties that should trigger a change event for this property
+     * @return the IDs of properties this property derives from.
      */
-    List<String> getLinkedPropertyIDs();
+    List<String> getSourcePropertyIDs();
 
     /**
      * @return the value provider, providing the derived value

@@ -262,7 +262,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
    */
   private static Entity parseEntity(final JSONObject entityObject, final DateFormat jsonTimeFormat,
                                     final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat) throws JSONException, ParseException {
-    final Map<String, Object> propertyValueMap = new HashMap<>();
+    final Map<Property, Object> propertyValueMap = new HashMap<>();
     final String entityID = entityObject.getString(ENTITY_ID);
     if (!Entities.isDefined(entityID)) {
       throw new IllegalArgumentException("Undefined entity found in JSON string: '" + entityID + "'");
@@ -271,16 +271,16 @@ public final class EntityJSONParser implements Serializer<Entity> {
     final JSONObject propertyValues = entityObject.getJSONObject(VALUES);
     for (int j = 0; j < propertyValues.names().length(); j++) {
       final String propertyID = propertyValues.names().get(j).toString();
-      propertyValueMap.put(propertyID,
+      propertyValueMap.put(Entities.getProperty(entityID, propertyID),
               parseValue(Entities.getProperty(entityID, propertyID), propertyValues, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
     }
-    Map<String, Object> originalValueMap = null;
+    Map<Property, Object> originalValueMap = null;
     if (!entityObject.isNull(ORIGINAL_VALUES)) {
       originalValueMap = new HashMap<>();
       final JSONObject originalValues = entityObject.getJSONObject(ORIGINAL_VALUES);
       for (int j = 0; j < originalValues.names().length(); j++) {
         final String propertyID = originalValues.names().get(j).toString();
-        originalValueMap.put(propertyID,
+        originalValueMap.put(Entities.getProperty(entityID, propertyID),
                 parseValue(Entities.getProperty(entityID, propertyID), originalValues, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
       }
     }
@@ -359,8 +359,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
                                             final DateFormat jsonTimeFormat, final DateFormat jsonDateFormat,
                                             final DateFormat jsonTimestampFormat) throws JSONException {
     final JSONObject propertyValues = new JSONObject();
-    for (final String propertyID : entity.keySet()) {
-      final Property property = Entities.getProperty(entity.getEntityID(), propertyID);
+    for (final Property property : entity.keySet()) {
       if (!(property instanceof Property.DenormalizedViewProperty) &&
               (!(property instanceof Property.ForeignKeyProperty) || includeForeignKeyValues)) {
         propertyValues.put(property.getPropertyID(),
@@ -376,7 +375,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
                                             final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat) throws JSONException {
     final JSONObject propertyValues = new JSONObject();
     for (final Property.ColumnProperty property : Entities.getPrimaryKeyProperties(key.getEntityID())) {
-      propertyValues.put(property.getPropertyID(), serializeValue(key.get(property.getPropertyID()), property,
+      propertyValues.put(property.getPropertyID(), serializeValue(key.get(property), property,
               false, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
     }
 

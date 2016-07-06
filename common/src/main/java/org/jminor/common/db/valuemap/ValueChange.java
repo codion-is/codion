@@ -3,12 +3,14 @@
  */
 package org.jminor.common.db.valuemap;
 
+import org.jminor.common.db.Attribute;
+
 /**
  * Represents a change in a {@link ValueMap} value
  * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
-public interface ValueChange<K, V> {
+public interface ValueChange<K extends Attribute, V> {
 
   /**
    * @return the key associated with the changed value

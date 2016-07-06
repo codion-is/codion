@@ -1080,17 +1080,17 @@ class DefaultProperty implements Property {
   static final class DefaultDerivedProperty extends DefautTransientProperty implements DerivedProperty {
 
     private final Provider valueProvider;
-    private final List<String> linkedPropertyIDs;
+    private final List<String> sourcePropertyIDs;
 
     DefaultDerivedProperty(final String propertyID, final int type, final String caption,
-                           final Provider valueProvider, final String... linkedPropertyIDs) {
+                           final Provider valueProvider, final String... sourcePropertyIDs) {
       super(propertyID, type, caption);
       this.valueProvider = valueProvider;
-      if (linkedPropertyIDs == null || linkedPropertyIDs.length == 0) {
-        throw new IllegalArgumentException("No linked propertyIDs, a derived property must be derived from one or more existing properties");
+      if (sourcePropertyIDs == null || sourcePropertyIDs.length == 0) {
+        throw new IllegalArgumentException("No source propertyIDs, a derived property must be derived from one or more existing properties");
       }
       else {
-        this.linkedPropertyIDs = Arrays.asList(linkedPropertyIDs);
+        this.sourcePropertyIDs = Arrays.asList(sourcePropertyIDs);
       }
       setReadOnly(true);
     }
@@ -1101,8 +1101,8 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public List<String> getLinkedPropertyIDs() {
-      return linkedPropertyIDs;
+    public List<String> getSourcePropertyIDs() {
+      return sourcePropertyIDs;
     }
   }
 

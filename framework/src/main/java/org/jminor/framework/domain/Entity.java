@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * Represents a row in a database table, providing access to the column values via the {@link ValueMap} interface.
  */
-public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
+public interface Entity extends ValueMap<Property, Object>, Comparable<Entity> {
 
   /**
    * @return the entity ID
@@ -52,10 +52,16 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
   Property getProperty(final String propertyID);
 
   /**
-   * @param property the property for which to retrieve the value
+   * @param propertyID the ID of the property for which to retrieve the value
    * @return the value of the given property
    */
-  Object get(final Property property);
+  Object get(final String propertyID);
+
+  /**
+   * @param propertyID the ID of the property for which to retrieve the original value
+   * @return the original value of the given property
+   */
+  Object getOriginal(final String propertyID);
 
   /**
    * @param propertyID the ID of the property for which to retrieve the value
@@ -132,11 +138,11 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
   /**
    * This method returns a String representation of the value associated with the given property,
    * if the property has a format it is used.
-   * @param property the property for which to retrieve the value
+   * @param propertyID the ID of the property for which to retrieve the value
    * @return a String representation of the value of {@code property}
    * @see #getFormatted(Property, java.text.Format)
    */
-  String getAsString(final Property property);
+  String getAsString(final String propertyID);
 
   /**
    * Returns the Entity instance referenced by the given foreign key property.
@@ -182,12 +188,12 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
 
   /**
    * Sets the value of the given property
-   * @param property the property
+   * @param propertyID the ID of the property
    * @param value the value
    * @return the previous value
    * @throws IllegalArgumentException in case the value type does not fit the property
    */
-  Object put(final Property property, final Object value);
+  Object put(final String propertyID, final Object value);
 
   /**
    * Sets the value of the given property
@@ -209,6 +215,12 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
    * @return true if the given property has a null value
    */
   boolean isValueNull(final Property property);
+
+  /**
+   * @param propertyID the propertyID
+   * @return true if the value associated with the given property has been modified
+   */
+  boolean isModified(final String propertyID);
 
   /**
    * Clears the primary key values from this entity,
@@ -248,9 +260,45 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
   Object getBackgroundColor(final Property property);
 
   /**
+   * Reverts the value associated with the given property to its original value.
+   * If the value has not been modified then calling this method has no effect.
+   * @param propertyID the ID of the property for which to revert the value
+   */
+  void revert(final String propertyID);
+
+  /**
+   * Saves the value associated with the given key, that is, removes the original value.
+   * If no original value exists calling this method has no effect.
+   * @param propertyID the ID of the property for which to save the value
+   */
+  void save(final String propertyID);
+
+  /**
+   * Returns true if a null value is mapped to the given property.
+   * @param propertyID the ID of the property
+   * @return true if the value mapped to the given property is null
+   */
+  boolean isValueNull(final String propertyID);
+
+  /**
+   * Returns true if this Entity contains a value for the given property, that value can be null.
+   * @param propertyID the propertyID
+   * @return true if a value is mapped to this property
+   */
+  boolean containsKey(final String propertyID);
+
+  /**
+   * Removes the given property and value from this Entity along with the original value if any.
+   * If no value is mapped to the given property, this method has no effect.
+   * @param propertyID the ID of the property to remove
+   * @return the value that was removed
+   */
+  void remove(final String propertyID);
+
+  /**
    * A class representing a primary key.
    */
-  interface Key extends ValueMap<String, Object> {
+  interface Key extends ValueMap<Property.ColumnProperty, Object> {
 
     /**
      * @return the entity ID
@@ -273,6 +321,13 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
     boolean isNull();
 
     /**
+     * Returns true if a null value is mapped to the given property.
+     * @param propertyID the propertyID
+     * @return true if the value mapped to the given property is null
+     */
+    boolean isValueNull(final String propertyID);
+
+    /**
      * @return true if this primary key is based on a single integer column
      */
     boolean isSingleIntegerKey();
@@ -291,6 +346,19 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
      * @return the first value contained in this key, useful for single property keys
      */
     Object getFirstValue();
+
+    /**
+     * @param propertyID the propertyID
+     * @param value the value to associate with the property
+     * @return the previous value
+     */
+    Object put(final String propertyID, final Object value);
+
+    /**
+     * @param propertyID the propertyID
+     * @return the value associated with the given property
+     */
+    Object get(final String propertyID);
   }
 
   /**
@@ -397,7 +465,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
   /**
    * Responsible for providing validation for entities.
    */
-  interface Validator extends ValueMap.Validator<String, Entity> {
+  interface Validator extends ValueMap.Validator<Property, Entity> {
 
     /**
      * @return the ID of the entity this validator validates
@@ -701,22 +769,22 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
     /**
      * @return true if this entity contains any properties which values are linked to other properties
      */
-    boolean hasLinkedProperties();
+    boolean hasDerivedProperties();
 
     /**
-     * Returns true if this entity contains properties which values are linked to the value of the given property
+     * Returns true if this entity contains properties which values are derived from the value of the given property
      * @param propertyID the ID of the property
-     * @return true if any properties are linked to the given property
+     * @return true if any properties are derived from the given property
      */
-    boolean hasLinkedProperties(final String propertyID);
+    boolean hasDerivedProperties(final String propertyID);
 
     /**
-     * Returns the IDs of the properties which values are linked to the value of the given property,
-     * an empty collection if no such linked properties exist
+     * Returns the properties which values are derived from the value of the given property,
+     * an empty collection if no such derived properties exist
      * @param propertyID the ID of the property
-     * @return a collection containing the IDs of any properties which are linked to the given property
+     * @return a collection containing the properties which are derived from the given property
      */
-    Collection<String> getLinkedPropertyIDs(final String propertyID);
+    Collection<Property.DerivedProperty> getDerivedProperties(final String propertyID);
 
     /**
      * @return the primary key properties of this entity type, sorted by primary key column index

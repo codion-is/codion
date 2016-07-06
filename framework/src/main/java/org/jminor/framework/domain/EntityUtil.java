@@ -129,7 +129,7 @@ public final class EntityUtil {
     Objects.requireNonNull(keys, "keys");
     final List<T> list = new ArrayList<>(keys.size());
     for (final Entity.Key key : keys) {
-      list.add((T) key.get(key.getFirstProperty().getPropertyID()));
+      list.add((T) key.get(key.getFirstProperty()));
     }
 
     return list;
@@ -220,7 +220,7 @@ public final class EntityUtil {
   public static <T> Collection<T> getDistinctValues(final String propertyID, final Collection<Entity> entities,
                                                     final boolean includeNullValue) {
     final Set<T> values = new HashSet<>();
-    if (entities == null) {
+    if (Util.nullOrEmpty(entities)) {
       return values;
     }
     for (final Entity entity : entities) {
@@ -414,7 +414,7 @@ public final class EntityUtil {
     for (final Entity entity : entities) {
       if (entity != null) {
         for (final Property.ColumnProperty property : Entities.getPrimaryKeyProperties(entity.getEntityID())) {
-          if (entity.isModified(property.getPropertyID())) {
+          if (entity.isModified(property)) {
             return true;
           }
         }
@@ -463,10 +463,9 @@ public final class EntityUtil {
    * entity, returns null if all of {@code entity}s original values match the values found in {@code comparison}
    */
   public static Property getModifiedProperty(final Entity entity, final Entity comparison) {
-    for (final String propertyID : comparison.keySet()) {
-      final Property property = Entities.getProperty(entity.getEntityID(), propertyID);
+    for (final Property property : comparison.keySet()) {
       //BLOB property values are not loaded, so we can't compare those
-      if (!property.isType(Types.BLOB) && isValueMissingOrModified(entity, comparison, propertyID)) {
+      if (!property.isType(Types.BLOB) && isValueMissingOrModified(entity, comparison, property.getPropertyID())) {
         return property;
       }
     }
@@ -487,7 +486,7 @@ public final class EntityUtil {
     final Property modifiedProperty = getModifiedProperty(entity, modified);
 
     return Entities.getCaption(entity.getEntityID()) + ", " + modifiedProperty + ": " +
-            entity.getOriginal(modifiedProperty.getPropertyID()) + " -> " + modified.get(modifiedProperty);
+            entity.getOriginal(modifiedProperty) + " -> " + modified.get(modifiedProperty);
   }
 
   /**

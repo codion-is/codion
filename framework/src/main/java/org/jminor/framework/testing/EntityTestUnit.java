@@ -316,8 +316,8 @@ public abstract class EntityTestUnit {
             testEntity.getKey(), tmp.getKey());
     for (final Property.ColumnProperty property : Entities.getColumnProperties(testEntity.getEntityID())) {
       if (!property.isReadOnly() && property.isUpdatable()) {
-        final Object beforeUpdate = testEntity.get(property.getPropertyID());
-        final Object afterUpdate = tmp.get(property.getPropertyID());
+        final Object beforeUpdate = testEntity.get(property);
+        final Object afterUpdate = tmp.get(property);
         assertTrue("Values of property " + property + " should be equal after update ["
                 + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
                 + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]",

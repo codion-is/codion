@@ -4,6 +4,7 @@
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.EventInfoListener;
+import org.jminor.common.db.Attribute;
 import org.jminor.common.db.valuemap.DefaultValueMap;
 import org.jminor.common.db.valuemap.DefaultValueMapValidator;
 import org.jminor.common.db.valuemap.ValueChange;
@@ -24,52 +25,54 @@ public class DefaultValueMapEditModelTest {
     final AtomicInteger valueChangeCounter = new AtomicInteger();
     final AtomicInteger valueSetCounter = new AtomicInteger();
 
-    final EventInfoListener<ValueChange<String, ?>> anyValueChangeListener = info -> anyValueChangeCounter.incrementAndGet();
-    final EventInfoListener<ValueChange<String, ?>> valueChangeListener = info -> valueChangeCounter.incrementAndGet();
-    final EventInfoListener<ValueChange<String, ?>> valueSetListener = info -> valueSetCounter.incrementAndGet();
+    final EventInfoListener<ValueChange<TestAttribute, ?>> anyValueChangeListener = info -> anyValueChangeCounter.incrementAndGet();
+    final EventInfoListener<ValueChange<TestAttribute, ?>> valueChangeListener = info -> valueChangeCounter.incrementAndGet();
+    final EventInfoListener<ValueChange<TestAttribute, ?>> valueSetListener = info -> valueSetCounter.incrementAndGet();
 
-    final ValueMapEditModel model = new DefaultValueMapEditModel<>(new DefaultValueMap<>(), new DefaultValueMapValidator<String, ValueMap<String, ?>>() {
+    final TestAttribute testAttribute = new TestAttribute();
+
+    final ValueMapEditModel model = new DefaultValueMapEditModel<>(new DefaultValueMap<>(), new DefaultValueMapValidator<TestAttribute, ValueMap<TestAttribute, ?>>() {
       @Override
-      public boolean isNullable(final ValueMap valueMap, final String key) {
-        return !key.equals("id");
+      public boolean isNullable(final ValueMap valueMap, final TestAttribute key) {
+        return !key.equals(testAttribute);
       }
     });
 
     assertNotNull(model.getValidator());
 
     model.getValueObserver().addInfoListener(anyValueChangeListener);
-    model.addValueListener("id", valueChangeListener);
-    model.addValueSetListener("id", valueSetListener);
+    model.addValueListener(testAttribute, valueChangeListener);
+    model.addValueSetListener(testAttribute, valueSetListener);
 
-    model.setValue("id", 1);
+    model.setValue(testAttribute, 1);
     model.validate();
-    model.validate("id");
+    model.validate(testAttribute);
     assertTrue(model.isValid());
-    assertTrue(model.isValid("id"));
+    assertTrue(model.isValid(testAttribute));
     assertTrue(model.getValidObserver().isActive());
     assertTrue(valueSetCounter.get() == 1);
     assertTrue(valueChangeCounter.get() == 1);
     assertTrue(anyValueChangeCounter.get() == 1);
 
-    model.setValue("id", 1);
+    model.setValue(testAttribute, 1);
     assertTrue(valueSetCounter.get() == 1);
     assertTrue(valueChangeCounter.get() == 1);
     assertTrue(anyValueChangeCounter.get() == 1);
 
-    assertFalse(model.isNullable("id"));
-    assertTrue(!model.isValueNull("id"));
-    assertEquals(1, model.getValue("id"));
+    assertFalse(model.isNullable(testAttribute));
+    assertTrue(!model.isValueNull(testAttribute));
+    assertEquals(1, model.getValue(testAttribute));
 
-    model.setValue("id", null);
+    model.setValue(testAttribute, null);
     assertFalse(model.isValid());
-    assertFalse(model.isValid("id"));
+    assertFalse(model.isValid(testAttribute));
     try {
       model.validate();
       fail();
     }
     catch (final ValidationException e) {}
     try {
-      model.validate("id");
+      model.validate(testAttribute);
       fail();
     }
     catch (final ValidationException e) {}
@@ -77,14 +80,25 @@ public class DefaultValueMapEditModelTest {
     assertTrue(valueSetCounter.get() == 2);
     assertTrue(valueChangeCounter.get() == 2);
     assertTrue(anyValueChangeCounter.get() == 2);
-    assertTrue(model.isValueNull("id"));
+    assertTrue(model.isValueNull(testAttribute));
 
-    model.setValue("name", "Name");
+    final TestAttribute nameAttribute = new TestAttribute();
+
+    model.setValue(nameAttribute, "Name");
     assertTrue(valueSetCounter.get() == 2);
     assertTrue(valueChangeCounter.get() == 2);
     assertTrue(anyValueChangeCounter.get() == 3);
 
-    model.removeValueListener("id", valueChangeListener);
-    model.removeValueSetListener("id", valueSetListener);
+    model.removeValueListener(testAttribute, valueChangeListener);
+    model.removeValueSetListener(testAttribute, valueSetListener);
+  }
+
+  private static final class TestAttribute implements Attribute {
+    @Override
+    public String getCaption() {return null;}
+    @Override
+    public String getDescription() {return null;}
+    @Override
+    public Class<?> getTypeClass() {return null;}
   }
 }

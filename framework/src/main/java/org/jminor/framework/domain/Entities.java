@@ -70,7 +70,7 @@ public final class Entities {
    * @param originalValues the original values
    * @return a new {@link Entity} instance
    */
-  public static Entity entity(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
+  public static Entity entity(final String entityID, final Map<Property, Object> values, final Map<Property, Object> originalValues) {
     return new DefaultEntity(DefaultEntityDefinition.getDefinition(entityID), values, originalValues);
   }
 
@@ -568,26 +568,24 @@ public final class Entities {
   }
 
   /**
-   * Returns true if the property identified by {@code propertyID} in the entity identified
-   * by {@code entityID} has any linked properties, that is properties which
-   * values depend on the value of the given property
+   * Returns true if this entity contains properties which values are derived from the value of the given property
    * @param entityID the entityID
-   * @param propertyID the propertyID
-   * @return true if any derived properties are linked to the given property
+   * @param propertyID the ID of the property
+   * @return true if any properties are derived from the given property
    */
-  public static boolean hasLinkedProperties(final String entityID, final String propertyID) {
-    return DefaultEntityDefinition.getDefinition(entityID).hasLinkedProperties(propertyID);
+  public static boolean hasDerivedProperties(final String entityID, final String propertyID) {
+    return DefaultEntityDefinition.getDefinition(entityID).hasDerivedProperties(propertyID);
   }
 
   /**
-   * Returns the IDs of any properties which values are linked to the property identified by {@code propertyID}
-   * in the entity identified by {@code entityID}
+   * Returns the properties which values are derived from the value of the given property,
+   * an empty collection if no such derived properties exist
    * @param entityID the entityID
-   * @param propertyID the propertyID
-   * @return the IDs of any properties which values are linked to the given property
+   * @param propertyID the ID of the property
+   * @return a collection containing the properties which are derived from the given property
    */
-  public static Collection<String> getLinkedPropertyIDs(final String entityID, final String propertyID) {
-    return DefaultEntityDefinition.getDefinition(entityID).getLinkedPropertyIDs(propertyID);
+  public static Collection<Property.DerivedProperty> getDerivedProperties(final String entityID, final String propertyID) {
+    return DefaultEntityDefinition.getDefinition(entityID).getDerivedProperties(propertyID);
   }
 
   /**
@@ -975,11 +973,12 @@ public final class Entities {
 
       @Override
       public String toString(final Entity entity) {
-        if (entity.isValueNull(foreignKeyPropertyID)) {
+        final Property.ForeignKeyProperty foreignKeyProperty = getForeignKeyProperty(entity.getEntityID(), foreignKeyPropertyID);
+        if (entity.isValueNull(foreignKeyProperty)) {
           return "";
         }
 
-        return entity.getForeignKey(foreignKeyPropertyID).getAsString(propertyID);
+        return entity.getForeignKey(foreignKeyProperty).getAsString(propertyID);
       }
     }
 
@@ -1015,7 +1014,7 @@ public final class Entities {
   /**
    * A default extensible {@link Entity.Validator} implementation.
    */
-  public static class Validator extends DefaultValueMapValidator<String, Entity> implements Entity.Validator {
+  public static class Validator extends DefaultValueMapValidator<Property, Entity> implements Entity.Validator {
 
     private final String entityID;
     private final boolean performNullValidation = Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION);
@@ -1039,12 +1038,12 @@ public final class Entities {
      * Returns true if the given property accepts a null value for the given entity,
      * by default this method simply returns {@code property.isNullable()}
      * @param entity the entity being validated
-     * @param key the property ID
+     * @param property the property
      * @return true if the property accepts a null value
      */
     @Override
-    public boolean isNullable(final Entity entity, final String key) {
-      return getProperty(entityID, key).isNullable();
+    public boolean isNullable(final Entity entity, final Property property) {
+      return property.isNullable();
     }
 
     /**
@@ -1069,16 +1068,15 @@ public final class Entities {
       Objects.requireNonNull(entity, ENTITY_PARAM);
       for (final Property property : getProperties(entityID).values()) {
         if (!property.isReadOnly()) {
-          validate(entity, property.getPropertyID());
+          validate(entity, property);
         }
       }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void validate(final Entity entity, final String propertyID) throws ValidationException {
+    public void validate(final Entity entity, final Property property) throws ValidationException {
       Objects.requireNonNull(entity, ENTITY_PARAM);
-      final Property property = entity.getProperty(propertyID);
       if (performNullValidation && !isForeignKeyProperty(property)) {
         performNullValidation(entity, property);
       }
@@ -1092,7 +1090,7 @@ public final class Entities {
     public final void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
       Objects.requireNonNull(entity, ENTITY_PARAM);
       Objects.requireNonNull(property, "property");
-      if (entity.isValueNull(property.getPropertyID())) {
+      if (entity.isValueNull(property)) {
         return;
       }
 
@@ -1112,7 +1110,7 @@ public final class Entities {
     public final void performNullValidation(final Entity entity, final Property property) throws NullValidationException {
       Objects.requireNonNull(entity, ENTITY_PARAM);
       Objects.requireNonNull(property, "property");
-      if (!isNullable(entity, property.getPropertyID()) && entity.isValueNull(property.getPropertyID())) {
+      if (!isNullable(entity, property) && entity.isValueNull(property)) {
         if ((entity.getKey().isNull() || entity.getOriginalKey().isNull()) && !(property instanceof Property.ForeignKeyProperty)) {
           //a new entity being inserted, allow null for columns with default values and auto generated primary key values
           final boolean columnPropertyWithoutDefaultValue = isColumnPropertyWithoutDefaultValue(property);

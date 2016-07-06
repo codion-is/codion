@@ -22,7 +22,7 @@ import java.util.Objects;
 /**
  * Represents a row in a database table, providing access to the column values via the {@link ValueMap} interface.
  */
-final class DefaultEntity extends DefaultValueMap<String, Object> implements Entity, Serializable, Comparable<Entity> {
+final class DefaultEntity extends DefaultValueMap<Property, Object> implements Entity, Serializable, Comparable<Entity> {
 
   private static final long serialVersionUID = 1;
 
@@ -66,7 +66,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   DefaultEntity(final Definition definition, final Key key) {
     this(definition);
     for (final Property.ColumnProperty property : key.getProperties()) {
-      put(property, key.get(property.getPropertyID()));
+      put(property, key.get(property));
     }
     this.key = key;
   }
@@ -76,7 +76,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
    * @param definition the definition of the entity type
    * @param values the initial values
    */
-  DefaultEntity(final Definition definition, final Map<String, Object> values) {
+  DefaultEntity(final Definition definition, final Map<Property, Object> values) {
     this(definition, values, null);
   }
 
@@ -86,7 +86,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
    * @param values the initial values
    * @param originalValues the original values, may be null
    */
-  DefaultEntity(final Definition definition, final Map<String, Object> values, final Map<String, Object> originalValues) {
+  DefaultEntity(final Definition definition, final Map<Property, Object> values, final Map<Property, Object> originalValues) {
     super(values, originalValues);
     this.definition = definition;
   }
@@ -188,7 +188,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
       return getDerivedValue((Property.DerivedProperty) property);
     }
 
-    return super.get(property.getPropertyID());
+    return super.get(property);
   }
 
   /**
@@ -215,7 +215,13 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
       return isForeignKeyNull((Property.ForeignKeyProperty) property);
     }
 
-    return super.isValueNull(property.getPropertyID());
+    return super.isValueNull(property);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isModified(final String propertyID) {
+    return isModified(getProperty(propertyID));
   }
 
   /** {@inheritDoc} */
@@ -232,7 +238,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   /** {@inheritDoc} */
   @Override
   public Entity getForeignKey(final Property.ForeignKeyProperty foreignKeyProperty) {
-    final Entity value = (Entity) super.get(foreignKeyProperty.getPropertyID());
+    final Entity value = (Entity) super.get(foreignKeyProperty);
     if (value == null) {//possibly not loaded
       final Entity.Key referencedKey = getReferencedKey(foreignKeyProperty);
       if (referencedKey != null) {
@@ -246,7 +252,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   /** {@inheritDoc} */
   @Override
   public boolean isLoaded(final String foreignKeyPropertyID) {
-    return super.get(foreignKeyPropertyID) != null;
+    return super.get(Entities.getForeignKeyProperty(getEntityID(), foreignKeyPropertyID)) != null;
   }
 
   /** {@inheritDoc} */
@@ -348,10 +354,34 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   @Override
   public void clearKeyValues() {
     for (final Property.ColumnProperty primaryKeyProperty : definition.getPrimaryKeyProperties()) {
-      remove(primaryKeyProperty.getPropertyID());
-      removeOriginalValue(primaryKeyProperty.getPropertyID());
+      remove(primaryKeyProperty);
+      removeOriginalValue(primaryKeyProperty);
     }
     this.key = null;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Object getOriginal(final String propertyID) {
+    return getOriginal(getProperty(propertyID));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void save(final String propertyID) {
+    save(getProperty(propertyID));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void revert(final String propertyID) {
+    revert(getProperty(propertyID));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void remove(final String propertyID) {
+    remove(getProperty(propertyID));
   }
 
   /** {@inheritDoc} */
@@ -442,8 +472,8 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
 
   /** {@inheritDoc} */
   @Override
-  public boolean containsKey(final Property property) {
-    return containsKey(Objects.requireNonNull(property, PROPERTY_PARAM).getPropertyID());
+  public boolean containsKey(final String propertyID) {
+    return containsKey(getProperty(propertyID));
   }
 
   /**
@@ -483,11 +513,10 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
 
   /** {@inheritDoc} */
   @Override
-  protected void handleRemove(final String key, final Object value) {
-    final Property property = getProperty(key);
+  protected void handleRemove(final Property property, final Object value) {
     if (property instanceof Property.ForeignKeyProperty) {
       for (final Property referenceProperty : ((Property.ForeignKeyProperty) property).getReferenceProperties()) {
-        remove(referenceProperty.getPropertyID());
+        remove(referenceProperty);
       }
     }
   }
@@ -495,12 +524,12 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   /** {@inheritDoc} */
   @Override
   protected void handleValueChangedEventInitialized() {
-    if (definition.hasLinkedProperties()) {
+    if (definition.hasDerivedProperties()) {
       addValueListener(valueChange -> {
-        final Collection<String> linkedPropertyIDs = definition.getLinkedPropertyIDs(valueChange.getKey());
-        for (final String propertyID : linkedPropertyIDs) {
-          final Object linkedValue = get(propertyID);
-          notifyValueChange(propertyID, linkedValue, linkedValue, false);
+        final Collection<Property.DerivedProperty> linkedProperties = definition.getDerivedProperties(valueChange.getKey().getPropertyID());
+        for (final Property.DerivedProperty property : linkedProperties) {
+          final Object linkedValue = get(property);
+          notifyValueChange(property, linkedValue, linkedValue, false);
         }
       });
     }
@@ -573,7 +602,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
       return null;
     }
 
-    return valueOwner.get(denormalizedViewProperty.getDenormalizedProperty().getPropertyID());
+    return valueOwner.get(denormalizedViewProperty.getDenormalizedProperty());
   }
 
   private Key initializeReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty) {
@@ -581,7 +610,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
       final List<Property.ColumnProperty> referenceProperties = foreignKeyProperty.getReferenceProperties();
       final Map<String, Object> values = new HashMap<>(referenceProperties.size());
       for (final Property referenceKeyProperty : referenceProperties) {
-        final Object value = super.get(referenceKeyProperty.getPropertyID());
+        final Object value = super.get(referenceKeyProperty);
         if (value == null) {
           return null;
         }
@@ -594,7 +623,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
     }
     else {
       final Property referenceKeyProperty = foreignKeyProperty.getReferenceProperties().get(0);
-      final Object value = super.get(referenceKeyProperty.getPropertyID());
+      final Object value = super.get(referenceKeyProperty);
       if (value == null) {
         return null;
       }
@@ -625,18 +654,17 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
    */
   private Key initializeKey(final boolean originalValues) {
     final List<Property.ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
-    final Map<String, Object> values = new HashMap<>(primaryKeyProperties.size());
+    final Map<Property.ColumnProperty, Object> values = new HashMap<>(primaryKeyProperties.size());
     for (final Property.ColumnProperty property : primaryKeyProperties) {
-      final String propertyID = property.getPropertyID();
-      values.put(propertyID, originalValues ? getOriginal(propertyID) : super.get(propertyID));
+      values.put(property, originalValues ? getOriginal(property) : super.get(property));
     }
 
     return new DefaultKey(definition, values);
   }
 
   private Object getDerivedValue(final Property.DerivedProperty derivedProperty) {
-    final Map<String, Object> values = new HashMap<>(derivedProperty.getLinkedPropertyIDs().size());
-    for (final String linkedPropertyID : derivedProperty.getLinkedPropertyIDs()) {
+    final Map<String, Object> values = new HashMap<>(derivedProperty.getSourcePropertyIDs().size());
+    for (final String linkedPropertyID : derivedProperty.getSourcePropertyIDs()) {
       values.put(linkedPropertyID, get(linkedPropertyID));
     }
 
@@ -644,8 +672,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   }
 
   private boolean writablePropertiesModified() {
-    for (final String propertyID : originalKeySet()) {
-      final Property property = getProperty(propertyID);
+    for (final Property property : originalKeySet()) {
       if (property instanceof Property.ColumnProperty) {
         final Property.ColumnProperty columnProperty = (Property.ColumnProperty) property;
         if (!columnProperty.isReadOnly() && columnProperty.isUpdatable()) {
@@ -683,7 +710,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
       propagateForeignKeyValues((Property.ForeignKeyProperty) property, (Entity) value, entityDefinitions);
     }
 
-    return super.put(property.getPropertyID(), property.prepareValue(value));
+    return super.put(property, property.prepareValue(value));
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
@@ -692,13 +719,12 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
     stream.writeBoolean(isModified);
     for (final Property property : definition.getProperties().values()) {
       if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
-        final String propertyID = property.getPropertyID();
-        stream.writeObject(super.get(propertyID));
+        stream.writeObject(super.get(property));
         if (isModified) {
-          final boolean valueModified = isModified(propertyID);
+          final boolean valueModified = isModified(property);
           stream.writeBoolean(valueModified);
           if (valueModified) {
-            stream.writeObject(getOriginal(propertyID));
+            stream.writeObject(getOriginal(property));
           }
         }
       }
@@ -714,10 +740,9 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
     }
     for (final Property property : definition.getProperties().values()) {
       if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
-        final String propertyID = property.getPropertyID();
-        super.put(propertyID, stream.readObject());
+        super.put(property, stream.readObject());
         if (isModified && stream.readBoolean()) {
-          setOriginalValue(propertyID, stream.readObject());
+          setOriginalValue(property, stream.readObject());
         }
       }
     }
@@ -766,7 +791,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   private static boolean primaryKeysEqual(final DefaultEntity entity1, final Entity entity2) {
     if (entity1.getEntityID().equals(entity2.getEntityID())) {
       for (final Property.ColumnProperty property : entity1.definition.getPrimaryKeyProperties()) {
-        if (!Objects.equals(entity1.get(property.getPropertyID()), entity2.get(property.getPropertyID()))) {
+        if (!Objects.equals(entity1.get(property.getPropertyID()), entity2.get(property))) {
           return false;
         }
       }
@@ -778,7 +803,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   /**
    * A class representing column key objects for entities.
    */
-  static final class DefaultKey extends DefaultValueMap<String, Object> implements Entity.Key, Serializable {
+  static final class DefaultKey extends DefaultValueMap<Property.ColumnProperty, Object> implements Entity.Key, Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -811,7 +836,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
      * Instantiates a new Key for the given entity type
      * @param definition the entity definition
      */
-    DefaultKey(final Definition definition, final Map<String, Object> values) {
+    DefaultKey(final Definition definition, final Map<Property.ColumnProperty, Object> values) {
       super(values, null);
       this.definition = definition;
       final List<Property.ColumnProperty> properties = definition.getPrimaryKeyProperties();
@@ -853,11 +878,21 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
     }
 
     @Override
+    public Object put(final String propertyID, final Object value) {
+      return put(Entities.getColumnProperty(getEntityID(), propertyID), value);
+    }
+
+    @Override
+    public Object get(final String propertyID) {
+      return get(Entities.getColumnProperty(getEntityID(), propertyID));
+    }
+
+    @Override
     public String toString() {
       final StringBuilder stringBuilder = new StringBuilder();
       int i = 0;
       for (final Property.ColumnProperty property : getProperties()) {
-        stringBuilder.append(property.getPropertyID()).append(":").append(super.get(property.getPropertyID()));
+        stringBuilder.append(property.getPropertyID()).append(":").append(super.get(property));
         if (i++ < getPropertyCount() - 1) {
           stringBuilder.append(",");
         }
@@ -938,7 +973,12 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
     }
 
     @Override
-    protected void handleSet(final String key, final Object value, final Object previousValue,
+    public boolean isValueNull(final String propertyID) {
+      return isValueNull(Entities.getColumnProperty(getEntityID(), propertyID));
+    }
+
+    @Override
+    protected void handleSet(final Property.ColumnProperty key, final Object value, final Object previousValue,
                              final boolean initialization) {
       hashCodeDirty = true;
       if (singleIntegerKey) {
@@ -990,8 +1030,8 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
       stream.writeObject(definition.getEntityID());
-      for (final Property property : definition.getPrimaryKeyProperties()) {
-        stream.writeObject(super.get(property.getPropertyID()));
+      for (final Property.ColumnProperty property : definition.getPrimaryKeyProperties()) {
+        stream.writeObject(super.get(property));
       }
     }
 
@@ -1004,14 +1044,14 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
       final List<Property.ColumnProperty> properties = definition.getPrimaryKeyProperties();
       compositeKey = properties.size() > 1;
       singleIntegerKey = !compositeKey && properties.get(0).isInteger();
-      for (final Property property : properties) {
-        super.put(property.getPropertyID(), stream.readObject());
+      for (final Property.ColumnProperty property : properties) {
+        super.put(property, stream.readObject());
       }
     }
 
-    private static Map<String, Object> createSingleValueMap(final Definition definition, final Object value) {
-      final Map<String, Object> values = new HashMap<>(1);
-      values.put(definition.getPrimaryKeyProperties().get(0).getPropertyID(), value);
+    private static Map<Property.ColumnProperty, Object> createSingleValueMap(final Definition definition, final Object value) {
+      final Map<Property.ColumnProperty, Object> values = new HashMap<>(1);
+      values.put(definition.getPrimaryKeyProperties().get(0), value);
 
       return values;
     }

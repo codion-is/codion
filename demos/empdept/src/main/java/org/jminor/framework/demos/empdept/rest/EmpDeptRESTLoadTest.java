@@ -200,7 +200,8 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
                 .addParameter("entityID", EmpDept.T_EMPLOYEE)
                 .addParameter("conditionType", Condition.Type.LIKE.toString())
-                .addParameter("values", "{\"deptno\":\"" + queryEntities.get(new Random().nextInt(queryEntities.size())).getAsString(EmpDept.DEPARTMENT_ID) + "\"}");
+                .addParameter("values", "{\"deptno\":\"" + queryEntities.get(new Random().nextInt(queryEntities.size()))
+                        .getAsString(EmpDept.DEPARTMENT_ID) + "\"}");
 
         response = client.execute(new HttpGet(builder.build()));
         queryResult = getContentStream(response.getEntity());

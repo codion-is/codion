@@ -27,12 +27,12 @@ public class DefaultPropertyFilterModel extends DefaultColumnConditionModel<Prop
   @Override
   protected final Comparable getComparable(final Object object) {
     final Entity entity = (Entity) object;
-    if (entity.isValueNull(getColumnIdentifier().getPropertyID())) {
+    if (entity.isValueNull(getColumnIdentifier())) {
       return null;
     }
 
     final Property property = getColumnIdentifier();
-    final Object value = entity.get(property.getPropertyID());
+    final Object value = entity.get(property);
     if (property instanceof Property.ForeignKeyProperty) {
       return value.toString();
     }

@@ -4,6 +4,7 @@
 package org.jminor.common.db.valuemap;
 
 import org.jminor.common.EventInfoListener;
+import org.jminor.common.db.Attribute;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,33 +22,33 @@ public class DefaultValueMapTest {
 
   @Test
   public void test() {
-    final String key = "key";
-    final DefaultValueMap<String, Object> map = new DefaultValueMap<>();
-    assertFalse(map.equals(key));
+    final TestAttribute attr1 = new TestAttribute();
+    final TestAttribute attr2 = new TestAttribute();
+    final DefaultValueMap<TestAttribute, Object> map = new DefaultValueMap<>();
+    assertFalse(map.equals(attr1));
     assertEquals(0, map.size());
-    assertFalse(map.containsKey(key));
-    map.put(key, null);
-    assertTrue(map.containsKey(key));
-    assertTrue(map.isValueNull(key));
-    assertEquals("", map.getAsString(key));
-    map.put(key, key);
-    assertFalse(map.isValueNull(key));
-    assertEquals(key, map.get(key));
-    assertEquals(key, map.getAsString(key));
-    assertNull(map.remove("bla"));
-    final Object value = map.remove(key);
-    assertEquals(value, key);
-    assertFalse(map.containsKey(key));
+    assertFalse(map.containsKey(attr1));
+    map.put(attr1, null);
+    assertTrue(map.containsKey(attr1));
+    assertTrue(map.isValueNull(attr1));
+    assertEquals("", map.getAsString(attr1));
+    map.put(attr1, attr1);
+    assertFalse(map.isValueNull(attr1));
+    assertEquals(attr1, map.get(attr1));
+    assertNull(map.remove(attr2));
+    final Object value = map.remove(attr1);
+    assertEquals(value, attr1);
+    assertFalse(map.containsKey(attr1));
     assertEquals(0, map.size());
-    map.put(key, key);
+    map.put(attr1, attr1);
     map.clear();
-    assertFalse(map.containsKey(key));
+    assertFalse(map.containsKey(attr1));
     assertEquals(0, map.size());
 
-    final ValueMap<String, Integer> valueMap = new DefaultValueMap<>();
+    final ValueMap<TestAttribute, Integer> valueMap = new DefaultValueMap<>();
 
-    final EventInfoListener<ValueChange<String, ?>> valueListener = info -> {
-      Assert.assertEquals(key, info.getKey());
+    final EventInfoListener<ValueChange<TestAttribute, ?>> valueListener = info -> {
+      Assert.assertEquals(attr1, info.getKey());
       info.toString();
       info.getOldValue();
       info.getNewValue();
@@ -58,65 +59,65 @@ public class DefaultValueMapTest {
     valueMap.getModifiedObserver();
     valueMap.getValueObserver();
 
-    assertFalse(valueMap.containsKey(key));
+    assertFalse(valueMap.containsKey(attr1));
     assertTrue(valueMap.originalKeySet().isEmpty());
 
-    valueMap.put(key, 1);
-    assertTrue(valueMap.containsKey(key));
-    Assert.assertEquals(Integer.valueOf(1), valueMap.get(key));
-    Assert.assertEquals(Integer.valueOf(1), valueMap.getOriginal(key));
-    assertFalse(valueMap.isValueNull(key));
+    valueMap.put(attr1, 1);
+    assertTrue(valueMap.containsKey(attr1));
+    Assert.assertEquals(Integer.valueOf(1), valueMap.get(attr1));
+    Assert.assertEquals(Integer.valueOf(1), valueMap.getOriginal(attr1));
+    assertFalse(valueMap.isValueNull(attr1));
     assertFalse(valueMap.isModified());
-    assertFalse(valueMap.isModified(key));
+    assertFalse(valueMap.isModified(attr1));
 
-    valueMap.put(key, 1);
-    assertTrue(valueMap.containsKey(key));
-    Assert.assertEquals(Integer.valueOf(1), valueMap.get(key));
+    valueMap.put(attr1, 1);
+    assertTrue(valueMap.containsKey(attr1));
+    Assert.assertEquals(Integer.valueOf(1), valueMap.get(attr1));
     assertFalse(valueMap.isModified());
-    assertFalse(valueMap.isModified(key));
+    assertFalse(valueMap.isModified(attr1));
 
-    valueMap.put(key, 2);
-    assertTrue(valueMap.containsKey(key));
-    Assert.assertEquals(Integer.valueOf(2), valueMap.get(key));
-    Assert.assertEquals(Integer.valueOf(1), valueMap.getOriginal(key));
+    valueMap.put(attr1, 2);
+    assertTrue(valueMap.containsKey(attr1));
+    Assert.assertEquals(Integer.valueOf(2), valueMap.get(attr1));
+    Assert.assertEquals(Integer.valueOf(1), valueMap.getOriginal(attr1));
     assertTrue(valueMap.isModified());
-    assertTrue(valueMap.isModified(key));
+    assertTrue(valueMap.isModified(attr1));
     assertFalse(valueMap.originalKeySet().isEmpty());
 
-    valueMap.put(key, 3);
-    assertTrue(valueMap.containsKey(key));
-    Assert.assertEquals(Integer.valueOf(3), valueMap.get(key));
-    Assert.assertEquals(Integer.valueOf(1), valueMap.getOriginal(key));
+    valueMap.put(attr1, 3);
+    assertTrue(valueMap.containsKey(attr1));
+    Assert.assertEquals(Integer.valueOf(3), valueMap.get(attr1));
+    Assert.assertEquals(Integer.valueOf(1), valueMap.getOriginal(attr1));
     assertTrue(valueMap.isModified());
-    assertTrue(valueMap.isModified(key));
+    assertTrue(valueMap.isModified(attr1));
 
     valueMap.revertAll();
-    Assert.assertEquals(Integer.valueOf(1), valueMap.get(key));
+    Assert.assertEquals(Integer.valueOf(1), valueMap.get(attr1));
     assertFalse(valueMap.isModified());
-    assertFalse(valueMap.isModified(key));
+    assertFalse(valueMap.isModified(attr1));
 
-    valueMap.put(key, null);
-    assertTrue(valueMap.isValueNull(key));
+    valueMap.put(attr1, null);
+    assertTrue(valueMap.isValueNull(attr1));
     assertTrue(valueMap.isModified());
-    assertTrue(valueMap.isModified(key));
-    valueMap.revert(key);
+    assertTrue(valueMap.isModified(attr1));
+    valueMap.revert(attr1);
     assertFalse(valueMap.isModified());
-    valueMap.revert(key);
-    valueMap.put(key, null);
+    valueMap.revert(attr1);
+    valueMap.put(attr1, null);
 
-    valueMap.remove(key);
-    assertFalse(valueMap.containsKey(key));
+    valueMap.remove(attr1);
+    assertFalse(valueMap.containsKey(attr1));
     assertFalse(valueMap.isModified());
 
-    valueMap.put(key, 0);
-    valueMap.put(key, 1);
+    valueMap.put(attr1, 0);
+    valueMap.put(attr1, 1);
     assertTrue(valueMap.isModified());
-    assertTrue(valueMap.isModified(key));
-    Assert.assertEquals(Integer.valueOf(0), valueMap.getOriginal(key));
-    Assert.assertEquals(Integer.valueOf(0), valueMap.getOriginalCopy().get(key));
+    assertTrue(valueMap.isModified(attr1));
+    Assert.assertEquals(Integer.valueOf(0), valueMap.getOriginal(attr1));
+    Assert.assertEquals(Integer.valueOf(0), valueMap.getOriginalCopy().get(attr1));
     valueMap.saveAll();
     assertFalse(valueMap.isModified());
-    assertFalse(valueMap.isModified(key));
+    assertFalse(valueMap.isModified(attr1));
 
     valueMap.removeValueListener(valueListener);
     valueMap.removeValueListener(null);
@@ -124,67 +125,75 @@ public class DefaultValueMapTest {
 
   @Test
   public void setAs() {
-    final ValueMap<Integer, String> dest = new DefaultValueMap<>();
+    final TestAttribute one = new TestAttribute();
+    final TestAttribute two = new TestAttribute();
+    final TestAttribute three = new TestAttribute();
+
+    final ValueMap<TestAttribute, String> dest = new DefaultValueMap<>();
     dest.getValueObserver();
 
-    final ValueMap<Integer, String> source = new DefaultValueMap<>();
-    source.put(1, "1");
-    source.put(2, "2");
-    source.put(2, "3");
+    final ValueMap<TestAttribute, String> source = new DefaultValueMap<>();
+    source.put(one, "1");
+    source.put(two, "2");
+    source.put(two, "3");
 
     dest.setAs(source);
 
-    Assert.assertEquals("1", dest.get(1));
-    Assert.assertEquals("3", dest.get(2));
-    Assert.assertEquals("2", dest.getOriginal(2));
+    Assert.assertEquals("1", dest.get(one));
+    Assert.assertEquals("3", dest.get(two));
+    Assert.assertEquals("2", dest.getOriginal(two));
 
     assertTrue(dest.equals(source));
 
     dest.setAs(dest);
 
-    Assert.assertEquals("1", dest.get(1));
-    Assert.assertEquals("3", dest.get(2));
-    Assert.assertEquals("2", dest.getOriginal(2));
+    Assert.assertEquals("1", dest.get(one));
+    Assert.assertEquals("3", dest.get(two));
+    Assert.assertEquals("2", dest.getOriginal(two));
 
     dest.setAs(null);
-    assertFalse(dest.containsKey(1));
-    assertFalse(dest.containsKey(2));
-    assertFalse(dest.containsKey(3));
+    assertFalse(dest.containsKey(one));
+    assertFalse(dest.containsKey(two));
+    assertFalse(dest.containsKey(three));
   }
 
   @Test
   public void equals() {
-    final ValueMap<String, Integer> mapOne = new DefaultValueMap<>();
-    final ValueMap<String, Integer> mapTwo = mapOne.newInstance();
+    final ValueMap<TestAttribute, Integer> mapOne = new DefaultValueMap<>();
+    final ValueMap<TestAttribute, Integer> mapTwo = mapOne.newInstance();
     mapOne.getValueObserver();
     mapTwo.getValueObserver();
 
-    mapOne.put("keyOne", 1);
-    mapOne.put("keyTwo", 2);
+    final TestAttribute one = new TestAttribute();
+    final TestAttribute two = new TestAttribute();
+    final TestAttribute three = new TestAttribute();
+
+    mapOne.put(one, 1);
+    mapOne.put(two, 2);
 
     assertFalse(mapOne.equals(mapTwo));
     assertFalse(mapTwo.equals(mapOne));
 
     assertFalse(mapOne.equals(new HashMap()));
 
-    mapTwo.put("keyOne", 1);
+    mapTwo.put(one, 1);
 
     assertFalse(mapOne.equals(mapTwo));
     assertFalse(mapTwo.equals(mapOne));
 
-    mapTwo.put("keyTwo", 2);
+    mapTwo.put(two, 2);
 
     assertTrue(mapOne.equals(mapTwo));
     assertTrue(mapTwo.equals(mapOne));
 
-    mapTwo.put("keyOne", 2);
+    mapTwo.put(one, 2);
 
     assertFalse(mapOne.equals(mapTwo));
     assertFalse(mapTwo.equals(mapOne));
 
-    mapTwo.put("keyOne", 1);
-    mapTwo.remove("keyTwo");
-    mapTwo.put("keyThree", 3);
+    mapTwo.put(one, 1);
+    mapTwo.remove(two);
+    mapTwo.put(three, 3);
 
     assertFalse(mapOne.equals(mapTwo));
     assertFalse(mapTwo.equals(mapOne));
@@ -192,15 +201,19 @@ public class DefaultValueMapTest {
 
   @Test
   public void clear() {
-    final ValueMap<String, Integer> map = new DefaultValueMap<>();
-    map.put("1", 1);
-    map.put("2", 2);
-    map.put("3", 3);
+    final TestAttribute one = new TestAttribute();
+    final TestAttribute two = new TestAttribute();
+    final TestAttribute three = new TestAttribute();
 
-    map.put("2", 3);
+    final ValueMap<TestAttribute, Integer> map = new DefaultValueMap<>();
+    map.put(one, 1);
+    map.put(two, 2);
+    map.put(three, 3);
+
+    map.put(two, 3);
 
     assertTrue(map.isModified());
-    assertTrue(map.isModified("2"));
+    assertTrue(map.isModified(two));
 
     map.clear();
 
@@ -208,24 +221,37 @@ public class DefaultValueMapTest {
     assertTrue(map.keySet().isEmpty());
 
     assertFalse(map.isModified());
-    assertFalse(map.isModified("2"));
+    assertFalse(map.isModified(two));
 
-    map.put("2", 4);
+    map.put(two, 4);
     assertFalse(map.isModified());
-    assertFalse(map.isModified("2"));
+    assertFalse(map.isModified(two));
   }
 
   @Test
   public void testHashCode() {
-    final ValueMap<String, Integer> map = new DefaultValueMap<>();
-    map.put("1", 1);
-    map.put("2", 2);
-    map.put("3", 3);
+    final TestAttribute one = new TestAttribute();
+    final TestAttribute two = new TestAttribute();
+    final TestAttribute three = new TestAttribute();
+
+    final ValueMap<TestAttribute, Integer> map = new DefaultValueMap<>();
+    map.put(one, 1);
+    map.put(two, 2);
+    map.put(three, 3);
 
     assertEquals(29, map.hashCode());
 
-    map.put("2", null);
+    map.put(two, null);
 
     assertEquals(27, map.hashCode());
+  }
+
+  private static final class TestAttribute implements Attribute {
+    @Override
+    public String getCaption() {return null;}
+    @Override
+    public String getDescription() {return null;}
+    @Override
+    public Class<?> getTypeClass() {return null;}
   }
 }

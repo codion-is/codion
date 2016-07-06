@@ -3,8 +3,6 @@
  */
 package org.jminor.common;
 
-import org.jminor.common.model.formats.DateFormats;
-
 import org.junit.Test;
 
 import java.sql.Timestamp;
@@ -18,18 +16,22 @@ import static org.junit.Assert.*;
 
 public class DateUtilTest {
 
+  private static final SimpleDateFormat SHORT_DASH = new SimpleDateFormat("dd-MM-yyyy");
+  private static final SimpleDateFormat SHORT_DOT = new SimpleDateFormat("dd.MM.yyyy");
+  private static final SimpleDateFormat TIMESTAMP = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+  private static final SimpleDateFormat EXACT_TIMESTAMP = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
   @Test
   public void isDateValid() throws Exception {
-    assertTrue("isDateValid should work", DateUtil.isDateValid("03-10-1975", DateFormats.getDateFormat(DateFormats.SHORT_DASH)));
-    assertFalse("isDateValid should work with an invalid date", DateUtil.isDateValid("033-102-975", DateFormats.getDateFormat(DateFormats.SHORT_DASH)));
+    assertTrue("isDateValid should work", DateUtil.isDateValid("03-10-1975", SHORT_DASH));
+    assertFalse("isDateValid should work with an invalid date", DateUtil.isDateValid("033-102-975", SHORT_DASH));
 
-    assertTrue("isDateValid should work with an empty string", DateUtil.isDateValid("", true, DateFormats.getDateFormat(DateFormats.SHORT_DASH)));
-    assertFalse("isDateValid should not work with an empty string", DateUtil.isDateValid("", false, DateFormats.getDateFormat(DateFormats.SHORT_DASH)));
+    assertTrue("isDateValid should work with an empty string", DateUtil.isDateValid("", true, SHORT_DASH));
+    assertFalse("isDateValid should not work with an empty string", DateUtil.isDateValid("", false, SHORT_DASH));
 
-    assertTrue("isDateValid should work with long date", DateUtil.isDateValid("03-10-1975 10:45", false, DateFormats.getDateFormat(DateFormats.TIMESTAMP)));
+    assertTrue("isDateValid should work with long date", DateUtil.isDateValid("03-10-1975 10:45", false, TIMESTAMP));
 
-    assertTrue("isDateValid should work with a date format specified",
-            DateUtil.isDateValid("03.10.1975", false, DateFormats.getDateFormat(DateFormats.SHORT_DOT)));
+    assertTrue("isDateValid should work with a date format specified", DateUtil.isDateValid("03.10.1975", false, SHORT_DOT));
   }
 
   @Test(expected = NullPointerException.class)
@@ -40,12 +42,12 @@ public class DateUtilTest {
   @Test
   public void getDate() throws ParseException {
     final Date date = DateUtil.getDate(1975, Calendar.OCTOBER, 3);
-    assertEquals(DateFormats.getDateFormat(DateFormats.SHORT_DASH).parse("03-10-1975"), date);
+    assertEquals(SHORT_DASH.parse("03-10-1975"), date);
   }
 
   @Test
   public void floorTimeFields() throws ParseException {
-    final Date dateWithTime = DateFormats.getDateFormat(DateFormats.EXACT_TIMESTAMP).parse("1975-10-03 10:45:42.123");
+    final Date dateWithTime = EXACT_TIMESTAMP.parse("1975-10-03 10:45:42.123");
     final Calendar calendar = Calendar.getInstance();
     calendar.setTime(dateWithTime);
     DateUtil.floorTimeFields(calendar);
@@ -57,7 +59,7 @@ public class DateUtilTest {
 
   @Test
   public void floorTime() throws ParseException {
-    final Date dateWithTime = DateFormats.getDateFormat(DateFormats.EXACT_TIMESTAMP).parse("1975-10-03 10:45:42.123");
+    final Date dateWithTime = EXACT_TIMESTAMP.parse("1975-10-03 10:45:42.123");
     final Date date = DateUtil.floorTime(dateWithTime);
     final Calendar calendar = Calendar.getInstance();
     calendar.setTime(date);

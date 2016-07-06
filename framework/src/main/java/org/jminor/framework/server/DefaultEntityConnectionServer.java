@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server;
 
+import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.Version;
@@ -13,7 +14,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
 import org.jminor.common.db.pool.ConnectionPools;
-import org.jminor.common.model.tools.TaskScheduler;
 import org.jminor.common.server.AbstractServer;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;

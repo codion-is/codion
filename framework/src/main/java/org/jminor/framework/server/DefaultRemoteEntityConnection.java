@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server;
 
+import org.jminor.common.DaemonThreadFactory;
 import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
@@ -14,7 +15,6 @@ import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolException;
-import org.jminor.common.model.DaemonThreadFactory;
 import org.jminor.common.model.ExceptionUtil;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;

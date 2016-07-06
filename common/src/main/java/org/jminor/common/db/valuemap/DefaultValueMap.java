@@ -11,6 +11,7 @@ import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Util;
+import org.jminor.common.db.Attribute;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -26,7 +27,7 @@ import java.util.Set;
  * @param <K> the key type
  * @param <V> the value type
  */
-public class DefaultValueMap<K, V> implements ValueMap<K, V> {
+public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
 
   /**
    * Holds the values contained in this value map.
@@ -156,10 +157,10 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     if (values.containsKey(key)) {
       final V value = values.remove(key);
       removeOriginalValue(key);
+      handleRemove(key, value);
       if (valueChangedEvent != null) {
         notifyValueChange(key, null, value, false);
       }
-      handleRemove(key, value);
 
       return value;
     }

@@ -19,7 +19,7 @@ import java.util.Collections;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class EntityConditionUtilTest {
+public class EntityConditionsTest {
 
   @BeforeClass
   public static void init() {
@@ -135,6 +135,7 @@ public class EntityConditionUtilTest {
     assertEquals("deptno = ?", condition.getWhereClause());
     assertEquals(1, condition.getValues().size());
     assertEquals(1, condition.getColumns().size());
+    final Object val = condition.getValues().get(0);
     assertEquals(10, condition.getValues().get(0));
     assertEquals(TestDomain.DEPARTMENT_ID, condition.getColumns().get(0).getPropertyID());
   }

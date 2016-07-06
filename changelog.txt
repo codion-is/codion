@@ -4328,3 +4328,6 @@
   MasterDetailPanel.getDetailPanels() removed wildcard type
   Floating point comparison now done with Double.compare()
   Condition now Column based, Condition.getValueKeys() renamed to getColumns()
+0.10.8
+  ValueMap keys now restricted to Attribute plus associated changes
+  TaskScheduler and DaemonThreadFactory moved to org.jminor.common to remove cyclical dependency between common.db and common.model

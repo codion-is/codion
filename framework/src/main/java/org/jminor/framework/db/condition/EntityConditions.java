@@ -688,7 +688,7 @@ public final class EntityConditions {
           final Set<Property.ColumnProperty> andSet = Conditions.conditionSet(Conjunction.AND);
           int i = 0;
           for (final Property.ColumnProperty property : propertyList) {
-            andSet.add(new PropertyCondition(property, Type.LIKE, key.get(pkProperties.get(i++).getPropertyID())));
+            andSet.add(new PropertyCondition(property, Type.LIKE, key.get(pkProperties.get(i++))));
           }
 
           conditionSet.add(andSet);
@@ -696,10 +696,10 @@ public final class EntityConditions {
       }
       else {
         final Property.ColumnProperty property = properties == null ? firstKey.getFirstProperty() : properties.get(0);
-        final Property primaryKeyProperty = properties == null ? property : firstKey.getFirstProperty();
+        final Property.ColumnProperty primaryKeyProperty = properties == null ? property : firstKey.getFirstProperty();
         //a = b
         if (keys.size() == 1) {
-          conditionSet.add(new PropertyCondition(property, Type.LIKE, firstKey.get(primaryKeyProperty.getPropertyID())));
+          conditionSet.add(new PropertyCondition(property, Type.LIKE, firstKey.get(primaryKeyProperty)));
         }
         else { //a in (c, v, d, s)
           conditionSet.add(new PropertyCondition(property, Type.LIKE, EntityUtil.getValues(keys)));
@@ -1026,7 +1026,9 @@ public final class EntityConditions {
         final Set<Property.ColumnProperty> pkSet = Conditions.conditionSet(Conjunction.AND);
         for (final Property.ColumnProperty referencedProperty : foreignKeyProperty.getReferenceProperties()) {
           final String referencedPropertyID = foreignKeyProperty.getReferencedPropertyID(referencedProperty);
-          final Object referencedValue = entityKey == null ? null : entityKey.get(referencedPropertyID);
+          final Property.ColumnProperty referencedPKProperty =
+                  Entities.getColumnProperty(foreignKeyProperty.getReferencedEntityID(), referencedPropertyID);
+          final Object referencedValue = entityKey == null ? null : entityKey.get(referencedPKProperty);
           pkSet.add(new PropertyCondition(referencedProperty, conditionType, referencedValue));
         }
 

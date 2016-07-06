@@ -156,7 +156,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /**
    * Links a set of derived property ids to a parent property id
    */
-  private final Map<String, Set<String>> linkedProperties = new HashMap<>();
+  private final Map<String, Set<Property.DerivedProperty>> derivedProperties = new HashMap<>();
 
   private List<Property.ColumnProperty> primaryKeyProperties;
   private List<Property.ForeignKeyProperty> foreignKeyProperties;
@@ -200,7 +200,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.resultPacker = new EntityResultPacker(entityID, getColumnProperties(properties.values()),
             getTransientProperties(properties.values()), this.properties.size());
     setSelectIndexes();
-    initializePropertyLinks();
+    initializeDerivedProperties();
   }
 
   /** {@inheritDoc} */
@@ -462,25 +462,26 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return properties;
   }
 
+  /** {@inheritDoc} */
   @Override
-  public boolean hasLinkedProperties() {
-    return !linkedProperties.isEmpty();
+  public boolean hasDerivedProperties() {
+    return !derivedProperties.isEmpty();
   }
 
   /** {@inheritDoc} */
   @Override
-  public boolean hasLinkedProperties(final String propertyID) {
-    return linkedProperties.containsKey(propertyID);
+  public boolean hasDerivedProperties(final String propertyID) {
+    return derivedProperties.containsKey(propertyID);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Collection<String> getLinkedPropertyIDs(final String propertyID) {
-    final Collection<String> linked = linkedProperties.get(propertyID);
-    if (linked == null) {
+  public Collection<Property.DerivedProperty> getDerivedProperties(final String property) {
+    final Collection<Property.DerivedProperty> derived = derivedProperties.get(property);
+    if (derived == null) {
       return Collections.emptyList();
     }
-    return linked;
+    return derived;
   }
 
   /** {@inheritDoc} */
@@ -699,24 +700,24 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
   }
 
-  private void initializePropertyLinks() {
+  private void initializeDerivedProperties() {
     for (final Property property : properties.values()) {
       if (property instanceof Property.DerivedProperty) {
-        final Collection<String> linked = ((Property.DerivedProperty) property).getLinkedPropertyIDs();
-        if (!Util.nullOrEmpty(linked)) {
-          for (final String parentLinkPropertyID : linked) {
-            linkProperties(parentLinkPropertyID, property.getPropertyID());
+        final Collection<String> derived = ((Property.DerivedProperty) property).getSourcePropertyIDs();
+        if (!Util.nullOrEmpty(derived)) {
+          for (final String parentLinkPropertyID : derived) {
+            linkProperties(parentLinkPropertyID, (Property.DerivedProperty) property);
           }
         }
       }
     }
   }
 
-  private void linkProperties(final String parentPropertyID, final String derivedPropertyID) {
-    if (!linkedProperties.containsKey(parentPropertyID)) {
-      linkedProperties.put(parentPropertyID, new HashSet<>());
+  private void linkProperties(final String parentPropertyID, final Property.DerivedProperty derivedProperty) {
+    if (!derivedProperties.containsKey(parentPropertyID)) {
+      derivedProperties.put(parentPropertyID, new HashSet<>());
     }
-    linkedProperties.get(parentPropertyID).add(derivedPropertyID);
+    derivedProperties.get(parentPropertyID).add(derivedProperty);
   }
 
   static Entity.Definition getDefinition(final String entityID) {
@@ -1052,18 +1053,18 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     private Entity loadEntity(final ResultSet resultSet) throws SQLException {
-      final Map<String, Object> values = new HashMap<>(propertyCount);
+      final Map<Property, Object> values = new HashMap<>(propertyCount);
       if (hasTransientProperties) {
         for (final Property.TransientProperty transientProperty : transientProperties) {
           if (!(transientProperty instanceof Property.DenormalizedViewProperty)
                   && !(transientProperty instanceof Property.DerivedProperty)) {
-            values.put(transientProperty.getPropertyID(), null);
+            values.put(transientProperty, null);
           }
         }
       }
       for (final Property.ColumnProperty property : properties) {
         try {
-          values.put(property.getPropertyID(), property.fetchValue(resultSet));
+          values.put(property, property.fetchValue(resultSet));
         }
         catch (final Exception e) {
           throw new SQLException("Exception fetching: " + property + ", entity: " + entityID + " [" + e.getMessage() + "]", e);

@@ -5,9 +5,12 @@ package org.jminor.framework.model;
 
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
+import org.jminor.common.EventObserver;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
+import org.jminor.common.db.Attribute;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.valuemap.ValueChange;
 import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.db.valuemap.exception.ValidationException;
@@ -23,7 +26,7 @@ import java.util.Map;
 /**
  * Specifies a class for editing {@link Entity} instances.
  */
-public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refreshable, EntityDataProvider {
+public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Refreshable, EntityDataProvider {
 
   /**
    * @return an Entity instance populated with default values for all properties
@@ -76,6 +79,26 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @see org.jminor.framework.Configuration#WARN_ABOUT_UNSAVED_DATA
    */
   boolean containsUnsavedData();
+
+  /**
+   * @param propertyID the ID of the property
+   * @return true if the value of the given property is null
+   */
+  boolean isValueNull(final String propertyID);
+
+  /**
+   * Sets the given value in the underlying value map
+   * @param propertyID the ID of the property to associate the given value with
+   * @param value the value to associate with the given property
+   */
+  void setValue(final String propertyID, final Object value);
+
+  /**
+   * Returns the value associated with the given property
+   * @param propertyID the ID of the property
+   * @return the value associated with the given property
+   */
+  Object getValue(final String propertyID);
 
   /**
    * Returns the value associated with the given propertyID assuming it
@@ -354,6 +377,39 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @see #setInsertAllowed(boolean)
    */
   StateObserver getAllowInsertObserver();
+
+  /**
+   * @param propertyID the ID of the property for which to retrieve the event
+   * @return an EventObserver notified when the value of the given property changes
+   */
+  EventObserver<ValueChange<Property, ?>> getValueObserver(final String propertyID);
+
+  /**
+   * Adds a listener notified each time the value associated with the given property is set via
+   * {@link ValueMapEditModel#setValue(Attribute, Object)}, note that this event is only fired when the the value changes
+   * @param key the key for which to monitor value changes
+   * @param listener a listener notified each time the value of the given property is set via this model
+   */
+  void addValueSetListener(final String propertyID, final EventInfoListener<ValueChange<Property, ?>> listener);
+
+  /**
+   * @param propertyID the propertyID
+   * @param listener the listener to remove
+   */
+  void removeValueSetListener(final String propertyID, final EventInfoListener listener);
+
+  /**
+   * Adds a listener notified each time the value associated with the given key changes
+   * @param propertyID the ID of the property for which to monitor value changes
+   * @param listener a listener notified each time the value of the property identified by {@code propertyID} changes
+   */
+  void addValueListener(final String propertyID, final EventInfoListener<ValueChange<Property, ?>> listener);
+
+  /**
+   * @param propertyID the ID of the property for which to remove the listener
+   * @param listener the listener to remove
+   */
+  void removeValueListener(final String propertyID, final EventInfoListener listener);
 
   /**
    * @param listener a listener notified each time the entity is set

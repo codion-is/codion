@@ -1,12 +1,7 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model.tools;
-
-import org.jminor.common.Event;
-import org.jminor.common.EventObserver;
-import org.jminor.common.Events;
-import org.jminor.common.model.DaemonThreadFactory;
+package org.jminor.common;
 
 import java.util.Objects;
 import java.util.concurrent.Executors;

@@ -3,12 +3,14 @@ package org.jminor.framework.model;
 import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
+import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.TextUtil;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.valuemap.ValueChange;
 import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.db.valuemap.exception.ValidationException;
@@ -48,7 +50,7 @@ import java.util.Objects;
  * panel.initializePanel();
  * </pre>
  */
-public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Object> implements EntityEditModel {
+public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Property, Object> implements EntityEditModel {
 
   protected static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditModel.class);
 
@@ -218,6 +220,12 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
 
   /** {@inheritDoc} */
   @Override
+  public EventObserver<ValueChange<Property, ?>> getValueObserver(final String propertyID) {
+    return getValueObserver(Entities.getProperty(getEntityID(), propertyID));
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final boolean isUpdateAllowed() {
     return allowUpdateState.isActive();
   }
@@ -295,8 +303,8 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
       if (currentForeignKeyValue != null) {
         for (final Entity newForeignKeyValue : foreignKeyValues) {
           if (currentForeignKeyValue.equals(newForeignKeyValue)) {
-            setValue(foreignKeyProperty.getPropertyID(), null);
-            setValue(foreignKeyProperty.getPropertyID(), newForeignKeyValue);
+            setValue(foreignKeyProperty, null);
+            setValue(foreignKeyProperty, newForeignKeyValue);
           }
         }
       }
@@ -323,7 +331,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
   /** {@inheritDoc} */
   @Override
   public final Entity getForeignKeyValue(final String foreignKeyPropertyID) {
-    return (Entity) getValue(foreignKeyPropertyID);
+    return (Entity) getValue(Entities.getForeignKeyProperty(getEntityID(), foreignKeyPropertyID));
   }
 
   /** {@inheritDoc} */
@@ -351,9 +359,27 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
     for (final Map.Entry<String, Collection<Entity>> entry : mapped.entrySet()) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(getEntityID(), entry.getKey())) {
         //todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?
-        setValue(foreignKeyProperty.getPropertyID(), entry.getValue().iterator().next());
+        setValue(foreignKeyProperty, entry.getValue().iterator().next());
       }
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Object getValue(final String propertyID) {
+    return getValue(Entities.getProperty(entityID, propertyID));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setValue(final String propertyID, final Object value) {
+    setValue(Entities.getProperty(entityID, propertyID), value);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isValueNull(final String propertyID) {
+    return isValueNull(Entities.getProperty(entityID, propertyID));
   }
 
   /** {@inheritDoc} */
@@ -559,6 +585,30 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
     else {
       return !getEntity().originalKeySet().isEmpty();
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void removeValueSetListener(final String propertyID, final EventInfoListener listener) {
+    removeValueSetListener(Entities.getProperty(getEntityID(), propertyID), listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void addValueSetListener(final String propertyID, final EventInfoListener<ValueChange<Property, ?>> listener) {
+    addValueSetListener(Entities.getProperty(getEntityID(), propertyID), listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void removeValueListener(final String propertyID, final EventInfoListener listener) {
+    removeValueListener(Entities.getProperty(getEntityID(), propertyID), listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void addValueListener(final String propertyID, final EventInfoListener<ValueChange<Property, ?>> listener) {
+    addValueListener(Entities.getProperty(getEntityID(), propertyID), listener);
   }
 
   /** {@inheritDoc} */
@@ -833,7 +883,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
   }
 
   private boolean valueModified(final Property property) {
-    return !Objects.equals(getValue(property.getPropertyID()), getDefaultValue(property));
+    return !Objects.equals(getValue(property), getDefaultValue(property));
   }
 
   private void bindEventsInternal() {
