@@ -718,6 +718,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   /**
    * An abstract usage scenario.
+   * @param T the type used to run this scenario
    */
   public abstract static class AbstractUsageScenario<T> implements LoadTest.UsageScenario<T> {
 

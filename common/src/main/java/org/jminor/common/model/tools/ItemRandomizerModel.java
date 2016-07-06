@@ -13,6 +13,7 @@ import java.util.Random;
 
 /**
  * A default ItemRandomizer implementation.
+ * @param T the type returned by this randomizer
  */
 public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
 

@@ -21,6 +21,9 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
   private final Iterator<Entity> reportIterator;
   private Entity currentEntity = null;
 
+  /**
+   * @param reportIterator the iterator providing the report data
+   */
   public JasperReportsEntityDataSource(final Iterator<Entity> reportIterator) {
     Objects.requireNonNull(reportIterator, "reportIterator");
     this.reportIterator = reportIterator;

@@ -62,7 +62,7 @@ public class SwingFilteredComboBoxModelTest {
     assertEquals(SIGGI + " should be at index 4, got " + testModel.getElementAt(4), SIGGI, testModel.getElementAt(4));
     assertEquals(TOMAS + " should be at index 5, got " + testModel.getElementAt(5), TOMAS, testModel.getElementAt(5));
 
-    final Comparator<? super String> comparator = testModel.getSortComparator();
+    final Comparator<String> comparator = testModel.getSortComparator();
     testModel.setSortComparator(null);
     assertNull(testModel.getSortComparator());
     final List<String> names = new ArrayList<>();

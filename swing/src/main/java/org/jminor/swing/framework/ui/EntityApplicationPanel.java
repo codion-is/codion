@@ -1217,15 +1217,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
   }
 
-  private static DefaultTreeModel createApplicationTree(final Collection<? extends EntityPanel> entityPanels) {
+  private static DefaultTreeModel createApplicationTree(final Collection<? extends MasterDetailPanel> entityPanels) {
     final DefaultTreeModel applicationTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
     addModelsToTree((DefaultMutableTreeNode) applicationTreeModel.getRoot(), entityPanels);
 
     return applicationTreeModel;
   }
 
-  private static void addModelsToTree(final DefaultMutableTreeNode root, final Collection<? extends EntityPanel> panels) {
-    for (final EntityPanel entityPanel : panels) {
+  private static void addModelsToTree(final DefaultMutableTreeNode root, final Collection<? extends MasterDetailPanel> panels) {
+    for (final MasterDetailPanel entityPanel : panels) {
       final DefaultMutableTreeNode node = new DefaultMutableTreeNode(entityPanel);
       root.add(node);
       if (!entityPanel.getDetailPanels().isEmpty()) {

@@ -34,7 +34,7 @@ public interface EntityTableConditionModel extends FilterCondition<Entity>, Refr
    * @param values the search condition values
    * @return true if the search state changed as a result of this method call, false otherwise
    */
-  boolean setConditionValues(final String propertyID, final Collection<?> values);
+  boolean setConditionValues(final String propertyID, final Collection values);
 
   /**
    * Sets the condition value of the PropertyFilterModel associated with the property identified by {@code propertyID}.

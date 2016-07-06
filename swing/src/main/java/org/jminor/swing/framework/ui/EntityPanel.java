@@ -638,7 +638,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /** {@inheritDoc} */
   @Override
-  public final List<EntityPanel> getDetailPanels() {
+  public final List<MasterDetailPanel> getDetailPanels() {
     return Collections.unmodifiableList(detailEntityPanels);
   }
 

@@ -22,7 +22,7 @@ public class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<T>> {
    * Constructs a new ItemComboBoxModel
    * @param items the items
    */
-  public ItemComboBoxModel(final Collection<? extends Item<T>> items) {
+  public ItemComboBoxModel(final Collection<Item<T>> items) {
     setContents(items);
   }
 
@@ -32,7 +32,7 @@ public class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<T>> {
    * if null then the original item order will be preserved
    * @param items the items
    */
-  public ItemComboBoxModel(final Comparator<? super Item<T>> sortComparator, final Collection<? extends Item<T>> items) {
+  public ItemComboBoxModel(final Comparator<Item<T>> sortComparator, final Collection<Item<T>> items) {
     super(null, sortComparator);
     setContents(items);
   }

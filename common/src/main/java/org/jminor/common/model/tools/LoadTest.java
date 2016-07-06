@@ -241,6 +241,7 @@ public interface LoadTest {
 
   /**
    * Specifies a load test usage scenario.
+   * @param T the type used to run the scenario
    */
   interface UsageScenario<T> {
 

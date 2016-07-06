@@ -43,7 +43,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
    */
   private boolean cleared = true;
 
-  private Comparator<? super T> sortComparator;
+  private Comparator<T> sortComparator;
   private T selectedItem = null;
   private T nullValue;
   private FilterCondition<T> filterCondition = ACCEPT_ALL_CONDITION;
@@ -78,7 +78,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
    * the contents are not sorted
    * @see #isNullValueSelected()
    */
-  public SwingFilteredComboBoxModel(final T nullValue, final Comparator<? super T> sortComparator) {
+  public SwingFilteredComboBoxModel(final T nullValue, final Comparator<T> sortComparator) {
     this.nullValue = nullValue;
     this.sortComparator = sortComparator;
   }
@@ -104,7 +104,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   /** {@inheritDoc} */
   @Override
-  public final void setContents(final Collection<? extends T> contents) {
+  public final void setContents(final Collection<T> contents) {
     filteredItems.clear();
     visibleItems.clear();
     if (contents != null) {
@@ -254,13 +254,13 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   /** {@inheritDoc} */
   @Override
-  public final Comparator<? super T> getSortComparator() {
+  public final Comparator<T> getSortComparator() {
     return sortComparator;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setSortComparator(final Comparator<? super T> sortComparator) {
+  public final void setSortComparator(final Comparator<T> sortComparator) {
     this.sortComparator = sortComparator;
     sortVisibleItems();
   }

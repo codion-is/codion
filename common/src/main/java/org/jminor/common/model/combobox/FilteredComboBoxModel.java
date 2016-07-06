@@ -35,7 +35,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
    * @param contents the contents to display in this combo box model
    * @see #isCleared()
    */
-  void setContents(final Collection<? extends T> contents);
+  void setContents(final Collection<T> contents);
 
   /**
    * Adds the given item to this model, respecting the sorting order if specified
@@ -79,12 +79,12 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
    * If a null {@code sortComparator} is provided no sorting will be performed.
    * @param sortComparator the Comparator, null if the contents of this model should not be sorted
    */
-  void setSortComparator(Comparator<? super T> sortComparator);
+  void setSortComparator(Comparator<T> sortComparator);
 
   /**
    * @return the Comparator used when sorting the contents of this model
    */
-  Comparator<? super T> getSortComparator();
+  Comparator<T> getSortComparator();
 
   /**
    * Sets the value which should represent a null value, a refresh is required for it to show up

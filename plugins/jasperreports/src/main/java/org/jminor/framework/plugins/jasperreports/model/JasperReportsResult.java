@@ -17,6 +17,9 @@ public final class JasperReportsResult implements ReportResult<JasperPrint>, Ser
   private static final long serialVersionUID = 1;
   private final JasperPrint jasperPrint;
 
+  /**
+   * @param jasperPrint the print object wrapped by this report result
+   */
   public JasperReportsResult(final JasperPrint jasperPrint) {
     Objects.requireNonNull(jasperPrint, "jasperPrint");
     this.jasperPrint = jasperPrint;

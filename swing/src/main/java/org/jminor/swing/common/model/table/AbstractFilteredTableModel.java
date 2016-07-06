@@ -336,11 +336,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /** {@inheritDoc} */
+  @Override
   public final FilterCondition<R> getFilterCondition() {
     return filterCondition;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setFilterCondition(final FilterCondition<R> filterCondition) {
     this.filterCondition = filterCondition;
     filterContents();

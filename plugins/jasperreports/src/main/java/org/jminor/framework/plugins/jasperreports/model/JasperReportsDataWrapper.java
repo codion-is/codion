@@ -16,6 +16,9 @@ public final class JasperReportsDataWrapper implements ReportDataWrapper<JRDataS
 
   private final JRDataSource dataSource;
 
+  /**
+   * @param dataSource the underlying datasource
+   */
   public JasperReportsDataWrapper(final JRDataSource dataSource) {
     Objects.requireNonNull(dataSource, "dataSource");
     this.dataSource = dataSource;

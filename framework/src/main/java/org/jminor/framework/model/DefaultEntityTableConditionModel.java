@@ -190,7 +190,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final boolean setConditionValues(final String propertyID, final Collection<?> values) {
+  public final boolean setConditionValues(final String propertyID, final Collection values) {
     final String conditionModelState = getConditionModelState();
     if (containsPropertyConditionModel(propertyID)) {
       final PropertyConditionModel conditionModel = getPropertyConditionModel(propertyID);

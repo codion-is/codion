@@ -4322,3 +4322,7 @@
   PropertyConditionModelProvider refactored to get rid of wildcard return type
   Sonar run
   Property.SearchableProperty removed
+  FilteredComboBoxModel.setContents(), removed a couple of wildcard types
+  Item is now final
+  EntityTableConditionModel.setConditionValues() removed wildcard type
+  MasterDetailPanel.getDetailPanels() removed wildcard type

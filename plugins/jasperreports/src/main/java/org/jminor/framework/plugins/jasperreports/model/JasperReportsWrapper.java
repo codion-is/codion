@@ -30,16 +30,25 @@ import java.util.Objects;
  * A Jasper Reports wrapper.
  */
 public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JRDataSource>, Serializable {
+
   private static final long serialVersionUID = 1;
+
   private final String reportPath;
   private final Map<String, Object> reportParameters;
   private static final boolean CACHE_REPORTS = Configuration.getBooleanValue(Configuration.CACHE_REPORTS);
   private static final Map<String, JasperReport> REPORT_CACHE = Collections.synchronizedMap(new HashMap<>());
 
+  /**
+   * @param reportPath the report path
+   */
   public JasperReportsWrapper(final String reportPath) {
     this(reportPath, Collections.emptyMap());
   }
 
+  /**
+   * @param reportPath the report path
+   * @param reportParameters the report parameters
+   */
   public JasperReportsWrapper(final String reportPath, final Map<String, Object> reportParameters) {
     Objects.requireNonNull(reportPath, "reportPath");
     Objects.requireNonNull(reportParameters, "reportParameters");

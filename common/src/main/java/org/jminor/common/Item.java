@@ -10,7 +10,7 @@ import java.util.Objects;
  * A class encapsulating an item and caption.
  * @param <T> the type of the actual item
  */
-public class Item<T> implements Comparable<Item> {
+public final class Item<T> implements Comparable<Item> {
 
   private final Comparator<String> collator = TextUtil.getSpaceAwareCollator();
   private final T item;
@@ -39,14 +39,14 @@ public class Item<T> implements Comparable<Item> {
   /**
    * @return the caption
    */
-  public final String getCaption() {
+  public String getCaption() {
     return caption;
   }
 
   /**
    * @return the actual item
    */
-  public final T getItem() {
+  public T getItem() {
     return item;
   }
 
@@ -54,19 +54,19 @@ public class Item<T> implements Comparable<Item> {
    * @return the item caption
    */
   @Override
-  public final String toString() {
+  public String toString() {
     return caption;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final boolean equals(final Object obj) {
+  public boolean equals(final Object obj) {
     return obj instanceof Item && Objects.equals(item, ((Item) obj).item);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     return item == null ? 0 : item.hashCode();
   }
 
@@ -76,7 +76,7 @@ public class Item<T> implements Comparable<Item> {
    * @return the compare result
    */
   @Override
-  public final int compareTo(final Item o) {
+  public int compareTo(final Item o) {
     return collator.compare(caption, o.caption);
   }
 }

@@ -12,8 +12,15 @@ import net.sf.jasperreports.view.JRViewer;
 import javax.swing.JComponent;
 import java.util.Objects;
 
+/**
+ * A class responsible for displaying a JasperReport
+ */
 public final class JasperReportsUIWrapper implements ReportUIWrapper<JasperPrint> {
 
+  /**
+   * @param result the result to display
+   * @return the component containing the report
+   */
   @Override
   public JComponent createReportComponent(final ReportResult<JasperPrint> result) {
     Objects.requireNonNull(result, "result");

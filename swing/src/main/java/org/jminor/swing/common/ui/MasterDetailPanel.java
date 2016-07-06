@@ -18,7 +18,7 @@ public interface MasterDetailPanel {
   /**
    * @return the detail panels, an empty list if no detail panels exist
    */
-  List<? extends MasterDetailPanel> getDetailPanels();
+  List<MasterDetailPanel> getDetailPanels();
 
   /**
    * @return a detail panel, if one exists, which child panel exactly is up the implementation

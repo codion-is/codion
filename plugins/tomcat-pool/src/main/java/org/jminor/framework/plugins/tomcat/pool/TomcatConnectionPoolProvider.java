@@ -130,7 +130,7 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
     }
 
     @Override
-    public void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod) {}
+    public void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod) {/*Not implemented*/}
 
     @Override
     public int getMinimumPoolSize() {
