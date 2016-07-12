@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.common.ui;
 
-import org.jminor.common.DaemonThreadFactory;
 import org.jminor.common.DateUtil;
 import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
@@ -13,6 +12,7 @@ import org.jminor.common.FileUtil;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
+import org.jminor.common.TaskScheduler;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.ValueCollectionProvider;
@@ -49,6 +49,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
@@ -114,7 +115,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -215,14 +216,15 @@ public final class UiUtil {
   /**
    * Creates a text field containing information about the memory usage
    * @param updateIntervalMilliseconds the interval between updating the memory usage info
-   * @return the text field
+   * @return a text field displaying the current VM memory usage
    */
   public static JTextField createMemoryUsageField(final int updateIntervalMilliseconds) {
     final JTextField txt = new JTextField(8);
     txt.setEditable(false);
     txt.setHorizontalAlignment(JTextField.CENTER);
-    Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory()).scheduleWithFixedDelay(() ->
-            txt.setText(Util.getMemoryUsageString()), 0, updateIntervalMilliseconds, TimeUnit.MILLISECONDS);
+    new TaskScheduler(() -> {
+      SwingUtilities.invokeLater(() -> txt.setText(Util.getMemoryUsageString()));
+    }, updateIntervalMilliseconds, 0, TimeUnit.MILLISECONDS).start();
 
     return txt;
   }
@@ -1536,35 +1538,35 @@ public final class UiUtil {
     UiUtil.centerWindow(dialog);
     SwingUtilities.invokeLater(() -> dialog.setVisible(true));
 
-    final class Finisher implements Runnable {
-      private final Exception exception;
-
-      private Finisher(final Exception exception) {
-        this.exception = exception;
+    final SwingWorker worker = new SwingWorker() {
+      @Override
+      protected Object doInBackground() throws Exception {
+        task.run();
+        return null;
       }
 
       @Override
-      public void run() {
+      protected void done() {
         dialog.dispose();
-        if (exception == null && !Util.nullOrEmpty(successMessage)) {
-          JOptionPane.showMessageDialog(UiUtil.getParentWindow(dialogParent), successMessage, successTitle, JOptionPane.INFORMATION_MESSAGE);
+        try {
+          get();
+          if (!Util.nullOrEmpty(successMessage)) {
+            JOptionPane.showMessageDialog(UiUtil.getParentWindow(dialogParent), successMessage, successTitle,
+                    JOptionPane.INFORMATION_MESSAGE);
+          }
         }
-        if (exception != null && !(exception instanceof CancelException)) {
-          showExceptionDialog(UiUtil.getParentWindow(dialogParent), failTitle, exception);
+        catch (final InterruptedException interruped) {
+          showExceptionDialog(UiUtil.getParentWindow(dialogParent), failTitle, interruped);
+        }
+        catch (final ExecutionException exception) {
+          final Throwable cause = exception.getCause();
+          if (!(cause instanceof CancelException)) {
+            showExceptionDialog(UiUtil.getParentWindow(dialogParent), failTitle, exception);
+          }
         }
       }
-    }
-
-    Executors.newSingleThreadExecutor().execute(() -> {
-      Exception exception = null;
-      try {
-        task.run();
-      }
-      catch (final Exception ex) {
-        exception = ex;
-      }
-      SwingUtilities.invokeLater(new Finisher(exception));
-    });
+    };
+    worker.execute();
   }
 
   /**

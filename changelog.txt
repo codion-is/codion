@@ -4332,3 +4332,5 @@
   ValueMap keys now restricted to Attribute plus associated changes
   TaskScheduler and DaemonThreadFactory moved to org.jminor.common to remove cyclical dependency between common.db and common.model
   DefaultProperty, some minor refactoring around PropertyResultPacker
+  UiUtil.createMemoryUsageField() is now based on a TaskScheduler
+  UiUtil.runWithProgressBar() is now based on a SwingWorker
