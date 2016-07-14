@@ -854,7 +854,7 @@ class DefaultProperty implements Property {
     private final String referencedEntityID;
     private final List<ColumnProperty> referenceProperties;
     private final boolean compositeReference;
-    private Map<Property, String> linkedReferenceProperties;
+    private Map<Property, Property.ColumnProperty> referencedKeyProperties;
     private int fetchDepth = Configuration.getIntValue(Configuration.FOREIGN_KEY_FETCH_DEPTH);
 
     /**
@@ -866,7 +866,7 @@ class DefaultProperty implements Property {
      */
     DefaultForeignKeyProperty(final String propertyID, final String caption, final String referencedEntityID,
                               final ColumnProperty referenceProperty) {
-      this(propertyID, caption, referencedEntityID, new ColumnProperty[] {referenceProperty}, new String[0]);
+      this(propertyID, caption, referencedEntityID, new ColumnProperty[] {referenceProperty}, new ColumnProperty[0]);
     }
 
     /**
@@ -878,15 +878,15 @@ class DefaultProperty implements Property {
      * @param referencedPropertyIDs the IDs of the properties referenced, in the same order as the reference properties
      */
     DefaultForeignKeyProperty(final String propertyID, final String caption, final String referencedEntityID,
-                              final ColumnProperty[] referenceProperties, final String[] referencedPropertyIDs) {
+                              final ColumnProperty[] referenceProperties, final ColumnProperty[] referencedProperties) {
       super(propertyID, Types.REF, caption);
       Objects.requireNonNull(referencedEntityID, "referencedEntityID");
-      validateParameters(propertyID, referencedEntityID, referenceProperties, referencedPropertyIDs);
+      validateParameters(propertyID, referencedEntityID, referenceProperties, referencedProperties);
       for (int i = 0; i < referenceProperties.length; i++) {
         final ColumnProperty referenceProperty = referenceProperties[i];
         referenceProperty.setForeignKeyProperty(this);
-        if (referencedPropertyIDs.length > i) {
-          link(referenceProperty, referencedPropertyIDs[i]);
+        if (referencedProperties.length > i) {
+          link(referenceProperty, referencedProperties[i]);
         }
       }
       this.referencedEntityID = referencedEntityID;
@@ -941,27 +941,28 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public String getReferencedPropertyID(final Property referenceProperty) {
-      if (linkedReferenceProperties == null) {
+    public Property.ColumnProperty getReferencedProperty(final Property referenceProperty) {
+      if (referencedKeyProperties == null) {
         return null;
       }
 
-      if (!linkedReferenceProperties.containsKey(referenceProperty)) {
-        throw new IllegalArgumentException("No referenced property ID associated with reference property: " + referenceProperty);
+      if (!referencedKeyProperties.containsKey(referenceProperty)) {
+        throw new IllegalArgumentException("No referenced key property associated with reference property: " + referenceProperty);
       }
 
-      return linkedReferenceProperties.get(referenceProperty);
+      return referencedKeyProperties.get(referenceProperty);
     }
 
-    private void link(final Property referenceProperty, final String referencedPropertyID) {
-      if (linkedReferenceProperties == null) {
-        linkedReferenceProperties = new HashMap<>();
+    private void link(final Property referenceProperty, final Property.ColumnProperty referencedKeyProperty) {
+      if (referencedKeyProperties == null) {
+        referencedKeyProperties = new HashMap<>();
       }
-      linkedReferenceProperties.put(referenceProperty, referencedPropertyID);
+      referencedKeyProperties.put(referenceProperty, referencedKeyProperty);
     }
 
     private static void validateParameters(final String propertyID, final String referencedEntityID,
-                                           final ColumnProperty[] referenceProperties, final String[] referencedPropertyIDs) {
+                                           final ColumnProperty[] referenceProperties,
+                                           final ColumnProperty[] referencedKeyProperties) {
       if (referenceProperties == null || referenceProperties.length == 0) {
         throw new IllegalArgumentException("No reference properties specified");
       }
@@ -971,10 +972,10 @@ class DefaultProperty implements Property {
           throw new IllegalArgumentException(referencedEntityID + ", reference propertyID is the same as parent propertyID: " + propertyID);
         }
       }
-      if (referenceProperties.length > 1 && referencedPropertyIDs == null) {
+      if (referenceProperties.length > 1 && referencedKeyProperties == null) {
         throw new IllegalArgumentException("Referenced properties must be specified when referencing a composite key");
       }
-      if (referenceProperties.length > 1 && referencedPropertyIDs.length != referenceProperties.length) {
+      if (referenceProperties.length > 1 && referencedKeyProperties.length != referenceProperties.length) {
         throw new IllegalArgumentException("The number of referenced properties must be equal to the number of properties referencing them");
       }
     }

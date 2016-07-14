@@ -1024,12 +1024,10 @@ public final class EntityConditions {
       final Property.ForeignKeyProperty foreignKeyProperty = property;
       if (foreignKeyProperty.isCompositeReference()) {
         final Set<Property.ColumnProperty> pkSet = Conditions.conditionSet(Conjunction.AND);
-        for (final Property.ColumnProperty referencedProperty : foreignKeyProperty.getReferenceProperties()) {
-          final String referencedPropertyID = foreignKeyProperty.getReferencedPropertyID(referencedProperty);
-          final Property.ColumnProperty referencedPKProperty =
-                  Entities.getColumnProperty(foreignKeyProperty.getReferencedEntityID(), referencedPropertyID);
-          final Object referencedValue = entityKey == null ? null : entityKey.get(referencedPKProperty);
-          pkSet.add(new PropertyCondition(referencedProperty, conditionType, referencedValue));
+        for (final Property.ColumnProperty referenceProperty : foreignKeyProperty.getReferenceProperties()) {
+          final Property.ColumnProperty referencedProperty = foreignKeyProperty.getReferencedProperty(referenceProperty);
+          final Object referencedValue = entityKey == null ? null : entityKey.get(referencedProperty);
+          pkSet.add(new PropertyCondition(referenceProperty, conditionType, referencedValue));
         }
 
         return pkSet;

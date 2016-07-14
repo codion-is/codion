@@ -608,14 +608,14 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   private Key initializeReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty) {
     if (foreignKeyProperty.isCompositeReference()) {
       final List<Property.ColumnProperty> referenceProperties = foreignKeyProperty.getReferenceProperties();
-      final Map<String, Object> values = new HashMap<>(referenceProperties.size());
-      for (final Property referenceKeyProperty : referenceProperties) {
+      final Map<Property.ColumnProperty, Object> values = new HashMap<>(referenceProperties.size());
+      for (final Property.ColumnProperty referenceKeyProperty : referenceProperties) {
         final Object value = super.get(referenceKeyProperty);
         if (value == null) {
           return null;
         }
         else {
-          values.put(foreignKeyProperty.getReferencedPropertyID(referenceKeyProperty), value);
+          values.put(foreignKeyProperty.getReferencedProperty(referenceKeyProperty), value);
         }
       }
 

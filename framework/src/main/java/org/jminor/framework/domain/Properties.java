@@ -89,14 +89,14 @@ public final class Properties {
    * @param caption the property caption
    * @param referencedEntityID the ID of the referenced entity type
    * @param referenceProperties the actual column properties involved in the reference
-   * @param referencedPropertyIDs the IDs of the properties referenced, in the same order as the reference properties
+   * @param referencedProperties the properties referenced, in the same order as the reference properties
    * @return a new foreign key proeprty
    */
   public static Property.ForeignKeyProperty foreignKeyProperty(final String propertyID, final String caption,
                                                                final String referencedEntityID,
                                                                final Property.ColumnProperty[] referenceProperties,
-                                                               final String[] referencedPropertyIDs) {
-    return new DefaultProperty.DefaultForeignKeyProperty(propertyID, caption, referencedEntityID, referenceProperties, referencedPropertyIDs);
+                                                               final Property.ColumnProperty[] referencedProperties) {
+    return new DefaultProperty.DefaultForeignKeyProperty(propertyID, caption, referencedEntityID, referenceProperties, referencedProperties);
   }
 
   /**

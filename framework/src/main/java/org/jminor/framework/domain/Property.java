@@ -463,10 +463,10 @@ public interface Property extends Attribute {
     boolean isCompositeReference();
 
     /**
-     * @param referenceProperty the ID of the reference property
-     * @return the reference property ID
+     * @param referenceProperty the property referenced by the given property
+     * @return the referenced property
      */
-    String getReferencedPropertyID(final Property referenceProperty);
+    Property.ColumnProperty getReferencedProperty(final Property referenceProperty);
 
     /**
      * @return the default query fetch depth for this foreign key
