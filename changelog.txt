@@ -4336,3 +4336,5 @@
   UiUtil.runWithProgressBar() is now based on a SwingWorker
   Properties.DefualtForeignKeyProperty constructor now takes an array of ColumnProperty instead of String, properties instead of property IDs
   DefaultEntity.initializeReferencedKey() bug fixed, wrong generic type of Map resulted in the single value key constructor being called for composite keys
+  DoubleInputProviderTest improved
+  IntInputProvider renamed to IntegerInputProvider for consistency

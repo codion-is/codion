@@ -41,7 +41,7 @@ import org.jminor.swing.common.ui.input.DateInputProvider;
 import org.jminor.swing.common.ui.input.DoubleInputProvider;
 import org.jminor.swing.common.ui.input.InputProvider;
 import org.jminor.swing.common.ui.input.InputProviderPanel;
-import org.jminor.swing.common.ui.input.IntInputProvider;
+import org.jminor.swing.common.ui.input.IntegerInputProvider;
 import org.jminor.swing.common.ui.input.LongInputProvider;
 import org.jminor.swing.common.ui.input.TextInputProvider;
 import org.jminor.swing.common.ui.input.ValueListInputProvider;
@@ -1156,7 +1156,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       case Types.DOUBLE:
         return new DoubleInputProvider((Double) currentValue);
       case Types.INTEGER:
-        return new IntInputProvider((Integer) currentValue);
+        return new IntegerInputProvider((Integer) currentValue);
       case Types.BIGINT:
         return new LongInputProvider((Long) currentValue);
       case Types.CHAR:

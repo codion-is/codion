@@ -8,13 +8,13 @@ import org.jminor.swing.common.ui.textfield.IntField;
 /**
  * A InputProvider implementation for int values.
 */
-public final class IntInputProvider extends AbstractInputProvider<Integer, IntField> {
+public final class IntegerInputProvider extends AbstractInputProvider<Integer, IntField> {
 
   /**
    * Instantiates a new IntInputProvider.
    * @param initialValue the initial value
    */
-  public IntInputProvider(final Integer initialValue) {
+  public IntegerInputProvider(final Integer initialValue) {
     this(initialValue, (int) Double.NEGATIVE_INFINITY, (int) Double.POSITIVE_INFINITY);
   }
 
@@ -24,7 +24,7 @@ public final class IntInputProvider extends AbstractInputProvider<Integer, IntFi
    * @param minValue the minimum value
    * @param maxValue the maximum value
    */
-  public IntInputProvider(final Integer initialValue, final int minValue, final int maxValue) {
+  public IntegerInputProvider(final Integer initialValue, final int minValue, final int maxValue) {
     super(new IntField());
     getInputComponent().setRange(minValue, maxValue);
     if (initialValue != null) {
