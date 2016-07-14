@@ -387,7 +387,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   /**
    * Adds a listener notified each time the value associated with the given property is set via
    * {@link ValueMapEditModel#setValue(Attribute, Object)}, note that this event is only fired when the the value changes
-   * @param key the key for which to monitor value changes
+   * @param propertyID the ID of the property for which to monitor value changes
    * @param listener a listener notified each time the value of the given property is set via this model
    */
   void addValueSetListener(final String propertyID, final EventInfoListener<ValueChange<Property, ?>> listener);

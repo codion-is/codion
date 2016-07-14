@@ -291,7 +291,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity> {
    * Removes the given property and value from this Entity along with the original value if any.
    * If no value is mapped to the given property, this method has no effect.
    * @param propertyID the ID of the property to remove
-   * @return the value that was removed
    */
   void remove(final String propertyID);
 
