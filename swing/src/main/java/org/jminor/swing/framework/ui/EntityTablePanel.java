@@ -411,18 +411,24 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
+   * Creates a {@link ControlSet} containing controls for updating the value of a single property
+   * for the selected entities. These controls are enabled as long as the selection is not empty
+   * and {@link EntityEditModel#getAllowUpdateObserver()} is enabled.
    * @return a control set containing a set of controls, one for each updatable property in the
    * underlying entity, for performing an update on the selected entities
    * @see #initializePanel()
-   * @throws IllegalStateException in case the underlying model is read only or if updating is not allowed
+   * @throws IllegalStateException in case the underlying edit model is read only or updating is not allowed
    * @see #includeUpdateSelectedProperty(org.jminor.framework.domain.Property)
+   * @see EntityEditModel#getAllowUpdateObserver()
    */
   public ControlSet getUpdateSelectedControlSet() {
     if (getEntityTableModel().isReadOnly() || !getEntityTableModel().isUpdateAllowed()
             || !getEntityTableModel().isBatchUpdateAllowed()) {
       throw new IllegalStateException("Table model is read only or does not allow updates");
     }
-    final StateObserver enabled = getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver();
+    final StateObserver selectionNotEmpty = getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver();
+    final StateObserver updateAllowed = getEntityTableModel().getEditModel().getAllowUpdateObserver();
+    final StateObserver enabled = States.aggregateState(Conjunction.AND, selectionNotEmpty, updateAllowed);
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));

@@ -4338,3 +4338,4 @@
   DefaultEntity.initializeReferencedKey() bug fixed, wrong generic type of Map resulted in the single value key constructor being called for composite keys
   DoubleInputProviderTest improved
   IntInputProvider renamed to IntegerInputProvider for consistency
+  EntityTablePanel.getUpdateSelectedControlSet(), enabled state is now based on both selection and the allowUpdate state of the edit model
