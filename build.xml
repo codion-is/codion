@@ -229,7 +229,7 @@
     <subant target="build" buildpath="demos"/>
   </target>
 
-  <target name="javadoc" description="Builds all modules">
+  <target name="javadoc" description="Creates javadoc for all modules">
     <subant target="javadoc" buildpath="common"/>
     <subant target="javadoc" buildpath="framework"/>
     <subant target="javadoc" buildpath="swing"/>
