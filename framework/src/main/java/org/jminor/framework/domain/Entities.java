@@ -7,7 +7,7 @@ import org.jminor.common.Util;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
-import org.jminor.common.db.valuemap.DefaultValueMapValidator;
+import org.jminor.common.db.valuemap.DefaultValueMap;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
@@ -1014,7 +1014,7 @@ public final class Entities {
   /**
    * A default extensible {@link Entity.Validator} implementation.
    */
-  public static class Validator extends DefaultValueMapValidator<Property, Entity> implements Entity.Validator {
+  public static class Validator extends DefaultValueMap.DefaultValidator<Property, Entity> implements Entity.Validator {
 
     private final String entityID;
     private final boolean performNullValidation = Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION);

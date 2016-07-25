@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * A generic interface for objects serving as where conditions in database queries
- * @param <T> the type used to describe the condition values
+ * @param <T> the type used to describe the columns involved in the condition
  */
 public interface Condition<T extends Column> {
   /**
@@ -48,13 +48,13 @@ public interface Condition<T extends Column> {
     void add(final Condition<T> condition);
 
     /**
-     * @return the number of condition in this set
+     * @return the number of conditions in this set
      */
     int getConditionCount();
   }
 
   /**
-   * Enumerating all the possible ways of searching.
+   * Enumerating all the possible condition types.
    */
   enum Type {
 
@@ -90,7 +90,7 @@ public interface Condition<T extends Column> {
     }
 
     /**
-     * The number of values expected for a ConditionType
+     * The number of values expected for a Condition.Type
      */
     public enum Values {
       ONE, TWO, MANY

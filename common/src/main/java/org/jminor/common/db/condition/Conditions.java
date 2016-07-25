@@ -27,7 +27,7 @@ public final class Conditions {
   /**
    * Initializes a new {@link Condition.Set} instance
    * @param conjunction the Conjunction to use
-   * @param <T> the Condition key type
+   * @param <T> the condition column type
    * @return a new {@link Condition.Set} instance
    */
   public static <T extends Column> Condition.Set<T> conditionSet(final Conjunction conjunction) {
@@ -271,9 +271,9 @@ public final class Conditions {
       for (int i = 0; i < valueCount; i++) {
         values.add(stream.readObject());
       }
-      final int keyCount = stream.readInt();
-      columns = new ArrayList<>(keyCount);
-      for (int i = 0; i < keyCount; i++) {
+      final int columnCount = stream.readInt();
+      columns = new ArrayList<>(columnCount);
+      for (int i = 0; i < columnCount; i++) {
         columns.add((T) stream.readObject());
       }
     }
