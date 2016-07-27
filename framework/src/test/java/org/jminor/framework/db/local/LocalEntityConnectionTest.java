@@ -51,6 +51,7 @@ import static org.junit.Assert.*;
 public class LocalEntityConnectionTest {
 
   private static final String JOINED_QUERY_ENTITY_ID = "joinedQueryEntityID";
+  private static final String GROUP_BY_QUERY_ENTITY_ID = "groupByQueryEntityID";
 
   private static final String ENTITY_ID = "blob_test";
   private static final String ID = "id";
@@ -64,6 +65,13 @@ public class LocalEntityConnectionTest {
             Properties.primaryKeyProperty("e.empno"),
             Properties.columnProperty("d.deptno", Types.INTEGER))
             .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno", true);
+
+    Entities.define(GROUP_BY_QUERY_ENTITY_ID,
+            Properties.columnProperty("job", Types.VARCHAR)
+                    .setPrimaryKeyIndex(0)
+                    .setGroupingColumn(true))
+            .setTableName("scott.emp")
+            .setHavingClause("job <> 'PRESIDENT'");
 
     Entities.define(ENTITY_ID,
             Properties.primaryKeyProperty(ID),
@@ -236,6 +244,9 @@ public class LocalEntityConnectionTest {
     assertEquals(16, rowCount);
     deptNoCondition = EntityConditions.propertyCondition(JOINED_QUERY_ENTITY_ID, "d.deptno", Condition.Type.GREATER_THAN, 30);
     rowCount = connection.selectRowCount(EntityConditions.condition(JOINED_QUERY_ENTITY_ID, deptNoCondition));
+    assertEquals(4, rowCount);
+
+    rowCount = connection.selectRowCount(EntityConditions.condition(GROUP_BY_QUERY_ENTITY_ID));
     assertEquals(4, rowCount);
   }
 

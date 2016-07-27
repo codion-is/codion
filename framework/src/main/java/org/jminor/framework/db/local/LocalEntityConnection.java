@@ -458,23 +458,8 @@ final class LocalEntityConnection implements EntityConnection {
   @Override
   public int selectRowCount(final EntityCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
-    final String selectSQL;
-    final String entitySelectQuery = Entities.getSelectQuery(condition.getEntityID());
-    if (entitySelectQuery == null) {
-      final String whereClause = condition.getWhereClause();
-      selectSQL = createSelectSQL(Entities.getSelectTableName(condition.getEntityID()), "count(*)",
-              whereClause.length() == 0 ? "" : WHERE + whereClause, null);
-    }
-    else {
-      final boolean containsWhereClause = Entities.selectQueryContainsWhereClause(condition.getEntityID());
-      final String whereClause = condition.getWhereClause();
-      String tableClause = "(" + entitySelectQuery;
-      if (whereClause.length() > 0) {
-        tableClause += containsWhereClause ? " and " + whereClause : WHERE_SPACE_PREFIX + whereClause;
-      }
-      tableClause += ") alias";
-      selectSQL = createSelectSQL(tableClause, "count(*)", null, null);
-    }
+    final String query = getSelectSQL(condition, connection.getDatabase());
+    final String selectSQL = createSelectSQL("(" + query + ") alias", "count(*)", null, null);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     DatabaseUtil.QUERY_COUNTER.count(selectSQL);
@@ -1022,7 +1007,7 @@ final class LocalEntityConnection implements EntityConnection {
     return keySet;
   }
 
-  private static String getSelectSQL(final EntitySelectCondition condition, final Database database) {
+  private static String getSelectSQL(final EntityCondition condition, final Database database) {
     final String entityID = condition.getEntityID();
     boolean containsWhereClause = false;
     String selectSQL = Entities.getSelectQuery(entityID);
@@ -1038,7 +1023,7 @@ final class LocalEntityConnection implements EntityConnection {
     if (whereClause.length() > 0) {
       queryBuilder.append(containsWhereClause ? " and " : WHERE_SPACE_PREFIX).append(whereClause);
     }
-    if (condition.isForUpdate()) {
+    if (condition instanceof EntitySelectCondition && ((EntitySelectCondition) condition).isForUpdate()) {
       addForUpdate(database, queryBuilder);
     }
     else {
@@ -1055,7 +1040,7 @@ final class LocalEntityConnection implements EntityConnection {
     }
   }
 
-  private static void addGroupHavingOrderByAndLimitClauses(final EntitySelectCondition condition, final StringBuilder queryBuilder) {
+  private static void addGroupHavingOrderByAndLimitClauses(final EntityCondition condition, final StringBuilder queryBuilder) {
     final String entityID = condition.getEntityID();
     final String groupByClause = Entities.getGroupByClause(entityID);
     if (groupByClause != null) {
@@ -1065,16 +1050,19 @@ final class LocalEntityConnection implements EntityConnection {
     if (havingClause != null) {
       queryBuilder.append(" having ").append(havingClause);
     }
-    final String orderByClause = condition.getOrderByClause();
-    if (orderByClause != null) {
-      queryBuilder.append(" order by ").append(orderByClause);
-    }
-    if (condition.getLimit() > 0) {
-      queryBuilder.append(" limit ");
-      queryBuilder.append(condition.getLimit());
-      if (condition.getOffset() > 0) {
-        queryBuilder.append(" offset ");
-        queryBuilder.append(condition.getOffset());
+    if (condition instanceof EntitySelectCondition) {
+      final EntitySelectCondition selectCondition = (EntitySelectCondition) condition;
+      final String orderByClause = selectCondition.getOrderByClause();
+      if (orderByClause != null) {
+        queryBuilder.append(" order by ").append(orderByClause);
+      }
+      if (selectCondition.getLimit() > 0) {
+        queryBuilder.append(" limit ");
+        queryBuilder.append(selectCondition.getLimit());
+        if (selectCondition.getOffset() > 0) {
+          queryBuilder.append(" offset ");
+          queryBuilder.append(selectCondition.getOffset());
+        }
       }
     }
   }
