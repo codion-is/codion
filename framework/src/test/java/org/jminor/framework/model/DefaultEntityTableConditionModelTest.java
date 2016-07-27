@@ -9,12 +9,15 @@ import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
+import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
 
 import java.sql.Types;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
@@ -120,5 +123,20 @@ public class DefaultEntityTableConditionModelTest {
         assertFalse(model.isEnabled());
       }
     }
+  }
+
+  @Test
+  public void testAdditionalFilterCondition() {
+    conditionModel.setAdditionalTableFilterCondition(entity -> {
+      return !Objects.equals(entity.get(TestDomain.EMP_ID), 1);
+    });
+    assertNotNull(conditionModel.getAdditionalTableFilterCondition());
+
+    final Entity emp = Entities.entity(TestDomain.T_EMP);
+    emp.put(TestDomain.EMP_ID, 1);
+    assertFalse(conditionModel.include(emp));
+
+    emp.put(TestDomain.EMP_ID, 2);
+    assertTrue(conditionModel.include(emp));
   }
 }

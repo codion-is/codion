@@ -14,6 +14,7 @@ import org.jminor.common.States;
 import org.jminor.common.Util;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.condition.Conditions;
+import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.Configuration;
@@ -43,6 +44,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   private final Map<String, ColumnConditionModel<Property>> propertyFilterModels = new LinkedHashMap<>();
   private final Map<String, PropertyConditionModel<? extends Property>> propertyConditionModels = new HashMap<>();
   private Condition<Property.ColumnProperty> additionalCondition;
+  private FilterCondition<Entity> additionalFilterCondition;
   private Conjunction conjunction = Conjunction.AND;
   private String rememberedConditionState = "";
   private String simpleConditionString = "";
@@ -109,6 +111,9 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
       if (!columnFilter.include(item)) {
         return false;
       }
+    }
+    if (additionalFilterCondition != null) {
+      return additionalFilterCondition.include(item);
     }
 
     return true;
@@ -237,6 +242,19 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   public final EntityTableConditionModel setAdditionalTableCondition(final Condition<Property.ColumnProperty> condition) {
     this.additionalCondition = condition;
     return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public FilterCondition<Entity> getAdditionalTableFilterCondition() {
+    return this.additionalFilterCondition;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public EntityTableConditionModel setAdditionalTableFilterCondition(final FilterCondition<Entity> filterCondition) {
+    this.additionalFilterCondition = filterCondition;
+    return null;
   }
 
   /** {@inheritDoc} */

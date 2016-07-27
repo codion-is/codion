@@ -4340,3 +4340,4 @@
   IntInputProvider renamed to IntegerInputProvider for consistency
   EntityTablePanel.getUpdateSelectedControlSet(), enabled state is now based on both selection and the allowUpdate state of the edit model
   DefaultValueMapValidator moved to DefaultValueMap.DefaultValidator
+  EntityTableConditionModel, additionalFilterCondition field added
