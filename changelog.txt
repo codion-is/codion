@@ -4342,3 +4342,4 @@
   DefaultValueMapValidator moved to DefaultValueMap.DefaultValidator
   EntityTableConditionModel, additionalFilterCondition field added
   LocalEntityConnection bug fixed, selectRowCount() did not work with group by
+  h2 library updated
