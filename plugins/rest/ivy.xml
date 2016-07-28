@@ -23,7 +23,7 @@
     <dependency org="org.jminor" name="jminor-framework-db-core" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-plugin-json" rev="${version}"/>
 
-    <dependency org="org.json" name="json" rev="20090211"/>
+    <dependency org="org.json" name="json" rev="${json.version}"/>
 
     <dependency org="org.glassfish.jersey.bundles" name="jaxrs-ri" rev="2.22" conf="compile->master;runtime->default"/>
 
@@ -42,8 +42,8 @@
     <dependency org="org.jminor" name="jminor-framework-db-local" rev="${version}" conf="test->master"/>
     <dependency org="org.jminor" name="jminor-framework-model-unittests" rev="${version}" conf="test->master"/>
     <dependency org="org.jminor" name="jminor-framework-server" rev="${version}" conf="test->default"/>
-    <dependency org="com.h2database" name="h2" rev="1.4.192" conf="test->master"/>
-    <dependency org="junit" name="junit" rev="4.12" conf="test->master"/>
-    <dependency org="org.hamcrest" name="hamcrest-core" rev="1.3" conf="test->master"/>
+    <dependency org="com.h2database" name="h2" rev="${h2.version}" conf="test->master"/>
+    <dependency org="junit" name="junit" rev="${junit.version}" conf="test->master"/>
+    <dependency org="org.hamcrest" name="hamcrest-core" rev="${hamcrest-core.version}" conf="test->master"/>
   </dependencies>
 </ivy-module>

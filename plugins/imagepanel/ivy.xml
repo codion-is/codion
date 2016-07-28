@@ -24,12 +24,12 @@
     <dependency org="org.jminor" name="jminor-swing-common-ui" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-swing-client-ui" rev="${version}"/>
 
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" conf="runtime"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.3" conf="runtime"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.3" conf="runtime"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="${slf4j-api.version}" conf="runtime"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="${logback.version}" conf="runtime"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="${logback.version}" conf="runtime"/>
 
-    <dependency org="junit" name="junit" rev="4.12" conf="test->master"/>
-    <dependency org="org.hamcrest" name="hamcrest-core" rev="1.3" conf="test->master"/>
+    <dependency org="junit" name="junit" rev="${junit.version}" conf="test->master"/>
+    <dependency org="org.hamcrest" name="hamcrest-core" rev="${hamcrest-core.version}" conf="test->master"/>
   </dependencies>
 
 </ivy-module>
