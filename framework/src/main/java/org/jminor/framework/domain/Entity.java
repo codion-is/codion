@@ -211,12 +211,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity> {
   boolean isKeyNull();
 
   /**
-   * @param property the property
-   * @return true if the given property has a null value
-   */
-  boolean isValueNull(final Property property);
-
-  /**
    * @param propertyID the propertyID
    * @return true if the value associated with the given property has been modified
    */
@@ -227,12 +221,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity> {
    * current as well as original values if any
    */
   void clearKeyValues();
-
-  /**
-   * @param property the property
-   * @return true if this entity contains a value for the given property
-   */
-  boolean containsKey(final Property property);
 
   /**
    * @param entityID the entityID

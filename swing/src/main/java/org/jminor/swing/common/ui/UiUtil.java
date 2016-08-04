@@ -222,9 +222,8 @@ public final class UiUtil {
     final JTextField txt = new JTextField(8);
     txt.setEditable(false);
     txt.setHorizontalAlignment(JTextField.CENTER);
-    new TaskScheduler(() -> {
-      SwingUtilities.invokeLater(() -> txt.setText(Util.getMemoryUsageString()));
-    }, updateIntervalMilliseconds, 0, TimeUnit.MILLISECONDS).start();
+    new TaskScheduler(() -> SwingUtilities.invokeLater(() ->
+            txt.setText(Util.getMemoryUsageString())), updateIntervalMilliseconds, 0, TimeUnit.MILLISECONDS).start();
 
     return txt;
   }

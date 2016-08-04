@@ -1401,7 +1401,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
 
     if (getEntityTableModel().hasEditModel()) {
-      getEntityTableModel().getEditModel().addEntitiesChangedListener(() -> getJTable().repaint());
+      getEntityTableModel().getEditModel().addEntitiesChangedListener(getJTable()::repaint);
     }
   }
 

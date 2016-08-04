@@ -74,13 +74,9 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityEditPanel.class);
 
-  //Control codes
-  public static final String SAVE = "EntityEditPanel.save";
-  public static final String INSERT = "EntityEditPanel.insert";
-  public static final String UPDATE = "EntityEditPanel.update";
-  public static final String DELETE = "EntityEditPanel.delete";
-  public static final String REFRESH = "EntityEditPanel.refresh";
-  public static final String CLEAR = "EntityEditPanel.clear";
+  public enum ControlCode {
+    SAVE, INSERT, UPDATE, DELETE, REFRESH, CLEAR
+  }
 
   protected enum ConfirmType {
     INSERT, UPDATE, DELETE
@@ -102,7 +98,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   /**
    * Controls mapped to their respective control codes
    */
-  private final Map<String, Control> controls = new HashMap<>();
+  private final Map<ControlCode, Control> controls = new HashMap<>();
 
   /**
    * Indicates whether the panel is active and ready to receive input
@@ -155,21 +151,21 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
    */
   public EntityEditPanel(final SwingEntityEditModel editModel) {
-    this(editModel, SAVE, UPDATE, DELETE, CLEAR, REFRESH);
+    this(editModel, ControlCode.SAVE, ControlCode.UPDATE, ControlCode.DELETE, ControlCode.CLEAR, ControlCode.REFRESH);
   }
 
   /**
    * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
-   * @param controlKeys if specified only controls with those keys are initialized,
+   * @param controlCodes if specified only controls with those keys are initialized,
    * null or an empty String array will result in no controls being initialized
    */
-  public EntityEditPanel(final SwingEntityEditModel editModel, final String... controlKeys) {
+  public EntityEditPanel(final SwingEntityEditModel editModel, final ControlCode... controlCodes) {
     this.editModel = Objects.requireNonNull(editModel, "editModel");
     if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE)) {
       ACTIVE_STATE_GROUP.addState(activeState);
     }
-    setupDefaultControls(controlKeys);
+    setupDefaultControls(controlCodes);
     bindEventsInternal();
   }
 
@@ -397,7 +393,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @return the control associated with {@code controlCode}
    * @throws IllegalArgumentException in case no control is associated with the given control code
    */
-  public final Control getControl(final String controlCode) {
+  public final Control getControl(final ControlCode controlCode) {
     if (!controls.containsKey(controlCode)) {
       throw new IllegalArgumentException(controlCode + " control not available in panel: " + this);
     }
@@ -829,7 +825,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param controlCode the control code
    * @param control the control to associate with {@code controlCode}
    */
-  protected final void setControl(final String controlCode, final Control control) {
+  protected final void setControl(final ControlCode controlCode, final Control control) {
     if (control == null) {
       controls.remove(controlCode);
     }
@@ -844,23 +840,23 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   protected ControlSet initializeControlPanelControlSet() {
     final ControlSet controlSet = new ControlSet("Actions");
-    if (controls.containsKey(SAVE)) {
-      controlSet.add(controls.get(SAVE));
+    if (controls.containsKey(ControlCode.SAVE)) {
+      controlSet.add(controls.get(ControlCode.SAVE));
     }
-    if (controls.containsKey(INSERT)) {
-      controlSet.add(controls.get(INSERT));
+    if (controls.containsKey(ControlCode.INSERT)) {
+      controlSet.add(controls.get(ControlCode.INSERT));
     }
-    if (controls.containsKey(UPDATE)) {
-      controlSet.add(controls.get(UPDATE));
+    if (controls.containsKey(ControlCode.UPDATE)) {
+      controlSet.add(controls.get(ControlCode.UPDATE));
     }
-    if (controls.containsKey(DELETE)) {
-      controlSet.add(controls.get(DELETE));
+    if (controls.containsKey(ControlCode.DELETE)) {
+      controlSet.add(controls.get(ControlCode.DELETE));
     }
-    if (controls.containsKey(CLEAR)) {
-      controlSet.add(controls.get(CLEAR));
+    if (controls.containsKey(ControlCode.CLEAR)) {
+      controlSet.add(controls.get(ControlCode.CLEAR));
     }
-    if (controls.containsKey(REFRESH)) {
-      controlSet.add(controls.get(REFRESH));
+    if (controls.containsKey(ControlCode.REFRESH)) {
+      controlSet.add(controls.get(ControlCode.REFRESH));
     }
 
     return controlSet;
@@ -2032,40 +2028,40 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * Initializes the default controls available to this EntityEditPanel by mapping them to their respective
    * control codes (EntityEditPanel.INSERT, UPDATE etc) via the {@code setControl(String, Control) method,
    * these can then be retrieved via the {@code getControl(String)} method.
-   * @param controlKeys the control keys for which controls should be initialized
+   * @param controlCodes the control codes for which controls should be initialized
    * @see org.jminor.swing.common.ui.control.Control
    * @see #setControl(String, org.jminor.swing.common.ui.control.Control)
    * @see #getControl(String)
    * todo updateAllowed(false) þá vantar Insert control nema það sé tiltekið í smið
    */
-  private void setupDefaultControls(final String... controlKeys) {
-    if (controlKeys == null || controlKeys.length == 0) {
+  private void setupDefaultControls(final ControlCode... controlCodes) {
+    if (controlCodes == null || controlCodes.length == 0) {
       return;
     }
-    final Collection<String> keys = Arrays.asList(controlKeys);
+    final Collection<ControlCode> keys = Arrays.asList(controlCodes);
     if (!editModel.isReadOnly()) {
       setupDefaultEditModelControls(keys);
     }
-    if (keys.contains(CLEAR)) {
-      setControl(CLEAR, getClearControl());
+    if (keys.contains(ControlCode.CLEAR)) {
+      setControl(ControlCode.CLEAR, getClearControl());
     }
-    if (keys.contains(REFRESH)) {
-      setControl(REFRESH, getRefreshControl());
+    if (keys.contains(ControlCode.REFRESH)) {
+      setControl(ControlCode.REFRESH, getRefreshControl());
     }
   }
 
-  private void setupDefaultEditModelControls(final Collection<String> keys) {
-    if (editModel.isInsertAllowed() && editModel.isUpdateAllowed() && keys.contains(SAVE)) {
-      setControl(SAVE, getSaveControl());
+  private void setupDefaultEditModelControls(final Collection<ControlCode> controlCodes) {
+    if (editModel.isInsertAllowed() && editModel.isUpdateAllowed() && controlCodes.contains(ControlCode.SAVE)) {
+      setControl(ControlCode.SAVE, getSaveControl());
     }
-    if (editModel.isInsertAllowed() && keys.contains(INSERT)) {
-      setControl(INSERT, getInsertControl());
+    if (editModel.isInsertAllowed() && controlCodes.contains(ControlCode.INSERT)) {
+      setControl(ControlCode.INSERT, getInsertControl());
     }
-    if (editModel.isUpdateAllowed() && keys.contains(UPDATE)) {
-      setControl(UPDATE, getUpdateControl());
+    if (editModel.isUpdateAllowed() && controlCodes.contains(ControlCode.UPDATE)) {
+      setControl(ControlCode.UPDATE, getUpdateControl());
     }
-    if (editModel.isDeleteAllowed() && keys.contains(DELETE)) {
-      setControl(DELETE, getDeleteControl());
+    if (editModel.isDeleteAllowed() && controlCodes.contains(ControlCode.DELETE)) {
+      setControl(ControlCode.DELETE, getDeleteControl());
     }
   }
 
@@ -2113,7 +2109,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
     return property.isReadOnly() || (property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).isUpdatable());
   }
 
-  public interface EntitiesInsertedListener {
+  interface EntitiesInsertedListener {
     void entitiesInserted(final List<Entity> entities);
   }
 

@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class EntityApplicationView<Model extends EntityApplicationModel> extends Application implements ViewTreeNode {
+public abstract class EntityApplicationView<M extends EntityApplicationModel> extends Application implements ViewTreeNode {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationView.class);
 
@@ -39,7 +39,7 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
 
   private final List<EntityView> entityViews = new ArrayList<>();
 
-  private Model model;
+  private M model;
   private Stage mainStage;
 
   public EntityApplicationView(final String applicationTitle) {
@@ -52,7 +52,7 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
     Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> handleException((Exception) throwable));
   }
 
-  public final Model getModel() {
+  public final M getModel() {
     return model;
   }
 
@@ -165,7 +165,7 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
     return new Scene(tabPane);
   }
 
-  protected abstract Model initializeApplicationModel(final EntityConnectionProvider connectionProvider);
+  protected abstract M initializeApplicationModel(final EntityConnectionProvider connectionProvider);
 
   private void handleException(final Exception e) {
     if (e instanceof CancelException) {

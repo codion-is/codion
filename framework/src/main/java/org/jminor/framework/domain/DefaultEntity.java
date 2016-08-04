@@ -879,12 +879,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
     @Override
     public Object put(final String propertyID, final Object value) {
-      return put(Entities.getColumnProperty(getEntityID(), propertyID), value);
+      return super.put(Entities.getColumnProperty(getEntityID(), propertyID), value);
     }
 
     @Override
     public Object get(final String propertyID) {
-      return get(Entities.getColumnProperty(getEntityID(), propertyID));
+      return super.get(Entities.getColumnProperty(getEntityID(), propertyID));
     }
 
     @Override
@@ -974,7 +974,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
     @Override
     public boolean isValueNull(final String propertyID) {
-      return isValueNull(Entities.getColumnProperty(getEntityID(), propertyID));
+      return super.isValueNull(Entities.getColumnProperty(getEntityID(), propertyID));
     }
 
     @Override

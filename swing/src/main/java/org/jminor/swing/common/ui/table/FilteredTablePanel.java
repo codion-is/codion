@@ -577,7 +577,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
 
   @SuppressWarnings({"unchecked"})
   private void bindEvents() {
-    tableModel.addSortingListener(() -> table.getTableHeader().repaint());
+    tableModel.addSortingListener(table.getTableHeader()::repaint);
     tableModel.getSelectionModel().addSelectedIndexListener(selected -> {
       if (scrollToSelectedItem && !tableModel.getSelectionModel().isSelectionEmpty()) {
         scrollToCoordinate(selected, table.getSelectedColumn());

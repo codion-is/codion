@@ -555,7 +555,7 @@ public class ColumnConditionPanel<K> extends JPanel {
     dialog.getContentPane().add(conditionPanel);
     dialog.pack();
 
-    addAdvancedConditionListener(() -> dialog.pack());
+    addAdvancedConditionListener(dialog::pack);
 
     dialog.addWindowListener(new WindowAdapter() {
       @Override

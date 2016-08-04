@@ -4344,3 +4344,4 @@
   LocalEntityConnection bug fixed, selectRowCount() did not work with group by
   h2 library updated
   Shared library versions consolidated to build.properties
+  Sonar run

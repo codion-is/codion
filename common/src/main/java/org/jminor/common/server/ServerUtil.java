@@ -206,7 +206,7 @@ public final class ServerUtil {
   private static byte[] getBytes(final InputStream stream) throws IOException {
     final ByteArrayOutputStream os = new ByteArrayOutputStream();
     final byte[] buffer = new byte[INPUT_BUFFER_SIZE];
-    int line = 0;
+    int line;
     while ((line = stream.read(buffer)) != -1) {
       os.write(buffer, 0, line);
     }

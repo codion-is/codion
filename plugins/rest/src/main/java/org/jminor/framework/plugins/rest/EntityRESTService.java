@@ -97,7 +97,7 @@ public final class EntityRESTService extends Application {
                          @QueryParam("entities") final String entities) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      return Response.ok((EntityJSONParser.serializeKeys(connection.insert(EntityJSONParser.deserializeEntities(entities))))).build();
+      return Response.ok(EntityJSONParser.serializeKeys(connection.insert(EntityJSONParser.deserializeEntities(entities)))).build();
     }
     catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();

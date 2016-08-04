@@ -302,8 +302,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     if (selectionModel instanceof MultipleSelectionModel) {
       ((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems().addListener((ListChangeListener<Entity>) change -> {
         selectionEmptyState.setActive(selectionModel.isEmpty());
-        final List<Integer> selectedIndices = getSelectedIndexes();
-        singleSelectionState.setActive(selectedIndices.size() == 1);
+        singleSelectionState.setActive(getSelectedIndexes().size() == 1);
         multipleSelectionState.setActive(!selectionEmptyState.isActive() && !singleSelectionState.isActive());
         selectionChangedEvent.fire();
         selectedItemChangedEvent.fire(getSelectedItem());

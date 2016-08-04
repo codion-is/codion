@@ -41,6 +41,10 @@ public class ServerException extends Exception {
    * An exception indicating that a login has failed
    */
   public static class LoginException extends ServerException {
+    /**
+     * Instantiates a new {@link LoginException}
+     * @param message the exception message
+     */
     public LoginException(final String message) {
       super(message);
     }
@@ -51,6 +55,10 @@ public class ServerException extends Exception {
    * invalid username or password
    */
   public static class AuthenticationException extends LoginException {
+    /**
+     * Instantiates a new {@link AuthenticationException}
+     * @param message the exception message
+     */
     public AuthenticationException(final String message) {
       super(message);
     }
@@ -60,6 +68,10 @@ public class ServerException extends Exception {
    * An exception indicating that the server is not accepting new connections
    */
   public static final class ServerFullException extends ServerException {
+    /**
+     * Instantiates a new {@link ServerFullException}
+     * @param message the exception message
+     */
     private ServerFullException() {
       super(Messages.get(Messages.SERVER_FULL));
     }
@@ -69,6 +81,10 @@ public class ServerException extends Exception {
    * An exception indicating that a connection validation has failed
    */
   public static class ConnectionValidationException extends ServerException {
+    /**
+     * Instantiates a new {@link ConnectionValidationException}
+     * @param message the exception message
+     */
     public ConnectionValidationException(final String message) {
       super(message);
     }
