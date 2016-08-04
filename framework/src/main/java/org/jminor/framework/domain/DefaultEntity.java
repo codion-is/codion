@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.Util;
 import org.jminor.common.db.valuemap.DefaultValueMap;
 import org.jminor.common.db.valuemap.ValueMap;
 
@@ -143,8 +144,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  public Object put(final String key, final Object value) {
-    return put(getProperty(key), value);
+  public Object put(final String propertyID, final Object value) {
+    return put(getProperty(propertyID), value);
   }
 
   /** {@inheritDoc} */
@@ -156,16 +157,16 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public Object put(final Property property, final Object value, final boolean validateType) {
-    return put((DefaultProperty) property, value, validateType, DefaultEntityDefinition.getDefinitionMap());
+    return put(property, value, validateType, DefaultEntityDefinition.getDefinitionMap());
   }
 
   /**
-   * @param key the ID of the property for which to retrieve the value
+   * @param propertyID the ID of the property for which to retrieve the value
    * @return the value of the property identified by {@code propertyID}
    */
   @Override
-  public Object get(final String key) {
-    return get(getProperty(key));
+  public Object get(final String propertyID) {
+    return get(getProperty(propertyID));
   }
 
   /**
@@ -558,7 +559,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     final Collection<Property.ColumnProperty> referenceEntityPKProperties =
             entityDefinitions.get(foreignKeyProperty.getReferencedEntityID()).getPrimaryKeyProperties();
     for (final Property.ColumnProperty primaryKeyProperty : referenceEntityPKProperties) {
-      final DefaultProperty referenceProperty = (DefaultProperty) foreignKeyProperty.getReferenceProperties().get(primaryKeyProperty.getPrimaryKeyIndex());
+      final Property referenceProperty = foreignKeyProperty.getReferenceProperties().get(primaryKeyProperty.getPrimaryKeyIndex());
       if (!(referenceProperty instanceof Property.MirrorProperty)) {
         final Object value;
         if (referencedEntity == null) {
@@ -591,7 +592,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
         else {
           value = referencedEntity.get(denormalizedProperty.getDenormalizedProperty());
         }
-        put((DefaultProperty) denormalizedProperty, value, false, entityDefinitions);
+        put(denormalizedProperty, value, false, entityDefinitions);
       }
     }
   }
@@ -695,7 +696,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @param entityDefinitions a global entity definition map
    * @return the old value
    */
-  private Object put(final DefaultProperty property, final Object value, final boolean validateType,
+  private Object put(final Property property, final Object value, final boolean validateType,
                      final Map<String, Definition> entityDefinitions) {
     Objects.requireNonNull(property, PROPERTY_PARAM);
     validateValue(this, property, value);
@@ -710,7 +711,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
       propagateForeignKeyValues((Property.ForeignKeyProperty) property, (Entity) value, entityDefinitions);
     }
 
-    return super.put(property, property.prepareValue(value));
+    return super.put(property, prepareValue(property, value));
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
@@ -746,6 +747,21 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
         }
       }
     }
+  }
+
+  /**
+   * Prepares the value according to the property configuration, such as rounding
+   * to the correct number of fraction digits in case of doubles
+   * @param property the property
+   * @param value the value to prepare
+   * @return the prepared value
+   */
+  private static Object prepareValue(final Property property, final Object value) {
+    if (value != null && property.isDouble()) {
+      return Util.roundDouble((Double) value, property.getMaximumFractionDigits());
+    }
+
+    return value;
   }
 
   /**

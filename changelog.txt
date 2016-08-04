@@ -4345,3 +4345,4 @@
   h2 library updated
   Shared library versions consolidated to build.properties
   Sonar run
+  DefaultProperty.prepareValue() moved to DefaultEntity
