@@ -62,6 +62,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +99,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   /**
    * Controls mapped to their respective control codes
    */
-  private final Map<ControlCode, Control> controls = new HashMap<>();
+  private final Map<ControlCode, Control> controls = new EnumMap(ControlCode.class);
 
   /**
    * Indicates whether the panel is active and ready to receive input
