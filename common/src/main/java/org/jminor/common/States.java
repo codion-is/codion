@@ -3,8 +3,6 @@
  */
 package org.jminor.common;
 
-//todo fix this
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
