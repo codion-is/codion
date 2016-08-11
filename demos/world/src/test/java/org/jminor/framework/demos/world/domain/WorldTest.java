@@ -13,6 +13,10 @@ import org.junit.Test;
 
 public final class WorldTest extends EntityTestUnit {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   @Test
   public void country() throws DatabaseException {
     testEntity(World.T_COUNTRY);
@@ -67,7 +71,7 @@ public final class WorldTest extends EntityTestUnit {
 
   @Override
   protected User getTestUser() {
-    return User.UNIT_TEST_USER;
+    return UNIT_TEST_USER;
   }
 
   @Override

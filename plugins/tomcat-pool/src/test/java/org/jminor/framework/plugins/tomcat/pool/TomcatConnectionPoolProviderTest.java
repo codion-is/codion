@@ -13,11 +13,15 @@ import static org.junit.Assert.assertTrue;
 
 public class TomcatConnectionPoolProviderTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   @Test
   public void test() throws Exception {
     final long startTime = System.currentTimeMillis();
     final TomcatConnectionPoolProvider provider = new TomcatConnectionPoolProvider();
-    final ConnectionPool pool = provider.createConnectionPool(User.UNIT_TEST_USER,
+    final ConnectionPool pool = provider.createConnectionPool(UNIT_TEST_USER,
             new H2Database("TomcatConnectionPoolProviderTest.test", System.getProperty("jminor.db.initScript")));
     pool.setCollectFineGrainedStatistics(true);
     assertTrue(pool.isCollectFineGrainedStatistics());

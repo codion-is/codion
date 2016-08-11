@@ -15,13 +15,17 @@ import static org.junit.Assert.assertTrue;
 
 public final class QueryLoadTestModelTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   private static final QueryLoadTestModel.QueryScenario SELECT_EMPLOYEE =
           new QueryLoadTestModel.QueryScenario("selectEmployees", "select * from scott.emp");
   private static final QueryLoadTestModel.QueryScenario SELECT_DEPARTMENTS =
           new QueryLoadTestModel.QueryScenario("selectDepartments", "select * from scott.dept");
   @Test
   public void test() throws DatabaseException {
-    final QueryLoadTestModel loadTest = new QueryLoadTestModel(DatabasesTest.createTestDatabaseInstance(), User.UNIT_TEST_USER,
+    final QueryLoadTestModel loadTest = new QueryLoadTestModel(DatabasesTest.createTestDatabaseInstance(), UNIT_TEST_USER,
             Arrays.asList(SELECT_DEPARTMENTS, SELECT_EMPLOYEE));
     loadTest.setMinimumThinkTime(10);
     loadTest.setMaximumThinkTime(30);

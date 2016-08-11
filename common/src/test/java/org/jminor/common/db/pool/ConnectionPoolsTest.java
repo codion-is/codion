@@ -14,20 +14,24 @@ import static org.junit.Assert.assertNull;
 
 public final class ConnectionPoolsTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   @Test
   public void initializeConnectionPools() throws DatabaseException, ClassNotFoundException {
     ConnectionPools.initializeConnectionPools(null, DatabasesTest.createTestDatabaseInstance(),
-            Collections.singletonList(User.UNIT_TEST_USER), 1000);
-    assertNotNull(ConnectionPools.getConnectionPool(User.UNIT_TEST_USER));
+            Collections.singletonList(UNIT_TEST_USER), 1000);
+    assertNotNull(ConnectionPools.getConnectionPool(UNIT_TEST_USER));
     ConnectionPools.closeConnectionPools();
-    assertNull(ConnectionPools.getConnectionPool(User.UNIT_TEST_USER));
+    assertNull(ConnectionPools.getConnectionPool(UNIT_TEST_USER));
   }
 
   @Test
   public void createDefaultConnectionPool() throws DatabaseException {
     final ConnectionPool pool = ConnectionPools.createDefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
-    assertNotNull(ConnectionPools.getConnectionPool(User.UNIT_TEST_USER));
+    assertNotNull(ConnectionPools.getConnectionPool(UNIT_TEST_USER));
     ConnectionPools.closeConnectionPools();
-    assertNull(ConnectionPools.getConnectionPool(User.UNIT_TEST_USER));
+    assertNull(ConnectionPools.getConnectionPool(UNIT_TEST_USER));
   }
 }

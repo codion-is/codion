@@ -42,6 +42,10 @@ import java.util.Scanner;
 
 public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient> {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   private static final int PORT = 8080;
   private static final String BASEURL = Configuration.getStringValue(Configuration.SERVER_HOST_NAME) + ":" + PORT + "/entities/";
   private static final String BASIC = "Basic ";
@@ -116,7 +120,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
 
   public static void main(final String[] args) throws Exception {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    new LoadTestPanel(new EmpDeptRESTLoadTest(User.UNIT_TEST_USER)).showFrame();
+    new LoadTestPanel(new EmpDeptRESTLoadTest(UNIT_TEST_USER)).showFrame();
   }
 
   private static final class UpdateLocation extends AbstractUsageScenario<CloseableHttpClient> {

@@ -19,6 +19,10 @@ import static org.junit.Assert.*;
 
 public class EntityServerMonitorTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   @BeforeClass
   public static void setUp() throws Exception {
     Configuration.setValue(Configuration.SERVER_CONNECTION_SSL_ENABLED, false);
@@ -35,7 +39,7 @@ public class EntityServerMonitorTest {
     final UUID clientId = UUID.randomUUID();
     final String clientTypeId = EntityServerMonitorTest.class.getName();
     final RemoteEntityConnectionProvider connectionProvider = new RemoteEntityConnectionProvider("localhost",
-            User.UNIT_TEST_USER, clientId, clientTypeId);
+            UNIT_TEST_USER, clientId, clientTypeId);
     connectionProvider.getConnection();
     final EntityServerMonitor model = new EntityServerMonitor("localhost", Configuration.getIntValue(Configuration.REGISTRY_PORT));
     model.refresh();
@@ -55,7 +59,7 @@ public class EntityServerMonitorTest {
     final ClientInstanceMonitor clientInstanceMonitor = clientMonitor.getClientInstanceListModel().firstElement();
     final ClientInfo clientInfo = clientInstanceMonitor.getClientInfo();
     assertEquals(clientId, clientInfo.getClientID());
-    assertEquals(User.UNIT_TEST_USER, clientInfo.getUser());
+    assertEquals(UNIT_TEST_USER, clientInfo.getUser());
 
     clientInstanceMonitor.disconnect();//disconnects the client
 

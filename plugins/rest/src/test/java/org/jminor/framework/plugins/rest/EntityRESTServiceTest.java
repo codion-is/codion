@@ -50,6 +50,10 @@ import static org.junit.Assert.assertTrue;
 
 public class EntityRESTServiceTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
   private static final User ADMIN_USER = new User("scott", "tiger");
   private static final String BASIC = "Basic ";
@@ -120,7 +124,7 @@ public class EntityRESTServiceTest {
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(new BasicHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              final User user = User.UNIT_TEST_USER;
+              final User user = UNIT_TEST_USER;
               request.setHeader(EntityRESTService.AUTHORIZATION,
                       BASIC + DatatypeConverter.printBase64Binary((user.getUsername() + ":" + user.getPassword()).getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_JSON);

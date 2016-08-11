@@ -21,6 +21,10 @@ import static org.junit.Assert.*;
 
 public class EntityLoadTestModelTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   private static final String CONNECTION_TYPE_BEFORE_TEST = Configuration.getStringValue(Configuration.CLIENT_CONNECTION_TYPE);
 
   @BeforeClass
@@ -38,7 +42,7 @@ public class EntityLoadTestModelTest {
   private static final class TestLoadTestModel extends EntityLoadTestModel<DefaultEntityApplicationModel> {
 
     public TestLoadTestModel() {
-      super(User.UNIT_TEST_USER, Arrays.asList(new EntityLoadTestModel.AbstractEntityUsageScenario<DefaultEntityApplicationModel>("1") {
+      super(UNIT_TEST_USER, Arrays.asList(new EntityLoadTestModel.AbstractEntityUsageScenario<DefaultEntityApplicationModel>("1") {
         @Override
         protected void performScenario(final DefaultEntityApplicationModel application) throws ScenarioException {}
       }, new EntityLoadTestModel.AbstractEntityUsageScenario<DefaultEntityApplicationModel>("2") {

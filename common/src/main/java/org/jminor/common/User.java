@@ -16,12 +16,6 @@ public final class User implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  public static final String UNITTEST_USERNAME_PROPERTY = "jminor.unittest.username";
-  public static final String UNITTEST_PASSWORD_PROPERTY = "jminor.unittest.password";
-
-  public static final User UNIT_TEST_USER = new User(System.getProperty(UNITTEST_USERNAME_PROPERTY, "scott"),
-          System.getProperty(UNITTEST_PASSWORD_PROPERTY, "tiger"));
-
   private String username;
   private String password;
 

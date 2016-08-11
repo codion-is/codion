@@ -20,6 +20,10 @@ import java.util.UUID;
 
 public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   private static final UsageScenario<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> SCENARIO
           = new AbstractEntityUsageScenario<SchemaBrowserAppPanel.SchemaBrowserApplicationModel>() {
     @Override
@@ -33,7 +37,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
   };
 
   public SchemaBrowserLoadTest() {
-    super(User.UNIT_TEST_USER, Collections.singletonList(SCENARIO));
+    super(UNIT_TEST_USER, Collections.singletonList(SCENARIO));
   }
 
   @Override

@@ -34,6 +34,10 @@ import static org.junit.Assert.*;
 
 public class DefaultEntityConnectionServerTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
 
   private static final User ADMIN_USER = new User("scott", "tiger");
@@ -59,7 +63,7 @@ public class DefaultEntityConnectionServerTest {
 
   @Test(expected = RuntimeException.class)
   public void testWrongPassword() throws Exception {
-    new RemoteEntityConnectionProvider("localhost", new User(User.UNIT_TEST_USER.getUsername(), "foobar"),
+    new RemoteEntityConnectionProvider("localhost", new User(UNIT_TEST_USER.getUsername(), "foobar"),
             UUID.randomUUID(), getClass().getSimpleName()).getConnection();
   }
 
@@ -91,19 +95,19 @@ public class DefaultEntityConnectionServerTest {
   @Test
   public void test() throws Exception {
     final RemoteEntityConnectionProvider providerOne = new RemoteEntityConnectionProvider("localhost",
-            User.UNIT_TEST_USER, UUID.randomUUID(), getClass().getSimpleName());
+            UNIT_TEST_USER, UUID.randomUUID(), getClass().getSimpleName());
     final EntityConnection remoteConnectionOne = providerOne.getConnection();
     assertTrue(remoteConnectionOne.isConnected());
     assertEquals(1, admin.getConnectionCount());
-    admin.setPoolConnectionThreshold(User.UNIT_TEST_USER, 505);
-    assertEquals(505, admin.getPoolConnectionThreshold(User.UNIT_TEST_USER));
-    admin.setPooledConnectionTimeout(User.UNIT_TEST_USER, 60005);
-    assertEquals(60005, admin.getPooledConnectionTimeout(User.UNIT_TEST_USER));
-    admin.setMaximumPoolCheckOutTime(User.UNIT_TEST_USER, 2005);
-    assertEquals(2005, admin.getMaximumPoolCheckOutTime(User.UNIT_TEST_USER));
+    admin.setPoolConnectionThreshold(UNIT_TEST_USER, 505);
+    assertEquals(505, admin.getPoolConnectionThreshold(UNIT_TEST_USER));
+    admin.setPooledConnectionTimeout(UNIT_TEST_USER, 60005);
+    assertEquals(60005, admin.getPooledConnectionTimeout(UNIT_TEST_USER));
+    admin.setMaximumPoolCheckOutTime(UNIT_TEST_USER, 2005);
+    assertEquals(2005, admin.getMaximumPoolCheckOutTime(UNIT_TEST_USER));
 
     final RemoteEntityConnectionProvider providerTwo = new RemoteEntityConnectionProvider("localhost",
-            User.UNIT_TEST_USER, UUID.randomUUID(), getClass().getSimpleName());
+            UNIT_TEST_USER, UUID.randomUUID(), getClass().getSimpleName());
     final EntityConnection remoteConnectionTwo = providerTwo.getConnection();
     admin.setLoggingEnabled(providerOne.getClientID(), true);
     assertTrue(admin.isLoggingEnabled(providerOne.getClientID()));
@@ -112,7 +116,7 @@ public class DefaultEntityConnectionServerTest {
     assertTrue(remoteConnectionTwo.isConnected());
     assertEquals(2, admin.getConnectionCount());
 
-    Collection<ClientInfo> clients = admin.getClients(new User(User.UNIT_TEST_USER.getUsername(), null));
+    Collection<ClientInfo> clients = admin.getClients(new User(UNIT_TEST_USER.getUsername(), null));
     assertEquals(2, clients.size());
     clients = admin.getClients(getClass().getSimpleName());
     assertEquals(2, clients.size());
@@ -122,7 +126,7 @@ public class DefaultEntityConnectionServerTest {
 
     final Collection<User> users = admin.getUsers();
     assertEquals(1, users.size());
-    assertEquals(User.UNIT_TEST_USER, users.iterator().next());
+    assertEquals(UNIT_TEST_USER, users.iterator().next());
 
     providerTwo.getConnection().selectMany(EntityConditions.selectCondition(TestDomain.T_EMP)
             .orderByAscending(TestDomain.EMP_NAME));
@@ -185,7 +189,7 @@ public class DefaultEntityConnectionServerTest {
     final Collection<ClientInfo> empDeptClients = admin.getClients(empDeptClientTypeID);
     assertEquals(2, empDeptClients.size());
     for (final ClientInfo empDeptClient : empDeptClients) {
-      assertEquals(User.UNIT_TEST_USER, empDeptClient.getDatabaseUser());
+      assertEquals(UNIT_TEST_USER, empDeptClient.getDatabaseUser());
     }
     empDeptProviderJohn.disconnect();
     assertEquals(1, admin.getConnectionCount());
@@ -211,7 +215,7 @@ public class DefaultEntityConnectionServerTest {
       }
       @Override
       public ClientInfo doLogin(final ClientInfo clientInfo) {
-        return ServerUtil.clientInfo(clientInfo.getConnectionInfo(), User.UNIT_TEST_USER);
+        return ServerUtil.clientInfo(clientInfo.getConnectionInfo(), UNIT_TEST_USER);
       }
       @Override
       public void doLogout(final ClientInfo clientInfo) {}
@@ -234,7 +238,7 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(1, clients.size());
     final ClientInfo clientOneFromServer = clients.iterator().next();
     assertEquals(userOne, clientOneFromServer.getUser());
-    assertEquals(User.UNIT_TEST_USER, clientOneFromServer.getDatabaseUser());
+    assertEquals(UNIT_TEST_USER, clientOneFromServer.getDatabaseUser());
 
     final RemoteEntityConnection connectionTwo = server.connect(clientTwo);
     assertEquals(userTwo, connectionTwo.getUser());
@@ -246,7 +250,7 @@ public class DefaultEntityConnectionServerTest {
     for (final ClientInfo clientInfo : server.getClients(clientTypeID)) {
       if (clientInfo.getClientID().equals(clientTwo.getClientID())) {
         found = true;
-        assertEquals(User.UNIT_TEST_USER, clientInfo.getDatabaseUser());
+        assertEquals(UNIT_TEST_USER, clientInfo.getDatabaseUser());
       }
     }
     assertTrue("Client two should have been returned from server", found);
@@ -285,7 +289,7 @@ public class DefaultEntityConnectionServerTest {
     Configuration.setValue(Configuration.SERVER_ADMIN_PORT, 2223);
     Configuration.setValue(Configuration.SERVER_ADMIN_USER, "scott:tiger");
     Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
-    Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername() + ":" + User.UNIT_TEST_USER.getPassword());
+    Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, UNIT_TEST_USER.getUsername() + ":" + UNIT_TEST_USER.getPassword());
     Configuration.setValue(Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT, "ClientTypeID:10000");
     Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.domain.TestDomain");
     Configuration.setValue(Configuration.SERVER_LOGIN_PROXY_CLASSES, "org.jminor.framework.server.TestLoginProxy");

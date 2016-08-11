@@ -14,6 +14,10 @@ import static org.junit.Assert.*;
 public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEntityModel<Model, EditModel, TableModel>,
         EditModel extends DefaultEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   protected abstract Model createDepartmentModel();
 
   @Test
@@ -30,12 +34,12 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     deptModel.getDetailModel(TestDomain.T_EMP).getTableModel().setQueryConditionRequired(false);
     assertEquals(1, model.getEntityModels().size());
     assertNotNull(deptModel);
-    assertEquals(User.UNIT_TEST_USER, model.getUser());
+    assertEquals(UNIT_TEST_USER, model.getUser());
     model.refresh();
     assertTrue(deptModel.getTableModel().getRowCount() > 0);
     model.logout();
     assertFalse(model.getConnectionProvider().isConnected());
-    model.login(User.UNIT_TEST_USER);
+    model.login(UNIT_TEST_USER);
   }
 
   @Test(expected = NullPointerException.class)

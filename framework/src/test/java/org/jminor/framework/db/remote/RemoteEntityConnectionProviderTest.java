@@ -24,6 +24,10 @@ import static org.junit.Assert.*;
  */
 public class RemoteEntityConnectionProviderTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   @BeforeClass
   public static void setUp() throws Exception {
     DefaultEntityConnectionServerTest.setUp();
@@ -37,7 +41,7 @@ public class RemoteEntityConnectionProviderTest {
   @Test
   public void test() throws Exception {
     final RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider("localhost",
-            User.UNIT_TEST_USER, UUID.randomUUID(), "TestClient");
+            UNIT_TEST_USER, UUID.randomUUID(), "TestClient");
 
     assertEquals(EntityConnection.Type.REMOTE, provider.getConnectionType());
     assertEquals(EntityConnection.Type.REMOTE, provider.getConnection().getType());

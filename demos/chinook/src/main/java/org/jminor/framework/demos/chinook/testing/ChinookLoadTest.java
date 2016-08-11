@@ -34,6 +34,10 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.ChinookApplicationModel> {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   private static final UsageScenario<ChinookAppPanel.ChinookApplicationModel> UPDATE_TOTALS =
           new AbstractEntityUsageScenario<ChinookAppPanel.ChinookApplicationModel>("updateTotals") {
     @Override
@@ -209,7 +213,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
   };
 
   public ChinookLoadTest() {
-    super(User.UNIT_TEST_USER, Arrays.asList(VIEW_GENRE, VIEW_CUSTOMER_REPORT, VIEW_INVOICE, VIEW_ALBUM,
+    super(UNIT_TEST_USER, Arrays.asList(VIEW_GENRE, VIEW_CUSTOMER_REPORT, VIEW_INVOICE, VIEW_ALBUM,
             UPDATE_TOTALS, INSERT_DELETE_ALBUM));
   }
 

@@ -44,6 +44,10 @@ import static org.junit.Assert.*;
  */
 public abstract class EntityTestUnit {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   private static final int MININUM_RANDOM_NUMBER = -10000000;
   private static final int MAXIMUM_RANDOM_NUMBER = 10000000;
   private static final int MAXIMUM_RANDOM_STRING_LENGTH = 10;
@@ -163,13 +167,12 @@ public abstract class EntityTestUnit {
   }
 
   /**
-   * Returns the database user to use when running the tests, this default implementation
-   * returns a user based on the {@link User#UNITTEST_USERNAME_PROPERTY}
-   * and {@link User#UNITTEST_PASSWORD_PROPERTY} properties.
+   * Returns the database user to use when running the tests, this default implementation returns
+   * a user based on the "jminor.unittest.username" and "jminor.unittest.password" system properties.
    * @return the db user to use when running the test
    */
   protected User getTestUser() {
-    return User.UNIT_TEST_USER;
+    return UNIT_TEST_USER;
   }
 
   /**

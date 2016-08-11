@@ -10,8 +10,12 @@ import org.junit.Test;
 
 public class EmpDeptAppPanelTest extends EntityApplicationPanelTestUnit {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   public EmpDeptAppPanelTest() {
-    super(EmpDeptAppPanel.class, User.UNIT_TEST_USER);
+    super(EmpDeptAppPanel.class, UNIT_TEST_USER);
   }
 
   @Test

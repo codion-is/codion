@@ -14,6 +14,10 @@ import static org.junit.Assert.assertEquals;
  */
 public class UserTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   @Test
   public void test() {
     final User user = new User("scott", "tiger");

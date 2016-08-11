@@ -13,6 +13,10 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public class ChinookTest extends EntityTestUnit {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   @Test
   public void album() throws Exception {
     testEntity(T_ALBUM);
@@ -70,7 +74,7 @@ public class ChinookTest extends EntityTestUnit {
 
   @Override
   protected User getTestUser() throws CancelException {
-    return User.UNIT_TEST_USER;
+    return UNIT_TEST_USER;
   }
 
   @Override

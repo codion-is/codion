@@ -13,10 +13,14 @@ import static org.junit.Assert.*;
 
 public class LocalEntityConnectionProviderTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   @Test
   public void test() {
     final Database database = LocalEntityConnectionTest.createTestDatabaseInstance();
-    final LocalEntityConnectionProvider provider = new LocalEntityConnectionProvider(User.UNIT_TEST_USER, database);
+    final LocalEntityConnectionProvider provider = new LocalEntityConnectionProvider(UNIT_TEST_USER, database);
 
     assertEquals(database.getHost(), provider.getServerHostName());
 

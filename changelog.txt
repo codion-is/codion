@@ -4346,3 +4346,5 @@
   Shared library versions consolidated to build.properties
   Sonar run
   DefaultProperty.prepareValue() moved to DefaultEntity
+  UiUtil.runWithProgressBar() now handles InterruptedException correctly
+  User.UNIT_TEST_USER field removed

@@ -23,6 +23,10 @@ import static org.junit.Assert.*;
 
 public class EntityApplicationPanelTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   @After
   public void tearDown() {
     Thread.setDefaultUncaughtExceptionHandler(null);
@@ -66,7 +70,7 @@ public class EntityApplicationPanelTest {
     };
     panel.setLoginRequired(false);
     panel.setShowStartupDialog(false);
-    panel.startApplication("Test", null, false, null, null, false, User.UNIT_TEST_USER);
+    panel.startApplication("Test", null, false, null, null, false, UNIT_TEST_USER);
     assertNotNull(panel.getEntityPanel(TestDomain.T_EMP));
 
     panel.logout();

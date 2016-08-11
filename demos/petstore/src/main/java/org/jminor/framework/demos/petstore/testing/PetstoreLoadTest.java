@@ -19,8 +19,12 @@ import java.util.UUID;
 
 public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppPanel.PetstoreApplicationModel> {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   public PetstoreLoadTest() {
-    super(User.UNIT_TEST_USER, Collections.singletonList(new AbstractUsageScenario<PetstoreAppPanel.PetstoreApplicationModel>("selectRecords") {
+    super(UNIT_TEST_USER, Collections.singletonList(new AbstractUsageScenario<PetstoreAppPanel.PetstoreApplicationModel>("selectRecords") {
       @Override
       protected void performScenario(final PetstoreAppPanel.PetstoreApplicationModel application) {
         final SwingEntityModel categoryModel = application.getEntityModels().iterator().next();

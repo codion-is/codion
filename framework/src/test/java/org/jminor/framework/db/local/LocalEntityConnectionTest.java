@@ -50,6 +50,10 @@ import static org.junit.Assert.*;
 
 public class LocalEntityConnectionTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   private static final String JOINED_QUERY_ENTITY_ID = "joinedQueryEntityID";
   private static final String GROUP_BY_QUERY_ENTITY_ID = "groupByQueryEntityID";
 
@@ -466,7 +470,7 @@ public class LocalEntityConnectionTest {
     Connection connection = null;
     try {
       final Database db = LocalEntityConnectionTest.createTestDatabaseInstance();
-      connection = db.createConnection(User.UNIT_TEST_USER);
+      connection = db.createConnection(UNIT_TEST_USER);
       final EntityConnection conn = new LocalEntityConnection(db, connection, true, true, 1);
       assertTrue(conn.isConnected());
     }
@@ -485,7 +489,7 @@ public class LocalEntityConnectionTest {
     Connection connection = null;
     try {
       final Database db = LocalEntityConnectionTest.createTestDatabaseInstance();
-      connection = db.createConnection(User.UNIT_TEST_USER);
+      connection = db.createConnection(UNIT_TEST_USER);
       connection.close();
       new LocalEntityConnection(db, connection, true, true, 1);
     }
@@ -620,7 +624,7 @@ public class LocalEntityConnectionTest {
   }
 
   private static LocalEntityConnection initializeConnection() throws DatabaseException {
-    return new LocalEntityConnection(createTestDatabaseInstance(), User.UNIT_TEST_USER, true, true, 1);
+    return new LocalEntityConnection(createTestDatabaseInstance(), UNIT_TEST_USER, true, true, 1);
   }
 
   private static void setSystemProperties(final String type, final String host, final String port, final String sid,

@@ -15,6 +15,10 @@ import static org.junit.Assert.*;
 
 public class LoadTestModelTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   private static final LoadTestModel.UsageScenario SCENARIO = new LoadTestModel.AbstractUsageScenario("test") {
     int counter = 0;
     @Override
@@ -32,22 +36,22 @@ public class LoadTestModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNegativeThinkTime() {
-    new TestLoadTestModel(User.UNIT_TEST_USER, -100, 2, 5, 1000);
+    new TestLoadTestModel(UNIT_TEST_USER, -100, 2, 5, 1000);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNegativeLoginDelayFactor() {
-    new TestLoadTestModel(User.UNIT_TEST_USER, 100, -2, 5, 1000);
+    new TestLoadTestModel(UNIT_TEST_USER, 100, -2, 5, 1000);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNegativeApplicationBatchSize() {
-    new TestLoadTestModel(User.UNIT_TEST_USER, 100, 2, -5, 1000);
+    new TestLoadTestModel(UNIT_TEST_USER, 100, 2, -5, 1000);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNegativeWarningTime() {
-    new TestLoadTestModel(User.UNIT_TEST_USER, 100, 2, 5, -1000);
+    new TestLoadTestModel(UNIT_TEST_USER, 100, 2, 5, -1000);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -94,7 +98,7 @@ public class LoadTestModelTest {
 
   @Test
   public void test() throws Exception {
-    final LoadTestModel model = new TestLoadTestModel(User.UNIT_TEST_USER, 50, 2, 2, 1000);
+    final LoadTestModel model = new TestLoadTestModel(UNIT_TEST_USER, 50, 2, 2, 1000);
     assertEquals(2, model.getApplicationBatchSize());
     model.setCollectChartData(true);
 
@@ -129,8 +133,8 @@ public class LoadTestModelTest {
 
     model.setApplicationBatchSize(5);
     assertTrue(model.getUsageScenarios().contains(SCENARIO.getName()));
-    model.setUser(User.UNIT_TEST_USER);
-    assertEquals(User.UNIT_TEST_USER, model.getUser());
+    model.setUser(UNIT_TEST_USER);
+    assertEquals(UNIT_TEST_USER, model.getUser());
     assertNotNull(model.getScenarioChooser());
     model.setWeight(SCENARIO.getName(), 2);
     model.setScenarioEnabled(SCENARIO_II.getName(), false);

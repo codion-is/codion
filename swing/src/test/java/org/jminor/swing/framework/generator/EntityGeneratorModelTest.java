@@ -19,6 +19,10 @@ import static org.junit.Assert.assertNotNull;
 
 public class EntityGeneratorModelTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   private static final String ADDRESS_DEF;
   private static final String TAG_ITEM_DEF;
   private static final String PRODUCT_DEF;
@@ -119,7 +123,7 @@ public class EntityGeneratorModelTest {
 
   @Before
   public void setUp() throws Exception {
-    model = new EntityGeneratorModel(User.UNIT_TEST_USER, "PETSTORE");
+    model = new EntityGeneratorModel(UNIT_TEST_USER, "PETSTORE");
     model.getTableModel().getSortModel().setSortingDirective(EntityGeneratorModel.SCHEMA_COLUMN_ID, SortingDirective.ASCENDING, false);
     model.getTableModel().getSortModel().setSortingDirective(EntityGeneratorModel.TABLE_COLUMN_ID, SortingDirective.ASCENDING, true);
   }

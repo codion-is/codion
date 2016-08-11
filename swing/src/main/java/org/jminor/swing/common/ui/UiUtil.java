@@ -1555,6 +1555,7 @@ public final class UiUtil {
           }
         }
         catch (final InterruptedException interruped) {
+          Thread.currentThread().interrupt();
           showExceptionDialog(UiUtil.getParentWindow(dialogParent), failTitle, interruped);
         }
         catch (final ExecutionException exception) {

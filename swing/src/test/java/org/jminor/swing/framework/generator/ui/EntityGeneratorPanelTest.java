@@ -11,9 +11,13 @@ import org.junit.Test;
 
 public class EntityGeneratorPanelTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   @Test
   public void test() throws ClassNotFoundException, DatabaseException {
-    final EntityGeneratorModel model = new EntityGeneratorModel(User.UNIT_TEST_USER, "PETSTORE");
+    final EntityGeneratorModel model = new EntityGeneratorModel(UNIT_TEST_USER, "PETSTORE");
     new EntityGeneratorPanel(model);
     model.getTableModel().getSelectionModel().setSelectedIndex(0);
   }

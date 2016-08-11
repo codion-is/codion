@@ -14,6 +14,10 @@ import static org.jminor.framework.demos.empdept.domain.EmpDept.T_EMPLOYEE;
 
 public class EmpDeptTest extends EntityTestUnit {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   @Test
   public void department() throws Exception {
     testEntity(T_DEPARTMENT);
@@ -26,7 +30,7 @@ public class EmpDeptTest extends EntityTestUnit {
 
   @Override
   protected User getTestUser() throws CancelException {
-    return User.UNIT_TEST_USER;
+    return UNIT_TEST_USER;
   }
 
   @Override

@@ -16,6 +16,10 @@ import static org.junit.Assert.assertTrue;
 
 public class DatabaseConnectionsTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   private static final Database DATABASE = DatabasesTest.createTestDatabaseInstance();
 
   public static DatabaseConnectionProvider createTestDatabaseConnectionProvider() {
@@ -32,7 +36,7 @@ public class DatabaseConnectionsTest {
 
       @Override
       public User getUser() {
-        return User.UNIT_TEST_USER;
+        return UNIT_TEST_USER;
       }
     };
   }
@@ -41,11 +45,11 @@ public class DatabaseConnectionsTest {
   public void createConnection() throws Exception {
     Connection connection = null;
     try {
-      connection = DATABASE.createConnection(User.UNIT_TEST_USER);
+      connection = DATABASE.createConnection(UNIT_TEST_USER);
       final DatabaseConnection databaseConnection = DatabaseConnections.createConnection(DATABASE, connection);
       assertTrue(databaseConnection.isConnected());
       assertNotNull(databaseConnection.getUser());
-      assertTrue(User.UNIT_TEST_USER.getUsername().equalsIgnoreCase(databaseConnection.getUser().getUsername()));
+      assertTrue(UNIT_TEST_USER.getUsername().equalsIgnoreCase(databaseConnection.getUser().getUsername()));
     }
     finally {
       DatabaseUtil.closeSilently(connection);
@@ -56,7 +60,7 @@ public class DatabaseConnectionsTest {
   public void createConnectionWithClosedConnection() throws DatabaseException, SQLException {
     Connection connection = null;
     try {
-      connection = DATABASE.createConnection(User.UNIT_TEST_USER);
+      connection = DATABASE.createConnection(UNIT_TEST_USER);
       connection.close();
       DatabaseConnections.createConnection(DATABASE, connection);
     }

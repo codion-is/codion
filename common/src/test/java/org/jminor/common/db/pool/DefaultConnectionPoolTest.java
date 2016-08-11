@@ -17,6 +17,10 @@ import static org.junit.Assert.*;
 
 public class DefaultConnectionPoolTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   @Test(expected = IllegalArgumentException.class)
   public void setMaximumPoolSizeLessThanMinSize() throws ClassNotFoundException, DatabaseException {
     final ConnectionPool pool = new DefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
@@ -91,7 +95,7 @@ public class DefaultConnectionPoolTest {
     pool.setConnectionTimeout(6000);
     pool.setMaximumPoolSize(8);
     try {
-      assertEquals(User.UNIT_TEST_USER, pool.getUser());
+      assertEquals(UNIT_TEST_USER, pool.getUser());
       assertEquals(2000, pool.getCleanupInterval());
       assertEquals(6000, pool.getConnectionTimeout());
       assertEquals(8, pool.getMaximumPoolSize());
@@ -106,7 +110,7 @@ public class DefaultConnectionPoolTest {
       pool.setCollectFineGrainedStatistics(true);
       assertTrue(pool.isCollectFineGrainedStatistics());
       ConnectionPoolStatistics statistics = pool.getStatistics(startDate.getTime());
-      assertEquals(new User(User.UNIT_TEST_USER.getUsername(), null), statistics.getUser());
+      assertEquals(new User(UNIT_TEST_USER.getUsername(), null), statistics.getUser());
       assertNotNull(statistics.getTimestamp());
       assertNotNull(statistics.getCreationDate());
       assertEquals(0, statistics.getDestroyed());

@@ -22,9 +22,13 @@ import static org.junit.Assert.assertEquals;
 
 public class NextReportsWrapperTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   @Test
   public void fillReport() throws ReportException, IOException {
-    final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(User.UNIT_TEST_USER,
+    final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(UNIT_TEST_USER,
             new H2Database("h2db", System.getProperty("jminor.db.initScript")));
     final ReportResult<NextReportsResult> result = EntityReportUtil.fillReport(
             new NextReportsWrapper("src/test/reports/test-report.report",

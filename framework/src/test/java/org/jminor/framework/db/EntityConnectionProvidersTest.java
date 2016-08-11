@@ -21,6 +21,10 @@ import static org.junit.Assert.assertTrue;
  */
 public class EntityConnectionProvidersTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   public static final EntityConnectionProvider CONNECTION_PROVIDER = createTestConnectionProvider();
 
   public static EntityConnectionProvider createTestConnectionProvider() {
@@ -40,7 +44,7 @@ public class EntityConnectionProvidersTest {
       System.setProperty(Database.DATABASE_EMBEDDED_IN_MEMORY, embeddedInMemory == null ? "true" : embeddedInMemory);
       System.setProperty(H2Database.DATABASE_INIT_SCRIPT, initScript == null ? "demos/src/main/sql/create_h2_db.sql" : initScript);
 
-      return EntityConnectionProviders.connectionProvider(User.UNIT_TEST_USER, "test");
+      return EntityConnectionProviders.connectionProvider(UNIT_TEST_USER, "test");
     }
     finally {
       setSystemProperties(type, host, port, sid, embedded, embeddedInMemory, initScript);
@@ -57,7 +61,7 @@ public class EntityConnectionProvidersTest {
       assertEquals(EntityConnection.Type.LOCAL, connectionProvider.getConnectionType());
 
       Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, Configuration.CONNECTION_TYPE_REMOTE);
-      connectionProvider = EntityConnectionProviders.connectionProvider(User.UNIT_TEST_USER, "test");
+      connectionProvider = EntityConnectionProviders.connectionProvider(UNIT_TEST_USER, "test");
       assertEquals("RemoteEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
       assertEquals(EntityConnection.Type.REMOTE, connectionProvider.getConnectionType());
     }

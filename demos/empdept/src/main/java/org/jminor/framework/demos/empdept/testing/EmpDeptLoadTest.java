@@ -27,8 +27,12 @@ import java.util.Random;
 @SuppressWarnings({"UnusedDeclaration"})
 public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   public EmpDeptLoadTest() {
-    super(User.UNIT_TEST_USER, Arrays.asList(new InsertDepartment(), new InsertEmployee(), new LoginLogout(),
+    super(UNIT_TEST_USER, Arrays.asList(new InsertDepartment(), new InsertEmployee(), new LoginLogout(),
             new SelectDepartment(), new UpdateEmployee()));
   }
 

@@ -13,8 +13,12 @@ import org.junit.Test;
 
 public class EmployeeEditPanelTest extends EntityEditPanelTestUnit {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   public EmployeeEditPanelTest() {
-    super(EmployeeEditPanel.class, EmpDept.T_EMPLOYEE, User.UNIT_TEST_USER);
+    super(EmployeeEditPanel.class, EmpDept.T_EMPLOYEE, UNIT_TEST_USER);
   }
 
   @Test

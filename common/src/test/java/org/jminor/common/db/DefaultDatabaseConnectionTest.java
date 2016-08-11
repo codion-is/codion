@@ -20,12 +20,16 @@ import static org.junit.Assert.*;
  */
 public class DefaultDatabaseConnectionTest {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   private static final Database DATABASE = DatabasesTest.createTestDatabaseInstance();
   private DefaultDatabaseConnection dbConnection;
 
   @Before
   public void before() throws Exception {
-    dbConnection = new DefaultDatabaseConnection(DATABASE, User.UNIT_TEST_USER);
+    dbConnection = new DefaultDatabaseConnection(DATABASE, UNIT_TEST_USER);
   }
 
   @After
@@ -40,14 +44,14 @@ public class DefaultDatabaseConnectionTest {
 
   @Test
   public void constructorWithConnection() throws DatabaseException, SQLException {
-    final Connection connection = DATABASE.createConnection(User.UNIT_TEST_USER);
+    final Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
     new DefaultDatabaseConnection(DATABASE, connection).disconnect();
     assertTrue(connection.isClosed());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorWithInvalidConnection() throws DatabaseException, SQLException {
-    final Connection connection = DATABASE.createConnection(User.UNIT_TEST_USER);
+    final Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
     connection.close();
     new DefaultDatabaseConnection(DATABASE, connection);
   }
@@ -59,7 +63,7 @@ public class DefaultDatabaseConnectionTest {
 
   @Test(expected = DatabaseException.class)
   public void wrongPassword() throws Exception {
-    new DefaultDatabaseConnection(DATABASE, new User(User.UNIT_TEST_USER.getUsername(), "xxxxx"));
+    new DefaultDatabaseConnection(DATABASE, new User(UNIT_TEST_USER.getUsername(), "xxxxx"));
   }
 
   @Test
@@ -78,7 +82,7 @@ public class DefaultDatabaseConnectionTest {
 
   @Test
   public void getUser() {
-    assertEquals(dbConnection.getUser(), User.UNIT_TEST_USER);
+    assertEquals(dbConnection.getUser(), UNIT_TEST_USER);
   }
 
   @Test

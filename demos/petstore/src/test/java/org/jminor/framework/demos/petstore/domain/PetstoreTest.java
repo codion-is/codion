@@ -13,6 +13,10 @@ import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 public class PetstoreTest extends EntityTestUnit {
 
+  private static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
   @Test
   public void address() throws Exception {
     testEntity(T_ADDRESS);
@@ -55,6 +59,6 @@ public class PetstoreTest extends EntityTestUnit {
 
   @Override
   protected User getTestUser() throws CancelException {
-    return User.UNIT_TEST_USER;
+    return UNIT_TEST_USER;
   }
 }
