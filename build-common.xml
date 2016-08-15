@@ -26,12 +26,12 @@
     <fileset dir="${lib}/test"/>
   </path>
 
-  <available property="build.libraries.installed" file="${project.root}/${ant.lib}/ivy-2.4.0.jar"/>
+  <available property="build.libraries.installed" file="${project.root}/${ant.lib}/ivy-${ivy.version}.jar"/>
 
   <target name="retrieve_build_libraries" unless="build.libraries.installed">
     <mkdir dir="${project.root}/${ant.lib}"/>
-    <get src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.4.0/ivy-2.4.0.jar"
-         dest="${project.root}/${ant.lib}/ivy-2.4.0.jar" skipexisting="true"/>
+    <get src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/${ivy.version}/ivy-${ivy.version}.jar"
+         dest="${project.root}/${ant.lib}/ivy-${ivy.version}.jar" skipexisting="true"/>
     <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="lib.ant.util"/>
     <ivy:settings file="${project.root}/ivysettings.xml"/>
     <ivy:resolve file="${project.root}/build-ivy.xml"/>
