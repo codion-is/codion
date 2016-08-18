@@ -5,7 +5,6 @@ package org.jminor.swing.framework.model;
 
 import org.jminor.common.EventListener;
 import org.jminor.common.TextUtil;
-import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.PreferencesUtil;
@@ -565,7 +564,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   protected final void doRefresh() {
     try {
       LOG.debug("{} refreshing", this);
-      final List<Entity> queryResult = performQuery(conditionModel.getTableCondition());
+      final List<Entity> queryResult = performQuery();
       clear();
       addItems(queryResult, false);
       conditionModel.rememberCurrentConditionState();
@@ -578,18 +577,17 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /**
    * Queries for the data used to populate this EntityTableModel when it is refreshed,
    * using the order by clause returned by {@link #getOrderByClause()}
-   * @param condition a condition
    * @return entities selected from the database according the the query condition.
    * @see EntityTableConditionModel#getTableCondition()
    */
-  protected List<Entity> performQuery(final Condition<Property.ColumnProperty> condition) {
-    if (condition == null && queryConditionRequired) {
+  protected List<Entity> performQuery() {
+    if (!getConditionModel().isEnabled() && queryConditionRequired) {
       return new ArrayList<>();
     }
 
     try {
-      return connectionProvider.getConnection().selectMany(EntityConditions.selectCondition(entityID, condition,
-              getOrderByClause(), fetchCount));
+      return connectionProvider.getConnection().selectMany(EntityConditions.selectCondition(entityID,
+              getConditionModel().getTableCondition(), getOrderByClause(), fetchCount));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);

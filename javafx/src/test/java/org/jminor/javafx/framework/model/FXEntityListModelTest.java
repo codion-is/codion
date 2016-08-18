@@ -81,7 +81,7 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
       setEditModel(new FXEntityEditModel(TestDomain.T_DETAIL, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
     }
     @Override
-    protected List<Entity> queryContents() {
+    protected List<Entity> performQuery() {
       return Arrays.asList(entities);
     }
   }

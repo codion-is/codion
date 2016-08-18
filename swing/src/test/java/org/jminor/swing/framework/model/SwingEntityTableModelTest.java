@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.framework.model;
 
-import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
@@ -234,7 +233,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
       setEditModel(new SwingEntityEditModel(TestDomain.T_DETAIL, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
     }
     @Override
-    protected List<Entity> performQuery(final Condition condition) {
+    protected List<Entity> performQuery() {
       return Arrays.asList(entities);
     }
   }

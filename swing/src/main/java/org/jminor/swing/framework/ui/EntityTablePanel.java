@@ -12,7 +12,6 @@ import org.jminor.common.Serializer;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Util;
-import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
@@ -744,7 +743,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
                                                               final String entityID) {
     final SwingEntityTableModel tableModel = new SwingEntityTableModel(entityID, connectionProvider) {
       @Override
-      protected List<Entity> performQuery(final Condition<Property.ColumnProperty> condition) {
+      protected List<Entity> performQuery() {
         return new ArrayList<>(entities);
       }
     };

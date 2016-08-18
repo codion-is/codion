@@ -4,7 +4,6 @@
 package org.jminor.javafx.framework.model;
 
 import org.jminor.common.TextUtil;
-import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.PreferencesUtil;
@@ -425,15 +424,14 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  protected List<Entity> queryContents() {
-    final Condition<Property.ColumnProperty> condition = conditionModel.getTableCondition();
-    if (condition == null && queryConditionRequired) {
+  protected List<Entity> performQuery() {
+    if (!conditionModel.isEnabled() && queryConditionRequired) {
       return new ArrayList<>();
     }
 
     try {
       return getConnectionProvider().getConnection().selectMany(EntityConditions.selectCondition(getEntityID(),
-              condition, getOrderByClause(), fetchCount));
+              conditionModel.getTableCondition(), getOrderByClause(), fetchCount));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);

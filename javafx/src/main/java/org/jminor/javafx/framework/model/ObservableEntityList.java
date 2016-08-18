@@ -73,7 +73,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     if (selectionModel != null) {
       selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
     }
-    setAll(queryContents());
+    setAll(performQuery());
     refreshEvent.fire();
     if (selectedItems != null) {
       selectionModel.setSelectedItems(selectedItems);
@@ -232,7 +232,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     }
   }
 
-  protected List<Entity> queryContents() {
+  protected List<Entity> performQuery() {
     try {
       return connectionProvider.getConnection().selectMany(selectCondition);
     }
