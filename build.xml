@@ -1,4 +1,7 @@
-<project name="jminor-parent" default="install" xmlns:sonar="antlib:org.sonar.ant" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="jminor-parent" default="install"
+         xmlns:sonar="antlib:org.sonar.ant"
+         xmlns:ivy="antlib:org.apache.ivy.ant"
+         xmlns:jacoco="antlib:org.jacoco.ant">
 
   <property file="user.properties"/>
   <property file="build.properties"/>
@@ -330,9 +333,29 @@
     </java>
   </target>
 
-  <target name="sonar" depends="run_unit_tests" description="Runs a Sonar analysis on the project">
+  <target name="sonar" depends="run_unit_tests, merge_coverage_results" description="Runs a Sonar analysis on the project">
     <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml" classpathref="lib.ant.util"/>
     <sonar:sonar/>
+  </target>
+
+  <target name="merge_coverage_results"
+          description="Merges the Jacoco coverage results so that one modules tests count as coverage for another module">
+    <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" classpathref="lib.ant.util"/>
+    <!--javafx and swing into framework-->
+    <jacoco:merge destfile="framework/test/report/combined.exec">
+      <fileset dir="swing/test/report" includes="*.exec"/>
+      <fileset dir="javafx/test/report" includes="*.exec"/>
+      <fileset dir="framework/test/report" includes="*.exec"/>
+    </jacoco:merge>
+    <delete file="framework/test/report/jacoco.exec"/>
+    <move file="framework/test/report/combined.exec" tofile="framework/test/report/jacoco.exec"/>
+    <!--combined framework, swing and javafx into common-->
+    <jacoco:merge destfile="common/test/report/combined.exec">
+      <fileset dir="framework/test/report" includes="*.exec"/>
+      <fileset dir="common/test/report" includes="*.exec"/>
+    </jacoco:merge>
+    <delete file="common/test/report/jacoco.exec"/>
+    <move file="common/test/report/combined.exec" tofile="common/test/report/jacoco.exec"/>
   </target>
 
   <!--<target name="run_generator" depends="build"-->

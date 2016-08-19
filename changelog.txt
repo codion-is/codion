@@ -4351,3 +4351,4 @@
   SwingEntityTableModel.performQuery() condition parameter removed
   FXEntityListModel.queryContents() renamed to performQuery() for consistency
   Logback demo config moved to src/resources
+  Unit test coverage results merged between modules, swing unit tests f.ex. cover a substantial amount of the framework module
