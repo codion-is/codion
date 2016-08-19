@@ -4350,3 +4350,4 @@
   User.UNIT_TEST_USER field removed
   SwingEntityTableModel.performQuery() condition parameter removed
   FXEntityListModel.queryContents() renamed to performQuery() for consistency
+  Logback demo config moved to src/resources
