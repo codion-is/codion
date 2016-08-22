@@ -4,9 +4,10 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.EventListener;
+import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
 
 import java.util.Collection;
 
@@ -95,9 +96,9 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
 
   /**
    * Sets the condition to use when querying data
-   * @param entitySelectCondition the condition
+   * @param selectCondition the condition
    */
-  void setEntitySelectCondition(final EntitySelectCondition entitySelectCondition);
+  void setSelectCondition(final Condition<Property.ColumnProperty> selectCondition);
 
   /**
    * @param listener a listener to be notified each time this model is refreshed

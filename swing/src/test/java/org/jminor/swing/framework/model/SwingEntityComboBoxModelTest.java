@@ -8,7 +8,6 @@ import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
-import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -99,16 +98,6 @@ public final class SwingEntityComboBoxModelTest {
     assertTrue(kingFound);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void setEntitySelectConditionEntityIDMismatch() {
-    comboBoxModel.setEntitySelectCondition(EntityConditions.selectCondition(TestDomain.T_DEPARTMENT));
-  }
-
-  @Test
-  public void setEntitySelectConditionNullValueDefaultCondition() {
-    comboBoxModel.setEntitySelectCondition(null);
-  }
-
   @Test
   public void setSelectedEntityByKey() throws DatabaseException {
     comboBoxModel.refresh();
@@ -152,13 +141,16 @@ public final class SwingEntityComboBoxModelTest {
     comboBoxModel.clear();
     assertTrue(comboBoxModel.getSize() == 0);
 
-    comboBoxModel.setEntitySelectCondition(EntityConditions.selectCondition(TestDomain.T_EMP,
-            Conditions.<Property.ColumnProperty>stringCondition(" ename = 'CLARK'")));
+    comboBoxModel.setSelectCondition(Conditions.<Property.ColumnProperty>stringCondition(" ename = 'CLARK'"));
     comboBoxModel.setForeignKeyFilterEntities(TestDomain.EMP_DEPARTMENT_FK, null);
 
     comboBoxModel.forceRefresh();
     assertEquals(1, comboBoxModel.getSize());
     assertEquals(2, refreshed.get());
+    comboBoxModel.setSelectCondition(null);
+    comboBoxModel.forceRefresh();
+    assertEquals(16, comboBoxModel.getSize());
+    assertEquals(3, refreshed.get());
     comboBoxModel.removeRefreshListener(refreshListener);
   }
 

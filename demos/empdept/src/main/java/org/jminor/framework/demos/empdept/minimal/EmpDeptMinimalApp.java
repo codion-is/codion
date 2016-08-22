@@ -36,7 +36,7 @@ public class EmpDeptMinimalApp {
   private static final class Domain {
 
     private Domain() {
-      /**
+      /*
        * We start by defining the entity based on the SCOTT.DEPT table
        */
       Entities.define("scott.dept",
@@ -49,7 +49,7 @@ public class EmpDeptMinimalApp {
               .setKeyGenerator(Entities.incrementKeyGenerator("scott.dept", "deptno"))
               .setCaption("Departments")
               .setStringProvider(new Entities.StringProvider("dname"));
-      /**
+      /*
        * We then define the entity based on the SCOTT.EMP table,
        * notice the foreign key wrapper properties, referencing the
        * department as well as the manager
@@ -100,7 +100,7 @@ public class EmpDeptMinimalApp {
             final Property.ForeignKeyProperty foreignKeyProperty) {
       final EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
       if (foreignKeyProperty.is("mgr_fk")) {
-        comboBoxModel.setEntitySelectCondition(EntityConditions.selectCondition(
+        comboBoxModel.setSelectCondition(EntityConditions.propertyCondition(
                 "scott.emp", "job", Condition.Type.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
         comboBoxModel.refresh();
       }

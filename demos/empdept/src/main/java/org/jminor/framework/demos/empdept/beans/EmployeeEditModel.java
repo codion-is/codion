@@ -32,7 +32,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
       managerModel.setNullValue(EntityUtil.createToStringEntity(T_EMPLOYEE, getString(NONE)));
       managerModel.setFilterSelectedItem(false);
       //Only show the president and managers
-      managerModel.setEntitySelectCondition(EntityConditions.selectCondition(T_EMPLOYEE, EMPLOYEE_JOB,
+      managerModel.setSelectCondition(EntityConditions.propertyCondition(T_EMPLOYEE, EMPLOYEE_JOB,
               Condition.Type.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
 
       return managerModel;
