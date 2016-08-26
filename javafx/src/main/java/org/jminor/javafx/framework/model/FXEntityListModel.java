@@ -36,6 +36,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * A JavaFX implementation of {@link EntityTableModel}.
+ */
 public class FXEntityListModel extends ObservableEntityList implements EntityTableModel<FXEntityEditModel> {
 
   private static final Logger LOG = LoggerFactory.getLogger(FXEntityListModel.class);
@@ -53,14 +56,27 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private boolean removeEntitiesOnDelete = true;
   private int fetchCount = -1;
 
+  /**
+   * Instantiates a new {@link FXEntityListModel} based on the given entityID
+   * @param entityID the entityID
+   * @param connectionProvider the connection provider
+   */
   public FXEntityListModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     this(entityID, connectionProvider, new DefaultEntityTableConditionModel(entityID, connectionProvider,
             null, new FXConditionModelProvider()));
   }
 
+  /**
+   * Instantiates a new {@link FXEntityListModel} based on the given entityID
+   * @param entityID the entityID
+   * @param connectionProvider the connection provider
+   * @param the {@link EntityTableConditionModel} to use
+   * @throws IllegalArgumentException in case the condition model is based on a different entity
+   */
   public FXEntityListModel(final String entityID, final EntityConnectionProvider connectionProvider,
                            final EntityTableConditionModel conditionModel) {
     super(entityID, connectionProvider);
+    Objects.requireNonNull(conditionModel);
     if (!conditionModel.getEntityID().equals(entityID)) {
       throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + conditionModel.getEntityID()
               + ", tableModel: " + entityID);
@@ -95,6 +111,11 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     return editModel;
   }
 
+  /**
+   * Sets the columns for this {@link FXEntityListModel}.
+   * @param columns the columns
+   * @throws IllegalStateException if the columns have already been set
+   */
   public final void setColumns(final ObservableList<? extends TableColumn<Entity, ?>> columns) {
     if (this.columns != null) {
       throw new IllegalStateException("Columns have already been set");
@@ -576,6 +597,9 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     addRefreshListener(conditionModel::rememberCurrentConditionState);
   }
 
+  /**
+   * A {@link TableColumn} based on a {@link Property} instance
+   */
   public static class PropertyTableColumn extends TableColumn<Entity, Object> {
 
     private final Property property;
@@ -585,10 +609,14 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       this.property = property;
     }
 
+    /**
+     * @return the underlying property
+     */
     public final Property getProperty() {
       return property;
     }
 
+    /** {@inheritDoc} */
     @Override
     public final String toString() {
       return property.getPropertyID();

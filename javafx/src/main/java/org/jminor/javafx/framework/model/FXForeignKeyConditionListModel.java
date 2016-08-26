@@ -9,6 +9,9 @@ import org.jminor.framework.model.DefaultForeignKeyConditionModel;
 
 import java.util.Collection;
 
+/**
+ * A foreign key condition model based on an {@link ObservableEntityList}
+ */
 public final class FXForeignKeyConditionListModel extends DefaultForeignKeyConditionModel {
 
   private final ObservableEntityList listModel;
@@ -32,6 +35,9 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
     }
   }
 
+  /**
+   * @return the {@link ObservableEntityList} this model is based on
+   */
   public ObservableEntityList getListModel() {
     return listModel;
   }

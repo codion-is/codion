@@ -16,23 +16,49 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * A JavaFX implementation of {@link EntityEditModel}
+ */
 public class FXEntityEditModel extends DefaultEntityEditModel {
 
   private final Map<Property.ForeignKeyProperty, FXEntityListModel> foreignKeyListModels = new HashMap<>();
 
+  /**
+   * Instantiates a new {@link FXEntityEditModel} based on the entity identified by {@code entityID}.
+   * @param entityID the ID of the entity to base this {@link DefaultEntityEditModel} on
+   * @param connectionProvider the {@link EntityConnectionProvider} instance
+   */
   public FXEntityEditModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     super(entityID, connectionProvider);
   }
 
+  /**
+   * Instantiates a new {@link FXEntityEditModel} based on the entity identified by {@code entityID}.
+   * @param entityID the ID of the entity to base this {@link FXEntityEditModel} on
+   * @param connectionProvider the {@link EntityConnectionProvider} instance
+   * @param validator the validator to use
+   */
   public FXEntityEditModel(final String entityID, final EntityConnectionProvider connectionProvider,
                            final Entity.Validator validator) {
     super(entityID, connectionProvider, validator);
   }
 
+  /**
+   * Returns a {@link FXEntityListModel} for the given foreign key property. If one does not exist it is created.
+   * @param foreignKeyPropertyID the ID of the foreign key property
+   * @return a {@link FXEntityListModel} based on the entity referenced by the given foreign key property
+   * @see #createForeignKeyListModel(Property.ForeignKeyProperty)
+   */
   public final FXEntityListModel getForeignKeyListModel(final String foreignKeyPropertyID) {
     return getForeignKeyListModel(Entities.getForeignKeyProperty(getEntityID(), foreignKeyPropertyID));
   }
 
+  /**
+   * Returns a {@link FXEntityListModel} for the given foreign key property. If one does not exist it is created.
+   * @param foreignKeyProperty the foreign key property
+   * @return a {@link FXEntityListModel} based on the entity referenced by the given foreign key property
+   * @see #createForeignKeyListModel(Property.ForeignKeyProperty)
+   */
   public final FXEntityListModel getForeignKeyListModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Objects.requireNonNull(foreignKeyProperty);
     FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
@@ -44,6 +70,11 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
     return listModel;
   }
 
+  /**
+   * Creates a {@link FXEntityListModel} based on the given foreign key property
+   * @param foreignKeyProperty the foreign key property
+   * @return a new {@link FXEntityListModel} based on the given property
+   */
   public FXEntityListModel createForeignKeyListModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Objects.requireNonNull(foreignKeyProperty);
     return new FXEntityListModel(foreignKeyProperty.getReferencedEntityID(), getConnectionProvider());
@@ -54,11 +85,16 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
 //    }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void clear() {
     foreignKeyListModels.values().forEach(FXEntityListModel::clear);
   }
 
+  /**
+   * Adds the given foreign key values to respective {@link FXEntityListModel}s.
+   * @param values the values
+   */
   @Override
   public void addForeignKeyValues(final List<Entity> values) {
     final Map<String, Collection<Entity>> mapped = EntityUtil.mapToEntityID(values);
@@ -72,6 +108,10 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
     }
   }
 
+  /**
+   * Removes the given foreign key values from respective {@link FXEntityListModel}s.
+   * @param values the values
+   */
   @Override
   public void removeForeignKeyValues(final List<Entity> values) {
     final Map<String, Collection<Entity>> mapped = EntityUtil.mapToEntityID(values);
@@ -96,6 +136,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   protected void refreshDataModels() {
     foreignKeyListModels.values().forEach(FXEntityListModel::refresh);

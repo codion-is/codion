@@ -4353,3 +4353,5 @@
   Logback demo config moved to src/resources
   Unit test coverage results merged between modules, swing unit tests f.ex. cover a substantial amount of the framework module
   EntityComboBoxModel.setEntitySelectCondition() renamed to setSelectCondition(), parameter changed from EntitySelectCondition to Condition<Property.ColumnProperty>
+  org.jminor.javafx.framework.model javadoc improvements
+  ObservableEntityListTest added

@@ -77,23 +77,41 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     clearComboBoxModels();
   }
 
+  /**
+   * Refreshes all combobox models
+   */
   public final void refreshComboBoxModels() {
     for (final Refreshable comboBoxModel : comboBoxModels.values()) {
       comboBoxModel.refresh();
     }
   }
 
+  /**
+   * Clears all combobox models
+   */
   public final void clearComboBoxModels() {
     for (final Refreshable  comboBoxModel : comboBoxModels.values()) {
       comboBoxModel.clear();
     }
   }
 
+  /**
+   * Returns a {@link EntityComboBoxModel} for the given foreign key property. If one does not exist it is created.
+   * @param foreignKeyPropertyID the ID of the foreign key property
+   * @return a {@link EntityComboBoxModel} based on the entity referenced by the given foreign key property
+   * @see #createForeignKeyComboBoxModel(Property.ForeignKeyProperty)
+   */
   public final EntityComboBoxModel getForeignKeyComboBoxModel(final String foreignKeyPropertyID) {
     Objects.requireNonNull(foreignKeyPropertyID, "foreignKeyPropertyID");
     return getForeignKeyComboBoxModel(Entities.getForeignKeyProperty(getEntityID(), foreignKeyPropertyID));
   }
 
+  /**
+   * Returns a {@link EntityComboBoxModel} for the given foreign key property. If one does not exist it is created.
+   * @param foreignKeyProperty the foreign key property
+   * @return a {@link EntityComboBoxModel} based on the entity referenced by the given foreign key property
+   * @see #createForeignKeyComboBoxModel(Property.ForeignKeyProperty)
+   */
   public final EntityComboBoxModel getForeignKeyComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Objects.requireNonNull(foreignKeyProperty, "foreignKyProperty");
     EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) comboBoxModels.get(foreignKeyProperty.getPropertyID());
@@ -105,6 +123,11 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     return comboBoxModel;
   }
 
+  /**
+   * Returns a {@link PropertyComboBoxModel} for the given property,
+   * @param propertyID the property ID
+   * @return a {@link PropertyComboBoxModel} for the given property
+   */
   public final PropertyComboBoxModel getComboBoxModel(final String propertyID) {
     Objects.requireNonNull(propertyID, "propertyID");
     PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) comboBoxModels.get(propertyID);
@@ -117,6 +140,10 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     return comboBoxModel;
   }
 
+  /**
+   * @param propertyID the ID of the property
+   * @return true if this edit model contains a combobox model for the property
+   */
   public final boolean containsComboBoxModel(final String propertyID) {
     return comboBoxModels.containsKey(propertyID);
   }

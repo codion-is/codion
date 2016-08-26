@@ -7,6 +7,7 @@ import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.StateObserver;
+import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.FilteredModel;
@@ -14,9 +15,9 @@ import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.SelectionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
-import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
 
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -31,6 +32,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * An {@link ObservableList} based on a {@link Entity}
+ */
 public class ObservableEntityList extends SimpleListProperty<Entity>
         implements ObservableList<Entity>, FilteredModel<Entity>, Refreshable {
 
@@ -47,26 +51,37 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   private FXEntityListSelectionModel selectionModel;
 
-  private EntitySelectCondition selectCondition;
+  private Condition<Property.ColumnProperty> selectCondition;
   private FilterCondition<Entity> filterCondition;
 
+  /**
+   * Instantiates a new {@link ObservableEntityList}
+   * @param entityID the entity on which to base the list
+   * @param connectionProvider the connection provider
+   */
   public ObservableEntityList(final String entityID, final EntityConnectionProvider connectionProvider) {
     super(FXCollections.observableArrayList());
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
     this.filteredList = new FilteredList<>(this);
     this.sortedList = new SortedList<>(filteredList, Entities.getComparator(entityID));
-    this.selectCondition = EntityConditions.selectCondition(entityID, Entities.getOrderByClause(entityID));
   }
 
+  /**
+   * @return the ID of the underlying entity
+   */
   public final String getEntityID() {
     return entityID;
   }
 
+  /**
+   * @return the connection provider
+   */
   public final EntityConnectionProvider getConnectionProvider() {
     return connectionProvider;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void refresh() {
     List<Entity> selectedItems = null;
@@ -80,14 +95,26 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     }
   }
 
+  /**
+   * @return a filtered view of this list
+   * @see #setFilterCondition(FilterCondition)
+   */
   public final FilteredList<Entity> getFilteredList() {
     return filteredList;
   }
 
+  /**
+   * @return a sorted view of this list
+   */
   public final SortedList<Entity> getSortedList() {
     return sortedList;
   }
 
+  /**
+   * Sets the selection model to use
+   * @param selectionModel the selection model
+   * @throws IllegalStateException in case the selection model has already been set
+   */
   public final void setSelectionModel(final javafx.scene.control.SelectionModel<Entity> selectionModel) {
     if (this.selectionModel != null) {
       throw new IllegalStateException("Selection model has already been set");
@@ -99,25 +126,44 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     bindSelectionModelEvents();
   }
 
+  /**
+   * @param listener a listener notified each time this model is refreshed
+   */
   public final void addRefreshListener(final EventListener listener) {
     refreshEvent.addListener(listener);
   }
 
+  /**
+   * @return the selection model
+   * @throws IllegalStateException in case the selection model has not been set
+   */
   public final SelectionModel<Entity> getSelectionModel() {
     checkIfSelectionModelHasBeenSet();
     return selectionModel;
   }
 
+  /**
+   * @return a {@link StateObserver} active when the selection is empty
+   * @throws IllegalStateException in case the selection model has not been set
+   */
   public final StateObserver getSelectionEmptyObserver() {
     checkIfSelectionModelHasBeenSet();
     return selectionModel.getSelectionEmptyObserver();
   }
 
+  /**
+   * @return a {@link StateObserver} active when a single item is selected
+   * @throws IllegalStateException in case the selection model has not been set
+   */
   public final StateObserver getSingleSelectionObserver() {
     checkIfSelectionModelHasBeenSet();
     return selectionModel.getSingleSelectionObserver();
   }
 
+  /**
+   * @return a {@link StateObserver} active when multiple items are selected
+   * @throws IllegalStateException in case the selection model has not been set
+   */
   public final StateObserver getMultipleSelectionObserver() {
     checkIfSelectionModelHasBeenSet();
     return selectionModel.getMultipleSelectionObserver();
@@ -219,28 +265,31 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     filteringDoneEvent.removeListener(listener);
   }
 
-  public final void setEntitySelectCondition(final EntitySelectCondition entitySelectCondition) {
-    if (entitySelectCondition != null && !entitySelectCondition.getEntityID().equals(entityID)) {
-      throw new IllegalArgumentException("EntitySelectCondition entityID mismatch, " + entityID
-              + " expected, got " + entitySelectCondition.getEntityID());
-    }
-    if (entitySelectCondition == null) {
-      this.selectCondition = EntityConditions.selectCondition(entityID, Entities.getOrderByClause(entityID));
-    }
-    else {
-      this.selectCondition = entitySelectCondition;
-    }
+  /**
+   * Sets the condition to use when querying data
+   * @param selectCondition the select condition to use
+   * @see #performQuery()
+   */
+  public final void setSelectCondition(final Condition<Property.ColumnProperty> selectCondition) {
+    this.selectCondition = selectCondition;
   }
 
+  /**
+   * @return the entities to display in this list
+   */
   protected List<Entity> performQuery() {
     try {
-      return connectionProvider.getConnection().selectMany(selectCondition);
+      return connectionProvider.getConnection().selectMany(EntityConditions.selectCondition(entityID, selectCondition)
+              .setOrderByClause(Entities.getOrderByClause(entityID)));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
 
+  /**
+   * Binds model events to the selection model
+   */
   protected void bindSelectionModelEvents() {
     selectionModel.addSelectionChangedListener(selectionChangedEvent);
   }

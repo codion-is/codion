@@ -21,6 +21,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A JavaFX {@link SelectionModel} implementation
+ */
 public final class FXEntityListSelectionModel implements SelectionModel<Entity> {
 
   private final Event selectionChangedEvent = Events.event();

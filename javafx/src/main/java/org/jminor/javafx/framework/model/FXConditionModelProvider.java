@@ -6,6 +6,10 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.DefaultPropertyConditionModelProvider;
 import org.jminor.framework.model.PropertyConditionModel;
 
+/**
+ * Provides foreign key condition models based on {@link ObservableEntityList} for
+ * entities based on small datasets, see {@link Entities#isSmallDataset(String)}
+ */
 public class FXConditionModelProvider extends DefaultPropertyConditionModelProvider {
 
   /** {@inheritDoc} */
