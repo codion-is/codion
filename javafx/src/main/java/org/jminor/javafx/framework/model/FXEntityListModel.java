@@ -70,7 +70,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * Instantiates a new {@link FXEntityListModel} based on the given entityID
    * @param entityID the entityID
    * @param connectionProvider the connection provider
-   * @param the {@link EntityTableConditionModel} to use
+   * @param conditionModel the {@link EntityTableConditionModel} to use
    * @throws IllegalArgumentException in case the condition model is based on a different entity
    */
   public FXEntityListModel(final String entityID, final EntityConnectionProvider connectionProvider,

@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * A JavaFX implementation of {@link EntityEditModel}
+ * A JavaFX implementation of {@link org.jminor.framework.model.EntityEditModel}
  */
 public class FXEntityEditModel extends DefaultEntityEditModel {
 

@@ -33,17 +33,17 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
 
   /**
    * Instantiates a new {@link FXEntityModel} with a default {@link FXEntityEditModel} implementation
-   * @param tableModel the {@link FXEntityListModel} to use
+   * @param listModel the {@link FXEntityListModel} to use
    */
-  public FXEntityModel(final FXEntityListModel tableModel) {
-    this(Objects.requireNonNull(tableModel).getEditModel() == null ? new FXEntityEditModel(tableModel.getEntityID(),
-            tableModel.getConnectionProvider()) : tableModel.getEditModel(), tableModel);
+  public FXEntityModel(final FXEntityListModel listModel) {
+    this(Objects.requireNonNull(listModel).getEditModel() == null ? new FXEntityEditModel(listModel.getEntityID(),
+            listModel.getConnectionProvider()) : listModel.getEditModel(), listModel);
   }
 
   /**
    * Instantiates a new {@link FXEntityModel}
    * @param editModel the {@link FXEntityEditModel} to use
-   * @param tableModel the {@link FXEntityListModel} to use
+   * @param listModel the {@link FXEntityListModel} to use
    */
   public FXEntityModel(final FXEntityEditModel editModel, final FXEntityListModel listModel) {
     super(editModel, listModel);
