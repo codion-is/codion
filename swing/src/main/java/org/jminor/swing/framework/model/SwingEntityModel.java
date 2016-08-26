@@ -8,6 +8,9 @@ import org.jminor.framework.model.DefaultEntityModel;
 
 import java.util.Objects;
 
+/**
+ * A Swing implementation of {@link org.jminor.framework.model.EntityModel}
+ */
 public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
   /** Instantiates a new SwingEntityModel with default EntityEditModel and EntityTableModel implementations.

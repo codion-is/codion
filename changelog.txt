@@ -4355,3 +4355,4 @@
   EntityComboBoxModel.setEntitySelectCondition() renamed to setSelectCondition(), parameter changed from EntitySelectCondition to Condition<Property.ColumnProperty>
   org.jminor.javafx.framework.model javadoc improvements
   ObservableEntityListTest added
+  UiUtil.ProgressWorker refactored from anonymous class

@@ -30,51 +30,102 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Collection;
 
+/**
+ * A factory class for {@link Value} instances based on JavaFX models and properties
+ */
 public final class PropertyValues {
 
   private PropertyValues() {/**/}
 
+  /**
+   * @param selectionModel the selection model
+   * @return a {@link Value} based on the selected item in the given selection model
+   */
   public static Value selectedItemValue(final SingleSelectionModel<Item> selectionModel) {
     return new SelectedItemValue(selectionModel);
   }
 
+  /**
+   * @param booleanProperty the boolean property
+   * @return a {@link Value} based on the given boolean property
+   */
   public static Value<Boolean> booleanPropertyValue(final BooleanProperty booleanProperty) {
     return new BooleanPropertyValue(booleanProperty);
   }
 
+  /**
+   * @param selectionModel the selection model
+   * @param <V> the type of the actual value
+   * @return a {@link Value} based on the selected item in the given selection model
+   */
   public static <V> Value<V> selectedValue(final SingleSelectionModel<V> selectionModel) {
     return new SelectedValue<>(selectionModel);
   }
 
-  public static Value lookupValue(final EntityLookupModel model) {
-    if (model.getMultipleSelectionAllowedValue().get()) {
-      return new EntityLookupMultiValue(model);
+  /**
+   * @param lookupModel the lookup model
+   * @return a {@link Value} based on the entities selected in the given lookup model
+   */
+  public static Value lookupValue(final EntityLookupModel lookupModel) {
+    if (lookupModel.getMultipleSelectionAllowedValue().get()) {
+      return new EntityLookupMultiValue(lookupModel);
     }
     else {
-      return new EntityLookupSingleValue(model);
+      return new EntityLookupSingleValue(lookupModel);
     }
   }
 
+  /**
+   * @param property the string property
+   * @return a {@link StringValue} based on the given string property
+   */
   public static StringValue<String> stringPropertyValue(final StringProperty property) {
     return new DefaultStringValue<>(property, new DefaultStringConverter());
   }
 
+  /**
+   * @param property the string property
+   * @param numberFormat the format to use
+   * @return a Integer {@link StringValue} based on the given string property
+   */
   public static StringValue<Integer> integerPropertyValue(final StringProperty property, final NumberFormat numberFormat) {
     return new DefaultStringValue<>(property, new IntegerConverter(numberFormat));
   }
 
+  /**
+   * @param property the string property
+   * @param numberFormat the format to use
+   * @return a Long {@link StringValue} based on the given string property
+   */
   public static StringValue<Long> longPropertyValue(final StringProperty property, final NumberFormat numberFormat) {
     return new DefaultStringValue<>(property, new LongConverter(numberFormat));
   }
 
+  /**
+   * @param property the string property
+   * @param numberFormat the format to use
+   * @return a Double {@link StringValue} based on the given string property
+   */
   public static StringValue<Double> doublePropertyValue(final StringProperty property, final NumberFormat numberFormat) {
     return new DefaultStringValue<>(property, new DoubleConverter(numberFormat));
   }
 
+  /**
+   * @param property the string property
+   * @param dateFormat the format to use
+   * @return a {@link LocalDate} {@link StringValue} based on the given string property
+   */
   public static StringValue<LocalDate> datePropertyValue(final StringProperty property, final SimpleDateFormat dateFormat) {
     return new DefaultStringValue<>(property, new DateConverter(dateFormat));
   }
 
+  /**
+   * Parses the given value using the given format
+   * @param format the format
+   * @param value the value
+   * @return the parsed value
+   * @throws ParseException in case of an exception
+   */
   public static Object parseStrict(final Format format, final String value) throws ParseException {
     final ParsePosition pos = new ParsePosition(0);
     final Object result = format.parseObject(value, pos);

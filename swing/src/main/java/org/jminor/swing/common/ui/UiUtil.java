@@ -1537,36 +1537,7 @@ public final class UiUtil {
     UiUtil.centerWindow(dialog);
     SwingUtilities.invokeLater(() -> dialog.setVisible(true));
 
-    final SwingWorker worker = new SwingWorker() {
-      @Override
-      protected Object doInBackground() throws Exception {
-        task.run();
-        return null;
-      }
-
-      @Override
-      protected void done() {
-        dialog.dispose();
-        try {
-          get();
-          if (!Util.nullOrEmpty(successMessage)) {
-            JOptionPane.showMessageDialog(UiUtil.getParentWindow(dialogParent), successMessage, successTitle,
-                    JOptionPane.INFORMATION_MESSAGE);
-          }
-        }
-        catch (final InterruptedException interruped) {
-          Thread.currentThread().interrupt();
-          showExceptionDialog(UiUtil.getParentWindow(dialogParent), failTitle, interruped);
-        }
-        catch (final ExecutionException exception) {
-          final Throwable cause = exception.getCause();
-          if (!(cause instanceof CancelException)) {
-            showExceptionDialog(UiUtil.getParentWindow(dialogParent), failTitle, exception);
-          }
-        }
-      }
-    };
-    worker.execute();
+    new ProgressWorker(task, dialog, dialogParent, successMessage, successTitle, failTitle).execute();
   }
 
   /**
@@ -1880,6 +1851,54 @@ public final class UiUtil {
     }
   }
 
+  private static final class ProgressWorker extends SwingWorker {
+
+    private final Runnable task;
+    private final Dialog dialog;
+    private final JComponent dialogParent;
+    private final String successMessage;
+    private final String successTitle;
+    private final String failTitle;
+
+    private ProgressWorker(final Runnable task, final Dialog dialog, final JComponent dialogParent,
+                           final String successMessage, final String successTitle, final String failTitle) {
+      this.task = task;
+      this.dialog = dialog;
+      this.successMessage = successMessage;
+      this.dialogParent = dialogParent;
+      this.successTitle = successTitle;
+      this.failTitle = failTitle;
+    }
+
+    @Override
+    protected Object doInBackground() throws Exception {
+      task.run();
+      return null;
+    }
+
+    @Override
+    protected void done() {
+      dialog.dispose();
+      try {
+        get();
+        if (!Util.nullOrEmpty(successMessage)) {
+          JOptionPane.showMessageDialog(UiUtil.getParentWindow(dialogParent), successMessage, successTitle,
+                  JOptionPane.INFORMATION_MESSAGE);
+        }
+      }
+      catch (final InterruptedException interruped) {
+        Thread.currentThread().interrupt();
+        showExceptionDialog(UiUtil.getParentWindow(dialogParent), failTitle, interruped);
+      }
+      catch (final ExecutionException exception) {
+        final Throwable cause = exception.getCause();
+        if (!(cause instanceof CancelException)) {
+          showExceptionDialog(UiUtil.getParentWindow(dialogParent), failTitle, exception);
+        }
+      }
+    }
+  }
+
   /**
    * A JDialog for displaying information on exceptions.
    * Before you can use the ExceptionDialog email mechanism (Windows only) you need to call at least
@@ -2174,7 +2193,7 @@ public final class UiUtil {
       }
     }
 
-    private String truncateMessage(final String message) {
+    private static String truncateMessage(final String message) {
       if (message.length() > MAX_MESSAGE_LENGTH) {
         return message.substring(0, MAX_MESSAGE_LENGTH) + "...";
       }
@@ -2182,7 +2201,7 @@ public final class UiUtil {
       return message;
     }
 
-    private String translateExceptionClass(final Class<? extends Throwable> exceptionClass) {
+    private static String translateExceptionClass(final Class<? extends Throwable> exceptionClass) {
       if (exceptionClass.equals(DatabaseException.class)) {
         return Messages.get(Messages.DATABASE_EXCEPTION);
       }
