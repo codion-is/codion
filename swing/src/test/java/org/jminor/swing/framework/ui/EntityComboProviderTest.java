@@ -11,8 +11,7 @@ import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * User: Björn Darri
@@ -24,14 +23,17 @@ public class EntityComboProviderTest {
   @Test
   public void test() throws Exception {
     final EntityComboBoxModel model = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
-    final EntityComboProvider provider = new EntityComboProvider(model, null);
+    final Entity operations = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
+            TestDomain.DEPARTMENT_NAME, "OPERATIONS");
+    final EntityComboProvider provider = new EntityComboProvider(model, operations);
 
-    assertNull(provider.getValue());
+    assertNotNull(provider.getValue());
 
-    final Entity dept = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    final Entity sales = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
+            TestDomain.DEPARTMENT_NAME, "SALES");
 
-    model.setSelectedItem(dept);
-    assertEquals(dept, provider.getValue());
+    model.setSelectedItem(sales);
+    assertEquals(sales, provider.getValue());
     model.setSelectedItem(null);
     assertNull(provider.getValue());
   }

@@ -155,10 +155,20 @@ public final class SwingEntityModelTest
 
   @Test
   public void constructor() {
-    new SwingEntityModel(new SwingEntityEditModel(TestDomain.T_DEPARTMENT,
-            EntityConnectionProvidersTest.CONNECTION_PROVIDER));
-    new SwingEntityModel(new SwingEntityTableModel(TestDomain.T_DEPARTMENT,
-            EntityConnectionProvidersTest.CONNECTION_PROVIDER));
+    final SwingEntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_DEPARTMENT,
+            EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT,
+            EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+
+    new SwingEntityModel(editModel);
+    new SwingEntityModel(tableModel);
+
+    tableModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    assertNotEquals(editModel, new SwingEntityModel(tableModel).getEditModel());
+
+    tableModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    tableModel.setEditModel(editModel);
+    assertEquals(editModel, new SwingEntityModel(tableModel).getEditModel());
   }
 
   @Test(expected = NullPointerException.class)

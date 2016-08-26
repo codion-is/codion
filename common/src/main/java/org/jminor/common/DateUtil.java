@@ -70,7 +70,7 @@ public final class DateUtil {
    * @return a Time object with the same time of day as {@code date}, except the Calendar.YEAR,
    * Calendar.MONTH and Calendar.DATE fields are set to 1970, january and 1 respectively
    */
-  public static Time floorTime(final Date date) {
+  public static Time getTime(final Date date) {
     final Calendar cal = Calendar.getInstance();
     cal.setTime(date);
     cal.set(Calendar.YEAR, NINETEENSEVENTY);

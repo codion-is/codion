@@ -42,7 +42,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
    * @param reportPath the report path
    */
   public JasperReportsWrapper(final String reportPath) {
-    this(reportPath, Collections.emptyMap());
+    this(reportPath, new HashMap<>());
   }
 
   /**

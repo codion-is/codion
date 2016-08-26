@@ -11,6 +11,8 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 
 import org.junit.Test;
 
+import java.util.UUID;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -64,6 +66,8 @@ public class EntityConnectionProvidersTest {
       connectionProvider = EntityConnectionProviders.connectionProvider(UNIT_TEST_USER, "test");
       assertEquals("RemoteEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
       assertEquals(EntityConnection.Type.REMOTE, connectionProvider.getConnectionType());
+
+      connectionProvider = EntityConnectionProviders.connectionProvider(UNIT_TEST_USER, "test", UUID.randomUUID());
     }
     finally {
       if (connectionType != null) {

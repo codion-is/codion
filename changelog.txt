@@ -4356,3 +4356,5 @@
   org.jminor.javafx.framework.model javadoc improvements
   ObservableEntityListTest added
   UiUtil.ProgressWorker refactored from anonymous class
+  JasperReportsWrapper, bug fixed, could not run a parameterless report
+  JUnit test improvements

@@ -342,7 +342,7 @@ public final class AbstractFilteredTableModelTest {
   }
 
   @Test
-  public void testSorting() {
+  public void sorting() {
     final AtomicInteger actionsPerformed = new AtomicInteger();
     final EventListener listener = actionsPerformed::incrementAndGet;
     tableModel.addSortingListener(listener);
@@ -446,7 +446,7 @@ public final class AbstractFilteredTableModelTest {
   }
 
   @Test
-  public void testSelection() {
+  public void selection() {
     final AtomicInteger events = new AtomicInteger();
     final EventListener listener = events::incrementAndGet;
     final EventInfoListener infoListener = Events.infoListener(listener);
@@ -577,7 +577,7 @@ public final class AbstractFilteredTableModelTest {
   }
 
   @Test
-  public void testSelectionAndSorting() {
+  public void selectionAndSorting() {
     tableModel.refresh();
     assertTrue("Model should contain all entities", tableModelContainsAll(ITEMS, false, tableModel));
 
@@ -609,7 +609,7 @@ public final class AbstractFilteredTableModelTest {
   }
 
   @Test
-  public void testSelectionAndFiltering() {
+  public void selectionAndFiltering() {
     tableModel.refresh();
     tableModel.getSelectionModel().addSelectedIndexes(Collections.singletonList(3));
     assertEquals("current index should fit", 3, ((SwingTableSelectionModel) tableModel.getSelectionModel()).getMinSelectionIndex());
@@ -632,7 +632,23 @@ public final class AbstractFilteredTableModelTest {
   }
 
   @Test
-  public void testFiltering() throws Exception {
+  public void columns() {
+    assertEquals(1, tableModel.getColumnCount());
+  }
+
+  @Test
+  public void filterAndRemove() {
+    tableModel.refresh();
+    tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("a");
+    assertTrue(tableModel.contains("b", true));
+    tableModel.removeItem("b");
+    assertFalse(tableModel.contains("b", true));
+    tableModel.removeItem("a");
+    assertFalse(tableModel.contains("a", true));
+  }
+
+  @Test
+  public void filtering() throws Exception {
     final AtomicInteger done = new AtomicInteger();
     final EventListener listener = done::incrementAndGet;
     tableModel.addFilteringListener(listener);
@@ -642,11 +658,14 @@ public final class AbstractFilteredTableModelTest {
     assertNotNull(tableModel.getFilterCondition());
 
     //test filters
+    assertTrue(tableModel.contains("b", false));
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("a");
     assertEquals(2, done.get());
     assertTrue(tableModel.isVisible("a"));
     assertFalse(tableModel.isVisible("b"));
     assertTrue(tableModel.isFiltered("d"));
+    assertFalse(tableModel.contains("b", false));
+    assertTrue(tableModel.contains("b", true));
     assertTrue("filter should be enabled", tableModel.getColumnModel().getColumnFilterModel(0).isEnabled());
     assertEquals("4 entities should be filtered", 4, tableModel.getFilteredItemCount());
     assertFalse("Model should not contain all entities",

@@ -26,13 +26,15 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
   /**
    * Instantiates a new {@link FXEntityModel} with a default {@link FXEntityListModel} implementation
    * @param editModel the {@link FXEntityEditModel} to use
+   * @throws IllegalArgumentException in case editModel is null
    */
   public FXEntityModel(final FXEntityEditModel editModel) {
     this(Objects.requireNonNull(editModel), new FXEntityListModel(editModel.getEntityID(), editModel.getConnectionProvider()));
   }
 
   /**
-   * Instantiates a new {@link FXEntityModel} with a default {@link FXEntityEditModel} implementation
+   * Instantiates a new {@link FXEntityModel}, using the edit model provided by the list model,
+   * or a default {@link FXEntityEditModel} implementation if the list model does not contain an edit model.
    * @param listModel the {@link FXEntityListModel} to use
    */
   public FXEntityModel(final FXEntityListModel listModel) {
@@ -44,6 +46,7 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
    * Instantiates a new {@link FXEntityModel}
    * @param editModel the {@link FXEntityEditModel} to use
    * @param listModel the {@link FXEntityListModel} to use
+   * @throws IllegalArgumentException in case editModel is null
    */
   public FXEntityModel(final FXEntityEditModel editModel, final FXEntityListModel listModel) {
     super(editModel, listModel);

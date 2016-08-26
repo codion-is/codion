@@ -58,9 +58,9 @@ public class DateUtilTest {
   }
 
   @Test
-  public void floorTime() throws ParseException {
+  public void getTime() throws ParseException {
     final Date dateWithTime = EXACT_TIMESTAMP.parse("1975-10-03 10:45:42.123");
-    final Date date = DateUtil.floorTime(dateWithTime);
+    final Date date = DateUtil.getTime(dateWithTime);
     final Calendar calendar = Calendar.getInstance();
     calendar.setTime(date);
     assertEquals(1970, calendar.get(Calendar.YEAR));
@@ -81,6 +81,22 @@ public class DateUtilTest {
     assertEquals(0, calendar.get(Calendar.SECOND));
     assertEquals(0, calendar.get(Calendar.MINUTE));
     assertEquals(0, calendar.get(Calendar.HOUR_OF_DAY));
+  }
+
+  @Test
+  public void floorFields() throws ParseException {
+    final Date dateWithTime = EXACT_TIMESTAMP.parse("1975-10-03 10:45:42.123");
+    final Calendar calendar = Calendar.getInstance();
+    calendar.setTime(dateWithTime);
+    DateUtil.floorFields(calendar, Calendar.MINUTE, Calendar.MILLISECOND);
+    assertEquals(1975, calendar.get(Calendar.YEAR));
+    assertEquals(Calendar.OCTOBER, calendar.get(Calendar.MONTH));
+    assertEquals(3, calendar.get(Calendar.DAY_OF_MONTH));
+    assertEquals(10, calendar.get(Calendar.HOUR_OF_DAY));
+    assertEquals(0, calendar.get(Calendar.MINUTE));
+    assertEquals(42, calendar.get(Calendar.SECOND));
+    assertEquals(0, calendar.get(Calendar.MILLISECOND));
+    DateUtil.floorFields(calendar, null);
   }
 
   @Test

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class NextReportsWrapperTest {
 
@@ -40,7 +41,11 @@ public class NextReportsWrapperTest {
       file = result.getResult().writeResultToFile(tmpDir, filename);
       file.deleteOnExit();
       assertEquals(file.length(), result.getResult().getResult().length);
+      //throws IllegalArgumentException
+      result.getResult().writeResultToFile(tmpDir, filename);
+      fail("Should not overwrite file");
     }
+    catch (final IllegalArgumentException e) {/*expected*/}
     finally {
       if (file != null) {
         file.delete();

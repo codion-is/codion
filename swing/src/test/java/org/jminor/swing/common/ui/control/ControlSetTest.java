@@ -14,6 +14,9 @@ public class ControlSetTest {
     final Control one = new Control("one");
     final Control two = new Control("two");
     ControlSet set = new ControlSet("set", one, two);
+    set.add(null);
+    set.addAt(null, 0);
+    set.remove(null);
     assertTrue(set.hasName());
     assertFalse(set.hasIcon());
     assertEquals("set", set.getName());

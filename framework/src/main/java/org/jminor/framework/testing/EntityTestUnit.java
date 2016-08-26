@@ -387,7 +387,7 @@ public abstract class EntityTestUnit {
       case Types.TIMESTAMP:
         return DateUtil.floorTimestamp(new Timestamp(getRandomDate().getTime()));
       case Types.TIME:
-        return DateUtil.floorTime(getRandomDate());
+        return DateUtil.getTime(getRandomDate());
       case Types.DOUBLE:
         return getRandomDouble(property);
       case Types.INTEGER:
