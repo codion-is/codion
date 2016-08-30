@@ -94,7 +94,7 @@ public final class ServerUtil {
    * @param serverHostName the name of the host
    * @param serverNamePrefix the server name prefix, an empty string results in all servers being returned
    * @param registryPort the port on which to lookup the registry
-   * @param serverPort the required server port, -1 for any port
+   * @param requestedServerPort the required server port, -1 for any port
    * @param <T> the Remote object type served by the server
    * @param <A> the server admin type supplied by the server
    * @return the servers having a name with the given prefix
@@ -103,46 +103,17 @@ public final class ServerUtil {
    */
   public static <T extends Remote, A extends Remote> Server<T, A> getServer(final String serverHostName,
                                                                             final String serverNamePrefix,
-                                                                            final int registryPort, final int serverPort)
+                                                                            final int registryPort,
+                                                                            final int requestedServerPort)
           throws RemoteException, NotBoundException {
-    final List<Server<T, A>> servers = getServers(serverHostName, serverNamePrefix, registryPort, serverPort);
+    final List<Server<T, A>> servers = getServers(serverHostName, registryPort, serverNamePrefix, requestedServerPort);
     if (!servers.isEmpty()) {
       return servers.get(0);
     }
     else {
       throw new NotBoundException("'" + serverNamePrefix + "' is not available, see LOG for details. Host: "
-              + serverHostName + (serverPort != -1 ? ", port: " + serverPort : "") + ", registryPort: " + registryPort);
+              + serverHostName + (requestedServerPort != -1 ? ", port: " + requestedServerPort : "") + ", registryPort: " + registryPort);
     }
-  }
-
-  private static <T extends Remote, A extends Remote> List<Server<T, A>> getServers(final String hostNames,
-                                                                                    final String serverNamePrefix,
-                                                                                    final int registryPort, final int serverPort)
-          throws RemoteException {
-    final List<Server<T, A>> servers = new ArrayList<>();
-    for (final String serverHostName : hostNames.split(",")) {
-      LOG.info("Searching for servers,  host: \"{}\", server name prefix: \"{}\", server port: {}, registry port {}",
-              new Object[] {serverHostName, serverNamePrefix, serverPort, registryPort});
-      final Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);
-      for (final String name : registry.list()) {
-        if (name.startsWith(serverNamePrefix)) {
-          LOG.info("Found server \"{}\"", name);
-          try {
-            final Server<T, A> server = checkServer((Server<T, A>) registry.lookup(name), serverPort);
-            if (server != null) {
-              LOG.info("Adding server \"{}\"", name);
-              servers.add(server);
-            }
-          }
-          catch (final Exception e) {
-            LOG.error("Server \"" + name + "\" is unreachable", e);
-          }
-        }
-      }
-      Collections.sort(servers, new ServerComparator());
-    }
-
-    return servers;
   }
 
   /**
@@ -174,12 +145,59 @@ public final class ServerUtil {
     }
   }
 
+  private static <T extends Remote, A extends Remote> List<Server<T, A>> getServers(final String hostNames,
+                                                                                    final int registryPort,
+                                                                                    final String serverNamePrefix,
+                                                                                    final int requestedServerPort)
+          throws RemoteException {
+    final List<Server<T, A>> servers = new ArrayList<>();
+    for (final String serverHostName : hostNames.split(",")) {
+      servers.addAll(getServersOnHost(serverHostName, registryPort, serverNamePrefix, requestedServerPort));
+    }
+    Collections.sort(servers, new ServerComparator());
+
+    return servers;
+  }
+
+  private static <T extends Remote, A extends Remote> List<Server<T, A>> getServersOnHost(final String serverHostName,
+                                                                                          final int registryPort,
+                                                                                          final String serverNamePrefix,
+                                                                                          final int requestedServerPort)
+          throws RemoteException {
+    LOG.info("Searching for servers,  host: \"{}\", server name prefix: \"{}\", requested server port: {}, registry port {}",
+            new Object[] {serverHostName, serverNamePrefix, requestedServerPort, registryPort});
+    final List<Server<T, A>> servers = new ArrayList<>();
+    final Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);
+    for (final String serverName : registry.list()) {
+      if (serverName.startsWith(serverNamePrefix)) {
+        checkAndAddServer(serverName, requestedServerPort, registry, servers);
+      }
+    }
+
+    return servers;
+  }
+
+  private static <T extends Remote, A extends Remote> void checkAndAddServer(final String serverName, final int requestedServerPort,
+                                                                             final Registry registry, final List<Server<T, A>> servers) {
+    LOG.info("Found server \"{}\"", serverName);
+    try {
+      final Server<T, A> server = checkServer((Server<T, A>) registry.lookup(serverName), requestedServerPort);
+      if (server != null) {
+        LOG.info("Adding server \"{}\"", serverName);
+        servers.add(server);
+      }
+    }
+    catch (final Exception e) {
+      LOG.error("Server \"" + serverName + "\" is unreachable", e);
+    }
+  }
+
   private static <T extends Remote, A extends Remote> Server<T, A> checkServer(final Server<T, A> server,
-                                                                               final int requestedPort) throws RemoteException {
+                                                                               final int requestedServerPort) throws RemoteException {
     final Server.ServerInfo serverInfo = server.getServerInfo();
-    if (requestedPort != -1 && serverInfo.getServerPort() != requestedPort) {
+    if (requestedServerPort != -1 && serverInfo.getServerPort() != requestedServerPort) {
       LOG.error("Server \"{}\" is serving on port {}, requested port was {}",
-              new Object[] {serverInfo.getServerName(), serverInfo.getServerPort(), requestedPort});
+              new Object[] {serverInfo.getServerName(), serverInfo.getServerPort(), requestedServerPort});
       return null;
     }
     if (server.connectionsAvailable()) {

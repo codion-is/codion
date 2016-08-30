@@ -10,6 +10,8 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
@@ -20,9 +22,14 @@ public final class QueryLoadTestModelTest {
           System.getProperty("jminor.unittest.password", "tiger"));
 
   private static final QueryLoadTestModel.QueryScenario SELECT_EMPLOYEE =
-          new QueryLoadTestModel.QueryScenario("selectEmployees", "select * from scott.emp");
+          new QueryLoadTestModel.QueryScenario("selectEmployees", "select * from scott.emp where ename not like ?") {
+            @Override
+            protected List<Object> getParameters() {
+              return Collections.singletonList("ADAMS");
+            }
+          };
   private static final QueryLoadTestModel.QueryScenario SELECT_DEPARTMENTS =
-          new QueryLoadTestModel.QueryScenario("selectDepartments", "select * from scott.dept");
+          new QueryLoadTestModel.QueryScenario("selectDepartments", "select * from scott.dept", true);
   @Test
   public void test() throws DatabaseException {
     final QueryLoadTestModel loadTest = new QueryLoadTestModel(DatabasesTest.createTestDatabaseInstance(), UNIT_TEST_USER,
