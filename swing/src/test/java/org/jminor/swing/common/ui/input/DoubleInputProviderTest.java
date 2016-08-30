@@ -15,8 +15,10 @@ public class DoubleInputProviderTest {
   @Test
   public void constructor() {
     final Double value = 10.4;
-    final DoubleInputProvider provider = new DoubleInputProvider(value);
+    DoubleInputProvider provider = new DoubleInputProvider(value);
     assertEquals(value, provider.getValue());
+    provider = new DoubleInputProvider(null);
+    assertNull(provider.getValue());
   }
 
   @Test

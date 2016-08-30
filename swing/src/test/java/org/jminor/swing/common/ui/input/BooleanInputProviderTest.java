@@ -12,11 +12,13 @@ public class BooleanInputProviderTest {
 
   @Test
   public void test() {
-    final BooleanInputProvider provider = new BooleanInputProvider(false);
+    BooleanInputProvider provider = new BooleanInputProvider(false);
     assertEquals(false, provider.getValue());
     provider.getInputComponent().getModel().setSelectedItem(true);
     assertEquals(true, provider.getValue());
     provider.getInputComponent().getModel().setSelectedItem(null);
+    assertNull(provider.getValue());
+    provider = new BooleanInputProvider(null);
     assertNull(provider.getValue());
   }
 }

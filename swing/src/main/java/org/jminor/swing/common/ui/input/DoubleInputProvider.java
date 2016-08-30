@@ -27,9 +27,7 @@ public final class DoubleInputProvider extends AbstractInputProvider<Double, Dou
   public DoubleInputProvider(final Double initialValue, final double minValue, final double maxValue) {
     super(new DoubleField());
     getInputComponent().setRange(minValue, maxValue);
-    if (initialValue != null) {
-      getInputComponent().setDouble(initialValue);
-    }
+    getInputComponent().setDouble(initialValue);
   }
 
   /** {@inheritDoc} */

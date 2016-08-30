@@ -19,5 +19,7 @@ public class DatabaseExceptionTest {
     dbException = new DatabaseException(new SQLException(), "message", "statement");
     assertEquals("message", dbException.getMessage());
     assertEquals("statement", dbException.getStatement());
+    dbException = new DatabaseException(null, "test", "stmt");
+    assertEquals(-1, dbException.getErrorCode());
   }
 }
