@@ -21,6 +21,11 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultDatabaseConnection.class);
 
+  /**
+   * The default timoeout in seconds when checking if this connection is valid
+   */
+  static final int DEFAULT_VALIDITY_CHECK_TIMEOUT = 2;
+
   private final User user;
   private final Database database;
   private final int validityCheckTimeout;
@@ -34,20 +39,21 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   private MethodLogger methodLogger;
 
   /**
-   * Constructs a new DefaultDatabaseConnection instance, initialized and ready for usage
+   * Constructs a new DefaultDatabaseConnection instance, initialized and ready for usage,
+   * using {@link DefaultDatabaseConnection#DEFAULT_VALIDITY_CHECK_TIMEOUT} as the validity check timeout.
    * @param database the database
    * @param user the user to base this database connection on
    * @throws DatabaseException in case there is a problem connecting to the database
    */
   public DefaultDatabaseConnection(final Database database, final User user) throws DatabaseException {
-    this(database, user, 0);
+    this(database, user, DEFAULT_VALIDITY_CHECK_TIMEOUT);
   }
 
   /**
    * Constructs a new DefaultDatabaseConnection instance, initialized and ready for usage
    * @param database the database
    * @param user the user to base this database connection on
-   * @param validityCheckTimeout the number of seconds specified when checking if this connection is valid
+   * @param validityCheckTimeout the timoeout in seconds when checking if this connection is valid
    * @throws DatabaseException in case there is a problem connecting to the database
    */
   public DefaultDatabaseConnection(final Database database, final User user,
