@@ -30,7 +30,7 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
   }
 
   @Override
-  protected void initializeEntitieViews() {
+  protected void initializeEntityViews() {
     final EntityModel departmentModel = getModel().getEntityModel(EmpDept.T_DEPARTMENT);
     final EntityView departmentView = new EntityView(departmentModel,
             new DepartmentEditView((FXEntityEditModel) departmentModel.getEditModel()),

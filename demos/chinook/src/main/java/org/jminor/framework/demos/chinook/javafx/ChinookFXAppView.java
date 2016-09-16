@@ -18,7 +18,7 @@ public class ChinookFXAppView extends EntityApplicationView<ChinookFXAppModel> {
   }
 
   @Override
-  protected void initializeEntitieViews() {
+  protected void initializeEntityViews() {
     final ChinookFXAppModel model = getModel();
 
     final FXEntityModel artistModel = model.getEntityModel(Chinook.T_ARTIST);

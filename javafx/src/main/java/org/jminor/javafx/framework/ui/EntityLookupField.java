@@ -22,6 +22,9 @@ import javafx.scene.paint.Color;
 
 import java.util.List;
 
+/**
+ * A {@link TextField} allowing entity lookup based on the text entered
+ */
 public final class EntityLookupField extends TextField {
 
   private final EntityLookupModel model;
@@ -31,6 +34,10 @@ public final class EntityLookupField extends TextField {
   private Color validBackgroundColor;
   private Color invalidBackgroundColor;
 
+  /**
+   * Instantiates a new {@link EntityLookupField} based on the given model
+   * @param model the {@link EntityLookupModel} model to base this lookup field on
+   */
   public EntityLookupField(final EntityLookupModel model) {
     this.model = model;
     linkToModel();
@@ -42,14 +49,23 @@ public final class EntityLookupField extends TextField {
     updateColors();
   }
 
+  /**
+   * @return the lookup model
+   */
   public EntityLookupModel getModel() {
     return model;
   }
 
+  /**
+   * @param validBackgroundColor the background color to display when the text fits the selected value
+   */
   public void setValidBackgroundColor(final Color validBackgroundColor) {
     this.validBackgroundColor = validBackgroundColor;
   }
 
+  /**
+   * @param invalidBackgroundColor the background color to display when the text does not fit the selected value
+   */
   public void setInvalidBackgroundColor(final Color invalidBackgroundColor) {
     this.invalidBackgroundColor = invalidBackgroundColor;
   }

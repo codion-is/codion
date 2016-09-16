@@ -27,6 +27,9 @@ import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * A View for configuring a query condition for a single property
+ */
 public final class PropertyConditionView extends BorderPane {
 
   private final ColumnConditionModel<? extends Property> model;
@@ -39,6 +42,10 @@ public final class PropertyConditionView extends BorderPane {
   private final Control lowerBoundControl;
   private final State advancedCondition = States.state();
 
+  /**
+   * Instantiates a new {@link PropertyConditionView}
+   * @param model the {@link ColumnConditionModel} to base this view on
+   */
   public PropertyConditionView(final ColumnConditionModel<? extends Property> model) {
     this.model = model;
     this.header = new Label(model.getColumnIdentifier().getCaption());
@@ -53,6 +60,10 @@ public final class PropertyConditionView extends BorderPane {
     bindEvents();
   }
 
+  /**
+   * Toggles the advanced view
+   * @param advanced the toggle values
+   */
   public void setAdvanced(final boolean advanced) {
     advancedCondition.setActive(advanced);
     initializeUI();

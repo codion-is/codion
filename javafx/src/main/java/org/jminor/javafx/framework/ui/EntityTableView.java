@@ -41,12 +41,19 @@ import javafx.util.Callback;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * A {@link TableView} extension based on entities
+ */
 public class EntityTableView extends TableView<Entity> {
 
   private final FXEntityListModel listModel;
   private final TextField filterText = new TextField();
   private final BorderPane toolPane = new BorderPane();
 
+  /**
+   * Instantiates a new {@link EntityTableView}
+   * @param listModel the list mode to base the table view on
+   */
   public EntityTableView(final FXEntityListModel listModel) {
     super(listModel.getSortedList());
     this.listModel = listModel;
@@ -60,14 +67,25 @@ public class EntityTableView extends TableView<Entity> {
     bindEvents();
   }
 
+  /**
+   * Toggles the visibility of the property condition views
+   * @param visible the toggle values
+   */
   public final void setConditionPaneVisible(final boolean visible) {
     getColumns().forEach(column -> ((EntityTableColumn) column).setConditionViewVisible(visible));
   }
 
+  /**
+   * Toggles the advanced property condition view
+   * @param advanced the toggle values
+   */
   public final void setConditionPaneAdvanced(final boolean advanced) {
     getColumns().forEach(column -> ((EntityTableColumn) column).setConditionViewAdvanced(advanced));
   }
 
+  /**
+   * Deletes the selected entities after displaying a confirm dialog
+   */
   public final void deleteSelected() {
     if (FXUiUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED))) {
       try {
@@ -79,18 +97,32 @@ public class EntityTableView extends TableView<Entity> {
     }
   }
 
+  /**
+   * @return the underlying {@link FXEntityListModel}
+   */
   public final FXEntityListModel getListModel() {
     return listModel;
   }
 
+  /**
+   * @return the {@link TextField} used to filter this table view
+   */
   public final TextField getFilterTextField() {
     return filterText;
   }
 
+  /**
+   * @return the tool pane associated with this table view
+   */
   public final Pane getToolPane() {
     return toolPane;
   }
 
+  /**
+   * Specifies whether or not a property should be included in the update selected menu
+   * @param property the property
+   * @return true if the user should be able to update the property value for multiple entities at a time
+   */
   protected boolean includeUpdateSelectedProperty(final Property property) {
     return true;
   }

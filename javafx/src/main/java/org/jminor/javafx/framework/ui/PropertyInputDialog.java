@@ -13,10 +13,18 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.TextField;
 
+/**
+ * A {@link Dialog} implementation for receiving property values as input from user
+ */
 public final class PropertyInputDialog extends Dialog<PropertyInputDialog.InputResult> {
 
   private final Control control;
 
+  /**
+   * @param property the property
+   * @param defaultValue the defaul value to present to the user
+   * @param connectionProvider the connection provider
+   */
   public PropertyInputDialog(final Property property, final Object defaultValue,
                              final EntityConnectionProvider connectionProvider) {
     setTitle(property.getCaption());
@@ -30,6 +38,9 @@ public final class PropertyInputDialog extends Dialog<PropertyInputDialog.InputR
             dialogButton.getButtonData() == ButtonBar.ButtonData.OK_DONE, value.get()));
   }
 
+  /**
+   * @return the input control used by this input dialog
+   */
   public Control getControl() {
     return control;
   }

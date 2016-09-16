@@ -16,12 +16,29 @@ import javafx.scene.layout.BorderPane;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A Pane joining a {@link EntityEditView} and a {@link EntityTableView}.
+ */
 public class EntityView extends BorderPane implements ViewTreeNode {
 
   private final SplitPane splitPane = new SplitPane();
 
+  /**
+   * The possible panel states
+   */
   public enum PanelState {
-    DIALOG, EMBEDDED, HIDDEN
+    /**
+     * The panel is displayed in a dialog
+     */
+    DIALOG,
+    /**
+     * The panel is embedded in its parent panel
+     */
+    EMBEDDED,
+    /**
+     * The panel is hidden
+     */
+    HIDDEN
   }
 
   private final String caption;
@@ -37,22 +54,49 @@ public class EntityView extends BorderPane implements ViewTreeNode {
   private boolean initialized = false;
   private PanelState detailPanelState = PanelState.EMBEDDED;
 
+  /**
+   * Instantiates a new {@link EntityView} with no {@link EntityEditView} and a default {@link EntityTableView}
+   * @param model the {@link EntityModel} to base this view on
+   */
   public EntityView(final EntityModel model) {
     this(model, (EntityEditView) null);
   }
 
+  /**
+   * Instantiates a new {@link EntityView} with the given {@link EntityEditView} and a default {@link EntityTableView}
+   * @param model the {@link EntityModel} to base this view on
+   * @param editView the editView
+   */
   public EntityView(final EntityModel model, final EntityEditView editView) {
     this(model, editView, new EntityTableView((FXEntityListModel) model.getTableModel()));
   }
 
+  /**
+   * Instantiates a new {@link EntityView} with no {@link EntityEditView} and the given {@link EntityTableView}
+   * @param model the {@link EntityModel} to base this view on
+   * @param tableView the tableView
+   */
   public EntityView(final EntityModel model, final EntityTableView tableView) {
     this(model, null, tableView);
   }
 
+  /**
+   * Instantiates a new {@link EntityView} with the given {@link EntityEditView} and {@link EntityTableView}
+   * @param model the {@link EntityModel} to base this view on
+   * @param editView the editView
+   * @param tableView the tableView
+   */
   public EntityView(final EntityModel model, final EntityEditView editView, final EntityTableView tableView) {
     this(Entities.getCaption(model.getEntityID()), model, editView, tableView);
   }
 
+  /**
+   * Instantiates a new {@link EntityView} with the given {@link EntityEditView} and {@link EntityTableView}
+   * @param caption the view caption
+   * @param model the {@link EntityModel} to base this view on
+   * @param editView the editView
+   * @param tableView the tableView
+   */
   public EntityView(final String caption, final EntityModel model, final EntityEditView editView, final EntityTableView tableView) {
     this.caption = caption;
     this.model = model;
@@ -62,23 +106,35 @@ public class EntityView extends BorderPane implements ViewTreeNode {
     bindEvents();
   }
 
+  /**
+   * @return the underlying {@link EntityModel}
+   */
   public final EntityModel getModel() {
     return model;
   }
 
+  /**
+   * @return the view caption
+   */
   public final String getCaption() {
     return caption;
   }
 
+  /**
+   * Sets the parent view of this {@link EntityView}
+   * @param parentView the parent view
+   */
   public final void setParentView(final ViewTreeNode parentView) {
     this.parentView = parentView;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final ViewTreeNode getParentView() {
     return parentView;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final ViewTreeNode getPreviousSiblingView() {
     if (getParentView() == null) {
@@ -99,6 +155,7 @@ public class EntityView extends BorderPane implements ViewTreeNode {
     return null;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final ViewTreeNode getNextSiblingView() {
     if (getParentView() == null) {//no parent, no siblings
@@ -118,11 +175,16 @@ public class EntityView extends BorderPane implements ViewTreeNode {
     return null;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final List<? extends ViewTreeNode> getChildViews() {
     return detailViews;
   }
 
+  /**
+   * Initializes this {@link EntityView}
+   * @return the initialized {@link EntityView}
+   */
   public final EntityView initializePanel() {
     if (!initialized) {
       initializeUI();
@@ -132,14 +194,24 @@ public class EntityView extends BorderPane implements ViewTreeNode {
     return this;
   }
 
+  /**
+   * @return the {@link EntityEditView} or null if none exists
+   */
   public EntityEditView getEditView() {
     return editView;
   }
 
+  /**
+   * @return the {@link EntityTableView}
+   */
   public EntityTableView getTableView() {
     return tableView;
   }
 
+  /**
+   * Adds a detail {@link EntityView} to this {@link EntityView}
+   * @param detailView the detail view to add
+   */
   public final void addDetailView(final EntityView detailView) {
     checkIfInitalized();
     detailViews.add(detailView);
@@ -189,8 +261,10 @@ public class EntityView extends BorderPane implements ViewTreeNode {
           }
           break;
         case F5:
-          tableView.getListModel().refresh();
-          event.consume();
+          if (tableView != null) {
+            tableView.getListModel().refresh();
+            event.consume();
+          }
           break;
         case DOWN:
         case UP:

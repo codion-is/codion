@@ -24,7 +24,7 @@ public final class EntityApplicationViewTest {
   public void constructor() {
     final EntityApplicationView<FXEntityApplicationModel> applicationView = new EntityApplicationView<FXEntityApplicationModel>("EntityApplicationViewTest") {
       @Override
-      protected void initializeEntitieViews() {
+      protected void initializeEntityViews() {
         final FXEntityEditModel editModel = new FXEntityEditModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
         final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
         final FXEntityModel model = new FXEntityModel(editModel, listModel);
@@ -43,6 +43,6 @@ public final class EntityApplicationViewTest {
       }
     };
     applicationView.initializeApplicationModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER);
-    applicationView.initializeEntitieViews();
+    applicationView.initializeEntityViews();
   }
 }

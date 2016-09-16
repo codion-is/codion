@@ -77,6 +77,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * A factory class for UI related things.
+ */
 public final class FXUiUtil {
 
   private FXUiUtil() {}

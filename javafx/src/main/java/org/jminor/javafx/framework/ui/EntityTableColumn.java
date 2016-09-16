@@ -12,10 +12,20 @@ import org.jminor.javafx.framework.model.FXEntityListModel;
 import javafx.beans.value.ObservableValue;
 import javafx.util.Callback;
 
+/**
+ * A table column based on properties via {@link FXEntityListModel.PropertyTableColumn}
+ */
 public final class EntityTableColumn extends FXEntityListModel.PropertyTableColumn {
 
   private final PropertyConditionView conditionView;
 
+  /**
+   * Instantiates a new table column for the given list model based on the given property
+   * @param listModel the list model this column is for
+   * @param property the property
+   * @param connectionProvider the connection provider
+   * @param cellValueFactory the cell value factory for this column
+   */
   public EntityTableColumn(final FXEntityListModel listModel, final Property property,
                            final EntityConnectionProvider connectionProvider,
                            final Callback<CellDataFeatures<Entity, Object>, ObservableValue<Object>> cellValueFactory) {
@@ -28,12 +38,20 @@ public final class EntityTableColumn extends FXEntityListModel.PropertyTableColu
     }
   }
 
+  /**
+   * Toggles the advanced property condition view
+   * @param advanced the toggle value
+   */
   public void setConditionViewAdvanced(final boolean advanced) {
     if (conditionView != null) {
       conditionView.setAdvanced(advanced);
     }
   }
 
+  /**
+   * Toggles the visibility of the property condition view
+   * @param visible the toggle values
+   */
   public void setConditionViewVisible(final boolean visible) {
     if (conditionView != null) {
       setGraphic(visible ? conditionView : null);
