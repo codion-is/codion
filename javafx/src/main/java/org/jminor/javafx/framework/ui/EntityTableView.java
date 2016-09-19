@@ -40,6 +40,7 @@ import javafx.util.Callback;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A {@link TableView} extension based on entities
@@ -260,10 +261,10 @@ public class EntityTableView extends TableView<Entity> {
     final PropertyInputDialog inputDialog = new PropertyInputDialog(property, defaultValue, listModel.getConnectionProvider());
 
     Platform.runLater(inputDialog.getControl()::requestFocus);
-    final PropertyInputDialog.InputResult result = inputDialog.showAndWait().get();
+    final Optional<PropertyInputDialog.InputResult> inputResult = inputDialog.showAndWait();
     try {
-      if (result.isInputAccepted()) {
-        EntityUtil.put(property.getPropertyID(), result.getValue(), selectedEntities);
+      if (inputResult.isPresent() && inputResult.get().isInputAccepted()) {
+        EntityUtil.put(property.getPropertyID(), inputResult.get().getValue(), selectedEntities);
         listModel.update(selectedEntities);
       }
     }

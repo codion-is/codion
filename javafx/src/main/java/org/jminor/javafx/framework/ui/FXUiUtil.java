@@ -84,14 +84,36 @@ public final class FXUiUtil {
 
   private FXUiUtil() {}
 
+  /**
+   * Displays a dialog for selecting one of the given values
+   * @param values the values from which to choose
+   * @param <T> the type of values
+   * @return the selected value
+   * @throws CancelException in case the user cancels the operation
+   */
   public static <T> T selectValue(final List<T> values) {
     return selectValues(values, true).get(0);
   }
 
+  /**
+   * Displays a dialog for selecting one or more of the given values
+   * @param values the values from which to choose
+   * @param <T> the type of values
+   * @return the selected values
+   * @throws CancelException in case the user cancels the operation
+   */
   public static <T> List<T> selectValues(final List<T> values) {
     return selectValues(values, false);
   }
 
+  /**
+   * Displays a dialog for selecting one or more of the given values
+   * @param values the values from which to choose
+   * @param <T> the type of values
+   * @param single if true then only a single value can be selected
+   * @return the selected values
+   * @throws CancelException in case the user cancels the operation
+   */
   public static <T> List<T> selectValues(final List<T> values, final boolean single) {
     final ListView<T> listView = new ListView<>(FXCollections.observableArrayList(values));
     listView.getSelectionModel().setSelectionMode(single ? SelectionMode.SINGLE : SelectionMode.MULTIPLE);
@@ -135,20 +157,42 @@ public final class FXUiUtil {
     throw new CancelException();
   }
 
+  /**
+   * Sets the given string as the system clipboard value
+   * @param string the string to add to the clipboard
+   */
   public static void setClipboard(final String string) {
     final ClipboardContent content = new ClipboardContent();
     content.putString(string);
     Clipboard.getSystemClipboard().setContent(content);
   }
 
+  /**
+   * Displays a confirmation dialog
+   * @param message the message to display
+   * @return true if confirmed
+   */
   public static boolean confirm(final String message) {
     return confirm(null, null, message);
   }
 
+  /**
+   * Displays a confirmation dialog
+   * @param headerText the dialog header text
+   * @param message the message to display
+   * @return true if confirmed
+   */
   public static boolean confirm(final String headerText, final String message) {
     return confirm(null, headerText, message);
   }
 
+  /**
+   * Displays a confirmation dialog
+   * @param title the dialog title
+   * @param headerText the dialog header text
+   * @param message the message to display
+   * @return true if confirmed
+   */
   public static boolean confirm(final String title, final String headerText, final String message) {
     Objects.requireNonNull(message);
     final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, ButtonType.OK, ButtonType.CANCEL);
@@ -158,9 +202,18 @@ public final class FXUiUtil {
     if (headerText != null) {
       alert.setHeaderText(headerText);
     }
-    return alert.showAndWait().get() == ButtonType.OK;
+    final Optional<ButtonType> buttonType = alert.showAndWait();
+
+    return buttonType.isPresent() && buttonType.get() == ButtonType.OK;
   }
 
+  /**
+   * Instantiates a {@link Value} instance based on the given property, linked to the given control
+   * @param property the property
+   * @param control the control
+   * @param defaultValue the default to set after instantiation
+   * @return the {@link Value} instance
+   */
   public static Value createValue(final Property property, final Control control, final Object defaultValue) {
     if (property instanceof Property.ForeignKeyProperty) {
       if (control instanceof ComboBox) {
@@ -214,10 +267,20 @@ public final class FXUiUtil {
     }
   }
 
+  /**
+   * Instantiates a {@link Value} instance based on the given {@link ComboBox}
+   * @param comboBox the combo box on which to base the value
+   * @return the {@link Value} instance
+   */
   public static Value<Entity> createEntityValue(final ComboBox<Entity> comboBox) {
     return PropertyValues.selectedValue(comboBox.getSelectionModel());
   }
 
+  /**
+   * Instantiates a {@link ToggleButton} based on the given {@link State} instance
+   * @param state the state on which to base the toggle button
+   * @return a {@link ToggleButton} based on the given state
+   */
   public static ToggleButton createToggleButton(final State state) {
     final ToggleButton button = new ToggleButton();
     final Value<Boolean> checkBoxValue = PropertyValues.booleanPropertyValue(button.selectedProperty());
@@ -227,6 +290,11 @@ public final class FXUiUtil {
     return button;
   }
 
+  /**
+   * Instantiates a {@link CheckBox} based on the given {@link State} instance
+   * @param state the state on which to base the check box
+   * @return a {@link CheckBox} based on the given state
+   */
   public static CheckBox createCheckBox(final State state) {
     final CheckBox box = new CheckBox();
     final Value<Boolean> checkBoxValue = PropertyValues.booleanPropertyValue(box.selectedProperty());
@@ -236,6 +304,12 @@ public final class FXUiUtil {
     return box;
   }
 
+  /**
+   * Instantiates a {@link Control} based on the given property.
+   * @param property the property
+   * @param connectionProvider the {@link EntityConnectionProvider} instance to use
+   * @return a {@link Control} based on the given property
+   */
   public static Control createControl(final Property property, final EntityConnectionProvider connectionProvider) {
     if (property instanceof Property.ForeignKeyProperty) {
       return new ComboBox<>(createEntityListModel((Property.ForeignKeyProperty) property, connectionProvider));
@@ -262,10 +336,23 @@ public final class FXUiUtil {
     }
   }
 
+  /**
+   * Instantiates a {@link CheckBox} based on the given property, linked to the given edit model
+   * @param property the property
+   * @param editModel the edit model
+   * @return a {@link CheckBox} based on the given property and edit model
+   */
   public static CheckBox createCheckBox(final Property property, final FXEntityEditModel editModel) {
     return createCheckBox(property, editModel, null);
   }
 
+  /**
+   * Instantiates a {@link CheckBox} based on the given property, linked to the given edit model
+   * @param property the property
+   * @param editModel the edit model
+   * @param enabledState the {@link State} instance controlling the enabled state of the check box
+   * @return a {@link CheckBox} based on the given property and edit model
+   */
   public static CheckBox createCheckBox(final Property property, final FXEntityEditModel editModel,
                                         final StateObserver enabledState) {
     final CheckBox checkBox = createCheckBox(enabledState);
@@ -275,14 +362,32 @@ public final class FXUiUtil {
     return checkBox;
   }
 
+  /**
+   * Instantiates a {@link Value} instance based on the value of the given {@link CheckBox}
+   * @param checkBox the check box on which to base the value
+   * @return a {@link Value} based on the given check box
+   */
   public static Value<Boolean> createBooleanValue(final CheckBox checkBox) {
     return PropertyValues.booleanPropertyValue(checkBox.selectedProperty());
   }
 
+  /**
+   * Instantiates a {@link TextField} based on the given property, linked to the given edit model
+   * @param property the property
+   * @param editModel the edit model
+   * @return a {@link TextField} based on the given property
+   */
   public static TextField createTextField(final Property property, final FXEntityEditModel editModel) {
     return createTextField(property, editModel, null);
   }
 
+  /**
+   * Instantiates a {@link TextField} based on the given property, linked to the given edit model
+   * @param property the property
+   * @param editModel the edit model
+   * @param enabledState the {@link State} instance controlling the enabled state of the text field
+   * @return a {@link TextField} based on the given property
+   */
   public static TextField createTextField(final Property property, final FXEntityEditModel editModel,
                                           final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
@@ -292,14 +397,32 @@ public final class FXUiUtil {
     return textField;
   }
 
+  /**
+   * Instantiates a {@link StringValue} based on the given text field
+   * @param textField the text field
+   * @return a {@link StringValue} based on the given text field
+   */
   public static StringValue<String> createStringValue(final TextField textField) {
     return PropertyValues.stringPropertyValue(textField.textProperty());
   }
 
+  /**
+   * Instantiates a {@link TextField} for {@link Long} values, based on the given property and linked to the given edit model
+   * @param property the property
+   * @param editModel the edit model
+   * @return a {@link TextField} for {@link Long} values, based on the given property
+   */
   public static TextField createLongField(final Property property, final FXEntityEditModel editModel) {
     return createLongField(property, editModel, null);
   }
 
+  /**
+   * Instantiates a {@link TextField} for {@link Long} values, based on the given property and linked to the given edit model
+   * @param property the property
+   * @param editModel the edit model
+   * @param enabledState the {@link State} instance controlling the enabled state of the text field
+   * @return a {@link TextField} for {@link Long} values, based on the given property
+   */
   public static TextField createLongField(final Property property, final FXEntityEditModel editModel,
                                           final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
@@ -309,6 +432,12 @@ public final class FXUiUtil {
     return textField;
   }
 
+  /**
+   * Instantiates a {@link StringValue} for {@link Long} values, based on the given property and linked to the given text field
+   * @param property the property
+   * @param textField the text field
+   * @return a {@link StringValue} for {@link Long} values, based on the given property
+   */
   public static StringValue<Long> createLongValue(final Property property, final TextField textField) {
     final StringValue<Long> propertyValue = PropertyValues.longPropertyValue(textField.textProperty(),
             (NumberFormat) property.getFormat());
@@ -317,10 +446,23 @@ public final class FXUiUtil {
     return propertyValue;
   }
 
+  /**
+   * Instantiates a {@link TextField} for {@link Integer} values, based on the given property and linked to the given edit model
+   * @param property the property
+   * @param editModel the edit model
+   * @return a {@link TextField} for {@link Integer} values, based on the given property
+   */
   public static TextField createIntegerField(final Property property, final FXEntityEditModel editModel) {
     return createIntegerField(property, editModel, null);
   }
 
+  /**
+   * Instantiates a {@link TextField} for {@link Integer} values, based on the given property and linked to the given edit model
+   * @param property the property
+   * @param editModel the edit model
+   * @param enabledState the {@link State} instance controlling the enabled state of the text field
+   * @return a {@link TextField} for {@link Integer} values, based on the given property
+   */
   public static TextField createIntegerField(final Property property, final FXEntityEditModel editModel,
                                              final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
@@ -330,6 +472,12 @@ public final class FXUiUtil {
     return textField;
   }
 
+  /**
+   * Instantiates a {@link StringValue} for {@link Integer} values, based on the given property and linked to the given text field
+   * @param property the property
+   * @param textField the text field
+   * @return a {@link StringValue} for {@link Integer} values, based on the given property
+   */
   public static StringValue<Integer> createIntegerValue(final Property property, final TextField textField) {
     final StringValue<Integer> propertyValue = PropertyValues.integerPropertyValue(textField.textProperty(),
             (NumberFormat) property.getFormat());
@@ -338,10 +486,23 @@ public final class FXUiUtil {
     return propertyValue;
   }
 
+  /**
+   * Instantiates a {@link TextField} for {@link Double} values, based on the given property and linked to the given edit model
+   * @param property the property
+   * @param editModel the edit model
+   * @return a {@link TextField} for {@link Double} values, based on the given property
+   */
   public static TextField createDoubleField(final Property property, final FXEntityEditModel editModel) {
     return createDoubleField(property, editModel, null);
   }
 
+  /**
+   * Instantiates a {@link TextField} for {@link Double} values, based on the given property and linked to the given edit model
+   * @param property the property
+   * @param editModel the edit model
+   * @param enabledState the {@link State} instance controlling the enabled state of the text field
+   * @return a {@link TextField} for {@link Double} values, based on the given property
+   */
   public static TextField createDoubleField(final Property property, final FXEntityEditModel editModel,
                                             final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
@@ -351,6 +512,12 @@ public final class FXUiUtil {
     return textField;
   }
 
+  /**
+   * Instantiates a {@link StringValue} for {@link Double} values, based on the given property and linked to the given text field
+   * @param property the property
+   * @param textField the text field
+   * @return a {@link StringValue} for {@link Double} values, based on the given property
+   */
   public static StringValue<Double> createDoubleValue(final Property property, final TextField textField) {
     final StringValue<Double> propertyValue = PropertyValues.doublePropertyValue(textField.textProperty(),
             (NumberFormat) property.getFormat());
@@ -359,10 +526,23 @@ public final class FXUiUtil {
     return propertyValue;
   }
 
+  /**
+   * Instantiates a {@link DatePicker} based on the given property and linked to the given edit model
+   * @param property the property
+   * @param editModel the edit model
+   * @return a {@link DatePicker} based on the given property
+   */
   public static DatePicker createDatePicker(final Property property, final FXEntityEditModel editModel) {
     return createDatePicker(property, editModel, null);
   }
 
+  /**
+   * Instantiates a {@link DatePicker} based on the given property and linked to the given edit model
+   * @param property the property
+   * @param editModel the edit model
+   * @param enabledState the {@link State} instance controlling the enabled state of the date picker
+   * @return a {@link DatePicker} based on the given property
+   */
   public static DatePicker createDatePicker(final Property property, final FXEntityEditModel editModel,
                                             final StateObserver enabledState) {
     final DatePicker picker = createDatePicker(enabledState);
@@ -373,6 +553,12 @@ public final class FXUiUtil {
     return picker;
   }
 
+  /**
+   * Instantiates a {@link StringValue} for {@link LocalDate} values, based on the given property and linked to the given text field
+   * @param property the property
+   * @param picker the date picker
+   * @return a {@link StringValue} for {@link LocalDate} values, based on the given property
+   */
   public static StringValue<LocalDate> createDateValue(final Property property, final DatePicker picker) {
     final SimpleDateFormat dateFormat = (SimpleDateFormat) property.getFormat();
     final StringValue<LocalDate> dateValue = PropertyValues.datePropertyValue(picker.getEditor().textProperty(), dateFormat);
@@ -383,10 +569,20 @@ public final class FXUiUtil {
     return dateValue;
   }
 
+  /**
+   * Instantiates a {@link Value} for {@link LocalDate} values, based on the given {@link Date} based {@link Value}
+   * @param dateValue the {@link Date} based {@link Value}
+   * @return a {@link StringValue} for {@link LocalDate} values, based on the given value
+   */
   public static Value<LocalDate> createLocalDateValue(final Value<Date> dateValue) {
     return new LocalDateValue(dateValue);
   }
 
+  /**
+   * Links the given boolean property to the given state observer, so that changes is one are reflected in the other
+   * @param property the boolean property
+   * @param stateObserver the state observer
+   */
   public static void link(final BooleanProperty property, final StateObserver stateObserver) {
     Objects.requireNonNull(property);
     Objects.requireNonNull(stateObserver);
@@ -394,6 +590,12 @@ public final class FXUiUtil {
     stateObserver.addInfoListener(property::setValue);
   }
 
+  /**
+   * Instantiates a {@link EntityLookupField} based on the given property and linked to the given edit model
+   * @param foreignKeyProperty the foreign key property
+   * @param editModel the edit model
+   * @return a {@link EntityLookupField} based on the given property
+   */
   public static EntityLookupField createLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                     final FXEntityEditModel editModel) {
     final EntityLookupModel lookupModel = editModel.getForeignKeyLookupModel(foreignKeyProperty);
@@ -403,28 +605,49 @@ public final class FXUiUtil {
     return lookupField;
   }
 
-  public static ComboBox<Entity> createForeignKeyComboBox(final Property.ForeignKeyProperty property,
+  /**
+   * Instantiates a {@link ComboBox} based on the given property and linked to the given edit model
+   * @param foreignKeyProperty the foreign key property
+   * @param editModel the edit model
+   * @return a {@link ComboBox} based on the given property
+   */
+  public static ComboBox<Entity> createForeignKeyComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final FXEntityEditModel editModel) {
-    final FXEntityListModel listModel = editModel.getForeignKeyListModel(property);
+    final FXEntityListModel listModel = editModel.getForeignKeyListModel(foreignKeyProperty);
     listModel.refresh();
     final ComboBox<Entity> box = new ComboBox<>(listModel.getSortedList());
     listModel.setSelectionModel(box.getSelectionModel());
-    Values.link(EditModelValues.value(editModel, property), PropertyValues.selectedValue(box.getSelectionModel()));
+    Values.link(EditModelValues.value(editModel, foreignKeyProperty), PropertyValues.selectedValue(box.getSelectionModel()));
 
     return box;
   }
 
-  public static ComboBox<Item> createValueListComboBox(final Property.ValueListProperty property,
+  /**
+   * Instantiates a {@link ComboBox} based on the values of the given property and linked to the given edit model
+   * @param valueListProperty the property
+   * @param editModel the edit model
+   * @return a {@link ComboBox} based on the values of the given property
+   */
+  public static ComboBox<Item> createValueListComboBox(final Property.ValueListProperty valueListProperty,
                                                        final FXEntityEditModel editModel) {
-    final ComboBox<Item> comboBox = new ComboBox<>(createValueListComboBoxModel(property));
-    Values.link(EditModelValues.value(editModel, property), PropertyValues.selectedItemValue(comboBox.getSelectionModel()));
+    final ComboBox<Item> comboBox = new ComboBox<>(createValueListComboBoxModel(valueListProperty));
+    Values.link(EditModelValues.value(editModel, valueListProperty), PropertyValues.selectedItemValue(comboBox.getSelectionModel()));
     return comboBox;
   }
 
+  /**
+   * Instantiates a new {@link CheckBox} instance
+   * @return the check box
+   */
   public static CheckBox createCheckBox() {
     return createCheckBox(null);
   }
 
+  /**
+   * Instantiates a new {@link CheckBox} instance
+   * @param enabledState the {@link State} instance controlling the enabled state of the check box
+   * @return the check box
+   */
   public static CheckBox createCheckBox(final StateObserver enabledState) {
     final CheckBox checkBox = new CheckBox();
     if (enabledState != null) {
@@ -434,15 +657,31 @@ public final class FXUiUtil {
     return checkBox;
   }
 
+  /**
+   * Instantiates a {@link ObservableList} containing the {@link Item}s associated with the given value list property
+   * @param property the property
+   * @return a {@link ObservableList} containing the {@link Item}s associated with the given value list property
+   */
   public static ObservableList<Item> createValueListComboBoxModel(final Property.ValueListProperty property) {
     return new SortedList<>(FXCollections.observableArrayList(property.getValues()),
             (o1, o2) -> o1.toString().compareTo(o2.toString()));
   }
 
+  /**
+   * Instantiates a {@link TextField} based on the given property
+   * @param property the property
+   * @return a {@link TextField} based on the given property
+   */
   public static TextField createTextField(final Property property) {
     return createTextField(property, (StateObserver) null);
   }
 
+  /**
+   * Instantiates a {@link TextField} based on the given property
+   * @param property the property
+   * @param enabledState the {@link State} instance controlling the enabled state of the text field
+   * @return a {@link TextField} based on the given property
+   */
   public static TextField createTextField(final Property property, final StateObserver enabledState) {
     final TextField textField = new TextField();
     textField.textProperty().addListener(new ValidationChangeListener(property, textField.textProperty()));
@@ -453,10 +692,17 @@ public final class FXUiUtil {
     return textField;
   }
 
+  /**
+   * @return a {@link DatePicker} instance
+   */
   public static DatePicker createDatePicker() {
     return createDatePicker(null);
   }
 
+  /**
+   * @param enabledState the {@link State} instance controlling the enabled state of the date picker
+   * @return a {@link DatePicker} instance
+   */
   public static DatePicker createDatePicker(final StateObserver enabledState) {
     final DatePicker picker = new DatePicker();
     if (enabledState != null) {
@@ -466,6 +712,14 @@ public final class FXUiUtil {
     return picker;
   }
 
+  /**
+   * Displays a login dialog
+   * @param applicationTitle the title to display
+   * @param defaultUser the default user to display in the dialog
+   * @param icon the icon, if any
+   * @return a {@link User} instance based on the values found in the dialog
+   * @throws CancelException in case the user cancels the operation
+   */
   public static User showLoginDialog(final String applicationTitle, final User defaultUser, final ImageView icon) {
     final Dialog<User> dialog = new Dialog<>();
     dialog.setTitle(Messages.get(Messages.LOGIN));
@@ -522,6 +776,10 @@ public final class FXUiUtil {
     throw new CancelException();
   }
 
+  /**
+   * Displays an exception dialog for the given exception
+   * @param exception the exception to display
+   */
   public static void showExceptionDialog(final Throwable exception) {
     final Alert alert = new Alert(Alert.AlertType.ERROR);
     alert.setTitle(Messages.get(Messages.EXCEPTION));
@@ -556,6 +814,13 @@ public final class FXUiUtil {
     Platform.runLater(alert::showAndWait);
   }
 
+  /**
+   * Finds and returns the first parent of {@code node} of the given type
+   * @param node the child node
+   * @param clazz the type to find
+   * @param <T> the type of the parent
+   * @return the parent, or null if none is found
+   */
   public static <T> T getParentOfType(final Node node, final Class<T> clazz) {
     Objects.requireNonNull(node);
     Objects.requireNonNull(clazz);
