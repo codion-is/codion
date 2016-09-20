@@ -318,7 +318,7 @@ public final class UiUtil {
     }
     fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
     fileChooser.setMultiSelectionEnabled(multiSelection);
-    if (!Util.nullOrEmpty(startDir)) {
+    if (!Util.nullOrEmpty(startDir) && new File(startDir).exists()) {
       fileChooser.setCurrentDirectory(new File(startDir));
     }
     if (dialogTitle != null) {
@@ -377,7 +377,7 @@ public final class UiUtil {
     fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
     fileChooser.setMultiSelectionEnabled(false);
     final File startDirectory;
-    if (!Util.nullOrEmpty(startDir)) {
+    if (!Util.nullOrEmpty(startDir) && new File(startDir).exists()) {
       startDirectory = new File(startDir);
     }
     else {
