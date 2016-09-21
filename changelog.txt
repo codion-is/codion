@@ -4361,3 +4361,4 @@
   DefaultDatabaseConnection.DEFAULT_VALIDITY_CHECK_TIMEOUT intruduced and used
   JavaFX javadocs improved
   UiUtil.selectFilesOrDirectories() and UiUtil.selectFileToSave() now only set the startDir if it exists
+  EntityJSONParser.parseValue() bug fixed, returned Date instead of Timestamp for timestamp based properties

@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -318,7 +319,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
       return jsonDateFormat.parse(propertyValues.getString(property.getPropertyID()));
     }
     else if (property.isTimestamp()) {
-      return jsonTimestampFormat.parse(propertyValues.getString(property.getPropertyID()));
+      return new Timestamp(jsonTimestampFormat.parse(propertyValues.getString(property.getPropertyID())).getTime());
     }
     else if (property.isDouble()) {
       return propertyValues.getDouble(property.getPropertyID());
