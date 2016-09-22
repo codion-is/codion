@@ -143,7 +143,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
         final Entity entity = queryEntities.get(new Random().nextInt(queryEntities.size()));
         entity.put(EmpDept.DEPARTMENT_LOCATION, TextUtil.createRandomString(10, 13));
         builder = createURIBuilder();
-        builder.addParameter("entities", EntityJSONParser.serializeEntities(Collections.singletonList(entity), false));
+        builder.addParameter("entities", new EntityJSONParser().serialize(Collections.singletonList(entity)));
         response = client.execute(new HttpPut(builder.build()));
         getContentStream(response.getEntity());
       }
@@ -234,7 +234,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
         propaganda.put(EmpDept.DEPARTMENT_LOCATION, "Hell");
 
         final URIBuilder builder = createURIBuilder();
-        builder.addParameter("entities", EntityJSONParser.serializeEntities(Collections.singletonList(propaganda), false));
+        builder.addParameter("entities", new EntityJSONParser().serialize(Collections.singletonList(propaganda)));
         final HttpResponse response = client.execute(new HttpPost(builder.build()));
         EntityUtils.consume(response.getEntity());
       }

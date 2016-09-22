@@ -38,6 +38,75 @@ public final class EntityJSONParser implements Serializer<Entity> {
   private static final String JSON_DATE_FORMAT = "yyyy-MM-dd";
   private static final String JSON_TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm";
 
+  private boolean includeForeignKeyValues = false;
+  private boolean includeNullValues = true;
+  private boolean includeReadOnlyValues = true;
+  private int indentation = 0;
+
+  /**
+   * @return true if the foreign key graph should be included in serialized entities
+   */
+  public boolean isIncludeForeignKeyValues() {
+    return includeForeignKeyValues;
+  }
+
+  /**
+   * @param includeForeignKeyValues if true then the foreign key graph is included in serialized entities
+   * @return this {@link EntityJSONParser} instance
+   */
+  public EntityJSONParser setIncludeForeignKeyValues(final boolean includeForeignKeyValues) {
+    this.includeForeignKeyValues = includeForeignKeyValues;
+    return this;
+  }
+
+  /**
+   * @return true if null values should be included in exported entities
+   */
+  public boolean isIncludeNullValues() {
+    return includeNullValues;
+  }
+
+  /**
+   * @param includeNullValues true if null values should be included in exported entities
+   * @return this {@link EntityJSONParser} instance
+   */
+  public EntityJSONParser setIncludeNullValues(final boolean includeNullValues) {
+    this.includeNullValues = includeNullValues;
+    return this;
+  }
+
+  /**
+   * @return true if read only values should be included in exported entities
+   */
+  public boolean isIncludeReadOnlyValues() {
+    return includeReadOnlyValues;
+  }
+
+  /**
+   * @param includeReadOnlyValues true if read only values should be included in exported entities
+   * @return this {@link EntityJSONParser} instance
+   */
+  public EntityJSONParser setIncludeReadOnlyValues(final boolean includeReadOnlyValues) {
+    this.includeReadOnlyValues = includeReadOnlyValues;
+    return this;
+  }
+
+  /**
+   * @return the indentation to use when serializing entities
+   */
+  public int getIndentation() {
+    return indentation;
+  }
+
+  /**
+   * @param indentation if > 0 then the serialized form will be human readable with the given indentation
+   * @return this {@link EntityJSONParser} instance
+   */
+  public EntityJSONParser setIndentation(final int indentation) {
+    this.indentation = indentation;
+    return this;
+  }
+
   /**
    * Serializes the given Entity instances into a JSON string array
    * @param entities the entities
@@ -47,7 +116,19 @@ public final class EntityJSONParser implements Serializer<Entity> {
   @Override
   public String serialize(final List<Entity> entities) throws SerializeException {
     try {
-      return serializeEntities(entities, false);
+      if (Util.nullOrEmpty(entities)) {
+        return "";
+      }
+
+      final DateFormat jsonTimeFormat = DateFormats.getDateFormat(JSON_TIME_FORMAT);
+      final DateFormat jsonDateFormat = DateFormats.getDateFormat(JSON_DATE_FORMAT);
+      final DateFormat jsonTimestampFormat = DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT);
+      final JSONArray jsonArray = new JSONArray();
+      for (final Entity entity : entities) {
+        jsonArray.put(serializeEntity(entity, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
+      }
+
+      return indentation <= 0 ? jsonArray.toString() : jsonArray.toString(indentation);
     }
     catch (final JSONException e) {
       throw new SerializeException(e.getMessage(), e);
@@ -71,14 +152,13 @@ public final class EntityJSONParser implements Serializer<Entity> {
   }
 
   /**
-   * Serializes the given Entity instances into a JSON string array
-   * @param entities the entities
-   * @param includeForeignKeyValues if true then entities referenced via foreign keys are included
-   * @return a JSON string representation of the given entities
+   * Serializes the given Entity.Key instances into a JSON string array
+   * @param keys the keys
+   * @return a JSON string representation of the given entity keys
    * @throws JSONException in case of an exception
    */
-  public static String serializeEntities(final Collection<Entity> entities, final boolean includeForeignKeyValues) throws JSONException {
-    if (Util.nullOrEmpty(entities)) {
+  public String serializeKeys(final Collection<Entity.Key> keys) throws JSONException {
+    if (Util.nullOrEmpty(keys)) {
       return "";
     }
 
@@ -86,11 +166,33 @@ public final class EntityJSONParser implements Serializer<Entity> {
     final DateFormat jsonDateFormat = DateFormats.getDateFormat(JSON_DATE_FORMAT);
     final DateFormat jsonTimestampFormat = DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT);
     final JSONArray jsonArray = new JSONArray();
-    for (final Entity entity : entities) {
-      jsonArray.put(serializeEntity(entity, includeForeignKeyValues, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
+    for (final Entity.Key key : keys) {
+      jsonArray.put(serializeKey(key, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
     }
 
     return jsonArray.toString();
+  }
+
+  /**
+   * Serializes the given entity
+   * @param entity the Entity to serialize
+   * @return the entity as a serialized string
+   * @throws JSONException in case of an exception
+   */
+  public String serializeEntity(final Entity entity) throws JSONException {
+    return serializeEntity(entity, DateFormats.getDateFormat(JSON_TIME_FORMAT),
+            DateFormats.getDateFormat(JSON_DATE_FORMAT), DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT)).toString();
+  }
+
+  /**
+   * Serializes the given key
+   * @param key the key
+   * @return a JSON serialized representation of the key
+   * @throws JSONException in case of an exception
+   */
+  public String serializeKey(final Entity.Key key) throws JSONException {
+    return serializeKey(key, DateFormats.getDateFormat(JSON_TIME_FORMAT), DateFormats.getDateFormat(JSON_DATE_FORMAT),
+            DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT)).toString();
   }
 
   /**
@@ -115,28 +217,6 @@ public final class EntityJSONParser implements Serializer<Entity> {
     }
 
     return entities;
-  }
-
-  /**
-   * Serializes the given Entity.Key instances into a JSON string array
-   * @param keys the keys
-   * @return a JSON string representation of the given entity keys
-   * @throws JSONException in case of an exception
-   */
-  public static String serializeKeys(final Collection<Entity.Key> keys) throws JSONException {
-    if (Util.nullOrEmpty(keys)) {
-      return "";
-    }
-
-    final DateFormat jsonTimeFormat = DateFormats.getDateFormat(JSON_TIME_FORMAT);
-    final DateFormat jsonDateFormat = DateFormats.getDateFormat(JSON_DATE_FORMAT);
-    final DateFormat jsonTimestampFormat = DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT);
-    final JSONArray jsonArray = new JSONArray();
-    for (final Entity.Key key : keys) {
-      jsonArray.put(serializeKey(key, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
-    }
-
-    return jsonArray.toString();
   }
 
   /**
@@ -176,18 +256,6 @@ public final class EntityJSONParser implements Serializer<Entity> {
   }
 
   /**
-   * Serializes the given entity
-   * @param entity the Entity to serialize
-   * @param includeForeignKeyValues if true then foreign key values are also serialized
-   * @return the entity as a serialized string
-   * @throws JSONException in case of an exception
-   */
-  public static String serializeEntity(final Entity entity, final boolean includeForeignKeyValues) throws JSONException {
-    return serializeEntity(entity, includeForeignKeyValues, DateFormats.getDateFormat(JSON_TIME_FORMAT),
-            DateFormats.getDateFormat(JSON_DATE_FORMAT), DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT)).toString();
-  }
-
-  /**
    * Parses an Entity.Key instance from the given JSON object string
    * @param keyObject the JSON object string representing the entity
    * @return the Entity.Key represented by the given JSON object
@@ -211,7 +279,8 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * @throws JSONException in case of an exception
    */
   public static Entity.Key parseKey(final JSONObject keyObject, final DateFormat jsonTimeFormat,
-                                    final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat) throws JSONException, ParseException {
+                                    final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat)
+          throws JSONException, ParseException {
     final String entityID = keyObject.getString(ENTITY_ID);
     if (!Entities.isDefined(entityID)) {
       throw new IllegalArgumentException("Undefined entity found in JSON string: '" + entityID + "'");
@@ -221,21 +290,11 @@ public final class EntityJSONParser implements Serializer<Entity> {
     final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
     for (int j = 0; j < propertyValues.names().length(); j++) {
       final String propertyID = propertyValues.names().get(j).toString();
-      key.put(propertyID, parseValue(Entities.getProperty(entityID, propertyID), propertyValues, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
+      key.put(propertyID, parseValue(Entities.getProperty(entityID, propertyID), propertyValues,
+              jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
     }
 
     return key;
-  }
-
-  /**
-   * Serializes the given key
-   * @param key the key
-   * @return a JSON serialized representation of the key
-   * @throws JSONException in case of an exception
-   */
-  public static String serializeKey(final Entity.Key key) throws JSONException {
-    return serializeKey(key, DateFormats.getDateFormat(JSON_TIME_FORMAT), DateFormats.getDateFormat(JSON_DATE_FORMAT),
-            DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT)).toString();
   }
 
   /**
@@ -246,9 +305,108 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * @throws JSONException in case of an exception
    * @throws ParseException in case of an exception
    */
-  public static Object parseValue(final Property property, final JSONObject propertyValues) throws JSONException, ParseException {
-    return parseValue(property, propertyValues, DateFormats.getDateFormat(JSON_TIME_FORMAT), DateFormats.getDateFormat(JSON_DATE_FORMAT),
-            DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT));
+  public static Object parseValue(final Property property, final JSONObject propertyValues)
+          throws JSONException, ParseException {
+    return parseValue(property, propertyValues, DateFormats.getDateFormat(JSON_TIME_FORMAT),
+            DateFormats.getDateFormat(JSON_DATE_FORMAT), DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT));
+  }
+
+  private JSONObject serializeEntity(final Entity entity,
+                                     final DateFormat jsonTimeFormat, final DateFormat jsonDateFormat,
+                                     final DateFormat jsonTimestampFormat) throws JSONException {
+    final JSONObject jsonEntity = new JSONObject();
+    jsonEntity.put(ENTITY_ID, entity.getEntityID());
+    jsonEntity.put(VALUES, serializeValues(entity, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
+    if (entity.isModified()) {
+      jsonEntity.put(ORIGINAL_VALUES, serializeOriginalValues(entity, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
+    }
+
+    return jsonEntity;
+  }
+
+  private JSONObject serializeKey(final Entity.Key key, final DateFormat jsonTimeFormat,
+                                  final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat) throws JSONException {
+    final JSONObject jsonKey = new JSONObject();
+    jsonKey.put(ENTITY_ID, key.getEntityID());
+    jsonKey.put(VALUES, serializeValues(key, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
+
+    return jsonKey;
+  }
+
+  private JSONObject serializeValues(final Entity entity, final DateFormat jsonTimeFormat,
+                                     final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat) throws JSONException {
+    final JSONObject propertyValues = new JSONObject();
+    for (final Property property : entity.keySet()) {
+      if (include(property, entity)) {
+        propertyValues.put(property.getPropertyID(),
+                serializeValue(entity.get(property), property, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
+      }
+    }
+
+    return propertyValues;
+  }
+
+  private JSONObject serializeValues(final Entity.Key key, final DateFormat jsonTimeFormat,
+                                     final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat) throws JSONException {
+    final JSONObject propertyValues = new JSONObject();
+    for (final Property.ColumnProperty property : Entities.getPrimaryKeyProperties(key.getEntityID())) {
+      propertyValues.put(property.getPropertyID(), serializeValue(key.get(property), property,
+              jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
+    }
+
+    return propertyValues;
+  }
+
+  private JSONObject serializeOriginalValues(final Entity entity, final DateFormat jsonTimeFormat,
+                                             final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat) throws JSONException {
+    final JSONObject originalValues = new JSONObject();
+    for (final Property property : Entities.getProperties(entity.getEntityID()).values()) {
+      if (entity.isModified(property.getPropertyID()) && (!(property instanceof Property.ForeignKeyProperty) || includeForeignKeyValues)) {
+        originalValues.put(property.getPropertyID(),
+                serializeValue(entity.getOriginal(property.getPropertyID()), property,
+                        jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
+      }
+    }
+
+    return originalValues;
+  }
+
+  private Object serializeValue(final Object value, final Property property,
+                                final DateFormat jsonTimeFormat, final DateFormat jsonDateFormat,
+                                final DateFormat jsonTimestampFormat) throws JSONException {
+    if (value == null) {
+      return JSONObject.NULL;
+    }
+    if (property instanceof Property.ForeignKeyProperty) {
+      return serializeEntity((Entity) value, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat);
+    }
+    if (property.isTime()) {
+      final Time time = (Time) value;
+      return jsonTimeFormat.format(new Date(time.getTime()));
+    }
+    if (property.isDateOrTime()) {
+      final Date date = (Date) value;
+      return property.isDate() ? jsonDateFormat.format(date) : jsonTimestampFormat.format(date);
+    }
+
+    return value;
+  }
+
+  private boolean include(final Property property, final Entity entity) {
+    if (property instanceof Property.DerivedProperty || property instanceof Property.DenormalizedViewProperty) {
+      return false;
+    }
+    if (!includeForeignKeyValues && property instanceof Property.ForeignKeyProperty) {
+      return false;
+    }
+    if (!includeReadOnlyValues && property.isReadOnly()) {
+      return false;
+    }
+    if (!includeNullValues && entity.isValueNull(property)) {
+      return false;
+    }
+
+    return true;
   }
 
   /**
@@ -332,90 +490,5 @@ public final class EntityJSONParser implements Serializer<Entity> {
     }
 
     return propertyValues.getString(property.getPropertyID());
-  }
-
-  private static JSONObject serializeEntity(final Entity entity, final boolean includeForeignKeyValues,
-                                            final DateFormat jsonTimeFormat, final DateFormat jsonDateFormat,
-                                            final DateFormat jsonTimestampFormat) throws JSONException {
-    final JSONObject jsonEntity = new JSONObject();
-    jsonEntity.put(ENTITY_ID, entity.getEntityID());
-    jsonEntity.put(VALUES, serializeValues(entity, includeForeignKeyValues, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
-    if (entity.isModified()) {
-      jsonEntity.put(ORIGINAL_VALUES, serializeOriginalValues(entity, includeForeignKeyValues, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
-    }
-
-    return jsonEntity;
-  }
-
-  private static JSONObject serializeKey(final Entity.Key key, final DateFormat jsonTimeFormat,
-                                         final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat) throws JSONException {
-    final JSONObject jsonKey = new JSONObject();
-    jsonKey.put(ENTITY_ID, key.getEntityID());
-    jsonKey.put(VALUES, serializeValues(key, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
-
-    return jsonKey;
-  }
-
-  private static JSONObject serializeValues(final Entity entity, final boolean includeForeignKeyValues,
-                                            final DateFormat jsonTimeFormat, final DateFormat jsonDateFormat,
-                                            final DateFormat jsonTimestampFormat) throws JSONException {
-    final JSONObject propertyValues = new JSONObject();
-    for (final Property property : entity.keySet()) {
-      if (!(property instanceof Property.DenormalizedViewProperty) &&
-              (!(property instanceof Property.ForeignKeyProperty) || includeForeignKeyValues)) {
-        propertyValues.put(property.getPropertyID(),
-                serializeValue(entity.get(property), property, includeForeignKeyValues,
-                        jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
-      }
-    }
-
-    return propertyValues;
-  }
-
-  private static JSONObject serializeValues(final Entity.Key key, final DateFormat jsonTimeFormat,
-                                            final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat) throws JSONException {
-    final JSONObject propertyValues = new JSONObject();
-    for (final Property.ColumnProperty property : Entities.getPrimaryKeyProperties(key.getEntityID())) {
-      propertyValues.put(property.getPropertyID(), serializeValue(key.get(property), property,
-              false, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
-    }
-
-    return propertyValues;
-  }
-
-  private static JSONObject serializeOriginalValues(final Entity entity, final boolean includeForeignKeyValues,
-                                                    final DateFormat jsonTimeFormat, final DateFormat jsonDateFormat,
-                                                    final DateFormat jsonTimestampFormat) throws JSONException {
-    final JSONObject originalValues = new JSONObject();
-    for (final Property property : Entities.getProperties(entity.getEntityID()).values()) {
-      if (entity.isModified(property.getPropertyID()) && (!(property instanceof Property.ForeignKeyProperty) || includeForeignKeyValues)) {
-        originalValues.put(property.getPropertyID(),
-                serializeValue(entity.getOriginal(property.getPropertyID()), property, false,
-                        jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
-      }
-    }
-
-    return originalValues;
-  }
-
-  private static Object serializeValue(final Object value, final Property property, final boolean includeForeignKeyValues,
-                                       final DateFormat jsonTimeFormat, final DateFormat jsonDateFormat,
-                                       final DateFormat jsonTimestampFormat) throws JSONException {
-    if (value == null) {
-      return JSONObject.NULL;
-    }
-    if (property instanceof Property.ForeignKeyProperty) {
-      return serializeEntity((Entity) value, includeForeignKeyValues, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat);
-    }
-    if (property.isTime()) {
-      final Time time = (Time) value;
-      return jsonTimeFormat.format(new Date(time.getTime()));
-    }
-    if (property.isDateOrTime()) {
-      final Date date = (Date) value;
-      return property.isDate() ? jsonDateFormat.format(date) : jsonTimestampFormat.format(date);
-    }
-
-    return value;
   }
 }

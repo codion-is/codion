@@ -18,8 +18,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class EntityJSONParserTest {
 
@@ -29,7 +28,7 @@ public class EntityJSONParserTest {
     final Entity.Key key = Entities.key(TestDomain.T_DEPARTMENT);
     key.put(TestDomain.DEPARTMENT_ID, 42);
 
-    final String keyJSON = EntityJSONParser.serializeKeys(Collections.singletonList(key));
+    final String keyJSON = new EntityJSONParser().serializeKeys(Collections.singletonList(key));
     assertEquals("[{\"values\":{\"deptno\":42},\"entityID\":\"unittest.scott.dept\"}]", keyJSON);
     final Entity.Key keyParsed = EntityJSONParser.deserializeKeys(keyJSON).get(0);
     assertEquals(key.getEntityID(), keyParsed.getEntityID());
@@ -92,10 +91,13 @@ public class EntityJSONParserTest {
     emp1.put(TestDomain.EMP_NAME, "A NAME");
     emp1.put(TestDomain.EMP_SALARY, 2500.5);
 
-    jsonString = EntityJSONParser.serializeEntities(Collections.singletonList(emp1), false);
+    jsonString = parser.serialize(Collections.singletonList(emp1));
     assertTrue(emp1.valuesEqual(parser.deserialize(jsonString).get(0)));
 
-    jsonString = EntityJSONParser.serializeEntities(Collections.singletonList(emp1), true);
+    parser = new EntityJSONParser();
+    parser.setIncludeForeignKeyValues(true);
+
+    jsonString = parser.serialize(Collections.singletonList(emp1));
     Entity emp1Deserialized = parser.deserialize(jsonString).get(0);
     assertTrue(emp1.valuesEqual(emp1Deserialized));
     assertTrue(emp1.getForeignKey(TestDomain.EMP_DEPARTMENT_FK).valuesEqual(emp1Deserialized.getForeignKey(TestDomain.EMP_DEPARTMENT_FK)));
@@ -110,7 +112,7 @@ public class EntityJSONParserTest {
     emp1.put(TestDomain.EMP_SALARY, 3500.5);
     emp1.put(TestDomain.EMP_HIREDATE, newHiredate);
 
-    jsonString = EntityJSONParser.serializeEntities(Collections.singletonList(emp1), true);
+    jsonString = parser.serialize(Collections.singletonList(emp1));
     emp1Deserialized = parser.deserialize(jsonString).get(0);
     assertTrue(emp1.valuesEqual(emp1Deserialized));
 
@@ -158,6 +160,24 @@ public class EntityJSONParserTest {
     assertTrue(parsedEntity.isModified(TestDomain.EMP_NAME));
     assertTrue(parsedEntity.isModified(TestDomain.EMP_SALARY));
     assertTrue(parsedEntity.isModified(TestDomain.EMP_HIREDATE));
+
+    final Entity emp3 = Entities.entity(TestDomain.T_EMP);
+    emp3.put(TestDomain.EMP_COMMISSION, 300.5);
+    emp3.put(TestDomain.EMP_DEPARTMENT_FK, dept10);
+    emp3.put(TestDomain.EMP_HIREDATE, null);
+    emp3.put(TestDomain.EMP_ID, -200);
+    emp3.put(TestDomain.EMP_JOB, "CLERK");
+    emp3.put(TestDomain.EMP_MGR_FK, mgr50);
+    emp3.put(TestDomain.EMP_NAME, "NAME");
+    emp3.put(TestDomain.EMP_SALARY, null);
+
+    parser = new EntityJSONParser();
+    parser.setIncludeForeignKeyValues(false);
+    parser.setIncludeNullValues(false);
+
+    final Entity emp3Parsed = parser.deserialize(parser.serialize(Collections.singletonList(emp3))).get(0);
+    assertFalse(emp3Parsed.containsKey(TestDomain.EMP_HIREDATE));
+    assertFalse(emp3Parsed.containsKey(TestDomain.EMP_SALARY));
   }
 
   @Test
@@ -172,7 +192,7 @@ public class EntityJSONParserTest {
     assertEquals("", parser.serialize(entities));
     assertEquals("", parser.serialize(null));
     final List<Entity.Key> keys = Collections.emptyList();
-    assertEquals("", EntityJSONParser.serializeKeys(keys));
-    assertEquals("", EntityJSONParser.serializeKeys(null));
+    assertEquals("", new EntityJSONParser().serializeKeys(keys));
+    assertEquals("", new EntityJSONParser().serializeKeys(null));
   }
 }

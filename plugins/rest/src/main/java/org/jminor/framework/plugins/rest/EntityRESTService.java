@@ -65,7 +65,7 @@ public final class EntityRESTService extends Application {
                          @QueryParam("keys") final String keys) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      return Response.ok(EntityJSONParser.serializeEntities(connection.selectMany(EntityJSONParser.deserializeKeys(keys)), false)).build();
+      return Response.ok(new EntityJSONParser().serialize(connection.selectMany(EntityJSONParser.deserializeKeys(keys)))).build();
     }
     catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();
@@ -82,8 +82,8 @@ public final class EntityRESTService extends Application {
                          @QueryParam("values") final String values) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      return Response.ok(EntityJSONParser.serializeEntities(connection.selectMany(
-              EntityConditions.selectCondition(entityID, createPropertyCondition(entityID, conditionType, values))), false)).build();
+      return Response.ok(new EntityJSONParser().serialize(connection.selectMany(
+              EntityConditions.selectCondition(entityID, createPropertyCondition(entityID, conditionType, values))))).build();
     }
     catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();
@@ -97,7 +97,7 @@ public final class EntityRESTService extends Application {
                          @QueryParam("entities") final String entities) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      return Response.ok(EntityJSONParser.serializeKeys(connection.insert(EntityJSONParser.deserializeEntities(entities)))).build();
+      return Response.ok(new EntityJSONParser().serializeKeys(connection.insert(EntityJSONParser.deserializeEntities(entities)))).build();
     }
     catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();
@@ -124,7 +124,7 @@ public final class EntityRESTService extends Application {
       }
       final List<Entity> savedEntities = saveEntities(connection, toInsert, toUpdate);
 
-      return Response.ok(EntityJSONParser.serializeEntities(savedEntities, false)).build();
+      return Response.ok(new EntityJSONParser().serialize(savedEntities)).build();
     }
     catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();
