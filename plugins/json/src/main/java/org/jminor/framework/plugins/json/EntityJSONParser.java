@@ -41,7 +41,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
   private boolean includeForeignKeyValues = false;
   private boolean includeNullValues = true;
   private boolean includeReadOnlyValues = true;
-  private int indentation = 0;
+  private int indentation = -1;
 
   /**
    * @return true if the foreign key graph should be included in serialized entities
@@ -99,7 +99,9 @@ public final class EntityJSONParser implements Serializer<Entity> {
   }
 
   /**
-   * @param indentation if > 0 then the serialized form will be human readable with the given indentation
+   * Sets the indendation used when exporting to JSON format, -1 means non-human readable, whereas >= 0
+   * means human readable with the given indentation.
+   * @param indentation if >= 0 then the serialized form will be human readable with the given indentation
    * @return this {@link EntityJSONParser} instance
    */
   public EntityJSONParser setIndentation(final int indentation) {
@@ -128,7 +130,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
         jsonArray.put(serializeEntity(entity, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
       }
 
-      return indentation <= 0 ? jsonArray.toString() : jsonArray.toString(indentation);
+      return indentation < 0 ? jsonArray.toString() : jsonArray.toString(indentation);
     }
     catch (final JSONException e) {
       throw new SerializeException(e.getMessage(), e);
