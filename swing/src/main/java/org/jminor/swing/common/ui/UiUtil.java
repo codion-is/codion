@@ -1471,6 +1471,15 @@ public final class UiUtil {
   }
 
   /**
+   * Sets the preferred size of the given component to its current width and the given {@code preferredHeight}
+   * @param component the component
+   * @param preferredHeight the preferred height
+   */
+  public static void setPreferredHeight(final JComponent component, final int preferredHeight) {
+    component.setPreferredSize(new Dimension(component.getPreferredSize().width, preferredHeight));
+  }
+
+  /**
    * Runs the given Runnable instance while displaying a simple indeterminate progress bar.
    * Any exception thrown from the task is caught and displayed, rendering the execution unsuccessful.
    * @param dialogParent the dialog parent

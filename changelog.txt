@@ -4363,3 +4363,4 @@
   UiUtil.selectFilesOrDirectories() and UiUtil.selectFileToSave() now only set the startDir if it exists
   EntityJSONParser.parseValue() bug fixed, returned Date instead of Timestamp for timestamp based properties
   EntityJSONParser improved, serializing is now instance based with the following configuration options: includeForeignKeyValues, includeNullValues, includeReadOnlyValues and indentation
+  UiUtil.setPreferredHeight() added

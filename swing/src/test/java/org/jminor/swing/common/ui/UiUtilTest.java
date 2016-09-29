@@ -13,6 +13,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
@@ -81,5 +82,21 @@ public class UiUtilTest {
       @Override
       public void actionPerformed(final ActionEvent e) {}
     });
+  }
+
+  @Test
+  public void setPreferredWidth() {
+    final JTextField txt = new JTextField();
+    final Dimension preferred = txt.getPreferredSize();
+    UiUtil.setPreferredWidth(txt, 42);
+    assertEquals(new Dimension(42, txt.getPreferredSize().height), txt.getPreferredSize());
+  }
+
+  @Test
+  public void setPreferredHeight() {
+    final JTextField txt = new JTextField();
+    final Dimension preferred = txt.getPreferredSize();
+    UiUtil.setPreferredHeight(txt, 42);
+    assertEquals(new Dimension(txt.getPreferredSize().width, 42), txt.getPreferredSize());
   }
 }
