@@ -91,7 +91,9 @@ public class DoubleFieldTest {
     txt.setText("5,123");
     assertEquals("5,12", txt.getText());
     txt.getDocument().insertString(3, "4", null);
-    assertEquals("5,14", txt.getText());
+    assertEquals("5,142", txt.getText());
+    txt.getDocument().remove(3, 1);
+    assertEquals("5,12", txt.getText());
     txt.setMaximumFractionDigits(3);
     txt.setText("5,12378");
     assertEquals("5,123", txt.getText());//no rounding should occur
