@@ -404,7 +404,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   @Override
   public boolean equals(final Object obj) {
-    return this == obj || obj instanceof Entity && ((Entity) obj).getKey().equals(getKey());
+    return this == obj || obj instanceof Entity && getKey().equals(((Entity) obj).getKey());
   }
 
   /**
@@ -953,7 +953,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
           return otherKey.isCompositeKey() && entityID.equals(otherKey.getEntityID()) && super.equals(otherKey);
         }
         if (singleIntegerKey) {
-          return otherKey.isSingleIntegerKey() && hashCode() == otherKey.hashCode() && entityID.equals(otherKey.getEntityID());
+          return otherKey.isSingleIntegerKey() && isNull() == otherKey.isNull()
+                  && hashCode() == otherKey.hashCode() && entityID.equals(otherKey.getEntityID());
         }
         //single non-integer key
         return !otherKey.isCompositeKey() && entityID.equals(otherKey.getEntityID()) && Objects.equals(getFirstValue(), otherKey.getFirstValue());

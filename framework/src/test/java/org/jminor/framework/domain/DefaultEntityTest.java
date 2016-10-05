@@ -458,6 +458,14 @@ public class DefaultEntityTest {
     assertEquals(1.1234567896, detail.get(TestDomain.DETAIL_DOUBLE));//default 10 fraction digits
   }
 
+  @Test
+  public void nullKeyEquals() {
+    final Entity.Key nullKey = Entities.key(TestDomain.T_EMP);
+    final Entity.Key zeroKey = Entities.key(TestDomain.T_EMP);
+    zeroKey.put(TestDomain.EMP_ID, 0);
+    assertFalse(nullKey.equals(zeroKey));
+  }
+
   private static Entity getDetailEntity(final long id, final Integer intValue, final Double doubleValue,
                                         final String stringValue, final Date dateValue, final Timestamp timestampValue,
                                         final Boolean booleanValue, final Entity entityValue) {
