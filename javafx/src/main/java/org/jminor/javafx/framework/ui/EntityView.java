@@ -394,10 +394,6 @@ public class EntityView extends BorderPane implements ViewTreeNode {
   }
 
   private void setDetailPanelState(final PanelState state) {
-    if (detailViewTabPane == null) {
-      this.detailPanelState = state;
-      return;
-    }
     if (state != PanelState.HIDDEN) {
       getTabbedDetailPanel().initializePanel();
     }
