@@ -167,7 +167,7 @@ public class SizedDocument extends PlainDocument {
     private void setText(final FilterBypass fb, final String text, final AttributeSet attributeSet) throws BadLocationException {
       final Document document = fb.getDocument();
       final String replacement = adjustReplacementString(text, document);
-      super.replace(fb, 0, document.getLength() - (text.length() - replacement.length()), replacement.toString(), attributeSet);
+      super.replace(fb, 0, document.getLength() - (text.length() - replacement.length()), replacement, attributeSet);
     }
 
     //We remove the common suffix if any, to preserve the caret position
