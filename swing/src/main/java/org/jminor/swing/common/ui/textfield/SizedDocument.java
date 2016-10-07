@@ -115,23 +115,15 @@ public class SizedDocument extends PlainDocument {
     @Override
     public final void insertString(final FilterBypass fb, final int offset, final String string,
                                    final AttributeSet attributeSet) throws BadLocationException {
-      final StringBuilder builder = new StringBuilder(fb.getDocument().getText(0, fb.getDocument().getLength()));
-      final String transformedString = transformString(string);
+      final Document document = fb.getDocument();
+      final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
       builder.insert(offset, string);
       if (getMaxLength() > 0 && builder.length() > getMaxLength()) {
         return;
       }
-      if (validValue(builder.toString())) {
-        super.insertString(fb, offset, transformedString, attributeSet);
-      }
-    }
-
-    @Override
-    public void remove(final FilterBypass fb, final int offset, final int length) throws BadLocationException {
-      final StringBuilder builder = new StringBuilder(fb.getDocument().getText(0, fb.getDocument().getLength()));
-      builder.replace(offset, offset + length, "");
-      if (validValue(builder.toString())) {
-        super.remove(fb, offset, length);
+      final String valueAfterInsert = transformString(builder.toString());
+      if (validValue(valueAfterInsert)) {
+        setText(fb, valueAfterInsert, attributeSet);
       }
     }
 
@@ -140,13 +132,13 @@ public class SizedDocument extends PlainDocument {
                               final AttributeSet attributeSet) throws BadLocationException {
       final Document document = fb.getDocument();
       final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
-      final String transformedString = transformString(string);
-      builder.replace(offset, offset + length, transformedString);
+      builder.replace(offset, offset + length, string);
       if (getMaxLength() > 0 && builder.length() > getMaxLength()) {
         return;
       }
-      if (validValue(builder.toString())) {
-        super.replace(fb, offset, length, transformedString, attributeSet);
+      final String transformedString = transformString(builder.toString());
+      if (validValue(transformedString)) {
+        setText(fb, transformedString, attributeSet);
       }
     }
 
@@ -170,6 +162,31 @@ public class SizedDocument extends PlainDocument {
         case LOWERCASE: return string.toLowerCase(Locale.getDefault());
         default: return string;
       }
+    }
+
+    private void setText(final FilterBypass fb, final String text, final AttributeSet attributeSet) throws BadLocationException {
+      final Document document = fb.getDocument();
+      final String replacement = adjustReplacementString(text, document);
+      super.replace(fb, 0, document.getLength() - (text.length() - replacement.length()), replacement.toString(), attributeSet);
+    }
+
+    //We remove the common suffix if any, to preserve the caret position
+    private String adjustReplacementString(final String text, final Document document) throws BadLocationException {
+      final StringBuilder replacement = new StringBuilder(text);
+      final String documentText = document.getText(0, document.getLength());
+      if (replacement.length() > 0) {
+        for (int i = documentText.length() - 1; i >= 0; i--) {
+          final int replacementLength = replacement.length();
+          if (replacement.charAt(replacementLength - 1) == documentText.charAt(i)) {
+            replacement.replace(replacementLength - 1, replacementLength, "");
+          }
+          else {
+            break;
+          }
+        }
+      }
+
+      return replacement.toString();
     }
   }
 }

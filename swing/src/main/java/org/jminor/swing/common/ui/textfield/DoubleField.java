@@ -153,7 +153,8 @@ public final class DoubleField extends NumberField {
         return "0" + decimalSeparator;
       }
 
-      return removeExcessiveFractionDigits(super.transformString(string));
+      return removeExcessiveFractionDigits(removeExcessiveDecimalSeparators(
+              super.transformString(replaceGroupingSeparators(string, decimalSeparator))));
     }
 
     @Override
@@ -161,6 +162,36 @@ public final class DoubleField extends NumberField {
       final char decimalSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getDecimalSeparator();
 
       return character == decimalSeparator || super.isValidCharacter(index, character);
+    }
+
+    private String replaceGroupingSeparators(final String string, final char decimalSeparator) {
+      if (!getFormat().isGroupingUsed()) {
+        final char groupingSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getGroupingSeparator();
+
+        return string.replace(groupingSeparator, decimalSeparator);
+      }
+
+      return string;
+    }
+
+    private String removeExcessiveDecimalSeparators(final String string) {
+      final char decimalSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getDecimalSeparator();
+      final StringBuilder builder = new StringBuilder(string);
+      boolean decimalSeparatorFound = false;
+      int i = 0;
+      while (i < builder.length()) {
+        if (builder.charAt(i) == decimalSeparator) {
+          if (decimalSeparatorFound) {
+            builder.replace(i, i + 1, "");
+          }
+          else {
+            decimalSeparatorFound = true;
+          }
+        }
+        i++;
+      }
+
+      return builder.toString();
     }
 
     private String removeExcessiveFractionDigits(final String string) {

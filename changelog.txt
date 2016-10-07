@@ -4366,3 +4366,4 @@
   UiUtil.setPreferredHeight() added
   SizedDocument bug fixed, inserting characters no longer moves caret to end
   DefaultKey.equals() bug fixed, null keys and zero based keys are no longer equal
+  SizedDocumentFilter and DoubleDocumentFilter bug fixes

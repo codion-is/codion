@@ -22,19 +22,19 @@ public class DoubleFieldTest {
     txt.setText("22,3");
     assertEquals(Double.valueOf(22.3), txt.getDouble());
     txt.setText("22.3");//note this is a thousand separator
-    assertEquals(Double.valueOf(223), txt.getDouble());
-    assertEquals("223", txt.getText());
+    assertEquals(Double.valueOf(22.3), txt.getDouble());
+    assertEquals("22,3", txt.getText());
     txt.setText("22.123.123,123");
-    assertEquals("22123123,123", txt.getText());
-    assertEquals(Double.valueOf(22123123.123), txt.getDouble());
+    assertEquals("22,123123123", txt.getText());
+    assertEquals(Double.valueOf(22.123123123), txt.getDouble());
 
     txt.setSeparators('.', ',');
 
     txt.setDouble(42.2);
     assertEquals("42.2", txt.getText());
     txt.setText("22,123,123.123");
-    assertEquals("22123123.123", txt.getText());
-    assertEquals(Double.valueOf(22123123.123), txt.getDouble());
+    assertEquals("22.123123123", txt.getText());
+    assertEquals(Double.valueOf(22.123123123), txt.getDouble());
 
     txt.setDouble(10000000d);
     assertEquals("10000000", txt.getText());
@@ -91,14 +91,29 @@ public class DoubleFieldTest {
     txt.setText("5,123");
     assertEquals("5,12", txt.getText());
     txt.getDocument().insertString(3, "4", null);
-    assertEquals("5,142", txt.getText());
+    assertEquals("5,14", txt.getText());
     txt.getDocument().remove(3, 1);
-    assertEquals("5,12", txt.getText());
+    assertEquals("5,1", txt.getText());
     txt.setMaximumFractionDigits(3);
     txt.setText("5,12378");
     assertEquals("5,123", txt.getText());//no rounding should occur
     txt.setMaximumFractionDigits(-1);
     txt.setText("5,12378");
     assertEquals("5,12378", txt.getText());
+  }
+
+  @Test
+  public void decimalSeparators() {
+    final DoubleField txt = new DoubleField();
+    txt.setSeparators('.', ',');
+    txt.setText("1.5");
+    assertEquals(Double.valueOf(1.5), txt.getDouble());
+    txt.setText("123.34.56");
+    assertEquals(Double.valueOf(123.3456), txt.getDouble());
+
+    txt.setText("1,5");
+    assertEquals(Double.valueOf(1.5), txt.getDouble());
+    txt.setText("1,4.5");
+    assertEquals(Double.valueOf(1.45), txt.getDouble());
   }
 }
