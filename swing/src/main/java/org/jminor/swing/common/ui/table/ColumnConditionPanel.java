@@ -22,7 +22,7 @@ import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.textfield.DoubleField;
-import org.jminor.swing.common.ui.textfield.IntField;
+import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 
 import javax.swing.DefaultListCellRenderer;
@@ -354,7 +354,7 @@ public class ColumnConditionPanel<K> extends JPanel {
     private JComponent initializeField() {
       switch (columnConditionModel.getType()) {
         case Types.INTEGER:
-          return new IntField(DEFAULT_FIELD_COLUMNS);
+          return new IntegerField(DEFAULT_FIELD_COLUMNS);
         case Types.DOUBLE:
           return new DoubleField(DEFAULT_FIELD_COLUMNS);
         case Types.BIGINT:
@@ -380,7 +380,7 @@ public class ColumnConditionPanel<K> extends JPanel {
       final Value modelValue = upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue();
       switch (columnConditionModel.getType()) {
         case Types.INTEGER:
-          ValueLinks.intValueLink((IntField) component, modelValue, false, false, true);
+          ValueLinks.integerValueLink((IntegerField) component, modelValue, false, false, true);
           break;
         case Types.DOUBLE:
           ValueLinks.doubleValueLink((DoubleField) component, modelValue, false, false, true);

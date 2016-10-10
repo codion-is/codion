@@ -17,7 +17,7 @@ import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
-import org.jminor.swing.common.ui.textfield.IntField;
+import org.jminor.swing.common.ui.textfield.IntegerField;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -196,9 +196,9 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private JPanel initializeApplicationPanel() {
-    final IntField applicationCountField = new IntField();
+    final IntegerField applicationCountField = new IntegerField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
-    ValueLinks.intValueLink(applicationCountField, loadTestModel, "applicationCount", loadTestModel.applicationCountObserver(), true, true, true);
+    ValueLinks.integerValueLink(applicationCountField, loadTestModel, "applicationCount", loadTestModel.applicationCountObserver(), true, true, true);
 
     final JPanel applicationPanel = new JPanel(UiUtil.createBorderLayout());
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));

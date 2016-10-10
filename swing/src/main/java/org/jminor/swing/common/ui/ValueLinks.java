@@ -7,7 +7,7 @@ import org.jminor.common.EventObserver;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
 import org.jminor.swing.common.ui.textfield.DoubleField;
-import org.jminor.swing.common.ui.textfield.IntField;
+import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 
 import javax.swing.ButtonModel;
@@ -67,22 +67,22 @@ public final class ValueLinks {
   }
 
   /**
-   * @param intField the int field to link with the value
+   * @param integerField the int field to link with the value
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param usePrimitive if true then the property is assumed to be a primitive, int instead of Integer
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void intValueLink(final IntField intField, final Object owner, final String beanPropertyName,
-                                  final EventObserver<Integer> valueChangeEvent, final boolean usePrimitive,
-                                  final boolean immediateUpdate) {
-    intValueLink(intField, Values.beanValue(owner, beanPropertyName, usePrimitive ? int.class : Integer.class,
+  public static void integerValueLink(final IntegerField integerField, final Object owner, final String beanPropertyName,
+                                      final EventObserver<Integer> valueChangeEvent, final boolean usePrimitive,
+                                      final boolean immediateUpdate) {
+    integerValueLink(integerField, Values.beanValue(owner, beanPropertyName, usePrimitive ? int.class : Integer.class,
             valueChangeEvent), usePrimitive, false, immediateUpdate);
   }
 
   /**
-   * @param intField the int field to link with the value
+   * @param integerField the int field to link with the value
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
@@ -90,24 +90,24 @@ public final class ValueLinks {
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void intValueLink(final IntField intField, final Object owner, final String beanPropertyName,
-                                  final EventObserver<Integer> valueChangeEvent, final boolean usePrimitive,
-                                  final boolean readOnly, final boolean immediateUpdate) {
-    intValueLink(intField, Values.beanValue(owner, beanPropertyName, usePrimitive ? int.class : Integer.class,
+  public static void integerValueLink(final IntegerField integerField, final Object owner, final String beanPropertyName,
+                                      final EventObserver<Integer> valueChangeEvent, final boolean usePrimitive,
+                                      final boolean readOnly, final boolean immediateUpdate) {
+    integerValueLink(integerField, Values.beanValue(owner, beanPropertyName, usePrimitive ? int.class : Integer.class,
             valueChangeEvent), usePrimitive, readOnly, immediateUpdate);
   }
 
   /**
-   * @param intField the int field to link with the value
+   * @param integerField the int field to link with the value
    * @param value the model value
    * @param usePrimitive if true then the property is assumed to be a primitive, int instead of Integer
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void intValueLink(final IntField intField, final Value<Integer> value, final boolean usePrimitive,
-                                  final boolean readOnly, final boolean immediateUpdate) {
-    intField.setEditable(!readOnly);
-    Values.link(value, UiValues.integerValue(intField, usePrimitive, immediateUpdate), readOnly);
+  public static void integerValueLink(final IntegerField integerField, final Value<Integer> value, final boolean usePrimitive,
+                                      final boolean readOnly, final boolean immediateUpdate) {
+    integerField.setEditable(!readOnly);
+    Values.link(value, UiValues.integerValue(integerField, usePrimitive, immediateUpdate), readOnly);
   }
 
   /**

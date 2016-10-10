@@ -15,7 +15,7 @@ import org.jminor.swing.common.model.DocumentAdapter;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.textfield.DoubleField;
-import org.jminor.swing.common.ui.textfield.IntField;
+import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.textfield.NumberField;
 
@@ -63,13 +63,13 @@ public final class UiValues {
   }
 
   /**
-   * @param intField the component
+   * @param integerField the component
    * @param usePrimitive if true then the int primitive is used, Integer otherwise
    * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
-  public static Value<Integer> integerValue(final IntField intField, final boolean usePrimitive, final boolean immediateUpdate) {
-    return new IntUIValue(intField, usePrimitive, immediateUpdate);
+  public static Value<Integer> integerValue(final IntegerField integerField, final boolean usePrimitive, final boolean immediateUpdate) {
+    return new IntUIValue(integerField, usePrimitive, immediateUpdate);
   }
 
   /**
@@ -318,8 +318,8 @@ public final class UiValues {
 
   private static final class IntUIValue extends NumberUIValue<Integer> {
 
-    private IntUIValue(final IntField intField, final boolean usePrimitive, final boolean immediateUpdate) {
-      super(intField, usePrimitive, immediateUpdate);
+    private IntUIValue(final IntegerField integerField, final boolean usePrimitive, final boolean immediateUpdate) {
+      super(integerField, usePrimitive, immediateUpdate);
     }
 
     @Override

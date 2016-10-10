@@ -17,7 +17,7 @@ import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
 import org.jminor.swing.common.ui.textfield.DoubleField;
-import org.jminor.swing.common.ui.textfield.IntField;
+import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 
 import javax.swing.AbstractAction;
@@ -97,7 +97,7 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
         return new DoubleField(DEFAULT_FIELD_COLUMNS);
       }
       else if (property.isInteger()) {
-        return new IntField(DEFAULT_FIELD_COLUMNS);
+        return new IntegerField(DEFAULT_FIELD_COLUMNS);
       }
       else if (property.isLong()) {
         return new LongField(DEFAULT_FIELD_COLUMNS);
@@ -124,7 +124,7 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
         ValueLinks.doubleValueLink((DoubleField) field, modelValue, false, false, true);
       }
       else if (columnProperty.isInteger()) {
-        ValueLinks.intValueLink((IntField) field, modelValue, false, false, true);
+        ValueLinks.integerValueLink((IntegerField) field, modelValue, false, false, true);
       }
       else if (columnProperty.isLong()) {
         ValueLinks.longValueLink((LongField) field, modelValue, false, false, true);

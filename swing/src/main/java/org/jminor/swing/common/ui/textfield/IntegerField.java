@@ -10,12 +10,12 @@ import java.text.NumberFormat;
 /**
  * A text field for integers.
  */
-public final class IntField extends NumberField {
+public final class IntegerField extends NumberField {
 
   /**
    * Constructs a new IntField.
    */
-  public IntField() {
+  public IntegerField() {
     this(FormatUtil.getNonGroupingNumberFormat(true));
   }
 
@@ -23,7 +23,7 @@ public final class IntField extends NumberField {
    * Constructs a new IntField.
    * @param columns the number of columns
    */
-  public IntField(final int columns) {
+  public IntegerField(final int columns) {
     this(FormatUtil.getNonGroupingNumberFormat(true), columns);
   }
 
@@ -31,7 +31,7 @@ public final class IntField extends NumberField {
    * Constructs a new IntField.
    * @param format the format to use
    */
-  public IntField(final NumberFormat format) {
+  public IntegerField(final NumberFormat format) {
     this(format, 0);
   }
 
@@ -40,21 +40,21 @@ public final class IntField extends NumberField {
    * @param format the format to use
    * @param columns the number of columns
    */
-  public IntField(final NumberFormat format, final int columns) {
+  public IntegerField(final NumberFormat format, final int columns) {
     super(new NumberDocument(new NumberDocumentFilter(format)), columns);
   }
 
   /**
    * @return the value
    */
-  public Integer getInt() {
-    return ((NumberDocument) getDocument()).getInt();
+  public Integer getInteger() {
+    return ((NumberDocument) getDocument()).getInteger();
   }
 
   /**
    * @param value the value to set
    */
-  public void setInt(final Integer value) {
+  public void setInteger(final Integer value) {
     ((NumberDocument) getDocument()).setNumber(value);
   }
 }

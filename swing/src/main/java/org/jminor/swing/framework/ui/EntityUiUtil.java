@@ -38,7 +38,7 @@ import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.input.InputProviderPanel;
 import org.jminor.swing.common.ui.textfield.DocumentSizeFilter;
 import org.jminor.swing.common.ui.textfield.DoubleField;
-import org.jminor.swing.common.ui.textfield.IntField;
+import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.valuemap.ValueLinkValidators;
@@ -735,7 +735,7 @@ public final class EntityUiUtil {
       ValueLinks.textValueLink(textField, EditModelValues.<String>value(editModel, property), null, immediateUpdate, readOnly);
     }
     else if (property.isInteger()) {
-      ValueLinks.intValueLink((IntField) textField, EditModelValues.<Integer>value(editModel, property), false, readOnly, immediateUpdate);
+      ValueLinks.integerValueLink((IntegerField) textField, EditModelValues.<Integer>value(editModel, property), false, readOnly, immediateUpdate);
     }
     else if (property.isDouble()) {
       ValueLinks.doubleValueLink((DoubleField) textField, EditModelValues.<Double>value(editModel, property), false, readOnly, immediateUpdate);
@@ -932,7 +932,7 @@ public final class EntityUiUtil {
   }
 
   private static JTextField initializeIntField(final Property property) {
-    final IntField field = new IntField(cloneFormat((NumberFormat) property.getFormat()));
+    final IntegerField field = new IntegerField(cloneFormat((NumberFormat) property.getFormat()));
     if (property.getMin() != null && property.getMax() != null) {
       field.setRange(property.getMin(), property.getMax());
     }

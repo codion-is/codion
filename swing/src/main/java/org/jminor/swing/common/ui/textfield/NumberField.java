@@ -105,7 +105,7 @@ public class NumberField extends JTextField {
       }
     }
 
-    protected final Integer getInt() {
+    protected final Integer getInteger() {
       final Number number = getNumber();
 
       return number == null ? null : number.intValue();
@@ -144,7 +144,7 @@ public class NumberField extends JTextField {
   }
 
   /**
-   * A DocumentFilter for numerical values
+   * A DocumentFilter for restricting input to  values
    */
   protected static class NumberDocumentFilter extends SizedDocument.SizedDocumentFilter {
 

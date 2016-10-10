@@ -8,7 +8,7 @@ import org.jminor.common.Value;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
 import org.jminor.swing.common.ui.textfield.DoubleField;
-import org.jminor.swing.common.ui.textfield.IntField;
+import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 
 import org.junit.Test;
@@ -113,7 +113,7 @@ public class UiValuesTest {
 
   @Test
   public void integerTextUiValue() {
-    final IntField txt = new IntField();
+    final IntegerField txt = new IntegerField();
     final Value<Integer> value = UiValues.integerValue(txt, false, true);
 
     assertNull(value.get());
@@ -128,7 +128,7 @@ public class UiValuesTest {
 
   @Test
   public void integerPrimitiveTextUiValue() {
-    final IntField txt = new IntField();
+    final IntegerField txt = new IntegerField();
     final Value<Integer> value = UiValues.integerValue(txt, true, true);
 
     assertEquals(Integer.valueOf(0), value.get());

@@ -8,7 +8,7 @@ import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.textfield.IntField;
+import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.framework.server.monitor.ServerMonitor;
 
 import ch.qos.logback.classic.Level;
@@ -209,10 +209,10 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JTextField initializeConnectionCountField() {
-    final IntField txtConnectionCount = new IntField(4);
+    final IntegerField txtConnectionCount = new IntegerField(4);
     txtConnectionCount.setEditable(false);
     txtConnectionCount.setHorizontalAlignment(JLabel.CENTER);
-    ValueLinks.intValueLink(txtConnectionCount, model, "connectionCount", model.getStatisticsUpdatedObserver(), true, true, true);
+    ValueLinks.integerValueLink(txtConnectionCount, model, "connectionCount", model.getStatisticsUpdatedObserver(), true, true, true);
 
     return txtConnectionCount;
   }
