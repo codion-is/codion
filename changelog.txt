@@ -4368,3 +4368,5 @@
   DefaultKey.equals() bug fixed, null keys and zero based keys are no longer equal
   SizedDocumentFilter and DoubleDocumentFilter bug fixes
   IntField renamed to IntegerField, ValuesLinks.intValueLink() to integerValueLink() and IntegerField.getInt()/setInt() to getInteger()/setInteger() for consistency
+  TextUtil.getTextFileContents() bug fixed, no longer appends line break after last read line
+  FileUtil, DatabaseUtil, ClientUtil, added a couple of unit tests

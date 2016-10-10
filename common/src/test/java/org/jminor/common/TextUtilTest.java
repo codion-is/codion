@@ -93,7 +93,7 @@ public final class TextUtilTest {
   public void getTextFileContents() throws IOException {
     final String contents = "<project name=\"jminor-common-core\">" + Util.LINE_SEPARATOR +
             "  <import file=\"../../../build-module.xml\"/>" + Util.LINE_SEPARATOR +
-            "</project>" + Util.LINE_SEPARATOR;
+            "</project>";
     assertEquals(contents, TextUtil.getTextFileContents("modules/common-core/build.xml", Charset.defaultCharset()));
   }
 

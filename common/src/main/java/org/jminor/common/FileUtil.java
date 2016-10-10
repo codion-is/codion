@@ -104,14 +104,15 @@ public final class FileUtil {
   /**
    * Deserializes a list of Objects from the given file
    * @param file the file
+   * @param <T> the type of objects to read from the file
    * @return deserialized objects
    * @throws Serializer.SerializeException in case of an exception
    */
-  public static List<Object> deserializeFromFile(final File file) throws Serializer.SerializeException {
-    final List<Object> objects = new ArrayList<>();
+  public static <T> List<T> deserializeFromFile(final File file) throws Serializer.SerializeException {
+    final List<T> objects = new ArrayList<>();
     try (final ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file))) {
       while (true) {
-        objects.add(inputStream.readObject());
+        objects.add((T) inputStream.readObject());
       }
     }
     catch (final EOFException ignored) {/*ignored*/}
@@ -140,6 +141,7 @@ public final class FileUtil {
   }
 
   /**
+   * Reads the complete file into memory, so this is not meant for reading large files.
    * @param file the file
    * @return the bytes comprising the given file
    * @throws IOException in case of an exception
@@ -147,13 +149,8 @@ public final class FileUtil {
   public static byte[] getBytesFromFile(final File file) throws IOException {
     Objects.requireNonNull(file, "file");
     try (final InputStream inputStream = new FileInputStream(file)) {
-      // Get the size of the file
-      final long length = file.length();
+      final byte[] bytes = new byte[(int) file.length()];
 
-      // Create the byte array to hold the data
-      final byte[] bytes = new byte[(int) length];
-
-      // Read in the bytes
       int offset = 0;
       int numRead = inputStream.read(bytes, offset, bytes.length - offset);
       while (offset < bytes.length && numRead >= 0) {

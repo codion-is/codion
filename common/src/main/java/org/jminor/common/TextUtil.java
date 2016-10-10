@@ -286,8 +286,10 @@ public final class TextUtil {
       String line = input.readLine();
       while (line != null) {
         contents.append(line);
-        contents.append(Util.LINE_SEPARATOR);
         line = input.readLine();
+        if (line != null) {
+          contents.append(Util.LINE_SEPARATOR);
+        }
       }
     }
 
