@@ -4370,3 +4370,5 @@
   IntField renamed to IntegerField, ValuesLinks.intValueLink() to integerValueLink() and IntegerField.getInt()/setInt() to getInteger()/setInteger() for consistency
   TextUtil.getTextFileContents() bug fixed, no longer appends line break after last read line
   FileUtil, DatabaseUtil, ClientUtil, added a couple of unit tests
+  EntityEditPanel.selectInputComponent() added, selectComponent() renamed to requestComponentFocus()
+  EntityPanel.setupKeyboardActions() refactored according to the above

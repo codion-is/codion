@@ -106,8 +106,8 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     }
     checkIndexes(indexes);
     final Iterator<Integer> iterator = indexes.iterator();
-    /** hold on to the first index and add last in order to avoid firing evtSelectionChanged
-     *  for each index being added, see {@link #fireValueChanged(int, int, boolean)} */
+    /* hold on to the first index and add last in order to avoid firing evtSelectionChanged
+     * for each index being added, see fireValueChanged(int, int, boolean) */
     final int firstIndex = iterator.next();
     try {
       isUpdatingSelection = true;

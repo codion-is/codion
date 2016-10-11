@@ -3,11 +3,8 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.i18n.Messages;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.EntityUtil;
-import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.ui.DefaultExceptionHandler;
@@ -1117,12 +1114,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         if (getEditPanelState() == PanelState.HIDDEN) {
           setEditPanelState(PanelState.EMBEDDED);
         }
-        final List<String> propertyIDs = editPanel.getSelectComponentPropertyIDs();
-        final List<Property> properties = EntityUtil.getSortedProperties(entityModel.getEntityID(), propertyIDs);
-        final Property property = UiUtil.selectValue(getEditPanel(), properties, Messages.get(Messages.SELECT_INPUT_FIELD));
-        if (property != null) {
-          getEditPanel().selectComponent(property.getPropertyID());
-        }
+        getEditPanel().selectInputComponent();
       }
     };
     final Action selectTablePanelAction = new AbstractAction("EntityPanel.selectTablePanel") {

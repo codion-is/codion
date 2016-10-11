@@ -312,10 +312,24 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
+   * Displays a dialog allowing the user the select a input component which should receive the keyboard focus
+   * @see #includeComponentSelectionPropertyID(String)
+   * @see #requestComponentFocus(String)
+   */
+  public void selectInputComponent() {
+    final List<String> propertyIDs = getSelectComponentPropertyIDs();
+    final List<Property> properties = EntityUtil.getSortedProperties(getEditModel().getEntityID(), propertyIDs);
+    final Property property = UiUtil.selectValue(this, properties, Messages.get(Messages.SELECT_INPUT_FIELD));
+    if (property != null) {
+      requestComponentFocus(property.getPropertyID());
+    }
+  }
+
+  /**
    * Request focus for the component associated with the given propertyID
    * @param propertyID the propertyID of the component to select
    */
-  public final void selectComponent(final String propertyID) {
+  public final void requestComponentFocus(final String propertyID) {
     if (components.containsKey(propertyID)) {
       components.get(propertyID).requestFocus();
     }
@@ -485,7 +499,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
     if (throwable instanceof ValidationException) {
       JOptionPane.showMessageDialog(this, throwable.getMessage(), Messages.get(Messages.EXCEPTION),
               JOptionPane.ERROR_MESSAGE);
-      selectComponent((String) ((ValidationException) throwable).getKey());
+      requestComponentFocus((String) ((ValidationException) throwable).getKey());
     }
     else {
       handleException(throwable, UiUtil.getParentWindow(this));
