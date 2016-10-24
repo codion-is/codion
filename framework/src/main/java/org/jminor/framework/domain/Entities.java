@@ -28,7 +28,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -400,15 +399,10 @@ public final class Entities {
                                                                   final boolean includeReadOnly,
                                                                   final boolean includeNonUpdatable) {
     final List<Property.ColumnProperty> properties = new ArrayList<>(DefaultEntityDefinition.getDefinition(entityID).getColumnProperties());
-    final ListIterator<Property.ColumnProperty> iterator = properties.listIterator();
-    while (iterator.hasNext()) {
-      final Property.ColumnProperty property = iterator.next();
-      if (!includeReadOnly && property.isReadOnly()
-              || !includeNonUpdatable && !property.isUpdatable()
-              || !includePrimaryKeyProperties && property.isPrimaryKeyProperty()) {
-        iterator.remove();
-      }
-    }
+    properties.removeIf(property ->
+            !includeReadOnly && property.isReadOnly()
+                    || !includeNonUpdatable && !property.isUpdatable()
+                    || !includePrimaryKeyProperties && property.isPrimaryKeyProperty());
 
     return properties;
   }
@@ -513,28 +507,28 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @return a collection containing all database properties found in the entity identified by {@code entityID},
+   * @return a list containing all database properties found in the entity identified by {@code entityID},
    * that is, properties that map to database columns
    */
-  public static Collection<Property.ColumnProperty> getColumnProperties(final String entityID) {
+  public static List<Property.ColumnProperty> getColumnProperties(final String entityID) {
     return DefaultEntityDefinition.getDefinition(entityID).getColumnProperties();
   }
 
   /**
    * @param entityID the entity ID
-   * @return a collection containing all transient database properties found in the entity identified by {@code entityID},
+   * @return a list containing all transient database properties found in the entity identified by {@code entityID},
    * that is, properties that do not map to database columns
    */
-  public static Collection<Property.TransientProperty> getTransientProperties(final String entityID) {
+  public static List<Property.TransientProperty> getTransientProperties(final String entityID) {
     return DefaultEntityDefinition.getDefinition(entityID).getTransientProperties();
   }
 
   /**
    * @param entityID the entity ID
-   * @return a collection containing all the foreign key properties found in the entity
+   * @return a list containing all the foreign key properties found in the entity
    * identified by {@code entityID}
    */
-  public static Collection<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID) {
+  public static List<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID) {
     return DefaultEntityDefinition.getDefinition(entityID).getForeignKeyProperties();
   }
 

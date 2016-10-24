@@ -294,6 +294,35 @@ public class EntityUtilTest {
   }
 
   @Test
+  public void getUpdatableProperties() {
+    final List<Property> properties = EntityUtil.getUpdatableProperties(TestDomain.T_DETAIL);
+    assertEquals(9, properties.size());
+    assertFalse(properties.contains(Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_NAME)));
+    assertFalse(properties.contains(Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_CODE)));
+    assertFalse(properties.contains(Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_INT_DERIVED)));
+  }
+
+  @Test
+  public void getStringValueArray() {
+    final Entity dept1 = Entities.entity(TestDomain.T_DEPARTMENT);
+    dept1.put(TestDomain.DEPARTMENT_ID, 1);
+    dept1.put(TestDomain.DEPARTMENT_NAME, "name1");
+    dept1.put(TestDomain.DEPARTMENT_LOCATION, "loc1");
+    final Entity dept2 = Entities.entity(TestDomain.T_DEPARTMENT);
+    dept2.put(TestDomain.DEPARTMENT_ID, 2);
+    dept2.put(TestDomain.DEPARTMENT_NAME, "name2");
+    dept2.put(TestDomain.DEPARTMENT_LOCATION, "loc2");
+
+    final String[][] strings = EntityUtil.getStringValueArray(Entities.getColumnProperties(TestDomain.T_DEPARTMENT), Arrays.asList(dept1, dept2));
+    assertEquals("1", strings[0][0]);
+    assertEquals("name1", strings[0][1]);
+    assertEquals("loc1", strings[0][2]);
+    assertEquals("2", strings[1][0]);
+    assertEquals("name2", strings[1][1]);
+    assertEquals("loc2", strings[1][2]);
+  }
+
+  @Test
   public void copyEntities() {
     TestDomain.init();
     final Entity dept1 = Entities.entity(TestDomain.T_DEPARTMENT);

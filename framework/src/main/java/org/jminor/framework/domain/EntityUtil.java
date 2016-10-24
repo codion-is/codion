@@ -239,7 +239,7 @@ public final class EntityUtil {
    * @param entities the entities
    * @return the values of the given properties from the given entities in a two dimensional array
    */
-  public static  String[][] getStringValueArray(final List<Property> properties, final List<Entity> entities) {
+  public static String[][] getStringValueArray(final List<? extends Property> properties, final List<Entity> entities) {
     final String[][] data = new String[entities.size()][];
     for (int i = 0; i < data.length; i++) {
       final List<String> line = new ArrayList<>();
@@ -351,13 +351,7 @@ public final class EntityUtil {
   public static List<Property> getUpdatableProperties(final String entityID) {
     final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
             Entities.getKeyGeneratorType(entityID).isManual(), false, false);
-    final ListIterator<Property.ColumnProperty> iterator = columnProperties.listIterator();
-    while(iterator.hasNext()) {
-      final Property.ColumnProperty property = iterator.next();
-      if (property.isForeignKeyProperty() || property.isDenormalized()) {
-        iterator.remove();
-      }
-    }
+    columnProperties.removeIf(property -> property.isForeignKeyProperty() || property.isDenormalized());
     final List<Property> updatable = new ArrayList<>(columnProperties);
     final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entityID);
     for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {

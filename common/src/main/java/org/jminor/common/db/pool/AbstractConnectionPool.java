@@ -8,7 +8,6 @@ import org.jminor.common.User;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -144,10 +143,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
     synchronized (pool) {
       poolStates = new LinkedList<>(fineGrainedCStatistics);
     }
-    final ListIterator<ConnectionPoolState> iterator = poolStates.listIterator();
-    while (iterator.hasNext() && iterator.next().getTimestamp() < since) {
-      iterator.remove();
-    }
+    poolStates.removeIf(state -> state.getTimestamp() < since);
 
     return poolStates;
   }

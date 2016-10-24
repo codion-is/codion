@@ -8,6 +8,7 @@ import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.framework.Configuration;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Types;
@@ -20,6 +21,11 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class EntitiesTest {
+
+  @Before
+  public void setUp() {
+    TestDomain.init();
+  }
 
   @Test
   public void key() {
@@ -79,7 +85,6 @@ public class EntitiesTest {
 
   @Test
   public void entity() {
-    TestDomain.init();
     final Entity.Key key = Entities.key(TestDomain.T_MASTER);
     key.put(TestDomain.MASTER_ID, 10L);
 
@@ -91,7 +96,6 @@ public class EntitiesTest {
 
   @Test
   public void getProperties() {
-    TestDomain.init();
     final Property id = Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID);
     final Property location = Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_LOCATION);
     final Property name = Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
@@ -111,9 +115,69 @@ public class EntitiesTest {
     assertTrue(visibleProperties.containsAll(allProperties));
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void getPropertyInvalid() {
+    Entities.getProperty(TestDomain.T_MASTER, "unknown property");
+  }
+
+  @Test
+  public void getColumnProperties() {
+    List<Property.ColumnProperty> properties = Entities.getColumnProperties(TestDomain.T_MASTER);
+    assertEquals(3, properties.size());
+    properties = Entities.getColumnProperties(TestDomain.T_MASTER, null);
+    assertTrue(properties.isEmpty());
+    properties = Entities.getColumnProperties(TestDomain.T_MASTER, new String[0]);
+    assertTrue(properties.isEmpty());
+  }
+
+  @Test
+  public void getForeignKeyProperties() {
+    List<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(TestDomain.T_DETAIL, TestDomain.T_EMP);
+    assertEquals(0, foreignKeyProperties.size());
+    foreignKeyProperties = Entities.getForeignKeyProperties(TestDomain.T_DETAIL, TestDomain.T_MASTER);
+    assertEquals(1, foreignKeyProperties.size());
+    assertTrue(foreignKeyProperties.contains(Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ENTITY_FK)));
+  }
+
+  public void getForeignKeyProperty() {
+    assertNotNull(Entities.getForeignKeyProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ENTITY_FK));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getForeignKeyPropertyInvalid() {
+    Entities.getForeignKeyProperty(TestDomain.T_DETAIL, "bla bla");
+  }
+
+  @Test
+  public void getDomainEntityIDs() {
+    final Collection<String> entityIDs = Entities.getDomainEntityIDs(TestDomain.SCOTT_DOMAIN_ID);
+    assertTrue(entityIDs.contains(TestDomain.T_DEPARTMENT));
+    assertTrue(entityIDs.contains(TestDomain.T_EMP));
+    assertFalse(entityIDs.contains(TestDomain.T_MASTER));
+  }
+
+  @Test
+  public void hasDerivedProperties() {
+    assertFalse(Entities.hasDerivedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_BOOLEAN));
+    assertTrue(Entities.hasDerivedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_INT));
+  }
+
+  @Test
+  public void getDerivedProperties() {
+    Collection<Property.DerivedProperty> derivedProperties = Entities.getDerivedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_BOOLEAN);
+    assertTrue(derivedProperties.isEmpty());
+    derivedProperties = Entities.getDerivedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_INT);
+    assertEquals(1, derivedProperties.size());
+    assertTrue(derivedProperties.contains(Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_INT_DERIVED)));
+  }
+
+  @Test
+  public void isSmallDataset() {
+    assertTrue(Entities.isSmallDataset(TestDomain.T_DETAIL));
+  }
+
   @Test
   public void getStringProvider() {
-    TestDomain.init();
     assertNotNull(Entities.getStringProvider(TestDomain.T_DEPARTMENT));
   }
 
@@ -137,7 +201,6 @@ public class EntitiesTest {
 
   @Test
   public void nullValidation() {
-    TestDomain.init();
     final Entity emp = Entities.entity(TestDomain.T_EMP);
     emp.put(TestDomain.EMP_NAME, "Name");
     emp.put(TestDomain.EMP_HIREDATE, new Date());
@@ -172,7 +235,6 @@ public class EntitiesTest {
 
   @Test
   public void getSearchProperties() {
-    TestDomain.init();
     Collection<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(TestDomain.T_EMP);
     assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB)));
     assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME)));
@@ -188,7 +250,6 @@ public class EntitiesTest {
 
   @Test
   public void getSearchPropertyIDs() {
-    TestDomain.init();
     Collection<String> searchPropertyIDs = Entities.getSearchPropertyIDs(TestDomain.T_EMP);
     assertTrue(searchPropertyIDs.contains(TestDomain.EMP_JOB));
     assertTrue(searchPropertyIDs.contains(TestDomain.EMP_NAME));
@@ -199,7 +260,6 @@ public class EntitiesTest {
 
   @Test
   public void stringProvider() {
-    TestDomain.init();
     final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, -10);
     department.put(TestDomain.DEPARTMENT_LOCATION, "Reykjavik");
