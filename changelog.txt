@@ -4375,3 +4375,4 @@
   List.removeIf() used instead of listIterator.remove() in a couple of places
   Added a few unit tests
   SizedDocumentFilter bug fixed
+  EntityApplicationPanel.getNorthToolbar() replaced with initializeNorthPanel()

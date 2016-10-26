@@ -51,7 +51,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -819,13 +818,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return a JToolBar instance to show in the NORTH position
-   */
-  protected JToolBar getNorthToolBar() {
-    return null;
-  }
-
-  /**
    * Called during initialization, after the application model has been initialized,
    * override to keep all entity panel provider definitions in one place.
    * @see #addEntityPanelProvider(EntityPanelProvider)
@@ -860,6 +852,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel();
     }
     add(applicationTabPane, BorderLayout.CENTER);
+
+    final JPanel northPanel = initializeNorthPanel();
+    if (northPanel != null) {
+      add(northPanel, BorderLayout.NORTH);
+    }
 
     final JPanel southPanel = initializeSouthPanel();
     if (southPanel != null) {
@@ -929,7 +926,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Initializes a panel to show in the SOUTH position of this application frame,
+   * Initializes a panel to display in the NORTH position of this application panel.
+   * override to provide a north panel.
+   * @return a panel for the NORTH position
+   */
+  protected JPanel initializeNorthPanel() {
+    return null;
+  }
+
+  /**
+   * Initializes a panel to display in the SOUTH position of this application frame,
    * override to provide a south panel.
    * @return a panel for the SOUTH position
    */
@@ -992,7 +998,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param applicationIcon the application icon
    * @param setVisible if true then the JFrame is set visible
    * @return an initialized, but non-visible JFrame
-   * @see #getNorthToolBar()
    */
   protected final JFrame prepareFrame(final String title, final boolean maximize,
                                       final boolean showMenuBar, final Dimension size,
@@ -1011,10 +1016,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     });
     frame.getContentPane().setLayout(new BorderLayout());
     frame.getContentPane().add(this, BorderLayout.CENTER);
-    final JToolBar toolbar = getNorthToolBar();
-    if (toolbar != null) {
-      frame.getContentPane().add(toolbar, BorderLayout.NORTH);
-    }
     if (size != null) {
       frame.setSize(size);
     }
