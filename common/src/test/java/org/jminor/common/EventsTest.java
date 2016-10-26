@@ -24,5 +24,6 @@ public class EventsTest {
     event.removeListener(listener);
     event.fire();
     assertTrue("Removed EventListener should not have been notified", counter.get() == 2);
+    Events.listener(Events.infoListener(listener));
   }
 }

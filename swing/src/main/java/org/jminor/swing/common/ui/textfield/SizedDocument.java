@@ -177,7 +177,7 @@ public class SizedDocument extends PlainDocument {
       if (replacement.length() > 0) {
         for (int i = documentText.length() - 1; i >= 0; i--) {
           final int replacementLength = replacement.length();
-          if (replacement.charAt(replacementLength - 1) == documentText.charAt(i)) {
+          if (replacementLength > 0 && replacement.charAt(replacementLength - 1) == documentText.charAt(i)) {
             replacement.replace(replacementLength - 1, replacementLength, "");
           }
           else {

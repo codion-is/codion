@@ -144,7 +144,7 @@ public class NumberField extends JTextField {
   }
 
   /**
-   * A DocumentFilter for restricting input to  values
+   * A DocumentFilter for restricting input to numerical values
    */
   protected static class NumberDocumentFilter extends SizedDocument.SizedDocumentFilter {
 
