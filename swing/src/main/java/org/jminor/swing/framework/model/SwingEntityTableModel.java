@@ -773,8 +773,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   private void applyColumnPreferences(final org.json.JSONObject preferences) {
     final FilteredTableColumnModel<Property> columnModel = getColumnModel();
-    final List<TableColumn> allColumns = Collections.list(columnModel.getColumns());
-    for (final TableColumn column : allColumns) {
+    for (final TableColumn column : Collections.list(columnModel.getColumns())) {
       final Property property = (Property) column.getIdentifier();
       if (columnModel.containsColumn(property)) {
         try {
