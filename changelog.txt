@@ -4376,3 +4376,5 @@
   Added a few unit tests
   SizedDocumentFilter bug fixed
   EntityApplicationPanel.getNorthToolbar() replaced with initializeNorthPanel()
+  EntityComboBoxModel.getSelectCondition() added
+  EntityComboBoxModel.performQuery() no longer takes selectCondition parameter

@@ -176,6 +176,12 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   /** {@inheritDoc} */
   @Override
+  public final Condition<Property.ColumnProperty> getSelectCondition() {
+    return this.selectCondition;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final void setForeignKeyFilterEntities(final String foreignKeyPropertyID, final Collection<Entity> entities) {
     if (Util.nullOrEmpty(entities)) {
       foreignKeyFilterEntities.remove(foreignKeyPropertyID);
@@ -291,7 +297,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
         return super.initializeContents();
       }
 
-      return performQuery(selectCondition);
+      return performQuery();
     }
     finally {
       refreshDoneEvent.fire();
@@ -299,11 +305,12 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   /**
-   * Retrieves the entities to present in this EntityComboBoxModel
-   * @param selectCondition the condition to base the query on
+   * Retrieves the entities to present in this EntityComboBoxModel, taking into account
+   * the {@link #getSelectCondition()} specified for this model
    * @return the entities to present in this EntityComboBoxModel
+   * @see #getSelectCondition()
    */
-  protected List<Entity> performQuery(final Condition<Property.ColumnProperty> selectCondition) {
+  protected List<Entity> performQuery() {
     try {
       return connectionProvider.getConnection().selectMany(EntityConditions.selectCondition(entityID, selectCondition));
     }

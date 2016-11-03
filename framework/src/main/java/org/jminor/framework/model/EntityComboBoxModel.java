@@ -101,6 +101,11 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
   void setSelectCondition(final Condition<Property.ColumnProperty> selectCondition);
 
   /**
+   * @return the select condition, null if none is specified
+   */
+  Condition<Property.ColumnProperty> getSelectCondition();
+
+  /**
    * @param listener a listener to be notified each time this model is refreshed
    */
   void addRefreshListener(final EventListener listener);
