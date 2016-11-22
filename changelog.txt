@@ -4378,3 +4378,4 @@
   EntityApplicationPanel.getNorthToolbar() replaced with initializeNorthPanel()
   EntityComboBoxModel.getSelectCondition() added
   EntityComboBoxModel.performQuery() no longer takes selectCondition parameter
+  ColumnConditionModel.setLikeValue() parameter type changed from Comparable to Object

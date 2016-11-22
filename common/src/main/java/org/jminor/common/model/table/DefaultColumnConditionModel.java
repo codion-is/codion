@@ -118,7 +118,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
   /** {@inheritDoc} */
   @Override
-  public final void setLikeValue(final Comparable value) {
+  public final void setLikeValue(final Object value) {
     setConditionType(Condition.Type.LIKE);
     setUpperBound(value);
     final boolean enableSearch = value != null;

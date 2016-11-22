@@ -87,7 +87,7 @@ public interface ColumnConditionModel<K> {
    * and enabling this model in case of a non-null value.
    * @param value the value to use as condition
    */
-  void setLikeValue(final Comparable value);
+  void setLikeValue(final Object value);
 
   /**
    * @return the upper bound
