@@ -179,12 +179,7 @@ public final class EntityGeneratorModel {
         refreshEndedEvent.fire();
       }
     });
-    Runtime.getRuntime().addShutdownHook(new Thread() {
-      @Override
-      public void run() {
-        exit();
-      }
-    });
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> exit()));
   }
 
   private void generateDefinitions(final List<Table> tables) {

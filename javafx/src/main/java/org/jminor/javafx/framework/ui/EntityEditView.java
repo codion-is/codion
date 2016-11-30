@@ -31,7 +31,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 import java.sql.Types;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,7 +116,7 @@ public abstract class EntityEditView extends BorderPane {
    */
   public void selectInputControl() {
     final List<Property> properties = Entities.getProperties(editModel.getEntityID(), controls.keySet());
-    Collections.sort(properties, (o1, o2) -> o1.toString().compareToIgnoreCase(o2.toString()));
+    properties.sort((o1, o2) -> o1.toString().compareToIgnoreCase(o2.toString()));
     controls.get(FXUiUtil.selectValues(properties).get(0).getPropertyID()).requestFocus();
   }
 

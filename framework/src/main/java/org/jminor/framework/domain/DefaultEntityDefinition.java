@@ -749,11 +749,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
     for (final Property property : properties) {
       if (property instanceof Property.DenormalizedProperty) {
         final Property.DenormalizedProperty denormalizedProperty = (Property.DenormalizedProperty) property;
-        Collection<Property.DenormalizedProperty> denormalizedProperties = denormalizedPropertiesMap.get(denormalizedProperty.getForeignKeyPropertyID());
-        if (denormalizedProperties == null) {
-          denormalizedProperties = new ArrayList<>();
-          denormalizedPropertiesMap.put(denormalizedProperty.getForeignKeyPropertyID(), denormalizedProperties);
-        }
+        final Collection<Property.DenormalizedProperty> denormalizedProperties =
+                denormalizedPropertiesMap.computeIfAbsent(denormalizedProperty.getForeignKeyPropertyID(), k -> new ArrayList<>());
         denormalizedProperties.add(denormalizedProperty);
       }
     }
@@ -768,7 +765,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
         primaryKeyProperties.add((Property.ColumnProperty) property);
       }
     }
-    Collections.sort(primaryKeyProperties, (pk1, pk2) -> {
+    primaryKeyProperties.sort((pk1, pk2) -> {
       final Integer index1 = pk1.getPrimaryKeyIndex();
       final Integer index2 = pk2.getPrimaryKeyIndex();
 

@@ -21,7 +21,6 @@ import org.jfree.data.xy.YIntervalSeriesCollection;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -240,7 +239,7 @@ public final class ConnectionPoolMonitor {
 
   private static List<ConnectionPoolState> sortAndRemoveDuplicates(final List<ConnectionPoolState> stats) {
     final List<ConnectionPoolState> poolStates = new ArrayList<>(stats.size());
-    Collections.sort(poolStates, new StateComparator());
+    poolStates.sort(new StateComparator());
     long time = -1;
     for (int i = stats.size()-1; i >= 0; i--) {
       final ConnectionPoolState state = stats.get(i);

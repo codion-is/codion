@@ -72,6 +72,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -664,7 +665,7 @@ public final class FXUiUtil {
    */
   public static ObservableList<Item> createValueListComboBoxModel(final Property.ValueListProperty property) {
     return new SortedList<>(FXCollections.observableArrayList(property.getValues()),
-            (o1, o2) -> o1.toString().compareTo(o2.toString()));
+            Comparator.comparing(Item::toString));
   }
 
   /**

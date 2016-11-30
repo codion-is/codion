@@ -331,9 +331,7 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void customSorting() {
-    final AbstractFilteredTableModel<String, Integer> tableModel = createTestModel((o1, o2) -> {
-      return o2.compareTo(o1);//reverse order
-    });
+    final AbstractFilteredTableModel<String, Integer> tableModel = createTestModel(Comparator.reverseOrder());
     tableModel.refresh();
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
     assertEquals("e", tableModel.getItemAt(0));

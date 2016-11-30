@@ -1,13 +1,13 @@
 package org.jminor.swing.common.model.checkbox;
 
+import javax.swing.JToggleButton.ToggleButtonModel;
+import java.awt.event.ItemEvent;
+
 /**
  * A ToggleButtonModel implementation which includes an undetermined state.
  * http://www.javaspecialists.eu/archive/Issue145.html
  * @author Heinz M. Kabutz
  */
-import javax.swing.JToggleButton.ToggleButtonModel;
-import java.awt.event.ItemEvent;
-
 public final class TristateButtonModel extends ToggleButtonModel {
   private TristateState state = TristateState.DESELECTED;
 

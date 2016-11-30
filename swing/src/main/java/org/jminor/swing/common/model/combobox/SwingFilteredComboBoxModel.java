@@ -447,7 +447,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
    */
   private void sortVisibleItems() {
     if (sortComparator != null) {
-      Collections.sort(visibleItems, sortComparator);
+      visibleItems.sort(sortComparator);
       fireContentsChanged();
     }
   }

@@ -27,7 +27,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -89,7 +89,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    */
   private void initializeUI() {
     final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<>(model.getItems());
-    Collections.sort(items, (o1, o2) -> o1.getItem().toString().compareTo(o2.getItem().toString()));
+    items.sort(Comparator.comparing(item -> item.getItem().toString()));
     for (final ItemRandomizer.RandomItem<T> item : items) {
       ((DefaultListModel<ItemRandomizer.RandomItem<T>>) itemList.getModel()).addElement(item);
     }

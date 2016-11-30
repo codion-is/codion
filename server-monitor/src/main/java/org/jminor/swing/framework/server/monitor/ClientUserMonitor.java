@@ -140,7 +140,7 @@ public final class ClientUserMonitor {
 
   private List<User> getSortedUsers() throws RemoteException {
     final List<User> users = new ArrayList<>(server.getUsers());
-    Collections.sort(users, USER_COMPARATOR);
+    users.sort(USER_COMPARATOR);
 
     return users;
   }

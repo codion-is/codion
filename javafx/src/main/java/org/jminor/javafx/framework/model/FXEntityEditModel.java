@@ -61,13 +61,8 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   public final FXEntityListModel getForeignKeyListModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Objects.requireNonNull(foreignKeyProperty);
-    FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
-    if (listModel == null) {
-      listModel = createForeignKeyListModel(foreignKeyProperty);
-      foreignKeyListModels.put(foreignKeyProperty, listModel);
-    }
 
-    return listModel;
+    return foreignKeyListModels.computeIfAbsent(foreignKeyProperty, k -> createForeignKeyListModel(foreignKeyProperty));
   }
 
   /**

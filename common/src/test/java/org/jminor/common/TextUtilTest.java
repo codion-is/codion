@@ -10,7 +10,6 @@ import java.nio.charset.Charset;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -27,7 +26,7 @@ public final class TextUtilTest {
 
     final Comparator<String> collator = TextUtil.getSpaceAwareCollator();
 
-    Collections.sort(strings, collator);
+    strings.sort(collator);
     assertEquals(two, strings.get(0));
     assertEquals(three, strings.get(1));
     assertEquals(one, strings.get(2));

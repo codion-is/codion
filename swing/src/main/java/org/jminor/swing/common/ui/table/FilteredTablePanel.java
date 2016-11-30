@@ -55,7 +55,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -400,8 +399,9 @@ public class FilteredTablePanel<R, C> extends JPanel {
   @SuppressWarnings({"unchecked"})
   public final void selectTableColumns() {
     final List<TableColumn> allColumns = new ArrayList<>(tableModel.getColumnModel().getAllColumns());
-    Collections.sort(allColumns, new Comparator<TableColumn>() {
+    allColumns.sort(new Comparator<TableColumn>() {
       private final Collator collator = Collator.getInstance();
+
       @Override
       public int compare(final TableColumn o1, final TableColumn o2) {
         return TextUtil.collateSansSpaces(collator, o1.getIdentifier().toString(), o2.getIdentifier().toString());

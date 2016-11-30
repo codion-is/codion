@@ -32,7 +32,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -100,7 +99,7 @@ public final class EntityConditionPanel extends JPanel {
   private List<PropertyConditionModel<? extends Property>> getSortedConditions(final EntityTableConditionModel conditionModel) {
     final List<PropertyConditionModel<? extends Property>> conditionModels =
             new ArrayList<>(conditionModel.getPropertyConditionModels());
-    Collections.sort(conditionModels, new ConditionModelComparator());
+    conditionModels.sort(new ConditionModelComparator());
 
     return conditionModels;
   }

@@ -1,9 +1,5 @@
 package org.jminor.swing.common.ui.checkbox;
 
-/**
- * http://www.javaspecialists.eu/archive/Issue145.html
- * @author Heinz M. Kabutz
- */
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
 import org.jminor.swing.common.model.checkbox.TristateState;
 
@@ -24,7 +20,9 @@ import java.awt.event.MouseListener;
 
 /**
  * A check box implementation based on the TristateButtonModel
+ * http://www.javaspecialists.eu/archive/Issue145.html
  * @see org.jminor.swing.common.model.checkbox.TristateButtonModel
+ * @author Heinz M. Kabutz
  */
 public final class TristateCheckBox extends JCheckBox {
 

@@ -254,7 +254,7 @@ public abstract class EntityTestUnit {
   private void initializeReferencedEntities(final String entityID, final Collection<String> visited) throws DatabaseException {
     visited.add(entityID);
     final List<Property.ForeignKeyProperty> foreignKeyProperties = new ArrayList<>(Entities.getForeignKeyProperties(entityID));
-    Collections.sort(foreignKeyProperties, (o1, o2) -> o1.getReferencedEntityID().equals(entityID) ? 1 : 0);
+    foreignKeyProperties.sort((o1, o2) -> o1.getReferencedEntityID().equals(entityID) ? 1 : 0);
     for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityID)) {
       final String referencedEntityID = foreignKeyProperty.getReferencedEntityID();
       if (!visited.contains(referencedEntityID)) {

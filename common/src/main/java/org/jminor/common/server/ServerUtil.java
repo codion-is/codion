@@ -22,7 +22,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -154,7 +153,7 @@ public final class ServerUtil {
     for (final String serverHostName : hostNames.split(",")) {
       servers.addAll(getServersOnHost(serverHostName, registryPort, serverNamePrefix, requestedServerPort));
     }
-    Collections.sort(servers, new ServerComparator());
+    servers.sort(new ServerComparator());
 
     return servers;
   }

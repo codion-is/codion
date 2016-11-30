@@ -13,7 +13,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.text.Collator;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -126,7 +125,7 @@ public final class TextUtil {
    * @param values the list to sort (collate)
    */
   public static void collate(final List values) {
-    Collections.sort(values, getSpaceAwareCollator());
+    values.sort(getSpaceAwareCollator());
   }
 
   /**
@@ -145,7 +144,7 @@ public final class TextUtil {
    * @param list the list
    */
   public static void collateSansSpaces(final Collator collator, final List<?> list) {
-    Collections.sort(list, (o1, o2) -> collateSansSpaces(collator, o1.toString(), o2.toString()));
+    list.sort((o1, o2) -> collateSansSpaces(collator, o1.toString(), o2.toString()));
   }
 
   /**

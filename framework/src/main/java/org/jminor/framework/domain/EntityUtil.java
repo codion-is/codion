@@ -341,7 +341,7 @@ public final class EntityUtil {
   public static void sort(final List<? extends Property> properties) {
     Objects.requireNonNull(properties, "properties");
     final Collator collator = Collator.getInstance();
-    Collections.sort(properties, (o1, o2) -> collator.compare(o1.toString().toLowerCase(), o2.toString().toLowerCase()));
+    properties.sort((o1, o2) -> collator.compare(o1.toString().toLowerCase(), o2.toString().toLowerCase()));
   }
 
   /**
@@ -597,11 +597,7 @@ public final class EntityUtil {
       Objects.requireNonNull(beanClass, BEAN_CLASS_PARAM);
       Objects.requireNonNull(propertyID, PROPERTY_ID_PARAM);
       Objects.requireNonNull(propertyName, PROPERTY_NAME_PARAM);
-      Map<String, GetterSetter> beanPropertyMap = propertyMap.get(beanClass);
-      if (beanPropertyMap == null) {
-        beanPropertyMap = new HashMap<>();
-        propertyMap.put(beanClass, beanPropertyMap);
-      }
+      final Map<String, GetterSetter> beanPropertyMap = propertyMap.computeIfAbsent(beanClass, k -> new HashMap<>());
       final Property property = Entities.getProperty(getEntityID(beanClass), propertyID);
       final Method getter = Util.getGetMethod(property.getTypeClass(), propertyName, beanClass);
       final Method setter = Util.getSetMethod(property.getTypeClass(), propertyName, beanClass);

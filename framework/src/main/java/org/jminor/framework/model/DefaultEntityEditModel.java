@@ -544,13 +544,8 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   @Override
   public final EntityLookupModel getForeignKeyLookupModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Objects.requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY);
-    EntityLookupModel entityLookupModel = entityLookupModels.get(foreignKeyProperty);
-    if (entityLookupModel == null) {
-      entityLookupModel = createForeignKeyLookupModel(foreignKeyProperty);
-      entityLookupModels.put(foreignKeyProperty, entityLookupModel);
-    }
 
-    return entityLookupModel;
+    return entityLookupModels.computeIfAbsent(foreignKeyProperty, k -> createForeignKeyLookupModel(foreignKeyProperty));
   }
 
   /** {@inheritDoc} */

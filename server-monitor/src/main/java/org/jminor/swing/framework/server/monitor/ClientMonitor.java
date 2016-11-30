@@ -10,7 +10,6 @@ import org.jminor.framework.server.EntityConnectionServerAdmin;
 import javax.swing.DefaultListModel;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public final class ClientMonitor {
   public void refresh() throws RemoteException {
     clientInstanceListModel.clear();
     final List<ClientInfo> clients = new ArrayList<>(clientTypeID == null ? server.getClients(user) : server.getClients(clientTypeID));
-    Collections.sort(clients, CLIENT_INFO_COMPARATOR);
+    clients.sort(CLIENT_INFO_COMPARATOR);
     for (final ClientInfo client : clients) {
       clientInstanceListModel.addElement(new ClientInstanceMonitor(client, server));
     }

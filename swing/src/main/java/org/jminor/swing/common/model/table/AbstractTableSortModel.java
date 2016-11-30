@@ -66,7 +66,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   /** {@inheritDoc} */
   @Override
   public final void sort(final List<R> items) {
-    Collections.sort(items, rowComparator);
+    items.sort(rowComparator);
   }
 
   /** {@inheritDoc} */
@@ -209,13 +209,8 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
         comparison = 1;
       }
       else {
-        Comparator comparator = columnComparators.get(columnIdentifier);
-        if (comparator == null) {
-          comparator = initializeColumnComparator(columnIdentifier);
-          columnComparators.put(columnIdentifier, comparator);
-        }
-        //noinspection unchecked
-        comparison = comparator.compare(valueOne, valueTwo);
+        comparison = columnComparators.computeIfAbsent(columnIdentifier,
+                k -> initializeColumnComparator(columnIdentifier)).compare(valueOne, valueTwo);
       }
       if (comparison != 0) {
         return directive == SortingDirective.DESCENDING ? -comparison : comparison;
@@ -231,7 +226,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
           entries.add(entry);
         }
       }
-      Collections.sort(entries, (o1, o2) -> {
+      entries.sort((o1, o2) -> {
         final Integer priorityOne = o1.getValue().getPriority();
         final Integer priorityTwo = o2.getValue().getPriority();
 
