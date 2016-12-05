@@ -4358,7 +4358,7 @@
   UiUtil.ProgressWorker refactored from anonymous class
   JasperReportsWrapper, bug fixed, could not run a parameterless report
   JUnit test improvements
-  DefaultDatabaseConnection.DEFAULT_VALIDITY_CHECK_TIMEOUT intruduced and used
+  DefaultDatabaseConnection.DEFAULT_VALIDITY_CHECK_TIMEOUT introduced and used
   JavaFX javadocs improved
   UiUtil.selectFilesOrDirectories() and UiUtil.selectFileToSave() now only set the startDir if it exists
   EntityJSONParser.parseValue() bug fixed, returned Date instead of Timestamp for timestamp based properties
