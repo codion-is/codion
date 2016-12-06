@@ -121,9 +121,10 @@ public class SizedDocument extends PlainDocument {
       if (getMaxLength() > 0 && builder.length() > getMaxLength()) {
         return;
       }
-      final String valueAfterInsert = transformString(builder.toString());
-      if (validValue(valueAfterInsert)) {
-        setText(fb, valueAfterInsert, attributeSet);
+      final String text = transformString(builder.toString());
+      if (validValue(text)) {
+        final String replacement = adjustReplacementString(text, document, offset, string.length());
+        super.replace(fb, 0, document.getLength() - (text.length() - replacement.length()), replacement, attributeSet);
       }
     }
 
@@ -136,9 +137,10 @@ public class SizedDocument extends PlainDocument {
       if (getMaxLength() > 0 && builder.length() > getMaxLength()) {
         return;
       }
-      final String transformedString = transformString(builder.toString());
-      if (validValue(transformedString)) {
-        setText(fb, transformedString, attributeSet);
+      final String text = transformString(builder.toString());
+      if (validValue(text)) {
+        final String replacement = adjustReplacementString(text, document, offset, length);
+        super.replace(fb, 0, document.getLength() - (text.length() - replacement.length()), replacement, attributeSet);
       }
     }
 
@@ -164,18 +166,13 @@ public class SizedDocument extends PlainDocument {
       }
     }
 
-    private void setText(final FilterBypass fb, final String text, final AttributeSet attributeSet) throws BadLocationException {
-      final Document document = fb.getDocument();
-      final String replacement = adjustReplacementString(text, document);
-      super.replace(fb, 0, document.getLength() - (text.length() - replacement.length()), replacement, attributeSet);
-    }
-
     //We remove the common suffix if any, to preserve the caret position
-    private String adjustReplacementString(final String text, final Document document) throws BadLocationException {
+    private String adjustReplacementString(final String text, final Document document,
+                                           final int offset, final int length) throws BadLocationException {
       final StringBuilder replacement = new StringBuilder(text);
       final String documentText = document.getText(0, document.getLength());
       if (replacement.length() > 0) {
-        for (int i = documentText.length() - 1; i >= 0; i--) {
+        for (int i = documentText.length() - 1; i >= (offset + length); i--) {
           final int replacementLength = replacement.length();
           if (replacementLength > 0 && replacement.charAt(replacementLength - 1) == documentText.charAt(i)) {
             replacement.replace(replacementLength - 1, replacementLength, "");

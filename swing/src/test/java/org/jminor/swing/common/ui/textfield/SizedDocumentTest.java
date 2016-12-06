@@ -6,13 +6,14 @@ package org.jminor.swing.common.ui.textfield;
 import org.junit.Test;
 
 import javax.swing.JTextField;
+import javax.swing.text.BadLocationException;
 
 import static org.junit.Assert.assertEquals;
 
 public class SizedDocumentTest {
 
   @Test
-  public void test() {
+  public void test() throws BadLocationException {
     final JTextField txt = new JTextField();
     final SizedDocument document = new SizedDocument();
     txt.setDocument(document);
@@ -39,5 +40,10 @@ public class SizedDocumentTest {
 
     txt.setText("HELLO");
     assertEquals("hello", txt.getText());
+
+    document.setDocumentCase(SizedDocument.DocumentCase.NONE);
+
+    document.insertString(2, "HOLA", null);
+    assertEquals("heHOLAllo", txt.getText());
   }
 }

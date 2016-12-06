@@ -4380,3 +4380,4 @@
   EntityComboBoxModel.performQuery() no longer takes selectCondition parameter
   ColumnConditionModel.setLikeValue() parameter type changed from Comparable to Object
   Some Java 8 related improvements based on IntelliJ inspections
+  SizedDocumentFilter bug fixed
