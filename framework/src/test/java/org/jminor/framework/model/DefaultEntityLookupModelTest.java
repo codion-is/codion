@@ -182,7 +182,7 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getCaseSensitiveValue().set(true);
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPostfixValue().set(true);
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPostfixValue().set(true);
-    lookupModel.setAdditionalLookupCondition(
+    lookupModel.setAdditionalConditionProvider(() ->
             EntityConditions.propertyCondition(Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB),
                     Condition.Type.NOT_LIKE, "MANAGER"));
     result = lookupModel.performQuery();
@@ -198,7 +198,7 @@ public final class DefaultEntityLookupModelTest {
     List<Entity> result = lookupModel.performQuery();
     assertTrue("A single result should be returned", result.size() == 1);
     lookupModel.setSelectedEntities(result);
-    lookupModel.setAdditionalLookupCondition(Conditions.<Property.ColumnProperty>stringCondition("1 = 2"));
+    lookupModel.setAdditionalConditionProvider(() -> Conditions.<Property.ColumnProperty>stringCondition("1 = 2"));
     assertEquals(1, lookupModel.getSelectedEntities().size());
     result = lookupModel.performQuery();
     assertTrue("No result should be returned", result.isEmpty());

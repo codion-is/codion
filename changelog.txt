@@ -4381,3 +4381,8 @@
   ColumnConditionModel.setLikeValue() parameter type changed from Comparable to Object
   Some Java 8 related improvements based on IntelliJ inspections
   SizedDocumentFilter bug fixed
+  Condition.Provider interface added, for dynamic conditions
+  PropertyConditionModel implements the above
+  EntityLookupModel.setAdditionalLookupCondition() changed to setAdditionalConditionProvider()
+  EntityComboBoxModel.setSelectCondition() changed to setSelectConditionProvider()
+  EntityTableConditionModel.setAdditionalTableCondition() changed to setAdditionalTableConditionProvider()

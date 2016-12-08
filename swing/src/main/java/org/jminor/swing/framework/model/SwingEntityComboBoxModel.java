@@ -57,9 +57,9 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private boolean forceRefresh = false;
 
   /**
-   * the Condition used to filter the data when queried
+   * the Condition.Provider used to filter the data when queried
    */
-  private Condition<Property.ColumnProperty> selectCondition;
+  private Condition.Provider<Property.ColumnProperty> selectConditionProvider;
 
   /**
    * A map of entities used to filter the contents of this model by foreign key value.
@@ -170,14 +170,14 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   /** {@inheritDoc} */
   @Override
-  public final void setSelectCondition(final Condition<Property.ColumnProperty> selectCondition) {
-    this.selectCondition = selectCondition;
+  public final void setSelectConditionProvider(final Condition.Provider<Property.ColumnProperty> selectConditionProvider) {
+    this.selectConditionProvider = selectConditionProvider;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final Condition<Property.ColumnProperty> getSelectCondition() {
-    return this.selectCondition;
+  public final Condition.Provider<Property.ColumnProperty> getSelectConditionProvider() {
+    return this.selectConditionProvider;
   }
 
   /** {@inheritDoc} */
@@ -306,13 +306,14 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   /**
    * Retrieves the entities to present in this EntityComboBoxModel, taking into account
-   * the {@link #getSelectCondition()} specified for this model
+   * the {@link #getSelectConditionProvider()} specified for this model
    * @return the entities to present in this EntityComboBoxModel
-   * @see #getSelectCondition()
+   * @see #getSelectConditionProvider()
    */
   protected List<Entity> performQuery() {
     try {
-      return connectionProvider.getConnection().selectMany(EntityConditions.selectCondition(entityID, selectCondition));
+      return connectionProvider.getConnection().selectMany(EntityConditions.selectCondition(entityID,
+              selectConditionProvider == null ? null : selectConditionProvider.getCondition()));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);

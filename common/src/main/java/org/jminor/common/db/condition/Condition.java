@@ -54,6 +54,18 @@ public interface Condition<T extends Column> {
   }
 
   /**
+   * For providing dynamic Conditions
+   * @param <T> the type used to describe the condition values
+   */
+  interface Provider<T extends Column> {
+
+    /**
+     * @return the Condition
+     */
+    Condition<T> getCondition();
+  }
+
+  /**
    * Enumerating all the possible condition types.
    */
   enum Type {

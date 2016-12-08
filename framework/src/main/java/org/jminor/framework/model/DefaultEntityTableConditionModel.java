@@ -43,7 +43,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   private final String entityID;
   private final Map<String, ColumnConditionModel<Property>> propertyFilterModels = new LinkedHashMap<>();
   private final Map<String, PropertyConditionModel<? extends Property>> propertyConditionModels = new HashMap<>();
-  private Condition<Property.ColumnProperty> additionalCondition;
+  private Condition.Provider<Property.ColumnProperty> additionalConditionProvider;
   private FilterCondition<Entity> additionalFilterCondition;
   private Conjunction conjunction = Conjunction.AND;
   private String rememberedConditionState = "";
@@ -224,8 +224,8 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
         conditionSet.add(conditionModel.getCondition());
       }
     }
-    if (additionalCondition != null) {
-      conditionSet.add(additionalCondition);
+    if (additionalConditionProvider != null) {
+      conditionSet.add(additionalConditionProvider.getCondition());
     }
 
     return conditionSet.getConditionCount() > 0 ? conditionSet : null;
@@ -233,14 +233,14 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final Condition<Property.ColumnProperty> getAdditionalTableCondition() {
-    return additionalCondition;
+  public final Condition.Provider<Property.ColumnProperty> getAdditionalTableConditionProvider() {
+    return additionalConditionProvider;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableConditionModel setAdditionalTableCondition(final Condition<Property.ColumnProperty> condition) {
-    this.additionalCondition = condition;
+  public final EntityTableConditionModel setAdditionalTableConditionProvider(final Condition.Provider<Property.ColumnProperty> conditionProvider) {
+    this.additionalConditionProvider = conditionProvider;
     return this;
   }
 

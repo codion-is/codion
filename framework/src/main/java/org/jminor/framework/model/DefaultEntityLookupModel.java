@@ -73,7 +73,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   private final Value<Boolean> multipleSelectionAllowedValue = Values.value(true);
 
   private Entity.ToString toStringProvider = null;
-  private Condition<Property.ColumnProperty> additionalLookupCondition;
+  private Condition.Provider<Property.ColumnProperty> additionalConditionProvider;
   private Comparator<Entity> resultSorter = new EntityComparator();
   private String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
   private String description;
@@ -185,9 +185,8 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public final EntityLookupModel setAdditionalLookupCondition(final Condition<Property.ColumnProperty>
-                                                                       additionalLookupCondition) {
-    this.additionalLookupCondition = additionalLookupCondition;
+  public final EntityLookupModel setAdditionalConditionProvider(final Condition.Provider<Property.ColumnProperty> additionalConditionProvider) {
+    this.additionalConditionProvider = additionalConditionProvider;
     return this;
   }
 
@@ -299,8 +298,8 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
       }
     }
 
-    return EntityConditions.selectCondition(entityID, additionalLookupCondition == null ? baseCondition :
-                    Conditions.conditionSet(Conjunction.AND, additionalLookupCondition, baseCondition),
+    return EntityConditions.selectCondition(entityID, additionalConditionProvider == null ? baseCondition :
+                    Conditions.conditionSet(Conjunction.AND, additionalConditionProvider.getCondition(), baseCondition),
             Entities.getOrderByClause(getEntityID()));
   }
 

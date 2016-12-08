@@ -100,8 +100,8 @@ public class EmpDeptMinimalApp {
             final Property.ForeignKeyProperty foreignKeyProperty) {
       final EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
       if (foreignKeyProperty.is("mgr_fk")) {
-        comboBoxModel.setSelectCondition(EntityConditions.propertyCondition(
-                "scott.emp", "job", Condition.Type.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
+        comboBoxModel.setSelectConditionProvider(() -> EntityConditions.propertyCondition(
+            "scott.emp", "job", Condition.Type.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
         comboBoxModel.refresh();
       }
 

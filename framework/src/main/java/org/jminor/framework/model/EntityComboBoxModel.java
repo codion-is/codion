@@ -95,15 +95,15 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
   boolean isStaticData();
 
   /**
-   * Sets the condition to use when querying data
-   * @param selectCondition the condition
+   * Sets the condition provider to use when querying data
+   * @param selectConditionProvider the condition provider
    */
-  void setSelectCondition(final Condition<Property.ColumnProperty> selectCondition);
+  void setSelectConditionProvider(final Condition.Provider<Property.ColumnProperty> selectConditionProvider);
 
   /**
-   * @return the select condition, null if none is specified
+   * @return the select condition provider, null if none is specified
    */
-  Condition<Property.ColumnProperty> getSelectCondition();
+  Condition.Provider<Property.ColumnProperty> getSelectConditionProvider();
 
   /**
    * @param listener a listener to be notified each time this model is refreshed

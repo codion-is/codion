@@ -51,14 +51,14 @@ public interface EntityTableConditionModel extends FilterCondition<Entity>, Refr
   /**
    * @return any additional search condition, not based on any individual property condition
    */
-  Condition<Property.ColumnProperty> getAdditionalTableCondition();
+  Condition.Provider<Property.ColumnProperty> getAdditionalTableConditionProvider();
 
   /**
-   * Sets the additional condition, one not based on any individual property condition
-   * @param condition the condition
+   * Sets the additional condition provider, one not based on any individual property condition
+   * @param conditionProvider the condition provider
    * @return this EntityTableConditionModel instance
    */
-  EntityTableConditionModel setAdditionalTableCondition(final Condition<Property.ColumnProperty> condition);
+  EntityTableConditionModel setAdditionalTableConditionProvider(final Condition.Provider<Property.ColumnProperty> conditionProvider);
 
   /**
    * @return any additional filter condition, not based on any individual property condition

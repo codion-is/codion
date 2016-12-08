@@ -98,13 +98,13 @@ public interface EntityLookupModel extends EntityDataProvider {
   List<Entity> performQuery();
 
   /**
-   * Sets the additional lookup condition to use when performing the next lookup.
+   * Sets the additional lookup condition provider to use when performing the next lookup.
    * This condition is AND'ed to the actual lookup condition.
    * NOTE, this does not affect the currently selected value(s), if any.
-   * @param additionalLookupCondition the additional lookup condition
+   * @param additionalConditionProvider the additional lookup condition provider
    * @return this EntityLookupModel instance
    */
-  EntityLookupModel setAdditionalLookupCondition(final Condition<Property.ColumnProperty> additionalLookupCondition);
+  EntityLookupModel setAdditionalConditionProvider(final Condition.Provider<Property.ColumnProperty> additionalConditionProvider);
 
   /**
    * Override the default toString() for lookup elements when displayed
