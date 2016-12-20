@@ -275,6 +275,13 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   }
 
   /**
+   * @return true if the selection model has been set
+   */
+  protected final boolean selectionModelHasBeenSet() {
+    return selectionModel != null;
+  }
+
+  /**
    * @return the entities to display in this list
    */
   protected List<Entity> performQuery() {
@@ -295,7 +302,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   }
 
   private void checkIfSelectionModelHasBeenSet() {
-    if (selectionModel == null) {
+    if (!selectionModelHasBeenSet()) {
       throw new IllegalStateException(SELECTION_MODEL_HAS_NOT_BEEN_SET);
     }
   }

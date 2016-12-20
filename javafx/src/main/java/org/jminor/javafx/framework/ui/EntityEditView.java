@@ -61,6 +61,7 @@ public abstract class EntityEditView extends BorderPane {
    */
   public EntityEditView(final FXEntityEditModel editModel) {
     this.editModel = editModel;
+    this.editModel.setEntity(null);
   }
 
   /**

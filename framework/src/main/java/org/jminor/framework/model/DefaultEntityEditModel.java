@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.model;
 
 import org.jminor.common.Event;
@@ -137,7 +140,6 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
     this.readOnly = Entities.isReadOnly(entityID);
-    setEntity(null);
     bindEventsInternal();
   }
 

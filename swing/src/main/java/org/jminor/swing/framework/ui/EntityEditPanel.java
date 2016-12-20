@@ -163,6 +163,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   public EntityEditPanel(final SwingEntityEditModel editModel, final ControlCode... controlCodes) {
     this.editModel = Objects.requireNonNull(editModel, "editModel");
+    this.editModel.setEntity(null);
     if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE)) {
       ACTIVE_STATE_GROUP.addState(activeState);
     }
