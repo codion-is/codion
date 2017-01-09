@@ -57,6 +57,7 @@ class CompletionDocument extends PlainDocument {
       return;
     }
     if (hitBackspace) {
+      hitBackspace = false;
       boolean selectFirst = false;
       // user hit backspace => move the selection backwards
       // old item keeps being selected unless we've backspaced beyond the first character
