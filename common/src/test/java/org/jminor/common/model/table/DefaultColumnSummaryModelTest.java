@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.common.model.table;
 

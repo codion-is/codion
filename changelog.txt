@@ -4390,3 +4390,4 @@
   EntityEditPanel and EntityEditView now set default values in constructor by calling editModel.setEntity(null)
   ObservableEntityList.hasSelectionModelBeenSet() added, used in FXEntityListModel
   CompletionDocument bug fixed, hitBackspace was not reset during remove()
+  Copyright updated
