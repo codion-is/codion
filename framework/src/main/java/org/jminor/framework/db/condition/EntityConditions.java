@@ -32,6 +32,7 @@ public final class EntityConditions {
 
   private static final int IN_CLAUSE_LIMIT = 100;//JDBC limit
   private static final String IN_PREFIX = " in (";
+  private static final String NOT_IN_PREFIX = " not in (";
 
   private EntityConditions() {}
 
@@ -864,12 +865,12 @@ public final class EntityConditions {
     }
 
     private static String getInList(final String columnIdentifier, final String value, final int valueCount, final boolean not) {
-      final StringBuilder stringBuilder = new StringBuilder("(").append(columnIdentifier).append(not ? " not in (" : IN_PREFIX);
+      final StringBuilder stringBuilder = new StringBuilder("(").append(columnIdentifier).append(not ? NOT_IN_PREFIX : IN_PREFIX);
       int cnt = 1;
       for (int i = 0; i < valueCount; i++) {
         stringBuilder.append(value);
         if (cnt++ == IN_CLAUSE_LIMIT && i < valueCount - 1) {
-          stringBuilder.append(not ? ") and " : ") or ").append(columnIdentifier).append(IN_PREFIX);
+          stringBuilder.append(not ? ") and " : ") or ").append(columnIdentifier).append(not ? NOT_IN_PREFIX : IN_PREFIX);
           cnt = 1;
         }
         else if (i < valueCount - 1) {

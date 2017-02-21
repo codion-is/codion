@@ -222,9 +222,11 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   boolean isQueryConditionRequired();
 
   /**
-   * @param value if set to true then all underlying entities are shown
-   * when no condition is applied, which can be problematic in the case of huge datasets.
+   * @param value set to true to prevent refreshing unless a query condition has been set.
+   * This is recommended for entities with large underlying datasets. If false then all underlying
+   * entities are retreived when no condition has been set.
    * @return this table model instance
+   * @see EntityTableConditionModel#isEnabled()
    */
   EntityTableModel<E> setQueryConditionRequired(final boolean value);
 

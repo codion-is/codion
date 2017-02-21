@@ -4393,3 +4393,4 @@
   Copyright updated
   EntityEditPanel and EntityEditView no longer set default values in constructor by calling editModel.setEntity(null), wrong place, wrong time since it resets the EditModel entity state
   DefaultEntityModel now calls editModel.setEntity(null) in constructor
+  EntityConditions.getInList() bug fixed, 'not in' did not work when the condition value count exceeded the in clause limit
