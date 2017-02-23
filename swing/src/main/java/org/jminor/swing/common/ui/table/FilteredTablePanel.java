@@ -500,6 +500,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
         scrollToCenter(coordinate.y, coordinate.x);
       }
       else {
+        tableModel.getSelectionModel().clearSelection();
         lastSearchResultCoordinate = NULL_POINT;
       }
     }

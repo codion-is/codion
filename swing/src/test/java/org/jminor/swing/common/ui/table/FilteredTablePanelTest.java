@@ -8,12 +8,10 @@ import org.jminor.swing.common.model.table.AbstractFilteredTableModelTest;
 import org.junit.Test;
 
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import java.awt.AWTException;
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class FilteredTablePanelTest {
 
@@ -59,9 +57,10 @@ public class FilteredTablePanelTest {
     assertEquals(3, tableModel.getSelectionModel().getSelectedIndex());
     searchField.setText("dans");
     assertEquals(2, tableModel.getSelectionModel().getSelectedIndex());
+    searchField.setText("dansu");
+    assertTrue(tableModel.getSelectionModel().isSelectionEmpty());
 
     searchField.setText("");
-    ((ListSelectionModel) tableModel.getSelectionModel()).clearSelection();
 
     panel.findNextValue(false, true, "da");
     assertEquals(0, tableModel.getSelectionModel().getSelectedIndex());
