@@ -4395,3 +4395,4 @@
   DefaultEntityModel now calls editModel.setEntity(null) in constructor
   EntityConditions.getInList() bug fixed, 'not in' did not work when the condition value count exceeded the in clause limit
   FilteredTablePanel.performSearch() now clears the selection when search string is not found
+  ProgressWorker and ProgressDialog added
