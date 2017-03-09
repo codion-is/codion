@@ -20,10 +20,12 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
+import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
+import org.jminor.swing.common.ui.worker.ProgressWorker;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -38,7 +40,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -49,7 +50,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
@@ -115,7 +115,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -140,7 +140,6 @@ public final class UiUtil {
   private static final int DEFAULT_HOR_VERT_GAP = 5;
   private static final int DEFAULT_DATE_FIELD_COLUMNS = 12;
   private static final int MAX_SELECT_VALUE_DIALOG_WIDTH = 500;
-  private static final int DEFAULT_PROGRESS_BAR_WIDTH = 400;
   private static final Map<RootPaneContainer, Integer> WAIT_CURSOR_REQUESTS = new HashMap<>();
   /**
    * Caching the file chooser since the constructor is quite slow, especially on Win. with many mapped network drives
@@ -1487,11 +1486,11 @@ public final class UiUtil {
    * @param successMessage if specified then this message is displayed after the task has successfully run
    * @param successTitle the title for the success message dialog
    * @param failTitle the title of the failure dialog
-   * @param task the task to run
+   * @param task the task to run in the background
    */
   public static void runWithProgressBar(final JComponent dialogParent, final String progressBarTitle,
                                         final String successMessage, final String successTitle, final String failTitle,
-                                        final Runnable task) {
+                                        final Callable task) {
     runWithProgressBar(dialogParent, progressBarTitle, successMessage, successTitle, failTitle, null, task);
   }
 
@@ -1504,49 +1503,50 @@ public final class UiUtil {
    * @param successMessage if specified then this message is displayed after the task has successfully run
    * @param successTitle the title for the success message dialog
    * @param failTitle the title of the failure dialog
-   * @param buttonAction if specified this action will be displayed as a button, useful for adding a cancel action
-   * @param task the task to run
+   * @param buttonControl if specified this control will be displayed as a button, useful for adding a cancel action
+   * @param task the task to run in the background
    */
   public static void runWithProgressBar(final JComponent dialogParent, final String progressBarTitle,
                                         final String successMessage, final String successTitle, final String failTitle,
-                                        final Action buttonAction, final Runnable task) {
-    runWithProgressBar(dialogParent, progressBarTitle, successMessage, successTitle, failTitle, buttonAction, null, task);
+                                        final Control buttonControl, final Callable task) {
+    runWithProgressBar(dialogParent, progressBarTitle, successMessage, successTitle, failTitle, buttonControl, null, task);
   }
 
   /**
    * Runs the given Runnable instance while displaying a simple indeterminate progress bar, along with a button based
-   * on the {@code buttonAction} parameter, if specified
+   * on the {@code buttonControl} parameter, if specified
    * Any exception thrown from the task is caught and displayed, rendering the execution unsuccessful.
    * @param dialogParent the dialog parent
    * @param progressBarTitle the progress bar title
    * @param successMessage if specified then this message is displayed after the task has successfully run
    * @param successTitle the title for the success message dialog
    * @param failTitle the title of the failure dialog
-   * @param buttonAction if specified this action will be displayed as a button, useful for adding a cancel action
+   * @param buttonControl if specified this control will be displayed as a button, useful for adding a cancel action
    * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog
-   * @param task the task to run
+   * @param task the task to run in the background
    */
   public static void runWithProgressBar(final JComponent dialogParent, final String progressBarTitle,
                                         final String successMessage, final String successTitle, final String failTitle,
-                                        final Action buttonAction, final JPanel northPanel, final Runnable task) {
-    final JProgressBar bar = new JProgressBar();
-    bar.setIndeterminate(true);
-    setPreferredWidth(bar, DEFAULT_PROGRESS_BAR_WIDTH);
-    final JDialog dialog = new JDialog(UiUtil.getParentWindow(dialogParent), progressBarTitle, Dialog.ModalityType.APPLICATION_MODAL);
-    dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    dialog.setLayout(createBorderLayout());
-    if (northPanel != null) {
-      dialog.add(northPanel, BorderLayout.NORTH);
-    }
-    dialog.add(bar, BorderLayout.CENTER);
-    if (buttonAction != null) {
-      dialog.add(new JButton(buttonAction), BorderLayout.EAST);
-    }
-    dialog.pack();
-    UiUtil.centerWindow(dialog);
-    SwingUtilities.invokeLater(() -> dialog.setVisible(true));
-
-    new ProgressWorker(task, dialog, dialogParent, successMessage, successTitle, failTitle).execute();
+                                        final Control buttonControl, final JPanel northPanel, final Callable task) {
+    final ProgressWorker.DialogOwnerProvider dialogOwnerProvider = () -> getParentWindow(dialogParent);
+    final ProgressWorker worker = new ProgressWorker(dialogOwnerProvider, progressBarTitle, true,
+            northPanel, buttonControl != null ? new ControlSet(buttonControl) : null) {
+      @Override
+      protected Object performBackgroundWork() throws Exception {
+        return task.call();
+      }
+      @Override
+      protected void handleException(final Throwable exception) {
+        if (!(exception instanceof CancelException)) {
+          showExceptionDialog(dialogOwnerProvider.getDialogOwner(), failTitle, exception);
+        }
+      }
+    }.addOnSuccessListener(Void -> {
+      if (!Util.nullOrEmpty(successMessage)) {
+        JOptionPane.showMessageDialog(UiUtil.getParentWindow(dialogParent), successMessage, successTitle, JOptionPane.INFORMATION_MESSAGE);
+      }
+    });
+    worker.execute();
   }
 
   /**
@@ -1855,54 +1855,6 @@ public final class UiUtil {
         }
         else {
           field.setCaretPosition(currentCaretPosition);
-        }
-      }
-    }
-  }
-
-  private static final class ProgressWorker extends SwingWorker {
-
-    private final Runnable task;
-    private final Dialog dialog;
-    private final JComponent dialogParent;
-    private final String successMessage;
-    private final String successTitle;
-    private final String failTitle;
-
-    private ProgressWorker(final Runnable task, final Dialog dialog, final JComponent dialogParent,
-                           final String successMessage, final String successTitle, final String failTitle) {
-      this.task = task;
-      this.dialog = dialog;
-      this.successMessage = successMessage;
-      this.dialogParent = dialogParent;
-      this.successTitle = successTitle;
-      this.failTitle = failTitle;
-    }
-
-    @Override
-    protected Object doInBackground() throws Exception {
-      task.run();
-      return null;
-    }
-
-    @Override
-    protected void done() {
-      dialog.dispose();
-      try {
-        get();
-        if (!Util.nullOrEmpty(successMessage)) {
-          JOptionPane.showMessageDialog(UiUtil.getParentWindow(dialogParent), successMessage, successTitle,
-                  JOptionPane.INFORMATION_MESSAGE);
-        }
-      }
-      catch (final InterruptedException interruped) {
-        Thread.currentThread().interrupt();
-        showExceptionDialog(UiUtil.getParentWindow(dialogParent), failTitle, interruped);
-      }
-      catch (final ExecutionException exception) {
-        final Throwable cause = exception.getCause();
-        if (!(cause instanceof CancelException)) {
-          showExceptionDialog(UiUtil.getParentWindow(dialogParent), failTitle, exception);
         }
       }
     }

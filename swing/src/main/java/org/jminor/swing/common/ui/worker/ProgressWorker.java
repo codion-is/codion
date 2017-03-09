@@ -4,8 +4,11 @@
 package org.jminor.swing.common.ui.worker;
 
 import org.jminor.common.EventInfoListener;
+import org.jminor.common.model.CancelException;
 import org.jminor.swing.common.ui.DefaultExceptionHandler;
+import org.jminor.swing.common.ui.control.ControlSet;
 
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.awt.Window;
@@ -29,6 +32,8 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   private final DialogOwnerProvider dialogOwnerProvider;
   private final String progressMessage;
   private final boolean indeterminate;
+  private final JPanel dialogNorthPanel;
+  private final ControlSet buttonControls;
 
   private ProgressDialog progressDialog;
 
@@ -50,11 +55,29 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    */
   public ProgressWorker(final DialogOwnerProvider dialogOwnerProvider, final String progressMessage,
                         final boolean indeterminate) {
+    this(dialogOwnerProvider, progressMessage, true, null, null);
+  }
+
+  /**
+   * Instantiates a {@link ProgressWorker}.
+   * @param dialogOwnerProvider provides the dialog owner
+   * @param progressMessage the message to display while work is in progress
+   * @param indeterminate if true the progress bar is of type 'indeterminate', otherwise the
+   * progress bar goes from 0 - 100.
+   * @param dialogNorthPanel if specified this panel will be added at the {@link java.awt.BorderLayout#NORTH}
+   * location of the progress dialog
+   * @param buttonControls if specified buttons based on the controls in this control set are added
+   * at the {@link java.awt.BorderLayout#SOUTH} location of the progress dialog
+   */
+  public ProgressWorker(final DialogOwnerProvider dialogOwnerProvider, final String progressMessage,
+                        final boolean indeterminate, final JPanel dialogNorthPanel, final ControlSet buttonControls) {
     this.dialogOwnerProvider = dialogOwnerProvider;
     this.progressMessage = progressMessage;
     this.indeterminate = indeterminate;
-    addPropertyChangeListener(evt -> {
-      if (evt.getPropertyName().equals(STATE_PROPERTY) && evt.getNewValue().equals(StateValue.DONE)) {
+    this.dialogNorthPanel = dialogNorthPanel;
+    this.buttonControls = buttonControls;
+    addPropertyChangeListener(changeEvent -> {
+      if (changeEvent.getPropertyName().equals(STATE_PROPERTY) && changeEvent.getNewValue().equals(StateValue.DONE)) {
         closeProgressDialog();
       }
     });
@@ -65,8 +88,8 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    * @return this {@link ProgressWorker} instance
    */
   public final ProgressWorker<T> addOnSuccessListener(final EventInfoListener<T> successListener) {
-    addPropertyChangeListener(evt -> {
-      if (evt.getPropertyName().equals(STATE_PROPERTY) && evt.getNewValue().equals(StateValue.DONE)) {
+    addPropertyChangeListener(changeEvent -> {
+      if (changeEvent.getPropertyName().equals(STATE_PROPERTY) && changeEvent.getNewValue().equals(StateValue.DONE)) {
         try {
           successListener.eventOccurred(get());
         }
@@ -83,12 +106,14 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
   }
 
   /**
-   * Displays exception information in a dialog.
+   * Displays exception information in a dialog if the exception is not a {@link CancelException}.
    * Override for customized error handling.
    * @param throwable the exception to handle
    */
   protected void handleException(final Throwable throwable) {
-    DefaultExceptionHandler.getInstance().handleException(throwable, getDialogOwner());
+    if (!(throwable instanceof CancelException)) {
+      DefaultExceptionHandler.getInstance().handleException(throwable, getDialogOwner());
+    }
   }
 
   /**
@@ -123,10 +148,11 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
 
   private void displayProgressDialog() {
     SwingUtilities.invokeLater(() -> {
-      progressDialog = new ProgressDialog(getDialogOwner(), progressMessage, indeterminate ? NO_PROGRESS : MAX_PROGRESS);
-      addPropertyChangeListener(evt -> {
-        if (evt.getPropertyName().equals(PROGRESS_PROPERTY)) {
-          progressDialog.getProgressModel().setValue((Integer) evt.getNewValue());
+      progressDialog = new ProgressDialog(getDialogOwner(), progressMessage, indeterminate ? NO_PROGRESS : MAX_PROGRESS,
+              dialogNorthPanel, buttonControls);
+      addPropertyChangeListener(changeEvent -> {
+        if (changeEvent.getPropertyName().equals(PROGRESS_PROPERTY)) {
+          progressDialog.getProgressModel().setValue((Integer) changeEvent.getNewValue());
         }
       });
       progressDialog.setVisible(true);
