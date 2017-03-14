@@ -94,7 +94,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
           successListener.eventOccurred(get());
         }
         catch (final InterruptedException e) {
-          handleInerruptedException(e);
+          handleInterruptedException(e);
         }
         catch (final ExecutionException e) {
           handleException(e.getCause());
@@ -121,7 +121,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    * By default the current thread is interrupted.
    * @param exception the exception
    */
-  protected void handleInerruptedException(final InterruptedException exception) {
+  protected void handleInterruptedException(final InterruptedException exception) {
     Thread.currentThread().interrupt();
   }
 

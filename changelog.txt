@@ -4397,3 +4397,4 @@
   FilteredTablePanel.performSearch() now clears the selection when search string is not found
   ProgressWorker and ProgressDialog added
   ProgressWorker and ProgressDialog improved, UiUtil.runWithProgressBar() refactored
+  ProgressWorker typo fixed
