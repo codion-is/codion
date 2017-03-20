@@ -61,6 +61,11 @@ public final class Configuration {
   public static final String CLIENT_CONNECTION_TYPE = "jminor.client.connectionType";
 
   /**
+   * Specifies the name of the client side domain model class. This class is automatically loaded by the client model.
+   */
+  public static final String CLIENT_DOMAIN_MODEL_CLASS = "jminor.client.domainModelClass";
+
+  /**
    * Specifies whether client connections, remote or local, should schedule a periodic validity check of the connection.
    * Value type: Boolean<br>
    * Default value: true
@@ -786,6 +791,7 @@ public final class Configuration {
     parseBooleanProperty(ALLOW_COLUMN_REORDERING, PROPERTIES);
     parseBooleanProperty(AUTHENTICATION_REQUIRED, PROPERTIES);
     parseStringProperty(CLIENT_CONNECTION_TYPE, PROPERTIES);
+    parseStringProperty(CLIENT_DOMAIN_MODEL_CLASS, PROPERTIES);
     parseBooleanProperty(CONNECTION_SCHEDULE_VALIDATION, PROPERTIES);
     parseIntegerProperty(CONNECTION_VALIDITY_CHECK_TIMEOUT, PROPERTIES);
     parseBooleanProperty(COMPACT_ENTITY_PANEL_LAYOUT, PROPERTIES);

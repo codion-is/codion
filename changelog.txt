@@ -4398,3 +4398,5 @@
   ProgressWorker and ProgressDialog added
   ProgressWorker and ProgressDialog improved, UiUtil.runWithProgressBar() refactored
   ProgressWorker typo fixed
+  Configuration.CLIENT_DOMAIN_MODEL_CLASS added
+  DefaultEntityApplicationModel.loadDomainModel() default implementation added based on the above
