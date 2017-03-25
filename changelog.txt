@@ -4403,3 +4403,4 @@
 0.10.9
   Server refactoring 1st stage
   Server refactoring 2nd stage
+  AbstractEntityConnectionServer now calls bindToRegistry() on creation

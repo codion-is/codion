@@ -135,6 +135,7 @@ public abstract class AbstractEntityConnectionServer<T extends AbstractRemoteEnt
       setConnectionLimit(connectionLimit);
       webServer = startWebServer(webDocumentRoot, webServerPort);
       serverAdmin = new DefaultEntityConnectionServerAdmin(this, serverAdminPort);
+      bindToRegistry();
     }
     catch (final Throwable t) {
       throw logShutdownAndReturn(new RuntimeException(t), this);
@@ -168,8 +169,8 @@ public abstract class AbstractEntityConnectionServer<T extends AbstractRemoteEnt
 
   /** {@inheritDoc} */
   @Override
-  protected final T doConnect(final ClientInfo clientInfo)
-          throws RemoteException, ServerException.LoginException, ServerException.ServerFullException {
+  protected final T doConnect(final ClientInfo clientInfo) throws RemoteException, ServerException.LoginException,
+          ServerException.ServerFullException {
     try {
       final ConnectionPool connectionPool = ConnectionPools.getConnectionPool(clientInfo.getDatabaseUser());
       if (connectionPool != null) {
@@ -203,6 +204,12 @@ public abstract class AbstractEntityConnectionServer<T extends AbstractRemoteEnt
     }
   }
 
+  /** {@inheritDoc} */
+  @Override
+  protected final void doDisconnect(final T connection) throws RemoteException {
+    connection.disconnect();
+  }
+
   /**
    * Creates the remote connection provided by this server
    * @param connectionPool the connection pool to use, if none is provided a local connection is established
@@ -219,12 +226,6 @@ public abstract class AbstractEntityConnectionServer<T extends AbstractRemoteEnt
   protected abstract T createRemoteConnection(final ConnectionPool connectionPool, final Database database,
                                               final ClientInfo clientInfo, final int port, final boolean clientLoggingEnabled,
                                               final boolean sslEnabled) throws RemoteException, DatabaseException;
-
-  /** {@inheritDoc} */
-  @Override
-  protected final void doDisconnect(final T connection) throws RemoteException {
-    connection.disconnect();
-  }
 
   /**
    * @return the underlying Database implementation class
@@ -255,7 +256,9 @@ public abstract class AbstractEntityConnectionServer<T extends AbstractRemoteEnt
    * @param clientSpecificTimeouts the timeout values mapped to each clientTypeID
    */
   final void setClientSpecificConnectionTimeout(final Map<String, Integer> clientSpecificTimeouts) {
-    this.clientTimeouts.putAll(clientSpecificTimeouts);
+    if (clientSpecificTimeouts != null) {
+      this.clientTimeouts.putAll(clientSpecificTimeouts);
+    }
   }
 
   /**
@@ -417,18 +420,6 @@ public abstract class AbstractEntityConnectionServer<T extends AbstractRemoteEnt
   }
 
   /**
-   * Binds this server instance to the registry
-   * @throws RemoteException in case of an exception
-   */
-  final void bindToRegistry() throws RemoteException {
-    ServerUtil.initializeRegistry(registryPort);
-    ServerUtil.getRegistry(registryPort).rebind(getServerInfo().getServerName(), this);
-    final String connectInfo = getServerInfo().getServerName() + " bound to registry on port: " + registryPort;
-    LOG.info(connectInfo);
-    System.out.println(connectInfo);
-  }
-
-  /**
    * @return a map containing all defined entityIDs, with their respective table names as an associated value
    */
   static Map<String, String> getEntityDefinitions() {
@@ -450,6 +441,18 @@ public abstract class AbstractEntityConnectionServer<T extends AbstractRemoteEnt
       database.shutdownEmbedded(null);
     }//todo does not work when shutdown requires user authentication, jminor.db.shutdownUser hmmm
     UnicastRemoteObject.unexportObject(serverAdmin, true);
+  }
+
+  /**
+   * Binds this server instance to the registry
+   * @throws RemoteException in case of an exception
+   */
+  private void bindToRegistry() throws RemoteException {
+    ServerUtil.initializeRegistry(registryPort);
+    ServerUtil.getRegistry(registryPort).rebind(getServerInfo().getServerName(), this);
+    final String connectInfo = getServerInfo().getServerName() + " bound to registry on port: " + registryPort;
+    LOG.info(connectInfo);
+    System.out.println(connectInfo);
   }
 
   private void loadLoginProxies(final Collection<String> loginProxyClassNames) throws ClassNotFoundException {

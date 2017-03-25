@@ -130,8 +130,8 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  AbstractRemoteEntityConnection(final ConnectionPool connectionPool, final Database database, final ClientInfo clientInfo,
-                                 final int port, final boolean loggingEnabled, final boolean sslEnabled)
+  protected AbstractRemoteEntityConnection(final ConnectionPool connectionPool, final Database database, final ClientInfo clientInfo,
+                                           final int port, final boolean loggingEnabled, final boolean sslEnabled)
           throws DatabaseException, RemoteException {
     super(port, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());

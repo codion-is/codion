@@ -112,7 +112,6 @@ public final class DefaultEntityConnectionServer extends AbstractEntityConnectio
               sslEnabled, connectionLimit, domainModelClassNames, loginProxyClassNames, connectionValidationClassNames,
               getPoolUsers(initialPoolUsers), webDocumentRoot, webServerPort, clientLoggingEnabled, connectionTimeout,
               clientTimeouts, adminUser);
-      server.bindToRegistry();
 
       return server;
     }
