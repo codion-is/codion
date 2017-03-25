@@ -209,11 +209,12 @@ public abstract class AbstractEntityConnectionServer<T extends AbstractRemoteEnt
    * @param database defines the underlying database
    * @param clientInfo information about the client requesting the connection
    * @param port the port to use when exporting this remote connection
-   * @param loggingEnabled specifies whether or not method logging is enabled
+   * @param clientLoggingEnabled specifies whether or not method logging is enabled
    * @param sslEnabled specifies whether or not ssl should be enabled
    * @throws RemoteException in case of an exception
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
+   * @return a remote connection
    */
   protected abstract T createRemoteConnection(final ConnectionPool connectionPool, final Database database,
                                               final ClientInfo clientInfo, final int port, final boolean clientLoggingEnabled,
