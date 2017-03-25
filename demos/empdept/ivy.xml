@@ -10,6 +10,7 @@
   </configurations>
 
   <dependencies defaultconf="compile->default">
+    <dependency org="org.jminor" name="jminor-framework-server" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-swing-client-bundle" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-plugin-jasperreports" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-plugin-json" rev="${version}"/>
