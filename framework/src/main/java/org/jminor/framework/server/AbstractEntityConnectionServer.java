@@ -45,6 +45,10 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * A remote server class, responsible for handling requests for AbstractRemoteEntityConnections.
+ * @param <T> the type of {@link AbstractRemoteEntityConnection} this server provides
+ */
 public abstract class AbstractEntityConnectionServer<T extends AbstractRemoteEntityConnection> extends AbstractServer<T, Remote> {
 
   private static final long serialVersionUID = 1;
@@ -103,13 +107,13 @@ public abstract class AbstractEntityConnectionServer<T extends AbstractRemoteEnt
    * jdbc driver class is not found or in case of an exception while constructing the initial pooled connections
    */
   public AbstractEntityConnectionServer(final String serverName, final int serverPort, final int serverAdminPort,
-                                       final int registryPort, final Database database, final boolean sslEnabled,
-                                       final int connectionLimit, final Collection<String> domainModelClassNames,
-                                       final Collection<String> loginProxyClassNames, final Collection<String> connectionValidatorClassNames,
-                                       final Collection<User> initialPoolUsers, final String webDocumentRoot,
-                                       final Integer webServerPort, final boolean clientLoggingEnabled,
-                                       final int connectionTimeout, final Map<String, Integer> clientSpecificConnectionTimeouts,
-                                       final User adminUser)
+                                        final int registryPort, final Database database, final boolean sslEnabled,
+                                        final int connectionLimit, final Collection<String> domainModelClassNames,
+                                        final Collection<String> loginProxyClassNames, final Collection<String> connectionValidatorClassNames,
+                                        final Collection<User> initialPoolUsers, final String webDocumentRoot,
+                                        final Integer webServerPort, final boolean clientLoggingEnabled,
+                                        final int connectionTimeout, final Map<String, Integer> clientSpecificConnectionTimeouts,
+                                        final User adminUser)
           throws RemoteException {
     super(serverPort, serverName,
             sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
@@ -155,10 +159,14 @@ public abstract class AbstractEntityConnectionServer<T extends AbstractRemoteEnt
     return AbstractRemoteEntityConnection.getRequestsPerSecond();
   }
 
+  /**
+   * @return true if client loggin is enabled
+   */
   public final boolean isClientLoggingEnabled() {
     return clientLoggingEnabled;
   }
 
+  /** {@inheritDoc} */
   @Override
   protected final T doConnect(final ClientInfo clientInfo)
           throws RemoteException, ServerException.LoginException, ServerException.ServerFullException {
@@ -195,10 +203,23 @@ public abstract class AbstractEntityConnectionServer<T extends AbstractRemoteEnt
     }
   }
 
+  /**
+   * Creates the remote connection provided by this server
+   * @param connectionPool the connection pool to use, if none is provided a local connection is established
+   * @param database defines the underlying database
+   * @param clientInfo information about the client requesting the connection
+   * @param port the port to use when exporting this remote connection
+   * @param loggingEnabled specifies whether or not method logging is enabled
+   * @param sslEnabled specifies whether or not ssl should be enabled
+   * @throws RemoteException in case of an exception
+   * @throws DatabaseException in case a database connection can not be established, for example
+   * if a wrong username or password is provided
+   */
   protected abstract T createRemoteConnection(final ConnectionPool connectionPool, final Database database,
-                                     final ClientInfo clientInfo, final int port, final boolean clientLoggingEnabled,
-                                     final boolean sslEnabled) throws RemoteException, DatabaseException;
+                                              final ClientInfo clientInfo, final int port, final boolean clientLoggingEnabled,
+                                              final boolean sslEnabled) throws RemoteException, DatabaseException;
 
+  /** {@inheritDoc} */
   @Override
   protected final void doDisconnect(final T connection) throws RemoteException {
     connection.disconnect();

@@ -119,7 +119,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   private long lastAccessTime = creationDate;
 
   /**
-   * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
+   * Instantiates a new AbstractRemoteEntityConnection and exports it on the given port number
    * @param connectionPool the connection pool to use, if none is provided a local connection is established
    * @param database defines the underlying database
    * @param clientInfo information about the client requesting the connection
@@ -131,7 +131,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    * if a wrong username or password is provided
    */
   AbstractRemoteEntityConnection(final ConnectionPool connectionPool, final Database database, final ClientInfo clientInfo,
-                                final int port, final boolean loggingEnabled, final boolean sslEnabled)
+                                 final int port, final boolean loggingEnabled, final boolean sslEnabled)
           throws DatabaseException, RemoteException {
     super(port, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
