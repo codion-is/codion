@@ -4400,3 +4400,5 @@
   ProgressWorker typo fixed
   Configuration.CLIENT_DOMAIN_MODEL_CLASS added
   DefaultEntityApplicationModel.loadDomainModel() default implementation added based on the above
+0.10.9
+  Server refactoring 1st stage

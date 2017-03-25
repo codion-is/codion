@@ -16,17 +16,10 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolException;
 import org.jminor.common.model.ExceptionUtil;
-import org.jminor.common.model.reports.ReportException;
-import org.jminor.common.model.reports.ReportResult;
-import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.RemoteEntityConnection;
-import org.jminor.framework.db.condition.EntityCondition;
-import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnections;
-import org.jminor.framework.domain.Entity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,24 +37,18 @@ import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-/**
- * An implementation of the RemoteEntityConnection interface, provides the logging of service calls
- * and database connection pooling.
- */
-final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements RemoteEntityConnection {
+public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject {
 
   private static final long serialVersionUID = 1;
 
-  private static final Logger LOG = LoggerFactory.getLogger(DefaultRemoteEntityConnection.class);
-  private static final RequestCounter REQUEST_COUNTER = new RequestCounter();
+  private static final Logger LOG = LoggerFactory.getLogger(AbstractRemoteEntityConnection.class);
+  private static final AbstractRemoteEntityConnection.RequestCounter REQUEST_COUNTER = new AbstractRemoteEntityConnection.RequestCounter();
   private static final String LOG_IDENTIFIER_PROPERTY = "logIdentifier";
 
   /**
@@ -82,7 +69,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   /**
    * A Proxy for logging method calls
    */
-  private final transient EntityConnection connectionProxy;
+  protected final transient EntityConnection connectionProxy;
 
   /**
    * The connection pool to use, if any
@@ -122,7 +109,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   /**
    * Contains the active remote connections, that is, those connections that are in the process of serving a request
    */
-  private static final List<DefaultRemoteEntityConnection> ACTIVE_CONNECTIONS = Collections.synchronizedList(new ArrayList<>());
+  private static final List<AbstractRemoteEntityConnection> ACTIVE_CONNECTIONS = Collections.synchronizedList(new ArrayList<>());
 
   private static final String GET_CONNECTION = "getConnection";
   private static final String RETURN_CONNECTION = "returnConnection";
@@ -130,23 +117,6 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   private static final int DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL = 2500;
 
   private long lastAccessTime = creationDate;
-
-  /**
-   * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
-   * @param database defines the underlying database
-   * @param clientInfo information about the client requesting the connection
-   * @param port the port to use when exporting this remote connection
-   * @param loggingEnabled specifies whether or not method logging is enabled
-   * @param sslEnabled specifies whether or not ssl should be enabled
-   * @throws RemoteException in case of an exception
-   * @throws DatabaseException in case a database connection can not be established, for example
-   * if a wrong username or password is provided
-   */
-  DefaultRemoteEntityConnection(final Database database, final ClientInfo clientInfo, final int port,
-                                final boolean loggingEnabled, final boolean sslEnabled)
-          throws DatabaseException, RemoteException {
-    this(null, database, clientInfo, port, loggingEnabled, sslEnabled);
-  }
 
   /**
    * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
@@ -160,7 +130,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  DefaultRemoteEntityConnection(final ConnectionPool connectionPool, final Database database, final ClientInfo clientInfo,
+  AbstractRemoteEntityConnection(final ConnectionPool connectionPool, final Database database, final ClientInfo clientInfo,
                                 final int port, final boolean loggingEnabled, final boolean sslEnabled)
           throws DatabaseException, RemoteException {
     super(port, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
@@ -169,7 +139,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
     this.connectionPool = connectionPool;
     this.clientInfo = clientInfo;
     this.methodLogger.setEnabled(loggingEnabled);
-    this.logIdentifier = getUser().getUsername().toLowerCase() +"@" + clientInfo.getClientTypeID();
+    this.logIdentifier = clientInfo.getUser().getUsername().toLowerCase() +"@" + clientInfo.getClientTypeID();
     this.connectionProxy = initializeProxy();
     try {
       clientInfo.setClientHost(getClientHost());
@@ -191,27 +161,25 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
     }
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public EntityConnection.Type getType() {
+  public final EntityConnection.Type getType() {
     return EntityConnection.Type.REMOTE;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public User getUser() {
+  public final User getUser() {
     return clientInfo.getUser();
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public void setMethodLogger(final MethodLogger methodLogger) {
+  public final void setMethodLogger(final MethodLogger methodLogger) {
     throw new UnsupportedOperationException("setMethodLogger is not supported on remote connections");
   }
 
   /** {@inheritDoc} */
-  @Override
-  public boolean isConnected() {
+  public final DatabaseConnection getDatabaseConnection() {
+    throw new UnsupportedOperationException("getDatabaseConnection is not supported on remote connections");
+  }
+
+  /** {@inheritDoc} */
+  public final boolean isConnected() {
     synchronized (connectionProxy) {
       if (connectionPool != null) {
         return connected;
@@ -222,8 +190,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   }
 
   /** {@inheritDoc} */
-  @Override
-  public void disconnect() {
+  public final void disconnect() {
     synchronized (connectionProxy) {
       if (!connected) {
         return;
@@ -240,193 +207,10 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
     disconnectedEvent.fire();
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public int selectRowCount(final EntityCondition condition) throws DatabaseException {
-    synchronized (connectionProxy) {
-      return connectionProxy.selectRowCount(condition);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException, DatabaseException {
-    synchronized (connectionProxy) {
-      return connectionProxy.fillReport(reportWrapper);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException {
-    synchronized (connectionProxy) {
-      connectionProxy.executeProcedure(procedureID, arguments);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public List executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
-    synchronized (connectionProxy) {
-      return connectionProxy.executeFunction(functionID, arguments);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void beginTransaction() {
-    synchronized (connectionProxy) {
-      connectionProxy.beginTransaction();
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void commitTransaction() {
-    synchronized (connectionProxy) {
-      connectionProxy.commitTransaction();
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void rollbackTransaction() {
-    synchronized (connectionProxy) {
-      connectionProxy.rollbackTransaction();
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public boolean isTransactionOpen() {
-    synchronized (connectionProxy) {
-      return connectionProxy.isTransactionOpen();
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
-    synchronized (connectionProxy) {
-      return connectionProxy.insert(entities);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public List<Entity> update(final List<Entity> entities) throws DatabaseException {
-    synchronized (connectionProxy) {
-      return connectionProxy.update(entities);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void delete(final List<Entity.Key> entityKeys) throws DatabaseException {
-    synchronized (connectionProxy) {
-      connectionProxy.delete(entityKeys);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void delete(final EntityCondition condition) throws DatabaseException {
-    synchronized (connectionProxy) {
-      connectionProxy.delete(condition);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public List<Object> selectValues(final String propertyID, final EntityCondition condition) throws DatabaseException {
-    synchronized (connectionProxy) {
-      return connectionProxy.selectValues(propertyID, condition);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DatabaseException {
-    synchronized (connectionProxy) {
-      return connectionProxy.selectSingle(entityID, propertyID, value);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Entity selectSingle(final Entity.Key key) throws DatabaseException {
-    synchronized (connectionProxy) {
-      return connectionProxy.selectSingle(key);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException {
-    synchronized (connectionProxy) {
-      return connectionProxy.selectSingle(condition);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
-    synchronized (connectionProxy) {
-      return connectionProxy.selectMany(keys);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public List<Entity> selectMany(final EntitySelectCondition condition) throws DatabaseException {
-    synchronized (connectionProxy) {
-      return connectionProxy.selectMany(condition);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public List<Entity> selectMany(final String entityID, final String propertyID,
-                                 final Object... values) throws DatabaseException {
-    synchronized (connectionProxy) {
-      return connectionProxy.selectMany(entityID, propertyID, values);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException {
-    synchronized (connectionProxy) {
-      return connectionProxy.selectDependentEntities(entities);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final byte[] blobData) throws DatabaseException {
-    synchronized (connectionProxy) {
-      connectionProxy.writeBlob(primaryKey, blobPropertyID, blobData);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException {
-    synchronized (connectionProxy) {
-      return connectionProxy.readBlob(primaryKey, blobPropertyID);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public DatabaseConnection getDatabaseConnection() {
-    throw new UnsupportedOperationException("getDatabaseConnection is not supported on remote connections");
-  }
-
   /**
    * @return information on the client using this remote connection
    */
-  ClientInfo getClientInfo() {
+  final ClientInfo getClientInfo() {
     return clientInfo;
   }
 
@@ -434,7 +218,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
    * @return a ClientLog instance containing information about this connections recent activity
    * @see org.jminor.framework.Configuration#SERVER_CONNECTION_LOG_SIZE
    */
-  ClientLog getClientLog() {
+  final ClientLog getClientLog() {
     synchronized (methodLogger) {
       return new ClientLog(clientInfo.getClientID(), creationDate, methodLogger.getEntries());
     }
@@ -444,30 +228,30 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
    * @param timeout the number of milliseconds
    * @return true if this connection has been inactive for {@code timeout} milliseconds or longer
    */
-  boolean hasBeenInactive(final int timeout) {
+  final boolean hasBeenInactive(final int timeout) {
     return System.currentTimeMillis() - lastAccessTime > timeout;
   }
 
-  void setLoggingEnabled(final boolean status) {
+  final void setLoggingEnabled(final boolean status) {
     methodLogger.setEnabled(status);
   }
 
-  boolean isLoggingEnabled() {
+  final boolean isLoggingEnabled() {
     return methodLogger.isEnabled();
   }
 
   /**
    * @return true during a remote method call
    */
-  boolean isActive() {
+  final boolean isActive() {
     return ACTIVE_CONNECTIONS.contains(this);
   }
 
-  void addDisconnectListener(final EventListener listener) {
+  final void addDisconnectListener(final EventListener listener) {
     disconnectedEvent.addListener(listener);
   }
 
-  void removeDisconnectListener(final EventListener listener) {
+  final void removeDisconnectListener(final EventListener listener) {
     disconnectedEvent.removeListener(listener);
   }
 
@@ -483,7 +267,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   }
 
   private EntityConnection initializeProxy() {
-    return Util.initializeProxy(EntityConnection.class, new RemoteConnectionHandler(this));
+    return Util.initializeProxy(EntityConnection.class, new AbstractRemoteEntityConnection.RemoteConnectionHandler(this));
   }
 
   private void cleanupLocalConnections() {
@@ -586,10 +370,10 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
   private static final class RemoteConnectionHandler implements InvocationHandler {
 
-    private final DefaultRemoteEntityConnection remoteEntityConnection;
+    private final AbstractRemoteEntityConnection remoteEntityConnection;
     private final MethodLogger methodLogger;
 
-    private RemoteConnectionHandler(final DefaultRemoteEntityConnection remoteEntityConnection) {
+    private RemoteConnectionHandler(final AbstractRemoteEntityConnection remoteEntityConnection) {
       this.remoteEntityConnection = remoteEntityConnection;
       this.methodLogger = remoteEntityConnection.methodLogger;
     }
