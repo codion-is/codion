@@ -21,7 +21,7 @@
     <dependency org="org.jminor" name="jminor-common-db" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-common-model" rev="${version}"/>
 
-    <dependency org="ro.nextreports" name="nextreports-engine" rev="8.2" conf="compile->master"/>
+    <dependency org="ro.nextreports" name="nextreports-engine" rev="9.2" conf="compile->master"/>
 
     <dependency org="org.apache.commons" name="commons-jexl" rev="2.1.1" conf="runtime->master"/>
     <dependency org="com.thoughtworks.xstream" name="xstream" rev="1.4.8" conf="runtime->master"/>
