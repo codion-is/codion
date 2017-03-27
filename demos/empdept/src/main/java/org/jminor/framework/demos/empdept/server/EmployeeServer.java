@@ -17,7 +17,7 @@ import org.jminor.framework.server.AbstractRemoteEntityConnection;
 import java.rmi.RemoteException;
 import java.util.List;
 
-public final class EmployeeServer extends AbstractEntityConnectionServer<EmployeeServer.DefaultEmployeeService> {
+public final class EmployeeServer extends AbstractEntityConnectionServer {
 
   public EmployeeServer(final Database database, final int serverPort, final int serverAdminPort,
                         final int registryPort) throws RemoteException {

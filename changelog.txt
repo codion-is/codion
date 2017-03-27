@@ -4405,3 +4405,4 @@
   Server refactoring 2nd stage
   AbstractEntityConnectionServer now calls bindToRegistry() on creation
   Custom server demo added
+  Server refactoring continued

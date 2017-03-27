@@ -41,7 +41,7 @@ public class DefaultEntityConnectionServerTest {
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
 
   private static final User ADMIN_USER = new User("scott", "tiger");
-  private static DefaultEntityConnectionServer server;
+  private static AbstractEntityConnectionServer server;
   private static DefaultEntityConnectionServerAdmin admin;
 
   public static EntityConnectionServerAdmin getServerAdmin() {
@@ -51,7 +51,7 @@ public class DefaultEntityConnectionServerTest {
   @BeforeClass
   public static synchronized void setUp() throws Exception {
     configure();
-    DefaultEntityConnectionServerTest.server = DefaultEntityConnectionServer.startServer();
+    DefaultEntityConnectionServerTest.server = AbstractEntityConnectionServer.startServer();
     admin = (DefaultEntityConnectionServerAdmin) server.getServerAdmin(ADMIN_USER);
   }
 
@@ -231,7 +231,7 @@ public class DefaultEntityConnectionServerTest {
     final User userTwo = new User("bar", "foo");
     final ConnectionInfo clientTwo = ClientUtil.connectionInfo(userTwo, UUID.randomUUID(), clientTypeID);
 
-    final RemoteEntityConnection connectionOne = server.connect(clientOne);
+    final RemoteEntityConnection connectionOne = (RemoteEntityConnection) server.connect(clientOne);
     assertEquals(userOne, connectionOne.getUser());
 
     Collection<ClientInfo> clients = server.getClients(clientTypeID);
@@ -240,7 +240,7 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(userOne, clientOneFromServer.getUser());
     assertEquals(UNIT_TEST_USER, clientOneFromServer.getDatabaseUser());
 
-    final RemoteEntityConnection connectionTwo = server.connect(clientTwo);
+    final RemoteEntityConnection connectionTwo = (RemoteEntityConnection) server.connect(clientTwo);
     assertEquals(userTwo, connectionTwo.getUser());
 
     clients = server.getClients(clientTypeID);
