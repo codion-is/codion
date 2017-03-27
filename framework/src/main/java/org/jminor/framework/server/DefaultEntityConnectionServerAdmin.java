@@ -57,7 +57,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   /**
    * The server being administrated
    */
-  private final AbstractEntityConnectionServer server;
+  private final DefaultEntityConnectionServer server;
   private final LinkedList<GcEvent> gcEventList = new LinkedList();
 
   /**
@@ -67,7 +67,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
    * @throws RemoteException in case of an exception
    * @throws NullPointerException in case {@code serverAdminPort} or {@code server} are not specified
    */
-  public DefaultEntityConnectionServerAdmin(final AbstractEntityConnectionServer server, final Integer serverAdminPort) throws RemoteException {
+  public DefaultEntityConnectionServerAdmin(final DefaultEntityConnectionServer server, final Integer serverAdminPort) throws RemoteException {
     super(Objects.requireNonNull(serverAdminPort),
             Objects.requireNonNull(server).isSslEnabled() ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             server.isSslEnabled() ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
@@ -411,7 +411,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   /** {@inheritDoc} */
   @Override
   public Map<String,String> getEntityDefinitions() {
-    return AbstractEntityConnectionServer.getEntityDefinitions();
+    return DefaultEntityConnectionServer.getEntityDefinitions();
   }
 
   private void initializeGarbageCollectionListener() {

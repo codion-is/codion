@@ -11,13 +11,13 @@ import org.jminor.common.server.ClientInfo;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.server.AbstractEntityConnectionServer;
 import org.jminor.framework.server.AbstractRemoteEntityConnection;
+import org.jminor.framework.server.DefaultEntityConnectionServer;
 
 import java.rmi.RemoteException;
 import java.util.List;
 
-public final class EmployeeServer extends AbstractEntityConnectionServer {
+public final class EmployeeServer extends DefaultEntityConnectionServer {
 
   public EmployeeServer(final Database database, final int serverPort, final int serverAdminPort,
                         final int registryPort) throws RemoteException {

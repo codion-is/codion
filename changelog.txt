@@ -4406,3 +4406,4 @@
   AbstractEntityConnectionServer now calls bindToRegistry() on creation
   Custom server demo added
   Server refactoring continued
+  AbstractEntityConnectionServer renamed back to DefaulEntityConnectionServer

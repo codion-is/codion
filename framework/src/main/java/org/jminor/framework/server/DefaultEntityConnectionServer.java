@@ -51,7 +51,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * A remote server class, responsible for handling requests for AbstractRemoteEntityConnections.
  */
-public class AbstractEntityConnectionServer extends AbstractServer<AbstractRemoteEntityConnection, Remote> {
+public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemoteEntityConnection, Remote> {
 
   private static final long serialVersionUID = 1;
 
@@ -59,7 +59,7 @@ public class AbstractEntityConnectionServer extends AbstractServer<AbstractRemot
     Configuration.init();
   }
 
-  protected static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionServer.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(DefaultEntityConnectionServer.class);
 
   protected static final String START = "start";
   protected static final String STOP = "stop";
@@ -72,7 +72,7 @@ public class AbstractEntityConnectionServer extends AbstractServer<AbstractRemot
 
   private final AuxiliaryServer webServer;
   private final Database database;
-  private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new AbstractEntityConnectionServer.MaintenanceTask(),
+  private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new DefaultEntityConnectionServer.MaintenanceTask(),
           DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
   private final int registryPort;
   private final boolean sslEnabled;
@@ -86,7 +86,7 @@ public class AbstractEntityConnectionServer extends AbstractServer<AbstractRemot
   private int connectionTimeout;
 
   /**
-   * Constructs a new AbstractEntityConnectionServer and binds it to a registry on the given port
+   * Constructs a new DefaultEntityConnectionServer and binds it to a registry on the given port
    * @param serverName the serverName
    * @param serverPort the port on which to make the server accessible
    * @param serverAdminPort the port on which to make the server admin interface accessible
@@ -108,14 +108,14 @@ public class AbstractEntityConnectionServer extends AbstractServer<AbstractRemot
    * @throws RuntimeException in case the domain model classes are not found on the classpath or if the
    * jdbc driver class is not found or in case of an exception while constructing the initial pooled connections
    */
-  public AbstractEntityConnectionServer(final String serverName, final int serverPort, final int serverAdminPort,
-                                        final int registryPort, final Database database, final boolean sslEnabled,
-                                        final int connectionLimit, final Collection<String> domainModelClassNames,
-                                        final Collection<String> loginProxyClassNames, final Collection<String> connectionValidatorClassNames,
-                                        final Collection<User> initialPoolUsers, final String webDocumentRoot,
-                                        final Integer webServerPort, final boolean clientLoggingEnabled,
-                                        final int connectionTimeout, final Map<String, Integer> clientSpecificConnectionTimeouts,
-                                        final User adminUser)
+  public DefaultEntityConnectionServer(final String serverName, final int serverPort, final int serverAdminPort,
+                                       final int registryPort, final Database database, final boolean sslEnabled,
+                                       final int connectionLimit, final Collection<String> domainModelClassNames,
+                                       final Collection<String> loginProxyClassNames, final Collection<String> connectionValidatorClassNames,
+                                       final Collection<User> initialPoolUsers, final String webDocumentRoot,
+                                       final Integer webServerPort, final boolean clientLoggingEnabled,
+                                       final int connectionTimeout, final Map<String, Integer> clientSpecificConnectionTimeouts,
+                                       final User adminUser)
           throws RemoteException {
     super(serverPort, serverName,
             sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
@@ -630,7 +630,7 @@ public class AbstractEntityConnectionServer extends AbstractServer<AbstractRemot
     }
   }
 
-  private static <T> T logShutdownAndReturn(final T exception, final AbstractEntityConnectionServer server) {
+  private static <T> T logShutdownAndReturn(final T exception, final DefaultEntityConnectionServer server) {
     LOG.error("Exception on server startup", exception);
     try {
       server.shutdown();
@@ -659,7 +659,7 @@ public class AbstractEntityConnectionServer extends AbstractServer<AbstractRemot
    * @return the server instance
    * @throws RemoteException in case of an exception
    */
-  public static synchronized AbstractEntityConnectionServer startServer() throws RemoteException {
+  public static synchronized DefaultEntityConnectionServer startServer() throws RemoteException {
     final Integer serverPort = (Integer) Configuration.getValue(Configuration.SERVER_PORT);
     if (serverPort == null) {
       throw new IllegalArgumentException("Configuration property '" + Configuration.SERVER_PORT + "' is required");
@@ -688,9 +688,9 @@ public class AbstractEntityConnectionServer extends AbstractServer<AbstractRemot
     else {
       LOG.info("Admin user: " + adminUser);
     }
-    AbstractEntityConnectionServer server = null;
+    DefaultEntityConnectionServer server = null;
     try {
-      server = new AbstractEntityConnectionServer(serverName, serverPort, serverAdminPort, registryPort, database,
+      server = new DefaultEntityConnectionServer(serverName, serverPort, serverAdminPort, registryPort, database,
               sslEnabled, connectionLimit, domainModelClassNames, loginProxyClassNames, connectionValidationClassNames,
               getPoolUsers(initialPoolUsers), webDocumentRoot, webServerPort, clientLoggingEnabled, connectionTimeout,
               clientTimeouts, adminUser);

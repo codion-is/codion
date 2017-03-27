@@ -41,7 +41,7 @@ public class DefaultEntityConnectionServerTest {
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
 
   private static final User ADMIN_USER = new User("scott", "tiger");
-  private static AbstractEntityConnectionServer server;
+  private static DefaultEntityConnectionServer server;
   private static DefaultEntityConnectionServerAdmin admin;
 
   public static EntityConnectionServerAdmin getServerAdmin() {
@@ -51,7 +51,7 @@ public class DefaultEntityConnectionServerTest {
   @BeforeClass
   public static synchronized void setUp() throws Exception {
     configure();
-    DefaultEntityConnectionServerTest.server = AbstractEntityConnectionServer.startServer();
+    DefaultEntityConnectionServerTest.server = DefaultEntityConnectionServer.startServer();
     admin = (DefaultEntityConnectionServerAdmin) server.getServerAdmin(ADMIN_USER);
   }
 
