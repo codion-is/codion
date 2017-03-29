@@ -4407,3 +4407,4 @@
   Custom server demo added
   Server refactoring continued
   AbstractEntityConnectionServer renamed back to DefaulEntityConnectionServer
+  SwingFilteredComboBoxModel bug fixed, setSelectedItem() fired selection changed event even though the selected item didn't actually change, test updated

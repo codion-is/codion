@@ -318,20 +318,15 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   /** {@inheritDoc} */
   @Override
   public final void setSelectedItem(final Object anItem) {
-    final T toSelect = translateSelectionItem(anItem);
-    if (!allowSelectionChange(toSelect) || Objects.equals(selectedItem, toSelect)) {
-      return;
+    T toSelect = translateSelectionItem(anItem);
+    if (Objects.equals(nullValue, toSelect)) {
+      toSelect = null;
     }
-
-    if (nullValue != null && nullValue.equals(toSelect)) {
-      selectedItem = null;
-    }
-    else {
-      //noinspection unchecked
+    if (allowSelectionChange(toSelect) && !Objects.equals(selectedItem, toSelect)) {
       selectedItem = toSelect;
+      fireContentsChanged();
+      selectionChangedEvent.fire(selectedItem);
     }
-    fireContentsChanged();
-    selectionChangedEvent.fire(selectedItem);
   }
 
   /** {@inheritDoc} */

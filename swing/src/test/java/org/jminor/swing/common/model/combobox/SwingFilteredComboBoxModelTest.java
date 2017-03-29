@@ -111,24 +111,30 @@ public class SwingFilteredComboBoxModelTest {
   @Test
   public void testSelection() {
     final AtomicInteger selectionChangedCounter = new AtomicInteger();
-    final EventInfoListener<String> selectionListener = info -> selectionChangedCounter.incrementAndGet();
+    final EventInfoListener<String> selectionListener = selectedItem -> selectionChangedCounter.incrementAndGet();
     testModel.addSelectionListener(selectionListener);
     testModel.setSelectedItem(BJORN);
     assertEquals(1, selectionChangedCounter.get());
+    testModel.setSelectedItem(null);
+    assertEquals(2, selectionChangedCounter.get());
+    testModel.setSelectedItem(NULL);
+    assertEquals(2, selectionChangedCounter.get());
+    testModel.setSelectedItem(BJORN);
+    assertEquals(3, selectionChangedCounter.get());
     assertEquals(BJORN, testModel.getSelectedItem());
     assertEquals(BJORN, testModel.getSelectedValue());
     assertFalse(testModel.isSelectionEmpty());
     assertFalse(testModel.isNullValueSelected());
     testModel.setSelectedItem(null);
     assertTrue(testModel.isSelectionEmpty());
-    assertEquals(2, selectionChangedCounter.get());
+    assertEquals(4, selectionChangedCounter.get());
     assertEquals(NULL, testModel.getSelectedItem());
     assertTrue(testModel.isNullValueSelected());
     assertTrue(testModel.isSelectionEmpty());
     assertNull(testModel.getSelectedValue());
     testModel.setSelectedItem(SIGGI);
     testModel.clear();
-    assertEquals(4, selectionChangedCounter.get());
+    assertEquals(6, selectionChangedCounter.get());
     testModel.removeSelectionListener(selectionListener);
   }
 
