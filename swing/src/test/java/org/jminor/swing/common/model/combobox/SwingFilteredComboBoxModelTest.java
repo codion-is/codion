@@ -13,6 +13,7 @@ import org.junit.Test;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -233,6 +234,42 @@ public class SwingFilteredComboBoxModelTest {
     testModel.setSelectedItem(NULL);
     assertEquals(NULL, testModel.getElementAt(0));
     assertEquals(ANNA, testModel.getElementAt(1));
+  }
+
+  @Test
+  public void setContentsSelectedItem() {
+    class Data {
+      final int id;
+      String data;
+
+      Data(final int id, final String data) {
+        this.id = id;
+        this.data = data;
+      }
+
+      @Override
+      public boolean equals(final Object o) {
+        if (this == o) {
+          return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+          return false;
+        }
+
+        return id == ((Data) o).id;
+      }
+    }
+    List<Data> contents = Arrays.asList(new Data(1, "1"), new Data(2, "2"), new Data(3, "3"));
+
+    final SwingFilteredComboBoxModel<Data> model = new SwingFilteredComboBoxModel();
+    model.setContents(contents);
+    model.setSelectedItem(contents.get(1));
+    assertEquals("2", model.getSelectedValue().data);
+
+    contents = Arrays.asList(new Data(1, "1"), new Data(2, "22"), new Data(3, "3"));
+
+    model.setContents(contents);
+    assertEquals("22", model.getSelectedValue().data);
   }
 
   @Before

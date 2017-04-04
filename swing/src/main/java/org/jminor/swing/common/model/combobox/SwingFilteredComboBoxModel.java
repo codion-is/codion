@@ -133,6 +133,10 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
         }
         sortVisibleItems();
       }
+      if (selectedItem != null && visibleItems.contains(selectedItem)) {
+        //update the selected item since the underlying data could have changed
+        selectedItem = visibleItems.get(visibleItems.indexOf(selectedItem));
+      }
       if (selectedItem != null && !visibleItems.contains(selectedItem) && filterSelectedItem) {
         setSelectedItem(null);
       }
