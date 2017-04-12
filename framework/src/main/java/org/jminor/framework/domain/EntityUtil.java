@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * A static utility class containing helper methods for working with Entity instances.
@@ -155,45 +154,7 @@ public final class EntityUtil {
    */
   public static <T> Collection<T> getValues(final String propertyID, final Collection<Entity> entities,
                                             final boolean includeNullValues) {
-    if (Util.nullOrEmpty(entities)) {
-      return new ArrayList<>(0);
-    }
-
-    return getValues(entities.iterator().next().getProperty(propertyID), entities, includeNullValues);
-  }
-
-  /**
-   * @param <T> the value type
-   * @param property the the property for which to retrieve the values
-   * @param entities the entities from which to retrieve the property value
-   * @return a Collection containing the values of the property with the given ID from the given entities,
-   * null values are included
-   */
-  public static <T> Collection<T> getValues(final Property property, final Collection<Entity> entities) {
-    return getValues(property, entities, true);
-  }
-
-  /**
-   * @param <T> the value type
-   * @param property the the property for which to retrieve the values
-   * @param entities the entities from which to retrieve the property value
-   * @param includeNullValues if true then null values are included
-   * @return a Collection containing the values of the property with the given ID from the given entities
-   */
-  public static <T> Collection<T> getValues(final Property property, final Collection<Entity> entities,
-                                            final boolean includeNullValues) {
-    Objects.requireNonNull(entities, ENTITIES_PARAM);
-    final List<T> values = new ArrayList<>(entities.size());
-    for (final Entity entity : entities) {
-      if (includeNullValues) {
-        values.add((T) entity.get(property));
-      }
-      else if (!entity.isValueNull(property)) {
-        values.add((T) entity.get(property));
-      }
-    }
-
-    return values;
+    return collectValues(new ArrayList<T>(entities == null ? 0 : entities.size()), propertyID, entities, includeNullValues);
   }
 
   /**
@@ -219,18 +180,7 @@ public final class EntityUtil {
    */
   public static <T> Collection<T> getDistinctValues(final String propertyID, final Collection<Entity> entities,
                                                     final boolean includeNullValue) {
-    final Set<T> values = new HashSet<>();
-    if (Util.nullOrEmpty(entities)) {
-      return values;
-    }
-    for (final Entity entity : entities) {
-      final Object value = entity.get(propertyID);
-      if (value != null || includeNullValue) {
-        values.add((T) value);
-      }
-    }
-
-    return values;
+    return collectValues(new HashSet<T>(), propertyID, entities, includeNullValue);
   }
 
   /**
@@ -537,6 +487,22 @@ public final class EntityUtil {
     return null;
   }
 
+  private static <T> Collection<T> collectValues(final Collection<T> collection, final String propertyID,
+                                                 final Collection<Entity> entities, final boolean includeNullValues) {
+    Objects.requireNonNull(collection);
+    Objects.requireNonNull(propertyID);
+    if (!Util.nullOrEmpty(entities)) {
+      for (final Entity entity : entities) {
+        final Object value = entity.get(propertyID);
+        if (value != null || includeNullValues) {
+          collection.add((T) value);
+        }
+      }
+    }
+
+    return collection;
+  }
+
   /**
    * A class for mapping between entities and corresponding bean classes
    */
@@ -617,12 +583,10 @@ public final class EntityUtil {
      * Transforms the given bean into a Entity according to the information found in this EntityBeanMapper instance
      * @param bean the bean to transform
      * @return a Entity derived from the given bean
-     * @throws NoSuchMethodException if a required getter method is not found in the bean class
      * @throws java.lang.reflect.InvocationTargetException in case an exception is thrown during a bean method call
      * @throws IllegalAccessException if a required method is not accessible
      */
-    public Entity toEntity(final Object bean) throws NoSuchMethodException,
-            InvocationTargetException, IllegalAccessException {
+    public Entity toEntity(final Object bean) throws InvocationTargetException, IllegalAccessException {
       if (bean == null) {
         return null;
       }
@@ -645,8 +609,7 @@ public final class EntityUtil {
      * @throws java.lang.reflect.InvocationTargetException in case an exception is thrown during a bean method call
      * @throws IllegalAccessException if a required method is not accessible
      */
-    public List<Entity> toEntities(final List<?> beans) throws InvocationTargetException,
-            NoSuchMethodException, IllegalAccessException {
+    public List<Entity> toEntities(final List<?> beans) throws InvocationTargetException, IllegalAccessException {
       if (Util.nullOrEmpty(beans)) {
         return Collections.emptyList();
       }

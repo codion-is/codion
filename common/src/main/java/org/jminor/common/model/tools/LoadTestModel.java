@@ -635,34 +635,28 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
     @Override
     public void run() {
-      try {
-        if (loadTestModel.getLoginDelayFactor() > 0) {
-          delayLogin();
-        }
-        T application = null;
-        while (!stopped) {
-          try {
-            if (application == null) {
-              application = loadTestModel.initializeApplication();
-              LOG.debug("LoadTestModel initialized application: {}", application);
-            }
-            think();
-            if (!loadTestModel.isPaused()) {
-              runRandomScenario(application);
-            }
+      delayLogin();
+
+      T application = null;
+      while (!stopped) {
+        try {
+          if (application == null) {
+            application = loadTestModel.initializeApplication();
+            LOG.debug("LoadTestModel initialized application: {}", application);
           }
-          catch (final Exception e) {
-            final String message = "Exception during " + (application == null ? "application initialization" : ("run " + application));
-            LOG.debug(message, e);
+          think();
+          if (!loadTestModel.isPaused()) {
+            runRandomScenario(application);
           }
         }
-        if (application != null) {
-          loadTestModel.disconnectApplication(application);
-          LOG.debug("LoadTestModel disconnected application: {}", application);
+        catch (final Exception e) {
+          final String message = "Exception during " + (application == null ? "application initialization" : ("run " + application));
+          LOG.debug(message, e);
         }
       }
-      catch (final Exception e) {
-        LOG.error("Exception while initializing application", e);
+      if (application != null) {
+        loadTestModel.disconnectApplication(application);
+        LOG.debug("LoadTestModel disconnected application: {}", application);
       }
     }
 
@@ -705,14 +699,16 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     private void delayLogin() {
-      try {
-        final int sleepyTime = RANDOM.nextInt(loadTestModel.getMaximumThinkTime() *
-                (loadTestModel.getLoginDelayFactor() <= 0 ? 1 : loadTestModel.getLoginDelayFactor()));
-        Thread.sleep(sleepyTime);// delay login a bit so all do not try to login at the same time
-      }
-      catch (final InterruptedException e) {
-        LOG.error("Delay login sleep interrupted", e);
-        Thread.currentThread().interrupt();
+      if (loadTestModel.getLoginDelayFactor() > 0) {
+        try {
+          final int sleepyTime = RANDOM.nextInt(loadTestModel.getMaximumThinkTime() *
+                  (loadTestModel.getLoginDelayFactor() <= 0 ? 1 : loadTestModel.getLoginDelayFactor()));
+          Thread.sleep(sleepyTime);// delay login a bit so all do not try to login at the same time
+        }
+        catch (final InterruptedException e) {
+          LOG.error("Delay login sleep interrupted", e);
+          Thread.currentThread().interrupt();
+        }
       }
     }
   }
@@ -869,7 +865,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     private final Map<String, Integer> usageScenarioAvgDurations = new HashMap<>();
     private final Map<String, Integer> usageScenarioMaxDurations = new HashMap<>();
     private final Map<String, Integer> usageScenarioMinDurations = new HashMap<>();
-    private final Map<String, Double> usageScenarioFailures = new HashMap<>();
+    private final Map<String, Integer> usageScenarioFailures = new HashMap<>();
     private final Map<String, Collection<Integer>> scenarioDurations = new HashMap<>();
 
     private double workRequestsPerSecond = 0;
@@ -933,7 +929,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     private void addScenarioDuration(final String scenarioName, final int duration) {
       synchronized (scenarioDurations) {
         if (!scenarioDurations.containsKey(scenarioName)) {
-          scenarioDurations.put(scenarioName, new ArrayList<>());
+          scenarioDurations.put(scenarioName, new LinkedList<>());
         }
         scenarioDurations.get(scenarioName).add(duration);
       }
@@ -958,34 +954,36 @@ public abstract class LoadTestModel<T> implements LoadTest {
         delayedWorkRequestsPerSecond = (int) (delayedWorkRequestCounter / elapsedSeconds);
         for (final UsageScenario scenario : usageScenarios) {
           usageScenarioRates.put(scenario.getName(), (int) (scenario.getTotalRunCount() / elapsedSeconds));
-          final double failures = scenario.getUnsuccessfulRunCount();
-          usageScenarioFailures.put(scenario.getName(), failures);
-          synchronized (scenarioDurations) {
-            final Collection<Integer> durations = scenarioDurations.get(scenario.getName());
-            if (!Util.nullOrEmpty(durations)) {
-              int totalDuration = 0;
-              int minDuration = -1;
-              int maxDuration = -1;
-              for (final Integer duration : durations) {
-                totalDuration += duration;
-                if (minDuration == -1) {
-                  minDuration = duration;
-                  maxDuration = duration;
-                }
-                else {
-                  minDuration = Math.min(minDuration, duration);
-                  maxDuration = Math.max(maxDuration, duration);
-                }
-              }
-              usageScenarioAvgDurations.put(scenario.getName(), totalDuration / durations.size());
-              usageScenarioMinDurations.put(scenario.getName(), minDuration);
-              usageScenarioMaxDurations.put(scenario.getName(), maxDuration);
-            }
-          }
+          usageScenarioFailures.put(scenario.getName(), scenario.getUnsuccessfulRunCount());
+          calculateScenarioDuration(scenario);
         }
-
         resetCounters();
         time = current;
+      }
+    }
+
+    private void calculateScenarioDuration(final UsageScenario scenario) {
+      synchronized (scenarioDurations) {
+        final Collection<Integer> durations = scenarioDurations.get(scenario.getName());
+        if (!Util.nullOrEmpty(durations)) {
+          int totalDuration = 0;
+          int minDuration = -1;
+          int maxDuration = -1;
+          for (final Integer duration : durations) {
+            totalDuration += duration;
+            if (minDuration == -1) {
+              minDuration = duration;
+              maxDuration = duration;
+            }
+            else {
+              minDuration = Math.min(minDuration, duration);
+              maxDuration = Math.max(maxDuration, duration);
+            }
+          }
+          usageScenarioAvgDurations.put(scenario.getName(), totalDuration / durations.size());
+          usageScenarioMinDurations.put(scenario.getName(), minDuration);
+          usageScenarioMaxDurations.put(scenario.getName(), maxDuration);
+        }
       }
     }
 

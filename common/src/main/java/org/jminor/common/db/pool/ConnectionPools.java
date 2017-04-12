@@ -39,7 +39,7 @@ public final class ConnectionPools {
    */
   public static synchronized void initializeConnectionPools(final Class<? extends ConnectionPoolProvider> connectionPoolProviderClass,
                                                             final Database database, final Collection<User> users,
-                                                            final int validityCheckTimeout) throws DatabaseException, ClassNotFoundException {
+                                                            final int validityCheckTimeout) throws DatabaseException {
     Objects.requireNonNull(database, "database");
     Objects.requireNonNull(users, "users");
     for (final User user : users) {
@@ -106,7 +106,7 @@ public final class ConnectionPools {
 
   private static ConnectionPoolProvider initializeConnectionPoolProvider(final Class<? extends ConnectionPoolProvider> providerClass,
                                                                          final Database database, final User user,
-                                                                         final int validityCheckTimeout) throws ClassNotFoundException {
+                                                                         final int validityCheckTimeout) {
     if (providerClass != null) {
       try {
         return providerClass.getConstructor().newInstance();

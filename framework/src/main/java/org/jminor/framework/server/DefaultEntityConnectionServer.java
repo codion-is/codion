@@ -268,9 +268,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
 
   /**
    * @return info on all connected users
-   * @throws RemoteException in case of an exception
    */
-  Collection<User> getUsers() throws RemoteException {
+  Collection<User> getUsers() {
     final Set<User> users = new HashSet<>();
     for (final ClientInfo clientInfo : getConnections().keySet()) {
       users.add(clientInfo.getUser());
@@ -289,9 +288,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   /**
    * @param user the user
    * @return all clients connected with the given user
-   * @throws RemoteException in case of an exception
    */
-  Collection<ClientInfo> getClients(final User user) throws RemoteException {
+  Collection<ClientInfo> getClients(final User user) {
     final Collection<ClientInfo> clients = new ArrayList<>();
     for (final ClientInfo clientInfo : getConnections().keySet()) {
       if (user == null || clientInfo.getUser().equals(user)) {
@@ -746,13 +744,9 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * If no arguments are supplied a new DefaultEntityConnectionServer is started.
    * @param arguments 'start' (or no argument) starts the server, 'stop' or 'shutdown' causes a running server to be shut down and 'restart' restarts the server
    * @throws RemoteException in case of a remote exception during service export
-   * @throws ClassNotFoundException in case the domain model classes required for the server is not found or
-   * if the jdbc driver class is not found
-   * @throws DatabaseException in case of an exception while constructing the initial pooled connections
    * @throws ServerException.AuthenticationException in case of missing or incorrect admin user information
    */
-  public static void main(final String[] arguments) throws RemoteException, ClassNotFoundException, DatabaseException,
-          ServerException.AuthenticationException {
+  public static void main(final String[] arguments) throws RemoteException, ServerException.AuthenticationException {
     final String argument = arguments.length == 0 ? START : arguments[0];
     switch (argument) {
       case START:

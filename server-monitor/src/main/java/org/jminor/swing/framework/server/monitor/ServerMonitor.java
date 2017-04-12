@@ -40,7 +40,7 @@ public final class ServerMonitor {
 
   private static final Logger LOG = LoggerFactory.getLogger(ServerMonitor.class);
   private static final Format MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
-  private static final long THOUSAND = 1000;
+  private static final double THOUSAND = 1000;
 
   private final Event serverShutDownEvent = Events.event();
   private final Event<String> statisticsUpdatedEvent = Events.event();
@@ -53,17 +53,8 @@ public final class ServerMonitor {
   private final EntityConnectionServerAdmin server;
   private final User serverAdminUser;
 
-  private final TaskScheduler updateScheduler = new TaskScheduler(new Runnable() {
-    @Override
-    public void run() {
-      try {
-        if (!shutdown) {
-          updateStatistics();
-        }
-      }
-      catch (final RemoteException ignored) {/*ignored*/}
-    }
-  }, Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
+  private final TaskScheduler updateScheduler = new TaskScheduler(this::updateStatistics,
+          Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
 
   private final DatabaseMonitor databaseMonitor;
   private final ClientUserMonitor clientMonitor;
@@ -291,20 +282,25 @@ public final class ServerMonitor {
     }
   }
 
-  private void updateStatistics() throws RemoteException {
-    final long time = System.currentTimeMillis();
-    connectionCount = server.getConnectionCount();
-    memoryUsage = server.getUsedMemory();
-    connectionRequestsPerSecondSeries.add(time, server.getRequestsPerSecond());
-    maxMemorySeries.add(time, server.getMaxMemory() / THOUSAND);
-    allocatedMemorySeries.add(time, server.getAllocatedMemory() / THOUSAND);
-    usedMemorySeries.add(time, server.getUsedMemory() / THOUSAND);
-    connectionCountSeries.add(time, server.getConnectionCount());
-    connectionLimitSeries.add(time, server.getConnectionLimit());
-    final EntityConnectionServerAdmin.ThreadStatistics threadStatistics = server.getThreadStatistics();
-    threadCountSeries.add(time, threadStatistics.getThreadCount());
-    daemonThreadCountSeries.add(time, threadStatistics.getDaemonThreadCount());
-    statisticsUpdatedEvent.fire();
+  private void updateStatistics() {
+    try {
+      if (!shutdown) {
+        final long time = System.currentTimeMillis();
+        connectionCount = server.getConnectionCount();
+        memoryUsage = server.getUsedMemory();
+        connectionRequestsPerSecondSeries.add(time, server.getRequestsPerSecond());
+        maxMemorySeries.add(time, server.getMaxMemory() / THOUSAND);
+        allocatedMemorySeries.add(time, server.getAllocatedMemory() / THOUSAND);
+        usedMemorySeries.add(time, server.getUsedMemory() / THOUSAND);
+        connectionCountSeries.add(time, server.getConnectionCount());
+        connectionLimitSeries.add(time, server.getConnectionLimit());
+        final EntityConnectionServerAdmin.ThreadStatistics threadStatistics = server.getThreadStatistics();
+        threadCountSeries.add(time, threadStatistics.getThreadCount());
+        daemonThreadCountSeries.add(time, threadStatistics.getDaemonThreadCount());
+        statisticsUpdatedEvent.fire();
+      }
+    }
+    catch (final RemoteException ignored) {/*ignored*/}
   }
 
   private void refreshGCInfo(final List<EntityConnectionServerAdmin.GcEvent> gcEvents) {

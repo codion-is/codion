@@ -202,7 +202,7 @@ public class EntityUtilTest {
     final Property property = Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID);
     Collection<Integer> propertyValues = EntityUtil.getValues(TestDomain.DEPARTMENT_ID, entities);
     assertTrue(propertyValues.containsAll(values));
-    propertyValues = EntityUtil.getValues(property, entities);
+    propertyValues = EntityUtil.getValues(property.getPropertyID(), entities);
     assertTrue(propertyValues.containsAll(values));
     assertTrue(EntityUtil.getValues(TestDomain.DEPARTMENT_ID, null).isEmpty());
     assertTrue(EntityUtil.getValues(TestDomain.DEPARTMENT_ID, Collections.<Entity>emptyList()).isEmpty());

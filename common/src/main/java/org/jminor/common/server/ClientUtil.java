@@ -97,10 +97,6 @@ public final class ClientUtil {
 
     @Override
     public String toString() {
-      if (user == null) {
-        return clientID.toString();
-      }
-
       return user.toString() + " [" + clientTypeID + "] - " + clientID.toString();
     }
   }

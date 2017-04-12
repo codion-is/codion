@@ -12,7 +12,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class DatabaseUtilTest {
@@ -66,6 +68,45 @@ public class DatabaseUtilTest {
       if (connection != null) {
         connection.disconnect();
       }
+    }
+  }
+
+  @Test
+  public void validateWithQuery() throws DatabaseException, SQLException {
+    final Database testDatabase = new TestDatabase();
+    final Connection connection = testDatabase.createConnection(new User("scott", "tiger"));
+    assertTrue(DatabaseUtil.isValid(connection, testDatabase, 2));
+    connection.close();
+    assertFalse(DatabaseUtil.isValid(connection, testDatabase, 2));
+  }
+
+  private static final class TestDatabase extends AbstractDatabase {
+
+    private final Database database;
+
+    public TestDatabase() {
+      super(Type.H2, "org.h2.Driver");
+      this.database = Databases.createInstance();
+    }
+
+    @Override
+    public String getCheckConnectionQuery() {
+      return "select 1 from dual";
+    }
+
+    @Override
+    public boolean supportsIsValid() {
+      return false;
+    }
+
+    @Override
+    public String getAutoIncrementValueSQL(final String idSource) {
+      return database.getAutoIncrementValueSQL(idSource);
+    }
+
+    @Override
+    public String getURL(final Properties connectionProperties) {
+      return database.getURL(connectionProperties);
     }
   }
 }

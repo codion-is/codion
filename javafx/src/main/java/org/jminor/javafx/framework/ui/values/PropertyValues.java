@@ -14,8 +14,6 @@ import org.jminor.framework.model.EntityLookupModel;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.util.StringConverter;
@@ -293,12 +291,7 @@ public final class PropertyValues {
     public DefaultStringValue(final StringProperty stringProperty, final StringConverter<V> converter) {
       this.stringProperty = stringProperty;
       this.converter = converter;
-      this.stringProperty.addListener(new ChangeListener<Object>() {
-        @Override
-        public void changed(final ObservableValue<? extends Object> observable, final Object oldValue, final Object newValue) {
-          changeEvent.fire((V) newValue);
-        }
-      });
+      this.stringProperty.addListener((observable, oldValue, newValue) -> changeEvent.fire((V) newValue));
     }
 
     @Override
@@ -359,9 +352,7 @@ public final class PropertyValues {
 
     public SelectedValue(final SingleSelectionModel<V> selectionModel) {
       this.selectionModel = selectionModel;
-      this.selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-        changeEvent.fire(newValue);
-      });
+      this.selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) -> changeEvent.fire(newValue));
     }
 
     @Override

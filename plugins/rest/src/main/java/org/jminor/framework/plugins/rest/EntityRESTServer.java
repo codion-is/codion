@@ -23,7 +23,7 @@ public final class EntityRESTServer extends Server implements org.jminor.common.
    * @param port the port on which to serve
    * @throws Exception in case of an exception
    */
-  public EntityRESTServer(final org.jminor.common.server.Server connectionServer, final String documentRoot, final Integer port) throws Exception {
+  public EntityRESTServer(final org.jminor.common.server.Server connectionServer, final String documentRoot, final Integer port) {
     super(port);
     EntityRESTService.setServer(connectionServer);
     final ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);

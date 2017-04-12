@@ -10,8 +10,7 @@ import org.junit.Test;
 
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public final class ClientUtilTest {
 
@@ -26,5 +25,6 @@ public final class ClientUtilTest {
     assertEquals(Version.getVersion(), info.getFrameworkVersion());
     assertEquals(uuid.hashCode(), info.hashCode());
     assertEquals("test", info.getClientTypeID());
+    assertTrue(info.toString().contains(user.getUsername()));
   }
 }

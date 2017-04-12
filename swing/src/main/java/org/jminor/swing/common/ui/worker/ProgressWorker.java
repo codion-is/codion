@@ -55,7 +55,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    */
   public ProgressWorker(final DialogOwnerProvider dialogOwnerProvider, final String progressMessage,
                         final boolean indeterminate) {
-    this(dialogOwnerProvider, progressMessage, true, null, null);
+    this(dialogOwnerProvider, progressMessage, indeterminate, null, null);
   }
 
   /**

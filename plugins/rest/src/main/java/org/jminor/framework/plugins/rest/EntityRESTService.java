@@ -46,6 +46,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * A proof of concept implementation of a REST service for dealing with Entities
+ */
 @Path("/")
 public final class EntityRESTService extends Application {
 

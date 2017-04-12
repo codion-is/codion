@@ -93,16 +93,16 @@ public class ProgressDialog extends JDialog {
   }
 
   private JProgressBar initializeProgressBar(final int maxProgress) {
-    final JProgressBar progressBar = new JProgressBar();
-    UiUtil.setPreferredWidth(progressBar, DEFAULT_PROGRESS_BAR_WIDTH);
+    final JProgressBar bar = new JProgressBar();
+    UiUtil.setPreferredWidth(bar, DEFAULT_PROGRESS_BAR_WIDTH);
     if (maxProgress < 0) {
-      progressBar.setIndeterminate(true);
+      bar.setIndeterminate(true);
     }
     else {
-      progressBar.setMaximum(maxProgress);
+      bar.setMaximum(maxProgress);
     }
 
-    return progressBar;
+    return bar;
   }
 
   private JPanel initializeButtonPanel(final ControlSet buttonControls) {

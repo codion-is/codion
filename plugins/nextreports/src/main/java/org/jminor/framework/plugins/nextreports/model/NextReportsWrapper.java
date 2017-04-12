@@ -27,6 +27,9 @@ import java.nio.file.Files;
 import java.sql.Connection;
 import java.util.Map;
 
+/**
+ * A NextReports {@link ReportWrapper} implementation
+ */
 public final class NextReportsWrapper implements ReportWrapper<NextReportsResult, Void>, Serializable {
 
   static {
@@ -37,6 +40,12 @@ public final class NextReportsWrapper implements ReportWrapper<NextReportsResult
   private final Map<String, Object> reportParameters;
   private final String format;
 
+  /**
+   * Instantiates a new {@link NextReportsWrapper}.
+   * @param reportPath the path to the report
+   * @param reportParameters the report parameters
+   * @param format the format
+   */
   public NextReportsWrapper(final String reportPath, final Map<String, Object> reportParameters, final String format) {
     this.reportParameters = reportParameters;
     this.reportPath = reportPath;

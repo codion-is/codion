@@ -4409,3 +4409,4 @@
   AbstractEntityConnectionServer renamed back to DefaulEntityConnectionServer
   SwingFilteredComboBoxModel bug fixed, setSelectedItem() fired selection changed event even though the selected item didn't actually change, test updated
   SwingFilteredComboBoxModel bug fixed, filterContents() did not assume the contents of the selected item could have change during setContents(), test updated
+  Sonar run

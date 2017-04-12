@@ -43,6 +43,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * A base class for remote connections served by a {@link DefaultEntityConnectionServer}.
+ */
 public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject {
 
   private static final long serialVersionUID = 1;

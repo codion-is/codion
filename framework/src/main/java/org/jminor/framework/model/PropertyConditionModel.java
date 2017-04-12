@@ -16,6 +16,7 @@ public interface PropertyConditionModel<T extends Property> extends ColumnCondit
   /**
    * @return a condition object based on this condition model
    */
+  @Override
   Condition<Property.ColumnProperty> getCondition();
 
   /**

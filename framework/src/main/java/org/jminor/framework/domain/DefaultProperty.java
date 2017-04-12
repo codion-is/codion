@@ -776,62 +776,60 @@ class DefaultProperty implements Property {
         case Types.CHAR:
           return (ValueFetcher) resultSet -> property.fromColumnValue(getCharacter(resultSet, property.selectIndex));
         case Types.BLOB:
-          return (ValueFetcher) resultSet -> {
-            return null;//blob columns are handled specifically
-          };
+          return (ValueFetcher) resultSet -> null;
         default:
           throw new IllegalArgumentException("Unsupported SQL value type: " + property.columnType);
       }
     }
-  }
 
-  private static Boolean getBoolean(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    final boolean value = resultSet.getBoolean(columnIndex);
+    private static Boolean getBoolean(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      final boolean value = resultSet.getBoolean(columnIndex);
 
-    return !value && resultSet.wasNull() ? null : value;
-  }
-
-  private static Integer getInteger(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    final int value = resultSet.getInt(columnIndex);
-
-    return value == 0 && resultSet.wasNull() ? null : value;
-  }
-
-  private static Long getLong(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    final long value = resultSet.getLong(columnIndex);
-
-    return value == 0 && resultSet.wasNull() ? null : value;
-  }
-
-  private static Double getDouble(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    final double value = resultSet.getDouble(columnIndex);
-
-    return Double.compare(value, 0) == 0 && resultSet.wasNull() ? null : value;
-  }
-
-  private static String getString(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    return resultSet.getString(columnIndex);
-  }
-
-  private static java.util.Date getDate(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    return resultSet.getDate(columnIndex);
-  }
-
-  private static Timestamp getTimestamp(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    return resultSet.getTimestamp(columnIndex);
-  }
-
-  private static Time getTime(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    return resultSet.getTime(columnIndex);
-  }
-
-  private static Character getCharacter(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    final String val = getString(resultSet, columnIndex);
-    if (!Util.nullOrEmpty(val)) {
-      return val.charAt(0);
+      return !value && resultSet.wasNull() ? null : value;
     }
-    else {
-      return null;
+
+    private static Integer getInteger(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      final int value = resultSet.getInt(columnIndex);
+
+      return value == 0 && resultSet.wasNull() ? null : value;
+    }
+
+    private static Long getLong(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      final long value = resultSet.getLong(columnIndex);
+
+      return value == 0 && resultSet.wasNull() ? null : value;
+    }
+
+    private static Double getDouble(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      final double value = resultSet.getDouble(columnIndex);
+
+      return Double.compare(value, 0) == 0 && resultSet.wasNull() ? null : value;
+    }
+
+    private static String getString(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      return resultSet.getString(columnIndex);
+    }
+
+    private static java.util.Date getDate(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      return resultSet.getDate(columnIndex);
+    }
+
+    private static Timestamp getTimestamp(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      return resultSet.getTimestamp(columnIndex);
+    }
+
+    private static Time getTime(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      return resultSet.getTime(columnIndex);
+    }
+
+    private static Character getCharacter(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      final String val = getString(resultSet, columnIndex);
+      if (!Util.nullOrEmpty(val)) {
+        return val.charAt(0);
+      }
+      else {
+        return null;
+      }
     }
   }
 
@@ -1266,13 +1264,13 @@ class DefaultProperty implements Property {
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         if (property.isInteger()) {
-          result.add(getInteger(resultSet, COLUMN_INDEX));
+          result.add(DefaultColumnProperty.getInteger(resultSet, COLUMN_INDEX));
         }
         if (property.isLong()) {
-          result.add(getLong(resultSet, COLUMN_INDEX));
+          result.add(DefaultColumnProperty.getLong(resultSet, COLUMN_INDEX));
         }
         else if (property.isDouble()) {
-          result.add(getDouble(resultSet, COLUMN_INDEX));
+          result.add(DefaultColumnProperty.getDouble(resultSet, COLUMN_INDEX));
         }
         else {
           result.add(resultSet.getObject(1));
