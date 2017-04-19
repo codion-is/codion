@@ -282,7 +282,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @return info on all connected clients
    */
   Collection<ClientInfo> getClients() {
-    return getConnections().keySet();
+    return new ArrayList<>(getConnections().keySet());
   }
 
   /**

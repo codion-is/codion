@@ -99,9 +99,9 @@ public final class EntityJSONParser implements Serializer<Entity> {
   }
 
   /**
-   * Sets the indendation used when exporting to JSON format, -1 means non-human readable, whereas >= 0
+   * Sets the indendation used when exporting to JSON format, -1 means non-human readable, whereas &gt;= 0
    * means human readable with the given indentation.
-   * @param indentation if >= 0 then the serialized form will be human readable with the given indentation
+   * @param indentation if &gt;= 0 then the serialized form will be human readable with the given indentation
    * @return this {@link EntityJSONParser} instance
    */
   public EntityJSONParser setIndentation(final int indentation) {

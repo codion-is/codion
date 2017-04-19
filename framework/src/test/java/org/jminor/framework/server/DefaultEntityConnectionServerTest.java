@@ -6,16 +6,13 @@ package org.jminor.framework.server;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.db.Database;
+import org.jminor.common.db.Databases;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
-import org.jminor.common.server.ClientUtil;
-import org.jminor.common.server.ConnectionInfo;
-import org.jminor.common.server.LoginProxy;
+import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
-import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.RemoteEntityConnection;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.TestDomain;
@@ -26,6 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Collection;
 import java.util.UUID;
@@ -41,8 +39,8 @@ public class DefaultEntityConnectionServerTest {
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
 
   private static final User ADMIN_USER = new User("scott", "tiger");
-  private static DefaultEntityConnectionServer server;
-  private static DefaultEntityConnectionServerAdmin admin;
+  private static Server server;
+  private static EntityConnectionServerAdmin admin;
 
   public static EntityConnectionServerAdmin getServerAdmin() {
     return admin;
@@ -51,13 +49,17 @@ public class DefaultEntityConnectionServerTest {
   @BeforeClass
   public static synchronized void setUp() throws Exception {
     configure();
-    DefaultEntityConnectionServerTest.server = DefaultEntityConnectionServer.startServer();
-    admin = (DefaultEntityConnectionServerAdmin) server.getServerAdmin(ADMIN_USER);
+    final Database database = Databases.createInstance();
+    final String serverName = DefaultEntityConnectionServer.initializeServerName(database.getHost(), database.getSid());
+    DefaultEntityConnectionServer.startServer();
+    server = (Server) LocateRegistry.getRegistry(Configuration.getStringValue(Configuration.SERVER_HOST_NAME),
+            Configuration.getIntValue(Configuration.REGISTRY_PORT)).lookup(serverName);
+    admin = (EntityConnectionServerAdmin) server.getServerAdmin(ADMIN_USER);
   }
 
   @AfterClass
   public static synchronized void tearDown() throws Exception {
-    server.shutdown();
+    admin.shutdown();
     server = null;
   }
 
@@ -68,27 +70,27 @@ public class DefaultEntityConnectionServerTest {
   }
 
   @Test(expected = ServerException.AuthenticationException.class)
-  public void getServerAdminEmptyPassword() throws ServerException.AuthenticationException {
+  public void getServerAdminEmptyPassword() throws Exception {
     server.getServerAdmin(new User("test", ""));
   }
 
   @Test(expected = ServerException.AuthenticationException.class)
-  public void getServerAdminNullPassword() throws ServerException.AuthenticationException {
+  public void getServerAdminNullPassword() throws Exception {
     server.getServerAdmin(new User("test", null));
   }
 
   @Test(expected = ServerException.AuthenticationException.class)
-  public void getServerAdminWrongPassword() throws ServerException.AuthenticationException {
+  public void getServerAdminWrongPassword() throws Exception {
     server.getServerAdmin(new User("test", "test"));
   }
 
   @Test(expected = ServerException.AuthenticationException.class)
-  public void getServerAdminEmptyUsername() throws ServerException.AuthenticationException {
+  public void getServerAdminEmptyUsername() throws Exception {
     server.getServerAdmin(new User("", "test"));
   }
 
   @Test(expected = ServerException.AuthenticationException.class)
-  public void getServerAdminWrongUsername() throws ServerException.AuthenticationException {
+  public void getServerAdminWrongUsername() throws Exception {
     server.getServerAdmin(new User("test", "test"));
   }
 
@@ -115,6 +117,7 @@ public class DefaultEntityConnectionServerTest {
     admin.setLoggingEnabled(UUID.randomUUID(), true);
     assertTrue(remoteConnectionTwo.isConnected());
     assertEquals(2, admin.getConnectionCount());
+    assertEquals(2, admin.getClients().size());
 
     Collection<ClientInfo> clients = admin.getClients(new User(UNIT_TEST_USER.getUsername(), null));
     assertEquals(2, clients.size());
@@ -151,7 +154,7 @@ public class DefaultEntityConnectionServerTest {
     providerTwo.disconnect();
     assertEquals(0, admin.getConnectionCount());
 
-    server.setConnectionLimit(1);
+    admin.setConnectionLimit(1);
     providerOne.getConnection();
     try {
       providerTwo.getConnection();
@@ -169,94 +172,32 @@ public class DefaultEntityConnectionServerTest {
     providerTwo.disconnect();
     assertEquals(0, admin.getConnectionCount());
 
-    //testing with the EmpDeptLoginProxy
+    //testing with the TestLoginProxy
     admin.setConnectionLimit(3);
     assertEquals(3, admin.getConnectionLimit());
-    final String empDeptClientTypeID = "TestLoginProxy";
-    final RemoteEntityConnectionProvider empDeptProviderJohn = new RemoteEntityConnectionProvider("localhost",
-            new User("john", "hello"), UUID.randomUUID(), empDeptClientTypeID);
-    final RemoteEntityConnectionProvider empDeptProviderHelen = new RemoteEntityConnectionProvider("localhost",
-            new User("helen", "juno"), UUID.randomUUID(), empDeptClientTypeID);
-    final RemoteEntityConnectionProvider empDeptProviderInvalid = new RemoteEntityConnectionProvider("localhost",
-            new User("foo", "bar"), UUID.randomUUID(), empDeptClientTypeID);
-    empDeptProviderJohn.getConnection();
-    empDeptProviderHelen.getConnection();
+    final String testClientTypeID = "TestLoginProxy";
+    final RemoteEntityConnectionProvider testProviderJohn = new RemoteEntityConnectionProvider("localhost",
+            new User("john", "hello"), UUID.randomUUID(), testClientTypeID);
+    final RemoteEntityConnectionProvider testProviderHelen = new RemoteEntityConnectionProvider("localhost",
+            new User("helen", "juno"), UUID.randomUUID(), testClientTypeID);
+    final RemoteEntityConnectionProvider testProviderInvalid = new RemoteEntityConnectionProvider("localhost",
+            new User("foo", "bar"), UUID.randomUUID(), testClientTypeID);
+    testProviderJohn.getConnection();
+    testProviderHelen.getConnection();
     try {
-      empDeptProviderInvalid.getConnection();
+      testProviderInvalid.getConnection();
       fail("Should not be able to connect with an invalid user");
     }
     catch (final Exception ignored) {/*ignored*/}
-    final Collection<ClientInfo> empDeptClients = admin.getClients(empDeptClientTypeID);
+    final Collection<ClientInfo> empDeptClients = admin.getClients(testClientTypeID);
     assertEquals(2, empDeptClients.size());
     for (final ClientInfo empDeptClient : empDeptClients) {
       assertEquals(UNIT_TEST_USER, empDeptClient.getDatabaseUser());
     }
-    empDeptProviderJohn.disconnect();
+    testProviderJohn.disconnect();
     assertEquals(1, admin.getConnectionCount());
-    empDeptProviderHelen.disconnect();
+    testProviderHelen.disconnect();
     assertEquals(0, admin.getConnectionCount());
-
-    try {
-      admin.setConnectionTimeout(-1);
-      fail();
-    }
-    catch (final IllegalArgumentException ignored) {/*ignored*/}
-  }
-
-  @Test
-  public void testLoginProxy() throws ServerException.ServerFullException, ServerException.LoginException, RemoteException,
-          ServerException.ConnectionValidationException {
-    final String clientTypeID = "loginProxyTestClient";
-    //create login proxy which returns a ClientInfo with databaseUser scott:tiger for authenticated users
-    final LoginProxy proxy = new LoginProxy() {
-      @Override
-      public String getClientTypeID() {
-        return clientTypeID;
-      }
-      @Override
-      public ClientInfo doLogin(final ClientInfo clientInfo) {
-        return ServerUtil.clientInfo(clientInfo.getConnectionInfo(), UNIT_TEST_USER);
-      }
-      @Override
-      public void doLogout(final ClientInfo clientInfo) {}
-      @Override
-      public void close() {}
-    };
-
-    server.setLoginProxy(clientTypeID, proxy);
-
-    final User userOne = new User("foo", "bar");
-    final ConnectionInfo clientOne = ClientUtil.connectionInfo(userOne, UUID.randomUUID(), clientTypeID);
-
-    final User userTwo = new User("bar", "foo");
-    final ConnectionInfo clientTwo = ClientUtil.connectionInfo(userTwo, UUID.randomUUID(), clientTypeID);
-
-    final RemoteEntityConnection connectionOne = (RemoteEntityConnection) server.connect(clientOne);
-    assertEquals(userOne, connectionOne.getUser());
-
-    Collection<ClientInfo> clients = server.getClients(clientTypeID);
-    assertEquals(1, clients.size());
-    final ClientInfo clientOneFromServer = clients.iterator().next();
-    assertEquals(userOne, clientOneFromServer.getUser());
-    assertEquals(UNIT_TEST_USER, clientOneFromServer.getDatabaseUser());
-
-    final RemoteEntityConnection connectionTwo = (RemoteEntityConnection) server.connect(clientTwo);
-    assertEquals(userTwo, connectionTwo.getUser());
-
-    clients = server.getClients(clientTypeID);
-    assertEquals(2, clients.size());
-
-    boolean found = false;
-    for (final ClientInfo clientInfo : server.getClients(clientTypeID)) {
-      if (clientInfo.getClientID().equals(clientTwo.getClientID())) {
-        found = true;
-        assertEquals(UNIT_TEST_USER, clientInfo.getDatabaseUser());
-      }
-    }
-    assertTrue("Client two should have been returned from server", found);
-
-    server.disconnect(clientOne.getClientID());
-    server.disconnect(clientTwo.getClientID());
   }
 
   @Test
@@ -264,6 +205,11 @@ public class DefaultEntityConnectionServerTest {
     admin.getActiveConnectionCount();
     admin.getAllocatedMemory();
     admin.setConnectionTimeout(30);
+    try {
+      admin.setConnectionTimeout(-1);
+      fail();
+    }
+    catch (final IllegalArgumentException ignored) {/*ignored*/}
     assertEquals(30, admin.getConnectionTimeout());
     admin.getDatabaseStatistics();
     admin.getDatabaseURL();

@@ -605,7 +605,6 @@ public final class EntityUtil {
      * Transforms the given beans into a Entities according to the information found in this EntityBeanMapper instance
      * @param beans the beans to transform
      * @return a List containing the Entities derived from the given beans, an empty List if {@code beans} is null or empty
-     * @throws NoSuchMethodException if a required getter method is not found in the bean class
      * @throws java.lang.reflect.InvocationTargetException in case an exception is thrown during a bean method call
      * @throws IllegalAccessException if a required method is not accessible
      */
