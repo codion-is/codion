@@ -6,7 +6,6 @@ package org.jminor.javafx.framework.model;
 import org.jminor.common.EventListener;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.FilterCondition;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entity;
@@ -46,12 +45,7 @@ public class ObservableEntityListTest {
     final Entity operations = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "OPERATIONS");
 
-    list.setFilterCondition(new FilterCondition<Entity>() {
-      @Override
-      public boolean include(final Entity item) {
-        return Objects.equals(item.get(TestDomain.DEPARTMENT_NAME), "SALES");
-      }
-    });
+    list.setFilterCondition(item -> Objects.equals(item.get(TestDomain.DEPARTMENT_NAME), "SALES"));
     assertEquals(1, counter.get());
     assertNotNull(list.getFilterCondition());
     assertEquals(3, list.getFilteredItemCount());

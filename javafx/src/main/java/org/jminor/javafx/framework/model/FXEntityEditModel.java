@@ -114,7 +114,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
       for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(getEntityID(), entry.getKey())) {
         final FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
         if (listModel != null) {
-          entry.getValue().forEach(listModel::remove);
+          listModel.removeAll(entry.getValue());
           //todo
 //          final Entity selectedEntity = listModel.getSelectionModel().getSelectedItem();
 //          if (listModel.isVisible(selectedEntity)) {

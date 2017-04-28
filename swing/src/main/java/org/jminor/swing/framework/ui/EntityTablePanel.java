@@ -791,10 +791,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        final List<Entity> entities = lookupModel.getSelectionModel().getSelectedItems();
-        for (final Entity entity : entities) {
-          selected.add(entity);
-        }
+        selected.addAll(lookupModel.getSelectionModel().getSelectedItems());
         dialog.dispose();
       }
     };

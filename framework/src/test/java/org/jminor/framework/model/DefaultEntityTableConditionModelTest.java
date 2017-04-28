@@ -127,9 +127,7 @@ public class DefaultEntityTableConditionModelTest {
 
   @Test
   public void testAdditionalFilterCondition() {
-    conditionModel.setAdditionalTableFilterCondition(entity -> {
-      return !Objects.equals(entity.get(TestDomain.EMP_ID), 1);
-    });
+    conditionModel.setAdditionalTableFilterCondition(entity -> !Objects.equals(entity.get(TestDomain.EMP_ID), 1));
     assertNotNull(conditionModel.getAdditionalTableFilterCondition());
 
     final Entity emp = Entities.entity(TestDomain.T_EMP);
