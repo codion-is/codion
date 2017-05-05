@@ -223,6 +223,7 @@ public final class Values {
     /**
      * Instantiates a new ValueLink
      * @param originalValue the value wrapper for the linked value
+     * @param linkedValue the value to link to the original value
      * @param readOnly if true then this link will be uni-directional
      */
     private ValueLink(final Value<V> originalValue, final Value<V> linkedValue, final boolean readOnly) {
