@@ -1218,6 +1218,23 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
   }
 
+  /**
+   * Tries to parse user information from the second argument string in the given array.
+   * Useful for single sign on application launch
+   * <pre>javaws -open scott:tiger http://jminor.org/demo/demo.jnlp</pre>
+   * @param args the program arguments
+   * @return null if no user information is found
+   * @see User#parseUser(String)
+   */
+  protected static User getUser(final String[] args) {
+    try {
+      return args != null && args.length > 1 ? User.parseUser(args[1]) : null;
+    }
+    catch (final IllegalArgumentException e) {
+      return null;
+    }
+  }
+
   private static DefaultTreeModel createApplicationTree(final Collection<? extends MasterDetailPanel> entityPanels) {
     final DefaultTreeModel applicationTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
     addModelsToTree((DefaultMutableTreeNode) applicationTreeModel.getRoot(), entityPanels);
