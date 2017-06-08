@@ -4415,3 +4415,4 @@
   Some minor javadoc fixes
   EntityApplicationPanel.getUser() added
   Attribute.validateType() added, implemented in DefaultProperty, now DefaultProperty validates the type in setDefaultValue()
+  ValueLinks, added a couple of intSpinnterValueLink() convenience methods

@@ -380,7 +380,7 @@ public final class ValueLinks {
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param readOnly if true the component will be read only
+   * @param readOnly if true the value link will be read only
    * @return a SpinnerNumberModel based on the value
    */
   public static SpinnerNumberModel intSpinnerValueLink(final Object owner, final String beanPropertyName,
@@ -392,16 +392,52 @@ public final class ValueLinks {
   }
 
   /**
+   * @param integerValue the value
+   * @return a SpinnerNumberModel based on the value
+   */
+  public static SpinnerNumberModel intSpinnerValueLink(final Value<Integer> integerValue) {
+    return intSpinnerValueLink(integerValue, false);
+  }
+
+  /**
+   * @param integerValue the value
+   * @param readOnly if true the value link will be read only
+   * @return a SpinnerNumberModel based on the value
+   */
+  public static SpinnerNumberModel intSpinnerValueLink(final Value<Integer> integerValue, final boolean readOnly) {
+    final SpinnerNumberModel numberModel = new SpinnerNumberModel();
+    intSpinnerValueLink(numberModel, integerValue, readOnly);
+
+    return numberModel;
+  }
+
+  /**
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param spinnerModel the spinner model to use
-   * @param readOnly if true the component will be read only
+   * @param readOnly if true the value link will be read only
    */
   public static void intSpinnerValueLink(final Object owner, final String beanPropertyName, final EventObserver<Integer> valueChangeEvent,
                                          final SpinnerNumberModel spinnerModel, final boolean readOnly) {
-    Values.link(Values.beanValue(owner, beanPropertyName, int.class, valueChangeEvent),
-            UiValues.integerValue(spinnerModel), readOnly);
+    intSpinnerValueLink(spinnerModel, Values.beanValue(owner, beanPropertyName, int.class, valueChangeEvent), readOnly);
+  }
+
+  /**
+   * @param spinnerModel the spinner model
+   * @param integerValue the value
+   */
+  public static void intSpinnerValueLink(final SpinnerNumberModel spinnerModel, final Value<Integer> integerValue) {
+    intSpinnerValueLink(spinnerModel, integerValue, false);
+  }
+
+  /**
+   * @param spinnerModel the spinner model
+   * @param integerValue the value
+   * @param readOnly if true the value link will be read only
+   */
+  public static void intSpinnerValueLink(final SpinnerNumberModel spinnerModel, final Value<Integer> integerValue, final boolean readOnly) {
+    Values.link(integerValue, UiValues.integerValue(spinnerModel), readOnly);
   }
 
   private static Class getDateTypeClass(final int sqlType) {
