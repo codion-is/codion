@@ -297,6 +297,7 @@ class DefaultProperty implements Property {
   /** {@inheritDoc} */
   @Override
   public final Property setDefaultValue(final Object defaultValue) {
+    validateType(defaultValue);
     this.defaultValue = defaultValue;
     return this;
   }
@@ -476,6 +477,14 @@ class DefaultProperty implements Property {
   @Override
   public final Class<?> getTypeClass() {
     return typeClass;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void validateType(final Object value) {
+    if (value != null && !typeClass.equals(value.getClass()) && !typeClass.isAssignableFrom(value.getClass())) {
+      throw new IllegalArgumentException("Value of type " + typeClass + " expected for property " + this + ", got: " + value.getClass());
+    }
   }
 
   private Format initializeDefaultFormat() {

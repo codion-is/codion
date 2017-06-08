@@ -22,4 +22,10 @@ public interface Attribute {
    * @return the Class representing the values of this attribute
    */
   Class<?> getTypeClass();
+
+  /**
+   * @param value the value to validate
+   * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this attribute
+   */
+  void validateType(final Object value);
 }

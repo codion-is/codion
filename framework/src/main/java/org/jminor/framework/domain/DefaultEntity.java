@@ -776,10 +776,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
       return;
     }
 
-    final Class<?> type = property.getTypeClass();
-    if (!type.equals(value.getClass()) && !type.isAssignableFrom(value.getClass())) {
-      throw new IllegalArgumentException("Value of type " + type + " expected for property " + property + ", got: " + value.getClass());
-    }
+    property.validateType(value);
     if (property instanceof Property.ForeignKeyProperty) {
       final String fkPropertyEntityID = ((Property.ForeignKeyProperty) property).getReferencedEntityID();
       final String actualEntityID = ((Entity) value).getEntityID();

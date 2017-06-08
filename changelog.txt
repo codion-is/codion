@@ -4414,3 +4414,4 @@
   DefaultEntityConnectionServerTest improved, now uses remote interfaces for testing, for catching bugs like the one above
   Some minor javadoc fixes
   EntityApplicationPanel.getUser() added
+  Attribute.validateType() added, implemented in DefaultProperty, now DefaultProperty validates the type in setDefaultValue()
