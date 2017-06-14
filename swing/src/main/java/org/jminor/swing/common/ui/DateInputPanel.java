@@ -4,13 +4,16 @@
 package org.jminor.swing.common.ui;
 
 import org.jminor.common.StateObserver;
+import org.jminor.common.Util;
 import org.jminor.common.i18n.Messages;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -93,11 +96,16 @@ public final class DateInputPanel extends JPanel {
   }
 
   /**
-   * @return the Date currently being displayed
+   * @return the Date currently being displayed, null in case of an incomplete date
    * @throws ParseException in case the date can not be parsed
    */
   public Date getDate() throws ParseException {
-    return dateFormat.parse(inputField.getText());
+    final String text = inputField.getText();
+    if (!text.contains("_")) {
+      return dateFormat.parse(text);
+    }
+
+    return null;
   }
 
   /**
@@ -113,6 +121,95 @@ public final class DateInputPanel extends JPanel {
    */
   public String getFormatPattern() {
     return dateFormat.toPattern();
+  }
+
+  /**
+   * A panel containing two DateInputPanels for selecting a date interval
+   */
+  public static final class IntervalInputPanel extends JPanel {
+
+    private final DateInputPanel fromInputPanel;
+    private final DateInputPanel toInputPanel;
+
+    /**
+     * @param dateFormat the date format to use
+     * @param initialValues the initial values, if null then no date values are selected
+     */
+    public IntervalInputPanel(final SimpleDateFormat dateFormat, final DateInterval initialValues) {
+      fromInputPanel = new DateInputPanel(initialValues != null ? initialValues.getFrom() : null, dateFormat);
+      toInputPanel = new DateInputPanel(initialValues != null ? initialValues.getTo() : null, dateFormat);
+      fromInputPanel.getButton().setFocusable(false);
+      toInputPanel.getButton().setFocusable(false);
+      setLayout(new GridLayout(4, 1, 5, 5));
+      add(new JLabel(Messages.get(Messages.FROM)));
+      add(fromInputPanel);
+      add(new JLabel(Messages.get(Messages.TO)));
+      add(toInputPanel);
+    }
+
+    /**
+     * @return the input panel for the 'from' value
+     */
+    public DateInputPanel getFromInputPanel() {
+      return fromInputPanel;
+    }
+
+    /**
+     * @return the input panel for the 'to' value
+     */
+    public DateInputPanel getToInputPanel() {
+      return toInputPanel;
+    }
+
+    /**
+     * @return the date interval represented by the input fields, null if either is not specified
+     */
+    public DateInterval getDateInterval() {
+      try {
+        final Date from = fromInputPanel.getDate();
+        final Date to = toInputPanel.getDate();
+        if (Util.notNull(from, to)) {
+          return new DateInterval(from, to);
+        }
+
+        return null;
+      }
+      catch (final ParseException e) {
+        return null;
+      }
+    }
+  }
+
+  /**
+   * A Date interval with from and to fields
+   */
+  public static final class DateInterval {
+
+    private final Date from;
+    private final Date to;
+
+    /**
+     * @param from the from date
+     * @param to the to date
+     */
+    public DateInterval(final Date from, final Date to) {
+      this.from = from;
+      this.to = to;
+    }
+
+    /**
+     * @return the from part of this interval
+     */
+    public Date getFrom() {
+      return from;
+    }
+
+    /**
+     * @return the to part of this interval
+     */
+    public Date getTo() {
+      return to;
+    }
   }
 
   private static final class InputFocusAdapter extends FocusAdapter {

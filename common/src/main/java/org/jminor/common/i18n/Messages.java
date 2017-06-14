@@ -77,6 +77,8 @@ public final class Messages {
   public static final String SELECT_ALL = "select_all";
   public static final String SELECT_NONE = "select_none";
   public static final String TOGGLE_SUMMARY_TIP = "toggle_summary_tip";
+  public static final String FROM = "from";
+  public static final String TO = "to";
 
   public static final String LIKE = "like";
   public static final String NOT_LIKE = "not_like";

@@ -43,6 +43,19 @@ public class DateInputPanelTest {
     assertEquals("__.__.____", panel.getInputField().getText());
   }
 
+  @Test
+  public void getDate() throws ParseException {
+    final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+    final DateInputPanel panel = new DateInputPanel(null, format);
+    assertNull(panel.getDate());
+    panel.getInputField().setText("03");
+    assertNull(panel.getDate());
+    panel.getInputField().setText("03.04");
+    assertNull(panel.getDate());
+    panel.getInputField().setText("03.04.2010");
+    assertNotNull(panel.getDate());
+  }
+
   @Test(expected = NullPointerException.class)
   public void constructorNullInputField() {
     new DateInputPanel(null, new SimpleDateFormat("dd.MM.yyyy"), true, null);
@@ -63,5 +76,19 @@ public class DateInputPanelTest {
     enabledState.setActive(true);
     assertTrue(txtField.isEnabled());
     assertTrue(inputPanel.getButton().isEnabled());
+  }
+
+  @Test
+  public void intervalInputPanel() throws ParseException {
+    final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+    final DateInputPanel.IntervalInputPanel inputPanel = new DateInputPanel.IntervalInputPanel(format,
+            new DateInputPanel.DateInterval(format.parse("01.03.2010"), format.parse("31.03.2010")));
+    assertEquals("01.03.2010", inputPanel.getFromInputPanel().getInputField().getText());
+    assertEquals("31.03.2010", inputPanel.getToInputPanel().getInputField().getText());
+    DateInputPanel.DateInterval interval = inputPanel.getDateInterval();
+    assertNotNull(interval);
+    inputPanel.getFromInputPanel().getInputField().setText("");
+    interval = inputPanel.getDateInterval();
+    assertNull(interval);
   }
 }

@@ -4416,3 +4416,5 @@
   EntityApplicationPanel.getUser() added
   Attribute.validateType() added, implemented in DefaultProperty, now DefaultProperty validates the type in setDefaultValue()
   ValueLinks, added a couple of intSpinnterValueLink() convenience methods
+  DateInputPanel.IntervalInputPanel added
+  DateInputPanel.getDate() now returns null in case of an incomplete date string
