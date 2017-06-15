@@ -50,19 +50,32 @@ public final class PropertyInputDialog extends Dialog<PropertyInputDialog.InputR
     getDialogPane().setContent(control);
   }
 
+  /**
+   * The result from a InputDialog
+   */
   public static final class InputResult {
     private final boolean inputAccepted;
     private final Object value;
 
+    /**
+     * @param inputAccepted true if the user accepted the input value
+     * @param value the input value
+     */
     public InputResult(final boolean inputAccepted, final Object value) {
       this.inputAccepted = inputAccepted;
       this.value = value;
     }
 
+    /**
+     * @return true if the user accepted the input value
+     */
     public boolean isInputAccepted() {
       return inputAccepted;
     }
 
+    /**
+     * @return the value
+     */
     public Object getValue() {
       return value;
     }

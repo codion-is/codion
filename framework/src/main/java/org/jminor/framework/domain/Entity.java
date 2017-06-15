@@ -10,6 +10,7 @@ import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 
+import java.io.Serializable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,7 +27,7 @@ import java.util.Map;
 /**
  * Represents a row in a database table, providing access to the column values via the {@link ValueMap} interface.
  */
-public interface Entity extends ValueMap<Property, Object>, Comparable<Entity> {
+public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, Serializable {
 
   /**
    * @return the entity ID
@@ -285,7 +286,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity> {
   /**
    * A class representing a primary key.
    */
-  interface Key extends ValueMap<Property.ColumnProperty, Object> {
+  interface Key extends ValueMap<Property.ColumnProperty, Object>, Serializable {
 
     /**
      * @return the entity ID

@@ -354,7 +354,7 @@ public final class EntityConditions {
     return condition;
   }
 
-  private static final class DefaultEntityCondition implements EntityCondition, Serializable {
+  private static final class DefaultEntityCondition implements EntityCondition {
 
     private static final long serialVersionUID = 1;
 
@@ -426,12 +426,12 @@ public final class EntityConditions {
     }
   }
 
-  private static final class DefaultEntitySelectCondition implements EntitySelectCondition, Serializable {
+  private static final class DefaultEntitySelectCondition implements EntitySelectCondition {
 
     private static final long serialVersionUID = 1;
 
     private EntityCondition condition;
-    private Map<String, Integer> foreignKeyFetchDepthLimits;
+    private HashMap<String, Integer> foreignKeyFetchDepthLimits;
 
     private OrderBy orderBy;
     private String orderByClause;
@@ -622,7 +622,7 @@ public final class EntityConditions {
   /**
    * A class encapsulating a query condition with Entity.Key objects as values.
    */
-  private static final class EntityKeyCondition implements Condition<Property.ColumnProperty>, Serializable {
+  private static final class EntityKeyCondition implements Condition<Property.ColumnProperty> {
 
     private static final long serialVersionUID = 1;
 
@@ -723,7 +723,7 @@ public final class EntityConditions {
   /**
    * A object for encapsulating a query condition with a single property and one or more values.
    */
-  private static final class PropertyCondition implements Condition<Property.ColumnProperty>, Serializable {
+  private static final class PropertyCondition implements Condition<Property.ColumnProperty> {
 
     private static final long serialVersionUID = 1;
 
@@ -926,7 +926,7 @@ public final class EntityConditions {
     }
   }
 
-  private static final class ForeignKeyCondition implements Condition<Property.ColumnProperty>, Serializable {
+  private static final class ForeignKeyCondition implements Condition<Property.ColumnProperty> {
 
     private static final long serialVersionUID = 1;
 

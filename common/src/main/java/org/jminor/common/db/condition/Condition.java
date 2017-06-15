@@ -6,13 +6,14 @@ package org.jminor.common.db.condition;
 import org.jminor.common.db.Column;
 import org.jminor.common.i18n.Messages;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * A generic interface for objects serving as where conditions in database queries
  * @param <T> the type used to describe the columns involved in the condition
  */
-public interface Condition<T extends Column> {
+public interface Condition<T extends Column> extends Serializable {
   /**
    * Returns a condition clause based on this Condition, note that this
    * clause contains the ? substitute character instead of the actual values.

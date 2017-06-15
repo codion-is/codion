@@ -103,7 +103,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     actionBase.add(ControlProvider.createButton(Controls.methodControl(model, "disconnectTimedOut",
             "Disconnect idle", null, "Disconnect those that have exceeded the allowed idle time")));
     actionBase.add(ControlProvider.createButton(Controls.methodControl(this, "disconnectAll",
-            "Disconnect all", null, "Disconnect all")));
+            "Disconnect all", null, "Disconnect all clients")));
 
     setLayout(new BorderLayout());
 

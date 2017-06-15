@@ -413,6 +413,9 @@ public final class EntityGeneratorModel {
     }
   }
 
+  /**
+   * Represents a database table
+   */
   public static final class Table {
 
     private final String schemaName;

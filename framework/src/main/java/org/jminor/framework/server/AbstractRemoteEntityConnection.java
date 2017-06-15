@@ -5,7 +5,7 @@ package org.jminor.framework.server;
 
 import org.jminor.common.DaemonThreadFactory;
 import org.jminor.common.Event;
-import org.jminor.common.EventListener;
+import org.jminor.common.EventInfoListener;
 import org.jminor.common.Events;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
@@ -92,7 +92,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   /**
    * An event notified when this connection is disconnected
    */
-  private final transient Event disconnectedEvent = Events.event();
+  private final transient Event<AbstractRemoteEntityConnection> disconnectedEvent = Events.event();
 
   /**
    * Indicates whether or not this remote connection has been disconnected
@@ -207,7 +207,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       }
       cleanupLocalConnections();
     }
-    disconnectedEvent.fire();
+    disconnectedEvent.fire(this);
   }
 
   /**
@@ -250,12 +250,12 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     return ACTIVE_CONNECTIONS.contains(this);
   }
 
-  final void addDisconnectListener(final EventListener listener) {
-    disconnectedEvent.addListener(listener);
+  final void addDisconnectListener(final EventInfoListener<AbstractRemoteEntityConnection> listener) {
+    disconnectedEvent.addInfoListener(listener);
   }
 
-  final void removeDisconnectListener(final EventListener listener) {
-    disconnectedEvent.removeListener(listener);
+  final void removeDisconnectListener(final EventInfoListener listener) {
+    disconnectedEvent.removeInfoListener(listener);
   }
 
   /**

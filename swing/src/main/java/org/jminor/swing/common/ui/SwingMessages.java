@@ -8,6 +8,9 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.UIManager;
 
+/**
+ * Handles i18n for Swing components
+ */
 public final class SwingMessages {
 
   static {
@@ -21,5 +24,8 @@ public final class SwingMessages {
 
   private SwingMessages() {}
 
-  public static void init() {/*A convenience method for triggering a loading of this class*/}
+  /**
+   * A convenience method for triggering a loading of this class
+   */
+  public static void init() {/*Just for loading the class*/}
 }

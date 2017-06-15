@@ -76,6 +76,9 @@ public final class EntityTableCellRenderers {
     return new Color(r, g, b);
   }
 
+  /**
+   * The default table cell renderer for a {@link EntityTablePanel}
+   */
   public static class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer implements EntityTableCellRenderer {
 
     private final EntityTableModel tableModel;

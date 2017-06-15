@@ -321,6 +321,11 @@ public final class ControlProvider {
     }
   }
 
+  /**
+   * Creates a JCheckBox based on the given toggle control
+   * @param toggleControl the toggle control
+   * @return a check box
+   */
   public static JCheckBox createCheckBox(final ToggleControl toggleControl) {
     final JCheckBox checkBox = new JCheckBox(toggleControl);
     checkBox.setModel(toggleControl.getButtonModel());
@@ -328,10 +333,21 @@ public final class ControlProvider {
     return checkBox;
   }
 
+  /**
+   * Creates a JToggleButton based on the given toggle control
+   * @param toggleControl the toggle control
+   * @return a toggle button
+   */
   public static JToggleButton createToggleButton(final ToggleControl toggleControl) {
     return createToggleButton(toggleControl, true);
   }
 
+  /**
+   * Creates a JToggleButton based on the given toggle control
+   * @param toggleControl the toggle control
+   * @param includeCaption if true a caption is included
+   * @return a toggle button
+   */
   public static JToggleButton createToggleButton(final ToggleControl toggleControl, final boolean includeCaption) {
     final JToggleButton toggleButton = new JToggleButton(toggleControl);
     toggleButton.setModel(toggleControl.getButtonModel());
@@ -340,8 +356,14 @@ public final class ControlProvider {
     return toggleButton;
   }
 
+  /**
+   * Iterates the given control set using the given control iterator
+   * @param controlIterator the control iterator
+   * @param controlSet the control set
+   */
   public static void iterate(final ControlIterator controlIterator, final ControlSet controlSet) {
     Objects.requireNonNull(controlIterator, "controlIterator");
+    Objects.requireNonNull(controlSet, "controlSet");
     for (final Action action : controlSet.getActions()) {
       if (action == null) {
         controlIterator.handleSeparator();

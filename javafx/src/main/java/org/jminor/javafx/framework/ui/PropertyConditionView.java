@@ -85,10 +85,10 @@ public final class PropertyConditionView extends BorderPane {
   }
 
   private BorderPane createCheckBoxPane() {
-    final BorderPane checkBoxPane = new BorderPane();
-    checkBoxPane.setCenter(enabledBox);
+    final BorderPane pane = new BorderPane();
+    pane.setCenter(enabledBox);
 
-    return checkBoxPane;
+    return pane;
   }
 
   private ComboBox<Item<Condition.Type>> createConditionTypeComboBox() {

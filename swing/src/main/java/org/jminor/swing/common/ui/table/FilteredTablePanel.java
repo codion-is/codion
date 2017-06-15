@@ -158,10 +158,8 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * @param tableModel the table model
    */
   public FilteredTablePanel(final FilteredTableModel<R, C> tableModel) {
-    this(tableModel, column -> {
-      //noinspection unchecked
-      return new ColumnConditionPanel<>(tableModel.getColumnModel().getColumnFilterModel((C) column.getIdentifier()), true, true);
-    });
+    this(tableModel, column -> new ColumnConditionPanel<>(tableModel.getColumnModel().getColumnFilterModel(
+            (C) column.getIdentifier()), true, true));
   }
 
   /**

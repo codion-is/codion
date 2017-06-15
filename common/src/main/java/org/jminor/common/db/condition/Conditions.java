@@ -9,7 +9,6 @@ import org.jminor.common.db.Column;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -141,7 +140,7 @@ public final class Conditions {
     return new StringCondition<>(conditionString, values, keys);
   }
 
-  private static final class DefaultSet<T extends Column> implements Condition.Set<T>, Serializable {
+  private static final class DefaultSet<T extends Column> implements Condition.Set<T> {
 
     private static final long serialVersionUID = 1;
 
@@ -223,7 +222,7 @@ public final class Conditions {
     }
   }
 
-  private static final class StringCondition<T extends Column> implements Condition<T>, Serializable {
+  private static final class StringCondition<T extends Column> implements Condition<T> {
 
     private static final long serialVersionUID = 1;
 

@@ -115,13 +115,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /**
    * The Entity.ToString instance used when toString() is called for this entity type
    */
-  private Entity.ToString stringProvider = new Entity.ToString() {
-    @Override
-    public String toString(final Entity entity) {
-      Objects.requireNonNull(entity, "entity");
-      return entityID + ": " + entity.getKey();
-    }
-  };
+  private Entity.ToString stringProvider = entity -> DefaultEntityDefinition.this.entityID + ": " +
+          Objects.requireNonNull(entity, "entity").getKey();
 
   /**
    * Provides the background color

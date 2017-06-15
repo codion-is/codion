@@ -10,7 +10,6 @@ import org.jminor.common.db.valuemap.ValueMap;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.Format;
 import java.util.Collection;
@@ -23,7 +22,7 @@ import java.util.Objects;
 /**
  * Represents a row in a database table, providing access to the column values via the {@link ValueMap} interface.
  */
-final class DefaultEntity extends DefaultValueMap<Property, Object> implements Entity, Serializable, Comparable<Entity> {
+final class DefaultEntity extends DefaultValueMap<Property, Object> implements Entity {
 
   private static final long serialVersionUID = 1;
 
@@ -808,6 +807,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
           return false;
         }
       }
+
+      return true;
     }
 
     return false;
@@ -816,7 +817,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /**
    * A class representing column key objects for entities.
    */
-  static final class DefaultKey extends DefaultValueMap<Property.ColumnProperty, Object> implements Entity.Key, Serializable {
+  static final class DefaultKey extends DefaultValueMap<Property.ColumnProperty, Object> implements Entity.Key {
 
     private static final long serialVersionUID = 1;
 

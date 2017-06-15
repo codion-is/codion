@@ -190,7 +190,9 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   /** {@inheritDoc} */
   @Override
   public final boolean isFilterEnabled(final String propertyID) {
-    return getPropertyFilterModel(propertyID).isEnabled();
+    final ColumnConditionModel<Property> propertyFilterModel = getPropertyFilterModel(propertyID);
+
+    return propertyFilterModel != null && propertyFilterModel.isEnabled();
   }
 
   /** {@inheritDoc} */

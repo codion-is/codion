@@ -15,11 +15,26 @@ public final class ExceptionUtil {
 
   private ExceptionUtil() {}
 
+  /**
+   * Logs the given exception after unwrapping it
+   * @param exception the exception
+   * @param wrappingExceptionClass the class of the the exception from which to unwrap
+   * @param logger the logger to use to log
+   * @return the unwrapped exception
+   */
   public static Exception unwrapAndLog(final Exception exception, final Class<? extends Exception> wrappingExceptionClass,
                                        final Logger logger) {
     return unwrapAndLog(exception, wrappingExceptionClass, logger, Collections.<Class<? extends Exception>>emptyList());
   }
 
+  /**
+   * Logs the given exception after unwrapping it
+   * @param exception the exception
+   * @param wrappingExceptionClass the class of the the exception from which to unwrap
+   * @param logger the logger to use to log
+   * @param dontLog a Collection of exception types for which no logging should be performed
+   * @return the unwrapped exception
+   */
   public static Exception unwrapAndLog(final Exception exception, final Class<? extends Exception> wrappingExceptionClass,
                                        final Logger logger, final Collection<Class<? extends Exception>> dontLog) {
     if (exception.getCause() instanceof Exception) {//else we can't really unwrap it

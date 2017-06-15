@@ -455,6 +455,9 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
   private boolean includeExactWildcard(final String value) {
     String upperBoundString = (String) getUpperBound();
+    if (upperBoundString == null) {
+      upperBoundString = "";
+    }
     if (upperBoundString.equals(wildcard)) {
       return true;
     }

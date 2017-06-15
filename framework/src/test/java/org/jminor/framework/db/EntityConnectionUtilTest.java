@@ -20,10 +20,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class EntityConnectionUtilTest {
 
@@ -60,21 +58,11 @@ public class EntityConnectionUtilTest {
     assertEquals(sourceConnection.selectRowCount(EntityConditions.condition(TestDomain.T_DEPARTMENT)),
             DESTINATION_CONNECTION.selectRowCount(EntityConditions.condition(TestDomain.T_DEPARTMENT)));
 
-    EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, false, TestDomain.T_EMP);
+    EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, true, TestDomain.T_EMP);
     final List<Entity> employees = DESTINATION_CONNECTION.selectMany(EntityConditions.selectCondition(TestDomain.T_EMP));
-    boolean zeroIdFound = false;
-    for (final Entity emp : employees) {
-      if (Objects.equals(emp.get(TestDomain.EMP_ID), 0)) {
-        zeroIdFound = true;
-      }
-    }
 
     DESTINATION_CONNECTION.delete(EntityConditions.condition(TestDomain.T_EMP));
     DESTINATION_CONNECTION.delete(EntityConditions.condition(TestDomain.T_DEPARTMENT));
-
-    if (!zeroIdFound) {
-      fail("Ids were not regenerated on copy");
-    }
   }
 
   @Test

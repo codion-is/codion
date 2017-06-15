@@ -66,7 +66,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   protected static final String SHUTDOWN = "shutdown";
   protected static final String RESTART = "restart";
 
-  private static final int USER_PASSWORD_SPLIT = 2;
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
   private static final String FROM_CLASSPATH = "' from classpath";
 
@@ -182,14 +181,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       final AbstractRemoteEntityConnection connection = createRemoteConnection(connectionPool, getDatabase(), clientInfo,
               getServerInfo().getServerPort(), isClientLoggingEnabled(), isSslEnabled());
 
-      connection.addDisconnectListener(() -> {
-        try {
-          disconnect(connection.getClientInfo().getClientID());
-        }
-        catch (final RemoteException ex) {
-          LOG.error(ex.getMessage(), ex);
-        }
-      });
+      connection.addDisconnectListener(this::disconnectQuietly);
       LOG.debug("{} connected", clientInfo);
 
       return connection;
@@ -446,6 +438,15 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     UnicastRemoteObject.unexportObject(serverAdmin, true);
   }
 
+  private void disconnectQuietly(final AbstractRemoteEntityConnection connection) {
+    try {
+      disconnect(connection.getClientInfo().getClientID());
+    }
+    catch (final RemoteException ex) {
+      LOG.error(ex.getMessage(), ex);
+    }
+  }
+
   /**
    * Binds this server instance to the registry
    * @throws RemoteException in case of an exception
@@ -528,20 +529,14 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   private static Map<String, Integer> getClientTimeouts(final Collection<String> values) {
     final Map<String, Integer> timeoutMap = new HashMap<>();
     for (final String clientTimeout : values) {
-      final String[] split = splitString(clientTimeout, ":");
+      final String[] split = clientTimeout.split(":");
+      if (split.length < 2) {
+        throw new IllegalArgumentException("Expecting a ':' delimiter");
+      }
       timeoutMap.put(split[0], Integer.parseInt(split[1]));
     }
 
     return timeoutMap;
-  }
-
-  public static String[] splitString(final String usernamePassword, final String delimiter) {
-    final String[] splitResult = usernamePassword.split(delimiter);
-    if (splitResult.length < USER_PASSWORD_SPLIT) {
-      throw new IllegalArgumentException("Expecting a '" + delimiter + "' delimiter");
-    }
-
-    return splitResult;
   }
 
   private AuxiliaryServer startWebServer(final String webDocumentRoot, final Integer webServerPort) {
@@ -695,11 +690,11 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
 
       return server;
     }
+    catch (final RuntimeException e) {
+      throw e;
+    }
     catch (final Exception e) {
       LOG.error("Exception when starting server", e);
-      if (server != null) {
-        server.shutdown();
-      }
       throw new RuntimeException(e);
     }
   }

@@ -75,10 +75,16 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityEditPanel.class);
 
+  /**
+   * The standard controls available to the EditPanel
+   */
   public enum ControlCode {
     SAVE, INSERT, UPDATE, DELETE, REFRESH, CLEAR
   }
 
+  /**
+   * The actions meriting user confirmation
+   */
   protected enum ConfirmType {
     INSERT, UPDATE, DELETE
   }
@@ -2124,7 +2130,11 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
     return property.isReadOnly() || (property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).isUpdatable());
   }
 
-  interface EntitiesInsertedListener {
+  private interface EntitiesInsertedListener {
+    /**
+     * Called when the given entities have been inserted
+     * @param entities the inserted entities
+     */
     void entitiesInserted(final List<Entity> entities);
   }
 

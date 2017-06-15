@@ -116,9 +116,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     this.tableModel = tableModel;
     setTableEditModel(editModel, tableModel);
     bindEventsInternal();
-    if (editModel != null) {
-      editModel.setEntity(null);
-    }
+    editModel.setEntity(null);
   }
 
   /**

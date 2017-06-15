@@ -33,9 +33,7 @@ public final class EntityConnectionUtil {
     for (final String entityID : entityIDs) {
       final List<Entity> entities = source.selectMany(EntityConditions.selectCondition(entityID).setForeignKeyFetchDepthLimit(0));
       if (!includePrimaryKeys) {
-        for (final Entity entity : entities) {
-          entity.clearKeyValues();
-        }
+        entities.forEach(Entity::clearKeyValues);
       }
       batchInsert(destination, entities, null, batchSize, null);
     }

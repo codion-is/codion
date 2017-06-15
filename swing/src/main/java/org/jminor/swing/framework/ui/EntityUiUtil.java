@@ -858,6 +858,13 @@ public final class EntityUiUtil {
     return panel;
   }
 
+  /**
+   * Displays a popup menu containing the values of the given entity
+   * @param entity the entity which values to display
+   * @param component the component on which to display the popup menu
+   * @param location the popup menu location
+   * @param connectionProvider the connection provider for populating the values
+   */
   public static void showEntityMenu(final Entity entity, final JComponent component, final Point location,
                                     final EntityConnectionProvider connectionProvider) {
     if (entity != null) {
@@ -985,11 +992,11 @@ public final class EntityUiUtil {
     TextUtil.collate(primaryKeyProperties);
     for (final Property.ColumnProperty property : primaryKeyProperties) {
       final boolean modified = entity.isModified(property);
-      String value = "[PK] " + property.getPropertyID() + ": " + entity.getAsString(property);
+      final StringBuilder builder = new StringBuilder("[PK] ").append(property.getPropertyID()).append(": ").append(entity.getAsString(property));
       if (modified) {
-        value += getOriginalValue(entity, property);
+        builder.append(getOriginalValue(entity, property));
       }
-      final JMenuItem menuItem = new JMenuItem(value);
+      final JMenuItem menuItem = new JMenuItem(builder.toString());
       setInvalidModified(menuItem, true, modified);
       menuItem.setToolTipText(property.getPropertyID());
       rootMenu.add(menuItem);
@@ -1018,22 +1025,23 @@ public final class EntityUiUtil {
             entity.remove(property);
             entity.put(property, referencedEntity);
           }
-          String text = "[FK" + (isLoaded ? "] " : "+] ") + property.getCaption() + ": " + referencedEntity.toString();
+          final StringBuilder builder = new StringBuilder("[FK").append(isLoaded ? "] " : "+] ").append(property.getCaption())
+                  .append(": ").append(referencedEntity.toString());
           if (modified) {
-            text += getOriginalValue(entity, property);
+            builder.append(getOriginalValue(entity, property));
           }
-          final JMenu foreignKeyMenu = new JMenu(text);
+          final JMenu foreignKeyMenu = new JMenu(builder.toString());
           setInvalidModified(foreignKeyMenu, valid, modified);
           foreignKeyMenu.setToolTipText(toolTipText);
           populateEntityMenu(foreignKeyMenu, entity.getForeignKey(property.getPropertyID()), connectionProvider);
           rootMenu.add(foreignKeyMenu);
         }
         else {
-          String text = "[FK] " + property.getCaption() + ": <null>";
+          final StringBuilder builder = new StringBuilder("[FK] ").append(property.getCaption()).append(": <null>");
           if (modified) {
-            text += getOriginalValue(entity, property);
+            builder.append(getOriginalValue(entity, property));
           }
-          final JMenuItem menuItem = new JMenuItem(text);
+          final JMenuItem menuItem = new JMenuItem(builder.toString());
           setInvalidModified(menuItem, valid, modified);
           menuItem.setToolTipText(toolTipText);
           rootMenu.add(menuItem);
@@ -1069,20 +1077,31 @@ public final class EntityUiUtil {
                 + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
         final String value = entity.isValueNull(property) ? "<null>" : entity.getAsString(property);
         final boolean longValue = value != null && value.length() > maxValueLength;
-        String caption = prefix + property + ": " + (longValue ? value.substring(0, maxValueLength) + "..." : value);
-        if (modified) {
-          caption += getOriginalValue(entity, property);
+        final StringBuilder builder = new StringBuilder(prefix).append(property).append(": ");
+        if (longValue) {
+          builder.append(value.substring(0, maxValueLength)).append("...");
         }
-        final JMenuItem menuItem = new JMenuItem(caption);
+        else {
+          builder.append(value);
+        }
+        if (modified) {
+          builder.append(getOriginalValue(entity, property));
+        }
+        final JMenuItem menuItem = new JMenuItem(builder.toString());
         setInvalidModified(menuItem, valid, modified);
-        String toolTipText = "";
+        final StringBuilder toolTipBuilder = new StringBuilder();
         if (property instanceof Property.ColumnProperty) {
-          toolTipText = property.getPropertyID();
+          toolTipBuilder.append(property.getPropertyID());
         }
         if (longValue) {
-          toolTipText += (value.length() > MAXIMUM_VALUE_LENGTH ? value.substring(0, MAXIMUM_VALUE_LENGTH) : value);
+          if (value.length() > MAXIMUM_VALUE_LENGTH) {
+            toolTipBuilder.append(value.substring(0, MAXIMUM_VALUE_LENGTH));
+          }
+          else {
+            toolTipBuilder.append(value);
+          }
         }
-        menuItem.setToolTipText(toolTipText);
+        menuItem.setToolTipText(toolTipBuilder.toString());
         rootMenu.add(menuItem);
       }
     }

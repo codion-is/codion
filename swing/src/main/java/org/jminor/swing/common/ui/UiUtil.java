@@ -1257,6 +1257,7 @@ public final class UiUtil {
    * @param valueCollectionProvider provides the values for the lookup dialog
    */
   public static void addLookupDialog(final JTextField txtField, final ValueCollectionProvider valueCollectionProvider) {
+    Objects.requireNonNull(valueCollectionProvider);
     addKeyEvent(txtField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, new AbstractAction("UiUtil.lookupValue") {
       @Override
       public void actionPerformed(final ActionEvent e) {
