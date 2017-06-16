@@ -6,17 +6,24 @@ package org.jminor.framework.server;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.Util;
+import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseConnection;
+import org.jminor.common.db.DatabaseConnectionProvider;
+import org.jminor.common.db.DatabaseConnections;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.pool.ConnectionPool;
+import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.RemoteEntityConnection;
 import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnectionTest;
 import org.jminor.framework.domain.TestDomain;
 
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -39,12 +46,7 @@ public class DefaultRemoteEntityConnectionTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
-    DefaultEntityConnectionServerTest.setUp();
-  }
-
-  @AfterClass
-  public static void tearDown() throws Exception {
-    DefaultEntityConnectionServerTest.tearDown();
+    TestDomain.init();
   }
 
   @Test(expected = DatabaseException.class)
@@ -93,6 +95,53 @@ public class DefaultRemoteEntityConnectionTest {
       }
       catch (final Exception ignored) {/*ignored*/}
     }
+  }
+
+  @Test
+  public void rollbackOnDisconnect() throws Exception {
+    final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectionInfo(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
+    DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(LocalEntityConnectionTest.createTestDatabaseInstance(), info, 1238, true, false);
+    final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_EMP);
+    connection.beginTransaction();
+    connection.delete(condition);
+    assertTrue(connection.selectMany(condition).isEmpty());
+    connection.disconnect();
+    connection = new DefaultRemoteEntityConnection(LocalEntityConnectionTest.createTestDatabaseInstance(), info, 1238, true, false);
+    assertTrue(connection.selectMany(condition).size() > 0);
+    connection.disconnect();
+  }
+
+  @Test
+  public void pooledTransaction() throws Exception {
+    final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectionInfo(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
+    final Database database = Databases.createInstance();
+    final DatabaseConnectionProvider connectionProvider = new DatabaseConnectionProvider() {
+      @Override
+      public Database getDatabase() {
+        return database;
+      }
+      @Override
+      public DatabaseConnection createConnection() throws DatabaseException {
+        return DatabaseConnections.createConnection(database, getUser());
+      }
+      @Override
+      public void destroyConnection(final DatabaseConnection connection) {
+        connection.disconnect();
+      }
+      @Override
+      public User getUser() {
+        return UNIT_TEST_USER;
+      }
+    };
+    final ConnectionPool connectionPool = ConnectionPools.createDefaultConnectionPool(connectionProvider);
+    final DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(connectionPool, connectionProvider.getDatabase(), info, 1238, true, false);
+    final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_EMP);
+    connection.beginTransaction();
+    connection.selectMany(condition);
+    connection.delete(condition);
+    connection.selectMany(condition);
+    connection.rollbackTransaction();
+    connection.selectMany(condition);
   }
 
   @Test

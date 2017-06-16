@@ -102,6 +102,11 @@ public final class DatabaseConnections {
     }
 
     @Override
+    public Database getDatabase() {
+      return database;
+    }
+
+    @Override
     public DatabaseConnection createConnection() throws DatabaseException {
       return DatabaseConnections.createConnection(database, user, validityCheckTimeout);
     }

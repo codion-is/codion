@@ -51,23 +51,6 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   private static final long serialVersionUID = 1;
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractRemoteEntityConnection.class);
-  private static final AbstractRemoteEntityConnection.RequestCounter REQUEST_COUNTER = new AbstractRemoteEntityConnection.RequestCounter();
-  private static final String LOG_IDENTIFIER_PROPERTY = "logIdentifier";
-
-  /**
-   * Identifies the log file being used for this connection
-   */
-  private final String logIdentifier;
-
-  /**
-   * Contains information about the client using this connection
-   */
-  private final ClientInfo clientInfo;
-
-  /**
-   * Contains information about the underlying database
-   */
-  private final transient Database database;
 
   /**
    * A Proxy for logging method calls
@@ -75,51 +58,14 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   protected final transient EntityConnection connectionProxy;
 
   /**
-   * The connection pool to use, if any
+   * The proxy connection handler
    */
-  private final transient ConnectionPool connectionPool;
-
-  /**
-   * A local connection used in case no connection pool is provided, managed by getConnection()/returnConnection()
-   */
-  private transient EntityConnection localEntityConnection;
-
-  /**
-   * A local connection used in case of a connection pool, managed by getConnection()/returnConnection()
-   */
-  private transient EntityConnection poolEntityConnection;
+  private final transient RemoteEntityConnectionHandler connectionHandler;
 
   /**
    * An event notified when this connection is disconnected
    */
   private final transient Event<AbstractRemoteEntityConnection> disconnectedEvent = Events.event();
-
-  /**
-   * Indicates whether or not this remote connection has been disconnected
-   */
-  private boolean connected = true;
-
-  /**
-   * The date and time when this remote connection was established
-   */
-  private final long creationDate = System.currentTimeMillis();
-
-  /**
-   * The method call log
-   */
-  private final transient MethodLogger methodLogger = LocalEntityConnections.createLogger();
-
-  /**
-   * Contains the active remote connections, that is, those connections that are in the process of serving a request
-   */
-  private static final List<AbstractRemoteEntityConnection> ACTIVE_CONNECTIONS = Collections.synchronizedList(new ArrayList<>());
-
-  private static final String GET_CONNECTION = "getConnection";
-  private static final String RETURN_CONNECTION = "returnConnection";
-
-  private static final int DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL = 2500;
-
-  private long lastAccessTime = creationDate;
 
   /**
    * Instantiates a new AbstractRemoteEntityConnection and exports it on the given port number
@@ -138,74 +84,66 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
           throws DatabaseException, RemoteException {
     super(port, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
-    this.database = database;
-    this.connectionPool = connectionPool;
-    this.clientInfo = clientInfo;
-    this.methodLogger.setEnabled(loggingEnabled);
-    this.logIdentifier = clientInfo.getUser().getUsername().toLowerCase() +"@" + clientInfo.getClientTypeID();
-    this.connectionProxy = initializeProxy();
+    this.connectionHandler = new RemoteEntityConnectionHandler(
+            this, connectionPool, clientInfo, database, loggingEnabled);
+    this.connectionProxy = Util.initializeProxy(EntityConnection.class, connectionHandler);
     try {
       clientInfo.setClientHost(getClientHost());
     }
     catch (final ServerNotActiveException ignored) {/*ignored*/}
-    try {
-      if (connectionPool == null) {
-        localEntityConnection = LocalEntityConnections.createConnection(database, clientInfo.getDatabaseUser());
-        localEntityConnection.setMethodLogger(methodLogger);
-      }
-      else {
-        poolEntityConnection = LocalEntityConnections.createConnection(database, connectionPool.getConnection());
-        returnConnectionToPool();
-      }
-    }
-    catch (final DatabaseException e) {
-      disconnect();
-      throw e;
-    }
   }
 
+  /**
+   * @return {@link EntityConnection.Type#REMOTE}
+   */
   public final EntityConnection.Type getType() {
     return EntityConnection.Type.REMOTE;
   }
 
+  /**
+   * @return the user this connection is using
+   */
   public final User getUser() {
-    return clientInfo.getUser();
+    return connectionHandler.clientInfo.getUser();
   }
 
+  /**
+   * @param methodLogger the method logger
+   * @throws UnsupportedOperationException always
+   */
   public final void setMethodLogger(final MethodLogger methodLogger) {
     throw new UnsupportedOperationException("setMethodLogger is not supported on remote connections");
   }
 
-  /** {@inheritDoc} */
+  /**
+   * @return nothing
+   * @throws UnsupportedOperationException always
+   */
   public final DatabaseConnection getDatabaseConnection() {
     throw new UnsupportedOperationException("getDatabaseConnection is not supported on remote connections");
   }
 
-  /** {@inheritDoc} */
+  /**
+   * @return true if this connection is connected
+   */
   public final boolean isConnected() {
     synchronized (connectionProxy) {
-      if (connectionPool != null) {
-        return connected;
-      }
-
-      return connected && localEntityConnection != null && localEntityConnection.isConnected();
+      return connectionHandler.isConnected();
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Disconnects this connection
+   */
   public final void disconnect() {
     synchronized (connectionProxy) {
-      if (!connected) {
-        return;
-      }
-      connected = false;
       try {
         UnicastRemoteObject.unexportObject(this, true);
       }
       catch (final NoSuchObjectException e) {
         LOG.error(e.getMessage(), e);
       }
-      cleanupLocalConnections();
+      connectionHandler.disconnect();
     }
     disconnectedEvent.fire(this);
   }
@@ -214,7 +152,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    * @return information on the client using this remote connection
    */
   final ClientInfo getClientInfo() {
-    return clientInfo;
+    return connectionHandler.clientInfo;
   }
 
   /**
@@ -222,9 +160,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    * @see org.jminor.framework.Configuration#SERVER_CONNECTION_LOG_SIZE
    */
   final ClientLog getClientLog() {
-    synchronized (methodLogger) {
-      return new ClientLog(clientInfo.getClientID(), creationDate, methodLogger.getEntries());
-    }
+    return connectionHandler.getClientLog();
   }
 
   /**
@@ -232,22 +168,22 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    * @return true if this connection has been inactive for {@code timeout} milliseconds or longer
    */
   final boolean hasBeenInactive(final int timeout) {
-    return System.currentTimeMillis() - lastAccessTime > timeout;
+    return System.currentTimeMillis() - connectionHandler.lastAccessTime > timeout;
   }
 
   final void setLoggingEnabled(final boolean status) {
-    methodLogger.setEnabled(status);
+    connectionHandler.methodLogger.setEnabled(status);
   }
 
   final boolean isLoggingEnabled() {
-    return methodLogger.isEnabled();
+    return connectionHandler.methodLogger.isEnabled();
   }
 
   /**
    * @return true during a remote method call
    */
   final boolean isActive() {
-    return ACTIVE_CONNECTIONS.contains(this);
+    return RemoteEntityConnectionHandler.ACTIVE_CONNECTIONS.contains(this);
   }
 
   final void addDisconnectListener(final EventInfoListener<AbstractRemoteEntityConnection> listener) {
@@ -262,141 +198,121 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    * @return the number of connections that are active at this moment
    */
   static int getActiveCount() {
-    return ACTIVE_CONNECTIONS.size();
+    return RemoteEntityConnectionHandler.ACTIVE_CONNECTIONS.size();
   }
 
   static int getRequestsPerSecond() {
-    return REQUEST_COUNTER.getRequestsPerSecond();
+    return RemoteEntityConnectionHandler.REQUEST_COUNTER.getRequestsPerSecond();
   }
 
-  private EntityConnection initializeProxy() {
-    return Util.initializeProxy(EntityConnection.class, new AbstractRemoteEntityConnection.RemoteConnectionHandler(this));
-  }
+  private static final class RemoteEntityConnectionHandler implements InvocationHandler {
 
-  private void cleanupLocalConnections() {
-    if (poolEntityConnection != null) {
-      if (poolEntityConnection.isTransactionOpen()) {
-        LOG.info("Rollback open transaction on disconnect: {}", clientInfo);
-        poolEntityConnection.rollbackTransaction();
-      }
-      returnConnectionToPool();
-      poolEntityConnection = null;
-    }
-    if (localEntityConnection != null) {
-      if (localEntityConnection.isTransactionOpen()) {
-        LOG.info("Rollback open transaction on disconnect: {}", clientInfo);
-        localEntityConnection.rollbackTransaction();
-      }
-      localEntityConnection.disconnect();
-      localEntityConnection = null;
-    }
-  }
+    private static final String LOG_IDENTIFIER_PROPERTY = "logIdentifier";
 
-  private EntityConnection getConnection() throws DatabaseException {
-    Exception exception = null;
-    try {
-      if (methodLogger != null && methodLogger.isEnabled()) {
-        methodLogger.logAccess(GET_CONNECTION, new Object[]{clientInfo.getDatabaseUser(), clientInfo.getUser()});
-      }
-      if (connectionPool != null) {
-        return getPooledEntityConnection();
-      }
+    private static final String GET_CONNECTION = "getConnection";
 
-      return getLocalEntityConnection();
-    }
-    catch (final DatabaseException ex) {
-      exception = ex;
-      throw ex;
-    }
-    finally {
-      if (methodLogger != null && methodLogger.isEnabled()) {
-        String message = null;
-        if (poolEntityConnection != null && poolEntityConnection.getDatabaseConnection().getRetryCount() > 0) {
-          message = "retries: " + poolEntityConnection.getDatabaseConnection().getRetryCount();
-        }
-        methodLogger.logExit(GET_CONNECTION, exception, message);
-      }
-    }
-  }
+    private static final String RETURN_CONNECTION = "returnConnection";
 
-  /**
-   * Returns the pooled connection to a connection pool if the connection is not within an open transaction
-   */
-  private void returnConnection() {
-    if (poolEntityConnection == null || poolEntityConnection.isTransactionOpen()) {
-      return;
-    }
-    try {
-      if (methodLogger != null && methodLogger.isEnabled()) {
-        methodLogger.logAccess(RETURN_CONNECTION, new Object[]{clientInfo.getDatabaseUser(), clientInfo.getUser()});
-      }
-      poolEntityConnection.setMethodLogger(null);
-      returnConnectionToPool();
-    }
-    catch (final Exception e) {
-      LOG.info("Exception while returning connection to pool", e);
-    }
-    finally {
-      if (methodLogger != null && methodLogger.isEnabled()) {
-        methodLogger.logExit(RETURN_CONNECTION, null, null);
-      }
-    }
-  }
+    private static final RequestCounter REQUEST_COUNTER = new RequestCounter();
 
-  private EntityConnection getPooledEntityConnection() throws DatabaseException {
-    if (poolEntityConnection.isTransactionOpen()) {
-      return poolEntityConnection;
-    }
-    poolEntityConnection.getDatabaseConnection().setConnection(connectionPool.getConnection());
-    poolEntityConnection.setMethodLogger(methodLogger);
+    /**
+     * Contains the active remote connections, that is, those connections that are in the process of serving a request
+     */
+    private static final List<AbstractRemoteEntityConnection> ACTIVE_CONNECTIONS = Collections.synchronizedList(new ArrayList<>());
 
-    return poolEntityConnection;
-  }
+    /**
+     * Contains information about the client using this connection
+     */
+    private final ClientInfo clientInfo;
 
-  private void returnConnectionToPool() {
-    final Connection connection = poolEntityConnection.getDatabaseConnection().getConnection();
-    if (connection != null) {
-      connectionPool.returnConnection(connection);
-      poolEntityConnection.getDatabaseConnection().setConnection(null);
-    }
-  }
+    /**
+     * Contains information about the underlying database
+     */
+    private final Database database;
 
-  private EntityConnection getLocalEntityConnection() throws DatabaseException {
-    if (!localEntityConnection.isConnected()) {
-      localEntityConnection.disconnect();//just in case
-      localEntityConnection = LocalEntityConnections.createConnection(database, clientInfo.getDatabaseUser());
-      localEntityConnection.setMethodLogger(methodLogger);
-    }
+    /**
+     * The connection pool to use, if any
+     */
+    private final ConnectionPool connectionPool;
 
-    return localEntityConnection;
-  }
-
-  private static final class RemoteConnectionHandler implements InvocationHandler {
-
+    /**
+     * The remote entity connection using this connection handler
+     */
     private final AbstractRemoteEntityConnection remoteEntityConnection;
-    private final MethodLogger methodLogger;
 
-    private RemoteConnectionHandler(final AbstractRemoteEntityConnection remoteEntityConnection) {
+    /**
+     * The method call log
+     */
+    private final MethodLogger methodLogger = LocalEntityConnections.createLogger();
+
+    /**
+     * Identifies the log file being used for this connection
+     */
+    private final String logIdentifier;
+
+    /**
+     * The date and time when this remote connection was established
+     */
+    private final long creationDate = System.currentTimeMillis();
+
+    /**
+     * A local connection used in case no connection pool is provided, managed by getConnection()/returnConnection()
+     */
+    private EntityConnection localEntityConnection;
+
+    /**
+     * A local connection used in case of a connection pool, managed by getConnection()/returnConnection()
+     */
+    private EntityConnection poolEntityConnection;
+
+    /**
+     * The time this connection was last used
+     */
+    private long lastAccessTime = creationDate;
+
+    /**
+     * Indicates whether or not this remote connection has been disconnected
+     */
+    private boolean disconnected = false;
+
+    private RemoteEntityConnectionHandler(final AbstractRemoteEntityConnection remoteEntityConnection, final ConnectionPool connectionPool,
+                                          final ClientInfo clientInfo, final Database database, final boolean loggingEnabled) throws DatabaseException {
+      this.clientInfo = clientInfo;
+      this.database = database;
+      this.connectionPool = connectionPool;
       this.remoteEntityConnection = remoteEntityConnection;
-      this.methodLogger = remoteEntityConnection.methodLogger;
+      this.methodLogger.setEnabled(loggingEnabled);
+      this.logIdentifier = clientInfo.getUser().getUsername().toLowerCase() +"@" + clientInfo.getClientTypeID();
+      try {
+        if (connectionPool == null) {
+          localEntityConnection = LocalEntityConnections.createConnection(this.database, this.clientInfo.getDatabaseUser());
+          localEntityConnection.setMethodLogger(methodLogger);
+        }
+        else {
+          poolEntityConnection = LocalEntityConnections.createConnection(this.database, connectionPool.getConnection());
+          returnConnectionToPool();
+        }
+      }
+      catch (final DatabaseException e) {
+        disconnect();
+        throw e;
+      }
     }
 
     @Override
     public synchronized Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
-      remoteEntityConnection.lastAccessTime = System.currentTimeMillis();
+      lastAccessTime = System.currentTimeMillis();
       final String methodName = method.getName();
       Exception exception = null;
       try {
-        MDC.put(LOG_IDENTIFIER_PROPERTY, remoteEntityConnection.logIdentifier);
+        MDC.put(LOG_IDENTIFIER_PROPERTY, logIdentifier);
         ACTIVE_CONNECTIONS.add(remoteEntityConnection);
         REQUEST_COUNTER.incrementRequestsPerSecondCounter();
         if (methodLogger.isEnabled()) {
           methodLogger.logAccess(methodName, args);
         }
 
-        final EntityConnection connection = remoteEntityConnection.getConnection();
-
-        return method.invoke(connection, args);
+        return method.invoke(getConnection(), args);
       }
       catch (final Exception e) {
         exception = ExceptionUtil.unwrapAndLog(e, InvocationTargetException.class, LOG,
@@ -405,19 +321,141 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       }
       finally {
         ACTIVE_CONNECTIONS.remove(remoteEntityConnection);
-        remoteEntityConnection.returnConnection();
+        returnConnection();
         if (methodLogger.isEnabled()) {
           final MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
-          final StringBuilder messageBuilder = new StringBuilder(remoteEntityConnection.getClientInfo().toString()).append("\n");
+          final StringBuilder messageBuilder = new StringBuilder(clientInfo.toString()).append("\n");
           MethodLogger.appendLogEntry(messageBuilder, entry, 0);
           LOG.info(messageBuilder.toString());
         }
         MDC.remove(LOG_IDENTIFIER_PROPERTY);
       }
     }
+
+    private EntityConnection getConnection() throws DatabaseException {
+      Exception exception = null;
+      try {
+        if (methodLogger != null && methodLogger.isEnabled()) {
+          methodLogger.logAccess(GET_CONNECTION, new Object[]{clientInfo.getDatabaseUser(), clientInfo.getUser()});
+        }
+        if (connectionPool != null) {
+          return getPooledEntityConnection();
+        }
+
+        return getLocalEntityConnection();
+      }
+      catch (final DatabaseException ex) {
+        exception = ex;
+        throw ex;
+      }
+      finally {
+        if (methodLogger != null && methodLogger.isEnabled()) {
+          String message = null;
+          if (poolEntityConnection != null && poolEntityConnection.getDatabaseConnection().getRetryCount() > 0) {
+            message = "retries: " + poolEntityConnection.getDatabaseConnection().getRetryCount();
+          }
+          methodLogger.logExit(GET_CONNECTION, exception, message);
+        }
+      }
+    }
+
+    private EntityConnection getPooledEntityConnection() throws DatabaseException {
+      if (poolEntityConnection.isTransactionOpen()) {
+        return poolEntityConnection;
+      }
+      poolEntityConnection.getDatabaseConnection().setConnection(connectionPool.getConnection());
+      poolEntityConnection.setMethodLogger(methodLogger);
+
+      return poolEntityConnection;
+    }
+
+    private EntityConnection getLocalEntityConnection() throws DatabaseException {
+      if (!localEntityConnection.isConnected()) {
+        localEntityConnection.disconnect();//just in case
+        localEntityConnection = LocalEntityConnections.createConnection(database, clientInfo.getDatabaseUser());
+        localEntityConnection.setMethodLogger(methodLogger);
+      }
+
+      return localEntityConnection;
+    }
+
+    /**
+     * Returns the pooled connection to a connection pool if the connection is not within an open transaction
+     */
+    private void returnConnection() {
+      if (poolEntityConnection == null || poolEntityConnection.isTransactionOpen()) {
+        return;
+      }
+      try {
+        if (methodLogger != null && methodLogger.isEnabled()) {
+          methodLogger.logAccess(RETURN_CONNECTION, new Object[]{clientInfo.getDatabaseUser(), clientInfo.getUser()});
+        }
+        poolEntityConnection.setMethodLogger(null);
+        returnConnectionToPool();
+      }
+      catch (final Exception e) {
+        LOG.info("Exception while returning connection to pool", e);
+      }
+      finally {
+        if (methodLogger != null && methodLogger.isEnabled()) {
+          methodLogger.logExit(RETURN_CONNECTION, null, null);
+        }
+      }
+    }
+
+    private void returnConnectionToPool() {
+      final Connection connection = poolEntityConnection.getDatabaseConnection().getConnection();
+      if (connection != null) {
+        connectionPool.returnConnection(connection);
+        poolEntityConnection.getDatabaseConnection().setConnection(null);
+      }
+    }
+
+    private void cleanupLocalConnections() {
+      if (poolEntityConnection != null) {
+        if (poolEntityConnection.isTransactionOpen()) {
+          LOG.info("Rollback open transaction on disconnect: {}", clientInfo);
+          poolEntityConnection.rollbackTransaction();
+        }
+        returnConnectionToPool();
+        poolEntityConnection = null;
+      }
+      if (localEntityConnection != null) {
+        if (localEntityConnection.isTransactionOpen()) {
+          LOG.info("Rollback open transaction on disconnect: {}", clientInfo);
+          localEntityConnection.rollbackTransaction();
+        }
+        localEntityConnection.disconnect();
+        localEntityConnection = null;
+      }
+    }
+
+    private boolean isConnected() {
+      if (connectionPool != null) {
+        return !disconnected;
+      }
+
+      return !disconnected && localEntityConnection != null && localEntityConnection.isConnected();
+    }
+
+    private void disconnect() {
+      if (disconnected) {
+        return;
+      }
+      disconnected = true;
+      cleanupLocalConnections();
+    }
+
+    private ClientLog getClientLog() {
+      synchronized (methodLogger) {
+        return new ClientLog(clientInfo.getClientID(), creationDate, methodLogger.getEntries());
+      }
+    }
   }
 
   private static final class RequestCounter {
+
+    private static final int DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL = 2500;
 
     private static final double THOUSAND = 1000d;
 

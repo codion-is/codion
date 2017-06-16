@@ -12,6 +12,11 @@ import org.jminor.common.db.exception.DatabaseException;
 public interface DatabaseConnectionProvider {
 
   /**
+   * @return the underlying {@link Database} implementation
+   */
+  Database getDatabase();
+
+  /**
    * Creates a new DatabaseConnection instance based on the given user.
    * @return a new DatabaseConnection instance
    * @throws DatabaseException in case of a database exception
