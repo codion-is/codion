@@ -450,7 +450,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a control for showing the query configuration dialog
    */
   public final Control getConfigureQueryControl() {
-    return Controls.methodControl(this, "configureQuery",
+    return Controls.commandControl(this::configureQuery,
             FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY) + TRIPLEDOT, null,
             FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY), 0,
             null, Images.loadImage(Images.IMG_PREFERENCES_16));
@@ -460,7 +460,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a control for showing the dependencies dialog
    */
   public final Control getViewDependenciesControl() {
-    return Controls.methodControl(this, "viewSelectionDependencies",
+    return Controls.commandControl(this::viewSelectionDependencies,
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + TRIPLEDOT,
             getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver(),
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
@@ -474,7 +474,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     if (getEntityTableModel().isReadOnly() || !getEntityTableModel().isDeleteAllowed()) {
       throw new IllegalStateException("Table model is read only or does not allow delete");
     }
-    return Controls.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
+    return Controls.commandControl(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
                     getEntityTableModel().getEditModel().getAllowDeleteObserver(),
                     getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver()),
@@ -486,7 +486,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a control for exporting the selected records to file
    */
   public final Control getExportControl() {
-    return Controls.methodControl(this, "exportSelected",
+    return Controls.commandControl(this::exportSelected,
             FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED) + TRIPLEDOT,
             getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver(),
             FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_TIP), 0, null,
@@ -498,7 +498,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   public final Control getPrintTableControl() {
     final String printCaption = FrameworkMessages.get(FrameworkMessages.PRINT_TABLE);
-    return Controls.methodControl(this, "printTable", printCaption, null,
+    return Controls.commandControl(this::printTable, printCaption, null,
             printCaption, printCaption.charAt(0), null, Images.loadImage("Print16.gif"));
   }
 
@@ -507,7 +507,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   public final Control getRefreshControl() {
     final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
-    return Controls.methodControl(getEntityTableModel(), REFRESH, refreshCaption,
+    return Controls.commandControl(getEntityTableModel()::refresh, refreshCaption,
             null, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP), refreshCaption.charAt(0),
             null, Images.loadImage(Images.IMG_REFRESH_16));
   }
@@ -517,7 +517,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   public final Control getClearControl() {
     final String clearCaption = FrameworkMessages.get(FrameworkMessages.CLEAR);
-    return Controls.methodControl(getEntityTableModel(), "clear", clearCaption,
+    return Controls.commandControl(getEntityTableModel()::clear, clearCaption,
             null, null, clearCaption.charAt(0), null, null);
   }
 
@@ -658,7 +658,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a control for clearing the table selection
    */
   public final Control getClearSelectionControl() {
-    final Control clearSelection = Controls.methodControl(getEntityTableModel().getSelectionModel(), "clearSelection", null,
+    final Control clearSelection = Controls.commandControl(getEntityTableModel().getSelectionModel()::clearSelection, null,
             getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver(), null, -1, null,
             Images.loadImage("ClearSelection16.gif"));
     clearSelection.setDescription(FrameworkMessages.get(FrameworkMessages.CLEAR_SELECTION_TIP));
@@ -670,7 +670,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a control for moving the table selection down one index
    */
   public final Control getMoveSelectionDownControl() {
-    final Control selectionDown = Controls.methodControl(getEntityTableModel().getSelectionModel(), "moveSelectionDown",
+    final Control selectionDown = Controls.commandControl(getEntityTableModel().getSelectionModel()::moveSelectionDown,
             Images.loadImage(Images.IMG_DOWN_16));
     selectionDown.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_DOWN_TIP));
 
@@ -681,7 +681,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a control for moving the table selection up one index
    */
   public final Control getMoveSelectionUpControl() {
-    final Control selectionUp = Controls.methodControl(getEntityTableModel().getSelectionModel(), "moveSelectionUp",
+    final Control selectionUp = Controls.commandControl(getEntityTableModel().getSelectionModel()::moveSelectionUp,
             Images.loadImage(Images.IMG_UP_16));
     selectionUp.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_UP_TIP));
 
@@ -1348,7 +1348,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private JToolBar initializeRefreshToolbar() {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = keyStroke.toString().replace("pressed ", "");
-    final Control refresh = Controls.methodControl(getEntityTableModel(), REFRESH, null,
+    final Control refresh = Controls.commandControl(getEntityTableModel()::refresh, null,
             getEntityTableModel().getConditionModel().getConditionStateObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
             + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 

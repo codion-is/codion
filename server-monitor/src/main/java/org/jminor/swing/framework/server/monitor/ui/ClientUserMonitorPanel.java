@@ -87,7 +87,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     clientUserBase.add(userScroller);
 
     clientTypeBase.add(clientUserBase, BorderLayout.CENTER);
-    clientTypeBase.add(ControlProvider.createButton(Controls.methodControl(model, "refresh", "Refresh")), BorderLayout.SOUTH);
+    clientTypeBase.add(ControlProvider.createButton(Controls.commandControl(model::refresh, "Refresh")), BorderLayout.SOUTH);
 
     final JPanel actionBase = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
     actionBase.add(new JLabel("Reaper interval (s)", JLabel.RIGHT));
@@ -100,9 +100,9 @@ public final class ClientUserMonitorPanel extends JPanel {
     actionBase.add(spnConnectionTimeout);
 
     actionBase.setBorder(BorderFactory.createTitledBorder("Remote connection controls"));
-    actionBase.add(ControlProvider.createButton(Controls.methodControl(model, "disconnectTimedOut",
+    actionBase.add(ControlProvider.createButton(Controls.commandControl(model::disconnectTimedOut,
             "Disconnect idle", null, "Disconnect those that have exceeded the allowed idle time")));
-    actionBase.add(ControlProvider.createButton(Controls.methodControl(this, "disconnectAll",
+    actionBase.add(ControlProvider.createButton(Controls.commandControl(this::disconnectAll,
             "Disconnect all", null, "Disconnect all clients")));
 
     setLayout(new BorderLayout());
@@ -134,8 +134,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     final JPanel configBase = new JPanel(UiUtil.createBorderLayout());
     configBase.add(configPanel, BorderLayout.CENTER);
-    configBase.add(ControlProvider.createButton(
-            Controls.methodControl(model, "resetHistory", "Reset")), BorderLayout.EAST);
+    configBase.add(ControlProvider.createButton(Controls.commandControl(model::resetHistory, "Reset")), BorderLayout.EAST);
 
     final FilteredTablePanel userHistoryTable = new FilteredTablePanel(model.getUserHistoryTableModel());
 

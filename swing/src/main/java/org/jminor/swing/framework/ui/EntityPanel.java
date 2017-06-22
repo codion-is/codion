@@ -643,8 +643,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @return a control for toggling the edit panel
    */
   public final Control getToggleEditPanelControl() {
-    final Control toggle = Controls.methodControl(this, "toggleEditPanelState",
-            Images.loadImage("Form16.gif"));
+    final Control toggle = Controls.commandControl(this::toggleEditPanelState, Images.loadImage("Form16.gif"));
     toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_EDIT_TIP));
 
     return toggle;
@@ -654,8 +653,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @return a control for toggling the detail panel
    */
   public final Control getToggleDetailPanelControl() {
-    final Control toggle = Controls.methodControl(this, "toggleDetailPanelState",
-            Images.loadImage(Images.IMG_HISTORY_16));
+    final Control toggle = Controls.commandControl(this::toggleDetailPanelState, Images.loadImage(Images.IMG_HISTORY_16));
     toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_DETAIL_TIP));
 
     return toggle;

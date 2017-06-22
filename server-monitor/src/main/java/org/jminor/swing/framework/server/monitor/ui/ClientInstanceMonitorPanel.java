@@ -105,8 +105,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     chkLoggingEnabled = new JCheckBox("Logging enabled");
     final JPanel pnlSettings = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
     pnlSettings.add(chkLoggingEnabled);
-    pnlSettings.add(ControlProvider.createButton(
-            Controls.methodControl(this, "updateView", "Refresh log")));
+    pnlSettings.add(ControlProvider.createButton(Controls.commandControl(this::updateView, "Refresh log")));
     infoBase.add(pnlSettings, BorderLayout.EAST);
     add(infoBase, BorderLayout.NORTH);
 

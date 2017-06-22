@@ -10,6 +10,7 @@ import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
+import org.jminor.common.model.CancelException;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
 
 import javax.swing.ButtonModel;
@@ -18,6 +19,7 @@ import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
+import java.util.Objects;
 
 /**
  * A factory class for Control objects.
@@ -27,101 +29,92 @@ public final class Controls {
   private Controls() {}
 
   /**
-   * Creates a control for calling a method, this method must be public in the owner class
-   * @param owner the object owning the method
-   * @param method the method name
+   * Creates a control based on a {@link Control.Command}
+   * @param command the {@link Control.Command} on which to base this control
    * @param icon the icon
-   * @return a Control for calling the given method
+   * @return a Control for calling the given {@link Control.Command}
    */
-  public static MethodControl methodControl(final Object owner, final String method, final Icon icon) {
-    return methodControl(owner, method, null, null, null, -1, null, icon);
+  public static Control commandControl(final Control.Command command, final Icon icon) {
+    return commandControl(command, null, null, null, -1, null, icon);
   }
 
   /**
-   * Creates a control for calling a method, this method must be public in the owner class
-   * @param owner the object owning the method
-   * @param method the method name
+   * Creates a control based on a {@link Control.Command}
+   * @param command the {@link Control.Command} on which to base this control
    * @param name the name of the control
-   * @return a Control for calling the given method
+   * @return a Control for calling the given {@link Control.Command}
    */
-  public static MethodControl methodControl(final Object owner, final String method, final String name) {
-    return methodControl(owner, method, name, null);
+  public static Control commandControl(final Control.Command command, final String name) {
+    return commandControl(command, name, null);
   }
 
   /**
-   * Creates a control for calling a method, this method must be public in the owner class
-   * @param owner the object owning the method
-   * @param method the method name
+   * Creates a control based on a {@link Control.Command}
+   * @param command the {@link Control.Command} on which to base this control
    * @param name the name of the control
    * @param enabledState the state which controls the enabled state of the control
-   * @return a Control for calling the given method
+   * @return a Control for calling the given {@link Control.Command}
    */
-  public static MethodControl methodControl(final Object owner, final String method, final String name,
-                                            final StateObserver enabledState) {
-    return new MethodControl(name, owner, method, enabledState);
+  public static Control commandControl(final Control.Command command, final String name, final StateObserver enabledState) {
+    return new ActionControl(command, name, enabledState);
   }
 
   /**
-   * Creates a control for calling a method, this method must be public in the owner class
-   * @param owner the object owning the method
-   * @param method the method name
+   * Creates a control based on a {@link Control.Command}
+   * @param command the {@link Control.Command} on which to base this control
    * @param name the name of the control
    * @param enabledState the state which controls the enabled state of the control
    * @param description a string describing the control
-   * @return a Control for calling the given method
+   * @return a Control for calling the given {@link Control.Command}
    */
-  public static MethodControl methodControl(final Object owner, final String method, final String name,
-                                            final StateObserver enabledState, final String description) {
-    return (MethodControl) methodControl(owner, method, name, enabledState).setDescription(description);
+  public static Control commandControl(final Control.Command command, final String name, final StateObserver enabledState,
+                                       final String description) {
+    return commandControl(command, name, enabledState).setDescription(description);
   }
 
   /**
-   * Creates a control for calling a method, this method must be public in the owner class
-   * @param owner the object owning the method
-   * @param method the method name
+   * Creates a control based on a {@link Control.Command}
+   * @param command the {@link Control.Command} on which to base this control
    * @param name the name of the control
    * @param enabledState the state which controls the enabled state of the control
    * @param description a string describing the control
    * @param mnemonic the control mnemonic
-   * @return a Control for calling the given method
+   * @return a Control for calling the given {@link Control.Command}
    */
-  public static MethodControl methodControl(final Object owner, final String method, final String name,
-                                            final StateObserver enabledState, final String description, final int mnemonic) {
-    return (MethodControl) methodControl(owner, method, name, enabledState, description).setMnemonic(mnemonic);
+  public static Control commandControl(final Control.Command command, final String name, final StateObserver enabledState,
+                                       final String description, final int mnemonic) {
+    return commandControl(command, name, enabledState, description).setMnemonic(mnemonic);
   }
 
   /**
-   * Creates a control for calling a method, this method must be public in the owner class
-   * @param owner the object owning the method
-   * @param method the method name
+   * Creates a control based on a {@link Control.Command}
+   * @param command the {@link Control.Command} on which to base this control
    * @param name the name of the control
    * @param enabledState the state which controls the enabled state of the control
    * @param description a string describing the control
    * @param mnemonic the control mnemonic
    * @param keyStroke the keystroke to associate with the control
-   * @return a Control for calling the given method
+   * @return a Control for calling the given {@link Control.Command}
    */
-  public static MethodControl methodControl(final Object owner, final String method, final String name,
-                                            final StateObserver enabledState, final String description, final int mnemonic, final KeyStroke keyStroke) {
-    return (MethodControl) methodControl(owner, method, name, enabledState, description, mnemonic).setKeyStroke(keyStroke);
+  public static Control commandControl(final Control.Command command, final String name, final StateObserver enabledState,
+                                       final String description, final int mnemonic, final KeyStroke keyStroke) {
+    return commandControl(command, name, enabledState, description, mnemonic).setKeyStroke(keyStroke);
   }
 
   /**
-   * Creates a control for calling a method, this method must be public in the owner class
-   * @param owner the object owning the method
-   * @param method the method name
+   * Creates a control based on a {@link Control.Command}
+   * @param command the {@link Control.Command} on which to base this control
    * @param name the name of the control
    * @param enabledState the state which controls the enabled state of the control
    * @param description a string describing the control
    * @param mnemonic the control mnemonic
    * @param keyStroke the keystroke to associate with the control
    * @param icon the control icon
-   * @return a Control for calling the given method
+   * @return a Control for calling the given {@link Control.Command}
    */
-  public static MethodControl methodControl(final Object owner, final String method, final String name,
-                                            final StateObserver enabledState, final String description, final int mnemonic,
-                                            final KeyStroke keyStroke, final Icon icon) {
-    return (MethodControl) methodControl(owner, method, name, enabledState, description, mnemonic, keyStroke).setIcon(icon);
+  public static Control commandControl(final Control.Command command, final String name, final StateObserver enabledState,
+                                       final String description, final int mnemonic, final KeyStroke keyStroke, final Icon icon) {
+    return commandControl(command, name, enabledState, description, mnemonic, keyStroke).setIcon(icon);
   }
 
   /**
@@ -221,6 +214,29 @@ public final class Controls {
         event.fire(e);
       }
     };
+  }
+
+  private static final class ActionControl extends Control {
+    private final Control.Command command;
+
+    private ActionControl(final Control.Command command, final String name, final StateObserver enabledObserver) {
+      super(name, enabledObserver);
+      this.command = Objects.requireNonNull(command);
+    }
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      try {
+        command.perform();
+      }
+      catch (final CancelException ce) {/*Operation cancelled*/}
+      catch (final RuntimeException re) {
+        throw re;
+      }
+      catch (final Exception ex) {
+        throw new RuntimeException(ex);
+      }
+    }
   }
 
   /**

@@ -109,7 +109,7 @@ public final class ServerMonitorPanel extends JPanel {
     infoPanel.add(initializeMemoryField());
     infoPanel.add(new JLabel("Logging", JLabel.RIGHT));
     infoPanel.add(initializeLoggingLevelField());
-    infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "shutdownServer", "Shutdown")));
+    infoPanel.add(ControlProvider.createButton(Controls.commandControl(this::shutdownServer, "Shutdown")));
 
     setLayout(new BorderLayout());
     add(infoPanel, BorderLayout.NORTH);
@@ -137,7 +137,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     final JPanel controlPanelBase = new JPanel(UiUtil.createBorderLayout());
     controlPanelBase.add(controlPanel, BorderLayout.WEST);
-    controlPanelBase.add(ControlProvider.createButton(Controls.methodControl(model, "resetStatistics", "Reset")), BorderLayout.EAST);
+    controlPanelBase.add(ControlProvider.createButton(Controls.commandControl(model::resetStatistics, "Reset")), BorderLayout.EAST);
 
     final JPanel chartPanel = new JPanel(UiUtil.createGridLayout(CHART_PANEL_DIM, CHART_PANEL_DIM));
     chartPanel.add(requestsPerSecondChartPanel);
@@ -166,7 +166,7 @@ public final class ServerMonitorPanel extends JPanel {
     chartPanel.add(gcEventsChartPanel);
 
     final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-    southPanel.add(ControlProvider.createButton(Controls.methodControl(model, "refreshGCInfo", "Refresh")));
+    southPanel.add(ControlProvider.createButton(Controls.commandControl(model::refreshGCInfo, "Refresh")));
 
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());
 
@@ -191,7 +191,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JScrollPane scroller = new JScrollPane(table);
 
     final JPanel refreshPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-    refreshPanel.add(ControlProvider.createButton(Controls.methodControl(model, "refreshDomainList", "Refresh")));
+    refreshPanel.add(ControlProvider.createButton(Controls.commandControl(model::refreshDomainList, "Refresh")));
     panel.add(refreshPanel, BorderLayout.NORTH);
     panel.add(scroller, BorderLayout.CENTER);
 

@@ -41,7 +41,7 @@ public class CustomerTablePanel extends EntityTablePanel {
   @Override
   protected ControlSet getPrintControls() {
     final ControlSet printControlSet = super.getPrintControls();
-    printControlSet.add(Controls.methodControl(this, "viewCustomerReport", "Customer report"));
+    printControlSet.add(Controls.commandControl(this::viewCustomerReport, "Customer report"));
 
     return printControlSet;
   }

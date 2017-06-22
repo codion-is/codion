@@ -427,7 +427,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   public final Control getRefreshControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
-    return Controls.methodControl(editModel, "refresh", FrameworkMessages.get(FrameworkMessages.REFRESH),
+    return Controls.commandControl(editModel::refresh, FrameworkMessages.get(FrameworkMessages.REFRESH),
             getActiveObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX
             + mnemonic + ")", mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
   }
@@ -437,7 +437,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   public final Control getDeleteControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
-    return Controls.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
+    return Controls.commandControl(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
                     getActiveObserver(),
                     editModel.getAllowDeleteObserver(),
@@ -451,7 +451,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   public final Control getClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
-    return Controls.methodControl(this, "clearModelValues", FrameworkMessages.get(FrameworkMessages.CLEAR),
+    return Controls.commandControl(this::clearModelValues, FrameworkMessages.get(FrameworkMessages.CLEAR),
             getActiveObserver(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_NEW_16));
   }
@@ -461,7 +461,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   public final Control getUpdateControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
-    return Controls.methodControl(this, "update", FrameworkMessages.get(FrameworkMessages.UPDATE),
+    return Controls.commandControl(this::update, FrameworkMessages.get(FrameworkMessages.UPDATE),
             States.aggregateState(Conjunction.AND,
                     getActiveObserver(),
                     editModel.getAllowUpdateObserver(),
@@ -476,7 +476,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   public final Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
-    return Controls.methodControl(this, "insert", FrameworkMessages.get(FrameworkMessages.INSERT),
+    return Controls.commandControl(this::insert, FrameworkMessages.get(FrameworkMessages.INSERT),
             States.aggregateState(Conjunction.AND, getActiveObserver(), editModel.getAllowInsertObserver()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
@@ -491,7 +491,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
     final State insertUpdateState = States.aggregateState(Conjunction.OR, editModel.getAllowInsertObserver(),
             States.aggregateState(Conjunction.AND, editModel.getAllowUpdateObserver(),
                     editModel.getModifiedObserver()));
-    return Controls.methodControl(this, "save", FrameworkMessages.get(FrameworkMessages.INSERT),
+    return Controls.commandControl(this::save, FrameworkMessages.get(FrameworkMessages.INSERT),
             States.aggregateState(Conjunction.AND, getActiveObserver(), insertUpdateState),
             FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));

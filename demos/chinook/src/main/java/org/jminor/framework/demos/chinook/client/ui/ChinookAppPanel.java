@@ -134,7 +134,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPane
   protected ControlSet getToolsControlSet() {
     final ControlSet tools = super.getToolsControlSet();
     tools.addSeparator();
-    tools.add(Controls.methodControl(getModel(), "updateInvoiceTotals", "Update invoice totals"));
+    tools.add(Controls.commandControl(getModel()::updateInvoiceTotals, "Update invoice totals"));
 
     return tools;
   }

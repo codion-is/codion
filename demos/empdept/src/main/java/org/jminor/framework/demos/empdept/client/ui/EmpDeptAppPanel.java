@@ -63,7 +63,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   @Override
   protected ControlSet getToolsControlSet() {
     final ControlSet toolsSet = super.getToolsControlSet();
-    toolsSet.add(Controls.methodControl(this, "importJSON", EmpDept.getString(IMPORT_JSON)));
+    toolsSet.add(Controls.commandControl(this::importJSON, EmpDept.getString(IMPORT_JSON)));
 
     return toolsSet;
   }

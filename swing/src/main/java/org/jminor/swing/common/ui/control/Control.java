@@ -7,7 +7,6 @@ import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
@@ -86,7 +85,7 @@ public class Control extends AbstractAction {
    * @return the description
    */
   public final String getDescription() {
-    return (String) this.getValue(Action.SHORT_DESCRIPTION);
+    return (String) this.getValue(javax.swing.Action.SHORT_DESCRIPTION);
   }
 
   /**
@@ -94,7 +93,7 @@ public class Control extends AbstractAction {
    * @return this control instance
    */
   public final Control setDescription(final String description) {
-    this.putValue(Action.SHORT_DESCRIPTION, description);
+    this.putValue(javax.swing.Action.SHORT_DESCRIPTION, description);
     return this;
   }
 
@@ -102,7 +101,7 @@ public class Control extends AbstractAction {
    * @return the name
    */
   public final String getName() {
-    return (String) this.getValue(Action.NAME);
+    return (String) this.getValue(javax.swing.Action.NAME);
   }
 
   /**
@@ -170,5 +169,16 @@ public class Control extends AbstractAction {
   protected Control doSetMnemonic(final int mnemonic) {
     this.putValue(MNEMONIC_KEY, mnemonic);
     return this;
+  }
+
+  /**
+   * A simple command interface, allowing for Controls based on method references
+   */
+  public interface Command {
+    /**
+     * Performs the work
+     * @throws Exception in case of an exception
+     */
+    void perform() throws Exception;
   }
 }
