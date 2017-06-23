@@ -698,7 +698,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   private Object put(final Property property, final Object value, final boolean validateType,
                      final Map<String, Definition> entityDefinitions) {
     Objects.requireNonNull(property, PROPERTY_PARAM);
-    validateValue(this, property, value);
+    validateValue(property, value);
     if (validateType) {
       validateType(property, value);
     }
@@ -785,7 +785,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
   }
 
-  private static void validateValue(final DefaultEntity entity, final Property property, final Object value) {
+  private static void validateValue(final Property property, final Object value) {
     if (property instanceof Property.DenormalizedViewProperty) {
       throw new IllegalArgumentException("Can not set the value of a denormalized view property");
     }
@@ -795,20 +795,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     if (property instanceof Property.ValueListProperty && value != null && !((Property.ValueListProperty) property).isValid(value)) {
       throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getPropertyID());
     }
-  }
-
-  private static boolean primaryKeysEqual(final DefaultEntity entity1, final Entity entity2) {
-    if (entity1.getEntityID().equals(entity2.getEntityID())) {
-      for (final Property.ColumnProperty property : entity1.definition.getPrimaryKeyProperties()) {
-        if (!Objects.equals(entity1.get(property.getPropertyID()), entity2.get(property))) {
-          return false;
-        }
-      }
-
-      return true;
-    }
-
-    return false;
   }
 
   /**

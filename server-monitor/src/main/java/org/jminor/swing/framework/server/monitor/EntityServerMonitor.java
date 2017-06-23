@@ -27,7 +27,6 @@ public final class EntityServerMonitor {
   }
 
   private final Event<String> hostAddedEvent = Events.event();
-  private final Event hostRemovedEvent = Events.event();
 
   private final Collection<HostMonitor> hostMonitors = new ArrayList<>();
 
@@ -56,11 +55,6 @@ public final class EntityServerMonitor {
   private void addHost(final String hostname, final int registryPort) throws RemoteException {
     hostMonitors.add(new HostMonitor(hostname, registryPort, ADMIN_USER));
     hostAddedEvent.fire(hostname);
-  }
-
-  private void removeHost(final HostMonitor hostMonitor) {
-    hostMonitors.remove(hostMonitor);
-    hostRemovedEvent.fire();
   }
 
   public void refresh() throws RemoteException {
