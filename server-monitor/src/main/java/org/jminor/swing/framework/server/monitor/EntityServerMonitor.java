@@ -31,6 +31,12 @@ public final class EntityServerMonitor {
 
   private final Collection<HostMonitor> hostMonitors = new ArrayList<>();
 
+  /**
+   * Instantiates a new {@link EntityServerMonitor}
+   * @param hostNames a comma separated list of hostnames to monitor
+   * @param registryPort the registry port
+   * @throws RemoteException in case of an exception
+   */
   public EntityServerMonitor(final String hostNames, final int registryPort) throws RemoteException {
     if (Util.nullOrEmpty(hostNames)) {
       throw new IllegalArgumentException("No server host names specified for server monitor");
@@ -40,18 +46,21 @@ public final class EntityServerMonitor {
     }
   }
 
-  public void addHost(final String hostname, final int registryPort) throws RemoteException {
+  /**
+   * @return the host monitors for this server
+   */
+  public Collection<HostMonitor> getHostMonitors() {
+    return hostMonitors;
+  }
+
+  private void addHost(final String hostname, final int registryPort) throws RemoteException {
     hostMonitors.add(new HostMonitor(hostname, registryPort, ADMIN_USER));
     hostAddedEvent.fire(hostname);
   }
 
-  public void removeHost(final HostMonitor hostMonitor) {
+  private void removeHost(final HostMonitor hostMonitor) {
     hostMonitors.remove(hostMonitor);
     hostRemovedEvent.fire();
-  }
-
-  public Collection<HostMonitor> getHostMonitors() {
-    return hostMonitors;
   }
 
   public void refresh() throws RemoteException {

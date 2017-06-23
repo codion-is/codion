@@ -190,10 +190,9 @@ public final class EntityRESTService extends Application {
 
     auth = auth.replaceFirst("[B|b]asic ", "");
     final byte[] decodedBytes = DatatypeConverter.parseBase64Binary(auth);
-    final String[] credentials = new String(decodedBytes).split(":", 2);
+    final User user = User.parseUser(new String(decodedBytes));
     try {
-      return (RemoteEntityConnection) server.connect(ClientUtil.connectionInfo(new User(credentials[0], credentials[1]),
-              clientId, EntityRESTService.class.getName()));
+      return (RemoteEntityConnection) server.connect(ClientUtil.connectionInfo(user, clientId, EntityRESTService.class.getName()));
     }
     catch (final ServerException.AuthenticationException ae) {
       throw new WebApplicationException(ae, Response.Status.UNAUTHORIZED);

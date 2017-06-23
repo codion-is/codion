@@ -35,6 +35,11 @@ public final class DatabaseMonitor {
     catch (final RemoteException ignored) {/*ignored*/}
   }, Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
 
+  /**
+   * Instantiates a new {@link DatabaseMonitor} for the given server
+   * @param server the server
+   * @throws RemoteException in case of an exception
+   */
   public DatabaseMonitor(final EntityConnectionServerAdmin server) throws RemoteException {
     this.server = server;
     this.poolMonitor = new PoolMonitor(server);
@@ -46,15 +51,24 @@ public final class DatabaseMonitor {
     updateStatistics();
   }
 
+  /**
+   * @return the connection pool monitor
+   */
   public PoolMonitor getConnectionPoolMonitor() {
     return poolMonitor;
   }
 
+  /**
+   * Shuts down this database monitor
+   */
   public void shutdown() {
     updateScheduler.stop();
     poolMonitor.shutdown();
   }
 
+  /**
+   * Resets all collected statistics
+   */
   public void resetStatistics() {
     queriesPerSecond.clear();
     selectsPerSecond.clear();
@@ -63,6 +77,10 @@ public final class DatabaseMonitor {
     deletesPerSecond.clear();
   }
 
+  /**
+   * Updates the database usage statistics
+   * @throws RemoteException in case of an exception
+   */
   public void updateStatistics() throws RemoteException {
     final Database.Statistics dbStats = server.getDatabaseStatistics();
     queriesPerSecond.add(dbStats.getTimestamp(), dbStats.getQueriesPerSecond());
@@ -72,10 +90,16 @@ public final class DatabaseMonitor {
     deletesPerSecond.add(dbStats.getTimestamp(), dbStats.getDeletesPerSecond());
   }
 
+  /**
+   * @return the graph series collection for the number of queries
+   */
   public XYSeriesCollection getQueriesPerSecondCollection() {
     return queriesPerSecondCollection;
   }
 
+  /**
+   * @return the stat update scheduler
+   */
   public TaskScheduler getUpdateScheduler() {
     return updateScheduler;
   }

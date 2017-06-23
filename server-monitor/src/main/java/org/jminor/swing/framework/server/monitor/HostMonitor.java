@@ -38,6 +38,13 @@ public final class HostMonitor {
   private final User adminUser;
   private final Collection<ServerMonitor> serverMonitors = new ArrayList<>();
 
+  /**
+   * Instantiates a new {@link HostMonitor}
+   * @param hostName the name of the host to monitor
+   * @param registryPort the registry port
+   * @param adminUser the admin user
+   * @throws RemoteException in case of an exception
+   */
   public HostMonitor(final String hostName, final int registryPort, final User adminUser) throws RemoteException {
     this.hostName = hostName;
     this.registryPort = registryPort;
@@ -45,14 +52,24 @@ public final class HostMonitor {
     refresh();
   }
 
+  /**
+   * @return the host name
+   */
   public String getHostName() {
     return hostName;
   }
 
+  /**
+   * @return the registry port
+   */
   public int getRegistryPort() {
     return registryPort;
   }
 
+  /**
+   * Refreshes the servers on this host
+   * @throws RemoteException in case of an exception
+   */
   public void refresh() throws RemoteException {
     removeUnreachableServers();
     try {
@@ -69,14 +86,23 @@ public final class HostMonitor {
     }
   }
 
+  /**
+   * @return the server monitors for this host
+   */
   public Collection<ServerMonitor> getServerMonitors() {
     return serverMonitors;
   }
 
+  /**
+   * @param listener a listener notified when a server is added to this monitor
+   */
   public void addServerAddedListener(final EventInfoListener<ServerMonitor> listener) {
     serverAddedEvent.addInfoListener(listener);
   }
 
+  /**
+   * @param listener a listener notified when a server is removed from this monitor
+   */
   public void addServerRemovedListener(final EventInfoListener<ServerMonitor> listener) {
     serverRemovedEvent.addInfoListener(listener);
   }

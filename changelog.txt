@@ -4424,3 +4424,5 @@
   Controls.commandControl() renamed to control()
   ToggleControl moved to Controls class
   DefaultEntity, now allows circular references
+  EntityRESTService, now uses User.parse() when authenticating
+  Some javadoc additions

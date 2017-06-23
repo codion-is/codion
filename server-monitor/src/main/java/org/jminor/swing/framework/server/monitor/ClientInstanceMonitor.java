@@ -34,15 +34,26 @@ public final class ClientInstanceMonitor {
   private final DefaultTreeModel logTreeModel = new DefaultTreeModel(logRootNode);
   private ButtonModel loggingEnabledButtonModel;
 
-  public ClientInstanceMonitor(final ClientInfo clientInfo, final EntityConnectionServerAdmin server) {
+  /**
+   * Instantiates a new {@link ClientInstanceMonitor}, monitoring the given client
+   * @param server the server being monitored
+   * @param clientInfo the client info
+   */
+  public ClientInstanceMonitor(final EntityConnectionServerAdmin server, final ClientInfo clientInfo) {
     this.clientInfo = clientInfo;
     this.server = server;
   }
 
+  /**
+   * @return the {@link ClientInfo}
+   */
   public ClientInfo getClientInfo() {
     return clientInfo;
   }
 
+  /**
+   * @return the {@link ButtonModel} for controlling whether logging is enabled
+   */
   public ButtonModel getLoggingEnabledButtonModel() {
     if (loggingEnabledButtonModel == null) {
       loggingEnabledButtonModel = ValueLinks.toggleValueLink(this, "loggingEnabled", loggingStatusChangedEvent);
@@ -51,28 +62,52 @@ public final class ClientInstanceMonitor {
     return loggingEnabledButtonModel;
   }
 
+  /**
+   * @return the creation date of the client connection
+   * @throws RemoteException in case of an exception
+   */
   public long getCreationDate() throws RemoteException {
     final ClientLog log = server.getClientLog(clientInfo.getClientID());
     return log != null ? log.getConnectionCreationDate() : 0;
   }
 
+  /**
+   * @return the client log
+   * @throws RemoteException in case of an exception
+   */
   public ClientLog getLog() throws RemoteException {
     return server.getClientLog(clientInfo.getClientID());
   }
 
+  /**
+   * @return true if logging is enabled for this client
+   * @throws RemoteException in case of an exception
+   */
   public boolean isLoggingEnabled() throws RemoteException {
     return server.isLoggingEnabled(clientInfo.getClientID());
   }
 
+  /**
+   * @param status true if logging should be enabled, false otherwise
+   * @throws RemoteException in case of an exception
+   */
   public void setLoggingEnabled(final boolean status) throws RemoteException {
     server.setLoggingEnabled(clientInfo.getClientID(), status);
     loggingStatusChangedEvent.fire(status);
   }
 
+  /**
+   * Disconnects the client from the server
+   * @throws RemoteException in case of an exception
+   */
   public void disconnect() throws RemoteException {
     server.disconnect(clientInfo.getClientID());
   }
 
+  /**
+   * Refreshes the log tree model with the most recent log from the server
+   * @throws RemoteException in case of an exception
+   */
   public void refreshLogTreeModel() throws RemoteException {
     final ClientLog log = server.getClientLog(clientInfo.getClientID());
     logRootNode.removeAllChildren();
@@ -86,6 +121,18 @@ public final class ClientInstanceMonitor {
       }
     }
     logTreeModel.setRoot(logRootNode);
+  }
+
+  /**
+   * @return the TreeModel for displaying the log in a Tree view
+   */
+  public DefaultTreeModel getLogTreeModel() {
+    return logTreeModel;
+  }
+
+  @Override
+  public String toString() {
+    return clientInfo.toString();
   }
 
   private void addSubLog(final DefaultMutableTreeNode entryNode, final List<MethodLogger.Entry> subLog) {
@@ -102,14 +149,5 @@ public final class ClientInstanceMonitor {
     return new StringBuilder(entry.getMethod()).append(" [")
                 .append(MICROSECOND_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(entry.getDeltaNano())))
                 .append(" μs").append("]").append(": ").append(entry.getAccessMessage()).toString();
-  }
-
-  public DefaultTreeModel getLogTreeModel() {
-    return logTreeModel;
-  }
-
-  @Override
-  public String toString() {
-    return clientInfo.toString();
   }
 }

@@ -22,27 +22,45 @@ public final class PoolMonitor {
 
   private final Collection<ConnectionPoolMonitor> connectionPoolMonitors = new ArrayList<>();
 
+  /**
+   * Instantiates a new {@link PoolMonitor}
+   * @param server the server
+   * @throws RemoteException in case of an exception
+   */
   public PoolMonitor(final EntityConnectionServerAdmin server) throws RemoteException {
     this.server = server;
     refresh();
   }
 
+  /**
+   * Refreshes the the connection pools
+   * @throws RemoteException in case of an exception
+   */
   public void refresh() throws RemoteException {
     for (final User user : server.getConnectionPools()) {
       connectionPoolMonitors.add(new ConnectionPoolMonitor(new MonitorPool(user, server)));
     }
   }
 
+  /**
+   * @return the avilable {@link ConnectionPoolMonitor} instances
+   */
   public Collection<ConnectionPoolMonitor> getConnectionPoolInstanceMonitors() {
     return connectionPoolMonitors;
   }
 
+  /**
+   * Shuts down this pool monitor
+   */
   public void shutdown() {
     for (final ConnectionPoolMonitor monitor : connectionPoolMonitors) {
       monitor.shutdown();
     }
   }
 
+  /**
+   * @throws UnsupportedOperationException always
+   */
   public void addConnectionPools(final String[] usernames) {
     throw new UnsupportedOperationException("Not implemented");
   }

@@ -84,6 +84,15 @@ public final class ServerMonitor {
   private final XYSeries daemonThreadCountSeries = new XYSeries("Daemon Threads");
   private final XYSeriesCollection threadCountCollection = new XYSeriesCollection();
 
+  /**
+   * Instantiates a new {@link ServerMonitor}
+   * @param hostName the host name
+   * @param serverInfo the server info
+   * @param registryPort the registry port
+   * @param serverAdminUser the admin user
+   * @throws RemoteException in case of an exception
+   * @throws ServerException.AuthenticationException in case the admin user credentials are incorrect
+   */
   public ServerMonitor(final String hostName, final Server.ServerInfo serverInfo, final int registryPort,
                        final User serverAdminUser)
           throws RemoteException, ServerException.AuthenticationException {
@@ -108,6 +117,9 @@ public final class ServerMonitor {
     updateStatistics();
   }
 
+  /**
+   * Shuts down this server monitor
+   */
   public void shutdown() {
     shutdown = true;
     updateScheduler.stop();
@@ -115,68 +127,120 @@ public final class ServerMonitor {
     clientMonitor.shutdown();
   }
 
+  /**
+   * @return the server being monitored
+   */
   public EntityConnectionServerAdmin getServer() {
     return server;
   }
 
+  /**
+   * @return the server into
+   */
   public Server.ServerInfo getServerInfo() {
     return serverInfo;
   }
 
+  /**
+   * @return the amount of memory being used by the server
+   */
   public String getMemoryUsage() {
     return MEMORY_USAGE_FORMAT.format(memoryUsage) + " KB";
   }
 
+  /**
+   * @return the number of connected clients
+   */
   public int getConnectionCount() {
     return connectionCount;
   }
 
+  /**
+   * @return the client monitor
+   */
   public ClientUserMonitor getClientMonitor() {
     return clientMonitor;
   }
 
+  /**
+   * @return the database monitor
+   */
   public DatabaseMonitor getDatabaseMonitor() {
     return databaseMonitor;
   }
 
+  /**
+   * @return the connection number limit
+   * @throws RemoteException in case of an exception
+   */
   public int getConnectionLimit() throws RemoteException {
     return server.getConnectionLimit();
   }
 
+  /**
+   * @param value the connection number limit
+   * @throws RemoteException in case of an exception
+   */
   public void setConnectionLimit(final int value) throws RemoteException {
     server.setConnectionLimit(value);
     connectionLimitChangedEvent.fire(value);
   }
 
+  /**
+   * @return the server logging level
+   * @throws RemoteException in case of an exception
+   */
   public Level getLoggingLevel() throws RemoteException {
     return server.getLoggingLevel();
   }
 
+  /**
+   * @param level the server logging level
+   * @throws RemoteException in case of an exception
+   */
   public void setLoggingLevel(final Level level) throws RemoteException {
     server.setLoggingLevel(level);
     loggingLevelChangedEvent.fire(level);
   }
 
+  /**
+   * @return the connection request dataset
+   */
   public XYSeriesCollection getConnectionRequestsDataset() {
     return connectionRequestsPerSecondCollection;
   }
 
+  /**
+   * @return the memory usage dataset
+   */
   public XYSeriesCollection getMemoryUsageDataset() {
     return memoryUsageCollection;
   }
 
+  /**
+   * @return the connection count dataset
+   */
   public XYSeriesCollection getConnectionCountDataset() {
     return connectionCountCollection;
   }
 
+  /**
+   * @return the garbage collection event dataset
+   */
   public XYSeriesCollection getGcEventsDataset() {
     return gcEventsCollection;
   }
 
+  /**
+   * @return the thread count dataset
+   */
   public XYSeriesCollection getThreadCountDataset() {
     return threadCountCollection;
   }
 
+  /**
+   * @return the server environment info
+   */
   public String getEnvironmentInfo() throws RemoteException {
     final StringBuilder contents = new StringBuilder();
     final String startDate = DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(new Date(serverInfo.getStartTime()));
@@ -193,6 +257,9 @@ public final class ServerMonitor {
     return contents.toString();
   }
 
+  /**
+   * Resets all connected statistics
+   */
   public void resetStatistics() {
     connectionRequestsPerSecondSeries.clear();
     allocatedMemorySeries.clear();
@@ -204,6 +271,10 @@ public final class ServerMonitor {
     daemonThreadCountSeries.clear();
   }
 
+  /**
+   * Refreshes the domain model list
+   * @throws RemoteException in case of an exception
+   */
   public void refreshDomainList() throws RemoteException {
     domainListModel.setDataVector(new Object[][]{}, new Object[]{"Entity ID", "Table name"});
     final Map<String,String> definitions = server.getEntityDefinitions();
@@ -212,14 +283,24 @@ public final class ServerMonitor {
     }
   }
 
+  /**
+   * Refreshes the garbage collection events info
+   * @throws RemoteException in case of an exception
+   */
   public void refreshGCInfo() throws RemoteException {
     refreshGCInfo(server.getGcEvents());
   }
 
+  /**
+   * @return the table model for viewing the domain models
+   */
   public TableModel getDomainTableModel() {
     return domainListModel;
   }
 
+  /**
+   * Shuts down the server
+   */
   public void shutdownServer() {
     shutdown();
     try {
@@ -229,6 +310,9 @@ public final class ServerMonitor {
     serverShutDownEvent.fire();
   }
 
+  /**
+   * @return true if the server is reachable
+   */
   public boolean isServerReachable() {
     try {
       server.getUsedMemory();
@@ -239,22 +323,37 @@ public final class ServerMonitor {
     }
   }
 
+  /**
+   * @return the stat update scheduler
+   */
   public TaskScheduler getUpdateScheduler() {
     return updateScheduler;
   }
 
+  /**
+   * @param listener a listener notified when the server is shut down
+   */
   public void addServerShutDownListener(final EventListener listener) {
     serverShutDownEvent.addListener(listener);
   }
 
+  /**
+   * @return a listener notified when the connection number limit is changed
+   */
   public EventObserver<Integer> getConnectionLimitObserver() {
     return connectionLimitChangedEvent.getObserver();
   }
 
+  /**
+   * @return a listener notified when the statistics have been updated
+   */
   public EventObserver getStatisticsUpdatedObserver() {
     return statisticsUpdatedEvent.getObserver();
   }
 
+  /**
+   * @return a listener notified when the logging level has changed
+   */
   public EventObserver<Level> getLoggingLevelObserver() {
     return loggingLevelChangedEvent.getObserver();
   }

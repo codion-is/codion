@@ -113,7 +113,7 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
     private void bindField(final JComponent field, final boolean upperBound) {
       final Property columnProperty = model.getColumnIdentifier();
       final Value modelValue = upperBound ? model.getUpperBoundValue() : model.getLowerBoundValue();
-      if (columnProperty instanceof Property.ValueListProperty) {
+      if (columnProperty instanceof Property.ValueListProperty || columnProperty.isBoolean()) {
         ValueLinks.selectedItemValueLink((JComboBox) field, modelValue);
       }
       else if (columnProperty.isDateOrTime()) {
@@ -128,9 +128,6 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
       }
       else if (columnProperty.isLong()) {
         ValueLinks.longValueLink((LongField) field, modelValue, false, false, true);
-      }
-      else if (columnProperty.isBoolean()) {
-        ValueLinks.selectedItemValueLink((JComboBox) field, modelValue);
       }
       else if (!(columnProperty instanceof Property.ForeignKeyProperty)) {//entity based properties are bound in the model
         ValueLinks.textValueLink((JTextField) field, modelValue, null, true, false);

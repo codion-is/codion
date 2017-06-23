@@ -25,6 +25,13 @@ public final class ClientMonitor {
 
   private final DefaultListModel<ClientInstanceMonitor> clientInstanceListModel = new DefaultListModel<>();
 
+  /**
+   * Instantiates a new {@link ClientMonitor}
+   * @param server the server being monitored
+   * @param clientTypeID the clientTypeID of the clients to monitor
+   * @param user the user to monitor
+   * @throws RemoteException in case of an exception
+   */
   public ClientMonitor(final EntityConnectionServerAdmin server, final String clientTypeID, final User user) throws RemoteException {
     this.server = server;
     this.clientTypeID = clientTypeID;
@@ -32,19 +39,29 @@ public final class ClientMonitor {
     refresh();
   }
 
+  /**
+   * Refreshes the client info from the server
+   * @throws RemoteException in case of an exception
+   */
   public void refresh() throws RemoteException {
     clientInstanceListModel.clear();
     final List<ClientInfo> clients = new ArrayList<>(clientTypeID == null ? server.getClients(user) : server.getClients(clientTypeID));
     clients.sort(CLIENT_INFO_COMPARATOR);
     for (final ClientInfo client : clients) {
-      clientInstanceListModel.addElement(new ClientInstanceMonitor(client, server));
+      clientInstanceListModel.addElement(new ClientInstanceMonitor(server, client));
     }
   }
 
+  /**
+   * @return the ListModel for displaying the client instances
+   */
   public DefaultListModel<ClientInstanceMonitor> getClientInstanceListModel() {
     return clientInstanceListModel;
   }
 
+  /**
+   * @return the clientTypeID being monitored
+   */
   public String getClientTypeID() {
     return clientTypeID;
   }

@@ -58,6 +58,10 @@ public final class ConnectionPoolMonitor {
 
   private long lastStatisticsUpdateTime = 0;
 
+  /**
+   * Instantiates a new {@link ConnectionPoolMonitor}
+   * @param connectionPool the connection pool to monitor
+   */
   public ConnectionPoolMonitor(final ConnectionPool connectionPool) {
     this.user = connectionPool.getUser();
     this.connectionPool = connectionPool;
@@ -73,76 +77,130 @@ public final class ConnectionPoolMonitor {
     updateStatistics();
   }
 
+  /**
+   * @return the user the connection pool is based on
+   */
   public User getUser() {
     return user;
   }
 
+  /**
+   * @return the latest pool statistics
+   */
   public ConnectionPoolStatistics getConnectionPoolStatistics() {
     return poolStatistics;
   }
 
+  /**
+   * @return the pool connection timeout in seconds
+   */
   public int getPooledConnectionTimeout() {
     return connectionPool.getConnectionTimeout() / THOUSAND;
   }
 
+  /**
+   * @param value the pool connection timeout in seconds
+   */
   public void setPooledConnectionTimeout(final int value) {
     connectionPool.setConnectionTimeout(value * THOUSAND);
   }
 
+  /**
+   * @return the pool maintenance interval in seconds
+   */
   public int getPoolCleanupInterval() {
     return connectionPool.getCleanupInterval() / THOUSAND;
   }
 
+  /**
+   * @param value the pool maintenance interval in seconds
+   */
   public void setPoolCleanupInterval(final int value) {
     connectionPool.setCleanupInterval(value);
   }
 
+  /**
+   * @return the minimum pool size to maintain
+   */
   public int getMinimumPoolSize() {
     return connectionPool.getMinimumPoolSize();
   }
 
+  /**
+   * @param value the minimum pool size to maintain
+   */
   public void setMinimumPoolSize(final int value) {
     connectionPool.setMinimumPoolSize(value);
   }
 
+  /**
+   * @return the maximum allowed pool size
+   */
   public int getMaximumPoolSize() {
     return connectionPool.getMaximumPoolSize();
   }
 
+  /**
+   * @param value the maximum allowed pool size
+   */
   public void setMaximumPoolSize(final int value) {
     connectionPool.setMaximumPoolSize(value);
   }
 
+  /**
+   * @return the maximum period to wait before retrying to get a connection
+   */
   public int getMaximumRetryWaitPeriod() {
     return connectionPool.getMaximumRetryWaitPeriod();
   }
 
+  /**
+   * @param value the maximum period to wait before retrying to get a connection
+   */
   public void setMaximumRetryWaitPeriod(final int value) {
     connectionPool.setMaximumRetryWaitPeriod(value);
   }
 
+  /**
+   * @return the maximum wait time for a connection
+   */
   public int getMaximumCheckOutTime() {
     return connectionPool.getMaximumCheckOutTime();
   }
 
+  /**
+   * @param value the maximum wait time for a connection
+   */
   public void setMaximumCheckOutTime(final int value) {
     connectionPool.setMaximumCheckOutTime(value);
   }
 
+  /**
+   * @return the wait threshold before creating a new connection (if pool size allows)
+   */
   public int getNewConnectionThreshold() {
     return connectionPool.getNewConnectionThreshold();
   }
 
+  /**
+   * @param value the wait threshold before creating a new connection
+   */
   public void setNewConnectionThreshold(final int value) {
     connectionPool.setNewConnectionThreshold(value);
   }
 
+  /**
+   * @return true if the graph datasets contain data
+   */
   public boolean datasetContainsData() {
     return fineGrainedStatisticsCollection.getSeriesCount() > 0
             && fineGrainedStatisticsCollection.getSeries(0).getItemCount() > 0
             && fineGrainedStatisticsCollection.getSeries(1).getItemCount() > 0;
   }
 
+  /**
+   * @return the dataset for fine grained pool stats
+   */
   public XYDataset getFineGrainedInPoolDataset() {
     final XYSeriesCollection poolDataset = new XYSeriesCollection();
     poolDataset.addSeries(fineGrainedStatisticsCollection.getSeries(0));
@@ -152,22 +210,37 @@ public final class ConnectionPoolMonitor {
     return poolDataset;
   }
 
+  /**
+   * @return the dataset for the number of connections in the pool
+   */
   public XYDataset getInPoolDataset() {
     return statisticsCollection;
   }
 
+  /**
+   * @return the dataset for the number of connection requests per second
+   */
   public XYDataset getRequestsPerSecondDataset() {
     return connectionRequestsPerSecondCollection;
   }
 
+  /**
+   * @return the dataset for the connection check out time
+   */
   public YIntervalSeriesCollection getCheckOutTimeCollection() {
     return checkOutTimeCollection;
   }
 
+  /**
+   * Resets all collected pool statistics
+   */
   public void resetStatistics() {
     connectionPool.resetStatistics();
   }
 
+  /**
+   * Resets all graph data sets
+   */
   public void resetInPoolStatistics() {
     inPoolSeries.clear();
     inUseSeries.clear();
@@ -180,29 +253,47 @@ public final class ConnectionPoolMonitor {
     averageCheckOutTime.clear();
   }
 
+  /**
+   * @param value true if fine grained stats should be collected
+   */
   public void setCollectFineGrainedStatistics(final boolean value) {
     connectionPool.setCollectFineGrainedStatistics(value);
     collectFineGrainedStatisticsChangedEvent.fire(value);
   }
 
+  /**
+   * @return true if fine grained stats are being collected
+   */
   public boolean isCollectFineGrainedStatistics() {
     return connectionPool.isCollectFineGrainedStatistics();
   }
 
-  public void shutdown() {
-    updateScheduler.stop();
-  }
-
+  /**
+   * @return EventObserver notified when fine grained stats collection status is changed
+   */
   public EventObserver<Boolean> getCollectFineGrainedStatisticsObserver() {
     return collectFineGrainedStatisticsChangedEvent.getObserver();
   }
 
+  /**
+   * @return EventObserver notified when statistics have been updated
+   */
   public EventObserver getStatisticsObserver() {
     return statisticsUpdatedEvent.getObserver();
   }
 
+  /**
+   * @return the stat update scheduler
+   */
   public TaskScheduler getUpdateScheduler() {
     return updateScheduler;
+  }
+
+  /**
+   * Shuts down this pool monitor
+   */
+  public void shutdown() {
+    updateScheduler.stop();
   }
 
   private void updateStatistics() {

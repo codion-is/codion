@@ -34,7 +34,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A ClientUserMonitor
+ * A ClientUserMonitor for monitoring connected clients and users connected to a server
  */
 public final class ClientUserMonitor {
 
@@ -64,27 +64,47 @@ public final class ClientUserMonitor {
     }
   }, Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
 
+  /**
+   * Instantiates a new {@link ClientUserMonitor}
+   * @param server
+   * @throws RemoteException
+   */
   public ClientUserMonitor(final EntityConnectionServerAdmin server) throws RemoteException {
     this.server = server;
     refresh();
   }
 
+  /**
+   * Shuts down this monitor
+   */
   public void shutdown() {
     updateScheduler.stop();
   }
 
+  /**
+   * @return a ListModel containing the connected client types
+   */
   public DefaultListModel<ClientMonitor> getClientTypeListModel() {
     return clientTypeListModel;
   }
 
+  /**
+   * @return a ListModel containing the connected users
+   */
   public DefaultListModel<ClientMonitor> getUserListModel() {
     return userListModel;
   }
 
+  /**
+   * @return a TableModel for displaying the user connection history
+   */
   public FilteredTableModel getUserHistoryTableModel() {
     return userHistoryTableModel;
   }
 
+  /**
+   * Refreshes the user and client data from the server
+   */
   public void refresh() throws RemoteException {
     clientTypeListModel.clear();
     for (final String clientType : getSortedClientTypes()) {
@@ -96,39 +116,78 @@ public final class ClientUserMonitor {
     }
   }
 
+  /**
+   * Disconnects all users from the server
+   * @throws RemoteException in case of an exception
+   */
   public void disconnectAll() throws RemoteException {
     server.removeConnections(false);
     refresh();
   }
 
+  /**
+   * Disconnects all timed out users from the server
+   * @throws RemoteException in case of an exception
+   */
   public void disconnectTimedOut() throws RemoteException {
     server.removeConnections(true);
     refresh();
   }
 
+  /**
+   * Sets the servers connection maintenance interval
+   * @param interval the maintenance interval in seconds
+   * @throws RemoteException in case of an exception
+   */
   public void setMaintenanceInterval(final int interval) throws RemoteException {
     server.setMaintenanceInterval(interval * THOUSAND);
   }
 
+  /**
+   * @return the servers connection maintenance interval in seconds
+   * @throws RemoteException in case of an exception
+   */
   public int getMaintenanceInterval() throws RemoteException {
     return server.getMaintenanceInterval() / THOUSAND;
   }
 
+  /**
+   * @return the server timeout for connections in seconds
+   * @throws RemoteException in case of an exception
+   */
   public int getConnectionTimeout() throws RemoteException {
     return server.getConnectionTimeout() / THOUSAND;
   }
 
+  /**
+   * Sets the server connection timeout
+   * @param timeout the timeout in seconds
+   * @throws RemoteException in case of an exception
+   */
   public void setConnectionTimeout(final int timeout) throws RemoteException {
     server.setConnectionTimeout(timeout * THOUSAND);
     connectionTimeoutChangedEvent.fire(timeout);
   }
 
+  /**
+   * Resets the user connection history
+   */
   public void resetHistory() {
     userHistoryTableModel.clear();
   }
 
+  /**
+   * @return an EventObserver notified when the connection timeout is changed
+   */
   public EventObserver<Integer> getConnectionTimeoutObserver() {
     return connectionTimeoutChangedEvent.getObserver();
+  }
+
+  /**
+   * @return the data update scheduler
+   */
+  public TaskScheduler getUpdateScheduler() {
+    return updateScheduler;
   }
 
   private List<String> getSortedClientTypes() throws RemoteException {
@@ -143,10 +202,6 @@ public final class ClientUserMonitor {
     users.sort(USER_COMPARATOR);
 
     return users;
-  }
-
-  public TaskScheduler getUpdateScheduler() {
-    return updateScheduler;
   }
 
   private final class UserHistoryTableModel extends AbstractFilteredTableModel<UserInfo, Integer> {
