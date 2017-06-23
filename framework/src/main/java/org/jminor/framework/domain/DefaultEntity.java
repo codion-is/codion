@@ -795,9 +795,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     if (property instanceof Property.ValueListProperty && value != null && !((Property.ValueListProperty) property).isValid(value)) {
       throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getPropertyID());
     }
-    if (value instanceof Entity && primaryKeysEqual(entity, (Entity) value)) {
-      throw new IllegalArgumentException("Circular entity reference detected: " + entity + "->" + property.getPropertyID());
-    }
   }
 
   private static boolean primaryKeysEqual(final DefaultEntity entity1, final Entity entity2) {

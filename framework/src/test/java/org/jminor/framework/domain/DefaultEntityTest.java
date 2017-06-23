@@ -466,18 +466,6 @@ public class DefaultEntityTest {
     assertFalse(nullKey.equals(zeroKey));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void cyclicalReference() {
-    final String entityID = "cyclical.entity";
-    Entities.define(entityID,
-            Properties.primaryKeyProperty("id"),
-            Properties.foreignKeyProperty("ref", "Ref", entityID,
-                    Properties.columnProperty("refid")));
-    final Entity entity = Entities.entity(entityID);
-    entity.put("id", 1);
-    entity.put("ref", entity);
-  }
-
   private static Entity getDetailEntity(final long id, final Integer intValue, final Double doubleValue,
                                         final String stringValue, final Date dateValue, final Timestamp timestampValue,
                                         final Boolean booleanValue, final Entity entityValue) {

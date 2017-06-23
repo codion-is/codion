@@ -4423,3 +4423,4 @@
   Controls.methodControl() replaced by commandControl()
   Controls.commandControl() renamed to control()
   ToggleControl moved to Controls class
+  DefaultEntity, now allows circular references
