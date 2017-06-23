@@ -72,7 +72,7 @@ public final class DatabaseMonitorPanel extends JPanel {
 
     final JPanel configBase = new JPanel(UiUtil.createBorderLayout());
     configBase.add(chartConfig, BorderLayout.CENTER);
-    configBase.add(ControlProvider.createButton(Controls.commandControl(model::resetStatistics, "Reset")), BorderLayout.EAST);
+    configBase.add(ControlProvider.createButton(Controls.control(model::resetStatistics, "Reset")), BorderLayout.EAST);
 
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());
     queriesPerSecondChartPanel.setBorder(BorderFactory.createEtchedBorder());

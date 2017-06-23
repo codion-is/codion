@@ -43,7 +43,7 @@ public final class ControlsTest {
 
   @Test
   public void toggleControl() {
-    final ToggleControl control = Controls.toggleControl(this, "value", "test", valueChangeEvent.getObserver());
+    final Controls.ToggleControl control = Controls.toggleControl(this, "value", "test", valueChangeEvent.getObserver());
     control.getButtonModel().setSelected(true);
     assertTrue(value);
     control.getButtonModel().setSelected(false);
@@ -60,7 +60,7 @@ public final class ControlsTest {
   @Test
   public void stateToggleControl() {
     final State enabledState = States.state(true);
-    final ToggleControl control = Controls.toggleControl(state, enabledState);
+    final Controls.ToggleControl control = Controls.toggleControl(state, enabledState);
     assertFalse(control.getButtonModel().isSelected());
     state.setActive(true);
     assertTrue(control.getButtonModel().isSelected());
@@ -79,7 +79,7 @@ public final class ControlsTest {
 
   @Test
   public void tristateToggleControl() {
-    final ToggleControl toggleControl = Controls.toggleControl(this, "tristateValue", "tristate", valueChangeEvent, null, true);
+    final Controls.ToggleControl toggleControl = Controls.toggleControl(this, "tristateValue", "tristate", valueChangeEvent, null, true);
     final TristateButtonModel buttonModel = (TristateButtonModel) toggleControl.getButtonModel();
     buttonModel.setIndeterminate();
     assertNull(value);

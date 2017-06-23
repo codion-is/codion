@@ -161,7 +161,7 @@ public final class EntityTableConditionPanel extends JPanel {
       controlSet.add(Controls.toggleControl(this, "advanced",
               FrameworkMessages.get(FrameworkMessages.ADVANCED), advancedChangedEvent));
     }
-    controlSet.add(Controls.commandControl(conditionModel::clearPropertyConditionModels, FrameworkMessages.get(FrameworkMessages.CLEAR)));
+    controlSet.add(Controls.control(conditionModel::clearPropertyConditionModels, FrameworkMessages.get(FrameworkMessages.CLEAR)));
 
     return controlSet;
   }

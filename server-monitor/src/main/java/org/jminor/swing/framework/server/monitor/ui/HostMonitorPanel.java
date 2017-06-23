@@ -47,7 +47,7 @@ public final class HostMonitorPanel extends JPanel {
 
   private ControlSet getControls() {
     final ControlSet controlSet = new ControlSet();
-    controlSet.add(Controls.commandControl(model::refresh, "Refresh"));
+    controlSet.add(Controls.control(model::refresh, "Refresh"));
 
     return controlSet;
   }

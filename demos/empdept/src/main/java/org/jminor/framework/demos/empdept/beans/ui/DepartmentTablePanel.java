@@ -43,7 +43,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
   @Override
   protected ControlSet getPrintControls() {
     final ControlSet printControlSet = super.getPrintControls();
-    printControlSet.add(Controls.commandControl(this::viewEmployeeReport, EmpDept.getString(EMPLOYEE_REPORT)));
+    printControlSet.add(Controls.control(this::viewEmployeeReport, EmpDept.getString(EMPLOYEE_REPORT)));
 
     return printControlSet;
   }

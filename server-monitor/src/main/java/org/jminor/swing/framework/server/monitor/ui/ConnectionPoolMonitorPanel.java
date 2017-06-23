@@ -186,7 +186,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     txtResetTime.setEditable(false);
     txtResetTime.setHorizontalAlignment(JLabel.CENTER);
 
-    final JButton btnReset = ControlProvider.createButton(Controls.commandControl(model::resetStatistics, "Reset"));
+    final JButton btnReset = ControlProvider.createButton(Controls.control(model::resetStatistics, "Reset"));
     btnReset.setMaximumSize(UiUtil.getPreferredTextFieldSize());
 
     statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Pool size"), txtPoolSize));
@@ -225,7 +225,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
     final JPanel configBase = new JPanel(UiUtil.createBorderLayout());
     configBase.add(chartConfig, BorderLayout.WEST);
-    final JButton btnReset = ControlProvider.createButton(Controls.commandControl(model::resetInPoolStatistics, "Reset"));
+    final JButton btnReset = ControlProvider.createButton(Controls.control(model::resetInPoolStatistics, "Reset"));
     btnReset.setMaximumSize(UiUtil.getPreferredTextFieldSize());
     configBase.add(btnReset, BorderLayout.EAST);
 

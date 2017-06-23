@@ -4421,3 +4421,5 @@
   Sonar run, Condition, Condition.Set and Entity.Key interfaces now extend Serializable instead of the implementation classes
   AbstractRemoteEntityConnection refactored, couple of tests added
   Controls.methodControl() replaced by commandControl()
+  Controls.commandControl() renamed to control()
+  ToggleControl moved to Controls class

@@ -14,7 +14,6 @@ import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.textfield.IntegerField;
@@ -251,7 +250,7 @@ public final class LoadTestPanel extends JPanel {
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
     controlPanel.add(ControlProvider.createCheckBox(Controls.toggleControl(loadTestModel, "collectChartData",
             "Collect chart data", loadTestModel.collectChartDataObserver())));
-    controlPanel.add(ControlProvider.createButton(Controls.commandControl(loadTestModel::resetChartData, "Reset")));
+    controlPanel.add(ControlProvider.createButton(Controls.control(loadTestModel::resetChartData, "Reset")));
 
     return controlPanel;
   }
@@ -339,7 +338,7 @@ public final class LoadTestPanel extends JPanel {
     ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
     spnWarningTime.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
 
-    final ToggleControl pauseControl = Controls.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.getPauseObserver());
+    final Controls.ToggleControl pauseControl = Controls.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.getPauseObserver());
     pauseControl.setMnemonic('P');
 
     final FlexibleGridLayout layout = UiUtil.createFlexibleGridLayout(4, 2, true, false);

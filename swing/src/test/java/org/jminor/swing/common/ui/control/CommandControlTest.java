@@ -36,7 +36,7 @@ public final class CommandControlTest {
   @Test
   public void test() throws Exception {
     final State stEnabled = States.state();
-    final Control control = Controls.commandControl(this::method, "test", stEnabled);
+    final Control control = Controls.control(this::method, "test", stEnabled);
     final JButton btn = ControlProvider.createButton(control);
     assertFalse("Button should be disabled", btn.isEnabled());
     stEnabled.setActive(true);
@@ -47,19 +47,19 @@ public final class CommandControlTest {
 
   @Test(expected = RuntimeException.class)
   public void exceptionOnExecute() {
-    final Control control = Controls.commandControl(this::errorMethod, "test", null);
+    final Control control = Controls.control(this::errorMethod, "test", null);
     control.actionPerformed(null);
   }
 
   @Test(expected = RuntimeException.class)
   public void runtimeExceptionOnExecute() {
-    final Control control = Controls.commandControl(this::runtimeErrorMethod,"test", null);
+    final Control control = Controls.control(this::runtimeErrorMethod,"test", null);
     control.actionPerformed(null);
   }
 
   @Test
   public void cancelOnExecute() {
-    final Control control = Controls.commandControl(this::cancelMethod, "test", null);
+    final Control control = Controls.control(this::cancelMethod, "test", null);
     control.actionPerformed(null);
   }
 }

@@ -343,7 +343,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * @return a control for showing the column selection dialog
    */
   public final Control getSelectColumnsControl() {
-    return Controls.commandControl(this::selectTableColumns, Messages.get(Messages.SELECT_COLUMNS) + "...",
+    return Controls.control(this::selectTableColumns, Messages.get(Messages.SELECT_COLUMNS) + "...",
             null, Messages.get(Messages.SELECT_COLUMNS));
   }
 

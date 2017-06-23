@@ -165,7 +165,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private Control initializeRefreshControl() {
-    final Control control = Controls.commandControl(model::refresh, "Refresh");
+    final Control control = Controls.control(model::refresh, "Refresh");
     control.setMnemonic('R');
 
     return control;
@@ -179,21 +179,21 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private Control initializeSetJDKDirControl() {
-    final Control control = Controls.commandControl(this::setJDKDir, "Set JDK home...");
+    final Control control = Controls.control(this::setJDKDir, "Set JDK home...");
     control.setMnemonic('S');
 
     return control;
   }
 
   private Control initializeJConsoleControl() {
-    final Control control = Controls.commandControl(this::runJConsole, "Run JConsole");
+    final Control control = Controls.control(this::runJConsole, "Run JConsole");
     control.setMnemonic('J');
 
     return control;
   }
 
   private Control initializeExitControl() {
-    return Controls.commandControl(this::exit, "Exit", null, null, 'X');
+    return Controls.control(this::exit, "Exit", null, null, 'X');
   }
 
   private JPanel initializeSouthPanel() {

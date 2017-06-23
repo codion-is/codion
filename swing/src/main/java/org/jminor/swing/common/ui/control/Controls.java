@@ -34,8 +34,8 @@ public final class Controls {
    * @param icon the icon
    * @return a Control for calling the given {@link Control.Command}
    */
-  public static Control commandControl(final Control.Command command, final Icon icon) {
-    return commandControl(command, null, null, null, -1, null, icon);
+  public static Control control(final Control.Command command, final Icon icon) {
+    return control(command, null, null, null, -1, null, icon);
   }
 
   /**
@@ -44,8 +44,8 @@ public final class Controls {
    * @param name the name of the control
    * @return a Control for calling the given {@link Control.Command}
    */
-  public static Control commandControl(final Control.Command command, final String name) {
-    return commandControl(command, name, null);
+  public static Control control(final Control.Command command, final String name) {
+    return control(command, name, null);
   }
 
   /**
@@ -55,8 +55,8 @@ public final class Controls {
    * @param enabledState the state which controls the enabled state of the control
    * @return a Control for calling the given {@link Control.Command}
    */
-  public static Control commandControl(final Control.Command command, final String name, final StateObserver enabledState) {
-    return new ActionControl(command, name, enabledState);
+  public static Control control(final Control.Command command, final String name, final StateObserver enabledState) {
+    return new CommandControl(command, name, enabledState);
   }
 
   /**
@@ -67,9 +67,9 @@ public final class Controls {
    * @param description a string describing the control
    * @return a Control for calling the given {@link Control.Command}
    */
-  public static Control commandControl(final Control.Command command, final String name, final StateObserver enabledState,
-                                       final String description) {
-    return commandControl(command, name, enabledState).setDescription(description);
+  public static Control control(final Control.Command command, final String name, final StateObserver enabledState,
+                                final String description) {
+    return control(command, name, enabledState).setDescription(description);
   }
 
   /**
@@ -81,9 +81,9 @@ public final class Controls {
    * @param mnemonic the control mnemonic
    * @return a Control for calling the given {@link Control.Command}
    */
-  public static Control commandControl(final Control.Command command, final String name, final StateObserver enabledState,
-                                       final String description, final int mnemonic) {
-    return commandControl(command, name, enabledState, description).setMnemonic(mnemonic);
+  public static Control control(final Control.Command command, final String name, final StateObserver enabledState,
+                                final String description, final int mnemonic) {
+    return control(command, name, enabledState, description).setMnemonic(mnemonic);
   }
 
   /**
@@ -96,9 +96,9 @@ public final class Controls {
    * @param keyStroke the keystroke to associate with the control
    * @return a Control for calling the given {@link Control.Command}
    */
-  public static Control commandControl(final Control.Command command, final String name, final StateObserver enabledState,
-                                       final String description, final int mnemonic, final KeyStroke keyStroke) {
-    return commandControl(command, name, enabledState, description, mnemonic).setKeyStroke(keyStroke);
+  public static Control control(final Control.Command command, final String name, final StateObserver enabledState,
+                                final String description, final int mnemonic, final KeyStroke keyStroke) {
+    return control(command, name, enabledState, description, mnemonic).setKeyStroke(keyStroke);
   }
 
   /**
@@ -112,9 +112,9 @@ public final class Controls {
    * @param icon the control icon
    * @return a Control for calling the given {@link Control.Command}
    */
-  public static Control commandControl(final Control.Command command, final String name, final StateObserver enabledState,
-                                       final String description, final int mnemonic, final KeyStroke keyStroke, final Icon icon) {
-    return commandControl(command, name, enabledState, description, mnemonic, keyStroke).setIcon(icon);
+  public static Control control(final Control.Command command, final String name, final StateObserver enabledState,
+                                final String description, final int mnemonic, final KeyStroke keyStroke, final Icon icon) {
+    return control(command, name, enabledState, description, mnemonic, keyStroke).setIcon(icon);
   }
 
   /**
@@ -216,10 +216,10 @@ public final class Controls {
     };
   }
 
-  private static final class ActionControl extends Control {
+  private static final class CommandControl extends Control {
     private final Control.Command command;
 
-    private ActionControl(final Control.Command command, final String name, final StateObserver enabledObserver) {
+    private CommandControl(final Control.Command command, final String name, final StateObserver enabledObserver) {
       super(name, enabledObserver);
       this.command = Objects.requireNonNull(command);
     }
@@ -236,6 +236,37 @@ public final class Controls {
       catch (final Exception ex) {
         throw new RuntimeException(ex);
       }
+    }
+  }
+
+  /**
+   * A Control for toggling a button model
+   */
+  public static final class ToggleControl extends Control {
+
+    private final ButtonModel buttonModel;
+
+    /**
+     * @param name the name
+     * @param buttonModel the button model
+     * @param enabledObserver an observer indicating when this control should be enabled
+     */
+    private ToggleControl(final String name, final ButtonModel buttonModel, final StateObserver enabledObserver) {
+      super(name, enabledObserver);
+      this.buttonModel = buttonModel;
+    }
+
+    /**
+     * @return the button model
+     */
+    public ButtonModel getButtonModel() {
+      return buttonModel;
+    }
+
+    @Override
+    protected ToggleControl doSetMnemonic(final int mnemonic) {
+      this.buttonModel.setMnemonic(mnemonic);
+      return (ToggleControl) super.doSetMnemonic(mnemonic);
     }
   }
 
