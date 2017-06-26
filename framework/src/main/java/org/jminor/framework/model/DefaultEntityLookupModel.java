@@ -79,6 +79,16 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   private String description;
 
   /**
+   * Instantiates a new EntityLookupModel, using the search properties for the given entity type
+   * @param entityID the ID of the entity to lookup
+   * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
+   * @see Entities#getSearchProperties(String)
+   */
+  public DefaultEntityLookupModel(final String entityID, final EntityConnectionProvider connectionProvider) {
+    this(entityID, connectionProvider, Entities.getSearchProperties(entityID));
+  }
+
+  /**
    * Instantiates a new EntityLookupModel
    * @param entityID the ID of the entity to lookup
    * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
@@ -234,9 +244,6 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /** {@inheritDoc} */
   @Override
   public final List<Entity> performQuery() {
-    if (lookupProperties.isEmpty()) {
-      throw new IllegalStateException("No lookup properties defined for lookup model: " + entityID);
-    }
     try {
       final List<Entity> result = connectionProvider.getConnection().selectMany(getEntitySelectCondition());
       if (resultSorter != null) {
@@ -335,6 +342,9 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   private static void validateLookupProperties(final String entityID, final Collection<Property.ColumnProperty> lookupProperties) {
+    if (lookupProperties.isEmpty()) {
+      throw new IllegalStateException("No lookup properties provided for lookup model: " + entityID);
+    }
     for (final Property.ColumnProperty property : lookupProperties) {
       if (!entityID.equals(property.getEntityID())) {
         throw new IllegalArgumentException("Property '" + property + "' is not part of entity " + entityID);

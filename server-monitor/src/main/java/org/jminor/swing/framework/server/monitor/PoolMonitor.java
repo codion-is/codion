@@ -59,6 +59,7 @@ public final class PoolMonitor {
   }
 
   /**
+   * @param usernames the usernames
    * @throws UnsupportedOperationException always
    */
   public void addConnectionPools(final String[] usernames) {

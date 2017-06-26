@@ -4,7 +4,6 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.framework.db.EntityConnectionProvidersTest;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.DefaultEntityLookupModel;
@@ -24,8 +23,7 @@ public class EntityLookupProviderTest {
 
   @Test
   public void test() throws Exception {
-    final EntityLookupModel model = new DefaultEntityLookupModel(TestDomain.T_DEPARTMENT,
-            EntityConnectionProvidersTest.CONNECTION_PROVIDER, Entities.getSearchProperties(TestDomain.T_DEPARTMENT));
+    final EntityLookupModel model = new DefaultEntityLookupModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
     final EntityLookupProvider provider = new EntityLookupProvider(model, null);
 
     assertNull(provider.getValue());

@@ -4426,3 +4426,4 @@
   DefaultEntity, now allows circular references
   EntityRESTService, now uses User.parse() when authenticating
   Some javadoc additions
+  DefaultEntityLookupModel, constructor added

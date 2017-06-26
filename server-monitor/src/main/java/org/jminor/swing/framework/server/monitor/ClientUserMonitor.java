@@ -66,8 +66,8 @@ public final class ClientUserMonitor {
 
   /**
    * Instantiates a new {@link ClientUserMonitor}
-   * @param server
-   * @throws RemoteException
+   * @param server the server
+   * @throws RemoteException in case of a communication error
    */
   public ClientUserMonitor(final EntityConnectionServerAdmin server) throws RemoteException {
     this.server = server;

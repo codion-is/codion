@@ -141,8 +141,7 @@ public final class EntityUiUtil {
   public static Collection<Entity> lookupEntities(final String entityID, final EntityConnectionProvider connectionProvider,
                                                   final boolean singleSelection, final JComponent dialogParent,
                                                   final String lookupCaption, final String dialogTitle) {
-    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityID, connectionProvider,
-            Entities.getSearchProperties(entityID));
+    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityID, connectionProvider);
     if (singleSelection) {
       lookupModel.getMultipleSelectionAllowedValue().set(false);
     }

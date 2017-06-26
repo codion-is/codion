@@ -240,6 +240,7 @@ public final class ServerMonitor {
 
   /**
    * @return the server environment info
+   * @throws RemoteException in case of a communication error
    */
   public String getEnvironmentInfo() throws RemoteException {
     final StringBuilder contents = new StringBuilder();
