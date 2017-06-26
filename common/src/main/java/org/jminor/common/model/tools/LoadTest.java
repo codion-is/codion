@@ -301,7 +301,7 @@ public interface LoadTest {
      * Instantiates a new ScenarioException.
      */
     public ScenarioException() {
-      super();
+      this(null);
     }
 
     /**
