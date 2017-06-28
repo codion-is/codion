@@ -76,10 +76,10 @@ public class DefaultEntityTest {
     assertTrue("Entity property values should be equal after .setAs()", test.valuesEqual(testEntity));
 
     //assure that no cached foreign key values linger
-    test.put(TestDomain.DETAIL_ENTITY_FK, null);
+    test.put(TestDomain.DETAIL_MASTER_FK, null);
     testEntity.setAs(test);
-    assertNull(testEntity.get(TestDomain.DETAIL_ENTITY_ID));
-    assertNull(testEntity.get(TestDomain.DETAIL_ENTITY_FK));
+    assertNull(testEntity.get(TestDomain.DETAIL_MASTER_ID));
+    assertNull(testEntity.get(TestDomain.DETAIL_MASTER_FK));
   }
 
   @Test
@@ -138,8 +138,8 @@ public class DefaultEntityTest {
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_DATE).getType(), Types.DATE);
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_TIMESTAMP).getType(), Types.TIMESTAMP);
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_BOOLEAN).getType(), Types.BOOLEAN);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_ENTITY_FK).getType(), Types.REF);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_ENTITY_ID).getType(), Types.BIGINT);
+    assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_FK).getType(), Types.REF);
+    assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_ID).getType(), Types.BIGINT);
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_NAME).getType(), Types.VARCHAR);
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_CODE).getType(), Types.INTEGER);
 
@@ -151,7 +151,7 @@ public class DefaultEntityTest {
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_DATE).getPropertyID(), TestDomain.DETAIL_DATE);
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_TIMESTAMP).getPropertyID(), TestDomain.DETAIL_TIMESTAMP);
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_BOOLEAN).getPropertyID(), TestDomain.DETAIL_BOOLEAN);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_ENTITY_ID).getPropertyID(), TestDomain.DETAIL_ENTITY_ID);
+    assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_ID).getPropertyID(), TestDomain.DETAIL_MASTER_ID);
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_NAME).getPropertyID(), TestDomain.DETAIL_MASTER_NAME);
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_CODE).getPropertyID(), TestDomain.DETAIL_MASTER_CODE);
 
@@ -163,7 +163,7 @@ public class DefaultEntityTest {
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_DATE).getCaption(), TestDomain.DETAIL_DATE);
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_TIMESTAMP).getCaption(), TestDomain.DETAIL_TIMESTAMP);
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_BOOLEAN).getCaption(), TestDomain.DETAIL_BOOLEAN);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_ENTITY_FK).getCaption(), TestDomain.DETAIL_ENTITY_FK);
+    assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_FK).getCaption(), TestDomain.DETAIL_MASTER_FK);
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_NAME).getCaption(), TestDomain.DETAIL_MASTER_NAME);
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_CODE).getCaption(), TestDomain.DETAIL_MASTER_CODE);
 
@@ -175,7 +175,7 @@ public class DefaultEntityTest {
     assertFalse(testEntity.getProperty(TestDomain.DETAIL_DATE).isHidden());
     assertFalse(testEntity.getProperty(TestDomain.DETAIL_TIMESTAMP).isHidden());
     assertFalse(testEntity.getProperty(TestDomain.DETAIL_BOOLEAN).isHidden());
-    assertFalse(testEntity.getProperty(TestDomain.DETAIL_ENTITY_FK).isHidden());
+    assertFalse(testEntity.getProperty(TestDomain.DETAIL_MASTER_FK).isHidden());
     assertFalse(testEntity.getProperty(TestDomain.DETAIL_MASTER_NAME).isHidden());
     assertFalse(testEntity.getProperty(TestDomain.DETAIL_MASTER_CODE).isHidden());
 
@@ -187,12 +187,12 @@ public class DefaultEntityTest {
     assertEquals(testEntity.get(TestDomain.DETAIL_DATE), detailDate);
     assertEquals(testEntity.get(TestDomain.DETAIL_TIMESTAMP), detailTimestamp);
     assertEquals(testEntity.get(TestDomain.DETAIL_BOOLEAN), detailBoolean);
-    assertEquals(testEntity.get(TestDomain.DETAIL_ENTITY_FK), referencedEntityValue);
+    assertEquals(testEntity.get(TestDomain.DETAIL_MASTER_FK), referencedEntityValue);
     assertEquals(testEntity.get(TestDomain.DETAIL_MASTER_NAME), masterName);
     assertEquals(testEntity.get(TestDomain.DETAIL_MASTER_CODE), 7);
-    assertFalse(testEntity.isValueNull(TestDomain.DETAIL_ENTITY_ID));
+    assertFalse(testEntity.isValueNull(TestDomain.DETAIL_MASTER_ID));
 
-    testEntity.getReferencedKey(Entities.getForeignKeyProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ENTITY_FK));
+    testEntity.getReferencedKey(Entities.getForeignKeyProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK));
 
     //test copy()
     final Entity test2 = (Entity) testEntity.getCopy();
@@ -200,21 +200,21 @@ public class DefaultEntityTest {
     assertTrue("Entities should be equal after .getCopy()", Objects.equals(test2, testEntity));
     assertTrue("Entity property values should be equal after .getCopy()", test2.valuesEqual(testEntity));
     assertFalse("This should be a deep copy",
-            testEntity.getForeignKey(TestDomain.DETAIL_ENTITY_FK) == test2.getForeignKey(TestDomain.DETAIL_ENTITY_FK));
+            testEntity.getForeignKey(TestDomain.DETAIL_MASTER_FK) == test2.getForeignKey(TestDomain.DETAIL_MASTER_FK));
 
     test2.put(TestDomain.DETAIL_DOUBLE, 2.1);
     assertTrue(test2.isModified());
     assertTrue(test2.getCopy().isModified());
 
     //test propagate entity reference/denormalized values
-    testEntity.put(TestDomain.DETAIL_ENTITY_FK, null);
-    assertTrue(testEntity.isValueNull(TestDomain.DETAIL_ENTITY_ID));
+    testEntity.put(TestDomain.DETAIL_MASTER_FK, null);
+    assertTrue(testEntity.isValueNull(TestDomain.DETAIL_MASTER_ID));
     assertTrue(testEntity.isValueNull(TestDomain.DETAIL_MASTER_NAME));
     assertTrue(testEntity.isValueNull(TestDomain.DETAIL_MASTER_CODE));
 
-    testEntity.put(TestDomain.DETAIL_ENTITY_FK, referencedEntityValue);
-    assertFalse(testEntity.isValueNull(TestDomain.DETAIL_ENTITY_ID));
-    assertEquals(testEntity.get(TestDomain.DETAIL_ENTITY_ID),
+    testEntity.put(TestDomain.DETAIL_MASTER_FK, referencedEntityValue);
+    assertFalse(testEntity.isValueNull(TestDomain.DETAIL_MASTER_ID));
+    assertEquals(testEntity.get(TestDomain.DETAIL_MASTER_ID),
             referencedEntityValue.get(TestDomain.MASTER_ID));
     assertEquals(testEntity.get(TestDomain.DETAIL_MASTER_NAME),
             referencedEntityValue.get(TestDomain.MASTER_NAME));
@@ -222,7 +222,7 @@ public class DefaultEntityTest {
             referencedEntityValue.get(TestDomain.MASTER_CODE));
 
     referencedEntityValue.put(TestDomain.MASTER_CODE, 20);
-    testEntity.put(TestDomain.DETAIL_ENTITY_FK, referencedEntityValue);
+    testEntity.put(TestDomain.DETAIL_MASTER_FK, referencedEntityValue);
     assertEquals(testEntity.get(TestDomain.DETAIL_MASTER_CODE),
             referencedEntityValue.get(TestDomain.MASTER_CODE));
   }
@@ -231,17 +231,17 @@ public class DefaultEntityTest {
   public void isValueNull() {
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
-    assertTrue(testEntity.isValueNull(TestDomain.DETAIL_ENTITY_ID));
-    assertTrue(testEntity.isValueNull(TestDomain.DETAIL_ENTITY_FK));
-    assertTrue(testEntity.isForeignKeyNull(Entities.getForeignKeyProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ENTITY_FK)));
-    testEntity.put(TestDomain.DETAIL_ENTITY_ID, 10L);
+    assertTrue(testEntity.isValueNull(TestDomain.DETAIL_MASTER_ID));
+    assertTrue(testEntity.isValueNull(TestDomain.DETAIL_MASTER_FK));
+    assertTrue(testEntity.isForeignKeyNull(Entities.getForeignKeyProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK)));
+    testEntity.put(TestDomain.DETAIL_MASTER_ID, 10L);
 
-    assertFalse(testEntity.isLoaded(TestDomain.DETAIL_ENTITY_FK));
-    final Entity referencedEntityValue = testEntity.getForeignKey(TestDomain.DETAIL_ENTITY_FK);
+    assertFalse(testEntity.isLoaded(TestDomain.DETAIL_MASTER_FK));
+    final Entity referencedEntityValue = testEntity.getForeignKey(TestDomain.DETAIL_MASTER_FK);
     assertEquals(10L, referencedEntityValue.get(TestDomain.MASTER_ID));
-    assertFalse(testEntity.isLoaded(TestDomain.DETAIL_ENTITY_FK));
-    assertFalse(testEntity.isValueNull(TestDomain.DETAIL_ENTITY_FK));
-    assertFalse(testEntity.isValueNull(TestDomain.DETAIL_ENTITY_ID));
+    assertFalse(testEntity.isLoaded(TestDomain.DETAIL_MASTER_FK));
+    assertFalse(testEntity.isValueNull(TestDomain.DETAIL_MASTER_FK));
+    assertFalse(testEntity.isValueNull(TestDomain.DETAIL_MASTER_ID));
   }
 
   @Test
@@ -477,7 +477,7 @@ public class DefaultEntityTest {
     entity.put(TestDomain.DETAIL_DATE, dateValue);
     entity.put(TestDomain.DETAIL_TIMESTAMP, timestampValue);
     entity.put(TestDomain.DETAIL_BOOLEAN, booleanValue);
-    entity.put(TestDomain.DETAIL_ENTITY_FK, entityValue);
+    entity.put(TestDomain.DETAIL_MASTER_FK, entityValue);
 
     return entity;
   }

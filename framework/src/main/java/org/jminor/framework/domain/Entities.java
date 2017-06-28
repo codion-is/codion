@@ -24,6 +24,7 @@ import java.text.Format;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -173,6 +174,7 @@ public final class Entities {
    * @param entityID the entity ID
    * @return a String array containing the IDs of the properties used as default search properties
    * for entities identified by {@code entityID}
+   * @see Entity.Definition#setSearchPropertyIDs(String...)
    */
   public static Collection<String> getSearchPropertyIDs(final String entityID) {
     return DefaultEntityDefinition.getDefinition(entityID).getSearchPropertyIDs();
@@ -183,6 +185,7 @@ public final class Entities {
    * if no search property IDs are defined all STRING based properties are returned.
    * @param entityID the entity ID
    * @return the search properties to use
+   * @see Entity.Definition#setSearchPropertyIDs(String...)
    */
   public static Collection<Property.ColumnProperty> getSearchProperties(final String entityID) {
     final Collection<String> searchPropertyIDs = getSearchPropertyIDs(entityID);
@@ -191,10 +194,10 @@ public final class Entities {
 
   /**
    * Retrieves the properties used when searching for a entity of the given type,
-   * if no search property IDs are specified all STRING based properties are returned.
    * @param entityID the entity ID
    * @param searchPropertyIds the IDs of the search properties to retrieve
    * @return the search properties to use
+   * @see Entity.Definition#setSearchPropertyIDs(String...)
    */
   public static Collection<Property.ColumnProperty> getSearchProperties(final String entityID, final String... searchPropertyIds) {
     if (searchPropertyIds != null && searchPropertyIds.length > 0) {
@@ -205,25 +208,8 @@ public final class Entities {
 
       return searchProperties;
     }
-    else {
-      final Collection<String> searchableProperties = getSearchablePropertyIDs(entityID);
-      return getColumnProperties(entityID, searchableProperties.toArray(new String[searchableProperties.size()]));
-    }
-  }
 
-  /**
-   * @param entityID the entityID
-   * @return all searchable string-based properties for the given entity type
-   */
-  public static Collection<String> getSearchablePropertyIDs(final String entityID) {
-    final Collection<String> searchProperties = new ArrayList<>();
-    for (final Property.ColumnProperty property : getColumnProperties(entityID)) {
-      if (property.isString() && property.isSearchable()) {
-        searchProperties.add(property.getPropertyID());
-      }
-    }
-
-    return searchProperties;
+    return Collections.emptyList();
   }
 
   /**
@@ -424,11 +410,11 @@ public final class Entities {
    * @throws IllegalArgumentException in case a given propertyID does not represent a {@link Property.ColumnProperty}
    */
   public static List<Property.ColumnProperty> getColumnProperties(final String entityID, final String... propertyIDs) {
-    final List<Property.ColumnProperty> columnProperties = new ArrayList<>();
     if (propertyIDs == null || propertyIDs.length == 0) {
-      return columnProperties;
+      return Collections.emptyList();
     }
 
+    final List<Property.ColumnProperty> columnProperties = new ArrayList<>();
     for (final String propertyID : propertyIDs) {
       columnProperties.add(getColumnProperty(entityID, propertyID));
     }

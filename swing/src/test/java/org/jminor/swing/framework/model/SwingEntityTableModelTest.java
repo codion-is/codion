@@ -107,7 +107,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals(4, testModel.getPropertyColumnIndex(TestDomain.DETAIL_TIMESTAMP));
     assertEquals(5, testModel.getPropertyColumnIndex(TestDomain.DETAIL_BOOLEAN));
     assertEquals(6, testModel.getPropertyColumnIndex(TestDomain.DETAIL_BOOLEAN_NULLABLE));
-    assertEquals(7, testModel.getPropertyColumnIndex(TestDomain.DETAIL_ENTITY_FK));
+    assertEquals(7, testModel.getPropertyColumnIndex(TestDomain.DETAIL_MASTER_FK));
     assertEquals(8, testModel.getPropertyColumnIndex(TestDomain.DETAIL_MASTER_NAME));
     assertEquals(9, testModel.getPropertyColumnIndex(TestDomain.DETAIL_MASTER_CODE));
   }
@@ -134,7 +134,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   public void testSortComparator() {
-    final Property masterFKProperty = Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ENTITY_FK);
+    final Property masterFKProperty = Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK);
     final Comparator comparator = ((SwingEntityTableModel.DefaultEntityTableSortModel) testModel.getSortModel()).initializeColumnComparator(masterFKProperty);
     assertEquals(comparator, Entities.getComparator(TestDomain.T_MASTER));
   }

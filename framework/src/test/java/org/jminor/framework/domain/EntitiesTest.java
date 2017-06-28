@@ -136,11 +136,11 @@ public class EntitiesTest {
     assertEquals(0, foreignKeyProperties.size());
     foreignKeyProperties = Entities.getForeignKeyProperties(TestDomain.T_DETAIL, TestDomain.T_MASTER);
     assertEquals(1, foreignKeyProperties.size());
-    assertTrue(foreignKeyProperties.contains(Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ENTITY_FK)));
+    assertTrue(foreignKeyProperties.contains(Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK)));
   }
 
   public void getForeignKeyProperty() {
-    assertNotNull(Entities.getForeignKeyProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ENTITY_FK));
+    assertNotNull(Entities.getForeignKeyProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -245,7 +245,6 @@ public class EntitiesTest {
     searchProperties = Entities.getSearchProperties(TestDomain.T_DEPARTMENT);
     //should contain all string based properties
     assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
-    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_LOCATION)));
   }
 
   @Test
@@ -255,7 +254,7 @@ public class EntitiesTest {
     assertTrue(searchPropertyIDs.contains(TestDomain.EMP_NAME));
 
     searchPropertyIDs = Entities.getSearchPropertyIDs(TestDomain.T_DEPARTMENT);
-    assertTrue(searchPropertyIDs.isEmpty());
+    assertTrue(searchPropertyIDs.contains(TestDomain.DEPARTMENT_NAME));
   }
 
   @Test
@@ -354,7 +353,7 @@ public class EntitiesTest {
   public void validateTypeEntity() {
     final Entity entity = Entities.entity(TestDomain.T_DETAIL);
     final Entity entity1 = Entities.entity(TestDomain.T_DETAIL);
-    entity.put(TestDomain.DETAIL_ENTITY_FK, entity1);
+    entity.put(TestDomain.DETAIL_MASTER_FK, entity1);
   }
 
   @Test(expected = IllegalArgumentException.class)

@@ -46,8 +46,8 @@ public final class TestDomain {
   public static final String DETAIL_TIMESTAMP = "timestamp";
   public static final String DETAIL_BOOLEAN = "boolean";
   public static final String DETAIL_BOOLEAN_NULLABLE = "boolean_nullable";
-  public static final String DETAIL_ENTITY_ID = "entity_id";
-  public static final String DETAIL_ENTITY_FK = "entity_ref";
+  public static final String DETAIL_MASTER_ID = "master_id";
+  public static final String DETAIL_MASTER_FK = "master_fk";
   public static final String DETAIL_MASTER_NAME = "master_name";
   public static final String DETAIL_MASTER_CODE = "master_code";
   public static final String DETAIL_INT_VALUE_LIST = "int_value_list";
@@ -75,11 +75,11 @@ public final class TestDomain {
                     .setDescription("A boolean property"),
             Properties.columnProperty(DETAIL_BOOLEAN_NULLABLE, Types.BOOLEAN, DETAIL_BOOLEAN_NULLABLE)
                     .setDefaultValue(true),
-            Properties.foreignKeyProperty(DETAIL_ENTITY_FK, DETAIL_ENTITY_FK, T_MASTER,
-                    Properties.columnProperty(DETAIL_ENTITY_ID, Types.BIGINT)),
-            Properties.denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_ENTITY_FK,
+            Properties.foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK, T_MASTER,
+                    Properties.columnProperty(DETAIL_MASTER_ID, Types.BIGINT)),
+            Properties.denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_FK,
                     Entities.getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
-            Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_ENTITY_FK,
+            Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_FK,
                     Entities.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE),
             Properties.valueListProperty(DETAIL_INT_VALUE_LIST, Types.INTEGER, DETAIL_INT_VALUE_LIST, ITEMS),
             Properties.derivedProperty(DETAIL_INT_DERIVED, Types.INTEGER, DETAIL_INT_DERIVED, linkedValues -> {
@@ -113,6 +113,7 @@ public final class TestDomain {
                     .setPreferredColumnWidth(150).setMaxLength(13))
             .setDomainID(SCOTT_DOMAIN_ID)
             .setSmallDataset(true)
+            .setSearchPropertyIDs(DEPARTMENT_NAME)
             .setOrderByClause(DEPARTMENT_NAME)
             .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
             .setCaption("Department");
