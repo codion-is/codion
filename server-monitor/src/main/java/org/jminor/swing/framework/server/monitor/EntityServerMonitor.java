@@ -52,14 +52,18 @@ public final class EntityServerMonitor {
     return hostMonitors;
   }
 
-  private void addHost(final String hostname, final int registryPort) throws RemoteException {
-    hostMonitors.add(new HostMonitor(hostname, registryPort, ADMIN_USER));
-    hostAddedEvent.fire(hostname);
-  }
-
+  /**
+   * Refreshes the servers
+   * @throws RemoteException in case of a communication error
+   */
   public void refresh() throws RemoteException {
     for (final HostMonitor hostMonitor : hostMonitors) {
       hostMonitor.refresh();
     }
+  }
+
+  private void addHost(final String hostname, final int registryPort) throws RemoteException {
+    hostMonitors.add(new HostMonitor(hostname, registryPort, ADMIN_USER));
+    hostAddedEvent.fire(hostname);
   }
 }

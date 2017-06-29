@@ -31,6 +31,7 @@ import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -64,7 +65,6 @@ public class EntityTableView extends TableView<Entity> {
     initializeToolPane();
     setTableMenuButtonVisible(true);
     addPopupMenu();
-    addKeyEvents();
     bindEvents();
   }
 
@@ -290,23 +290,21 @@ public class EntityTableView extends TableView<Entity> {
     }
   }
 
-  private void addKeyEvents() {
-    setOnKeyReleased(event -> {
-      switch (event.getCode()) {
-        case DELETE:
-          if (event.getTarget() == this && !getSelectionModel().isEmpty()) {
-            deleteSelected();
-            event.consume();
-          }
-          break;
-        case F5:
-          listModel.refresh();
+  private void onKeyRelease(final KeyEvent event) {
+    switch (event.getCode()) {
+      case DELETE:
+        if (event.getTarget() == this && !getSelectionModel().isEmpty()) {
+          deleteSelected();
           event.consume();
-          break;
-        default:
-          break;
-      }
-    });
+        }
+        break;
+      case F5:
+        listModel.refresh();
+        event.consume();
+        break;
+      default:
+        break;
+    }
   }
 
   private void bindEvents() {
@@ -330,5 +328,6 @@ public class EntityTableView extends TableView<Entity> {
         });
       }
     });
+    setOnKeyReleased(this::onKeyRelease);
   }
 }

@@ -241,6 +241,9 @@ public class DefaultEntityConnectionServerTest {
     Configuration.setValue(Configuration.SERVER_LOGIN_PROXY_CLASSES, "org.jminor.framework.server.TestLoginProxy");
     Configuration.setValue(Configuration.SERVER_CONNECTION_VALIDATOR_CLASSES, "org.jminor.framework.server.TestConnectionValidator");
     Configuration.setValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED, true);
+    Configuration.setValue(Configuration.WEB_SERVER_PORT, 2224);
+    Configuration.setValue(Configuration.WEB_SERVER_DOCUMENT_ROOT, System.getProperty("user.dir"));
+    Configuration.setValue(Configuration.WEB_SERVER_IMPLEMENTATION_CLASS, TestWebServer.class.getName());
     Configuration.setValue("java.rmi.server.hostname", "localhost");
     Configuration.setValue("java.security.policy", "resources/security/all_permissions.policy");
     Configuration.setValue("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
@@ -260,10 +263,24 @@ public class DefaultEntityConnectionServerTest {
     Configuration.clearValue(Configuration.SERVER_LOGIN_PROXY_CLASSES);
     Configuration.clearValue(Configuration.SERVER_CONNECTION_VALIDATOR_CLASSES);
     Configuration.setValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED, false);
+    Configuration.clearValue(Configuration.WEB_SERVER_PORT);
+    Configuration.clearValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
+    Configuration.clearValue(Configuration.WEB_SERVER_IMPLEMENTATION_CLASS);
     Configuration.clearValue("java.rmi.server.hostname");
     Configuration.clearValue("java.security.policy");
     Configuration.clearValue("javax.net.ssl.trustStore");
     Configuration.clearValue("javax.net.ssl.keyStore");
     Configuration.clearValue("javax.net.ssl.keyStorePassword");
+  }
+
+  public static final class TestWebServer implements Server.AuxiliaryServer {
+
+    public TestWebServer(final Server connectionServer, final String documentRoot, final Integer port) {}
+
+    @Override
+    public void startServer() throws Exception {}
+
+    @Override
+    public void stopServer() throws Exception {}
   }
 }

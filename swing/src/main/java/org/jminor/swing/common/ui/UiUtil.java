@@ -951,7 +951,7 @@ public final class UiUtil {
     }
 
     return textComponent;
-  };
+  }
 
   /**
    * Sets the caret position to 0 in the given text component when it gains focus

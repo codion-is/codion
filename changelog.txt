@@ -4429,3 +4429,6 @@
   DefaultEntityLookupModel, constructor added
   DefaultPropertyConditionModelProvider.initializeForeignKeyConditionModel() now returns null if no search properties are defined for the referenced entity
   UiUtil.selectNoneOnFocusGained() added (reverses the effect of UiUtil.selectAllOnFocusGained())
+  DefaultEntityConnectionServer.startWebServer() now uses a Callable for improved error handling
+  EntityView, EntityEditView, EntityTableView, minor refactoring for consistency
+  EntityTableConditionModel.getPropertyConditionModel() no longer throws IllegalArgumentException, returns null instead

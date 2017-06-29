@@ -102,7 +102,6 @@ public class EntityView extends BorderPane implements ViewTreeNode {
     this.model = model;
     this.editView = editView;
     this.tableView = tableView;
-    addKeyEvents();
     bindEvents();
   }
 
@@ -232,55 +231,6 @@ public class EntityView extends BorderPane implements ViewTreeNode {
     }
   }
 
-  private void addKeyEvents() {
-    setOnKeyReleased(event -> {
-      switch (event.getCode()) {
-        case T:
-          if (tableView != null && event.isControlDown()) {
-            tableView.requestFocus();
-            event.consume();
-          }
-          break;
-        case F:
-          if (tableView != null && event.isControlDown()) {
-            tableView.getFilterTextField().requestFocus();
-            event.consume();
-          }
-          break;
-        case S:
-          if (tableView != null && event.isControlDown()) {
-            tableView.setConditionPaneVisible(true);
-            tableView.requestFocus();
-            event.consume();
-          }
-          break;
-        case I:
-          if (editView != null && event.isControlDown()) {
-            editView.selectInputControl();
-            event.consume();
-          }
-          break;
-        case F5:
-          if (tableView != null) {
-            tableView.getListModel().refresh();
-            event.consume();
-          }
-          break;
-        case DOWN:
-        case UP:
-        case LEFT:
-        case RIGHT:
-          if (event.isControlDown() && event.isAltDown()) {
-            navigate(event);
-            event.consume();
-          }
-          break;
-        default:
-          break;
-      }
-    });
-  }
-
   private void navigate(final KeyEvent event) {
     switch (event.getCode()) {
       case DOWN:
@@ -391,6 +341,7 @@ public class EntityView extends BorderPane implements ViewTreeNode {
       setCenter(splitPane);
       setDetailPanelState(detailPanelState);
     }
+    setOnKeyReleased(this::onKeyReleased);
   }
 
   private void setDetailPanelState(final PanelState state) {
@@ -413,5 +364,52 @@ public class EntityView extends BorderPane implements ViewTreeNode {
 
   private EntityView getTabbedDetailPanel() {
     return (EntityView) detailViewTabPane.getSelectionModel().getSelectedItem().getContent();
+  }
+
+  private void onKeyReleased(final KeyEvent event) {
+    switch (event.getCode()) {
+      case T:
+        if (tableView != null && event.isControlDown()) {
+          tableView.requestFocus();
+          event.consume();
+        }
+        break;
+      case F:
+        if (tableView != null && event.isControlDown()) {
+          tableView.getFilterTextField().requestFocus();
+          event.consume();
+        }
+        break;
+      case S:
+        if (tableView != null && event.isControlDown()) {
+          tableView.setConditionPaneVisible(true);
+          tableView.requestFocus();
+          event.consume();
+        }
+        break;
+      case I:
+        if (editView != null && event.isControlDown()) {
+          editView.selectInputControl();
+          event.consume();
+        }
+        break;
+      case F5:
+        if (tableView != null) {
+          tableView.getListModel().refresh();
+          event.consume();
+        }
+        break;
+      case DOWN:
+      case UP:
+      case LEFT:
+      case RIGHT:
+        if (event.isControlDown() && event.isAltDown()) {
+          navigate(event);
+          event.consume();
+        }
+        break;
+      default:
+        break;
+    }
   }
 }

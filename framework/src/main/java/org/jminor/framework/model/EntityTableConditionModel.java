@@ -133,8 +133,8 @@ public interface EntityTableConditionModel extends FilterCondition<Entity>, Refr
 
   /**
    * @param propertyID the id of the property for which to retrieve the PropertyConditionModel
-   * @return the PropertyConditionModel associated with the property identified by {@code propertyID}
-   * @throws IllegalArgumentException in case no condition model is available
+   * @return the PropertyConditionModel associated with the property identified by {@code propertyID},
+   * null if no condition model is available
    * @see #containsPropertyConditionModel(String)
    */
   PropertyConditionModel<? extends Property> getPropertyConditionModel(final String propertyID);

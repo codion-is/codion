@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
+import java.lang.reflect.InvocationTargetException;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -45,6 +46,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -431,7 +434,9 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     try {
       stopWebServer();
     }
-    catch (final Exception ignored) {/*ignored*/}
+    catch (final Exception e) {
+      LOG.error("Error when stopping web server", e);
+    }
     if (database.isEmbedded()) {
       database.shutdownEmbedded(null);
     }//todo does not work when shutdown requires user authentication, jminor.db.shutdownUser hmmm
@@ -539,31 +544,30 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     return timeoutMap;
   }
 
-  private AuxiliaryServer startWebServer(final String webDocumentRoot, final Integer webServerPort) {
+  private AuxiliaryServer startWebServer(final String webDocumentRoot, final Integer webServerPort)
+          throws ExecutionException, InterruptedException, ClassNotFoundException, NoSuchMethodException,
+          IllegalAccessException, InvocationTargetException, InstantiationException {
     final String webServerClassName = Configuration.getStringValue(Configuration.WEB_SERVER_IMPLEMENTATION_CLASS);
     if (Util.nullOrEmpty(webDocumentRoot) || Util.nullOrEmpty(webServerClassName)) {
       return null;
     }
 
-    try {
-      final AuxiliaryServer auxiliaryServer = (AuxiliaryServer) Class.forName(webServerClassName).getConstructor(
-              Server.class, String.class, Integer.class).newInstance(this, webDocumentRoot, webServerPort);
-      Executors.newSingleThreadExecutor().submit(() -> {
-        LOG.info("Starting web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
-        try {
-          auxiliaryServer.startServer();
-        }
-        catch (final Exception e) {
-          LOG.error(e.getMessage(), e);
-          LOG.error("Trying to start web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
-        }
-      }).get();
+    final AuxiliaryServer auxiliaryServer = (AuxiliaryServer) Class.forName(webServerClassName).getConstructor(
+            Server.class, String.class, Integer.class).newInstance(this, webDocumentRoot, webServerPort);
+    Executors.newSingleThreadExecutor().submit((Callable) () -> {
+      LOG.info("Starting web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
+      try {
+        auxiliaryServer.startServer();
 
-      return auxiliaryServer;
-    }
-    catch (final Exception e) {
-      throw new RuntimeException(e);
-    }
+        return null;
+      }
+      catch (final Exception e) {
+        LOG.error("Trying to start web server", e);
+        throw e;
+      }
+    }).get();
+
+    return auxiliaryServer;
   }
 
   /**

@@ -162,11 +162,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   /** {@inheritDoc} */
   @Override
   public final PropertyConditionModel<? extends Property> getPropertyConditionModel(final String propertyID) {
-    if (propertyConditionModels.containsKey(propertyID)) {
-      return propertyConditionModels.get(propertyID);
-    }
-
-    throw new IllegalArgumentException("ColumnConditionModel not found for property with ID: " + propertyID);
+    return propertyConditionModels.get(propertyID);
   }
 
   /** {@inheritDoc} */

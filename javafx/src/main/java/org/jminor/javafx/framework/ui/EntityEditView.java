@@ -27,6 +27,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
@@ -264,38 +265,7 @@ public abstract class EntityEditView extends BorderPane {
     topLeft.setCenter(initializeEditPanel());
     top.setLeft(topLeft);
     setTop(top);
-    addKeyEvents();
-  }
-
-  private void addKeyEvents() {
-    setOnKeyReleased(event -> {
-      if (event.isAltDown()) {
-        if (event.getCode().equals(INSERT_KEY_CODE)) {
-          save();
-          event.consume();
-        }
-        else if (event.getCode().equals(UPDATE_KEY_CODE)) {
-          update(true);
-          event.consume();
-        }
-        else if (event.getCode().equals(DELETE_KEY_CODE)) {
-          delete();
-          event.consume();
-        }
-        else if (event.getCode().equals(CLEAR_KEY_CODE)) {
-          editModel.setEntity(null);
-          event.consume();
-        }
-        else if (event.getCode().equals(REFRESH_KEY_CODE)) {
-          editModel.refresh();
-          event.consume();
-        }
-      }
-      else if (event.isControlDown() && event.getCode().equals(KeyCode.I)) {
-        selectInputControl();
-        event.consume();
-      }
-    });
+    setOnKeyReleased(this::onKeyReleased);
   }
 
   private Button createSaveButton() {
@@ -429,6 +399,35 @@ public abstract class EntityEditView extends BorderPane {
   private void checkControl(final String propertyID) {
     if (controls.containsKey(propertyID)) {
       throw new IllegalStateException("Control has already been created for property: " + propertyID);
+    }
+  }
+
+  private void onKeyReleased(final KeyEvent event) {
+    if (event.isAltDown()) {
+      if (event.getCode().equals(INSERT_KEY_CODE)) {
+        save();
+        event.consume();
+      }
+      else if (event.getCode().equals(UPDATE_KEY_CODE)) {
+        update(true);
+        event.consume();
+      }
+      else if (event.getCode().equals(DELETE_KEY_CODE)) {
+        delete();
+        event.consume();
+      }
+      else if (event.getCode().equals(CLEAR_KEY_CODE)) {
+        editModel.setEntity(null);
+        event.consume();
+      }
+      else if (event.getCode().equals(REFRESH_KEY_CODE)) {
+        editModel.refresh();
+        event.consume();
+      }
+    }
+    else if (event.isControlDown() && event.getCode().equals(KeyCode.I)) {
+      selectInputControl();
+      event.consume();
     }
   }
 }
