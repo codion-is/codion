@@ -82,6 +82,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -931,20 +932,26 @@ public final class UiUtil {
    * @return the component
    */
   public static JTextComponent selectAllOnFocusGained(final JTextComponent textComponent) {
-    textComponent.addFocusListener(new FocusAdapter() {
-      @Override
-      public void focusGained(final FocusEvent e) {
-        SwingUtilities.invokeLater(textComponent::selectAll);
-      }
-
-      @Override
-      public void focusLost(final FocusEvent e) {
-        SwingUtilities.invokeLater(() -> textComponent.select(0, 0));
-      }
-    });
+    textComponent.addFocusListener(new SelectAllListener(textComponent));
 
     return textComponent;
   }
+
+  /**
+   * Reverts the functionality added via {@link #selectAllOnFocusGained(JTextComponent)}.
+   * @param textComponent the text component
+   * @return the text component
+   * @see #selectAllOnFocusGained(JTextComponent)
+   */
+  public static JTextComponent selectNoneOnFocusGained(final JTextComponent textComponent) {
+    for (final FocusListener listener : textComponent.getFocusListeners()) {
+      if (listener instanceof SelectAllListener) {
+        textComponent.removeFocusListener(listener);
+      }
+    }
+
+    return textComponent;
+  };
 
   /**
    * Sets the caret position to 0 in the given text component when it gains focus
@@ -1753,6 +1760,25 @@ public final class UiUtil {
       else {
         component.transferFocus();
       }
+    }
+  }
+
+  private static final class SelectAllListener extends FocusAdapter {
+
+    private final JTextComponent textComponent;
+
+    private SelectAllListener(final JTextComponent textComponent) {
+      this.textComponent = textComponent;
+    }
+
+    @Override
+    public void focusGained(final FocusEvent e) {
+      SwingUtilities.invokeLater(textComponent::selectAll);
+    }
+
+    @Override
+    public void focusLost(final FocusEvent e) {
+      SwingUtilities.invokeLater(() -> textComponent.select(0, 0));
     }
   }
 

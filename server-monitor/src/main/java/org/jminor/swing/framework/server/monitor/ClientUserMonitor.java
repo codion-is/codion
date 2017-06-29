@@ -104,6 +104,7 @@ public final class ClientUserMonitor {
 
   /**
    * Refreshes the user and client data from the server
+   * @throws RemoteException in case of a communication error
    */
   public void refresh() throws RemoteException {
     clientTypeListModel.clear();

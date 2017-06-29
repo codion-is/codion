@@ -99,4 +99,14 @@ public class UiUtilTest {
     UiUtil.setPreferredHeight(txt, 42);
     assertEquals(new Dimension(txt.getPreferredSize().width, 42), txt.getPreferredSize());
   }
+
+  @Test
+  public void selectAllOnFocusGained() {
+    final JTextField txt = new JTextField("test");
+    final int focusListenerCount = txt.getFocusListeners().length;
+    UiUtil.selectAllOnFocusGained(txt);
+    assertEquals(focusListenerCount + 1, txt.getFocusListeners().length);
+    UiUtil.selectNoneOnFocusGained(txt);
+    assertEquals(focusListenerCount, txt.getFocusListeners().length);
+  }
 }

@@ -4428,3 +4428,4 @@
   Some javadoc additions
   DefaultEntityLookupModel, constructor added
   DefaultPropertyConditionModelProvider.initializeForeignKeyConditionModel() now returns null if no search properties are defined for the referenced entity
+  UiUtil.selectNoneOnFocusGained() added (reverses the effect of UiUtil.selectAllOnFocusGained())
