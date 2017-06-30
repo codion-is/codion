@@ -289,9 +289,13 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /**
    * @return a condition based on this lookup model including any additional lookup condition
+   * @throws IllegalStateException in case no lookup properties are specified
    * @see #setAdditionalLookupCondition(Condition)
    */
   private EntitySelectCondition getEntitySelectCondition() {
+    if (lookupProperties.isEmpty()) {
+      throw new IllegalStateException("No lookup properties provided for lookup model: " + entityID);
+    }
     final Condition.Set<Property.ColumnProperty> baseCondition = Conditions.conditionSet(Conjunction.OR);
     final String[] lookupTexts = multipleSelectionAllowedValue.get() ? searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
     for (final Property.ColumnProperty lookupProperty : lookupProperties) {
@@ -342,9 +346,6 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   private static void validateLookupProperties(final String entityID, final Collection<Property.ColumnProperty> lookupProperties) {
-    if (lookupProperties.isEmpty()) {
-      throw new IllegalStateException("No lookup properties provided for lookup model: " + entityID);
-    }
     for (final Property.ColumnProperty property : lookupProperties) {
       if (!entityID.equals(property.getEntityID())) {
         throw new IllegalArgumentException("Property '" + property + "' is not part of entity " + entityID);

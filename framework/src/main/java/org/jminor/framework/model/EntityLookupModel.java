@@ -94,6 +94,7 @@ public interface EntityLookupModel extends EntityDataProvider {
   /**
    * Performs a query based on the select condition
    * @return a list containing the entities fulfilling the current condition
+   * @throws IllegalStateException in case no lookup properties are specified
    */
   List<Entity> performQuery();
 

@@ -48,12 +48,12 @@ public class DefaultEntityTableConditionModelTest {
     assertTrue(conditionModel.isEnabled());
   }
 
-  @Test
+  @Test(expected = IllegalStateException.class)
   public void noSearchPropertiesDefined() {
     final DefaultEntityTableConditionModel model = new DefaultEntityTableConditionModel(TestDomain.T_DETAIL,
             EntityConnectionProvidersTest.CONNECTION_PROVIDER, new DefaultPropertyFilterModelProvider(), new DefaultPropertyConditionModelProvider());
     //no search properties defined for master entity
-    assertNull(model.getPropertyConditionModel(TestDomain.DETAIL_MASTER_FK));
+    ((DefaultForeignKeyConditionModel) model.getPropertyConditionModel(TestDomain.DETAIL_MASTER_FK)).getEntityLookupModel().performQuery();
   }
 
   @Test

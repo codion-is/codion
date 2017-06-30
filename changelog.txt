@@ -4432,3 +4432,4 @@
   DefaultEntityConnectionServer.startWebServer() now uses a Callable for improved error handling
   EntityView, EntityEditView, EntityTableView, minor refactoring for consistency
   EntityTableConditionModel.getPropertyConditionModel() no longer throws IllegalArgumentException, returns null instead
+  DefaultPropertyConditionModelProvider.initializeForeignKeyConditionModel() no longer returns null if no search properties are defined for the referenced entity, returns a PropertyConditionModel without a lookup model instead
