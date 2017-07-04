@@ -693,7 +693,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * @return true if the control panel should be included
+   * @return true if the detail panel tab pane should be included
    */
   public final boolean isIncludeDetailPanelTabPane() {
     return includeDetailPanelTabPane;
