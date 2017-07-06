@@ -90,6 +90,13 @@ public interface ValueMapEditModel<K extends Attribute, V> {
   void setValue(final K key, final V value);
 
   /**
+   * Removes the given value from the map
+   * @param key the key associated with the value to remove
+   * @return the value, if any
+   */
+  V removeValue(final K key);
+
+  /**
    * Returns the value associated with the given key in the underlying value map
    * @param key the key of the value to retrieve
    * @return the value associated with the given key

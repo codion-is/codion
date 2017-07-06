@@ -94,6 +94,13 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   void setValue(final String propertyID, final Object value);
 
   /**
+   * Removes the given value from the underlying value map
+   * @param propertyID the ID of the property
+   * @return the value, if any
+   */
+  Object removeValue(final String propertyID);
+
+  /**
    * Returns the value associated with the given property
    * @param propertyID the ID of the property
    * @return the value associated with the given property

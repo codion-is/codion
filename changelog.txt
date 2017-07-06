@@ -4434,3 +4434,6 @@
   EntityTableConditionModel.getPropertyConditionModel() no longer throws IllegalArgumentException, returns null instead
   DefaultPropertyConditionModelProvider.initializeForeignKeyConditionModel() no longer returns null if no search properties are defined for the referenced entity, returns a PropertyConditionModel without a lookup model instead
   EntityTablePanel now sets the default setAutoResizeMode() during construction
+  ServerUtil.initializeRegistry() now returns the Registry object
+  ValueMapEditModel.removeValue() added
+  EntityEditModel.removeValue() added

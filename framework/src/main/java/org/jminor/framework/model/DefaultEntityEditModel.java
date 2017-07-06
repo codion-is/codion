@@ -380,6 +380,12 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
+  public Object removeValue(final String propertyID) {
+    return removeValue(Entities.getProperty(entityID, propertyID));
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public boolean isValueNull(final String propertyID) {
     return isValueNull(Entities.getProperty(entityID, propertyID));
   }

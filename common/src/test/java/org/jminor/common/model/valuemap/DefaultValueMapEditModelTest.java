@@ -88,6 +88,11 @@ public class DefaultValueMapEditModelTest {
     assertTrue(valueChangeCounter.get() == 2);
     assertTrue(anyValueChangeCounter.get() == 3);
 
+    assertNotNull(model.getValue(nameAttribute));
+    assertNotNull(model.removeValue(nameAttribute));
+    assertNull(model.getValue(nameAttribute));
+    assertNull(model.removeValue(nameAttribute));
+
     model.removeValueListener(testAttribute, valueChangeListener);
     model.removeValueSetListener(testAttribute, valueSetListener);
   }

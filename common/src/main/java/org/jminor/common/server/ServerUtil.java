@@ -62,9 +62,10 @@ public final class ServerUtil {
   /**
    * Initializes a Registry if one is not running
    * @param port the port on which to look for (or create) a registry
+   * @return the Registry
    * @throws java.rmi.RemoteException in case of an exception
    */
-  public static void initializeRegistry(final int port) throws RemoteException {
+  public static Registry initializeRegistry(final int port) throws RemoteException {
     LOG.info("Initializing registry on port: {}", port);
     final Registry localRegistry = getRegistry(port);
     try {
@@ -76,6 +77,8 @@ public final class ServerUtil {
       LOG.info("Creating registry on port: {}", port);
       LocateRegistry.createRegistry(port);
     }
+
+    return getRegistry(port);
   }
 
   /**

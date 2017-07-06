@@ -457,8 +457,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @throws RemoteException in case of an exception
    */
   private void bindToRegistry() throws RemoteException {
-    ServerUtil.initializeRegistry(registryPort);
-    ServerUtil.getRegistry(registryPort).rebind(getServerInfo().getServerName(), this);
+    ServerUtil.initializeRegistry(registryPort).rebind(getServerInfo().getServerName(), this);
     final String connectInfo = getServerInfo().getServerName() + " bound to registry on port: " + registryPort;
     LOG.info(connectInfo);
     System.out.println(connectInfo);

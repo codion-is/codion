@@ -209,6 +209,10 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setValue(TestDomain.EMP_NAME, originalName);
     assertFalse(employeeEditModel.isModified());
 
+    employeeEditModel.setValue(TestDomain.EMP_COMMISSION, 50d);
+    assertNotNull(employeeEditModel.removeValue(TestDomain.EMP_COMMISSION));
+    assertNull(employeeEditModel.getValue(TestDomain.EMP_COMMISSION));
+
     //test validation
     try {
       employeeEditModel.setValue(TestDomain.EMP_COMMISSION, 50d);

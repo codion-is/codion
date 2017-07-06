@@ -86,6 +86,19 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
 
   /** {@inheritDoc} */
   @Override
+  public final V removeValue(final K key) {
+    Objects.requireNonNull(key, KEY);
+    final V value = valueMap.get(key);
+    if (valueMap.containsKey(key)) {
+      valueMap.remove(key);
+      notifyValueChange(key, ValueChanges.valueChange(key, null, value, false));
+    }
+
+    return value;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final boolean isNullable(final K key) {
     return validator.isNullable(valueMap, key);
   }
