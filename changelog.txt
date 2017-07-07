@@ -4437,3 +4437,5 @@
   ServerUtil.initializeRegistry() now returns the Registry object
   ValueMapEditModel.removeValue() added
   EntityEditModel.removeValue() added
+  DefaultEntityEditModel.isModified() bug fixed, did not use getModifiedObserver(), which can be overridden
+  ForeignKeyConditionPanel, lookup field now selects all when gaining focus

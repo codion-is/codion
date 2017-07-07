@@ -345,7 +345,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final boolean isModified() {
-    return getEntity().isModified();
+    return getModifiedObserver().isActive();
   }
 
   /** {@inheritDoc} */

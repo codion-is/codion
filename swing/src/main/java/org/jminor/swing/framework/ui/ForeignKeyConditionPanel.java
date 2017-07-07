@@ -8,6 +8,7 @@ import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.ForeignKeyConditionModel;
+import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
 import org.jminor.swing.framework.model.SwingForeignKeyConditionModel;
@@ -66,7 +67,7 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Propert
         return field;
       }
       else {
-        return new EntityLookupField(((ForeignKeyConditionModel) model).getEntityLookupModel());
+        return UiUtil.selectAllOnFocusGained(new EntityLookupField(((ForeignKeyConditionModel) model).getEntityLookupModel()));
       }
     }
   }
