@@ -206,17 +206,16 @@ public final class MethodLogger {
   }
 
   /**
-   * Appends  the given log entries to the log
+   * Appends the given log entries to the log
    * @param log the log
-   * @param logger the log containing the entries to append
+   * @param entries the List containing the entries to append
    * @param indentationLevel the indentation to use for the given log entries
    */
-  public static void appendLogEntries(final StringBuilder log, final List<Entry> logger, final int indentationLevel) {
-    if (logger != null) {
-      for (final MethodLogger.Entry logEntry : logger) {
-        log.append(logEntry.toString(indentationLevel)).append("\n");
-        final List<Entry> subLog = logEntry.getSubLog();
-        appendLogEntries(log, subLog, indentationLevel + 1);
+  public static void appendLogEntries(final StringBuilder log, final List<Entry> entries, final int indentationLevel) {
+    if (entries != null) {
+      for (final MethodLogger.Entry entry : entries) {
+        log.append(entry.toString(indentationLevel)).append("\n");
+        appendLogEntries(log, entry.getSubLog(), indentationLevel + 1);
       }
     }
   }

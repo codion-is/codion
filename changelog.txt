@@ -4452,3 +4452,4 @@
   EntityTableConditionPanel.getSearchPanel() renamed to getConditionPanel()
   Added some calls to SwingUtilities.invokeLater() where deemed appropriate
   Replaced AbstractAction with Control where applicable
+  Controls.eventControl() refactored

@@ -145,49 +145,49 @@ public final class Conditions {
     private static final long serialVersionUID = 1;
 
     private Conjunction conjunction;
-    private List<Condition<T>> conditionList = new ArrayList<>();
+    private List<Condition<T>> conditions = new ArrayList<>();
 
-    private DefaultSet(final Conjunction conjunction, final Collection<Condition<T>> condition) {
+    private DefaultSet(final Conjunction conjunction, final Collection<Condition<T>> conditions) {
       this.conjunction = conjunction;
-      for (final Condition<T> criterion : condition) {
-        add(criterion);
+      for (final Condition<T> condition : conditions) {
+        add(condition);
       }
     }
 
     @Override
     public void add(final Condition<T> condition) {
       if (condition != null) {
-        conditionList.add(condition);
+        conditions.add(condition);
       }
     }
 
     @Override
     public int getConditionCount() {
-      return conditionList.size();
+      return conditions.size();
     }
 
     @Override
     public String getWhereClause() {
-      if (conditionList.isEmpty()) {
+      if (conditions.isEmpty()) {
         return "";
       }
 
-      final StringBuilder conditionString = new StringBuilder(conditionList.size() > 1 ? "(" : "");
+      final StringBuilder conditionString = new StringBuilder(conditions.size() > 1 ? "(" : "");
       int i = 0;
-      for (final Condition condition : conditionList) {
+      for (final Condition condition : conditions) {
         conditionString.append(condition.getWhereClause());
-        if (i++ < conditionList.size() - 1) {
+        if (i++ < conditions.size() - 1) {
           conditionString.append(conjunction.toString());
         }
       }
 
-      return conditionString.append(conditionList.size() > 1 ? ")" : "").toString();
+      return conditionString.append(conditions.size() > 1 ? ")" : "").toString();
     }
 
     @Override
     public List getValues() {
       final List values = new ArrayList<>();
-      for (final Condition<T> condition : conditionList) {
+      for (final Condition<T> condition : conditions) {
         values.addAll(condition.getValues());
       }
 
@@ -197,7 +197,7 @@ public final class Conditions {
     @Override
     public List<T> getColumns() {
       final List<T> columns = new ArrayList<>();
-      for (final Condition<T> condition : conditionList) {
+      for (final Condition<T> condition : conditions) {
         columns.addAll(condition.getColumns());
       }
 
@@ -206,8 +206,8 @@ public final class Conditions {
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
       stream.writeObject(conjunction);
-      stream.writeInt(conditionList.size());
-      for (final Condition value : conditionList) {
+      stream.writeInt(conditions.size());
+      for (final Condition value : conditions) {
         stream.writeObject(value);
       }
     }
@@ -215,9 +215,9 @@ public final class Conditions {
     private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
       conjunction = (Conjunction) stream.readObject();
       final int conditionCount = stream.readInt();
-      conditionList = new ArrayList<>(conditionCount);
+      conditions = new ArrayList<>(conditionCount);
       for (int i = 0; i < conditionCount; i++) {
-        conditionList.add((Condition) stream.readObject());
+        conditions.add((Condition) stream.readObject());
       }
     }
   }

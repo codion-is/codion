@@ -214,18 +214,14 @@ public final class Controls {
   /**
    * Creates a Control which fires the given event on action performed
    * @param event the event
-   * @return a control for firing the given event
+   * @return a control which fires the given event
    */
   public static Control eventControl(final Event<ActionEvent> event) {
-    return new Control() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        event.fire(e);
-      }
-    };
+    return control(event::fire);
   }
 
   private static final class CommandControl extends Control {
+
     private final Control.Command command;
 
     private CommandControl(final Control.Command command, final String name, final StateObserver enabledObserver) {
