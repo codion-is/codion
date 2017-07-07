@@ -17,21 +17,19 @@ import org.jminor.framework.model.PropertyConditionModel;
 import org.jminor.swing.common.model.table.FilteredTableModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
+import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.table.AbstractTableColumnSyncPanel;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -235,14 +233,9 @@ public final class EntityTableConditionPanel extends JPanel {
 
   private static JPanel initializeSimpleConditionPanel(final EntityTableConditionModel conditionModel) {
     final JTextField simpleSearchTextField = new JTextField();
-    final Action simpleSearchAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        conditionModel.performSimpleSearch();
-      }
-    };
-    final JButton simpleSearchButton = new JButton(simpleSearchAction);
-    simpleSearchTextField.addActionListener(simpleSearchAction);
+    final Control simpleSearchControl = Controls.control(conditionModel::performSimpleSearch, FrameworkMessages.get(FrameworkMessages.SEARCH));
+    final JButton simpleSearchButton = new JButton(simpleSearchControl);
+    simpleSearchTextField.addActionListener(simpleSearchControl);
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());
     ValueLinks.textValueLink(simpleSearchTextField, conditionModel, "simpleConditionString", conditionModel.getSimpleConditionStringObserver());
     panel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.CONDITION)));

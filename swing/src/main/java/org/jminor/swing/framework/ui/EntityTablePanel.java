@@ -48,7 +48,6 @@ import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
-import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -815,7 +814,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       entityTablePanel.getJTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
-    final Action searchControl = Controls.control(() -> {
+    final Control searchControl = Controls.control(() -> {
       lookupModel.refresh();
       if (lookupModel.getRowCount() > 0) {
         lookupModel.getSelectionModel().setSelectedIndexes(Collections.singletonList(0));
@@ -927,8 +926,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     if (table.getParent() != null) {
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
     }
-    UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK,
-            new PopupMenuAction(popupMenu, table));
+    UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK, Controls.control(() -> {
+      final Point location = getPopupLocation(table);
+      popupMenu.show(table, location.x, location.y);
+    }, "EntityTablePanel.showPopupMenu"));
     UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
             Controls.control(() -> EntityUiUtil.showEntityMenu(getEntityTableModel().getSelectionModel().getSelectedItem(),
                     EntityTablePanel.this, getPopupLocation(table), getEntityTableModel().getConnectionProvider()),
@@ -1477,22 +1478,5 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final int y = table.getSelectionModel().isSelectionEmpty() ? POPUP_LOCATION_EMPTY_SELECTION : (table.getSelectedRow() + 1) * table.getRowHeight();
 
     return new Point(x, y);
-  }
-
-  private static final class PopupMenuAction extends AbstractAction {
-    private final JPopupMenu popupMenu;
-    private final JTable table;
-
-    private PopupMenuAction(final JPopupMenu popupMenu, final JTable table) {
-      super("EntityTablePanel.showPopupMenu");
-      this.popupMenu = popupMenu;
-      this.table = table;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      final Point location = getPopupLocation(table);
-      popupMenu.show(table, location.x, location.y);
-    }
   }
 }

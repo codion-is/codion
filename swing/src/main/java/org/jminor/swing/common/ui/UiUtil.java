@@ -448,33 +448,22 @@ public final class UiUtil {
       final State cancel = States.state();
       final Calendar returnTime = Calendar.getInstance();
       returnTime.setTime(cal.getTime());
-      final JButton okBtn = new JButton(new AbstractAction(Messages.get(Messages.OK)) {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          try {
-            returnTime.setTimeInMillis(((Calendar) getCalendar.invoke(calendarPanel)).getTimeInMillis());
-            closeEvent.fire();
-          }
-          catch (final Exception ex) {
-            throw new RuntimeException("Exception while using JCalendar", ex);
-          }
-        }
-      });
-      final Action cancelAction = new AbstractAction(Messages.get(Messages.CANCEL)) {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          cancel.setActive(true);
-          closeEvent.fire();
-        }
-      };
-      final JButton cancelBtn = new JButton(cancelAction);
+      final JButton okBtn = new JButton(Controls.control(() -> {
+        returnTime.setTimeInMillis(((Calendar) getCalendar.invoke(calendarPanel)).getTimeInMillis());
+        closeEvent.fire();
+      }, Messages.get(Messages.OK)));
+      final Control cancelControl = Controls.control(() -> {
+        cancel.setActive(true);
+        closeEvent.fire();
+      }, Messages.get(Messages.CANCEL));
+      final JButton cancelBtn = new JButton(cancelControl);
       final JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 5, 5));
       buttonPanel.add(okBtn);
       buttonPanel.add(cancelBtn);
 
       datePanel.add(buttonPanel, BorderLayout.SOUTH);
 
-      addKeyEvent(datePanel, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelAction);
+      addKeyEvent(datePanel, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelControl);
       displayInDialog(parent, datePanel, message, true, okBtn, closeEvent, true, null);
 
       return cancel.isActive() ? null : new Date(returnTime.getTimeInMillis());
@@ -1264,15 +1253,12 @@ public final class UiUtil {
    */
   public static void addLookupDialog(final JTextField txtField, final ValueCollectionProvider valueCollectionProvider) {
     Objects.requireNonNull(valueCollectionProvider);
-    addKeyEvent(txtField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, new AbstractAction("UiUtil.lookupValue") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final Object value = selectValue(txtField, valueCollectionProvider.values());
-        if (value != null) {
-          txtField.setText(value.toString());
-        }
+    addKeyEvent(txtField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, Controls.control(() -> {
+      final Object value = selectValue(txtField, valueCollectionProvider.values());
+      if (value != null) {
+        txtField.setText(value.toString());
       }
-    });
+    }, "UiUtil.lookupValue"));
   }
 
   /**
@@ -1365,21 +1351,18 @@ public final class UiUtil {
   }
 
   /**
-   * Creates an Action instance, with a triple-dot name ('...') for selecting a file path to display in the given text field
+   * Creates a Control instance, with a triple-dot name ('...') for selecting a file path to display in the given text field
    * @param txtFilename the text field for displaying the file path
-   * @return the Action
+   * @return the Control
    */
-  public static Action getBrowseAction(final JTextField txtFilename) {
-    return new AbstractAction("...") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          final File file = selectFile(txtFilename, getParentPath(txtFilename.getText()));
-          txtFilename.setText(file.getAbsolutePath());
-        }
-        catch (final CancelException ignored) {/*ignored*/}
+  public static Control getBrowseControl(final JTextField txtFilename) {
+    return Controls.control(() -> {
+      try {
+        final File file = selectFile(txtFilename, getParentPath(txtFilename.getText()));
+        txtFilename.setText(file.getAbsolutePath());
       }
-    };
+      catch (final CancelException ignored) {/*ignored*/}
+    }, "...");
   }
 
   /**
@@ -1679,17 +1662,14 @@ public final class UiUtil {
     final Window owner = getParentWindow(dialogOwner);
     final JDialog dialog = new JDialog(owner, dialogTitle);
     final Action okAction = new DisposeWindowAction(dialog);
-    final Action cancelAction = new AbstractAction("UiUtil.cancel") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        list.clearSelection();
-        dialog.dispose();
-      }
-    };
+    final Control cancelControl = Controls.control(() -> {
+      list.clearSelection();
+      dialog.dispose();
+    });
     if (singleSelection) {
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
-    prepareScrollPanelDialog(dialog, dialogOwner, list, okAction, cancelAction);
+    prepareScrollPanelDialog(dialog, dialogOwner, list, okAction, cancelControl);
     if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
       dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
     }
@@ -1998,13 +1978,8 @@ public final class UiUtil {
     }
 
     private void initializeUI() {
-      final AbstractAction closeAction = new AbstractAction("close") {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          dispose();
-        }
-      };
-      addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, closeAction);
+      final Control closeControl = Controls.control(this::dispose, "close");
+      addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, closeControl);
       final JPanel basePanel = new JPanel(createBorderLayout());
       basePanel.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
       basePanel.add(createNorthPanel(), BorderLayout.NORTH);

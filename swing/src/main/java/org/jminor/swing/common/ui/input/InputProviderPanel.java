@@ -9,8 +9,8 @@ import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.i18n.Messages;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.control.Controls;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -18,7 +18,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Objects;
 
@@ -123,25 +122,18 @@ public final class InputProviderPanel<T, K extends JComponent> extends JPanel im
   private JPanel createButtonPanel() {
     final JPanel panel = new JPanel(UiUtil.createGridLayout(1, COLUMNS));
     panel.add(okButton);
-    UiUtil.addKeyEvent(this, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, true, new AbstractAction("cancelInput") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        cancelButton.doClick();
-      }
-    });
+    UiUtil.addKeyEvent(this, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, true,
+            Controls.control(cancelButton::doClick, "cancelInput"));
     panel.add(cancelButton);
 
     return panel;
   }
 
   private JButton createButton(final String caption, final String mnemonic, final int option) {
-    final JButton button = new JButton(new AbstractAction(caption) {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        buttonValue = option;
-        buttonClickedEvent.fire(option);
-      }
-    });
+    final JButton button = new JButton(Controls.control(() -> {
+      buttonValue = option;
+      buttonClickedEvent.fire(option);
+    }, caption));
     button.setMnemonic(mnemonic.charAt(0));
 
     return button;

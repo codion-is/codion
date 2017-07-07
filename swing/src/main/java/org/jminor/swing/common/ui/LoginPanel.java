@@ -6,8 +6,8 @@ package org.jminor.swing.common.ui;
 import org.jminor.common.User;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
+import org.jminor.swing.common.ui.control.Controls;
 
-import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -18,7 +18,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
 
 /**
  * A JPanel for retrieving login information.
@@ -119,20 +118,10 @@ public final class LoginPanel extends JPanel {
     setLayout(UiUtil.createBorderLayout());
     add(centerPanel, BorderLayout.CENTER);
     if (usernameField.getText().length() == 0) {
-      UiUtil.addInitialFocusHack(usernameField, new AbstractAction() {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          usernameField.setCaretPosition(usernameField.getText().length());
-        }
-      });
+      UiUtil.addInitialFocusHack(usernameField, Controls.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));
     }
     else {
-      UiUtil.addInitialFocusHack(passwordField, new AbstractAction() {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          passwordField.setCaretPosition(passwordField.getPassword().length);
-        }
-      });
+      UiUtil.addInitialFocusHack(passwordField, Controls.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
     }
   }
 }

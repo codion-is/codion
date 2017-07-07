@@ -4,9 +4,9 @@
 package org.jminor.swing.common.ui;
 
 import org.jminor.common.i18n.Messages;
+import org.jminor.swing.common.ui.control.Control;
+import org.jminor.swing.common.ui.control.Controls;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -18,7 +18,6 @@ import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 import java.util.Objects;
 
 /**
@@ -130,7 +129,7 @@ public final class TextInputPanel extends JPanel {
   }
 
   private JButton createButton(final boolean buttonFocusable, final Dimension buttonSize) {
-    final JButton jButton = new JButton(new InputAction());
+    final JButton jButton = new JButton(Controls.control(this::getInputFromUser, "..."));
     jButton.setFocusable(buttonFocusable);
     if (buttonSize != null) {
       jButton.setPreferredSize(buttonSize);
@@ -139,41 +138,27 @@ public final class TextInputPanel extends JPanel {
     return jButton;
   }
 
-  private final class InputAction extends AbstractAction {
-
-    private InputAction() {
-      super("...");
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      final JTextArea txtArea = new JTextArea(textField.getText()) {
-        @Override
-        protected Document createDefaultModel() {
-          return new PlainDocument() {
-            @Override
-            public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
-              if (getMaxLength() > 0 && getLength() + (str != null ? str.length() : 0) > getMaxLength()) {
-                return;
-              }
-
-              super.insertString(offs, str, a);
+  private void getInputFromUser() {
+    final JTextArea txtArea = new JTextArea(textField.getText()) {
+      @Override
+      protected Document createDefaultModel() {
+        return new PlainDocument() {
+          @Override
+          public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
+            if (getMaxLength() > 0 && getLength() + (str != null ? str.length() : 0) > getMaxLength()) {
+              return;
             }
-          };
-        }
-      };
-      txtArea.setPreferredSize(txtAreaSize);
-      txtArea.setLineWrap(true);
-      txtArea.setWrapStyleWord(true);
-      final JScrollPane scroller = new JScrollPane(txtArea);
-      final AbstractAction okAction = new AbstractAction(Messages.get(Messages.OK)) {
-        @Override
-        public void actionPerformed(final ActionEvent evt) {
-          textField.setText(txtArea.getText());
-        }
-      };
-      okAction.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-      UiUtil.displayInDialog(textField, scroller, dialogTitle, okAction);
-    }
+
+            super.insertString(offs, str, a);
+          }
+        };
+      }
+    };
+    txtArea.setPreferredSize(txtAreaSize);
+    txtArea.setLineWrap(true);
+    txtArea.setWrapStyleWord(true);
+    final Control okControl = Controls.control(() -> textField.setText(txtArea.getText()),
+            Messages.get(Messages.OK), null, null, Messages.get(Messages.OK_MNEMONIC).charAt(0));
+    UiUtil.displayInDialog(textField, new JScrollPane(txtArea), dialogTitle, okControl);
   }
 }

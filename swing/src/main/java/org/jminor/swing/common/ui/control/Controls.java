@@ -31,6 +31,15 @@ public final class Controls {
   /**
    * Creates a control based on a {@link Control.Command}
    * @param command the {@link Control.Command} on which to base this control
+   * @return a Control for calling the given {@link Control.Command}
+   */
+  public static Control control(final Control.Command command) {
+    return control(command, (String) null);
+  }
+
+  /**
+   * Creates a control based on a {@link Control.Command}
+   * @param command the {@link Control.Command} on which to base this control
    * @param icon the icon
    * @return a Control for calling the given {@link Control.Command}
    */

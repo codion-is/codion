@@ -19,10 +19,11 @@ import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.UiValues;
 import org.jminor.swing.common.ui.ValueLinks;
+import org.jminor.swing.common.ui.control.Control;
+import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.textfield.TextFieldHint;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -42,7 +43,6 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -107,7 +107,7 @@ public final class EntityLookupField extends JTextField {
     addEscapeListener();
     this.searchHint = TextFieldHint.enable(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     updateColors();
-    UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, lookupOnKeyRelease, initializeLookupAction());
+    UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, lookupOnKeyRelease, initializeLookupControl());
     UiUtil.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
     UiUtil.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
   }
@@ -151,17 +151,14 @@ public final class EntityLookupField extends JTextField {
     final JList<Entity> list = new JList<>(entities.toArray(new Entity[entities.size()]));
     final Window owner = UiUtil.getParentWindow(this);
     final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
-    final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        getModel().setSelectedEntities(list.getSelectedValuesList());
-        dialog.dispose();
-      }
-    };
+    final Control okControl = Controls.control(() -> {
+      getModel().setSelectedEntities(list.getSelectedValuesList());
+      dialog.dispose();
+    }, Messages.get(Messages.OK));
     final Action cancelAction = new UiUtil.DisposeWindowAction(dialog);
     list.setSelectionMode(model.getMultipleSelectionAllowedValue().get() ?
             ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
-    UiUtil.prepareScrollPanelDialog(dialog, this, list, okAction, cancelAction);
+    UiUtil.prepareScrollPanelDialog(dialog, this, list, okControl, cancelAction);
   }
 
   private void linkToModel() {
@@ -171,15 +168,11 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void addEscapeListener() {
-    final AbstractAction escapeAction = new AbstractAction("EntityLookupField.escape") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        getModel().refreshSearchText();
-        selectAll();
-      }
-    };
-    UiUtil.linkToEnabledState(getModel().getSearchStringRepresentsSelectedObserver().getReversedObserver(), escapeAction);
-    UiUtil.addKeyEvent(this, KeyEvent.VK_ESCAPE, escapeAction);
+    final Control escapeControl = Controls.control(() -> {
+      getModel().refreshSearchText();
+      selectAll();
+    }, "EntityLookupField.escape", getModel().getSearchStringRepresentsSelectedObserver().getReversedObserver());
+    UiUtil.addKeyEvent(this, KeyEvent.VK_ESCAPE, escapeControl);
   }
 
   private FocusListener initializeFocusListener() {
@@ -206,18 +199,10 @@ public final class EntityLookupField extends JTextField {
     setBackground(validBackground ? validBackgroundColor : invalidBackgroundColor);
   }
 
-  private AbstractAction initializeLookupAction() {
-    final AbstractAction lookupAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        performLookup(true);
-      }
-    };
-    UiUtil.linkToEnabledState(States.aggregateState(Conjunction.AND,
-            getModel().getSearchStringRepresentsSelectedObserver().getReversedObserver(),
-            lookupEnabledState), lookupAction);
-
-    return lookupAction;
+  private Control initializeLookupControl() {
+    return Controls.control(() -> performLookup(true),
+            FrameworkMessages.get(FrameworkMessages.SEARCH), States.aggregateState(Conjunction.AND,
+                    getModel().getSearchStringRepresentsSelectedObserver().getReversedObserver(), lookupEnabledState));
   }
 
   private void performLookup(final boolean promptUser) {
@@ -258,7 +243,8 @@ public final class EntityLookupField extends JTextField {
 
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
-    popupMenu.add(new SettingsAction(settingsPanel));
+    popupMenu.add(Controls.control(() -> UiUtil.displayInDialog(EntityLookupField.this, settingsPanel,
+            Messages.get(Messages.SETTINGS)), Messages.get(Messages.SETTINGS)));
 
     return popupMenu;
   }
@@ -269,13 +255,12 @@ public final class EntityLookupField extends JTextField {
    */
   private void showEmptyResultMessage() {
     final Event closeEvent = Events.event();
-    final JButton okButton = new JButton(new AbstractAction(Messages.get(Messages.OK)) {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        closeEvent.fire();
-      }
-    });
-    UiUtil.addKeyEvent(okButton, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, true, new OKAction(okButton, closeEvent));
+    final JButton okButton = new JButton(Controls.control(closeEvent::fire, Messages.get(Messages.OK)));
+    UiUtil.addKeyEvent(okButton, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, true,
+            Controls.control(() -> {
+              okButton.doClick();
+              closeEvent.fire();
+            }, "EntityLookupField.emptyResultOK"));
     final JPanel btnBase = new JPanel(UiUtil.createFlowLayout(FlowLayout.CENTER));
     btnBase.add(okButton);
     final JLabel messageLabel = new JLabel(FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION));
@@ -299,39 +284,6 @@ public final class EntityLookupField extends JTextField {
     final Timer timer = new Timer(ENABLE_LOOKUP_DELAY, e -> lookupEnabledState.setActive(true));
     timer.setRepeats(false);
     timer.start();
-  }
-
-  private final class SettingsAction extends AbstractAction {
-
-    private final SettingsPanel settingsPanel;
-
-    private SettingsAction(final SettingsPanel settingsPanel) {
-      super(Messages.get(Messages.SETTINGS));
-      this.settingsPanel = settingsPanel;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      UiUtil.displayInDialog(EntityLookupField.this, settingsPanel, Messages.get(Messages.SETTINGS));
-    }
-  }
-
-  private static final class OKAction extends AbstractAction {
-
-    private final JButton okButton;
-    private final Event closeEvent;
-
-    private OKAction(final JButton okButton, final Event closeEvent) {
-      super("EntityLookupField.emptyResultOK");
-      this.closeEvent = closeEvent;
-      this.okButton = okButton;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      okButton.doClick();
-      closeEvent.fire();
-    }
   }
 
   private static final class SettingsPanel extends JPanel {

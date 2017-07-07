@@ -832,7 +832,7 @@ public final class EntityUiUtil {
    */
   public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final String foreignKeyPropertyID,
                                                        final boolean filterButtonTakesFocus) {
-    return createEastButtonPanel(entityComboBox, entityComboBox.createForeignKeyFilterAction(foreignKeyPropertyID),
+    return createEastButtonPanel(entityComboBox, entityComboBox.createForeignKeyFilterControl(foreignKeyPropertyID),
             filterButtonTakesFocus);
   }
 

@@ -1307,7 +1307,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
           setDetailPanelState(PanelState.DIALOG);
         }
       }
-    }, "EntityPanel.tableDoubleClick");
+    });
   }
 
   /**
@@ -1393,7 +1393,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
             parentLocation.y + (parentSize.height - size.height) - DETAIL_DIALOG_OFFSET);
     detailPanelDialog = UiUtil.displayInDialog(EntityPanel.this, detailPanelTabbedPane,
             caption + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false,
-            Controls.control(() -> setDetailPanelState(PanelState.HIDDEN), "EntityPanel.hideDetailPanel"));
+            Controls.control(() -> setDetailPanelState(PanelState.HIDDEN)));
     detailPanelDialog.setSize(size);
     detailPanelDialog.setLocation(location);
   }
@@ -1416,7 +1416,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       dialogOwner = UiUtil.getParentWindow(this);
     }
     editPanelDialog = UiUtil.displayInDialog(dialogOwner, editControlPanel, caption, false, disposeEditDialogOnEscape,
-            Controls.control(() -> setEditPanelState(PanelState.HIDDEN), "EntityPanel.hideEditDialog"));
+            Controls.control(() -> setEditPanelState(PanelState.HIDDEN)));
   }
 
   /**

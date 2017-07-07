@@ -10,7 +10,6 @@ import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.server.monitor.ClientInstanceMonitor;
 import org.jminor.swing.framework.server.monitor.ClientMonitor;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -18,7 +17,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 
 /**
@@ -84,20 +82,12 @@ public final class ClientMonitorPanel extends JPanel {
 
   private JPopupMenu initializePopupMenu() {
     final ControlSet controls = new ControlSet();
-    controls.add(new AbstractAction("Disconnect") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          for (final ClientInstanceMonitor clientMonitor : clientInstanceList.getSelectedValuesList()) {
-            clientMonitor.disconnect();
-            model.getClientInstanceListModel().removeElement(clientMonitor);
-          }
-        }
-        catch (final RemoteException ex) {
-          throw new RuntimeException(ex);
-        }
+    controls.add(Controls.control(() -> {
+      for (final ClientInstanceMonitor clientMonitor : clientInstanceList.getSelectedValuesList()) {
+        clientMonitor.disconnect();
+        model.getClientInstanceListModel().removeElement(clientMonitor);
       }
-    });
+    }, "Disconnect"));
 
     return ControlProvider.createPopupMenu(controls);
   }

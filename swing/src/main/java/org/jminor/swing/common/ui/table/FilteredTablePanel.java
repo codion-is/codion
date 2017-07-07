@@ -19,7 +19,6 @@ import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.textfield.TextFieldHint;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -487,21 +486,12 @@ public class FilteredTablePanel<R, C> extends JPanel {
     final JPanel panel = new JPanel(UiUtil.createGridLayout(1, 1));
     panel.add(boxRegexp);
 
-    final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        tableModel.setRegularExpressionSearch(boxRegexp.isSelected());
-      }
-    };
-    action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
+    final Control control = Controls.control(() -> tableModel.setRegularExpressionSearch(boxRegexp.isSelected()),
+            Messages.get(Messages.OK), null, null, Messages.get(Messages.OK_MNEMONIC).charAt(0));
 
     final JPopupMenu popupMenu = new JPopupMenu();
-    popupMenu.add(new AbstractAction(Messages.get(Messages.SETTINGS)) {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        UiUtil.displayInDialog(FilteredTablePanel.this, panel, Messages.get(Messages.SETTINGS), action);
-      }
-    });
+    popupMenu.add(Controls.control(() ->
+            UiUtil.displayInDialog(FilteredTablePanel.this, panel, Messages.get(Messages.SETTINGS), control), Messages.get(Messages.SETTINGS)));
 
     return popupMenu;
   }
@@ -516,18 +506,8 @@ public class FilteredTablePanel<R, C> extends JPanel {
       togglePanel.add(chkColumn);
     });
     final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-    southPanel.add(new JButton(new AbstractAction(Messages.get(Messages.SELECT_ALL)) {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        setSelected(checkBoxes, true);
-      }
-    }));
-    southPanel.add(new JButton(new AbstractAction(Messages.get(Messages.SELECT_NONE)) {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        setSelected(checkBoxes, false);
-      }
-    }));
+    southPanel.add(new JButton(Controls.control(() -> setSelected(checkBoxes, true), Messages.get(Messages.SELECT_ALL))));
+    southPanel.add(new JButton(Controls.control(() -> setSelected(checkBoxes, false), Messages.get(Messages.SELECT_NONE))));
 
     final JPanel base = new JPanel(UiUtil.createBorderLayout());
     base.add(new JScrollPane(togglePanel), BorderLayout.CENTER);

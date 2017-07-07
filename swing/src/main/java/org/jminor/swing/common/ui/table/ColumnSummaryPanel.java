@@ -4,15 +4,14 @@
 package org.jminor.swing.common.ui.table;
 
 import org.jminor.common.model.table.ColumnSummaryModel;
+import org.jminor.swing.common.ui.control.Controls;
 
-import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -65,12 +64,7 @@ public final class ColumnSummaryPanel extends JPanel {
     final JPopupMenu popupMenu = new JPopupMenu();
     final ButtonGroup group = new ButtonGroup();
     for (final ColumnSummaryModel.Summary summary : model.getAvailableSummaries()) {
-      final JRadioButtonMenuItem item = new JRadioButtonMenuItem(new AbstractAction(summary.toString()) {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          model.setSummary(summary);
-        }
-      });
+      final JRadioButtonMenuItem item = new JRadioButtonMenuItem(Controls.control(() -> model.setSummary(summary), summary.toString()));
       model.addSummaryListener(newSummary -> item.setSelected(newSummary.equals(summary)));
       item.setSelected(model.getSummary().equals(summary));
       group.add(item);

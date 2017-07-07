@@ -2,8 +2,8 @@ package org.jminor.swing.common.ui.checkbox;
 
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
 import org.jminor.swing.common.model.checkbox.TristateState;
+import org.jminor.swing.common.ui.control.Controls;
 
-import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.ButtonModel;
 import javax.swing.Icon;
@@ -54,12 +54,7 @@ public final class TristateCheckBox extends JCheckBox {
       }
     });
     final ActionMap actions = new ActionMapUIResource();
-    actions.put("pressed", new AbstractAction() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        TristateCheckBox.this.iterateState();
-      }
-    });
+    actions.put("pressed", Controls.control(TristateCheckBox.this::iterateState));
     actions.put("released", null);
     SwingUtilities.replaceUIActionMap(this, actions);
   }

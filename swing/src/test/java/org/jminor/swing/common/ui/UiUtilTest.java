@@ -5,6 +5,7 @@ package org.jminor.swing.common.ui;
 
 import org.jminor.common.State;
 import org.jminor.common.States;
+import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 
 import org.junit.Test;
@@ -78,10 +79,7 @@ public class UiUtilTest {
   @Test(expected = IllegalArgumentException.class)
   public void addKeyEventWithoutName() {
     final JTextField txt = new JTextField();
-    UiUtil.addKeyEvent(txt, KeyEvent.VK_ENTER, new AbstractAction() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {}
-    });
+    UiUtil.addKeyEvent(txt, KeyEvent.VK_ENTER, Controls.control(() -> {}));
   }
 
   @Test

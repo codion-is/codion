@@ -6,15 +6,15 @@ package org.jminor.swing.common.ui;
 import org.jminor.common.StateObserver;
 import org.jminor.common.Util;
 import org.jminor.common.i18n.Messages;
+import org.jminor.swing.common.ui.control.Control;
+import org.jminor.swing.common.ui.control.Controls;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.text.ParseException;
@@ -57,21 +57,18 @@ public final class DateInputPanel extends JPanel {
     add(inputField, BorderLayout.CENTER);
     addFocusListener(new InputFocusAdapter(inputField));
     if (includeButton) {
-      final AbstractAction buttonAction = new AbstractAction("...") {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          Date currentValue = null;
-          try {
-            currentValue = getDate();
-          }
-          catch (final ParseException ignored) {/*ignored*/}
-          final Date newValue = UiUtil.getDateFromUser(currentValue, Messages.get(Messages.SELECT_DATE), inputField);
-          if (newValue != null) {
-            inputField.setText(dateFormat.format(newValue));
-          }
+      final Control buttonControl = Controls.control(() -> {
+        Date currentValue = null;
+        try {
+          currentValue = getDate();
         }
-      };
-      this.button = new JButton(buttonAction);
+        catch (final ParseException ignored) {/*ignored*/}
+        final Date newValue = UiUtil.getDateFromUser(currentValue, Messages.get(Messages.SELECT_DATE), inputField);
+        if (newValue != null) {
+          inputField.setText(dateFormat.format(newValue));
+        }
+      }, "...");
+      this.button = new JButton(buttonControl);
       this.button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
       if (enabledState != null) {
         UiUtil.linkToEnabledState(enabledState, this.inputField);
