@@ -351,13 +351,13 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   public final List<String> getSelectComponentPropertyIDs() {
     final Collection<String> propertyIDs = getComponentPropertyIDs();
     final List<String> selectableComponentPropertyIDs = new ArrayList<>(propertyIDs.size());
-    for (final String propertyID : propertyIDs) {
+    propertyIDs.forEach(propertyID -> {
       final JComponent component = getComponent(propertyID);
       if (component != null && includeComponentSelectionPropertyID(propertyID) && component.isVisible() &&
               component.isFocusable() && component.isEnabled()) {
         selectableComponentPropertyIDs.add(propertyID);
       }
-    }
+    });
 
     return selectableComponentPropertyIDs;
   }
@@ -429,7 +429,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
     return Controls.control(editModel::refresh, FrameworkMessages.get(FrameworkMessages.REFRESH),
             getActiveObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX
-            + mnemonic + ")", mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
+                    + mnemonic + ")", mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
   }
 
   /**
@@ -2096,15 +2096,12 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
       }
     });
     UiUtil.addKeyEvent(this, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new AbstractAction("EntityEditPanel.showEntityMenu") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final int x = getBounds().getLocation().x + ENTITY_MENU_X_OFFSET;
-        final int y = getHeight();
-
-        EntityUiUtil.showEntityMenu(getEditModel().getEntityCopy(), EntityEditPanel.this, new Point(x, y), getEditModel().getConnectionProvider());
-      }
-    });
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Controls.control(() -> {
+              final int x = getBounds().getLocation().x + ENTITY_MENU_X_OFFSET;
+              final int y = getHeight();
+              EntityUiUtil.showEntityMenu(getEditModel().getEntityCopy(), EntityEditPanel.this, new Point(x, y),
+                      getEditModel().getConnectionProvider());
+            }, "EntityEditPanel.showEntityMenu"));
     editModel.addBeforeRefreshListener(() -> UiUtil.setWaitCursor(true, EntityEditPanel.this));
     editModel.addAfterRefreshListener(() -> UiUtil.setWaitCursor(false, EntityEditPanel.this));
     editModel.addConfirmSetEntityObserver(confirmationState -> {
@@ -2148,9 +2145,9 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
 
     private InsertEntityAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
       this(comboBox, panelProvider, ((EntityComboBoxModel) comboBox.getModel()).getConnectionProvider(), entities -> {
-          final EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) comboBox.getModel();
-          comboBoxModel.refresh();
-          comboBoxModel.setSelectedItem(entities.get(0));
+        final EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) comboBox.getModel();
+        comboBoxModel.refresh();
+        comboBoxModel.setSelectedItem(entities.get(0));
       });
     }
 

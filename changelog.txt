@@ -4439,3 +4439,15 @@
   EntityEditModel.removeValue() added
   DefaultEntityEditModel.isModified() bug fixed, did not use getModifiedObserver(), which can be overridden
   ForeignKeyConditionPanel, lookup field now selects all when gaining focus
+  FilteredTablePanel.scrollToColumn() added
+  ColumnConditionPanel.requestInputFocus() added
+  EntityTableConditionPanel.selectConditionPanel() added
+  EntityTablePanel.selectConditionPanel() added
+  EntityPanel, EntityTablePanel and EntityEditPanel, replaced AbstracAction with Control
+  FilteredTablePanel.scrollToCenter() removed, scrollToCoordinate() added centerXPos and centerYPos parameters
+  ColumnConditionPanel.addFocusGainedListener() added
+  EntityTableConditionPanel.addFocusGainedListener() added
+  EntityTablePanel now automatically scrolls to a column when its condition panel receives focus
+  EntityTablePanel, EntityTableConditionPanel and FilteredTablePanel, replaced loops with forEach
+  EntityTableConditionPanel.getSearchPanel() renamed to getConditionPanel()
+  Added some calls to SwingUtilities.invokeLater() where deemed appropriate

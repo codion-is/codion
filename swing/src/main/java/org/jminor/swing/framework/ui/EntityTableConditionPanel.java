@@ -6,6 +6,8 @@ package org.jminor.swing.framework.ui;
 import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.Events;
+import org.jminor.common.i18n.Messages;
+import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityTableConditionModel;
@@ -30,6 +32,7 @@ import javax.swing.JTextField;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,8 +55,8 @@ public final class EntityTableConditionPanel extends JPanel {
    * @param tableModel the table model
    */
   public EntityTableConditionPanel(final EntityTableModel tableModel) {
-    this(tableModel, initializeAdvancedSearchPanel(tableModel, UiUtil.getPreferredScrollBarWidth()),
-            initializeSimpleSearchPanel(tableModel.getConditionModel()));
+    this(tableModel, initializeAdvancedConditionPanel(tableModel, UiUtil.getPreferredScrollBarWidth()),
+            initializeSimpleConditionPanel(tableModel.getConditionModel()));
   }
 
   /**
@@ -88,11 +91,11 @@ public final class EntityTableConditionPanel extends JPanel {
    */
   public void setAdvanced(final boolean value) {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
-      for (final JPanel searchPanel : ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().values()) {
-        if (searchPanel instanceof ColumnConditionPanel) {
-          ((ColumnConditionPanel) searchPanel).setAdvancedConditionEnabled(value);
+      ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().forEach((column, panel) -> {
+        if (panel instanceof ColumnConditionPanel) {
+          ((ColumnConditionPanel) panel).setAdvancedConditionEnabled(value);
         }
-      }
+      });
     }
     else {
       layoutPanel(value);
@@ -106,9 +109,9 @@ public final class EntityTableConditionPanel extends JPanel {
    */
   public boolean isAdvanced() {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
-      for (final JPanel searchPanel : ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().values()) {
-        if (searchPanel instanceof ColumnConditionPanel) {
-          return ((ColumnConditionPanel) searchPanel).isAdvancedConditionEnabled();
+      for (final JPanel conditionPanel : ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().values()) {
+        if (conditionPanel instanceof ColumnConditionPanel) {
+          return ((ColumnConditionPanel) conditionPanel).isAdvancedConditionEnabled();
         }
       }
     }
@@ -121,6 +124,39 @@ public final class EntityTableConditionPanel extends JPanel {
    */
   public boolean canToggleAdvanced() {
     return advancedConditionPanel instanceof AbstractTableColumnSyncPanel || (advancedConditionPanel != null && simpleConditionPanel != null);
+  }
+
+  /**
+   * Allows the user to select one of the available condition panels for keyboard input focus
+   */
+  public void selectConditionPanel() {
+    if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
+      final List<Property> conditionProperties = new ArrayList<>();
+      ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().forEach((column, panel) -> {
+        if (panel instanceof ColumnConditionPanel) {
+          conditionProperties.add((Property) column.getIdentifier());
+        }
+      });
+      EntityUtil.sort(conditionProperties);
+      final Property property = UiUtil.selectValue(this, conditionProperties, Messages.get(Messages.SELECT_INPUT_FIELD));
+      if (property != null) {
+        final ColumnConditionPanel conditionPanel = getConditionPanel(property.getPropertyID());
+        if (conditionPanel != null) {
+          conditionPanel.requestInputFocus();
+        }
+      }
+    }
+  }
+
+  /**
+   * @param listener a listener notified when a condition panel receives focus
+   */
+  public void addFocusGainedListener(final EventInfoListener<Property> listener) {
+    ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().forEach((column, panel) -> {
+      if (panel instanceof ColumnConditionPanel) {
+        ((ColumnConditionPanel) panel).addFocusGainedListener(listener);
+      }
+    });
   }
 
   /**
@@ -170,7 +206,7 @@ public final class EntityTableConditionPanel extends JPanel {
    * @param propertyID the property ID
    * @return the condition panel associated with the given property
    */
-  public ColumnConditionPanel getSearchPanel(final String propertyID) {
+  public ColumnConditionPanel getConditionPanel(final String propertyID) {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
       for (final TableColumn column : columns) {
         final Property property = (Property) column.getIdentifier();
@@ -197,7 +233,7 @@ public final class EntityTableConditionPanel extends JPanel {
     advancedChangedEvent.removeInfoListener(listener);
   }
 
-  private static JPanel initializeSimpleSearchPanel(final EntityTableConditionModel conditionModel) {
+  private static JPanel initializeSimpleConditionPanel(final EntityTableConditionModel conditionModel) {
     final JTextField simpleSearchTextField = new JTextField();
     final Action simpleSearchAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       @Override
@@ -216,14 +252,14 @@ public final class EntityTableConditionPanel extends JPanel {
     return panel;
   }
 
-  private static AbstractTableColumnSyncPanel initializeAdvancedSearchPanel(final EntityTableModel tableModel, final int verticalFillerWidth) {
+  private static AbstractTableColumnSyncPanel initializeAdvancedConditionPanel(final EntityTableModel tableModel, final int verticalFillerWidth) {
     final AbstractTableColumnSyncPanel panel = new AbstractTableColumnSyncPanel(((FilteredTableModel) tableModel).getColumnModel()) {
       @Override
       protected JPanel initializeColumnPanel(final TableColumn column) {
         final Property property = (Property) column.getIdentifier();
         if (tableModel.getConditionModel().containsPropertyConditionModel(property.getPropertyID())) {
           final PropertyConditionModel propertyConditionModel = tableModel.getConditionModel().getPropertyConditionModel(property.getPropertyID());
-          return initializeSearchPanel(propertyConditionModel);
+          return initializeConditionPanel(propertyConditionModel);
         }
         else {
           return new JPanel();
@@ -242,7 +278,7 @@ public final class EntityTableConditionPanel extends JPanel {
    * @return a ColumnConditionPanel based on the given model
    */
   @SuppressWarnings({"unchecked"})
-  private static ColumnConditionPanel initializeSearchPanel(final PropertyConditionModel propertyConditionModel) {
+  private static ColumnConditionPanel initializeConditionPanel(final PropertyConditionModel propertyConditionModel) {
     if (propertyConditionModel instanceof ForeignKeyConditionModel) {
       return new ForeignKeyConditionPanel((ForeignKeyConditionModel) propertyConditionModel, true, false);
     }

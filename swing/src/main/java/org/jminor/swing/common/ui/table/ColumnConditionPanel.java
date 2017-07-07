@@ -4,8 +4,11 @@
 package org.jminor.swing.common.ui.table;
 
 import org.jminor.common.DateUtil;
+import org.jminor.common.Event;
+import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
+import org.jminor.common.Events;
 import org.jminor.common.Item;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
@@ -13,6 +16,7 @@ import org.jminor.common.States;
 import org.jminor.common.Value;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.framework.domain.Property;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
@@ -41,6 +45,8 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Types;
@@ -72,16 +78,17 @@ public class ColumnConditionPanel<K> extends JPanel {
   /**
    * A JToggleButton for enabling/disabling the filter
    */
-  private final JToggleButton toggleEnabled;
+  private final JToggleButton toggleEnabledButton;
 
   /**
    * A JToggleButton for toggling advanced/simple search
    */
-  private final JToggleButton toggleAdvancedCondition;
+  private final JToggleButton toggleAdvancedButton;
   private final JComboBox conditionTypeCombo;
   private final JComponent upperBoundField;
   private final JComponent lowerBoundField;
 
+  private final Event<Property> focusGainedEvent = Events.event();
   private final State advancedConditionState = States.state();
 
   private JDialog dialog;
@@ -146,20 +153,20 @@ public class ColumnConditionPanel<K> extends JPanel {
     this.upperBoundField = upperBoundField;
     this.lowerBoundField = lowerBoundField;
     if (includeToggleEnabledButton) {
-      this.toggleEnabled = ControlProvider.createToggleButton(
+      this.toggleEnabledButton = ControlProvider.createToggleButton(
               Controls.toggleControl(conditionModel, "enabled", null, conditionModel.getEnabledObserver()));
-      toggleEnabled.setIcon(Images.loadImage(Images.IMG_FILTER_16));
+      toggleEnabledButton.setIcon(Images.loadImage(Images.IMG_FILTER_16));
     }
     else {
-      this.toggleEnabled = null;
+      this.toggleEnabledButton = null;
     }
     if (includeToggleAdvancedConditionButton) {
-      this.toggleAdvancedCondition = ControlProvider.createToggleButton(
+      this.toggleAdvancedButton = ControlProvider.createToggleButton(
               Controls.toggleControl(this, "advancedConditionEnabled", null, advancedConditionState.getObserver()));
-      toggleAdvancedCondition.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
+      toggleAdvancedButton.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
     }
     else {
-      this.toggleAdvancedCondition = null;
+      this.toggleAdvancedButton = null;
     }
     linkComponentsToLockedState();
     initializeUI();
@@ -264,6 +271,18 @@ public class ColumnConditionPanel<K> extends JPanel {
   }
 
   /**
+   * Requests keyboard focus for this panels input field
+   */
+  public final void requestInputFocus() {
+    if (conditionModel.isLowerBoundRequired()) {
+      lowerBoundField.requestFocusInWindow();
+    }
+    else {
+      upperBoundField.requestFocusInWindow();
+    }
+  }
+
+  /**
    * @param value true if advanced condition should be enabled
    */
   public final void setAdvancedConditionEnabled(final boolean value) {
@@ -303,6 +322,13 @@ public class ColumnConditionPanel<K> extends JPanel {
    */
   public final void removeAdvancedConditionListener(final EventListener listener) {
     advancedConditionState.removeListener(listener);
+  }
+
+  /**
+   * @param listener listener notified when a this condition panels input fields receive focus
+   */
+  public final void addFocusGainedListener(final EventInfoListener<Property> listener) {
+    focusGainedEvent.addInfoListener(listener);
   }
 
   /**
@@ -406,8 +432,8 @@ public class ColumnConditionPanel<K> extends JPanel {
   private void bindEvents() {
     advancedConditionState.addListener(() -> {
       initializePanel();
-      if (toggleAdvancedCondition != null) {
-        toggleAdvancedCondition.requestFocusInWindow();
+      if (toggleAdvancedButton != null) {
+        toggleAdvancedButton.requestFocusInWindow();
       }
       else {
         upperBoundField.requestFocusInWindow();
@@ -418,6 +444,23 @@ public class ColumnConditionPanel<K> extends JPanel {
       revalidate();
       conditionTypeCombo.requestFocusInWindow();
     });
+    final FocusAdapter focusGainedListener = new FocusAdapter() {
+      @Override
+      public void focusGained(final FocusEvent e) {
+        focusGainedEvent.fire((Property) conditionModel.getColumnIdentifier());
+      }
+    };
+    conditionTypeCombo.addFocusListener(focusGainedListener);
+    upperBoundField.addFocusListener(focusGainedListener);
+    if (lowerBoundField != null) {
+      lowerBoundField.addFocusListener(focusGainedListener);
+    }
+    if (toggleAdvancedButton != null) {
+      toggleAdvancedButton.addFocusListener(focusGainedListener);
+    }
+    if (toggleEnabledButton != null) {
+      toggleEnabledButton.addFocusListener(focusGainedListener);
+    }
   }
 
   private void initializePanel() {
@@ -455,11 +498,11 @@ public class ColumnConditionPanel<K> extends JPanel {
   private void initializeUI() {
     final FlexibleGridLayout layout = new FlexibleGridLayout(2, 1, 1, 1, true, false);
     setLayout(layout);
-    if (toggleEnabled != null) {
-      this.toggleEnabled.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
+    if (toggleEnabledButton != null) {
+      this.toggleEnabledButton.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
     }
-    if (toggleAdvancedCondition != null) {
-      this.toggleAdvancedCondition.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
+    if (toggleAdvancedButton != null) {
+      this.toggleAdvancedButton.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
     }
   }
 
@@ -477,11 +520,11 @@ public class ColumnConditionPanel<K> extends JPanel {
       basePanel.add(upperBoundField, BorderLayout.CENTER);
     }
 
-    if (toggleEnabled != null) {
-      basePanel.add(toggleEnabled, BorderLayout.EAST);
+    if (toggleEnabledButton != null) {
+      basePanel.add(toggleEnabledButton, BorderLayout.EAST);
     }
-    if (toggleAdvancedCondition != null) {
-      basePanel.add(toggleAdvancedCondition, BorderLayout.WEST);
+    if (toggleAdvancedButton != null) {
+      basePanel.add(toggleAdvancedButton, BorderLayout.WEST);
     }
 
     add(basePanel);
@@ -507,11 +550,11 @@ public class ColumnConditionPanel<K> extends JPanel {
 
     final JPanel controlPanel = new JPanel(new BorderLayout(1, 1));
     controlPanel.add(conditionTypeCombo, BorderLayout.CENTER);
-    if (toggleEnabled != null) {
-      controlPanel.add(toggleEnabled, BorderLayout.EAST);
+    if (toggleEnabledButton != null) {
+      controlPanel.add(toggleEnabledButton, BorderLayout.EAST);
     }
-    if (toggleAdvancedCondition != null) {
-      controlPanel.add(toggleAdvancedCondition, BorderLayout.WEST);
+    if (toggleAdvancedButton != null) {
+      controlPanel.add(toggleAdvancedButton, BorderLayout.WEST);
     }
 
     add(controlPanel);
@@ -529,11 +572,11 @@ public class ColumnConditionPanel<K> extends JPanel {
     if (lowerBoundField != null) {
       UiUtil.linkToEnabledState(stUnlocked, lowerBoundField);
     }
-    if (toggleAdvancedCondition != null) {
-      UiUtil.linkToEnabledState(stUnlocked, toggleAdvancedCondition);
+    if (toggleAdvancedButton != null) {
+      UiUtil.linkToEnabledState(stUnlocked, toggleAdvancedButton);
     }
-    if (toggleEnabled != null) {
-      UiUtil.linkToEnabledState(stUnlocked, toggleEnabled);
+    if (toggleEnabledButton != null) {
+      UiUtil.linkToEnabledState(stUnlocked, toggleEnabledButton);
     }
   }
 

@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -1074,7 +1073,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
             controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
     return Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
-              editPanel.createControlToolBar(JToolBar.VERTICAL) : editPanel.createControlPanel(alignment == FlowLayout.CENTER);
+            editPanel.createControlToolBar(JToolBar.VERTICAL) : editPanel.createControlPanel(alignment == FlowLayout.CENTER);
   }
 
   /**
@@ -1097,72 +1096,38 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * and CTR-F selects the table search field
    */
   private void setupKeyboardActions() {
-    final Action selectEditPanelAction = new AbstractAction("EntityPanel.selectEditPanel") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (getEditPanelState() == PanelState.HIDDEN) {
-          setEditPanelState(PanelState.EMBEDDED);
-        }
-        getEditPanel().prepareUI(true, false);
-      }
-    };
-    final Action selectInputComponentAction = new AbstractAction("EntityPanel.selectInputComponent") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (getEditPanelState() == PanelState.HIDDEN) {
-          setEditPanelState(PanelState.EMBEDDED);
-        }
-        getEditPanel().selectInputComponent();
-      }
-    };
-    final Action selectTablePanelAction = new AbstractAction("EntityPanel.selectTablePanel") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        getTablePanel().getJTable().requestFocus();
-      }
-    };
-    final Action selectSearchFieldAction = new AbstractAction("EntityPanel.selectSearchField") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        getTablePanel().getSearchField().requestFocus();
-      }
-    };
-    final Action toggleConditionPanelAction = new AbstractAction("EntityPanel.toggleConditionPanel") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (!getTablePanel().isConditionPanelVisible()) {
-          getTablePanel().setConditionPanelVisible(true);
-        }
-        getTablePanel().getConditionPanel().requestFocus();
-      }
-    };
+    final Control selectEditPanelControl = Controls.control(this::selectEditPanel, "EntityPanel.selectEditPanel");
+    final Control selectInputComponentControl = Controls.control(this::selectInputComponent, "EntityPanel.selectInputComponent");
+    final Control selectTablePanelControl = Controls.control(getTablePanel().getJTable()::requestFocus, "EntityPanel.selectTablePanel");
+    final Control selectSearchFieldControl = Controls.control(getTablePanel().getSearchField()::requestFocus, "EntityPanel.selectSearchField");
     if (containsTablePanel()) {
+      final Control selectConditionPanelAction = Controls.control(getTablePanel()::selectConditionPanel, "EntityPanel.selectConditionPanel");
       UiUtil.addKeyEvent(this, KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              selectTablePanelAction);
+              selectTablePanelControl);
       UiUtil.addKeyEvent(this, KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              selectSearchFieldAction);
+              selectSearchFieldControl);
       if (tablePanel.getConditionPanel() != null) {
         UiUtil.addKeyEvent(this, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                toggleConditionPanelAction);
+                selectConditionPanelAction);
       }
       if (containsEditPanel()) {
         UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                selectTablePanelAction);
+                selectTablePanelControl);
         UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                selectSearchFieldAction);
+                selectSearchFieldControl);
         if (tablePanel.getConditionPanel() != null) {
           UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                  toggleConditionPanelAction);
+                  selectConditionPanelAction);
         }
       }
     }
     if (containsEditPanel()) {
       UiUtil.addKeyEvent(this, KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              selectEditPanelAction);
+              selectEditPanelControl);
       UiUtil.addKeyEvent(this, KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              selectInputComponentAction);
+              selectInputComponentControl);
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-              selectInputComponentAction);
+              selectInputComponentControl);
     }
   }
 
@@ -1327,25 +1292,22 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * Initialize the Action to perform when a double click is performed on the table, if a table is present.
+   * Initialize the Control to trigger when a double click is performed on the table, if a table is present.
    * The default implementation shows the edit panel in a dialog if one is available and hidden, if that is
    * not the case and the detail panels are hidden those are shown in a dialog.
-   * @return the Action to perform when the a double click is performed on the table
+   * @return the Control to trigger when the a double click is performed on the table
    */
-  private Action initializeTableDoubleClickAction() {
-    return new AbstractAction() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (containsEditPanel() || (!detailEntityPanels.isEmpty() && includeDetailPanelTabPane)) {
-          if (containsEditPanel() && getEditPanelState() == PanelState.HIDDEN) {
-            setEditPanelState(PanelState.DIALOG);
-          }
-          else if (getDetailPanelState() == PanelState.HIDDEN) {
-            setDetailPanelState(PanelState.DIALOG);
-          }
+  private Control initializeTableDoubleClickAction() {
+    return Controls.control(() -> {
+      if (containsEditPanel() || (!detailEntityPanels.isEmpty() && includeDetailPanelTabPane)) {
+        if (containsEditPanel() && getEditPanelState() == PanelState.HIDDEN) {
+          setEditPanelState(PanelState.DIALOG);
+        }
+        else if (getDetailPanelState() == PanelState.HIDDEN) {
+          setDetailPanelState(PanelState.DIALOG);
         }
       }
-    };
+    }, "EntityPanel.tableDoubleClick");
   }
 
   /**
@@ -1375,6 +1337,20 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   //#############################################################################################
   // End - initialization methods
   //#############################################################################################
+
+  private void selectEditPanel() {
+    if (getEditPanelState() == PanelState.HIDDEN) {
+      setEditPanelState(PanelState.EMBEDDED);
+    }
+    getEditPanel().prepareUI(true, false);
+  }
+
+  private void selectInputComponent() {
+    if (getEditPanelState() == PanelState.HIDDEN) {
+      setEditPanelState(PanelState.EMBEDDED);
+    }
+    getEditPanel().selectInputComponent();
+  }
 
   private void updateEditPanelState() {
     if (editPanelState != PanelState.DIALOG) {
@@ -1417,12 +1393,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
             parentLocation.y + (parentSize.height - size.height) - DETAIL_DIALOG_OFFSET);
     detailPanelDialog = UiUtil.displayInDialog(EntityPanel.this, detailPanelTabbedPane,
             caption + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false,
-            new AbstractAction() {
-              @Override
-              public void actionPerformed(final ActionEvent e) {
-                setDetailPanelState(PanelState.HIDDEN);
-              }
-            });
+            Controls.control(() -> setDetailPanelState(PanelState.HIDDEN), "EntityPanel.hideDetailPanel"));
     detailPanelDialog.setSize(size);
     detailPanelDialog.setLocation(location);
   }
@@ -1445,12 +1416,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       dialogOwner = UiUtil.getParentWindow(this);
     }
     editPanelDialog = UiUtil.displayInDialog(dialogOwner, editControlPanel, caption, false, disposeEditDialogOnEscape,
-            new AbstractAction() {
-              @Override
-              public void actionPerformed(final ActionEvent e) {
-                setEditPanelState(PanelState.HIDDEN);
-              }
-            });
+            Controls.control(() -> setEditPanelState(PanelState.HIDDEN), "EntityPanel.hideEditDialog"));
   }
 
   /**

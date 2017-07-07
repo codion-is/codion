@@ -33,6 +33,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.JTableHeader;
@@ -198,14 +199,14 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * @param value true if the active filter panels should be shown, false if they should be hidden
    */
   public final void setFilterPanelsVisible(final boolean value) {
-    for (final ColumnConditionPanel columnFilterPanel : columnFilterPanels.values()) {
+    columnFilterPanels.values().forEach(columnFilterPanel -> SwingUtilities.invokeLater(() -> {
       if (value) {
         columnFilterPanel.showDialog();
       }
       else {
         columnFilterPanel.hideDialog();
       }
-    }
+    }));
   }
 
   /**
@@ -277,66 +278,41 @@ public class FilteredTablePanel<R, C> extends JPanel {
   }
 
   /**
+   * Scrolls horizontally so that the column identified by columnIdentifier becomes visible, centered if possible
+   * @param columnIdentifier the column identifier
+   */
+  public final void scrollToColumn(final Object columnIdentifier) {
+    scrollToCoordinate(table.rowAtPoint(getTableScrollPane().getViewport().getViewPosition()),
+            getTableModel().getColumnModel().getColumnIndex(columnIdentifier), false, false);
+  }
+
+  /**
    * Scrolls to the given coordinate.
    * @param row the row
    * @param column the column
+   * @param centerXPos if true then the selected column is positioned in the center of the table, if possible
+   * @param centerYPos if true then the selected row is positioned in the center of the table, if possible
    */
-  public final void scrollToCoordinate(final int row, final int column) {
-    table.scrollRectToVisible(table.getCellRect(row, column, true));
-  }
-
-  /**
-   * Scrolls the given row and column to the center of the view.
-   * Calling this method has no effect if the table is not contained in a JScrollPane.
-   * @param rowIndex the row
-   * @param colIndex the column
-   * Based on http://www.exampledepot.com/egs/javax.swing.table/VisCenter.html
-   */
-  public final void scrollToCenter(final int rowIndex, final int colIndex) {
-    if (!(table.getParent() instanceof JViewport)) {
-      return;
-    }
-    final JViewport viewport = (JViewport) table.getParent();
-    // This rectangle is relative to the table where the northwest corner of cell (0,0) is always (0,0)
-    final Rectangle cellRectangle = table.getCellRect(rowIndex, colIndex, true);
-    // The location of the view relative to the table
+  public final void scrollToCoordinate(final int row, final int column, final boolean centerXPos, final boolean centerYPos) {
+    final JViewport viewport = tableScrollPane.getViewport();
+    final Rectangle cellRectangle = table.getCellRect(row, column, true);
     final Rectangle viewRectangle = viewport.getViewRect();
-    // Translate the cell location so that it is relative to the view, assuming the northwest corner of the view is (0,0)
     cellRectangle.setLocation(cellRectangle.x - viewRectangle.x, cellRectangle.y - viewRectangle.y);
-    // Calculate location of viewRectangle if it were at the center of view
-    int centerX = (viewRectangle.width- cellRectangle.width) / 2;
-    int centerY = (viewRectangle.height- cellRectangle.height) / 2;
-    // Fake the location of the cell so that scrollRectToVisible will move the cell to the center
-    if (cellRectangle.x < centerX) {
-      centerX = -centerX;
+    if (centerXPos) {
+      int centerX = (viewRectangle.width - cellRectangle.width) / 2;
+      if (cellRectangle.x < centerX) {
+        centerX = -centerX;
+      }
+      cellRectangle.translate(centerX, cellRectangle.y);
     }
-    if (cellRectangle.y < centerY) {
-      centerY = -centerY;
+    if (centerYPos) {
+      int centerY = (viewRectangle.height - cellRectangle.height) / 2;
+      if (cellRectangle.y < centerY) {
+        centerY = -centerY;
+      }
+      cellRectangle.translate(cellRectangle.x, centerY);
     }
-    cellRectangle.translate(centerX, centerY);
     viewport.scrollRectToVisible(cellRectangle);
-  }
-
-  /**
-   * Assumes table is contained in a JScrollPane.
-   * @param rowIndex the row index
-   * @param colIndex the column index
-   * @return true if the cell (rowIndex, vColIndex) is visible within the viewport.
-   * Based on http://www.exampledepot.com/egs/javax.swing.table/IsVis.html
-   */
-  public final boolean isCellVisible(final int rowIndex, final int colIndex) {
-    if (!(table.getParent() instanceof JViewport)) {
-      return false;
-    }
-    final JViewport viewport = (JViewport) table.getParent();
-    // This rectangle is relative to the table where the northwest corner of cell (0,0) is always (0,0)
-    final Rectangle cellRectangle = table.getCellRect(rowIndex, colIndex, true);
-    // The location of the viewport relative to the table
-    final Point viewPosition = viewport.getViewPosition();
-    // Translate the cell location so that it is relative to the view, assuming the northwest corner of the view is (0,0)
-    cellRectangle.setLocation(cellRectangle.x - viewPosition.x, cellRectangle.y - viewPosition.y);
-
-    return new Rectangle(viewport.getExtentSize()).intersects(cellRectangle);
   }
 
   /**
@@ -412,10 +388,10 @@ public class FilteredTablePanel<R, C> extends JPanel {
       if (result == 0) {
         setSelected(checkBoxes, true);
       }
-      for (final JCheckBox chkButton : checkBoxes) {
+      checkBoxes.forEach(chkButton -> SwingUtilities.invokeLater(() -> {
         final TableColumn column = allColumns.get(checkBoxes.indexOf(chkButton));
         tableModel.getColumnModel().setColumnVisible((C) column.getIdentifier(), chkButton.isSelected());
-      }
+      }));
     }
   }
 
@@ -494,7 +470,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
           tableModel.getSelectionModel().setSelectedIndex(coordinate.y);
           table.setColumnSelectionInterval(coordinate.x, coordinate.x);
         }
-        scrollToCenter(coordinate.y, coordinate.x);
+        scrollToCoordinate(coordinate.y, coordinate.x, false, false);
       }
       else {
         tableModel.getSelectionModel().clearSelection();
@@ -533,11 +509,12 @@ public class FilteredTablePanel<R, C> extends JPanel {
   @SuppressWarnings({"unchecked"})
   private JPanel initializeSelectColumnsPanel(final List<TableColumn> allColumns, final List<JCheckBox> checkBoxes) {
     final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, allColumns.size()), 0));
-    for (final TableColumn column : allColumns) {
-      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), tableModel.getColumnModel().isColumnVisible((C) column.getIdentifier()));
+    allColumns.forEach(column -> {
+      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(),
+              tableModel.getColumnModel().isColumnVisible((C) column.getIdentifier()));
       checkBoxes.add(chkColumn);
       togglePanel.add(chkColumn);
-    }
+    });
     final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     southPanel.add(new JButton(new AbstractAction(Messages.get(Messages.SELECT_ALL)) {
       @Override
@@ -578,12 +555,12 @@ public class FilteredTablePanel<R, C> extends JPanel {
     tableModel.addSortingListener(table.getTableHeader()::repaint);
     tableModel.getSelectionModel().addSelectedIndexListener(selected -> {
       if (scrollToSelectedItem && !tableModel.getSelectionModel().isSelectionEmpty()) {
-        scrollToCoordinate(selected, table.getSelectedColumn());
+        scrollToCoordinate(selected, table.getSelectedColumn(), false, false);
       }
     });
     tableModel.addRefreshStartedListener(() -> UiUtil.setWaitCursor(true, FilteredTablePanel.this));
     tableModel.addRefreshDoneListener(() -> UiUtil.setWaitCursor(false, FilteredTablePanel.this));
-    for (final TableColumn column : tableModel.getColumnModel().getAllColumns()) {
+    tableModel.getColumnModel().getAllColumns().forEach(column -> SwingUtilities.invokeLater(() -> {
       final ColumnConditionModel model = tableModel.getColumnModel().getColumnFilterModel((C) column.getIdentifier());
       if (model != null) {
         model.addConditionStateListener(() -> {
@@ -600,7 +577,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
           addFilterIndicator(column);
         }
       }
-    }
+    }));
     UiUtil.addKeyEvent(table, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(table, false));
     UiUtil.addKeyEvent(table, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(table, true));
     UiUtil.addKeyEvent(table, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK, new MoveSelectedColumnAction(table, true));
@@ -646,9 +623,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
   }
 
   private static void setSelected(final List<JCheckBox> checkBoxes, final boolean selected) {
-    for (final JCheckBox box : checkBoxes) {
-      box.setSelected(selected);
-    }
+    checkBoxes.forEach(box -> SwingUtilities.invokeLater(() -> box.setSelected(selected)));
   }
 
   /**
