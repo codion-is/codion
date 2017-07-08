@@ -11,10 +11,6 @@ import org.jminor.swing.common.model.checkbox.TristateButtonModel;
 
 import org.junit.Test;
 
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import static org.junit.Assert.*;
 
 public final class ControlsTest {
@@ -102,12 +98,6 @@ public final class ControlsTest {
 
   @Test
   public void eventControl() {
-    final Event<ActionEvent> event = Events.event();
-    final Collection<ActionEvent> firedEvents = new ArrayList<>();
-    event.addInfoListener(firedEvents::add);
-    final Control control = Controls.eventControl(event);
-    final ActionEvent actionEvent = new ActionEvent(this, 0, "command");
-    control.actionPerformed(actionEvent);
-    assertTrue(firedEvents.contains(actionEvent));
+    Controls.eventControl(Events.event()).actionPerformed(null);
   }
 }

@@ -1228,7 +1228,6 @@ public final class UiUtil {
    * @param condition the condition
    * @param onKeyRelease the onKeyRelease condition
    * @param action the action, if null then the action binding is removed
-   * @throws NullPointerException in case {@code component} or the action name is null
    * @see KeyStroke#getKeyStroke(int, int, boolean)
    */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
@@ -1238,7 +1237,7 @@ public final class UiUtil {
     if (action != null) {
       actionName = action.getValue(Action.NAME);
       if (actionName == null) {
-        throw new IllegalArgumentException("Action name must be specified");
+        actionName = component.getClass().getName() + keyEvent + modifiers + onKeyRelease;
       }
       component.getActionMap().put(actionName, action);
     }
@@ -1606,16 +1605,16 @@ public final class UiUtil {
       dialog.getRootPane().setDefaultButton(defaultButton);
     }
 
-    final Action disposeActionListener = new DisposeWindowAction(dialog);
+    final Action disposeAction = new DisposeWindowAction(dialog);
     if (closeEvent == null) {
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       if (disposeOnEscape) {
-        addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, disposeActionListener);
+        addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, disposeAction);
       }
     }
     else {
       dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-      closeEvent.addListener(() -> disposeActionListener.actionPerformed(null));
+      closeEvent.addListener(() -> disposeAction.actionPerformed(null));
     }
     if (onClosedAction != null) {
       dialog.addWindowListener(new WindowAdapter() {
