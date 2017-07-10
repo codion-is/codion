@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -86,9 +87,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
+  private static final String LOOK_AND_FEEL_PROPERTY = "org.jminor.swing.framework.ui.LookAndFeel";
   private static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
   private static final Dimension MINIMUM_HELP_WINDOW_SIZE = new Dimension(600, 750);
   private static final double HELP_DIALOG_SCREEN_SIZE_RATIO = 0.1;
+
+  private final String applicationLookAndFeelProperty;
 
   private final List<EntityPanelProvider> entityPanelProviders = new ArrayList<>();
   private final List<EntityPanelProvider> supportPanelProviders = new ArrayList<>();
@@ -113,6 +117,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * A default constructor
    */
   public EntityApplicationPanel() {
+    this.applicationLookAndFeelProperty = LOOK_AND_FEEL_PROPERTY + "#" + getClass().getSimpleName();
     setUncaughtExceptionHandler();
   }
 
@@ -267,6 +272,21 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final void viewDependencyTree() {
     UiUtil.displayInDialog(this, initializeDependencyTree(), FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES), false);
+  }
+
+  public final void selectLookAndFeel() {
+    final JComboBox<String> lookAndFeelComboBox = new JComboBox<>();
+    lookAndFeelComboBox.addItem(UIManager.getSystemLookAndFeelClassName());
+    lookAndFeelComboBox.addItem(UIManager.getCrossPlatformLookAndFeelClassName());
+    lookAndFeelComboBox.setSelectedItem(UIManager.getLookAndFeel().getClass().getName());
+
+    final int option = JOptionPane.showOptionDialog(this, lookAndFeelComboBox,
+            FrameworkMessages.get(FrameworkMessages.SELECT_LOOK_AND_FEEL), JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE, null, null, null);
+    if (option == JOptionPane.OK_OPTION) {
+      PreferencesUtil.putUserPreference(applicationLookAndFeelProperty, (String) lookAndFeelComboBox.getSelectedItem());
+      JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.LOOK_AND_FEEL_SELECTED_MESSAGE));
+    }
   }
 
   /**
@@ -610,9 +630,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     controlSet.add(ctrRefreshAll);
     controlSet.addSeparator();
     controlSet.add(Controls.control(this::viewApplicationTree,
-            FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), null, null));
+            FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE)));
     controlSet.add(Controls.control(this::viewDependencyTree,
-            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES), null, null));
+            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES)));
+    controlSet.add(Controls.control(this::selectLookAndFeel,
+            FrameworkMessages.get(FrameworkMessages.SELECT_LOOK_AND_FEEL)));
     controlSet.addSeparator();
     final Control ctrAlwaysOnTop = Controls.toggleControl(this,
             "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), alwaysOnTopChangedEvent);
@@ -922,7 +944,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the look and feel class name to use
    */
   protected String getDefaultLookAndFeelClassName() {
-    return UIManager.getSystemLookAndFeelClassName();
+    return PreferencesUtil.getUserPreference(applicationLookAndFeelProperty, UIManager.getSystemLookAndFeelClassName());
   }
 
   /**

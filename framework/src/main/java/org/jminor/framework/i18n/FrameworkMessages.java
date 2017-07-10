@@ -121,6 +121,9 @@ public final class FrameworkMessages {
 
   public static final String HAS_BEEN_DELETED = "has_been_deleted";
 
+  public static final String SELECT_LOOK_AND_FEEL = "select_look_and_feel";
+  public static final String LOOK_AND_FEEL_SELECTED_MESSAGE = "look_and_feel_selected_message";
+
   private FrameworkMessages() {}
 
   /**
