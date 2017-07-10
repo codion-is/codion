@@ -274,6 +274,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     UiUtil.displayInDialog(this, initializeDependencyTree(), FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES), false);
   }
 
+  /**
+   * Allows the user the select the Look & Feel, activated when the appliation is started next time
+   */
   public final void selectLookAndFeel() {
     final JComboBox<String> lookAndFeelComboBox = new JComboBox<>();
     lookAndFeelComboBox.addItem(UIManager.getSystemLookAndFeelClassName());
