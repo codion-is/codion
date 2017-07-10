@@ -79,7 +79,7 @@ public class UiUtilTest {
   @Test
   public void addKeyEventWithoutName() {
     final JTextField txt = new JTextField();
-    final String actionName = txt.getClass().getName() + KeyEvent.VK_ENTER + 0 + "true";
+    final String actionName = txt.getClass().getSimpleName() + KeyEvent.VK_ENTER + 0 + "true";
     assertNull(txt.getActionMap().get(actionName));
     UiUtil.addKeyEvent(txt, KeyEvent.VK_ENTER, Controls.control(() -> {}));
     assertNotNull(txt.getActionMap().get(actionName));
