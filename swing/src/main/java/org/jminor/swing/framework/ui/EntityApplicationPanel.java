@@ -1164,7 +1164,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
     UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) : Images.loadImage("jminor_logo32.gif");
-    final JDialog startupDialog = silentLoginUser == null && showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
+    final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     while (true) {
       final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : new User("", "");
       if (startupDialog != null) {
