@@ -7,6 +7,10 @@ import org.jminor.common.User;
 import org.jminor.common.Version;
 
 import java.io.Serializable;
+import java.rmi.NotBoundException;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -39,6 +43,25 @@ public final class ClientUtil {
   public static ConnectionInfo connectionInfo(final User user, final UUID clientID, final String clientTypeID,
                                               final Version clientVersion) {
     return new DefaultConnectionInfo(user, clientID, clientTypeID, clientVersion, Version.getVersion());
+  }
+
+  /**
+   * Performs a authentication lookup on localhost.
+   * @param authenticationToken the authentication token
+   * @return the User credentials associated with the {@code authenticationToken}, null if the user credentials
+   * have expired or if no authentication server is running
+   * @see CredentialServer
+   */
+  public static User getUserCredentials(final UUID authenticationToken) {
+    try {
+      final Remote credentialService = ServerUtil.getRegistry(Registry.REGISTRY_PORT).lookup(CredentialService.class.getSimpleName());
+
+      return ((CredentialService) credentialService).getUser(authenticationToken);
+    }
+    catch (NotBoundException | RemoteException e) {
+      //no credential server available or not reachable
+      return null;
+    }
   }
 
   private static final class DefaultConnectionInfo implements ConnectionInfo, Serializable {

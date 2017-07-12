@@ -4455,3 +4455,4 @@
   Controls.eventControl() refactored
   UiUtil.addKeyEvent() no longer requires Action to have a name
   EntityApplicationPanel, default View menu now contains an action for selecting between cross platform and system look and feel
+  CredentialServer added

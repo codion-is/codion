@@ -14,6 +14,7 @@ import org.jminor.common.Version;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.PreferencesUtil;
+import org.jminor.common.server.ClientUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
@@ -77,6 +78,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * A central application panel class.
@@ -238,7 +240,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Performs a login, fetching user information via {@code getUser}
+   * Performs a login, fetching user information via {@link #getUser}
    * @throws CancelException in case the login is cancelled
    * @see #getUser(String, User, javax.swing.ImageIcon)
    */
@@ -275,7 +277,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Allows the user the select the Look & Feel, activated when the appliation is started next time
+   * Allows the user the select between the system and cross platform Look and Feel, activated on next appliation start
    */
   public final void selectLookAndFeel() {
     final JComboBox<String> lookAndFeelComboBox = new JComboBox<>();
@@ -1244,16 +1246,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Tries to parse user information from the second argument string in the given array.
-   * Useful for single sign on application launch
-   * <pre>javaws -open scott:tiger http://jminor.org/demo/demo.jnlp</pre>
+   * Looks up user credentials via {@link org.jminor.common.server.CredentialServer} using an authentication token
+   * found in the program arguments list. Useful for single sign on application launch.
+   * <pre>javaws -open [authenticationToken] http://jminor.org/demo/demo.jnlp</pre>
    * @param args the program arguments
-   * @return null if no user information is found
-   * @see User#parseUser(String)
+   * @return the User credentials associated with the authenticationToken from the arguments array, null if
+   * no authentication token is found, the user credentials have expired or if no authentication server is running
    */
   protected static User getUser(final String[] args) {
     try {
-      return args != null && args.length > 1 ? User.parseUser(args[1]) : null;
+      return args != null && args.length > 1 ? ClientUtil.getUserCredentials(UUID.fromString(args[1])) : null;
     }
     catch (final IllegalArgumentException e) {
       return null;
