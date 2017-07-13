@@ -9,7 +9,6 @@ import org.jminor.common.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
@@ -45,7 +44,7 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
    * @param port the port
    * @param tokenValidity the number of milliseconds a token is valid
    * @param cleanupInterval the expired token cleanup interval in milliseconds
-   * @throws IOException in case of a communication error
+   * @throws RemoteException in case of a communication error
    * @throws AlreadyBoundException if a credential server is already running
    */
   public CredentialServer(final int port, final int tokenValidity, final int cleanupInterval) throws AlreadyBoundException, RemoteException {
