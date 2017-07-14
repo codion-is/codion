@@ -5,10 +5,10 @@ package org.jminor.framework.db.condition;
 
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.condition.Conditions;
+import org.jminor.framework.db.TestDomain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.TestDomain;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -12,7 +12,6 @@ import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.TestDomain;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

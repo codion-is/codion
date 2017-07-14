@@ -7,9 +7,9 @@ import org.jminor.common.Conjunction;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.model.formats.DateFormats;
+import org.jminor.framework.db.TestDomain;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
 

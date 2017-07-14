@@ -4459,3 +4459,4 @@
   EntityApplicationPanel.startApplicationInternal() bug fixed, silentLoginUser no longer prevents the startup dialog from showing
 0.10.10
   Major refactoring of unit tests, removing interdependencies between modules
+  Unittest interdependency between framework.db and framework.domain removed
