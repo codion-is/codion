@@ -4,16 +4,20 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.common.EventListener;
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.FilterCondition;
-import org.jminor.framework.db.EntityConnectionProvidersTest;
+import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.framework.model.TestDomain;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -27,16 +31,24 @@ import static org.junit.Assert.*;
 
 public final class SwingEntityComboBoxModelTest {
 
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
+
+  @BeforeClass
+  public static void setUp() {
+    TestDomain.init();
+  }
+
   private final SwingEntityComboBoxModel comboBoxModel;
 
   public SwingEntityComboBoxModelTest() {
-    TestDomain.init();
-    comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 
   @Test(expected = NullPointerException.class)
   public void constructorNullEntityID() {
-    new SwingEntityComboBoxModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    new SwingEntityComboBoxModel(null, CONNECTION_PROVIDER);
   }
 
   @Test(expected = NullPointerException.class)

@@ -3,11 +3,14 @@
  */
 package org.jminor.javafx.framework.model;
 
-import org.jminor.framework.db.EntityConnectionProvidersTest;
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
+import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.AbstractEntityTableModelTest;
+import org.jminor.framework.model.TestDomain;
 import org.jminor.javafx.framework.ui.EntityTableView;
 
 import javafx.embed.swing.JFXPanel;
@@ -16,6 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FXEntityEditModel, FXEntityListModel> {
+
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
 
   static {
     new JFXPanel();
@@ -28,17 +35,17 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
   @Override
   protected FXEntityListModel createMasterTableModel() {
-    return new FXEntityListModel(TestDomain.T_MASTER, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    return new FXEntityListModel(TestDomain.T_MASTER, CONNECTION_PROVIDER);
   }
 
   @Override
   protected FXEntityListModel createDetailTableModel() {
-    return new FXEntityListModel(TestDomain.T_DETAIL, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    return new FXEntityListModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
   }
 
   @Override
   protected FXEntityListModel createEmployeeTableModelWithoutEditModel() {
-    final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
     new EntityTableView(listModel);
 
     return listModel;
@@ -64,12 +71,12 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
   @Override
   protected FXEntityEditModel createDepartmentEditModel() {
-    return new FXEntityEditModel(TestDomain.T_MASTER, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    return new FXEntityEditModel(TestDomain.T_MASTER, CONNECTION_PROVIDER);
   }
 
   @Override
   protected FXEntityEditModel createDetailEditModel() {
-    return new FXEntityEditModel(TestDomain.T_DETAIL, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    return new FXEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
   }
 
   public static final class EntityTableModelTmp extends FXEntityListModel {
@@ -77,8 +84,8 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
     private final Entity[] entities = initTestEntities(new Entity[5]);
 
     public EntityTableModelTmp() {
-      super(TestDomain.T_DETAIL, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
-      setEditModel(new FXEntityEditModel(TestDomain.T_DETAIL, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
+      super(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
+      setEditModel(new FXEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER));
     }
     @Override
     protected List<Entity> performQuery() {

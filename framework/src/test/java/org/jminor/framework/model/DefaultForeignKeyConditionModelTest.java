@@ -3,11 +3,13 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.db.EntityConnectionProvidersTest;
+import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
 
@@ -20,19 +22,23 @@ import static org.junit.Assert.assertTrue;
 
 public class DefaultForeignKeyConditionModelTest {
 
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
+
   @Test
   public void getSearchEntitiesLookupModel() throws DatabaseException {
     TestDomain.init();
-    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER,
+    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER,
             Collections.singletonList(Entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
     final ForeignKeyConditionModel conditionModel = new DefaultForeignKeyConditionModel(
             Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK), lookupModel);
-    final Entity sales = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
     lookupModel.setSelectedEntity(sales);
     Collection<Entity> searchEntities = conditionModel.getConditionEntities();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
-    final Entity accounting = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
+    final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     lookupModel.setSelectedEntities(Arrays.asList(sales, accounting));
     searchEntities = conditionModel.getConditionEntities();
     assertEquals(2, searchEntities.size());

@@ -6,11 +6,9 @@ package org.jminor.framework.model;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.CancelException;
-import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
-import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
 
@@ -272,7 +270,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   @Test
   public void testTheRest() {
-    assertEquals(EntityConnectionProvidersTest.CONNECTION_PROVIDER, testModel.getConnectionProvider());
+    assertNotNull(testModel.getConnectionProvider());
     testModel.setQueryConditionRequired(false);
     assertFalse(testModel.isQueryConditionRequired());
     testModel.setQueryConditionRequired(true);

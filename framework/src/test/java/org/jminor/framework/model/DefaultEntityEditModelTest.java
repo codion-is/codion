@@ -8,18 +8,19 @@ import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.junit.Before;
@@ -34,6 +35,10 @@ import static org.junit.Assert.*;
 
 public final class DefaultEntityEditModelTest {
 
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
+
   private EntityEditModel employeeEditModel;
   private Property.ColumnProperty jobProperty;
   private Property.ForeignKeyProperty deptProperty;
@@ -43,7 +48,7 @@ public final class DefaultEntityEditModelTest {
     TestDomain.init();
     jobProperty = Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
     deptProperty = Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
-    employeeEditModel = new TestEntityEditModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    employeeEditModel = new TestEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -99,7 +104,7 @@ public final class DefaultEntityEditModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullEntityID() {
-    new TestEntityEditModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    new TestEntityEditModel(null, CONNECTION_PROVIDER);
   }
 
   @Test(expected = NullPointerException.class)

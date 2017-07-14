@@ -3,12 +3,15 @@
  */
 package org.jminor.swing.framework.model;
 
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.framework.db.EntityConnectionProvidersTest;
+import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.framework.model.TestDomain;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +19,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class SwingEntityEditModelTest {
+
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
 
   private SwingEntityEditModel employeeEditModel;
   private Property.ColumnProperty jobProperty;
@@ -26,7 +33,7 @@ public class SwingEntityEditModelTest {
     TestDomain.init();
     jobProperty = Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
     deptProperty = Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
-    employeeEditModel = new SwingEntityEditModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    employeeEditModel = new SwingEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 
   @Test

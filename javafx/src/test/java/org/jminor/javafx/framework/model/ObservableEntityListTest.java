@@ -4,12 +4,15 @@
 package org.jminor.javafx.framework.model;
 
 import org.jminor.common.EventListener;
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.db.EntityConnectionProvidersTest;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.TestDomain;
+import org.jminor.framework.model.TestDomain;
 
 import javafx.scene.control.ListView;
 import org.junit.Test;
@@ -22,9 +25,13 @@ import static org.junit.Assert.*;
 
 public class ObservableEntityListTest {
 
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
+
   @Test
   public void selectCondition() {
-    final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     list.refresh();
     assertEquals(4, list.size());
     list.setSelectCondition(EntityConditions.propertyCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME,
@@ -36,13 +43,13 @@ public class ObservableEntityListTest {
   @Test
   public void filterCondition() throws DatabaseException {
     final AtomicInteger counter = new AtomicInteger(0);
-    final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     final EventListener listener = counter::incrementAndGet;
     list.addFilteringListener(listener);
     list.refresh();
-    final Entity sales = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
+    final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "SALES");
-    final Entity operations = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
+    final Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "OPERATIONS");
 
     list.setFilterCondition(item -> Objects.equals(item.get(TestDomain.DEPARTMENT_NAME), "SALES"));
@@ -69,7 +76,7 @@ public class ObservableEntityListTest {
 
   @Test
   public void selection() throws DatabaseException {
-    final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     final ListView<Entity> listView = new ListView<>(list);
     list.setSelectionModel(listView.getSelectionModel());
     try {
@@ -78,9 +85,9 @@ public class ObservableEntityListTest {
     }
     catch (final IllegalStateException e) {}
     list.refresh();
-    final Entity sales = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
+    final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "SALES");
-    final Entity operations = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
+    final Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "OPERATIONS");
 
     list.getSelectionModel().setSelectedItem(sales);

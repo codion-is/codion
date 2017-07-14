@@ -3,16 +3,20 @@
  */
 package org.jminor.swing.framework.model;
 
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.db.EntityConnectionProvidersTest;
+import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityTableConditionModel;
+import org.jminor.framework.model.TestDomain;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -21,9 +25,18 @@ import static org.junit.Assert.*;
 
 public class SwingForeignKeyConditionModelTest {
 
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
+
   private final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_EMP,
-          EntityConnectionProvidersTest.CONNECTION_PROVIDER, new DefaultPropertyFilterModelProvider(),
+          CONNECTION_PROVIDER, new DefaultPropertyFilterModelProvider(),
           new SwingPropertyConditionModelProvider());
+
+  @BeforeClass
+  public static void setUp() {
+    TestDomain.init();
+  }
 
   @Test
   public void refresh() {
@@ -37,11 +50,10 @@ public class SwingForeignKeyConditionModelTest {
 
   @Test
   public void getSearchEntitiesComboBoxModel() throws DatabaseException {
-    TestDomain.init();
-    final EntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    final EntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     final SwingForeignKeyConditionModel conditionModel = new SwingForeignKeyConditionModel(
             Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK), comboBoxModel);
-    final Entity sales = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
     comboBoxModel.setSelectedItem(sales);
     Collection<Entity> searchEntities = conditionModel.getConditionEntities();
     assertEquals(1, searchEntities.size());

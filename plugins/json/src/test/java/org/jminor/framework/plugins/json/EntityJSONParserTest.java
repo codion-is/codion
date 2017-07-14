@@ -6,7 +6,6 @@ package org.jminor.framework.plugins.json;
 import org.jminor.common.Serializer;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.TestDomain;
 
 import org.json.JSONException;
 import org.junit.Test;
@@ -22,14 +21,17 @@ import static org.junit.Assert.*;
 
 public class EntityJSONParserTest {
 
+  static {
+    TestDomain.init();
+  }
+
   @Test
   public void key() throws Exception {
-    TestDomain.init();
     final Entity.Key key = Entities.key(TestDomain.T_DEPARTMENT);
     key.put(TestDomain.DEPARTMENT_ID, 42);
 
     final String keyJSON = new EntityJSONParser().serializeKeys(Collections.singletonList(key));
-    assertEquals("[{\"values\":{\"deptno\":42},\"entityID\":\"unittest.scott.dept\"}]", keyJSON);
+    assertEquals("[{\"values\":{\"deptno\":42},\"entityID\":\"json.scott.dept\"}]", keyJSON);
     final Entity.Key keyParsed = EntityJSONParser.deserializeKeys(keyJSON).get(0);
     assertEquals(key.getEntityID(), keyParsed.getEntityID());
     assertEquals(key.getFirstProperty(), keyParsed.getFirstProperty());

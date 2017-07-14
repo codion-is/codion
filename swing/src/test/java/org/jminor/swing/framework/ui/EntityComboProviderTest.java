@@ -3,12 +3,15 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.framework.db.EntityConnectionProvidersTest;
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
+import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -20,16 +23,25 @@ import static org.junit.Assert.*;
  */
 public class EntityComboProviderTest {
 
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
+
+  @BeforeClass
+  public static void setUp() {
+    TestDomain.init();
+  }
+
   @Test
   public void test() throws Exception {
-    final EntityComboBoxModel model = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
-    final Entity operations = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
+    final EntityComboBoxModel model = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    final Entity operations = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "OPERATIONS");
     final EntityComboProvider provider = new EntityComboProvider(model, operations);
 
     assertNotNull(provider.getValue());
 
-    final Entity sales = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
+    final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "SALES");
 
     model.setSelectedItem(sales);

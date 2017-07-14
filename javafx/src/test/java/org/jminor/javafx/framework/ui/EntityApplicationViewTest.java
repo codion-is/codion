@@ -3,9 +3,10 @@
  */
 package org.jminor.javafx.framework.ui;
 
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.EntityConnectionProvidersTest;
-import org.jminor.framework.domain.TestDomain;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.javafx.framework.model.FXEntityApplicationModel;
 import org.jminor.javafx.framework.model.FXEntityEditModel;
 import org.jminor.javafx.framework.model.FXEntityListModel;
@@ -16,6 +17,10 @@ import org.junit.Test;
 
 public final class EntityApplicationViewTest {
 
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
+
   static {
     new JFXPanel();
   }
@@ -25,8 +30,8 @@ public final class EntityApplicationViewTest {
     final EntityApplicationView<FXEntityApplicationModel> applicationView = new EntityApplicationView<FXEntityApplicationModel>("EntityApplicationViewTest") {
       @Override
       protected void initializeEntityViews() {
-        final FXEntityEditModel editModel = new FXEntityEditModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
-        final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+        final FXEntityEditModel editModel = new FXEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
+        final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
         final FXEntityModel model = new FXEntityModel(editModel, listModel);
 
         addEntityView(new EntityView(model, new EntityEditViewTest.EmpEditView(editModel), new EntityTableView(listModel)));
@@ -34,7 +39,7 @@ public final class EntityApplicationViewTest {
 
       @Override
       protected FXEntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
-        return new FXEntityApplicationModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER) {
+        return new FXEntityApplicationModel(CONNECTION_PROVIDER) {
           @Override
           protected void loadDomainModel() throws ClassNotFoundException {
             TestDomain.init();
@@ -42,7 +47,7 @@ public final class EntityApplicationViewTest {
         };
       }
     };
-    applicationView.initializeApplicationModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    applicationView.initializeApplicationModel(CONNECTION_PROVIDER);
     applicationView.initializeEntityViews();
   }
 }

@@ -6,11 +6,10 @@ package org.jminor.swing.framework.ui;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.DefaultPropertyConditionModel;
 import org.jminor.framework.model.PropertyConditionModel;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.swing.JTextField;
@@ -19,8 +18,9 @@ import static org.junit.Assert.assertEquals;
 
 public class PropertySearchPanelTest {
 
-  @Before
-  public void setUp() {
+
+  @BeforeClass
+  public static void setUp() {
     TestDomain.init();
   }
 

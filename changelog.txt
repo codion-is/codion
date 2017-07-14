@@ -4457,3 +4457,5 @@
   EntityApplicationPanel, default View menu now contains an action for selecting between cross platform and system look and feel
   CredentialServer added
   EntityApplicationPanel.startApplicationInternal() bug fixed, silentLoginUser no longer prevents the startup dialog from showing
+0.10.10
+  Major refactoring of unit tests, removing interdependencies between modules

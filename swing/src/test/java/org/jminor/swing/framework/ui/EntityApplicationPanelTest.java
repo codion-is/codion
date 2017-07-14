@@ -6,11 +6,11 @@ package org.jminor.swing.framework.ui;
 import org.jminor.common.User;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.TestDomain;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 
 import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -27,6 +27,11 @@ public class EntityApplicationPanelTest {
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
+  @BeforeClass
+  public static void setUp() {
+    TestDomain.init();
+  }
+
   @After
   public void tearDown() {
     Thread.setDefaultUncaughtExceptionHandler(null);
@@ -34,7 +39,6 @@ public class EntityApplicationPanelTest {
 
   @Test
   public void getDependencyTreeModel() {
-    TestDomain.init();
     final TreeModel model = EntityApplicationPanel.getDependencyTreeModel(TestDomain.SCOTT_DOMAIN_ID);
     final DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
     final Enumeration tree = root.preorderEnumeration();

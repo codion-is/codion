@@ -13,7 +13,6 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
 

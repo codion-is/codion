@@ -5,14 +5,16 @@ package org.jminor.framework.model;
 
 import org.jminor.common.Conjunction;
 import org.jminor.common.EventListener;
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.EntityConnectionProvidersTest;
+import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
 
@@ -24,8 +26,12 @@ import static org.junit.Assert.*;
 
 public class DefaultEntityTableConditionModelTest {
 
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
+
   private final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_EMP,
-          EntityConnectionProvidersTest.CONNECTION_PROVIDER, new DefaultPropertyFilterModelProvider(),
+          CONNECTION_PROVIDER, new DefaultPropertyFilterModelProvider(),
           new DefaultPropertyConditionModelProvider());
 
   static {
@@ -51,7 +57,7 @@ public class DefaultEntityTableConditionModelTest {
   @Test(expected = IllegalStateException.class)
   public void noSearchPropertiesDefined() {
     final DefaultEntityTableConditionModel model = new DefaultEntityTableConditionModel(TestDomain.T_DETAIL,
-            EntityConnectionProvidersTest.CONNECTION_PROVIDER, new DefaultPropertyFilterModelProvider(), new DefaultPropertyConditionModelProvider());
+            CONNECTION_PROVIDER, new DefaultPropertyFilterModelProvider(), new DefaultPropertyConditionModelProvider());
     //no search properties defined for master entity
     ((DefaultForeignKeyConditionModel) model.getPropertyConditionModel(TestDomain.DETAIL_MASTER_FK)).getEntityLookupModel().performQuery();
   }

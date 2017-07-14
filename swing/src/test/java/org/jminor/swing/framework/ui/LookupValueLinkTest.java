@@ -3,15 +3,18 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.framework.db.EntityConnectionProvidersTest;
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
+import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -19,10 +22,19 @@ import static org.junit.Assert.assertTrue;
 
 public class LookupValueLinkTest {
 
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
+
+  @BeforeClass
+  public static void setUp() {
+    TestDomain.init();
+  }
+
   private final EntityEditModel model;
 
   public LookupValueLinkTest() {
-    model = new SwingEntityEditModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    model = new SwingEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 
   @Test

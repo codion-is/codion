@@ -4,9 +4,11 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.User;
-import org.jminor.framework.db.EntityConnectionProvidersTest;
-import org.jminor.framework.domain.TestDomain;
+import org.jminor.common.db.Databases;
+import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -18,11 +20,18 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(UNIT_TEST_USER, Databases.createInstance());
+
   protected abstract Model createDepartmentModel();
+
+  @BeforeClass
+  public static void setUp() {
+    TestDomain.init();
+  }
 
   @Test
   public void test() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER) {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
         TestDomain.init();
@@ -52,7 +61,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   @Test(expected = NullPointerException.class)
   public void loginNullUser() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER) {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {}
     };
@@ -61,7 +70,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   @Test(expected = IllegalArgumentException.class)
   public void getEntityModelByEntityIDNotFound() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER) {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
         TestDomain.init();
@@ -72,7 +81,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   @Test
   public void getEntityModelByEntityID() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER) {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
         TestDomain.init();
@@ -85,7 +94,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   @Test(expected = IllegalArgumentException.class)
   public void getEntityModelByClassNotFound() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER) {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
         TestDomain.init();
@@ -96,7 +105,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   @Test
   public void getEntityModelByClass() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER) {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
         TestDomain.init();
@@ -109,7 +118,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   @Test
   public void containsEntityModel() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER) {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
         TestDomain.init();
@@ -128,7 +137,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   @Test
   public void containsUnsavedData() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER) {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
         TestDomain.init();

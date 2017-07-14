@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain;
+package org.jminor.framework.plugins.rest;
 
 import org.jminor.common.Item;
-import org.jminor.common.db.AbstractProcedure;
-import org.jminor.common.db.Databases;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Properties;
+import org.jminor.framework.domain.Property;
 
 import java.awt.Color;
 import java.sql.Types;
@@ -19,7 +19,7 @@ public final class TestDomain {
   private TestDomain() {}
   public static void init() {}
 
-  public static final String T_MASTER = "domain.master_entity";
+  public static final String T_MASTER = "rest.master_entity";
   public static final String MASTER_ID = "id";
   public static final String MASTER_NAME = "name";
   public static final String MASTER_CODE = "code";
@@ -53,10 +53,10 @@ public final class TestDomain {
   public static final String DETAIL_INT_VALUE_LIST = "int_value_list";
   public static final String DETAIL_INT_DERIVED = "int_derived";
 
-  public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
+  public static final String DETAIL_SELECT_TABLE_NAME = "rest.entity_test_select";
 
   @Entity.Table(orderByClause = DETAIL_STRING, selectTableName = DETAIL_SELECT_TABLE_NAME)
-  public static final String T_DETAIL = "domain.detail_entity";
+  public static final String T_DETAIL = "rest.detail_entity";
 
   private static final List<Item> ITEMS = Arrays.asList(new Item(0, "0"), new Item(1, "1"),
           new Item(2, "2"), new Item(3, "3"));
@@ -94,14 +94,14 @@ public final class TestDomain {
             .setStringProvider(new Entities.StringProvider(DETAIL_STRING));
   }
 
-  public static final String SCOTT_DOMAIN_ID = "domain.scott.domain";
+  public static final String SCOTT_DOMAIN_ID = "rest.scott.domain";
 
   public static final String DEPARTMENT_ID = "deptno";
   public static final String DEPARTMENT_NAME = "dname";
   public static final String DEPARTMENT_LOCATION = "loc";
 
   @Entity.Table(tableName = "scott.dept")
-  public static final String T_DEPARTMENT = "domain.scott.dept";
+  public static final String T_DEPARTMENT = "rest.scott.dept";
 
   static {
     Entities.define(T_DEPARTMENT,
@@ -119,9 +119,9 @@ public final class TestDomain {
             .setCaption("Department");
   }
 
-  @Property.Column(entityID = "domain.scott.emp", columnName = "empno")
+  @Property.Column(entityID = "rest.scott.emp", columnName = "empno")
   public static final String EMP_ID = "emp_id";
-  @Property.Column(entityID = "domain.scott.emp", columnName = "ename")
+  @Property.Column(entityID = "rest.scott.emp", columnName = "ename")
   public static final String EMP_NAME = "emp_name";
   public static final String EMP_JOB = "job";
   public static final String EMP_MGR = "mgr";
@@ -136,7 +136,7 @@ public final class TestDomain {
           keyGenerator = Entity.KeyGenerator.Type.INCREMENT,
           keyGeneratorSource = "scott.emp",
           keyGeneratorIncrementColumnName = "empno")
-  public static final String T_EMP = "domain.scott.emp";
+  public static final String T_EMP = "rest.scott.emp";
 
   static {
     Entities.define(T_EMP, "scott.emp",
@@ -171,21 +171,6 @@ public final class TestDomain {
               return null;
             });
   }
-
-  public static final class TestProcedure extends AbstractProcedure<EntityConnection> {
-
-    public TestProcedure(final String id) {
-      super(id, "TestProcedure");
-    }
-
-    @Override
-    public void execute(final EntityConnection connection, final Object... arguments) throws DatabaseException {
-      //do absolutely nothing
-    }
-  }
-
-  @Databases.Operation(className = "org.jminor.framework.domain.TestDomain$TestProcedure")
-  public static final String PROCEDURE_ID = "org.jminor.framework.domain.TestProcedureID";
 
   static {
     Entities.processAnnotations(TestDomain.class);

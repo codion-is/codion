@@ -3,12 +3,15 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.framework.db.EntityConnectionProvidersTest;
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
+import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.DefaultEntityLookupModel;
 import org.jminor.framework.model.EntityLookupModel;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -21,14 +24,23 @@ import static org.junit.Assert.assertNull;
  */
 public class EntityLookupProviderTest {
 
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
+
+  @BeforeClass
+  public static void setUp() {
+    TestDomain.init();
+  }
+
   @Test
   public void test() throws Exception {
-    final EntityLookupModel model = new DefaultEntityLookupModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    final EntityLookupModel model = new DefaultEntityLookupModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     final EntityLookupProvider provider = new EntityLookupProvider(model, null);
 
     assertNull(provider.getValue());
 
-    final Entity dept = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    final Entity dept = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
 
     model.setSelectedEntity(dept);
     assertEquals(dept, provider.getValue());

@@ -3,20 +3,24 @@
  */
 package org.jminor.swing.framework.model;
 
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.framework.db.EntityConnectionProvidersTest;
+import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.AbstractEntityTableModelTest;
 import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.DefaultPropertyConditionModelProvider;
 import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
 import org.jminor.framework.model.EntityTableConditionModel;
+import org.jminor.framework.model.TestDomain;
 import org.jminor.swing.common.model.table.SortingDirective;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.swing.table.TableColumn;
@@ -31,6 +35,15 @@ import static org.junit.Assert.*;
 
 public final class SwingEntityTableModelTest extends AbstractEntityTableModelTest<SwingEntityEditModel, SwingEntityTableModel> {
 
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
+
+  @BeforeClass
+  public static void setUp() {
+    TestDomain.init();
+  }
+
   @Override
   protected EntityTableModelTmp createTestTableModel() {
     return new EntityTableModelTmp();
@@ -38,17 +51,17 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Override
   protected SwingEntityTableModel createMasterTableModel() {
-    return new SwingEntityTableModel(TestDomain.T_MASTER, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    return new SwingEntityTableModel(TestDomain.T_MASTER, CONNECTION_PROVIDER);
   }
 
   @Override
   protected SwingEntityTableModel createDetailTableModel() {
-    return new SwingEntityTableModel(TestDomain.T_DETAIL, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    return new SwingEntityTableModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
   }
 
   @Override
   protected SwingEntityTableModel createEmployeeTableModelWithoutEditModel() {
-    return new SwingEntityTableModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    return new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 
   @Override
@@ -69,19 +82,19 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Override
   protected SwingEntityEditModel createDepartmentEditModel() {
-    return new SwingEntityEditModel(TestDomain.T_MASTER, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    return new SwingEntityEditModel(TestDomain.T_MASTER, CONNECTION_PROVIDER);
   }
 
   @Override
   protected SwingEntityEditModel createDetailEditModel() {
-    return new SwingEntityEditModel(TestDomain.T_DETAIL, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    return new SwingEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void nonMatchingConditionModelEntityID() {
     final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, null,
             new DefaultPropertyFilterModelProvider(), new DefaultPropertyConditionModelProvider());
-    new SwingEntityTableModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER,
+    new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
             new SwingEntityTableModel.DefaultEntityTableSortModel(TestDomain.T_EMP), conditionModel);
   }
 
@@ -229,8 +242,8 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     private final Entity[] entities = initTestEntities(new Entity[5]);
 
     public EntityTableModelTmp() {
-      super(TestDomain.T_DETAIL, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
-      setEditModel(new SwingEntityEditModel(TestDomain.T_DETAIL, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
+      super(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
+      setEditModel(new SwingEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER));
     }
     @Override
     protected List<Entity> performQuery() {

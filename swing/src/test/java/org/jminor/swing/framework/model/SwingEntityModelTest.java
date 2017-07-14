@@ -3,19 +3,22 @@
  */
 package org.jminor.swing.framework.model;
 
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.valuemap.EditModelValues;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.EntityConnectionProvidersTest;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.AbstractEntityModelTest;
 import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.framework.model.TestDomain;
 import org.jminor.swing.common.ui.ValueLinks;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.swing.ComboBoxModel;
@@ -28,9 +31,18 @@ import static org.junit.Assert.*;
 public final class SwingEntityModelTest
         extends AbstractEntityModelTest<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
+
+  @BeforeClass
+  public static void setUp() {
+    TestDomain.init();
+  }
+
   @Override
   protected SwingEntityModel createDepartmentModel() {
-    final SwingEntityModel departmentModel = new SwingEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    final SwingEntityModel departmentModel = new SwingEntityModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     final SwingEntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
     departmentModel.addDetailModel(employeeModel);
     departmentModel.setDetailModelForeignKey(employeeModel, TestDomain.EMP_DEPARTMENT_FK);
@@ -42,27 +54,27 @@ public final class SwingEntityModelTest
 
   @Override
   protected SwingEntityModel createDepartmentModelWithoutDetailModel() {
-    return new SwingEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    return new SwingEntityModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
   }
 
   @Override
   protected SwingEntityModel createEmployeeModel() {
-    return new SwingEntityModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    return new SwingEntityModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 
   @Override
   protected SwingEntityEditModel createDepartmentEditModel() {
-    return new SwingEntityEditModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    return new SwingEntityEditModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
   }
 
   @Override
   protected SwingEntityTableModel createEmployeeTableModel() {
-    return new SwingEntityTableModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    return new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 
   @Override
   protected SwingEntityTableModel createDepartmentTableModel() {
-    return new SwingEntityTableModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    return new SwingEntityTableModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
   }
 
   @Test
@@ -155,25 +167,23 @@ public final class SwingEntityModelTest
 
   @Test
   public void constructor() {
-    final SwingEntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_DEPARTMENT,
-            EntityConnectionProvidersTest.CONNECTION_PROVIDER);
-    SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT,
-            EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    final SwingEntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
 
     new SwingEntityModel(editModel);
     new SwingEntityModel(tableModel);
 
-    tableModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    tableModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     assertNotEquals(editModel, new SwingEntityModel(tableModel).getEditModel());
 
-    tableModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    tableModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     tableModel.setEditModel(editModel);
     assertEquals(editModel, new SwingEntityModel(tableModel).getEditModel());
   }
 
   @Test(expected = NullPointerException.class)
   public void constructorNullEntityID() {
-    new SwingEntityModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    new SwingEntityModel(null, CONNECTION_PROVIDER);
   }
 
   @Test(expected = NullPointerException.class)

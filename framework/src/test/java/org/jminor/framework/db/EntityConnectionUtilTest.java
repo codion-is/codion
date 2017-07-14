@@ -4,10 +4,12 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.User;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.dbms.H2Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.ProgressReporter;
 import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.TestDomain;
@@ -24,6 +26,10 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class EntityConnectionUtilTest {
+
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
 
   private static EntityConnection DESTINATION_CONNECTION;
 
@@ -52,7 +58,7 @@ public class EntityConnectionUtilTest {
 
   @Test
   public void copyEntities() throws SQLException, DatabaseException {
-    final EntityConnection sourceConnection = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection();
+    final EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
     EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, true, TestDomain.T_DEPARTMENT);
 
     assertEquals(sourceConnection.selectRowCount(EntityConditions.condition(TestDomain.T_DEPARTMENT)),
@@ -67,7 +73,7 @@ public class EntityConnectionUtilTest {
 
   @Test
   public void batchInsert() throws SQLException, DatabaseException {
-    final EntityConnection sourceConnection = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection();
+    final EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
 
     final List<Entity> source = sourceConnection.selectMany(EntityConditions.selectCondition(TestDomain.T_DEPARTMENT));
     final List<Entity.Key> dest = new ArrayList<>();

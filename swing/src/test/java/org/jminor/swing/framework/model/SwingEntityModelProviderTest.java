@@ -3,10 +3,13 @@
  */
 package org.jminor.swing.framework.model;
 
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.EntityConnectionProvidersTest;
-import org.jminor.framework.domain.TestDomain;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
+import org.jminor.framework.model.TestDomain;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -14,7 +17,12 @@ import static org.junit.Assert.assertTrue;
 
 public final class SwingEntityModelProviderTest {
 
-  public SwingEntityModelProviderTest() {
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
+
+  @BeforeClass
+  public static void setUp() {
     TestDomain.init();
   }
 
@@ -30,7 +38,7 @@ public final class SwingEntityModelProviderTest {
     assertEquals(DepartmentEditModel.class, departmentModelProvider.getEditModelClass());
     assertEquals(DepartmentTableModel.class, departmentModelProvider.getTableModelClass());
 
-    final SwingEntityModel departmentModel = departmentModelProvider.createModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER, false);
+    final SwingEntityModel departmentModel = departmentModelProvider.createModel(CONNECTION_PROVIDER, false);
     assertTrue(departmentModel.getEditModel() instanceof DepartmentEditModel);
     assertTrue(departmentModel.getTableModel() instanceof DepartmentTableModel);
     assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));

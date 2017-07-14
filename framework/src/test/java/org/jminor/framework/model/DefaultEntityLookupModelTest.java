@@ -3,14 +3,16 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.condition.Conditions;
-import org.jminor.framework.db.EntityConnectionProvidersTest;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.TestDomain;
 
 import org.junit.After;
 import org.junit.Before;
@@ -27,12 +29,16 @@ import static org.junit.Assert.*;
 
 public final class DefaultEntityLookupModelTest {
 
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
+
   private EntityLookupModel lookupModel;
   private Collection<Property.ColumnProperty> lookupProperties;
 
   @Test(expected = NullPointerException.class)
   public void constructorNullEntityID() {
-    new DefaultEntityLookupModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER, new ArrayList<>());
+    new DefaultEntityLookupModel(null, CONNECTION_PROVIDER, new ArrayList<>());
   }
 
   @Test(expected = NullPointerException.class)
@@ -42,23 +48,23 @@ public final class DefaultEntityLookupModelTest {
 
   @Test(expected = NullPointerException.class)
   public void constructorNullLookupProperties() {
-    new DefaultEntityLookupModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER, null);
+    new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, null);
   }
 
   @Test(expected = IllegalStateException.class)
   public void lookupWithNoLookupProperties() {
-    new DefaultEntityLookupModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER, Collections.emptyList()).performQuery();
+    new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, Collections.emptyList()).performQuery();
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNonStringLookupProperty() {
-    new DefaultEntityLookupModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER,
+    new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
             Collections.singletonList(Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_COMMISSION)));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorIncorrectEntityLookupProperty() {
-    new DefaultEntityLookupModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER,
+    new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
             Collections.singletonList(Entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
   }
 
@@ -209,15 +215,15 @@ public final class DefaultEntityLookupModelTest {
     TestDomain.init();
     lookupProperties = Arrays.asList(Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME),
                     Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB));
-    lookupModel = new DefaultEntityLookupModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER, lookupProperties);
+    lookupModel = new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, lookupProperties);
 
-    EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().beginTransaction();
+    CONNECTION_PROVIDER.getConnection().beginTransaction();
     setupData();
   }
 
   @After
   public void tearDown() throws Exception {
-    EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().rollbackTransaction();
+    CONNECTION_PROVIDER.getConnection().rollbackTransaction();
   }
 
   private boolean contains(final List<Entity> result, final String employeeName) {
@@ -268,6 +274,6 @@ public final class DefaultEntityLookupModelTest {
     emp4.put(TestDomain.EMP_NAME, "Andrew");
     emp4.put(TestDomain.EMP_SALARY, 1000d);
 
-    EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().insert(Arrays.asList(dept, emp, emp2, emp3, emp4));
+    CONNECTION_PROVIDER.getConnection().insert(Arrays.asList(dept, emp, emp2, emp3, emp4));
   }
 }

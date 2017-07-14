@@ -10,7 +10,6 @@ import org.jminor.common.server.ClientInfo;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.plugins.json.EntityJSONParser;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;

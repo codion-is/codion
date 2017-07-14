@@ -21,18 +21,12 @@
     <package_module module-name="jminor-framework-model"
                     includes="org/jminor/framework/model/*"/>
     <package_module module-name="jminor-framework-model-unittests"
-                    includes="org/jminor/common/model/tools/LoadTestModelTest*,
-                    org/jminor/framework/domain/TestDomain*,
-                    org/jminor/framework/model/Abstract*,
-                    org/jminor/framework/db/EntityConnectionProvidersTest*,
-                    org/jminor/framework/server/DefaultEntityConnectionServerTest*,
-                    org/jminor/framework/server/TestConnectionValidator*
-                    org/jminor/framework/server/TestLoginProxy*"
+                    includes="org/jminor/framework/model/TestDomain*,
+                    org/jminor/framework/model/Abstract*"
                     build.basedir="${build.test}"
                     src.basedir="${src.test}"/>
     <package_module module-name="jminor-framework-server"
-                    includes="org/jminor/framework/Configuration.class,
-                    org/jminor/framework/server/*"/>
+                    includes="org/jminor/framework/server/*"/>
 
     <copy file="${basedir}/../changelog.txt" todir="${package}"/>
   </target>

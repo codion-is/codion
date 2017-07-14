@@ -15,7 +15,6 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
-import org.jminor.framework.domain.TestDomain;
 
 import ch.qos.logback.classic.Level;
 import org.junit.AfterClass;
@@ -24,7 +23,6 @@ import org.junit.Test;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -48,6 +46,7 @@ public class DefaultEntityConnectionServerTest {
 
   @BeforeClass
   public static synchronized void setUp() throws Exception {
+    TestDomain.init();
     configure();
     final Database database = Databases.createInstance();
     final String serverName = DefaultEntityConnectionServer.initializeServerName(database.getHost(), database.getSid());
@@ -237,7 +236,7 @@ public class DefaultEntityConnectionServerTest {
     Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
     Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, UNIT_TEST_USER.getUsername() + ":" + UNIT_TEST_USER.getPassword());
     Configuration.setValue(Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT, "ClientTypeID:10000");
-    Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.domain.TestDomain");
+    Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.server.TestDomain");
     Configuration.setValue(Configuration.SERVER_LOGIN_PROXY_CLASSES, "org.jminor.framework.server.TestLoginProxy");
     Configuration.setValue(Configuration.SERVER_CONNECTION_VALIDATOR_CLASSES, "org.jminor.framework.server.TestConnectionValidator");
     Configuration.setValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED, true);
@@ -249,28 +248,6 @@ public class DefaultEntityConnectionServerTest {
     Configuration.setValue("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
     Configuration.setValue("javax.net.ssl.keyStore", "resources/security/JMinorServerKeystore");
     Configuration.setValue("javax.net.ssl.keyStorePassword", "crappypass");
-  }
-
-  private static void deconfigure() {
-    Configuration.setValue(Configuration.REGISTRY_PORT, Registry.REGISTRY_PORT);
-    Configuration.clearValue(Configuration.SERVER_PORT);
-    Configuration.clearValue(Configuration.SERVER_ADMIN_PORT);
-    Configuration.clearValue(Configuration.SERVER_ADMIN_USER);
-    Configuration.clearValue(Configuration.SERVER_HOST_NAME);
-    Configuration.clearValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
-    Configuration.clearValue(Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT);
-    Configuration.clearValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
-    Configuration.clearValue(Configuration.SERVER_LOGIN_PROXY_CLASSES);
-    Configuration.clearValue(Configuration.SERVER_CONNECTION_VALIDATOR_CLASSES);
-    Configuration.setValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED, false);
-    Configuration.clearValue(Configuration.WEB_SERVER_PORT);
-    Configuration.clearValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
-    Configuration.clearValue(Configuration.WEB_SERVER_IMPLEMENTATION_CLASS);
-    Configuration.clearValue("java.rmi.server.hostname");
-    Configuration.clearValue("java.security.policy");
-    Configuration.clearValue("javax.net.ssl.trustStore");
-    Configuration.clearValue("javax.net.ssl.keyStore");
-    Configuration.clearValue("javax.net.ssl.keyStorePassword");
   }
 
   public static final class TestWebServer implements Server.AuxiliaryServer {

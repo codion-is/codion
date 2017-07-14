@@ -1,20 +1,23 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.testing;
+package org.jminor.framework.model;
 
 import org.jminor.common.User;
+import org.jminor.common.Version;
+import org.jminor.common.db.Database;
+import org.jminor.common.db.Databases;
+import org.jminor.common.server.Server;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.domain.TestDomain;
-import org.jminor.framework.model.DefaultEntityApplicationModel;
-import org.jminor.framework.model.EntityLoadTestModel;
-import org.jminor.framework.server.DefaultEntityConnectionServerTest;
+import org.jminor.framework.server.DefaultEntityConnectionServer;
+import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.rmi.registry.LocateRegistry;
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
@@ -27,15 +30,27 @@ public class EntityLoadTestModelTest {
 
   private static final String CONNECTION_TYPE_BEFORE_TEST = Configuration.getStringValue(Configuration.CLIENT_CONNECTION_TYPE);
 
+  private static final User ADMIN_USER = new User("scott", "tiger");
+  private static Server server;
+  private static EntityConnectionServerAdmin admin;
+
   @BeforeClass
-  public static void setUp() throws Exception {
-    DefaultEntityConnectionServerTest.setUp();
+  public static synchronized void setUp() throws Exception {
+    configure();
+    final Database database = Databases.createInstance();
+    final String serverName = Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX) + " " + Version.getVersionString()
+            + "@" + (database.getSid() != null ? database.getSid().toUpperCase() : database.getHost().toUpperCase());
+    DefaultEntityConnectionServer.startServer();
+    server = (Server) LocateRegistry.getRegistry(Configuration.getStringValue(Configuration.SERVER_HOST_NAME),
+            Configuration.getIntValue(Configuration.REGISTRY_PORT)).lookup(serverName);
+    admin = (EntityConnectionServerAdmin) server.getServerAdmin(ADMIN_USER);
     Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, "remote");
   }
 
   @AfterClass
-  public static void tearDown() throws Exception {
-    DefaultEntityConnectionServerTest.tearDown();
+  public static synchronized void tearDown() throws Exception {
+    admin.shutdown();
+    server = null;
     Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, CONNECTION_TYPE_BEFORE_TEST);
   }
 
@@ -56,9 +71,7 @@ public class EntityLoadTestModelTest {
       return new DefaultEntityApplicationModel(
               EntityConnectionProviders.connectionProvider(getUser(), EntityLoadTestModelTest.class.getSimpleName())) {
         @Override
-        protected void loadDomainModel() {
-          TestDomain.init();
-        }
+        protected void loadDomainModel() {}
       };
     }
   }
@@ -120,5 +133,18 @@ public class EntityLoadTestModelTest {
 
     assertFalse(loadTest.isPaused());
     assertEquals(0, loadTest.getApplicationCount());
+  }
+
+  private static void configure() {
+    Configuration.setValue(Configuration.REGISTRY_PORT, 2221);
+    Configuration.setValue(Configuration.SERVER_PORT, 2223);
+    Configuration.setValue(Configuration.SERVER_ADMIN_PORT, 2223);
+    Configuration.setValue(Configuration.SERVER_ADMIN_USER, "scott:tiger");
+    Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
+    Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, UNIT_TEST_USER.getUsername() + ":" + UNIT_TEST_USER.getPassword());
+    Configuration.setValue(Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT, "ClientTypeID:10000");
+    Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.model.TestDomain");
+    Configuration.setValue(Configuration.SERVER_CONNECTION_SSL_ENABLED, false);
+    Configuration.setValue("java.rmi.server.hostname", "localhost");
   }
 }

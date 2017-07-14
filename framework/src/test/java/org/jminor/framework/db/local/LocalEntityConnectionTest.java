@@ -11,7 +11,6 @@ import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.condition.Conditions;
-import org.jminor.common.db.dbms.H2Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
@@ -27,7 +26,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.domain.TestDomain;
 
 import org.junit.After;
 import org.junit.Before;
@@ -469,7 +467,7 @@ public class LocalEntityConnectionTest {
   public void testConstructor() throws Exception {
     Connection connection = null;
     try {
-      final Database db = LocalEntityConnectionTest.createTestDatabaseInstance();
+      final Database db = Databases.createInstance();
       connection = db.createConnection(UNIT_TEST_USER);
       final EntityConnection conn = new LocalEntityConnection(db, connection, true, true, 1);
       assertTrue(conn.isConnected());
@@ -488,7 +486,7 @@ public class LocalEntityConnectionTest {
   public void testConstructorInvalidConnection() throws Exception {
     Connection connection = null;
     try {
-      final Database db = LocalEntityConnectionTest.createTestDatabaseInstance();
+      final Database db = Databases.createInstance();
       connection = db.createConnection(UNIT_TEST_USER);
       connection.close();
       new LocalEntityConnection(db, connection, true, true, 1);
@@ -599,56 +597,7 @@ public class LocalEntityConnectionTest {
     }
   }
 
-  public static Database createTestDatabaseInstance() {
-    final String type = System.getProperty(Database.DATABASE_TYPE);
-    final String host = System.getProperty(Database.DATABASE_HOST);
-    final String port = System.getProperty(Database.DATABASE_PORT, "1234");
-    final String sid = System.getProperty(Database.DATABASE_SID, "sid");
-    final String embedded = System.getProperty(Database.DATABASE_EMBEDDED, "false");
-    final String embeddedInMemory = System.getProperty(Database.DATABASE_EMBEDDED_IN_MEMORY, "false");
-    final String initScript = System.getProperty(H2Database.DATABASE_INIT_SCRIPT);
-    try {
-      System.setProperty(Database.DATABASE_TYPE, type == null ? Database.Type.H2.toString() : type);
-      System.setProperty(Database.DATABASE_HOST, host == null ? "h2db/h2" : host);
-      System.setProperty(Database.DATABASE_PORT, port);
-      System.setProperty(Database.DATABASE_SID, sid);
-      System.setProperty(Database.DATABASE_EMBEDDED, embedded == null ? "true" : embedded);
-      System.setProperty(Database.DATABASE_EMBEDDED_IN_MEMORY, embeddedInMemory == null ? "true" : embeddedInMemory);
-      System.setProperty(H2Database.DATABASE_INIT_SCRIPT, initScript == null ? "demos/src/main/sql/create_h2_db.sql" : initScript);
-
-      return Databases.createInstance();
-    }
-    finally {
-      setSystemProperties(type, host, port, sid, embedded, embeddedInMemory, initScript);
-    }
-  }
-
   private static LocalEntityConnection initializeConnection() throws DatabaseException {
-    return new LocalEntityConnection(createTestDatabaseInstance(), UNIT_TEST_USER, true, true, 1);
-  }
-
-  private static void setSystemProperties(final String type, final String host, final String port, final String sid,
-                                          final String embedded, final String embeddedInMemory, final String initScript) {
-    if (type != null) {
-      System.setProperty(Database.DATABASE_TYPE, type);
-    }
-    if (host != null) {
-      System.setProperty(Database.DATABASE_HOST, host);
-    }
-    if (port != null) {
-      System.setProperty(Database.DATABASE_PORT, port);
-    }
-    if (sid != null) {
-      System.setProperty(Database.DATABASE_SID, sid);
-    }
-    if (embedded != null) {
-      System.setProperty(Database.DATABASE_EMBEDDED, embedded);
-    }
-    if (embeddedInMemory != null) {
-      System.setProperty(Database.DATABASE_EMBEDDED_IN_MEMORY, embeddedInMemory);
-    }
-    if (initScript != null) {
-      System.setProperty(H2Database.DATABASE_INIT_SCRIPT, initScript);
-    }
+    return new LocalEntityConnection(Databases.createInstance(), UNIT_TEST_USER, true, true, 1);
   }
 }
