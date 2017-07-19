@@ -4460,3 +4460,4 @@
 0.10.10
   Major refactoring of unit tests, removing interdependencies between modules
   Unittest interdependency between framework.db and framework.domain removed
+  DefaultProperty.PropertyResultPacker.pack() bug fixed, missing else keyword

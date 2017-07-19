@@ -1275,7 +1275,7 @@ class DefaultProperty implements Property {
         if (property.isInteger()) {
           result.add(DefaultColumnProperty.getInteger(resultSet, COLUMN_INDEX));
         }
-        if (property.isLong()) {
+        else if (property.isLong()) {
           result.add(DefaultColumnProperty.getLong(resultSet, COLUMN_INDEX));
         }
         else if (property.isDouble()) {
