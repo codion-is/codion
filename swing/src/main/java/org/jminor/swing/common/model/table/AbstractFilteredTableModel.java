@@ -360,13 +360,14 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final void removeItem(final R item) {
-    if (visibleItems.contains(item)) {
-      final int index = indexOf(item);
-      visibleItems.remove(item);
+    final int index = visibleItems.indexOf(item);
+    if (index >= 0) {
+      visibleItems.remove(index);
       fireTableRowsDeleted(index, index);
     }
     else {
-      if (filteredItems.contains(item)) {
+      final int filteredIndex = filteredItems.indexOf(item);
+      if (filteredIndex >= 0) {
         filteredItems.remove(item);
       }
     }
@@ -375,8 +376,22 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final void removeItems(final Collection<R> items) {
-    for (final R rowItem : items) {
-      removeItem(rowItem);
+    boolean removed = false;
+    for (final R item : items) {
+      final int index = visibleItems.indexOf(item);
+      if (index >= 0) {
+        visibleItems.remove(index);
+        removed = true;
+      }
+      else {
+        final int filteredIndex = filteredItems.indexOf(item);
+        if (filteredIndex >= 0) {
+          filteredItems.remove(item);
+        }
+      }
+    }
+    if (removed) {
+      fireTableDataChanged();
     }
   }
 

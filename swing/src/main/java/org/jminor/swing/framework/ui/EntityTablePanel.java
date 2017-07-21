@@ -27,7 +27,7 @@ import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.model.table.FilteredTableModel;
-import org.jminor.swing.common.ui.DefaultExceptionHandler;
+import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -630,10 +630,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   /**
    * Uses the default exception handler to handle the given exception
    * @param exception the exception to handle
-   * @see DefaultExceptionHandler#handleException(Throwable, javax.swing.JComponent)
+   * @see DefaultDialogExceptionHandler#handleException(Throwable, javax.swing.JComponent)
    */
   public final void handleException(final Exception exception) {
-    DefaultExceptionHandler.getInstance().handleException(exception, UiUtil.getParentWindow(this));
+    DefaultDialogExceptionHandler.getInstance().handleException(exception, UiUtil.getParentWindow(this));
   }
 
   /**

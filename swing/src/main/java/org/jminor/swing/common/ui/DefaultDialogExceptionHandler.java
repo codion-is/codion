@@ -18,17 +18,17 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * A default ExceptionHandler implementation
+ * A default DialogExceptionHandler implementation
  */
-public final class DefaultExceptionHandler implements ExceptionHandler {
+public final class DefaultDialogExceptionHandler implements DialogExceptionHandler {
 
-  private static final DefaultExceptionHandler INSTANCE = new DefaultExceptionHandler();
+  private static final DefaultDialogExceptionHandler INSTANCE = new DefaultDialogExceptionHandler();
   private static final int MAXIMUM_MESSAGE_LENGTH = 50;
 
   /**
    * @return an ExceptionHandler singleton
    */
-  public static DefaultExceptionHandler getInstance() {
+  public static DefaultDialogExceptionHandler getInstance() {
     return INSTANCE;
   }
 

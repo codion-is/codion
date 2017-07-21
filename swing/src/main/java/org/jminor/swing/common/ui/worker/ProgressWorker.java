@@ -5,13 +5,14 @@ package org.jminor.swing.common.ui.worker;
 
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.model.CancelException;
-import org.jminor.swing.common.ui.DefaultExceptionHandler;
+import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.control.ControlSet;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.awt.Window;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -88,6 +89,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    * @return this {@link ProgressWorker} instance
    */
   public final ProgressWorker<T> addOnSuccessListener(final EventInfoListener<T> successListener) {
+    Objects.requireNonNull(successListener);
     addPropertyChangeListener(changeEvent -> {
       if (changeEvent.getPropertyName().equals(STATE_PROPERTY) && changeEvent.getNewValue().equals(StateValue.DONE)) {
         try {
@@ -112,7 +114,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    */
   protected void handleException(final Throwable throwable) {
     if (!(throwable instanceof CancelException)) {
-      DefaultExceptionHandler.getInstance().handleException(throwable, getDialogOwner());
+      DefaultDialogExceptionHandler.getInstance().handleException(throwable, getDialogOwner());
     }
   }
 

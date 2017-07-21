@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class DefaultExceptionHandlerTest {
+public class DefaultDialogExceptionHandlerTest {
 
   @Test
   public void test() {
@@ -20,25 +20,25 @@ public class DefaultExceptionHandlerTest {
     RuntimeException wrapper = new RuntimeException(rootException);
     final List<Class<? extends Throwable>> toUnwrap = new ArrayList<>();
     toUnwrap.add(RuntimeException.class);
-    Throwable unwrapped = DefaultExceptionHandler.unwrapExceptions(wrapper, toUnwrap);
+    Throwable unwrapped = DefaultDialogExceptionHandler.unwrapExceptions(wrapper, toUnwrap);
     assertEquals(rootException, unwrapped);
 
     rootException = new Exception();
     wrapper = new RuntimeException(new RuntimeException(rootException));
-    unwrapped = DefaultExceptionHandler.unwrapExceptions(wrapper, toUnwrap);
+    unwrapped = DefaultDialogExceptionHandler.unwrapExceptions(wrapper, toUnwrap);
     assertEquals(rootException, unwrapped);
 
     rootException = new CancelException();
     wrapper = new RuntimeException(rootException);
-    unwrapped = DefaultExceptionHandler.unwrapExceptions(wrapper, toUnwrap);
+    unwrapped = DefaultDialogExceptionHandler.unwrapExceptions(wrapper, toUnwrap);
     assertEquals(rootException, unwrapped);
 
     rootException = new Exception();
-    unwrapped = DefaultExceptionHandler.unwrapExceptions(rootException, toUnwrap);
+    unwrapped = DefaultDialogExceptionHandler.unwrapExceptions(rootException, toUnwrap);
     assertEquals(rootException, unwrapped);
 
     rootException = new RuntimeException();
-    unwrapped = DefaultExceptionHandler.unwrapExceptions(rootException, toUnwrap);
+    unwrapped = DefaultDialogExceptionHandler.unwrapExceptions(rootException, toUnwrap);
     assertEquals(rootException, unwrapped);
   }
 }

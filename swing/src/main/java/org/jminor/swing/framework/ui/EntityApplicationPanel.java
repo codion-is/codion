@@ -22,8 +22,8 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.swing.SwingConfiguration;
-import org.jminor.swing.common.ui.DefaultExceptionHandler;
-import org.jminor.swing.common.ui.ExceptionHandler;
+import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
+import org.jminor.swing.common.ui.DialogExceptionHandler;
 import org.jminor.swing.common.ui.LoginPanel;
 import org.jminor.swing.common.ui.MasterDetailPanel;
 import org.jminor.swing.common.ui.UiUtil;
@@ -85,7 +85,7 @@ import java.util.UUID;
  * @param <M> the application model type
  */
 public abstract class EntityApplicationPanel<M extends SwingEntityApplicationModel>
-        extends JPanel implements ExceptionHandler, MasterDetailPanel {
+        extends JPanel implements DialogExceptionHandler, MasterDetailPanel {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
@@ -135,7 +135,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   @Override
   public final void handleException(final Throwable exception, final Window dialogParent) {
     LOG.error(exception.getMessage(), exception);
-    DefaultExceptionHandler.getInstance().handleException(exception, dialogParent);
+    DefaultDialogExceptionHandler.getInstance().handleException(exception, dialogParent);
   }
 
   /**
@@ -1149,7 +1149,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   private void setUncaughtExceptionHandler() {
     Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-            DefaultExceptionHandler.getInstance().handleException(e, UiUtil.getParentWindow(EntityApplicationPanel.this)));
+            DefaultDialogExceptionHandler.getInstance().handleException(e, UiUtil.getParentWindow(EntityApplicationPanel.this)));
   }
 
   private void bindEventsInternal() {

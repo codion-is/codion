@@ -4461,3 +4461,9 @@
   Major refactoring of unit tests, removing interdependencies between modules
   Unittest interdependency between framework.db and framework.domain removed
   DefaultProperty.PropertyResultPacker.pack() bug fixed, missing else keyword
+  UiUtil.runWithProgressBar() now uses Control.Command instead of Callable
+  org.jminor.swing.common.ui.ExceptionHandler renamed to DialogExceptionHandler
+  org.jminor.common.ExceptionHandler interface added
+  UiUtil.runWithProgressBar() overloaded and refactored
+  AbstractFilteredTableModel.removeItem() made a bit more efficient
+  AbstractFilteredTableModel.removeItems() now uses a single call to fireTableDataChanged() after removing all the items instead of calling fireTableRowsDeleted() after each row is removed

@@ -7,7 +7,7 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.swing.SwingConfiguration;
-import org.jminor.swing.common.ui.DefaultExceptionHandler;
+import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.MasterDetailPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
@@ -667,7 +667,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       editPanel.handleException(exception);
     }
     else {
-      DefaultExceptionHandler.getInstance().handleException(exception, this);
+      DefaultDialogExceptionHandler.getInstance().handleException(exception, this);
     }
   }
 

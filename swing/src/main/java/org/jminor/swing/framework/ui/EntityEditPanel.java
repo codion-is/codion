@@ -21,8 +21,8 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.DateInputPanel;
-import org.jminor.swing.common.ui.DefaultExceptionHandler;
-import org.jminor.swing.common.ui.ExceptionHandler;
+import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
+import org.jminor.swing.common.ui.DialogExceptionHandler;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.checkbox.TristateCheckBox;
@@ -71,7 +71,7 @@ import java.util.Objects;
 /**
  * A UI component based on a {@link EntityEditModel}.
  */
-public abstract class EntityEditPanel extends JPanel implements ExceptionHandler {
+public abstract class EntityEditPanel extends JPanel implements DialogExceptionHandler {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityEditPanel.class);
 
@@ -526,7 +526,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
                       + EntityUtil.getModifiedExceptionMessage((RecordModifiedException) throwable), throwable);
     }
     else {
-      DefaultExceptionHandler.getInstance().handleException(throwable, dialogParent);
+      DefaultDialogExceptionHandler.getInstance().handleException(throwable, dialogParent);
     }
   }
 

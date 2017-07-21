@@ -9,7 +9,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
-import org.jminor.swing.common.ui.DefaultExceptionHandler;
+import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -61,7 +61,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     this(new EntityServerMonitor(Configuration.getStringValue(Configuration.SERVER_HOST_NAME),
             Configuration.getIntValue(Configuration.REGISTRY_PORT)));
     Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-            DefaultExceptionHandler.getInstance().handleException(e, UiUtil.getParentWindow(EntityServerMonitorPanel.this)));
+            DefaultDialogExceptionHandler.getInstance().handleException(e, UiUtil.getParentWindow(EntityServerMonitorPanel.this)));
   }
 
   /**

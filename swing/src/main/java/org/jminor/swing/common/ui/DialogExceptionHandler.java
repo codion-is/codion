@@ -6,9 +6,9 @@ package org.jminor.swing.common.ui;
 import java.awt.Window;
 
 /**
- * An interface describing an exception handler
+ * Handles an exception by displaying a error dialog.
  */
-public interface ExceptionHandler {
+public interface DialogExceptionHandler {
   /**
    * Handle the given exception and display it to the user.
    * @param exception the exception
