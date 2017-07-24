@@ -46,7 +46,7 @@ public final class ClientUtil {
   }
 
   /**
-   * Performs a authentication lookup on localhost.
+   * Performs a authentication lookup on localhost via a {@link CredentialServer}.
    * @param authenticationToken the authentication token
    * @return the User credentials associated with the {@code authenticationToken}, null if the user credentials
    * have expired or if no authentication server is running
