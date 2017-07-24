@@ -26,6 +26,15 @@ import java.util.concurrent.TimeUnit;
  * A simple credential server for one-time authentication tokens for applications running on localhost.
  * Setting the following before the server is constructed is recommended:
  * {@code System.setProperty("java.rmi.server.hostname", CredentialServer.LOCALHOST);}
+ * <pre>
+ * {@code
+ * CredentialServer credentialServer = new CredentialServer(12345, 30000, 60000);
+ * String jnlpUrl = getApplicationJNLPUrl();
+ * UUID token = UUID.randomUUID();
+ * credentialServer.addAuthenticationToken(token, user);
+ * new ProcessBuilder().command("javaws", "-open", token.toString(), jnlpUrl).start();
+ * }
+ * </pre>
  * @see ClientUtil#getUserCredentials(UUID)
  */
 public final class CredentialServer extends UnicastRemoteObject implements CredentialService {
