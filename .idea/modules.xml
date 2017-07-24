@@ -13,6 +13,7 @@
       <module fileurl="file://$PROJECT_DIR$/jminor-parent.iml" filepath="$PROJECT_DIR$/jminor-parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/server-monitor/jminor-server-monitor.iml" filepath="$PROJECT_DIR$/server-monitor/jminor-server-monitor.iml" />
       <module fileurl="file://$PROJECT_DIR$/swing/jminor-swing.iml" filepath="$PROJECT_DIR$/swing/jminor-swing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugins/hikari-pool/plugin-hikari-pool.iml" filepath="$PROJECT_DIR$/plugins/hikari-pool/plugin-hikari-pool.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugins/imagepanel/plugin-imagepanel.iml" filepath="$PROJECT_DIR$/plugins/imagepanel/plugin-imagepanel.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugins/jasperreports/plugin-jasperreports.iml" filepath="$PROJECT_DIR$/plugins/jasperreports/plugin-jasperreports.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugins/json/plugin-json.iml" filepath="$PROJECT_DIR$/plugins/json/plugin-json.iml" />

@@ -58,8 +58,9 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
    * @throws DatabaseException in case of an exception while constructing the initial connections
    */
   DefaultConnectionPool(final DatabaseConnectionProvider connectionProvider) throws DatabaseException {
-    super(new ArrayDeque<>(), connectionProvider.getUser());
+    super(connectionProvider.getUser());
     this.connectionProvider = connectionProvider;
+    setPool(new ArrayDeque<>());
     initializeConnections();
   }
 
@@ -80,6 +81,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
   public void close() {
     closed = true;
     poolCleanupScheduler.stop();
+    final Deque<DatabaseConnection> pool = getPool();
     synchronized (pool) {
       while (!pool.isEmpty()) {
         connectionProvider.destroyConnection(pool.pop());
@@ -91,7 +93,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
   /** {@inheritDoc} */
   @Override
   protected int getSize() {
-    return pool.size();
+    return getPool().size();
   }
 
   /** {@inheritDoc} */
@@ -247,6 +249,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
     if (databaseConnection.isTransactionOpen()) {
       throw new IllegalStateException("Open transaction");
     }
+    final Deque<DatabaseConnection> pool = getPool();
     if (closed || !databaseConnection.isConnected()) {
       synchronized (pool) {
         inUse.remove(databaseConnection);
@@ -266,6 +269,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
   private DatabaseConnection fetchFromPool() {
     DatabaseConnection connection = null;
     boolean destroyConnection = false;
+    final Deque<DatabaseConnection> pool = getPool();
     synchronized (pool) {
       if (!pool.isEmpty()) {
         connection = pool.pop();
@@ -289,6 +293,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
   }
 
   private DatabaseConnection createConnection() throws DatabaseException {
+    final Deque<DatabaseConnection> pool = getPool();
     synchronized (pool) {
       try {
         creatingConnection = true;
@@ -309,6 +314,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
   }
 
   private DatabaseConnection findConnection(final Connection connection) {
+    final Deque<DatabaseConnection> pool = getPool();
     synchronized (pool) {
       for (final DatabaseConnection databaseConnection : inUse) {
         if (databaseConnection.getConnection().equals(connection)) {
@@ -339,6 +345,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
     if (elapsedTime < newConnectionThreshold) {
       return false;
     }
+    final Deque<DatabaseConnection> pool = getPool();
     synchronized (pool) {
       return !creatingConnection && (pool.size() + inUse.size()) < maximumPoolSize;
     }
@@ -352,6 +359,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
 
     private void cleanPool() {
       final long currentTime = System.currentTimeMillis();
+      final Deque<DatabaseConnection> pool = getPool();
       synchronized (pool) {
         final int inUseCount = inUse.size();
         final Collection<DatabaseConnection> pooledConnections = new ArrayList<>(pool);

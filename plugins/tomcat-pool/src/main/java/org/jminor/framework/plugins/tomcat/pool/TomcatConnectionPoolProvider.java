@@ -50,28 +50,24 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
   private static final class DataSourceWrapper extends AbstractConnectionPool<DataSource> {
 
     private DataSourceWrapper(final Database database, final User user, final DataSource dataSource) {
-      super(dataSource, user);
-      dataSource.setDataSource(Util.initializeProxy(javax.sql.DataSource.class, (proxy, method, args) -> {
-        if ("getConnection".equals(method.getName())) {
-          try {
-            final Connection connection = database.createConnection(user);
-            getCounter().incrementConnectionsCreatedCounter();
+      super(user);
+      dataSource.setDataSource(Util.initializeProxy(javax.sql.DataSource.class, (dataSourceProxy, dataSourceMethod, dataSourceArgs) -> {
+        if ("getConnection".equals(dataSourceMethod.getName())) {
+          final Connection connection = database.createConnection(user);
+          getCounter().incrementConnectionsCreatedCounter();
 
-            return Util.initializeProxy(Connection.class, (proxy1, method1, args1) -> {
-              if ("close".equals(method1.getName())) {
-                getCounter().incrementConnectionsDestroyedCounter();
-              }
+          return Util.initializeProxy(Connection.class, (connectionProxy, connectionMethod, connectionArgs) -> {
+            if ("close".equals(connectionMethod.getName())) {
+              getCounter().incrementConnectionsDestroyedCounter();
+            }
 
-              return method1.invoke(connection, args1);
-            });
-          }
-          catch (final DatabaseException e) {
-            throw e.getCause();
-          }
+            return connectionMethod.invoke(connection, connectionArgs);
+          });
         }
 
-        throw new NoSuchMethodException(method.toString());
+        return dataSourceMethod.invoke(dataSource, dataSourceArgs);
       }));
+      setPool(dataSource);
     }
 
     @Override
@@ -80,7 +76,7 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
       try {
         getCounter().incrementRequestCounter();
 
-        return pool.getConnection();
+        return getPool().getConnection();
       }
       catch (final SQLException e) {
         getCounter().incrementFailedRequestCounter();
@@ -101,27 +97,27 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
 
     @Override
     public void close() {
-      pool.close();
+      getPool().close();
     }
 
     @Override
     public int getCleanupInterval() {
-      return pool.getTimeBetweenEvictionRunsMillis();
+      return getPool().getTimeBetweenEvictionRunsMillis();
     }
 
     @Override
     public void setCleanupInterval(final int poolCleanupInterval) {
-      pool.setTimeBetweenEvictionRunsMillis(poolCleanupInterval);
+      getPool().setTimeBetweenEvictionRunsMillis(poolCleanupInterval);
     }
 
     @Override
     public int getConnectionTimeout() {
-      return pool.getSuspectTimeout() * 1000;
+      return getPool().getSuspectTimeout() * 1000;
     }
 
     @Override
     public void setConnectionTimeout(final int timeout) {
-      pool.setSuspectTimeout(timeout / 1000);
+      getPool().setSuspectTimeout(timeout / 1000);
     }
 
     @Override
@@ -134,33 +130,33 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
 
     @Override
     public int getMinimumPoolSize() {
-      return pool.getMinIdle();
+      return getPool().getMinIdle();
     }
 
     @Override
     public void setMinimumPoolSize(final int value) {
-      pool.setMinIdle(value);
+      getPool().setMinIdle(value);
     }
 
     @Override
     public int getMaximumPoolSize() {
-      return pool.getMaxActive();
+      return getPool().getMaxActive();
     }
 
     @Override
     public void setMaximumPoolSize(final int value) {
-      pool.setMaxActive(value);
-      pool.setMaxIdle(value);
+      getPool().setMaxActive(value);
+      getPool().setMaxIdle(value);
     }
 
     @Override
     public int getMaximumCheckOutTime() {
-      return pool.getMaxWait();
+      return getPool().getMaxWait();
     }
 
     @Override
     public void setMaximumCheckOutTime(final int value) {
-      pool.setMaxWait(value);
+      getPool().setMaxWait(value);
     }
 
     @Override
@@ -173,17 +169,17 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
 
     @Override
     protected int getSize() {
-      return pool.getSize() - pool.getActive();
+      return getPool().getSize() - getPool().getActive();
     }
 
     @Override
     protected int getInUse() {
-      return pool.getActive();
+      return getPool().getActive();
     }
 
     @Override
     protected int getWaiting() {
-      return pool.getWaitCount();
+      return getPool().getWaitCount();
     }
   }
 

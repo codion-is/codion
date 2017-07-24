@@ -22,7 +22,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   /**
    * The actual connection pool object
    */
-  protected final T pool;
+  private T pool;
   private final User user;
 
   private final LinkedList<DefaultConnectionPoolState> fineGrainedCStatistics = new LinkedList<>();
@@ -33,11 +33,9 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   private final DefaultConnectionPoolCounter counter = new DefaultConnectionPoolCounter();
 
   /**
-   * @param pool the actual connection pool
    * @param user the connection pool user
    */
-  public AbstractConnectionPool(final T pool, final User user) {
-    this.pool = pool;
+  public AbstractConnectionPool(final User user) {
     this.user = user;
   }
 
@@ -104,6 +102,20 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
     }
 
     return statistics;
+  }
+
+  /**
+   * @param pool the underlying connection pool
+   */
+  protected void setPool(final T pool) {
+    this.pool = pool;
+  }
+
+  /**
+   * @return the underlying pool object
+   */
+  protected T getPool() {
+    return pool;
   }
 
   /**

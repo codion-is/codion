@@ -4468,3 +4468,5 @@
   AbstractFilteredTableModel.removeItem() made a bit more efficient
   AbstractFilteredTableModel.removeItems() now uses a single call to fireTableDataChanged() after removing all the items instead of calling fireTableRowsDeleted() after each row is removed
   CredentialServer bug fixed, now checks if token is expired when queried, not only during periodic cleanup
+  AbstractConnectionPool, DefaultConnectionPool and TomactConnectionPoolProvider refactored
+  HikariCP connection pool plugin added
