@@ -60,7 +60,7 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
    */
   public void addAuthenticationToken(final UUID authenticationToken, final User user) {
     synchronized (authenticationTokens) {
-      authenticationTokens.put(authenticationToken, new UserExpiration(user, tokenValidity));
+      authenticationTokens.put(authenticationToken, new UserExpiration(user, System.currentTimeMillis() + tokenValidity));
     }
   }
 
@@ -76,7 +76,7 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
 
       synchronized (authenticationTokens) {
         final UserExpiration userExpiration = authenticationTokens.remove(authenticationToken);
-        if (userExpiration == null) {
+        if (userExpiration == null || userExpiration.isExpired()) {
           LOG.debug("Request failed, authentication token: " + authenticationToken + " invalid or expired");
 
           return null;
@@ -123,9 +123,9 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
     private final User user;
     private final long expires;
 
-    private UserExpiration(final User user, final int tokenValidity) {
+    private UserExpiration(final User user, final long expires) {
       this.user = user;
-      this.expires = System.currentTimeMillis() + tokenValidity;
+      this.expires = expires;
     }
 
     private boolean isExpired() {
