@@ -4473,3 +4473,4 @@
   Ant dependencies.xml file removed along with associated stuff, never used
   org.jminor.common.Configuration added
   org.jminor.framework.Configuration and associated abominations removed, configuration values refactored and spread all over the place
+  Removed a reference to Configuration from framework module build file

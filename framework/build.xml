@@ -5,8 +5,7 @@
 
   <target name="package" depends="build, javadoc">
     <package_module module-name="jminor-framework-db-core"
-                    includes="org/jminor/framework/Configuration.class,
-                    org/jminor/framework/db/*,
+                    includes="org/jminor/framework/db/*,
                     org/jminor/framework/db/condition/*,
                     org/jminor/framework/domain/*,
                     org/jminor/framework/i18n/**"
