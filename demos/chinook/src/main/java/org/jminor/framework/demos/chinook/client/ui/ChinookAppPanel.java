@@ -7,7 +7,6 @@ import org.jminor.common.User;
 import org.jminor.common.Version;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.chinook.beans.ui.AlbumEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.ArtistEditPanel;
@@ -146,9 +145,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPane
 
   public static void main(final String[] args) throws CancelException {
     Locale.setDefault(new Locale("en", "EN"));
-    Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
-    Configuration.setValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT, true);
-    Configuration.setValue(Configuration.USE_OPTIMISTIC_LOCKING, true);
+    EntityPanel.TOOLBAR_BUTTONS.set(true);
+    EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
     new ChinookAppPanel().startApplication("Chinook", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
   }
 

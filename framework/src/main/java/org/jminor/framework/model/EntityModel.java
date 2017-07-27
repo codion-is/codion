@@ -3,7 +3,10 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.EventListener;
+import org.jminor.common.Util;
+import org.jminor.common.Value;
 import org.jminor.common.model.Refreshable;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -19,6 +22,21 @@ import java.util.List;
  */
 public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>>
         extends Refreshable, EntityDataProvider {
+
+  /**
+   * Specifies whether or not a table model should be automatically filtered when an insert is performed
+   * in a master model, using the inserted entity.
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  Value<Boolean> FILTER_ON_MASTER_INSERT = Configuration.booleanValue("jminor.client.filterOnMasterInsert", false);
+
+  /**
+   * Specifies whether or not the client should save and apply user preferences<br>
+   * Value type: Boolean<br>
+   * Default value: true if required JSON library is found on classpath, false otherwise
+   */
+  Value<Boolean> USE_CLIENT_PREFERENCES = Configuration.booleanValue("jminor.client.useClientPreferences", Util.onClasspath("org.json.JSONObject"));
 
   /**
    * @return the {@link EntityEditModel} instance used by this {@link EntityModel}
@@ -173,13 +191,13 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 
   /**
    * @return true if this table model is automatically filtered when insert is performed in a master model
-   * @see org.jminor.framework.Configuration#FILTER_ON_MASTER_INSERT
+   * @see EntityModel#FILTER_ON_MASTER_INSERT
    */
   boolean isFilterOnMasterInsert();
 
   /**
    * @param filterDetailOnInsert if true then the table model is automatically filtered when insert is performed in a master model
-   * @see org.jminor.framework.Configuration#FILTER_ON_MASTER_INSERT
+   * @see EntityModel#FILTER_ON_MASTER_INSERT
    */
   void setFilterOnMasterInsert(final boolean filterDetailOnInsert);
 

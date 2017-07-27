@@ -3,15 +3,16 @@
  */
 package org.jminor.swing.framework.ui;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.Conjunction;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
+import org.jminor.common.Value;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -76,6 +77,23 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   private static final Logger LOG = LoggerFactory.getLogger(EntityEditPanel.class);
 
   /**
+   * Specifies whether focus should be transferred from components on enter,
+   * this does not work for editable combo boxes, combo boxes with the
+   * maximum match functionality enabled or text areas<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final Value<Boolean> TRANSFER_FOCUS_ON_ENTER = Configuration.booleanValue("jminor.client.transferFocusOnEnter", true);
+
+  /**
+   * Indicates whether all entity panels should be enabled and receiving input by default<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   * @see EntityPanel#USE_FOCUS_ACTIVATION
+   */
+  public static final Value<Boolean> ALL_PANELS_ACTIVE = Configuration.booleanValue("jminor.client.allPanelsActive", false);
+
+  /**
    * The standard controls available to the EditPanel
    */
   public enum ControlCode {
@@ -110,7 +128,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   /**
    * Indicates whether the panel is active and ready to receive input
    */
-  private final State activeState = States.state(Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE));
+  private final State activeState = States.state(ALL_PANELS_ACTIVE.get());
 
   /**
    * The mechanism for restricting a single active EntityEditPanel at a time
@@ -169,7 +187,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   public EntityEditPanel(final SwingEntityEditModel editModel, final ControlCode... controlCodes) {
     this.editModel = Objects.requireNonNull(editModel, "editModel");
-    if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE)) {
+    if (!ALL_PANELS_ACTIVE.get()) {
       ACTIVE_STATE_GROUP.addState(activeState);
     }
     setupDefaultControls(controlCodes);
@@ -1181,7 +1199,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * identified by {@code propertyID}.
    * @param propertyID the ID of the property for which to create the panel
    * @return a DateInputPanel using the default short date format
-   * @see org.jminor.framework.Configuration#DATE_FORMAT
+   * @see Property#DATE_FORMAT
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID) {
     return createDateInputPanel(propertyID, true);
@@ -1192,7 +1210,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param propertyID the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @return a DateInputPanel using the default short date format
-   * @see org.jminor.framework.Configuration#DATE_FORMAT
+   * @see Property#DATE_FORMAT
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton) {
     final Property property = Entities.getProperty(editModel.getEntityID(), propertyID);

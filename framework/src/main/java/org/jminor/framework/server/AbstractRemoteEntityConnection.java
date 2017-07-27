@@ -157,7 +157,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 
   /**
    * @return a ClientLog instance containing information about this connections recent activity
-   * @see org.jminor.framework.Configuration#SERVER_CONNECTION_LOG_SIZE
+   * @see EntityConnection#CONNECTION_LOG_SIZE
    */
   final ClientLog getClientLog() {
     return connectionHandler.getClientLog();

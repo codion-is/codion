@@ -5,7 +5,6 @@ package org.jminor.framework.demos.petstore.client.ui;
 
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.petstore.beans.ui.AddressEditPanel;
 import org.jminor.framework.demos.petstore.beans.ui.CategoryEditPanel;
@@ -58,7 +57,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppPa
 
   public static void main(final String[] args) {
     Locale.setDefault(new Locale("en"));
-    Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
+    EntityPanel.TOOLBAR_BUTTONS.set(true);
     new PetstoreAppPanel().startApplication("The Pet Store", null, false, UiUtil.getScreenSizeRatio(0.8), new User("scott", "tiger"));
   }
 

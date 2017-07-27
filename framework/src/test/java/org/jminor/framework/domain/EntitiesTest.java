@@ -6,7 +6,6 @@ package org.jminor.framework.domain;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.framework.Configuration;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -193,10 +192,10 @@ public class EntitiesTest {
     final String entityID = "entityID2";
     Entities.define(entityID, Properties.primaryKeyProperty("id"));
     assertEquals("id", Entities.getPrimaryKeyProperties(entityID).get(0).getPropertyID());
-    Configuration.setValue(Configuration.ALLOW_REDEFINE_ENTITY, true);
+    Entities.ALLOW_REDEFINE_ENTITY.set(true);
     Entities.define(entityID, Properties.primaryKeyProperty("id2"));
     assertEquals("id2", Entities.getPrimaryKeyProperties(entityID).get(0).getPropertyID());
-    Configuration.setValue(Configuration.ALLOW_REDEFINE_ENTITY, false);
+    Entities.ALLOW_REDEFINE_ENTITY.set(false);
   }
 
   @Test
@@ -304,12 +303,12 @@ public class EntitiesTest {
 
   @Test
   public void foreignKeyReferencingUndefinedEntityNonStrict() {
-    Configuration.setValue(Configuration.STRICT_FOREIGN_KEYS, false);
+    Entity.Definition.STRICT_FOREIGN_KEYS.set(false);
     Entities.define("test.entity",
             Properties.primaryKeyProperty("id"),
             Properties.foreignKeyProperty("fk_id_fk", "caption", "test.referenced_entity",
                     Properties.columnProperty("fk_id")));
-    Configuration.setValue(Configuration.STRICT_FOREIGN_KEYS, true);
+    Entity.Definition.STRICT_FOREIGN_KEYS.set(true);
   }
 
   @Test (expected = IllegalArgumentException.class)

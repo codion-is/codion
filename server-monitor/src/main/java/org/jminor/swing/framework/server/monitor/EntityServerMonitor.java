@@ -3,11 +3,13 @@
  */
 package org.jminor.swing.framework.server.monitor;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.Event;
 import org.jminor.common.Events;
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.framework.Configuration;
+import org.jminor.common.Value;
+import org.jminor.common.server.Server;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -19,11 +21,19 @@ import java.util.Collection;
  */
 public final class EntityServerMonitor {
 
+  private static final int DEFAULT_SERVER_MONITOR_UPDATE_RATE = 5;
+
+  /**
+   * Specifies the statistics polling rate for the server monitor, in seconds.
+   * Value type: Integer<br>
+   * Default value: 5
+   */
+  public static final Value<Integer> SERVER_MONITOR_UPDATE_RATE = Configuration.integerValue("jminor.server.monitor.updateRate", DEFAULT_SERVER_MONITOR_UPDATE_RATE);
+
   private static final User ADMIN_USER;
 
   static {
-    final String adminUserString = Configuration.getStringValue(Configuration.SERVER_ADMIN_USER);
-    ADMIN_USER = User.parseUser(adminUserString);
+    ADMIN_USER = User.parseUser(Server.SERVER_ADMIN_USER.get());
   }
 
   private final Event<String> hostAddedEvent = Events.event();

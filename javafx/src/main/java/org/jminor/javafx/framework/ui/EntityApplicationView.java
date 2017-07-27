@@ -6,7 +6,6 @@ package org.jminor.javafx.framework.ui;
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.ExceptionUtil;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -158,7 +157,7 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
    * @return the default user when logging into this application
    */
   protected User getDefaultUser() {
-    final String defaultUserName = Configuration.getValue(Configuration.USERNAME_PREFIX) + System.getProperty("user.name");
+    final String defaultUserName = EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name");
 
     return new User(defaultUserName, "");
   }
@@ -187,11 +186,11 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
   /**
    * Displays a login panel in case authentication is required, otherwise returns the default user.
    * @return the user to use when logging into this application.
-   * @see Configuration#AUTHENTICATION_REQUIRED
+   * @see EntityApplicationModel#AUTHENTICATION_REQUIRED
    * @see #getDefaultUser()
    */
   protected final User getApplicationUser() {
-    if (Configuration.getBooleanValue(Configuration.AUTHENTICATION_REQUIRED)) {
+    if (EntityApplicationModel.AUTHENTICATION_REQUIRED.get()) {
       return showLoginPanel(getDefaultUser());
     }
 

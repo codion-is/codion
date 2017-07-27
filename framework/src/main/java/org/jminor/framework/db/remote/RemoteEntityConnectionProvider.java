@@ -11,7 +11,6 @@ import org.jminor.common.model.ExceptionUtil;
 import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerUtil;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.RemoteEntityConnection;
@@ -171,20 +170,19 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   private void connectToServer() throws RemoteException, NotBoundException {
-    Integer serverPort = (Integer) Configuration.getValue(Configuration.SERVER_PORT);
+    Integer serverPort = Server.SERVER_PORT.get();
     if (serverPort == null) {
       serverPort = -1;
     }
-    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT);
-    this.server = ServerUtil.getServer(serverHostName,
-            Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX), registryPort, serverPort);
+    final int registryPort = Server.REGISTRY_PORT.get();
+    this.server = ServerUtil.getServer(serverHostName, Server.SERVER_NAME_PREFIX.get(), registryPort, serverPort);
     this.serverInfo = this.server.getServerInfo();
     final Version serverVersion = this.serverInfo.getServerVersion();
     if (serverVersion != null) {
-      Configuration.setValue(Configuration.REMOTE_SERVER_VERSION, serverVersion);
+      RemoteEntityConnection.REMOTE_SERVER_VERSION.set(serverVersion);
     }
     else {
-      Configuration.clearValue(Configuration.REMOTE_SERVER_VERSION);
+      RemoteEntityConnection.REMOTE_SERVER_VERSION.set(null);
     }
   }
 

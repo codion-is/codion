@@ -5,7 +5,6 @@ package org.jminor.framework.model;
 
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Property;
 
@@ -24,8 +23,7 @@ public class DefaultPropertyConditionModel extends DefaultColumnConditionModel<P
    * @throws IllegalArgumentException if an illegal constant is used
    */
   public DefaultPropertyConditionModel(final Property.ColumnProperty property) {
-    super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER),
-            property.getFormat());
+    super(property, property.getType(), Property.WILDCARD_CHARACTER.get(), property.getFormat());
   }
 
   /** {@inheritDoc} */

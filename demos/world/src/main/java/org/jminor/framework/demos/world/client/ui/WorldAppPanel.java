@@ -5,7 +5,6 @@ package org.jminor.framework.demos.world.client.ui;
 
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.world.beans.ui.CityEditPanel;
 import org.jminor.framework.demos.world.beans.ui.CountryEditPanel;
@@ -14,6 +13,7 @@ import org.jminor.framework.demos.world.domain.World;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
+import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
 
 import java.util.Locale;
@@ -41,9 +41,8 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppPanel.Wo
 
   public static void main(final String[] args) throws CancelException {
     Locale.setDefault(new Locale("en", "EN"));
-    Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
-    Configuration.setValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT, true);
-    Configuration.setValue(Configuration.USE_OPTIMISTIC_LOCKING, true);
+    EntityPanel.TOOLBAR_BUTTONS.set(true);
+    EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
     new WorldAppPanel().startApplication("World", null, false, UiUtil.getScreenSizeRatio(0.8), new User("scott", "tiger"));
   }
 

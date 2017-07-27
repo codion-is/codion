@@ -7,7 +7,6 @@ import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 
 import java.sql.Connection;
@@ -27,10 +26,8 @@ public final class LocalEntityConnections {
    * @throws DatabaseException in case there is a problem connecting to the database
    */
   public static EntityConnection createConnection(final Database database, final User user) throws DatabaseException {
-    return new LocalEntityConnection(database, user,
-            Configuration.getBooleanValue(Configuration.USE_OPTIMISTIC_LOCKING),
-            Configuration.getBooleanValue(Configuration.LIMIT_FOREIGN_KEY_FETCH_DEPTH),
-            Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
+    return new LocalEntityConnection(database, user, EntityConnection.USE_OPTIMISTIC_LOCKING.get(),
+            EntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get(), EntityConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
   }
 
   /**
@@ -44,17 +41,15 @@ public final class LocalEntityConnections {
    * @see org.jminor.common.db.Database#supportsIsValid()
    */
   public static EntityConnection createConnection(final Database database, final Connection connection) throws DatabaseException {
-    return new LocalEntityConnection(database, connection,
-            Configuration.getBooleanValue(Configuration.USE_OPTIMISTIC_LOCKING),
-            Configuration.getBooleanValue(Configuration.LIMIT_FOREIGN_KEY_FETCH_DEPTH),
-            Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
+    return new LocalEntityConnection(database, connection, EntityConnection.USE_OPTIMISTIC_LOCKING.get(),
+            EntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get(), EntityConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
   }
 
   /**
    * @return A {@link MethodLogger} implementation tailored for EntityConnections
    */
   public static MethodLogger createLogger() {
-    return new MethodLogger(Configuration.getIntValue(Configuration.SERVER_CONNECTION_LOG_SIZE),
+    return new MethodLogger(EntityConnection.CONNECTION_LOG_SIZE.get(),
             false, new LocalEntityConnection.EntityArgumentStringProvider());
   }
 }

@@ -4,7 +4,6 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.common.User;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
@@ -52,7 +51,7 @@ public class EntityApplicationPanelTest {
 
   @Test
   public void test() throws Exception {
-    Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, "local");
+    EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
     final EntityApplicationPanel<SwingEntityApplicationModel> panel = new EntityApplicationPanel<SwingEntityApplicationModel>() {
       @Override
       protected List<EntityPanel> initializeEntityPanels(final SwingEntityApplicationModel applicationModel) {

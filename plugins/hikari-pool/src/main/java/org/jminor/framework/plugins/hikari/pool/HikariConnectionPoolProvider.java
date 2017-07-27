@@ -100,7 +100,9 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
       try {
         getPool().shutdown();
       }
-      catch (final InterruptedException e) {/*ignored*/}
+      catch (final InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
     }
 
     @Override
@@ -109,7 +111,7 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
     }
 
     @Override
-    public void setCleanupInterval(final int poolCleanupInterval) {}
+    public void setCleanupInterval(final int poolCleanupInterval) {/*non-configurable, com.zaxxer.hikari.housekeeping.periodMs*/}
 
     @Override
     public int getConnectionTimeout() {
@@ -127,7 +129,7 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
     }
 
     @Override
-    public void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod) {}
+    public void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod) {/*not implemented*/}
 
     @Override
     public int getMinimumPoolSize() {
@@ -180,6 +182,6 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
     }
 
     @Override
-    public void setNewConnectionThreshold(final int value) {}
+    public void setNewConnectionThreshold(final int value) {/*Not implemented*/}
   }
 }

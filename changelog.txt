@@ -4470,3 +4470,6 @@
   CredentialServer bug fixed, now checks if token is expired when queried, not only during periodic cleanup
   AbstractConnectionPool, DefaultConnectionPool and TomactConnectionPoolProvider refactored
   HikariCP connection pool plugin added
+  Ant dependencies.xml file removed along with associated stuff, never used
+  org.jminor.common.Configuration added
+  org.jminor.framework.Configuration and associated abominations removed, configuration values refactored and spread all over the place

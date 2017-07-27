@@ -321,11 +321,12 @@ public final class Properties {
   public static Property.MirrorProperty mirrorProperty(final String propertyID) {
     return new DefaultProperty.DefaultMirrorProperty(propertyID);
   }
+
   /**
    * @return a value converter which converts an underlying database representation
    * of a boolean value into an actual Boolean
-   * @see org.jminor.framework.Configuration#SQL_BOOLEAN_VALUE_TRUE
-   * @see org.jminor.framework.Configuration#SQL_BOOLEAN_VALUE_FALSE
+   * @see Property#SQL_BOOLEAN_VALUE_TRUE
+   * @see Property#SQL_BOOLEAN_VALUE_FALSE
    */
   public static ValueConverter booleanValueConverter() {
     return new DefaultProperty.BooleanValueConverter();

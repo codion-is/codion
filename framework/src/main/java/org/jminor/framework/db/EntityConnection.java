@@ -3,8 +3,10 @@
  */
 package org.jminor.framework.db;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
+import org.jminor.common.Value;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.reports.ReportException;
@@ -22,6 +24,38 @@ import java.util.Map;
  * Defines the database methods the database layer offers.
  */
 public interface EntityConnection {
+
+  int DEFAULT_CONNECTION_LOG_SIZE = 40;
+
+  /**
+   * Specifies the size of the (circular) log that is kept in memory for each connection<br>
+   * Value type: Integer<br>
+   * Default value: 40
+   */
+  Value<Integer> CONNECTION_LOG_SIZE = Configuration.integerValue("jminor.db.clientLogSize", DEFAULT_CONNECTION_LOG_SIZE);
+
+  /**
+   * Specifies whether optimistic locking should be performed, that is, if entities should
+   * be selected for update and checked for modification before being updated<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  Value<Boolean> USE_OPTIMISTIC_LOCKING = Configuration.booleanValue("jminor.db.useOptimisticLocking", true);
+
+  /**
+   * Specifies whether the foreign key value graph should be fully populated instead of
+   * being limited by the foreign key fetch depth setting.<br>
+   * Value type: Boolean<br>
+   * Default value: true<br>
+   */
+  Value<Boolean> LIMIT_FOREIGN_KEY_FETCH_DEPTH = Configuration.booleanValue("jminor.db.limitForeignKeyFetchDepth", true);
+
+  /**
+   * Specifies the timeout (in seconds) to specify when checking if database connections are valid.
+   * Value type: Integer<br>
+   * Default value: 0
+   */
+  Value<Integer> CONNECTION_VALIDITY_CHECK_TIMEOUT = Configuration.integerValue("jminor.db.validityCheckTimeout", 0);
 
   /**
    * The possible EntityConnection types

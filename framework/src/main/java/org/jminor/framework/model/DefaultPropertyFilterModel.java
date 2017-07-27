@@ -4,7 +4,6 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.model.table.DefaultColumnConditionModel;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -19,8 +18,7 @@ public class DefaultPropertyFilterModel extends DefaultColumnConditionModel<Prop
    * @param property the property
    */
   public DefaultPropertyFilterModel(final Property property) {
-    super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER),
-            property.getFormat());
+    super(property, property.getType(), Property.WILDCARD_CHARACTER.get(), property.getFormat());
   }
 
   /** {@inheritDoc} */

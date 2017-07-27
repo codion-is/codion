@@ -3,6 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.DateUtil;
 import org.jminor.common.Event;
 import org.jminor.common.EventObserver;
@@ -14,7 +15,6 @@ import org.jminor.common.Values;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.valuemap.EditModelValues;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -24,7 +24,6 @@ import org.jminor.framework.model.DefaultEntityLookupModel;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityLookupModel;
-import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.DateInputPanel;
@@ -83,6 +82,34 @@ import java.util.Objects;
  * A static utility class concerned with UI related tasks.
  */
 public final class EntityUiUtil {
+
+  /**
+   * Identifies the completion mode MaximumMatch
+   * @see EntityUiUtil#COMBO_BOX_COMPLETION_MODE
+   */
+  public static final String COMPLETION_MODE_MAXIMUM_MATCH = "max";
+
+  /**
+   * Identifies the completion mode AutoCompletion
+   * @see EntityUiUtil#COMBO_BOX_COMPLETION_MODE
+   */
+  public static final String COMPLETION_MODE_AUTOCOMPLETE = "auto";
+
+  /**
+   * Specifies the default horizontal alignment used in labels<br>
+   * Value type: Integer (JLabel.LEFT, JLabel.RIGHT, JLabel.CENTER)<br>
+   * Default value: JLabel.LEFT
+   */
+  public static final Value<Integer> LABEL_TEXT_ALIGNMENT = Configuration.integerValue("jminor.swing.labelTextAlignment", JLabel.LEFT);
+
+  /**
+   * Specifies whether maximum match or autocomplete is used for comboboxes,
+   * {@link #COMPLETION_MODE_MAXIMUM_MATCH} for {@link MaximumMatch}
+   * and {@link #COMPLETION_MODE_AUTOCOMPLETE} for {@link AutoCompletion}.<br>
+   * Value type:String<br>
+   * Default value: {@link #COMPLETION_MODE_MAXIMUM_MATCH}
+   */
+  public static final Value<String> COMBO_BOX_COMPLETION_MODE = Configuration.stringValue("jminor.swing.comboBoxCompletionMode", COMPLETION_MODE_MAXIMUM_MATCH);
 
   private static final String PROPERTY_PARAM_NAME = "property";
   private static final String EDIT_MODEL_PARAM_NAME = "editModel";
@@ -158,10 +185,10 @@ public final class EntityUiUtil {
    * Creates a JLabel with a caption from the given property, using the default label text alignment
    * @param property the property for which to create the label
    * @return a JLabel for the given property
-   * @see org.jminor.swing.SwingConfiguration#LABEL_TEXT_ALIGNMENT
+   * @see EntityUiUtil#LABEL_TEXT_ALIGNMENT
    */
   public static JLabel createLabel(final Property property) {
-    return createLabel(property, SwingConfiguration.getIntValue(SwingConfiguration.LABEL_TEXT_ALIGNMENT));
+    return createLabel(property, LABEL_TEXT_ALIGNMENT.get());
   }
 
   /**
@@ -230,7 +257,7 @@ public final class EntityUiUtil {
     else {
       checkBox.setToolTipText(property.getCaption());
     }
-    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
+    if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
       UiUtil.transferFocusOnEnter(checkBox);
     }
 
@@ -264,7 +291,7 @@ public final class EntityUiUtil {
     else {
       checkBox.setToolTipText(property.getCaption());
     }
-    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
+    if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
       UiUtil.transferFocusOnEnter(checkBox);
     }
 
@@ -326,7 +353,7 @@ public final class EntityUiUtil {
     UiUtil.linkToEnabledState(enabledState, comboBox);
     addComboBoxCompletion(comboBox);
     comboBox.setToolTipText(foreignKeyProperty.getDescription());
-    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
+    if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
       //getEditor().getEditorComponent() only required because the combo box is editable, due to addComboBoxCompletion() above
       UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
     }
@@ -434,7 +461,7 @@ public final class EntityUiUtil {
     final EntityLookupModel lookupModel = editModel.getForeignKeyLookupModel(foreignKeyProperty);
     final EntityLookupField lookupField = new EntityLookupField(lookupModel);
 
-    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
+    if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
       lookupField.setTransferFocusOnEnter();
     }
     Values.link(EditModelValues.<Entity>value(editModel, foreignKeyProperty), new LookupUIValue(lookupField.getModel()));
@@ -534,7 +561,7 @@ public final class EntityUiUtil {
     ValueLinks.selectedItemValueLink(comboBox, EditModelValues.value(editModel, property));
     UiUtil.linkToEnabledState(enabledState, comboBox);
     comboBox.setToolTipText(property.getDescription());
-    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
+    if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
       UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
       UiUtil.transferFocusOnEnter(comboBox);
     }
@@ -575,7 +602,7 @@ public final class EntityUiUtil {
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, editModel, readOnly,
             DateUtil.getDateMask((SimpleDateFormat) property.getFormat()), true, enabledState);
     final DateInputPanel panel = new DateInputPanel(field, (SimpleDateFormat) property.getFormat(), includeButton, enabledState);
-    if (panel.getButton() != null && Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
+    if (panel.getButton() != null && EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
       UiUtil.transferFocusOnEnter(panel.getButton());
     }
 
@@ -599,7 +626,7 @@ public final class EntityUiUtil {
     final JTextField field = createTextField(property, editModel, readOnly, null, immediateUpdate);
     final TextInputPanel panel = new TextInputPanel(field, property.getCaption(), null, buttonFocusable);
     panel.setMaxLength(property.getMaxLength());
-    if (panel.getButton() != null && Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
+    if (panel.getButton() != null && EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
       UiUtil.transferFocusOnEnter(panel.getButton());//todo
     }
 
@@ -878,7 +905,7 @@ public final class EntityUiUtil {
                                                 final boolean valueContainsLiteralCharacters) {
     final JTextField field = initializeTextField(property, formatMaskString, valueContainsLiteralCharacters);
     UiUtil.linkToEnabledState(enabledState, field);
-    if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
+    if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
       UiUtil.transferFocusOnEnter(field);
     }
     field.setToolTipText(property.getDescription());
@@ -1134,12 +1161,12 @@ public final class EntityUiUtil {
   }
 
   private static void addComboBoxCompletion(final JComboBox comboBox) {
-    final String completionMode = SwingConfiguration.getStringValue(SwingConfiguration.COMBO_BOX_COMPLETION_MODE);
+    final String completionMode = COMBO_BOX_COMPLETION_MODE.get();
     switch (completionMode) {
-      case SwingConfiguration.COMPLETION_MODE_AUTOCOMPLETE:
+      case COMPLETION_MODE_AUTOCOMPLETE:
         AutoCompletion.enable(comboBox);
         break;
-      case SwingConfiguration.COMPLETION_MODE_MAXIMUM_MATCH:
+      case COMPLETION_MODE_MAXIMUM_MATCH:
         MaximumMatch.enable(comboBox);
         break;
       default:

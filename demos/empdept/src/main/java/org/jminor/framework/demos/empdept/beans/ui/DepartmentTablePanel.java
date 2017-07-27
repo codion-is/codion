@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.demos.empdept.beans.ui;
 
-import org.jminor.framework.Configuration;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityUtil;
+import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 import org.jminor.framework.plugins.jasperreports.ui.JasperReportsUIWrapper;
 import org.jminor.swing.common.ui.control.ControlSet;
@@ -31,7 +31,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
       return;
     }
 
-    final String reportPath = Configuration.getReportPath() + "/empdept_employees.jasper";
+    final String reportPath = EntityApplicationModel.getReportPath() + "/empdept_employees.jasper";
     final Collection departmentNumbers =
             EntityUtil.getDistinctValues(DEPARTMENT_ID, getEntityTableModel().getSelectionModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<>();

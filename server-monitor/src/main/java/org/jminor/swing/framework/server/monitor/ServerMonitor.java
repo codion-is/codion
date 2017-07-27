@@ -12,7 +12,6 @@ import org.jminor.common.User;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import ch.qos.logback.classic.Level;
@@ -54,7 +53,7 @@ public final class ServerMonitor {
   private final User serverAdminUser;
 
   private final TaskScheduler updateScheduler = new TaskScheduler(this::updateStatistics,
-          Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
+          EntityServerMonitor.SERVER_MONITOR_UPDATE_RATE.get(), 2, TimeUnit.SECONDS).start();
 
   private final DatabaseMonitor databaseMonitor;
   private final ClientUserMonitor clientMonitor;

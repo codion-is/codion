@@ -6,6 +6,7 @@ package org.jminor.framework.demos.empdept.minimal;
 import org.jminor.common.User;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.server.Server;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
@@ -223,11 +224,11 @@ public class EmpDeptMinimalApp {
     //Let's set the locale, otherwise the application would be in icelandic
     Locale.setDefault(new Locale("en", "EN"));
     //the remote connection settings
-    System.setProperty("jminor.client.connectionType", "remote");
-    System.setProperty("jminor.server.hostname", "jminor.no-ip.org");
-    System.setProperty("java.security.policy", "resources/security/jminor_demos.policy");
+    EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
+    Server.SERVER_HOST_NAME.set("jminor.no-ip.org");
     //we're using Secure Sockets Layer so we need to specify a truststore
-    System.setProperty("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
+    Server.TRUSTSTORE.set("resources/security/JMinorClientTruststore");
+    System.setProperty("java.security.policy", "resources/security/jminor_demos.policy");
 
     //we create an instance of our application panel
     final EmpDeptApplicationPanel mainPanel = new EmpDeptApplicationPanel();

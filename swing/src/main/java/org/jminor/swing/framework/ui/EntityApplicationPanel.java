@@ -3,6 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
@@ -10,18 +11,19 @@ import org.jminor.common.Events;
 import org.jminor.common.TextUtil;
 import org.jminor.common.User;
 import org.jminor.common.Util;
+import org.jminor.common.Value;
 import org.jminor.common.Version;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.server.ClientUtil;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.swing.SwingConfiguration;
+import org.jminor.framework.model.EntityApplicationModel;
+import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.DialogExceptionHandler;
 import org.jminor.swing.common.ui.LoginPanel;
@@ -89,6 +91,36 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
+  /**
+   * Indicates whether the application should ask for confirmation when exiting<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final Value<Boolean> CONFIRM_EXIT = Configuration.booleanValue("jminor.swing.confirmExit", false);
+
+  /**
+   * Specifies whether a startup dialog should be shown<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final Value<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue("jminor.swing.showStartupDialog", true);
+
+  /**
+   * Specifies if EntityPanels opened via the {@code EntityApplicationPanel.showEntityPanelDialog} method
+   * should be persisted, or kept in memory, when the dialog is closed.<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   * @see EntityApplicationPanel#showEntityPanelDialog(EntityPanelProvider)
+   */
+  public static final Value<Boolean> PERSIST_ENTITY_PANELS = Configuration.booleanValue("jminor.swing.persistEntityPanels", false);
+
+  /**
+   * Specifies the tab placement<br>
+   * Value type: Integer (JTabbedPane.TOP, JTabbedPane.BOTTOM, JTabbedPane.LEFT, JTabbedPane.RIGHT)<br>
+   * Default value: JTabbedPane.TOP
+   */
+  public static final Value<Integer> TAB_PLACEMENT = Configuration.integerValue("jminor.swing.tabPlacement", JTabbedPane.TOP);
+
   private static final String LOOK_AND_FEEL_PROPERTY = "org.jminor.swing.framework.ui.LookAndFeel";
   private static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
   private static final Dimension MINIMUM_HELP_WINDOW_SIZE = new Dimension(600, 750);
@@ -107,11 +139,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private final Event<Boolean> alwaysOnTopChangedEvent = Events.event();
   private final Event onExitEvent = Events.event();
 
-  private final boolean persistEntityPanels = SwingConfiguration.getBooleanValue(SwingConfiguration.PERSIST_ENTITY_PANELS);
   private final Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<>();
 
-  private boolean loginRequired = Configuration.getBooleanValue(Configuration.AUTHENTICATION_REQUIRED);
-  private boolean showStartupDialog = Configuration.getBooleanValue(Configuration.SHOW_STARTUP_DIALOG);
+  private boolean loginRequired = EntityApplicationModel.AUTHENTICATION_REQUIRED.get();
+  private boolean showStartupDialog = SHOW_STARTUP_DIALOG.get();
 
   private String frameTitle = "<no title>";
 
@@ -408,18 +439,18 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Exits this application
    * @see #addOnExitListener(EventListener)
-   * @see Configuration#CONFIRM_EXIT
-   * @see Configuration#WARN_ABOUT_UNSAVED_DATA
+   * @see EntityApplicationPanel#CONFIRM_EXIT
+   * @see EntityEditModel#WARN_ABOUT_UNSAVED_DATA
    * @throws CancelException if the exit is cancelled
    */
   public final void exit() {
-    if (Configuration.getBooleanValue(Configuration.WARN_ABOUT_UNSAVED_DATA) && getModel().containsUnsavedData() &&
+    if (EntityEditModel.WARN_ABOUT_UNSAVED_DATA.get() && getModel().containsUnsavedData() &&
             JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING),
                     FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
                     JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
       throw new CancelException();
     }
-    else if (Configuration.getBooleanValue(Configuration.CONFIRM_EXIT) && JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
+    else if (CONFIRM_EXIT.get() && JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
             FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
       throw new CancelException();
     }
@@ -802,7 +833,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     try {
       UiUtil.setWaitCursor(true, this);
       final EntityPanel entityPanel;
-      if (persistEntityPanels && persistentEntityPanels.containsKey(panelProvider)) {
+      if (PERSIST_ENTITY_PANELS.get() && persistentEntityPanels.containsKey(panelProvider)) {
         entityPanel = persistentEntityPanels.get(panelProvider);
         if (entityPanel.isShowing()) {
           return;
@@ -811,7 +842,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       else {
         entityPanel = panelProvider.createPanel(applicationModel.getConnectionProvider());
         entityPanel.initializePanel();
-        if (persistEntityPanels) {
+        if (PERSIST_ENTITY_PANELS.get()) {
           persistentEntityPanels.put(panelProvider, entityPanel);
         }
       }
@@ -859,7 +890,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected void initializeUI() {
     setLayout(new BorderLayout());
-    applicationTabPane = new JTabbedPane(SwingConfiguration.getIntValue(SwingConfiguration.TAB_PLACEMENT));
+    applicationTabPane = new JTabbedPane(TAB_PLACEMENT.get());
     applicationTabPane.setFocusable(false);
     applicationTabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     applicationTabPane.addChangeListener(e -> ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel());
@@ -1100,7 +1131,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case a login dialog is cancelled
    */
   protected User getUser(final String frameCaption, final User defaultUser, final ImageIcon applicationIcon) {
-    final String defaultUserName = Configuration.getValue(Configuration.USERNAME_PREFIX) + System.getProperty("user.name");
+    final String defaultUserName = EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name");
     final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? new User(PreferencesUtil.getDefaultUserName(getApplicationIdentifier(),
             defaultUserName), null) : defaultUser);
     final String loginTitle = (!Util.nullOrEmpty(frameCaption) ? (frameCaption + " - ") : "") + Messages.get(Messages.LOGIN);
@@ -1180,7 +1211,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         if (startupDialog != null) {
           startupDialog.dispose();
         }
-        if (Configuration.getBooleanValue(Configuration.SAVE_DEFAULT_USERNAME)) {
+        if (EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
           saveDefaultUserName(connectionProvider.getUser().getUsername());
         }
         this.frameTitle = getFrameTitle(frameCaption, connectionProvider);
@@ -1286,7 +1317,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private static String getUsername(final String username) {
-    final String usernamePrefix = (String) Configuration.getValue(Configuration.USERNAME_PREFIX);
+    final String usernamePrefix = EntityApplicationModel.USERNAME_PREFIX.get();
     if (!Util.nullOrEmpty(usernamePrefix) && username.toUpperCase().startsWith(usernamePrefix.toUpperCase())) {
       return username.substring(usernamePrefix.length(), username.length());
     }

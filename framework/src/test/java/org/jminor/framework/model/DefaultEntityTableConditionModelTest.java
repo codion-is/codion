@@ -9,7 +9,6 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
@@ -121,7 +120,7 @@ public class DefaultEntityTableConditionModelTest {
   @Test
   public void testSimpleSearchString() {
     final String value = "test";
-    final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
+    final String wildcard = Property.WILDCARD_CHARACTER.get();
     final String wildcardValue = wildcard + "test" + wildcard;
     conditionModel.setSimpleConditionString(value);
     for (final PropertyConditionModel model : conditionModel.getPropertyConditionModels()) {

@@ -6,7 +6,6 @@ package org.jminor.framework.db.local;
 import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
@@ -44,11 +43,11 @@ public class LocalEntityConnectionProviderTest {
 
   @Test
   public void entityConnectionProviders() {
-    final Object previousValue = Configuration.getValue(Configuration.CLIENT_CONNECTION_TYPE);
-    Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, Configuration.CONNECTION_TYPE_LOCAL);
+    final String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
+    EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
     final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider(UNIT_TEST_USER, "test");
     assertEquals("LocalEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
     assertEquals(EntityConnection.Type.LOCAL, connectionProvider.getConnectionType());
-    Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, previousValue);
+    EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);
   }
 }

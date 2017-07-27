@@ -5,7 +5,6 @@ package org.jminor.framework.model;
 
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -37,7 +36,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
    * @param entityLookupModel a EntityLookupModel
    */
   public DefaultForeignKeyConditionModel(final Property.ForeignKeyProperty property, final EntityLookupModel entityLookupModel) {
-    super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
+    super(property, property.getType(), Property.WILDCARD_CHARACTER.get());
     this.entityLookupModel = entityLookupModel;
     if (entityLookupModel != null) {
       bindLookupModelEvents();

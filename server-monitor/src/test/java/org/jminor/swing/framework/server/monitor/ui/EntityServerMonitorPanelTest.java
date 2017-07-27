@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
-import org.jminor.framework.Configuration;
+import org.jminor.common.server.Server;
 import org.jminor.swing.framework.server.monitor.ConnectionPoolMonitor;
 import org.jminor.swing.framework.server.monitor.DatabaseMonitor;
 import org.jminor.swing.framework.server.monitor.EntityServerMonitor;
@@ -29,7 +29,7 @@ public class EntityServerMonitorPanelTest {
   @Test
   public void test() throws Exception {
     final EntityServerMonitorPanel panel = new EntityServerMonitorPanel(new EntityServerMonitor("localhost",
-            Configuration.getIntValue(Configuration.REGISTRY_PORT)));
+            Server.REGISTRY_PORT.get()));
     final ServerMonitor serverMonitor = panel.getModel().getHostMonitors().iterator().next().getServerMonitors().iterator().next();
     serverMonitor.getUpdateScheduler().setInterval(350);
     final DatabaseMonitor databaseMonitor = serverMonitor.getDatabaseMonitor();

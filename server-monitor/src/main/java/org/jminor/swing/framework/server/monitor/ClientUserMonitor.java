@@ -10,7 +10,6 @@ import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.server.ClientInfo;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.AbstractTableSortModel;
@@ -62,7 +61,7 @@ public final class ClientUserMonitor {
     catch (final Exception e) {
       LOG.error("Error while refreshing user history table model", e);
     }
-  }, Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
+  }, EntityServerMonitor.SERVER_MONITOR_UPDATE_RATE.get(), 2, TimeUnit.SECONDS).start();
 
   /**
    * Instantiates a new {@link ClientUserMonitor}

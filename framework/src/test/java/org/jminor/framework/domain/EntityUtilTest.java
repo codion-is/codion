@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.framework.Configuration;
-
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
@@ -439,7 +437,7 @@ public class EntityUtilTest {
 
   @Test(expected = RuntimeException.class)
   public void getEntitySerializerUnconfigured() {
-    Configuration.setValue(Configuration.ENTITY_SERIALIZER_CLASS, null);
+    Entities.ENTITY_SERIALIZER_CLASS.set(null);
     EntityUtil.getEntitySerializer();
   }
 

@@ -11,7 +11,6 @@ import org.jminor.common.User;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolState;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
-import org.jminor.framework.Configuration;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -54,7 +53,7 @@ public final class ConnectionPoolMonitor {
   private final YIntervalSeriesCollection checkOutTimeCollection = new YIntervalSeriesCollection();
 
   private final TaskScheduler updateScheduler = new TaskScheduler(this::updateStatistics,
-          Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
+          EntityServerMonitor.SERVER_MONITOR_UPDATE_RATE.get(), 2, TimeUnit.SECONDS).start();
 
   private long lastStatisticsUpdateTime = 0;
 

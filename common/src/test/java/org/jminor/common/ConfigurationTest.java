@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework;
+package org.jminor.common;
 
 import org.junit.Test;
 
@@ -12,9 +12,9 @@ import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 
-public final class ConfigurationTest {
+public class ConfigurationTest {
 
-    @Test
+  @Test
   public void parseConfigurationFile() throws IOException {
     File mainConfigurationFile = null;
     File secondConfigurationFile = null;

@@ -5,7 +5,6 @@ package org.jminor.swing.framework.server.monitor;
 
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.db.Database;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import org.jfree.data.xy.XYSeries;
@@ -33,7 +32,7 @@ public final class DatabaseMonitor {
       updateStatistics();
     }
     catch (final RemoteException ignored) {/*ignored*/}
-  }, Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
+  }, EntityServerMonitor.SERVER_MONITOR_UPDATE_RATE.get(), 2, TimeUnit.SECONDS).start();
 
   /**
    * Instantiates a new {@link DatabaseMonitor} for the given server

@@ -8,7 +8,7 @@ import org.jminor.common.User;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.tools.LoadTestModel;
-import org.jminor.framework.Configuration;
+import org.jminor.common.server.Server;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -47,7 +47,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
           System.getProperty("jminor.unittest.password", "tiger"));
 
   private static final int PORT = 8080;
-  private static final String BASEURL = Configuration.getStringValue(Configuration.SERVER_HOST_NAME) + ":" + PORT + "/entities/";
+  private static final String BASEURL = Server.SERVER_HOST_NAME.get() + ":" + PORT + "/entities/";
   private static final String BASIC = "Basic ";
   private static final String HTTP = "http";
   private static final RequestConfig REQUEST_CONFIG = RequestConfig.custom()

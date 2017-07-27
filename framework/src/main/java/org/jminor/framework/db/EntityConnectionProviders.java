@@ -5,7 +5,7 @@ package org.jminor.framework.db;
 
 import org.jminor.common.User;
 import org.jminor.common.Version;
-import org.jminor.framework.Configuration;
+import org.jminor.common.server.Server;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
@@ -14,11 +14,6 @@ import java.util.UUID;
  * A factory class for handing out EntityConnectionProviders according to system properties.
  */
 public final class EntityConnectionProviders {
-
-  private static final String REMOTE_CONNECTION_PROVIDER =
-          Configuration.getStringValue(Configuration.REMOTE_CONNECTION_PROVIDER);
-  private static final String LOCAL_CONNECTION_PROVIDER =
-          Configuration.getStringValue(Configuration.LOCAL_CONNECTION_PROVIDER);
 
   private EntityConnectionProviders() {}
 
@@ -63,25 +58,25 @@ public final class EntityConnectionProviders {
    * @param clientID a unique client ID
    * @param clientVersion the client version, if any
    * @return a EntityConnectionProvider
-   * @see org.jminor.framework.Configuration#CLIENT_CONNECTION_TYPE
-   * @see org.jminor.framework.Configuration#REMOTE_CONNECTION_PROVIDER
-   * @see org.jminor.framework.Configuration#LOCAL_CONNECTION_PROVIDER
+   * @see org.jminor.framework.db.EntityConnectionProvider#CLIENT_CONNECTION_TYPE
+   * @see org.jminor.framework.db.EntityConnectionProvider#REMOTE_CONNECTION_PROVIDER
+   * @see org.jminor.framework.db.EntityConnectionProvider#LOCAL_CONNECTION_PROVIDER
    * @see org.jminor.framework.db.local.LocalEntityConnectionProvider
    * @see org.jminor.framework.db.remote.RemoteEntityConnectionProvider
    */
   public static EntityConnectionProvider connectionProvider(final User user, final String clientTypeID, final UUID clientID,
                                                             final Version clientVersion) {
     try {
-      if (Configuration.getStringValue(Configuration.CLIENT_CONNECTION_TYPE).equals(Configuration.CONNECTION_TYPE_REMOTE)) {
-        final String serverHostName = Configuration.getStringValue(Configuration.SERVER_HOST_NAME);
-        final boolean scheduleValidityCheck = Configuration.getBooleanValue(Configuration.CONNECTION_SCHEDULE_VALIDATION);
+      if (EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get().equals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE)) {
+        final String serverHostName = Server.SERVER_HOST_NAME.get();
+        final boolean scheduleValidityCheck = EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get();
 
-        return (EntityConnectionProvider) Class.forName(REMOTE_CONNECTION_PROVIDER).getConstructor(
+        return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.REMOTE_CONNECTION_PROVIDER.get()).getConstructor(
                 String.class, User.class, UUID.class, String.class, Version.class, boolean.class)
                 .newInstance(serverHostName, user, clientID, clientTypeID, clientVersion, scheduleValidityCheck);
       }
       else {
-        return (EntityConnectionProvider) Class.forName(LOCAL_CONNECTION_PROVIDER).getConstructor(
+        return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.LOCAL_CONNECTION_PROVIDER.get()).getConstructor(
                 User.class).newInstance(user);
       }
     }

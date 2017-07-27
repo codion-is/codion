@@ -5,14 +5,13 @@ package org.jminor.framework.demos.schemabrowser.client.ui;
 
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
-import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
+import org.jminor.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
 
@@ -43,8 +42,8 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
   }
 
   public static void main(final String[] args) {
-    SwingConfiguration.setValue(SwingConfiguration.TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_ALL_COLUMNS);
-    Configuration.setValue(Configuration.TABLE_CONDITION_PANEL_VISIBLE, true);
+    EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
+    EntityTablePanel.TABLE_CONDITION_PANEL_VISIBLE.set(true);
     new SchemaBrowserAppPanel().startApplication("Schema Browser", null, false, UiUtil.getScreenSizeRatio(0.5), new User("scott", "tiger"));
   }
 

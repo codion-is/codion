@@ -17,7 +17,6 @@ import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -351,7 +350,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   }
 
   private void setConditionString(final String searchString) {
-    final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
+    final String wildcard = Property.WILDCARD_CHARACTER.get();
     final String searchTextWithWildcards = wildcard + searchString + wildcard;
     final Collection<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(entityID);
     for (final Property.ColumnProperty searchProperty : searchProperties) {

@@ -11,7 +11,6 @@ import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
@@ -51,8 +50,7 @@ public class DefaultEntityConnectionServerTest {
     final Database database = Databases.createInstance();
     final String serverName = DefaultEntityConnectionServer.initializeServerName(database.getHost(), database.getSid());
     DefaultEntityConnectionServer.startServer();
-    server = (Server) LocateRegistry.getRegistry(Configuration.getStringValue(Configuration.SERVER_HOST_NAME),
-            Configuration.getIntValue(Configuration.REGISTRY_PORT)).lookup(serverName);
+    server = (Server) LocateRegistry.getRegistry(Server.SERVER_HOST_NAME.get(), Server.REGISTRY_PORT.get()).lookup(serverName);
     admin = (EntityConnectionServerAdmin) server.getServerAdmin(ADMIN_USER);
   }
 
@@ -229,25 +227,25 @@ public class DefaultEntityConnectionServerTest {
   }
 
   private static void configure() {
-    Configuration.setValue(Configuration.REGISTRY_PORT, 2221);
-    Configuration.setValue(Configuration.SERVER_PORT, 2223);
-    Configuration.setValue(Configuration.SERVER_ADMIN_PORT, 2223);
-    Configuration.setValue(Configuration.SERVER_ADMIN_USER, "scott:tiger");
-    Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
-    Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, UNIT_TEST_USER.getUsername() + ":" + UNIT_TEST_USER.getPassword());
-    Configuration.setValue(Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT, "ClientTypeID:10000");
-    Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.server.TestDomain");
-    Configuration.setValue(Configuration.SERVER_LOGIN_PROXY_CLASSES, "org.jminor.framework.server.TestLoginProxy");
-    Configuration.setValue(Configuration.SERVER_CONNECTION_VALIDATOR_CLASSES, "org.jminor.framework.server.TestConnectionValidator");
-    Configuration.setValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED, true);
-    Configuration.setValue(Configuration.WEB_SERVER_PORT, 2224);
-    Configuration.setValue(Configuration.WEB_SERVER_DOCUMENT_ROOT, System.getProperty("user.dir"));
-    Configuration.setValue(Configuration.WEB_SERVER_IMPLEMENTATION_CLASS, TestWebServer.class.getName());
-    Configuration.setValue("java.rmi.server.hostname", "localhost");
-    Configuration.setValue("java.security.policy", "resources/security/all_permissions.policy");
-    Configuration.setValue("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
-    Configuration.setValue("javax.net.ssl.keyStore", "resources/security/JMinorServerKeystore");
-    Configuration.setValue("javax.net.ssl.keyStorePassword", "crappypass");
+    Server.REGISTRY_PORT.set(2221);
+    Server.SERVER_PORT.set(2223);
+    Server.SERVER_HOST_NAME.set("localhost");
+    Server.SERVER_ADMIN_PORT.set(2223);
+    Server.SERVER_ADMIN_USER.set("scott:tiger");
+    DefaultEntityConnectionServer.SERVER_CONNECTION_POOLING_INITIAL.set(UNIT_TEST_USER.getUsername() + ":" + UNIT_TEST_USER.getPassword());
+    DefaultEntityConnectionServer.SERVER_CLIENT_CONNECTION_TIMEOUT.set("ClientTypeID:10000");
+    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set("org.jminor.framework.server.TestDomain");
+    DefaultEntityConnectionServer.SERVER_LOGIN_PROXY_CLASSES.set("org.jminor.framework.server.TestLoginProxy");
+    DefaultEntityConnectionServer.SERVER_CONNECTION_VALIDATOR_CLASSES.set("org.jminor.framework.server.TestConnectionValidator");
+    DefaultEntityConnectionServer.SERVER_CLIENT_LOGGING_ENABLED.set(true);
+    DefaultEntityConnectionServer.WEB_SERVER_PORT.set(2224);
+    DefaultEntityConnectionServer.WEB_SERVER_DOCUMENT_ROOT.set(System.getProperty("user.dir"));
+    DefaultEntityConnectionServer.WEB_SERVER_IMPLEMENTATION_CLASS.set(TestWebServer.class.getName());
+    Server.RMI_SERVER_HOSTNAME.set("localhost");
+    System.setProperty("java.security.policy", "resources/security/all_permissions.policy");
+    Server.TRUSTSTORE.set("resources/security/JMinorClientTruststore");
+    System.setProperty("javax.net.ssl.keyStore", "resources/security/JMinorServerKeystore");
+    System.setProperty("javax.net.ssl.keyStorePassword", "crappypass");
   }
 
   public static final class TestWebServer implements Server.AuxiliaryServer {

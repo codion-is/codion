@@ -5,7 +5,6 @@ package org.jminor.swing.framework.model;
 
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -158,7 +157,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * if the underlying property is nullable
    * @param foreignKeyProperty the foreign key property for which to create a {@link EntityComboBoxModel}
    * @return a {@link EntityComboBoxModel} for the given property
-   * @see org.jminor.framework.Configuration#COMBO_BOX_NULL_VALUE_ITEM
+   * @see EntityEditModel#COMBO_BOX_NULL_VALUE_ITEM
    * @see Property#isNullable()
    */
   public EntityComboBoxModel createForeignKeyComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
@@ -167,7 +166,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
             getConnectionProvider());
     if (getValidator().isNullable(getEntity(), foreignKeyProperty)) {
       model.setNullValue(EntityUtil.createToStringEntity(foreignKeyProperty.getReferencedEntityID(),
-              (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM)));
+              EntityEditModel.COMBO_BOX_NULL_VALUE_ITEM.get()));
     }
 
     return model;
@@ -185,7 +184,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     final PropertyComboBoxModel model = new SwingPropertyComboBoxModel<>(getEntityID(),
             getConnectionProvider(), property, null);
     ((FilteredComboBoxModel) model).setNullValue(getValidator().isNullable(getEntity(), property) ?
-            (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM) : null);
+            EntityEditModel.COMBO_BOX_NULL_VALUE_ITEM.get() : null);
     model.refresh();
     addEntitiesChangedListener(model::refresh);
 

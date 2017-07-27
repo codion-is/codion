@@ -3,15 +3,17 @@
  */
 package org.jminor.framework.db.local;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.Util;
+import org.jminor.common.Value;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.model.ExceptionUtil;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.db.EntityConnectionProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,13 @@ import java.util.Properties;
 public final class LocalEntityConnectionProvider extends AbstractEntityConnectionProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(LocalEntityConnectionProvider.class);
+
+  /**
+   * Specifies whether or not an embedded database is shut down when disconnected from<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final Value<Boolean> SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT = Configuration.booleanValue("jminor.db.shutdownEmbeddedOnDisconnect", false);
 
   /**
    * The underlying database implementation
@@ -50,7 +59,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * @param database the Database implementation
    */
   public LocalEntityConnectionProvider(final User user, final Database database) {
-    this(user, database, Configuration.getBooleanValue(Configuration.CONNECTION_SCHEDULE_VALIDATION));
+    this(user, database, EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get());
   }
 
   /**
@@ -108,7 +117,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   @Override
   protected void doDisconnect() {
     getConnectionInternal().disconnect();
-    if (database.isEmbedded() && Configuration.getBooleanValue(Configuration.SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT)) {
+    if (database.isEmbedded() && SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT.get()) {
       database.shutdownEmbedded(connectionProperties);
     }
   }

@@ -9,7 +9,6 @@ import org.jminor.common.Util;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
 import org.jminor.common.db.ValueFetcher;
-import org.jminor.framework.Configuration;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -490,19 +489,19 @@ class DefaultProperty implements Property {
   private Format initializeDefaultFormat() {
     if (isDateOrTime()) {
       if (isDate()) {
-        return Configuration.getDefaultDateFormat();
+        return Property.getDefaultDateFormat();
       }
       else if (isTime()) {
-        return Configuration.getDefaultTimeFormat();
+        return Property.getDefaultTimeFormat();
       }
       else {
-        return Configuration.getDefaultTimestampFormat();
+        return Property.getDefaultTimestampFormat();
       }
     }
     else if (isNumerical()) {
       final NumberFormat numberFormat = FormatUtil.getNonGroupingNumberFormat(isInteger());
       if (isDouble()) {
-        numberFormat.setMaximumFractionDigits(Configuration.getIntValue(Configuration.MAXIMUM_FRACTION_DIGITS));
+        numberFormat.setMaximumFractionDigits(Property.MAXIMUM_FRACTION_DIGITS.get());
       }
 
       return numberFormat;
@@ -848,7 +847,7 @@ class DefaultProperty implements Property {
     private final List<ColumnProperty> referenceProperties;
     private final boolean compositeReference;
     private Map<Property, Property.ColumnProperty> referencedKeyProperties;
-    private int fetchDepth = Configuration.getIntValue(Configuration.FOREIGN_KEY_FETCH_DEPTH);
+    private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
 
     /**
      * @param propertyID the property ID, since ForeignKeyProperties are meta properties, the property ID should not
@@ -1193,8 +1192,7 @@ class DefaultProperty implements Property {
     private final Object falseValue;
 
     BooleanValueConverter() {
-      this(Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_TRUE),
-              Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE));
+      this(Property.SQL_BOOLEAN_VALUE_TRUE.get(), Property.SQL_BOOLEAN_VALUE_FALSE.get());
     }
 
     BooleanValueConverter(final Object trueValue, final Object falseValue) {

@@ -7,7 +7,7 @@ import org.jminor.common.Serializer;
 import org.jminor.common.User;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.server.ClientInfo;
-import org.jminor.framework.Configuration;
+import org.jminor.common.server.Server;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.plugins.json.EntityJSONParser;
@@ -71,7 +71,7 @@ public class EntityRESTServiceTest {
   @BeforeClass
   public static synchronized void setUp() throws Exception {
     configure();
-    HOSTNAME = Configuration.getStringValue(Configuration.SERVER_HOST_NAME);
+    HOSTNAME = Server.SERVER_HOST_NAME.get();
     REST_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities/";
     server = DefaultEntityConnectionServer.startServer();
     admin = (EntityConnectionServerAdmin) server.getServerAdmin(ADMIN_USER);
@@ -255,28 +255,28 @@ public class EntityRESTServiceTest {
   }
 
   private static void configure() {
-    Configuration.setValue(Configuration.REGISTRY_PORT, 2221);
-    Configuration.setValue(Configuration.SERVER_CONNECTION_SSL_ENABLED, false);
-    Configuration.setValue(Configuration.SERVER_PORT, 2223);
-    Configuration.setValue(Configuration.SERVER_ADMIN_PORT, 2223);
-    Configuration.setValue(Configuration.SERVER_ADMIN_USER, "scott:tiger");
-    Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
-    Configuration.setValue("java.rmi.server.hostname", "localhost");
-    Configuration.setValue("java.security.policy", "resources/security/all_permissions.policy");
-    Configuration.setValue(Configuration.WEB_SERVER_DOCUMENT_ROOT, System.getProperty("user.dir"));
-    Configuration.setValue(Configuration.WEB_SERVER_PORT, WEB_SERVER_PORT_NUMBER);
+    Server.REGISTRY_PORT.set(2221);
+    Server.SERVER_CONNECTION_SSL_ENABLED.set(false);
+    Server.SERVER_PORT.set(2223);
+    Server.SERVER_ADMIN_PORT.set(2223);
+    Server.SERVER_ADMIN_USER.set("scott:tiger");
+    Server.SERVER_HOST_NAME.set("localhost");
+    Server.RMI_SERVER_HOSTNAME.set("localhost");
+    System.setProperty("java.security.policy", "resources/security/all_permissions.policy");
+    DefaultEntityConnectionServer.WEB_SERVER_DOCUMENT_ROOT.set(System.getProperty("user.dir"));
+    DefaultEntityConnectionServer.WEB_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
   }
 
   private static void deconfigure() {
-    Configuration.setValue(Configuration.REGISTRY_PORT, Registry.REGISTRY_PORT);
-    Configuration.setValue(Configuration.SERVER_CONNECTION_SSL_ENABLED, true);
-    Configuration.clearValue(Configuration.SERVER_PORT);
-    Configuration.clearValue(Configuration.SERVER_ADMIN_PORT);
-    Configuration.clearValue(Configuration.SERVER_ADMIN_USER);
-    Configuration.clearValue(Configuration.SERVER_HOST_NAME);
-    Configuration.clearValue("java.rmi.server.hostname");
-    Configuration.clearValue("java.security.policy");
-    Configuration.clearValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
-    Configuration.clearValue(Configuration.WEB_SERVER_PORT);
+    Server.REGISTRY_PORT.set(Registry.REGISTRY_PORT);
+    Server.SERVER_CONNECTION_SSL_ENABLED.set(true);
+    Server.SERVER_PORT.set(null);
+    Server.SERVER_ADMIN_PORT.set(null);
+    Server.SERVER_ADMIN_USER.set(null);
+    Server.SERVER_HOST_NAME.set(null);
+    Server.RMI_SERVER_HOSTNAME.set(null);
+    System.clearProperty("java.security.policy");
+    DefaultEntityConnectionServer.WEB_SERVER_DOCUMENT_ROOT.set(null);
+    DefaultEntityConnectionServer.WEB_SERVER_PORT.set(null);
   }
 }

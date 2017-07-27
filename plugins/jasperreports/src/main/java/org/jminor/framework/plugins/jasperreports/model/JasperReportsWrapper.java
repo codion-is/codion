@@ -3,11 +3,12 @@
  */
 package org.jminor.framework.plugins.jasperreports.model;
 
+import org.jminor.common.Configuration;
+import org.jminor.common.Value;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
-import org.jminor.framework.Configuration;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -33,9 +34,16 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
 
   private static final long serialVersionUID = 1;
 
+  /**
+   * Specifies whether or not reports are cached when loaded from disk/network,<br>
+   * this prevents "hot deploy" of reports.<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final Value<Boolean> CACHE_REPORTS = Configuration.booleanValue("jminor.report.cacheReports", true);
+
   private final String reportPath;
   private final Map<String, Object> reportParameters;
-  private static final boolean CACHE_REPORTS = Configuration.getBooleanValue(Configuration.CACHE_REPORTS);
   private static final Map<String, JasperReport> REPORT_CACHE = Collections.synchronizedMap(new HashMap<>());
 
   /**
@@ -112,7 +120,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
     if (reportPath.length() == 0) {
       throw new IllegalArgumentException("Empty report path");
     }
-    if (CACHE_REPORTS && REPORT_CACHE.containsKey(reportPath)) {
+    if (CACHE_REPORTS.get() && REPORT_CACHE.containsKey(reportPath)) {
       return REPORT_CACHE.get(reportPath);
     }
     final JasperReport report;
@@ -133,7 +141,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
         }
       }
     }
-    if (CACHE_REPORTS) {
+    if (CACHE_REPORTS.get()) {
       REPORT_CACHE.put(reportPath, report);
     }
 

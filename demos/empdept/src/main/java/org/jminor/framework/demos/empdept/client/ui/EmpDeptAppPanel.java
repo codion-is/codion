@@ -7,7 +7,6 @@ import org.jminor.common.TextUtil;
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.table.ColumnSummary;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeEditModel;
 import org.jminor.framework.demos.empdept.beans.ui.DepartmentEditPanel;
@@ -23,6 +22,7 @@ import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityModelProvider;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
+import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 
@@ -74,9 +74,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   }
 
   public static void main(final String[] args) {
-    Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
-    Configuration.setValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT, true);
-    Configuration.setValue(Configuration.USE_OPTIMISTIC_LOCKING, true);
+    EntityPanel.TOOLBAR_BUTTONS.set(true);
+    EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
     new EmpDeptAppPanel().startApplication("Emp-Dept", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
   }
 

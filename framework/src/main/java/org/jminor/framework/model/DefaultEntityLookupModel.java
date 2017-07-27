@@ -17,7 +17,6 @@ import org.jminor.common.Values;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
@@ -75,7 +74,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   private Entity.ToString toStringProvider = null;
   private Condition.Provider<Property.ColumnProperty> additionalConditionProvider;
   private Comparator<Entity> resultSorter = new EntityComparator();
-  private String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
+  private String wildcard = Property.WILDCARD_CHARACTER.get();
   private String description;
 
   /**

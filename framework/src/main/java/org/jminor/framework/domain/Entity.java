@@ -3,6 +3,8 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.Configuration;
+import org.jminor.common.Value;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.valuemap.ValueMap;
@@ -503,6 +505,14 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * Specifies a entity definition.
    */
   interface Definition {
+
+    /**
+     * Specifies that it should not be possible to define foreign keys referencing entities that have
+     * not been defined, this can be disabled in case of entities with circular references<br>
+     * Value type: Boolean<br>
+     * Default value: true
+     */
+    Value<Boolean> STRICT_FOREIGN_KEYS = Configuration.booleanValue("jminor.domain.strictForeignKeys", true);
 
     /**
      * @return the entity ID

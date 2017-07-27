@@ -9,7 +9,6 @@ import org.jminor.common.Events;
 import org.jminor.common.User;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
-import org.jminor.framework.Configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -162,7 +161,7 @@ public final class HostMonitor {
   private static Collection<String> getEntityServers(final Registry registry) throws RemoteException {
     final List<String> serverNames = new ArrayList<>();
     final String[] boundNames = registry.list();
-    final String serverNamePrefix = Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX);
+    final String serverNamePrefix = Server.SERVER_NAME_PREFIX.get();
     for (final String name : boundNames) {
       if (name.startsWith(serverNamePrefix)) {
         serverNames.add(name);

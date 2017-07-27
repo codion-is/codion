@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.world.domain;
 
-import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Properties;
 
 import java.sql.Types;
@@ -39,7 +39,7 @@ public final class World {
 
   static {
     //disable this default check so we can define a cyclical foreign key between country and city
-    Configuration.setValue(Configuration.STRICT_FOREIGN_KEYS, false);
+    Entity.Definition.STRICT_FOREIGN_KEYS.set(false);
 
     Entities.define(T_COUNTRY,
             Properties.columnProperty(COUNTRY_CODE, Types.VARCHAR, "Country code")

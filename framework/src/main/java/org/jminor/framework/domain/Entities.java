@@ -3,7 +3,9 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.Util;
+import org.jminor.common.Value;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
@@ -11,7 +13,6 @@ import org.jminor.common.db.valuemap.DefaultValueMap;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import java.io.Serializable;
@@ -36,6 +37,30 @@ import java.util.Objects;
  * A {@link Entity} factory class
  */
 public final class Entities {
+
+  /**
+   * Specifies whether or not to allow entities to be re-defined, that is,
+   * allow a new definition to replace an old one.
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final Value<Boolean> ALLOW_REDEFINE_ENTITY = Configuration.booleanValue("jminor.domain.allowRedefineEntity", false);
+
+  /**
+   * Specifies whether the client layer should perform null validation on entities
+   * before update/insert actions are performed<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   * @see Property#setNullable(boolean)
+   */
+  public static final Value<Boolean> PERFORM_NULL_VALIDATION = Configuration.booleanValue("jminor.client.performNullValidation", true);
+
+  /**
+   * Specifies the class used for serializing and deserializing entity instances.<br>
+   * Value type: String, the name of the class implementing org.jminor.common.Serializer&#60;Entity&#62;<br>
+   * Default value: none
+   */
+  public static final Value<String> ENTITY_SERIALIZER_CLASS = Configuration.stringValue("jminor.domain.entitySerializerClass", null);
 
   private static final String ENTITY_PARAM = "entity";
   private static final String ENTITY_ID_PARAM = "entityID";
@@ -107,7 +132,7 @@ public final class Entities {
    * no primary key property is specified
    */
   public static Entity.Definition define(final String entityID, final String tableName, final Property... propertyDefinitions) {
-    if (DefaultEntityDefinition.getDefinitionMap().containsKey(entityID) && !Configuration.getBooleanValue(Configuration.ALLOW_REDEFINE_ENTITY)) {
+    if (DefaultEntityDefinition.getDefinitionMap().containsKey(entityID) && !ALLOW_REDEFINE_ENTITY.get()) {
       throw new IllegalArgumentException("Entity has already been defined: " + entityID + ", for table: " + tableName);
     }
     final DefaultEntityDefinition entityDefinition = new DefaultEntityDefinition(entityID, tableName, propertyDefinitions);
@@ -676,6 +701,14 @@ public final class Entities {
   }
 
   /**
+   * @return true if a entity serializer is specified and available on the classpath
+   */
+  public static boolean entitySerializerAvailable() {
+    final String serializerClass = ENTITY_SERIALIZER_CLASS.get();
+    return serializerClass != null && Util.onClasspath(serializerClass);
+  }
+
+  /**
    * Processes {@link Entity.Table}, {@link Property.Column}
    * and {@link org.jminor.common.db.Databases.Operation} annotations found in the given class
    * @param domainClass the domain class to process
@@ -997,7 +1030,7 @@ public final class Entities {
   public static class Validator extends DefaultValueMap.DefaultValidator<Property, Entity> implements Entity.Validator {
 
     private final String entityID;
-    private final boolean performNullValidation = Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION);
+    private final boolean performNullValidation = PERFORM_NULL_VALIDATION.get();
 
     /**
      * Instantiates a new {@link Entity.Validator}

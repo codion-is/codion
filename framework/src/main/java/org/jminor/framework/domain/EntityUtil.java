@@ -7,7 +7,6 @@ import org.jminor.common.Serializer;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.valuemap.ValueProvider;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import java.lang.reflect.InvocationTargetException;
@@ -333,12 +332,12 @@ public final class EntityUtil {
    */
   @SuppressWarnings({"unchecked"})
   public static Serializer<Entity> getEntitySerializer() {
-    if (!Configuration.entitySerializerAvailable()) {
-      throw new IllegalArgumentException("Required configuration property is missing: " + Configuration.ENTITY_SERIALIZER_CLASS);
+    if (!Entities.entitySerializerAvailable()) {
+      throw new IllegalArgumentException("Required configuration property is missing: " + Entities.ENTITY_SERIALIZER_CLASS);
     }
 
     try {
-      final String serializerClass = Configuration.getStringValue(Configuration.ENTITY_SERIALIZER_CLASS);
+      final String serializerClass = Entities.ENTITY_SERIALIZER_CLASS.get();
 
       return (Serializer<Entity>) Class.forName(serializerClass).getConstructor().newInstance();
     }

@@ -8,7 +8,7 @@ import org.jminor.common.Version;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.server.Server;
-import org.jminor.framework.Configuration;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
@@ -28,7 +28,7 @@ public class EntityLoadTestModelTest {
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
-  private static final String CONNECTION_TYPE_BEFORE_TEST = Configuration.getStringValue(Configuration.CLIENT_CONNECTION_TYPE);
+  private static final String CONNECTION_TYPE_BEFORE_TEST = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
 
   private static final User ADMIN_USER = new User("scott", "tiger");
   private static Server server;
@@ -38,20 +38,20 @@ public class EntityLoadTestModelTest {
   public static synchronized void setUp() throws Exception {
     configure();
     final Database database = Databases.createInstance();
-    final String serverName = Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX) + " " + Version.getVersionString()
+    final String serverName = Server.SERVER_NAME_PREFIX.get() + " " + Version.getVersionString()
             + "@" + (database.getSid() != null ? database.getSid().toUpperCase() : database.getHost().toUpperCase());
     DefaultEntityConnectionServer.startServer();
-    server = (Server) LocateRegistry.getRegistry(Configuration.getStringValue(Configuration.SERVER_HOST_NAME),
-            Configuration.getIntValue(Configuration.REGISTRY_PORT)).lookup(serverName);
+    server = (Server) LocateRegistry.getRegistry((Server.SERVER_HOST_NAME.get()),
+            Server.REGISTRY_PORT.get()).lookup(serverName);
     admin = (EntityConnectionServerAdmin) server.getServerAdmin(ADMIN_USER);
-    Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, "remote");
+    EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
   }
 
   @AfterClass
   public static synchronized void tearDown() throws Exception {
     admin.shutdown();
     server = null;
-    Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, CONNECTION_TYPE_BEFORE_TEST);
+    EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(CONNECTION_TYPE_BEFORE_TEST);
   }
 
   private static final class TestLoadTestModel extends EntityLoadTestModel<DefaultEntityApplicationModel> {
@@ -136,15 +136,15 @@ public class EntityLoadTestModelTest {
   }
 
   private static void configure() {
-    Configuration.setValue(Configuration.REGISTRY_PORT, 2221);
-    Configuration.setValue(Configuration.SERVER_PORT, 2223);
-    Configuration.setValue(Configuration.SERVER_ADMIN_PORT, 2223);
-    Configuration.setValue(Configuration.SERVER_ADMIN_USER, "scott:tiger");
-    Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
-    Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, UNIT_TEST_USER.getUsername() + ":" + UNIT_TEST_USER.getPassword());
-    Configuration.setValue(Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT, "ClientTypeID:10000");
-    Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.model.TestDomain");
-    Configuration.setValue(Configuration.SERVER_CONNECTION_SSL_ENABLED, false);
-    Configuration.setValue("java.rmi.server.hostname", "localhost");
+    Server.REGISTRY_PORT.set(2221);
+    Server.SERVER_PORT.set(2223);
+    Server.SERVER_HOST_NAME.set("localhost");
+    Server.SERVER_ADMIN_PORT.set(2223);
+    Server.SERVER_ADMIN_USER.set("scott:tiger");
+    DefaultEntityConnectionServer.SERVER_CONNECTION_POOLING_INITIAL.set(UNIT_TEST_USER.getUsername() + ":" + UNIT_TEST_USER.getPassword());
+    DefaultEntityConnectionServer.SERVER_CLIENT_CONNECTION_TIMEOUT.set("ClientTypeID:10000");
+    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set("org.jminor.framework.model.TestDomain");
+    Server.SERVER_CONNECTION_SSL_ENABLED.set(false);
+    Server.RMI_SERVER_HOSTNAME.set("localhost");
   }
 }

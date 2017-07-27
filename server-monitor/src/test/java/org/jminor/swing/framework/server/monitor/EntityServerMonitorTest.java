@@ -9,7 +9,6 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.Server;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
@@ -37,11 +36,11 @@ public class EntityServerMonitorTest {
   public static synchronized void setUp() throws Exception {
     configure();
     final Database database = Databases.createInstance();
-    final String serverName = Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX) + " " + Version.getVersionString()
+    final String serverName = Server.SERVER_NAME_PREFIX.get() + " " + Version.getVersionString()
             + "@" + (database.getSid() != null ? database.getSid().toUpperCase() : database.getHost().toUpperCase());
     DefaultEntityConnectionServer.startServer();
-    server = (Server) LocateRegistry.getRegistry(Configuration.getStringValue(Configuration.SERVER_HOST_NAME),
-            Configuration.getIntValue(Configuration.REGISTRY_PORT)).lookup(serverName);
+    server = (Server) LocateRegistry.getRegistry(Server.SERVER_HOST_NAME.get(),
+            Server.REGISTRY_PORT.get()).lookup(serverName);
     admin = (EntityConnectionServerAdmin) server.getServerAdmin(ADMIN_USER);
   }
 
@@ -58,7 +57,7 @@ public class EntityServerMonitorTest {
     final RemoteEntityConnectionProvider connectionProvider = new RemoteEntityConnectionProvider("localhost",
             UNIT_TEST_USER, clientId, clientTypeId);
     connectionProvider.getConnection();
-    final EntityServerMonitor model = new EntityServerMonitor("localhost", Configuration.getIntValue(Configuration.REGISTRY_PORT));
+    final EntityServerMonitor model = new EntityServerMonitor("localhost", Server.REGISTRY_PORT.get());
     model.refresh();
     final HostMonitor hostMonitor = model.getHostMonitors().iterator().next();
     assertEquals("localhost", hostMonitor.getHostName());
@@ -90,14 +89,14 @@ public class EntityServerMonitorTest {
   }
 
   private static void configure() {
-    Configuration.setValue(Configuration.REGISTRY_PORT, 2221);
-    Configuration.setValue(Configuration.SERVER_PORT, 2223);
-    Configuration.setValue(Configuration.SERVER_ADMIN_PORT, 2223);
-    Configuration.setValue(Configuration.SERVER_ADMIN_USER, "scott:tiger");
-    Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
-    Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, UNIT_TEST_USER.getUsername() + ":" + UNIT_TEST_USER.getPassword());
-    Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.swing.framework.server.monitor.TestDomain");
-    Configuration.setValue(Configuration.SERVER_CONNECTION_SSL_ENABLED, false);
-    Configuration.setValue("java.rmi.server.hostname", "localhost");
+    Server.REGISTRY_PORT.set(2221);
+    Server.SERVER_PORT.set(2223);
+    Server.SERVER_ADMIN_PORT.set(2223);
+    Server.SERVER_ADMIN_USER.set("scott:tiger");
+    Server.SERVER_HOST_NAME.set("localhost");
+    DefaultEntityConnectionServer.SERVER_CONNECTION_POOLING_INITIAL.set(UNIT_TEST_USER.getUsername() + ":" + UNIT_TEST_USER.getPassword());
+    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set("org.jminor.swing.framework.server.monitor.TestDomain");
+    Server.SERVER_CONNECTION_SSL_ENABLED.set(false);
+    Server.RMI_SERVER_HOSTNAME.set("localhost");
   }
 }

@@ -3,11 +3,13 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
+import org.jminor.common.Value;
 import org.jminor.common.db.Attribute;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.ValueChange;
@@ -27,6 +29,29 @@ import java.util.Map;
  * Specifies a class for editing {@link Entity} instances.
  */
 public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Refreshable, EntityDataProvider {
+
+  /**
+   * Specifies whether foreign key values should persist when the UI is cleared or be reset to null<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  Value<Boolean> PERSIST_FOREIGN_KEY_VALUES = Configuration.booleanValue("jminor.client.persistForeignKeyValues", true);
+
+  /**
+   * Indicates whether the application should ask for confirmation when exiting if some data is unsaved<br>
+   * and whether it should warn when unsaved data is about to be lost due to selection changes f.ex.
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  Value<Boolean> WARN_ABOUT_UNSAVED_DATA = Configuration.booleanValue("jminor.client.warnAboutUnsavedData", false);
+
+  /**
+   * Specifies the value used by default to represent a null value in combo box models.
+   * Using the value null indicates that no null value item should be used.<br>
+   * Value type: String<br>
+   * Default value: -
+   */
+  Value<String> COMBO_BOX_NULL_VALUE_ITEM = Configuration.stringValue("jminor.client.comboBoxNullValueItem", "-");
 
   /**
    * @return an Entity instance populated with default values for all properties
@@ -76,7 +101,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * Returns true if an entity is selected and a value has been modified or if the entity is new
    * and one or more non-default values have been entered
    * @return true if this edit model contains unsaved data
-   * @see org.jminor.framework.Configuration#WARN_ABOUT_UNSAVED_DATA
+   * @see EntityEditModel#WARN_ABOUT_UNSAVED_DATA
    */
   boolean containsUnsavedData();
 
@@ -231,10 +256,10 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * a default entity.
    * Override for selective reset of field values when the model is cleared.
    * For foreign key property values this method by default returns the value of the
-   * property {@link org.jminor.framework.Configuration#PERSIST_FOREIGN_KEY_VALUES}.
+   * property {@link EntityEditModel#PERSIST_FOREIGN_KEY_VALUES}.
    * @param property the property
    * @return true if the given field value should be reset when the model is cleared
-   * @see org.jminor.framework.Configuration#PERSIST_FOREIGN_KEY_VALUES
+   * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
   boolean isValuePersistent(final Property property);
 
@@ -250,7 +275,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param propertyID the property ID
    * @param persistValueOnClear true if this model should persist the value of the given property on clear
    * @return this edit model instance
-   * @see org.jminor.framework.Configuration#PERSIST_FOREIGN_KEY_VALUES
+   * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
   EntityEditModel setValuePersistent(final String propertyID, final boolean persistValueOnClear);
 

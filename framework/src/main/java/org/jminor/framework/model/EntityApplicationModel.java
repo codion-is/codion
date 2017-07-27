@@ -3,7 +3,10 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.User;
+import org.jminor.common.Util;
+import org.jminor.common.Value;
 import org.jminor.common.model.Refreshable;
 import org.jminor.framework.db.EntityConnectionProvider;
 
@@ -14,6 +17,51 @@ import java.util.List;
  * @param <M> the type of {@link EntityModel} used by this application model
  */
 public interface EntityApplicationModel<M extends EntityModel> extends Refreshable {
+
+  /**
+   * Specifies the name of the client side domain model class. This class is automatically loaded by the client model.
+   */
+  Value<String> CLIENT_DOMAIN_MODEL_CLASS = Configuration.stringValue("jminor.client.domainModelClass", null);
+
+  /**
+   * Specifies a string to prepend to the username field in the login dialog<br>
+   * Value type: String<br>
+   * Default value: [empty string]
+   */
+  Value<String> USERNAME_PREFIX = Configuration.stringValue("jminor.client.usernamePrefix", "");
+
+  /**
+   * Specifies whether user authentication is required<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  Value<Boolean> AUTHENTICATION_REQUIRED = Configuration.booleanValue("jminor.client.authenticationRequired", true);
+
+  /**
+   * Specifies whether or not the client saves the last successful login username,<br>
+   * which is then displayed as the default username the next time the application is started<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  Value<Boolean> SAVE_DEFAULT_USERNAME = Configuration.booleanValue("jminor.client.saveDefaultUsername", true);
+
+  /**
+   * The report path used for the default report generation,
+   * either file or http based
+   */
+  Value<String> REPORT_PATH = Configuration.stringValue("jminor.report.path", null);
+
+  /**
+   * @return the value associated with {@link #REPORT_PATH}
+   */
+  static String getReportPath() {
+    final String path = REPORT_PATH.get();
+    if (Util.nullOrEmpty(path)) {
+      throw new IllegalArgumentException(REPORT_PATH + " property is not specified");
+    }
+
+    return path;
+  }
 
   /**
    * Log out from this application model

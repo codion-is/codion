@@ -11,7 +11,6 @@ import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
 import org.jminor.common.server.ServerUtil;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
 
 import org.junit.Test;
@@ -32,7 +31,7 @@ public final class EmployeeServerTest {
   @Test
   public void test() throws RemoteException, NotBoundException, ServerException.LoginException,
           ServerException.ServerFullException, ServerException.ConnectionValidationException, DatabaseException {
-    Configuration.setValue("java.rmi.server.hostname", "localhost");
+    Server.RMI_SERVER_HOSTNAME.set("localhost");
 
     final Database database = Databases.createInstance();
     final EmployeeServer employeeServer = new EmployeeServer(database, SERVER_PORT, SERVER_PORT, REGISTRY_PORT);

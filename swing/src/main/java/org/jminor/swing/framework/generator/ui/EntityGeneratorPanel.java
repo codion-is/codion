@@ -6,7 +6,6 @@ package org.jminor.swing.framework.generator.ui;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.model.CancelException;
-import org.jminor.framework.Configuration;
 import org.jminor.swing.common.ui.LoginPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.images.Images;
@@ -77,7 +76,6 @@ public class EntityGeneratorPanel extends JPanel {
     @Override
     public void run() {
       try {
-        Configuration.init();
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
         final String schemaName = JOptionPane.showInputDialog("Schema name");

@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.testing;
 
 import org.jminor.common.User;
-import org.jminor.framework.Configuration;
+import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 
 import java.util.Objects;
@@ -34,8 +34,8 @@ public class EntityApplicationPanelTestUnit {
    * @throws Exception in case of an exception
    */
   protected final void testInitializePanel() throws Exception {
-    Configuration.setValue(Configuration.SAVE_DEFAULT_USERNAME, false);
-    Configuration.setValue(Configuration.SHOW_STARTUP_DIALOG, false);
+    EntityApplicationModel.SAVE_DEFAULT_USERNAME.set(false);
+    EntityApplicationPanel.SHOW_STARTUP_DIALOG.set(false);
     final EntityApplicationPanel panel = createApplicationPanel();
     panel.startApplication(null, null, false, null, null, false, user);
     panel.getModel().getConnectionProvider().disconnect();

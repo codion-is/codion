@@ -3,13 +3,58 @@
  */
 package org.jminor.framework.db;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.StateObserver;
 import org.jminor.common.User;
+import org.jminor.common.Value;
 
 /**
  * Interface for a class responsible for providing EntityConnection objects.
  */
 public interface EntityConnectionProvider {
+
+  /**
+   * Indicates a local database connection
+   * @see #CLIENT_CONNECTION_TYPE
+   */
+  String CONNECTION_TYPE_LOCAL = "local";
+
+  /**
+   * Indicates a remote database connection
+   * @see #CLIENT_CONNECTION_TYPE
+   */
+  String CONNECTION_TYPE_REMOTE = "remote";
+
+  /**
+   * Specifies whether the client should connect locally or remotely,
+   * accepted values: local, remote<br>
+   * Value type: String<br>
+   * Default value: local
+   * @see #CONNECTION_TYPE_LOCAL
+   * @see #CONNECTION_TYPE_REMOTE
+   */
+  Value<String> CLIENT_CONNECTION_TYPE = Configuration.stringValue("jminor.client.connectionType", CONNECTION_TYPE_LOCAL);
+
+  /**
+   * Specifies the class providing remote db connections<br>
+   * Value type: String (the name of a class implementing org.jminor.framework.db.EntityConnectionProvider)<br>
+   * Default value: org.jminor.framework.db.remote.RemoteEntityConnectionProvider
+   */
+  Value<String> REMOTE_CONNECTION_PROVIDER = Configuration.stringValue("jminor.client.remoteConnectionProvider", "org.jminor.framework.db.remote.RemoteEntityConnectionProvider");
+
+  /**
+   * Specifies the class providing local db connections<br>
+   * Value type: String (the name of a class implementing org.jminor.framework.db.EntityConnectionProvider)<br>
+   * Default value: org.jminor.framework.db.local.LocalEntityConnectionProvider
+   */
+  Value<String> LOCAL_CONNECTION_PROVIDER = Configuration.stringValue("jminor.client.localConnectionProvider", "org.jminor.framework.db.local.LocalEntityConnectionProvider");
+
+  /**
+   * Specifies whether client connections, remote or local, should schedule a periodic validity check of the connection.
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  Value<Boolean> CONNECTION_SCHEDULE_VALIDATION = Configuration.booleanValue("jminor.connection.scheduleValidation", true);
 
   /**
    * Provides a EntityConnection object, is responsible for returning a healthy EntityConnection object,
@@ -42,7 +87,7 @@ public interface EntityConnectionProvider {
 
   /**
    * Returns a state which is active when this provider is connected, note that this state is only updated
-   * if {@link org.jminor.framework.Configuration#CONNECTION_SCHEDULE_VALIDATION} is set to true
+   * if {@link EntityConnectionProvider#CONNECTION_SCHEDULE_VALIDATION} is set to true
    * @return a state active when this provider is connected
    */
   StateObserver getConnectedObserver();

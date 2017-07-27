@@ -3,8 +3,10 @@
  */
 package org.jminor.framework.db;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
+import org.jminor.common.Version;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.reports.ReportException;
@@ -24,6 +26,19 @@ import java.util.Map;
  * An interface specifying a remote EntityConnection implementation.
  */
 public interface RemoteEntityConnection extends Remote {
+
+  /**
+   * The version of the server the last RemoteEntityConnectionProvider connected to.
+   * Value type: Version<br>
+   * Default value: the client version
+   */
+  Configuration.ConfigurationValue<Version> REMOTE_SERVER_VERSION = new Configuration.ConfigurationValue<Version>("jminor.server.version", null) {
+    @Override
+    protected Version parseFromSystemProperties(final Version defaultValue) {
+      //not supported
+      return null;
+    }
+  };
 
   /**
    * @param methodLogger the method logger

@@ -2,7 +2,6 @@
 
   <property file="${project.root}/build.properties"/>
 
-  <import file="dependencies.xml"/>
   <import file="build-macros.xml"/>
 
   <property name="ivy.pom.version" value="${version}"/>
@@ -153,12 +152,6 @@
 
   <target name="install" depends="package" description="Publishes the module artifacts to a local repository">
     <publish resolver="install-local-publish" artifact-dir="${package}"/>
-  </target>
-
-  <target name="install_with_dependencies">
-    <antcall target="depend.${ant.project.name}">
-      <param name="dependency.target" value="install"/>
-    </antcall>
   </target>
 
   <target name="report">

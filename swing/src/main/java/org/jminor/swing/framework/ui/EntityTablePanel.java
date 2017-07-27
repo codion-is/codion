@@ -3,6 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.Conjunction;
 import org.jminor.common.Event;
 import org.jminor.common.EventListener;
@@ -12,11 +13,11 @@ import org.jminor.common.Serializer;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Util;
+import org.jminor.common.Value;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -25,7 +26,6 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableModel;
-import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.model.table.FilteredTableModel;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.UiUtil;
@@ -124,6 +124,27 @@ import java.util.Objects;
  */
 public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
+  /**
+   * Specifies whether or not columns can be rearranged in tables<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final Value<Boolean> ALLOW_COLUMN_REORDERING = Configuration.booleanValue("jminor.client.allowColumnReordering", true);
+
+  /**
+   * Specifies whether the table condition panels should be visible or not by default<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final Value<Boolean> TABLE_CONDITION_PANEL_VISIBLE = Configuration.booleanValue("jminor.swing.tableConditionPanelVisible", false);
+
+  /**
+   * Specifies the default table column resize mode for tables in the application<br>
+   * Value type: Integer (JTable.AUTO_RESIZE_*)<br>
+   * Default value: JTable.AUTO_RESIZE_OFF
+   */
+  public static final Value<Integer> TABLE_AUTO_RESIZE_MODE = Configuration.integerValue("jminor.swing.tableAutoResizeMode", JTable.AUTO_RESIZE_OFF);
+
   public static final String PRINT_TABLE = "printTable";
   public static final String DELETE_SELECTED = "deleteSelected";
   public static final String VIEW_DEPENDENCIES = "viewDependencies";
@@ -217,7 +238,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     super((FilteredTableModel<Entity, Property>) tableModel, column ->
             new PropertyFilterPanel(tableModel.getConditionModel().getPropertyFilterModel(
                     ((Property) column.getIdentifier()).getPropertyID()), true, true));
-    getJTable().setAutoResizeMode(SwingConfiguration.getIntValue(SwingConfiguration.TABLE_AUTO_RESIZE_MODE));
+    getJTable().setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     this.conditionPanel = conditionPanel;
     if (conditionPanel != null) {
       this.conditionScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -605,7 +626,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   /**
    * Exports the selected records as a text file using the available serializer
    * @see org.jminor.framework.domain.EntityUtil#getEntitySerializer()
-   * @see Configuration#ENTITY_SERIALIZER_CLASS
+   * @see Entities#ENTITY_SERIALIZER_CLASS
    */
   public final void exportSelected() {
     try {
@@ -1142,11 +1163,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       case Types.BOOLEAN:
         return new BooleanInputProvider((Boolean) currentValue);
       case Types.DATE:
-        return new DateInputProvider((Date) currentValue, Configuration.getDefaultDateFormat());
+        return new DateInputProvider((Date) currentValue, Property.getDefaultDateFormat());
       case Types.TIMESTAMP:
-        return new DateInputProvider((Date) currentValue, Configuration.getDefaultTimestampFormat());
+        return new DateInputProvider((Date) currentValue, Property.getDefaultTimestampFormat());
       case Types.TIME:
-        return new DateInputProvider((Date) currentValue, Configuration.getDefaultTimeFormat());
+        return new DateInputProvider((Date) currentValue, Property.getDefaultTimeFormat());
       case Types.DOUBLE:
         return new DoubleInputProvider((Double) currentValue);
       case Types.INTEGER:
@@ -1267,7 +1288,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     setControl(CLEAR, getClearControl());
     setControl(REFRESH, getRefreshControl());
     setControl(SELECT_COLUMNS, getSelectColumnsControl());
-    if (Configuration.entitySerializerAvailable()) {
+    if (Entities.entitySerializerAvailable()) {
       setControl(EXPORT_JSON, getExportControl());
     }
     setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
@@ -1423,7 +1444,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       return label;
     });
     header.setFocusable(false);
-    header.setReorderingAllowed(Configuration.getBooleanValue(Configuration.ALLOW_COLUMN_REORDERING));
+    header.setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
     if (includePopupMenu) {
       setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControlSets));
     }

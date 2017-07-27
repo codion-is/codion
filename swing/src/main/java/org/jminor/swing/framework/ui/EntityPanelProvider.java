@@ -4,7 +4,6 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.common.TextUtil;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
@@ -32,7 +31,7 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
   private boolean refreshOnInit = true;
   private EntityPanel.PanelState detailPanelState = EntityPanel.PanelState.EMBEDDED;
   private double detailSplitPanelResizeWeight = DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT;
-  private boolean tableConditionPanelVisible = Configuration.getBooleanValue(Configuration.TABLE_CONDITION_PANEL_VISIBLE);
+  private boolean tableConditionPanelVisible = EntityTablePanel.TABLE_CONDITION_PANEL_VISIBLE.get();
 
   private Class<? extends EntityPanel> panelClass = EntityPanel.class;
   private Class<? extends EntityTablePanel> tablePanelClass = EntityTablePanel.class;

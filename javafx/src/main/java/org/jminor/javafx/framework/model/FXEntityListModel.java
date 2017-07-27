@@ -8,7 +8,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnSummaryModel;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
@@ -17,6 +16,7 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityModel;
 import org.jminor.framework.model.EntityTableConditionModel;
 import org.jminor.framework.model.EntityTableModel;
 
@@ -398,7 +398,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final void savePreferences() {
-    if (Configuration.getBooleanValue(Configuration.USE_CLIENT_PREFERENCES)) {
+    if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
       try {
         PreferencesUtil.putUserPreference(getUserPreferencesKey(), createPreferences().toString());
       }
@@ -526,7 +526,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   private void applyPreferences() {
-    if (Configuration.getBooleanValue(Configuration.USE_CLIENT_PREFERENCES)) {
+    if (EntityModel.USE_CLIENT_PREFERENCES.get()) {
       final String preferencesString = PreferencesUtil.getUserPreference(getUserPreferencesKey(), "");
       try {
         if (preferencesString.length() > 0) {

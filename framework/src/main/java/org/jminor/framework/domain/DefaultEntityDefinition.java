@@ -9,7 +9,6 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.ResultPacker;
-import org.jminor.framework.Configuration;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -644,7 +643,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
                                                    final Property.ForeignKeyProperty foreignKeyProperty) {
     final List<Property.ColumnProperty> referenceProperties = foreignKeyProperty.getReferenceProperties();
     final boolean selfReferential = entityID.equals(foreignKeyProperty.getReferencedEntityID());
-    if (Configuration.getBooleanValue(Configuration.STRICT_FOREIGN_KEYS)) {
+    if (Entity.Definition.STRICT_FOREIGN_KEYS.get()) {
       if (!selfReferential && !ENTITY_DEFINITIONS.containsKey(foreignKeyProperty.getReferencedEntityID())) {
         throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getReferencedEntityID()
                 + "' referenced by entity '" + entityID + "' via foreign key property '"

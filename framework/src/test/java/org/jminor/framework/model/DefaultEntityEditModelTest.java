@@ -13,7 +13,6 @@ import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.CancelException;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
@@ -403,7 +402,7 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void containsUnsavedData() throws DatabaseException {
-    Configuration.setValue(Configuration.WARN_ABOUT_UNSAVED_DATA, true);
+    EntityEditModel.WARN_ABOUT_UNSAVED_DATA.set(true);
     employeeEditModel.setValuePersistent(TestDomain.EMP_DEPARTMENT_FK, false);
 
     final EventInfoListener<State> alwaysConfirmListener = info -> info.setActive(true);
@@ -433,7 +432,7 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setEntity(adams);
     assertEquals(king.get(TestDomain.EMP_DEPARTMENT_FK), employeeEditModel.getValue(TestDomain.EMP_DEPARTMENT_FK));
 
-    Configuration.setValue(Configuration.WARN_ABOUT_UNSAVED_DATA, false);
+    EntityEditModel.WARN_ABOUT_UNSAVED_DATA.set(false);
   }
 
   private static final class TestEntityEditModel extends DefaultEntityEditModel {

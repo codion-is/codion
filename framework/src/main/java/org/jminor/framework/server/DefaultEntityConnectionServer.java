@@ -3,9 +3,11 @@
  */
 package org.jminor.framework.server;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
 import org.jminor.common.Util;
+import org.jminor.common.Value;
 import org.jminor.common.Version;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
@@ -22,7 +24,7 @@ import org.jminor.common.server.LoginProxy;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
 import org.jminor.common.server.ServerUtil;
-import org.jminor.framework.Configuration;
+import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Entities;
 
 import org.slf4j.Logger;
@@ -56,11 +58,92 @@ import java.util.concurrent.TimeUnit;
  */
 public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemoteEntityConnection, Remote> {
 
-  private static final long serialVersionUID = 1;
+  private static final int DEFAULT_SERVER_CONNECTION_LIMIT = -1;
 
-  static {
-    Configuration.init();
-  }
+  private static final int DEFAULT_WEB_SERVER_PORT = 80;
+
+  /**
+   * Specifies the web server class, must implement Server.AuxiliaryServer<br>
+   * and contain a constructor with the following signature: (Server, String, Integer)<br>
+   * for the server, file document root and port respectively<br>
+   * Value type: String<br>
+   * Default value: org.jminor.framework.plugins.rest.EntityRESTServer
+   */
+  public static final Value<String> WEB_SERVER_IMPLEMENTATION_CLASS = Configuration.stringValue("jminor.server.web.webServerClass", "org.jminor.framework.plugins.rest.EntityRESTServer");
+
+  /**
+   * Specifies the class name of the connection pool provider to user, if none is specified
+   * the internal connection pool is used if necessary<br>
+   * Value type: String<br>
+   * Default value: none
+   * @see ConnectionPoolProvider
+   */
+  public static final Value<String> SERVER_CONNECTION_POOL_PROVIDER_CLASS = Configuration.stringValue("jminor.server.pooling.poolProviderClass", null);
+
+  /**
+   * Specifies maximum number of concurrent connections the server accepts<br>
+   * -1 indicates no limit and 0 indicates a closed server.
+   * Value type: Integer<br>
+   * Default value: -1
+   */
+  public static final Value<Integer> SERVER_CONNECTION_LIMIT = Configuration.integerValue("jminor.server.connectionLimit", DEFAULT_SERVER_CONNECTION_LIMIT);
+
+  /**
+   * Specifies the default client connection timeout (ms) in a comma separated list.
+   * Example: org.jminor.demos.empdept.client.ui.EmpDeptAppPanel:60000,org.jminor.demos.chinook.ui.ChinookAppPanel:120000
+   * Value type: String<br>
+   * Default value: none
+   */
+  public static final Value<String> SERVER_CLIENT_CONNECTION_TIMEOUT = Configuration.stringValue("jminor.server.clientConnectionTimeout", null);
+
+  /**
+   * Specifies the port number for the WebStartServer<br>
+   * Value type: Integer<br>
+   * Default value: 80
+   */
+  public static final Value<Integer> WEB_SERVER_PORT = Configuration.integerValue("jminor.server.web.port", DEFAULT_WEB_SERVER_PORT);
+
+  /**
+   * The initial connection logging status on the server, either true (on) or false (off)<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final Value<Boolean> SERVER_CLIENT_LOGGING_ENABLED = Configuration.booleanValue("jminor.server.clientLoggingEnabled", false);
+
+  /**
+   * Specifies the document root for the WebStartServer, if no specified the web server will not be started<br>
+   * Value type: String<br>
+   * Default value: null
+   */
+  public static final Value<String> WEB_SERVER_DOCUMENT_ROOT = Configuration.stringValue("jminor.server.web.documentRoot", null);
+
+  /**
+   * Specifies a comma separated list of username:password combinations for which to create connection pools on startup
+   * Example: scott:tiger,john:foo,paul:bar
+   */
+  public static final Value<String> SERVER_CONNECTION_POOLING_INITIAL = Configuration.stringValue("jminor.server.pooling.initial", null);
+
+  /**
+   * Specifies a comma separated list of ConnectionValidator class names, which should be initialized on server startup,
+   * these classes must be available on the server classpath and contain a parameterless constructor
+   * @see ConnectionValidator
+   */
+  public static final Value<String> SERVER_CONNECTION_VALIDATOR_CLASSES = Configuration.stringValue("jminor.server.connectionValidatorClasses", null);
+
+  /**
+   * Specifies a comma separated list of LoginProxy class names, which should be initialized on server startup,
+   * these classes must be available on the server classpath and contain a parameterless constructor
+   * @see LoginProxy
+   */
+  public static final Value<String> SERVER_LOGIN_PROXY_CLASSES = Configuration.stringValue("jminor.server.loginProxyClasses", null);
+
+  /**
+   * Specifies a comma separated list of domain model class names, these classes must be
+   * available on the server classpath
+   */
+  public static final Value<String> SERVER_DOMAIN_MODEL_CLASSES = Configuration.stringValue("jminor.server.domain.classes", null);
+
+  private static final long serialVersionUID = 1;
 
   protected static final Logger LOG = LoggerFactory.getLogger(DefaultEntityConnectionServer.class);
 
@@ -511,7 +594,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   protected static String initializeServerName(final String databaseHost, final String sid) {
-    return Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX) + " " + Version.getVersionString()
+    return Server.SERVER_NAME_PREFIX.get() + " " + Version.getVersionString()
             + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
   }
 
@@ -525,7 +608,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   protected static Map<String, Integer> getClientTimeoutValues() {
-    final Collection<String> values = Configuration.parseCommaSeparatedValues(Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT);
+    final Collection<String> values = parseCommaSeparatedValues(SERVER_CLIENT_CONNECTION_TIMEOUT.get());
 
     return getClientTimeouts(values);
   }
@@ -546,7 +629,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   private AuxiliaryServer startWebServer(final String webDocumentRoot, final Integer webServerPort)
           throws ExecutionException, InterruptedException, ClassNotFoundException, NoSuchMethodException,
           IllegalAccessException, InvocationTargetException, InstantiationException {
-    final String webServerClassName = Configuration.getStringValue(Configuration.WEB_SERVER_IMPLEMENTATION_CLASS);
+    final String webServerClassName = WEB_SERVER_IMPLEMENTATION_CLASS.get();
     if (Util.nullOrEmpty(webDocumentRoot) || Util.nullOrEmpty(webServerClassName)) {
       return null;
     }
@@ -613,7 +696,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
 
   private static void initializeConnectionPools(final Database database, final Collection<User> initialPoolUsers) throws ClassNotFoundException, DatabaseException {
     if (initialPoolUsers != null) {
-      final String connectionPoolProviderClassName = Configuration.getStringValue(Configuration.SERVER_CONNECTION_POOL_PROVIDER_CLASS);
+      final String connectionPoolProviderClassName = SERVER_CONNECTION_POOL_PROVIDER_CLASS.get();
       final Class<? extends ConnectionPoolProvider> providerClass;
       if (Util.nullOrEmpty(connectionPoolProviderClassName)) {
         providerClass = null;
@@ -622,7 +705,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
         providerClass = (Class<? extends ConnectionPoolProvider>) Class.forName(connectionPoolProviderClassName);
       }
       ConnectionPools.initializeConnectionPools(providerClass, database, initialPoolUsers,
-              Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
+              EntityConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
     }
   }
 
@@ -656,27 +739,27 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @throws RemoteException in case of an exception
    */
   public static synchronized DefaultEntityConnectionServer startServer() throws RemoteException {
-    final Integer serverPort = (Integer) Configuration.getValue(Configuration.SERVER_PORT);
+    final Integer serverPort = Server.SERVER_PORT.get();
     if (serverPort == null) {
-      throw new IllegalArgumentException("Configuration property '" + Configuration.SERVER_PORT + "' is required");
+      throw new IllegalArgumentException("Configuration property '" + Server.SERVER_PORT + "' is required");
     }
-    final Integer registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT);
-    final Integer serverAdminPort = Configuration.getIntValue(Configuration.SERVER_ADMIN_PORT);
-    final boolean sslEnabled = Configuration.getBooleanValue(Configuration.SERVER_CONNECTION_SSL_ENABLED);
-    final Integer connectionLimit = Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT);
+    final Integer registryPort = Server.REGISTRY_PORT.get();
+    final Integer serverAdminPort = Server.SERVER_ADMIN_PORT.get();
+    final boolean sslEnabled = Server.SERVER_CONNECTION_SSL_ENABLED.get();
+    final Integer connectionLimit = SERVER_CONNECTION_LIMIT.get();
     final Database database = Databases.createInstance();
     final String serverName = initializeServerName(database.getHost(), database.getSid());
 
-    final Collection<String> domainModelClassNames = Configuration.parseCommaSeparatedValues(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
-    final Collection<String> loginProxyClassNames = Configuration.parseCommaSeparatedValues(Configuration.SERVER_LOGIN_PROXY_CLASSES);
-    final Collection<String> connectionValidationClassNames = Configuration.parseCommaSeparatedValues(Configuration.SERVER_CONNECTION_VALIDATOR_CLASSES);
-    final Collection<String> initialPoolUsers = Configuration.parseCommaSeparatedValues(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
-    final String webDocumentRoot = Configuration.getStringValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
-    final Integer webServerPort = Configuration.getIntValue(Configuration.WEB_SERVER_PORT);
-    final boolean clientLoggingEnabled = Configuration.getBooleanValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED);
-    final Integer connectionTimeout = Configuration.getIntValue(Configuration.SERVER_CONNECTION_TIMEOUT);
+    final Collection<String> domainModelClassNames = parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get());
+    final Collection<String> loginProxyClassNames = parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get());
+    final Collection<String> connectionValidationClassNames = parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get());
+    final Collection<String> initialPoolUsers = parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_INITIAL.get());
+    final String webDocumentRoot = WEB_SERVER_DOCUMENT_ROOT.get();
+    final Integer webServerPort = WEB_SERVER_PORT.get();
+    final boolean clientLoggingEnabled = SERVER_CLIENT_LOGGING_ENABLED.get();
+    final Integer connectionTimeout = Server.SERVER_CONNECTION_TIMEOUT.get();
     final Map<String, Integer> clientTimeouts = getClientTimeoutValues();
-    final String adminUserString = Configuration.getStringValue(Configuration.SERVER_ADMIN_USER);
+    final String adminUserString = Server.SERVER_ADMIN_USER.get();
     final User adminUser = Util.nullOrEmpty(adminUserString) ? null : User.parseUser(adminUserString);
     if (adminUser == null) {
       LOG.info("No admin user specified");
@@ -702,15 +785,27 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
   }
 
+  private static Collection<String> parseCommaSeparatedValues(final String commaSeparatedValues) {
+    final Collection<String> values = new ArrayList<>();
+    if (!Util.nullOrEmpty(commaSeparatedValues)) {
+      final String[] classNames = commaSeparatedValues.split(",");
+      for (final String className : classNames) {
+        values.add(className.trim());
+      }
+    }
+
+    return values;
+  }
+
   /**
    * Connects to the server and shuts it down
    */
   static synchronized void shutdownServer() throws ServerException.AuthenticationException {
-    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT);
+    final int registryPort = Server.REGISTRY_PORT.get();
     final String sid = System.getProperty(Database.DATABASE_SID);
     final String host = System.getProperty(Database.DATABASE_HOST);
     final String serverName = initializeServerName(host, sid);
-    final String adminUserString = Configuration.getStringValue(Configuration.SERVER_ADMIN_USER);
+    final String adminUserString = Server.SERVER_ADMIN_USER.get();
     if (Util.nullOrEmpty(adminUserString)) {
       throw ServerException.authenticationException("No admin user specified");
     }

@@ -3,10 +3,10 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.framework.Configuration;
+import org.jminor.common.Configuration;
+import org.jminor.common.Value;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.MasterDetailPanel;
 import org.jminor.swing.common.ui.UiUtil;
@@ -70,6 +70,79 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityPanel.class);
 
+  private static final int DEFAULT_SPLIT_PANE_DIVIDER_SIZE = 18;
+
+  /**
+   * Indicates whether entity panels should be activated when the panel receives focus<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   * @see org.jminor.swing.framework.ui.EntityEditPanel#ALL_PANELS_ACTIVE
+   */
+  public static final Value<Boolean> USE_FOCUS_ACTIVATION = Configuration.booleanValue("jminor.client.useFocusActivation", true);
+
+  /**
+   * Indicates whether keyboard navigation will be enabled<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final Value<Boolean> USE_KEYBOARD_NAVIGATION = Configuration.booleanValue("jminor.client.useKeyboardNavigation", true);
+
+  /**
+   * Indicates whether dialogs opened by child panels in the application should be centered
+   * on their respective parent panel or the application frame/dialog.
+   * This applies to edit panels.
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final Value<Boolean> CENTER_APPLICATION_DIALOGS = Configuration.booleanValue("jminor.client.centerApplicationDialogs", false);
+
+  /**
+   * Indicates whether entity edit panel dialogs should be closed on escape<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final Value<Boolean> DISPOSE_EDIT_DIALOG_ON_ESCAPE = Configuration.booleanValue("jminor.client.disposeEditDialogOnEscape", true);
+
+  /**
+   * Specifies whether or not a control for toggling the edit panel is available to the user<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final Value<Boolean> SHOW_TOGGLE_EDIT_PANEL_CONTROL = Configuration.booleanValue("jminor.client.showToggleEditPanelControl", true);
+
+  /**
+   * if true and an edit panel is available the actions to toggle it is included
+   */
+  private boolean showToggleEditPanelControl = SHOW_TOGGLE_EDIT_PANEL_CONTROL.get();
+
+  /**
+   * Specifies whether or not actions to hide detail panels or show them in a dialog are available to the user<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final Value<Boolean> SHOW_DETAIL_PANEL_CONTROLS = Configuration.booleanValue("jminor.client.showDetailPanelControls", true);
+
+  /**
+   * Specifies the default size of the divider for detail panel split panes.<br>
+   * Value type: Integer<br>
+   * Default value: 18<br>
+   */
+  public static final Value<Integer> SPLIT_PANE_DIVIDER_SIZE = Configuration.integerValue("jminor.swing.splitPaneDividerSize", DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
+
+  /**
+   * Indicates whether entity panels containing detail panels should by default be laid out in a compact manner<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final Value<Boolean> COMPACT_ENTITY_PANEL_LAYOUT = Configuration.booleanValue("jminor.swing.compactEntityPanelLayout", true);
+
+  /**
+   * Specifies whether the action buttons (Save, update, delete, clear, refresh) should be on a toolbar<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final Value<Boolean> TOOLBAR_BUTTONS = Configuration.booleanValue("jminor.swing.toolbarButtons", false);
+
   /**
    * The possible states of a detail panel.
    */
@@ -96,7 +169,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   private static final int RESIZE_AMOUNT = 30;
 
-  private static final int SPLIT_PANE_DIVIDER_SIZE = SwingConfiguration.getIntValue(SwingConfiguration.SPLIT_PANE_DIVIDER_SIZE);
   private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
   private static final int DETAIL_DIALOG_OFFSET = 29;
   private static final double DETAIL_DIALOG_SIZE_RATIO = 1.5;
@@ -167,12 +239,12 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   /**
    * true if this panel should be compact
    */
-  private boolean compactDetailLayout = Configuration.getBooleanValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT);
+  private boolean compactDetailLayout = COMPACT_ENTITY_PANEL_LAYOUT.get();
 
   /**
    * indicates where the control panel should be placed in a BorderLayout
    */
-  private String controlPanelConstraints = Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ? BorderLayout.WEST : BorderLayout.EAST;
+  private String controlPanelConstraints = TOOLBAR_BUTTONS.get() ? BorderLayout.WEST : BorderLayout.EAST;
 
   /**
    * Holds the current state of the edit panel (HIDDEN, EMBEDDED or DIALOG)
@@ -193,21 +265,15 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * if true and detail panels are available then the detail panel tab pane should be included
    */
   private boolean includeDetailPanelTabPane = true;
-
-  /**
-   * if true and an edit panel is available the actions to toggle it is included
-   */
-  private boolean showToggleEditPanelControl = Configuration.getBooleanValue(Configuration.SHOW_TOGGLE_EDIT_PANEL_CONTROL);
-
   /**
    * if true and detail panels are available the controls to hide and show detail panels are included
    */
-  private boolean showDetailPanelControls = Configuration.getBooleanValue(Configuration.SHOW_DETAIL_PANEL_CONTROLS);
+  private boolean showDetailPanelControls = SHOW_DETAIL_PANEL_CONTROLS.get();
 
   /**
    * if true then the ESC key disposes the edit dialog
    */
-  private boolean disposeEditDialogOnEscape = Configuration.getBooleanValue(Configuration.DISPOSE_EDIT_DIALOG_ON_ESCAPE);
+  private boolean disposeEditDialogOnEscape = DISPOSE_EDIT_DIALOG_ON_ESCAPE.get();
 
   /**
    * True after {@code initializePanel()} has been called
@@ -217,7 +283,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private double detailSplitPanelResizeWeight = DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT;
 
   static {
-    if (Configuration.getBooleanValue(Configuration.USE_FOCUS_ACTIVATION)) {
+    if (USE_FOCUS_ACTIVATION.get()) {
       KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner", new FocusActivationListener());
     }
   }
@@ -711,7 +777,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /**
    * @return true if the edit panel control should be shown
-   * @see Configuration#SHOW_TOGGLE_EDIT_PANEL_CONTROL
+   * @see EntityPanel#SHOW_TOGGLE_EDIT_PANEL_CONTROL
    */
   public final boolean isShowToggleEditPanelControl() {
     return showToggleEditPanelControl;
@@ -730,7 +796,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /**
    * @return true if detail panel controls should be shown
-   * @see Configuration#SHOW_DETAIL_PANEL_CONTROLS
+   * @see EntityPanel#SHOW_DETAIL_PANEL_CONTROLS
    */
   public final boolean isShowDetailPanelControls() {
     return showDetailPanelControls;
@@ -767,7 +833,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /**
    * @return true if the edit dialog is disposed of on ESC
-   * @see Configuration#DISPOSE_EDIT_DIALOG_ON_ESCAPE
+   * @see EntityPanel#DISPOSE_EDIT_DIALOG_ON_ESCAPE
    */
   public final boolean isDisposeEditDialogOnEscape() {
     return disposeEditDialogOnEscape;
@@ -775,7 +841,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /**
    * @param disposeEditDialogOnEscape if true then the edit dialog is disposed of on ESC
-   * @see Configuration#DISPOSE_EDIT_DIALOG_ON_ESCAPE
+   * @see EntityPanel#DISPOSE_EDIT_DIALOG_ON_ESCAPE
    */
   public final void setDisposeEditDialogOnEscape(final boolean disposeEditDialogOnEscape) {
     this.disposeEditDialogOnEscape = disposeEditDialogOnEscape;
@@ -1034,7 +1100,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       updateEditPanelState();
     }
     setupKeyboardActions();
-    if (Configuration.getBooleanValue(Configuration.USE_KEYBOARD_NAVIGATION)) {
+    if (USE_KEYBOARD_NAVIGATION.get()) {
       initializeNavigation();
     }
     initializeResizing();
@@ -1067,12 +1133,12 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @return the control panel for managing records
    * @see EntityEditPanel#createControlPanel(boolean)
    * @see EntityEditPanel#createControlToolBar(int)
-   * @see Configuration#TOOLBAR_BUTTONS
+   * @see EntityPanel#TOOLBAR_BUTTONS
    */
   protected JComponent createEditControlPanel() {
     final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
             controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
-    return Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
+    return TOOLBAR_BUTTONS.get() ?
             editPanel.createControlToolBar(JToolBar.VERTICAL) : editPanel.createControlPanel(alignment == FlowLayout.CENTER);
   }
 
@@ -1198,7 +1264,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     splitPane.setBorder(BorderFactory.createEmptyBorder());
     splitPane.setOneTouchExpandable(true);
     splitPane.setResizeWeight(detailSplitPanelResizeWeight);
-    splitPane.setDividerSize(SPLIT_PANE_DIVIDER_SIZE);
+    splitPane.setDividerSize(SPLIT_PANE_DIVIDER_SIZE.get());
 
     return splitPane;
   }
@@ -1412,7 +1478,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    */
   private void showEditDialog() {
     Container dialogOwner = this;
-    if (Configuration.getBooleanValue(Configuration.CENTER_APPLICATION_DIALOGS)) {
+    if (CENTER_APPLICATION_DIALOGS.get()) {
       dialogOwner = UiUtil.getParentWindow(this);
     }
     editPanelDialog = UiUtil.displayInDialog(dialogOwner, editControlPanel, caption, false, disposeEditDialogOnEscape,

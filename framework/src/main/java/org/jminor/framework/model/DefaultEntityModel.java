@@ -7,7 +7,6 @@ import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.Util;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -101,7 +100,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /**
    * If true then the table model is automatically filtered when insert is performed in a master model
    */
-  private boolean filterOnMasterInsert = Configuration.getBooleanValue(Configuration.FILTER_ON_MASTER_INSERT);
+  private boolean filterOnMasterInsert = EntityModel.FILTER_ON_MASTER_INSERT.get();
 
   /**
    * Instantiates a new DefaultEntityModel
@@ -461,7 +460,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * Adds the inserted entities to the EntityComboBoxModels based on the inserted entity type,
    * sets the value of the master foreign key property and filters the table model if applicable
    * @param insertEvent the insert event
-   * @see Configuration#FILTER_ON_MASTER_INSERT
+   * @see EntityModel#FILTER_ON_MASTER_INSERT
    */
   private void handleMasterInsert(final EntityEditModel.InsertEvent insertEvent) {
     editModel.addForeignKeyValues(insertEvent.getInsertedEntities());

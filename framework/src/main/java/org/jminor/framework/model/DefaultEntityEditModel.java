@@ -18,7 +18,6 @@ import org.jminor.common.db.valuemap.ValueCollectionProvider;
 import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.valuemap.DefaultValueMapEditModel;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
@@ -190,8 +189,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
       return persistentValues.get(property.getPropertyID());
     }
 
-    return property instanceof Property.ForeignKeyProperty &&
-            Configuration.getBooleanValue(Configuration.PERSIST_FOREIGN_KEY_VALUES);
+    return property instanceof Property.ForeignKeyProperty && EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get();
   }
 
   /** {@inheritDoc} */
@@ -870,7 +868,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   }
 
   private boolean isSetEntityAllowed() {
-    if (Configuration.getBooleanValue(Configuration.WARN_ABOUT_UNSAVED_DATA) && containsUnsavedData()) {
+    if (EntityEditModel.WARN_ABOUT_UNSAVED_DATA.get() && containsUnsavedData()) {
       final State confirmation = States.state(true);
       confirmSetEntityEvent.fire(confirmation);
 

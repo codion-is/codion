@@ -3,10 +3,13 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.Item;
+import org.jminor.common.Value;
 import org.jminor.common.db.Attribute;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
+import org.jminor.common.model.formats.DateFormats;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,6 +18,7 @@ import java.lang.annotation.Target;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +26,105 @@ import java.util.Map;
  * Specifies a Property.
  */
 public interface Property extends Attribute {
+
+  int DEFAULT_MAXIMUM_FRACTION_DIGITS = 10;
+  int DEFAULT_FOREIGN_KEY_FETCH_DEPTH = 1;
+
+  /**
+   * Specifies the default maximum number of fraction digits for double property values<br>
+   * Note that values are rounded when set.<br>
+   * Value type: Integer<br>
+   * Default value: 10
+   */
+  Value<Integer> MAXIMUM_FRACTION_DIGITS = Configuration.integerValue("jminor.domain.maximumFractionDigits", DEFAULT_MAXIMUM_FRACTION_DIGITS);
+
+  /**
+   * The date format pattern to use when showing time values in tables and when
+   * creating default time input fields<br>
+   * Value type: String<br>
+   * Default value: HH:mm
+   */
+  Value<String> TIME_FORMAT = Configuration.stringValue("jminor.domain.timeFormat", "HH:mm");
+
+  /**
+   * The date format pattern to use when showing timestamp values in tables and when
+   * creating default timestamp input fields<br>
+   * Value type: String<br>
+   * Default value: dd-MM-yyyy HH:mm
+   */
+  Value<String> TIMESTAMP_FORMAT = Configuration.stringValue("jminor.domain.timestampFormat", "dd-MM-yyyy HH:mm");
+
+  /**
+   * The date format pattern to use when showing date values in tables and when
+   * creating default date input fields<br>
+   * Value type: String<br>
+   * Default value: dd-MM-yyyy
+   */
+  Value<String> DATE_FORMAT = Configuration.stringValue("jminor.domain.dateFormat", "dd-MM-yyyy");
+
+  /**
+   * Specifies the value used to denote a boolean false in the database<br>
+   * Value type: Any Object<br>
+   * Default value: 0
+   */
+  Configuration.ConfigurationValue<Object> SQL_BOOLEAN_VALUE_FALSE = new Configuration.ConfigurationValue<Object>("jminor.domain.sqlBooleanValueFalse", 0) {
+    @Override
+    protected Object parseFromSystemProperties(final Object defaultValue) {
+      //not supported
+      return null;
+    }
+  };
+
+  /**
+   * Specifies the value used to denote a boolean true in the database<br>
+   * Value type: Any Object<br>
+   * Default value: 1
+   */
+  Configuration.ConfigurationValue<Object> SQL_BOOLEAN_VALUE_TRUE = new Configuration.ConfigurationValue<Object>("jminor.domain.sqlBooleanValueTrue", 1) {
+    @Override
+    protected Object parseFromSystemProperties(final Object defaultValue) {
+      //not supported
+      return null;
+    }
+  };
+
+  /**
+   * Specifies the default foreign key fetch depth<br>
+   * Value type: Integer<br>
+   * Default value: 1
+   */
+  Value<Integer> FOREIGN_KEY_FETCH_DEPTH = Configuration.integerValue("jminor.domain.foreignKeyFetchDepth", DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
+
+  /**
+   * Specifies the wildcard character used by the framework<br>
+   * Value type: String<br>
+   * Default value: %
+   */
+  Value<String> WILDCARD_CHARACTER = Configuration.stringValue("jminor.wildcardCharacter", "%");
+
+  /**
+   * @return A non-lenient SimpleDateFormat based on Configuration.DATE_FORMAT
+   * @see Property#DATE_FORMAT
+   */
+  static SimpleDateFormat getDefaultDateFormat() {
+    return DateFormats.getDateFormat(DATE_FORMAT.get());
+  }
+
+  /**
+   * @return A non-lenient SimpleDateFormat based on Configuration.TIMESTAMP_FORMAT
+   * @see Property#TIMESTAMP_FORMAT
+   */
+  static SimpleDateFormat getDefaultTimestampFormat() {
+    return DateFormats.getDateFormat(TIMESTAMP_FORMAT.get());
+  }
+
+  /**
+   * @return A non-lenient SimpleDateFormat based on Configuration.TIME_FORMAT
+   * @see Property#TIME_FORMAT
+   */
+  static SimpleDateFormat getDefaultTimeFormat() {
+    return DateFormats.getDateFormat(TIME_FORMAT.get());
+  }
 
   /**
    * @return the ID of the entity this property is associated with

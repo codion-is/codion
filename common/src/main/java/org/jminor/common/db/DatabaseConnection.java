@@ -57,7 +57,7 @@ public interface DatabaseConnection {
   int getRetryCount();
 
   /**
-   * Begins a transaction on this connection
+   * Begins a transaction on this connection, to end the transaction use {@link #commitTransaction()} or {@link #rollbackTransaction()}.
    * @throws IllegalStateException in case a transaction is already open
    */
   void beginTransaction();

@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.framework.Configuration;
-
 import org.junit.Test;
 
 import java.awt.Color;
@@ -135,11 +133,11 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void testForeignPrimaryKey() {
-    Configuration.setValue(Configuration.STRICT_FOREIGN_KEYS, false);
+    Entity.Definition.STRICT_FOREIGN_KEYS.set(false);
     new DefaultEntityDefinition("entityID", "tableName",
             Properties.foreignKeyProperty("fkPropertyID", "caption", "parent",
                     Properties.primaryKeyProperty("propertyID")));
-    Configuration.setValue(Configuration.STRICT_FOREIGN_KEYS, true);
+    Entity.Definition.STRICT_FOREIGN_KEYS.set(true);
   }
 
   @Test(expected = IllegalArgumentException.class)
