@@ -72,6 +72,13 @@ public final class Databases {
     return Database.Type.valueOf(dbType.trim().toUpperCase());
   }
 
+  /**
+   * @return true if the configuration value {@link Database#DATABASE_TYPE} is available as a system property
+   */
+  public static boolean isDatabaseTypeSpecified() {
+    return System.getProperty(Database.DATABASE_TYPE) != null;
+  }
+
   private static String getDatabaseClassName() {
     final Database.Type dbType = getDatabaseType();
     switch (dbType) {

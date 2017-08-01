@@ -4481,3 +4481,5 @@
   DefaultEntityConnectionServer.parseCommaSeparatedValues() moved to TextUtil
   Database.DATABASE_INIT_SCRIPT now supports a comma separated list of scripts, used by H2Database
   Database.createInstance() added back as deprecated, a bit too much of a breaking change
+  Databases.isDatabaseTypeSpecified() added
+  DefaultProperty only tries to use Databases.getInstance() when the above returns true
