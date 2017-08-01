@@ -4480,3 +4480,4 @@
   Database.getBooleanTrueValue() and getBooleanFalseValue() added instead of the above, by default retuns Boolean.TRUE and Boolean.FALSE respectively, overridden in OracleDatabase and SQLServerDatabase with 1 and 0
   DefaultEntityConnectionServer.parseCommaSeparatedValues() moved to TextUtil
   Database.DATABASE_INIT_SCRIPT now supports a comma separated list of scripts, used by H2Database
+  Database.createInstance() added back as deprecated, a bit too much of a breaking change

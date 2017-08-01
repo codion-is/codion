@@ -26,6 +26,13 @@ public final class Databases {
   private Databases() {}
 
   /**
+   * @deprecated use {@link #getInstance()}
+   */
+  public static synchronized Database createInstance() {
+    return getInstance();
+  }
+
+  /**
    * @return a Database instance based on the current runtime database type property
    * @see Database#DATABASE_TYPE
    * @see Database#DATABASE_IMPLEMENTATION_CLASS

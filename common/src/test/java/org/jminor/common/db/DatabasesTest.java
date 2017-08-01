@@ -92,6 +92,7 @@ public class DatabasesTest {
       System.setProperty(Database.DATABASE_SID, "sid");
       database = Databases.getInstance();
       assertTrue(database instanceof SQLServerDatabase);
+      assertTrue(database == Databases.createInstance());
     }
     finally {
       setSystemProperties(type, host, port, sid, embedded, embeddedInMemory, initScript);
