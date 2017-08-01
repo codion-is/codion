@@ -63,30 +63,6 @@ public interface Property extends Attribute {
   Value<String> DATE_FORMAT = Configuration.stringValue("jminor.domain.dateFormat", "dd-MM-yyyy");
 
   /**
-   * Specifies the value used to denote a boolean false in the database<br>
-   * Value type: Any Object<br>
-   * Default value: 0
-   */
-  Configuration.ConfigurationValue<Object> SQL_BOOLEAN_VALUE_FALSE = new Configuration.ConfigurationValue<Object>("jminor.domain.sqlBooleanValueFalse", 0) {
-    @Override
-    protected Object parseFromSystemProperties(final Object defaultValue) {
-      return defaultValue;
-    }
-  };
-
-  /**
-   * Specifies the value used to denote a boolean true in the database<br>
-   * Value type: Any Object<br>
-   * Default value: 1
-   */
-  Configuration.ConfigurationValue<Object> SQL_BOOLEAN_VALUE_TRUE = new Configuration.ConfigurationValue<Object>("jminor.domain.sqlBooleanValueTrue", 1) {
-    @Override
-    protected Object parseFromSystemProperties(final Object defaultValue) {
-      return defaultValue;
-    }
-  };
-
-  /**
    * Specifies the default foreign key fetch depth<br>
    * Value type: Integer<br>
    * Default value: 1

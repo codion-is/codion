@@ -22,7 +22,7 @@ public class LocalEntityConnectionProviderTest {
 
   @Test
   public void test() {
-    final Database database = Databases.createInstance();
+    final Database database = Databases.getInstance();
     final LocalEntityConnectionProvider provider = new LocalEntityConnectionProvider(UNIT_TEST_USER, database);
 
     assertEquals(database.getHost(), provider.getServerHostName());

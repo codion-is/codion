@@ -24,7 +24,7 @@ public class LookupValueLinkTest {
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger")), Databases.createInstance());
+          System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
 
   @BeforeClass
   public static void setUp() {

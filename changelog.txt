@@ -4475,3 +4475,8 @@
   org.jminor.framework.Configuration and associated abominations removed, configuration values refactored and spread all over the place
   Removed a reference to Configuration from framework module build file
   Property.SQL_BOOLEAN_VALUE_* initialization bug fixed
+  Databases.createInstance() renamed to getInstance(), now creates an instance only when required
+  Property.SQL_BOOLEAN_VALUE_* configuration values removed
+  Database.getBooleanTrueValue() and getBooleanFalseValue() added instead of the above, by default retuns Boolean.TRUE and Boolean.FALSE respectively, overridden in OracleDatabase and SQLServerDatabase with 1 and 0
+  DefaultEntityConnectionServer.parseCommaSeparatedValues() moved to TextUtil
+  Database.DATABASE_INIT_SCRIPT now supports a comma separated list of scripts, used by H2Database

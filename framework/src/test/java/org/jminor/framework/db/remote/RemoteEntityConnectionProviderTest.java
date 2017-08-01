@@ -42,7 +42,7 @@ public class RemoteEntityConnectionProviderTest {
   @BeforeClass
   public static synchronized void setUp() throws Exception {
     configure();
-    final Database database = Databases.createInstance();
+    final Database database = Databases.getInstance();
     final String serverName = Server.SERVER_NAME_PREFIX.get() + " " + Version.getVersionString()
             + "@" + (database.getSid() != null ? database.getSid().toUpperCase() : database.getHost().toUpperCase());
     DefaultEntityConnectionServer.startServer();

@@ -45,7 +45,7 @@ public class DatabaseUtilTest {
   public void queryInteger() throws DatabaseException, SQLException {
     DatabaseConnection connection = null;
     try {
-      connection = DatabaseConnections.createConnection(Databases.createInstance(), UNIT_TEST_USER);
+      connection = DatabaseConnections.createConnection(Databases.getInstance(), UNIT_TEST_USER);
       final int qInt = DatabaseUtil.queryInteger(connection, "select empno from scott.emp where ename = 'ADAMS'");
       assertTrue(qInt == 10);
     }
@@ -60,7 +60,7 @@ public class DatabaseUtilTest {
   public void queryLong() throws DatabaseException, SQLException {
     DatabaseConnection connection = null;
     try {
-      connection = DatabaseConnections.createConnection(Databases.createInstance(), UNIT_TEST_USER);
+      connection = DatabaseConnections.createConnection(Databases.getInstance(), UNIT_TEST_USER);
       final long qLong = DatabaseUtil.queryLong(connection, "select empno from scott.emp where ename = 'ADAMS'");
       assertTrue(qLong == 10L);
     }
@@ -86,7 +86,7 @@ public class DatabaseUtilTest {
 
     public TestDatabase() {
       super(Type.H2, "org.h2.Driver");
-      this.database = Databases.createInstance();
+      this.database = Databases.getInstance();
     }
 
     @Override

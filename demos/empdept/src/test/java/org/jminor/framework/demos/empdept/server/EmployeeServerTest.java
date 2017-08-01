@@ -33,7 +33,7 @@ public final class EmployeeServerTest {
           ServerException.ServerFullException, ServerException.ConnectionValidationException, DatabaseException {
     Server.RMI_SERVER_HOSTNAME.set("localhost");
 
-    final Database database = Databases.createInstance();
+    final Database database = Databases.getInstance();
     final EmployeeServer employeeServer = new EmployeeServer(database, SERVER_PORT, SERVER_PORT, REGISTRY_PORT);
 
     final Server<EmployeeService, Remote> remoteServer = ServerUtil.getServer("localhost",

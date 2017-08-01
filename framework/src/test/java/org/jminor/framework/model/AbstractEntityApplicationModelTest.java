@@ -20,7 +20,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(UNIT_TEST_USER, Databases.createInstance());
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(UNIT_TEST_USER, Databases.getInstance());
 
   protected abstract Model createDepartmentModel();
 

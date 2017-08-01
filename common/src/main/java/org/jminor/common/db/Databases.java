@@ -21,19 +21,28 @@ public final class Databases {
 
   private static final Map<String, DatabaseConnection.Operation> OPERATIONS = Collections.synchronizedMap(new HashMap<>());
 
+  private static Database INSTANCE;
+
   private Databases() {}
 
   /**
-   * @return a new Database instance based on runtime properties
+   * @return a Database instance based on the current runtime database type property
    * @see Database#DATABASE_TYPE
    * @see Database#DATABASE_IMPLEMENTATION_CLASS
+   * @see #getDatabaseType()
    * @throws IllegalArgumentException in case an unsupported database type is specified
    * @throws RuntimeException in case of an exception occurring while instantiating the database implementation instance
    */
-  public static Database createInstance() {
+  public static synchronized Database getInstance() {
     try {
-      final String databaseClassName = System.getProperty(Database.DATABASE_IMPLEMENTATION_CLASS, getDatabaseClassName());
-      return (Database) Class.forName(databaseClassName).newInstance();
+      final Database.Type currentType = getDatabaseType();
+      if (INSTANCE == null || !INSTANCE.getDatabaseType().equals(currentType)) {
+        //refresh the instance
+        final String databaseClassName = System.getProperty(Database.DATABASE_IMPLEMENTATION_CLASS, getDatabaseClassName());
+        INSTANCE = (Database) Class.forName(databaseClassName).newInstance();
+      }
+
+      return INSTANCE;
     }
     catch (final IllegalArgumentException e) {
       throw e;

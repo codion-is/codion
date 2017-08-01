@@ -50,7 +50,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * @param user the user
    */
   public LocalEntityConnectionProvider(final User user) {
-    this(user, Databases.createInstance());
+    this(user, Databases.getInstance());
   }
 
   /**

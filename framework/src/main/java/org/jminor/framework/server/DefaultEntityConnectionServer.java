@@ -5,6 +5,7 @@ package org.jminor.framework.server;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.TaskScheduler;
+import org.jminor.common.TextUtil;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.Value;
@@ -608,7 +609,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   protected static Map<String, Integer> getClientTimeoutValues() {
-    final Collection<String> values = parseCommaSeparatedValues(SERVER_CLIENT_CONNECTION_TIMEOUT.get());
+    final Collection<String> values = TextUtil.parseCommaSeparatedValues(SERVER_CLIENT_CONNECTION_TIMEOUT.get());
 
     return getClientTimeouts(values);
   }
@@ -747,13 +748,13 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     final Integer serverAdminPort = Server.SERVER_ADMIN_PORT.get();
     final boolean sslEnabled = Server.SERVER_CONNECTION_SSL_ENABLED.get();
     final Integer connectionLimit = SERVER_CONNECTION_LIMIT.get();
-    final Database database = Databases.createInstance();
+    final Database database = Databases.getInstance();
     final String serverName = initializeServerName(database.getHost(), database.getSid());
 
-    final Collection<String> domainModelClassNames = parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get());
-    final Collection<String> loginProxyClassNames = parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get());
-    final Collection<String> connectionValidationClassNames = parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get());
-    final Collection<String> initialPoolUsers = parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_INITIAL.get());
+    final Collection<String> domainModelClassNames = TextUtil.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get());
+    final Collection<String> loginProxyClassNames = TextUtil.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get());
+    final Collection<String> connectionValidationClassNames = TextUtil.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get());
+    final Collection<String> initialPoolUsers = TextUtil.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_INITIAL.get());
     final String webDocumentRoot = WEB_SERVER_DOCUMENT_ROOT.get();
     final Integer webServerPort = WEB_SERVER_PORT.get();
     final boolean clientLoggingEnabled = SERVER_CLIENT_LOGGING_ENABLED.get();
@@ -783,18 +784,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       LOG.error("Exception when starting server", e);
       throw new RuntimeException(e);
     }
-  }
-
-  private static Collection<String> parseCommaSeparatedValues(final String commaSeparatedValues) {
-    final Collection<String> values = new ArrayList<>();
-    if (!Util.nullOrEmpty(commaSeparatedValues)) {
-      final String[] classNames = commaSeparatedValues.split(",");
-      for (final String className : classNames) {
-        values.add(className.trim());
-      }
-    }
-
-    return values;
   }
 
   /**

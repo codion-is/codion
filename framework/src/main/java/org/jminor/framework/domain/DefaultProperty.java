@@ -6,6 +6,7 @@ package org.jminor.framework.domain;
 import org.jminor.common.FormatUtil;
 import org.jminor.common.Item;
 import org.jminor.common.Util;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
 import org.jminor.common.db.ValueFetcher;
@@ -1192,7 +1193,7 @@ class DefaultProperty implements Property {
     private final Object falseValue;
 
     BooleanValueConverter() {
-      this(Property.SQL_BOOLEAN_VALUE_TRUE.get(), Property.SQL_BOOLEAN_VALUE_FALSE.get());
+      this(Databases.getInstance().getBooleanTrueValue(), Databases.getInstance().getBooleanTrueValue());
     }
 
     BooleanValueConverter(final Object trueValue, final Object falseValue) {

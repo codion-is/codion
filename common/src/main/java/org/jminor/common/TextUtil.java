@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.text.Collator;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -333,5 +334,21 @@ public final class TextUtil {
     }
 
     return stringBuilder.toString();
+  }
+
+  /**
+   * @param commaSeparatedValues a String with comma separated values
+   * @return the trimmed values
+   */
+  public static List<String> parseCommaSeparatedValues(final String commaSeparatedValues) {
+    final List<String> values = new ArrayList<>();
+    if (!Util.nullOrEmpty(commaSeparatedValues)) {
+      final String[] strings = commaSeparatedValues.split(",");
+      for (final String value : strings) {
+        values.add(value.trim());
+      }
+    }
+
+    return values;
   }
 }

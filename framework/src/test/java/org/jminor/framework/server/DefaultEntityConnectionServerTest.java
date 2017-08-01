@@ -47,7 +47,7 @@ public class DefaultEntityConnectionServerTest {
   public static synchronized void setUp() throws Exception {
     TestDomain.init();
     configure();
-    final Database database = Databases.createInstance();
+    final Database database = Databases.getInstance();
     final String serverName = DefaultEntityConnectionServer.initializeServerName(database.getHost(), database.getSid());
     DefaultEntityConnectionServer.startServer();
     server = (Server) LocateRegistry.getRegistry(Server.SERVER_HOST_NAME.get(), Server.REGISTRY_PORT.get()).lookup(serverName);

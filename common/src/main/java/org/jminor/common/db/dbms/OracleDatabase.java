@@ -22,6 +22,9 @@ public final class OracleDatabase extends AbstractDatabase {
   static final String URL_PREFIX = "jdbc:oracle:thin:@";
   static final String CHECK_QUERY = "select 1 from dual";
 
+  private static final Integer BOOLEAN_TRUE_VALUE = 1;
+  private static final Integer BOOLEAN_FALSE_VALUE = 0;
+
   private static final Map<Integer, String> ERROR_CODE_MAP = new HashMap<>();
 
   private static final int UNIQUE_KEY_ERROR = 1;
@@ -96,6 +99,18 @@ public final class OracleDatabase extends AbstractDatabase {
   @Override
   public boolean supportsIsValid() {
     return false;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Object getBooleanTrueValue() {
+    return BOOLEAN_TRUE_VALUE;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Object getBooleanFalseValue() {
+    return BOOLEAN_FALSE_VALUE;
   }
 
   /** {@inheritDoc} */

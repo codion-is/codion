@@ -17,6 +17,9 @@ public final class SQLServerDatabase extends AbstractDatabase {
   static final String AUTO_INCREMENT_QUERY = "SELECT SCOPE_IDENTITY()";
   static final String URL_PREFIX = "jdbc:sqlserver://";
 
+  private static final Integer BOOLEAN_TRUE_VALUE = 1;
+  private static final Integer BOOLEAN_FALSE_VALUE = 0;
+
   /**
    * Instantiates a new SQLServerDatabase.
    */
@@ -47,5 +50,17 @@ public final class SQLServerDatabase extends AbstractDatabase {
     Util.require("port", getPort());
     final String sid = getSid();
     return URL_PREFIX + getHost() + ":" + getPort() + (!Util.nullOrEmpty(sid) ? ";databaseName=" + sid : "");
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Object getBooleanTrueValue() {
+    return BOOLEAN_TRUE_VALUE;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Object getBooleanFalseValue() {
+    return BOOLEAN_FALSE_VALUE;
   }
 }

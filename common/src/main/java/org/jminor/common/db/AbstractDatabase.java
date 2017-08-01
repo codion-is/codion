@@ -176,6 +176,18 @@ public abstract class AbstractDatabase implements Database {
 
   /** {@inheritDoc} */
   @Override
+  public Object getBooleanTrueValue() {
+    return Boolean.TRUE;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Object getBooleanFalseValue() {
+    return Boolean.FALSE;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public String getCheckConnectionQuery() {
     return null;
   }

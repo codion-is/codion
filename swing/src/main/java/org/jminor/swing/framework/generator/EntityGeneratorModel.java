@@ -72,7 +72,7 @@ public final class EntityGeneratorModel {
    * @throws DatabaseException in case of an exception while connecting to the database
    */
   public EntityGeneratorModel(final User user, final String schema) throws DatabaseException {
-    this(Databases.createInstance(), user, schema);
+    this(Databases.getInstance(), user, schema);
   }
 
   /**

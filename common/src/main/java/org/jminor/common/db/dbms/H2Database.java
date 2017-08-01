@@ -3,6 +3,7 @@
  */
 package org.jminor.common.db.dbms;
 
+import org.jminor.common.TextUtil;
 import org.jminor.common.Util;
 import org.jminor.common.db.AbstractDatabase;
 
@@ -13,6 +14,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -62,7 +65,7 @@ public final class H2Database extends AbstractDatabase {
    */
   public H2Database(final String databaseName, final boolean embeddedInMemory) {
     super(Type.H2, DRIVER_CLASS_NAME, databaseName, null, null, true);
-    initializeSharedDatabase(databaseName, System.getProperty(DATABASE_INIT_SCRIPT), embeddedInMemory);
+    initializeSharedDatabase(databaseName, TextUtil.parseCommaSeparatedValues(System.getProperty(DATABASE_INIT_SCRIPT)), embeddedInMemory);
     this.embeddedInMemory = embeddedInMemory;
   }
 
@@ -96,7 +99,7 @@ public final class H2Database extends AbstractDatabase {
    */
   public H2Database(final String databaseName, final String initScript, final boolean embeddedInMemory) {
     super(Type.H2, DRIVER_CLASS_NAME, databaseName, null, null, true);
-    initializeDatabase(databaseName, initScript, embeddedInMemory);
+    initializeDatabase(databaseName, Collections.singletonList(initScript), embeddedInMemory);
     this.embeddedInMemory = embeddedInMemory;
 
   }
@@ -192,25 +195,27 @@ public final class H2Database extends AbstractDatabase {
   /**
    * Initializes a shared H2 database instance
    */
-  private static synchronized void initializeSharedDatabase(final String databaseName, final String scriptPath,
+  private static synchronized void initializeSharedDatabase(final String databaseName, final List<String> scriptPaths,
                                                             final boolean inMemory) {
     if (!sharedDatabaseInitialized) {
-      initializeDatabase(databaseName, scriptPath, inMemory);
+      initializeDatabase(databaseName, scriptPaths, inMemory);
       sharedDatabaseInitialized = true;
     }
   }
 
-  private static void initializeDatabase(final String databaseName, final String scriptPath, final boolean inMemory) {
-    if (!Util.nullOrEmpty(scriptPath) && (inMemory || !Files.exists(Paths.get(databaseName + ".h2.db")))) {
+  private static void initializeDatabase(final String databaseName, final List<String> scriptPaths, final boolean inMemory) {
+    if (!Util.nullOrEmpty(scriptPaths) && (inMemory || !Files.exists(Paths.get(databaseName + ".h2.db")))) {
       final Properties properties = new Properties();
       properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
-      final String url = (inMemory ? URL_PREFIX_MEM : URL_PREFIX_FILE) + databaseName
-              + ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + scriptPath.replace("\\", "/") + "'";
-      try {
-        DriverManager.getConnection(url, properties).close();
-      }
-      catch (final SQLException e) {
-        throw new RuntimeException(e);
+      for (final String scriptPath : scriptPaths) {
+        final String url = (inMemory ? URL_PREFIX_MEM : URL_PREFIX_FILE) + databaseName
+                + ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + scriptPath.replace("\\", "/") + "'";
+        try {
+          DriverManager.getConnection(url, properties).close();
+        }
+        catch (final SQLException e) {
+          throw new RuntimeException(e);
+        }
       }
     }
   }
