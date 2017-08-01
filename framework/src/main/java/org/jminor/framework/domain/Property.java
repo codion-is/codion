@@ -70,8 +70,7 @@ public interface Property extends Attribute {
   Configuration.ConfigurationValue<Object> SQL_BOOLEAN_VALUE_FALSE = new Configuration.ConfigurationValue<Object>("jminor.domain.sqlBooleanValueFalse", 0) {
     @Override
     protected Object parseFromSystemProperties(final Object defaultValue) {
-      //not supported
-      return null;
+      return defaultValue;
     }
   };
 
@@ -83,8 +82,7 @@ public interface Property extends Attribute {
   Configuration.ConfigurationValue<Object> SQL_BOOLEAN_VALUE_TRUE = new Configuration.ConfigurationValue<Object>("jminor.domain.sqlBooleanValueTrue", 1) {
     @Override
     protected Object parseFromSystemProperties(final Object defaultValue) {
-      //not supported
-      return null;
+      return defaultValue;
     }
   };
 

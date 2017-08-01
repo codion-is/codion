@@ -206,6 +206,11 @@ public final class Configuration {
       return key;
     }
 
+    /**
+     * Parses the configuration value from system properties, returning the default value if none is specified
+     * @param defaultValue the default value
+     * @return the system properties value or the default value if none is specified
+     */
     protected abstract T parseFromSystemProperties(final T defaultValue);
   }
 

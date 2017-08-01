@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * A default {@link EntityModelProvider} implementation.
+ * A default Swing based {@link EntityModelProvider} implementation.
  */
 public class SwingEntityModelProvider
         implements EntityModelProvider<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
@@ -30,7 +30,7 @@ public class SwingEntityModelProvider
   private Class<? extends SwingEntityTableModel> tableModelClass = SwingEntityTableModel.class;
 
   /**
-   * Instantiates a new DefaultEntityModelProvider based on the given entity ID
+   * Instantiates a new SwingeEntityModelProvider based on the given entity ID
    * @param entityID the entity ID
    */
   public SwingEntityModelProvider(final String entityID) {
@@ -38,7 +38,7 @@ public class SwingEntityModelProvider
   }
 
   /**
-   * Instantiates a new DefaultEntityModelProvider based on the given entity ID
+   * Instantiates a new SwingEntityModelProvider based on the given entity ID
    * @param entityID the entity ID
    * @param entityModelClass the entity model class
    */

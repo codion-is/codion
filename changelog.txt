@@ -4474,3 +4474,4 @@
   org.jminor.common.Configuration added
   org.jminor.framework.Configuration and associated abominations removed, configuration values refactored and spread all over the place
   Removed a reference to Configuration from framework module build file
+  Property.SQL_BOOLEAN_VALUE_* initialization bug fixed
