@@ -33,7 +33,7 @@ public final class SQLServerDatabase extends AbstractDatabase {
    * @param port the port number
    * @param databaseName the database name
    */
-  public SQLServerDatabase(final String host, final String port, final String databaseName) {
+  public SQLServerDatabase(final String host, final Integer port, final String databaseName) {
     super(Type.SQLSERVER, DRIVER_CLASS_NAME, host, port, databaseName, false);
   }
 

@@ -4483,3 +4483,5 @@
   Database.createInstance() added back as deprecated, a bit too much of a breaking change
   Databases.isDatabaseTypeSpecified() added
   DefaultProperty only tries to use Databases.getInstance() when the above returns true
+  Database configuration valuefied
+  Database.getDatabaseType() renamed to getType()

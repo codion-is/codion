@@ -15,24 +15,24 @@ public class DerbyDatabaseTest {
 
   @Test(expected = UnsupportedOperationException.class)
   public void getSequenceSQL() {
-    new DerbyDatabase("host", "1234", "sid").getSequenceSQL("seq");
+    new DerbyDatabase("host", 1234, "sid").getSequenceSQL("seq");
   }
 
   @Test
   public void supportsIsValid() {
-    final DerbyDatabase db = new DerbyDatabase("host", "1234", "sid");
+    final DerbyDatabase db = new DerbyDatabase("host", 1234, "sid");
     assertTrue(db.supportsIsValid());
   }
 
   @Test
   public void supportsNoWait() {
-    final DerbyDatabase db = new DerbyDatabase("host", "1234", "sid");
+    final DerbyDatabase db = new DerbyDatabase("host", 1234, "sid");
     assertFalse(db.supportsNowait());
   }
 
   @Test
   public void getAuthenticationInfo() {
-    final DerbyDatabase db = new DerbyDatabase("host", "1234", "sid");
+    final DerbyDatabase db = new DerbyDatabase("host", 1234, "sid");
     final Properties props = new Properties();
     props.put(Database.USER_PROPERTY, "scott");
     props.put(Database.PASSWORD_PROPERTY, "tiger");
@@ -41,14 +41,14 @@ public class DerbyDatabaseTest {
 
   @Test
   public void getAutoIncrementValueSQL() {
-    final DerbyDatabase db = new DerbyDatabase("host", "1234", "sid");
+    final DerbyDatabase db = new DerbyDatabase("host", 1234, "sid");
     final String idSource = "id_source";
     assertEquals(DerbyDatabase.AUTO_INCREMENT_QUERY + idSource, db.getAutoIncrementValueSQL(idSource));
   }
 
   @Test
   public void getURL() {
-    DerbyDatabase db = new DerbyDatabase("host", "1234", "sid");
+    DerbyDatabase db = new DerbyDatabase("host", 1234, "sid");
     final Properties props = new Properties();
     props.put(Database.USER_PROPERTY, "scott");
     assertEquals("jdbc:derby://host:1234/sid;user=scott", db.getURL(props));

@@ -34,7 +34,7 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
    * @param port the port number
    * @param database the database name
    */
-  public PostgreSQLDatabase(final String host, final String port, final String database) {
+  public PostgreSQLDatabase(final String host, final Integer port, final String database) {
     super(Type.POSTGRESQL, DRIVER_CLASS_NAME, host, port, database, false);
   }
 

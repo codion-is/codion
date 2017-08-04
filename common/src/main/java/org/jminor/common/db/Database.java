@@ -3,7 +3,9 @@
  */
 package org.jminor.common.db;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.User;
+import org.jminor.common.Value;
 import org.jminor.common.db.exception.DatabaseException;
 
 import java.sql.Connection;
@@ -24,56 +26,56 @@ public interface Database {
 
   /**
    * Specifies the database type by name, this property is case insensitive
-   * @see Database.Type#DERBY
-   * @see Database.Type#HSQL
-   * @see Database.Type#H2
-   * @see Database.Type#MYSQL
-   * @see Database.Type#ORACLE
-   * @see Database.Type#POSTGRESQL
-   * @see Database.Type#SQLSERVER
+   * @see Type#DERBY
+   * @see Type#HSQL
+   * @see Type#H2
+   * @see Type#MYSQL
+   * @see Type#ORACLE
+   * @see Type#POSTGRESQL
+   * @see Type#SQLSERVER
    */
-  String DATABASE_TYPE = "jminor.db.type";
+  Value<String> DATABASE_TYPE = Configuration.stringValue("jminor.db.type", null);
 
   /**
    * Specifies the machine hosting the database, in the case of embedded databases
    * this specifies the name of the database
    */
-  String DATABASE_HOST = "jminor.db.host";
+  Value<String> DATABASE_HOST = Configuration.stringValue("jminor.db.host", null);
 
   /**
    * Specifies the database sid (used for dbname for MySQL, SQLServer and Derby server connections)
    */
-  String DATABASE_SID = "jminor.db.sid";
+  Value<String> DATABASE_SID = Configuration.stringValue("jminor.db.sid", null);
 
   /**
    * Specifies the database port
    */
-  String DATABASE_PORT = "jminor.db.port";
+  Value<Integer> DATABASE_PORT = Configuration.integerValue("jminor.db.port", null);
 
   /**
    * Specifies whether or not the database should be run in embedded mode, if applicable<br>
    * Values: "true"/"false"<br>
    * Default: "false"<br>
    */
-  String DATABASE_EMBEDDED = "jminor.db.embedded";
+  Value<Boolean> DATABASE_EMBEDDED = Configuration.booleanValue("jminor.db.embedded", false);
 
   /**
    * Specifies whether or not the database should be run in in-memory mode<br>
    * Values: "true"/"false"<br>
    * Default: "false"<br>
    */
-  String DATABASE_EMBEDDED_IN_MEMORY = "jminor.db.embeddedInMemory";
+  Value<Boolean> DATABASE_EMBEDDED_IN_MEMORY = Configuration.booleanValue("jminor.db.embeddedInMemory", false);
 
   /**
    * A script to run when initializing the database, implementation specific
    */
-  String DATABASE_INIT_SCRIPT = "jminor.db.initScript";
+  Value<String> DATABASE_INIT_SCRIPT = Configuration.stringValue("jminor.db.initScript", null);
 
   /**
    * Specifies the Database implementation class to use in case of a dbms that is not directly supported
    * @see Database
    */
-  String DATABASE_IMPLEMENTATION_CLASS = "jminor.db.implementation";
+  Value<String> DATABASE_IMPLEMENTATION_CLASS = Configuration.stringValue("jminor.db.implementation", getDatabaseClassName());
 
   /**
    * The constant used to denote the username value in the connection properties
@@ -94,7 +96,7 @@ public interface Database {
   /**
    * @return the name of the dbms in use
    */
-  Type getDatabaseType();
+  Type getType();
 
   /**
    * @return the database host name
@@ -104,7 +106,7 @@ public interface Database {
   /**
    * @return the database port
    */
-  String getPort();
+  Integer getPort();
 
   /**
    * @return the database service id
@@ -257,5 +259,45 @@ public interface Database {
      * @return the timestamp of these statistics
      */
     long getTimestamp();
+  }
+
+  /**
+   * @return the database implementation class name associated with the specified database type
+   */
+  static String getDatabaseClassName() {
+    final Database.Type dbType = Database.getDatabaseType();
+    switch (dbType) {
+      case POSTGRESQL:
+        return "org.jminor.common.db.dbms.PostgreSQLDatabase";
+      case MYSQL:
+        return "org.jminor.common.db.dbms.MySQLDatabase";
+      case ORACLE:
+        return "org.jminor.common.db.dbms.OracleDatabase";
+      case SQLSERVER:
+        return "org.jminor.common.db.dbms.SQLServerDatabase";
+      case DERBY:
+        return "org.jminor.common.db.dbms.DerbyDatabase";
+      case H2:
+        return "org.jminor.common.db.dbms.H2Database";
+      case HSQL:
+        return "org.jminor.common.db.dbms.HSQLDatabase";
+      case OTHER:
+        throw new IllegalArgumentException("Database type OTHER does not have an implementation");
+      default:
+        throw new IllegalArgumentException("Unknown database type: " + dbType);
+    }
+  }
+
+  /**
+   * @return the database type string as specified by the DATABASE_TYPE system property
+   * @see Database#DATABASE_TYPE
+   */
+  static Database.Type getDatabaseType() {
+    final String dbType = Database.DATABASE_TYPE.get();
+    if (dbType == null) {
+      throw new IllegalArgumentException("Required system property missing: " + Database.DATABASE_TYPE);
+    }
+
+    return Database.Type.valueOf(dbType.trim().toUpperCase());
   }
 }

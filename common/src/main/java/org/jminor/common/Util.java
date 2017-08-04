@@ -127,14 +127,14 @@ public class Util {
   }
 
   /**
-   * Throws a RuntimeException in case the given string value is null or an empty string,
+   * Throws a RuntimeException in case the given value is null or an empty string,
    * using {@code propertyName} in the error message, as in: "propertyName is required"
    * @param propertyName the name of the property that is required
    * @param value the value
-   * @throws RuntimeException in case value is null or empty
+   * @throws RuntimeException in case value is null or an empty string
    */
-  public static void require(final String propertyName, final String value) {
-    if (nullOrEmpty(value)) {
+  public static void require(final String propertyName, final Object value) {
+    if (value == null || value instanceof String && ((String) value).isEmpty()) {
       throw new RuntimeException(propertyName + " is required");
     }
   }

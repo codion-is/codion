@@ -30,7 +30,7 @@ public final class MySQLDatabase extends AbstractDatabase {
    * @param port the port number
    * @param dbname the db name
    */
-  public MySQLDatabase(final String host, final String port, final String dbname) {
+  public MySQLDatabase(final String host, final Integer port, final String dbname) {
     super(Type.MYSQL, DRIVER_CLASS_NAME, host, port, dbname);
   }
 

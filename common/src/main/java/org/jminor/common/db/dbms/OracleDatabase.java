@@ -68,7 +68,7 @@ public final class OracleDatabase extends AbstractDatabase {
    * @param port the port number
    * @param sid the service identifier
    */
-  public OracleDatabase(final String host, final String port, final String sid) {
+  public OracleDatabase(final String host, final Integer port, final String sid) {
     super(Type.ORACLE, DRIVER_CLASS_NAME, host, port, sid);
   }
 

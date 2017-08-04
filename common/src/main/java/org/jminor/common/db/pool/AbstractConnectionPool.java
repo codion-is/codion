@@ -5,7 +5,14 @@ package org.jminor.common.db.pool;
 
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
+import org.jminor.common.Util;
+import org.jminor.common.db.Database;
+import org.jminor.common.db.exception.DatabaseException;
 
+import javax.sql.DataSource;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.sql.Connection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -138,6 +145,37 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
    */
   protected final ConnectionPool.Counter getCounter() {
     return counter;
+  }
+
+  /**
+   * Handles a method invocation for this pool, counting created and destroyed connections.
+   * @param database the database
+   * @param user the user
+   * @param dataSource the data source
+   * @param dataSourceMethod the data source method being called
+   * @param dataSourceArgs the data source method arguments
+   * @return the method return value
+   * @throws DatabaseException in case of a an exception
+   * @throws IllegalAccessException in case of illegal access
+   * @throws InvocationTargetException in case of invocation exception
+   */
+  protected final Object handleInvocation(final Database database, final User user, final DataSource dataSource,
+                                          final Method dataSourceMethod, final Object[] dataSourceArgs)
+          throws DatabaseException, IllegalAccessException, InvocationTargetException {
+    if ("getConnection".equals(dataSourceMethod.getName())) {
+      final Connection connection = database.createConnection(user);
+      getCounter().incrementConnectionsCreatedCounter();
+
+      return Util.initializeProxy(Connection.class, (connectionProxy, connectionMethod, connectionArgs) -> {
+        if ("close".equals(connectionMethod.getName())) {
+          getCounter().incrementConnectionsDestroyedCounter();
+        }
+
+        return connectionMethod.invoke(connection, connectionArgs);
+      });
+    }
+
+    return dataSourceMethod.invoke(dataSource, dataSourceArgs);
   }
 
   private void initializePoolStatistics() {

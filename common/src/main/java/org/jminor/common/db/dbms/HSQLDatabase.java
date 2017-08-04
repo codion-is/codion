@@ -41,7 +41,7 @@ public final class HSQLDatabase extends AbstractDatabase {
    * @param port the port number
    * @param sid the service identifier
    */
-  public HSQLDatabase(final String host, final String port, final String sid) {
+  public HSQLDatabase(final String host, final Integer port, final String sid) {
     super(Type.HSQL, DRIVER_CLASS_NAME, host, port, sid, false);
   }
 

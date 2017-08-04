@@ -16,18 +16,18 @@ public class HSQLDatabaseTest {
 
   @Test (expected = NullPointerException.class)
   public void getSequenceSQLNullSequence() {
-    new HSQLDatabase("host", "1234", "sid").getSequenceSQL(null);
+    new HSQLDatabase("host", 1234, "sid").getSequenceSQL(null);
   }
 
   @Test
   public void supportsIsValid() {
-    final HSQLDatabase db = new HSQLDatabase("host", "1234", "sid");
+    final HSQLDatabase db = new HSQLDatabase("host", 1234, "sid");
     assertTrue(db.supportsIsValid());
   }
 
   @Test
   public void getAuthenticationInfo() {
-    final HSQLDatabase db = new HSQLDatabase("host", "1234", "sid");
+    final HSQLDatabase db = new HSQLDatabase("host", 1234, "sid");
     final Properties props = new Properties();
     props.put(Database.USER_PROPERTY, "scott");
     props.put(Database.PASSWORD_PROPERTY, "tiger");
@@ -36,20 +36,20 @@ public class HSQLDatabaseTest {
 
   @Test
   public void getAutoIncrementValueSQL() {
-    final HSQLDatabase db = new HSQLDatabase("host", "1234", "sid");
+    final HSQLDatabase db = new HSQLDatabase("host", 1234, "sid");
     assertEquals(HSQLDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementValueSQL(null));
   }
 
   @Test
   public void getSequenceSQL() {
-    final HSQLDatabase db = new HSQLDatabase("host", "1234", "sid");
+    final HSQLDatabase db = new HSQLDatabase("host", 1234, "sid");
     final String idSource = "seq";
     assertEquals(HSQLDatabase.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceSQL(idSource));
   }
 
   @Test
   public void getURL() {
-    HSQLDatabase db = new HSQLDatabase("host", "1234", "sid");
+    HSQLDatabase db = new HSQLDatabase("host", 1234, "sid");
     final Properties props = new Properties();
     props.put(Database.USER_PROPERTY, "scott");
     assertEquals("jdbc:hsqldb:hsql//host:1234/sid;user=scott", db.getURL(props));

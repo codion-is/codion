@@ -5,6 +5,7 @@ package org.jminor.common.db.dbms;
 
 import org.jminor.common.Util;
 import org.jminor.common.db.AbstractDatabase;
+import org.jminor.common.db.Database;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public final class DerbyDatabase extends AbstractDatabase {
 
   private static final Logger LOG = LoggerFactory.getLogger(DerbyDatabase.class);
 
-  static final boolean EMBEDDED = Boolean.TRUE.toString().equals(System.getProperty(DATABASE_EMBEDDED, Boolean.FALSE.toString()));
+  static final boolean EMBEDDED = Database.DATABASE_EMBEDDED.get();
 
   /**
    * Instantiates a new DerbyDatabase.
@@ -51,7 +52,7 @@ public final class DerbyDatabase extends AbstractDatabase {
    * @param port the port number
    * @param sid the service identifier
    */
-  public DerbyDatabase(final String host, final String port, final String sid) {
+  public DerbyDatabase(final String host, final Integer port, final String sid) {
     super(Type.DERBY, DRIVER_CLASS_NAME, host, port, sid, false);
   }
 

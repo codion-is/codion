@@ -11,42 +11,42 @@ public class PostgreSQLDatabaseTest {
 
   @Test (expected = NullPointerException.class)
   public void getSequenceSQLNullSequence() {
-    new PostgreSQLDatabase("host", "1234", "sid").getSequenceSQL(null);
+    new PostgreSQLDatabase("host", 1234, "sid").getSequenceSQL(null);
   }
   
   @Test
   public void supportsIsValid() {
-    final PostgreSQLDatabase db = new PostgreSQLDatabase("host", "1234", "sid");
+    final PostgreSQLDatabase db = new PostgreSQLDatabase("host", 1234, "sid");
     assertFalse(db.supportsIsValid());
   }
   
   @Test
   public void getAuthenticationInfo() {
-    final PostgreSQLDatabase db = new PostgreSQLDatabase("host", "1234", "sid");
+    final PostgreSQLDatabase db = new PostgreSQLDatabase("host", 1234, "sid");
     assertNull(db.getAuthenticationInfo(null));
   }
   
   @Test
   public void getAutoIncrementValueSQL() {
-    final PostgreSQLDatabase db = new PostgreSQLDatabase("host", "1234", "sid");
+    final PostgreSQLDatabase db = new PostgreSQLDatabase("host", 1234, "sid");
     assertEquals("select currval('seq')", db.getAutoIncrementValueSQL("seq"));
   }
   
   @Test
   public void getSequenceSQL() {
-    final PostgreSQLDatabase db = new PostgreSQLDatabase("host", "1234", "sid");
+    final PostgreSQLDatabase db = new PostgreSQLDatabase("host", 1234, "sid");
     assertEquals("select nextval('seq')", db.getSequenceSQL("seq"));
   }
   
   @Test
   public void getURL() {
-    final PostgreSQLDatabase db = new PostgreSQLDatabase("host", "1234", "sid");
+    final PostgreSQLDatabase db = new PostgreSQLDatabase("host", 1234, "sid");
     assertEquals("jdbc:postgresql://host:1234/sid", db.getURL(null));
   }
   
   @Test
   public void getCheckConnectionQuery() {
-    final PostgreSQLDatabase db = new PostgreSQLDatabase("host", "1234", "sid");
+    final PostgreSQLDatabase db = new PostgreSQLDatabase("host", 1234, "sid");
     assertEquals(PostgreSQLDatabase.CHECK_QUERY, db.getCheckConnectionQuery());
   }
 

@@ -6,6 +6,7 @@ package org.jminor.common.db.dbms;
 import org.jminor.common.TextUtil;
 import org.jminor.common.Util;
 import org.jminor.common.db.AbstractDatabase;
+import org.jminor.common.db.Database;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -35,7 +36,7 @@ public final class H2Database extends AbstractDatabase {
   static final String SEQUENCE_VALUE_QUERY = "select next value for ";
   static final String SYSADMIN_USERNAME = "sa";
   static final String RUN_TOOL_CLASS_NAME = "org.h2.tools.RunScript";
-  static final boolean EMBEDDED_IN_MEMORY = Boolean.TRUE.toString().equals(System.getProperty(DATABASE_EMBEDDED_IN_MEMORY, Boolean.FALSE.toString()));
+  static final boolean EMBEDDED_IN_MEMORY = Database.DATABASE_EMBEDDED_IN_MEMORY.get();
   static final String URL_PREFIX_SERVER = "jdbc:h2:";
   static final String URL_PREFIX_MEM = "jdbc:h2:mem:";
   static final String URL_PREFIX_FILE = "jdbc:h2:file:";
@@ -47,7 +48,7 @@ public final class H2Database extends AbstractDatabase {
    * Instantiates a new H2Database.
    */
   public H2Database() {
-    this(System.getProperty(DATABASE_HOST));
+    this(Database.DATABASE_HOST.get());
   }
 
   /**
@@ -65,7 +66,7 @@ public final class H2Database extends AbstractDatabase {
    */
   public H2Database(final String databaseName, final boolean embeddedInMemory) {
     super(Type.H2, DRIVER_CLASS_NAME, databaseName, null, null, true);
-    initializeSharedDatabase(databaseName, TextUtil.parseCommaSeparatedValues(System.getProperty(DATABASE_INIT_SCRIPT)), embeddedInMemory);
+    initializeSharedDatabase(databaseName, TextUtil.parseCommaSeparatedValues(Database.DATABASE_INIT_SCRIPT.get()), embeddedInMemory);
     this.embeddedInMemory = embeddedInMemory;
   }
 
@@ -75,7 +76,7 @@ public final class H2Database extends AbstractDatabase {
    * @param port the port number
    * @param databaseName the database name
    */
-  public H2Database(final String host, final String port, final String databaseName) {
+  public H2Database(final String host, final Integer port, final String databaseName) {
     super(Type.H2, DRIVER_CLASS_NAME, host, port, databaseName, false);
     this.embeddedInMemory = false;
   }

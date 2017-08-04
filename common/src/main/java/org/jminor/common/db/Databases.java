@@ -21,13 +21,15 @@ public final class Databases {
 
   private static final Map<String, DatabaseConnection.Operation> OPERATIONS = Collections.synchronizedMap(new HashMap<>());
 
-  private static Database INSTANCE;
+  private static Database instance;
 
   private Databases() {}
 
   /**
    * @deprecated use {@link #getInstance()}
+   * @return a Database instance based on the current runtime database type property
    */
+  @Deprecated
   public static synchronized Database createInstance() {
     return getInstance();
   }
@@ -42,14 +44,13 @@ public final class Databases {
    */
   public static synchronized Database getInstance() {
     try {
-      final Database.Type currentType = getDatabaseType();
-      if (INSTANCE == null || !INSTANCE.getDatabaseType().equals(currentType)) {
+      final Database.Type currentType = Database.getDatabaseType();
+      if (instance == null || !instance.getType().equals(currentType)) {
         //refresh the instance
-        final String databaseClassName = System.getProperty(Database.DATABASE_IMPLEMENTATION_CLASS, getDatabaseClassName());
-        INSTANCE = (Database) Class.forName(databaseClassName).newInstance();
+        instance = (Database) Class.forName(Database.getDatabaseClassName()).newInstance();
       }
 
-      return INSTANCE;
+      return instance;
     }
     catch (final IllegalArgumentException e) {
       throw e;
@@ -60,47 +61,10 @@ public final class Databases {
   }
 
   /**
-   * @return the database type string as specified by the DATABASE_TYPE system property
-   * @see Database#DATABASE_TYPE
-   */
-  public static Database.Type getDatabaseType() {
-    final String dbType = System.getProperty(Database.DATABASE_TYPE);
-    if (dbType == null) {
-      throw new IllegalArgumentException("Required system property missing: " + Database.DATABASE_TYPE);
-    }
-
-    return Database.Type.valueOf(dbType.trim().toUpperCase());
-  }
-
-  /**
    * @return true if the configuration value {@link Database#DATABASE_TYPE} is available as a system property
    */
   public static boolean isDatabaseTypeSpecified() {
-    return System.getProperty(Database.DATABASE_TYPE) != null;
-  }
-
-  private static String getDatabaseClassName() {
-    final Database.Type dbType = getDatabaseType();
-    switch (dbType) {
-      case POSTGRESQL:
-        return "org.jminor.common.db.dbms.PostgreSQLDatabase";
-      case MYSQL:
-        return "org.jminor.common.db.dbms.MySQLDatabase";
-      case ORACLE:
-        return "org.jminor.common.db.dbms.OracleDatabase";
-      case SQLSERVER:
-        return "org.jminor.common.db.dbms.SQLServerDatabase";
-      case DERBY:
-        return "org.jminor.common.db.dbms.DerbyDatabase";
-      case H2:
-        return "org.jminor.common.db.dbms.H2Database";
-      case HSQL:
-        return "org.jminor.common.db.dbms.HSQLDatabase";
-      case OTHER:
-        throw new IllegalArgumentException("Database type OTHER does not have an implementation");
-      default:
-        throw new IllegalArgumentException("Unknown database type: " + dbType);
-    }
+    return Database.DATABASE_TYPE.get() != null;
   }
 
   /**

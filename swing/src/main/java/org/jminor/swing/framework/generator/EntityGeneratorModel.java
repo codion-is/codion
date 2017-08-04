@@ -85,7 +85,7 @@ public final class EntityGeneratorModel {
   public EntityGeneratorModel(final Database database, final User user, final String schema) throws DatabaseException {
     try {
       this.schema = schema;
-      this.catalog = database.getDatabaseType().equals(Database.Type.MYSQL) ? schema : null;
+      this.catalog = database.getType().equals(Database.Type.MYSQL) ? schema : null;
       this.connection = database.createConnection(user);
       this.metaData = connection.getMetaData();
       this.tableModel = initializeTableModel();

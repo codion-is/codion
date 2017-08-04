@@ -53,6 +53,7 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
 
   /**
    * @return the value associated with {@link #REPORT_PATH}
+   * @throws IllegalArgumentException in case it is not specified
    */
   static String getReportPath() {
     final String path = REPORT_PATH.get();

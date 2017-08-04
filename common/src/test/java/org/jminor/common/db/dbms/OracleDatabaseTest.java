@@ -11,42 +11,42 @@ public class OracleDatabaseTest {
 
   @Test (expected = NullPointerException.class)
   public void getSequenceSQLNullSequence() {
-    new OracleDatabase("host", "1234", "sid").getSequenceSQL(null);
+    new OracleDatabase("host", 1234, "sid").getSequenceSQL(null);
   }
   
   @Test
   public void supportsIsValid() {
-    final OracleDatabase db = new OracleDatabase("host", "1234", "sid");
+    final OracleDatabase db = new OracleDatabase("host", 1234, "sid");
     assertFalse(db.supportsIsValid());
   }
   
   @Test
   public void getAuthenticationInfo() {
-    final OracleDatabase db = new OracleDatabase("host", "1234", "sid");
+    final OracleDatabase db = new OracleDatabase("host", 1234, "sid");
     assertNull(db.getAuthenticationInfo(null));
   }
   
   @Test
   public void getAutoIncrementValueSQL() {
-    final OracleDatabase db = new OracleDatabase("host", "1234", "sid");
+    final OracleDatabase db = new OracleDatabase("host", 1234, "sid");
     assertEquals("select seq.currval from dual", db.getAutoIncrementValueSQL("seq"));
   }
   
   @Test
   public void getSequenceSQL() {
-    final OracleDatabase db = new OracleDatabase("host", "1234", "sid");
+    final OracleDatabase db = new OracleDatabase("host", 1234, "sid");
     assertEquals("select seq.nextval from dual", db.getSequenceSQL("seq"));
   }
   
   @Test
   public void getURL() {
-    final OracleDatabase db = new OracleDatabase("host", "1234", "sid");
+    final OracleDatabase db = new OracleDatabase("host", 1234, "sid");
     assertEquals("jdbc:oracle:thin:@host:1234:sid", db.getURL(null));
   }
   
   @Test
   public void getCheckConnectionQuery() {
-    final OracleDatabase db = new OracleDatabase("host", "1234", "sid");
+    final OracleDatabase db = new OracleDatabase("host", 1234, "sid");
     assertEquals(OracleDatabase.CHECK_QUERY, db.getCheckConnectionQuery());
   }
 

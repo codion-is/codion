@@ -51,22 +51,8 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
       config.setMinimumIdle(4);
       config.setIdleTimeout(60000);
       config.setJdbcUrl(database.getURL(null));
-      config.setDataSource(Util.initializeProxy(DataSource.class, (dataSourceProxy, dataSourceMethod, dataSourceArgs) -> {
-        if ("getConnection".equals(dataSourceMethod.getName())) {
-          final Connection connection = database.createConnection(user);
-          getCounter().incrementConnectionsCreatedCounter();
-
-          return Util.initializeProxy(Connection.class, (connectionProxy, connectionMethod, connectionArgs) -> {
-            if ("close".equals(connectionMethod.getName())) {
-              getCounter().incrementConnectionsDestroyedCounter();
-            }
-
-            return connectionMethod.invoke(connection, connectionArgs);
-          });
-        }
-
-        return dataSourceMethod.invoke(dataSource, dataSourceArgs);
-      }));
+      config.setDataSource(Util.initializeProxy(DataSource.class, (dataSourceProxy, dataSourceMethod, dataSourceArgs) ->
+              handleInvocation(database, user, dataSource, dataSourceMethod, dataSourceArgs)));
       setPool(new HikariPool(config));
     }
 

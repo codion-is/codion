@@ -791,8 +791,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    */
   static synchronized void shutdownServer() throws ServerException.AuthenticationException {
     final int registryPort = Server.REGISTRY_PORT.get();
-    final String sid = System.getProperty(Database.DATABASE_SID);
-    final String host = System.getProperty(Database.DATABASE_HOST);
+    final String sid = Database.DATABASE_SID.get();
+    final String host = Database.DATABASE_HOST.get();
     final String serverName = initializeServerName(host, sid);
     final String adminUserString = Server.SERVER_ADMIN_USER.get();
     if (Util.nullOrEmpty(adminUserString)) {

@@ -51,22 +51,8 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
 
     private DataSourceWrapper(final Database database, final User user, final DataSource dataSource) {
       super(user);
-      dataSource.setDataSource(Util.initializeProxy(javax.sql.DataSource.class, (dataSourceProxy, dataSourceMethod, dataSourceArgs) -> {
-        if ("getConnection".equals(dataSourceMethod.getName())) {
-          final Connection connection = database.createConnection(user);
-          getCounter().incrementConnectionsCreatedCounter();
-
-          return Util.initializeProxy(Connection.class, (connectionProxy, connectionMethod, connectionArgs) -> {
-            if ("close".equals(connectionMethod.getName())) {
-              getCounter().incrementConnectionsDestroyedCounter();
-            }
-
-            return connectionMethod.invoke(connection, connectionArgs);
-          });
-        }
-
-        return dataSourceMethod.invoke(dataSource, dataSourceArgs);
-      }));
+      dataSource.setDataSource(Util.initializeProxy(javax.sql.DataSource.class, (dataSourceProxy, dataSourceMethod, dataSourceArgs) ->
+              handleInvocation(database, user, dataSource, dataSourceMethod, dataSourceArgs)));
       setPool(dataSource);
     }
 
