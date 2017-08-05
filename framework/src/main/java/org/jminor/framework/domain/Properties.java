@@ -325,8 +325,6 @@ public final class Properties {
   /**
    * @return a value converter which converts an underlying database representation
    * of a boolean value into an actual Boolean
-   * @see Property#SQL_BOOLEAN_VALUE_TRUE
-   * @see Property#SQL_BOOLEAN_VALUE_FALSE
    */
   public static ValueConverter booleanValueConverter() {
     return new DefaultProperty.BooleanValueConverter();

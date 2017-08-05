@@ -38,7 +38,7 @@ public final class Databases {
    * @return a Database instance based on the current runtime database type property
    * @see Database#DATABASE_TYPE
    * @see Database#DATABASE_IMPLEMENTATION_CLASS
-   * @see #getDatabaseType()
+   * @see Database#getDatabaseType()
    * @throws IllegalArgumentException in case an unsupported database type is specified
    * @throws RuntimeException in case of an exception occurring while instantiating the database implementation instance
    */
