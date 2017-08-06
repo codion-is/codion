@@ -3,13 +3,13 @@
  */
 package org.jminor.swing.framework.server.monitor;
 
+import org.jminor.common.DateFormats;
 import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
-import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
 import org.jminor.framework.server.EntityConnectionServerAdmin;

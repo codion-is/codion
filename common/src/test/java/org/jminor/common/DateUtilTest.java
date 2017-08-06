@@ -5,7 +5,6 @@ package org.jminor.common;
 
 import org.junit.Test;
 
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -58,21 +57,6 @@ public class DateUtilTest {
   }
 
   @Test
-  public void getTime() throws ParseException {
-    final Date dateWithTime = EXACT_TIMESTAMP.parse("1975-10-03 10:45:42.123");
-    final Date date = DateUtil.getTime(dateWithTime);
-    final Calendar calendar = Calendar.getInstance();
-    calendar.setTime(date);
-    assertEquals(1970, calendar.get(Calendar.YEAR));
-    assertEquals(Calendar.JANUARY, calendar.get(Calendar.MONTH));
-    assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
-    assertEquals(10, calendar.get(Calendar.HOUR_OF_DAY));
-    assertEquals(45, calendar.get(Calendar.MINUTE));
-    assertEquals(42, calendar.get(Calendar.SECOND));
-    assertEquals(123, calendar.get(Calendar.MILLISECOND));
-  }
-
-  @Test
   public void floorDate() {
     final Date date = DateUtil.floorDate(new Date());
     final Calendar calendar = Calendar.getInstance();
@@ -97,15 +81,6 @@ public class DateUtilTest {
     assertEquals(42, calendar.get(Calendar.SECOND));
     assertEquals(0, calendar.get(Calendar.MILLISECOND));
     DateUtil.floorFields(calendar, null);
-  }
-
-  @Test
-  public void floorTimestamp() {
-    final Timestamp timestamp = DateUtil.floorTimestamp(new Timestamp(System.currentTimeMillis()));
-    final Calendar calendar = Calendar.getInstance();
-    calendar.setTime(timestamp);
-    assertEquals(0, calendar.get(Calendar.MILLISECOND));
-    assertEquals(0, calendar.get(Calendar.SECOND));
   }
 
   @Test(expected = IllegalArgumentException.class)

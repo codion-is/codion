@@ -6,8 +6,8 @@ package org.jminor.swing.framework.server.monitor;
 import org.jminor.common.Event;
 import org.jminor.common.Events;
 import org.jminor.common.MethodLogger;
-import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
+import org.jminor.common.server.RemoteClient;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 import org.jminor.swing.common.ui.ValueLinks;
 
@@ -28,7 +28,7 @@ public final class ClientInstanceMonitor {
 
   private final Event<Boolean> loggingStatusChangedEvent = Events.event();
 
-  private final ClientInfo clientInfo;
+  private final RemoteClient remoteClient;
   private final EntityConnectionServerAdmin server;
   private final DefaultMutableTreeNode logRootNode = new DefaultMutableTreeNode();
   private final DefaultTreeModel logTreeModel = new DefaultTreeModel(logRootNode);
@@ -37,18 +37,18 @@ public final class ClientInstanceMonitor {
   /**
    * Instantiates a new {@link ClientInstanceMonitor}, monitoring the given client
    * @param server the server being monitored
-   * @param clientInfo the client info
+   * @param remoteClient the client info
    */
-  public ClientInstanceMonitor(final EntityConnectionServerAdmin server, final ClientInfo clientInfo) {
-    this.clientInfo = clientInfo;
+  public ClientInstanceMonitor(final EntityConnectionServerAdmin server, final RemoteClient remoteClient) {
+    this.remoteClient = remoteClient;
     this.server = server;
   }
 
   /**
-   * @return the {@link ClientInfo}
+   * @return the {@link RemoteClient}
    */
-  public ClientInfo getClientInfo() {
-    return clientInfo;
+  public RemoteClient getRemoteClient() {
+    return remoteClient;
   }
 
   /**
@@ -67,7 +67,7 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public long getCreationDate() throws RemoteException {
-    final ClientLog log = server.getClientLog(clientInfo.getClientID());
+    final ClientLog log = server.getClientLog(remoteClient.getClientID());
     return log != null ? log.getConnectionCreationDate() : 0;
   }
 
@@ -76,7 +76,7 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public ClientLog getLog() throws RemoteException {
-    return server.getClientLog(clientInfo.getClientID());
+    return server.getClientLog(remoteClient.getClientID());
   }
 
   /**
@@ -84,7 +84,7 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public boolean isLoggingEnabled() throws RemoteException {
-    return server.isLoggingEnabled(clientInfo.getClientID());
+    return server.isLoggingEnabled(remoteClient.getClientID());
   }
 
   /**
@@ -92,7 +92,7 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public void setLoggingEnabled(final boolean status) throws RemoteException {
-    server.setLoggingEnabled(clientInfo.getClientID(), status);
+    server.setLoggingEnabled(remoteClient.getClientID(), status);
     loggingStatusChangedEvent.fire(status);
   }
 
@@ -101,7 +101,7 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public void disconnect() throws RemoteException {
-    server.disconnect(clientInfo.getClientID());
+    server.disconnect(remoteClient.getClientID());
   }
 
   /**
@@ -109,7 +109,7 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public void refreshLogTreeModel() throws RemoteException {
-    final ClientLog log = server.getClientLog(clientInfo.getClientID());
+    final ClientLog log = server.getClientLog(remoteClient.getClientID());
     logRootNode.removeAllChildren();
     if (log != null) {
       for (final MethodLogger.Entry entry : log.getEntries()) {
@@ -132,7 +132,7 @@ public final class ClientInstanceMonitor {
 
   @Override
   public String toString() {
-    return clientInfo.toString();
+    return remoteClient.toString();
   }
 
   private void addSubLog(final DefaultMutableTreeNode entryNode, final List<MethodLogger.Entry> subLog) {

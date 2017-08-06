@@ -4,10 +4,10 @@
 package org.jminor.framework.demos.empdept.server;
 
 import org.jminor.common.User;
-import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.LoginProxy;
+import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.ServerException;
-import org.jminor.common.server.ServerUtil;
+import org.jminor.common.server.Servers;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,14 +29,14 @@ public final class EmpDeptLoginProxy implements LoginProxy {
   }
 
   @Override
-  public ClientInfo doLogin(final ClientInfo clientInfo) throws ServerException.LoginException {
-    authenticateUser(clientInfo.getUser());
+  public RemoteClient doLogin(final RemoteClient remoteClient) throws ServerException.LoginException {
+    authenticateUser(remoteClient.getUser());
 
-    return ServerUtil.clientInfo(clientInfo.getConnectionInfo(), databaseUser);
+    return Servers.remoteClient(remoteClient.getConnectionRequest(), databaseUser);
   }
 
   @Override
-  public void doLogout(final ClientInfo clientInfo) {}
+  public void doLogout(final RemoteClient remoteClient) {}
 
   @Override
   public void close() {

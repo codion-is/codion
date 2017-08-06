@@ -15,8 +15,8 @@ public interface ConnectionValidator {
 
   /**
    * Validates the given connection, throwing an exception in case the validation fails
-   * @param connectionInfo the connection to validate
+   * @param connectionRequest the connection to validate
    * @throws ServerException.ConnectionValidationException in case the validation fails
    */
-  void validate(final ConnectionInfo connectionInfo) throws ServerException.ConnectionValidationException;
+  void validate(final ConnectionRequest connectionRequest) throws ServerException.ConnectionValidationException;
 }

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
+package org.jminor.common;
 
 /**
  * Specifies a simple progress reporting object

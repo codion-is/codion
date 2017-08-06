@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  * new ProcessBuilder().command("javaws", "-open", token.toString(), jnlpUrl).start();
  * }
  * </pre>
- * @see ClientUtil#getUserCredentials(UUID)
+ * @see Clients#getUserCredentials(UUID)
  */
 public final class CredentialServer extends UnicastRemoteObject implements CredentialService {
 
@@ -61,7 +61,7 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
     super(port);
     this.tokenValidity = tokenValidity;
     this.expiredCleaner = new TaskScheduler(this::removeExpired, cleanupInterval, TimeUnit.MILLISECONDS).start();
-    ServerUtil.initializeRegistry(Registry.REGISTRY_PORT).bind(CredentialService.class.getSimpleName(), this);
+    Servers.initializeRegistry(Registry.REGISTRY_PORT).bind(CredentialService.class.getSimpleName(), this);
   }
 
   /**
@@ -108,7 +108,7 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
     try {
       expiredCleaner.stop();
       synchronized (authenticationTokens) {
-        ServerUtil.getRegistry(Registry.REGISTRY_PORT).unbind(CredentialService.class.getSimpleName());
+        Servers.getRegistry(Registry.REGISTRY_PORT).unbind(CredentialService.class.getSimpleName());
         authenticationTokens.clear();
       }
     }

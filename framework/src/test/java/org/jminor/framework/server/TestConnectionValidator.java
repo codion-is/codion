@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.server.ConnectionInfo;
+import org.jminor.common.server.ConnectionRequest;
 import org.jminor.common.server.ConnectionValidator;
 import org.jminor.common.server.ServerException;
 
@@ -15,5 +15,5 @@ public class TestConnectionValidator implements ConnectionValidator {
   }
 
   @Override
-  public void validate(final ConnectionInfo connectionInfo) throws ServerException.ConnectionValidationException {}
+  public void validate(final ConnectionRequest connectionRequest) throws ServerException.ConnectionValidationException {}
 }

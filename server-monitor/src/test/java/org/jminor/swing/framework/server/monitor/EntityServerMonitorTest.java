@@ -7,7 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.Version;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
-import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.Server;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
@@ -73,9 +73,9 @@ public class EntityServerMonitorTest {
     clientMonitor.refresh();
     assertEquals(1, clientMonitor.getClientInstanceListModel().size());
     final ClientInstanceMonitor clientInstanceMonitor = clientMonitor.getClientInstanceListModel().firstElement();
-    final ClientInfo clientInfo = clientInstanceMonitor.getClientInfo();
-    assertEquals(clientId, clientInfo.getClientID());
-    assertEquals(UNIT_TEST_USER, clientInfo.getUser());
+    final RemoteClient remoteClient = clientInstanceMonitor.getRemoteClient();
+    assertEquals(clientId, remoteClient.getClientID());
+    assertEquals(UNIT_TEST_USER, remoteClient.getUser());
 
     clientInstanceMonitor.disconnect();//disconnects the client
 

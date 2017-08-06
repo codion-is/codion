@@ -6,7 +6,7 @@ package org.jminor.framework.plugins.rest;
 import org.jminor.common.Serializer;
 import org.jminor.common.User;
 import org.jminor.common.db.condition.Condition;
-import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.Server;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -219,7 +219,7 @@ public class EntityRESTServiceTest {
     assertEquals(200, response.getStatusLine().getStatusCode());
     client.close();
 
-    final Collection<ClientInfo> clients = admin.getClients(EntityRESTService.class.getName());
+    final Collection<RemoteClient> clients = admin.getClients(EntityRESTService.class.getName());
     assertEquals(1, clients.size());
 
     admin.disconnect(clients.iterator().next().getClientID());

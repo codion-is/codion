@@ -7,8 +7,8 @@ import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
-import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
+import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
 import org.jminor.framework.db.EntityConnection;
@@ -116,7 +116,7 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(2, admin.getConnectionCount());
     assertEquals(2, admin.getClients().size());
 
-    Collection<ClientInfo> clients = admin.getClients(new User(UNIT_TEST_USER.getUsername(), null));
+    Collection<RemoteClient> clients = admin.getClients(new User(UNIT_TEST_USER.getUsername(), null));
     assertEquals(2, clients.size());
     clients = admin.getClients(getClass().getSimpleName());
     assertEquals(2, clients.size());
@@ -186,9 +186,9 @@ public class DefaultEntityConnectionServerTest {
       fail("Should not be able to connect with an invalid user");
     }
     catch (final Exception ignored) {/*ignored*/}
-    final Collection<ClientInfo> empDeptClients = admin.getClients(testClientTypeID);
+    final Collection<RemoteClient> empDeptClients = admin.getClients(testClientTypeID);
     assertEquals(2, empDeptClients.size());
-    for (final ClientInfo empDeptClient : empDeptClients) {
+    for (final RemoteClient empDeptClient : empDeptClients) {
       assertEquals(UNIT_TEST_USER, empDeptClient.getDatabaseUser());
     }
     testProviderJohn.disconnect();

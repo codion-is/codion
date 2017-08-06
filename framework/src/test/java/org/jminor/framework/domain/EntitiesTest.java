@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.DateFormats;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
-import org.jminor.common.model.formats.DateFormats;
 
 import org.junit.Before;
 import org.junit.Test;

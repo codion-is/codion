@@ -5,10 +5,10 @@ package org.jminor.framework.plugins.jasperreports.model;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.Value;
-import org.jminor.common.model.reports.ReportDataWrapper;
-import org.jminor.common.model.reports.ReportException;
-import org.jminor.common.model.reports.ReportResult;
-import org.jminor.common.model.reports.ReportWrapper;
+import org.jminor.common.db.reports.ReportDataWrapper;
+import org.jminor.common.db.reports.ReportException;
+import org.jminor.common.db.reports.ReportResult;
+import org.jminor.common.db.reports.ReportWrapper;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;

@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.common.ui.input;
 
+import org.jminor.common.DateFormats;
 import org.jminor.common.DateUtil;
-import org.jminor.common.model.formats.DateFormats;
 
 import org.junit.Test;
 

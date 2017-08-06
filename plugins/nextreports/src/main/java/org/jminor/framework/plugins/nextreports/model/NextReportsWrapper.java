@@ -5,10 +5,10 @@ package org.jminor.framework.plugins.nextreports.model;
 
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
-import org.jminor.common.model.reports.ReportDataWrapper;
-import org.jminor.common.model.reports.ReportException;
-import org.jminor.common.model.reports.ReportResult;
-import org.jminor.common.model.reports.ReportWrapper;
+import org.jminor.common.db.reports.ReportDataWrapper;
+import org.jminor.common.db.reports.ReportException;
+import org.jminor.common.db.reports.ReportResult;
+import org.jminor.common.db.reports.ReportWrapper;
 
 import ro.nextreports.engine.FluentReportRunner;
 import ro.nextreports.engine.Report;

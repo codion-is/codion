@@ -18,13 +18,13 @@ import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.server.AbstractServer;
-import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
 import org.jminor.common.server.ConnectionValidator;
 import org.jminor.common.server.LoginProxy;
+import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
-import org.jminor.common.server.ServerUtil;
+import org.jminor.common.server.Servers;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Entities;
 
@@ -257,19 +257,19 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
 
   /** {@inheritDoc} */
   @Override
-  protected final AbstractRemoteEntityConnection doConnect(final ClientInfo clientInfo) throws RemoteException, ServerException.LoginException,
+  protected final AbstractRemoteEntityConnection doConnect(final RemoteClient remoteClient) throws RemoteException, ServerException.LoginException,
           ServerException.ServerFullException {
     try {
-      final ConnectionPool connectionPool = ConnectionPools.getConnectionPool(clientInfo.getDatabaseUser());
+      final ConnectionPool connectionPool = ConnectionPools.getConnectionPool(remoteClient.getDatabaseUser());
       if (connectionPool != null) {
-        checkConnectionPoolCredentials(connectionPool.getUser(), clientInfo.getDatabaseUser());
+        checkConnectionPoolCredentials(connectionPool.getUser(), remoteClient.getDatabaseUser());
       }
 
-      final AbstractRemoteEntityConnection connection = createRemoteConnection(connectionPool, getDatabase(), clientInfo,
+      final AbstractRemoteEntityConnection connection = createRemoteConnection(connectionPool, getDatabase(), remoteClient,
               getServerInfo().getServerPort(), isClientLoggingEnabled(), isSslEnabled());
 
       connection.addDisconnectListener(this::disconnectQuietly);
-      LOG.debug("{} connected", clientInfo);
+      LOG.debug("{} connected", remoteClient);
 
       return connection;
     }
@@ -280,7 +280,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       throw ServerException.authenticationException(ae.getMessage());
     }
     catch (final Exception e) {
-      LOG.debug(clientInfo + " unable to connect", e);
+      LOG.debug(remoteClient + " unable to connect", e);
       throw ServerException.loginException(e.getMessage());
     }
   }
@@ -295,7 +295,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * Creates the remote connection provided by this server
    * @param connectionPool the connection pool to use, if none is provided a local connection is established
    * @param database defines the underlying database
-   * @param clientInfo information about the client requesting the connection
+   * @param remoteClient the client requesting the connection
    * @param port the port to use when exporting this remote connection
    * @param clientLoggingEnabled specifies whether or not method logging is enabled
    * @param sslEnabled specifies whether or not ssl should be enabled
@@ -305,10 +305,10 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @return a remote connection
    */
   protected AbstractRemoteEntityConnection createRemoteConnection(final ConnectionPool connectionPool, final Database database,
-                                                                  final ClientInfo clientInfo, final int port,
+                                                                  final RemoteClient remoteClient, final int port,
                                                                   final boolean clientLoggingEnabled, final boolean sslEnabled)
           throws RemoteException, DatabaseException {
-    return new DefaultRemoteEntityConnection(connectionPool, database, clientInfo, port, clientLoggingEnabled, sslEnabled);
+    return new DefaultRemoteEntityConnection(connectionPool, database, remoteClient, port, clientLoggingEnabled, sslEnabled);
   }
 
   /**
@@ -350,8 +350,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    */
   Collection<User> getUsers() {
     final Set<User> users = new HashSet<>();
-    for (final ClientInfo clientInfo : getConnections().keySet()) {
-      users.add(clientInfo.getUser());
+    for (final RemoteClient remoteClient : getConnections().keySet()) {
+      users.add(remoteClient.getUser());
     }
 
     return users;
@@ -360,7 +360,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   /**
    * @return info on all connected clients
    */
-  Collection<ClientInfo> getClients() {
+  Collection<RemoteClient> getClients() {
     return new ArrayList<>(getConnections().keySet());
   }
 
@@ -368,11 +368,11 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @param user the user
    * @return all clients connected with the given user
    */
-  Collection<ClientInfo> getClients(final User user) {
-    final Collection<ClientInfo> clients = new ArrayList<>();
-    for (final ClientInfo clientInfo : getConnections().keySet()) {
-      if (user == null || clientInfo.getUser().equals(user)) {
-        clients.add(clientInfo);
+  Collection<RemoteClient> getClients(final User user) {
+    final Collection<RemoteClient> clients = new ArrayList<>();
+    for (final RemoteClient remoteClient : getConnections().keySet()) {
+      if (user == null || remoteClient.getUser().equals(user)) {
+        clients.add(remoteClient);
       }
     }
 
@@ -383,12 +383,12 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @param clientTypeID the client type ID
    * @return all clients of the given type
    */
-  Collection<ClientInfo> getClients(final String clientTypeID) {
-    final Collection<ClientInfo> clients = new ArrayList<>();
-    //using the clientInfo from the connection since it contains the correct database user
+  Collection<RemoteClient> getClients(final String clientTypeID) {
+    final Collection<RemoteClient> clients = new ArrayList<>();
+    //using the remoteClient from the connection since it contains the correct database user
     for (final AbstractRemoteEntityConnection connection : getConnections().values()) {
-      if (connection.getClientInfo().getClientTypeID().equals(clientTypeID)) {
-        clients.add(connection.getClientInfo());
+      if (connection.getRemoteClient().getClientTypeID().equals(clientTypeID)) {
+        clients.add(connection.getRemoteClient());
       }
     }
 
@@ -466,8 +466,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @throws RemoteException in case of an exception
    */
   final void maintainConnections() throws RemoteException {
-    final List<ClientInfo> clients = new ArrayList<>(getConnections().keySet());
-    for (final ClientInfo client : clients) {
+    final List<RemoteClient> clients = new ArrayList<>(getConnections().keySet());
+    for (final RemoteClient client : clients) {
       final AbstractRemoteEntityConnection connection = getConnection(client.getClientID());
       if (!connection.isActive()) {
         final boolean valid = connection.isConnected();
@@ -486,8 +486,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @see #hasConnectionTimedOut(String, AbstractRemoteEntityConnection)
    */
   final void removeConnections(final boolean timedOutOnly) throws RemoteException {
-    final List<ClientInfo> clients = new ArrayList<>(getConnections().keySet());
-    for (final ClientInfo client : clients) {
+    final List<RemoteClient> clients = new ArrayList<>(getConnections().keySet());
+    for (final RemoteClient client : clients) {
       final AbstractRemoteEntityConnection connection = getConnection(client.getClientID());
       if (timedOutOnly) {
         final boolean active = connection.isActive();
@@ -529,7 +529,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
 
   private void disconnectQuietly(final AbstractRemoteEntityConnection connection) {
     try {
-      disconnect(connection.getClientInfo().getClientID());
+      disconnect(connection.getRemoteClient().getClientID());
     }
     catch (final RemoteException ex) {
       LOG.error(ex.getMessage(), ex);
@@ -541,7 +541,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @throws RemoteException in case of an exception
    */
   private void bindToRegistry() throws RemoteException {
-    ServerUtil.initializeRegistry(registryPort).rebind(getServerInfo().getServerName(), this);
+    Servers.initializeRegistry(registryPort).rebind(getServerInfo().getServerName(), this);
     final String connectInfo = getServerInfo().getServerName() + " bound to registry on port: " + registryPort;
     LOG.info(connectInfo);
     System.out.println(connectInfo);
@@ -664,7 +664,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   /**
-   * Checks the credentials provided by {@code clientInfo} against the credentials
+   * Checks the credentials provided by {@code remoteClient} against the credentials
    * found in the connection pool user, assuming the user names match
    * @param connectionPoolUser the connection pool user credentials
    * @param user the user credentials to check
@@ -799,9 +799,9 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       throw ServerException.authenticationException("No admin user specified");
     }
     final User adminUser = User.parseUser(adminUserString);
-    ServerUtil.resolveTrustStoreFromClasspath(DefaultEntityConnectionServerAdmin.class.getSimpleName());
+    Servers.resolveTrustStoreFromClasspath(DefaultEntityConnectionServerAdmin.class.getSimpleName());
     try {
-      final Registry registry = ServerUtil.getRegistry(registryPort);
+      final Registry registry = Servers.getRegistry(registryPort);
       final Server server = (Server) registry.lookup(serverName);
       final EntityConnectionServerAdmin serverAdmin = (EntityConnectionServerAdmin) server.getServerAdmin(adminUser);
       final String shutDownInfo = serverName + " found in registry on port: " + registryPort + ", shutting down";

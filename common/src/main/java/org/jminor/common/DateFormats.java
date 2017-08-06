@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model.formats;
+package org.jminor.common;
 
 import java.text.SimpleDateFormat;
 

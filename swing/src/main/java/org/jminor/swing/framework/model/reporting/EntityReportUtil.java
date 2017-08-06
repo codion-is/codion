@@ -4,10 +4,10 @@
 package org.jminor.swing.framework.model.reporting;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.reports.ReportDataWrapper;
-import org.jminor.common.model.reports.ReportException;
-import org.jminor.common.model.reports.ReportResult;
-import org.jminor.common.model.reports.ReportWrapper;
+import org.jminor.common.db.reports.ReportDataWrapper;
+import org.jminor.common.db.reports.ReportException;
+import org.jminor.common.db.reports.ReportResult;
+import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnectionProvider;
 
 /**

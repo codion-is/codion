@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.server.monitor;
 
 import org.jminor.common.User;
-import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.RemoteClient;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import javax.swing.DefaultListModel;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 public final class ClientMonitor {
 
-  private static final Comparator<ClientInfo> CLIENT_INFO_COMPARATOR = (c1, c2) -> c1.getUser().getUsername().compareToIgnoreCase(c2.getUser().getUsername());
+  private static final Comparator<RemoteClient> CLIENT_INFO_COMPARATOR = (c1, c2) -> c1.getUser().getUsername().compareToIgnoreCase(c2.getUser().getUsername());
   private final EntityConnectionServerAdmin server;
   private final String clientTypeID;
   private final User user;
@@ -45,9 +45,9 @@ public final class ClientMonitor {
    */
   public void refresh() throws RemoteException {
     clientInstanceListModel.clear();
-    final List<ClientInfo> clients = new ArrayList<>(clientTypeID == null ? server.getClients(user) : server.getClients(clientTypeID));
+    final List<RemoteClient> clients = new ArrayList<>(clientTypeID == null ? server.getClients(user) : server.getClients(clientTypeID));
     clients.sort(CLIENT_INFO_COMPARATOR);
-    for (final ClientInfo client : clients) {
+    for (final RemoteClient client : clients) {
       clientInstanceListModel.addElement(new ClientInstanceMonitor(server, client));
     }
   }

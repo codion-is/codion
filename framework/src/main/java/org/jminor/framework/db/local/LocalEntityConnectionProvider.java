@@ -4,13 +4,13 @@
 package org.jminor.framework.db.local;
 
 import org.jminor.common.Configuration;
+import org.jminor.common.ExceptionUtil;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
-import org.jminor.common.model.ExceptionUtil;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;

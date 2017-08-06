@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.model.formats.DateFormats;
+import org.jminor.common.DateFormats;
 
 import org.junit.Test;
 

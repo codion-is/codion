@@ -14,21 +14,21 @@ public interface LoginProxy {
   String getClientTypeID();
 
   /**
-   * Performs login validation for the user specified by the client info
-   * and returns a client info with the same clientID and user but possibly
+   * Performs login validation for the user specified by the remote client
+   * and returns a remote client with the same clientID and user but possibly
    * a different databaseUser to propagate to further login procedures
-   * @param clientInfo the client info
-   * @return a new client info with the same clientID but not necessarily the same user or databaseUser
+   * @param remoteClient the client
+   * @return a new client with the same clientID but not necessarily the same user or databaseUser
    * @throws ServerException.LoginException in case the login fails
-   * @see org.jminor.common.server.ClientInfo#getDatabaseUser()
+   * @see RemoteClient#getDatabaseUser()
    */
-  ClientInfo doLogin(final ClientInfo clientInfo) throws ServerException.LoginException;
+  RemoteClient doLogin(final RemoteClient remoteClient) throws ServerException.LoginException;
 
   /**
    * Called after the given client has been disconnected
-   * @param clientInfo the client info
+   * @param remoteClient the remote client
    */
-  void doLogout(final ClientInfo clientInfo);
+  void doLogout(final RemoteClient remoteClient);
 
   /**
    * Disposes of all resources used by this LoginProxy, after a call to this

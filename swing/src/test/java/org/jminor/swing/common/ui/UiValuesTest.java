@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.common.ui;
 
+import org.jminor.common.DateFormats;
 import org.jminor.common.DateUtil;
 import org.jminor.common.Value;
-import org.jminor.common.model.formats.DateFormats;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
 import org.jminor.swing.common.ui.textfield.DoubleField;
 import org.jminor.swing.common.ui.textfield.IntegerField;

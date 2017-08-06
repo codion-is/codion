@@ -8,7 +8,7 @@ import org.jminor.common.Events;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.server.Server;
-import org.jminor.common.server.ServerUtil;
+import org.jminor.common.server.Servers;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
@@ -205,7 +205,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   public static void main(final String[] arguments) {
-    ServerUtil.resolveTrustStoreFromClasspath(EntityServerMonitorPanel.class.getSimpleName());
+    Servers.resolveTrustStoreFromClasspath(EntityServerMonitorPanel.class.getSimpleName());
     SwingUtilities.invokeLater(() -> {
       try {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

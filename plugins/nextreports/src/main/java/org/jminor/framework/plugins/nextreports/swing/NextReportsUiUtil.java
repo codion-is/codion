@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.plugins.nextreports.swing;
 
-import org.jminor.common.model.reports.ReportResult;
+import org.jminor.common.db.reports.ReportResult;
 import org.jminor.framework.plugins.nextreports.model.NextReportsResult;
 
 import java.awt.Desktop;

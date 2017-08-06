@@ -33,7 +33,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
-  private final Map<UUID, ClientConnectionInfo<T>> connections = Collections.synchronizedMap(new HashMap<>());
+  private final Map<UUID, RemoteClientConnection<T>> connections = Collections.synchronizedMap(new HashMap<>());
   private final Map<String, LoginProxy> loginProxies = Collections.synchronizedMap(new HashMap<>());
   private final LoginProxy defaultLoginProxy = new DefaultLoginProxy();
   private final Map<String, ConnectionValidator> connectionValidators = Collections.synchronizedMap(new HashMap<>());
@@ -70,11 +70,11 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   /**
    * @return a map containing the current connections
    */
-  public final Map<ClientInfo, T> getConnections() {
+  public final Map<RemoteClient, T> getConnections() {
     synchronized (connections) {
-      final Map<ClientInfo, T> clients = new HashMap<>(connections.size());
-      for (final ClientConnectionInfo<T> clientConnectionInfo : connections.values()) {
-        clients.put(clientConnectionInfo.getClientInfo(), clientConnectionInfo.getConnection());
+      final Map<RemoteClient, T> clients = new HashMap<>(connections.size());
+      for (final RemoteClientConnection<T> remoteClientConnection : connections.values()) {
+        clients.put(remoteClientConnection.getRemoteClient(), remoteClientConnection.getConnection());
       }
 
       return clients;
@@ -97,9 +97,9 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
    */
   public final T getConnection(final UUID clientID) {
     synchronized (connections) {
-      final ClientConnectionInfo<T> connectionInfo = connections.get(clientID);
-      if (connectionInfo != null) {
-        return connectionInfo.getConnection();
+      final RemoteClientConnection<T> clientConnection = connections.get(clientID);
+      if (clientConnection != null) {
+        return clientConnection.getConnection();
       }
 
       return null;
@@ -145,37 +145,37 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   /** {@inheritDoc} */
   @Override
-  public final T connect(final ConnectionInfo connectionInfo) throws RemoteException, ServerException.ServerFullException,
+  public final T connect(final ConnectionRequest connectionRequest) throws RemoteException, ServerException.ServerFullException,
           ServerException.LoginException, ServerException.ConnectionValidationException {
     if (shuttingDown) {
       throw ServerException.loginException("Server is shutting down");
     }
-    Objects.requireNonNull(connectionInfo, "connectionInfo");
-    Objects.requireNonNull(connectionInfo.getUser(), "user");
-    Objects.requireNonNull(connectionInfo.getClientID(), "clientID");
-    Objects.requireNonNull(connectionInfo.getClientTypeID(), "clientTypeID");
+    Objects.requireNonNull(connectionRequest, "connectionRequest");
+    Objects.requireNonNull(connectionRequest.getUser(), "user");
+    Objects.requireNonNull(connectionRequest.getClientID(), "clientID");
+    Objects.requireNonNull(connectionRequest.getClientTypeID(), "clientTypeID");
 
-    getConnectionValidator(connectionInfo.getClientTypeID()).validate(connectionInfo);
-    final LoginProxy loginProxy = getLoginProxy(connectionInfo.getClientTypeID());
-    LOG.debug("Connecting client {}, loginProxy {}", connectionInfo, loginProxy);
+    getConnectionValidator(connectionRequest.getClientTypeID()).validate(connectionRequest);
+    final LoginProxy loginProxy = getLoginProxy(connectionRequest.getClientTypeID());
+    LOG.debug("Connecting client {}, loginProxy {}", connectionRequest, loginProxy);
     synchronized (connections) {
-      ClientConnectionInfo<T> clientConnectionInfo = connections.get(connectionInfo.getClientID());
-      if (clientConnectionInfo != null) {
-        validateUserCredentials(connectionInfo.getUser(), clientConnectionInfo.getClientInfo().getUser());
-        LOG.debug("Active connection exists {}", connectionInfo);
-        return clientConnectionInfo.getConnection();
+      RemoteClientConnection<T> remoteClientConnection = connections.get(connectionRequest.getClientID());
+      if (remoteClientConnection != null) {
+        validateUserCredentials(connectionRequest.getUser(), remoteClientConnection.getRemoteClient().getUser());
+        LOG.debug("Active connection exists {}", connectionRequest);
+        return remoteClientConnection.getConnection();
       }
 
       if (maximumNumberOfConnectionReached()) {
         throw ServerException.serverFullException();
       }
 
-      LOG.debug("No active connection found for client {}, establishing a new connection", connectionInfo);
-      final ClientInfo clientInfo = ServerUtil.clientInfo(connectionInfo);
-      clientConnectionInfo = new ClientConnectionInfo<>(clientInfo, doConnect(loginProxy.doLogin(clientInfo)));
-      connections.put(clientInfo.getClientID(), clientConnectionInfo);
+      LOG.debug("No active connection found for client {}, establishing a new connection", connectionRequest);
+      final RemoteClient remoteClient = Servers.remoteClient(connectionRequest);
+      remoteClientConnection = new RemoteClientConnection<>(remoteClient, doConnect(loginProxy.doLogin(remoteClient)));
+      connections.put(remoteClient.getClientID(), remoteClientConnection);
 
-      return clientConnectionInfo.getConnection();
+      return remoteClientConnection.getConnection();
     }
   }
 
@@ -186,15 +186,15 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
       return;
     }
 
-    final ClientConnectionInfo<T> clientConnectionInfo;
+    final RemoteClientConnection<T> remoteClientConnection;
     synchronized (connections) {
-      clientConnectionInfo = connections.remove(clientID);
+      remoteClientConnection = connections.remove(clientID);
     }
-    if (clientConnectionInfo != null) {
-      doDisconnect(clientConnectionInfo.getConnection());
-      final ClientInfo clientInfo = clientConnectionInfo.getClientInfo();
-      getLoginProxy(clientInfo.getClientTypeID()).doLogout(clientInfo);
-      LOG.debug("Client disconnected {}", clientInfo);
+    if (remoteClientConnection != null) {
+      doDisconnect(remoteClientConnection.getConnection());
+      final RemoteClient remoteClient = remoteClientConnection.getRemoteClient();
+      getLoginProxy(remoteClient.getClientTypeID()).doLogout(remoteClient);
+      LOG.debug("Client disconnected {}", remoteClient);
     }
   }
 
@@ -278,13 +278,13 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   /**
    * Establishes the actual client connection.
-   * @param connectionInfo the client connection info
+   * @param remoteClient the client connection info
    * @return a connection servicing the given client
    * @throws RemoteException in case of an exception
    * @throws ServerException.LoginException in case of an error during the login
    * @throws ServerException.ServerFullException in case the server is not accepting new connections
    */
-  protected abstract T doConnect(final ClientInfo connectionInfo)
+  protected abstract T doConnect(final RemoteClient remoteClient)
           throws RemoteException, ServerException.LoginException, ServerException.ServerFullException;
 
   /**
@@ -328,17 +328,17 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
   }
 
-  private static final class ClientConnectionInfo<T> {
+  private static final class RemoteClientConnection<T> {
     private final T connection;
-    private final ClientInfo clientInfo;
+    private final RemoteClient remoteClient;
 
-    private ClientConnectionInfo(final ClientInfo clientInfo, final T connection) {
-      this.clientInfo = clientInfo;
+    private RemoteClientConnection(final RemoteClient remoteClient, final T connection) {
+      this.remoteClient = remoteClient;
       this.connection = connection;
     }
 
-    private ClientInfo getClientInfo() {
-      return clientInfo;
+    private RemoteClient getRemoteClient() {
+      return remoteClient;
     }
 
     private T getConnection() {
@@ -395,12 +395,12 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
 
     @Override
-    public ClientInfo doLogin(final ClientInfo clientInfo) {
-      return clientInfo;
+    public RemoteClient doLogin(final RemoteClient remoteClient) {
+      return remoteClient;
     }
 
     @Override
-    public void doLogout(final ClientInfo clientInfo) {/*No logout action required*/}
+    public void doLogout(final RemoteClient remoteClient) {/*No logout action required*/}
 
     @Override
     public void close() {/*Not required*/}
@@ -413,6 +413,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
 
     @Override
-    public void validate(final ConnectionInfo connectionInfo) throws ServerException.ConnectionValidationException {/*No validation*/}
+    public void validate(final ConnectionRequest connectionRequest) throws ServerException.ConnectionValidationException {/*No validation*/}
   }
 }

@@ -3,8 +3,6 @@
  */
 package org.jminor.common;
 
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,7 +24,6 @@ public final class DateUtil {
 
   private static final int THIRTY_FIRST = 31;
   private static final int THIRTIETH = 30;
-  private static final int NINETEENSEVENTY = 1970;
 
   private DateUtil() {}
 
@@ -67,21 +64,6 @@ public final class DateUtil {
 
   /**
    * @param date the Date object to floor
-   * @return a Time object with the same time of day as {@code date}, except the Calendar.YEAR,
-   * Calendar.MONTH and Calendar.DATE fields are set to 1970, january and 1 respectively
-   */
-  public static Time getTime(final Date date) {
-    final Calendar cal = Calendar.getInstance();
-    cal.setTime(date);
-    cal.set(Calendar.YEAR, NINETEENSEVENTY);
-    cal.set(Calendar.MONTH, Calendar.JANUARY);
-    cal.set(Calendar.DATE, 1);
-
-    return new Time(cal.getTimeInMillis());
-  }
-
-  /**
-   * @param date the Date object to floor
    * @return a Date object with the same date as {@code date}, except the Calendar.HOUR_OF_DAY,
    * Calendar.MINUTE, Calendar.SECOND and Calendar.MILLISECOND fields are set to zero
    */
@@ -91,19 +73,6 @@ public final class DateUtil {
     floorFields(cal, Calendar.MILLISECOND, Calendar.SECOND, Calendar.MINUTE, Calendar.HOUR_OF_DAY);
 
     return cal.getTime();
-  }
-
-  /**
-   * @param timestamp the Timestamp object to floor
-   * @return a Timestamp object with the same time as {@code timestamp}
-   * except the Calendar.SECOND and Calendar.MILLISECOND fields are set to zero
-   */
-  public static Timestamp floorTimestamp(final Timestamp timestamp) {
-    final Calendar cal = Calendar.getInstance();
-    cal.setTime(timestamp);
-    floorFields(cal, Calendar.SECOND, Calendar.MILLISECOND);
-
-    return new Timestamp(cal.getTimeInMillis());
   }
 
   /**
@@ -322,19 +291,6 @@ public final class DateUtil {
     numberOfDays++;
 
     return numberOfDays;
-  }
-
-  /**
-   * @param formatString the format string
-   * @return a thread local date format based on the given format string
-   */
-  public static ThreadLocal<DateFormat> getThreadLocalDateFormat(final String formatString) {
-    return new ThreadLocal<DateFormat>() {
-      @Override
-      protected synchronized DateFormat initialValue() {
-        return new SimpleDateFormat(formatString);
-      }
-    };
   }
 
   /**

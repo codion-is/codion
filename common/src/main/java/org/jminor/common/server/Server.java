@@ -23,6 +23,11 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
   int DEFAULT_SERVER_CONNECTION_TIMEOUT = 120000;
 
   /**
+   * The system property key for specifying a ssl truststore
+   */
+  String JAVAX_NET_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
+
+  /**
    * The host on which to locate the server<br>
    * Value type: String<br>
    * Default value: localhost
@@ -57,7 +62,7 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
    * Value type: String
    * Default value: null
    */
-  Value<String> TRUSTSTORE = Configuration.stringValue(ServerUtil.JAVAX_NET_NET_TRUSTSTORE, null);
+  Value<String> TRUSTSTORE = Configuration.stringValue(JAVAX_NET_NET_TRUSTSTORE, null);
 
   /**
    * Specifies the rmi server hostname<br>
@@ -95,14 +100,14 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
 
   /**
    * Establishes a connection to this Server
-   * @param connectionInfo the information required for establishing a connection
+   * @param connectionRequest the information required for establishing a connection
    * @return a remote connection instance
    * @throws RemoteException in case of a communitation error
    * @throws ServerException.ServerFullException in case the server isn't accepting more connections
    * @throws ServerException.LoginException in case the login fails
    * @throws ServerException.ConnectionValidationException in case connection validation fails
    */
-  T connect(final ConnectionInfo connectionInfo) throws RemoteException,
+  T connect(final ConnectionRequest connectionRequest) throws RemoteException,
           ServerException.ServerFullException, ServerException.LoginException, ServerException.ConnectionValidationException;
 
   /**

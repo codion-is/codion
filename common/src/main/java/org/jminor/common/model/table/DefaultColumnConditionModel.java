@@ -3,7 +3,6 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.DateUtil;
 import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
@@ -14,6 +13,7 @@ import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
+import org.jminor.common.db.TimeUtil;
 import org.jminor.common.db.condition.Condition;
 
 import java.sql.Timestamp;
@@ -392,7 +392,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
     Comparable toCompare = comparable;
     if (comparable instanceof Timestamp) {//ignore seconds and milliseconds
-      toCompare = DateUtil.floorTimestamp((Timestamp) toCompare);
+      toCompare = TimeUtil.floorTimestamp((Timestamp) toCompare);
     }
 
     switch (conditionTypeValue.get()) {

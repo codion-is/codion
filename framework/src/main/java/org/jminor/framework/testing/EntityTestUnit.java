@@ -8,6 +8,7 @@ import org.jminor.common.Item;
 import org.jminor.common.TextUtil;
 import org.jminor.common.User;
 import org.jminor.common.Util;
+import org.jminor.common.db.TimeUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.db.valuemap.ValueProvider;
@@ -385,9 +386,9 @@ public abstract class EntityTestUnit {
       case Types.DATE:
         return DateUtil.floorDate(getRandomDate());
       case Types.TIMESTAMP:
-        return DateUtil.floorTimestamp(new Timestamp(getRandomDate().getTime()));
+        return TimeUtil.floorTimestamp(new Timestamp(getRandomDate().getTime()));
       case Types.TIME:
-        return DateUtil.getTime(getRandomDate());
+        return TimeUtil.getTime(getRandomDate());
       case Types.DOUBLE:
         return getRandomDouble(property);
       case Types.INTEGER:

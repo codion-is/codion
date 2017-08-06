@@ -4,7 +4,7 @@
 package org.jminor.framework.plugins.nextreports.model;
 
 import org.jminor.common.Util;
-import org.jminor.common.model.reports.ReportResult;
+import org.jminor.common.db.reports.ReportResult;
 
 import java.io.File;
 import java.io.IOException;

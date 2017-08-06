@@ -3,10 +3,10 @@
  */
 package org.jminor.swing.framework.ui.reporting;
 
-import org.jminor.common.model.reports.ReportDataWrapper;
-import org.jminor.common.model.reports.ReportException;
-import org.jminor.common.model.reports.ReportResult;
-import org.jminor.common.model.reports.ReportWrapper;
+import org.jminor.common.db.reports.ReportDataWrapper;
+import org.jminor.common.db.reports.ReportException;
+import org.jminor.common.db.reports.ReportResult;
+import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.swing.common.ui.UiUtil;

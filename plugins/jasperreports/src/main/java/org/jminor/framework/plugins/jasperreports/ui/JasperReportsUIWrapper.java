@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.plugins.jasperreports.ui;
 
-import org.jminor.common.model.reports.ReportResult;
+import org.jminor.common.db.reports.ReportResult;
 import org.jminor.swing.common.ui.reports.ReportUIWrapper;
 
 import net.sf.jasperreports.engine.JasperPrint;

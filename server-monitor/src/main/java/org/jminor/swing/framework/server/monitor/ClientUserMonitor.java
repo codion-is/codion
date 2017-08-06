@@ -3,13 +3,13 @@
  */
 package org.jminor.swing.framework.server.monitor;
 
+import org.jminor.common.DateFormats;
 import org.jminor.common.Event;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
-import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.RemoteClient;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.AbstractTableSortModel;
@@ -213,9 +213,9 @@ public final class ClientUserMonitor {
     @Override
     protected void doRefresh() {
       try {
-        for (final ClientInfo clientInfo : server.getClients()) {
-          final UserInfo newUserInfo = new UserInfo(clientInfo.getUser(), clientInfo.getClientTypeID(),
-                  clientInfo.getClientHost(), new Date(), clientInfo.getClientID());
+        for (final RemoteClient remoteClient : server.getClients()) {
+          final UserInfo newUserInfo = new UserInfo(remoteClient.getUser(), remoteClient.getClientTypeID(),
+                  remoteClient.getClientHost(), new Date(), remoteClient.getClientID());
           if (contains(newUserInfo, true)) {
             final UserInfo currentUserInfo = getItemAt(indexOf(newUserInfo));
             currentUserInfo.setLastSeen(newUserInfo.getLastSeen());

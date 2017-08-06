@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.reports;
 
-import org.jminor.common.model.reports.ReportResult;
+import org.jminor.common.db.reports.ReportResult;
 
 import javax.swing.JComponent;
 

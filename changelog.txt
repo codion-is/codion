@@ -4477,7 +4477,7 @@
   Property.SQL_BOOLEAN_VALUE_* initialization bug fixed
   Databases.createInstance() renamed to getInstance(), now creates an instance only when required
   Property.SQL_BOOLEAN_VALUE_* configuration values removed
-  Database.getBooleanTrueValue() and getBooleanFalseValue() added instead of the above, by default retuns Boolean.TRUE and Boolean.FALSE respectively, overridden in OracleDatabase and SQLServerDatabase with 1 and 0
+  Database.getBooleanTrueValue() and getBooleanFalseValue() added instead of the above, by default returns Boolean.TRUE and Boolean.FALSE respectively, overridden in OracleDatabase and SQLServerDatabase with 1 and 0
   DefaultEntityConnectionServer.parseCommaSeparatedValues() moved to TextUtil
   Database.DATABASE_INIT_SCRIPT now supports a comma separated list of scripts, used by H2Database
   Database.createInstance() added back as deprecated, a bit too much of a breaking change
@@ -4485,3 +4485,12 @@
   DefaultProperty only tries to use Databases.getInstance() when the above returns true
   Database configuration valuefied
   Database.getDatabaseType() renamed to getType()
+0.10.11
+  ClientInfo renamed to RemoteClient
+  ConnectionInfo renamed to ConnectionRequest
+  ServerUtil.JAVAX_NET_NET_TRUSTSTORE configuration constant moved to Server
+  ServerUtil renamed to Servers and ClientUtil renamed to Clients
+  org.jminor.common.model.reports package moved to org.jminor.common.db
+  ExceptionUtil, DateFormats and ProgressReporter moved to common core
+  TimeUtil split from DateUtil due to java.sql dependencies
+  Module dependencies modified according to the above

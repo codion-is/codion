@@ -12,13 +12,13 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 
-public final class ClientUtilTest {
+public final class ClientsTest {
 
   @Test
   public void clientUtil() {
     final User user = new User("scott", "tiger");
     final UUID uuid = UUID.randomUUID();
-    final ConnectionInfo info = ClientUtil.connectionInfo(user, uuid, "test");
+    final ConnectionRequest info = Clients.connectionRequest(user, uuid, "test");
     assertEquals(user, info.getUser());
     assertEquals(uuid, info.getClientID());
     assertNull(info.getClientVersion());

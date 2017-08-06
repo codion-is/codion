@@ -3,14 +3,14 @@
  */
 package org.jminor.framework.db.remote;
 
+import org.jminor.common.ExceptionUtil;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.Version;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.ExceptionUtil;
-import org.jminor.common.server.ClientUtil;
+import org.jminor.common.server.Clients;
 import org.jminor.common.server.Server;
-import org.jminor.common.server.ServerUtil;
+import org.jminor.common.server.Servers;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.RemoteEntityConnection;
@@ -84,7 +84,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     this.clientID = Objects.requireNonNull(clientID, "clientID");
     this.clientTypeID = Objects.requireNonNull(clientTypeID, "clientTypeID");
     this.clientVersion = clientVersion;
-    ServerUtil.resolveTrustStoreFromClasspath(clientTypeID);
+    Servers.resolveTrustStoreFromClasspath(clientTypeID);
   }
 
   /** {@inheritDoc} */
@@ -124,7 +124,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     try {
       LOG.debug("Initializing connection for {}", getUser());
       final RemoteEntityConnection remote = getServer().connect(
-              ClientUtil.connectionInfo(getUser(), clientID, clientTypeID, clientVersion));
+              Clients.connectionRequest(getUser(), clientID, clientTypeID, clientVersion));
 
       return Util.initializeProxy(EntityConnection.class, new RemoteEntityConnectionHandler(remote));
     }
@@ -175,7 +175,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       serverPort = -1;
     }
     final int registryPort = Server.REGISTRY_PORT.get();
-    this.server = ServerUtil.getServer(serverHostName, Server.SERVER_NAME_PREFIX.get(), registryPort, serverPort);
+    this.server = Servers.getServer(serverHostName, Server.SERVER_NAME_PREFIX.get(), registryPort, serverPort);
     this.serverInfo = this.server.getServerInfo();
     final Version serverVersion = this.serverInfo.getServerVersion();
     if (serverVersion != null) {

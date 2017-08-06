@@ -6,12 +6,13 @@ package org.jminor.common.server;
 import org.jminor.common.User;
 import org.jminor.common.Version;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
  * Encapsulates information about a client required by a server for establishing a connection
  */
-public interface ConnectionInfo {
+public interface ConnectionRequest extends Serializable {
 
   /**
    * @return the user

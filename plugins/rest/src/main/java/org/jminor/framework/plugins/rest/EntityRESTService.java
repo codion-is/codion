@@ -9,7 +9,7 @@ import org.jminor.common.Util;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.server.ClientUtil;
+import org.jminor.common.server.Clients;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
 import org.jminor.framework.db.RemoteEntityConnection;
@@ -192,7 +192,7 @@ public final class EntityRESTService extends Application {
     final byte[] decodedBytes = DatatypeConverter.parseBase64Binary(auth);
     final User user = User.parseUser(new String(decodedBytes));
     try {
-      return (RemoteEntityConnection) server.connect(ClientUtil.connectionInfo(user, clientId, EntityRESTService.class.getName()));
+      return (RemoteEntityConnection) server.connect(Clients.connectionRequest(user, clientId, EntityRESTService.class.getName()));
     }
     catch (final ServerException.AuthenticationException ae) {
       throw new WebApplicationException(ae, Response.Status.UNAUTHORIZED);

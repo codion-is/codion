@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.common.ui.tools;
 
+import org.jminor.common.ExceptionUtil;
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.model.ExceptionUtil;
 import org.jminor.common.model.tools.ItemRandomizer;
 import org.jminor.common.model.tools.LoadTest;
 import org.jminor.common.model.tools.LoadTestModel;

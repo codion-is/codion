@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model.reports;
+package org.jminor.common.db.reports;
 
 /**
  * A simple wrapper for a report data source

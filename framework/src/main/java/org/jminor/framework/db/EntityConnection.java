@@ -9,9 +9,9 @@ import org.jminor.common.User;
 import org.jminor.common.Value;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.reports.ReportException;
-import org.jminor.common.model.reports.ReportResult;
-import org.jminor.common.model.reports.ReportWrapper;
+import org.jminor.common.db.reports.ReportException;
+import org.jminor.common.db.reports.ReportResult;
+import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Entity;
@@ -255,8 +255,8 @@ public interface EntityConnection {
    * @param reportWrapper the wrapper containing the report to fill
    * @return an initialized ReportResult object
    * @throws DatabaseException in case of a db exception
-   * @throws org.jminor.common.model.reports.ReportException in case of a report exception
-   * @see org.jminor.common.model.reports.ReportWrapper#fillReport(java.sql.Connection)
+   * @throws org.jminor.common.db.reports.ReportException in case of a report exception
+   * @see org.jminor.common.db.reports.ReportWrapper#fillReport(java.sql.Connection)
    */
   ReportResult fillReport(final ReportWrapper reportWrapper) throws DatabaseException, ReportException;
 

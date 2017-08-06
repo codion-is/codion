@@ -4,12 +4,12 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.Configuration;
+import org.jminor.common.DateFormats;
 import org.jminor.common.Item;
 import org.jminor.common.Value;
 import org.jminor.common.db.Attribute;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
-import org.jminor.common.model.formats.DateFormats;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

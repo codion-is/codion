@@ -6,7 +6,6 @@ package org.jminor.common.server;
 import org.jminor.common.User;
 import org.jminor.common.Version;
 
-import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -17,32 +16,32 @@ import java.util.UUID;
 /**
  * Utility methods for remote clients
  */
-public final class ClientUtil {
+public final class Clients {
 
-  private ClientUtil() {}
+  private Clients() {}
 
   /**
-   * Instantiates a ConnectionInfo
+   * Instantiates a ConnectionRequest
    * @param user the user
    * @param clientID the client id
    * @param clientTypeID the client type id
-   * @return a ConnectionInfo
+   * @return a ConnectionRequest
    */
-  public static ConnectionInfo connectionInfo(final User user, final UUID clientID, final String clientTypeID) {
-    return connectionInfo(user, clientID, clientTypeID, null);
+  public static ConnectionRequest connectionRequest(final User user, final UUID clientID, final String clientTypeID) {
+    return connectionRequest(user, clientID, clientTypeID, null);
   }
 
   /**
-   * Instantiates a ConnectionInfo
+   * Instantiates a ConnectionRequest
    * @param user the user
    * @param clientID the client id
    * @param clientTypeID the client type id
    * @param clientVersion the client application version
-   * @return a ConnectionInfo
+   * @return a ConnectionRequest
    */
-  public static ConnectionInfo connectionInfo(final User user, final UUID clientID, final String clientTypeID,
-                                              final Version clientVersion) {
-    return new DefaultConnectionInfo(user, clientID, clientTypeID, clientVersion, Version.getVersion());
+  public static ConnectionRequest connectionRequest(final User user, final UUID clientID, final String clientTypeID,
+                                                    final Version clientVersion) {
+    return new DefaultConnectionRequest(user, clientID, clientTypeID, clientVersion, Version.getVersion());
   }
 
   /**
@@ -54,7 +53,7 @@ public final class ClientUtil {
    */
   public static User getUserCredentials(final UUID authenticationToken) {
     try {
-      final Remote credentialService = ServerUtil.getRegistry(Registry.REGISTRY_PORT).lookup(CredentialService.class.getSimpleName());
+      final Remote credentialService = Servers.getRegistry(Registry.REGISTRY_PORT).lookup(CredentialService.class.getSimpleName());
 
       return ((CredentialService) credentialService).getUser(authenticationToken);
     }
@@ -64,7 +63,7 @@ public final class ClientUtil {
     }
   }
 
-  private static final class DefaultConnectionInfo implements ConnectionInfo, Serializable {
+  private static final class DefaultConnectionRequest implements ConnectionRequest {
 
     private static final long serialVersionUID = 1;
 
@@ -74,8 +73,8 @@ public final class ClientUtil {
     private final Version clientVersion;
     private final Version frameworkVersion;
 
-    private DefaultConnectionInfo(final User user, final UUID clientID, final String clientTypeID,
-                                  final Version clientVersion, final Version frameworkVersion) {
+    private DefaultConnectionRequest(final User user, final UUID clientID, final String clientTypeID,
+                                     final Version clientVersion, final Version frameworkVersion) {
       this.user = Objects.requireNonNull(user, "user");
       this.clientID = Objects.requireNonNull(clientID, "clientID");
       this.clientTypeID = Objects.requireNonNull(clientTypeID, "clientTypeID");
@@ -110,7 +109,7 @@ public final class ClientUtil {
 
     @Override
     public boolean equals(final Object obj) {
-      return this == obj || obj instanceof ConnectionInfo && clientID.equals(((ConnectionInfo) obj).getClientID());
+      return this == obj || obj instanceof ConnectionRequest && clientID.equals(((ConnectionRequest) obj).getClientID());
     }
 
     @Override

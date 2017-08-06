@@ -3,10 +3,10 @@
  */
 package org.jminor.swing.common.ui.control;
 
+import org.jminor.common.DateFormats;
 import org.jminor.common.DateUtil;
 import org.jminor.common.Event;
 import org.jminor.common.Events;
-import org.jminor.common.model.formats.DateFormats;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
 

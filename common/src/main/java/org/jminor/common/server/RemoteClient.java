@@ -6,14 +6,14 @@ package org.jminor.common.server;
 import org.jminor.common.User;
 
 /**
- * Contains basic information about a remote client required by a server
+ * Contains basic information about a remote client
  */
-public interface ClientInfo extends ConnectionInfo {
+public interface RemoteClient extends ConnectionRequest {
 
   /**
-   * @return the connection info
+   * @return the connection request
    */
-  ConnectionInfo getConnectionInfo();
+  ConnectionRequest getConnectionRequest();
 
   /**
    * @return the user used when connecting to the underlying database

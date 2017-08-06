@@ -6,10 +6,10 @@ package org.jminor.framework.server;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
-import org.jminor.common.model.reports.ReportException;
-import org.jminor.common.model.reports.ReportResult;
-import org.jminor.common.model.reports.ReportWrapper;
-import org.jminor.common.server.ClientInfo;
+import org.jminor.common.db.reports.ReportException;
+import org.jminor.common.db.reports.ReportResult;
+import org.jminor.common.db.reports.ReportWrapper;
+import org.jminor.common.server.RemoteClient;
 import org.jminor.framework.db.RemoteEntityConnection;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
@@ -29,7 +29,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   /**
    * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
    * @param database defines the underlying database
-   * @param clientInfo information about the client requesting the connection
+   * @param remoteClient the client requesting the connection
    * @param port the port to use when exporting this remote connection
    * @param loggingEnabled specifies whether or not method logging is enabled
    * @param sslEnabled specifies whether or not ssl should be enabled
@@ -37,17 +37,17 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  DefaultRemoteEntityConnection(final Database database, final ClientInfo clientInfo, final int port,
+  DefaultRemoteEntityConnection(final Database database, final RemoteClient remoteClient, final int port,
                                 final boolean loggingEnabled, final boolean sslEnabled)
           throws DatabaseException, RemoteException {
-    this(null, database, clientInfo, port, loggingEnabled, sslEnabled);
+    this(null, database, remoteClient, port, loggingEnabled, sslEnabled);
   }
 
   /**
    * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
    * @param connectionPool the connection pool to use, if none is provided a local connection is established
    * @param database defines the underlying database
-   * @param clientInfo information about the client requesting the connection
+   * @param remoteClient the client requesting the connection
    * @param port the port to use when exporting this remote connection
    * @param loggingEnabled specifies whether or not method logging is enabled
    * @param sslEnabled specifies whether or not ssl should be enabled
@@ -55,10 +55,10 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  DefaultRemoteEntityConnection(final ConnectionPool connectionPool, final Database database, final ClientInfo clientInfo,
+  DefaultRemoteEntityConnection(final ConnectionPool connectionPool, final Database database, final RemoteClient remoteClient,
                                 final int port, final boolean loggingEnabled, final boolean sslEnabled)
           throws DatabaseException, RemoteException {
-    super(connectionPool, database, clientInfo, port, loggingEnabled, sslEnabled);
+    super(connectionPool, database, remoteClient, port, loggingEnabled, sslEnabled);
   }
 
   /** {@inheritDoc} */

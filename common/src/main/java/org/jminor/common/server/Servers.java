@@ -29,34 +29,30 @@ import java.util.UUID;
 /**
  * A utility class for working with Server instances.
  */
-public final class ServerUtil {
+public final class Servers {
 
-  /**
-   * The system property key for specifying a ssl truststore
-   */
-  public static final String JAVAX_NET_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
-  private static final Logger LOG = LoggerFactory.getLogger(ServerUtil.class);
+  private static final Logger LOG = LoggerFactory.getLogger(Servers.class);
   private static final int INPUT_BUFFER_SIZE = 8192;
 
-  private ServerUtil() {}
+  private Servers() {}
 
   /**
-   * Instantiates a new ClientInfo
-   * @param connectionInfo the connection info
-   * @return a new ClientInfo instance
+   * Instantiates a new RemoteClient
+   * @param connectionRequest the connection request
+   * @return a new RemoteClient instance
    */
-  public static ClientInfo clientInfo(final ConnectionInfo connectionInfo) {
-    return clientInfo(connectionInfo, connectionInfo.getUser());
+  public static RemoteClient remoteClient(final ConnectionRequest connectionRequest) {
+    return remoteClient(connectionRequest, connectionRequest.getUser());
   }
 
   /**
-   * Instantiates a new ClientInfo
-   * @param connectionInfo the connection info
+   * Instantiates a new RemoteClient
+   * @param connectionRequest the connection request
    * @param databaseUser the user to use when connecting to the underlying database
-   * @return a new ClientInfo instance
+   * @return a new RemoteClient instance
    */
-  public static ClientInfo clientInfo(final ConnectionInfo connectionInfo, final User databaseUser) {
-    return new DefaultClientInfo(connectionInfo, databaseUser);
+  public static RemoteClient remoteClient(final ConnectionRequest connectionRequest, final User databaseUser) {
+    return new DefaultRemoteClient(connectionRequest, databaseUser);
   }
 
   /**
@@ -128,7 +124,7 @@ public final class ServerUtil {
   public static void resolveTrustStoreFromClasspath(final String temporaryFileNamePrefix) {
     final String value = Server.TRUSTSTORE.get();
     if (Util.nullOrEmpty(value)) {
-      LOG.debug("No trust store specified via {}", JAVAX_NET_NET_TRUSTSTORE);
+      LOG.debug("No trust store specified via {}", Server.JAVAX_NET_NET_TRUSTSTORE);
       return;
     }
     try (final InputStream inputStream = Util.class.getClassLoader().getResourceAsStream(value)) {
@@ -139,7 +135,7 @@ public final class ServerUtil {
       final File file = File.createTempFile(temporaryFileNamePrefix, "tmp");
       Files.write(file.toPath(), getBytes(inputStream));
       file.deleteOnExit();
-      LOG.debug("Classpath trust store written to file: {} -> {}", JAVAX_NET_NET_TRUSTSTORE, file);
+      LOG.debug("Classpath trust store written to file: {} -> {}", Server.JAVAX_NET_NET_TRUSTSTORE, file);
 
       Server.TRUSTSTORE.set(file.getPath());
     }
@@ -236,32 +232,32 @@ public final class ServerUtil {
     return os.toByteArray();
   }
 
-  private static final class DefaultClientInfo implements ClientInfo, Serializable {
+  private static final class DefaultRemoteClient implements RemoteClient {
 
     private static final long serialVersionUID = 1;
 
-    private final ConnectionInfo connectionInfo;
+    private final ConnectionRequest connectionRequest;
     private final User databaseUser;
     private String clientHost = "unknown";
 
     /**
-     * Instantiates a new ClientInfo
-     * @param connectionInfo the connection info
+     * Instantiates a new RemoteClient
+     * @param connectionRequest the connection request
      * @param databaseUser the user to use when connecting to the underlying database
      */
-    private DefaultClientInfo(final ConnectionInfo connectionInfo, final User databaseUser) {
-      this.connectionInfo = connectionInfo;
+    private DefaultRemoteClient(final ConnectionRequest connectionRequest, final User databaseUser) {
+      this.connectionRequest = connectionRequest;
       this.databaseUser = databaseUser;
     }
 
     @Override
-    public ConnectionInfo getConnectionInfo() {
-      return connectionInfo;
+    public ConnectionRequest getConnectionRequest() {
+      return connectionRequest;
     }
 
     @Override
     public User getUser() {
-      return connectionInfo.getUser();
+      return connectionRequest.getUser();
     }
 
     @Override
@@ -271,22 +267,22 @@ public final class ServerUtil {
 
     @Override
     public UUID getClientID() {
-      return connectionInfo.getClientID();
+      return connectionRequest.getClientID();
     }
 
     @Override
     public String getClientTypeID() {
-      return connectionInfo.getClientTypeID();
+      return connectionRequest.getClientTypeID();
     }
 
     @Override
     public Version getClientVersion() {
-      return connectionInfo.getClientVersion();
+      return connectionRequest.getClientVersion();
     }
 
     @Override
     public Version getFrameworkVersion() {
-      return connectionInfo.getFrameworkVersion();
+      return connectionRequest.getFrameworkVersion();
     }
 
     @Override
@@ -301,23 +297,23 @@ public final class ServerUtil {
 
     @Override
     public int hashCode() {
-      return connectionInfo.hashCode();
+      return connectionRequest.hashCode();
     }
 
     @Override
     public boolean equals(final Object obj) {
-      return this == obj || obj instanceof ClientInfo && connectionInfo.equals(((ClientInfo) obj).getConnectionInfo());
+      return this == obj || obj instanceof RemoteClient && connectionRequest.equals(((RemoteClient) obj).getConnectionRequest());
     }
 
     @Override
     public String toString() {
-      final StringBuilder builder = new StringBuilder(connectionInfo.getUser().toString());
-      if (databaseUser != null && !connectionInfo.getUser().equals(databaseUser)) {
+      final StringBuilder builder = new StringBuilder(connectionRequest.getUser().toString());
+      if (databaseUser != null && !connectionRequest.getUser().equals(databaseUser)) {
         builder.append(" (databaseUser: ").append(databaseUser.toString()).append(")");
       }
-      builder.append("@").append(clientHost).append(" [").append(connectionInfo.getClientTypeID())
-              .append(connectionInfo.getClientVersion() != null ? "-" + connectionInfo.getClientVersion() : "")
-              .append("] - ").append(connectionInfo.getClientID().toString());
+      builder.append("@").append(clientHost).append(" [").append(connectionRequest.getClientTypeID())
+              .append(connectionRequest.getClientVersion() != null ? "-" + connectionRequest.getClientVersion() : "")
+              .append("] - ").append(connectionRequest.getClientID().toString());
 
       return builder.toString();
     }

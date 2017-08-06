@@ -16,7 +16,7 @@ import org.jminor.common.Version;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.PreferencesUtil;
-import org.jminor.common.server.ClientUtil;
+import org.jminor.common.server.Clients;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Entities;
@@ -1286,7 +1286,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected static User getUser(final String[] args) {
     try {
-      return args != null && args.length > 1 ? ClientUtil.getUserCredentials(UUID.fromString(args[1])) : null;
+      return args != null && args.length > 1 ? Clients.getUserCredentials(UUID.fromString(args[1])) : null;
     }
     catch (final IllegalArgumentException e) {
       return null;

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.plugins.jasperreports.model;
 
-import org.jminor.common.model.reports.ReportDataWrapper;
+import org.jminor.common.db.reports.ReportDataWrapper;
 
 import net.sf.jasperreports.engine.JRDataSource;
 

@@ -6,8 +6,8 @@ package org.jminor.framework.server;
 import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
-import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
+import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.Server;
 
 import ch.qos.logback.classic.Level;
@@ -148,24 +148,24 @@ public interface EntityConnectionServerAdmin extends Remote {
   Collection<User> getUsers() throws RemoteException;
 
   /**
-   * @return the info on all clients connected to the server
+   * @return all clients connected to the server
    * @throws RemoteException in case of a communication error
    */
-  Collection<ClientInfo> getClients() throws RemoteException;
+  Collection<RemoteClient> getClients() throws RemoteException;
 
   /**
-   * @param user the user for which to retrieve the client infos
-   * @return the connection keys associated with the given user
+   * @param user the user for which to retrieve the clients
+   * @return the clients associated with the given user
    * @throws RemoteException in case of a communication error
    */
-  Collection<ClientInfo> getClients(final User user) throws RemoteException;
+  Collection<RemoteClient> getClients(final User user) throws RemoteException;
 
   /**
-   * @param clientTypeID the client type for which to retrieve the client infos
-   * @return the connection keys associated with the given user
+   * @param clientTypeID the client type for which to retrieve the clients
+   * @return the clients associated with the given user
    * @throws RemoteException in case of a communication error
    */
-  Collection<ClientInfo> getClients(final String clientTypeID) throws RemoteException;
+  Collection<RemoteClient> getClients(final String clientTypeID) throws RemoteException;
 
   /**
    * Returns the connection timeout in ms

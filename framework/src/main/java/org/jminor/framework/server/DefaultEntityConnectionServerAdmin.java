@@ -10,8 +10,8 @@ import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.ConnectionPools;
-import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
+import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.Server;
 
 import ch.qos.logback.classic.Level;
@@ -133,19 +133,19 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public Collection<ClientInfo> getClients(final User user) throws RemoteException {
+  public Collection<RemoteClient> getClients(final User user) throws RemoteException {
     return server.getClients(user);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Collection<ClientInfo> getClients(final String clientTypeID) {
+  public Collection<RemoteClient> getClients(final String clientTypeID) {
     return server.getClients(clientTypeID);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Collection<ClientInfo> getClients() {
+  public Collection<RemoteClient> getClients() {
     return server.getClients();
   }
 
@@ -153,7 +153,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   @Override
   public Collection<String> getClientTypes() {
     final Set<String> clientTypes = new HashSet<>();
-    for (final ClientInfo client : getClients()) {
+    for (final RemoteClient client : getClients()) {
       clientTypes.add(client.getClientTypeID());
     }
 

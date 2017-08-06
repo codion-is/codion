@@ -3,9 +3,9 @@
  */
 package org.jminor.javafx.framework.ui;
 
+import org.jminor.common.ExceptionUtil;
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.ExceptionUtil;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.i18n.FrameworkMessages;

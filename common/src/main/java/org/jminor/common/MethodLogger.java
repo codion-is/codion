@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -259,7 +260,12 @@ public final class MethodLogger {
 
     private static final long serialVersionUID = 1;
     private static final String TIMESTAMP_FORMAT_STRING = "yyyy-MM-dd HH:mm:ss.SSS";
-    private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = DateUtil.getThreadLocalDateFormat(TIMESTAMP_FORMAT_STRING);
+    private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = new ThreadLocal<DateFormat>() {
+      @Override
+      protected synchronized DateFormat initialValue() {
+        return new SimpleDateFormat(TIMESTAMP_FORMAT_STRING);
+      }
+    };
     private static final NumberFormat MICROSECONDS_FORMAT = NumberFormat.getIntegerInstance();
 
     private LinkedList<Entry> subEntries = new LinkedList<>();

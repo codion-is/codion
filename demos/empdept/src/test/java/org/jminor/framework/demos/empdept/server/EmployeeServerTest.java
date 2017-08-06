@@ -7,10 +7,10 @@ import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.server.ClientUtil;
+import org.jminor.common.server.Clients;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
-import org.jminor.common.server.ServerUtil;
+import org.jminor.common.server.Servers;
 import org.jminor.framework.domain.Entity;
 
 import org.junit.Test;
@@ -36,11 +36,11 @@ public final class EmployeeServerTest {
     final Database database = Databases.getInstance();
     final EmployeeServer employeeServer = new EmployeeServer(database, SERVER_PORT, SERVER_PORT, REGISTRY_PORT);
 
-    final Server<EmployeeService, Remote> remoteServer = ServerUtil.getServer("localhost",
+    final Server<EmployeeService, Remote> remoteServer = Servers.getServer("localhost",
             "Employee Server", REGISTRY_PORT, SERVER_PORT);
 
     final EmployeeService employeeService = remoteServer.connect(
-            ClientUtil.connectionInfo(new User("scott", "tiger"),
+            Clients.connectionRequest(new User("scott", "tiger"),
                     UUID.randomUUID(), "EmployeeServerTest"));
 
     final List<Entity> employees = employeeService.getEmployees();
