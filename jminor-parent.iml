@@ -5,25 +5,38 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="demo-chinook" scope="RUNTIME" />
-    <orderEntry type="module" module-name="demo-empdept" scope="RUNTIME" />
-    <orderEntry type="module" module-name="demo-petstore" scope="RUNTIME" />
-    <orderEntry type="module" module-name="demo-schemabrowser" scope="RUNTIME" />
-    <orderEntry type="module" module-name="demo-world" scope="RUNTIME" />
-    <orderEntry type="module" module-name="jminor-common" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-common-core" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-common-db" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-common-model" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-common-server" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-framework-db-core" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-framework-db-local" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-framework-db-remote" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-framework-db-test" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-framework-model" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-framework-model-unittests" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-framework-server" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-swing" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-javafx" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-server-monitor" scope="RUNTIME" />
     <orderEntry type="module" module-name="plugin-imagepanel" scope="RUNTIME" />
     <orderEntry type="module" module-name="plugin-jasperreports" scope="RUNTIME" />
     <orderEntry type="module" module-name="plugin-json" scope="RUNTIME" />
     <orderEntry type="module" module-name="plugin-nextreports" scope="RUNTIME" />
     <orderEntry type="module" module-name="plugin-rest" scope="RUNTIME" />
     <orderEntry type="module" module-name="plugin-tomcat-pool" scope="RUNTIME" />
-    <orderEntry type="module" module-name="jminor-framework" />
-    <orderEntry type="module" module-name="jminor-server-monitor" />
+    <orderEntry type="module" module-name="plugin-hikari-pool" scope="RUNTIME" />
+    <orderEntry type="module" module-name="demo-chinook" scope="RUNTIME" />
+    <orderEntry type="module" module-name="demo-empdept" scope="RUNTIME" />
+    <orderEntry type="module" module-name="demo-petstore" scope="RUNTIME" />
+    <orderEntry type="module" module-name="demo-schemabrowser" scope="RUNTIME" />
+    <orderEntry type="module" module-name="demo-world" scope="RUNTIME" />
   </component>
   <component name="sonarModuleSettings">
+    <option name="alternativeWorkingDirPath" value="" />
     <option name="localAnalysisScripName" value="&lt;PROJECT&gt;" />
     <option name="serverName" value="&lt;PROJECT&gt;" />
+    <option name="useAlternativeWorkingDir" value="false" />
+    <option name="workingDirSelection" value="&lt;MODULE&gt;" />
   </component>
 </module>
