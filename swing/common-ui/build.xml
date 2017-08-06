@@ -1,0 +1,4 @@
+<project name="jminor-swing-common-ui">
+  <property name="project.root" value="../../"/>
+  <import file="../../build-common.xml"/>
+</project>

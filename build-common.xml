@@ -26,6 +26,7 @@
   </path>
 
   <available property="build.libraries.installed" file="${project.root}/${ant.lib}/ivy-${ivy.version}.jar"/>
+  <available property="main.sources.available" file="src/main" type="dir"/>
   <available property="test.sources.available" file="src/test" type="dir"/>
 
   <target name="retrieve_build_libraries" unless="build.libraries.installed">
@@ -55,7 +56,7 @@
 
   <target name="build" depends="build_main, build_test" description="Builds this module"/>
 
-  <target name="build_main" depends="retrieve_libraries" description="Builds this modules main classes">
+  <target name="build_main" depends="retrieve_libraries" if="main.sources.available" description="Builds this modules main classes">
     <mkdir dir="${build.main}"/>
     <javac destdir="${build.main}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.main}"/>
@@ -136,7 +137,7 @@
     </jacoco:report>
   </target>
 
-  <target name="javadoc" depends="build">
+  <target name="javadoc" depends="build" if="main.sources.available">
     <javadoc destdir="${javadoc}" sourcepath="src/main/java" packagenames="org.jminor.*" Encoding="UTF-8"
              docencoding="UTF-8" author="true" version="true" use="true"
              windowtitle="JMinor v${version} ${ant.project.name}" doctitle="JMinor v${version} ${ant.project.name}">

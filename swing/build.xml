@@ -1,92 +1,57 @@
 <project name="jminor-swing">
 
-  <property name="project.root" value="../"/>
-  <import file="../build-common.xml"/>
-
-  <target name="package" depends="build, javadoc">
-    <package_module module-name="jminor-swing-common-model"
-                    includes="org/jminor/swing/common/model/**,
-                    org/jminor/swing/SwingConfiguration.class"/>
-    <package_module module-name="jminor-swing-common-ui"
-                    includes="org/jminor/swing/common/ui/**"/>
-    <package_module module-name="jminor-swing-client-model"
-                    includes="org/jminor/swing/framework/model/**"/>
-    <package_module module-name="jminor-swing-client-ui"
-                    includes="org/jminor/swing/framework/ui/**"/>
-    <package_module module-name="jminor-swing-client-test"
-                    includes="org/jminor/swing/framework/testing/**"/>
-
-    <jar jarfile="${package}/jminor-swing-client-bundle.jar"
-         manifest="${build.main}/META-INF/MANIFEST.MF">
-      <zipgroupfileset dir="${lib}/runtime/" includes="
-              jminor-common-core-${version}.jar,
-              jminor-common-model-${version}.jar,
-              jminor-common-db-${version}.jar,
-              jminor-common-server-${version}.jar,
-              jminor-framework-model-${version}.jar,
-              jminor-framework-db-core-${version}.jar,
-              jminor-framework-db-local-${version}.jar,
-              jminor-framework-db-remote-${version}.jar"/>
-      <zipgroupfileset dir="${package}" includes="
-              jminor-swing-common-model.jar,
-              jminor-swing-common-ui.jar,
-              jminor-swing-client-model.jar,
-              jminor-swing-client-ui.jar"/>
-    </jar>
-    <jar jarfile="${package}/jminor-swing-client-bundle-sources.jar"
-         manifest="${build.main}/META-INF/MANIFEST.MF">
-      <zipgroupfileset dir="${lib}/sources/" includes="
-              jminor-common-core-${version}.jar,
-              jminor-common-model-${version}.jar,
-              jminor-common-db-${version}.jar,
-              jminor-common-server-${version}.jar,
-              jminor-framework-model-${version}.jar,
-              jminor-framework-db-core-${version}.jar,
-              jminor-framework-db-local-${version}.jar,
-              jminor-framework-db-remote-${version}.jar"/>
-      <zipgroupfileset dir="${package}" includes="
-              jminor-swing-common-model-sources.jar,
-              jminor-swing-common-ui-sources.jar,
-              jminor-swing-client-model-sources.jar,
-              jminor-swing-client-ui-sources.jar"/>
-    </jar>
-    <jar jarfile="${package}/jminor-swing-client-bundle-javadoc.jar"
-         manifest="${build.main}/META-INF/MANIFEST.MF">
-      <zipgroupfileset dir="${lib}/javadoc/" includes="
-              jminor-common-core-${version}.jar,
-              jminor-common-model-${version}.jar,
-              jminor-common-db-${version}.jar,
-              jminor-common-server-${version}.jar,
-              jminor-framework-model-${version}.jar,
-              jminor-framework-db-core-${version}.jar,
-              jminor-framework-db-local-${version}.jar,
-              jminor-framework-db-remote-${version}.jar"/>
-      <zipgroupfileset dir="${package}" includes="
-              jminor-swing-common-model-javadoc.jar,
-              jminor-swing-common-ui-javadoc.jar,
-              jminor-swing-client-model-javadoc.jar,
-              jminor-swing-client-ui-javadoc.jar"/>
-    </jar>
+  <target name="clean">
+    <subant target="clean" buildpath="common-model"/>
+    <subant target="clean" buildpath="common-ui"/>
+    <subant target="clean" buildpath="client-model"/>
+    <subant target="clean" buildpath="client-ui"/>
+    <subant target="clean" buildpath="client-test"/>
+    <subant target="clean" buildpath="client-bundle"/>
   </target>
 
-  <target name="deploy" depends="package"
-          description="deploy all project artifacts">
-    <subant target="deploy" buildpath="${basedir}/modules/swing-common-model"/>
-    <subant target="deploy" buildpath="${basedir}/modules/swing-common-ui"/>
-    <subant target="deploy" buildpath="${basedir}/modules/swing-client-model"/>
-    <subant target="deploy" buildpath="${basedir}/modules/swing-client-ui"/>
-    <subant target="deploy" buildpath="${basedir}/modules/swing-client-test"/>
-    <subant target="deploy" buildpath="${basedir}/modules/swing-client-bundle"/>
+  <target name="build">
+    <subant target="build" buildpath="common-model"/>
+    <subant target="build" buildpath="common-ui"/>
+    <subant target="build" buildpath="client-model"/>
+    <subant target="build" buildpath="client-ui"/>
+    <subant target="build" buildpath="client-test"/>
+    <subant target="build" buildpath="client-bundle"/>
   </target>
 
-  <target name="install" depends="package"
-          description="install all project artifacts">
-    <subant target="install" buildpath="${basedir}/modules/swing-common-model"/>
-    <subant target="install" buildpath="${basedir}/modules/swing-common-ui"/>
-    <subant target="install" buildpath="${basedir}/modules/swing-client-model"/>
-    <subant target="install" buildpath="${basedir}/modules/swing-client-ui"/>
-    <subant target="install" buildpath="${basedir}/modules/swing-client-test"/>
-    <subant target="install" buildpath="${basedir}/modules/swing-client-bundle"/>
+  <target name="package">
+    <subant target="package" buildpath="common-model"/>
+    <subant target="package" buildpath="common-ui"/>
+    <subant target="package" buildpath="client-model"/>
+    <subant target="package" buildpath="client-ui"/>
+    <subant target="package" buildpath="client-test"/>
+    <subant target="package" buildpath="client-bundle"/>
+  </target>
+
+  <target name="install">
+    <subant target="install" buildpath="common-model"/>
+    <subant target="install" buildpath="common-ui"/>
+    <subant target="install" buildpath="client-model"/>
+    <subant target="install" buildpath="client-ui"/>
+    <subant target="install" buildpath="client-test"/>
+    <subant target="install" buildpath="client-bundle"/>
+  </target>
+
+  <target name="deploy">
+    <subant target="deploy" buildpath="common-model"/>
+    <subant target="deploy" buildpath="common-ui"/>
+    <subant target="deploy" buildpath="client-model"/>
+    <subant target="deploy" buildpath="client-ui"/>
+    <subant target="deploy" buildpath="client-test"/>
+    <subant target="deploy" buildpath="client-bundle"/>
+  </target>
+
+  <target name="run_unit_tests">
+    <subant target="run_unit_tests" buildpath="common-model"/>
+    <subant target="run_unit_tests" buildpath="common-ui"/>
+    <subant target="run_unit_tests" buildpath="client-model"/>
+    <subant target="run_unit_tests" buildpath="client-ui"/>
+    <subant target="run_unit_tests" buildpath="client-test"/>
+    <subant target="run_unit_tests" buildpath="client-bundle"/>
   </target>
 
   <!--<target name="deploy_generator" depends="package, create_demo_h2db"-->

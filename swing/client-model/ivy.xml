@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+  <info organisation="org.jminor" module="jminor-swing-client-model"/>
+
+  <configurations defaultconfmapping="compile->default">
+    <conf name="compile"/>
+    <conf name="runtime" extends="compile"/>
+    <conf name="test" extends="runtime"/>
+    <conf name="sources"/>
+    <conf name="javadoc"/>
+  </configurations>
+
+  <publications>
+    <artifact name="jminor-swing-client-model" type="jar" ext="jar" conf="compile"/>
+    <artifact name="jminor-swing-client-model" type="pom" ext="pom" conf="compile"/>
+    <artifact name="jminor-swing-client-model-sources" type="source" ext="jar" conf="sources" m:classifier="sources"/>
+    <artifact name="jminor-swing-client-model-javadoc" type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
+  </publications>
+
+  <dependencies defaultconf="compile">
+    <dependency org="org.jminor" name="jminor-common-core" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-model" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-db" rev="${version}"/>
+
+    <dependency org="org.jminor" name="jminor-framework-db-core" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-framework-model" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-framework-model-unittests" rev="${version}" conf="test->master"/>
+    <dependency org="org.jminor" name="jminor-swing-common-model" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-swing-common-ui" rev="${version}" conf="test->master"/>
+
+    <dependency org="org.jminor" name="jminor-framework-db-local" rev="${version}" conf="runtime->default"/>
+    <dependency org="org.jminor" name="jminor-framework-db-remote" rev="${version}" conf="runtime->default"/>
+
+    <dependency org="org.slf4j" name="slf4j-api" rev="${slf4j-api.version}"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="${logback.version}"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="${logback.version}"/>
+
+    <dependency org="org.json" name="json" rev="${json.version}"/>
+
+    <dependency org="com.h2database" name="h2" rev="${h2.version}" conf="test->master"/>
+    <dependency org="junit" name="junit" rev="${junit.version}" conf="test->master"/>
+    <dependency org="org.hamcrest" name="hamcrest-core" rev="${hamcrest-core.version}" conf="test->master"/>
+  </dependencies>
+</ivy-module>

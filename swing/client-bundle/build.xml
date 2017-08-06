@@ -1,0 +1,16 @@
+<project name="jminor-swing-client-bundle">
+  <property name="project.root" value="../../"/>
+  <import file="../../build-common.xml"/>
+
+  <target name="package" depends="build, javadoc">
+    <!--TODO-->
+  </target>
+
+  <target name="deploy" depends="package" description="Publishes the module artifacts to a remote repository">
+    <!--TODO-->
+  </target>
+
+  <target name="install" depends="package" description="Publishes the module artifacts to a local repository">
+    <!--TODO-->
+  </target>
+</project>

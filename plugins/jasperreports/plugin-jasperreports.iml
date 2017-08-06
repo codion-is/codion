@@ -15,7 +15,6 @@
     <orderEntry type="module" module-name="jminor-common-db" />
     <orderEntry type="module" module-name="jminor-common-model" />
     <orderEntry type="module" module-name="jminor-framework-db-core" />
-    <orderEntry type="module" module-name="jminor-swing" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

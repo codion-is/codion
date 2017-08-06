@@ -16,7 +16,6 @@
     <orderEntry type="module" module-name="jminor-framework-model" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-framework-model-unittests" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-framework-server" scope="RUNTIME" />
-    <orderEntry type="module" module-name="jminor-swing" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-javafx" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-server-monitor" scope="RUNTIME" />
     <orderEntry type="module" module-name="plugin-imagepanel" scope="RUNTIME" />
