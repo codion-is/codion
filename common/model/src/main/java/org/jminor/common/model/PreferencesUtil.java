@@ -31,7 +31,7 @@ public final class PreferencesUtil {
    */
   public static String getDefaultUserName(final String applicationIdentifier, final String defaultName) {
     return getUserPreference(Objects.requireNonNull(applicationIdentifier, "applicationIdentifier")
-            + "lib/test" + PREFERENCE_DEFAULT_USERNAME, defaultName);
+            + "." + PREFERENCE_DEFAULT_USERNAME, defaultName);
   }
 
   /**
@@ -41,7 +41,7 @@ public final class PreferencesUtil {
    */
   public static void setDefaultUserName(final String applicationIdentifier, final String username) {
     Objects.requireNonNull(applicationIdentifier, "applicationIdentifier");
-    putUserPreference(applicationIdentifier + "lib/test" + PREFERENCE_DEFAULT_USERNAME, username);
+    putUserPreference(applicationIdentifier + "." + PREFERENCE_DEFAULT_USERNAME, username);
   }
 
   /**

@@ -72,14 +72,14 @@
     </sequential>
   </macrodef>
 
-  <path id="lib.framework.test">
-    <fileset dir="framework/${lib}/test"/>
+  <path id="lib.common.db.test">
+    <fileset dir="common/db/${lib}/test"/>
   </path>
 
   <macrodef name="run_h2_script">
     <attribute name="script"/>
     <sequential>
-      <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.framework.test" outputproperty="devnull">
+      <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.common.db.test" outputproperty="devnull">
         <arg line="-url jdbc:h2:file:${db.h2.dir}/${db.h2.name} -showResults -script @{script}"/>
       </java>
     </sequential>
