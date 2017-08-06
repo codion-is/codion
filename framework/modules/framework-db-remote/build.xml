@@ -1,3 +1,0 @@
-<project name="jminor-framework-db-remote">
-  <import file="../../../build-module.xml"/>
-</project>

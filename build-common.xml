@@ -26,6 +26,7 @@
   </path>
 
   <available property="build.libraries.installed" file="${project.root}/${ant.lib}/ivy-${ivy.version}.jar"/>
+  <available property="test.sources.available" file="src/test" type="dir"/>
 
   <target name="retrieve_build_libraries" unless="build.libraries.installed">
     <mkdir dir="${project.root}/${ant.lib}"/>
@@ -52,7 +53,9 @@
     <ivy:retrieve pattern="${lib}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
   </target>
 
-  <target name="build" depends="retrieve_libraries" description="Builds this module">
+  <target name="build" depends="build_main, build_test" description="Builds this module"/>
+
+  <target name="build_main" depends="retrieve_libraries" description="Builds this modules main classes">
     <mkdir dir="${build.main}"/>
     <javac destdir="${build.main}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.main}"/>
@@ -63,6 +66,9 @@
     <copy todir="${build.main}">
       <fileset dir="${src.main}" excludes="**/*.java"/>
     </copy>
+  </target>
+
+  <target name="build_test" depends="build_main" if="test.sources.available" description="Builds this modules test classes">
     <mkdir dir="${build.test}"/>
     <javac destdir="${build.test}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.test}"/>
@@ -75,7 +81,7 @@
     </copy>
   </target>
 
-  <target name="run_unit_tests" depends="build"
+  <target name="run_unit_tests" depends="build" if="test.sources.available"
           description="Runs the framework unit tests with JaCoCo coverage">
     <delete dir="${test.reports}" includeEmptyDirs="true"/>
     <delete dir="${test.reports.html}" includeEmptyDirs="true"/>

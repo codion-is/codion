@@ -1,3 +1,0 @@
-<project name="jminor-framework-db-core">
-  <import file="../../../build-module.xml"/>
-</project>

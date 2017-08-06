@@ -1,0 +1,4 @@
+<project name="jminor-framework-model-unittests">
+  <property name="project.root" value="../../"/>
+  <import file="../../build-common.xml"/>
+</project>

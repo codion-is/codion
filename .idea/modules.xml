@@ -11,7 +11,13 @@
       <module fileurl="file://$PROJECT_DIR$/common/db/jminor-common-db.iml" filepath="$PROJECT_DIR$/common/db/jminor-common-db.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/model/jminor-common-model.iml" filepath="$PROJECT_DIR$/common/model/jminor-common-model.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/server/jminor-common-server.iml" filepath="$PROJECT_DIR$/common/server/jminor-common-server.iml" />
-      <module fileurl="file://$PROJECT_DIR$/framework/jminor-framework.iml" filepath="$PROJECT_DIR$/framework/jminor-framework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/db-core/jminor-framework-db-core.iml" filepath="$PROJECT_DIR$/framework/db-core/jminor-framework-db-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/db-local/jminor-framework-db-local.iml" filepath="$PROJECT_DIR$/framework/db-local/jminor-framework-db-local.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/db-remote/jminor-framework-db-remote.iml" filepath="$PROJECT_DIR$/framework/db-remote/jminor-framework-db-remote.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/db-test/jminor-framework-db-test.iml" filepath="$PROJECT_DIR$/framework/db-test/jminor-framework-db-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/model/jminor-framework-model.iml" filepath="$PROJECT_DIR$/framework/model/jminor-framework-model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/model-unittests/jminor-framework-model-unittests.iml" filepath="$PROJECT_DIR$/framework/model-unittests/jminor-framework-model-unittests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/server/jminor-framework-server.iml" filepath="$PROJECT_DIR$/framework/server/jminor-framework-server.iml" />
       <module fileurl="file://$PROJECT_DIR$/javafx/jminor-javafx.iml" filepath="$PROJECT_DIR$/javafx/jminor-javafx.iml" />
       <module fileurl="file://$PROJECT_DIR$/jminor-parent.iml" filepath="$PROJECT_DIR$/jminor-parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/server-monitor/jminor-server-monitor.iml" filepath="$PROJECT_DIR$/server-monitor/jminor-server-monitor.iml" />

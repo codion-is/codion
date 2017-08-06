@@ -59,7 +59,7 @@
   </condition>
 
   <condition property="keystore.available">
-    <available file="framework/${resources.security}/JMinorServerKeystore"/>
+    <available file="framework/server/src/test/security/JMinorServerKeystore"/>
   </condition>
 
   <target name="create_demo_db" unless="demo.db.available"
@@ -73,8 +73,9 @@
 
   <target name="create_keystore" unless="keystore.available"
           description="Creates a client/server keystore for running the demos">
+    <mkdir dir="framework/server/src/test/security"/>
     <genkey alias="JMinorServer" keyalg="RSA" storepass="${demo.server.keystorePassword}" validity="365"
-            keystore="framework/${resources.security}/JMinorServerKeystore">
+            keystore="framework/server/src/test/security/JMinorServerKeystore">
       <dname>
         <param name="CN" value="Dummy"/>
         <param name="OU" value="dummy"/>
@@ -84,23 +85,23 @@
     </genkey>
     <exec executable="${java.bin}/keytool" failonerror="true">
       <arg value="-exportcert"/>
-      <arg line="-keystore framework/${resources.security}/JMinorServerKeystore"/>
+      <arg line="-keystore framework/server/src/test/security/JMinorServerKeystore"/>
       <arg line="-alias JMinorServer"/>
       <arg line="-storepass ${demo.server.keystorePassword}"/>
       <arg line="-rfc"/>
-      <arg line="-file framework/${resources.security}/JMinorServer.cer"/>
+      <arg line="-file framework/server/src/test/security/JMinorServer.cer"/>
     </exec>
     <exec executable="${java.bin}/keytool" failonerror="true">
       <arg value="-import"/>
       <arg line="-alias JMinorServer"/>
       <arg line="-storepass ${demo.server.keystorePassword}"/>
-      <arg line="-file framework/${resources.security}/JMinorServer.cer"/>
-      <arg line="-keystore framework/${resources.security}/JMinorClientTruststore"/>
+      <arg line="-file framework/server/src/test/security/JMinorServer.cer"/>
+      <arg line="-keystore framework/server/src/test/security/JMinorClientTruststore"/>
       <arg line="-noprompt"/>
     </exec>
-    <copy file="framework/${resources.security}/JMinorClientTruststore"
-          tofile="framework/${resources.security}/JMinorServerMonitorTruststore"/>
-    <delete file="framework/${resources.security}/JMinorServer.cer"/>
+    <copy file="framework/server/src/test/security/JMinorClientTruststore"
+          tofile="framework/server/src/test/security/JMinorServerMonitorTruststore"/>
+    <delete file="framework/server/src/test/security/JMinorServer.cer"/>
   </target>
 
   <target name="deploy_server" depends="create_keystore, create_demo_db"
@@ -149,7 +150,7 @@
     </copy>
 
     <copy todir="${deploy.server.path}">
-      <fileset dir="framework/resources/server/"/>
+      <fileset dir="resources/server/"/>
     </copy>
     <copy file="${deploy.server.policy}" todir="${deploy.server.path}/config"/>
     <copy file="${deploy.server.allpermissions.policy}" todir="${deploy.server.path}/config"/>
@@ -213,10 +214,7 @@
   <!--</target>-->
 
   <target name="clean" description="Clean all modules">
-    <subant target="clean" buildpath="common/core"/>
-    <subant target="clean" buildpath="common/db"/>
-    <subant target="clean" buildpath="common/model"/>
-    <subant target="clean" buildpath="common/server"/>
+    <subant target="clean" buildpath="common"/>
     <subant target="clean" buildpath="framework"/>
     <subant target="clean" buildpath="swing"/>
     <subant target="clean" buildpath="javafx"/>
@@ -226,10 +224,7 @@
   </target>
 
   <target name="build" description="Builds all modules">
-    <subant target="build" buildpath="common/core"/>
-    <subant target="build" buildpath="common/db"/>
-    <subant target="build" buildpath="common/model"/>
-    <subant target="build" buildpath="common/server"/>
+    <subant target="build" buildpath="common"/>
     <subant target="build" buildpath="framework"/>
     <subant target="build" buildpath="swing"/>
     <subant target="build" buildpath="javafx"/>
@@ -239,10 +234,7 @@
   </target>
 
   <target name="javadoc" description="Creates javadoc for all modules">
-    <subant target="javadoc" buildpath="common/core"/>
-    <subant target="javadoc" buildpath="common/db"/>
-    <subant target="javadoc" buildpath="common/model"/>
-    <subant target="javadoc" buildpath="common/server"/>
+    <subant target="javadoc" buildpath="common"/>
     <subant target="javadoc" buildpath="framework"/>
     <subant target="javadoc" buildpath="swing"/>
     <subant target="javadoc" buildpath="javafx"/>
@@ -251,10 +243,7 @@
   </target>
 
   <target name="package" description="Packages all modules">
-    <subant target="package" buildpath="common/core"/>
-    <subant target="package" buildpath="common/db"/>
-    <subant target="package" buildpath="common/model"/>
-    <subant target="package" buildpath="common/server"/>
+    <subant target="package" buildpath="common"/>
     <subant target="package" buildpath="framework"/>
     <subant target="package" buildpath="swing"/>
     <subant target="package" buildpath="javafx"/>
@@ -263,10 +252,7 @@
   </target>
 
   <target name="run_unit_tests" depends="install, create_keystore" description="Runs unit tests for all modules">
-    <subant target="run_unit_tests" buildpath="common/core"/>
-    <subant target="run_unit_tests" buildpath="common/db"/>
-    <subant target="run_unit_tests" buildpath="common/model"/>
-    <subant target="run_unit_tests" buildpath="common/server"/>
+    <subant target="run_unit_tests" buildpath="common"/>
     <subant target="run_unit_tests" buildpath="framework"/>
     <subant target="run_unit_tests" buildpath="swing"/>
     <subant target="run_unit_tests" buildpath="javafx"/>
@@ -277,10 +263,7 @@
 
   <target name="deploy" depends="run_unit_tests"
           description="Publishes all project artifacts to a remote repository after running unit tests">
-    <subant target="deploy" buildpath="common/core"/>
-    <subant target="deploy" buildpath="common/db"/>
-    <subant target="deploy" buildpath="common/model"/>
-    <subant target="deploy" buildpath="common/server"/>
+    <subant target="deploy" buildpath="common"/>
     <subant target="deploy" buildpath="framework"/>
     <subant target="deploy" buildpath="swing"/>
     <subant target="deploy" buildpath="javafx"/>
@@ -289,10 +272,7 @@
   </target>
 
   <target name="install" depends="clear_ivy_local_repository" description="Publishes all project artifacts to a local repository">
-    <subant target="install" buildpath="common/core"/>
-    <subant target="install" buildpath="common/db"/>
-    <subant target="install" buildpath="common/model"/>
-    <subant target="install" buildpath="common/server"/>
+    <subant target="install" buildpath="common"/>
     <subant target="install" buildpath="framework"/>
     <subant target="install" buildpath="swing"/>
     <subant target="install" buildpath="javafx"/>
@@ -349,8 +329,8 @@
       </classpath>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
       <jvmarg value="-Djminor.server.admin.user=scott:tiger"/>
-      <jvmarg value="-Djavax.net.ssl.trustStore=framework/resources/security/JMinorServerMonitorTruststore"/>
-      <jvmarg value="-Djava.security.policy=framework/resources/security/jminor_server_monitor.policy"/>
+      <jvmarg value="-Djavax.net.ssl.trustStore=framework/server/src/test/security/JMinorServerMonitorTruststore"/>
+      <jvmarg value="-Djava.security.policy=resources/security/jminor_server_monitor.policy"/>
     </java>
   </target>
 

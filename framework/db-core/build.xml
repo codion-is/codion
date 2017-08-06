@@ -1,0 +1,4 @@
+<project name="jminor-framework-db-core">
+  <property name="project.root" value="../../"/>
+  <import file="../../build-common.xml"/>
+</project>

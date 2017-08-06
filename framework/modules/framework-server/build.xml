@@ -1,3 +1,0 @@
-<project name="jminor-framework-server">
-  <import file="../../../build-module.xml"/>
-</project>

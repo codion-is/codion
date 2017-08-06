@@ -11,6 +11,13 @@
     <buildFile url="file://$PROJECT_DIR$/common/model/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/common/server/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/framework/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/framework/db-core/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/framework/db-local/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/framework/db-remote/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/framework/db-test/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/framework/model/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/framework/model-unittests/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/framework/server/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/swing/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/javafx/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/server-monitor/build.xml" />
