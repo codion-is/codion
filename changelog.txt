@@ -4494,3 +4494,4 @@
   ExceptionUtil, DateFormats and ProgressReporter moved to common core
   TimeUtil split from DateUtil due to java.sql dependencies
   Module dependencies modified according to the above
+  Common module broken up into submodules

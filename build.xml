@@ -108,13 +108,13 @@
     <subant target="package" buildpath="common"/>
     <subant target="package" buildpath="framework"/>
 
-    <copy file="common/${package}/jminor-common-core.jar"
+    <copy file="common/core/${package}/jminor-common-core.jar"
           tofile="${deploy.server.path}/lib/jminor-common-core-${version}.jar"/>
-    <copy file="common/${package}/jminor-common-db.jar"
+    <copy file="common/db/${package}/jminor-common-db.jar"
           tofile="${deploy.server.path}/lib/jminor-common-db-${version}.jar"/>
-    <copy file="common/${package}/jminor-common-model.jar"
+    <copy file="common/model/${package}/jminor-common-model.jar"
           tofile="${deploy.server.path}/lib/jminor-common-model-${version}.jar"/>
-    <copy file="common/${package}/jminor-common-server.jar"
+    <copy file="common/server/${package}/jminor-common-server.jar"
           tofile="${deploy.server.path}/lib/jminor-common-server-${version}.jar"/>
 
     <copy file="framework/${package}/jminor-framework-server.jar"
@@ -213,7 +213,10 @@
   <!--</target>-->
 
   <target name="clean" description="Clean all modules">
-    <subant target="clean" buildpath="common"/>
+    <subant target="clean" buildpath="common/core"/>
+    <subant target="clean" buildpath="common/db"/>
+    <subant target="clean" buildpath="common/model"/>
+    <subant target="clean" buildpath="common/server"/>
     <subant target="clean" buildpath="framework"/>
     <subant target="clean" buildpath="swing"/>
     <subant target="clean" buildpath="javafx"/>
@@ -223,7 +226,10 @@
   </target>
 
   <target name="build" description="Builds all modules">
-    <subant target="build" buildpath="common"/>
+    <subant target="build" buildpath="common/core"/>
+    <subant target="build" buildpath="common/db"/>
+    <subant target="build" buildpath="common/model"/>
+    <subant target="build" buildpath="common/server"/>
     <subant target="build" buildpath="framework"/>
     <subant target="build" buildpath="swing"/>
     <subant target="build" buildpath="javafx"/>
@@ -233,7 +239,10 @@
   </target>
 
   <target name="javadoc" description="Creates javadoc for all modules">
-    <subant target="javadoc" buildpath="common"/>
+    <subant target="javadoc" buildpath="common/core"/>
+    <subant target="javadoc" buildpath="common/db"/>
+    <subant target="javadoc" buildpath="common/model"/>
+    <subant target="javadoc" buildpath="common/server"/>
     <subant target="javadoc" buildpath="framework"/>
     <subant target="javadoc" buildpath="swing"/>
     <subant target="javadoc" buildpath="javafx"/>
@@ -242,7 +251,10 @@
   </target>
 
   <target name="package" description="Packages all modules">
-    <subant target="package" buildpath="common"/>
+    <subant target="package" buildpath="common/core"/>
+    <subant target="package" buildpath="common/db"/>
+    <subant target="package" buildpath="common/model"/>
+    <subant target="package" buildpath="common/server"/>
     <subant target="package" buildpath="framework"/>
     <subant target="package" buildpath="swing"/>
     <subant target="package" buildpath="javafx"/>
@@ -251,7 +263,10 @@
   </target>
 
   <target name="run_unit_tests" depends="install, create_keystore" description="Runs unit tests for all modules">
-    <subant target="run_unit_tests" buildpath="common"/>
+    <subant target="run_unit_tests" buildpath="common/core"/>
+    <subant target="run_unit_tests" buildpath="common/db"/>
+    <subant target="run_unit_tests" buildpath="common/model"/>
+    <subant target="run_unit_tests" buildpath="common/server"/>
     <subant target="run_unit_tests" buildpath="framework"/>
     <subant target="run_unit_tests" buildpath="swing"/>
     <subant target="run_unit_tests" buildpath="javafx"/>
@@ -262,7 +277,10 @@
 
   <target name="deploy" depends="run_unit_tests"
           description="Publishes all project artifacts to a remote repository after running unit tests">
-    <subant target="deploy" buildpath="common"/>
+    <subant target="deploy" buildpath="common/core"/>
+    <subant target="deploy" buildpath="common/db"/>
+    <subant target="deploy" buildpath="common/model"/>
+    <subant target="deploy" buildpath="common/server"/>
     <subant target="deploy" buildpath="framework"/>
     <subant target="deploy" buildpath="swing"/>
     <subant target="deploy" buildpath="javafx"/>
@@ -271,7 +289,10 @@
   </target>
 
   <target name="install" depends="clear_ivy_local_repository" description="Publishes all project artifacts to a local repository">
-    <subant target="install" buildpath="common"/>
+    <subant target="install" buildpath="common/core"/>
+    <subant target="install" buildpath="common/db"/>
+    <subant target="install" buildpath="common/model"/>
+    <subant target="install" buildpath="common/server"/>
     <subant target="install" buildpath="framework"/>
     <subant target="install" buildpath="swing"/>
     <subant target="install" buildpath="javafx"/>
@@ -333,7 +354,7 @@
     </java>
   </target>
 
-  <target name="sonar" depends="run_unit_tests, merge_coverage_results" description="Runs a Sonar analysis on the project">
+  <target name="sonar" depends="run_unit_tests" description="Runs a Sonar analysis on the project">
     <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml" classpathref="lib.ant.util"/>
     <sonar:sonar/>
   </target>

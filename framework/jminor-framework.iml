@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" inherit-compiler-output="false">
+  <component name="NewModuleRootManager">
     <output url="file://$MODULE_DIR$/build/main" />
     <output-test url="file://$MODULE_DIR$/build/test" />
     <exclude-output />
@@ -10,7 +10,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="jminor-common" exported="" />
+    <orderEntry type="module" module-name="jminor-common-core" exported="" />
+    <orderEntry type="module" module-name="jminor-common-db" exported="" />
+    <orderEntry type="module" module-name="jminor-common-model" exported="" />
+    <orderEntry type="module" module-name="jminor-common-server" exported="" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

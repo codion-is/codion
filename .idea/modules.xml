@@ -7,7 +7,10 @@
       <module fileurl="file://$PROJECT_DIR$/demos/petstore/demo-petstore.iml" filepath="$PROJECT_DIR$/demos/petstore/demo-petstore.iml" />
       <module fileurl="file://$PROJECT_DIR$/demos/schemabrowser/demo-schemabrowser.iml" filepath="$PROJECT_DIR$/demos/schemabrowser/demo-schemabrowser.iml" />
       <module fileurl="file://$PROJECT_DIR$/demos/world/demo-world.iml" filepath="$PROJECT_DIR$/demos/world/demo-world.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common/jminor-common.iml" filepath="$PROJECT_DIR$/common/jminor-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/core/jminor-common-core.iml" filepath="$PROJECT_DIR$/common/core/jminor-common-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/db/jminor-common-db.iml" filepath="$PROJECT_DIR$/common/db/jminor-common-db.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/model/jminor-common-model.iml" filepath="$PROJECT_DIR$/common/model/jminor-common-model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/server/jminor-common-server.iml" filepath="$PROJECT_DIR$/common/server/jminor-common-server.iml" />
       <module fileurl="file://$PROJECT_DIR$/framework/jminor-framework.iml" filepath="$PROJECT_DIR$/framework/jminor-framework.iml" />
       <module fileurl="file://$PROJECT_DIR$/javafx/jminor-javafx.iml" filepath="$PROJECT_DIR$/javafx/jminor-javafx.iml" />
       <module fileurl="file://$PROJECT_DIR$/jminor-parent.iml" filepath="$PROJECT_DIR$/jminor-parent.iml" />

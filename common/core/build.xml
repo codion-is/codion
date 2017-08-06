@@ -1,0 +1,12 @@
+<project name="jminor-common-core">
+  <property name="project.root" value="../../"/>
+  <import file="../../build-common.xml"/>
+
+  <tstamp>
+    <format property="build.date" pattern="yyyy.MM.dd HH:mm"/>
+  </tstamp>
+
+  <target name="build" depends="common.build" description="Creates a version file before building">
+    <concat destfile="${build.main}/org/jminor/common/version.txt">${version}-build ${build.date}</concat>
+  </target>
+</project>

@@ -10,7 +10,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="jminor-common-db" />
+    <orderEntry type="module" module-name="jminor-common-core" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -21,16 +21,6 @@
         <jarDirectory url="file://$MODULE_DIR$/lib/compile" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="module-library" scope="RUNTIME">
-      <library>
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/lib/runtime" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/lib/runtime" recursive="false" />
-      </library>
-    </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
@@ -39,6 +29,16 @@
         <JAVADOC />
         <SOURCES />
         <jarDirectory url="file://$MODULE_DIR$/lib/test" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib/runtime" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/lib/runtime" recursive="false" />
       </library>
     </orderEntry>
   </component>

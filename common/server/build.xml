@@ -1,0 +1,4 @@
+<project name="jminor-common-server">
+  <property name="project.root" value="../../"/>
+  <import file="../../build-common.xml"/>
+</project>
