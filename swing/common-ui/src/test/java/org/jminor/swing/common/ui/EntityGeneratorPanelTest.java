@@ -6,7 +6,7 @@ package org.jminor.swing.common.ui;
 import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.swing.common.EntityGeneratorPanel;
-import org.jminor.swing.common.model.generator.EntityGeneratorModel;
+import org.jminor.swing.common.model.EntityGeneratorModel;
 
 import org.junit.Test;
 

@@ -6,7 +6,7 @@ package org.jminor.swing.common;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.model.CancelException;
-import org.jminor.swing.common.model.generator.EntityGeneratorModel;
+import org.jminor.swing.common.model.EntityGeneratorModel;
 import org.jminor.swing.common.ui.LoginPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.images.Images;
