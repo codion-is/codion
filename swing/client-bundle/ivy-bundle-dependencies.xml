@@ -1,0 +1,31 @@
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+  <info organisation="org.jminor" module="jminor-swing-client-bundle"/>
+
+  <configurations>
+    <conf name="runtime"/>
+    <conf name="sources"/>
+  </configurations>
+
+  <dependencies defaultconf="runtime">
+    <dependency org="org.slf4j" name="slf4j-api" rev="${slf4j-api.version}"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="${logback.version}"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="${logback.version}"/>
+    <dependency org="org.json" name="json" rev="${json.version}"/>
+    <dependency org="com.toedter" name="jcalendar" rev="${jcalendar.version}"/>
+
+    <dependency org="org.jminor" name="jminor-common-core" rev="${version}" conf="runtime->default;sources->sources"/>
+    <dependency org="org.jminor" name="jminor-common-model" rev="${version}" conf="runtime->default;sources->sources"/>
+    <dependency org="org.jminor" name="jminor-common-db" rev="${version}" conf="runtime->default;sources->sources"/>
+    <dependency org="org.jminor" name="jminor-common-server" rev="${version}" conf="runtime->default;sources->sources"/>
+
+    <dependency org="org.jminor" name="jminor-framework-db-core" rev="${version}" conf="runtime->default;sources->sources"/>
+    <dependency org="org.jminor" name="jminor-framework-db-local" rev="${version}" conf="runtime->default;sources->sources"/>
+    <dependency org="org.jminor" name="jminor-framework-db-remote" rev="${version}" conf="runtime->default;sources->sources"/>
+    <dependency org="org.jminor" name="jminor-framework-model" rev="${version}" conf="runtime->default;sources->sources"/>
+
+    <dependency org="org.jminor" name="jminor-swing-common-model" rev="${version}" conf="runtime->default;sources->sources"/>
+    <dependency org="org.jminor" name="jminor-swing-common-ui" rev="${version}" conf="runtime->default;sources->sources"/>
+    <dependency org="org.jminor" name="jminor-swing-client-model" rev="${version}" conf="runtime->default;sources->sources"/>
+    <dependency org="org.jminor" name="jminor-swing-client-ui" rev="${version}" conf="runtime->default;sources->sources"/>
+  </dependencies>
+</ivy-module>

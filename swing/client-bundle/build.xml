@@ -3,15 +3,52 @@
   <property name="java.module.name" value="org.jminor.swing.client.bundle"/>
   <import file="../../build-common.xml"/>
 
+  <target name="retrieve_libraries" depends="retrieve_build_libraries"
+          description="Resolves all libraries according to ivy.xml">
+    <resolve_ivy ivy-file="ivy-bundle-dependencies.xml"/>
+  </target>
+
   <target name="package" depends="build, javadoc">
-    <!--TODO-->
-  </target>
+    <tstamp/>
+    <unzip dest="src">
+      <fileset dir="lib/sources"/>
+    </unzip>
+    <javadoc destdir="${javadoc}" sourcepath="src" packagenames="org.jminor.*" Encoding="UTF-8"
+             docencoding="UTF-8" author="true" version="true" use="true"
+             windowtitle="JMinor v${version} ${ant.project.name}" doctitle="JMinor v${version} ${ant.project.name}">
+      <classpath>
+        <path refid="lib.runtime"/>
+      </classpath>
+      <link href="http://download.oracle.com/javase/8/docs/api/"/>
+      <link offline="true" href="http://jminor.org/data/media/project/docs/api/" packagelistloc="javadoc"/>
+    </javadoc>
 
-  <target name="deploy" depends="package" description="Publishes the module artifacts to a remote repository">
-    <!--TODO-->
-  </target>
+    <manifest file="MANIFEST.MF">
+      <attribute name="Specification-Title" value="jminor-swing-client-bundle"/>
+      <attribute name="Specification-Version" value="${version}"/>
+      <attribute name="Specification-Vendor" value="JMinor"/>
+      <attribute name="Implementation-Title" value="jminor-swing-client-bundle"/>
+      <attribute name="Implementation-Version" value="${version}"/>
+      <attribute name="Implementation-Vendor" value="JMinor"/>
+      <attribute name="Implementation-Vendor-Id" value="org.jminor"/>
+      <attribute name="Implementation-URL" value="http://jminor.org"/>
+      <attribute name="Automatic-Module-Name" value="org.jminor.swing.client.bundle"/>
+      <attribute name="Build-Jdk" value="${java.version}"/>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Build-Time" value="${DSTAMP}${TSTAMP}"/>
+    </manifest>
 
-  <target name="install" depends="package" description="Publishes the module artifacts to a local repository">
-    <!--TODO-->
+    <jar jarfile="${package}/jminor-swing-client-bundle.jar" manifest="MANIFEST.MF">
+      <zipgroupfileset dir="${lib}/runtime/" includes="jminor*.jar"/>
+    </jar>
+    <jar jarfile="${package}/jminor-swing-client-bundle-sources.jar" manifest="MANIFEST.MF">
+      <fileset dir="src"/>
+    </jar>
+    <jar jarfile="${package}/jminor-swing-client-bundle-javadoc.jar" manifest="MANIFEST.MF">
+      <fileset dir="javadoc"/>
+    </jar>
+    <delete file="MANIFEST.MF"/>
+    <delete dir="src"/>
+    <delete dir="javadoc"/>
   </target>
 </project>

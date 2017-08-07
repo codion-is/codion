@@ -4499,3 +4499,4 @@
   Swing module broken up into submodules
   Cleanup after breakup
   Automatic-Module-Name attribute added to jar manifests
+  Swing client bundle module fixed

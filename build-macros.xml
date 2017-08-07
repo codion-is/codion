@@ -1,5 +1,15 @@
 <project name="macros" xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:jacoco="antlib:org.jacoco.ant">
 
+  <macrodef name="resolve_ivy">
+    <attribute name="ivy-file" default="ivy.xml"/>
+    <sequential>
+      <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="lib.ant.util"/>
+      <ivy:settings file="${project.root}/ivysettings.xml"/>
+      <ivy:resolve file="@{ivy-file}"/>
+      <ivy:retrieve pattern="${lib}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
+    </sequential>
+  </macrodef>
+
   <macrodef name="package_module">
     <attribute name="module-name" default="${ant.project.name}"/>
     <attribute name="java-module-name" default="${java.module.name}"/>

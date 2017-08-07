@@ -39,7 +39,6 @@ import java.util.Set;
 
 /**
  * A model class for generating entity definitions.
- * @see org.jminor.swing.common.ui.EntityGeneratorPanel
  */
 public final class EntityGeneratorModel {
 
