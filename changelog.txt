@@ -4488,7 +4488,7 @@
 0.10.11
   ClientInfo renamed to RemoteClient
   ConnectionInfo renamed to ConnectionRequest
-  ServerUtil.JAVAX_NET_NET_TRUSTSTORE configuration constant moved to Server
+  ServerUtil.JAVAX_NET_TRUSTSTORE configuration constant moved to Server
   ServerUtil renamed to Servers and ClientUtil renamed to Clients
   org.jminor.common.model.reports package moved to org.jminor.common.db
   ExceptionUtil, DateFormats and ProgressReporter moved to common core
