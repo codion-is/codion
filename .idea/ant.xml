@@ -23,7 +23,7 @@
     <buildFile url="file://$PROJECT_DIR$/swing/common-ui/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/swing/framework-model/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/swing/framework-ui/build.xml" />
-    <buildFile url="file://$PROJECT_DIR$/swing/framework-test/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/swing/framework-ui-test/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/swing/framework-bundle/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/javafx/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/server-monitor/build.xml" />

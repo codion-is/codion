@@ -4,7 +4,7 @@
 package org.jminor.framework.demos.world.client.ui;
 
 import org.jminor.common.User;
-import org.jminor.swing.framework.testing.EntityApplicationPanelTestUnit;
+import org.jminor.swing.framework.ui.testing.EntityApplicationPanelTestUnit;
 
 import org.junit.Test;
 

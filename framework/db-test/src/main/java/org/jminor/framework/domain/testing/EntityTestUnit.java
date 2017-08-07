@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.testing;
+package org.jminor.framework.domain.testing;
 
 import org.jminor.common.DateUtil;
 import org.jminor.common.Item;

@@ -9,11 +9,11 @@ import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.testing.EntityTestUnit;
 import org.jminor.framework.model.DefaultEntityApplicationModel;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.framework.model.EntityLoadTestModel;
 import org.jminor.framework.model.EntityModel;
-import org.jminor.framework.testing.EntityTestUnit;
 import org.jminor.swing.common.ui.tools.LoadTestPanel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 

@@ -4503,3 +4503,6 @@
   Swing client-* module directories renamed to framework-*
   Swing client-* modules renamed to framework-*
   Swing framwork-test module directory renamed to framwork-ui-test
+  Swing framework-test module renamed to framework-ui-test
+  EntityTestUnit moved into org.jminor.framework.domain.testing
+  EntityApplicationPanelTestUnit and EntityEditPanelTestUnit moved into org.jminor.swing.framework.ui.testing

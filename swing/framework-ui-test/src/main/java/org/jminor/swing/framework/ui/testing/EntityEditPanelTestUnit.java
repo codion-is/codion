@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.testing;
+package org.jminor.swing.framework.ui.testing;
 
 import org.jminor.common.User;
 import org.jminor.framework.db.EntityConnectionProvider;
