@@ -150,6 +150,12 @@
     <package_module/>
   </target>
 
+  <target name="jdeps" depends="package">
+    <exec executable="jdeps">
+      <arg line="-classpath ${lib}/runtime/* -dotoutput ${package} ${package}/${ant.project.name}.jar"/>
+    </exec>
+  </target>
+
   <target name="deploy" depends="package" description="Publishes the module artifacts to a remote repository">
     <publish resolver="deploy.${release.status}" artifact-dir="${package}"/>
   </target>
