@@ -4498,3 +4498,4 @@
   Framework module broken up into submodules
   Swing module broken up into submodules
   Cleanup after breakup
+  Automatic-Module-Name attribute added to jar manifests

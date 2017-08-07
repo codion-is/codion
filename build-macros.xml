@@ -2,6 +2,7 @@
 
   <macrodef name="package_module">
     <attribute name="module-name" default="${ant.project.name}"/>
+    <attribute name="java-module-name" default="${java.module.name}"/>
     <attribute name="build.basedir" default="${build.main}"/>
     <attribute name="src.basedir" default="${src.main}"/>
     <attribute name="includes" default=""/>
@@ -18,6 +19,7 @@
         <attribute name="Implementation-Vendor" value="JMinor"/>
         <attribute name="Implementation-Vendor-Id" value="org.jminor"/>
         <attribute name="Implementation-URL" value="http://jminor.org"/>
+        <attribute name="Automatic-Module-Name" value="@{java-module-name}"/>
         <attribute name="Build-Jdk" value="${java.version}"/>
         <attribute name="Built-By" value="${user.name}"/>
         <attribute name="Build-Time" value="${DSTAMP}${TSTAMP}"/>

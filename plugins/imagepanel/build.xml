@@ -1,4 +1,5 @@
 <project name="jminor-plugin-imagepanel">
   <property name="project.root" value="../../"/>
+  <property name="java.module.name" value="org.jminor.plugin.imagepanel"/>
   <import file="../../build-common.xml"/>
 </project>

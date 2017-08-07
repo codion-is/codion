@@ -1,4 +1,5 @@
 <project name="jminor-framework-server">
   <property name="project.root" value="../../"/>
+  <property name="java.module.name" value="org.jminor.framework.server"/>
   <import file="../../build-common.xml"/>
 </project>

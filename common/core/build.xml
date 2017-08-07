@@ -1,5 +1,6 @@
 <project name="jminor-common-core">
   <property name="project.root" value="../../"/>
+  <property name="java.module.name" value="org.jminor.common.core"/>
   <import file="../../build-common.xml"/>
 
   <tstamp>

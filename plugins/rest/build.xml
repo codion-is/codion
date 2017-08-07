@@ -1,4 +1,5 @@
 <project name="jminor-plugin-rest">
   <property name="project.root" value="../../"/>
+  <property name="java.module.name" value="org.jminor.plugin.rest"/>
   <import file="../../build-common.xml"/>
 </project>

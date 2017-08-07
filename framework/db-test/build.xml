@@ -1,4 +1,5 @@
 <project name="jminor-framework-db-test">
   <property name="project.root" value="../../"/>
+  <property name="java.module.name" value="org.jminor.framework.db.test"/>
   <import file="../../build-common.xml"/>
 </project>
