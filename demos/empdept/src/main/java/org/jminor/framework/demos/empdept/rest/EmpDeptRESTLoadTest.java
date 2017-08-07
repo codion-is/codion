@@ -31,10 +31,10 @@ import org.apache.http.util.EntityUtils;
 
 import javax.swing.UIManager;
 import javax.ws.rs.core.MediaType;
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -57,7 +57,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
 
   private final HttpRequestInterceptor requestInterceptor = (request, httpContext) -> {
     final User user1 = getUser();
-    request.setHeader(EntityRESTService.AUTHORIZATION, BASIC + DatatypeConverter.printBase64Binary((user1.getUsername() + ":" + user1.getPassword()).getBytes()));
+    request.setHeader(EntityRESTService.AUTHORIZATION, BASIC + Base64.getEncoder().encodeToString((user1.getUsername() + ":" + user1.getPassword()).getBytes()));
     request.setHeader("Content-Type", MediaType.APPLICATION_JSON);
   };
 
