@@ -124,7 +124,7 @@ public final class Servers {
   public static void resolveTrustStoreFromClasspath(final String temporaryFileNamePrefix) {
     final String value = Server.TRUSTSTORE.get();
     if (Util.nullOrEmpty(value)) {
-      LOG.debug("No trust store specified via {}", Server.JAVAX_NET_NET_TRUSTSTORE);
+      LOG.debug("No trust store specified via {}", Server.JAVAX_NET_TRUSTSTORE);
       return;
     }
     try (final InputStream inputStream = Util.class.getClassLoader().getResourceAsStream(value)) {
@@ -135,7 +135,7 @@ public final class Servers {
       final File file = File.createTempFile(temporaryFileNamePrefix, "tmp");
       Files.write(file.toPath(), getBytes(inputStream));
       file.deleteOnExit();
-      LOG.debug("Classpath trust store written to file: {} -> {}", Server.JAVAX_NET_NET_TRUSTSTORE, file);
+      LOG.debug("Classpath trust store written to file: {} -> {}", Server.JAVAX_NET_TRUSTSTORE, file);
 
       Server.TRUSTSTORE.set(file.getPath());
     }

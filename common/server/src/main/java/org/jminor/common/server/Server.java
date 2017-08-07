@@ -25,7 +25,7 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
   /**
    * The system property key for specifying a ssl truststore
    */
-  String JAVAX_NET_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
+  String JAVAX_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
 
   /**
    * The host on which to locate the server<br>
@@ -62,7 +62,7 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
    * Value type: String
    * Default value: null
    */
-  Value<String> TRUSTSTORE = Configuration.stringValue(JAVAX_NET_NET_TRUSTSTORE, null);
+  Value<String> TRUSTSTORE = Configuration.stringValue(JAVAX_NET_TRUSTSTORE, null);
 
   /**
    * Specifies the rmi server hostname<br>
