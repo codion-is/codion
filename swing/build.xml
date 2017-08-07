@@ -5,7 +5,7 @@
     <subant target="clean" buildpath="common-ui"/>
     <subant target="clean" buildpath="framework-model"/>
     <subant target="clean" buildpath="framework-ui"/>
-    <subant target="clean" buildpath="framework-test"/>
+    <subant target="clean" buildpath="framework-ui-test"/>
     <subant target="clean" buildpath="framework-bundle"/>
   </target>
 
@@ -14,7 +14,7 @@
     <subant target="build" buildpath="common-ui"/>
     <subant target="build" buildpath="framework-model"/>
     <subant target="build" buildpath="framework-ui"/>
-    <subant target="build" buildpath="framework-test"/>
+    <subant target="build" buildpath="framework-ui-test"/>
     <subant target="build" buildpath="framework-bundle"/>
   </target>
 
@@ -23,7 +23,7 @@
     <subant target="package" buildpath="common-ui"/>
     <subant target="package" buildpath="framework-model"/>
     <subant target="package" buildpath="framework-ui"/>
-    <subant target="package" buildpath="framework-test"/>
+    <subant target="package" buildpath="framework-ui-test"/>
     <subant target="package" buildpath="framework-bundle"/>
   </target>
 
@@ -32,7 +32,7 @@
     <subant target="install" buildpath="common-ui"/>
     <subant target="install" buildpath="framework-model"/>
     <subant target="install" buildpath="framework-ui"/>
-    <subant target="install" buildpath="framework-test"/>
+    <subant target="install" buildpath="framework-ui-test"/>
     <subant target="install" buildpath="framework-bundle"/>
   </target>
 
@@ -41,7 +41,7 @@
     <subant target="deploy" buildpath="common-ui"/>
     <subant target="deploy" buildpath="framework-model"/>
     <subant target="deploy" buildpath="framework-ui"/>
-    <subant target="deploy" buildpath="framework-test"/>
+    <subant target="deploy" buildpath="framework-ui-test"/>
     <subant target="deploy" buildpath="framework-bundle"/>
   </target>
 
@@ -50,7 +50,7 @@
     <subant target="run_unit_tests" buildpath="common-ui"/>
     <subant target="run_unit_tests" buildpath="framework-model"/>
     <subant target="run_unit_tests" buildpath="framework-ui"/>
-    <subant target="run_unit_tests" buildpath="framework-test"/>
+    <subant target="run_unit_tests" buildpath="framework-ui-test"/>
     <subant target="run_unit_tests" buildpath="framework-bundle"/>
   </target>
 
