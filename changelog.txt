@@ -4500,3 +4500,4 @@
   Cleanup after breakup
   Automatic-Module-Name attribute added to jar manifests
   Swing client bundle module fixed
+  Swing client-* module directories renamed to framework-*
