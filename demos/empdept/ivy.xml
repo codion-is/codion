@@ -11,11 +11,11 @@
 
   <dependencies defaultconf="compile->default">
     <dependency org="org.jminor" name="jminor-framework-server" rev="${version}"/>
-    <dependency org="org.jminor" name="jminor-swing-client-bundle" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-swing-framework-bundle" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-plugin-jasperreports" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-plugin-json" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-plugin-rest" rev="${version}"/>
-    <dependency org="org.jminor" name="jminor-swing-client-test" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-swing-framework-test" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-javafx" rev="${version}"/>
 
     <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" conf="compile->master"/>
@@ -35,7 +35,7 @@
 
     <dependency org="com.h2database" name="h2" rev="${h2.version}" conf="runtime->master"/>
 
-    <dependency org="org.jminor" name="jminor-swing-client-test" rev="${version}" conf="test->master"/>
+    <dependency org="org.jminor" name="jminor-swing-framework-test" rev="${version}" conf="test->master"/>
 
     <dependency org="junit" name="junit" rev="${junit.version}" conf="test->master"/>
     <dependency org="org.hamcrest" name="hamcrest-core" rev="${hamcrest-core.version}" conf="test->master"/>

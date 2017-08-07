@@ -22,7 +22,7 @@
     <dependency org="org.jminor" name="jminor-framework-db-core" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-swing-common-model" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-swing-common-ui" rev="${version}"/>
-    <dependency org="org.jminor" name="jminor-swing-client-ui" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-swing-framework-ui" rev="${version}"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="${slf4j-api.version}" conf="runtime"/>
     <dependency org="ch.qos.logback" name="logback-classic" rev="${logback.version}" conf="runtime"/>

@@ -1,5 +1,5 @@
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-  <info organisation="org.jminor" module="jminor-swing-client-bundle"/>
+  <info organisation="org.jminor" module="jminor-swing-framework-bundle"/>
 
   <configurations>
     <conf name="runtime"/>
@@ -25,7 +25,7 @@
 
     <dependency org="org.jminor" name="jminor-swing-common-model" rev="${version}" conf="runtime->default;sources->sources"/>
     <dependency org="org.jminor" name="jminor-swing-common-ui" rev="${version}" conf="runtime->default;sources->sources"/>
-    <dependency org="org.jminor" name="jminor-swing-client-model" rev="${version}" conf="runtime->default;sources->sources"/>
-    <dependency org="org.jminor" name="jminor-swing-client-ui" rev="${version}" conf="runtime->default;sources->sources"/>
+    <dependency org="org.jminor" name="jminor-swing-framework-model" rev="${version}" conf="runtime->default;sources->sources"/>
+    <dependency org="org.jminor" name="jminor-swing-framework-ui" rev="${version}" conf="runtime->default;sources->sources"/>
   </dependencies>
 </ivy-module>

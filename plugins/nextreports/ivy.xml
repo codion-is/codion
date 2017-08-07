@@ -27,7 +27,7 @@
     <dependency org="com.thoughtworks.xstream" name="xstream" rev="1.4.8" conf="runtime->master"/>
 
     <dependency org="org.jminor" name="jminor-framework-db-local" rev="${version}" conf="test->default"/>
-    <dependency org="org.jminor" name="jminor-swing-client-model" rev="${version}" conf="test->default"/>
+    <dependency org="org.jminor" name="jminor-swing-framework-model" rev="${version}" conf="test->default"/>
     <dependency org="com.h2database" name="h2" rev="${h2.version}" conf="test->master"/>
     <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="test->master"/>
     <dependency org="com.itextpdf" name="itextpdf" rev="5.5.0" conf="test->master"/>

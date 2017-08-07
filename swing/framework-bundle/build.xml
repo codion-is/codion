@@ -1,6 +1,6 @@
-<project name="jminor-swing-client-bundle">
+<project name="jminor-swing-framework-bundle">
   <property name="project.root" value="../../"/>
-  <property name="java.module.name" value="org.jminor.swing.client.bundle"/>
+  <property name="java.module.name" value="org.jminor.swing.framework.bundle"/>
   <import file="../../build-common.xml"/>
 
   <target name="retrieve_libraries" depends="retrieve_build_libraries"
@@ -24,27 +24,27 @@
     </javadoc>
 
     <manifest file="MANIFEST.MF">
-      <attribute name="Specification-Title" value="jminor-swing-client-bundle"/>
+      <attribute name="Specification-Title" value="jminor-swing-framework-bundle"/>
       <attribute name="Specification-Version" value="${version}"/>
       <attribute name="Specification-Vendor" value="JMinor"/>
-      <attribute name="Implementation-Title" value="jminor-swing-client-bundle"/>
+      <attribute name="Implementation-Title" value="jminor-swing-framework-bundle"/>
       <attribute name="Implementation-Version" value="${version}"/>
       <attribute name="Implementation-Vendor" value="JMinor"/>
       <attribute name="Implementation-Vendor-Id" value="org.jminor"/>
       <attribute name="Implementation-URL" value="http://jminor.org"/>
-      <attribute name="Automatic-Module-Name" value="org.jminor.swing.client.bundle"/>
+      <attribute name="Automatic-Module-Name" value="org.jminor.swing.framework.bundle"/>
       <attribute name="Build-Jdk" value="${java.version}"/>
       <attribute name="Built-By" value="${user.name}"/>
       <attribute name="Build-Time" value="${DSTAMP}${TSTAMP}"/>
     </manifest>
 
-    <jar jarfile="${package}/jminor-swing-client-bundle.jar" manifest="MANIFEST.MF">
+    <jar jarfile="${package}/jminor-swing-framework-bundle.jar" manifest="MANIFEST.MF">
       <zipgroupfileset dir="${lib}/runtime/" includes="jminor*.jar"/>
     </jar>
-    <jar jarfile="${package}/jminor-swing-client-bundle-sources.jar" manifest="MANIFEST.MF">
+    <jar jarfile="${package}/jminor-swing-framework-bundle-sources.jar" manifest="MANIFEST.MF">
       <fileset dir="src"/>
     </jar>
-    <jar jarfile="${package}/jminor-swing-client-bundle-javadoc.jar" manifest="MANIFEST.MF">
+    <jar jarfile="${package}/jminor-swing-framework-bundle-javadoc.jar" manifest="MANIFEST.MF">
       <fileset dir="javadoc"/>
     </jar>
     <delete file="MANIFEST.MF"/>

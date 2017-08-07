@@ -4501,3 +4501,4 @@
   Automatic-Module-Name attribute added to jar manifests
   Swing client bundle module fixed
   Swing client-* module directories renamed to framework-*
+  Swing client-* modules renamed to framework-*

@@ -10,9 +10,9 @@
   </configurations>
 
   <dependencies defaultconf="compile->default">
-    <dependency org="org.jminor" name="jminor-swing-client-bundle" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-swing-framework-bundle" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-plugin-jasperreports" rev="${version}"/>
-    <dependency org="org.jminor" name="jminor-swing-client-test" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-swing-framework-test" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-javafx" rev="${version}"/>
 
     <dependency org="org.jfree" name="jcommon" rev="${jcommon.version}" conf="compile->master"/>

@@ -10,10 +10,10 @@
   </configurations>
 
   <dependencies defaultconf="compile->default">
-    <dependency org="org.jminor" name="jminor-swing-client-bundle" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-swing-framework-bundle" rev="${version}"/>
 
     <dependency org="org.jminor" name="jminor-framework-db-test" rev="${version}" conf="test->master"/>
-    <dependency org="org.jminor" name="jminor-swing-client-test" rev="${version}" conf="test->master"/>
+    <dependency org="org.jminor" name="jminor-swing-framework-test" rev="${version}" conf="test->master"/>
 
     <dependency org="com.h2database" name="h2" rev="${h2.version}" conf="runtime->master"/>
 

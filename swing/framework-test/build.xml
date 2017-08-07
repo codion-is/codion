@@ -1,5 +1,5 @@
-<project name="jminor-swing-client-test">
+<project name="jminor-swing-framework-test">
   <property name="project.root" value="../../"/>
-  <property name="java.module.name" value="org.jminor.swing.client.test"/>
+  <property name="java.module.name" value="org.jminor.swing.framework.test"/>
   <import file="../../build-common.xml"/>
 </project>

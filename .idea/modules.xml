@@ -21,10 +21,10 @@
       <module fileurl="file://$PROJECT_DIR$/javafx/jminor-javafx.iml" filepath="$PROJECT_DIR$/javafx/jminor-javafx.iml" />
       <module fileurl="file://$PROJECT_DIR$/jminor-parent.iml" filepath="$PROJECT_DIR$/jminor-parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/server-monitor/jminor-server-monitor.iml" filepath="$PROJECT_DIR$/server-monitor/jminor-server-monitor.iml" />
-      <module fileurl="file://$PROJECT_DIR$/swing/framework-bundle/jminor-swing-client-bundle.iml" filepath="$PROJECT_DIR$/swing/framework-bundle/jminor-swing-client-bundle.iml" />
-      <module fileurl="file://$PROJECT_DIR$/swing/framework-model/jminor-swing-client-model.iml" filepath="$PROJECT_DIR$/swing/framework-model/jminor-swing-client-model.iml" />
-      <module fileurl="file://$PROJECT_DIR$/swing/framework-test/jminor-swing-client-test.iml" filepath="$PROJECT_DIR$/swing/framework-test/jminor-swing-client-test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/swing/framework-ui/jminor-swing-client-ui.iml" filepath="$PROJECT_DIR$/swing/framework-ui/jminor-swing-client-ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swing/framework-bundle/jminor-swing-framework-bundle.iml" filepath="$PROJECT_DIR$/swing/framework-bundle/jminor-swing-framework-bundle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swing/framework-model/jminor-swing-framework-model.iml" filepath="$PROJECT_DIR$/swing/framework-model/jminor-swing-framework-model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swing/framework-test/jminor-swing-framework-test.iml" filepath="$PROJECT_DIR$/swing/framework-test/jminor-swing-framework-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swing/framework-ui/jminor-swing-framework-ui.iml" filepath="$PROJECT_DIR$/swing/framework-ui/jminor-swing-framework-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/swing/common-model/jminor-swing-common-model.iml" filepath="$PROJECT_DIR$/swing/common-model/jminor-swing-common-model.iml" />
       <module fileurl="file://$PROJECT_DIR$/swing/common-ui/jminor-swing-common-ui.iml" filepath="$PROJECT_DIR$/swing/common-ui/jminor-swing-common-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugins/hikari-pool/plugin-hikari-pool.iml" filepath="$PROJECT_DIR$/plugins/hikari-pool/plugin-hikari-pool.iml" />

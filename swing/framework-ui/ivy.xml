@@ -1,5 +1,5 @@
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-  <info organisation="org.jminor" module="jminor-swing-client-ui"/>
+  <info organisation="org.jminor" module="jminor-swing-framework-ui"/>
 
   <configurations defaultconfmapping="compile->default">
     <conf name="compile"/>
@@ -10,10 +10,10 @@
   </configurations>
 
   <publications>
-    <artifact name="jminor-swing-client-ui" type="jar" ext="jar" conf="compile"/>
-    <artifact name="jminor-swing-client-ui" type="pom" ext="pom" conf="compile"/>
-    <artifact name="jminor-swing-client-ui-sources" type="source" ext="jar" conf="sources" m:classifier="sources"/>
-    <artifact name="jminor-swing-client-ui-javadoc" type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
+    <artifact name="jminor-swing-framework-ui" type="jar" ext="jar" conf="compile"/>
+    <artifact name="jminor-swing-framework-ui" type="pom" ext="pom" conf="compile"/>
+    <artifact name="jminor-swing-framework-ui-sources" type="source" ext="jar" conf="sources" m:classifier="sources"/>
+    <artifact name="jminor-swing-framework-ui-javadoc" type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
   </publications>
 
   <dependencies defaultconf="compile">
@@ -23,7 +23,7 @@
     <dependency org="org.jminor" name="jminor-framework-model" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-swing-common-model" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-swing-common-ui" rev="${version}"/>
-    <dependency org="org.jminor" name="jminor-swing-client-model" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-swing-framework-model" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-framework-db-core" rev="${version}"/>
 
     <dependency org="org.jminor" name="jminor-framework-db-local" rev="${version}" conf="runtime->default"/>

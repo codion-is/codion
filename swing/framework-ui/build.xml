@@ -1,5 +1,5 @@
-<project name="jminor-swing-client-ui">
+<project name="jminor-swing-framework-ui">
   <property name="project.root" value="../../"/>
-  <property name="java.module.name" value="org.jminor.swing.client.ui"/>
+  <property name="java.module.name" value="org.jminor.swing.framework.ui"/>
   <import file="../../build-common.xml"/>
 </project>

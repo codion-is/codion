@@ -21,10 +21,10 @@
     <buildFile url="file://$PROJECT_DIR$/swing/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/swing/common-model/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/swing/common-ui/build.xml" />
-    <buildFile url="file://$PROJECT_DIR$/swing/client-model/build.xml" />
-    <buildFile url="file://$PROJECT_DIR$/swing/client-ui/build.xml" />
-    <buildFile url="file://$PROJECT_DIR$/swing/client-test/build.xml" />
-    <buildFile url="file://$PROJECT_DIR$/swing/client-bundle/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/swing/framework-model/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/swing/framework-ui/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/swing/framework-test/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/swing/framework-bundle/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/javafx/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/server-monitor/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/plugins/build.xml" />
