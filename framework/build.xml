@@ -30,6 +30,16 @@
     <subant target="package" buildpath="server"/>
   </target>
 
+  <target name="jdeps">
+    <subant target="jdeps" buildpath="db-core"/>
+    <subant target="jdeps" buildpath="db-local"/>
+    <subant target="jdeps" buildpath="db-remote"/>
+    <subant target="jdeps" buildpath="db-test"/>
+    <subant target="jdeps" buildpath="model"/>
+    <subant target="jdeps" buildpath="model-unittests"/>
+    <subant target="jdeps" buildpath="server"/>
+  </target>
+
   <target name="install">
     <subant target="install" buildpath="db-core"/>
     <subant target="install" buildpath="db-local"/>

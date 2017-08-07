@@ -40,6 +40,16 @@
     <subant target="package" buildpath="tomcat-pool"/>
   </target>
 
+  <target name="jdeps">
+    <subant target="jdeps" buildpath="hikari-pool"/>
+    <subant target="jdeps" buildpath="imagepanel"/>
+    <subant target="jdeps" buildpath="jasperreports"/>
+    <subant target="jdeps" buildpath="json"/>
+    <subant target="jdeps" buildpath="nextreports"/>
+    <subant target="jdeps" buildpath="rest"/>
+    <subant target="jdeps" buildpath="tomcat-pool"/>
+  </target>
+
   <target name="deploy">
     <subant target="deploy" buildpath="hikari-pool"/>
     <subant target="deploy" buildpath="imagepanel"/>

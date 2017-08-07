@@ -27,6 +27,15 @@
     <subant target="package" buildpath="framework-bundle"/>
   </target>
 
+  <target name="jdeps">
+    <subant target="jdeps" buildpath="common-model"/>
+    <subant target="jdeps" buildpath="common-ui"/>
+    <subant target="jdeps" buildpath="framework-model"/>
+    <subant target="jdeps" buildpath="framework-ui"/>
+    <subant target="jdeps" buildpath="framework-ui-test"/>
+    <subant target="jdeps" buildpath="framework-bundle"/>
+  </target>
+
   <target name="install">
     <subant target="install" buildpath="common-model"/>
     <subant target="install" buildpath="common-ui"/>

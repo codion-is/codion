@@ -21,6 +21,13 @@
     <subant target="package" buildpath="server"/>
   </target>
 
+  <target name="jdeps">
+    <subant target="jdeps" buildpath="core"/>
+    <subant target="jdeps" buildpath="db"/>
+    <subant target="jdeps" buildpath="model"/>
+    <subant target="jdeps" buildpath="server"/>
+  </target>
+
   <target name="install">
     <subant target="install" buildpath="core"/>
     <subant target="install" buildpath="db"/>
