@@ -39,10 +39,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.DatatypeConverter;
 import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -189,7 +189,7 @@ public final class EntityRESTService extends Application {
     }
 
     auth = auth.replaceFirst("[B|b]asic ", "");
-    final byte[] decodedBytes = DatatypeConverter.parseBase64Binary(auth);
+    final byte[] decodedBytes = Base64.getDecoder().decode(auth);
     final User user = User.parseUser(new String(decodedBytes));
     try {
       return (RemoteEntityConnection) server.connect(Clients.connectionRequest(user, clientId, EntityRESTService.class.getName()));

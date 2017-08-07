@@ -33,13 +33,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.ws.rs.core.MediaType;
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.rmi.registry.Registry;
 import java.text.ParseException;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -110,7 +110,7 @@ public class EntityRESTServiceTest {
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = new User("who", "areu");
               request.setHeader(EntityRESTService.AUTHORIZATION,
-                      BASIC + DatatypeConverter.printBase64Binary((user.getUsername() + ":" + user.getPassword()).getBytes()));
+                      BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_JSON);
             })
             .build();
@@ -127,7 +127,7 @@ public class EntityRESTServiceTest {
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = UNIT_TEST_USER;
               request.setHeader(EntityRESTService.AUTHORIZATION,
-                      BASIC + DatatypeConverter.printBase64Binary((user.getUsername() + ":" + user.getPassword()).getBytes()));
+                      BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_JSON);
             })
             .build();
