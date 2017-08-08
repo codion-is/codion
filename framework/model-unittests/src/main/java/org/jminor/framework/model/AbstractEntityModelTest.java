@@ -24,6 +24,12 @@ import java.util.Objects;
 
 import static org.junit.Assert.*;
 
+/**
+ * A base class for testing {@link EntityModel} subclasses.
+ * @param <Model> the {@link EntityModel} type
+ * @param <EditModel> the {@link EntityEditModel} type
+ * @param <TableModel> the {@link EntityTableModel} type
+ */
 public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<Model, EditModel, TableModel>,
         EditModel extends DefaultEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
