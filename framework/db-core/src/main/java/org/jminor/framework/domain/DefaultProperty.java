@@ -1194,7 +1194,7 @@ class DefaultProperty implements Property {
     private static final Database DATABASE_INSTANCE;
 
     static {
-      DATABASE_INSTANCE = Databases.isDatabaseTypeSpecified() ? Databases.getInstance() : null;
+      DATABASE_INSTANCE = Database.isDatabaseTypeSpecified() ? Databases.getInstance() : null;
     }
 
     private final Object trueValue;

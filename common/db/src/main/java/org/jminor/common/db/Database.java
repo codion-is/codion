@@ -262,9 +262,19 @@ public interface Database {
   }
 
   /**
-   * @return the database implementation class name associated with the specified database type
+   * @return true if the configuration value {@link Database#DATABASE_TYPE} is available as a system property
+   */
+  static boolean isDatabaseTypeSpecified() {
+    return Database.DATABASE_TYPE.get() != null;
+  }
+
+  /**
+   * @return the database implementation class name associated with the specified database type, null if none is specified
    */
   static String getDatabaseClassName() {
+    if (!isDatabaseTypeSpecified()) {
+      return null;
+    }
     final Database.Type dbType = Database.getDatabaseType();
     switch (dbType) {
       case POSTGRESQL:

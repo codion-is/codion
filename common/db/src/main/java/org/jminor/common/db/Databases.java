@@ -61,13 +61,6 @@ public final class Databases {
   }
 
   /**
-   * @return true if the configuration value {@link Database#DATABASE_TYPE} is available as a system property
-   */
-  public static boolean isDatabaseTypeSpecified() {
-    return Database.DATABASE_TYPE.get() != null;
-  }
-
-  /**
    * Adds the given Operation to this repository
    * @param operation the operation to add
    * @throws IllegalArgumentException in case an operation with the same ID has already been added

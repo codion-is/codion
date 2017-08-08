@@ -4509,3 +4509,4 @@
   Ant build jdeps target added
   REST plugin uses Base64 instead of DatatypeConverter
   Server module tests no longer depend on framework-db-remote module
+  Databases.isDatabaseTypeSpecified() moved to Database
