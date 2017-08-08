@@ -343,29 +343,84 @@
     </java>
   </target>
 
-  <target name="sonar" depends="run_unit_tests" description="Runs a Sonar analysis on the project">
+  <target name="sonar" depends="merge_coverage_results" description="Runs a Sonar analysis on the project">
     <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml" classpathref="lib.ant.util"/>
     <sonar:sonar/>
   </target>
 
-  <target name="merge_coverage_results"
+  <target name="merge_coverage_results" depends="run_unit_tests"
           description="Merges the Jacoco coverage results so that one modules tests count as coverage for another module">
     <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" classpathref="lib.ant.util"/>
-    <!--javafx and swing into framework-->
-    <jacoco:merge destfile="framework/test/report/combined.exec">
-      <fileset dir="swing/test/report" includes="*.exec"/>
-      <fileset dir="javafx/test/report" includes="*.exec"/>
-      <fileset dir="framework/test/report" includes="*.exec"/>
+
+    <!--swing-framework-ui -> swing-framework-model-->
+    <jacoco:merge destfile="swing/framework-model/test/report/jacoco.exec">
+      <fileset dir="swing/framework-ui/test/report" includes="jacoco.exec"/>
+      <fileset dir="swing/framework-model/test/report" includes="jacoco.exec"/>
     </jacoco:merge>
-    <delete file="framework/test/report/jacoco.exec"/>
-    <move file="framework/test/report/combined.exec" tofile="framework/test/report/jacoco.exec"/>
-    <!--combined framework, swing and javafx into common-->
-    <jacoco:merge destfile="common/test/report/combined.exec">
-      <fileset dir="framework/test/report" includes="*.exec"/>
-      <fileset dir="common/test/report" includes="*.exec"/>
+    <!--swing-framwork-model -> swing-common-ui-->
+    <jacoco:merge destfile="swing/common-ui/test/report/jacoco.exec">
+      <fileset dir="swing/framework-model/test/report" includes="jacoco.exec"/>
+      <fileset dir="swing/common-ui/test/report" includes="jacoco.exec"/>
     </jacoco:merge>
-    <delete file="common/test/report/jacoco.exec"/>
-    <move file="common/test/report/combined.exec" tofile="common/test/report/jacoco.exec"/>
+    <!--swing-common-ui -> swing-common-model-->
+    <jacoco:merge destfile="swing/common-model/test/report/jacoco.exec">
+      <fileset dir="swing/common-ui/test/report" includes="jacoco.exec"/>
+      <fileset dir="swing/common-model/test/report" includes="jacoco.exec"/>
+    </jacoco:merge>
+
+    <!--swing-common-model -> framework-db-remote-->
+    <jacoco:merge destfile="framework/db-remote/test/report/jacoco.exec">
+      <fileset dir="swing/common-model/test/report" includes="jacoco.exec"/>
+      <fileset dir="framework/db-remote/test/report" includes="jacoco.exec"/>
+    </jacoco:merge>
+    <!--javafx -> framework-db-remote-->
+    <jacoco:merge destfile="framework/db-remote/test/report/jacoco.exec">
+      <fileset dir="javafx/test/report" includes="jacoco.exec"/>
+      <fileset dir="framework/db-remote/test/report" includes="jacoco.exec"/>
+    </jacoco:merge>
+
+    <!--framework-db-remote -> framework-server-->
+    <jacoco:merge destfile="framework/server/test/report/jacoco.exec">
+      <fileset dir="framework/db-remote/test/report" includes="jacoco.exec"/>
+      <fileset dir="framework/server/test/report" includes="jacoco.exec"/>
+    </jacoco:merge>
+    <!--framework-server -> framework-model-->
+    <jacoco:merge destfile="framework/model/test/report/jacoco.exec">
+      <fileset dir="framework/server/test/report" includes="jacoco.exec"/>
+      <fileset dir="framework/model/test/report" includes="jacoco.exec"/>
+    </jacoco:merge>
+    <!--framework-model -> framework-db-local-->
+    <jacoco:merge destfile="framework/db-local/test/report/jacoco.exec">
+      <fileset dir="framework/model/test/report" includes="jacoco.exec"/>
+      <fileset dir="framework/db-local/test/report" includes="jacoco.exec"/>
+    </jacoco:merge>
+    <!--framework-db-local -> framework-db-core-->
+    <jacoco:merge destfile="framework/db-core/test/report/jacoco.exec">
+      <fileset dir="framework/db-local/test/report" includes="jacoco.exec"/>
+      <fileset dir="framework/db-core/test/report" includes="jacoco.exec"/>
+    </jacoco:merge>
+
+    <!--framework-db-core -> common-server-->
+    <jacoco:merge destfile="common/server/test/report/jacoco.exec">
+      <fileset dir="framework/db-core/test/report" includes="jacoco.exec"/>
+      <fileset dir="common/server/test/report" includes="jacoco.exec"/>
+    </jacoco:merge>
+
+    <!--common-server -> common model-->
+    <jacoco:merge destfile="common/model/test/report/jacoco.exec">
+      <fileset dir="common/server/test/report" includes="jacoco.exec"/>
+      <fileset dir="common/model/test/report" includes="jacoco.exec"/>
+    </jacoco:merge>
+    <!--common-model -> common-db-->
+    <jacoco:merge destfile="common/db/test/report/jacoco.exec">
+      <fileset dir="common/model/test/report" includes="jacoco.exec"/>
+      <fileset dir="common/db/test/report" includes="jacoco.exec"/>
+    </jacoco:merge>
+    <!--common-db -> common-core-->
+    <jacoco:merge destfile="common/core/test/report/jacoco.exec">
+      <fileset dir="common/db/test/report" includes="jacoco.exec"/>
+      <fileset dir="common/core/test/report" includes="jacoco.exec"/>
+    </jacoco:merge>
   </target>
 
   <!--<target name="run_generator" depends="build"-->
