@@ -242,8 +242,8 @@ public class DefaultEntityConnectionServerTest {
     DefaultEntityConnectionServer.WEB_SERVER_DOCUMENT_ROOT.set(System.getProperty("user.dir"));
     DefaultEntityConnectionServer.WEB_SERVER_IMPLEMENTATION_CLASS.set(TestWebServer.class.getName());
     Server.RMI_SERVER_HOSTNAME.set("localhost");
-    Server.TRUSTSTORE.set("src/test/security/JMinorClientTruststore");
-    System.setProperty("javax.net.ssl.keyStore", "src/test/security/JMinorServerKeystore");
+    Server.TRUSTSTORE.set("../../resources/security/JMinorClientTruststore");
+    System.setProperty("javax.net.ssl.keyStore", "../../resources/security/JMinorServerKeystore");
     System.setProperty("javax.net.ssl.keyStorePassword", "crappypass");
   }
 
