@@ -8,7 +8,6 @@ import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.FilteredModel;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
@@ -70,7 +69,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     final Entity operations = deptTableModel.getSelectionModel().getSelectedItem();
     assertEquals(80, operations.get(TestDomain.DEPARTMENT_ID));
 
-    ((FilteredModel<Entity>) deptTableModel).setFilterCondition(item ->
+    deptTableModel.setFilterCondition(item ->
             !Objects.equals(80, item.get(TestDomain.DEPARTMENT_ID)));
 
     deptEditModel.setEntity(operations);

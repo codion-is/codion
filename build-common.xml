@@ -102,6 +102,7 @@
         <jvmarg value="-Djminor.db.initScript=${basedir}/${junit.db.initScript}"/>
         <jvmarg value="-Djminor.unittest.username=${junit.username}"/>
         <jvmarg value="-Djminor.unittest.password=${junit.password}"/>
+        <!--<jvmarg line="&#45;&#45;add-modules java.xml.bind"/>-->
         <batchtest todir="${test.reports}">
           <fileset dir="${src.test}" includes="**/*Test.java" excludes="**/Abstract*Test.java"/>
         </batchtest>

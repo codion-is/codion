@@ -145,6 +145,7 @@ public final class SwingEntityModelTest
 
   @Test
   public void test() throws Exception {
+    super.test();
     try {
       departmentModel.getConnectionProvider().getConnection().beginTransaction();
       departmentModel.refresh();
