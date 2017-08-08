@@ -58,9 +58,9 @@ public final class EntityConnectionProviders {
    * @param clientID a unique client ID
    * @param clientVersion the client version, if any
    * @return a EntityConnectionProvider
-   * @see org.jminor.framework.db.EntityConnectionProvider.CLIENT_CONNECTION_TYPE
-   * @see org.jminor.framework.db.EntityConnectionProvider.REMOTE_CONNECTION_PROVIDER
-   * @see org.jminor.framework.db.EntityConnectionProvider.LOCAL_CONNECTION_PROVIDER
+   * @see org.jminor.framework.db.EntityConnectionProvider#CLIENT_CONNECTION_TYPE
+   * @see org.jminor.framework.db.EntityConnectionProvider#REMOTE_CONNECTION_PROVIDER
+   * @see org.jminor.framework.db.EntityConnectionProvider#LOCAL_CONNECTION_PROVIDER
    * @see org.jminor.framework.db.local.LocalEntityConnectionProvider
    */
   public static EntityConnectionProvider connectionProvider(final User user, final String clientTypeID, final UUID clientID,

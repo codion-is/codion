@@ -22,8 +22,6 @@
     <dependency org="org.jminor" name="jminor-common-server" rev="${version}"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="${slf4j-api.version}"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="${logback.version}"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="${logback.version}" conf="runtime->master"/>
 
     <dependency org="junit" name="junit" rev="${junit.version}" conf="test->master"/>
     <dependency org="org.hamcrest" name="hamcrest-core" rev="${hamcrest-core.version}" conf="test->master"/>

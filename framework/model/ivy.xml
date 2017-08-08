@@ -29,8 +29,8 @@
     <dependency org="org.jminor" name="jminor-framework-server" conf="test->master" rev="${version}"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="${slf4j-api.version}"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="${logback.version}"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="${logback.version}" conf="runtime->master"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="${logback.version}" conf="test->master"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="${logback.version}" conf="test->master"/>
 
     <dependency org="org.json" name="json" rev="${json.version}"/>
 
