@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.server;
 
 import org.jminor.common.User;
@@ -26,7 +29,7 @@ public final class TestLoginProxy implements LoginProxy {
   }
 
   @Override
-  public RemoteClient doLogin(final RemoteClient remoteClient) throws ServerException.LoginException {
+  public RemoteClient doLogin(final RemoteClient remoteClient) throws ServerException.AuthenticationException {
     authenticateUser(remoteClient.getUser());
 
     return Servers.remoteClient(remoteClient.getConnectionRequest(), databaseUser);
@@ -40,10 +43,10 @@ public final class TestLoginProxy implements LoginProxy {
     users.clear();
   }
 
-  private void authenticateUser(final User user) throws ServerException.LoginException {
+  private void authenticateUser(final User user) throws ServerException.AuthenticationException {
     final String password = users.get(user.getUsername());
     if (password == null || !password.equals(user.getPassword())) {
-      throw ServerException.loginException("Wrong username or password");
+      throw ServerException.authenticationException("Wrong username or password");
     }
   }
 }
