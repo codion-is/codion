@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common;
+package org.jminor.swing.framework.ui;
 
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.model.CancelException;
-import org.jminor.swing.common.model.EntityGeneratorModel;
 import org.jminor.swing.common.ui.LoginPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.table.FilteredTablePanel;
+import org.jminor.swing.framework.model.EntityGeneratorModel;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;

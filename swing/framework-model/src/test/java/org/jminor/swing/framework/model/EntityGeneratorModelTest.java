@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.model;
+package org.jminor.swing.framework.model;
 
 import org.jminor.common.EventListener;
 import org.jminor.common.User;
