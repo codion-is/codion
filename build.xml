@@ -35,6 +35,7 @@
   </path>
 
   <path id="build.plugins.main">
+    <path location="plugins/hikari-pool/build/main"/>
     <path location="plugins/imagepanel/build/main"/>
     <path location="plugins/jasperreports/build/main"/>
     <path location="plugins/json/build/main"/>
@@ -45,6 +46,7 @@
 
   <path id="lib.plugins">
     <path>
+      <fileset dir="plugins/hikari-pool/lib/test"/>
       <fileset dir="plugins/imagepanel/lib/test"/>
       <fileset dir="plugins/jasperreports/lib/test"/>
       <fileset dir="plugins/json/lib/test"/>
@@ -194,24 +196,6 @@
     <deploy_demo_app demo-name="schemabrowser"/>
     <deploy_demo_app demo-name="world"/>
   </target>
-
-  <!--<target name="deploy_generator" depends="package, create_demo_h2db"-->
-  <!--description="Deploys the entity generator to the path defined by the 'deploy.generator.path' property">-->
-  <!--<mkdir dir="${deploy.generator.path}"/>-->
-  <!--<copy file="${package}/jminor/jminor.jar"-->
-  <!--tofile="${deploy.generator.path}/lib/jminor-${version}.jar"/>-->
-  <!--<copy todir="${deploy.generator.path}/lib">-->
-  <!--<fileset dir="${lib}/runtime.client"/>-->
-  <!--</copy>-->
-  <!--<copy todir="${deploy.generator.path}">-->
-  <!--<fileset dir="${basedir}/resources/entity_generator/"/>-->
-  <!--</copy>-->
-  <!--<copy todir="${deploy.generator.path}/h2db">-->
-  <!--<fileset dir="${db.h2.dir}"/>-->
-  <!--</copy>-->
-  <!--<copy file="${deploy.generator.policy}" todir="${deploy.generator.config.path}"/>-->
-  <!--<chmod dir="${deploy.generator.path}" perm="u+x" type="file" includes="*.sh"/>-->
-  <!--</target>-->
 
   <target name="clean" description="Clean all modules">
     <subant target="clean" buildpath="common"/>
@@ -422,18 +406,4 @@
       <fileset dir="common/core/test/report" includes="jacoco.exec"/>
     </jacoco:merge>
   </target>
-
-  <!--<target name="run_generator" depends="build"-->
-  <!--description="Runs the entity generator">-->
-  <!--<java classname="org.jminor.swing.framework.generator.ui.EntityGeneratorPanel" fork="yes">-->
-  <!--<classpath>-->
-  <!--<path refid="build.main"/>-->
-  <!--<path refid="lib.runtime.client"/>-->
-  <!--</classpath>-->
-  <!--<jvmarg value="-Djminor.db.type=h2"/>-->
-  <!--<jvmarg value="-Djminor.db.host=h2db/h2"/>-->
-  <!--<jvmarg value="-Djminor.db.embedded=true"/>-->
-  <!--</java>-->
-  <!--</target>-->
-
 </project>
