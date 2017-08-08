@@ -18,6 +18,15 @@
     <subant target="build" buildpath="framework-bundle"/>
   </target>
 
+  <target name="javadoc">
+    <subant target="javadoc" buildpath="common-model"/>
+    <subant target="javadoc" buildpath="common-ui"/>
+    <subant target="javadoc" buildpath="framework-model"/>
+    <subant target="javadoc" buildpath="framework-ui"/>
+    <subant target="javadoc" buildpath="framework-ui-test"/>
+    <subant target="javadoc" buildpath="framework-bundle"/>
+  </target>
+
   <target name="package">
     <subant target="package" buildpath="common-model"/>
     <subant target="package" buildpath="common-ui"/>

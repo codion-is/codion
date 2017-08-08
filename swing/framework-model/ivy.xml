@@ -19,17 +19,16 @@
 
   <dependencies defaultconf="compile">
     <dependency org="org.jminor" name="jminor-common-core" rev="${version}"/>
-    <dependency org="org.jminor" name="jminor-common-model" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-common-db" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-model" rev="${version}"/>
 
     <dependency org="org.jminor" name="jminor-framework-db-core" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-framework-db-local" rev="${version}" conf="test->default"/>
     <dependency org="org.jminor" name="jminor-framework-model" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-framework-model-unittests" rev="${version}" conf="test->master"/>
+
     <dependency org="org.jminor" name="jminor-swing-common-model" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-swing-common-ui" rev="${version}" conf="test->master"/>
-
-    <dependency org="org.jminor" name="jminor-framework-db-local" rev="${version}" conf="runtime->default"/>
-    <dependency org="org.jminor" name="jminor-framework-db-remote" rev="${version}" conf="runtime->default"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="${slf4j-api.version}"/>
     <dependency org="ch.qos.logback" name="logback-classic" rev="${logback.version}"/>

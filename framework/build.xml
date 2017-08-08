@@ -20,6 +20,16 @@
     <subant target="build" buildpath="server"/>
   </target>
 
+  <target name="javadoc">
+    <subant target="javadoc" buildpath="db-core"/>
+    <subant target="javadoc" buildpath="db-local"/>
+    <subant target="javadoc" buildpath="db-remote"/>
+    <subant target="javadoc" buildpath="db-test"/>
+    <subant target="javadoc" buildpath="model"/>
+    <subant target="javadoc" buildpath="model-unittests"/>
+    <subant target="javadoc" buildpath="server"/>
+  </target>
+
   <target name="package">
     <subant target="package" buildpath="db-core"/>
     <subant target="package" buildpath="db-local"/>

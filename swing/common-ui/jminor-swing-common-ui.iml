@@ -11,7 +11,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="jminor-common-core" />
+    <orderEntry type="module" module-name="jminor-common-db" />
     <orderEntry type="module" module-name="jminor-common-model" />
+    <orderEntry type="module" module-name="jminor-framework-db-core" />
     <orderEntry type="module" module-name="jminor-swing-common-model" />
     <orderEntry type="module-library">
       <library>

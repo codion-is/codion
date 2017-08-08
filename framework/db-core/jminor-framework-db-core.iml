@@ -10,8 +10,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="jminor-common-core" exported="" />
-    <orderEntry type="module" module-name="jminor-common-db" exported="" />
+    <orderEntry type="module" module-name="jminor-common-core" />
+    <orderEntry type="module" module-name="jminor-common-db" />
+    <orderEntry type="module" module-name="jminor-common-server" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

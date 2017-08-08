@@ -4511,3 +4511,4 @@
   Server module tests no longer depend on framework-db-remote module
   Databases.isDatabaseTypeSpecified() moved to Database
   EntityGeneratorModel and EntityGeneratorPanel moved to swing.framwork.model and ui respectively
+  IntelliJ modules synced with ivy dependencies

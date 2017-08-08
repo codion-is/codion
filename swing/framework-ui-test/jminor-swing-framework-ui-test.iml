@@ -10,11 +10,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="jminor-common-core" />
-    <orderEntry type="module" module-name="jminor-common-db" />
     <orderEntry type="module" module-name="jminor-common-model" />
-    <orderEntry type="module" module-name="jminor-common-server" />
     <orderEntry type="module" module-name="jminor-framework-db-core" />
-    <orderEntry type="module" module-name="jminor-framework-db-local" />
+    <orderEntry type="module" module-name="jminor-framework-model" />
     <orderEntry type="module" module-name="jminor-swing-common-model" />
     <orderEntry type="module" module-name="jminor-swing-common-ui" />
     <orderEntry type="module" module-name="jminor-swing-framework-model" />
@@ -27,26 +25,6 @@
         <JAVADOC />
         <SOURCES />
         <jarDirectory url="file://$MODULE_DIR$/lib/compile" recursive="false" />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" scope="RUNTIME">
-      <library>
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/lib/runtime" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/lib/runtime" recursive="false" />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" scope="TEST">
-      <library>
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/lib/test" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/lib/test" recursive="false" />
       </library>
     </orderEntry>
   </component>

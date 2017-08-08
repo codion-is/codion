@@ -14,6 +14,13 @@
     <subant target="build" buildpath="server"/>
   </target>
 
+  <target name="javadoc">
+    <subant target="javadoc" buildpath="core"/>
+    <subant target="javadoc" buildpath="db"/>
+    <subant target="javadoc" buildpath="model"/>
+    <subant target="javadoc" buildpath="server"/>
+  </target>
+
   <target name="package">
     <subant target="package" buildpath="core"/>
     <subant target="package" buildpath="db"/>

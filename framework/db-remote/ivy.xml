@@ -21,8 +21,8 @@
     <dependency org="org.jminor" name="jminor-common-server" rev="${version}"/>
 
     <dependency org="org.jminor" name="jminor-framework-db-core" rev="${version}"/>
-
     <dependency org="org.jminor" name="jminor-framework-db-local" conf="test->master" rev="${version}"/>
+
     <dependency org="org.jminor" name="jminor-framework-server" conf="test->master" rev="${version}"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="${slf4j-api.version}"/>

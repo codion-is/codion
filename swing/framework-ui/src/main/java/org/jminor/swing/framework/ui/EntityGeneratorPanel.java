@@ -26,7 +26,7 @@ import java.awt.BorderLayout;
 
 /**
  * A UI class based on the EntityGeneratorModel.
- * @see org.jminor.swing.framework.generator.EntityGeneratorModel
+ * @see org.jminor.swing.framework.model.EntityGeneratorModel
  */
 public class EntityGeneratorPanel extends JPanel {
 
