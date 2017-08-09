@@ -1,4 +1,4 @@
-<project name="jminor-plugins">
+<project name="jminor-plugins-parent">
 
   <target name="clean">
     <subant target="clean" buildpath="hikari-pool"/>

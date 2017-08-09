@@ -1,4 +1,4 @@
-<project name="jminor-demos">
+<project name="jminor-demos-parent">
 
   <target name="clean">
     <subant target="clean" buildpath="chinook"/>

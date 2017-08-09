@@ -1,4 +1,4 @@
-<project name="jminor-common">
+<project name="jminor-common-parent">
 
   <target name="clean">
     <subant target="clean" buildpath="core"/>

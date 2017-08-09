@@ -1,4 +1,4 @@
-<project name="jminor-swing">
+<project name="jminor-swing-parent">
 
   <target name="clean">
     <subant target="clean" buildpath="common-model"/>

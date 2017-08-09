@@ -1,4 +1,4 @@
-<project name="jminor-framework">
+<project name="jminor-framework-parent">
 
   <target name="clean">
     <subant target="clean" buildpath="db-core"/>
