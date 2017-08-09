@@ -80,7 +80,7 @@ public class DateUtilTest {
     assertEquals(0, calendar.get(Calendar.MINUTE));
     assertEquals(42, calendar.get(Calendar.SECOND));
     assertEquals(0, calendar.get(Calendar.MILLISECOND));
-    DateUtil.floorFields(calendar, null);
+    DateUtil.floorFields(calendar, (Integer) null);
   }
 
   @Test(expected = IllegalArgumentException.class)
