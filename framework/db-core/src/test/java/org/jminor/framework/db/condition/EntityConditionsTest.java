@@ -16,8 +16,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class EntityConditionsTest {
 
@@ -112,9 +111,20 @@ public class EntityConditionsTest {
   public void simpleCondition() {
     final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_DEPARTMENT,
             Conditions.stringCondition("department name is not null"), TestDomain.DEPARTMENT_NAME, -1);
-    assertEquals(0, condition.getValues().size());
-    assertEquals(0, condition.getColumns().size());
+    assertTrue(condition.getValues().isEmpty());
+    assertTrue(condition.getColumns().isEmpty());
     assertEquals(condition.getOrderByClause(), TestDomain.DEPARTMENT_NAME);
+  }
+
+  @Test
+  public void selectAllCondition() {
+    final EntitySelectCondition selectCondition = EntityConditions.selectCondition(TestDomain.T_DEPARTMENT);
+    assertTrue(selectCondition.getValues().isEmpty());
+    assertTrue(selectCondition.getColumns().isEmpty());
+
+    final EntityCondition condition = EntityConditions.condition(TestDomain.T_DEPARTMENT);
+    assertTrue(condition.getValues().isEmpty());
+    assertTrue(condition.getColumns().isEmpty());
   }
 
   @Test
@@ -122,6 +132,16 @@ public class EntityConditionsTest {
     final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_EMP)
             .orderByAscending(TestDomain.EMP_DEPARTMENT).orderByDescending(TestDomain.EMP_ID);
     assertEquals("deptno, empno desc", condition.getOrderByClause());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void propertyConditionWithForeignKeyProperty() {
+    EntityConditions.propertyCondition(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK, Condition.Type.LIKE, null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void propertyConditionWithNonColumnProperty() {
+    EntityConditions.propertyCondition(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_LOCATION, Condition.Type.LIKE, null);
   }
 
   @Test(expected = IllegalArgumentException.class)

@@ -231,8 +231,12 @@ public final class EntityConditions {
                                                                      final Condition.Type conditionType, final boolean caseSensitive,
                                                                      final Object value) {
     final Property property = Entities.getProperty(entityID, propertyID);
+    if (property instanceof Property.ForeignKeyProperty) {
+      throw new IllegalArgumentException(property + " is a " + Property.ForeignKeyProperty.class.getSimpleName() +
+              ", use EntityConditions.foreignKeyCondition()");
+    }
     if (!(property instanceof Property.ColumnProperty)) {
-      throw new IllegalArgumentException(property + " is not a " + Property.ColumnProperty.class.getName());
+      throw new IllegalArgumentException(property + " is not a " + Property.ColumnProperty.class.getSimpleName());
     }
 
     return propertyCondition((Property.ColumnProperty) property, conditionType, caseSensitive, value);
@@ -387,12 +391,12 @@ public final class EntityConditions {
 
     @Override
     public List<?> getValues() {
-      return condition == null ? null : condition.getValues();
+      return condition == null ? Collections.emptyList() : condition.getValues();
     }
 
     @Override
     public List<Property.ColumnProperty> getColumns() {
-      return condition == null ? null : condition.getColumns();
+      return condition == null ? Collections.emptyList() : condition.getColumns();
     }
 
     @Override

@@ -4513,3 +4513,5 @@
   EntityGeneratorModel and EntityGeneratorPanel moved to swing.framwork.model and ui respectively
   IntelliJ modules synced with ivy dependencies
   Logback dependencies cleaned up
+  EntityConditions.propertyCondition() now throws a more descriptive error when called with a foreign key property parameter
+  EntityConditions.DefaultEntityCondition bug fixed, getValues() and getColumns() now return empty list instead of null when no property condition is available

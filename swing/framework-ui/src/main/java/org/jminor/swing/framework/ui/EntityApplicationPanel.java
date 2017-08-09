@@ -1040,11 +1040,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * @param frameCaption the caption for the frame
-   * @param provider the EntityConnectionProvider this application is using
+   * @param connectionProvider the EntityConnectionProvider this application is using
    * @return a frame title based on the logged in user
    */
-  protected String getFrameTitle(final String frameCaption, final EntityConnectionProvider provider) {
-    return frameCaption + " - " + getUserInfo(provider);
+  protected String getFrameTitle(final String frameCaption, final EntityConnectionProvider connectionProvider) {
+    return frameCaption + " - " + getUserInfo(connectionProvider);
   }
 
   /**
@@ -1310,10 +1310,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
   }
 
-  private static String getUserInfo(final EntityConnectionProvider provider) {
-    final String dbDescription = provider.getDescription();
+  private static String getUserInfo(final EntityConnectionProvider connectionProvider) {
+    final String description = connectionProvider.getDescription();
 
-    return getUsername(provider.getUser().getUsername().toUpperCase()) + (dbDescription != null ? "@" + dbDescription.toUpperCase() : "");
+    return getUsername(connectionProvider.getUser().getUsername().toUpperCase()) + (description != null ? "@" + description.toUpperCase() : "");
   }
 
   private static String getUsername(final String username) {
