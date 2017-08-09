@@ -29,7 +29,8 @@
   <available property="main.sources.available" file="src/main" type="dir"/>
   <available property="test.sources.available" file="src/test" type="dir"/>
 
-  <target name="retrieve_build_libraries" unless="build.libraries.installed">
+  <target name="retrieve_build_libraries" unless="build.libraries.installed"
+          description="Retrieves the libraries required for the build process">
     <mkdir dir="${project.root}/${ant.lib}"/>
     <get src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/${ivy.version}/ivy-${ivy.version}.jar"
          dest="${project.root}/${ant.lib}/ivy-${ivy.version}.jar" skipexisting="true"/>
@@ -39,7 +40,7 @@
     <ivy:retrieve pattern="${project.root}/${ant.lib}/[artifact]-[revision].[ext]" sync="true"/>
   </target>
 
-  <target name="clean">
+  <target name="clean" description="Removes all build artifacts">
     <delete dir="${build.root}"/>
     <delete dir="${javadoc}"/>
     <delete dir="${package}"/>
@@ -47,7 +48,7 @@
   </target>
 
   <target name="retrieve_libraries" depends="retrieve_build_libraries"
-          description="Resolves all libraries according to ivy.xml">
+          description="Retrieves all libraries according to ivy.xml">
     <resolve_ivy/>
   </target>
 
@@ -57,12 +58,10 @@
     <mkdir dir="${build.main}"/>
     <javac destdir="${build.main}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.main}"/>
-      <classpath>
-        <path refid="lib.compile"/>
-      </classpath>
+      <classpath refid="lib.compile"/>
     </javac>
-    <copy todir="${build.main}">
-      <fileset dir="${src.main}" excludes="**/*.java"/>
+    <copy todir="${build.main}" failonerror="false">
+      <fileset dir="${resources.main}"/>
     </copy>
   </target>
 
@@ -70,12 +69,10 @@
     <mkdir dir="${build.test}"/>
     <javac destdir="${build.test}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.test}"/>
-      <classpath>
-        <path refid="lib.test"/>
-      </classpath>
+      <classpath refid="lib.test"/>
     </javac>
-    <copy todir="${build.test}">
-      <fileset dir="${src.test}" excludes="**/*.java"/>
+    <copy todir="${build.test}" failonerror="false">
+      <fileset dir="${resources.test}"/>
     </copy>
   </target>
 
@@ -135,23 +132,21 @@
     </jacoco:report>
   </target>
 
-  <target name="javadoc" depends="build" if="main.sources.available">
+  <target name="javadoc" depends="build" if="main.sources.available" description="Creates javadocs for this module">
     <javadoc destdir="${javadoc}" sourcepath="src/main/java" packagenames="org.jminor.*" Encoding="UTF-8"
              docencoding="UTF-8" author="true" version="true" use="true"
              windowtitle="JMinor v${version} ${ant.project.name}" doctitle="JMinor v${version} ${ant.project.name}">
-      <classpath>
-        <path refid="lib.test"/>
-      </classpath>
+      <classpath refid="lib.test"/>
       <link href="http://download.oracle.com/javase/8/docs/api/"/>
       <link offline="true" href="http://jminor.org/data/media/project/docs/api/" packagelistloc="javadoc"/>
     </javadoc>
   </target>
 
-  <target name="package" depends="build, javadoc">
+  <target name="package" depends="build, javadoc" description="Packages the module artifacts into the ${package} folder">
     <package_module/>
   </target>
 
-  <target name="jdeps" depends="package">
+  <target name="jdeps" depends="package" description="Runs jdeps on the module jar file, result can be found in the ${package} folder">
     <exec executable="jdeps">
       <arg line="-classpath ${lib}/runtime/* -dotoutput ${package} ${package}/${ant.project.name}.jar"/>
     </exec>
@@ -165,7 +160,7 @@
     <publish resolver="install-local-publish" artifact-dir="${package}"/>
   </target>
 
-  <target name="report">
+  <target name="report" description="Creates a ivy report for this module, results found in 'ivy_report' directory">
     <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="lib.ant.util"/>
     <ivy:settings file="${project.root}/ivysettings.xml"/>
     <ivy:resolve/>

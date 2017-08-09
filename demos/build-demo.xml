@@ -6,7 +6,7 @@
 
   <available property="reports.available" file="src/main/reports"/>
 
-  <target name="package" depends="common.package">
+  <target name="package" depends="common.package" description="Packages this demo application into the ${package} folder">
     <jar jarfile="${package}/${ant.project.name}-domain.jar" basedir="build/main"
          includes="org/jminor/framework/demos/${ant.project.name}/domain/**/*,
          org/jminor/framework/demos/${ant.project.name}/server/**/*"
@@ -27,13 +27,13 @@
     <!--manifest="${build.main}/META-INF/MANIFEST.MF"/>-->
   </target>
 
-  <target name="build" depends="common.build, build_reports">
+  <target name="build" depends="common.build, build_reports" description="Builds this demo application">
     <copy todir="${build.main}" failonerror="false">
       <fileset dir="src/main/resources"/>
     </copy>
   </target>
 
-  <target name="build_reports" depends="common.build" if="reports.available">
+  <target name="build_reports" depends="common.build" if="reports.available" description="Builds the demo reports, if any">
     <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
       <classpath refid="lib.test"/>
     </taskdef>
@@ -91,7 +91,7 @@
     </java>
   </target>
 
-  <target name="deploy" depends="package">
+  <target name="deploy" depends="package" description="Deploys this demo application into ${package}/deployment">
     <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpathref="lib.ant.util"/>
     <delete dir="${package}/deployment"/>
     <!--create uber-jar-->
