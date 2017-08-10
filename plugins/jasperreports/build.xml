@@ -1,7 +1,7 @@
 <project name="jminor-plugin-jasperreports">
   <property name="project.root" value="../../"/>
   <property name="java.module.name" value="org.jminor.plugin.jasperreports"/>
-  <import file="../../build-common.xml"/>
+  <import file="${project.root}/build-common.xml"/>
 
   <target name="build" depends="common.build">
     <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">

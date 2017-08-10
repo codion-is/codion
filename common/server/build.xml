@@ -1,5 +1,5 @@
 <project name="jminor-common-server">
   <property name="project.root" value="../../"/>
   <property name="java.module.name" value="org.jminor.common.server"/>
-  <import file="../../build-common.xml"/>
+  <import file="${project.root}/build-common.xml"/>
 </project>

@@ -1,7 +1,7 @@
 <project name="jminor-common-core">
   <property name="project.root" value="../../"/>
   <property name="java.module.name" value="org.jminor.common.core"/>
-  <import file="../../build-common.xml"/>
+  <import file="${project.root}/build-common.xml"/>
 
   <tstamp>
     <format property="build.date" pattern="yyyy.MM.dd HH:mm"/>

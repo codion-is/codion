@@ -1,5 +1,5 @@
 <project name="jminor-plugin-hikari-pool">
   <property name="project.root" value="../../"/>
   <property name="java.module.name" value="org.jminor.plugin.hikari.pool"/>
-  <import file="../../build-common.xml"/>
+  <import file="${project.root}/build-common.xml"/>
 </project>

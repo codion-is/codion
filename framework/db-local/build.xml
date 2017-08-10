@@ -1,5 +1,5 @@
 <project name="jminor-framework-db-local">
   <property name="project.root" value="../../"/>
   <property name="java.module.name" value="org.jminor.framework.db.local"/>
-  <import file="../../build-common.xml"/>
+  <import file="${project.root}/build-common.xml"/>
 </project>

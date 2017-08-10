@@ -1,7 +1,7 @@
 <project name="jminor-swing-framework-bundle">
   <property name="project.root" value="../../"/>
   <property name="java.module.name" value="org.jminor.swing.framework.bundle"/>
-  <import file="../../build-common.xml"/>
+  <import file="${project.root}/build-common.xml"/>
 
   <target name="retrieve_libraries" depends="retrieve_build_libraries"
           description="Resolves all libraries according to ivy.xml">
