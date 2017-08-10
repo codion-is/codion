@@ -16,7 +16,6 @@ import org.jminor.common.server.ServerException;
 import org.jminor.framework.db.RemoteEntityConnection;
 import org.jminor.framework.db.condition.EntityConditions;
 
-import ch.qos.logback.classic.Level;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -213,10 +212,8 @@ public class DefaultEntityConnectionServerTest {
     admin.getDatabaseStatistics();
     admin.getDatabaseURL();
     admin.getConnectionPools();
-    admin.getEntityDefinitions();
-    admin.setLoggingLevel(Level.INFO);
-    assertEquals(Level.INFO, admin.getLoggingLevel());
     admin.setMaintenanceInterval(500);
+    admin.getEntityDefinitions();
     assertEquals(500, admin.getMaintenanceInterval());
     admin.getMaxMemory();
     admin.getRequestsPerSecond();

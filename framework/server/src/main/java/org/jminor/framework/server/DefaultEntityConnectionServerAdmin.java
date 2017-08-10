@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server;
 
+import org.jminor.common.LoggerProxy;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
@@ -14,7 +15,6 @@ import org.jminor.common.server.ClientLog;
 import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.Server;
 
-import ch.qos.logback.classic.Level;
 import com.sun.management.GarbageCollectionNotificationInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +59,8 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
    */
   private final DefaultEntityConnectionServer server;
   private final LinkedList<GcEvent> gcEventList = new LinkedList();
+
+  private final LoggerProxy loggerProxy = LoggerProxy.createLoggerProxy();
 
   /**
    * Instantiates a new DefaultEntityConnectionServerAdmin
@@ -111,18 +113,21 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public Level getLoggingLevel() {
-    final ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+  public Object getLoggingLevel() {
+    if (loggerProxy != null) {
+      return loggerProxy.getLogLevel();
+    }
 
-    return rootLogger.getLevel();
+    return null;
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setLoggingLevel(final Level level) {
+  public void setLoggingLevel(final Object level) {
     LOG.info("setLoggingLevel({})", level);
-    final ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-    rootLogger.setLevel(level);
+    if (loggerProxy != null) {
+      loggerProxy.setLogLevel(level);
+    }
   }
 
   /** {@inheritDoc} */

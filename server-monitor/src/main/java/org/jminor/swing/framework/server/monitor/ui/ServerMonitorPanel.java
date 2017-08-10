@@ -11,7 +11,6 @@ import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.framework.server.monitor.ServerMonitor;
 
-import ch.qos.logback.classic.Level;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -227,15 +226,10 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JComboBox initializeLoggingLevelField() {
-    final DefaultComboBoxModel<Level> comboModel = new DefaultComboBoxModel<>();
-    comboModel.addElement(Level.TRACE);
-    comboModel.addElement(Level.DEBUG);
-    comboModel.addElement(Level.INFO);
-    comboModel.addElement(Level.WARN);
-    comboModel.addElement(Level.ERROR);
+    final DefaultComboBoxModel comboModel = new DefaultComboBoxModel(model.getLoggingLevels().toArray());
 
-    final JComboBox<Level> box = new JComboBox<>(comboModel);
-    ValueLinks.selectedItemValueLink(box, model, "loggingLevel", Level.class, model.getLoggingLevelObserver());
+    final JComboBox box = new JComboBox<>(comboModel);
+    ValueLinks.selectedItemValueLink(box, model, "loggingLevel", Object.class, model.getLoggingLevelObserver());
 
     return box;
   }

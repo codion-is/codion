@@ -10,8 +10,6 @@ import org.jminor.common.server.ClientLog;
 import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.Server;
 
-import ch.qos.logback.classic.Level;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
@@ -133,13 +131,13 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @return the server logging level
    * @throws RemoteException in case of a communication error
    */
-  Level getLoggingLevel() throws RemoteException;
+  Object getLoggingLevel() throws RemoteException;
 
   /**
    * @param level the logging level
    * @throws RemoteException in case of a communication error
    */
-  void setLoggingLevel(final Level level) throws RemoteException;
+  void setLoggingLevel(final Object level) throws RemoteException;
 
   /**
    * @return the users currently connected to the server

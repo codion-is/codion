@@ -8,6 +8,7 @@ import org.jminor.common.DateUtil;
 import org.jminor.common.Event;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
+import org.jminor.common.LoggerProxy;
 import org.jminor.common.StateObserver;
 import org.jminor.common.TextUtil;
 import org.jminor.common.Value;
@@ -42,10 +43,6 @@ import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.valuemap.ValueLinkValidators;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
-
-import ch.qos.logback.classic.Level;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.Action;
 import javax.swing.ComboBoxModel;
@@ -118,6 +115,8 @@ public final class EntityUiUtil {
   private static final Color INVALID_COLOR = Color.RED;
   private static final int MAXIMUM_VALUE_LENGTH = 1000;
 
+  private static final LoggerProxy loggerProxy = LoggerProxy.createLoggerProxy();
+
   private EntityUiUtil() {}
 
   /**
@@ -125,13 +124,14 @@ public final class EntityUiUtil {
    * @param dialogParent the component serving as a dialog parent
    */
   public static void setLoggingLevel(final JComponent dialogParent) {
-    final DefaultComboBoxModel<Level> model = new DefaultComboBoxModel<>(
-            new Level[] {Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR});
-    final ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-    model.setSelectedItem(rootLogger.getLevel());
-    JOptionPane.showMessageDialog(dialogParent, new JComboBox<>(model),
+    if (loggerProxy == null) {
+      throw new RuntimeException("No LoggerProxy implementation available");
+    }
+    final DefaultComboBoxModel model = new DefaultComboBoxModel(loggerProxy.getLogLevels().toArray());
+    model.setSelectedItem(loggerProxy.getLogLevel());
+    JOptionPane.showMessageDialog(dialogParent, new JComboBox(model),
             FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL), JOptionPane.QUESTION_MESSAGE);
-    rootLogger.setLevel((Level) model.getSelectedItem());
+    loggerProxy.setLogLevel(model.getSelectedItem());
   }
 
   /**

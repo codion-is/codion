@@ -5,6 +5,7 @@
     <subant target="clean" buildpath="imagepanel"/>
     <subant target="clean" buildpath="jasperreports"/>
     <subant target="clean" buildpath="json"/>
+    <subant target="clean" buildpath="logback-proxy"/>
     <subant target="clean" buildpath="nextreports"/>
     <subant target="clean" buildpath="rest"/>
     <subant target="clean" buildpath="tomcat-pool"/>
@@ -15,6 +16,7 @@
     <subant target="build" buildpath="imagepanel"/>
     <subant target="build" buildpath="jasperreports"/>
     <subant target="build" buildpath="json"/>
+    <subant target="build" buildpath="logback-proxy"/>
     <subant target="build" buildpath="nextreports"/>
     <subant target="build" buildpath="rest"/>
     <subant target="build" buildpath="tomcat-pool"/>
@@ -25,6 +27,7 @@
     <subant target="javadoc" buildpath="imagepanel"/>
     <subant target="javadoc" buildpath="jasperreports"/>
     <subant target="javadoc" buildpath="json"/>
+    <subant target="javadoc" buildpath="logback-proxy"/>
     <subant target="javadoc" buildpath="nextreports"/>
     <subant target="javadoc" buildpath="rest"/>
     <subant target="javadoc" buildpath="tomcat-pool"/>
@@ -35,6 +38,7 @@
     <subant target="package" buildpath="imagepanel"/>
     <subant target="package" buildpath="jasperreports"/>
     <subant target="package" buildpath="json"/>
+    <subant target="package" buildpath="logback-proxy"/>
     <subant target="package" buildpath="nextreports"/>
     <subant target="package" buildpath="rest"/>
     <subant target="package" buildpath="tomcat-pool"/>
@@ -45,6 +49,7 @@
     <subant target="jdeps" buildpath="imagepanel"/>
     <subant target="jdeps" buildpath="jasperreports"/>
     <subant target="jdeps" buildpath="json"/>
+    <subant target="jdeps" buildpath="logback-proxy"/>
     <subant target="jdeps" buildpath="nextreports"/>
     <subant target="jdeps" buildpath="rest"/>
     <subant target="jdeps" buildpath="tomcat-pool"/>
@@ -55,6 +60,7 @@
     <subant target="deploy" buildpath="imagepanel"/>
     <subant target="deploy" buildpath="jasperreports"/>
     <subant target="deploy" buildpath="json"/>
+    <subant target="deploy" buildpath="logback-proxy"/>
     <subant target="deploy" buildpath="nextreports"/>
     <subant target="deploy" buildpath="rest"/>
     <subant target="deploy" buildpath="tomcat-pool"/>
@@ -65,6 +71,7 @@
     <subant target="install" buildpath="imagepanel"/>
     <subant target="install" buildpath="jasperreports"/>
     <subant target="install" buildpath="json"/>
+    <subant target="install" buildpath="logback-proxy"/>
     <subant target="install" buildpath="nextreports"/>
     <subant target="install" buildpath="rest"/>
     <subant target="install" buildpath="tomcat-pool"/>
@@ -75,6 +82,7 @@
     <subant target="run_unit_tests" buildpath="imagepanel"/>
     <subant target="run_unit_tests" buildpath="jasperreports"/>
     <subant target="run_unit_tests" buildpath="json"/>
+    <subant target="run_unit_tests" buildpath="logback-proxy"/>
     <subant target="run_unit_tests" buildpath="nextreports"/>
     <subant target="run_unit_tests" buildpath="rest"/>
     <subant target="run_unit_tests" buildpath="tomcat-pool"/>

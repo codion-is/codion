@@ -27,8 +27,6 @@
     <dependency org="org.jminor" name="jminor-framework-server" rev="${version}" conf="%->master"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="${slf4j-api.version}"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="${logback.version}"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="${logback.version}"/>
 
     <dependency org="org.jfree" name="jcommon" rev="${jcommon.version}"/>
     <dependency org="org.jfree" name="jfreechart" rev="${jfreechart.version}"/>

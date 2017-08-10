@@ -13,47 +13,45 @@
   </path>
 
   <path id="lib.runtime.server">
+    <path location="framework/server/${build.main}"/>
     <fileset dir="framework/server/${lib}/test"/>
-    <fileset dir="framework/server/${package}"
-             includes="jminor-framework-server.jar,
-             jminor-framework-db-core.jar,
-             jminor-framework-db-local.jar"/>
   </path>
 
   <path id="lib.runtime.server.monitor">
+    <path location="server-monitor/${build.main}"/>
     <fileset dir="server-monitor/${lib}/runtime"/>
-    <fileset dir="server-monitor/${package}"
-             includes="jminor-framework-server-monitor.jar"/>
+    <path location="plugins/logback-proxy/${build.main}"/>
+    <fileset dir="plugins/logback-proxy/${lib}/test"/>
   </path>
 
   <path id="build.demos.main">
-    <pathelement path="demos/chinook/build/main"/>
-    <pathelement path="demos/empdept/build/main"/>
-    <pathelement path="demos/petstore/build/main"/>
-    <pathelement path="demos/schemabrowser/build/main"/>
-    <pathelement path="demos/world/build/main"/>
+    <pathelement path="demos/chinook/${build.main}"/>
+    <pathelement path="demos/empdept/${build.main}"/>
+    <pathelement path="demos/petstore/${build.main}"/>
+    <pathelement path="demos/schemabrowser/${build.main}"/>
+    <pathelement path="demos/world/${build.main}"/>
   </path>
 
   <path id="build.plugins.main">
-    <path location="plugins/hikari-pool/build/main"/>
-    <path location="plugins/imagepanel/build/main"/>
-    <path location="plugins/jasperreports/build/main"/>
-    <path location="plugins/json/build/main"/>
-    <path location="plugins/nextreports/build/main"/>
-    <path location="plugins/rest/build/main"/>
-    <path location="plugins/tomcat-pool/build/main"/>
+    <path location="plugins/hikari-pool/${build.main}"/>
+    <path location="plugins/imagepanel/${build.main}"/>
+    <path location="plugins/jasperreports/${build.main}"/>
+    <path location="plugins/json/${build.main}"/>
+    <path location="plugins/logback-proxy/${build.main}"/>
+    <path location="plugins/nextreports/${build.main}"/>
+    <path location="plugins/rest/${build.main}"/>
+    <path location="plugins/tomcat-pool/${build.main}"/>
   </path>
 
   <path id="lib.plugins">
-    <path>
-      <fileset dir="plugins/hikari-pool/lib/test"/>
-      <fileset dir="plugins/imagepanel/lib/test"/>
-      <fileset dir="plugins/jasperreports/lib/test"/>
-      <fileset dir="plugins/json/lib/test"/>
-      <fileset dir="plugins/nextreports/lib/test"/>
-      <fileset dir="plugins/rest/lib/test"/>
-      <fileset dir="plugins/tomcat-pool/lib/test"/>
-    </path>
+    <fileset dir="plugins/hikari-pool/lib/test"/>
+    <fileset dir="plugins/imagepanel/lib/test"/>
+    <fileset dir="plugins/jasperreports/lib/test"/>
+    <fileset dir="plugins/json/lib/test"/>
+    <fileset dir="plugins/logback-proxy/lib/test"/>
+    <fileset dir="plugins/nextreports/lib/test"/>
+    <fileset dir="plugins/rest/lib/test"/>
+    <fileset dir="plugins/tomcat-pool/lib/test"/>
   </path>
 
   <condition property="demo.db.available">
@@ -288,7 +286,7 @@
   </target>
 
   <target name="run_server" depends="create_keystore, create_demo_db" description="Runs the RMI server">
-    <subant target="package" buildpath="framework"/>
+    <subant target="build" buildpath="framework/server"/>
     <subant target="build" buildpath="plugins"/>
     <subant target="build" buildpath="demos"/>
     <java classname="org.jminor.framework.server.DefaultEntityConnectionServer" fork="yes" dir="demos">
@@ -315,7 +313,8 @@
   </target>
 
   <target name="run_server_monitor" description="Runs the RMI server monitor">
-    <subant target="package" buildpath="server-monitor"/>
+    <subant target="build" buildpath="server-monitor"/>
+    <subant target="build" buildpath="plugins/logback-proxy"/>
     <java classname="org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel" fork="yes">
       <classpath>
         <path refid="lib.runtime.server.monitor"/>

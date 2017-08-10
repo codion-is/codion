@@ -16,8 +16,6 @@
 
   <dependencies defaultconf="runtime">
     <dependency org="org.slf4j" name="slf4j-api" rev="${slf4j-api.version}"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="${logback.version}"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="${logback.version}"/>
     <dependency org="org.json" name="json" rev="${json.version}"/>
     <dependency org="com.toedter" name="jcalendar" rev="${jcalendar.version}"/>
   </dependencies>

@@ -25,8 +25,6 @@
     <dependency org="org.jminor" name="jminor-swing-framework-ui" rev="${version}"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="${slf4j-api.version}" conf="runtime"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="${logback.version}" conf="runtime"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="${logback.version}" conf="runtime"/>
 
     <dependency org="junit" name="junit" rev="${junit.version}" conf="test->master"/>
     <dependency org="org.hamcrest" name="hamcrest-core" rev="${hamcrest-core.version}" conf="test->master"/>

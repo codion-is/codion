@@ -8,13 +8,13 @@ import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
+import org.jminor.common.LoggerProxy;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
-import ch.qos.logback.classic.Level;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.slf4j.Logger;
@@ -27,6 +27,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.text.Format;
 import java.text.NumberFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,7 @@ public final class ServerMonitor {
 
   private final Event serverShutDownEvent = Events.event();
   private final Event<String> statisticsUpdatedEvent = Events.event();
-  private final Event<Level> loggingLevelChangedEvent = Events.event();
+  private final Event loggingLevelChangedEvent = Events.event();
   private final Event<Integer> connectionLimitChangedEvent = Events.event();
 
   private final String hostName;
@@ -57,6 +58,8 @@ public final class ServerMonitor {
 
   private final DatabaseMonitor databaseMonitor;
   private final ClientUserMonitor clientMonitor;
+
+  private final LoggerProxy loggerProxy = LoggerProxy.createLoggerProxy();
 
   private int connectionCount = 0;
   private boolean shutdown = false;
@@ -186,10 +189,21 @@ public final class ServerMonitor {
   }
 
   /**
+   * @return the available log levels
+   */
+  public List getLoggingLevels() {
+    if (loggerProxy == null) {
+      return Collections.emptyList();
+    }
+
+    return loggerProxy.getLogLevels();
+  }
+
+  /**
    * @return the server logging level
    * @throws RemoteException in case of an exception
    */
-  public Level getLoggingLevel() throws RemoteException {
+  public Object getLoggingLevel() throws RemoteException {
     return server.getLoggingLevel();
   }
 
@@ -197,7 +211,7 @@ public final class ServerMonitor {
    * @param level the server logging level
    * @throws RemoteException in case of an exception
    */
-  public void setLoggingLevel(final Level level) throws RemoteException {
+  public void setLoggingLevel(final Object level) throws RemoteException {
     server.setLoggingLevel(level);
     loggingLevelChangedEvent.fire(level);
   }
@@ -354,7 +368,7 @@ public final class ServerMonitor {
   /**
    * @return a listener notified when the logging level has changed
    */
-  public EventObserver<Level> getLoggingLevelObserver() {
+  public EventObserver getLoggingLevelObserver() {
     return loggingLevelChangedEvent.getObserver();
   }
 

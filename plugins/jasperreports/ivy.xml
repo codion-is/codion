@@ -28,8 +28,6 @@
     <dependency org="net.sf.jasperreports" name="jasperreports" rev="6.0.0" conf="%->master"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="${slf4j-api.version}" conf="runtime->master"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="${logback.version}" conf="runtime->master"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="${logback.version}" conf="runtime->master"/>
     <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="runtime->master"/>
     <dependency org="commons-digester" name="commons-digester" rev="2.1" conf="runtime->master"/>
     <dependency org="commons-collections" name="commons-collections" rev="3.2.1" conf="runtime->master"/>

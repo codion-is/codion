@@ -21,8 +21,6 @@
     <dependency org="org.jminor" name="jminor-common-model" rev="${version}"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="${slf4j-api.version}"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="${logback.version}"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="${logback.version}"/>
 
     <dependency org="com.h2database" name="h2" rev="${h2.version}" conf="test->master"/>
     <dependency org="junit" name="junit" rev="${junit.version}" conf="test->master"/>

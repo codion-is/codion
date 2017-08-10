@@ -4519,3 +4519,5 @@
   DefaultEntityConnectionServer now extends AbstractServer<AbstractRemoteEntityConnection, EntityConnectionServerAdmin>
   Some javadoc improvements
   Entities.getColumnProperties() and DateUtil.floorFields(), vararg parameter replaced with a collection
+  LoggerProxy added, LogbackProxy module added, Logback dependencies removed
+  Some build file improvements
