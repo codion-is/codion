@@ -108,45 +108,34 @@
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
     <subant target="package" buildpath="common"/>
     <subant target="package" buildpath="framework"/>
-
-    <copy file="common/core/${package}/jminor-common-core.jar"
-          tofile="${deploy.server.path}/lib/jminor-common-core-${version}.jar"/>
-    <copy file="common/db/${package}/jminor-common-db.jar"
-          tofile="${deploy.server.path}/lib/jminor-common-db-${version}.jar"/>
-    <copy file="common/model/${package}/jminor-common-model.jar"
-          tofile="${deploy.server.path}/lib/jminor-common-model-${version}.jar"/>
-    <copy file="common/server/${package}/jminor-common-server.jar"
-          tofile="${deploy.server.path}/lib/jminor-common-server-${version}.jar"/>
-
-    <copy file="framework/server/${package}/jminor-framework-server.jar"
-          tofile="${deploy.server.path}/lib/jminor-framework-server-${version}.jar"/>
-    <copy file="framework/db-core/${package}/jminor-framework-db-core.jar"
-          tofile="${deploy.server.path}/lib/jminor-framework-db-core-${version}.jar"/>
-    <copy file="framework/db-local/${package}/jminor-framework-db-local.jar"
-          tofile="${deploy.server.path}/lib/jminor-framework-db-local-${version}.jar"/>
-
-    <copy todir="${deploy.server.path}/lib">
-      <fileset dir="framework/server/${lib}/test" includes="h2*.jar"/>
-    </copy>
-
     <subant target="package" buildpath="demos"/>
-    <copy file="demos/chinook/${package}/chinook-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="demos/empdept/${package}/empdept-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="demos/petstore/${package}/petstore-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="demos/world/${package}/world-domain.jar" todir="${deploy.server.path}/lib"/>
-
     <subant target="package" buildpath="plugins"/>
-    <copy file="plugins/jasperreports/${package}/jminor-plugin-jasperreports.jar"
-          tofile="${deploy.server.path}/lib/jminor-plugin-jasperreports-${version}.jar"/>
+
     <copy todir="${deploy.server.path}/lib">
+      <file file="common/core/${package}/jminor-common-core.jar"/>
+      <file file="common/db/${package}/jminor-common-db.jar"/>
+      <file file="common/server/${package}/jminor-common-server.jar"/>
+
+      <file file="framework/db-core/${package}/jminor-framework-db-core.jar"/>
+      <file file="framework/db-local/${package}/jminor-framework-db-local.jar"/>
+      <file file="framework/server/${package}/jminor-framework-server.jar"/>
+
+      <fileset dir="framework/server/${lib}/test" includes="h2*.jar"/>
+
+      <file file="plugins/jasperreports/${package}/jminor-plugin-jasperreports.jar"/>
       <fileset dir="plugins/jasperreports/lib/runtime" excludes="*jminor*"/>
-    </copy>
-    <copy file="plugins/rest/${package}/jminor-plugin-rest.jar"
-          tofile="${deploy.server.path}/lib/jminor-plugin-rest-${version}.jar"/>
-    <copy file="plugins/json/${package}/jminor-plugin-json.jar"
-          tofile="${deploy.server.path}/lib/jminor-plugin-json-${version}.jar"/>
-    <copy todir="${deploy.server.path}/lib">
+
+      <file file="plugins/rest/${package}/jminor-plugin-rest.jar"/>
       <fileset dir="plugins/rest/lib/runtime" excludes="*jminor*"/>
+
+      <file file="plugins/json/${package}/jminor-plugin-json.jar"/>
+      <file file="plugins/logback-proxy/${package}/jminor-plugin-logback-proxy.jar"/>
+      <fileset dir="plugins/logback-proxy/lib/runtime" excludes="*jminor*"/>
+
+      <file file="demos/chinook/${package}/chinook-domain.jar"/>
+      <file file="demos/empdept/${package}/empdept-domain.jar"/>
+      <file file="demos/petstore/${package}/petstore-domain.jar"/>
+      <file file="demos/world/${package}/world-domain.jar"/>
     </copy>
 
     <copy todir="${deploy.server.path}">
@@ -169,12 +158,14 @@
 
   <target name="deploy_server_monitor" depends="create_keystore"
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
+    <subant target="package" buildpath="plugins/logback-proxy"/>
     <subant target="package" buildpath="server-monitor"/>
 
-    <copy file="server-monitor/${package}/jminor-framework-server-monitor.jar"
-          tofile="${deploy.server.monitor.path}/lib/jminor-framework-server-monitor-${version}.jar"/>
+    <copy file="server-monitor/${package}/jminor-framework-server-monitor.jar" todir="${deploy.server.monitor.path}/lib"/>
     <copy todir="${deploy.server.monitor.path}/lib">
       <fileset dir="server-monitor/${lib}/runtime"/>
+      <file file="plugins/logback-proxy/${package}/jminor-plugin-logback-proxy.jar"/>
+      <fileset dir="plugins/logback-proxy/lib/runtime" excludes="*jminor*"/>
     </copy>
     <copy todir="${deploy.server.monitor.path}">
       <fileset dir="${basedir}/server-monitor/resources"/>

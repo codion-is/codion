@@ -4521,3 +4521,4 @@
   Entities.getColumnProperties() and DateUtil.floorFields(), vararg parameter replaced with a collection
   LoggerProxy added, LogbackProxy module added, Logback dependencies removed
   Some build file improvements
+  Build file streamlined a bit, deployment targets improved

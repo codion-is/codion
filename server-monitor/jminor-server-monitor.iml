@@ -15,6 +15,7 @@
     <orderEntry type="module" module-name="jminor-common-model" />
     <orderEntry type="module" module-name="jminor-common-server" />
     <orderEntry type="module" module-name="jminor-framework-server" />
+    <orderEntry type="module" module-name="plugin-logback-proxy" scope="RUNTIME" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

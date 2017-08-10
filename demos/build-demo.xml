@@ -104,7 +104,7 @@
     <zip destfile="${package}/deployment/${ant.project.name}.jar">
       <zipfileset src="${package}/${ant.project.name}.jar" excludes="**/META-INF/**/*"/>
       <zipfileset dir="${package}/deployment/libtmp" excludes="**/META-INF/**/*"/>
-      <zipfileset file="../../framework/resources/security/JMinorClientTruststore"/>
+      <zipfileset file="../../resources/security/JMinorClientTruststore"/>
     </zip>
     <delete dir="${package}/deployment/libtmp"/>
 
@@ -118,8 +118,8 @@
              storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
     <copy file="src/main/config/${ant.project.name}.jnlp" todir="${package}/deployment/web" failonerror="false"/>
     <copy file="src/main/config/getdown.txt" todir="${package}/deployment/web"/>
-    <copy file="../../common/docs/jminor.org/jminor_logo_2.png" tofile="${package}/deployment/web/jminor.png"/>
-    <copy file="../../common/docs/jminor.org/jminor_logo_medium.png" tofile="${package}/deployment/web/jminor-getdown.png"/>
+    <copy file="../../docs/jminor.org/jminor_logo_2.png" tofile="${package}/deployment/web/jminor.png"/>
+    <copy file="../../docs/jminor.org/jminor_logo_medium.png" tofile="${package}/deployment/web/jminor-getdown.png"/>
 
     <!--getdown-->
     <getdown_digest appdir="${package}/deployment/web"/>

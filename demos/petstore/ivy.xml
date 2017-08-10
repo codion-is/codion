@@ -12,6 +12,7 @@
   <dependencies defaultconf="compile->default">
     <dependency org="org.jminor" name="jminor-swing-framework-bundle" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-swing-framework-ui-test" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-plugin-logback-proxy" rev="${version}" conf="runtime->default"/>
 
     <dependency org="org.jfree" name="jcommon" rev="${jcommon.version}" conf="compile->master"/>
     <dependency org="org.jfree" name="jfreechart" rev="${jfreechart.version}" conf="compile->master"/>
