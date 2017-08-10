@@ -29,7 +29,7 @@ public class EntityServerMonitorTest {
           System.getProperty("jminor.unittest.password", "tiger"));
 
   private static final User ADMIN_USER = new User("scott", "tiger");
-  private static Server server;
+  private static Server<?, EntityConnectionServerAdmin> server;
   private static EntityConnectionServerAdmin admin;
 
   @BeforeClass
@@ -41,7 +41,7 @@ public class EntityServerMonitorTest {
     DefaultEntityConnectionServer.startServer();
     server = (Server) LocateRegistry.getRegistry(Server.SERVER_HOST_NAME.get(),
             Server.REGISTRY_PORT.get()).lookup(serverName);
-    admin = (EntityConnectionServerAdmin) server.getServerAdmin(ADMIN_USER);
+    admin = server.getServerAdmin(ADMIN_USER);
   }
 
   @AfterClass

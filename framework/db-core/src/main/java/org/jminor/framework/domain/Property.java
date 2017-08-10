@@ -540,7 +540,7 @@ public interface Property extends Attribute {
     boolean isCompositeReference();
 
     /**
-     * @param referenceProperty the property referenced by the given property
+     * @param referenceProperty the property from the referenced entity referenced by the {@code referenceProperty}
      * @return the referenced property
      */
     Property.ColumnProperty getReferencedProperty(final Property referenceProperty);

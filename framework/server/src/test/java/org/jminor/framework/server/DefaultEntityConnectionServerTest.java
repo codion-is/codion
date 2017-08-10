@@ -51,8 +51,8 @@ public class DefaultEntityConnectionServerTest {
     final Database database = Databases.getInstance();
     final String serverName = DefaultEntityConnectionServer.initializeServerName(database.getHost(), database.getSid());
     DefaultEntityConnectionServer.startServer();
-    server = (Server<RemoteEntityConnection, EntityConnectionServerAdmin>) LocateRegistry.getRegistry(Server.SERVER_HOST_NAME.get(), Server.REGISTRY_PORT.get()).lookup(serverName);
-    admin = (EntityConnectionServerAdmin) server.getServerAdmin(ADMIN_USER);
+    server = (Server) LocateRegistry.getRegistry(Server.SERVER_HOST_NAME.get(), Server.REGISTRY_PORT.get()).lookup(serverName);
+    admin = server.getServerAdmin(ADMIN_USER);
   }
 
   @AfterClass

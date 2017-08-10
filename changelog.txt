@@ -4516,3 +4516,5 @@
   EntityConditions.propertyCondition() now throws a more descriptive error when called with a foreign key property parameter
   EntityConditions.DefaultEntityCondition bug fixed, getValues() and getColumns() now return empty list instead of null when no property condition is available
   Resources moved to standard src/main/resources directory
+  DefaultEntityConnectionServer now extends AbstractServer<AbstractRemoteEntityConnection, EntityConnectionServerAdmin>
+  Some javadoc improvements

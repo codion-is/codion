@@ -442,13 +442,16 @@ public class EntityUtilTest {
   }
 
   @Test
-  public void setNull() {
+  public void putNull() {
     final Entity dept = Entities.entity(TestDomain.T_DEPARTMENT);
     for (final Property property : Entities.getProperties(TestDomain.T_DEPARTMENT, true)) {
       assertFalse(dept.containsKey(property));
       assertTrue(dept.isValueNull(property));
     }
-    EntityUtil.putNull(dept);
+    for (final Property property : Entities.getProperties(TestDomain.T_DEPARTMENT, true)) {
+      dept.put(property, null);
+    }
+    //putting nulls should not have an effect
     assertFalse(dept.isModified());
     for (final Property property : Entities.getProperties(TestDomain.T_DEPARTMENT, true)) {
       assertTrue(dept.containsKey(property));

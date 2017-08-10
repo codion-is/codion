@@ -74,7 +74,7 @@ public class EntityRESTServiceTest {
     HOSTNAME = Server.SERVER_HOST_NAME.get();
     REST_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities/";
     server = DefaultEntityConnectionServer.startServer();
-    admin = (EntityConnectionServerAdmin) server.getServerAdmin(ADMIN_USER);
+    admin = server.getServerAdmin(ADMIN_USER);
   }
 
   @AfterClass

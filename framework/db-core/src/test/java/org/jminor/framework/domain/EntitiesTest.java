@@ -123,7 +123,7 @@ public class EntitiesTest {
   public void getColumnProperties() {
     List<Property.ColumnProperty> properties = Entities.getColumnProperties(TestDomain.T_MASTER);
     assertEquals(3, properties.size());
-    properties = Entities.getColumnProperties(TestDomain.T_MASTER, (String) null);
+    properties = Entities.getColumnProperties(TestDomain.T_MASTER, null);
     assertTrue(properties.isEmpty());
     properties = Entities.getColumnProperties(TestDomain.T_MASTER, new String[0]);
     assertTrue(properties.isEmpty());

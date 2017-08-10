@@ -34,8 +34,9 @@ public final class EntityUtil {
   private EntityUtil() {}
 
   /**
-   * Populates an entity of the given type using the values provided by the given valueProvider,
-   * only non-derived, non-denormalized and values that are not part of a foreign key are fetched from the value provider
+   * Populates an entity of the given type using the values provided by {@code valueProvider}.
+   * Values are fetched for {@link Property.ColumnProperty} and its descendants, {@link Property.TransientProperty}
+   * excluding its descendants and {@link Property.ForeignKeyProperty}.
    * @param entityID the entity ID
    * @param valueProvider the value provider
    * @return the populated entity
@@ -386,20 +387,6 @@ public final class EntityUtil {
   }
 
   /**
-   * Sets all property values to null
-   * @param entity the entity
-   * @return the same entity instance
-   */
-  public static Entity putNull(final Entity entity) {
-    Objects.requireNonNull(entity, "entity");
-    for (final Property property : Entities.getProperties(entity.getEntityID(), true)) {
-      entity.put(property, null);
-    }
-
-    return entity;
-  }
-
-  /**
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
    * @return the first property which value is missing or the original value differs from the one in the comparison
@@ -418,7 +405,7 @@ public final class EntityUtil {
 
   /**
    * @param exception the record modified exception
-   * @return a String describing the modification
+   * @return a human-readable String describing the modification
    */
   public static String getModifiedExceptionMessage(final RecordModifiedException exception) {
     final Entity entity = (Entity) exception.getRow();
@@ -444,7 +431,7 @@ public final class EntityUtil {
 
   /**
    * Returns true if this entity has a null primary key or a null original primary key,
-   * which indicates the best guess about an entity being new.
+   * which is the best guess about an entity being new, as in, not existing in a database.
    * @param entity the entity
    * @return true if this entity has not been persisted
    */

@@ -22,6 +22,7 @@ import java.util.Map;
 
 /**
  * Defines the database methods the database layer offers.
+ * All DML operations are committed unless a transaction is open.
  */
 public interface EntityConnection {
 
@@ -141,7 +142,7 @@ public interface EntityConnection {
 
   /**
    * Updates the given entities according to their properties.
-   * Performs a commit unless a transaction is open.
+   * Throws an exception if any of the given entities is unmodified.
    * @param entities the entities to update
    * @return the updated entities
    * @throws DatabaseException in case of a db exception
@@ -158,8 +159,7 @@ public interface EntityConnection {
   void delete(final List<Entity.Key> entityKeys) throws DatabaseException;
 
   /**
-   * Deletes the entities specified by the given condition
-   * Performs a commit unless a transaction is open.
+   * Deletes the entities specified by the given condition.
    * @param condition the condition specifying the entities to delete
    * @throws DatabaseException in case of a db exception
    */

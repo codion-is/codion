@@ -31,7 +31,7 @@ public class EntityLoadTestModelTest {
   private static final String CONNECTION_TYPE_BEFORE_TEST = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
 
   private static final User ADMIN_USER = new User("scott", "tiger");
-  private static Server server;
+  private static Server<?, EntityConnectionServerAdmin> server;
   private static EntityConnectionServerAdmin admin;
 
   @BeforeClass
@@ -43,7 +43,7 @@ public class EntityLoadTestModelTest {
     DefaultEntityConnectionServer.startServer();
     server = (Server) LocateRegistry.getRegistry((Server.SERVER_HOST_NAME.get()),
             Server.REGISTRY_PORT.get()).lookup(serverName);
-    admin = (EntityConnectionServerAdmin) server.getServerAdmin(ADMIN_USER);
+    admin = server.getServerAdmin(ADMIN_USER);
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
   }
 

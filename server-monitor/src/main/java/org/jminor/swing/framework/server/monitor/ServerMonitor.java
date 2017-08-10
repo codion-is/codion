@@ -361,8 +361,8 @@ public final class ServerMonitor {
   private EntityConnectionServerAdmin connectServer(final String serverName) throws RemoteException, ServerException.AuthenticationException {
     final long time = System.currentTimeMillis();
     try {
-      final Server theServer = (Server) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
-      final EntityConnectionServerAdmin serverAdmin = (EntityConnectionServerAdmin) theServer.getServerAdmin(serverAdminUser);
+      final Server<?, EntityConnectionServerAdmin> theServer = (Server) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
+      final EntityConnectionServerAdmin serverAdmin = theServer.getServerAdmin(serverAdminUser);
       //just some simple call to validate the remote connection
       serverAdmin.getUsedMemory();
       LOG.info("ServerMonitor connected to server: {}", serverName);

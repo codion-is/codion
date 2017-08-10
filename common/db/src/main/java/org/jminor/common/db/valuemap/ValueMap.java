@@ -41,7 +41,8 @@ public interface ValueMap<K extends Attribute, V> extends ValueProvider<K, V>, V
   V remove(final K key);
 
   /**
-   * Retrieves a string representation of the value mapped to the given key
+   * Retrieves a string representation of the value mapped to the given key, an empty string is returned
+   * in case of null values or if key is not found.
    * @param key the key
    * @return the value mapped to the given key as a string, an empty string if no such mapping exists
    */
@@ -54,15 +55,15 @@ public interface ValueMap<K extends Attribute, V> extends ValueProvider<K, V>, V
   void clear();
 
   /**
-   * After a call to this method this ValueMap contains the same values and original values as the given map.
+   * After a call to this method this ValueMap contains the same values and original values as the source map.
    * A null argument to this method clears the destination map of all values and original values.
-   * Value change events for affected keys are fired only after all values have been copied.
+   * Value change events for affected keys are fired after all values have been set, in no particular order.
    * @param sourceMap the map to copy or null for clearing the destination map
    */
   void setAs(final ValueMap<K, V> sourceMap);
 
   /**
-   * Returns true if a null value is mapped to the given key.
+   * Returns true if a null value is mapped to the given key or the key is not found.
    * @param key the key
    * @return true if the value mapped to the given key is null
    */
@@ -111,7 +112,7 @@ public interface ValueMap<K extends Attribute, V> extends ValueProvider<K, V>, V
 
   /**
    * Reverts the value associated with the given key to its original value.
-   * If the value has not been modified then calling this method has no effect.
+   * If the value has not been modified or the key is not found then calling this method has no effect.
    * @param key the key for which to revert the value
    */
   void revert(final K key);
