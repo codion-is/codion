@@ -8,7 +8,9 @@ import org.junit.Test;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -35,7 +37,7 @@ public class DateUtilTest {
 
   @Test(expected = NullPointerException.class)
   public void floorFieldsNullCalendar() {
-    DateUtil.floorFields(null);
+    DateUtil.floorFields(null, Collections.emptyList());
   }
 
   @Test
@@ -72,7 +74,7 @@ public class DateUtilTest {
     final Date dateWithTime = EXACT_TIMESTAMP.parse("1975-10-03 10:45:42.123");
     final Calendar calendar = Calendar.getInstance();
     calendar.setTime(dateWithTime);
-    DateUtil.floorFields(calendar, Calendar.MINUTE, Calendar.MILLISECOND);
+    DateUtil.floorFields(calendar, Arrays.asList(Calendar.MINUTE, Calendar.MILLISECOND));
     assertEquals(1975, calendar.get(Calendar.YEAR));
     assertEquals(Calendar.OCTOBER, calendar.get(Calendar.MONTH));
     assertEquals(3, calendar.get(Calendar.DAY_OF_MONTH));

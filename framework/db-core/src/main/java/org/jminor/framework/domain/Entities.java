@@ -434,8 +434,8 @@ public final class Entities {
    * @return the {@link Property.ColumnProperty}s specified by the given property IDs
    * @throws IllegalArgumentException in case a given propertyID does not represent a {@link Property.ColumnProperty}
    */
-  public static List<Property.ColumnProperty> getColumnProperties(final String entityID, final String... propertyIDs) {
-    if (propertyIDs == null || propertyIDs.length == 0) {
+  public static List<Property.ColumnProperty> getColumnProperties(final String entityID, final Collection<String> propertyIDs) {
+    if (propertyIDs == null || propertyIDs.isEmpty()) {
       return Collections.emptyList();
     }
 

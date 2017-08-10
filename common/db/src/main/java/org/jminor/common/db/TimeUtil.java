@@ -7,6 +7,7 @@ import org.jminor.common.DateUtil;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -42,7 +43,7 @@ public final class TimeUtil {
   public static Timestamp floorTimestamp(final Timestamp timestamp) {
     final Calendar cal = Calendar.getInstance();
     cal.setTime(timestamp);
-    DateUtil.floorFields(cal, Calendar.SECOND, Calendar.MILLISECOND);
+    DateUtil.floorFields(cal, Arrays.asList(Calendar.SECOND, Calendar.MILLISECOND));
 
     return new Timestamp(cal.getTimeInMillis());
   }

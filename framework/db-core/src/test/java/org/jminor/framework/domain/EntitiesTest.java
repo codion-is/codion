@@ -14,6 +14,7 @@ import java.sql.Types;
 import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -125,7 +126,7 @@ public class EntitiesTest {
     assertEquals(3, properties.size());
     properties = Entities.getColumnProperties(TestDomain.T_MASTER, null);
     assertTrue(properties.isEmpty());
-    properties = Entities.getColumnProperties(TestDomain.T_MASTER, new String[0]);
+    properties = Entities.getColumnProperties(TestDomain.T_MASTER, Collections.emptyList());
     assertTrue(properties.isEmpty());
   }
 

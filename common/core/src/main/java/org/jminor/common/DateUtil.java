@@ -6,7 +6,9 @@ package org.jminor.common;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
 
@@ -70,7 +72,7 @@ public final class DateUtil {
   public static Date floorDate(final Date date) {
     final Calendar cal = Calendar.getInstance();
     cal.setTime(date);
-    floorFields(cal, Calendar.MILLISECOND, Calendar.SECOND, Calendar.MINUTE, Calendar.HOUR_OF_DAY);
+    floorFields(cal, Arrays.asList(Calendar.MILLISECOND, Calendar.SECOND, Calendar.MINUTE, Calendar.HOUR_OF_DAY));
 
     return cal.getTime();
   }
@@ -81,7 +83,7 @@ public final class DateUtil {
    * @param calendar the calendar in which to floor the time fields
    */
   public static void floorTimeFields(final Calendar calendar) {
-    floorFields(calendar, Calendar.MILLISECOND, Calendar.SECOND, Calendar.MINUTE, Calendar.HOUR_OF_DAY);
+    floorFields(calendar, Arrays.asList(Calendar.MILLISECOND, Calendar.SECOND, Calendar.MINUTE, Calendar.HOUR_OF_DAY));
   }
 
   /**
@@ -90,7 +92,7 @@ public final class DateUtil {
    * @param calendar the calendar in which to floor fields
    * @param fields the fields to floor
    */
-  public static void floorFields(final Calendar calendar, final Integer... fields) {
+  public static void floorFields(final Calendar calendar, final Collection<Integer> fields) {
     Objects.requireNonNull(calendar, "calendar");
     if (fields != null) {
       for (final Integer field : fields) {

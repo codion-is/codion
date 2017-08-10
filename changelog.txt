@@ -4518,3 +4518,4 @@
   Resources moved to standard src/main/resources directory
   DefaultEntityConnectionServer now extends AbstractServer<AbstractRemoteEntityConnection, EntityConnectionServerAdmin>
   Some javadoc improvements
+  Entities.getColumnProperties() and DateUtil.floorFields(), vararg parameter replaced with a collection
