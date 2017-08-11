@@ -32,6 +32,7 @@
     <buildFile url="file://$PROJECT_DIR$/plugins/imagepanel/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/plugins/jasperreports/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/plugins/json/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/plugins/log4j-proxy/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/plugins/logback-proxy/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/plugins/nextreports/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/plugins/rest/build.xml" />
