@@ -37,6 +37,7 @@
     <path location="plugins/imagepanel/${build.main}"/>
     <path location="plugins/jasperreports/${build.main}"/>
     <path location="plugins/json/${build.main}"/>
+    <path location="plugins/log4j-proxy/${build.main}"/>
     <path location="plugins/logback-proxy/${build.main}"/>
     <path location="plugins/nextreports/${build.main}"/>
     <path location="plugins/rest/${build.main}"/>
@@ -48,6 +49,7 @@
     <fileset dir="plugins/imagepanel/lib/test"/>
     <fileset dir="plugins/jasperreports/lib/test"/>
     <fileset dir="plugins/json/lib/test"/>
+    <fileset dir="plugins/log4j-proxy/lib/test"/>
     <fileset dir="plugins/logback-proxy/lib/test"/>
     <fileset dir="plugins/nextreports/lib/test"/>
     <fileset dir="plugins/rest/lib/test"/>

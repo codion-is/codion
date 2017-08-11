@@ -1,0 +1,25 @@
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+  <info organisation="org.jminor" module="jminor-plugin-log4j-proxy"/>
+
+  <configurations defaultconfmapping="compile">
+    <conf name="compile"/>
+    <conf name="runtime" extends="compile"/>
+    <conf name="test" extends="runtime"/>
+    <conf name="sources"/>
+    <conf name="javadoc"/>
+  </configurations>
+
+  <publications>
+    <artifact name="jminor-plugin-log4j-proxy" type="jar" ext="jar" conf="compile"/>
+    <artifact name="jminor-plugin-log4j-proxy" type="pom" ext="pom" conf="compile"/>
+    <artifact name="jminor-plugin-log4j-proxy-sources" type="source" ext="jar" conf="sources" m:classifier="sources"/>
+    <artifact name="jminor-plugin-log4j-proxy-javadoc" type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
+  </publications>
+
+  <dependencies defaultconf="compile->default">
+    <dependency org="org.jminor" name="jminor-common-core" rev="${version}"/>
+
+    <dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.8.2"/>
+    <dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.8.2"/>
+  </dependencies>
+</ivy-module>

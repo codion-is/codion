@@ -4523,3 +4523,4 @@
   Some build file improvements
   Build file streamlined a bit, deployment targets improved
   Server monitor ivy dependencies fixed, maven no longer pulls local db jar along
+  Log4jProxy plugin module added
