@@ -14,6 +14,9 @@ import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The Domain model used by the model tests
+ */
 public final class TestDomain {
 
   private TestDomain() {}

@@ -98,7 +98,6 @@ public final class SwingEntityModelTest
   @Test
   public void testDetailModels() throws CancelException, DatabaseException, ValidationException {
     assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));
-    assertNull(departmentModel.getDetailModel(SwingEntityModel.class));
     assertFalse(departmentModel.containsDetailModel("undefined"));
     assertFalse(departmentModel.containsDetailModel(SwingEntityModel.class));
     final SwingEntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
@@ -141,6 +140,11 @@ public final class SwingEntityModelTest
     finally {
       departmentModel.getConnectionProvider().getConnection().rollbackTransaction();
     }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getDetailModelNonExisting() {
+    departmentModel.getDetailModel(SwingEntityModel.class);
   }
 
   @Test

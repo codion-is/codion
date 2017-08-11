@@ -64,7 +64,6 @@ public class DefaultEntityTableConditionModelTest {
   @Test
   public void getPropertyFilterModel() {
     assertNotNull(conditionModel.getPropertyFilterModel(TestDomain.EMP_COMMISSION));
-    assertNull(conditionModel.getPropertyFilterModel("bla bla"));
   }
 
   @Test
@@ -72,7 +71,7 @@ public class DefaultEntityTableConditionModelTest {
     assertNotNull(conditionModel.getPropertyConditionModel(TestDomain.EMP_COMMISSION));
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void getPropertyConditionModelNonExisting() {
     assertNull(conditionModel.getPropertyConditionModel("bla bla"));
   }
@@ -80,7 +79,6 @@ public class DefaultEntityTableConditionModelTest {
   @Test
   public void setFilterValue() {
     conditionModel.setFilterValue(TestDomain.EMP_COMMISSION, 1400);
-    conditionModel.setFilterValue("bla bla", "bla");
     final ColumnConditionModel<Property> propertyConditionModel = conditionModel.getPropertyFilterModel(TestDomain.EMP_COMMISSION);
     assertTrue(propertyConditionModel.isEnabled());
     assertEquals(Condition.Type.LIKE, propertyConditionModel.getConditionType());

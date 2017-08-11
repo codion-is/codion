@@ -465,7 +465,6 @@ public final class EntityJSONParser implements Serializer<Entity> {
     if (propertyValues.isNull(property.getPropertyID())) {
       return null;
     }
-
     if (property.isString()) {
       return propertyValues.getString(property.getPropertyID());
     }

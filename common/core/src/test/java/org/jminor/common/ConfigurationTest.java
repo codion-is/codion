@@ -11,8 +11,53 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class ConfigurationTest {
+
+  @Test
+  public void stringValue() {
+    final String key = "configuration.test.string";
+    final String value = "value";
+    final String defaultValue = "default";
+    final String setValue = "setValue";
+    assertEquals(defaultValue, Configuration.stringValue(key, defaultValue).get());
+    assertNull(Configuration.stringValue(key, null).get());
+    System.setProperty(key, value);
+    assertEquals(value, Configuration.stringValue(key, defaultValue).get());
+    Configuration.stringValue(key, null).set(setValue);
+    assertEquals(setValue, System.getProperty(key));
+    Configuration.stringValue(key, null).set(null);
+    assertNull(System.getProperty(key));
+    assertEquals(key, Configuration.stringValue(key, null).toString());
+  }
+
+  @Test
+  public void booleanValue() {
+    final String key = "configuration.test.boolean";
+    final Boolean value = true;
+    final Boolean defaultValue = false;
+    assertEquals(defaultValue, Configuration.booleanValue(key, defaultValue).get());
+    assertNull(Configuration.booleanValue(key, null).get());
+    System.setProperty(key, value.toString());
+    assertEquals(value, Configuration.booleanValue(key, defaultValue).get());
+  }
+
+  @Test
+  public void integerValue() {
+    final String key = "configuration.test.integer";
+    final Integer value = 1;
+    final Integer defaultValue = 42;
+    assertEquals(defaultValue, Configuration.integerValue(key, defaultValue).get());
+    assertNull(Configuration.integerValue(key, null).get());
+    System.setProperty(key, value.toString());
+    assertEquals(value, Configuration.integerValue(key, defaultValue).get());
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void value() {
+    new Configuration.ConfigurationValue("configuration.test.value", null);
+  }
 
   @Test
   public void parseConfigurationFile() throws IOException {

@@ -71,8 +71,6 @@ public class EntityUtilTest {
     assertEquals(name, employeeBean.getName());
     assertEquals(salary, employeeBean.getSalary());
 
-    assertNull(beanMapper.toBean(null));
-
     final List<Object> empty = beanMapper.toBeans(null);
     assertTrue(empty.isEmpty());
   }
@@ -126,10 +124,21 @@ public class EntityUtilTest {
     assertEquals(name, employee.get(TestDomain.EMP_NAME));
     assertEquals(salary, employee.get(TestDomain.EMP_SALARY));
 
-    assertNull(beanMapper.toEntity(null));
-
     final List<Entity> empty = beanMapper.toEntities(null);
     assertTrue(empty.isEmpty());
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testNullEntity() throws NoSuchMethodException, IllegalAccessException, InstantiationException,
+          InvocationTargetException {
+    final EntityUtil.EntityBeanMapper beanMapper = createEmpDeptBeanMapper();
+    assertNull(beanMapper.toBean(null));
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testNullBean() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    final EntityUtil.EntityBeanMapper beanMapper = createEmpDeptBeanMapper();
+    assertNull(beanMapper.toEntity(null));
   }
 
   @Test(expected = IllegalArgumentException.class)

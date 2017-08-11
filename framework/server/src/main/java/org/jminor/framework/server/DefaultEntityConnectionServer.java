@@ -419,7 +419,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       return connection.getClientLog();
     }
 
-    return null;
+    throw new IllegalArgumentException("Client not connected: " + clientID);
   }
 
   /**

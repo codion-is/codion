@@ -597,12 +597,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   private Object getDenormalizedViewValue(final Property.DenormalizedViewProperty denormalizedViewProperty) {
-    final Entity valueOwner = (Entity) get(denormalizedViewProperty.getForeignKeyPropertyID());
-    if (valueOwner == null) {
+    final Entity valueSource = (Entity) get(denormalizedViewProperty.getForeignKeyPropertyID());
+    if (valueSource == null) {
       return null;
     }
 
-    return valueOwner.get(denormalizedViewProperty.getDenormalizedProperty());
+    return valueSource.get(denormalizedViewProperty.getDenormalizedProperty());
   }
 
   private Key initializeReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty) {

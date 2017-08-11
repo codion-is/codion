@@ -851,7 +851,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     /**
      * @param entity the entity
      * @param property the property
-     * @return the background color to use for this entity and property
+     * @return the background color to use for this entity and property, null if none is specified
      */
     Object getBackgroundColor(final Entity entity, final Property property);
   }

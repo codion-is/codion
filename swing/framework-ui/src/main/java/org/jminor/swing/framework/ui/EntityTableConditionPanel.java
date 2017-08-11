@@ -202,7 +202,7 @@ public final class EntityTableConditionPanel extends JPanel {
 
   /**
    * @param propertyID the property ID
-   * @return the condition panel associated with the given property
+   * @return the condition panel associated with the given property, null if none is specified
    */
   public ColumnConditionPanel getConditionPanel(final String propertyID) {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {

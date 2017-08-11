@@ -110,34 +110,33 @@ public final class MethodLogger {
    * @param method the method being exited
    * @param exception the exception, if any
    * @param exitMessage the message to associate with exiting the method
-   * @return the Entry
+   * @return the Entry, or null if this logger is not enabled
    */
   public synchronized Entry logExit(final String method, final Throwable exception, final String exitMessage) {
-    if (enabled) {
-      if (callStack.isEmpty()) {
-        throw new IllegalStateException("Call stack is empty when trying to log method exit");
+    if (!enabled) {
+      return null;
+    }
+    if (callStack.isEmpty()) {
+      throw new IllegalStateException("Call stack is empty when trying to log method exit");
+    }
+    final Entry entry = callStack.pop();
+    if (!entry.getMethod().equals(method)) {//todo pop until found or empty?
+      throw new IllegalStateException("Expecting method " + entry.getMethod() + " but got " + method + " when trying to log method exit");
+    }
+    entry.setExitTime();
+    entry.setException(exception);
+    entry.setExitMessage(exitMessage);
+    if (callStack.isEmpty()) {
+      if (entries.size() == maxSize) {
+        entries.removeFirst();
       }
-      final Entry entry = callStack.pop();
-      if (!entry.getMethod().equals(method)) {//todo pop until found or empty?
-        throw new IllegalStateException("Expecting method " + entry.getMethod() + " but got " + method + " when trying to log method exit");
-      }
-      entry.setExitTime();
-      entry.setException(exception);
-      entry.setExitMessage(exitMessage);
-      if (callStack.isEmpty()) {
-        if (entries.size() == maxSize) {
-          entries.removeFirst();
-        }
-        entries.addLast(entry);
-      }
-      else {
-        callStack.peek().addSubEntry(entry);
-      }
-
-      return entry;
+      entries.addLast(entry);
+    }
+    else {
+      callStack.peek().addSubEntry(entry);
     }
 
-    return null;
+    return entry;
   }
 
   /**
@@ -357,7 +356,9 @@ public final class MethodLogger {
      * @param exception the exception that occurred during the method call logged by this entry
      */
     public void setException(final Throwable exception) {
-      this.stackTrace = getStackTrace(exception);
+      if (exception != null) {
+        this.stackTrace = getStackTrace(exception);
+      }
     }
 
     /**
@@ -473,9 +474,6 @@ public final class MethodLogger {
     }
 
     private static String getStackTrace(final Throwable exception) {
-      if (exception == null) {
-        return null;
-      }
       final StringWriter sw = new StringWriter();
       exception.printStackTrace(new PrintWriter(sw));
 

@@ -143,7 +143,8 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   /**
    * Returns the first detail model of the given type
    * @param modelClass the type of the required {@link EntityModel}
-   * @return the detail model of type {@code entityModelClass}, null if none is found
+   * @return the detail model of type {@code entityModelClass}
+   * @throws IllegalArgumentException in case a model is not found
    */
   M getDetailModel(final Class<? extends M> modelClass);
 

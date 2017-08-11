@@ -22,6 +22,11 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
+/**
+ * A base class for testing {@link EntityTableModel} subclasses.
+ * @param <EditModel> the {@link EntityEditModel} type
+ * @param <TableModel> the {@link EntityTableModel} type
+ */
 public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
   protected final TableModel testModel = createTestTableModel();

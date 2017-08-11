@@ -573,10 +573,7 @@ public final class EntityUtil {
      * @throws IllegalAccessException if a required method is not accessible
      */
     public Entity toEntity(final Object bean) throws InvocationTargetException, IllegalAccessException {
-      if (bean == null) {
-        return null;
-      }
-
+      Objects.requireNonNull(bean, "bean");
       final Entity entity = Entities.entity(getEntityID(bean.getClass()));
       final Map<String, GetterSetter> beanPropertyMap = getPropertyMap(bean.getClass());
       for (final Map.Entry<String, GetterSetter> propertyEntry : beanPropertyMap.entrySet()) {
@@ -609,7 +606,7 @@ public final class EntityUtil {
     /**
      * Transforms the given entity into a bean according to the information found in this EntityBeanMapper instance
      * @param entity the entity to transform
-     * @return a bean derived from the given entity, null if {@code entity} is null
+     * @return a bean derived from the given entity
      * @throws NoSuchMethodException if a required setter method is not found in the bean class
      * @throws InvocationTargetException in case an exception is thrown during a bean method call
      * @throws IllegalAccessException if a required method is not accessible
@@ -617,10 +614,7 @@ public final class EntityUtil {
      */
     public Object toBean(final Entity entity) throws NoSuchMethodException,
             InvocationTargetException, IllegalAccessException, InstantiationException {
-      if (entity == null) {
-        return null;
-      }
-
+      Objects.requireNonNull(entity, "entity");
       final Class<?> beanClass = getBeanClass(entity.getEntityID());
       final Object bean = beanClass.getConstructor().newInstance();
       final Map<String, GetterSetter> beanPropertyMap = getPropertyMap(beanClass);

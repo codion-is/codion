@@ -261,13 +261,14 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /** {@inheritDoc} */
   @Override
   public final M getDetailModel(final Class<? extends M> modelClass) {
+    Objects.requireNonNull(modelClass, "modelClass");
     for (final M detailModel : detailModels) {
       if (detailModel.getClass().equals(modelClass)) {
         return detailModel;
       }
     }
 
-    return null;
+    throw new IllegalArgumentException("Detail model of type " + modelClass.getName() + " not found");
   }
 
   /** {@inheritDoc} */

@@ -94,7 +94,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
       return propertyFilterModels.get(propertyID);
     }
 
-    return null;
+    throw new IllegalArgumentException("No property filter model found for property " + propertyID);
   }
 
   /** {@inheritDoc} */
@@ -161,7 +161,11 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   /** {@inheritDoc} */
   @Override
   public final PropertyConditionModel<? extends Property> getPropertyConditionModel(final String propertyID) {
-    return propertyConditionModels.get(propertyID);
+    if (propertyConditionModels.containsKey(propertyID)) {
+      return propertyConditionModels.get(propertyID);
+    }
+
+    throw new IllegalArgumentException("Condition model not found for property: " + propertyID);
   }
 
   /** {@inheritDoc} */
@@ -251,7 +255,8 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   @Override
   public EntityTableConditionModel setAdditionalTableFilterCondition(final FilterCondition<Entity> filterCondition) {
     this.additionalFilterCondition = filterCondition;
-    return null;
+
+    return this;
   }
 
   /** {@inheritDoc} */

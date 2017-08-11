@@ -138,7 +138,6 @@ public class DefaultEntityConnectionServerTest {
 
     final ClientLog log = admin.getClientLog(connectionRequestTwo.getClientID());
     assertNotNull(log.getConnectionCreationDate());
-    assertNull(admin.getClientLog(UUID.randomUUID()));
 
     final MethodLogger.Entry entry = log.getEntries().get(0);
     assertEquals("selectMany", entry.getMethod());
@@ -196,6 +195,11 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(1, admin.getConnectionCount());
     server.disconnect(connectionRequestHelen.getClientID());
     assertEquals(0, admin.getConnectionCount());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getClientLogNotConnected() throws RemoteException {
+    admin.getClientLog(UUID.randomUUID());
   }
 
   @Test

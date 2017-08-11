@@ -36,7 +36,7 @@ public interface ValueMap<K extends Attribute, V> extends ValueProvider<K, V>, V
    * Removes the given key and value from this value map along with the original value if any.
    * If no value is mapped to the given key, this method has no effect.
    * @param key the key to remove
-   * @return the value that was removed
+   * @return the value that was removed, null if no value was found
    */
   V remove(final K key);
 

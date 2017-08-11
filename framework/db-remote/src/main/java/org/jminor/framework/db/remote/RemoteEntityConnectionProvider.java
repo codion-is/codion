@@ -118,6 +118,13 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     return clientID;
   }
 
+  /**
+   * @return the info on the server last connected to
+   */
+  public Server.ServerInfo getServerInfo() {
+    return serverInfo;
+  }
+
   /** {@inheritDoc} */
   @Override
   protected EntityConnection connect() {
@@ -177,13 +184,6 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     final int registryPort = Server.REGISTRY_PORT.get();
     this.server = Servers.getServer(serverHostName, Server.SERVER_NAME_PREFIX.get(), registryPort, serverPort);
     this.serverInfo = this.server.getServerInfo();
-    final Version serverVersion = this.serverInfo.getServerVersion();
-    if (serverVersion != null) {
-      RemoteEntityConnection.REMOTE_SERVER_VERSION.set(serverVersion);
-    }
-    else {
-      RemoteEntityConnection.REMOTE_SERVER_VERSION.set(null);
-    }
   }
 
   private static final class RemoteEntityConnectionHandler implements InvocationHandler {
