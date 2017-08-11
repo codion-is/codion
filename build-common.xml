@@ -153,11 +153,11 @@
   </target>
 
   <target name="deploy" depends="package" description="Publishes the module artifacts to a remote repository">
-    <publish resolver="deploy.${release.status}" artifact-dir="${package}"/>
+    <publish resolver="deploy.${release.status}"/>
   </target>
 
   <target name="install" depends="package" description="Publishes the module artifacts to a local repository">
-    <publish resolver="install-local-publish" artifact-dir="${package}"/>
+    <publish resolver="install-local-publish"/>
   </target>
 
   <target name="report" description="Creates a ivy report for this module, results found in 'ivy_report' directory">

@@ -49,14 +49,13 @@
 
   <macrodef name="publish">
     <attribute name="resolver"/>
-    <attribute name="artifact-dir"/>
     <sequential>
       <fail unless="version">Version information not set</fail>
       <copy file="ivy.xml" tofile="ivy.xml.bak" overwrite="true"/>
       <ivy:settings file="${project.root}/ivysettings.xml"/>
       <ivy:resolve/>
       <ivy:deliver deliverpattern="ivy.xml" pubrevision="${version}"/>
-      <ivy:makepom ivyfile="ivy.xml" pomfile="@{artifact-dir}/${ant.project.name}.pom">
+      <ivy:makepom ivyfile="ivy.xml" pomfile="${package}/${ant.project.name}.pom">
         <mapping conf="compile" scope="compile" />
         <mapping conf="runtime" scope="runtime" />
         <mapping conf="test" scope="test" />
@@ -65,7 +64,7 @@
       </ivy:makepom>
       <ivy:publish pubrevision="${version}" status="${release.status}" resolver="@{resolver}"
                    overwrite="true" forcedeliver="true">
-        <artifacts pattern="@{artifact-dir}/[artifact].[ext]"/>
+        <artifacts pattern="${package}/[artifact].[ext]"/>
       </ivy:publish>
       <move file="ivy.xml.bak" tofile="ivy.xml"/>
     </sequential>
