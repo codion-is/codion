@@ -117,7 +117,7 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
    * @throws RemoteException in case of a communitation error
    * @throws ServerException.AuthenticationException in case authentication fails
    */
-  A getServerAdmin(final User user) throws RemoteException, ServerException.AuthenticationException ;
+  A getServerAdmin(final User user) throws RemoteException, ServerException.AuthenticationException;
 
   /**
    * Disconnects the connection identified by the given key.
