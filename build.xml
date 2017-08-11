@@ -140,15 +140,17 @@
       <file file="demos/world/${package}/world-domain.jar"/>
     </copy>
 
+    <copy todir="${deploy.server.path}/config">
+      <file file="${deploy.server.policy}"/>
+      <file file="${deploy.server.allpermissions.policy}"/>
+      <file file="${deploy.server.notsoserial.whitelist}"/>
+      <file file="${deploy.server.keystore}"/>
+      <file file="${deploy.server.monitor.truststore}"/>
+    </copy>
+
     <copy todir="${deploy.server.path}">
       <fileset dir="resources/server/"/>
     </copy>
-    <copy file="${deploy.server.policy}" todir="${deploy.server.path}/config"/>
-    <copy file="${deploy.server.allpermissions.policy}" todir="${deploy.server.path}/config"/>
-    <copy file="${deploy.server.notsoserial.whitelist}" todir="${deploy.server.path}/config"/>
-    <copy file="${deploy.server.keystore}" todir="${deploy.server.path}/config"/>
-    <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.path}/config"/>
-    <chmod dir="${deploy.server.path}" perm="u+x" type="file" includes="*.sh"/>
     <copy todir="${deploy.server.path}/h2db">
       <fileset dir="${db.h2.dir}"/>
     </copy>
@@ -156,6 +158,7 @@
       <fileset dir="demos/chinook/build/reports" includes="**/*.jasper"/>
       <fileset dir="demos/empdept/build/reports" includes="**/*.jasper"/>
     </copy>
+    <chmod dir="${deploy.server.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
   <target name="deploy_server_monitor" depends="create_keystore"
