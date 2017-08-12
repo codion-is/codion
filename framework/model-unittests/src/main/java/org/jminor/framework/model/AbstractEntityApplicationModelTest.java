@@ -28,8 +28,6 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(UNIT_TEST_USER, Databases.getInstance());
 
-  protected abstract Model createDepartmentModel();
-
   @BeforeClass
   public static void setUp() {
     TestDomain.init();
@@ -176,4 +174,10 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     deptModel.getEditModel().setValue(TestDomain.DEPARTMENT_NAME, name);
     assertFalse(model.containsUnsavedData());
   }
+
+  /**
+   * @return a EntityModel based on the department entity
+   * @see TestDomain#T_DEPARTMENT
+   */
+  protected abstract Model createDepartmentModel();
 }

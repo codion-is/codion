@@ -13,6 +13,7 @@ import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -32,24 +33,13 @@ import static org.junit.Assert.*;
 public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<Model, EditModel, TableModel>,
         EditModel extends DefaultEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
-  static {
-    TestDomain.init();
-  }
-
   protected final Model departmentModel = createDepartmentModel();
   private int eventCount = 0;
 
-  protected abstract Model createDepartmentModel();
-
-  protected abstract Model createDepartmentModelWithoutDetailModel();
-
-  protected abstract EditModel createDepartmentEditModel();
-
-  protected abstract TableModel createEmployeeTableModel();
-
-  protected abstract TableModel createDepartmentTableModel();
-
-  protected abstract Model createEmployeeModel();
+  @BeforeClass
+  public static void setUp() {
+    TestDomain.init();
+  }
 
   @Test
   public void testUpdatePrimaryKey() throws DatabaseException, ValidationException {
@@ -234,6 +224,42 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     assertEquals(inserted.get(0), upperBoundEntity);
     editModel.delete();
   }
+
+  /**
+   * @return a EntityModel based on the department entity
+   * @see TestDomain#T_DEPARTMENT
+   */
+  protected abstract Model createDepartmentModel();
+
+  /**
+   * @return a EntityModel based on the department entity, without detail models
+   * @see TestDomain#T_DEPARTMENT
+   */
+  protected abstract Model createDepartmentModelWithoutDetailModel();
+
+  /**
+   * @return a EntityEditModel based on the department entity
+   * @see TestDomain#T_DEPARTMENT
+   */
+  protected abstract EditModel createDepartmentEditModel();
+
+  /**
+   * @return a EntityTableModel based on the employee entity
+   * @see TestDomain#T_EMP
+   */
+  protected abstract TableModel createEmployeeTableModel();
+
+  /**
+   * @return a EntityTableModel based on the department entity
+   * @see TestDomain#T_DEPARTMENT
+   */
+  protected abstract TableModel createDepartmentTableModel();
+
+  /**
+   * @return a EntityModel based on the employee entity
+   * @see TestDomain#T_EMP
+   */
+  protected abstract Model createEmployeeModel();
 
   private static boolean containsAll(final List<Entity> employees, final List<Entity> employeesFromModel) {
     for (final Entity entity : employeesFromModel) {

@@ -25,7 +25,6 @@ import org.junit.Test;
 
 import javax.swing.table.TableColumn;
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
@@ -45,8 +44,16 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Override
-  protected EntityTableModelTmp createTestTableModel() {
-    return new EntityTableModelTmp();
+  protected SwingEntityTableModel createTestTableModel() {
+    final SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER) {
+      @Override
+      protected List<Entity> performQuery() {
+        return testEntities;
+      }
+    };
+    tableModel.setEditModel(new SwingEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER));
+
+    return tableModel;
   }
 
   @Override
@@ -212,7 +219,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   public void preferences() throws Exception {
     testModel.clearPreferences();
 
-    final EntityTableModelTmp tableModel = new EntityTableModelTmp();
+    final SwingEntityTableModel tableModel = createTestTableModel();
     assertTrue(tableModel.getColumnModel().isColumnVisible(Entities.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING)));
 
     tableModel.getColumnModel().setColumnVisible(Entities.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING), false);
@@ -224,7 +231,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
     tableModel.savePreferences();
 
-    final EntityTableModelTmp model = new EntityTableModelTmp();
+    final SwingEntityTableModel model = createTestTableModel();
     assertFalse(model.getColumnModel().isColumnVisible(Entities.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING)));
     assertTrue(model.getPropertyColumnIndex(TestDomain.DETAIL_DOUBLE) == 0);
     assertTrue(model.getPropertyColumnIndex(TestDomain.DETAIL_INT) == 1);
@@ -235,31 +242,5 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
     model.clearPreferences();
     PreferencesUtil.flushUserPreferences();
-  }
-
-  public static final class EntityTableModelTmp extends SwingEntityTableModel {
-
-    private final Entity[] entities = initTestEntities(new Entity[5]);
-
-    public EntityTableModelTmp() {
-      super(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
-      setEditModel(new SwingEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER));
-    }
-    @Override
-    protected List<Entity> performQuery() {
-      return Arrays.asList(entities);
-    }
-  }
-
-  private static Entity[] initTestEntities(final Entity[] testEntities) {
-    final String[] stringValues = new String[]{"a", "b", "c", "d", "e"};
-    for (int i = 0; i < testEntities.length; i++) {
-      testEntities[i] = Entities.entity(TestDomain.T_DETAIL);
-      testEntities[i].put(TestDomain.DETAIL_ID, (long) i+1);
-      testEntities[i].put(TestDomain.DETAIL_INT, i+1);
-      testEntities[i].put(TestDomain.DETAIL_STRING, stringValues[i]);
-    }
-
-    return testEntities;
   }
 }

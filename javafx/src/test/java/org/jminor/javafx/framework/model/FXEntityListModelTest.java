@@ -7,7 +7,6 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.AbstractEntityTableModelTest;
 import org.jminor.framework.model.TestDomain;
@@ -15,7 +14,6 @@ import org.jminor.javafx.framework.ui.EntityTableView;
 
 import javafx.embed.swing.JFXPanel;
 
-import java.util.Arrays;
 import java.util.List;
 
 public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FXEntityEditModel, FXEntityListModel> {
@@ -30,7 +28,15 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
   @Override
   protected FXEntityListModel createTestTableModel() {
-    return new EntityTableModelTmp();
+    final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER) {
+      @Override
+      protected List<Entity> performQuery() {
+        return testEntities;
+      }
+    };
+    listModel.setEditModel(new FXEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER));
+
+    return listModel;
   }
 
   @Override
@@ -77,31 +83,5 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
   @Override
   protected FXEntityEditModel createDetailEditModel() {
     return new FXEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
-  }
-
-  public static final class EntityTableModelTmp extends FXEntityListModel {
-
-    private final Entity[] entities = initTestEntities(new Entity[5]);
-
-    public EntityTableModelTmp() {
-      super(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
-      setEditModel(new FXEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER));
-    }
-    @Override
-    protected List<Entity> performQuery() {
-      return Arrays.asList(entities);
-    }
-  }
-
-  private static Entity[] initTestEntities(final Entity[] testEntities) {
-    final String[] stringValues = new String[]{"a", "b", "c", "d", "e"};
-    for (int i = 0; i < testEntities.length; i++) {
-      testEntities[i] = Entities.entity(TestDomain.T_DETAIL);
-      testEntities[i].put(TestDomain.DETAIL_ID, (long) i+1);
-      testEntities[i].put(TestDomain.DETAIL_INT, i+1);
-      testEntities[i].put(TestDomain.DETAIL_STRING, stringValues[i]);
-    }
-
-    return testEntities;
   }
 }

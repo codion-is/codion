@@ -9,6 +9,7 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -29,27 +30,14 @@ import static org.junit.Assert.*;
  */
 public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
+  protected final List<Entity> testEntities = initTestEntities();
+
   protected final TableModel testModel = createTestTableModel();
 
-  static {
+  @BeforeClass
+  public static void setUp() {
     TestDomain.init();
   }
-
-  protected abstract TableModel createTestTableModel();
-
-  protected abstract TableModel createMasterTableModel();
-
-  protected abstract TableModel createEmployeeTableModelWithoutEditModel();
-
-  protected abstract TableModel createDepartmentTableModel();
-
-  protected abstract TableModel createEmployeeTableModel();
-
-  protected abstract EditModel createDepartmentEditModel();
-
-  protected abstract TableModel createDetailTableModel();
-
-  protected abstract EditModel createDetailEditModel();
 
   @Test
   public void setSelectedByKey() {
@@ -341,5 +329,43 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   public void setColumns() {
     final TableModel empModel = createEmployeeTableModel();
     empModel.setColumns(TestDomain.EMP_COMMISSION, TestDomain.EMP_DEPARTMENT_FK, TestDomain.EMP_HIREDATE);
+  }
+
+  /**
+   * @return a static EntityTableModel using {@link #testEntities} with an edit model
+   * @see TestDomain#T_DETAIL
+   */
+  protected abstract TableModel createTestTableModel();
+
+  /**
+   * @return a EntityTableModel based on the master entity
+   * @see TestDomain#T_MASTER
+   */
+  protected abstract TableModel createMasterTableModel();
+
+  protected abstract TableModel createEmployeeTableModelWithoutEditModel();
+
+  protected abstract TableModel createDepartmentTableModel();
+
+  protected abstract TableModel createEmployeeTableModel();
+
+  protected abstract EditModel createDepartmentEditModel();
+
+  protected abstract TableModel createDetailTableModel();
+
+  protected abstract EditModel createDetailEditModel();
+
+  private static List<Entity> initTestEntities() {
+    final List<Entity> testEntities = new ArrayList<>(5);
+    final String[] stringValues = new String[]{"a", "b", "c", "d", "e"};
+    for (int i = 0; i < 5; i++) {
+      final Entity entity = Entities.entity(TestDomain.T_DETAIL);
+      entity.put(TestDomain.DETAIL_ID, (long) i+1);
+      entity.put(TestDomain.DETAIL_INT, i+1);
+      entity.put(TestDomain.DETAIL_STRING, stringValues[i]);
+      testEntities.add(entity);
+    }
+
+    return testEntities;
   }
 }

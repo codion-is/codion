@@ -43,7 +43,8 @@ public final class SwingEntityModelTest
   @Override
   protected SwingEntityModel createDepartmentModel() {
     final SwingEntityModel departmentModel = new SwingEntityModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
-    final SwingEntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
+    final SwingEntityModel employeeModel = new SwingEntityModel(TestDomain.T_EMP, departmentModel.getConnectionProvider());
+    employeeModel.getEditModel().refreshComboBoxModels();
     departmentModel.addDetailModel(employeeModel);
     departmentModel.setDetailModelForeignKey(employeeModel, TestDomain.EMP_DEPARTMENT_FK);
     departmentModel.addLinkedDetailModel(employeeModel);
@@ -99,7 +100,7 @@ public final class SwingEntityModelTest
   public void testDetailModels() throws CancelException, DatabaseException, ValidationException {
     assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));
     assertFalse(departmentModel.containsDetailModel("undefined"));
-    assertFalse(departmentModel.containsDetailModel(SwingEntityModel.class));
+    assertFalse(departmentModel.containsDetailModel(EmpModel.class));
     final SwingEntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
     assertNotNull(employeeModel);
     assertTrue(departmentModel.getLinkedDetailModels().contains(employeeModel));
@@ -144,7 +145,7 @@ public final class SwingEntityModelTest
 
   @Test(expected = IllegalArgumentException.class)
   public void getDetailModelNonExisting() {
-    departmentModel.getDetailModel(SwingEntityModel.class);
+    departmentModel.getDetailModel(EmpModel.class);
   }
 
   @Test
@@ -198,9 +199,7 @@ public final class SwingEntityModelTest
 
   public static class EmpModel extends SwingEntityModel {
     public EmpModel(final EntityConnectionProvider connectionProvider) {
-      super(new SwingEntityEditModel(TestDomain.T_EMP, connectionProvider));
-      ((SwingEntityEditModel) getEditModel()).getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).refresh();
-      ((SwingEntityEditModel) getEditModel()).getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK).refresh();
+      super(TestDomain.T_EMP, connectionProvider);
     }
   }
 }
