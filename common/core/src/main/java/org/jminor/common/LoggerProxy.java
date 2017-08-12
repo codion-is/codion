@@ -6,6 +6,7 @@ package org.jminor.common;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
@@ -46,13 +47,17 @@ public interface LoggerProxy {
   static LoggerProxy createLoggerProxy() {
     final String loggingProxyImpl = LoggerProxy.LOGGER_PROXY_IMPLEMENTATION.get();
     try {
-      return ((Class<LoggerProxy>) Class.forName(loggingProxyImpl)).newInstance();
+      return ((Class<LoggerProxy>) Class.forName(loggingProxyImpl)).getDeclaredConstructor().newInstance();
+    }
+    catch (final NoSuchMethodException e) {
+      LOG.warn("Unable to instantiate LoggerProxy implementation class: " + e.getMessage());
+      return null;
     }
     catch (final ClassNotFoundException e) {
       LOG.warn("LoggerProxy implementation class not found: " + e.getMessage());
       return null;
     }
-    catch (final InstantiationException | IllegalAccessException e) {
+    catch (final InvocationTargetException | InstantiationException | IllegalAccessException e) {
       LOG.error("Error while instantiating LoggerProxy", e);
 
       throw new RuntimeException(e);

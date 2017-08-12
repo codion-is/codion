@@ -20,13 +20,13 @@ public final class UtilTest {
   @Test
   public void roundDouble() {
     final Double d = 5.1234567;
-    assertEquals(new Double(5.1), new Double(Util.roundDouble(d, 1)));
-    assertEquals(new Double(5.12), new Double(Util.roundDouble(d, 2)));
-    assertEquals(new Double(5.123), new Double(Util.roundDouble(d, 3)));
-    assertEquals(new Double(5.1235), new Double(Util.roundDouble(d, 4)));
-    assertEquals(new Double(5.12346), new Double(Util.roundDouble(d, 5)));
-    assertEquals(new Double(5.123457), new Double(Util.roundDouble(d, 6)));
-    assertEquals(new Double(5.1234567), new Double(Util.roundDouble(d, 7)));
+    assertEquals(Double.valueOf(5.1), Double.valueOf(Util.roundDouble(d, 1)));
+    assertEquals(Double.valueOf(5.12), Double.valueOf(Util.roundDouble(d, 2)));
+    assertEquals(Double.valueOf(5.123), Double.valueOf(Util.roundDouble(d, 3)));
+    assertEquals(Double.valueOf(5.1235), Double.valueOf(Util.roundDouble(d, 4)));
+    assertEquals(Double.valueOf(5.12346), Double.valueOf(Util.roundDouble(d, 5)));
+    assertEquals(Double.valueOf(5.123457), Double.valueOf(Util.roundDouble(d, 6)));
+    assertEquals(Double.valueOf(5.1234567), Double.valueOf(Util.roundDouble(d, 7)));
   }
 
   @Test

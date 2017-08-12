@@ -59,24 +59,24 @@ public final class TextUtilTest {
 
   @Test
   public void getDouble() throws Exception {
-    assertEquals("getDouble should work with comma", new Double(4.22), TextUtil.getDouble("4,22"));
-    assertEquals("getDouble should work with period", new Double(4.22), TextUtil.getDouble("4.22"));
-    assertEquals("getDouble should work with single minus sign", new Double(-1), TextUtil.getDouble("-"));
+    assertEquals("getDouble should work with comma", Double.valueOf(4.22), TextUtil.getDouble("4,22"));
+    assertEquals("getDouble should work with period", Double.valueOf(4.22), TextUtil.getDouble("4.22"));
+    assertEquals("getDouble should work with single minus sign", Double.valueOf(-1), TextUtil.getDouble("-"));
     assertNull("getDouble should work with an empty string", TextUtil.getDouble(""));
   }
 
   @Test
   public void getInt() throws Exception {
-    assertEquals("getInt should work with a digit string", new Integer(4), TextUtil.getInt("4"));
-    assertEquals("getInt should work with single minus sign", new Integer(-1), TextUtil.getInt("-"));
+    assertEquals("getInt should work with a digit string", Integer.valueOf(4), TextUtil.getInt("4"));
+    assertEquals("getInt should work with single minus sign", Integer.valueOf(-1), TextUtil.getInt("-"));
     assertNull("getInt should work with an empty string", TextUtil.getInt(""));
     assertNull("getInt should work with a null value", TextUtil.getInt(null));
   }
 
   @Test
   public void getLong() throws Exception {
-    assertEquals("getLong should work with a digit string", new Long(4), TextUtil.getLong("4"));
-    assertEquals("getLong should work with single minus sign", new Long(-1), TextUtil.getLong("-"));
+    assertEquals("getLong should work with a digit string", Long.valueOf(4), TextUtil.getLong("4"));
+    assertEquals("getLong should work with single minus sign", Long.valueOf(-1), TextUtil.getLong("-"));
     assertNull("getLong should work with an empty string", TextUtil.getLong(""));
     assertNull("getLong should work with a null value", TextUtil.getLong(null));
   }
