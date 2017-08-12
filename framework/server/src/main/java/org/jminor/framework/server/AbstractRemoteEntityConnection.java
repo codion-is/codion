@@ -411,6 +411,22 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       }
     }
 
+    private boolean isConnected() {
+      if (connectionPool != null) {
+        return !disconnected;
+      }
+
+      return !disconnected && localEntityConnection != null && localEntityConnection.isConnected();
+    }
+
+    private void disconnect() {
+      if (disconnected) {
+        return;
+      }
+      disconnected = true;
+      cleanupLocalConnections();
+    }
+
     private void cleanupLocalConnections() {
       if (poolEntityConnection != null) {
         if (poolEntityConnection.isTransactionOpen()) {
@@ -428,22 +444,6 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
         localEntityConnection.disconnect();
         localEntityConnection = null;
       }
-    }
-
-    private boolean isConnected() {
-      if (connectionPool != null) {
-        return !disconnected;
-      }
-
-      return !disconnected && localEntityConnection != null && localEntityConnection.isConnected();
-    }
-
-    private void disconnect() {
-      if (disconnected) {
-        return;
-      }
-      disconnected = true;
-      cleanupLocalConnections();
     }
 
     private ClientLog getClientLog() {

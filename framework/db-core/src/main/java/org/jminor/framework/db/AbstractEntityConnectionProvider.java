@@ -100,7 +100,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   @Override
   public final synchronized void disconnect() {
     if (isConnectionValid()) {
-      doDisconnect();
+      disconnect(entityConnection);
       entityConnection = null;
     }
   }
@@ -127,16 +127,10 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   protected abstract EntityConnection connect();
 
   /**
-   * Disconnects the underlying connection
+   * Disconnects the given connection
+   * @param the connection to be disconnected
    */
-  protected abstract void doDisconnect();
-
-  /**
-   * @return the underlying EntityConnection object
-   */
-  protected final synchronized EntityConnection getConnectionInternal() {
-    return entityConnection;
-  }
+  protected abstract void disconnect(final EntityConnection connection);
 
   private void validateConnection() {
     if (entityConnection == null) {

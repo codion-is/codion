@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An interface specifying a remote EntityConnection implementation.
+ * A remote EntityConnection.
  */
 public interface RemoteEntityConnection extends Remote {
 

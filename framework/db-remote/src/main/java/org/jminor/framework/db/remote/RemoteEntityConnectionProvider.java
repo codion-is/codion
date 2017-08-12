@@ -141,7 +141,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
 
   /** {@inheritDoc} */
   @Override
-  protected void doDisconnect() {
+  protected void disconnect(final EntityConnection connection) {
     try {
       server.disconnect(clientID);
     }
@@ -204,7 +204,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
         return remoteMethod.invoke(remote, args);
       }
       catch (final Exception e) {
-        throw ExceptionUtil.unwrapAndLog(e, InvocationTargetException.class, null);
+        throw ExceptionUtil.unwrapAndLog(e, InvocationTargetException.class, LOG);
       }
     }
 
