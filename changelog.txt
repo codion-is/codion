@@ -4526,3 +4526,5 @@
   Log4jProxy plugin module added
   Throw exception instead of returning null in a few cases
   RemoteEntityConnection moved from framework.db to framework.db.remote, server now depends on db-remote, test moved
+  Abstract unit test classes in framework-model-unittests moved to package framework.model.testing
+  module-info.java added for common and framework modules, ignored during build

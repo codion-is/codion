@@ -8,8 +8,8 @@ import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.model.AbstractEntityTableModelTest;
-import org.jminor.framework.model.TestDomain;
+import org.jminor.framework.model.testing.AbstractEntityTableModelTest;
+import org.jminor.framework.model.testing.TestDomain;
 import org.jminor.javafx.framework.ui.EntityTableView;
 
 import javafx.embed.swing.JFXPanel;

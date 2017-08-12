@@ -11,7 +11,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.model.TestDomain;
+import org.jminor.framework.model.testing.TestDomain;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
 import org.junit.BeforeClass;

@@ -7,7 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.model.TestDomain;
+import org.jminor.framework.model.testing.TestDomain;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

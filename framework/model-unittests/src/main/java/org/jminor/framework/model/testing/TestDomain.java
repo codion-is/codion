@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package org.jminor.framework.model.testing;
 
 import org.jminor.common.Item;
 import org.jminor.framework.domain.Entities;
@@ -9,7 +9,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
-import java.awt.Color;
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
@@ -165,14 +164,7 @@ public final class TestDomain {
             .setDomainID(SCOTT_DOMAIN_ID)
             .setStringProvider(new Entities.StringProvider(EMP_NAME))
             .setSearchPropertyIDs(EMP_NAME, EMP_JOB)
-            .setCaption("Employee")
-            .setBackgroundColorProvider((entity, property) -> {
-              if (property.is(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {
-                return Color.CYAN;
-              }
-
-              return null;
-            });
+            .setCaption("Employee");
   }
 
   static {

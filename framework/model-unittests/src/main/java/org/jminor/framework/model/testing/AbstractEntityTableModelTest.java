@@ -1,13 +1,15 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package org.jminor.framework.model.testing;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityTableModel;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

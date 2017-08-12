@@ -14,7 +14,7 @@ import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityTableConditionModel;
-import org.jminor.framework.model.TestDomain;
+import org.jminor.framework.model.testing.TestDomain;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

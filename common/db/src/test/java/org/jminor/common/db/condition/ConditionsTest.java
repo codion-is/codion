@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 
 public final class ConditionsTest {
 
-  private static final Condition.Set AND_SET = Conditions.conditionSet(Conjunction.AND, new TestCondition(), new TestCondition());
+  private static final Condition.Set<TestColumn> AND_SET = Conditions.conditionSet(Conjunction.AND, new TestCondition(), new TestCondition());
   private static final Condition.Set<TestColumn> OR_SET = Conditions.conditionSet(Conjunction.OR, new TestCondition(), new TestCondition());
   private static final Condition.Set<TestColumn> AND_OR_AND_SET = Conditions.conditionSet(Conjunction.AND, AND_SET, OR_SET);
   private static final Condition.Set<TestColumn> AND_OR_OR_SET = Conditions.conditionSet(Conjunction.OR, AND_SET, OR_SET);

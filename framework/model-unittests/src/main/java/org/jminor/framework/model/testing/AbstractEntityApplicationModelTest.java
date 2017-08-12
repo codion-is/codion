@@ -1,12 +1,19 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package org.jminor.framework.model.testing;
 
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
+import org.jminor.framework.model.DefaultEntityApplicationModel;
+import org.jminor.framework.model.DefaultEntityEditModel;
+import org.jminor.framework.model.DefaultEntityModel;
+import org.jminor.framework.model.EntityApplicationModel;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityModel;
+import org.jminor.framework.model.EntityTableModel;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package org.jminor.framework.model.testing;
 
 import org.jminor.common.EventListener;
 import org.jminor.common.db.condition.Condition;
@@ -12,6 +12,11 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.model.DefaultEntityEditModel;
+import org.jminor.framework.model.DefaultEntityModel;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityModel;
+import org.jminor.framework.model.EntityTableModel;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
