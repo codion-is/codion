@@ -830,29 +830,29 @@ public final class EntityConditions {
         return columnIdentifier + (conditionType == Type.LIKE ? " is null" : " is not null");
       }
 
-      final String sqlValue = getSqlValue("?");
-      final String sqlValue2 = getValueCount() == 2 ? getSqlValue("?") : null;
+      final String valuePlaceholder = getValuePlaceholder();
+      final String value2Placeholder = getValueCount() == 2 ? getValuePlaceholder() : null;
 
       switch(conditionType) {
         case LIKE:
-          return getLikeCondition(columnIdentifier, sqlValue, false);
+          return getLikeCondition(columnIdentifier, valuePlaceholder, false);
         case NOT_LIKE:
-          return getLikeCondition(columnIdentifier, sqlValue, true);
+          return getLikeCondition(columnIdentifier, valuePlaceholder, true);
         case LESS_THAN:
-          return columnIdentifier + " <= " + sqlValue;
+          return columnIdentifier + " <= " + valuePlaceholder;
         case GREATER_THAN:
-          return columnIdentifier + " >= " + sqlValue;
+          return columnIdentifier + " >= " + valuePlaceholder;
         case WITHIN_RANGE:
-          return "(" + columnIdentifier + " >= " + sqlValue + " and " + columnIdentifier +  " <= " + sqlValue2 + ")";
+          return "(" + columnIdentifier + " >= " + valuePlaceholder + " and " + columnIdentifier +  " <= " + value2Placeholder + ")";
         case OUTSIDE_RANGE:
-          return "(" + columnIdentifier + " <= " + sqlValue + " or " + columnIdentifier + " >= " + sqlValue2 + ")";
+          return "(" + columnIdentifier + " <= " + valuePlaceholder + " or " + columnIdentifier + " >= " + value2Placeholder + ")";
         default:
           throw new IllegalArgumentException("Unknown search type" + conditionType);
       }
     }
 
-    private String getSqlValue(final String sqlStringValue) {
-      return property.isString() && !caseSensitive ? "upper(" + sqlStringValue + ")" : sqlStringValue;
+    private String getValuePlaceholder() {
+      return property.isString() && !caseSensitive ? "upper(?)" : "?";
     }
 
     private String getLikeCondition(final String columnIdentifier, final String value, final boolean not) {
