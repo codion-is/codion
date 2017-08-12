@@ -86,8 +86,8 @@
       <jvmarg value="-Djminor.server.hostname=localhost"/>
       <!--this report path setting is based on the assumption that the servers working directory is the demos directory-->
       <jvmarg value="-Djminor.report.path=chinook/build/reports"/>
-      <jvmarg value="-Djavax.net.ssl.trustStore=../../framework/resources/security/JMinorClientTruststore"/>
-      <jvmarg value="-Djava.security.policy=../../framework/resources/security/jminor_load_test.policy"/>
+      <jvmarg value="-Djavax.net.ssl.trustStore=../../resources/security/JMinorClientTruststore"/>
+      <jvmarg value="-Djava.security.policy=../../resources/security/jminor_load_test.policy"/>
     </java>
   </target>
 

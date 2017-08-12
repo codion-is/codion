@@ -128,7 +128,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   /**
    * Disconnects the given connection
-   * @param the connection to be disconnected
+   * @param connection the connection to be disconnected
    */
   protected abstract void disconnect(final EntityConnection connection);
 

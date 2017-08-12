@@ -120,6 +120,7 @@
 
       <file file="framework/db-core/${package}/jminor-framework-db-core.jar"/>
       <file file="framework/db-local/${package}/jminor-framework-db-local.jar"/>
+      <file file="framework/db-remote/${package}/jminor-framework-db-remote.jar"/>
       <file file="framework/server/${package}/jminor-framework-server.jar"/>
 
       <fileset dir="framework/server/${lib}/test" includes="h2*.jar"/>
