@@ -18,9 +18,9 @@ import org.jminor.common.server.Clients;
 import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.Servers;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.RemoteEntityConnection;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.framework.db.remote.RemoteEntityConnection;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

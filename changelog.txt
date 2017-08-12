@@ -4525,3 +4525,4 @@
   Server monitor ivy dependencies fixed, maven no longer pulls local db jar along
   Log4jProxy plugin module added
   Throw exception instead of returning null in a few cases
+  RemoteEntityConnection moved from framework.db to framework.db.remote, server now depends on db-remote, test moved

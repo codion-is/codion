@@ -47,7 +47,7 @@ public final class Databases {
       final Database.Type currentType = Database.getDatabaseType();
       if (instance == null || !instance.getType().equals(currentType)) {
         //refresh the instance
-        instance = (Database) Class.forName(Database.getDatabaseClassName()).newInstance();
+        instance = (Database) Class.forName(Database.getDatabaseClassName()).getDeclaredConstructor().newInstance();
       }
 
       return instance;

@@ -4,8 +4,8 @@
     <subant target="clean" buildpath="db-core"/>
     <subant target="clean" buildpath="db-test"/>
     <subant target="clean" buildpath="db-local"/>
-    <subant target="clean" buildpath="server"/>
     <subant target="clean" buildpath="db-remote"/>
+    <subant target="clean" buildpath="server"/>
     <subant target="clean" buildpath="model"/>
     <subant target="clean" buildpath="model-unittests"/>
   </target>
@@ -14,8 +14,8 @@
     <subant target="build" buildpath="db-core"/>
     <subant target="build" buildpath="db-test"/>
     <subant target="build" buildpath="db-local"/>
-    <subant target="build" buildpath="server"/>
     <subant target="build" buildpath="db-remote"/>
+    <subant target="build" buildpath="server"/>
     <subant target="build" buildpath="model"/>
     <subant target="build" buildpath="model-unittests"/>
   </target>
@@ -24,8 +24,8 @@
     <subant target="javadoc" buildpath="db-core"/>
     <subant target="javadoc" buildpath="db-test"/>
     <subant target="javadoc" buildpath="db-local"/>
-    <subant target="javadoc" buildpath="server"/>
     <subant target="javadoc" buildpath="db-remote"/>
+    <subant target="javadoc" buildpath="server"/>
     <subant target="javadoc" buildpath="model"/>
     <subant target="javadoc" buildpath="model-unittests"/>
   </target>
@@ -34,8 +34,8 @@
     <subant target="package" buildpath="db-core"/>
     <subant target="package" buildpath="db-test"/>
     <subant target="package" buildpath="db-local"/>
-    <subant target="package" buildpath="server"/>
     <subant target="package" buildpath="db-remote"/>
+    <subant target="package" buildpath="server"/>
     <subant target="package" buildpath="model"/>
     <subant target="package" buildpath="model-unittests"/>
   </target>
@@ -44,8 +44,8 @@
     <subant target="jdeps" buildpath="db-core"/>
     <subant target="jdeps" buildpath="db-test"/>
     <subant target="jdeps" buildpath="db-local"/>
-    <subant target="jdeps" buildpath="server"/>
     <subant target="jdeps" buildpath="db-remote"/>
+    <subant target="jdeps" buildpath="server"/>
     <subant target="jdeps" buildpath="model"/>
     <subant target="jdeps" buildpath="model-unittests"/>
   </target>
@@ -54,8 +54,8 @@
     <subant target="install" buildpath="db-core"/>
     <subant target="install" buildpath="db-test"/>
     <subant target="install" buildpath="db-local"/>
-    <subant target="install" buildpath="server"/>
     <subant target="install" buildpath="db-remote"/>
+    <subant target="install" buildpath="server"/>
     <subant target="install" buildpath="model"/>
     <subant target="install" buildpath="model-unittests"/>
   </target>
@@ -64,8 +64,8 @@
     <subant target="deploy" buildpath="db-core"/>
     <subant target="deploy" buildpath="db-test"/>
     <subant target="deploy" buildpath="db-local"/>
-    <subant target="deploy" buildpath="server"/>
     <subant target="deploy" buildpath="db-remote"/>
+    <subant target="deploy" buildpath="server"/>
     <subant target="deploy" buildpath="model"/>
     <subant target="deploy" buildpath="model-unittests"/>
   </target>
@@ -74,8 +74,8 @@
     <subant target="run_unit_tests" buildpath="db-core"/>
     <subant target="run_unit_tests" buildpath="db-test"/>
     <subant target="run_unit_tests" buildpath="db-local"/>
-    <subant target="run_unit_tests" buildpath="server"/>
     <subant target="run_unit_tests" buildpath="db-remote"/>
+    <subant target="run_unit_tests" buildpath="server"/>
     <subant target="run_unit_tests" buildpath="model"/>
     <subant target="run_unit_tests" buildpath="model-unittests"/>
   </target>

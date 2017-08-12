@@ -13,7 +13,6 @@ import org.jminor.common.server.Server;
 import org.jminor.common.server.Servers;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.RemoteEntityConnection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

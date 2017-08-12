@@ -358,14 +358,14 @@
       <fileset dir="framework/db-remote/test/report" includes="jacoco.exec"/>
     </jacoco:merge>
 
-    <!--framework-db-remote -> framework-server-->
-    <jacoco:merge destfile="framework/server/test/report/jacoco.exec">
+    <!--framework-db-server -> framework-db-remote-->
+    <jacoco:merge destfile="framework/db-remote/test/report/jacoco.exec">
+      <fileset dir="framework/server/test/report" includes="jacoco.exec"/>
       <fileset dir="framework/db-remote/test/report" includes="jacoco.exec"/>
-      <fileset dir="framework/server/test/report" includes="jacoco.exec"/>
     </jacoco:merge>
-    <!--framework-server -> framework-model-->
+    <!--framework-db-remote -> framework-model-->
     <jacoco:merge destfile="framework/model/test/report/jacoco.exec">
-      <fileset dir="framework/server/test/report" includes="jacoco.exec"/>
+      <fileset dir="framework/db-remote/test/report" includes="jacoco.exec"/>
       <fileset dir="framework/model/test/report" includes="jacoco.exec"/>
     </jacoco:merge>
     <!--framework-model -> framework-db-local-->

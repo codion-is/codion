@@ -27,9 +27,9 @@ public class DoubleValueLinkTest {
     ValueLinks.doubleValueLink(txtDouble, this, "doubleValue", evtDoubleValueChanged, false, true);
     assertNull("Double value should be null on initialization", txtDouble.getDouble());
     setDoubleValue(2.2);
-    assertEquals("Double value should be 2.2", new Double(2.2), txtDouble.getDouble());
+    assertEquals("Double value should be 2.2", Double.valueOf(2.2), txtDouble.getDouble());
     txtDouble.setText("42.2");
-    assertEquals("Double value should be 42.2", new Double(42.2), doubleValue);
+    assertEquals("Double value should be 42.2", Double.valueOf(42.2), doubleValue);
     txtDouble.setText("");
     assertNull("Double value should be null", doubleValue);
   }
@@ -41,7 +41,7 @@ public class DoubleValueLinkTest {
     ValueLinks.doubleValueLink(txtDouble, this, "doublePrimitiveValue", evtDoublePrimitiveValueValueChanged, true, true);
     assertEquals("Double value should be 0 on initialization", (Double) 0.0, txtDouble.getDouble());
     setDoublePrimitiveValue(2.2);
-    assertEquals("Double value should be 2.2", new Double(2.2), txtDouble.getDouble());
+    assertEquals("Double value should be 2.2", Double.valueOf(2.2), txtDouble.getDouble());
     txtDouble.setText("42.2");
     assertEquals("Double value should be 42.2", 42.2, 0, doublePrimitiveValue);
     txtDouble.setText("");

@@ -1,10 +1,9 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server;
+package org.jminor.framework.db.remote;
 
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.RemoteEntityConnection;
 
 import org.junit.Test;
 

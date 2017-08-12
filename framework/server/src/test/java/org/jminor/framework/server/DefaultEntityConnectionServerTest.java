@@ -7,14 +7,17 @@ import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
+import org.jminor.common.i18n.Messages;
 import org.jminor.common.server.ClientLog;
 import org.jminor.common.server.Clients;
 import org.jminor.common.server.ConnectionRequest;
 import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
-import org.jminor.framework.db.RemoteEntityConnection;
+import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.remote.RemoteEntityConnection;
+import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -133,11 +136,8 @@ public class DefaultEntityConnectionServerTest {
             .orderByAscending(TestDomain.EMP_NAME));
 
     final Database.Statistics stats = admin.getDatabaseStatistics();
-    assertNotNull(stats.getTimestamp());
-    assertNotNull(stats.getQueriesPerSecond());
 
     final ClientLog log = admin.getClientLog(connectionRequestTwo.getClientID());
-    assertNotNull(log.getConnectionCreationDate());
 
     final MethodLogger.Entry entry = log.getEntries().get(0);
     assertEquals("selectMany", entry.getMethod());
@@ -195,6 +195,43 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(1, admin.getConnectionCount());
     server.disconnect(connectionRequestHelen.getClientID());
     assertEquals(0, admin.getConnectionCount());
+  }
+
+  @Test
+  public void remoteEntityConnectionProvider() throws Exception {
+    final RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider("localhost",
+            UNIT_TEST_USER, UUID.randomUUID(), "TestClient");
+
+    assertEquals(EntityConnection.Type.REMOTE, provider.getConnectionType());
+    assertEquals(EntityConnection.Type.REMOTE, provider.getConnection().getType());
+
+    assertEquals(Server.SERVER_HOST_NAME.get(), provider.getServerHostName());
+
+    final EntityConnection db = provider.getConnection();
+    assertNotNull(db);
+    assertTrue(db.isConnected());
+    provider.disconnect();
+
+    final EntityConnection db2 = provider.getConnection();
+    assertNotNull(db2);
+    assertFalse(db == db2);
+    assertTrue(db2.isConnected());
+    provider.disconnect();
+
+    EntityConnection db3 = provider.getConnection();
+    assertTrue(db3.isConnected());
+    admin.disconnect(provider.getClientID());
+    assertFalse(db3.isConnected());
+
+    db3 = provider.getConnection();
+    assertTrue(db3.isConnected());
+    db3.disconnect();
+
+    provider.disconnect();
+    assertEquals("localhost" + " - " + Messages.get(Messages.NOT_CONNECTED), provider.getDescription());
+    db3 = provider.getConnection();
+    assertEquals(admin.getServerInfo().getServerName() + "@localhost", provider.getDescription());
+    db3.disconnect();
   }
 
   @Test(expected = IllegalArgumentException.class)
