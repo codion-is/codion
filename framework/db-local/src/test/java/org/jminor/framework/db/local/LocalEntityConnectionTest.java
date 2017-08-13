@@ -29,6 +29,7 @@ import org.jminor.framework.domain.Property;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.Connection;
@@ -61,7 +62,12 @@ public class LocalEntityConnectionTest {
 
   private LocalEntityConnection connection;
 
-  static {
+  public LocalEntityConnectionTest() {
+    TestDomain.init();
+  }
+
+  @BeforeClass
+  public static void beforeClass() {
     TestDomain.init();
     Entities.define(JOINED_QUERY_ENTITY_ID,
             Properties.primaryKeyProperty("e.empno"),
@@ -78,10 +84,6 @@ public class LocalEntityConnectionTest {
     Entities.define(ENTITY_ID,
             Properties.primaryKeyProperty(ID),
             Properties.columnProperty(DATA, Types.BLOB));
-  }
-
-  public LocalEntityConnectionTest() {
-    TestDomain.init();
   }
 
   @Before
@@ -125,6 +127,17 @@ public class LocalEntityConnectionTest {
     finally {
       connection.rollbackTransaction();
     }
+  }
+
+  @Test(expected = DatabaseException.class)
+  public void deleteByKeyWithForeignKeys() throws DatabaseException {
+    final Entity accounting = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
+    connection.delete(Collections.singletonList(accounting.getKey()));
+  }
+
+  @Test(expected = DatabaseException.class)
+  public void deleteByConditionWithForeignKeys() throws DatabaseException {
+    connection.delete(EntityConditions.condition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "ACCOUNTING"));
   }
 
   @Test
