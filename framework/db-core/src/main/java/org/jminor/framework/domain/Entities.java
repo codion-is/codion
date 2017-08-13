@@ -627,6 +627,14 @@ public final class Entities {
   }
 
   /**
+   * @param entityID the entityID
+   * @return all foreign keys referencing entities of type {@code entityID}
+   */
+  public static Collection<Property.ForeignKeyProperty> getForeignKeyReferences(final String entityID) {
+    return DefaultEntityDefinition.getDefinition(entityID).getForeignKeyReferences();
+  }
+
+  /**
    * @param entityID the entity ID
    * @return a map containing the properties the given entity is comprised of, mapped to their respective propertyIDs
    */

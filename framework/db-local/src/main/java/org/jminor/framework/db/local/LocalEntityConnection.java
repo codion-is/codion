@@ -495,12 +495,13 @@ final class LocalEntityConnection implements EntityConnection {
       return dependencyMap;
     }
 
-    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = resolveForeignKeys(entities.iterator().next().getEntityID());
-    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      final List<Entity> dependentEntities = selectMany(EntityConditions.selectCondition(foreignKeyProperty.getEntityID(),
-              foreignKeyProperty.getPropertyID(), Condition.Type.LIKE, entities));
-      if (!dependentEntities.isEmpty()) {
-        dependencyMap.put(foreignKeyProperty.getEntityID(), dependentEntities);
+    final Collection<Property.ForeignKeyProperty> foreignKeyReferences = Entities.getForeignKeyReferences(
+            entities.iterator().next().getEntityID());
+    for (final Property.ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
+      final List<Entity> dependencies = selectMany(EntityConditions.selectCondition(foreignKeyReference.getEntityID(),
+              foreignKeyReference.getPropertyID(), Condition.Type.LIKE, entities));
+      if (!dependencies.isEmpty()) {
+        dependencyMap.put(foreignKeyReference.getEntityID(), dependencies);
       }
     }
 
@@ -1189,20 +1190,6 @@ final class LocalEntityConnection implements EntityConnection {
     if (Entities.isReadOnly(entityID)) {
       throw new DatabaseException("Entities of type: " + entityID + " are read only");
     }
-  }
-
-  private static Collection<Property.ForeignKeyProperty> resolveForeignKeys(final String entityID) {
-    final Collection<String> entityIDs = Entities.getDefinedEntities();
-    final Collection<Property.ForeignKeyProperty> dependencies = new ArrayList<>();
-    for (final String entityIDToCheck : entityIDs) {
-      for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityIDToCheck)) {
-        if (foreignKeyProperty.getReferencedEntityID().equals(entityID)) {
-          dependencies.add(foreignKeyProperty);
-        }
-      }
-    }
-
-    return dependencies;
   }
 
   private static final class BlobPacker implements ResultPacker<Blob> {

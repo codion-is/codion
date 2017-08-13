@@ -154,6 +154,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   private List<Property.ColumnProperty> primaryKeyProperties;
   private List<Property.ForeignKeyProperty> foreignKeyProperties;
+  private List<Property.ForeignKeyProperty> foreignKeyReferences;
   private List<Property.TransientProperty> transientProperties;
   private List<Property> visibleProperties;
   private List<Property.ColumnProperty> columnProperties;
@@ -530,6 +531,23 @@ final class DefaultEntityDefinition implements Entity.Definition {
       foreignKeyProperties = Collections.unmodifiableList(getForeignKeyProperties(properties.values()));
     }
     return foreignKeyProperties;
+  }
+
+  @Override
+  public List<Property.ForeignKeyProperty> getForeignKeyReferences() {
+    if (foreignKeyReferences == null) {
+      foreignKeyReferences = new ArrayList<>();
+      for (final String definedEntityID : getDefinitionMap().keySet()) {
+        for (final Property.ForeignKeyProperty foreignKeyProperty : getDefinition(definedEntityID).getForeignKeyProperties()) {
+          if (foreignKeyProperty.getReferencedEntityID().equals(entityID)) {
+            foreignKeyReferences.add(foreignKeyProperty);
+          }
+        }
+      }
+
+    }
+
+    return foreignKeyReferences;
   }
 
   /** {@inheritDoc} */

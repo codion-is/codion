@@ -816,6 +816,11 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     List<Property.ForeignKeyProperty> getForeignKeyProperties();
 
     /**
+     * @return all foreign keys referencing entities of this type
+     */
+    List<Property.ForeignKeyProperty> getForeignKeyReferences();
+
+    /**
      * @return true if this entity type has any denormalized properties
      */
     boolean hasDenormalizedProperties();
