@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <option name="DEFAULT_COMPILER" value="Javac" />
-    <resourceExtensions />
+    <excludeFromCompile>
+      <file url="file://$PROJECT_DIR$/common/core/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/common/db/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/common/model/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/common/server/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/framework/db-core/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/framework/db-local/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/framework/db-remote/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/framework/db-test/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/framework/model/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/framework/model-unittests/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/framework/server/src/main/java/module-info.java" />
+    </excludeFromCompile>
     <wildcardResourcePatterns>
       <entry name="!?*.java" />
       <entry name="!?*.form" />
@@ -13,10 +24,5 @@
       <entry name="!?*.kt" />
       <entry name="!?*.clj" />
     </wildcardResourcePatterns>
-    <annotationProcessing>
-      <profile default="true" name="Default" enabled="false">
-        <processorPath useClasspath="true" />
-      </profile>
-    </annotationProcessing>
   </component>
 </project>
