@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.sql.Types;
 import java.text.NumberFormat;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -147,8 +148,11 @@ public final class PropertiesTest {
     final Property.ForeignKeyProperty foreignKeyProperty = Properties.foreignKeyProperty("propertyID", "caption",
             "referencedEntityID", new Property.ColumnProperty[] {columnProperty1, columnProperty2},
             new Property.ColumnProperty[] {refProperty, refProperty2});
-    assertEquals(refProperty, foreignKeyProperty.getReferencedProperty(columnProperty1));
-    assertEquals(refProperty2, foreignKeyProperty.getReferencedProperty(columnProperty2));
+    final List<Property.ColumnProperty> foreignProperties = foreignKeyProperty.getForeignProperties();
+    assertNotNull(foreignProperties);
+    assertEquals(2, foreignProperties.size());
+    assertEquals(refProperty, foreignProperties.get(0));
+    assertEquals(refProperty2, foreignProperties.get(1));
   }
 
   @Test(expected = NullPointerException.class)
@@ -168,13 +172,5 @@ public final class PropertiesTest {
     final Property.ColumnProperty columnProperty2 = Properties.columnProperty("fk2");
     Properties.foreignKeyProperty("propertyID", "caption", "referencedEntityID",
             new Property.ColumnProperty[] {columnProperty1, columnProperty2}, new Property.ColumnProperty[] {refProperty});
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void foreignKeyPropertyNullProperties() {
-    final Property.ColumnProperty columnProperty1 = Properties.columnProperty("fk1");
-    final Property.ColumnProperty columnProperty2 = Properties.columnProperty("fk2");
-    Properties.foreignKeyProperty("propertyID", "caption", "referencedEntityID",
-            new Property.ColumnProperty[] {columnProperty1, columnProperty2}, null);
   }
 }

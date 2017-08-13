@@ -79,8 +79,6 @@ org.jminor.common.db.condition.Condition$Type
 org.jminor.common.server.Clients$DefaultConnectionRequest
 org.jminor.framework.db.condition.EntityConditions$DefaultEntityCondition
 org.jminor.framework.db.condition.EntityConditions$DefaultEntitySelectCondition
-org.jminor.framework.db.condition.EntityConditions$ForeignKeyCondition
-org.jminor.framework.db.condition.EntityConditions$EntityKeyCondition
 org.jminor.framework.db.condition.EntityConditions$PropertyCondition
 org.jminor.framework.domain.DefaultEntity
 org.jminor.framework.domain.DefaultEntity$DefaultKey

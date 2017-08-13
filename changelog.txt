@@ -4529,3 +4529,4 @@
   Abstract unit test classes in framework-model-unittests moved to package framework.model.testing
   module-info.java added for common and framework modules, ignored during build
   AbstractEntityConnectionProvider refactored a bit
+  EntityConditions refactored, ForeignKeyCondition and EntityKeyCondition classes removed

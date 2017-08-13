@@ -15,6 +15,7 @@ import java.text.Format;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -456,6 +457,10 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   public Key getReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty) {
     Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
+    if (!Objects.equals(getEntityID(), foreignKeyProperty.getEntityID())) {
+      throw new IllegalArgumentException("Foreign key property " + foreignKeyProperty
+              + " is not part of entity: " + getEntityID());
+    }
     final String propertyID = foreignKeyProperty.getPropertyID();
     Key referencedPrimaryKey = getCachedReferencedKey(propertyID);
     if (referencedPrimaryKey != null) {
@@ -608,6 +613,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   private Key initializeReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty) {
     if (foreignKeyProperty.isCompositeReference()) {
       final List<Property.ColumnProperty> referenceProperties = foreignKeyProperty.getReferenceProperties();
+      final Iterator<Property.ColumnProperty> foreignProperties = Entities.getReferencedProperties(foreignKeyProperty).iterator();
       final Map<Property.ColumnProperty, Object> values = new HashMap<>(referenceProperties.size());
       for (final Property.ColumnProperty referenceKeyProperty : referenceProperties) {
         final Object value = super.get(referenceKeyProperty);
@@ -615,7 +621,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
           return null;
         }
         else {
-          values.put(foreignKeyProperty.getReferencedProperty(referenceKeyProperty), value);
+          values.put(foreignProperties.next(), value);
         }
       }
 

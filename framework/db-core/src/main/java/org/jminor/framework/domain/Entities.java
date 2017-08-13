@@ -674,6 +674,19 @@ public final class Entities {
   }
 
   /**
+   * @param foreignKeyProperty the foreign key property
+   * @return the properties referenced by this foreign key property, by default the primary key properties of the referenced entity type
+   */
+  public static List<Property.ColumnProperty> getReferencedProperties(final Property.ForeignKeyProperty foreignKeyProperty) {
+    final List<Property.ColumnProperty> referencedProperties = foreignKeyProperty.getForeignProperties();
+    if (referencedProperties == null) {
+      return getPrimaryKeyProperties(foreignKeyProperty.getReferencedEntityID());
+    }
+
+    return referencedProperties;
+  }
+
+                                                                      /**
    * @return a map containing all defined entityIDs, with their respective table names as an associated value
    */
   public static Map<String, String> getDefinitions() {

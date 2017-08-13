@@ -20,13 +20,15 @@ public final class TestDomain {
   public static void init() {}
 
   public static final String T_MASTER = "db.master_entity";
-  public static final String MASTER_ID = "id";
+  public static final String MASTER_ID_1 = "id";
+  public static final String MASTER_ID_2 = "id2";
   public static final String MASTER_NAME = "name";
   public static final String MASTER_CODE = "code";
 
   static {
     Entities.define(T_MASTER,
-            Properties.primaryKeyProperty(MASTER_ID, Types.BIGINT),
+            Properties.columnProperty(MASTER_ID_1).setPrimaryKeyIndex(0),
+            Properties.columnProperty(MASTER_ID_2).setPrimaryKeyIndex(1),
             Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
             Properties.columnProperty(MASTER_CODE, Types.INTEGER))
             .setComparator((o1, o2) -> {
@@ -46,7 +48,8 @@ public final class TestDomain {
   public static final String DETAIL_TIMESTAMP = "timestamp";
   public static final String DETAIL_BOOLEAN = "boolean";
   public static final String DETAIL_BOOLEAN_NULLABLE = "boolean_nullable";
-  public static final String DETAIL_MASTER_ID = "master_id";
+  public static final String DETAIL_MASTER_ID_1 = "master_id";
+  public static final String DETAIL_MASTER_ID_2 = "master_id_2";
   public static final String DETAIL_MASTER_FK = "master_fk";
   public static final String DETAIL_MASTER_NAME = "master_name";
   public static final String DETAIL_MASTER_CODE = "master_code";
@@ -76,7 +79,10 @@ public final class TestDomain {
             Properties.columnProperty(DETAIL_BOOLEAN_NULLABLE, Types.BOOLEAN, DETAIL_BOOLEAN_NULLABLE)
                     .setDefaultValue(true),
             Properties.foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK, T_MASTER,
-                    Properties.columnProperty(DETAIL_MASTER_ID, Types.BIGINT)),
+                    new Property.ColumnProperty[] {
+                            Properties.columnProperty(DETAIL_MASTER_ID_1),
+                            Properties.columnProperty(DETAIL_MASTER_ID_2)
+                    }, null),
             Properties.denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_FK,
                     Entities.getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
             Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_FK,

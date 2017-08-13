@@ -236,7 +236,7 @@ public interface EntityConnection {
 
   /**
    * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityIDs
-   * @param entities the entities for which to retrieve dependencies
+   * @param entities the entities for which to retrieve dependencies, must be of same type
    * @return the entities that depend on {@code entities}
    * @throws DatabaseException in case of a db exception
    */

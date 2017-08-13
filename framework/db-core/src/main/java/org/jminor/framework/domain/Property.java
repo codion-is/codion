@@ -529,7 +529,7 @@ public interface Property extends Attribute {
     String getReferencedEntityID();
 
     /**
-     * Returns an unmodifiable list containing the actual reference properties,
+     * Returns an unmodifiable list containing the underlying reference properties
      * @return the reference properties
      */
     List<ColumnProperty> getReferenceProperties();
@@ -540,10 +540,10 @@ public interface Property extends Attribute {
     boolean isCompositeReference();
 
     /**
-     * @param referenceProperty the property from the referenced entity referenced by the {@code referenceProperty}
-     * @return the referenced property
+     * Returns an unmodifiable list containing the properties referenced by this foreign key property
+     * @return the referenced properties
      */
-    Property.ColumnProperty getReferencedProperty(final Property referenceProperty);
+    List<ColumnProperty> getForeignProperties();
 
     /**
      * @return the default query fetch depth for this foreign key

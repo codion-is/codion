@@ -7,6 +7,7 @@ import org.jminor.common.Item;
 import org.jminor.common.db.ValueConverter;
 
 import java.sql.Types;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -89,14 +90,16 @@ public final class Properties {
    * @param caption the property caption
    * @param referencedEntityID the ID of the referenced entity type
    * @param referenceProperties the actual column properties involved in the reference
-   * @param referencedProperties the properties referenced, in the same order as the reference properties
+   * @param foreignProperties the properties referenced, in the same order as the reference properties,
+   * if null then the primary key properties of the referenced entity are used when required
    * @return a new foreign key proeprty
    */
   public static Property.ForeignKeyProperty foreignKeyProperty(final String propertyID, final String caption,
                                                                final String referencedEntityID,
                                                                final Property.ColumnProperty[] referenceProperties,
-                                                               final Property.ColumnProperty[] referencedProperties) {
-    return new DefaultProperty.DefaultForeignKeyProperty(propertyID, caption, referencedEntityID, referenceProperties, referencedProperties);
+                                                               final Property.ColumnProperty[] foreignProperties) {
+    return new DefaultProperty.DefaultForeignKeyProperty(propertyID, caption, referencedEntityID, Arrays.asList(referenceProperties),
+            foreignProperties == null ? null : Arrays.asList(foreignProperties));
   }
 
   /**

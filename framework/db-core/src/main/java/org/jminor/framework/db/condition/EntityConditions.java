@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,8 +50,8 @@ public final class EntityConditions {
    * @return a select condition based on the given keys
    */
   public static EntitySelectCondition selectCondition(final Collection<Entity.Key> keys) {
-    final EntityKeyCondition keyCondition = new EntityKeyCondition(keys);
-    return new DefaultEntitySelectCondition(keyCondition.getEntityID(), keyCondition);
+    checkKeysParameter(keys);
+    return new DefaultEntitySelectCondition(keys.iterator().next().getEntityID(), createKeyCondition(keys));
   }
 
   /**
@@ -91,7 +92,7 @@ public final class EntityConditions {
   public static EntitySelectCondition selectCondition(final String entityID, final String propertyID,
                                                       final Condition.Type conditionType, final String orderByClause,
                                                       final int fetchCount, final Object value) {
-    return new DefaultEntitySelectCondition(entityID, createPropertyCondition(entityID, propertyID, conditionType, value),
+    return new DefaultEntitySelectCondition(entityID, propertyCondition(entityID, propertyID, conditionType, value),
             fetchCount).setOrderByClause(orderByClause);
   }
 
@@ -102,19 +103,6 @@ public final class EntityConditions {
    */
   public static EntitySelectCondition selectCondition(final String entityID, final String orderByClause) {
     return new DefaultEntitySelectCondition(entityID, null).setOrderByClause(orderByClause);
-  }
-
-  /**
-   * @param entityID the entity ID
-   * @param foreignKeyReferenceProperties the foreign key reference properties
-   * @param primaryKeys the primary keys referenced by the given properties
-   * @return a select condition based on the given values
-   */
-  public static EntitySelectCondition selectCondition(final String entityID,
-                                                      final List<Property.ColumnProperty> foreignKeyReferenceProperties,
-                                                      final List<Entity.Key> primaryKeys) {
-    final EntityKeyCondition keyCondition = new EntityKeyCondition(foreignKeyReferenceProperties, primaryKeys);
-    return new DefaultEntitySelectCondition(entityID, keyCondition);
   }
 
   /**
@@ -183,8 +171,8 @@ public final class EntityConditions {
    * @return a condition specifying the entities having the given primary keys
    */
   public static EntityCondition condition(final Collection<Entity.Key> keys) {
-    final EntityKeyCondition keyCondition = new EntityKeyCondition(keys);
-    return new DefaultEntityCondition(keyCondition.getEntityID(), keyCondition);
+    checkKeysParameter(keys);
+    return new DefaultEntityCondition(keys.iterator().next().getEntityID(), createKeyCondition(keys));
   }
 
   /**
@@ -204,7 +192,7 @@ public final class EntityConditions {
    */
   public static EntityCondition condition(final String entityID, final String propertyID,
                                           final Condition.Type conditionType, final Object value) {
-    return new DefaultEntityCondition(entityID, createPropertyCondition(entityID, propertyID, conditionType, value));
+    return new DefaultEntityCondition(entityID, propertyCondition(entityID, propertyID, conditionType, value));
   }
 
   /**
@@ -232,8 +220,12 @@ public final class EntityConditions {
                                                                      final Object value) {
     final Property property = Entities.getProperty(entityID, propertyID);
     if (property instanceof Property.ForeignKeyProperty) {
-      throw new IllegalArgumentException(property + " is a " + Property.ForeignKeyProperty.class.getSimpleName() +
-              ", use EntityConditions.foreignKeyCondition()");
+      if (value instanceof Collection) {
+        return foreignKeyCondition((Property.ForeignKeyProperty) property, conditionType, (Collection) value);
+      }
+      else {
+        return foreignKeyCondition((Property.ForeignKeyProperty) property, conditionType, Collections.singletonList(value));
+      }
     }
     if (!(property instanceof Property.ColumnProperty)) {
       throw new IllegalArgumentException(property + " is not a " + Property.ColumnProperty.class.getSimpleName());
@@ -332,7 +324,25 @@ public final class EntityConditions {
    */
   public static Condition<Property.ColumnProperty> foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
                                                                        final Condition.Type conditionType, final Collection values) {
-    return new ForeignKeyCondition(foreignKeyProperty, conditionType, values);
+    final Collection<Entity.Key> keys = getEntityKeys(values);
+    if (foreignKeyProperty.isCompositeReference()) {
+      final List<Property.ColumnProperty> referenceProperties = foreignKeyProperty.getReferenceProperties();
+      final List<Property.ColumnProperty> foreignProperties = Entities.getReferencedProperties(foreignKeyProperty);
+      if (keys.size() == 1) {
+        return createSingleCompositeCondition(referenceProperties, foreignProperties, conditionType, keys.iterator().next());
+      }
+
+      return createMultipleCompositeCondition(referenceProperties, foreignProperties, conditionType, keys);
+    }
+    else {
+      if (keys.size() == 1) {
+        final Entity.Key entityKey = keys.iterator().next();
+        return propertyCondition(foreignKeyProperty.getReferenceProperties().get(0), conditionType,
+                entityKey == null ? null : entityKey.getFirstValue());
+      }
+
+      return propertyCondition(keys.iterator().next().getFirstProperty(), conditionType, EntityUtil.getValues(keys));
+    }
   }
 
   /**
@@ -344,18 +354,87 @@ public final class EntityConditions {
     return new DefaultEntityCondition(entityID, condition);
   }
 
-  private static Condition<Property.ColumnProperty> createPropertyCondition(final String entityID, final String propertyID,
-                                                                            final Condition.Type conditionType, final Object value) {
-    final Property property = Entities.getProperty(entityID, propertyID);
-    final Condition<Property.ColumnProperty> condition;
-    if (property instanceof Property.ForeignKeyProperty) {
-      condition = new ForeignKeyCondition((Property.ForeignKeyProperty) property, conditionType, value);
+  private static Condition<Property.ColumnProperty> createKeyCondition(final Collection<Entity.Key> keys) {
+    final Entity.Key firstKey = keys.iterator().next();
+    if (firstKey.isCompositeKey()) {
+      return createMultipleCompositeCondition(firstKey.getProperties(), firstKey.getProperties(), Condition.Type.LIKE, keys);
     }
     else {
-      condition = new PropertyCondition((Property.ColumnProperty) property, conditionType, value);
+      return propertyCondition(keys.iterator().next().getFirstProperty(), Condition.Type.LIKE, EntityUtil.getValues(keys));
+    }
+  }
+
+  private static Condition<Property.ColumnProperty> createMultipleCompositeCondition(final List<Property.ColumnProperty> referenceProperties,
+                                                                                     final List<Property.ColumnProperty> foreignProperties,
+                                                                                     final Condition.Type conditionType,
+                                                                                     final Collection<Entity.Key> keys) {
+    final Condition.Set<Property.ColumnProperty> conditionSet = Conditions.conditionSet(Conjunction.OR);
+    for (final Entity.Key entityKey : keys) {
+      final Condition.Set<Property.ColumnProperty> keyCondition = Conditions.conditionSet(Conjunction.AND);
+      final Iterator<Property.ColumnProperty> foreignPropertiesIterator = foreignProperties.iterator();
+      for (final Property.ColumnProperty referenceProperty : referenceProperties) {
+        final Property.ColumnProperty foreignProperty = foreignPropertiesIterator.next();
+        final Object referencedValue = entityKey == null ? null : entityKey.get(foreignProperty);
+        keyCondition.add(new PropertyCondition(referenceProperty, conditionType, referencedValue));
+      }
+
+      conditionSet.add(keyCondition);
     }
 
-    return condition;
+    return conditionSet;
+  }
+
+  private static Condition<Property.ColumnProperty> createSingleCompositeCondition(final List<Property.ColumnProperty> referenceProperties,
+                                                                                   final List<Property.ColumnProperty> foreignProperties,
+                                                                                   final Condition.Type conditionType,
+                                                                                   final Entity.Key entityKey) {
+    final Condition.Set<Property.ColumnProperty> conditionSet = Conditions.conditionSet(Conjunction.AND);
+    final Iterator<Property.ColumnProperty> foreignPropertiesIterator = foreignProperties.iterator();
+    for (final Property.ColumnProperty referenceProperty : referenceProperties) {
+      final Property.ColumnProperty foreignProperty = foreignPropertiesIterator.next();
+      final Object referencedValue = entityKey == null ? null : entityKey.get(foreignProperty);
+      conditionSet.add(new PropertyCondition(referenceProperty, conditionType, referencedValue));
+    }
+
+    return conditionSet;
+  }
+
+  @SuppressWarnings({"unchecked"})
+  private static Collection<Entity.Key> getEntityKeys(final Object value) {
+    final Collection<Entity.Key> keys = new ArrayList<>();
+    if (value instanceof Collection) {
+      if (((Collection) value).isEmpty()) {
+        keys.add(null);
+      }
+      else {
+        for (final Object object : (Collection) value) {
+          keys.add(getKey(object));
+        }
+      }
+    }
+    else {
+      keys.add(getKey(value));
+    }
+
+    return keys;
+  }
+
+  private static Entity.Key getKey(final Object value) {
+    if (value == null || value instanceof Entity.Key) {
+      return (Entity.Key) value;
+    }
+    else if (value instanceof Entity) {
+      return ((Entity) value).getKey();
+    }
+
+    throw new IllegalArgumentException("Foreign key condition uses only Entity or Entity.Key instances for values");
+  }
+
+  private static void checkKeysParameter(final Collection<Entity.Key> keys) {
+    Objects.requireNonNull(keys, "keys");
+    if (keys.isEmpty()) {
+      throw new IllegalArgumentException("Entity key condition requires at least one key");
+    }
   }
 
   private static final class DefaultEntityCondition implements EntityCondition {
@@ -624,107 +703,6 @@ public final class EntityConditions {
   }
 
   /**
-   * A class encapsulating a query condition with Entity.Key objects as values.
-   */
-  private static final class EntityKeyCondition implements Condition<Property.ColumnProperty> {
-
-    private static final long serialVersionUID = 1;
-
-    private String entityID;
-    private Set<Property.ColumnProperty> conditionSet;
-
-    /**
-     * Instantiates a new {@link EntityKeyCondition} comprised of the given keys
-     * @param keys the keys
-     */
-    private EntityKeyCondition(final Collection<Entity.Key> keys) {
-      this(null, keys);
-    }
-
-    /**
-     * Instantiates a new {@link EntityKeyCondition} comprised of the given keys which uses the given properties
-     * as column names when constructing the condition string
-     * @param properties the properties to use for column names when constructing the condition string
-     * @param keys the keys
-     */
-    private EntityKeyCondition(final List<Property.ColumnProperty> properties, final Collection<Entity.Key> keys) {
-      conditionSet = Conditions.conditionSet(Conjunction.OR);
-      Objects.requireNonNull(keys, "keys");
-      if (keys.isEmpty()) {
-        throw new IllegalArgumentException("EntityKeyCondition requires at least one key");
-      }
-      final Entity.Key firstKey = keys.iterator().next();
-      if (properties != null && properties.size() != firstKey.getPropertyCount()) {
-        throw new IllegalArgumentException("Reference property count mismatch");
-      }
-      entityID = firstKey.getEntityID();
-      setupCondition(properties, keys, firstKey);
-    }
-
-    @Override
-    public String getWhereClause() {
-      return conditionSet.getWhereClause();
-    }
-
-    @Override
-    public List<Property.ColumnProperty> getColumns() {
-      return conditionSet.getColumns();
-    }
-
-    @Override
-    public List<Object> getValues() {
-      return conditionSet.getValues();
-    }
-
-    /**
-     * @return the entityID
-     */
-    private String getEntityID() {
-      return entityID;
-    }
-
-    private void setupCondition(final List<Property.ColumnProperty> properties, final Collection<Entity.Key> keys,
-                                final Entity.Key firstKey) {
-      if (firstKey.isCompositeKey()) {//multiple column key
-        final List<Property.ColumnProperty> pkProperties = firstKey.getProperties();
-        final List<? extends Property.ColumnProperty> propertyList = properties == null ? pkProperties : properties;
-        //(a = b and c = d) or (a = g and c = d)
-        for (final Entity.Key key : keys) {
-          final Set<Property.ColumnProperty> andSet = Conditions.conditionSet(Conjunction.AND);
-          int i = 0;
-          for (final Property.ColumnProperty property : propertyList) {
-            andSet.add(new PropertyCondition(property, Type.LIKE, key.get(pkProperties.get(i++))));
-          }
-
-          conditionSet.add(andSet);
-        }
-      }
-      else {
-        final Property.ColumnProperty property = properties == null ? firstKey.getFirstProperty() : properties.get(0);
-        final Property.ColumnProperty primaryKeyProperty = properties == null ? property : firstKey.getFirstProperty();
-        //a = b
-        if (keys.size() == 1) {
-          conditionSet.add(new PropertyCondition(property, Type.LIKE, firstKey.get(primaryKeyProperty)));
-        }
-        else { //a in (c, v, d, s)
-          conditionSet.add(new PropertyCondition(property, Type.LIKE, EntityUtil.getValues(keys)));
-        }
-      }
-    }
-
-    private void writeObject(final ObjectOutputStream stream) throws IOException {
-      stream.writeObject(entityID);
-      stream.writeObject(conditionSet);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
-      entityID = (String) stream.readObject();
-      conditionSet = (Set<Property.ColumnProperty>) stream.readObject();
-    }
-  }
-
-  /**
    * A object for encapsulating a query condition with a single property and one or more values.
    */
   private static final class PropertyCondition implements Condition<Property.ColumnProperty> {
@@ -927,176 +905,6 @@ public final class EntityConditions {
       for (int i = 0; i < valueCount; i++) {
         values.add(stream.readObject());
       }
-    }
-  }
-
-  private static final class ForeignKeyCondition implements Condition<Property.ColumnProperty> {
-
-    private static final long serialVersionUID = 1;
-
-    /**
-     * The property used in this condition
-     */
-    private Property.ForeignKeyProperty property;
-
-    /**
-     * The values used in this condition
-     */
-    private Collection<Entity.Key> values;
-    private Type conditionType;
-    private boolean isNullCondition;
-
-    private ForeignKeyCondition(final Property.ForeignKeyProperty property, final Type conditionType, final Object value) {
-      Objects.requireNonNull(property, "property");
-      Objects.requireNonNull(conditionType, "conditionType");
-      this.property = property;
-      this.conditionType = conditionType;
-      this.values = getEntityKeys(value);
-      this.isNullCondition = this.values.size() == 1 && this.values.iterator().next() == null;
-    }
-
-    @Override
-    public String getWhereClause() {
-      return getForeignKeyConditionString();
-    }
-
-    @Override
-    public List<Property.ColumnProperty> getColumns() {
-      if (isNullCondition) {
-        return Collections.emptyList();
-      }//null condition, uses 'x is null', not 'x = ?'
-
-      return getForeignKeyValueProperties();
-    }
-
-    @Override
-    public List<?> getValues() {
-      if (isNullCondition) {
-        return Collections.emptyList();
-      }//null condition, uses 'x is null', not 'x = ?'
-
-      return getForeignKeyConditionValues();
-    }
-
-    private String getForeignKeyConditionString() {
-      if (getValues().size() > 1) {
-        return getMultipleForeignKeyConditionString();
-      }
-
-      return createSingleForeignKeyCondition(values.iterator().next()).getWhereClause();
-    }
-
-    private String getMultipleForeignKeyConditionString() {
-      if (property.isCompositeReference()) {
-        return createMultipleCompositeForeignKeyCondition().getWhereClause();
-      }
-      else {
-        return PropertyCondition.getInList(property.getReferenceProperties().get(0).getColumnName(), "?",
-                getValues().size(), conditionType == Type.NOT_LIKE);
-      }
-    }
-
-    private List<?> getForeignKeyConditionValues() {
-      if (values.size() > 1) {
-        return getCompositeForeignKeyConditionValues();
-      }
-
-      return createSingleForeignKeyCondition(values.iterator().next()).getValues();
-    }
-
-    private List<?> getCompositeForeignKeyConditionValues() {
-      return createMultipleCompositeForeignKeyCondition().getValues();
-    }
-
-    private List<Property.ColumnProperty> getForeignKeyValueProperties() {
-      if (values.size() > 1) {
-        return createMultipleCompositeForeignKeyCondition().getColumns();
-      }
-
-      return createSingleForeignKeyCondition(values.iterator().next()).getColumns();
-    }
-
-    private Condition<Property.ColumnProperty> createMultipleCompositeForeignKeyCondition() {
-      final Set<Property.ColumnProperty> conditionSet = Conditions.conditionSet(Conjunction.OR);
-      for (final Object entityKey : values) {
-        conditionSet.add(createSingleForeignKeyCondition((Entity.Key) entityKey));
-      }
-
-      return conditionSet;
-    }
-
-    private Condition<Property.ColumnProperty> createSingleForeignKeyCondition(final Entity.Key entityKey) {
-      final Property.ForeignKeyProperty foreignKeyProperty = property;
-      if (foreignKeyProperty.isCompositeReference()) {
-        final Set<Property.ColumnProperty> pkSet = Conditions.conditionSet(Conjunction.AND);
-        for (final Property.ColumnProperty referenceProperty : foreignKeyProperty.getReferenceProperties()) {
-          final Property.ColumnProperty referencedProperty = foreignKeyProperty.getReferencedProperty(referenceProperty);
-          final Object referencedValue = entityKey == null ? null : entityKey.get(referencedProperty);
-          pkSet.add(new PropertyCondition(referenceProperty, conditionType, referencedValue));
-        }
-
-        return pkSet;
-      }
-      else {
-        return new PropertyCondition(foreignKeyProperty.getReferenceProperties().get(0), conditionType,
-                entityKey == null ? null : entityKey.getFirstValue());
-      }
-    }
-
-    private void writeObject(final ObjectOutputStream stream) throws IOException {
-      stream.writeBoolean(isNullCondition);
-      stream.writeObject(property.getEntityID());
-      stream.writeObject(property.getPropertyID());
-      stream.writeObject(conditionType);
-      stream.writeInt(values.size());
-      for (final Entity.Key key : values) {
-        stream.writeObject(key);
-      }
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
-      isNullCondition = stream.readBoolean();
-      final String entityID = (String) stream.readObject();
-      final String propertyID = (String) stream.readObject();
-      property = (Property.ForeignKeyProperty) Entities.getProperty(entityID, propertyID);
-      conditionType = (Type) stream.readObject();
-      final int valueCount = stream.readInt();
-      values = new ArrayList<>(valueCount);
-      for (int i = 0; i < valueCount; i++) {
-        values.add((Entity.Key) stream.readObject());
-      }
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private static Collection<Entity.Key> getEntityKeys(final Object value) {
-      final Collection<Entity.Key> keys = new ArrayList<>();
-      if (value instanceof Collection) {
-        if (((Collection) value).isEmpty()) {
-          keys.add(null);
-        }
-        else {
-          for (final Object object : (Collection) value) {
-            keys.add(getKey(object));
-          }
-        }
-      }
-      else {
-        keys.add(getKey(value));
-      }
-
-      return keys;
-    }
-
-    private static Entity.Key getKey(final Object value) {
-      if (value == null || value instanceof Entity.Key) {
-        return (Entity.Key) value;
-      }
-      else if (value instanceof Entity) {
-        return ((Entity) value).getKey();
-      }
-
-      throw new IllegalArgumentException("Foreign key condition uses only Entity or Entity.Key instances for values");
     }
   }
 

@@ -495,12 +495,12 @@ final class LocalEntityConnection implements EntityConnection {
       return dependencyMap;
     }
 
-    final Set<Dependency> dependencies = resolveEntityDependencies(entities.iterator().next().getEntityID());
-    for (final Dependency dependency : dependencies) {
-      final List<Entity> dependentEntities = selectMany(EntityConditions.selectCondition(dependency.getEntityID(),
-              dependency.getForeignKeyProperties(), EntityUtil.getKeys(entities)));
+    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = resolveForeignKeys(entities.iterator().next().getEntityID());
+    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+      final List<Entity> dependentEntities = selectMany(EntityConditions.selectCondition(foreignKeyProperty.getEntityID(),
+              foreignKeyProperty.getPropertyID(), Condition.Type.LIKE, entities));
       if (!dependentEntities.isEmpty()) {
-        dependencyMap.put(dependency.entityID, dependentEntities);
+        dependencyMap.put(foreignKeyProperty.getEntityID(), dependentEntities);
       }
     }
 
@@ -1191,36 +1191,18 @@ final class LocalEntityConnection implements EntityConnection {
     }
   }
 
-  private static Set<Dependency> resolveEntityDependencies(final String entityID) {
+  private static Collection<Property.ForeignKeyProperty> resolveForeignKeys(final String entityID) {
     final Collection<String> entityIDs = Entities.getDefinedEntities();
-    final Set<Dependency> dependencies = new HashSet<>();
+    final Collection<Property.ForeignKeyProperty> dependencies = new ArrayList<>();
     for (final String entityIDToCheck : entityIDs) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityIDToCheck)) {
         if (foreignKeyProperty.getReferencedEntityID().equals(entityID)) {
-          dependencies.add(new Dependency(entityIDToCheck, foreignKeyProperty.getReferenceProperties()));
+          dependencies.add(foreignKeyProperty);
         }
       }
     }
 
     return dependencies;
-  }
-
-  private static final class Dependency {
-    private final String entityID;
-    private final List<Property.ColumnProperty> foreignKeyProperties;
-
-    private Dependency(final String entityID, final List<Property.ColumnProperty> foreignKeyProperties) {
-      this.entityID = entityID;
-      this.foreignKeyProperties = foreignKeyProperties;
-    }
-
-    public String getEntityID() {
-      return entityID;
-    }
-
-    public List<Property.ColumnProperty> getForeignKeyProperties() {
-      return foreignKeyProperties;
-    }
   }
 
   private static final class BlobPacker implements ResultPacker<Blob> {

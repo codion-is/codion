@@ -108,6 +108,53 @@ public class EntityConditionsTest {
   }
 
   @Test
+  public void compositeForeignKey() {
+    final Entity master1 = Entities.entity(TestDomain.T_MASTER);
+    master1.put(TestDomain.MASTER_ID_1, 1);
+    master1.put(TestDomain.MASTER_ID_2, 2);
+
+    final Entity master2 = Entities.entity(TestDomain.T_MASTER);
+    master2.put(TestDomain.MASTER_ID_1, 3);
+    master2.put(TestDomain.MASTER_ID_2, 4);
+
+    Condition<Property.ColumnProperty> condition = EntityConditions.foreignKeyCondition(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK, Condition.Type.LIKE, master1);
+    assertEquals("(master_id = ? and master_id_2 = ?)", condition.getWhereClause());
+
+    condition = EntityConditions.foreignKeyCondition(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK, Condition.Type.NOT_LIKE, master1);
+    assertEquals("(master_id <> ? and master_id_2 <> ?)", condition.getWhereClause());
+
+    condition = EntityConditions.foreignKeyCondition(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK, Condition.Type.LIKE,
+            Arrays.asList(master1, master2));
+    assertEquals("((master_id = ? and master_id_2 = ?) or (master_id = ? and master_id_2 = ?))", condition.getWhereClause());
+
+    condition = EntityConditions.foreignKeyCondition(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK, Condition.Type.NOT_LIKE,
+            Arrays.asList(master1, master2));
+    assertEquals("((master_id <> ? and master_id_2 <> ?) or (master_id <> ? and master_id_2 <> ?))", condition.getWhereClause());
+  }
+
+  @Test
+  public void selectConditionCompositeKey() {
+    final Entity master1 = Entities.entity(TestDomain.T_MASTER);
+    master1.put(TestDomain.MASTER_ID_1, 1);
+    master1.put(TestDomain.MASTER_ID_2, 2);
+
+    final Entity master2 = Entities.entity(TestDomain.T_MASTER);
+    master2.put(TestDomain.MASTER_ID_1, 3);
+    master2.put(TestDomain.MASTER_ID_2, 4);
+
+    Condition<Property.ColumnProperty> condition = EntityConditions.selectCondition(master1.getKey());
+    assertEquals("(id = ? and id2 = ?)", condition.getWhereClause());
+
+    condition = EntityConditions.selectCondition(Arrays.asList(master1.getKey(), master2.getKey()));
+    assertEquals("((id = ? and id2 = ?) or (id = ? and id2 = ?))", condition.getWhereClause());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void selectConditionKeyNoKeys() {
+    EntityConditions.selectCondition(Collections.emptyList());
+  }
+
+  @Test
   public void simpleCondition() {
     final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_DEPARTMENT,
             Conditions.stringCondition("department name is not null"), TestDomain.DEPARTMENT_NAME, -1);
@@ -132,11 +179,6 @@ public class EntityConditionsTest {
     final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_EMP)
             .orderByAscending(TestDomain.EMP_DEPARTMENT).orderByDescending(TestDomain.EMP_ID);
     assertEquals("deptno, empno desc", condition.getOrderByClause());
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void propertyConditionWithForeignKeyProperty() {
-    EntityConditions.propertyCondition(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK, Condition.Type.LIKE, null);
   }
 
   @Test(expected = IllegalArgumentException.class)

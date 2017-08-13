@@ -78,6 +78,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
   /** {@inheritDoc} */
   @Override
   public V put(final K key, final V value) {
+    Objects.requireNonNull(key, "key");
     final boolean initialization = !values.containsKey(key);
     final V previousValue = values.put(key, value);
     if (!initialization && Objects.equals(previousValue, value)) {
