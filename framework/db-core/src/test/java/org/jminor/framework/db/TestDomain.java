@@ -19,9 +19,19 @@ public final class TestDomain {
   private TestDomain() {}
   public static void init() {}
 
+  public static final String T_SUPER = "db.super_entity";
+  public static final String SUPER_ID = "id";
+
+  static {
+    Entities.define(T_SUPER,
+            Properties.primaryKeyProperty(SUPER_ID));
+  }
+
   public static final String T_MASTER = "db.master_entity";
   public static final String MASTER_ID_1 = "id";
   public static final String MASTER_ID_2 = "id2";
+  public static final String MASTER_SUPER_ID = "super_id";
+  public static final String MASTER_SUPER_FK = "super_fk";
   public static final String MASTER_NAME = "name";
   public static final String MASTER_CODE = "code";
 
@@ -29,6 +39,8 @@ public final class TestDomain {
     Entities.define(T_MASTER,
             Properties.columnProperty(MASTER_ID_1).setPrimaryKeyIndex(0),
             Properties.columnProperty(MASTER_ID_2).setPrimaryKeyIndex(1),
+            Properties.foreignKeyProperty(MASTER_SUPER_FK, "Super", T_SUPER,
+                    Properties.columnProperty(MASTER_SUPER_ID)),
             Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
             Properties.columnProperty(MASTER_CODE, Types.INTEGER))
             .setComparator((o1, o2) -> {

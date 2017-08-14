@@ -115,7 +115,7 @@
       <zipfileset dir="src/main/config/" includes="${ant.project.name}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
     </zip>
     <signjar jar="${package}/deployment/web/${ant.project.name}.jar" alias="${jar.sign.alias}"
-             storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
+             storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}" tsaurl="${deploy.tsaurl}"/>
     <copy file="src/main/config/${ant.project.name}.jnlp" todir="${package}/deployment/web" failonerror="false"/>
     <copy file="src/main/config/getdown.txt" todir="${package}/deployment/web"/>
     <copy file="../../docs/jminor.org/jminor_logo_2.png" tofile="${package}/deployment/web/jminor.png"/>

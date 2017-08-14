@@ -4531,3 +4531,5 @@
   AbstractEntityConnectionProvider refactored a bit
   EntityConditions refactored, ForeignKeyCondition and EntityKeyCondition classes removed
   EntityDefinition.getForeignKeyReferences() added
+  EntityConditions refactored some more, bug fixed, null condition tests added
+  deploy.tsaurl build property added and used

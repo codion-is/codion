@@ -166,6 +166,15 @@ public final class EntityConditions {
   }
 
   /**
+   * @param entityID the entity ID
+   * @param condition the column condition
+   * @return a condition based on the given column condition
+   */
+  public static EntityCondition condition(final String entityID, final Condition<Property.ColumnProperty> condition) {
+    return new DefaultEntityCondition(entityID, condition);
+  }
+
+  /**
    * Creates a condition based on the given primary keys, it is assumed they are all for the same entityID
    * @param keys the primary keys
    * @return a condition specifying the entities having the given primary keys
@@ -326,59 +335,49 @@ public final class EntityConditions {
                                                                        final Condition.Type conditionType, final Collection values) {
     final Collection<Entity.Key> keys = getEntityKeys(values);
     if (foreignKeyProperty.isCompositeReference()) {
-      final List<Property.ColumnProperty> referenceProperties = foreignKeyProperty.getReferenceProperties();
-      final List<Property.ColumnProperty> foreignProperties = Entities.getReferencedProperties(foreignKeyProperty);
-      if (keys.size() == 1) {
-        return createSingleCompositeCondition(referenceProperties, foreignProperties, conditionType, keys.iterator().next());
-      }
-
-      return createMultipleCompositeCondition(referenceProperties, foreignProperties, conditionType, keys);
+      return createCompositeKeyCondition(foreignKeyProperty.getReferenceProperties(),
+              Entities.getReferencedProperties(foreignKeyProperty), conditionType, keys);
     }
-    else {
-      if (keys.size() == 1) {
-        final Entity.Key entityKey = keys.iterator().next();
-        return propertyCondition(foreignKeyProperty.getReferenceProperties().get(0), conditionType,
-                entityKey == null ? null : entityKey.getFirstValue());
-      }
 
-      return propertyCondition(keys.iterator().next().getFirstProperty(), conditionType, EntityUtil.getValues(keys));
+    if (keys.size() == 1) {
+      final Entity.Key entityKey = keys.iterator().next();
+      return propertyCondition(foreignKeyProperty.getReferenceProperties().get(0), conditionType,
+              entityKey == null ? null : entityKey.getFirstValue());
     }
+
+    return propertyCondition(foreignKeyProperty.getReferenceProperties().get(0), conditionType, EntityUtil.getValues(keys));
   }
 
-  /**
-   * @param entityID the entity ID
-   * @param condition the column condition
-   * @return a condition based on the given column condition
-   */
-  public static EntityCondition condition(final String entityID, final Condition<Property.ColumnProperty> condition) {
-    return new DefaultEntityCondition(entityID, condition);
-  }
-
+  /** Assumes {@code keys} is not empty. */
   private static Condition<Property.ColumnProperty> createKeyCondition(final Collection<Entity.Key> keys) {
     final Entity.Key firstKey = keys.iterator().next();
     if (firstKey.isCompositeKey()) {
-      return createMultipleCompositeCondition(firstKey.getProperties(), firstKey.getProperties(), Condition.Type.LIKE, keys);
+      return createCompositeKeyCondition(firstKey.getProperties(), firstKey.getProperties(), Condition.Type.LIKE, keys);
     }
-    else {
-      return propertyCondition(keys.iterator().next().getFirstProperty(), Condition.Type.LIKE, EntityUtil.getValues(keys));
-    }
+
+    return propertyCondition(keys.iterator().next().getFirstProperty(), Condition.Type.LIKE, EntityUtil.getValues(keys));
   }
 
+  /** Assumes {@code keys} is not empty. */
+  private static Condition<Property.ColumnProperty> createCompositeKeyCondition(final List<Property.ColumnProperty> referenceProperties,
+                                                                                final List<Property.ColumnProperty> foreignProperties,
+                                                                                final Condition.Type conditionType,
+                                                                                final Collection<Entity.Key> keys) {
+    if (keys.size() == 1) {
+      return createSingleCompositeCondition(referenceProperties, foreignProperties, conditionType, keys.iterator().next());
+    }
+
+    return createMultipleCompositeCondition(referenceProperties, foreignProperties, conditionType, keys);
+  }
+
+  /** Assumes {@code keys} is not empty. */
   private static Condition<Property.ColumnProperty> createMultipleCompositeCondition(final List<Property.ColumnProperty> referenceProperties,
                                                                                      final List<Property.ColumnProperty> foreignProperties,
                                                                                      final Condition.Type conditionType,
                                                                                      final Collection<Entity.Key> keys) {
     final Condition.Set<Property.ColumnProperty> conditionSet = Conditions.conditionSet(Conjunction.OR);
     for (final Entity.Key entityKey : keys) {
-      final Condition.Set<Property.ColumnProperty> keyCondition = Conditions.conditionSet(Conjunction.AND);
-      final Iterator<Property.ColumnProperty> foreignPropertiesIterator = foreignProperties.iterator();
-      for (final Property.ColumnProperty referenceProperty : referenceProperties) {
-        final Property.ColumnProperty foreignProperty = foreignPropertiesIterator.next();
-        final Object referencedValue = entityKey == null ? null : entityKey.get(foreignProperty);
-        keyCondition.add(new PropertyCondition(referenceProperty, conditionType, referencedValue));
-      }
-
-      conditionSet.add(keyCondition);
+      conditionSet.add(createSingleCompositeCondition(referenceProperties, foreignProperties, conditionType, entityKey));
     }
 
     return conditionSet;
