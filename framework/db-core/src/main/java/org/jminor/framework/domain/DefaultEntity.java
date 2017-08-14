@@ -905,7 +905,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     public String toString() {
       final StringBuilder stringBuilder = new StringBuilder();
       int i = 0;
-      for (final Property.ColumnProperty property : getProperties()) {
+      for (final Property.ColumnProperty property : definition.getPrimaryKeyProperties()) {
         stringBuilder.append(property.getPropertyID()).append(":").append(super.get(property));
         if (i++ < getPropertyCount() - 1) {
           stringBuilder.append(",");
@@ -1037,7 +1037,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     private Integer computeCompositeHashCode() {
       if (size() > 0) {
         int hash = 0;
-        for (final Property.ColumnProperty property : getProperties()) {
+        for (final Property.ColumnProperty property : definition.getPrimaryKeyProperties()) {
           final Object value = super.get(property);
           if (!property.isNullable() && value == null) {
             return null;
