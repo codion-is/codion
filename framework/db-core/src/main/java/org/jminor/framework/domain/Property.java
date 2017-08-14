@@ -424,11 +424,12 @@ public interface Property extends Attribute {
 
     /**
      * Sets the zero based primary key index of this property.
-     * Note that setting the primary key index renders this property non-updatable by default,
-     * this can be reverted by setting it as updatable after setting the primary key index.
+     * Note that setting the primary key index renders this property non-null and non-updatable by default,
+     * these can be reverted by setting it as updatable after setting the primary key index.
      * @param index the zero based index
      * @return this ColumnProperty instance
      * @throws IllegalArgumentException in case index is a negative number
+     * @see #setNullable(boolean)
      * @see #setUpdatable(boolean)
      */
     ColumnProperty setPrimaryKeyIndex(final int index);

@@ -533,20 +533,18 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return foreignKeyProperties;
   }
 
+  /** {@inheritDoc} */
   @Override
   public List<Property.ForeignKeyProperty> getForeignKeyReferences() {
     if (foreignKeyReferences == null) {
       foreignKeyReferences = new ArrayList<>();
-      for (final String definedEntityID : getDefinitionMap().keySet()) {
-        for (final Property.ForeignKeyProperty foreignKeyProperty : getDefinition(definedEntityID).getForeignKeyProperties()) {
-          if (foreignKeyProperty.getReferencedEntityID().equals(entityID)) {
-            foreignKeyReferences.add(foreignKeyProperty);
-          }
+      getDefinitionMap().keySet().forEach(definedEntityID ->
+              getDefinition(definedEntityID).getForeignKeyProperties().forEach(foreignKeyProperty -> {
+        if (foreignKeyProperty.getReferencedEntityID().equals(entityID)) {
+          foreignKeyReferences.add(foreignKeyProperty);
         }
-      }
-
+      }));
     }
-
     return foreignKeyReferences;
   }
 

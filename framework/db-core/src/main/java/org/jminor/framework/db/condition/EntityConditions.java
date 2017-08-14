@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -388,9 +387,9 @@ public final class EntityConditions {
                                                                                    final Condition.Type conditionType,
                                                                                    final Entity.Key entityKey) {
     final Condition.Set<Property.ColumnProperty> conditionSet = Conditions.conditionSet(Conjunction.AND);
-    final Iterator<Property.ColumnProperty> foreignPropertiesIterator = foreignProperties.iterator();
+    int index = 0;
     for (final Property.ColumnProperty referenceProperty : referenceProperties) {
-      final Property.ColumnProperty foreignProperty = foreignPropertiesIterator.next();
+      final Property.ColumnProperty foreignProperty = foreignProperties.get(index++);
       final Object referencedValue = entityKey == null ? null : entityKey.get(foreignProperty);
       conditionSet.add(new PropertyCondition(referenceProperty, conditionType, referencedValue));
     }
