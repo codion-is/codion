@@ -36,7 +36,7 @@ public class EntitiesTest {
     Entities.define(entityID,
             Properties.primaryKeyProperty(propertyID1),
             Properties.primaryKeyProperty(propertyID2).setPrimaryKeyIndex(1),
-            Properties.primaryKeyProperty(propertyID3).setPrimaryKeyIndex(2));
+            Properties.primaryKeyProperty(propertyID3).setPrimaryKeyIndex(2).setNullable(true));
 
     final Entity.Key key = Entities.key(entityID);
     assertEquals(0, key.hashCode());
@@ -56,15 +56,15 @@ public class EntitiesTest {
     assertFalse(key.isNull());
     assertEquals(4, key.hashCode());
     key.put(propertyID2, null);
-    assertFalse(key.isNull());
-    assertEquals(1, key.hashCode());
-    key.put(propertyID1, null);
     assertTrue(key.isNull());
     assertEquals(0, key.hashCode());
+    key.put(propertyID2, 4);
+    assertFalse(key.isNull());
+    assertEquals(5, key.hashCode());
 
     key.put(propertyID2, 42);
     assertFalse(key.isNull());
-    assertEquals(42, key.hashCode());
+    assertEquals(43, key.hashCode());
   }
 
   @Test(expected = IllegalArgumentException.class)

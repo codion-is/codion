@@ -650,6 +650,7 @@ class DefaultProperty implements Property {
         throw new IllegalArgumentException("Primary key index must be at least 0");
       }
       this.primaryKeyIndex = index;
+      setNullable(false);
       setUpdatable(false);
       return this;
     }

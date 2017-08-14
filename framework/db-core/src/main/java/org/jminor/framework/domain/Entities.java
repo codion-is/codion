@@ -1147,9 +1147,9 @@ public final class Entities {
       if (!isNullable(entity, property) && entity.isValueNull(property)) {
         if ((entity.getKey().isNull() || entity.getOriginalKey().isNull()) && !(property instanceof Property.ForeignKeyProperty)) {
           //a new entity being inserted, allow null for columns with default values and auto generated primary key values
-          final boolean columnPropertyWithoutDefaultValue = isColumnPropertyWithoutDefaultValue(property);
+          final boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
           final boolean primaryKeyPropertyWithoutAutoGenerate = isPrimaryKeyPropertyWithoutAutoGenerate(entityID, property);
-          if (columnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
+          if (nonKeyColumnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
             throw new NullValidationException(property.getPropertyID(),
                     FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
           }
@@ -1174,8 +1174,9 @@ public final class Entities {
               && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) && getKeyGeneratorType(entityID).isManual();
     }
 
-    private static boolean isColumnPropertyWithoutDefaultValue(final Property property) {
-      return property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).columnHasDefaultValue();
+    private static boolean isNonKeyColumnPropertyWithoutDefaultValue(final Property property) {
+      return property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).isPrimaryKeyProperty()
+              && !((Property.ColumnProperty) property).columnHasDefaultValue();
     }
   }
 }

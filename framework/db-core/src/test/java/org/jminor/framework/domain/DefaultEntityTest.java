@@ -48,6 +48,7 @@ public class DefaultEntityTest {
     final List<Object> fromFile = FileUtil.deserializeFromFile(tmp);
     assertEquals(1, fromFile.size());
     final Entity entityFromFile = (Entity) fromFile.get(0);
+    assertTrue(entity.is(TestDomain.T_DETAIL));
     assertTrue(entity.valuesEqual(entityFromFile));
     assertTrue(entityFromFile.isModified());
     assertTrue(entityFromFile.isModified(TestDomain.DETAIL_STRING));
@@ -110,6 +111,49 @@ public class DefaultEntityTest {
     assertEquals(newName, entity.get(TestDomain.MASTER_NAME));
     assertFalse(entity.isModified());
     assertFalse(entity.isModified(TestDomain.MASTER_NAME));
+  }
+
+  @Test
+  public void compositeReferenceKey() {
+    final Entity master = Entities.entity(TestDomain.T_COMPOSITE_MASTER);
+    master.put(TestDomain.COMPOSITE_MASTER_ID, null);
+    master.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
+
+    final Entity detail = Entities.entity(TestDomain.T_COMPOSITE_DETAIL);
+    detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, master);
+
+    final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(TestDomain.T_COMPOSITE_DETAIL, TestDomain.COMPOSITE_DETAIL_MASTER_FK);
+    assertEquals(master.getKey(), detail.getReferencedKey(foreignKeyProperty));
+
+    master.put(TestDomain.COMPOSITE_MASTER_ID, 1);
+    master.put(TestDomain.COMPOSITE_MASTER_ID_2, null);
+    detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, master);
+
+    assertNull(detail.getReferencedKey(foreignKeyProperty));
+  }
+
+  @Test
+  public void compositeKeyNull() {
+    final Entity master = Entities.entity(TestDomain.T_COMPOSITE_MASTER);
+    assertTrue(master.getKey().isNull());
+
+    master.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
+    assertFalse(master.getKey().isNull());
+
+    master.put(TestDomain.COMPOSITE_MASTER_ID, null);
+    assertFalse(master.getKey().isNull());
+
+    master.put(TestDomain.COMPOSITE_MASTER_ID, 2);
+    master.put(TestDomain.COMPOSITE_MASTER_ID_2, null);
+    assertTrue(master.getKey().isNull());
+
+    master.put(TestDomain.COMPOSITE_MASTER_ID, null);
+    assertTrue(master.getKey().isNull());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void compositeKeySingleValueConstructor() {
+    new DefaultEntity.DefaultKey(DefaultEntityDefinition.getDefinitionMap().get(TestDomain.T_COMPOSITE_MASTER), 1);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -456,6 +500,46 @@ public class DefaultEntityTest {
     final Entity detail = Entities.entity(TestDomain.T_DETAIL);
     detail.put(TestDomain.DETAIL_DOUBLE, 1.123456789567);
     assertEquals(1.1234567896, detail.get(TestDomain.DETAIL_DOUBLE));//default 10 fraction digits
+  }
+
+  @Test
+  public void keyEquality() {
+    final Entity.Key empKey1 = Entities.key(TestDomain.T_EMP);
+    empKey1.put(TestDomain.EMP_ID, 1);
+    final Entity.Key empKey2 = Entities.key(TestDomain.T_EMP);
+    empKey2.put(TestDomain.EMP_ID, 2);
+    assertFalse(empKey1.equals(empKey2));
+
+    empKey2.put(TestDomain.EMP_ID, 1);
+    assertTrue(empKey1.equals(empKey2));
+
+    final Entity.Key deptKey = Entities.key(TestDomain.T_DEPARTMENT);
+    deptKey.put(TestDomain.DEPARTMENT_ID, 1);
+    assertFalse(empKey1.equals(deptKey));
+
+    final Entity.Key compMasterKey = Entities.key(TestDomain.T_COMPOSITE_MASTER);
+    compMasterKey.put(TestDomain.COMPOSITE_MASTER_ID, 1);
+    compMasterKey.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
+    //noinspection EqualsWithItself
+    assertTrue(compMasterKey.equals(compMasterKey));
+    assertFalse(empKey1.equals(compMasterKey));
+    assertFalse(compMasterKey.equals(new Object()));
+
+    final Entity.Key compMasterKey2 = Entities.key(TestDomain.T_COMPOSITE_MASTER);
+    compMasterKey2.put(TestDomain.COMPOSITE_MASTER_ID, 1);
+    assertFalse(compMasterKey.equals(compMasterKey2));
+
+    compMasterKey2.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
+    assertTrue(compMasterKey.equals(compMasterKey2));
+
+    final Entity.Key detailKey = Entities.key(TestDomain.T_DETAIL);
+    detailKey.put(TestDomain.DETAIL_ID, 1L);
+    final Entity.Key detailKey2 = Entities.key(TestDomain.T_DETAIL);
+    detailKey2.put(TestDomain.DETAIL_ID, 2L);
+    assertFalse(detailKey.equals(detailKey2));
+
+    detailKey2.put(TestDomain.DETAIL_ID, 1L);
+    assertTrue(detailKey2.equals(detailKey));
   }
 
   @Test

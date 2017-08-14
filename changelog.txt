@@ -4533,3 +4533,8 @@
   EntityDefinition.getForeignKeyReferences() added
   EntityConditions refactored some more, bug fixed, null condition tests added
   deploy.tsaurl build property added and used
+  DefaultKey.isNull(), returns true if any non-nullable properties have null values, computeHashCode() added
+  Primary key properties are now automatically configured as not-null
+  Entities.Validator null validation bug fixed
+  DefaultKey.getFirstValue() no longer uses Iterator.next()
+  Optimized for single value keys

@@ -306,7 +306,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     int getPropertyCount();
 
     /**
-     * @return true if all of the primary key properties have a null value
+     * @return true if this key contains no values or if it contains a null value for a non-nullable key property
      */
     boolean isNull();
 

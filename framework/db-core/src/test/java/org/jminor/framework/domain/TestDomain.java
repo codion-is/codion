@@ -19,6 +19,30 @@ public final class TestDomain {
   private TestDomain() {}
   public static void init() {}
 
+  public static final String T_COMPOSITE_MASTER = "domain.composite_master";
+  public static final String COMPOSITE_MASTER_ID = "id";
+  public static final String COMPOSITE_MASTER_ID_2 = "id2";
+
+  static {
+    Entities.define(T_COMPOSITE_MASTER,
+            Properties.columnProperty(COMPOSITE_MASTER_ID).setPrimaryKeyIndex(0).setNullable(true),
+            Properties.columnProperty(COMPOSITE_MASTER_ID_2).setPrimaryKeyIndex(1));
+  }
+
+  public static final String T_COMPOSITE_DETAIL = "domain.composite_detail";
+  public static final String COMPOSITE_DETAIL_MASTER_ID = "master_id";
+  public static final String COMPOSITE_DETAIL_MASTER_ID_2 = "master_id2";
+  public static final String COMPOSITE_DETAIL_MASTER_FK = "master_fk";
+
+  static {
+    Entities.define(T_COMPOSITE_DETAIL,
+            Properties.foreignKeyProperty(COMPOSITE_DETAIL_MASTER_FK, "master", T_COMPOSITE_MASTER,
+                    new Property.ColumnProperty[] {
+                            Properties.columnProperty(COMPOSITE_DETAIL_MASTER_ID).setPrimaryKeyIndex(0),
+                            Properties.columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).setPrimaryKeyIndex(1)
+                    }, null));
+  }
+
   public static final String T_MASTER = "domain.master_entity";
   public static final String MASTER_ID = "id";
   public static final String MASTER_NAME = "name";
