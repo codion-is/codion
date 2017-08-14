@@ -32,6 +32,7 @@ import javax.swing.table.TableRowSorter;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.rmi.RemoteException;
 
 /**
@@ -40,7 +41,6 @@ import java.rmi.RemoteException;
 public final class ServerMonitorPanel extends JPanel {
 
   private static final int SPINNER_COLUMNS = 3;
-  private static final int CHART_PANEL_DIM = 2;
 
   private final ServerMonitor model;
 
@@ -55,6 +55,10 @@ public final class ServerMonitorPanel extends JPanel {
   private final JFreeChart connectionCountChart = ChartFactory.createXYStepChart(null,
           null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final ChartPanel connectionCountChartPanel = new ChartPanel(connectionCountChart);
+
+  private final JFreeChart systemLoadChart = ChartFactory.createXYStepChart(null,
+          null, null, null, PlotOrientation.VERTICAL, true, true, false);
+  private final ChartPanel systemLoadChartPanel = new ChartPanel(systemLoadChart);
 
   private final JFreeChart threadCountChart = ChartFactory.createXYStepChart(null,
           null, null, null, PlotOrientation.VERTICAL, true, true, false);
@@ -74,11 +78,14 @@ public final class ServerMonitorPanel extends JPanel {
     requestsPerSecondChart.getXYPlot().setDataset(model.getConnectionRequestsDataset());
     memoryUsageChart.getXYPlot().setDataset(model.getMemoryUsageDataset());
     connectionCountChart.getXYPlot().setDataset(model.getConnectionCountDataset());
+    systemLoadChart.getXYPlot().setDataset(model.getSystemLoadDataset());
+    systemLoadChart.getXYPlot().getRangeAxis().setRange(0, 100);
     gcEventsChart.getXYPlot().setDataset(model.getGcEventsDataset());
     threadCountChart.getXYPlot().setDataset(model.getThreadCountDataset());
     setColors(requestsPerSecondChart);
     setColors(memoryUsageChart);
     setColors(connectionCountChart);
+    setColors(systemLoadChart);
     setColors(gcEventsChart);
     setColors(threadCountChart);
     initializeUI();
@@ -138,11 +145,16 @@ public final class ServerMonitorPanel extends JPanel {
     controlPanelBase.add(controlPanel, BorderLayout.WEST);
     controlPanelBase.add(ControlProvider.createButton(Controls.control(model::resetStatistics, "Reset")), BorderLayout.EAST);
 
-    final JPanel chartPanel = new JPanel(UiUtil.createGridLayout(CHART_PANEL_DIM, CHART_PANEL_DIM));
-    chartPanel.add(requestsPerSecondChartPanel);
-    chartPanel.add(threadCountChartPanel);
-    chartPanel.add(connectionCountChartPanel);
-    chartPanel.add(memoryUsageChartPanel);
+    final JPanel chartPanelLeft = new JPanel(new GridLayout(3, 1, 5, 5));
+    final JPanel chartPanelRight = new JPanel(new GridLayout(2, 1, 5, 5));
+    chartPanelLeft.add(requestsPerSecondChartPanel);
+    chartPanelLeft.add(connectionCountChartPanel);
+    chartPanelLeft.add(systemLoadChartPanel);
+    chartPanelRight.add(threadCountChartPanel);
+    chartPanelRight.add(memoryUsageChartPanel);
+    final JPanel chartPanel = new JPanel(new GridLayout(1, 2, 5, 5));
+    chartPanel.add(chartPanelLeft);
+    chartPanel.add(chartPanelRight);
     chartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     final JPanel overviewPanel = new JPanel(UiUtil.createBorderLayout());

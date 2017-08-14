@@ -4538,3 +4538,6 @@
   Entities.Validator null validation bug fixed
   DefaultKey.getFirstValue() no longer uses Iterator.next()
   Optimized for single value keys
+  EntityConnectionServerAdmin.ThreadStatistics.getThreadStateCount() added
+  EntityConnectionServerAdmin.getSystemCpuLoad() and getProcessCpuLoad() added
+  ServerMonitor and ServerMonitorPanel display the above

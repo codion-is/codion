@@ -120,6 +120,20 @@ public interface EntityConnectionServerAdmin extends Remote {
   long getMaxMemory() throws RemoteException;
 
   /**
+   * @return the system cpu load, a negative number if not available
+   * @throws RemoteException in case of a communication error
+   * @see com.sun.management.OperatingSystemMXBean#getSystemCpuLoad()
+   */
+  double getSystemCpuLoad() throws RemoteException;
+
+  /**
+   * @return the java vm process cpu load, a negative number if not available
+   * @throws RemoteException in case of a communication error
+   * @see com.sun.management.OperatingSystemMXBean#getProcessCpuLoad()
+   */
+  double getProcessCpuLoad() throws RemoteException;
+
+  /**
    * Unregisters the connection from the server, if connection pooling is enabled
    * for the user the connection is pooled.
    * @param clientID the ID of the client
@@ -376,6 +390,11 @@ public interface EntityConnectionServerAdmin extends Remote {
      * @return the number daemon threads
      */
     int getDaemonThreadCount();
+
+    /**
+     * @return the number of threads in each state
+     */
+    Map<Thread.State, Integer> getThreadStateCount();
   }
 
   /**

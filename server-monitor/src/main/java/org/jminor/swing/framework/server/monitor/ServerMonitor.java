@@ -29,6 +29,7 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -84,7 +85,12 @@ public final class ServerMonitor {
 
   private final XYSeries threadCountSeries = new XYSeries("Threads");
   private final XYSeries daemonThreadCountSeries = new XYSeries("Daemon Threads");
+  private final Map<Thread.State, XYSeries> threadStateSeries = new HashMap<>();
   private final XYSeriesCollection threadCountCollection = new XYSeriesCollection();
+
+  private final XYSeries systemLoadSeries = new XYSeries("System Load");
+  private final XYSeries processLoadSeries = new XYSeries("Process Load");
+  private final XYSeriesCollection systemLoadCollection = new XYSeriesCollection();
 
   /**
    * Instantiates a new {@link ServerMonitor}
@@ -113,6 +119,8 @@ public final class ServerMonitor {
     gcEventsCollection.addSeries(gcMarkSweepSeries);
     threadCountCollection.addSeries(threadCountSeries);
     threadCountCollection.addSeries(daemonThreadCountSeries);
+    systemLoadCollection.addSeries(systemLoadSeries);
+    systemLoadCollection.addSeries(processLoadSeries);
     databaseMonitor = new DatabaseMonitor(server);
     clientMonitor = new ClientUserMonitor(server);
     refreshDomainList();
@@ -231,6 +239,13 @@ public final class ServerMonitor {
   }
 
   /**
+   * @return the system load dataset
+   */
+  public XYSeriesCollection getSystemLoadDataset() {
+    return systemLoadCollection;
+  }
+
+  /**
    * @return the connection count dataset
    */
   public XYSeriesCollection getConnectionCountDataset() {
@@ -283,6 +298,9 @@ public final class ServerMonitor {
     connectionLimitSeries.clear();
     threadCountSeries.clear();
     daemonThreadCountSeries.clear();
+    systemLoadSeries.clear();
+    processLoadSeries.clear();
+    threadStateSeries.values().forEach(XYSeries::clear);
   }
 
   /**
@@ -405,11 +423,22 @@ public final class ServerMonitor {
         maxMemorySeries.add(time, server.getMaxMemory() / THOUSAND);
         allocatedMemorySeries.add(time, server.getAllocatedMemory() / THOUSAND);
         usedMemorySeries.add(time, server.getUsedMemory() / THOUSAND);
+        systemLoadSeries.add(time, server.getSystemCpuLoad() * 100);
+        processLoadSeries.add(time, server.getProcessCpuLoad() * 100);
         connectionCountSeries.add(time, server.getConnectionCount());
         connectionLimitSeries.add(time, server.getConnectionLimit());
         final EntityConnectionServerAdmin.ThreadStatistics threadStatistics = server.getThreadStatistics();
         threadCountSeries.add(time, threadStatistics.getThreadCount());
         daemonThreadCountSeries.add(time, threadStatistics.getDaemonThreadCount());
+        for (final Map.Entry<Thread.State, Integer> entry : threadStatistics.getThreadStateCount().entrySet()) {
+          XYSeries stateSeries = threadStateSeries.get(entry.getKey());
+          if (stateSeries == null) {
+            stateSeries = new XYSeries(entry.getKey());
+            threadStateSeries.put(entry.getKey(), stateSeries);
+            threadCountCollection.addSeries(stateSeries);
+          }
+          stateSeries.add(time, entry.getValue());
+        }
         statisticsUpdatedEvent.fire();
       }
     }

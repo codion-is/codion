@@ -35,6 +35,7 @@ import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -101,8 +102,12 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   @Override
   public ThreadStatistics getThreadStatistics() throws RemoteException {
     final ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+    final Map<Thread.State, Integer> threadStateMap = new HashMap(Thread.State.values().length);
+    for (final Long threadId : bean.getAllThreadIds()) {
+      incrementThreadStateCounter(threadStateMap, bean.getThreadInfo(threadId).getThreadState());
+    }
 
-    return new DefaultThreadStatistics(bean.getThreadCount(), bean.getDaemonThreadCount());
+    return new DefaultThreadStatistics(bean.getThreadCount(), bean.getDaemonThreadCount(), threadStateMap);
   }
 
   /** {@inheritDoc} */
@@ -364,6 +369,18 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
+  public double getSystemCpuLoad() throws RemoteException {
+    return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getSystemCpuLoad();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public double getProcessCpuLoad() throws RemoteException {
+    return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getProcessCpuLoad();
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public int getConnectionCount() {
     return server.getConnectionCount();
   }
@@ -426,6 +443,19 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
     }
   }
 
+  private static void incrementThreadStateCounter(final Map<Thread.State, Integer> stateMap, final Thread.State state) {
+    if (state != null) {
+      Integer value = stateMap.get(state);
+      if (value == null) {
+        value = 1;
+      }
+      else {
+        value++;
+      }
+      stateMap.put(state, value);
+    }
+  }
+
   private final class GCNotifactionListener implements NotificationListener {
     @Override
     public void handleNotification(final Notification notification, final Object handback) {
@@ -447,10 +477,13 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
     private final int threadCount;
     private final int daemonThreadCount;
+    private final Map<Thread.State, Integer> threadStateCount;
 
-    private DefaultThreadStatistics(final int threadCount, final int daemonThreadCount) {
+    private DefaultThreadStatistics(final int threadCount, final int daemonThreadCount,
+                                    final Map<Thread.State, Integer> threadStateCount) {
       this.threadCount = threadCount;
       this.daemonThreadCount = daemonThreadCount;
+      this.threadStateCount = threadStateCount;
     }
 
     @Override
@@ -461,6 +494,11 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
     @Override
     public int getDaemonThreadCount() {
       return daemonThreadCount;
+    }
+
+    @Override
+    public Map<Thread.State, Integer> getThreadStateCount() {
+      return threadStateCount;
     }
   }
 
