@@ -4542,3 +4542,5 @@
   EntityConnectionServerAdmin.getSystemCpuLoad() and getProcessCpuLoad() added
   ServerMonitor and ServerMonitorPanel display the above
   DefaultKey now validates the value type, some hashCode refactoring
+  Replaced frequently called foreach loops on Lists with indexed for loops, get rid of iterator instantiations
+  Util.nullOrEmpty() for collections and maps overloaded for single instances, less garbage

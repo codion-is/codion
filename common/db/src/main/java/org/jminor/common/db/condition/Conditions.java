@@ -187,8 +187,8 @@ public final class Conditions {
     @Override
     public List getValues() {
       final List values = new ArrayList<>();
-      for (final Condition<T> condition : conditions) {
-        values.addAll(condition.getValues());
+      for (int i = 0; i < conditions.size(); i++) {
+        values.addAll(conditions.get(i).getValues());
       }
 
       return values;
@@ -197,8 +197,8 @@ public final class Conditions {
     @Override
     public List<T> getColumns() {
       final List<T> columns = new ArrayList<>();
-      for (final Condition<T> condition : conditions) {
-        columns.addAll(condition.getColumns());
+      for (int i = 0; i < conditions.size(); i++) {
+        columns.addAll(conditions.get(i).getColumns());
       }
 
       return columns;
@@ -207,8 +207,8 @@ public final class Conditions {
     private void writeObject(final ObjectOutputStream stream) throws IOException {
       stream.writeObject(conjunction);
       stream.writeInt(conditions.size());
-      for (final Condition value : conditions) {
-        stream.writeObject(value);
+      for (int i = 0; i < conditions.size(); i++) {
+        stream.writeObject(conditions.get(i));
       }
     }
 
@@ -254,12 +254,12 @@ public final class Conditions {
     private void writeObject(final ObjectOutputStream stream) throws IOException {
       stream.writeObject(conditionString);
       stream.writeInt(values.size());
-      for (final Object value : values) {
-        stream.writeObject(value);
+      for (int i = 0; i < values.size(); i++) {
+        stream.writeObject(values.get(i));
       }
       stream.writeInt(columns.size());
-      for (final T key : columns) {
-        stream.writeObject(key);
+      for (int i = 0; i < columns.size(); i++) {
+        stream.writeObject(columns.get(i));
       }
     }
 

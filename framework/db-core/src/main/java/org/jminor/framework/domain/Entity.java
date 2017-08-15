@@ -765,6 +765,11 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     Map<String, Property> getProperties();
 
     /**
+     * @return a unmodifiable list view of the properties
+     */
+    List<Property> getPropertyList();
+
+    /**
      * @return true if this entity contains any properties which values are linked to other properties
      */
     boolean hasDerivedProperties();

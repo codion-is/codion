@@ -801,24 +801,28 @@ final class LocalEntityConnection implements EntityConnection {
     if (Util.nullOrEmpty(entities)) {
       return;
     }
-    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entities.get(0).getEntityID());
-    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entities.get(0).getEntityID());
+    for (int i = 0; i < foreignKeyProperties.size(); i++) {
+      final Property.ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
       final int conditionFetchDepthLimit = condition.getForeignKeyFetchDepthLimit(foreignKeyProperty.getPropertyID());
       if (!limitForeignKeyFetchDepth || currentForeignKeyFetchDepth < conditionFetchDepthLimit) {
         try {
-          logAccess("setForeignKeys", new Object[] {foreignKeyProperty});
+          logAccess("setForeignKeys", new Object[]{foreignKeyProperty});
           final Collection<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
           if (referencedPrimaryKeys.isEmpty()) {
-            for (final Entity entity : entities) {
-              entity.put(foreignKeyProperty, null, false);
+            for (int j = 0; j < entities.size(); j++) {
+              entities.get(j).put(foreignKeyProperty, null, false);
             }
           }
           else {
-            final EntitySelectCondition referencedEntitiesCondition = EntityConditions.selectCondition(referencedPrimaryKeys);
+            final EntitySelectCondition referencedEntitiesCondition = EntityConditions.selectCondition
+                    (referencedPrimaryKeys);
             referencedEntitiesCondition.setForeignKeyFetchDepthLimit(conditionFetchDepthLimit);
-            final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCondition, currentForeignKeyFetchDepth + 1);
+            final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCondition,
+                    currentForeignKeyFetchDepth + 1);
             final Map<Entity.Key, Entity> mappedReferencedEntities = EntityUtil.mapToKey(referencedEntities);
-            for (final Entity entity : entities) {
+            for (int j = 0; j < entities.size(); j++) {
+              final Entity entity = entities.get(j);
               final Entity.Key referencedKey = entity.getReferencedKey(foreignKeyProperty);
               entity.put(foreignKeyProperty, getReferencedEntity(referencedKey, mappedReferencedEntities), false);
             }
@@ -972,9 +976,8 @@ final class LocalEntityConnection implements EntityConnection {
               "no properties" : ("expected: " + values.size() + ", got: " + parameterProperties.size())));
     }
 
-    int i = 0;
-    for (final Property.ColumnProperty property : parameterProperties) {
-      setParameterValue(statement, i + 1, values.get(i++), property);
+    for (int i = 0; i < parameterProperties.size(); i++) {
+      setParameterValue(statement, i + 1, values.get(i), parameterProperties.get(i));
     }
   }
 
@@ -998,8 +1001,8 @@ final class LocalEntityConnection implements EntityConnection {
   private static Collection<Entity.Key> getReferencedPrimaryKeys(final List<Entity> entities,
                                                                  final Property.ForeignKeyProperty foreignKeyProperty) {
     final Set<Entity.Key> keySet = new HashSet<>(entities.size());
-    for (final Entity entity : entities) {
-      final Entity.Key key = entity.getReferencedKey(foreignKeyProperty);
+    for (int i = 0; i < entities.size(); i++) {
+      final Entity.Key key = entities.get(i).getReferencedKey(foreignKeyProperty);
       if (key != null) {
         keySet.add(key);
       }

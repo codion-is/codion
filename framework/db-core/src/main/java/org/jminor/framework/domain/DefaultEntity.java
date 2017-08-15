@@ -388,7 +388,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   public boolean valuesEqual(final Entity entity) {
     Objects.requireNonNull(entity, "entity");
-    for (final Property property : definition.getProperties().values()) {
+    for (final Property property : definition.getPropertyList()) {
       if (property instanceof Property.ColumnProperty && !Objects.equals(get(property), entity.get(property))) {
         return false;
       }
@@ -488,8 +488,13 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   public boolean isForeignKeyNull(final Property.ForeignKeyProperty foreignKeyProperty) {
     Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-    for (final Property property : foreignKeyProperty.getReferenceProperties()) {
-      if (isValueNull(property.getPropertyID())) {
+    final List<Property.ColumnProperty> referenceProperties = foreignKeyProperty.getReferenceProperties();
+    if (referenceProperties.size() == 1) {
+      return isValueNull(referenceProperties.get(0));
+    }
+    final List<Property.ColumnProperty> foreignProperties = Entities.getReferencedProperties(foreignKeyProperty);
+    for (int i = 0; i < referenceProperties.size(); i++) {
+      if (!foreignProperties.get(i).isNullable() && isValueNull(referenceProperties.get(i))) {
         return true;
       }
     }
@@ -734,7 +739,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     stream.writeObject(definition.getEntityID());
     final boolean isModified = isModified();
     stream.writeBoolean(isModified);
-    for (final Property property : definition.getProperties().values()) {
+    final List<Property> propertyList = definition.getPropertyList();
+    for (int i = 0; i < propertyList.size(); i++) {
+      final Property property = propertyList.get(i);
       if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
         stream.writeObject(super.get(property));
         if (isModified) {
@@ -755,7 +762,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityID);
     }
-    for (final Property property : definition.getProperties().values()) {
+    final List<Property> propertyList = definition.getPropertyList();
+    for (int i = 0; i < propertyList.size(); i++) {
+      final Property property = propertyList.get(i);
       if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
         super.put(property, stream.readObject());
         if (isModified && stream.readBoolean()) {
@@ -1065,8 +1074,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
       stream.writeObject(definition.getEntityID());
-      for (final Property.ColumnProperty property : definition.getPrimaryKeyProperties()) {
-        stream.writeObject(super.get(property));
+      final List<Property.ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
+      for (int i = 0; i < primaryKeyProperties.size(); i++) {
+        stream.writeObject(super.get(primaryKeyProperties.get(i)));
       }
     }
 
@@ -1079,8 +1089,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
       final List<Property.ColumnProperty> properties = definition.getPrimaryKeyProperties();
       compositeKey = properties.size() > 1;
       singleIntegerKey = !compositeKey && properties.get(0).isInteger();
-      for (final Property.ColumnProperty property : properties) {
-        super.put(property, stream.readObject());
+      for (int i = 0; i < properties.size(); i++) {
+        super.put(properties.get(i), stream.readObject());
       }
     }
 

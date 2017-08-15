@@ -715,7 +715,7 @@ public final class EntityConditions {
     /**
      * The values used in this condition
      */
-    private Collection values;
+    private List values;
 
     /**
      * True if this condition tests for null
@@ -741,18 +741,13 @@ public final class EntityConditions {
     private PropertyCondition(final Property.ColumnProperty property, final Type conditionType, final Object value) {
       Objects.requireNonNull(property, "property");
       Objects.requireNonNull(conditionType, "conditionType");
-      if (value instanceof Collection) {
-        this.values = (Collection) value;
-      }
-      else {
-        this.values = Collections.singletonList(value);
-      }
+      this.values = value instanceof Collection ? new ArrayList((Collection) value) : Collections.singletonList(value);
       if (values.isEmpty()) {
         throw new IllegalArgumentException("No values specified for PropertyCondition: " + property);
       }
       this.property = property;
       this.conditionType = conditionType;
-      this.isNullCondition = this.values.size() == 1 && this.values.iterator().next() == null;
+      this.isNullCondition = value == null;
     }
 
     @Override
@@ -762,7 +757,7 @@ public final class EntityConditions {
       }//null condition, uses 'x is null', not 'x = ?'
 
       //noinspection unchecked
-      return new ArrayList(values);
+      return values;
     }
 
     @Override

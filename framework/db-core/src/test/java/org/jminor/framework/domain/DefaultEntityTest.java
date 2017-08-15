@@ -317,6 +317,17 @@ public class DefaultEntityTest {
     assertFalse(testEntity.isLoaded(TestDomain.DETAIL_MASTER_FK));
     assertFalse(testEntity.isValueNull(TestDomain.DETAIL_MASTER_FK));
     assertFalse(testEntity.isValueNull(TestDomain.DETAIL_MASTER_ID));
+
+    final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(TestDomain.T_COMPOSITE_DETAIL, TestDomain.COMPOSITE_DETAIL_MASTER_FK);
+    final Entity composite = Entities.entity(TestDomain.T_COMPOSITE_DETAIL);
+    composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID, null);
+    assertTrue(composite.isForeignKeyNull(foreignKeyProperty));
+    composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID, 1);
+    assertTrue(composite.isForeignKeyNull(foreignKeyProperty));
+    composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, null);
+    assertTrue(composite.isForeignKeyNull(foreignKeyProperty));
+    composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, 1);
+    assertFalse(composite.isForeignKeyNull(foreignKeyProperty));
   }
 
   @Test

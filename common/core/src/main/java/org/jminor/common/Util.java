@@ -148,12 +148,20 @@ public class Util {
       return true;
     }
     for (final Map map : maps) {
-      if (map == null || map.isEmpty()) {
+      if (nullOrEmpty(map)) {
         return true;
       }
     }
 
     return false;
+  }
+
+  /**
+   * @param map the map to check
+   * @return true if the given map is null or empty, false otherwise
+   */
+  public static boolean nullOrEmpty(final Map map) {
+    return map == null || map.isEmpty();
   }
 
   /**
@@ -165,12 +173,20 @@ public class Util {
       return true;
     }
     for (final Collection collection : collections) {
-      if (collection == null || collection.isEmpty()) {
+      if (nullOrEmpty(collection)) {
         return true;
       }
     }
 
     return false;
+  }
+
+  /**
+   * @param collection the collection to check
+   * @return true if the given collection is null or empty, false otherwise
+   */
+  public static boolean nullOrEmpty(final Collection collection) {
+    return collection == null || collection.isEmpty();
   }
 
   /**
