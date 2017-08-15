@@ -114,6 +114,20 @@ public class DefaultEntityTest {
   }
 
   @Test
+  public void getReferencedKeyCache() {
+    final Entity detail = Entities.entity(TestDomain.T_COMPOSITE_DETAIL);
+    detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID, 1);
+    detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, 2);
+
+    final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(TestDomain.T_COMPOSITE_DETAIL,
+            TestDomain.COMPOSITE_DETAIL_MASTER_FK);
+    final Entity.Key referencedKey = detail.getReferencedKey(foreignKeyProperty);
+    final Entity.Key cachedKey = detail.getReferencedKey(foreignKeyProperty);
+
+    assertTrue(cachedKey == referencedKey);
+  }
+
+  @Test
   public void compositeReferenceKey() {
     final Entity master = Entities.entity(TestDomain.T_COMPOSITE_MASTER);
     master.put(TestDomain.COMPOSITE_MASTER_ID, null);
@@ -149,6 +163,16 @@ public class DefaultEntityTest {
 
     master.put(TestDomain.COMPOSITE_MASTER_ID, null);
     assertTrue(master.getKey().isNull());
+  }
+
+  @Test
+  public void singleKeyNull() {
+    final Entity.Key key = Entities.key(TestDomain.T_DETAIL);
+    assertTrue(key.isNull());
+    key.put(TestDomain.DETAIL_ID, null);
+    assertTrue(key.isNull());
+    key.put(TestDomain.DETAIL_ID, 1L);
+    assertFalse(key.isNull());
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -269,6 +293,13 @@ public class DefaultEntityTest {
     testEntity.put(TestDomain.DETAIL_MASTER_FK, referencedEntityValue);
     assertEquals(testEntity.get(TestDomain.DETAIL_MASTER_CODE),
             referencedEntityValue.get(TestDomain.MASTER_CODE));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getReferencedKeyIncorrectFK() {
+    final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
+            detailString, detailDate, detailTimestamp, detailBoolean, null);
+    testEntity.getReferencedKey(Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
   }
 
   @Test

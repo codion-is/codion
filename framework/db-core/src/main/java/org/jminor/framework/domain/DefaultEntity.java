@@ -883,7 +883,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
     @Override
     public Property.ColumnProperty getFirstProperty() {
-      return getProperties().get(0);
+      return definition.getPrimaryKeyProperties().get(0);
     }
 
     @Override
@@ -893,7 +893,14 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
     @Override
     public Object put(final String propertyID, final Object value) {
-      return super.put(Entities.getColumnProperty(getEntityID(), propertyID), value);
+      return put(Entities.getColumnProperty(getEntityID(), propertyID), value);
+    }
+
+    @Override
+    public Object put(final Property.ColumnProperty property, final Object value) {
+      property.validateType(value);
+
+      return super.put(property, value);
     }
 
     @Override
@@ -1018,39 +1025,42 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
 
     private Integer computeHashCode() {
+      if (size() == 0) {
+        return null;
+      }
       if (isCompositeKey()) {
         return computeCompositeHashCode();
       }
 
+      return computeSingleHashCode();
+    }
+
+    private Integer computeCompositeHashCode() {
+      int hash = 0;
+      for (final Property.ColumnProperty property : definition.getPrimaryKeyProperties()) {
+        final Object value = super.get(property);
+        if (!property.isNullable() && value == null) {
+          return null;
+        }
+        if (value != null) {
+          hash = hash + value.hashCode();
+        }
+      }
+
+      return hash;
+    }
+
+    private Integer computeSingleHashCode() {
       final Property.ColumnProperty property = getFirstProperty();
       final Object value = super.get(property);
       if (value == null) {
-        return property.isNullable() ? 0 : null;
+        return null;
       }
       else if (singleIntegerKey) {
         return (Integer) value;
       }
 
       return value.hashCode();
-    }
-
-    private Integer computeCompositeHashCode() {
-      if (size() > 0) {
-        int hash = 0;
-        for (final Property.ColumnProperty property : definition.getPrimaryKeyProperties()) {
-          final Object value = super.get(property);
-          if (!property.isNullable() && value == null) {
-            return null;
-          }
-          if (value != null) {
-            hash = hash + value.hashCode();
-          }
-        }
-
-        return hash;
-      }
-
-      return null;
     }
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {

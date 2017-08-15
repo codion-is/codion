@@ -4541,3 +4541,4 @@
   EntityConnectionServerAdmin.ThreadStatistics.getThreadStateCount() added
   EntityConnectionServerAdmin.getSystemCpuLoad() and getProcessCpuLoad() added
   ServerMonitor and ServerMonitorPanel display the above
+  DefaultKey now validates the value type, some hashCode refactoring
