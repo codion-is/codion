@@ -4545,3 +4545,4 @@
   Replaced frequently called foreach loops on Lists with indexed for loops, get rid of iterator instantiations
   Util.nullOrEmpty() for collections and maps overloaded for single instances, less garbage
   DefaultEntityConnectionServer creates and holds a Registry, CredentialServer as well, registry unexported on exit
+  Replaced more foreach loops with indexed loops

@@ -163,7 +163,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private List<Property.TransientProperty> transientProperties;
   private List<Property> visibleProperties;
   private List<Property.ColumnProperty> columnProperties;
-  private Map<String, Collection<Property.DenormalizedProperty>> denormalizedProperties;
+  private Map<String, List<Property.DenormalizedProperty>> denormalizedProperties;
   private String selectColumnsString;
   private boolean hasDenormalizedProperties;
 
@@ -581,7 +581,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyID) {
+  public List<Property.DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyID) {
     if (denormalizedProperties == null) {
       denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
     }
@@ -766,8 +766,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
     };
   }
 
-  private static Map<String, Collection<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
-    final Map<String, Collection<Property.DenormalizedProperty>> denormalizedPropertiesMap = new HashMap<>(properties.size());
+  private static Map<String, List<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
+    final Map<String, List<Property.DenormalizedProperty>> denormalizedPropertiesMap = new HashMap<>(properties.size());
     for (final Property property : properties) {
       if (property instanceof Property.DenormalizedProperty) {
         final Property.DenormalizedProperty denormalizedProperty = (Property.DenormalizedProperty) property;

@@ -554,11 +554,11 @@ public final class Entities {
   /**
    * @param entityID the entity ID
    * @param foreignKeyPropertyID the foreign key id
-   * @return a collection containing all denormalized properties of the entity identified by {@code entityID}
+   * @return a list containing all denormalized properties of the entity identified by {@code entityID}
    * which source is the entity identified by {@code propertyOwnerEntityID}
    */
-  public static Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String entityID,
-                                                                                    final String foreignKeyPropertyID) {
+  public static List<Property.DenormalizedProperty> getDenormalizedProperties(final String entityID,
+                                                                              final String foreignKeyPropertyID) {
     return DefaultEntityDefinition.getDefinition(entityID).getDenormalizedProperties(foreignKeyPropertyID);
   }
 
@@ -617,7 +617,9 @@ public final class Entities {
    * @throws IllegalArgumentException in case no such property exists
    */
   public static Property.ForeignKeyProperty getForeignKeyProperty(final String entityID, final String propertyID) {
-    for (final Property.ForeignKeyProperty foreignKeyProperty : getForeignKeyProperties(entityID)) {
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = getForeignKeyProperties(entityID);
+    for (int i = 0; i < foreignKeyProperties.size(); i++) {
+      final Property.ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
       if (foreignKeyProperty.is(propertyID)) {
         return foreignKeyProperty;
       }
@@ -694,7 +696,7 @@ public final class Entities {
     return referencedProperties;
   }
 
-                                                                      /**
+  /**
    * @return a map containing all defined entityIDs, with their respective table names as an associated value
    */
   public static Map<String, String> getDefinitions() {

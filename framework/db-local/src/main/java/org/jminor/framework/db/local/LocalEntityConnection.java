@@ -203,7 +203,8 @@ final class LocalEntityConnection implements EntityConnection {
     synchronized (connection) {
       try {
         final List<Property.ColumnProperty> statementProperties = new ArrayList<>();
-        for (final Entity entity : entities) {
+        for (int i = 0; i < entities.size(); i++) {
+          final Entity entity = entities.get(i);
           final String entityID = entity.getEntityID();
           final Property.ColumnProperty firstPrimaryKeyProperty = Entities.getPrimaryKeyProperties(entityID).get(0);
           final Entity.KeyGenerator keyGenerator = Entities.getKeyGenerator(entityID);
@@ -797,7 +798,8 @@ final class LocalEntityConnection implements EntityConnection {
    * @see #setLimitForeignKeyFetchDepth(boolean)
    * @see EntitySelectCondition#setForeignKeyFetchDepthLimit(int)
    */
-  private void setForeignKeys(final List<Entity> entities, final EntitySelectCondition condition, final int currentForeignKeyFetchDepth) throws DatabaseException {
+  private void setForeignKeys(final List<Entity> entities, final EntitySelectCondition condition,
+                              final int currentForeignKeyFetchDepth) throws DatabaseException {
     if (Util.nullOrEmpty(entities)) {
       return;
     }
@@ -808,15 +810,14 @@ final class LocalEntityConnection implements EntityConnection {
       if (!limitForeignKeyFetchDepth || currentForeignKeyFetchDepth < conditionFetchDepthLimit) {
         try {
           logAccess("setForeignKeys", new Object[]{foreignKeyProperty});
-          final Collection<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
+          final List<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
           if (referencedPrimaryKeys.isEmpty()) {
             for (int j = 0; j < entities.size(); j++) {
               entities.get(j).put(foreignKeyProperty, null, false);
             }
           }
           else {
-            final EntitySelectCondition referencedEntitiesCondition = EntityConditions.selectCondition
-                    (referencedPrimaryKeys);
+            final EntitySelectCondition referencedEntitiesCondition = EntityConditions.selectCondition(referencedPrimaryKeys);
             referencedEntitiesCondition.setForeignKeyFetchDepthLimit(conditionFetchDepthLimit);
             final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);
@@ -998,7 +999,7 @@ final class LocalEntityConnection implements EntityConnection {
     }
   }
 
-  private static Collection<Entity.Key> getReferencedPrimaryKeys(final List<Entity> entities,
+  private static List<Entity.Key> getReferencedPrimaryKeys(final List<Entity> entities,
                                                                  final Property.ForeignKeyProperty foreignKeyProperty) {
     final Set<Entity.Key> keySet = new HashSet<>(entities.size());
     for (int i = 0; i < entities.size(); i++) {
@@ -1008,7 +1009,7 @@ final class LocalEntityConnection implements EntityConnection {
       }
     }
 
-    return keySet;
+    return new ArrayList<>(keySet);
   }
 
   private static String getSelectSQL(final EntityCondition condition, final Database database) {
@@ -1077,14 +1078,13 @@ final class LocalEntityConnection implements EntityConnection {
    * @param condition the primary key condition for the given entity
    * @return a query for updating this entity instance
    */
-  private static String createUpdateSQL(final String tableName, final Collection<Property.ColumnProperty> updateProperties,
+  private static String createUpdateSQL(final String tableName, final List<Property.ColumnProperty> updateProperties,
                                         final EntityCondition condition) {
     final StringBuilder sql = new StringBuilder("update ");
     sql.append(tableName).append(" set ");
-    int columnIndex = 0;
-    for (final Property.ColumnProperty property : updateProperties) {
-      sql.append(property.getColumnName()).append(" = ?");
-      if (columnIndex++ < updateProperties.size() - 1) {
+    for (int i = 0; i < updateProperties.size(); i++) {
+      sql.append(updateProperties.get(i).getColumnName()).append(" = ?");
+      if (i < updateProperties.size() - 1) {
         sql.append(", ");
       }
     }
@@ -1097,15 +1097,14 @@ final class LocalEntityConnection implements EntityConnection {
    * @param insertProperties the properties used to insert the given entity type
    * @return a query for inserting this entity instance
    */
-  private static String createInsertSQL(final String entityID, final Collection<Property.ColumnProperty> insertProperties) {
+  private static String createInsertSQL(final String entityID, final List<Property.ColumnProperty> insertProperties) {
     final String tableName = Entities.getTableName(entityID);
     final StringBuilder sql = new StringBuilder("insert ").append("into ").append(tableName).append("(");
     final StringBuilder columnValues = new StringBuilder(") values(");
-    int columnIndex = 0;
-    for (final Property.ColumnProperty property : insertProperties) {
-      sql.append(property.getColumnName());
+    for (int i = 0; i < insertProperties.size(); i++) {
+      sql.append(insertProperties.get(i).getColumnName());
       columnValues.append("?");
-      if (columnIndex++ < insertProperties.size() - 1) {
+      if (i < insertProperties.size() - 1) {
         sql.append(", ");
         columnValues.append(", ");
       }
@@ -1162,9 +1161,10 @@ final class LocalEntityConnection implements EntityConnection {
    */
   private static void populateStatementPropertiesAndValues(final boolean inserting, final Entity entity,
                                                            final List<Property.ColumnProperty> columnProperties,
-                                                           final Collection<Property.ColumnProperty> properties,
+                                                           final List<Property.ColumnProperty> properties,
                                                            final Collection<Object> values) throws SQLException {
-    for (final Property.ColumnProperty property : columnProperties) {
+    for (int i = 0; i < columnProperties.size(); i++) {
+      final Property.ColumnProperty property = columnProperties.get(i);
       final Object value = entity.get(property);
       final boolean insertingAndNonNull = inserting && value != null;
       final boolean updatingAndModified = !inserting && entity.isModified(property);
@@ -1183,9 +1183,9 @@ final class LocalEntityConnection implements EntityConnection {
     }
   }
 
-  private static void checkReadOnly(final Collection<Entity> entities) throws DatabaseException {
-    for (final Entity entity : entities) {
-      checkReadOnly(entity.getEntityID());
+  private static void checkReadOnly(final List<Entity> entities) throws DatabaseException {
+    for (int i = 0; i < entities.size(); i++) {
+      checkReadOnly(entities.get(i).getEntityID());
     }
   }
 
@@ -1260,7 +1260,10 @@ final class LocalEntityConnection implements EntityConnection {
     private static String getEntityParameterString(final Entity entity) {
       final StringBuilder builder = new StringBuilder();
       builder.append(entity.getEntityID()).append(" {");
-      for (final Property.ColumnProperty property : Entities.getColumnProperties(entity.getEntityID(), true, true, true)) {
+      final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entity.getEntityID(), true,
+              true, true);
+      for (int i = 0; i < columnProperties.size(); i++) {
+        final Property.ColumnProperty property = columnProperties.get(i);
         final boolean modified = entity.isModified(property);
         if (property.isPrimaryKeyProperty() || modified) {
           final StringBuilder valueString = new StringBuilder();

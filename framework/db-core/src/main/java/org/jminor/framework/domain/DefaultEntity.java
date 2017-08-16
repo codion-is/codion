@@ -65,7 +65,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   DefaultEntity(final Definition definition, final Key key) {
     this(definition);
-    for (final Property.ColumnProperty property : key.getProperties()) {
+    final List<Property.ColumnProperty> properties = key.getProperties();
+    for (int i = 0; i < properties.size(); i++) {
+      final Property.ColumnProperty property = properties.get(i);
       put(property, key.get(property));
     }
     this.key = key;
@@ -353,9 +355,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public void clearKeyValues() {
-    for (final Property.ColumnProperty primaryKeyProperty : definition.getPrimaryKeyProperties()) {
-      remove(primaryKeyProperty);
-      removeOriginalValue(primaryKeyProperty);
+    final List<Property.ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
+    for (int i = 0; i < primaryKeyProperties.size(); i++) {
+      remove(primaryKeyProperties.get(i));
     }
     this.key = null;
   }
@@ -388,7 +390,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   public boolean valuesEqual(final Entity entity) {
     Objects.requireNonNull(entity, "entity");
-    for (final Property property : definition.getPropertyList()) {
+    final List<Property> propertyList = definition.getPropertyList();
+    for (int i = 0; i < propertyList.size(); i++) {
+      final Property property = propertyList.get(i);
       if (property instanceof Property.ColumnProperty && !Objects.equals(get(property), entity.get(property))) {
         return false;
       }
@@ -524,8 +528,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   protected void handleRemove(final Property property, final Object value) {
     if (property instanceof Property.ForeignKeyProperty) {
-      for (final Property referenceProperty : ((Property.ForeignKeyProperty) property).getReferenceProperties()) {
-        remove(referenceProperty);
+      final List<Property.ColumnProperty> referenceProperties = ((Property.ForeignKeyProperty) property).getReferenceProperties();
+      for (int i = 0; i < referenceProperties.size(); i++) {
+        remove(referenceProperties.get(i));
       }
     }
   }
@@ -575,15 +580,16 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   private void setCompositeForeignKeyValues(final Entity referencedEntity, final Map<String, Definition> entityDefinitions,
-                                            final List<Property.ColumnProperty> referenceProperties, final List<Property.ColumnProperty> foreignColumnProperties) {
-    int index = 0;
-    for (final Property.ColumnProperty referenceProperty : referenceProperties) {
-      setSingleForeignKeyValue(referencedEntity, entityDefinitions, referenceProperty, foreignColumnProperties.get(index++));
+                                            final List<Property.ColumnProperty> referenceProperties,
+                                            final List<Property.ColumnProperty> foreignColumnProperties) {
+    for (int i = 0; i < referenceProperties.size(); i++) {
+      setSingleForeignKeyValue(referencedEntity, entityDefinitions, referenceProperties.get(i), foreignColumnProperties.get(i));
     }
   }
 
   private void setSingleForeignKeyValue(final Entity referencedEntity, final Map<String, Definition> entityDefinitions,
-                                        final Property.ColumnProperty referenceProperty, final Property.ColumnProperty foreignColumnProperty) {
+                                        final Property.ColumnProperty referenceProperty,
+                                        final Property.ColumnProperty foreignColumnProperty) {
     if (!(foreignColumnProperty instanceof Property.MirrorProperty)) {
       put(referenceProperty, referencedEntity == null ? null : referencedEntity.get(foreignColumnProperty), false, entityDefinitions);
     }
@@ -597,11 +603,13 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   private void setDenormalizedValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
                                      final Map<String, Definition> entityDefinitions) {
-    final Collection<Property.DenormalizedProperty> denormalizedProperties =
+    final List<Property.DenormalizedProperty> denormalizedProperties =
             definition.getDenormalizedProperties(foreignKeyProperty.getPropertyID());
     if (denormalizedProperties != null) {
-      for (final Property.DenormalizedProperty denormalizedProperty : denormalizedProperties) {
-        put(denormalizedProperty, referencedEntity == null ? null : referencedEntity.get(denormalizedProperty.getDenormalizedProperty()), false, entityDefinitions);
+      for (int i = 0; i < denormalizedProperties.size(); i++) {
+        final Property.DenormalizedProperty denormalizedProperty = denormalizedProperties.get(i);
+        put(denormalizedProperty, referencedEntity == null ? null : referencedEntity.get(denormalizedProperty
+                .getDenormalizedProperty()), false, entityDefinitions);
       }
     }
   }
@@ -625,10 +633,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     final List<Property.ColumnProperty> referenceProperties = foreignKeyProperty.getReferenceProperties();
     if (foreignKeyProperty.isCompositeReference()) {
       final Map<Property.ColumnProperty, Object> values = new HashMap<>(referenceProperties.size());
-      int index = 0;
-      for (final Property.ColumnProperty referenceKeyProperty : referenceProperties) {
-        final Property.ColumnProperty foreignColumnProperty = foreignColumnProperties.get(index++);
-        final Object value = super.get(referenceKeyProperty);
+      for (int i = 0; i < referenceProperties.size(); i++) {
+        final Property.ColumnProperty foreignColumnProperty = foreignColumnProperties.get(i);
+        final Object value = super.get(referenceProperties.get(i));
         if (!foreignColumnProperty.isNullable() && value == null) {
           return null;
         }
@@ -673,7 +680,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     final List<Property.ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
     if (primaryKeyProperties.size() > 1) {
       final Map<Property.ColumnProperty, Object> values = new HashMap<>(primaryKeyProperties.size());
-      for (final Property.ColumnProperty property : primaryKeyProperties) {
+      for (int i = 0; i < primaryKeyProperties.size(); i++) {
+        final Property.ColumnProperty property = primaryKeyProperties.get(i);
         values.put(property, originalValues ? getOriginal(property) : super.get(property));
       }
 
@@ -686,7 +694,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   private Object getDerivedValue(final Property.DerivedProperty derivedProperty) {
     final Map<String, Object> values = new HashMap<>(derivedProperty.getSourcePropertyIDs().size());
-    for (final String linkedPropertyID : derivedProperty.getSourcePropertyIDs()) {
+    final List<String> sourcePropertyIDs = derivedProperty.getSourcePropertyIDs();
+    for (int i = 0; i < sourcePropertyIDs.size(); i++) {
+      final String linkedPropertyID = sourcePropertyIDs.get(i);
       values.put(linkedPropertyID, get(linkedPropertyID));
     }
 
@@ -920,10 +930,11 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     @Override
     public String toString() {
       final StringBuilder stringBuilder = new StringBuilder();
-      int i = 0;
-      for (final Property.ColumnProperty property : definition.getPrimaryKeyProperties()) {
+      final List<Property.ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
+      for (int i = 0; i < primaryKeyProperties.size(); i++) {
+        final Property.ColumnProperty property = primaryKeyProperties.get(i);
         stringBuilder.append(property.getPropertyID()).append(":").append(super.get(property));
-        if (i++ < getPropertyCount() - 1) {
+        if (i < getPropertyCount() - 1) {
           stringBuilder.append(",");
         }
       }
@@ -1046,7 +1057,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
     private Integer computeCompositeHashCode() {
       int hash = 0;
-      for (final Property.ColumnProperty property : definition.getPrimaryKeyProperties()) {
+      final List<Property.ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
+      for (int i = 0; i < primaryKeyProperties.size(); i++) {
+        final Property.ColumnProperty property = primaryKeyProperties.get(i);
         final Object value = super.get(property);
         if (!property.isNullable() && value == null) {
           return null;

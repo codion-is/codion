@@ -124,10 +124,11 @@ public final class EntityUtil {
    * @param keys the keys
    * @return the actual property values of the given keys
    */
-  public static <T> Collection<T> getValues(final Collection<Entity.Key> keys) {
+  public static <T> List<T> getValues(final List<Entity.Key> keys) {
     Objects.requireNonNull(keys, "keys");
     final List<T> list = new ArrayList<>(keys.size());
-    for (final Entity.Key key : keys) {
+    for (int i = 0; i < keys.size(); i++) {
+      final Entity.Key key = keys.get(i);
       list.add((T) key.get(key.getFirstProperty()));
     }
 

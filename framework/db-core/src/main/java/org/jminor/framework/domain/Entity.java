@@ -839,10 +839,10 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     /**
      * Retrieves the denormalized properties which values originate from the entity referenced by the given foreign key property
      * @param foreignKeyPropertyID the foreign key property ID
-     * @return a collection containing the denormalized properties which values originate from the entity
+     * @return a list containing the denormalized properties which values originate from the entity
      * referenced by the given foreign key property
      */
-    Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyID);
+    List<Property.DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyID);
 
     /**
      * Compares the given entities.
