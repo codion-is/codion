@@ -1,5 +1,5 @@
 <project name="jminor-common-db">
-  <property name="project.root" value="../../"/>
+  <property name="project.root" value="../.."/>
   <property name="java.module.name" value="org.jminor.common.db"/>
   <import file="${project.root}/build-common.xml"/>
 </project>

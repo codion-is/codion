@@ -1,5 +1,5 @@
 <project name="jminor-plugin-logback-proxy">
-  <property name="project.root" value="../../"/>
+  <property name="project.root" value="../.."/>
   <property name="java.module.name" value="org.jminor.plugin.logback.proxy"/>
   <import file="${project.root}/build-common.xml"/>
 </project>

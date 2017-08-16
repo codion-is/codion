@@ -1,5 +1,5 @@
 <project name="jminor-swing-common-ui">
-  <property name="project.root" value="../../"/>
+  <property name="project.root" value="../.."/>
   <property name="java.module.name" value="org.jminor.swing.common.ui"/>
   <import file="${project.root}/build-common.xml"/>
 </project>

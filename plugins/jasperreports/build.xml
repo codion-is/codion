@@ -1,5 +1,5 @@
 <project name="jminor-plugin-jasperreports">
-  <property name="project.root" value="../../"/>
+  <property name="project.root" value="../.."/>
   <property name="java.module.name" value="org.jminor.plugin.jasperreports"/>
   <import file="${project.root}/build-common.xml"/>
 

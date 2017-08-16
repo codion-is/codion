@@ -1,5 +1,5 @@
 <project name="jminor-framework-server-monitor">
-  <property name="project.root" value="../"/>
+  <property name="project.root" value=".."/>
   <property name="java.module.name" value="org.jminor.framework.server.monitor"/>
   <import file="${project.root}/build-common.xml"/>
 </project>

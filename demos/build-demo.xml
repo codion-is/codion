@@ -1,6 +1,6 @@
 <project name="demo">
 
-  <property name="project.root" value="../../"/>
+  <property name="project.root" value="../.."/>
   <property name="junit.db.initScript" value="src/main/sql/create_schema.sql"/>
   <import file="../build-common.xml"/>
 
