@@ -67,14 +67,14 @@ public final class Servers {
     try {
       localRegistry.list();
       LOG.info("Registry listing available on port: {}", port);
+
+      return localRegistry;
     }
     catch (final Exception e) {
       LOG.info("Trying to locate registry: {}", e.getMessage());
       LOG.info("Creating registry on port: {}", port);
-      LocateRegistry.createRegistry(port);
+      return LocateRegistry.createRegistry(port);
     }
-
-    return getRegistry(port);
   }
 
   /**

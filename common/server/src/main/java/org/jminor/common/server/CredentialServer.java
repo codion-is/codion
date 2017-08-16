@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
@@ -43,10 +44,9 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
 
   public static final String LOCALHOST = "127.0.0.1";
 
+  private final Registry registry;
   private final Map<UUID, UserExpiration> authenticationTokens = Collections.synchronizedMap(new HashMap<>());
-
   private final TaskScheduler expiredCleaner;
-
   private final int tokenValidity;
 
   /**
@@ -61,7 +61,8 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
     super(port);
     this.tokenValidity = tokenValidity;
     this.expiredCleaner = new TaskScheduler(this::removeExpired, cleanupInterval, TimeUnit.MILLISECONDS).start();
-    Servers.initializeRegistry(Registry.REGISTRY_PORT).bind(CredentialService.class.getSimpleName(), this);
+    this.registry = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+    this.registry.bind(CredentialService.class.getSimpleName(), this);
   }
 
   /**
@@ -108,8 +109,9 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
     try {
       expiredCleaner.stop();
       synchronized (authenticationTokens) {
-        Servers.getRegistry(Registry.REGISTRY_PORT).unbind(CredentialService.class.getSimpleName());
         authenticationTokens.clear();
+        registry.unbind(CredentialService.class.getSimpleName());
+        UnicastRemoteObject.unexportObject(registry, true);
       }
     }
     catch (final Exception e) {

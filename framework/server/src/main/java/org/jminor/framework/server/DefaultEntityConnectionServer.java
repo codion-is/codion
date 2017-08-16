@@ -34,8 +34,10 @@ import org.slf4j.LoggerFactory;
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.lang.reflect.InvocationTargetException;
+import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
@@ -160,6 +162,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new DefaultEntityConnectionServer.MaintenanceTask(),
           DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
   private final int registryPort;
+  private final Registry registry;
   private final boolean sslEnabled;
   private final boolean clientLoggingEnabled;
   private final Map<String, Integer> clientTimeouts = new HashMap<>();
@@ -210,6 +213,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       Runtime.getRuntime().addShutdownHook(this.shutdownHook);
       this.database = Objects.requireNonNull(database, "database");
       this.registryPort = registryPort;
+      this.registry = LocateRegistry.createRegistry(registryPort);
       this.sslEnabled = sslEnabled;
       this.clientLoggingEnabled = clientLoggingEnabled;
       this.adminUser = adminUser;
@@ -523,6 +527,10 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     if (database.isEmbedded()) {
       database.shutdownEmbedded(null);
     }//todo does not work when shutdown requires user authentication, jminor.db.shutdownUser hmmm
+    try {
+      UnicastRemoteObject.unexportObject(registry, true);
+    }
+    catch (final NoSuchObjectException ignored) {/*ignored*/}
     UnicastRemoteObject.unexportObject(serverAdmin, true);
   }
 
@@ -540,7 +548,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @throws RemoteException in case of an exception
    */
   private void bindToRegistry() throws RemoteException {
-    Servers.initializeRegistry(registryPort).rebind(getServerInfo().getServerName(), this);
+    registry.rebind(getServerInfo().getServerName(), this);
     final String connectInfo = getServerInfo().getServerName() + " bound to registry on port: " + registryPort;
     LOG.info(connectInfo);
     System.out.println(connectInfo);
