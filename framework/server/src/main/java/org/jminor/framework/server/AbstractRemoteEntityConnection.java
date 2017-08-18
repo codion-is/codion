@@ -25,14 +25,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import javax.rmi.ssl.SslRMIClientSocketFactory;
-import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
-import java.rmi.server.RMISocketFactory;
+import java.rmi.server.RMIClientSocketFactory;
+import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -73,18 +72,20 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    * @param remoteClient information about the client requesting the connection
    * @param port the port to use when exporting this remote connection
    * @param loggingEnabled specifies whether or not method logging is enabled
-   * @param sslEnabled specifies whether or not ssl should be enabled
+   * @param clientSocketFactory the client socket factory to use, null for default
+   * @param serverSocketFactory the server socket factory to use, null for default
    * @throws RemoteException in case of an exception
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  protected AbstractRemoteEntityConnection(final ConnectionPool connectionPool, final Database database, final RemoteClient remoteClient,
-                                           final int port, final boolean loggingEnabled, final boolean sslEnabled)
+  protected AbstractRemoteEntityConnection(final ConnectionPool connectionPool, final Database database,
+                                           final RemoteClient remoteClient, final int port, final boolean loggingEnabled,
+                                           final RMIClientSocketFactory clientSocketFactory,
+                                           final RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
-    super(port, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
-            sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
-    this.connectionHandler = new RemoteEntityConnectionHandler(
-            this, connectionPool, remoteClient, database, loggingEnabled);
+    super(port, clientSocketFactory, serverSocketFactory);
+    this.connectionHandler = new RemoteEntityConnectionHandler(this, connectionPool, remoteClient,
+            database, loggingEnabled);
     this.connectionProxy = Util.initializeProxy(EntityConnection.class, connectionHandler);
   }
 
@@ -270,8 +271,9 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
      */
     private boolean disconnected = false;
 
-    private RemoteEntityConnectionHandler(final AbstractRemoteEntityConnection remoteEntityConnection, final ConnectionPool connectionPool,
-                                          final RemoteClient remoteClient, final Database database, final boolean loggingEnabled) throws DatabaseException {
+    private RemoteEntityConnectionHandler(final AbstractRemoteEntityConnection remoteEntityConnection,
+                                          final ConnectionPool connectionPool, final RemoteClient remoteClient,
+                                          final Database database, final boolean loggingEnabled) throws DatabaseException {
       this.remoteClient = remoteClient;
       this.database = database;
       this.connectionPool = connectionPool;

@@ -15,6 +15,8 @@ import org.jminor.framework.server.AbstractRemoteEntityConnection;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 
 import java.rmi.RemoteException;
+import java.rmi.server.RMIClientSocketFactory;
+import java.rmi.server.RMIServerSocketFactory;
 import java.util.List;
 
 public final class EmployeeServer extends DefaultEntityConnectionServer {
@@ -32,9 +34,10 @@ public final class EmployeeServer extends DefaultEntityConnectionServer {
   protected DefaultEmployeeService createRemoteConnection(final ConnectionPool connectionPool,
                                                           final Database database, final RemoteClient remoteClient,
                                                           final int port, final boolean clientLoggingEnabled,
-                                                          final boolean sslEnabled)
+                                                          final RMIClientSocketFactory clientSocketFactory,
+                                                          final RMIServerSocketFactory serverSocketFactory)
           throws RemoteException, DatabaseException {
-    return new DefaultEmployeeService(database, remoteClient, port, clientLoggingEnabled, sslEnabled);
+    return new DefaultEmployeeService(database, remoteClient, port, clientLoggingEnabled, clientSocketFactory, serverSocketFactory);
   }
 
   static final class DefaultEmployeeService extends AbstractRemoteEntityConnection
@@ -45,9 +48,10 @@ public final class EmployeeServer extends DefaultEntityConnectionServer {
     }
 
     private DefaultEmployeeService(final Database database, final RemoteClient remoteClient, final int port,
-                                   final boolean loggingEnabled, final boolean sslEnabled)
+                                   final boolean loggingEnabled, final RMIClientSocketFactory clientSocketFactory,
+                                   final RMIServerSocketFactory serverSocketFactory)
             throws DatabaseException, RemoteException {
-      super(null, database, remoteClient, port, loggingEnabled, sslEnabled);
+      super(null, database, remoteClient, port, loggingEnabled, null, null);
     }
 
     @Override

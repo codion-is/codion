@@ -15,7 +15,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
-import java.rmi.server.RMISocketFactory;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collections;
@@ -51,15 +50,15 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
    * @throws RemoteException in case of an exception
    */
   public AbstractServer(final int serverPort, final String serverName) throws RemoteException {
-    this(serverPort, serverName, RMISocketFactory.getSocketFactory(), RMISocketFactory.getSocketFactory());
+    this(serverPort, serverName, null, null);
   }
 
   /**
    * Instantiates a new AbstractServer
    * @param serverPort the port on which the server should be exported
    * @param serverName the name used when exporting this server
-   * @param clientSocketFactory the client socket factory to use
-   * @param serverSocketFactory the server socket factory to use
+   * @param clientSocketFactory the client socket factory to use, null for default
+   * @param serverSocketFactory the server socket factory to use, null for default
    * @throws RemoteException in case of an exception
    */
   public AbstractServer(final int serverPort, final String serverName, final RMIClientSocketFactory clientSocketFactory,
@@ -75,7 +74,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     synchronized (connections) {
       final Map<RemoteClient, T> clients = new HashMap<>(connections.size());
       for (final RemoteClientConnection<T> remoteClientConnection : connections.values()) {
-        clients.put(remoteClientConnection.getRemoteClient(), remoteClientConnection.getConnection());
+        clients.put(remoteClientConnection.getClient(), remoteClientConnection.getConnection());
       }
 
       return clients;
@@ -162,7 +161,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     synchronized (connections) {
       RemoteClientConnection<T> remoteClientConnection = connections.get(connectionRequest.getClientID());
       if (remoteClientConnection != null) {
-        validateUserCredentials(connectionRequest.getUser(), remoteClientConnection.getRemoteClient().getUser());
+        validateUserCredentials(connectionRequest.getUser(), remoteClientConnection.getClient().getUser());
         LOG.debug("Active connection exists {}", connectionRequest);
         return remoteClientConnection.getConnection();
       }
@@ -197,7 +196,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
     if (remoteClientConnection != null) {
       doDisconnect(remoteClientConnection.getConnection());
-      final RemoteClient remoteClient = remoteClientConnection.getRemoteClient();
+      final RemoteClient remoteClient = remoteClientConnection.getClient();
       getLoginProxy(remoteClient.getClientTypeID()).doLogout(remoteClient);
       LOG.debug("Client disconnected {}", remoteClient);
     }
@@ -264,13 +263,17 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     try {
       UnicastRemoteObject.unexportObject(this, true);
     }
-    catch (final NoSuchObjectException ignored) {/*ignored*/}
-    for (final LoginProxy proxy : loginProxies.values()) {
-      try {
-        proxy.close();
-      }
-      catch (final Exception ignored) {/*ignored*/}
+    catch (final NoSuchObjectException e) {
+      LOG.error("Exception while unexporting server on shutdown", e);
     }
+    loginProxies.values().forEach(loginProxy -> {
+      try {
+        loginProxy.close();
+      }
+      catch (final Exception e) {
+        LOG.error("Exception while closing loginProxy for client type: " + loginProxy.getClientTypeID(), e);
+      }
+    });
 
     handleShutdown();
   }
@@ -334,16 +337,16 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   }
 
   private static final class RemoteClientConnection<T> {
+    private final RemoteClient client;
     private final T connection;
-    private final RemoteClient remoteClient;
 
-    private RemoteClientConnection(final RemoteClient remoteClient, final T connection) {
-      this.remoteClient = remoteClient;
+    private RemoteClientConnection(final RemoteClient client, final T connection) {
+      this.client = client;
       this.connection = connection;
     }
 
-    private RemoteClient getRemoteClient() {
-      return remoteClient;
+    private RemoteClient getClient() {
+      return client;
     }
 
     private T getConnection() {

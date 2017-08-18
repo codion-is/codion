@@ -39,7 +39,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.RMISocketFactory;
+import java.rmi.server.RMIClientSocketFactory;
+import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -205,9 +206,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
                                        final int connectionTimeout, final Map<String, Integer> clientSpecificConnectionTimeouts,
                                        final User adminUser)
           throws RemoteException {
-    super(serverPort, serverName,
-            sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
-            sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
+    super(serverPort, serverName, sslEnabled ? new SslRMIClientSocketFactory() : null, sslEnabled ? new SslRMIServerSocketFactory() : null);
     try {
       this.shutdownHook = new Thread(getShutdownHook());
       Runtime.getRuntime().addShutdownHook(this.shutdownHook);
@@ -269,7 +268,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       }
 
       final AbstractRemoteEntityConnection connection = createRemoteConnection(connectionPool, getDatabase(), remoteClient,
-              getServerInfo().getServerPort(), isClientLoggingEnabled(), isSslEnabled());
+              getServerInfo().getServerPort(), isClientLoggingEnabled(), isSslEnabled() ? new SslRMIClientSocketFactory() : null,
+              isSslEnabled() ? new SslRMIServerSocketFactory() : null);
 
       connection.addDisconnectListener(this::disconnectQuietly);
       LOG.debug("{} connected", remoteClient);
@@ -309,9 +309,12 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    */
   protected AbstractRemoteEntityConnection createRemoteConnection(final ConnectionPool connectionPool, final Database database,
                                                                   final RemoteClient remoteClient, final int port,
-                                                                  final boolean clientLoggingEnabled, final boolean sslEnabled)
+                                                                  final boolean clientLoggingEnabled,
+                                                                  final RMIClientSocketFactory clientSocketFactory,
+                                                                  final RMIServerSocketFactory serverSocketFactory)
           throws RemoteException, DatabaseException {
-    return new DefaultRemoteEntityConnection(connectionPool, database, remoteClient, port, clientLoggingEnabled, sslEnabled);
+    return new DefaultRemoteEntityConnection(connectionPool, database, remoteClient, port, clientLoggingEnabled,
+            clientSocketFactory, serverSocketFactory);
   }
 
   /**

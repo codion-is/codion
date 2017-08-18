@@ -16,6 +16,8 @@ import org.jminor.framework.db.remote.RemoteEntityConnection;
 import org.jminor.framework.domain.Entity;
 
 import java.rmi.RemoteException;
+import java.rmi.server.RMIClientSocketFactory;
+import java.rmi.server.RMIServerSocketFactory;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -32,15 +34,30 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @param remoteClient the client requesting the connection
    * @param port the port to use when exporting this remote connection
    * @param loggingEnabled specifies whether or not method logging is enabled
-   * @param sslEnabled specifies whether or not ssl should be enabled
    * @throws RemoteException in case of an exception
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
   DefaultRemoteEntityConnection(final Database database, final RemoteClient remoteClient, final int port,
-                                final boolean loggingEnabled, final boolean sslEnabled)
+                                final boolean loggingEnabled)
           throws DatabaseException, RemoteException {
-    this(null, database, remoteClient, port, loggingEnabled, sslEnabled);
+    this(null, database, remoteClient, port, loggingEnabled);
+  }
+
+  /**
+   * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
+   * @param connectionPool the connection pool to use, if none is provided a local connection is established
+   * @param remoteClient the client requesting the connection
+   * @param port the port to use when exporting this remote connection
+   * @param loggingEnabled specifies whether or not method logging is enabled
+   * @throws RemoteException in case of an exception
+   * @throws DatabaseException in case a database connection can not be established, for example
+   * if a wrong username or password is provided
+   */
+  DefaultRemoteEntityConnection(final ConnectionPool connectionPool, final Database database, final RemoteClient remoteClient,
+                                final int port, final boolean loggingEnabled)
+          throws DatabaseException, RemoteException {
+    this(connectionPool, database, remoteClient, port, loggingEnabled, null, null);
   }
 
   /**
@@ -50,15 +67,17 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @param remoteClient the client requesting the connection
    * @param port the port to use when exporting this remote connection
    * @param loggingEnabled specifies whether or not method logging is enabled
-   * @param sslEnabled specifies whether or not ssl should be enabled
+   * @param clientSocketFactory the client socket factory to use, null for default
+   * @param serverSocketFactory the server socket factory to use, null for default
    * @throws RemoteException in case of an exception
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
   DefaultRemoteEntityConnection(final ConnectionPool connectionPool, final Database database, final RemoteClient remoteClient,
-                                final int port, final boolean loggingEnabled, final boolean sslEnabled)
+                                final int port, final boolean loggingEnabled, final RMIClientSocketFactory clientSocketFactory,
+                                final RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
-    super(connectionPool, database, remoteClient, port, loggingEnabled, sslEnabled);
+    super(connectionPool, database, remoteClient, port, loggingEnabled, clientSocketFactory, serverSocketFactory);
   }
 
   /** {@inheritDoc} */
