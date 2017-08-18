@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.RMISocketFactory;
+import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collections;
 import java.util.HashMap;
@@ -172,6 +173,10 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
       LOG.debug("No active connection found for client {}, establishing a new connection", connectionRequest);
       final RemoteClient remoteClient = Servers.remoteClient(connectionRequest);
+      try {
+        remoteClient.setClientHost(getClientHost());
+      }
+      catch (final ServerNotActiveException ignored) {/*ignored*/}
       remoteClientConnection = new RemoteClientConnection<>(remoteClient, doConnect(loginProxy.doLogin(remoteClient)));
       connections.put(remoteClient.getClientID(), remoteClientConnection);
 

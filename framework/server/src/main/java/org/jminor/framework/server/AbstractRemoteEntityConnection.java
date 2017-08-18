@@ -33,7 +33,6 @@ import java.lang.reflect.Method;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
-import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -87,10 +86,6 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     this.connectionHandler = new RemoteEntityConnectionHandler(
             this, connectionPool, remoteClient, database, loggingEnabled);
     this.connectionProxy = Util.initializeProxy(EntityConnection.class, connectionHandler);
-    try {
-      remoteClient.setClientHost(getClientHost());
-    }
-    catch (final ServerNotActiveException ignored) {/*ignored*/}
   }
 
   /**
