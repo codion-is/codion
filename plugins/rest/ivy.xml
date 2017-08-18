@@ -36,8 +36,8 @@
     <dependency org="org.eclipse.jetty" name="jetty-io" rev="9.3.2.v20150730" conf="runtime->master"/>
     <dependency org="org.eclipse.jetty" name="jetty-security" rev="9.3.2.v20150730" conf="runtime->master"/>
 
-    <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.5" conf="test->master"/>
-    <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.4.1" conf="test->master"/>
+    <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.5" conf="compile->master"/>
+    <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.4.1" conf="compile->master"/>
     <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="test->master"/>
 
     <dependency org="org.jminor" name="jminor-framework-db-local" rev="${version}" conf="test->master"/>

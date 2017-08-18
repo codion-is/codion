@@ -10,6 +10,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="jminor-swing-framework-bundle" />
     <orderEntry type="module" module-name="jminor-javafx" />
     <orderEntry type="module" module-name="plugin-jasperreports" />
     <orderEntry type="module" module-name="plugin-logback-proxy" scope="RUNTIME" />
