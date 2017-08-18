@@ -33,7 +33,7 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
    */
   @Override
   public ConnectionPool createConnectionPool(final User user, final Database database) {
-    return new HikariConnectionPool(user, database);
+    return new HikariConnectionPool(database, user);
   }
 
   private static final class HikariConnectionPool extends AbstractConnectionPool<HikariPool> {
@@ -41,8 +41,8 @@ public final class HikariConnectionPoolProvider implements ConnectionPoolProvide
     private final HikariConfig config = new HikariConfig();
     private final DriverDataSource dataSource;
 
-    public HikariConnectionPool(final User user, final Database database) {
-      super(user);
+    public HikariConnectionPool(final Database database, final User user) {
+      super(database, user);
       dataSource = new DriverDataSource(database.getURL(null), database.getDriverClassName(),
               new Properties(), user.getUsername(), user.getPassword());
       config.setJdbcUrl(database.getURL(null));

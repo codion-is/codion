@@ -4548,3 +4548,4 @@
   Replaced more foreach loops with indexed loops
   AbstractServer now sets remote client host instead of AbstractRemoteConnection, which was too late when using a login proxy
   AbstractRemoteEntityConnection socket factory usage refactored
+  ConnectionPool.getDatabase() added, implementations refactored

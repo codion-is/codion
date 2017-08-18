@@ -58,7 +58,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
    * @throws DatabaseException in case of an exception while constructing the initial connections
    */
   DefaultConnectionPool(final DatabaseConnectionProvider connectionProvider) throws DatabaseException {
-    super(connectionProvider.getUser());
+    super(connectionProvider.getDatabase(), connectionProvider.getUser());
     this.connectionProvider = connectionProvider;
     setPool(new ArrayDeque<>());
     initializeConnections();

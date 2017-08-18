@@ -4,6 +4,7 @@
 package org.jminor.swing.framework.server.monitor;
 
 import org.jminor.common.User;
+import org.jminor.common.db.Database;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
@@ -259,6 +260,11 @@ public final class PoolMonitor {
       catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
+    }
+
+    @Override
+    public Database getDatabase() {
+      return null;
     }
 
     @Override

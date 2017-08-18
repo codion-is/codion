@@ -30,6 +30,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
    * The actual connection pool object
    */
   private T pool;
+  private final Database database;
   private final User user;
 
   private final LinkedList<DefaultConnectionPoolState> fineGrainedCStatistics = new LinkedList<>();
@@ -42,8 +43,15 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   /**
    * @param user the connection pool user
    */
-  public AbstractConnectionPool(final User user) {
+  public AbstractConnectionPool(final Database database, final User user) {
+    this.database = database;
     this.user = user;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Database getDatabase() {
+    return database;
   }
 
   /** {@inheritDoc} */
@@ -200,15 +208,11 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
 
   private final class StatisticsCollector implements Runnable {
 
-    @Override
-    public void run() {
-      addPoolStatistics();
-    }
-
     /**
      * Adds the current state of the pool to the fine grained connection pool log
      */
-    private void addPoolStatistics() {
+    @Override
+    public void run() {
       synchronized (pool) {
         final DefaultConnectionPoolState state = fineGrainedCStatistics.removeFirst();
         state.set(System.currentTimeMillis(), getSize(), getInUse(), getWaiting());

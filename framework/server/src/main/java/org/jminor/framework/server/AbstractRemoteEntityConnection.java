@@ -84,7 +84,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
                                            final RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
     super(port, clientSocketFactory, serverSocketFactory);
-    this.connectionHandler = new RemoteEntityConnectionHandler(this, connectionPool, remoteClient,
+    this.connectionHandler = new RemoteEntityConnectionHandler(this, remoteClient, connectionPool,
             database, loggingEnabled);
     this.connectionProxy = Util.initializeProxy(EntityConnection.class, connectionHandler);
   }
@@ -272,12 +272,12 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     private boolean disconnected = false;
 
     private RemoteEntityConnectionHandler(final AbstractRemoteEntityConnection remoteEntityConnection,
-                                          final ConnectionPool connectionPool, final RemoteClient remoteClient,
+                                          final RemoteClient remoteClient, final ConnectionPool connectionPool,
                                           final Database database, final boolean loggingEnabled) throws DatabaseException {
-      this.remoteClient = remoteClient;
-      this.database = database;
-      this.connectionPool = connectionPool;
       this.remoteEntityConnection = remoteEntityConnection;
+      this.remoteClient = remoteClient;
+      this.connectionPool = connectionPool;
+      this.database = database;
       this.methodLogger.setEnabled(loggingEnabled);
       this.logIdentifier = remoteClient.getUser().getUsername().toLowerCase() +"@" + remoteClient.getClientTypeID();
       try {
@@ -330,7 +330,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     }
 
     private EntityConnection getConnection() throws DatabaseException {
-      Exception exception = null;
+      DatabaseException exception = null;
       try {
         if (methodLogger != null && methodLogger.isEnabled()) {
           methodLogger.logAccess(GET_CONNECTION, new Object[]{remoteClient.getDatabaseUser(), remoteClient.getUser()});
@@ -348,8 +348,9 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       finally {
         if (methodLogger != null && methodLogger.isEnabled()) {
           String message = null;
-          if (poolEntityConnection != null && poolEntityConnection.getDatabaseConnection().getRetryCount() > 0) {
-            message = "retries: " + poolEntityConnection.getDatabaseConnection().getRetryCount();
+          final int retryCount = poolEntityConnection == null ? 0 : poolEntityConnection.getDatabaseConnection().getRetryCount();
+          if (retryCount > 0) {
+            message = "retries: " + retryCount;
           }
           methodLogger.logExit(GET_CONNECTION, exception, message);
         }

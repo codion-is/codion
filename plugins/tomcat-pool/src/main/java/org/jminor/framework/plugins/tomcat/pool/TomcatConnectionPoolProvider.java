@@ -50,7 +50,7 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
   private static final class DataSourceWrapper extends AbstractConnectionPool<DataSource> {
 
     private DataSourceWrapper(final Database database, final User user, final DataSource dataSource) {
-      super(user);
+      super(database, user);
       dataSource.setDataSource(Util.initializeProxy(javax.sql.DataSource.class, (dataSourceProxy, dataSourceMethod, dataSourceArgs) ->
               handleInvocation(database, user, dataSource, dataSourceMethod, dataSourceArgs)));
       setPool(dataSource);

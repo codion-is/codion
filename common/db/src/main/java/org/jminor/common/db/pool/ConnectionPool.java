@@ -4,6 +4,7 @@
 package org.jminor.common.db.pool;
 
 import org.jminor.common.User;
+import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 
 import java.sql.Connection;
@@ -29,6 +30,11 @@ public interface ConnectionPool {
    * @param connection the database connection to return to the pool
    */
   void returnConnection(final Connection connection);
+
+  /**
+   * @return the underlying database
+   */
+  Database getDatabase();
 
   /**
    * @return the user this connection pool is based on.
