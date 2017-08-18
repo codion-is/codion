@@ -505,6 +505,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   private static class DefaultGcEvent implements GcEvent, Serializable {
 
     private static final long serialVersionUID = 1;
+
     private final long timeStamp;
     private final String gcName;
     private final long duration;

@@ -208,8 +208,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
           throws RemoteException {
     super(serverPort, serverName, sslEnabled ? new SslRMIClientSocketFactory() : null, sslEnabled ? new SslRMIServerSocketFactory() : null);
     try {
-      this.shutdownHook = new Thread(getShutdownHook());
-      Runtime.getRuntime().addShutdownHook(this.shutdownHook);
+      Runtime.getRuntime().addShutdownHook(this.shutdownHook = new Thread(getShutdownHook()));
       this.database = Objects.requireNonNull(database, "database");
       this.registryPort = registryPort;
       this.registry = LocateRegistry.createRegistry(registryPort);
@@ -251,7 +250,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   /**
-   * @return true if client loggin is enabled
+   * @return true if client logging is enabled
    */
   public final boolean isClientLoggingEnabled() {
     return clientLoggingEnabled;
@@ -259,8 +258,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
 
   /** {@inheritDoc} */
   @Override
-  protected final AbstractRemoteEntityConnection doConnect(final RemoteClient remoteClient) throws RemoteException, ServerException.LoginException,
-          ServerException.ServerFullException {
+  protected final AbstractRemoteEntityConnection doConnect(final RemoteClient remoteClient)
+          throws RemoteException, ServerException.LoginException, ServerException.ServerFullException {
     try {
       final ConnectionPool connectionPool = ConnectionPools.getConnectionPool(remoteClient.getDatabaseUser());
       if (connectionPool != null) {
@@ -710,7 +709,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
   }
 
-  private static void initializeConnectionPools(final Database database, final Collection<User> initialPoolUsers) throws ClassNotFoundException, DatabaseException {
+  private static void initializeConnectionPools(final Database database, final Collection<User> initialPoolUsers)
+          throws ClassNotFoundException, DatabaseException {
     if (initialPoolUsers != null) {
       final String connectionPoolProviderClassName = SERVER_CONNECTION_POOL_PROVIDER_CLASS.get();
       final Class<? extends ConnectionPoolProvider> providerClass;
