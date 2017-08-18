@@ -231,9 +231,8 @@ public final class EntityConditions {
       if (value instanceof Collection) {
         return foreignKeyCondition((Property.ForeignKeyProperty) property, conditionType, (Collection) value);
       }
-      else {
-        return foreignKeyCondition((Property.ForeignKeyProperty) property, conditionType, Collections.singletonList(value));
-      }
+
+      return foreignKeyCondition((Property.ForeignKeyProperty) property, conditionType, Collections.singletonList(value));
     }
     if (!(property instanceof Property.ColumnProperty)) {
       throw new IllegalArgumentException(property + " is not a " + Property.ColumnProperty.class.getSimpleName());
@@ -395,7 +394,6 @@ public final class EntityConditions {
     return conditionSet;
   }
 
-  @SuppressWarnings({"unchecked"})
   private static List<Entity.Key> getEntityKeys(final Object value) {
     final List<Entity.Key> keys = new ArrayList<>();
     if (value instanceof Collection) {
@@ -685,7 +683,6 @@ public final class EntityConditions {
       stream.writeInt(offset);
     }
 
-    @SuppressWarnings({"unchecked"})
     private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
       orderBy = (OrderBy) stream.readObject();
       orderByClause = (String) stream.readObject();
@@ -754,7 +751,6 @@ public final class EntityConditions {
         return Collections.emptyList();
       }//null condition, uses 'x is null', not 'x = ?'
 
-      //noinspection unchecked
       return values;
     }
 
