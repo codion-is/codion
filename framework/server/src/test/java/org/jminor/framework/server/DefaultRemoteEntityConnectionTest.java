@@ -132,7 +132,7 @@ public class DefaultRemoteEntityConnectionTest {
       }
     };
     final ConnectionPool connectionPool = ConnectionPools.createDefaultConnectionPool(connectionProvider);
-    final DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(connectionPool, connectionProvider.getDatabase(), client, 1238, true);
+    final DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(connectionPool, client, 1238, true);
     final EntitySelectCondition condition = EntityConditions.selectCondition(TestDomain.T_EMP);
     connection.beginTransaction();
     connection.selectMany(condition);

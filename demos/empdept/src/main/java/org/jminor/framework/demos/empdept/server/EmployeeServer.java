@@ -37,7 +37,7 @@ public final class EmployeeServer extends DefaultEntityConnectionServer {
                                                           final RMIClientSocketFactory clientSocketFactory,
                                                           final RMIServerSocketFactory serverSocketFactory)
           throws RemoteException, DatabaseException {
-    return new DefaultEmployeeService(database, remoteClient, port, clientLoggingEnabled, clientSocketFactory, serverSocketFactory);
+    return new DefaultEmployeeService(database, remoteClient, port, clientLoggingEnabled);
   }
 
   static final class DefaultEmployeeService extends AbstractRemoteEntityConnection
@@ -48,8 +48,7 @@ public final class EmployeeServer extends DefaultEntityConnectionServer {
     }
 
     private DefaultEmployeeService(final Database database, final RemoteClient remoteClient, final int port,
-                                   final boolean loggingEnabled, final RMIClientSocketFactory clientSocketFactory,
-                                   final RMIServerSocketFactory serverSocketFactory)
+                                   final boolean loggingEnabled)
             throws DatabaseException, RemoteException {
       super(null, database, remoteClient, port, loggingEnabled, null, null);
     }

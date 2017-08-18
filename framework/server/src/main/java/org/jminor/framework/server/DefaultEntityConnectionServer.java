@@ -297,7 +297,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   /**
    * Creates the remote connection provided by this server
    * @param connectionPool the connection pool to use, if none is provided a local connection is established
-   * @param database defines the underlying database
+   * @param database the underlying database
    * @param remoteClient the client requesting the connection
    * @param port the port to use when exporting this remote connection
    * @param clientLoggingEnabled specifies whether or not method logging is enabled
@@ -313,7 +313,12 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
                                                                   final RMIClientSocketFactory clientSocketFactory,
                                                                   final RMIServerSocketFactory serverSocketFactory)
           throws RemoteException, DatabaseException {
-    return new DefaultRemoteEntityConnection(connectionPool, database, remoteClient, port, clientLoggingEnabled,
+    if (connectionPool != null) {
+      return new DefaultRemoteEntityConnection(connectionPool, remoteClient, port, clientLoggingEnabled,
+            clientSocketFactory, serverSocketFactory);
+    }
+
+    return new DefaultRemoteEntityConnection(database, remoteClient, port, clientLoggingEnabled,
             clientSocketFactory, serverSocketFactory);
   }
 

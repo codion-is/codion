@@ -30,7 +30,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   /**
    * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
-   * @param database defines the underlying database
+   * @param database the underlying database
    * @param remoteClient the client requesting the connection
    * @param port the port to use when exporting this remote connection
    * @param loggingEnabled specifies whether or not method logging is enabled
@@ -41,29 +41,12 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   DefaultRemoteEntityConnection(final Database database, final RemoteClient remoteClient, final int port,
                                 final boolean loggingEnabled)
           throws DatabaseException, RemoteException {
-    this(null, database, remoteClient, port, loggingEnabled);
+    this(database, remoteClient, port, loggingEnabled, null, null);
   }
 
   /**
    * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
-   * @param connectionPool the connection pool to use, if none is provided a local connection is established
-   * @param remoteClient the client requesting the connection
-   * @param port the port to use when exporting this remote connection
-   * @param loggingEnabled specifies whether or not method logging is enabled
-   * @throws RemoteException in case of an exception
-   * @throws DatabaseException in case a database connection can not be established, for example
-   * if a wrong username or password is provided
-   */
-  DefaultRemoteEntityConnection(final ConnectionPool connectionPool, final Database database, final RemoteClient remoteClient,
-                                final int port, final boolean loggingEnabled)
-          throws DatabaseException, RemoteException {
-    this(connectionPool, database, remoteClient, port, loggingEnabled, null, null);
-  }
-
-  /**
-   * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
-   * @param connectionPool the connection pool to use, if none is provided a local connection is established
-   * @param database defines the underlying database
+   * @param database the underlying database
    * @param remoteClient the client requesting the connection
    * @param port the port to use when exporting this remote connection
    * @param loggingEnabled specifies whether or not method logging is enabled
@@ -73,11 +56,46 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  DefaultRemoteEntityConnection(final ConnectionPool connectionPool, final Database database, final RemoteClient remoteClient,
+  DefaultRemoteEntityConnection(final Database database, final RemoteClient remoteClient,
                                 final int port, final boolean loggingEnabled, final RMIClientSocketFactory clientSocketFactory,
                                 final RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
-    super(connectionPool, database, remoteClient, port, loggingEnabled, clientSocketFactory, serverSocketFactory);
+    super(null, database, remoteClient, port, loggingEnabled, clientSocketFactory, serverSocketFactory);
+  }
+
+  /**
+   * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
+   * @param connectionPool the connection pool to use, if none is provided a local connection is established
+   * @param remoteClient the client requesting the connection
+   * @param port the port to use when exporting this remote connection
+   * @param loggingEnabled specifies whether or not method logging is enabled
+   * @throws RemoteException in case of an exception
+   * @throws DatabaseException in case a database connection can not be established, for example
+   * if a wrong username or password is provided
+   */
+  DefaultRemoteEntityConnection(final ConnectionPool connectionPool, final RemoteClient remoteClient,
+                                final int port, final boolean loggingEnabled)
+          throws DatabaseException, RemoteException {
+    this(connectionPool, remoteClient, port, loggingEnabled, null, null);
+  }
+
+  /**
+   * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
+   * @param connectionPool the connection pool to use, if none is provided a local connection is established
+   * @param remoteClient the client requesting the connection
+   * @param port the port to use when exporting this remote connection
+   * @param loggingEnabled specifies whether or not method logging is enabled
+   * @param clientSocketFactory the client socket factory to use, null for default
+   * @param serverSocketFactory the server socket factory to use, null for default
+   * @throws RemoteException in case of an exception
+   * @throws DatabaseException in case a database connection can not be established, for example
+   * if a wrong username or password is provided
+   */
+  DefaultRemoteEntityConnection(final ConnectionPool connectionPool, final RemoteClient remoteClient,
+                                final int port, final boolean loggingEnabled, final RMIClientSocketFactory clientSocketFactory,
+                                final RMIServerSocketFactory serverSocketFactory)
+          throws DatabaseException, RemoteException {
+    super(connectionPool, connectionPool.getDatabase(), remoteClient, port, loggingEnabled, clientSocketFactory, serverSocketFactory);
   }
 
   /** {@inheritDoc} */
