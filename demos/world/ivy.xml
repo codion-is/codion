@@ -20,6 +20,5 @@
 
     <dependency org="junit" name="junit" rev="${junit.version}" conf="test->master"/>
     <dependency org="org.hamcrest" name="hamcrest-core" rev="${hamcrest-core.version}" conf="test->master"/>
-    <dependency org="com.h2database" name="h2" rev="${h2.version}" conf="test->master"/>
   </dependencies>
 </ivy-module>
