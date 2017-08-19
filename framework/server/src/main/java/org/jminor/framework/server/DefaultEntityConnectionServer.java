@@ -208,7 +208,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
           throws RemoteException {
     super(serverPort, serverName, sslEnabled ? new SslRMIClientSocketFactory() : null, sslEnabled ? new SslRMIServerSocketFactory() : null);
     try {
-      Runtime.getRuntime().addShutdownHook(this.shutdownHook = new Thread(getShutdownHook()));
+      this.shutdownHook = new Thread(getShutdownHook());
+      Runtime.getRuntime().addShutdownHook(this.shutdownHook);
       this.database = Objects.requireNonNull(database, "database");
       this.registryPort = registryPort;
       this.registry = LocateRegistry.createRegistry(registryPort);

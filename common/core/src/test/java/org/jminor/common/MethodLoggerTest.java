@@ -5,6 +5,12 @@ package org.jminor.common;
 
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -18,12 +24,27 @@ public class MethodLoggerTest {
     logger.setEnabled(true);
 
     final String methodName = "test";
-    logger.logAccess(methodName, new Object[0]);
-    logger.logExit(methodName, null, null);
+    logger.logAccess(methodName);
+    logger.logExit(methodName);
 
-    assertEquals(1, logger.size());
+    assertEquals(1, logger.getEntries().size());
     logger.setEnabled(false);
-    assertEquals(0, logger.size());
+    assertEquals(0, logger.getEntries().size());
+  }
+
+  @Test
+  public void serialize() throws IOException, ClassNotFoundException {
+    final MethodLogger logger = new MethodLogger(10, false);
+    logger.setEnabled(true);
+    logger.logAccess("method");
+    logger.logAccess("method2");
+    logger.logExit("method2");
+    logger.logExit("method");
+
+    final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+    new ObjectOutputStream(byteOut).writeObject(logger.getEntries());
+    final List<MethodLogger.Entry> readLogger = (List<MethodLogger.Entry>) new ObjectInputStream(
+            new ByteArrayInputStream(byteOut.toByteArray())).readObject();
   }
 
   @Test
@@ -32,16 +53,16 @@ public class MethodLoggerTest {
     assertFalse(logger.isEnabled());
     logger.logAccess("method");
 
-    assertEquals(0, logger.size());
+    assertEquals(0, logger.getEntries().size());
 
     logger.setEnabled(true);
     logger.logAccess("method2");
     logger.logExit("method2");
 
-    assertEquals(1, logger.size());
+    assertEquals(1, logger.getEntries().size());
 
     logger.setEnabled(false);
-    assertEquals(0, logger.size());
+    assertEquals(0, logger.getEntries().size());
   }
 
   @Test
@@ -51,16 +72,18 @@ public class MethodLoggerTest {
     logger.logAccess("method");
     logger.logExit("method");
 
-    assertEquals(1, logger.size());
-    final MethodLogger.Entry entry = logger.getEntryAt(0);
+    assertEquals(1, logger.getEntries().size());
+    final MethodLogger.Entry entry = logger.getEntries().get(0);
     assertEquals("method", entry.getMethod());
 
     logger.logAccess("method2");
     logger.logExit("method2");
 
-    assertEquals(2, logger.size());
-    final MethodLogger.Entry entry2 = logger.getEntryAt(1);
+    assertEquals(2, logger.getEntries().size());
+    final MethodLogger.Entry entry2 = logger.getEntries().get(1);
     assertEquals("method2", entry2.getMethod());
+
+    assertTrue(logger.getEntries().containsAll(Arrays.asList(entry, entry2)));
   }
 
   @Test
@@ -74,9 +97,9 @@ public class MethodLoggerTest {
     logger.logExit("subMethod2");
     logger.logExit("method");
 
-    assertEquals(1, logger.size());
+    assertEquals(1, logger.getEntries().size());
 
-    final MethodLogger.Entry lastEntry = logger.getEntryAt(0);
+    final MethodLogger.Entry lastEntry = logger.getEntries().get(0);
     assertEquals("method", lastEntry.getMethod());
     assertTrue(lastEntry.containsSubLog());
     final List<MethodLogger.Entry> subLog = lastEntry.getSubLog();
@@ -97,9 +120,9 @@ public class MethodLoggerTest {
     logger.logExit("method");
     logger.logExit("method");
 
-    assertEquals(1, logger.size());
+    assertEquals(1, logger.getEntries().size());
 
-    final MethodLogger.Entry lastEntry = logger.getEntryAt(0);
+    final MethodLogger.Entry lastEntry = logger.getEntries().get(0);
     assertEquals("method", lastEntry.getMethod());
     assertTrue(lastEntry.containsSubLog());
     final List<MethodLogger.Entry> subLog = lastEntry.getSubLog();
@@ -124,9 +147,9 @@ public class MethodLoggerTest {
     logger.logExit("two2");
     logger.logExit("one");
 
-    assertEquals(1, logger.size());
+    assertEquals(1, logger.getEntries().size());
 
-    final MethodLogger.Entry entry = logger.getEntryAt(0);
+    final MethodLogger.Entry entry = logger.getEntries().get(0);
     assertEquals("one", entry.getMethod());
     assertTrue(entry.containsSubLog());
     final List<MethodLogger.Entry> subLog = entry.getSubLog();
@@ -166,26 +189,6 @@ public class MethodLoggerTest {
   }
 
   @Test
-  public void testEntry() {
-    final MethodLogger.Entry entry = new MethodLogger.Entry("method", "message", 1000, 1000000000);
-    assertFalse(entry.isComplete());
-
-    entry.setExitMessage("exit");
-    entry.setExitTime(1200, 1200000000);
-    assertTrue(entry.isComplete());
-
-    final MethodLogger.Entry newEntry = new MethodLogger.Entry("method", "message", 1100, 1100000000);
-    newEntry.setExitMessage("exit");
-
-    assertEquals("method", entry.getMethod());
-    assertEquals("message", entry.getAccessMessage());
-    assertEquals(1000, entry.getAccessTime());
-    assertEquals(1200, entry.getExitTime());
-    assertEquals(200, entry.getDelta());
-    assertEquals(200000000, entry.getDeltaNano());
-  }
-
-  @Test
   public void appendLogEntry() {
     final MethodLogger logger = new MethodLogger(10, false);
     logger.setEnabled(true);
@@ -199,6 +202,6 @@ public class MethodLoggerTest {
     logger.logExit("three2");
     logger.logExit("two2");
     logger.logExit("one");
-    MethodLogger.appendLogEntry(new StringBuilder(), logger.getFirstEntry(), 0);
+    MethodLogger.appendLogEntry(new StringBuilder(), logger.getEntries().get(0), 0);
   }
 }

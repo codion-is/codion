@@ -83,9 +83,7 @@ public final class MethodLogger {
    */
   public synchronized void logAccess(final String method, final Object[] arguments) {
     if (enabled) {
-      final String accessMessage = argumentStringProvider.toString(arguments);
-      final Entry entry = new Entry(method, accessMessage);
-      callStack.push(entry);
+      callStack.push(new Entry(method, argumentStringProvider.toString(arguments)));
     }
   }
 
@@ -156,35 +154,6 @@ public final class MethodLogger {
   }
 
   /**
-   * @return the number of log entries
-   */
-  public synchronized int size() {
-    return entries.size();
-  }
-
-  /**
-   * @param index the index
-   * @return the entry at the given index
-   */
-  public synchronized Entry getEntryAt(final int index) {
-    return entries.get(index);
-  }
-
-  /**
-   * @return the last log entry
-   */
-  public synchronized Entry getLastEntry() {
-    return entries.getLast();
-  }
-
-  /**
-   * @return the first log entry
-   */
-  public synchronized Entry getFirstEntry() {
-    return entries.getFirst();
-  }
-
-  /**
    * @return an unmodifiable view of the log entries
    */
   public synchronized List<Entry> getEntries() {
@@ -200,8 +169,7 @@ public final class MethodLogger {
   public static void appendLogEntry(final StringBuilder log, final Entry entry, final int indentationLevel) {
     if (entry != null) {
       log.append(entry.toString(indentationLevel)).append("\n");
-      final List<Entry> subLog = entry.getSubLog();
-      appendLogEntries(log, subLog, indentationLevel + 1);
+      appendLogEntries(log, entry.getSubLog(), indentationLevel + 1);
     }
   }
 
@@ -315,14 +283,6 @@ public final class MethodLogger {
     }
 
     /**
-     * Adds a sub entry to this log entry
-     * @param subEntry the sub entry to add
-     */
-    public void addSubEntry(final Entry subEntry) {
-      this.subEntries.addLast(subEntry);
-    }
-
-    /**
      * @return the name of the method logged by this entry
      */
     public String getMethod() {
@@ -334,31 +294,6 @@ public final class MethodLogger {
      */
     public boolean isComplete() {
       return exitTime != 0;
-    }
-
-    /**
-     * Sets the exit time using the current time
-     */
-    public void setExitTime() {
-      setExitTime(System.currentTimeMillis(), System.nanoTime());
-    }
-
-    /**
-     * @param exitTime the exit time
-     * @param exitTimeNano the exit time in nanoseconds
-     */
-    public void setExitTime(final long exitTime, final long exitTimeNano) {
-      this.exitTime = exitTime;
-      this.exitTimeNano = exitTimeNano;
-    }
-
-    /**
-     * @param exception the exception that occurred during the method call logged by this entry
-     */
-    public void setException(final Throwable exception) {
-      if (exception != null) {
-        this.stackTrace = getStackTrace(exception);
-      }
     }
 
     /**
@@ -383,29 +318,12 @@ public final class MethodLogger {
     }
 
     /**
-     * @param exitMessage the exit message
-     */
-    public void setExitMessage(final String exitMessage) {
-      this.exitMessage = exitMessage;
-    }
-
-    /**
-     * Returns the duration of the method call this entry represents,
-     * this value is 0 or undefined until {@code setExitTime()}
-     * has been called, this can be checked via {@code isComplete()}.
-     * @return the duration of the method call this entry represents
-     */
-    public long getDelta() {
-      return exitTime - accessTime;
-    }
-
-    /**
      * Returns the duration of the method call this entry represents in nanoseconds,
      * this value is 0 or undefined until {@code setExitTime()}
      * has been called, this can be checked via {@code isComplete()}.
      * @return the duration of the method call this entry represents
      */
-    public long getDeltaNano() {
+    public long getDuration() {
       return exitTimeNano - accessTimeNano;
     }
 
@@ -428,7 +346,7 @@ public final class MethodLogger {
         stringBuilder.append(indentString).append(timestampFormat.format(accessTime)).append(" @ ").append(method).append(
                 !Util.nullOrEmpty(accessMessage) ? (": " + accessMessage) : "").append("\n");
         stringBuilder.append(indentString).append(timestampFormat.format(exitTime)).append(" > ")
-                .append(MICROSECONDS_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(getDeltaNano()))).append(" μs")
+                .append(MICROSECONDS_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(getDuration()))).append(" μs")
                 .append(exitMessage == null ? "" : " (" + exitMessage + ")");
         if (stackTrace != null) {
           stringBuilder.append("\n").append(stackTrace);
@@ -440,6 +358,46 @@ public final class MethodLogger {
       }
 
       return stringBuilder.toString();
+    }
+
+    /**
+     * Adds a sub entry to this log entry
+     * @param subEntry the sub entry to add
+     */
+    private void addSubEntry(final Entry subEntry) {
+      this.subEntries.addLast(subEntry);
+    }
+
+    /**
+     * Sets the exit time using the current time
+     */
+    private void setExitTime() {
+      setExitTime(System.currentTimeMillis(), System.nanoTime());
+    }
+
+    /**
+     * @param exitTime the exit time
+     * @param exitTimeNano the exit time in nanoseconds
+     */
+    private void setExitTime(final long exitTime, final long exitTimeNano) {
+      this.exitTime = exitTime;
+      this.exitTimeNano = exitTimeNano;
+    }
+
+    /**
+     * @param exception the exception that occurred during the method call logged by this entry
+     */
+    private void setException(final Throwable exception) {
+      if (exception != null) {
+        this.stackTrace = getStackTrace(exception);
+      }
+    }
+
+    /**
+     * @param exitMessage the exit message
+     */
+    private void setExitMessage(final String exitMessage) {
+      this.exitMessage = exitMessage;
     }
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {

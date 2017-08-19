@@ -141,7 +141,7 @@ public class DefaultEntityConnectionServerTest {
 
     final MethodLogger.Entry entry = log.getEntries().get(0);
     assertEquals("selectMany", entry.getMethod());
-    assertTrue(entry.getDelta() >= 0);
+    assertTrue(entry.getDuration() >= 0);
 
     admin.removeConnections(true);
 

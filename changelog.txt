@@ -4550,3 +4550,4 @@
   AbstractRemoteEntityConnection socket factory usage refactored
   ConnectionPool.getDatabase() added, implementations refactored
   DefaultRemoteEntityConnection constructors tidied up
+  MethodLogger public api reduced
