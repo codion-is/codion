@@ -766,7 +766,7 @@ public final class Entities {
         final String entityID = (String) entityAnnotation.getKey().get(null);
         final Collection<Map.Entry<Field, Property.Column>> entityPropertyAnnotations =
                 getPropertyAnnotations(entityID, columnAnnotations);
-        addTablAndColumnDefinitions(entityID, (Entity.Table) entityAnnotation.getValue(), entityPropertyAnnotations);
+        addTableAndColumnDefinitions(entityID, (Entity.Table) entityAnnotation.getValue(), entityPropertyAnnotations);
       }
       for (final Map.Entry<Field, Annotation> operationAnnotation : operationAnnotations.entrySet()) {
         final String operationID = (String) operationAnnotation.getKey().get(null);
@@ -791,8 +791,8 @@ public final class Entities {
     return ret;
   }
 
-  private static void addTablAndColumnDefinitions(final String entityID, final Entity.Table entityTable,
-                                                  final Collection<Map.Entry<Field, Property.Column>> entityColumnAnnotations) {
+  private static void addTableAndColumnDefinitions(final String entityID, final Entity.Table entityTable,
+                                                   final Collection<Map.Entry<Field, Property.Column>> entityColumnAnnotations) {
     final Entity.Definition definition = DefaultEntityDefinition.getDefinition(entityID);
     setTableConfiguration(entityTable, definition);
     setKeyGenerator(definition, entityTable);
