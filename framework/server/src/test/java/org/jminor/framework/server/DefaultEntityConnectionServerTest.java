@@ -116,6 +116,12 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(2005, admin.getMaximumPoolCheckOutTime(UNIT_TEST_USER));
 
     try {
+      server.connect(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID"));
+      fail();
+    }
+    catch (final ServerException.LoginException e) {}
+
+    try {
       server.connect(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID",
               Collections.singletonMap("jminor.client.domainModelClass", EmptyDomain.class)));
       fail();

@@ -41,7 +41,7 @@ public interface ConnectionRequest extends Serializable {
   Version getFrameworkVersion();
 
   /**
-   * Misc. parameters
+   * @return misc. parameters, an empty map if none are specified
    */
   Map<String, Object> getParameters();
 }
