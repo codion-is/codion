@@ -24,7 +24,7 @@ public final class EmpDept extends Entities {
   public EmpDept() {
     defineDepartment();
     defineEmployee();
-    setDomainEntities(EmpDept.class.getName(), this);
+    registerDomain();
   }
 
   /**Used for i18n*/

@@ -895,6 +895,21 @@ public class Entities {
   }
 
   /**
+   * @return true if a entity serializer is specified and available on the classpath
+   */
+  public boolean entitySerializerAvailable() {
+    final String serializerClass = ENTITY_SERIALIZER_CLASS.get();
+    return serializerClass != null && Util.onClasspath(serializerClass);
+  }
+
+  /**
+   * Registers this instance for lookup via {@link Entities#getDomainEntities(String)}
+   */
+  public void registerDomain() {
+    setDomainEntities(getClass().getName(), this);
+  }
+
+  /**
    * Sorts the given properties by caption, or if that is not available, property ID, ignoring case
    * @param properties the properties to sort
    */
@@ -912,12 +927,8 @@ public class Entities {
     return DOMAIN_ENTITIES.get(domainID);
   }
 
-  /**
-   * @return true if a entity serializer is specified and available on the classpath
-   */
-  public boolean entitySerializerAvailable() {
-    final String serializerClass = ENTITY_SERIALIZER_CLASS.get();
-    return serializerClass != null && Util.onClasspath(serializerClass);
+  public static Collection<Entities> getAllDomains() {
+    return Collections.unmodifiableCollection(DOMAIN_ENTITIES.values());
   }
 
   Entity.Definition getDefinition(final String entityID) {
@@ -927,10 +938,6 @@ public class Entities {
     }
 
     return definition;
-  }
-
-  protected static void setDomainEntities(final String domainID, final Entities entities) {
-    DOMAIN_ENTITIES.put(domainID, entities);
   }
 
   private Map<String, Property> initializeProperties(final String domainID, final String entityID, final Property... propertyDefinitions) {
@@ -1000,6 +1007,12 @@ public class Entities {
     }
 
     throw new IllegalArgumentException("Entity is missing a primary key: " + entityID);
+  }
+
+  private static void setDomainEntities(final String domainID, final Entities entities) {
+    synchronized (DOMAIN_ENTITIES) {
+      DOMAIN_ENTITIES.put(domainID, entities);
+    }
   }
 
   /**

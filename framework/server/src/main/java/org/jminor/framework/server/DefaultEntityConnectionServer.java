@@ -158,7 +158,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
   private static final String FROM_CLASSPATH = "' from classpath";
 
-  private final Map<Class<? extends Entities>, Entities> clientDomainModels = new HashMap<>();
   private final AuxiliaryServer webServer;
   private final Database database;
   private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new DefaultEntityConnectionServer.MaintenanceTask(),
@@ -319,7 +318,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     if (domainModelClass == null) {
       throw new IllegalArgumentException("'jminor.client.domainModelClass' parameter not specified");
     }
-    final Entities domainModel = clientDomainModels.get(domainModelClass);
+    final Entities domainModel = Entities.getDomainEntities(domainModelClass.getName());
     if (domainModel == null) {
       throw new IllegalArgumentException("Domain model of type: '" + domainModelClass + "' is not available");
     }
@@ -421,7 +420,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    */
   Map<String, String> getEntityDefinitions() {
     final Map<String, String> definitions = new HashMap<>();
-    for (final Entities entities : clientDomainModels.values()) {
+    for (final Entities entities : Entities.getAllDomains()) {
       for (final String entityID : entities.getDefinedEntities()) {
         definitions.put(entityID, entities.getTableName(entityID));
       }
@@ -536,10 +535,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
   }
 
-  private Entities getEntities(final String clientTypeID) {
-    return clientDomainModels.get(clientTypeID);
-  }
-
   /** {@inheritDoc} */
   @Override
   protected final void handleShutdown() throws RemoteException {
@@ -621,7 +616,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
 
   private Entities getCombinedEntities() {
     final Entities entities = new Entities();
-    for (final Entities domain : clientDomainModels.values()) {
+    for (final Entities domain : Entities.getAllDomains()) {
       entities.addAll(domain);
     }
 
@@ -736,8 +731,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
         for (final String className : domainModelClassNames) {
           final String message = "Server loading domain model class '" + className + FROM_CLASSPATH;
           LOG.info(message);
-          final Entities entities = (Entities) Class.forName(className).getDeclaredConstructor().newInstance();
-          clientDomainModels.put(entities.getClass(), entities);
+          Class.forName(className).getDeclaredConstructor().newInstance();
         }
       }
     }

@@ -20,7 +20,7 @@ public final class TestDomain extends Entities {
     defineDepartment();
     defineEmployee();
     processAnnotations(TestDomain.class);
-    setDomainEntities(TestDomain.class.getName(), this);
+    registerDomain();
   }
 
   public static final String T_COMPOSITE_MASTER = "domain.composite_master";

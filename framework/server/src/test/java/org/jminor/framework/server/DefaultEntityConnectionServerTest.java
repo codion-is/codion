@@ -151,7 +151,7 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(1, users.size());
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
-    final EntityConditions entityConditions = new EntityConditions(new TestDomain());
+    final EntityConditions entityConditions = new EntityConditions(ENTITIES);
     final EntitySelectCondition selectCondition = entityConditions.selectCondition(TestDomain.T_EMP)
             .orderByAscending(TestDomain.EMP_NAME);
     remoteConnectionTwo.selectMany(selectCondition);

@@ -4556,3 +4556,4 @@
   ConnectionRequest.getParameters() added, used to specify the required domain model class
   Minor improvements to the above
   Javadocs fixed
+  Entities.registerDomain() added

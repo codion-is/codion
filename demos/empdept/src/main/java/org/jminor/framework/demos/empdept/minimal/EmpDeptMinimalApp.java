@@ -79,6 +79,8 @@ public class EmpDeptMinimalApp {
               .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
               .setCaption("Employees")
               .setStringProvider(new Entities.StringProvider("ename"));
+
+      registerDomain();
     }
   }
 
