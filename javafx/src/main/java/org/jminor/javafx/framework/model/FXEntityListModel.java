@@ -86,7 +86,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       throw new IllegalStateException("No visible properties defined for entity: " + entityID);
     }
     this.conditionModel = conditionModel;
-    this.entityConditions = new EntityConditions(connectionProvider.getEntities());
+    this.entityConditions = connectionProvider.getConditions();
     bindEvents();
   }
 

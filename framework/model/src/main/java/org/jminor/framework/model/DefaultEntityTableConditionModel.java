@@ -65,7 +65,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
     Objects.requireNonNull(connectionProvider, "connectionProvider");
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
-    this.entityConditions = new EntityConditions(connectionProvider.getEntities());
+    this.entityConditions = connectionProvider.getConditions();
     initializeFilterModels(entityID, filterModelProvider);
     initializeColumnPropertyConditionModels(entityID, conditionModelProvider);
     initializeForeignKeyPropertyConditionModels(entityID, connectionProvider, conditionModelProvider);

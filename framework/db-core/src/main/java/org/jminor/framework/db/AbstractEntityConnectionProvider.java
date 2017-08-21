@@ -8,6 +8,7 @@ import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
           VALIDITY_CHECK_INTERVAL_SECONDS, 0, TimeUnit.SECONDS);
 
   private final Entities entities;
+  private final EntityConditions entityConditions;
 
   /**
    * The user used by this connection provider when connecting to the database server
@@ -56,6 +58,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     Objects.requireNonNull(entities, "entities");
     Objects.requireNonNull(user, "user");
     this.entities = entities;
+    this.entityConditions = new EntityConditions(entities);
     this.user = user;
     this.scheduleValidityCheck = scheduleValidityCheck;
     if (this.scheduleValidityCheck) {
@@ -67,6 +70,12 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   @Override
   public Entities getEntities() {
     return entities;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public EntityConditions getConditions() {
+    return entityConditions;
   }
 
   /** {@inheritDoc} */

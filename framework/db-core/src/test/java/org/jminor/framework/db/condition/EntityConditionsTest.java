@@ -22,7 +22,6 @@ import static org.junit.Assert.*;
 public class EntityConditionsTest {
 
   private static final TestDomain entities = new TestDomain();
-
   private static final EntityConditions entityConditions = new EntityConditions(entities);
 
   @Test

@@ -4559,3 +4559,5 @@
   Entities.registerDomain() added
   TestDomain cleanup
   DefultEntityConnectionServer.WEB_SERVER_DOMAIN_ID configuration property added, EntityRESTServiceTest fixed
+  EntityConnectionProvider.getConditions() added, used where applicable
+  EntityPanelProvider, re-added a couple of convenient constructors

@@ -30,11 +30,10 @@ import static org.junit.Assert.*;
 public final class DefaultEntityLookupModelTest {
 
   private static final Entities ENTITIES = new TestDomain();
-  private static final EntityConditions ENTITY_CONDITIONS = new EntityConditions(ENTITIES);
-
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
+  private static final EntityConditions ENTITY_CONDITIONS = CONNECTION_PROVIDER.getConditions();
 
   private EntityLookupModel lookupModel;
   private Collection<Property.ColumnProperty> lookupProperties;

@@ -105,7 +105,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     Objects.requireNonNull(lookupProperties, "lookupProperties");
     validateLookupProperties(entityID, lookupProperties);
     this.connectionProvider = connectionProvider;
-    this.entityConditions = new EntityConditions(connectionProvider.getEntities());
+    this.entityConditions = connectionProvider.getConditions();
     this.entityID = entityID;
     this.lookupProperties = lookupProperties;
     this.description = TextUtil.getCollectionContentsAsString(getLookupProperties(), false);

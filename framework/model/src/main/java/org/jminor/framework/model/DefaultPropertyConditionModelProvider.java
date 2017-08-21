@@ -26,6 +26,6 @@ public class DefaultPropertyConditionModelProvider implements PropertyConditionM
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getReferencedEntityID(), connectionProvider);
     lookupModel.getMultipleSelectionAllowedValue().set(true);
 
-    return new DefaultForeignKeyConditionModel(new EntityConditions(connectionProvider.getEntities()), property, lookupModel);
+    return new DefaultForeignKeyConditionModel(connectionProvider.getConditions(), property, lookupModel);
   }
 }

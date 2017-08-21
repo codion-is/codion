@@ -28,10 +28,11 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
   public EntityComboBoxModel createForeignKeyComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     if (foreignKeyProperty.is(EMPLOYEE_MGR_FK)) {
       final EntityComboBoxModel managerModel = new SwingEntityComboBoxModel(T_EMPLOYEE, getConnectionProvider());
+      final EntityConditions conditions = new EntityConditions(getEntities());
       managerModel.setNullValue(getEntities().createToStringEntity(T_EMPLOYEE, getString(NONE)));
       managerModel.setFilterSelectedItem(false);
       //Only show the president and managers
-      managerModel.setSelectConditionProvider(() -> new EntityConditions(getEntities()).propertyCondition(T_EMPLOYEE,
+      managerModel.setSelectConditionProvider(() -> conditions.propertyCondition(T_EMPLOYEE,
               EMPLOYEE_JOB, Condition.Type.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
 
       return managerModel;

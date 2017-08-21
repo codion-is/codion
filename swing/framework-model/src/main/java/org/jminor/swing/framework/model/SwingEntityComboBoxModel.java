@@ -45,8 +45,14 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    */
   private final EntityConnectionProvider connectionProvider;
 
+  /**
+   * The domain entities
+   */
   private final Entities entities;
 
+  /**
+   * The conditions instance
+   */
   private final EntityConditions entityConditions;
 
   /**
@@ -96,7 +102,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
     this.entities = connectionProvider.getEntities();
-    this.entityConditions = new EntityConditions(entities);
+    this.entityConditions = connectionProvider.getConditions();
     setStaticData(this.entities.isStaticData(entityID));
     final FilterCondition<Entity> superCondition = super.getFilterCondition();
     setFilterCondition(item -> superCondition.include(item) && foreignKeyFilterCondition.include(item));
@@ -183,6 +189,12 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   @Override
   public final Condition.Provider<Property.ColumnProperty> getSelectConditionProvider() {
     return this.selectConditionProvider;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public EntityConditions getEntityConditions() {
+    return entityConditions;
   }
 
   /** {@inheritDoc} */

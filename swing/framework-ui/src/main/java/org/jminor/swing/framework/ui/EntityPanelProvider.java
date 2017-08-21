@@ -43,6 +43,14 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
   /**
    * Instantiates a new EntityPanelProvider for the given entity type
    * @param entityID the entity ID
+   */
+  public EntityPanelProvider(final String entityID) {
+    this(entityID, null);
+  }
+
+  /**
+   * Instantiates a new EntityPanelProvider for the given entity type
+   * @param entityID the entity ID
    * @param caption the panel caption
    */
   public EntityPanelProvider(final String entityID, final String caption) {
@@ -64,6 +72,14 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
     this.caption = caption;
     this.panelClass = entityPanelClass;
     this.modelProvider = new SwingEntityModelProvider(entityID, entityModelClass);
+  }
+
+  /**
+   * Instantiates a new EntityPanelProvider
+   * @param modelProvider the EntityModelProvider to base this panel provider on
+   */
+  public EntityPanelProvider (final SwingEntityModelProvider modelProvider) {
+    this(modelProvider, null);
   }
 
   /**
@@ -369,16 +385,11 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
     try {
       final EntityPanel entityPanel;
       if (panelClass.equals(EntityPanel.class)) {
-        final EntityTablePanel tablePanel;
-        if (entityModel.containsTableModel()) {
-          tablePanel = initializeTablePanel(entityModel.getTableModel());
-        }
-        else {
-          tablePanel = null;
-        }
+        final EntityTablePanel tablePanel = entityModel.containsTableModel() ? initializeTablePanel(entityModel.getTableModel()) : null;
         final EntityEditPanel editPanel = editPanelClass == null ? null : initializeEditPanel(entityModel.getEditModel());
+        final String panelCaption = caption == null ? entityModel.getConnectionProvider().getEntities().getCaption(entityModel.getEntityID()) : caption;
         entityPanel = panelClass.getConstructor(SwingEntityModel.class, String.class, EntityEditPanel.class, EntityTablePanel.class)
-                .newInstance(entityModel, caption, editPanel, tablePanel);
+                .newInstance(entityModel, panelCaption, editPanel, tablePanel);
       }
       else {
         entityPanel = panelClass.getConstructor(SwingEntityModel.class).newInstance(entityModel);

@@ -155,7 +155,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
     this.conditionModel = conditionModel;
-    this.entityConditions = new EntityConditions(connectionProvider.getEntities());
+    this.entityConditions = connectionProvider.getConditions();
     bindEventsInternal();
     applyPreferences();
   }

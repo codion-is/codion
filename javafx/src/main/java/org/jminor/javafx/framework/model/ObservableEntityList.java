@@ -65,7 +65,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     this.connectionProvider = connectionProvider;
     this.filteredList = new FilteredList<>(this);
     this.sortedList = new SortedList<>(filteredList, connectionProvider.getEntities().getComparator(entityID));
-    this.entityConditions = new EntityConditions(connectionProvider.getEntities());
+    this.entityConditions = connectionProvider.getConditions();
   }
 
   /**

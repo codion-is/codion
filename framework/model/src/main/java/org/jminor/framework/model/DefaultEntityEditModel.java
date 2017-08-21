@@ -19,7 +19,6 @@ import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.valuemap.DefaultValueMapEditModel;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
@@ -924,7 +923,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     public Collection<Object> values() {
       try {
         return connectionProvider.getConnection().selectValues(propertyID,
-                new EntityConditions(connectionProvider.getEntities()).condition(entityID));
+                connectionProvider.getConditions().condition(entityID));
       }
       catch (final DatabaseException e) {
         throw new RuntimeException(e);

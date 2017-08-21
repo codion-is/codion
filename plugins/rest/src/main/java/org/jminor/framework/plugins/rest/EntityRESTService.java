@@ -61,6 +61,7 @@ public final class EntityRESTService extends Application {
 
   private static Server server;
   private static Entities domain;
+  private static EntityConditions conditions;
 
   @GET
   @Consumes(MediaType.APPLICATION_JSON)
@@ -89,7 +90,7 @@ public final class EntityRESTService extends Application {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
       return Response.ok(new EntityJSONParser(domain).serialize(connection.selectMany(
-              new EntityConditions(domain).selectCondition(entityID, createPropertyCondition(entityID, conditionType, values))))).build();
+              conditions.selectCondition(entityID, createPropertyCondition(entityID, conditionType, values))))).build();
     }
     catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();
@@ -163,7 +164,7 @@ public final class EntityRESTService extends Application {
                          @QueryParam("values") final String values) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      connection.delete(new EntityConditions(domain).condition(entityID, createPropertyCondition(entityID, conditionType, values)));
+      connection.delete(conditions.condition(entityID, createPropertyCondition(entityID, conditionType, values)));
 
       return Response.ok().build();
     }
@@ -214,6 +215,7 @@ public final class EntityRESTService extends Application {
 
   static void setEntities(final Entities entities) {
     EntityRESTService.domain = entities;
+    EntityRESTService.conditions = new EntityConditions(entities);
   }
 
   private static List<Entity> saveEntities(final RemoteEntityConnection connection, final List<Entity> toInsert,
@@ -238,7 +240,7 @@ public final class EntityRESTService extends Application {
   }
 
   private Condition.Set<Property.ColumnProperty> createPropertyCondition(final String entityID, final Condition.Type conditionType,
-                                                                                final String values) throws JSONException, ParseException {
+                                                                         final String values) throws JSONException, ParseException {
     if (conditionType == null || Util.nullOrEmpty(values)) {
       return null;
     }
@@ -246,7 +248,7 @@ public final class EntityRESTService extends Application {
     final Condition.Set<Property.ColumnProperty> set = Conditions.conditionSet(Conjunction.AND);
     for (final String propertyID : JSONObject.getNames(jsonObject)) {
       final Property.ColumnProperty property = domain.getColumnProperty(entityID, propertyID);
-      final Condition<Property.ColumnProperty> condition = new EntityConditions(domain).propertyCondition(property,
+      final Condition<Property.ColumnProperty> condition = conditions.propertyCondition(property,
               conditionType, new EntityJSONParser(domain).parseValue(property, jsonObject));
       set.add(condition);
     }

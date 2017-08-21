@@ -7,6 +7,7 @@ import org.jminor.common.Configuration;
 import org.jminor.common.StateObserver;
 import org.jminor.common.User;
 import org.jminor.common.Value;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 
 /**
@@ -61,6 +62,11 @@ public interface EntityConnectionProvider {
    * @return the underlying domain entities
    */
   Entities getEntities();
+
+  /**
+   * @return a EntityConditions instance based on the domain entities
+   */
+  EntityConditions getConditions();
 
   /**
    * Provides a EntityConnection object, is responsible for returning a healthy EntityConnection object,

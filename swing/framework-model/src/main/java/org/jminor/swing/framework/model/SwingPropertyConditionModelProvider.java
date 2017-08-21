@@ -4,7 +4,6 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.DefaultPropertyConditionModelProvider;
 import org.jminor.framework.model.EntityComboBoxModel;
@@ -25,7 +24,7 @@ public class SwingPropertyConditionModelProvider extends DefaultPropertyConditio
       final EntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
       comboBoxModel.setNullValue(connectionProvider.getEntities().createToStringEntity(foreignKeyProperty.getReferencedEntityID(), ""));
 
-      return new SwingForeignKeyConditionModel(new EntityConditions(connectionProvider.getEntities()), foreignKeyProperty, comboBoxModel);
+      return new SwingForeignKeyConditionModel(connectionProvider.getConditions(), foreignKeyProperty, comboBoxModel);
     }
 
     return super.initializeForeignKeyConditionModel(foreignKeyProperty, connectionProvider);

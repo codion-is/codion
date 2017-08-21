@@ -19,7 +19,6 @@ import static org.junit.Assert.assertEquals;
 public class EntityConditionTest {
 
   private static final TestDomain entities = new TestDomain();
-
   private static final EntityConditions entityConditions = new EntityConditions(entities);
 
   @Test
