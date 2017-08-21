@@ -13,6 +13,7 @@ import org.jminor.common.server.Server;
 import org.jminor.common.server.Servers;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.domain.Entities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,9 +49,9 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @param clientID a UUID identifying the client
    * @param clientTypeID a string identifying the client type
    */
-  public RemoteEntityConnectionProvider(final String serverHostName, final User user, final UUID clientID,
+  public RemoteEntityConnectionProvider(final Entities entities, final String serverHostName, final User user, final UUID clientID,
                                         final String clientTypeID) {
-    this(serverHostName, user, clientID, clientTypeID, null);
+    this(entities, serverHostName, user, clientID, clientTypeID, null);
   }
 
   /**
@@ -61,9 +62,9 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @param clientTypeID a string identifying the client type
    * @param clientVersion the client version
    */
-  public RemoteEntityConnectionProvider(final String serverHostName, final User user, final UUID clientID,
+  public RemoteEntityConnectionProvider(final Entities entities, final String serverHostName, final User user, final UUID clientID,
                                         final String clientTypeID, final Version clientVersion) {
-    this(serverHostName, user, clientID, clientTypeID, clientVersion, true);
+    this(entities, serverHostName, user, clientID, clientTypeID, clientVersion, true);
   }
 
   /**
@@ -75,10 +76,10 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @param clientVersion the client version, if any
    * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
    */
-  public RemoteEntityConnectionProvider(final String serverHostName, final User user, final UUID clientID,
+  public RemoteEntityConnectionProvider(final Entities entities, final String serverHostName, final User user, final UUID clientID,
                                         final String clientTypeID, final Version clientVersion,
                                         final boolean scheduleValidityCheck) {
-    super(user, scheduleValidityCheck);
+    super(entities, user, scheduleValidityCheck);
     this.serverHostName = Objects.requireNonNull(serverHostName, "serverHostName");
     this.clientID = Objects.requireNonNull(clientID, "clientID");
     this.clientTypeID = Objects.requireNonNull(clientTypeID, "clientTypeID");

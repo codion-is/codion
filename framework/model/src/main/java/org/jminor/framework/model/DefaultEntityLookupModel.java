@@ -63,6 +63,11 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   private final EntityConnectionProvider connectionProvider;
 
   /**
+   * The conditions instance
+   */
+  private final EntityConditions entityConditions;
+
+  /**
    * Contains the search settings for lookup properties
    */
   private final Map<Property.ColumnProperty, LookupSettings> propertyLookupSettings = new HashMap<>();
@@ -84,7 +89,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    * @see Entities#getSearchProperties(String)
    */
   public DefaultEntityLookupModel(final String entityID, final EntityConnectionProvider connectionProvider) {
-    this(entityID, connectionProvider, Entities.getSearchProperties(entityID));
+    this(entityID, connectionProvider, connectionProvider.getEntities().getSearchProperties(entityID));
   }
 
   /**
@@ -100,6 +105,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     Objects.requireNonNull(lookupProperties, "lookupProperties");
     validateLookupProperties(entityID, lookupProperties);
     this.connectionProvider = connectionProvider;
+    this.entityConditions = new EntityConditions(connectionProvider.getEntities());
     this.entityID = entityID;
     this.lookupProperties = lookupProperties;
     this.description = TextUtil.getCollectionContentsAsString(getLookupProperties(), false);
@@ -304,13 +310,13 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
         final boolean caseSensitive = propertyLookupSettings.get(lookupProperty).getCaseSensitiveValue().get();
         final String lookupText = rawLookupText.trim();
         final String modifiedLookupText = searchStringValue.get().equals(wildcard) ? wildcard : ((wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : ""));
-        baseCondition.add(EntityConditions.propertyCondition(lookupProperty, Condition.Type.LIKE, caseSensitive, modifiedLookupText));
+        baseCondition.add(entityConditions.propertyCondition(lookupProperty, Condition.Type.LIKE, caseSensitive, modifiedLookupText));
       }
     }
 
-    return EntityConditions.selectCondition(entityID, additionalConditionProvider == null ? baseCondition :
+    return entityConditions.selectCondition(entityID, additionalConditionProvider == null ? baseCondition :
                     Conditions.conditionSet(Conjunction.AND, additionalConditionProvider.getCondition(), baseCondition),
-            Entities.getOrderByClause(getEntityID()));
+            connectionProvider.getEntities().getOrderByClause(getEntityID()));
   }
 
   private void initializeDefaultSettings() {

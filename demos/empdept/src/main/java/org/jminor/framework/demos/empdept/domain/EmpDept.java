@@ -16,13 +16,16 @@ import java.util.ResourceBundle;
 /**
  * This class contains the specification for the EmpDept application domain model
  */
-public class EmpDept {
-
-  private EmpDept() {}
-  public static void init() {}
+public final class EmpDept extends Entities {
 
   private static final ResourceBundle bundle =
           ResourceBundle.getBundle("org.jminor.framework.demos.empdept.domain.EmpDept", Locale.getDefault());
+
+  public EmpDept() {
+    defineDepartment();
+    defineEmployee();
+    setDomainEntities(EmpDept.class.getName(), this);
+  }
 
   /**Used for i18n*/
   public static final String DEPARTMENT = "department";
@@ -38,6 +41,21 @@ public class EmpDept {
   public static final String DEPARTMENT_ID = "deptno";
   public static final String DEPARTMENT_NAME = "dname";
   public static final String DEPARTMENT_LOCATION = "loc";
+
+  void defineDepartment() {
+    /*Defining the entity type T_DEPARTMENT*/
+    define(T_DEPARTMENT,
+            Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, getString(DEPARTMENT_ID))
+                    .setUpdatable(true).setNullable(false),
+            Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, getString(DEPARTMENT_NAME))
+                    .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
+            Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, getString(DEPARTMENT_LOCATION))
+                    .setPreferredColumnWidth(150).setMaxLength(13))
+            .setSmallDataset(true)
+            .setOrderByClause(DEPARTMENT_NAME)
+            .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
+            .setCaption(getString(DEPARTMENT));
+  }
 
   /**Entity identifier for the table scott.emp*/
   public static final String T_EMPLOYEE = "scott.emp";
@@ -58,22 +76,9 @@ public class EmpDept {
   /**Property identifier for the denormalized department location property*/
   public static final String EMPLOYEE_DEPARTMENT_LOCATION = "location";
 
-  static {
-    /*Defining the entity type T_DEPARTMENT*/
-    Entities.define(T_DEPARTMENT,
-            Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, getString(DEPARTMENT_ID))
-                    .setUpdatable(true).setNullable(false),
-            Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, getString(DEPARTMENT_NAME))
-                    .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
-            Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, getString(DEPARTMENT_LOCATION))
-                    .setPreferredColumnWidth(150).setMaxLength(13))
-            .setSmallDataset(true)
-            .setOrderByClause(DEPARTMENT_NAME)
-            .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
-            .setCaption(getString(DEPARTMENT));
-
+  void defineEmployee() {
     /*Defining the entity type T_EMPLOYEE*/
-    Entities.define(T_EMPLOYEE,
+    define(T_EMPLOYEE,
             Properties.primaryKeyProperty(EMPLOYEE_ID, Types.INTEGER, getString(EMPLOYEE_ID)),
             Properties.columnProperty(EMPLOYEE_NAME, Types.VARCHAR, getString(EMPLOYEE_NAME))
                     .setMaxLength(10).setNullable(false),
@@ -91,9 +96,9 @@ public class EmpDept {
             Properties.columnProperty(EMPLOYEE_HIREDATE, Types.DATE, getString(EMPLOYEE_HIREDATE))
                     .setNullable(false),
             Properties.denormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
-                    Entities.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
+                    getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     getString(DEPARTMENT_LOCATION)).setPreferredColumnWidth(100))
-            .setKeyGenerator(Entities.incrementKeyGenerator(T_EMPLOYEE, EMPLOYEE_ID))
+            .setKeyGenerator(incrementKeyGenerator(T_EMPLOYEE, EMPLOYEE_ID))
             .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME)
             .setStringProvider(new Entities.StringProvider(EMPLOYEE_NAME))
             .setCaption(getString(EMPLOYEE))

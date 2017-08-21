@@ -42,6 +42,8 @@ import java.util.Scanner;
 
 public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient> {
 
+  private static final Entities ENTITIES = new EmpDept();
+
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
@@ -60,10 +62,6 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
     request.setHeader(EntityRESTService.AUTHORIZATION, BASIC + Base64.getEncoder().encodeToString((user1.getUsername() + ":" + user1.getPassword()).getBytes()));
     request.setHeader("Content-Type", MediaType.APPLICATION_JSON);
   };
-
-  static {
-    EmpDept.init();
-  }
 
   public EmpDeptRESTLoadTest(final User user) {
     super(user, Arrays.asList(new Accounting(), new UpdateLocation(), new Employees(), new AddDepartment(), new AddEmployee()),
@@ -138,12 +136,12 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
                 .addParameter("entityID", EmpDept.T_DEPARTMENT);
         HttpResponse response = client.execute(new HttpGet(builder.build()));
         final String queryResult = getContentStream(response.getEntity());
-        final List<Entity> queryEntities = EntityJSONParser.deserializeEntities(queryResult);
+        final List<Entity> queryEntities = new EntityJSONParser(ENTITIES).deserializeEntities(queryResult);
 
         final Entity entity = queryEntities.get(new Random().nextInt(queryEntities.size()));
         entity.put(EmpDept.DEPARTMENT_LOCATION, TextUtil.createRandomString(10, 13));
         builder = createURIBuilder();
-        builder.addParameter("entities", new EntityJSONParser().serialize(Collections.singletonList(entity)));
+        builder.addParameter("entities", new EntityJSONParser(ENTITIES).serialize(Collections.singletonList(entity)));
         response = client.execute(new HttpPut(builder.build()));
         getContentStream(response.getEntity());
       }
@@ -171,7 +169,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
                 .addParameter("values", "{\"dname\":\"ACCOUNTING\"}");
         final HttpResponse response = client.execute(new HttpGet(builder.build()));
         final String queryResult = getContentStream(response.getEntity());
-        final List<Entity> queryEntities = EntityJSONParser.deserializeEntities(queryResult);
+        final List<Entity> queryEntities = new EntityJSONParser(ENTITIES).deserializeEntities(queryResult);
       }
       catch (final Exception e) {
         e.printStackTrace();
@@ -189,6 +187,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
 
     @Override
     protected void performScenario(final CloseableHttpClient client) throws ScenarioException {
+      final EntityJSONParser parser = new EntityJSONParser(ENTITIES);
       try {
         URIBuilder builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
@@ -198,7 +197,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
 
         HttpResponse response = client.execute(new HttpGet(builder.build()));
         String queryResult = getContentStream(response.getEntity());
-        List<Entity> queryEntities = EntityJSONParser.deserializeEntities(queryResult);
+        List<Entity> queryEntities = parser.deserializeEntities(queryResult);
 
         builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
@@ -209,7 +208,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
 
         response = client.execute(new HttpGet(builder.build()));
         queryResult = getContentStream(response.getEntity());
-        queryEntities = EntityJSONParser.deserializeEntities(queryResult);
+        queryEntities = parser.deserializeEntities(queryResult);
       }
       catch (final Exception e) {
         e.printStackTrace();
@@ -228,13 +227,13 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
     protected void performScenario(final CloseableHttpClient client) throws ScenarioException {
       try {
         final int deptNo = new Random().nextInt(500);
-        final Entity propaganda = Entities.entity(EmpDept.T_DEPARTMENT);
+        final Entity propaganda = ENTITIES.entity(EmpDept.T_DEPARTMENT);
         propaganda.put(EmpDept.DEPARTMENT_ID, deptNo);
         propaganda.put(EmpDept.DEPARTMENT_NAME, "PROPAGANDA");
         propaganda.put(EmpDept.DEPARTMENT_LOCATION, "Hell");
 
         final URIBuilder builder = createURIBuilder();
-        builder.addParameter("entities", new EntityJSONParser().serialize(Collections.singletonList(propaganda)));
+        builder.addParameter("entities", new EntityJSONParser(ENTITIES).serialize(Collections.singletonList(propaganda)));
         final HttpResponse response = client.execute(new HttpPost(builder.build()));
         EntityUtils.consume(response.getEntity());
       }
@@ -261,7 +260,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
         final HttpResponse response = client.execute(new HttpGet(builder.build()));
 
         final String queryResult = getContentStream(response.getEntity());
-        final List<Entity> queryEntities = EntityJSONParser.deserializeEntities(queryResult);
+        final List<Entity> queryEntities = new EntityJSONParser(ENTITIES).deserializeEntities(queryResult);
         final Entity department = queryEntities.get(0);;
       }
       catch (final Exception e) {

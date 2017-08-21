@@ -431,7 +431,7 @@ public final class EntityUiUtil {
    */
   public static EntityLookupField createForeignKeyLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                               final EntityEditModel editModel, final StateObserver enabledState) {
-    final Collection<String> searchPropertyIDs = Entities.getSearchPropertyIDs(foreignKeyProperty.getReferencedEntityID());
+    final Collection<String> searchPropertyIDs = editModel.getEntities().getSearchPropertyIDs(foreignKeyProperty.getReferencedEntityID());
     if (searchPropertyIDs.isEmpty()) {
       throw new IllegalArgumentException("No default search properties specified for entity: " + foreignKeyProperty.getReferencedEntityID()
               + ", unable to create EntityLookupField, you must specify the searchPropertyIDs");
@@ -805,7 +805,7 @@ public final class EntityUiUtil {
    */
   public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel,
                                                        final StateObserver enabledState) {
-    return createPropertyComboBox(Entities.getColumnProperty(editModel.getEntityID(), propertyID),
+    return createPropertyComboBox(editModel.getEntities().getColumnProperty(editModel.getEntityID(), propertyID),
             editModel, enabledState);
   }
 
@@ -1009,9 +1009,10 @@ public final class EntityUiUtil {
    */
   private static void populateEntityMenu(final JComponent rootMenu, final Entity entity,
                                          final EntityConnectionProvider connectionProvider) {
-    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(Entities.getPrimaryKeyProperties(entity.getEntityID())));
-    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(Entities.getForeignKeyProperties(entity.getEntityID())));
-    populateValueMenu(rootMenu, entity, new ArrayList<>(Entities.getProperties(entity.getEntityID(), true)));
+    final Entities entities = connectionProvider.getEntities();
+    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entities.getPrimaryKeyProperties(entity.getEntityID())));
+    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(entities.getForeignKeyProperties(entity.getEntityID())));
+    populateValueMenu(rootMenu, entity, new ArrayList<>(entities.getProperties(entity.getEntityID(), true)), entities);
   }
 
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.ColumnProperty> primaryKeyProperties) {
@@ -1034,7 +1035,7 @@ public final class EntityUiUtil {
                                              final List<Property.ForeignKeyProperty> fkProperties) {
     try {
       TextUtil.collate(fkProperties);
-      final Entity.Validator validator = Entities.getValidator(entity.getEntityID());
+      final Entity.Validator validator = connectionProvider.getEntities().getValidator(entity.getEntityID());
       for (final Property.ForeignKeyProperty property : fkProperties) {
         final boolean fkValueNull = entity.isForeignKeyNull(property);
         final boolean isLoaded = entity.isLoaded(property.getPropertyID());
@@ -1088,10 +1089,11 @@ public final class EntityUiUtil {
     return TextUtil.getArrayContentsAsString(columnNames.toArray(), false);
   }
 
-  private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties) {
+  private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties,
+                                        final Entities entities) {
     TextUtil.collate(properties);
     final int maxValueLength = 20;
-    final Entity.Validator validator = Entities.getValidator(entity.getEntityID());
+    final Entity.Validator validator = entities.getValidator(entity.getEntityID());
     for (final Property property : properties) {
       final boolean valid = isValid(validator, entity, property);
       final boolean modified = entity.isModified(property);

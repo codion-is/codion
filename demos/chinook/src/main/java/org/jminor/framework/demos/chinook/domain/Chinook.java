@@ -12,12 +12,23 @@ import org.jminor.framework.domain.Property;
 import java.sql.Types;
 import java.text.NumberFormat;
 
-public class Chinook {
+public final class Chinook extends Entities {
 
-  private Chinook() {}
-  public static void init() {}
-
-  public static final String DOMAIN_ID = Chinook.class.getName();
+  public Chinook() {
+    defineArtist();
+    defineAlbum();
+    defineEmployee();
+    defineCustomer();
+    defineGenre();
+    defineMediaType();
+    defineTrack();
+    defineInvoice();
+    defineInvoiceLine();
+    definePlaylist();
+    definePlaylistTrack();
+    processAnnotations(Chinook.class);
+    setDomainEntities(Chinook.class.getName(), this);
+  }
 
   public static final String ARTIST_ARTISTID = "artistid";
   public static final String ARTIST_NAME = "name";
@@ -27,14 +38,13 @@ public class Chinook {
           keyGeneratorSource = "chinook.artist")
   public static final String T_ARTIST = "artist@chinook";
 
-  static {
-    Entities.define(T_ARTIST,
+  void defineArtist() {
+    define(T_ARTIST,
             Properties.primaryKeyProperty(ARTIST_ARTISTID, Types.BIGINT),
             Properties.columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
                     .setNullable(false)
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
-            .setDomainID(DOMAIN_ID)
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setStringProvider(new Entities.StringProvider(ARTIST_NAME))
             .setSearchPropertyIDs(ARTIST_NAME)
@@ -51,8 +61,8 @@ public class Chinook {
           keyGeneratorSource = "chinook.album")
   public static final String T_ALBUM = "album@chinook";
 
-  static {
-    Entities.define(T_ALBUM,
+  void defineAlbum() {
+    define(T_ALBUM,
             Properties.primaryKeyProperty(ALBUM_ALBUMID, Types.BIGINT),
             Properties.foreignKeyProperty(ALBUM_ARTISTID_FK, "Artist", T_ARTIST,
                     Properties.columnProperty(ALBUM_ARTISTID, Types.BIGINT))
@@ -62,7 +72,6 @@ public class Chinook {
                     .setNullable(false)
                     .setMaxLength(160)
                     .setPreferredColumnWidth(160))
-            .setDomainID(DOMAIN_ID)
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setStringProvider(new Entities.StringProvider(ALBUM_TITLE))
             .setSearchPropertyIDs(ALBUM_TITLE)
@@ -91,8 +100,8 @@ public class Chinook {
           keyGeneratorSource = "chinook.employee")
   public static final String T_EMPLOYEE = "employee@chinook";
 
-  static {
-    Entities.define(T_EMPLOYEE,
+  void defineEmployee() {
+    define(T_EMPLOYEE,
             Properties.primaryKeyProperty(EMPLOYEE_EMPLOYEEID, Types.BIGINT),
             Properties.columnProperty(EMPLOYEE_LASTNAME, Types.VARCHAR, "Last name")
                     .setNullable(false)
@@ -122,7 +131,6 @@ public class Chinook {
                     .setMaxLength(24),
             Properties.columnProperty(EMPLOYEE_EMAIL, Types.VARCHAR, "Email")
                     .setMaxLength(60))
-            .setDomainID(DOMAIN_ID)
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setStringProvider(new Entities.StringProvider(EMPLOYEE_LASTNAME)
                     .addText(", ").addValue(EMPLOYEE_FIRSTNAME))
@@ -150,8 +158,8 @@ public class Chinook {
           keyGeneratorSource = "chinook.customer")
   public static final String T_CUSTOMER = "customer@chinook";
 
-  static {
-    Entities.define(T_CUSTOMER,
+  void defineCustomer() {
+    define(T_CUSTOMER,
             Properties.primaryKeyProperty(CUSTOMER_CUSTOMERID, Types.BIGINT),
             Properties.columnProperty(CUSTOMER_LASTNAME, Types.VARCHAR, "Last name")
                     .setNullable(false)
@@ -180,7 +188,6 @@ public class Chinook {
                     .setMaxLength(60),
             Properties.foreignKeyProperty(CUSTOMER_SUPPORTREPID_FK, "Support rep", T_EMPLOYEE,
                     Properties.columnProperty(CUSTOMER_SUPPORTREPID, Types.BIGINT)))
-            .setDomainID(DOMAIN_ID)
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setStringProvider(new Entities.StringProvider(CUSTOMER_LASTNAME)
                     .addText(", ").addValue(CUSTOMER_FIRSTNAME))
@@ -196,14 +203,13 @@ public class Chinook {
           keyGeneratorSource = "chinook.genre")
   public static final String T_GENRE = "genre@chinook";
 
-  static {
-    Entities.define(T_GENRE,
+  void defineGenre() {
+    define(T_GENRE,
             Properties.primaryKeyProperty(GENRE_GENREID, Types.BIGINT),
             Properties.columnProperty(GENRE_NAME, Types.VARCHAR, "Name")
                     .setNullable(false)
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
-            .setDomainID(DOMAIN_ID)
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setStringProvider(new Entities.StringProvider(GENRE_NAME))
             .setSearchPropertyIDs(GENRE_NAME)
@@ -219,14 +225,13 @@ public class Chinook {
           keyGeneratorSource = "chinook.mediatype")
   public static final String T_MEDIATYPE = "mediatype@chinook";
 
-  static {
-    Entities.define(T_MEDIATYPE,
+  void defineMediaType() {
+    define(T_MEDIATYPE,
             Properties.primaryKeyProperty(MEDIATYPE_MEDIATYPEID, Types.BIGINT),
             Properties.columnProperty(MEDIATYPE_NAME, Types.VARCHAR, "Name")
                     .setNullable(false)
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
-            .setDomainID(DOMAIN_ID)
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setStringProvider(new Entities.StringProvider(MEDIATYPE_NAME))
             .setSmallDataset(true)
@@ -266,11 +271,11 @@ public class Chinook {
             return minutes + " min " + seconds + " sec";
           };
 
-  static {
-    Entities.define(T_TRACK,
+  void defineTrack() {
+    define(T_TRACK,
             Properties.primaryKeyProperty(TRACK_TRACKID, Types.BIGINT),
             Properties.denormalizedViewProperty(TRACK_ARTIST_DENORM, TRACK_ALBUMID_FK,
-                    Entities.getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist")
+                    getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist")
                     .setPreferredColumnWidth(160),
             Properties.foreignKeyProperty(TRACK_ALBUMID_FK, "Album", T_ALBUM,
                     Properties.columnProperty(TRACK_ALBUMID, Types.BIGINT))
@@ -297,7 +302,6 @@ public class Chinook {
                     .setFormat(NumberFormat.getIntegerInstance()),
             Properties.columnProperty(TRACK_UNITPRICE, Types.DOUBLE, "Price")
                     .setNullable(false))
-            .setDomainID(DOMAIN_ID)
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setStringProvider(new Entities.StringProvider(TRACK_NAME))
             .setSearchPropertyIDs(TRACK_NAME)
@@ -323,8 +327,8 @@ public class Chinook {
           keyGeneratorSource = "chinook.invoice")
   public static final String T_INVOICE = "invoice@chinook";
 
-  static {
-    Entities.define(T_INVOICE,
+  void defineInvoice() {
+    define(T_INVOICE,
             Properties.primaryKeyProperty(INVOICE_INVOICEID, Types.BIGINT, "Invoice no."),
             Properties.columnProperty(INVOICE_INVOICEID_AS_STRING, Types.VARCHAR, "Invoice no.")
                     .setReadOnly(true)
@@ -349,7 +353,6 @@ public class Chinook {
                     .setHidden(true),
             Properties.subqueryProperty(INVOICE_TOTAL_SUB, Types.DOUBLE, "Calculated total", INVOICE_TOTAL_SUBQUERY)
                     .setMaximumFractionDigits(2))
-            .setDomainID(DOMAIN_ID)
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setStringProvider(new Entities.StringProvider(INVOICE_INVOICEID))
             .setSearchPropertyIDs(INVOICE_INVOICEID_AS_STRING)
@@ -380,8 +383,8 @@ public class Chinook {
             return quantity * unitPrice;
           };
 
-  static {
-    Entities.define(T_INVOICELINE,
+  void defineInvoiceLine() {
+    define(T_INVOICELINE,
             Properties.primaryKeyProperty(INVOICELINE_INVOICELINEID, Types.BIGINT),
             Properties.foreignKeyProperty(INVOICELINE_INVOICEID_FK, "Invoice", T_INVOICE,
                     Properties.columnProperty(INVOICELINE_INVOICEID, Types.BIGINT))
@@ -392,13 +395,12 @@ public class Chinook {
                     .setNullable(false)
                     .setPreferredColumnWidth(100),
             Properties.denormalizedProperty(INVOICELINE_UNITPRICE, INVOICELINE_TRACKID_FK,
-                    Entities.getProperty(T_TRACK, TRACK_UNITPRICE), "Unit price")
+                    getProperty(T_TRACK, TRACK_UNITPRICE), "Unit price")
                     .setNullable(false),
             Properties.columnProperty(INVOICELINE_QUANTITY, Types.INTEGER, "Quantity")
                     .setNullable(false),
             Properties.derivedProperty(INVOICELINE_TOTAL, Types.DOUBLE, "Total", INVOICELINE_TOTAL_PROVIDER,
                     INVOICELINE_QUANTITY, INVOICELINE_UNITPRICE))
-            .setDomainID(DOMAIN_ID)
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setCaption("Invoice lines");
   }
@@ -411,14 +413,13 @@ public class Chinook {
           keyGeneratorSource = "chinook.playlist")
   public static final String T_PLAYLIST = "playlist@chinook";
 
-  static {
-    Entities.define(T_PLAYLIST,
+  void definePlaylist() {
+    define(T_PLAYLIST,
             Properties.primaryKeyProperty(PLAYLIST_PLAYLISTID, Types.BIGINT),
             Properties.columnProperty(PLAYLIST_NAME, Types.VARCHAR, "Name")
                     .setNullable(false)
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
-            .setDomainID(DOMAIN_ID)
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setStringProvider(new Entities.StringProvider(PLAYLIST_NAME))
             .setSearchPropertyIDs(PLAYLIST_NAME)
@@ -434,15 +435,15 @@ public class Chinook {
   @Entity.Table(tableName = "chinook.playlisttrack")
   public static final String T_PLAYLISTTRACK = "playlisttrack@chinook";
 
-  static {
-    Entities.define(T_PLAYLISTTRACK,
+  void definePlaylistTrack() {
+    define(T_PLAYLISTTRACK,
             Properties.foreignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
                     Properties.primaryKeyProperty(PLAYLISTTRACK_PLAYLISTID, Types.BIGINT)
                             .setUpdatable(true))
                     .setNullable(false)
                     .setPreferredColumnWidth(120),
             Properties.denormalizedViewProperty(PLAYLISTTRACK_ARTIST_DENORM, PLAYLISTTRACK_ALBUM_DENORM,
-                    Entities.getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist")
+                    getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist")
                     .setPreferredColumnWidth(160),
             Properties.foreignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
                     Properties.primaryKeyProperty(PLAYLISTTRACK_TRACKID, Types.BIGINT)
@@ -452,9 +453,8 @@ public class Chinook {
                     .setNullable(false)
                     .setPreferredColumnWidth(160),
             Properties.denormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACKID_FK,
-                    Entities.getProperty(T_TRACK, TRACK_ALBUMID_FK), "Album")
+                    getProperty(T_TRACK, TRACK_ALBUMID_FK), "Album")
                     .setPreferredColumnWidth(160))
-            .setDomainID(DOMAIN_ID)
             .setStringProvider(new Entities.StringProvider(PLAYLISTTRACK_PLAYLISTID_FK)
                     .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
             .setCaption("Playlist tracks");
@@ -462,8 +462,4 @@ public class Chinook {
 
   @Databases.Operation(className="org.jminor.framework.demos.chinook.server.UpdateTotalsProcedure")
   public static final String P_UPDATE_TOTALS = "chinook.update_totals_procedure";
-
-  static {
-    Entities.processAnnotations(Chinook.class);
-  }
 }

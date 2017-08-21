@@ -5,26 +5,26 @@ package org.jminor.framework.demos.chinook.server;
 
 import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.framework.db.local.LocalEntityConnection;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 
 import java.util.List;
 
-public final class UpdateTotalsProcedure extends AbstractProcedure<EntityConnection> {
+public final class UpdateTotalsProcedure extends AbstractProcedure<LocalEntityConnection> {
 
   public UpdateTotalsProcedure(final String id) {
     super(id, "Update invoice totals");
   }
 
   @Override
-  public void execute(final EntityConnection entityConnection, final Object... arguments) throws DatabaseException {
+  public void execute(final LocalEntityConnection entityConnection, final Object... arguments) throws DatabaseException {
     try {
       entityConnection.beginTransaction();
-      final EntitySelectCondition selectCondition = EntityConditions.selectCondition(Chinook.T_INVOICE);
+      final EntitySelectCondition selectCondition = new EntityConditions(entityConnection.getDomain()).selectCondition(Chinook.T_INVOICE);
       selectCondition.setForUpdate(true);
       selectCondition.setForeignKeyFetchDepthLimit(0);
       final List<Entity> invoices = entityConnection.selectMany(selectCondition);

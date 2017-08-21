@@ -6,6 +6,7 @@ package org.jminor.swing.framework.ui.testing;
 import org.jminor.common.User;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
@@ -27,12 +28,12 @@ public abstract class EntityEditPanelTestUnit {
    * @param entityID the entityId
    * @param user the user
    */
-  protected EntityEditPanelTestUnit(final Class<? extends EntityEditPanel> editPanelClass,
+  protected EntityEditPanelTestUnit(final Entities entities, final Class<? extends EntityEditPanel> editPanelClass,
                                     final String entityID, final User user) {
     Objects.requireNonNull(editPanelClass, "editPanelClass");
     Objects.requireNonNull(entityID, "entityID");
     Objects.requireNonNull(user, "user");
-    this.connectionProvider = EntityConnectionProviders.connectionProvider(user, getClass().getName());
+    this.connectionProvider = EntityConnectionProviders.connectionProvider(entities, user, getClass().getName());
     this.editPanelClass = editPanelClass;
     this.entityID = entityID;
   }

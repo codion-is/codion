@@ -14,6 +14,7 @@ import org.jminor.common.db.Databases;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.domain.Entities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +50,8 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * Instantiates a new LocalEntityConnectionProvider
    * @param user the user
    */
-  public LocalEntityConnectionProvider(final User user) {
-    this(user, Databases.getInstance());
+  public LocalEntityConnectionProvider(final Entities entities, final User user) {
+    this(entities, user, Databases.getInstance());
   }
 
   /**
@@ -58,8 +59,8 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * @param user the user
    * @param database the Database implementation
    */
-  public LocalEntityConnectionProvider(final User user, final Database database) {
-    this(user, database, EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get());
+  public LocalEntityConnectionProvider(final Entities entities, final User user, final Database database) {
+    this(entities, user, database, EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get());
   }
 
   /**
@@ -68,8 +69,9 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * @param database the Database implementation
    * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
    */
-  public LocalEntityConnectionProvider(final User user, final Database database, final boolean scheduleValidityCheck) {
-    super(user, scheduleValidityCheck);
+  public LocalEntityConnectionProvider(final Entities entities, final User user, final Database database,
+                                       final boolean scheduleValidityCheck) {
+    super(entities, user, scheduleValidityCheck);
     Objects.requireNonNull(database, "database");
     this.database = database;
     this.connectionProperties.put(Database.USER_PROPERTY, user.getUsername());
@@ -106,7 +108,8 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      return Util.initializeProxy(EntityConnection.class, new LocalConnectionHandler(LocalEntityConnections.createConnection(database, getUser())));
+      return Util.initializeProxy(EntityConnection.class, new LocalConnectionHandler(getEntities(),
+              LocalEntityConnections.createConnection(getEntities(), database, getUser())));
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
@@ -124,10 +127,11 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   private static final class LocalConnectionHandler implements InvocationHandler {
     private final EntityConnection connection;
-    private final MethodLogger methodLogger = LocalEntityConnections.createLogger();
+    private final MethodLogger methodLogger;
 
-    private LocalConnectionHandler(final EntityConnection connection) {
+    private LocalConnectionHandler(final Entities entities, final EntityConnection connection) {
       this.connection = connection;
+      this.methodLogger = LocalEntityConnections.createLogger(entities);
       this.connection.setMethodLogger(methodLogger);
       this.methodLogger.setEnabled(true);
     }

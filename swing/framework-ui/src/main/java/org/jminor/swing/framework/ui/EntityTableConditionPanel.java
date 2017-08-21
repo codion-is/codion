@@ -7,7 +7,7 @@ import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.Events;
 import org.jminor.common.i18n.Messages;
-import org.jminor.framework.domain.EntityUtil;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityTableConditionModel;
@@ -135,7 +135,7 @@ public final class EntityTableConditionPanel extends JPanel {
           conditionProperties.add((Property) column.getIdentifier());
         }
       });
-      EntityUtil.sort(conditionProperties);
+      Entities.sort(conditionProperties);
       final Property property = UiUtil.selectValue(this, conditionProperties, Messages.get(Messages.SELECT_INPUT_FIELD));
       if (property != null) {
         final ColumnConditionPanel conditionPanel = getConditionPanel(property.getPropertyID());

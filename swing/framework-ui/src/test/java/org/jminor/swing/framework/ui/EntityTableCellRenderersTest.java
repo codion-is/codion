@@ -10,26 +10,22 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class EntityTableCellRenderersTest {
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+  private static final Entities ENTITIES = new TestDomain();
+
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
-
-  @BeforeClass
-  public static void setUp() {
-    TestDomain.init();
-  }
 
   @Test
   public void test() {
     final EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
     tablePanel.getEntityTableModel().refresh();
     final EntityTableCellRenderer renderer = EntityTableCellRenderers.getTableCellRenderer(tablePanel.getEntityTableModel(),
-            Entities.getProperty(TestDomain.T_EMP, TestDomain.EMP_NAME));
+            ENTITIES.getProperty(TestDomain.T_EMP, TestDomain.EMP_NAME));
     renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, false, false, 0, 0);
     renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, true, false, 0, 0);
     renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, true, true, 0, 0);
@@ -48,6 +44,6 @@ public class EntityTableCellRenderersTest {
     final EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
     tablePanel.getEntityTableModel().refresh();
     EntityTableCellRenderers.getTableCellRenderer(tablePanel.getEntityTableModel(),
-            Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME));
+            ENTITIES.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME));
   }
 }

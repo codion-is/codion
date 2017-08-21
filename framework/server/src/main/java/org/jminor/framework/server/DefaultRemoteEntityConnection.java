@@ -13,6 +13,7 @@ import org.jminor.common.server.RemoteClient;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 
 import java.rmi.RemoteException;
@@ -38,10 +39,10 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  DefaultRemoteEntityConnection(final Database database, final RemoteClient remoteClient, final int port,
+  DefaultRemoteEntityConnection(final Entities entities, final Database database, final RemoteClient remoteClient, final int port,
                                 final boolean loggingEnabled)
           throws DatabaseException, RemoteException {
-    this(database, remoteClient, port, loggingEnabled, null, null);
+    this(entities, database, remoteClient, port, loggingEnabled, null, null);
   }
 
   /**
@@ -56,11 +57,11 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  DefaultRemoteEntityConnection(final Database database, final RemoteClient remoteClient,
+  DefaultRemoteEntityConnection(final Entities entities, final Database database, final RemoteClient remoteClient,
                                 final int port, final boolean loggingEnabled, final RMIClientSocketFactory clientSocketFactory,
                                 final RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
-    super(null, database, remoteClient, port, loggingEnabled, clientSocketFactory, serverSocketFactory);
+    super(entities,null, database, remoteClient, port, loggingEnabled, clientSocketFactory, serverSocketFactory);
   }
 
   /**
@@ -73,10 +74,10 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  DefaultRemoteEntityConnection(final ConnectionPool connectionPool, final RemoteClient remoteClient,
+  DefaultRemoteEntityConnection(final Entities entities, final ConnectionPool connectionPool, final RemoteClient remoteClient,
                                 final int port, final boolean loggingEnabled)
           throws DatabaseException, RemoteException {
-    this(connectionPool, remoteClient, port, loggingEnabled, null, null);
+    this(entities, connectionPool, remoteClient, port, loggingEnabled, null, null);
   }
 
   /**
@@ -91,11 +92,11 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  DefaultRemoteEntityConnection(final ConnectionPool connectionPool, final RemoteClient remoteClient,
+  DefaultRemoteEntityConnection(final Entities entities, final ConnectionPool connectionPool, final RemoteClient remoteClient,
                                 final int port, final boolean loggingEnabled, final RMIClientSocketFactory clientSocketFactory,
                                 final RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
-    super(connectionPool, connectionPool.getDatabase(), remoteClient, port, loggingEnabled, clientSocketFactory, serverSocketFactory);
+    super(entities, connectionPool, connectionPool.getDatabase(), remoteClient, port, loggingEnabled, clientSocketFactory, serverSocketFactory);
   }
 
   /** {@inheritDoc} */

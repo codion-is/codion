@@ -3,16 +3,10 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.Serializer;
 import org.jminor.common.Util;
-import org.jminor.common.db.exception.RecordModifiedException;
-import org.jminor.common.db.valuemap.ValueProvider;
-import org.jminor.framework.i18n.FrameworkMessages;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Types;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,37 +26,6 @@ public final class EntityUtil {
   private static final String ENTITIES_PARAM = "entities";
 
   private EntityUtil() {}
-
-  /**
-   * Populates an entity of the given type using the values provided by {@code valueProvider}.
-   * Values are fetched for {@link Property.ColumnProperty} and its descendants, {@link Property.TransientProperty}
-   * excluding its descendants and {@link Property.ForeignKeyProperty}.
-   * @param entityID the entity ID
-   * @param valueProvider the value provider
-   * @return the populated entity
-   */
-  public static Entity getEntity(final String entityID, final ValueProvider<Property, Object> valueProvider) {
-    final Entity entity = Entities.entity(entityID);
-    final Collection<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID);
-    for (final Property.ColumnProperty property : columnProperties) {
-      if (!property.isForeignKeyProperty() && !property.isDenormalized()) {//these are set via their respective parent properties
-        entity.put(property, valueProvider.get(property));
-      }
-    }
-    final Collection<Property.TransientProperty> transientProperties = Entities.getTransientProperties(entityID);
-    for (final Property.TransientProperty transientProperty : transientProperties) {
-      if (!(transientProperty instanceof Property.DerivedProperty) && !(transientProperty instanceof Property.DenormalizedViewProperty)) {
-        entity.put(transientProperty, valueProvider.get(transientProperty));
-      }
-    }
-    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entityID);
-    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      entity.put(foreignKeyProperty, valueProvider.get(foreignKeyProperty));
-    }
-    entity.saveAll();
-
-    return entity;
-  }
 
   /**
    * @param entities the entities
@@ -256,66 +219,6 @@ public final class EntityUtil {
   }
 
   /**
-   * @param entityID the entity ID
-   * @param propertyIDs the property IDs
-   * @return a list containing the properties identified by the given propertyIDs
-   */
-  public static Collection<Property> getProperties(final String entityID, final Collection<String> propertyIDs) {
-    if (Util.nullOrEmpty(propertyIDs)) {
-      return new ArrayList<>(0);
-    }
-
-    final List<Property> properties = new ArrayList<>(propertyIDs.size());
-    for (final String propertyID : propertyIDs) {
-      properties.add(Entities.getProperty(entityID, propertyID));
-    }
-
-    return properties;
-  }
-
-  /**
-   * @param entityID the entity ID
-   * @param propertyIDs the property IDs
-   * @return the given properties sorted by caption, or if that is not available, property ID
-   */
-  public static List<Property> getSortedProperties(final String entityID, final Collection<String> propertyIDs) {
-    final List<Property> properties = new ArrayList<>(getProperties(entityID, propertyIDs));
-    sort(properties);
-
-    return properties;
-  }
-
-  /**
-   * Sorts the given properties by caption, or if that is not available, property ID, ignoring case
-   * @param properties the properties to sort
-   */
-  public static void sort(final List<? extends Property> properties) {
-    Objects.requireNonNull(properties, "properties");
-    final Collator collator = Collator.getInstance();
-    properties.sort((o1, o2) -> collator.compare(o1.toString().toLowerCase(), o2.toString().toLowerCase()));
-  }
-
-  /**
-   * @param entityID the entity ID
-   * @return a list containing all updatable properties associated with the given entity ID
-   */
-  public static List<Property> getUpdatableProperties(final String entityID) {
-    final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
-            Entities.getKeyGeneratorType(entityID).isManual(), false, false);
-    columnProperties.removeIf(property -> property.isForeignKeyProperty() || property.isDenormalized());
-    final List<Property> updatable = new ArrayList<>(columnProperties);
-    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entityID);
-    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      if (!foreignKeyProperty.isReadOnly() && foreignKeyProperty.isUpdatable()) {
-        updatable.add(foreignKeyProperty);
-      }
-    }
-    sort(updatable);
-
-    return updatable;
-  }
-
-  /**
    * @param entities the entities to copy
    * @return deep copies of the entities, in the same order as they are received
    */
@@ -327,107 +230,6 @@ public final class EntityUtil {
     }
 
     return copies;
-  }
-
-  /**
-   * @return a Serializer, if one is available on the classpath
-   */
-  @SuppressWarnings({"unchecked"})
-  public static Serializer<Entity> getEntitySerializer() {
-    if (!Entities.entitySerializerAvailable()) {
-      throw new IllegalArgumentException("Required configuration property is missing: " + Entities.ENTITY_SERIALIZER_CLASS);
-    }
-
-    try {
-      final String serializerClass = Entities.ENTITY_SERIALIZER_CLASS.get();
-
-      return (Serializer<Entity>) Class.forName(serializerClass).getConstructor().newInstance();
-    }
-    catch (final Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
-   * @param entities the entities to check
-   * @return true if any of the given entities has a modified primary key
-   */
-  public static boolean isKeyModified(final Collection<Entity> entities) {
-    if (Util.nullOrEmpty(entities)) {
-      return false;
-    }
-    for (final Entity entity : entities) {
-      if (entity != null) {
-        for (final Property.ColumnProperty property : Entities.getPrimaryKeyProperties(entity.getEntityID())) {
-          if (entity.isModified(property)) {
-            return true;
-          }
-        }
-      }
-    }
-
-    return false;
-  }
-
-  /**
-   * Creates an empty Entity instance returning the given string on a call to toString(), all other
-   * method calls are routed to an empty Entity instance.
-   * @param entityID the entityID
-   * @param toStringValue the string to return by a call to toString() on the resulting entity
-   * @return an empty entity wrapping a string
-   */
-  public static Entity createToStringEntity(final String entityID, final String toStringValue) {
-    final Entity entity = Entities.entity(entityID);
-    return Util.initializeProxy(Entity.class, (proxy, method, args) -> {
-      if ("toString".equals(method.getName())) {
-        return toStringValue;
-      }
-
-      return method.invoke(entity, args);
-    });
-  }
-
-  /**
-   * @param entity the entity instance to check
-   * @param comparison the entity instance to compare with
-   * @return the first property which value is missing or the original value differs from the one in the comparison
-   * entity, returns null if all of {@code entity}s original values match the values found in {@code comparison}
-   */
-  public static Property getModifiedProperty(final Entity entity, final Entity comparison) {
-    for (final Property property : comparison.keySet()) {
-      //BLOB property values are not loaded, so we can't compare those
-      if (!property.isType(Types.BLOB) && isValueMissingOrModified(entity, comparison, property.getPropertyID())) {
-        return property;
-      }
-    }
-
-    return null;
-  }
-
-  /**
-   * @param exception the record modified exception
-   * @return a human-readable String describing the modification
-   */
-  public static String getModifiedExceptionMessage(final RecordModifiedException exception) {
-    final Entity entity = (Entity) exception.getRow();
-    final Entity modified = (Entity) exception.getModifiedRow();
-    if (modified == null) {//record has been deleted
-      return entity + " " + FrameworkMessages.get(FrameworkMessages.HAS_BEEN_DELETED);
-    }
-    final Property modifiedProperty = getModifiedProperty(entity, modified);
-
-    return Entities.getCaption(entity.getEntityID()) + ", " + modifiedProperty + ": " +
-            entity.getOriginal(modifiedProperty) + " -> " + modified.get(modifiedProperty);
-  }
-
-  /**
-   * @param entity the entity instance to check
-   * @param comparison the entity instance to compare with
-   * @param propertyID the property to check
-   * @return true if the value is missing or the original value differs from the one in the comparison entity
-   */
-  static boolean isValueMissingOrModified(final Entity entity, final Entity comparison, final String propertyID) {
-    return !entity.containsKey(propertyID) || !Objects.equals(comparison.get(propertyID), entity.getOriginal(propertyID));
   }
 
   /**
@@ -500,8 +302,14 @@ public final class EntityUtil {
     private static final String PROPERTY_ID_PARAM = "propertyID";
     private static final String PROPERTY_NAME_PARAM = "propertyName";
 
+    private final Entities entities;
+
     private final Map<Class, String> entityIDMap = new HashMap<>();
     private final Map<Class, Map<String, GetterSetter>> propertyMap = new HashMap<>();
+
+    public EntityBeanMapper(final Entities entities) {
+      this.entities = entities;
+    }
 
     /**
      * Associates the given bean class with the given entityID
@@ -551,7 +359,7 @@ public final class EntityUtil {
       Objects.requireNonNull(propertyID, PROPERTY_ID_PARAM);
       Objects.requireNonNull(propertyName, PROPERTY_NAME_PARAM);
       final Map<String, GetterSetter> beanPropertyMap = propertyMap.computeIfAbsent(beanClass, k -> new HashMap<>());
-      final Property property = Entities.getProperty(getEntityID(beanClass), propertyID);
+      final Property property = entities.getProperty(getEntityID(beanClass), propertyID);
       final Method getter = Util.getGetMethod(property.getTypeClass(), propertyName, beanClass);
       final Method setter = Util.getSetMethod(property.getTypeClass(), propertyName, beanClass);
       beanPropertyMap.put(propertyID, new GetterSetter(getter, setter));
@@ -575,10 +383,10 @@ public final class EntityUtil {
      */
     public Entity toEntity(final Object bean) throws InvocationTargetException, IllegalAccessException {
       Objects.requireNonNull(bean, "bean");
-      final Entity entity = Entities.entity(getEntityID(bean.getClass()));
+      final Entity entity = entities.entity(getEntityID(bean.getClass()));
       final Map<String, GetterSetter> beanPropertyMap = getPropertyMap(bean.getClass());
       for (final Map.Entry<String, GetterSetter> propertyEntry : beanPropertyMap.entrySet()) {
-        final Property property = Entities.getProperty(entity.getEntityID(), propertyEntry.getKey());
+        final Property property = entities.getProperty(entity.getEntityID(), propertyEntry.getKey());
         entity.put(property, propertyEntry.getValue().getter.invoke(bean));
       }
 
@@ -620,7 +428,7 @@ public final class EntityUtil {
       final Object bean = beanClass.getConstructor().newInstance();
       final Map<String, GetterSetter> beanPropertyMap = getPropertyMap(beanClass);
       for (final Map.Entry<String, GetterSetter> propertyEntry : beanPropertyMap.entrySet()) {
-        final Property property = Entities.getProperty(entity.getEntityID(), propertyEntry.getKey());
+        final Property property = entities.getProperty(entity.getEntityID(), propertyEntry.getKey());
         propertyEntry.getValue().setter.invoke(bean, entity.get(property));
       }
 

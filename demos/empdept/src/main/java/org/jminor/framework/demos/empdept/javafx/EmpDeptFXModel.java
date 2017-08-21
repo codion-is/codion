@@ -17,11 +17,6 @@ public final class EmpDeptFXModel extends FXEntityApplicationModel {
     setupEntityModels();
   }
 
-  @Override
-  protected void loadDomainModel() {
-    EmpDept.init();
-  }
-
   protected void setupEntityModels() {
     final FXEntityModel departmentModel = new FXEntityModel(
             new FXEntityEditModel(EmpDept.T_DEPARTMENT, getConnectionProvider()),

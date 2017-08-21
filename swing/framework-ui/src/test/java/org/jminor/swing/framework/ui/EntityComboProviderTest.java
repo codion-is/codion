@@ -7,11 +7,11 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -23,14 +23,11 @@ import static org.junit.Assert.*;
  */
 public class EntityComboProviderTest {
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+  private static final Entities ENTITIES = new TestDomain();
+
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
-
-  @BeforeClass
-  public static void setUp() {
-    TestDomain.init();
-  }
 
   @Test
   public void test() throws Exception {

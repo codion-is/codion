@@ -8,6 +8,7 @@ import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.domain.Entities;
 
 import java.sql.Connection;
 
@@ -25,8 +26,8 @@ public final class LocalEntityConnections {
    * @return a new EntityConnection instance
    * @throws DatabaseException in case there is a problem connecting to the database
    */
-  public static EntityConnection createConnection(final Database database, final User user) throws DatabaseException {
-    return new LocalEntityConnection(database, user, EntityConnection.USE_OPTIMISTIC_LOCKING.get(),
+  public static EntityConnection createConnection(final Entities entities, final Database database, final User user) throws DatabaseException {
+    return new LocalEntityConnection(entities, database, user, EntityConnection.USE_OPTIMISTIC_LOCKING.get(),
             EntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get(), EntityConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
   }
 
@@ -40,16 +41,16 @@ public final class LocalEntityConnections {
    * but could not be created
    * @see org.jminor.common.db.Database#supportsIsValid()
    */
-  public static EntityConnection createConnection(final Database database, final Connection connection) throws DatabaseException {
-    return new LocalEntityConnection(database, connection, EntityConnection.USE_OPTIMISTIC_LOCKING.get(),
+  public static EntityConnection createConnection(final Entities entities, final Database database, final Connection connection) throws DatabaseException {
+    return new LocalEntityConnection(entities, database, connection, EntityConnection.USE_OPTIMISTIC_LOCKING.get(),
             EntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get(), EntityConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
   }
 
   /**
    * @return A {@link MethodLogger} implementation tailored for EntityConnections
    */
-  public static MethodLogger createLogger() {
+  public static MethodLogger createLogger(final Entities entities) {
     return new MethodLogger(EntityConnection.CONNECTION_LOG_SIZE.get(),
-            false, new LocalEntityConnection.EntityArgumentStringProvider());
+            false, new LocalEntityConnection.EntityArgumentStringProvider(entities));
   }
 }

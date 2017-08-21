@@ -548,7 +548,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return a tree model showing the dependencies between entities via foreign keys
    */
-  public static TreeModel getDependencyTreeModel() {
+  public TreeModel getDependencyTreeModel() {
     return getDependencyTreeModel(null);
   }
 
@@ -556,19 +556,20 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param domainID the ID of the domain for which to return a dependency tree model
    * @return a tree model showing the dependencies between entities via foreign keys
    */
-  public static TreeModel getDependencyTreeModel(final String domainID) {
+  public TreeModel getDependencyTreeModel(final String domainID) {
     final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
-    for (final String entityID : Entities.getDefinitions(domainID).keySet()) {
-      if (Entities.getForeignKeyProperties(entityID).isEmpty() || referencesOnlySelf(entityID)) {
-        root.add(new EntityDependencyTreeNode(domainID, entityID));
+    final Entities entities = applicationModel.getEntities();
+    for (final String entityID : entities.getDefinedEntities()) {
+      if (entities.getForeignKeyProperties(entityID).isEmpty() || referencesOnlySelf(entityID)) {
+        root.add(new EntityDependencyTreeNode(domainID, entityID, entities));
       }
     }
 
     return new DefaultTreeModel(root);
   }
 
-  private static boolean referencesOnlySelf(final String entityID) {
-    for (final Property.ForeignKeyProperty fkProperty : Entities.getForeignKeyProperties(entityID)) {
+  private boolean referencesOnlySelf(final String entityID) {
+    for (final Property.ForeignKeyProperty fkProperty : applicationModel.getEntities().getForeignKeyProperties(entityID)) {
       if (!fkProperty.getReferencedEntityID().equals(entityID)) {
         return false;
       }
@@ -748,8 +749,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return an initialized EntityConnectionProvider
    * @throws CancelException in case the initialization is cancelled
    */
-  protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeID) {
-    return EntityConnectionProviders.connectionProvider(user, clientTypeID, getClientVersion());
+  protected EntityConnectionProvider initializeConnectionProvider(final Entities entities, final User user, final String clientTypeID) {
+    return EntityConnectionProviders.connectionProvider(entities, user, clientTypeID, getClientVersion());
   }
 
   /**
@@ -802,7 +803,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     for (final EntityPanelProvider panelProvider : supportPanelProviders) {
       String caption = panelProvider.getCaption();
       if (caption == null) {
-        caption = Entities.getCaption(panelProvider.getEntityID());
+        caption = applicationModel.getEntities().getCaption(panelProvider.getEntityID());
       }
       controlSet.add(new Control(caption) {
         @Override
@@ -848,7 +849,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
       String caption = panelProvider.getCaption();
       if (caption == null) {
-        caption = Entities.getCaption(panelProvider.getEntityID());
+        caption = applicationModel.getEntities().getCaption(panelProvider.getEntityID());
       }
       dialog = new JDialog(getParentWindow(), caption);
       dialog.addWindowListener(new WindowAdapter() {
@@ -1122,6 +1123,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected abstract M initializeApplicationModel(final EntityConnectionProvider connectionProvider);
 
+  protected abstract Entities initializeDomainEntities();
+
   /**
    * Returns the user, either via a login dialog or via override, called during startup
    * @param frameCaption the application frame caption
@@ -1203,7 +1206,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
       EntityConnectionProvider connectionProvider = null;
       try {
-        connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
+        connectionProvider = initializeConnectionProvider(initializeDomainEntities(), user, getApplicationIdentifier());
         connectionProvider.getConnection();//throws exception if the server is not reachable
         final long initializationStarted = System.currentTimeMillis();
         initialize(initializeApplicationModel(connectionProvider));
@@ -1327,11 +1330,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private static final class EntityDependencyTreeNode extends DefaultMutableTreeNode {
 
+    private final Entities entities;
     private final String domainID;
 
-    private EntityDependencyTreeNode(final String domainID, final String entityID) {
+    private EntityDependencyTreeNode(final String domainID, final String entityID, final Entities entities) {
       super(entityID);
       this.domainID = domainID;
+      this.entities = entities;
       Objects.requireNonNull(entityID, "entityID");
     }
 
@@ -1353,10 +1358,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     private List<EntityDependencyTreeNode> initializeChildren() {
       final List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
-      for (final String entityID : Entities.getDefinitions(domainID).keySet()) {
-        for (final Property.ForeignKeyProperty fkProperty : Entities.getForeignKeyProperties(entityID)) {
+      for (final String entityID : entities.getDefinedEntities()) {
+        for (final Property.ForeignKeyProperty fkProperty : entities.getForeignKeyProperties(entityID)) {
           if (fkProperty.getReferencedEntityID().equals(getEntityID()) && !foreignKeyCycle(fkProperty.getReferencedEntityID())) {
-            childrenList.add(new EntityDependencyTreeNode(domainID, entityID));
+            childrenList.add(new EntityDependencyTreeNode(domainID, entityID, entities));
           }
         }
       }

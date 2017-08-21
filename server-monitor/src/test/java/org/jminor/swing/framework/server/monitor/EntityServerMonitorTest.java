@@ -10,6 +10,7 @@ import org.jminor.common.db.Databases;
 import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.Server;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
@@ -23,6 +24,8 @@ import java.util.UUID;
 import static org.junit.Assert.*;
 
 public class EntityServerMonitorTest {
+
+  private static final Entities ENTITIES = new TestDomain();
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
@@ -54,7 +57,7 @@ public class EntityServerMonitorTest {
   public void test() throws Exception {
     final UUID clientId = UUID.randomUUID();
     final String clientTypeId = EntityServerMonitorTest.class.getName();
-    final RemoteEntityConnectionProvider connectionProvider = new RemoteEntityConnectionProvider("localhost",
+    final RemoteEntityConnectionProvider connectionProvider = new RemoteEntityConnectionProvider(ENTITIES, "localhost",
             UNIT_TEST_USER, clientId, clientTypeId);
     connectionProvider.getConnection();
     final EntityServerMonitor model = new EntityServerMonitor("localhost", Server.REGISTRY_PORT.get());

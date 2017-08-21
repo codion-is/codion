@@ -7,6 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -22,17 +23,18 @@ import static org.junit.Assert.assertTrue;
 
 public class DefaultForeignKeyConditionModelTest {
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new TestDomain(), new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
 
   @Test
   public void getSearchEntitiesLookupModel() throws DatabaseException {
-    TestDomain.init();
+    final Entities entities = CONNECTION_PROVIDER.getEntities();
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER,
-            Collections.singletonList(Entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
+            Collections.singletonList(CONNECTION_PROVIDER.getEntities().getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
     final ForeignKeyConditionModel conditionModel = new DefaultForeignKeyConditionModel(
-            Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK), lookupModel);
+            new EntityConditions(entities),
+            entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK), lookupModel);
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
     lookupModel.setSelectedEntity(sales);
     Collection<Entity> searchEntities = conditionModel.getConditionEntities();

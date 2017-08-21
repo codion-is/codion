@@ -8,6 +8,7 @@ import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
+import org.jminor.framework.domain.Entities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private final TaskScheduler validityCheckScheduler = new TaskScheduler(this::checkValidity,
           VALIDITY_CHECK_INTERVAL_SECONDS, 0, TimeUnit.SECONDS);
 
+  private final Entities entities;
+
   /**
    * The user used by this connection provider when connecting to the database server
    */
@@ -38,8 +41,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
    * Instantiates a new AbstractEntityConnectionProvider.
    * @param user the user to base the connection provider on
    */
-  public AbstractEntityConnectionProvider(final User user) {
-    this(user, false);
+  public AbstractEntityConnectionProvider(final Entities entities, final User user) {
+    this(entities, user, false);
   }
 
   /**
@@ -47,13 +50,21 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
    * @param user the user to base the connection provider on
    * @param scheduleValidityCheck if true then a connection validity check is run every 10 seconds
    */
-  public AbstractEntityConnectionProvider(final User user, final boolean scheduleValidityCheck) {
+  public AbstractEntityConnectionProvider(final Entities entities, final User user, final boolean scheduleValidityCheck) {
+    Objects.requireNonNull(entities, "entities");
     Objects.requireNonNull(user, "user");
+    this.entities = entities;
     this.user = user;
     this.scheduleValidityCheck = scheduleValidityCheck;
     if (this.scheduleValidityCheck) {
       this.validityCheckScheduler.start();
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entities getEntities() {
+    return entities;
   }
 
   /** {@inheritDoc} */

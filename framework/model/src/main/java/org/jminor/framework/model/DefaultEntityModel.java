@@ -8,7 +8,6 @@ import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.Util;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -295,7 +294,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
       detailModelForeignKeys.remove(detailModel);
     }
     else {
-      detailModelForeignKeys.put(detailModel, Entities.getForeignKeyProperty(detailModel.getEntityID(), foreignKeyPropertyID));
+      detailModelForeignKeys.put(detailModel,
+              connectionProvider.getEntities().getForeignKeyProperty(detailModel.getEntityID(), foreignKeyPropertyID));
     }
   }
 
@@ -356,7 +356,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /** {@inheritDoc} */
   @Override
   public final void initialize(final String foreignKeyEntityID, final List<Entity> foreignKeyValues) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entityID, foreignKeyEntityID);
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = connectionProvider.getEntities()
+            .getForeignKeyProperties(entityID, foreignKeyEntityID);
     if (!foreignKeyProperties.isEmpty()) {
       initialize(foreignKeyProperties.get(0), foreignKeyValues);
     }
@@ -469,7 +470,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     if (containsTableModel() && filterOnMasterInsert) {
       Property.ForeignKeyProperty foreignKeyProperty = masterModel.getDetailModelForeignKey((M) this);
       if (foreignKeyProperty == null) {
-        foreignKeyProperty = Entities.getForeignKeyProperties(entityID, masterModel.getEntityID()).get(0);
+        foreignKeyProperty = connectionProvider.getEntities().getForeignKeyProperties(entityID, masterModel.getEntityID()).get(0);
       }
       tableModel.setForeignKeyConditionValues(foreignKeyProperty, insertEvent.getInsertedEntities());
     }

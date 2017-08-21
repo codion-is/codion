@@ -3,6 +3,8 @@
  */
 package org.jminor.framework.plugins.rest;
 
+import org.jminor.framework.domain.Entities;
+
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -22,9 +24,10 @@ public final class EntityRESTServer extends Server implements org.jminor.common.
    * @param documentRoot the document root
    * @param port the port on which to serve
    */
-  public EntityRESTServer(final org.jminor.common.server.Server connectionServer, final String documentRoot, final Integer port) {
+  public EntityRESTServer(final Entities entities, final org.jminor.common.server.Server connectionServer, final String documentRoot, final Integer port) {
     super(port);
     EntityRESTService.setServer(connectionServer);
+    EntityRESTService.setEntities(entities);
     final ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
     servletHandler.setContextPath("/");
     final ServletHolder holder = servletHandler.addServlet(ServletContainer.class, "/entities/*");
@@ -50,6 +53,7 @@ public final class EntityRESTServer extends Server implements org.jminor.common.
   @Override
   public void stopServer() throws Exception {
     EntityRESTService.setServer(null);
+    EntityRESTService.setEntities(null);
     stop();
     join();
   }

@@ -9,7 +9,7 @@ import org.jminor.framework.model.DefaultEntityApplicationModel;
 /**
  * A Swing implementation of {@link org.jminor.framework.model.EntityApplicationModel}
  */
-public abstract class SwingEntityApplicationModel extends DefaultEntityApplicationModel<SwingEntityModel> {
+public class SwingEntityApplicationModel extends DefaultEntityApplicationModel<SwingEntityModel> {
 
   /**
    * Instantiates a new {@link SwingEntityApplicationModel}

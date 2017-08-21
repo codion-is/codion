@@ -19,9 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 public class JasperReportsEntityDataSourceTest {
 
-  static {
-    TestDomain.init();
-  }
+  private static final Entities ENTITIES = new TestDomain();
 
   @Test(expected = NullPointerException.class)
   public void constructorNullIterator() {
@@ -30,7 +28,7 @@ public class JasperReportsEntityDataSourceTest {
 
   @Test
   public void iterator() throws Exception {
-    final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
+    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, 10);
     department.put(TestDomain.DEPARTMENT_NAME, "name");
     department.put(TestDomain.DEPARTMENT_LOCATION, "none");

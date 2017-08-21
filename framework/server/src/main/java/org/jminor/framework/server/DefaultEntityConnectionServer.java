@@ -158,6 +158,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
   private static final String FROM_CLASSPATH = "' from classpath";
 
+  private final Map<String, Entities> clientDomainModels = new HashMap<>();
   private final AuxiliaryServer webServer;
   private final Database database;
   private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new DefaultEntityConnectionServer.MaintenanceTask(),
@@ -183,7 +184,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @param database the Database implementation
    * @param sslEnabled if true then ssl is enabled
    * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
-   * @param domainModelClassNames the domain model classes to load on startup
+   * @param clientDomainModelClassNames the domain model classes to load on startup
    * @param loginProxyClassNames the login proxy classes to initialize on startup
    * @param connectionValidatorClassNames the connection validation classes to initialize on startup
    * @param initialPoolUsers the users for which to initialize connection pools on startup
@@ -199,7 +200,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    */
   public DefaultEntityConnectionServer(final String serverName, final int serverPort, final int serverAdminPort,
                                        final int registryPort, final Database database, final boolean sslEnabled,
-                                       final int connectionLimit, final Collection<String> domainModelClassNames,
+                                       final int connectionLimit, final Collection<String> clientDomainModelClassNames,
                                        final Collection<String> loginProxyClassNames, final Collection<String> connectionValidatorClassNames,
                                        final Collection<User> initialPoolUsers, final String webDocumentRoot,
                                        final Integer webServerPort, final boolean clientLoggingEnabled,
@@ -218,12 +219,12 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       this.adminUser = adminUser;
       setConnectionTimeout(connectionTimeout);
       setClientSpecificConnectionTimeout(clientSpecificConnectionTimeouts);
-      loadDomainModels(domainModelClassNames);
+      loadDomainModels(clientDomainModelClassNames);
       initializeConnectionPools(database, initialPoolUsers);
       loadLoginProxies(loginProxyClassNames);
       loadConnectionValidators(connectionValidatorClassNames);
       setConnectionLimit(connectionLimit);
-      webServer = startWebServer(webDocumentRoot, webServerPort);
+      webServer = startWebServer(getCombinedEntities(), webDocumentRoot, webServerPort);
       serverAdmin = new DefaultEntityConnectionServerAdmin(this, serverAdminPort);
       bindToRegistry();
     }
@@ -314,12 +315,12 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
                                                                   final RMIServerSocketFactory serverSocketFactory)
           throws RemoteException, DatabaseException {
     if (connectionPool != null) {
-      return new DefaultRemoteEntityConnection(connectionPool, remoteClient, port, clientLoggingEnabled,
-            clientSocketFactory, serverSocketFactory);
+      return new DefaultRemoteEntityConnection(clientDomainModels.get(remoteClient.getConnectionRequest().getClientTypeID()),
+              connectionPool, remoteClient, port, clientLoggingEnabled, clientSocketFactory, serverSocketFactory);
     }
 
-    return new DefaultRemoteEntityConnection(database, remoteClient, port, clientLoggingEnabled,
-            clientSocketFactory, serverSocketFactory);
+    return new DefaultRemoteEntityConnection(clientDomainModels.get(remoteClient.getConnectionRequest().getClientTypeID()), database,
+            remoteClient, port, clientLoggingEnabled, clientSocketFactory, serverSocketFactory);
   }
 
   /**
@@ -404,6 +405,20 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
 
     return clients;
+  }
+
+  /**
+   * @return a map containing all defined entityIDs, with their respective table names as an associated value
+   */
+  Map<String, String> getEntityDefinitions() {
+    final Map<String, String> definitions = new HashMap<>();
+    for (final Entities entities : clientDomainModels.values()) {
+      for (final String entityID : entities.getDefinedEntities()) {
+        definitions.put(entityID, entities.getTableName(entityID));
+      }
+    }
+
+    return definitions;
   }
 
   /**
@@ -512,11 +527,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
   }
 
-  /**
-   * @return a map containing all defined entityIDs, with their respective table names as an associated value
-   */
-  static Map<String, String> getEntityDefinitions() {
-    return Entities.getDefinitions();
+  private Entities getEntities(final String clientTypeID) {
+    return clientDomainModels.get(clientTypeID);
   }
 
   /** {@inheritDoc} */
@@ -598,6 +610,15 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
   }
 
+  private Entities getCombinedEntities() {
+    final Entities entities = new Entities();
+    for (final Entities domain : clientDomainModels.values()) {
+      entities.addAll(domain);
+    }
+
+    return entities;
+  }
+
   private Runnable getShutdownHook() {
     return () -> {
       try {
@@ -642,7 +663,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     return timeoutMap;
   }
 
-  private AuxiliaryServer startWebServer(final String webDocumentRoot, final Integer webServerPort)
+  private AuxiliaryServer startWebServer(final Entities entities, final String webDocumentRoot, final Integer webServerPort)
           throws ExecutionException, InterruptedException, ClassNotFoundException, NoSuchMethodException,
           IllegalAccessException, InvocationTargetException, InstantiationException {
     final String webServerClassName = WEB_SERVER_IMPLEMENTATION_CLASS.get();
@@ -651,7 +672,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
 
     final AuxiliaryServer auxiliaryServer = (AuxiliaryServer) Class.forName(webServerClassName).getConstructor(
-            Server.class, String.class, Integer.class).newInstance(this, webDocumentRoot, webServerPort);
+            Entities.class, Server.class, String.class, Integer.class).newInstance(entities, this, webDocumentRoot, webServerPort);
     Executors.newSingleThreadExecutor().submit((Callable) () -> {
       LOG.info("Starting web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
       try {
@@ -700,13 +721,27 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     return connection.hasBeenInactive(timeout);
   }
 
-  private static void loadDomainModels(final Collection<String> domainModelClassNames) throws ClassNotFoundException {
-    if (domainModelClassNames != null) {
-      for (final String className : domainModelClassNames) {
-        final String message = "Server loading domain model class '" + className + FROM_CLASSPATH;
-        LOG.info(message);
-        Class.forName(className);
+  private void loadDomainModels(final Collection<String> domainModelClassNames) throws ClassNotFoundException {
+    try {
+      if (domainModelClassNames != null) {
+        for (final String className : domainModelClassNames) {
+          final String message = "Server loading domain model class '" + className + FROM_CLASSPATH;
+          LOG.info(message);
+          final String[] clientDomainModel = className.split(":");
+          if (clientDomainModel.length < 2) {
+            throw new IllegalArgumentException("Wrong client domain format (clientID:domainClassname)");
+          }
+
+          final Entities entities = (Entities) Class.forName(clientDomainModel[1]).getDeclaredConstructor().newInstance();
+          clientDomainModels.put(clientDomainModel[0], entities);
+        }
       }
+    }
+    catch (final ClassNotFoundException cl) {
+      throw cl;
+    }
+    catch (final Exception e) {
+      LOG.error("Exception while instantiating domain model", e);
     }
   }
 

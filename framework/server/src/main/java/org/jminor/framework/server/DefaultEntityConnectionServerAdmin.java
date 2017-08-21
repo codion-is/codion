@@ -433,7 +433,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   /** {@inheritDoc} */
   @Override
   public Map<String,String> getEntityDefinitions() {
-    return DefaultEntityConnectionServer.getEntityDefinitions();
+    return server.getEntityDefinitions();
   }
 
   private void initializeGarbageCollectionListener() {

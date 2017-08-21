@@ -460,7 +460,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
-    EntityUtil.getUpdatableProperties(getEntityTableModel().getEntityID()).forEach(property -> {
+    getEntityTableModel().getConnectionProvider().getEntities().getUpdatableProperties(
+            getEntityTableModel().getEntityID()).forEach(property -> {
       if (includeUpdateSelectedProperty(property)) {
         final String caption = property.getCaption() == null ? property.getPropertyID() : property.getCaption();
         controlSet.add(Controls.control(() -> updateSelectedEntities(property),caption, enabled));
@@ -631,7 +632,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public final void exportSelected() {
     try {
       final List<Entity> selected = getEntityTableModel().getSelectionModel().getSelectedItems();
-      FileUtil.writeFile(EntityUtil.getEntitySerializer().serialize(selected), UiUtil.selectFileToSave(this, null, null));
+      FileUtil.writeFile(getEntityTableModel().getConnectionProvider().getEntities().getEntitySerializer()
+              .serialize(selected), UiUtil.selectFileToSave(this, null, null));
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
     }
     catch (IOException | CancelException | Serializer.SerializeException e) {
@@ -1195,7 +1197,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   protected final InputProvider createEntityInputProvider(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final Entity currentValue,
                                                           final EntityEditModel editModel) {
-    if (Entities.isSmallDataset(foreignKeyProperty.getReferencedEntityID())) {
+    if (getEntityTableModel().getConnectionProvider().getEntities().isSmallDataset(foreignKeyProperty.getReferencedEntityID())) {
       return new EntityComboProvider(((SwingEntityEditModel) editModel).createForeignKeyComboBoxModel(foreignKeyProperty), currentValue);
     }
     else {
@@ -1288,7 +1290,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     setControl(CLEAR, getClearControl());
     setControl(REFRESH, getRefreshControl());
     setControl(SELECT_COLUMNS, getSelectColumnsControl());
-    if (Entities.entitySerializerAvailable()) {
+    if (getEntityTableModel().getConnectionProvider().getEntities().entitySerializerAvailable()) {
       setControl(EXPORT_JSON, getExportControl());
     }
     setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
@@ -1456,7 +1458,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
   }
 
-  private static void showDependenciesDialog(final Map<String, Collection<Entity>> dependencies,
+  private void showDependenciesDialog(final Map<String, Collection<Entity>> dependencies,
                                              final EntityConnectionProvider connectionProvider,
                                              final JComponent dialogParent) {
     JPanel dependenciesPanel;
@@ -1478,15 +1480,15 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     return label;
   }
 
-  private static JPanel createDependenciesPanel(final Map<String, Collection<Entity>> dependencies,
-                                                final EntityConnectionProvider connectionProvider) {
+  private JPanel createDependenciesPanel(final Map<String, Collection<Entity>> dependencies,
+                                         final EntityConnectionProvider connectionProvider) {
     final JPanel panel = new JPanel(new BorderLayout());
     final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
     tabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     for (final Map.Entry<String, Collection<Entity>> entry : dependencies.entrySet()) {
       final Collection<Entity> dependantEntities = entry.getValue();
       if (!dependantEntities.isEmpty()) {
-        tabPane.addTab(Entities.getCaption(entry.getKey()), createStaticEntityTablePanel(dependantEntities, connectionProvider));
+        tabPane.addTab(connectionProvider.getEntities().getCaption(entry.getKey()), createStaticEntityTablePanel(dependantEntities, connectionProvider));
       }
     }
     panel.add(tabPane, BorderLayout.CENTER);

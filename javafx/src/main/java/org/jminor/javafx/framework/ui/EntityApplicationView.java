@@ -8,6 +8,7 @@ import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityApplicationModel;
 
@@ -125,7 +126,7 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
     try {
       this.mainStage = stage;
       final User user = getApplicationUser();
-      final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
+      final EntityConnectionProvider connectionProvider = initializeConnectionProvider(initializeEntities(), user, getApplicationIdentifier());
       connectionProvider.getConnection();//throws exception if the server is not reachable or credentials are incorrect
       this.model = initializeApplicationModel(connectionProvider);
       stage.setTitle(applicationTitle);
@@ -149,8 +150,8 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
    * @param clientTypeID a String identifying the client type
    * @return a {@link EntityConnectionProvider} based on the given user and client type
    */
-  protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeID) {
-    return EntityConnectionProviders.connectionProvider(user, clientTypeID);
+  protected EntityConnectionProvider initializeConnectionProvider(final Entities entities, final User user, final String clientTypeID) {
+    return EntityConnectionProviders.connectionProvider(entities, user, clientTypeID);
   }
 
   /**
@@ -168,6 +169,8 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
   protected String getApplicationIdentifier() {
     return getClass().getName();
   }
+
+  protected abstract Entities initializeEntities();
 
   /**
    * @return the main menu for this application

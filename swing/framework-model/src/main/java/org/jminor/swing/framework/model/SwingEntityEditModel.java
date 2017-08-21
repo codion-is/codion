@@ -6,7 +6,6 @@ package org.jminor.swing.framework.model;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
@@ -38,7 +37,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   public SwingEntityEditModel(final String entityID, final EntityConnectionProvider connectionProvider) {
-    this(entityID, connectionProvider, Entities.getValidator(entityID));
+    this(entityID, connectionProvider, connectionProvider.getEntities().getValidator(entityID));
   }
 
   /**
@@ -56,7 +55,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   public void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> foreignKeyValues) {
     super.replaceForeignKeyValues(foreignKeyEntityID, foreignKeyValues);
     final List<Property.ForeignKeyProperty> foreignKeyProperties =
-            Entities.getForeignKeyProperties(getEntityID(), foreignKeyEntityID);
+            getEntities().getForeignKeyProperties(getEntityID(), foreignKeyEntityID);
     for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
       if (containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
         getForeignKeyComboBoxModel(foreignKeyProperty.getPropertyID()).refresh();
@@ -102,7 +101,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    */
   public final EntityComboBoxModel getForeignKeyComboBoxModel(final String foreignKeyPropertyID) {
     Objects.requireNonNull(foreignKeyPropertyID, "foreignKeyPropertyID");
-    return getForeignKeyComboBoxModel(Entities.getForeignKeyProperty(getEntityID(), foreignKeyPropertyID));
+    return getForeignKeyComboBoxModel(getEntities().getForeignKeyProperty(getEntityID(), foreignKeyPropertyID));
   }
 
   /**
@@ -131,7 +130,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     Objects.requireNonNull(propertyID, "propertyID");
     PropertyComboBoxModel comboBoxModel = (PropertyComboBoxModel) comboBoxModels.get(propertyID);
     if (comboBoxModel == null) {
-      comboBoxModel = createComboBoxModel(Entities.getColumnProperty(getEntityID(), propertyID));
+      comboBoxModel = createComboBoxModel(getEntities().getColumnProperty(getEntityID(), propertyID));
       comboBoxModels.put(propertyID, comboBoxModel);
       comboBoxModel.refresh();
     }
@@ -165,7 +164,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     final EntityComboBoxModel model = new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(),
             getConnectionProvider());
     if (getValidator().isNullable(getEntity(), foreignKeyProperty)) {
-      model.setNullValue(EntityUtil.createToStringEntity(foreignKeyProperty.getReferencedEntityID(),
+      model.setNullValue(getEntities().createToStringEntity(foreignKeyProperty.getReferencedEntityID(),
               EntityEditModel.COMBO_BOX_NULL_VALUE_ITEM.get()));
     }
 
@@ -196,7 +195,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   public void addForeignKeyValues(final List<Entity> values) {
     final Map<String, Collection<Entity>> mapped = EntityUtil.mapToEntityID(values);
     for (final Map.Entry<String, Collection<Entity>> entry : mapped.entrySet()) {
-      for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(getEntityID(), entry.getKey())) {
+      for (final Property.ForeignKeyProperty foreignKeyProperty : getEntities().getForeignKeyProperties(getEntityID(), entry.getKey())) {
         if (containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
           final EntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty);
           for (final Entity inserted : entry.getValue()) {
@@ -212,7 +211,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   public void removeForeignKeyValues(final List<Entity> values) {
     final Map<String, Collection<Entity>> mapped = EntityUtil.mapToEntityID(values);
     for (final Map.Entry<String, Collection<Entity>> entry : mapped.entrySet()) {
-      for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(getEntityID(), entry.getKey())) {
+      for (final Property.ForeignKeyProperty foreignKeyProperty : getEntities().getForeignKeyProperties(getEntityID(), entry.getKey())) {
         if (containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
           final EntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty);
           final Entity selectedEntity = comboBoxModel.getSelectedValue();

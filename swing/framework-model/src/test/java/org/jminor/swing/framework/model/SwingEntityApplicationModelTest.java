@@ -7,22 +7,18 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.model.testing.AbstractEntityApplicationModelTest;
 import org.jminor.framework.model.testing.TestDomain;
-
-import org.junit.BeforeClass;
 
 public final class SwingEntityApplicationModelTest
         extends AbstractEntityApplicationModelTest<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+  private static final Entities ENTITIES = new TestDomain();
+
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
-
-  @BeforeClass
-  public static void setUp() {
-    TestDomain.init();
-  }
 
   @Override
   protected SwingEntityModel createDepartmentModel() {

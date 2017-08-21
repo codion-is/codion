@@ -11,7 +11,6 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityModelProvider;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -19,14 +18,11 @@ import static org.junit.Assert.assertTrue;
 
 public class EntityPanelProviderTest {
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+  private static final Entities ENTITIES = new TestDomain();
+
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
-
-  @BeforeClass
-  public static void setUp() {
-    TestDomain.init();
-  }
 
   @Test
   public void testDetailPanelProvider() {
@@ -39,7 +35,7 @@ public class EntityPanelProviderTest {
 
     final String customerCaption = "A department caption";
     final EntityPanelProvider customerPanelProvider = new EntityPanelProvider(TestDomain.T_DEPARTMENT, customerCaption);
-    final EntityPanelProvider invoicePanelProvider = new EntityPanelProvider(TestDomain.T_EMP);
+    final EntityPanelProvider invoicePanelProvider = new EntityPanelProvider(TestDomain.T_EMP, "empCaption");
 
     customerPanelProvider.addDetailPanelProvider(invoicePanelProvider);
 
@@ -47,7 +43,7 @@ public class EntityPanelProviderTest {
     assertEquals(customerCaption, customerPanel.getCaption());
     assertTrue(customerPanel.containsDetailPanel(TestDomain.T_EMP));
     final EntityPanel invoicePanel = customerPanel.getDetailPanel(TestDomain.T_EMP);
-    assertEquals(Entities.getCaption(TestDomain.T_EMP), invoicePanel.getCaption());
+    assertEquals("empCaption", invoicePanel.getCaption());
 
     assertEquals(customerModel, customerPanel.getModel());
     assertEquals(customerModel.getDetailModel(TestDomain.T_EMP), invoicePanel.getModel());

@@ -5,7 +5,6 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.TextUtil;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityModelProvider;
@@ -44,29 +43,10 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
   /**
    * Instantiates a new EntityPanelProvider for the given entity type
    * @param entityID the entity ID
-   */
-  public EntityPanelProvider(final String entityID) {
-    this(entityID, Entities.getCaption(entityID));
-  }
-
-  /**
-   * Instantiates a new EntityPanelProvider for the given entity type
-   * @param entityID the entity ID
    * @param caption the panel caption
    */
   public EntityPanelProvider(final String entityID, final String caption) {
     this(entityID, caption, SwingEntityModel.class, EntityPanel.class);
-  }
-
-  /**
-   * Instantiates a new EntityPanelProvider
-   * @param entityID the entity ID
-   * @param entityModelClass the Class of the EntityModel
-   * @param entityPanelClass the Class of the EntityPanel
-   */
-  public EntityPanelProvider(final String entityID, final Class<? extends SwingEntityModel> entityModelClass,
-                             final Class<? extends EntityPanel> entityPanelClass) {
-    this(entityID, Entities.getCaption(entityID), entityModelClass, entityPanelClass);
   }
 
   /**
@@ -90,8 +70,8 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
    * Instantiates a new EntityPanelProvider
    * @param modelProvider the EntityModelProvider to base this panel provider on
    */
-  public EntityPanelProvider (final SwingEntityModelProvider modelProvider) {
-    this(modelProvider, Entities.getCaption(modelProvider.getEntityID()));
+  public EntityPanelProvider (final String caption, final SwingEntityModelProvider modelProvider) {
+    this(modelProvider, caption);
   }
 
   /**

@@ -16,8 +16,10 @@ import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
+import org.jminor.framework.domain.Entities;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -31,6 +33,8 @@ import java.util.UUID;
 import static org.junit.Assert.*;
 
 public class DefaultEntityConnectionServerTest {
+
+  private static final Entities ENTITIES = new TestDomain();
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
@@ -48,7 +52,6 @@ public class DefaultEntityConnectionServerTest {
 
   @BeforeClass
   public static synchronized void setUp() throws Exception {
-    TestDomain.init();
     configure();
     final Database database = Databases.getInstance();
     final String serverName = DefaultEntityConnectionServer.initializeServerName(database.getHost(), database.getSid());
@@ -96,8 +99,7 @@ public class DefaultEntityConnectionServerTest {
 
   @Test
   public void test() throws Exception {
-    final ConnectionRequest connectionRequestOne = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
-            getClass().getSimpleName());
+    final ConnectionRequest connectionRequestOne = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID");
 
     final RemoteEntityConnection remoteConnectionOne = server.connect(connectionRequestOne);
     assertTrue(remoteConnectionOne.isConnected());
@@ -109,8 +111,7 @@ public class DefaultEntityConnectionServerTest {
     admin.setMaximumPoolCheckOutTime(UNIT_TEST_USER, 2005);
     assertEquals(2005, admin.getMaximumPoolCheckOutTime(UNIT_TEST_USER));
 
-    final ConnectionRequest connectionRequestTwo = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
-            getClass().getSimpleName());
+    final ConnectionRequest connectionRequestTwo = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID");
     final RemoteEntityConnection remoteConnectionTwo = server.connect(connectionRequestTwo);
     admin.setLoggingEnabled(connectionRequestTwo.getClientID(), true);
     assertTrue(admin.isLoggingEnabled(connectionRequestOne.getClientID()));
@@ -122,18 +123,20 @@ public class DefaultEntityConnectionServerTest {
 
     Collection<RemoteClient> clients = admin.getClients(new User(UNIT_TEST_USER.getUsername(), null));
     assertEquals(2, clients.size());
-    clients = admin.getClients(getClass().getSimpleName());
+    clients = admin.getClients("ClientTypeID");
     assertEquals(2, clients.size());
     final Collection<String> clientTypes = admin.getClientTypes();
     assertEquals(1, clientTypes.size());
-    assertTrue(clientTypes.contains(getClass().getSimpleName()));
+    assertTrue(clientTypes.contains("ClientTypeID"));
 
     final Collection<User> users = admin.getUsers();
     assertEquals(1, users.size());
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
-    remoteConnectionTwo.selectMany(EntityConditions.selectCondition(TestDomain.T_EMP)
-            .orderByAscending(TestDomain.EMP_NAME));
+    final EntityConditions entityConditions = new EntityConditions(new TestDomain());
+    final EntitySelectCondition selectCondition = entityConditions.selectCondition(TestDomain.T_EMP)
+            .orderByAscending(TestDomain.EMP_NAME);
+    remoteConnectionTwo.selectMany(selectCondition);
 
     final Database.Statistics stats = admin.getDatabaseStatistics();
 
@@ -199,7 +202,7 @@ public class DefaultEntityConnectionServerTest {
 
   @Test
   public void remoteEntityConnectionProvider() throws Exception {
-    final RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider("localhost",
+    final RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider(new Entities(), "localhost",
             UNIT_TEST_USER, UUID.randomUUID(), "TestClient");
 
     assertEquals(EntityConnection.Type.REMOTE, provider.getConnectionType());
@@ -274,7 +277,7 @@ public class DefaultEntityConnectionServerTest {
     Server.SERVER_ADMIN_USER.set("scott:tiger");
     DefaultEntityConnectionServer.SERVER_CONNECTION_POOLING_INITIAL.set(UNIT_TEST_USER.getUsername() + ":" + UNIT_TEST_USER.getPassword());
     DefaultEntityConnectionServer.SERVER_CLIENT_CONNECTION_TIMEOUT.set("ClientTypeID:10000");
-    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set("org.jminor.framework.server.TestDomain");
+    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set("ClientTypeID:org.jminor.framework.server.TestDomain");
     DefaultEntityConnectionServer.SERVER_LOGIN_PROXY_CLASSES.set("org.jminor.framework.server.TestLoginProxy");
     DefaultEntityConnectionServer.SERVER_CONNECTION_VALIDATOR_CLASSES.set("org.jminor.framework.server.TestConnectionValidator");
     DefaultEntityConnectionServer.SERVER_CLIENT_LOGGING_ENABLED.set(true);
@@ -289,7 +292,7 @@ public class DefaultEntityConnectionServerTest {
 
   public static final class TestWebServer implements Server.AuxiliaryServer {
 
-    public TestWebServer(final Server connectionServer, final String documentRoot, final Integer port) {}
+    public TestWebServer(final Entities entities, final Server connectionServer, final String documentRoot, final Integer port) {}
 
     @Override
     public void startServer() throws Exception {}

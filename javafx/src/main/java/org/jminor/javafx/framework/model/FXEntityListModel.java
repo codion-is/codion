@@ -44,6 +44,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private static final Logger LOG = LoggerFactory.getLogger(FXEntityListModel.class);
 
   private final EntityTableConditionModel conditionModel;
+  private final EntityConditions entityConditions;
 
   private FXEntityEditModel editModel;
   private ObservableList<? extends TableColumn<Entity, ?>> columns;
@@ -81,11 +82,18 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + conditionModel.getEntityID()
               + ", tableModel: " + entityID);
     }
-    if (Entities.getVisibleProperties(entityID).isEmpty()) {
+    if (connectionProvider.getEntities().getVisibleProperties(entityID).isEmpty()) {
       throw new IllegalStateException("No visible properties defined for entity: " + entityID);
     }
     this.conditionModel = conditionModel;
+    this.entityConditions = new EntityConditions(connectionProvider.getEntities());
     bindEvents();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entities getEntities() {
+    return getConnectionProvider().getEntities();
   }
 
   /** {@inheritDoc} */
@@ -173,7 +181,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> foreignKeyValues) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(getEntityID(), foreignKeyEntityID);
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = getEntities().getForeignKeyProperties(getEntityID(), foreignKeyEntityID);
     for (final Entity entity : getAllItems()) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
@@ -451,7 +459,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
 
     try {
-      return getConnectionProvider().getConnection().selectMany(EntityConditions.selectCondition(getEntityID(),
+      return getConnectionProvider().getConnection().selectMany(entityConditions.selectCondition(getEntityID(),
               conditionModel.getTableCondition(), getOrderByClause(), fetchCount));
     }
     catch (final DatabaseException e) {
@@ -466,7 +474,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * @see Entities#getOrderByClause(String)
    */
   protected String getOrderByClause() {
-    return Entities.getOrderByClause(getEntityID());
+    return getEntities().getOrderByClause(getEntityID());
   }
 
   /**

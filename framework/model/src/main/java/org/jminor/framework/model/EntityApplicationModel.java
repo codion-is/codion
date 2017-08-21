@@ -9,6 +9,7 @@ import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.model.Refreshable;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.domain.Entities;
 
 import java.util.List;
 
@@ -85,6 +86,11 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
    * @return the EntityConnectionProvider instance being used by this EntityApplicationModel
    */
   EntityConnectionProvider getConnectionProvider();
+
+  /**
+   * @return the underlying domain model Entities
+   */
+  Entities getEntities();
 
   /**
    * Adds the given entity models to this model.

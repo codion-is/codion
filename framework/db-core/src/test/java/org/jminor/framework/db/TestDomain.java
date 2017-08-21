@@ -14,16 +14,23 @@ import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
 
-public final class TestDomain {
+public final class TestDomain extends Entities {
 
-  private TestDomain() {}
-  public static void init() {}
+  public TestDomain() {
+    defineSuper();
+    defineMaster();
+    defineDetail();
+    defineDepartment();
+    defineEmployee();
+    processAnnotations(TestDomain.class);
+    setDomainEntities(TestDomain.class.getName(), this);
+  }
 
   public static final String T_SUPER = "db.super_entity";
   public static final String SUPER_ID = "id";
 
-  static {
-    Entities.define(T_SUPER,
+  void defineSuper() {
+    define(T_SUPER,
             Properties.primaryKeyProperty(SUPER_ID));
   }
 
@@ -35,8 +42,8 @@ public final class TestDomain {
   public static final String MASTER_NAME = "name";
   public static final String MASTER_CODE = "code";
 
-  static {
-    Entities.define(T_MASTER,
+  void defineMaster() {
+    define(T_MASTER,
             Properties.columnProperty(MASTER_ID_1).setPrimaryKeyIndex(0),
             Properties.columnProperty(MASTER_ID_2).setPrimaryKeyIndex(1),
             Properties.foreignKeyProperty(MASTER_SUPER_FK, "Super", T_SUPER,
@@ -76,8 +83,8 @@ public final class TestDomain {
   private static final List<Item> ITEMS = Arrays.asList(new Item(0, "0"), new Item(1, "1"),
           new Item(2, "2"), new Item(3, "3"));
 
-  static {
-    Entities.define(T_DETAIL,
+  void defineDetail() {
+    define(T_DETAIL,
             Properties.primaryKeyProperty(DETAIL_ID, Types.BIGINT),
             Properties.columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT),
             Properties.columnProperty(DETAIL_DOUBLE, Types.DOUBLE, DETAIL_DOUBLE),
@@ -96,9 +103,9 @@ public final class TestDomain {
                             Properties.columnProperty(DETAIL_MASTER_ID_2)
                     }, null),
             Properties.denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_FK,
-                    Entities.getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
+                    getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
             Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_FK,
-                    Entities.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE),
+                    getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE),
             Properties.valueListProperty(DETAIL_INT_VALUE_LIST, Types.INTEGER, DETAIL_INT_VALUE_LIST, ITEMS),
             Properties.derivedProperty(DETAIL_INT_DERIVED, Types.INTEGER, DETAIL_INT_DERIVED, linkedValues -> {
               final Integer intValue = (Integer) linkedValues.get(DETAIL_INT);
@@ -121,15 +128,14 @@ public final class TestDomain {
   @Entity.Table(tableName = "scott.dept")
   public static final String T_DEPARTMENT = "db.scott.dept";
 
-  static {
-    Entities.define(T_DEPARTMENT,
+  void defineDepartment() {
+    define(T_DEPARTMENT,
             Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
                     .setUpdatable(true).setNullable(false),
             Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
                     .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
             Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
                     .setPreferredColumnWidth(150).setMaxLength(13))
-            .setDomainID(SCOTT_DOMAIN_ID)
             .setSmallDataset(true)
             .setSearchPropertyIDs(DEPARTMENT_NAME)
             .setOrderByClause(DEPARTMENT_NAME)
@@ -156,8 +162,8 @@ public final class TestDomain {
           keyGeneratorIncrementColumnName = "empno")
   public static final String T_EMP = "db.scott.emp";
 
-  static {
-    Entities.define(T_EMP, "scott.emp",
+  void defineEmployee() {
+    define(T_EMP, "scott.emp",
             Properties.primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
             Properties.columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
                     .setMaxLength(10).setNullable(false),
@@ -175,9 +181,8 @@ public final class TestDomain {
             Properties.columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)
                     .setNullable(false),
             Properties.denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
-                    Entities.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
+                    getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     DEPARTMENT_LOCATION).setPreferredColumnWidth(100))
-            .setDomainID(SCOTT_DOMAIN_ID)
             .setStringProvider(new Entities.StringProvider(EMP_NAME))
             .setSearchPropertyIDs(EMP_NAME, EMP_JOB)
             .setCaption("Employee")
@@ -190,7 +195,7 @@ public final class TestDomain {
             });
   }
 
-  static {
-    Entities.processAnnotations(TestDomain.class);
+  void define() {
+    processAnnotations(TestDomain.class);
   }
 }

@@ -537,13 +537,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     String getDomainID();
 
     /**
-     * Sets the domain ID for this entity type
-     * @param domainID the domain ID
-     * @return this Entity.Definition instance
-     */
-    Definition setDomainID(final String domainID);
-
-    /**
      * @param colorProvider the background color provider
      * @return this {@link Entity.Definition} instance
      */
@@ -819,11 +812,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return a list containing the foreign key properties for this entity type
      */
     List<Property.ForeignKeyProperty> getForeignKeyProperties();
-
-    /**
-     * @return all foreign keys referencing entities of this type
-     */
-    List<Property.ForeignKeyProperty> getForeignKeyReferences();
 
     /**
      * @return true if this entity type has any denormalized properties

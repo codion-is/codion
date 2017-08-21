@@ -36,6 +36,11 @@ class DefaultProperty implements Property {
   private static final ValueConverter<java.util.Date, java.sql.Date> DATE_VALUE_CONVERTER = new DateValueConverter();
 
   /**
+   * The domain id
+   */
+  private String domainID;
+
+  /**
    * The ID of the entity this property is associated with
    */
   private String entityID;
@@ -237,6 +242,22 @@ class DefaultProperty implements Property {
   @Override
   public final String getPropertyID() {
     return propertyID;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getDomainID() {
+    return domainID;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Property setDomainID(final String domainID) {
+    if (this.domainID != null) {
+      throw new IllegalStateException("domainID (" + this.domainID + ") has already been set for property: " + propertyID);
+    }
+    this.domainID = domainID;
+    return this;
   }
 
   /** {@inheritDoc} */

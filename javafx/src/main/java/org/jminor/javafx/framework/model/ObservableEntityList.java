@@ -15,7 +15,6 @@ import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.SelectionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -44,6 +43,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   private final EntityConnectionProvider connectionProvider;
   private final SortedList<Entity> sortedList;
   private final FilteredList<Entity> filteredList;
+  private final EntityConditions entityConditions;
 
   private final Event refreshEvent = Events.event();
   private final Event selectionChangedEvent = Events.event();
@@ -64,7 +64,8 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
     this.filteredList = new FilteredList<>(this);
-    this.sortedList = new SortedList<>(filteredList, Entities.getComparator(entityID));
+    this.sortedList = new SortedList<>(filteredList, connectionProvider.getEntities().getComparator(entityID));
+    this.entityConditions = new EntityConditions(connectionProvider.getEntities());
   }
 
   /**
@@ -286,8 +287,8 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
    */
   protected List<Entity> performQuery() {
     try {
-      return connectionProvider.getConnection().selectMany(EntityConditions.selectCondition(entityID, selectCondition)
-              .setOrderByClause(Entities.getOrderByClause(entityID)));
+      return connectionProvider.getConnection().selectMany(entityConditions.selectCondition(entityID, selectCondition)
+              .setOrderByClause(connectionProvider.getEntities().getOrderByClause(entityID)));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);

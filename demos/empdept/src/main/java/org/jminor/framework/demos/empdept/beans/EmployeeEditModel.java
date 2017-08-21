@@ -6,7 +6,6 @@ package org.jminor.framework.demos.empdept.beans;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
-import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
@@ -29,10 +28,10 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
   public EntityComboBoxModel createForeignKeyComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     if (foreignKeyProperty.is(EMPLOYEE_MGR_FK)) {
       final EntityComboBoxModel managerModel = new SwingEntityComboBoxModel(T_EMPLOYEE, getConnectionProvider());
-      managerModel.setNullValue(EntityUtil.createToStringEntity(T_EMPLOYEE, getString(NONE)));
+      managerModel.setNullValue(getEntities().createToStringEntity(T_EMPLOYEE, getString(NONE)));
       managerModel.setFilterSelectedItem(false);
       //Only show the president and managers
-      managerModel.setSelectConditionProvider(() -> EntityConditions.propertyCondition(T_EMPLOYEE,
+      managerModel.setSelectConditionProvider(() -> new EntityConditions(getEntities()).propertyCondition(T_EMPLOYEE,
               EMPLOYEE_JOB, Condition.Type.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
 
       return managerModel;

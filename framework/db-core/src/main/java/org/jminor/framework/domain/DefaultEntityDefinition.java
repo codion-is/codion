@@ -5,22 +5,13 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.TextUtil;
 import org.jminor.common.Util;
-import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.ResultPacker;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -31,7 +22,12 @@ import java.util.Set;
  */
 final class DefaultEntityDefinition implements Entity.Definition {
 
-  private static final Entity.KeyGenerator DEFAULT_KEY_GENERATOR = new DefaultKeyGenerator();
+  private static final Entity.KeyGenerator DEFAULT_KEY_GENERATOR = new Entities.DefaultKeyGenerator();
+
+  /**
+   * The domainID
+   */
+  private final String domainID;
 
   /**
    * The entityID
@@ -63,11 +59,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * Used if it differs from the one used for inserts/updates
    */
   private String selectTableName;
-
-  /**
-   * The domainID
-   */
-  private String domainID;
 
   /**
    * The caption to use for the entity type
@@ -155,19 +146,15 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /**
    * Links a set of derived property ids to a parent property id
    */
-  private final Map<String, Set<Property.DerivedProperty>> derivedProperties = new HashMap<>();
-
-  private List<Property.ColumnProperty> primaryKeyProperties;
-  private List<Property.ForeignKeyProperty> foreignKeyProperties;
-  private List<Property.ForeignKeyProperty> foreignKeyReferences;
-  private List<Property.TransientProperty> transientProperties;
-  private List<Property> visibleProperties;
-  private List<Property.ColumnProperty> columnProperties;
-  private Map<String, List<Property.DenormalizedProperty>> denormalizedProperties;
-  private String selectColumnsString;
-  private boolean hasDenormalizedProperties;
-
-  private static final Map<String, Entity.Definition> ENTITY_DEFINITIONS = new LinkedHashMap<>();
+  private final Map<String, Set<Property.DerivedProperty>> derivedProperties;
+  private final List<Property.ColumnProperty> primaryKeyProperties;
+  private final List<Property.ForeignKeyProperty> foreignKeyProperties;
+  private final List<Property.TransientProperty> transientProperties;
+  private final List<Property> visibleProperties;
+  private final List<Property.ColumnProperty> columnProperties;
+  private final Map<String, List<Property.DenormalizedProperty>> denormalizedProperties;
+  private final String selectColumnsString;
+  private final boolean hasDenormalizedProperties;
 
   /**
    * Defines a new entity type, with the entityID serving as the initial entity caption
@@ -176,32 +163,65 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * @param propertyDefinitions the Property objects this entity should encompass
    * @throws IllegalArgumentException if no primary key property is specified
    */
-  DefaultEntityDefinition(final String entityID, final Property... propertyDefinitions) {
-    this(entityID, entityID, propertyDefinitions);
+  DefaultEntityDefinition(final String domainID, final String entityID, final Map<String, Property> properties,
+                          final ResultPacker<Entity> resultPacker,
+                          final Map<String, Set<Property.DerivedProperty>> derivedProperties,
+                          final List<Property.ColumnProperty> primaryKeyProperties,
+                          final List<Property.ForeignKeyProperty> foreignKeyProperties,
+                          final List<Property .TransientProperty> transientProperties,
+                          final List<Property> visibleProperties,
+                          final List<Property.ColumnProperty> columnProperties,
+                          final Map<String, List<Property.DenormalizedProperty>> denormalizedProperties,
+                          final String selectColumnsString, final String groupByClause) {
+    this(domainID, entityID, entityID, properties, resultPacker, derivedProperties, primaryKeyProperties, foreignKeyProperties,
+            transientProperties, visibleProperties, columnProperties, denormalizedProperties, selectColumnsString, groupByClause);
   }
 
   /**
    * Defines a new entity type with the entityID serving as the initial entity caption.
+   * @param propertyDefinitions the Property objects this entity should encompass
    * @param entityID the ID uniquely identifying the entity
    * @param tableName the name of the underlying table
-   * @param propertyDefinitions the Property objects this entity should encompass
+   * @param derivedProperties
+   * @param primaryKeyProperties
+   * @param foreignKeyProperties
+   * @param transientProperties
+   * @param visibleProperties
+   * @param columnProperties
+   * @param denormalizedProperties
+   * @param selectColumnsString
    * @throws IllegalArgumentException if no primary key property is specified
    */
-  DefaultEntityDefinition(final String entityID, final String tableName, final Property... propertyDefinitions) {
+  DefaultEntityDefinition(final String domainID, final String entityID, final String tableName,
+                          final Map<String, Property> properties,
+                          final ResultPacker<Entity> resultPacker,
+                          final Map<String, Set<Property.DerivedProperty>> derivedProperties,
+                          final List<Property.ColumnProperty> primaryKeyProperties,
+                          final List<Property.ForeignKeyProperty> foreignKeyProperties,
+                          final List<Property .TransientProperty> transientProperties,
+                          final List<Property> visibleProperties,
+                          final List<Property.ColumnProperty> columnProperties,
+                          final Map<String, List<Property.DenormalizedProperty>> denormalizedProperties,
+                          final String selectColumnsString, final String groupByClause) {
     Util.rejectNullOrEmpty(entityID, "entityID");
     Util.rejectNullOrEmpty(tableName, "tableName");
-    Objects.requireNonNull(propertyDefinitions, "entityDefinitions");
-    this.domainID = entityID;
+    this.domainID = domainID;
     this.entityID = entityID;
     this.caption = entityID;
     this.tableName = tableName;
-    this.properties = initializeProperties(entityID, propertyDefinitions);
+    this.properties = properties;
+    this.derivedProperties = derivedProperties;
+    this.primaryKeyProperties = primaryKeyProperties;
+    this.foreignKeyProperties = foreignKeyProperties;
+    this.transientProperties = transientProperties;
+    this.visibleProperties = visibleProperties;
+    this.columnProperties = columnProperties;
+    this.denormalizedProperties = denormalizedProperties;
+    this.selectColumnsString = selectColumnsString;
+    this.hasDenormalizedProperties = !this.denormalizedProperties.isEmpty();
     this.propertyList = Collections.unmodifiableList(new ArrayList(this.properties.values()));
-    this.groupByClause = initializeGroupByClause(getColumnProperties());
-    this.resultPacker = new EntityResultPacker(entityID, getColumnProperties(properties.values()),
-            getTransientProperties(properties.values()), this.properties.size());
-    setSelectIndexes();
-    initializeDerivedProperties();
+    this.groupByClause = groupByClause;
+    this.resultPacker = resultPacker;
   }
 
   /** {@inheritDoc} */
@@ -228,13 +248,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
   @Override
   public String getDomainID() {
     return domainID;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Entity.Definition setDomainID(final String domainID) {
-    this.domainID = domainID;
-    return this;
   }
 
   /** {@inheritDoc} */
@@ -494,97 +507,54 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public List<Property.ColumnProperty> getPrimaryKeyProperties() {
-    if (primaryKeyProperties == null) {
-      primaryKeyProperties = Collections.unmodifiableList(getPrimaryKeyProperties(properties.values()));
-    }
     return primaryKeyProperties;
   }
 
   /** {@inheritDoc} */
   @Override
   public String getSelectColumnsString() {
-    if (selectColumnsString == null) {
-      selectColumnsString = initializeSelectColumnsString(getColumnProperties());
-    }
     return selectColumnsString;
   }
 
   /** {@inheritDoc} */
   @Override
   public List<Property> getVisibleProperties() {
-    if (visibleProperties == null) {
-      visibleProperties = Collections.unmodifiableList(getVisibleProperties(properties.values()));
-    }
     return visibleProperties;
   }
 
   /** {@inheritDoc} */
   @Override
   public List<Property.ColumnProperty> getColumnProperties() {
-    if (columnProperties == null) {
-      columnProperties = Collections.unmodifiableList(getColumnProperties(properties.values()));
-    }
     return columnProperties;
   }
 
   /** {@inheritDoc} */
   @Override
   public List<Property.TransientProperty> getTransientProperties() {
-    if (transientProperties == null) {
-      transientProperties = Collections.unmodifiableList(getTransientProperties(properties.values()));
-    }
     return transientProperties;
   }
 
   /** {@inheritDoc} */
   @Override
   public List<Property.ForeignKeyProperty> getForeignKeyProperties() {
-    if (foreignKeyProperties == null) {
-      foreignKeyProperties = Collections.unmodifiableList(getForeignKeyProperties(properties.values()));
-    }
     return foreignKeyProperties;
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<Property.ForeignKeyProperty> getForeignKeyReferences() {
-    if (foreignKeyReferences == null) {
-      foreignKeyReferences = new ArrayList<>();
-      getDefinitionMap().keySet().forEach(definedEntityID ->
-              getDefinition(definedEntityID).getForeignKeyProperties().forEach(foreignKeyProperty -> {
-        if (foreignKeyProperty.getReferencedEntityID().equals(entityID)) {
-          foreignKeyReferences.add(foreignKeyProperty);
-        }
-      }));
-    }
-    return foreignKeyReferences;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public boolean hasDenormalizedProperties() {
-    if (denormalizedProperties == null) {
-      denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
-      hasDenormalizedProperties = !denormalizedProperties.isEmpty();
-    }
     return hasDenormalizedProperties;
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean hasDenormalizedProperties(final String foreignKeyPropertyID) {
-    if (denormalizedProperties == null) {
-      denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
-    }
     return hasDenormalizedProperties && denormalizedProperties.containsKey(foreignKeyPropertyID);
   }
 
   /** {@inheritDoc} */
   @Override
   public List<Property.DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyID) {
-    if (denormalizedProperties == null) {
-      denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
-    }
     return denormalizedProperties.get(foreignKeyPropertyID);
   }
 
@@ -642,458 +612,5 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     return backgroundColorProvider.getBackgroundColor(entity, property);
-  }
-
-  static Map<String, Entity.Definition> getDefinitionMap() {
-    return ENTITY_DEFINITIONS;
-  }
-
-  private static Map<String, Property> initializeProperties(final String entityID, final Property... propertyDefinitions) {
-    final Map<String, Property> properties = new LinkedHashMap<>(propertyDefinitions.length);
-    for (final Property property : propertyDefinitions) {
-      if (properties.containsKey(property.getPropertyID())) {
-        throw new IllegalArgumentException("Property with ID " + property.getPropertyID()
-                + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
-                + " has already been defined as: " + properties.get(property.getPropertyID()) + " in entity: " + entityID);
-      }
-      property.setEntityID(entityID);
-      properties.put(property.getPropertyID(), property);
-      if (property instanceof Property.ForeignKeyProperty) {
-        initializeForeignKeyProperty(entityID, properties, (Property.ForeignKeyProperty) property);
-      }
-    }
-    checkPrimaryKey(entityID, properties);
-
-    return Collections.unmodifiableMap(properties);
-  }
-
-  private static void initializeForeignKeyProperty(final String entityID, final Map<String, Property> properties,
-                                                   final Property.ForeignKeyProperty foreignKeyProperty) {
-    final List<Property.ColumnProperty> referenceProperties = foreignKeyProperty.getReferenceProperties();
-    final boolean selfReferential = entityID.equals(foreignKeyProperty.getReferencedEntityID());
-    if (Entity.Definition.STRICT_FOREIGN_KEYS.get()) {
-      if (!selfReferential && !ENTITY_DEFINITIONS.containsKey(foreignKeyProperty.getReferencedEntityID())) {
-        throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getReferencedEntityID()
-                + "' referenced by entity '" + entityID + "' via foreign key property '"
-                + foreignKeyProperty.getPropertyID() + "' has not been defined");
-      }
-      if (!selfReferential && referenceProperties.size() != ENTITY_DEFINITIONS.get(foreignKeyProperty.getReferencedEntityID()).getPrimaryKeyProperties().size()) {
-        throw new IllegalArgumentException("Number of reference properties in '" + entityID + "." + foreignKeyProperty.getPropertyID() +
-                "' does not match the number of primary key properties in the referenced entity '" + foreignKeyProperty.getReferencedEntityID() + "'");
-      }
-    }
-    for (final Property.ColumnProperty referenceProperty : referenceProperties) {
-      if (!(referenceProperty instanceof Property.MirrorProperty)) {
-        if (properties.containsKey(referenceProperty.getPropertyID())) {
-          throw new IllegalArgumentException("Property with ID " + referenceProperty.getPropertyID()
-                  + (referenceProperty.getCaption() != null ? " (caption: " + referenceProperty.getCaption() + ")" : "")
-                  + " has already been defined as: " + properties.get(referenceProperty.getPropertyID()) + " in entity: " + entityID);
-        }
-        referenceProperty.setEntityID(entityID);
-        properties.put(referenceProperty.getPropertyID(), referenceProperty);
-      }
-    }
-  }
-
-  private static void checkPrimaryKey(final String entityID, final Map<String, Property> propertyDefinitions) {
-    final Collection<Integer> usedPrimaryKeyIndexes = new ArrayList<>();
-    boolean primaryKeyPropertyFound = false;
-    for (final Property property : propertyDefinitions.values()) {
-      if (property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) {
-        final Integer index = ((Property.ColumnProperty) property).getPrimaryKeyIndex();
-        if (usedPrimaryKeyIndexes.contains(index)) {
-          throw new IllegalArgumentException("Primary key index " + index + " in property " + property + " has already been used");
-        }
-        usedPrimaryKeyIndexes.add(index);
-        primaryKeyPropertyFound = true;
-      }
-    }
-    if (primaryKeyPropertyFound) {
-      return;
-    }
-
-    throw new IllegalArgumentException("Entity is missing a primary key: " + entityID);
-  }
-
-  private void setSelectIndexes() {
-    final String[] selectColumnNames = initializeSelectColumnNames(getColumnProperties());
-    for (int idx = 0; idx < selectColumnNames.length; idx++) {
-      ((Property.ColumnProperty) properties.get(selectColumnNames[idx])).setSelectIndex(idx + 1);
-    }
-  }
-
-  private void initializeDerivedProperties() {
-    for (final Property property : properties.values()) {
-      if (property instanceof Property.DerivedProperty) {
-        final Collection<String> derived = ((Property.DerivedProperty) property).getSourcePropertyIDs();
-        if (!Util.nullOrEmpty(derived)) {
-          for (final String parentLinkPropertyID : derived) {
-            linkProperties(parentLinkPropertyID, (Property.DerivedProperty) property);
-          }
-        }
-      }
-    }
-  }
-
-  private void linkProperties(final String parentPropertyID, final Property.DerivedProperty derivedProperty) {
-    if (!derivedProperties.containsKey(parentPropertyID)) {
-      derivedProperties.put(parentPropertyID, new HashSet<>());
-    }
-    derivedProperties.get(parentPropertyID).add(derivedProperty);
-  }
-
-  static Entity.Definition getDefinition(final String entityID) {
-    final Entity.Definition definition = ENTITY_DEFINITIONS.get(entityID);
-    if (definition == null) {
-      throw new IllegalArgumentException("Undefined entity: " + entityID);
-    }
-
-    return definition;
-  }
-
-  static Entity.KeyGenerator queriedKeyGenerator(final String query) {
-    return new QueriedKeyGenerator() {
-      @Override
-      public void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
-                               final DatabaseConnection connection) throws SQLException {
-        queryAndSet(entity, primaryKeyProperty, connection);
-      }
-
-      @Override
-      protected String getQuery(final Database database) {
-        return query;
-      }
-    };
-  }
-
-  private static Map<String, List<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
-    final Map<String, List<Property.DenormalizedProperty>> denormalizedPropertiesMap = new HashMap<>(properties.size());
-    for (final Property property : properties) {
-      if (property instanceof Property.DenormalizedProperty) {
-        final Property.DenormalizedProperty denormalizedProperty = (Property.DenormalizedProperty) property;
-        final Collection<Property.DenormalizedProperty> denormalizedProperties =
-                denormalizedPropertiesMap.computeIfAbsent(denormalizedProperty.getForeignKeyPropertyID(), k -> new ArrayList<>());
-        denormalizedProperties.add(denormalizedProperty);
-      }
-    }
-
-    return denormalizedPropertiesMap;
-  }
-
-  private static List<Property.ColumnProperty> getPrimaryKeyProperties(final Collection<Property> properties) {
-    final List<Property.ColumnProperty> primaryKeyProperties = new ArrayList<>(properties.size());
-    for (final Property property : properties) {
-      if (property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) {
-        primaryKeyProperties.add((Property.ColumnProperty) property);
-      }
-    }
-    primaryKeyProperties.sort((pk1, pk2) -> {
-      final Integer index1 = pk1.getPrimaryKeyIndex();
-      final Integer index2 = pk2.getPrimaryKeyIndex();
-
-      return index1.compareTo(index2);
-    });
-
-    return primaryKeyProperties;
-  }
-
-  private static List<Property.ForeignKeyProperty> getForeignKeyProperties(final Collection<Property> properties) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = new ArrayList<>(properties.size());
-    for (final Property property : properties) {
-      if (property instanceof Property.ForeignKeyProperty) {
-        foreignKeyProperties.add((Property.ForeignKeyProperty) property);
-      }
-    }
-
-    return foreignKeyProperties;
-  }
-
-  private static List<Property.ColumnProperty> getColumnProperties(final Collection<Property> properties) {
-    final List<Property.ColumnProperty> columnProperties = new ArrayList<>(properties.size());
-    for (final Property property : properties) {
-      if (property instanceof Property.ColumnProperty) {
-        columnProperties.add((Property.ColumnProperty) property);
-      }
-    }
-
-    return columnProperties;
-  }
-
-  private static List<Property.TransientProperty> getTransientProperties(final Collection<Property> properties) {
-    final List<Property.TransientProperty> transientProperties = new ArrayList<>(properties.size());
-    for (final Property property : properties) {
-      if (property instanceof Property.TransientProperty) {
-        transientProperties.add((Property.TransientProperty) property);
-      }
-    }
-
-    return transientProperties;
-  }
-
-  private static List<Property> getVisibleProperties(final Collection<Property> properties) {
-    final List<Property> visibleProperties = new ArrayList<>(properties.size());
-    for (final Property property : properties) {
-      if (!property.isHidden()) {
-        visibleProperties.add(property);
-      }
-    }
-
-    return visibleProperties;
-  }
-
-  /**
-   * @param databaseProperties the properties to base the column names on
-   * @return the column names used to select an entity of this type from the database
-   */
-  private static String[] initializeSelectColumnNames(final Collection<Property.ColumnProperty> databaseProperties) {
-    final List<String> columnNames = new ArrayList<>();
-    for (final Property property : databaseProperties) {
-      columnNames.add(property.getPropertyID());
-    }
-
-    return columnNames.toArray(new String[columnNames.size()]);
-  }
-
-  /**
-   * @param databaseProperties the column properties
-   * @return a list of grouping columns separated with a comma, to serve as a group by clause,
-   * null if no grouping properties are defined
-   */
-  private static String initializeGroupByClause(final Collection<Property.ColumnProperty> databaseProperties) {
-    final List<Property> groupingProperties = new ArrayList<>(databaseProperties.size());
-    for (final Property.ColumnProperty property : databaseProperties) {
-      if (property.isGroupingColumn()) {
-        groupingProperties.add(property);
-      }
-    }
-    if (groupingProperties.isEmpty()) {
-      return null;
-    }
-
-    final StringBuilder stringBuilder = new StringBuilder();
-    int i = 0;
-    for (final Property property : groupingProperties) {
-      stringBuilder.append(property.getPropertyID());
-      if (i++ < groupingProperties.size() - 1) {
-        stringBuilder.append(", ");
-      }
-    }
-
-    return stringBuilder.toString();
-  }
-
-  private static String initializeSelectColumnsString(final List<Property.ColumnProperty> columnProperties) {
-    final StringBuilder stringBuilder = new StringBuilder();
-    int i = 0;
-    for (final Property.ColumnProperty property : columnProperties) {
-      if (property instanceof Property.SubqueryProperty) {
-        stringBuilder.append("(").append(((Property.SubqueryProperty) property).getSubQuery()).append(
-                ") as ").append(property.getColumnName());
-      }
-      else {
-        stringBuilder.append(property.getColumnName());
-      }
-
-      if (i++ < columnProperties.size() - 1) {
-        stringBuilder.append(", ");
-      }
-    }
-
-    return stringBuilder.toString();
-  }
-
-  private static class DefaultKeyGenerator implements Entity.KeyGenerator {
-
-    @Override
-    public Type getType() {
-      return Type.NONE;
-    }
-
-    @Override
-    public void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
-                             final DatabaseConnection connection) throws SQLException {/*Provided for subclasses*/}
-
-    @Override
-    public void afterInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
-                            final DatabaseConnection connection) throws SQLException {/*Provided for subclasses*/}
-  }
-
-  abstract static class QueriedKeyGenerator extends DefaultKeyGenerator {
-
-    @Override
-    public Type getType() {
-      return Type.QUERY;
-    }
-
-    protected final void queryAndSet(final Entity entity, final Property.ColumnProperty keyProperty,
-                                     final DatabaseConnection connection) throws SQLException {
-      final Object value;
-      switch (keyProperty.getColumnType()) {
-        case Types.INTEGER:
-          value = DatabaseUtil.queryInteger(connection, getQuery(connection.getDatabase()));
-          break;
-        case Types.BIGINT:
-          value = DatabaseUtil.queryLong(connection, getQuery(connection.getDatabase()));
-          break;
-        default:
-          throw new SQLException("Queried key generator only implemented for Types.INTEGER and Types.BIGINT datatypes", null, null);
-      }
-      entity.put(keyProperty, value);
-    }
-
-    protected abstract String getQuery(final Database database);
-  }
-
-  static final class IncrementKeyGenerator extends QueriedKeyGenerator {
-
-    private final String query;
-
-    IncrementKeyGenerator(final String tableName, final String columnName) {
-      this.query = "select max(" + columnName + ") + 1 from " + tableName;
-    }
-
-    @Override
-    public Type getType() {
-      return Type.INCREMENT;
-    }
-
-    @Override
-    public void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
-                             final DatabaseConnection connection) throws SQLException {
-      if (entity.isValueNull(primaryKeyProperty)) {
-        queryAndSet(entity, primaryKeyProperty, connection);
-      }
-    }
-
-    @Override
-    protected String getQuery(final Database database) {
-      return query;
-    }
-  }
-
-  static final class SequenceKeyGenerator extends QueriedKeyGenerator {
-
-    private final String sequenceName;
-
-    SequenceKeyGenerator(final String sequenceName) {
-      this.sequenceName = sequenceName;
-    }
-
-    @Override
-    public Type getType() {
-      return Type.SEQUENCE;
-    }
-
-    @Override
-    public void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
-                             final DatabaseConnection connection) throws SQLException {
-      if (entity.isValueNull(primaryKeyProperty)) {
-        queryAndSet(entity, primaryKeyProperty, connection);
-      }
-    }
-
-    @Override
-    protected String getQuery(final Database database) {
-      return database.getSequenceSQL(sequenceName);
-    }
-  }
-
-  static final class AutomaticKeyGenerator extends QueriedKeyGenerator {
-
-    private final String valueSource;
-
-    AutomaticKeyGenerator(final String valueSource) {
-      this.valueSource = valueSource;
-    }
-
-    @Override
-    public Type getType() {
-      return Type.AUTOMATIC;
-    }
-
-    @Override
-    public void afterInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
-                            final DatabaseConnection connection) throws SQLException {
-      queryAndSet(entity, primaryKeyProperty, connection);
-    }
-
-    @Override
-    protected String getQuery(final Database database) {
-      return database.getAutoIncrementValueSQL(valueSource);
-    }
-  }
-
-  /**
-   * Handles packing Entity query results.
-   * Loads all database property values except for foreign key properties (Property.ForeignKeyProperty).
-   */
-  private static final class EntityResultPacker implements ResultPacker<Entity> {
-
-    private final String entityID;
-    private final List<Property.ColumnProperty> properties;
-    private final List<Property.TransientProperty> transientProperties;
-    private final boolean hasTransientProperties;
-    private final int propertyCount;
-
-    /**
-     * Instantiates a new EntityResultPacker.
-     * @param entityID the ID of the entities this packer packs
-     */
-    private EntityResultPacker(final String entityID, final List<Property.ColumnProperty> columnProperties,
-                               final List<Property.TransientProperty> transientProperties,
-                               final int propertyCount) {
-      Objects.requireNonNull(entityID, "entityID");
-      this.entityID = entityID;
-      this.properties = columnProperties;
-      this.transientProperties = transientProperties;
-      this.hasTransientProperties = !Util.nullOrEmpty(this.transientProperties);
-      this.propertyCount = propertyCount;
-    }
-
-    /**
-     * Packs the contents of {@code resultSet} into a List of Entity objects.
-     * The resulting entities do not contain values for foreign key properties (Property.ForeignKeyProperty).
-     * This method does not close the ResultSet object.
-     * @param resultSet the ResultSet object
-     * @param fetchCount the maximum number of records to retrieve from the result set
-     * @return a List of Entity objects representing the contents of {@code resultSet}
-     * @throws java.sql.SQLException in case of an exception
-     */
-    @Override
-    public List<Entity> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      Objects.requireNonNull(resultSet, "resultSet");
-      final List<Entity> entities = new ArrayList<>();
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        entities.add(loadEntity(resultSet));
-      }
-
-      return entities;
-    }
-
-    private Entity loadEntity(final ResultSet resultSet) throws SQLException {
-      final Map<Property, Object> values = new HashMap<>(propertyCount);
-      if (hasTransientProperties) {
-        for (int i = 0; i < transientProperties.size(); i++) {
-          final Property.TransientProperty transientProperty = transientProperties.get(i);
-          if (!(transientProperty instanceof Property.DenormalizedViewProperty)
-                  && !(transientProperty instanceof Property.DerivedProperty)) {
-            values.put(transientProperty, null);
-          }
-        }
-      }
-      for (int i = 0; i < properties.size(); i++) {
-        final Property.ColumnProperty property = properties.get(i);
-        try {
-          values.put(property, property.fetchValue(resultSet));
-        }
-        catch (final Exception e) {
-          throw new SQLException("Exception fetching: " + property + ", entity: " + entityID + " [" + e.getMessage()
-                  + "]", e);
-        }
-      }
-
-      return new DefaultEntity(getDefinition(entityID), values);
-    }
   }
 }

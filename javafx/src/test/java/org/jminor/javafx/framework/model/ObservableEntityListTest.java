@@ -11,6 +11,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.testing.TestDomain;
 
@@ -25,16 +26,20 @@ import static org.junit.Assert.*;
 
 public class ObservableEntityListTest {
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+  protected static final Entities ENTITIES = new TestDomain();
+
+  protected static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
+          System.getProperty("jminor.unittest.password", "tiger"));
+
+  protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, UNIT_TEST_USER, Databases.getInstance());
 
   @Test
   public void selectCondition() {
     final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     list.refresh();
     assertEquals(4, list.size());
-    list.setSelectCondition(EntityConditions.propertyCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME,
+    list.setSelectCondition(new EntityConditions(ENTITIES).propertyCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME,
             Condition.Type.NOT_LIKE, Arrays.asList("SALES", "OPERATIONS")));
     list.refresh();
     assertEquals(2, list.size());

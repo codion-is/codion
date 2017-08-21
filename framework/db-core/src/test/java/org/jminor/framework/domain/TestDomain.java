@@ -4,27 +4,31 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.Item;
-import org.jminor.common.db.AbstractProcedure;
-import org.jminor.common.db.Databases;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.db.EntityConnection;
 
 import java.awt.Color;
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
 
-public final class TestDomain {
+public final class TestDomain extends Entities {
 
-  private TestDomain() {}
-  public static void init() {}
+  public TestDomain() {
+    defineCompositeMaster();
+    defineCompositeDetail();
+    defineMaster();
+    defineDetail();
+    defineDepartment();
+    defineEmployee();
+    processAnnotations(TestDomain.class);
+    setDomainEntities(TestDomain.class.getName(), this);
+  }
 
   public static final String T_COMPOSITE_MASTER = "domain.composite_master";
   public static final String COMPOSITE_MASTER_ID = "id";
   public static final String COMPOSITE_MASTER_ID_2 = "id2";
 
-  static {
-    Entities.define(T_COMPOSITE_MASTER,
+  void defineCompositeMaster() {
+    define(T_COMPOSITE_MASTER,
             Properties.columnProperty(COMPOSITE_MASTER_ID).setPrimaryKeyIndex(0).setNullable(true),
             Properties.columnProperty(COMPOSITE_MASTER_ID_2).setPrimaryKeyIndex(1));
   }
@@ -34,8 +38,8 @@ public final class TestDomain {
   public static final String COMPOSITE_DETAIL_MASTER_ID_2 = "master_id2";
   public static final String COMPOSITE_DETAIL_MASTER_FK = "master_fk";
 
-  static {
-    Entities.define(T_COMPOSITE_DETAIL,
+  void defineCompositeDetail() {
+    define(T_COMPOSITE_DETAIL,
             Properties.foreignKeyProperty(COMPOSITE_DETAIL_MASTER_FK, "master", T_COMPOSITE_MASTER,
                     new Property.ColumnProperty[] {
                             Properties.columnProperty(COMPOSITE_DETAIL_MASTER_ID).setPrimaryKeyIndex(0),
@@ -48,8 +52,8 @@ public final class TestDomain {
   public static final String MASTER_NAME = "name";
   public static final String MASTER_CODE = "code";
 
-  static {
-    Entities.define(T_MASTER,
+  void defineMaster() {
+    define(T_MASTER,
             Properties.primaryKeyProperty(MASTER_ID, Types.BIGINT),
             Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
             Properties.columnProperty(MASTER_CODE, Types.INTEGER))
@@ -85,8 +89,8 @@ public final class TestDomain {
   private static final List<Item> ITEMS = Arrays.asList(new Item(0, "0"), new Item(1, "1"),
           new Item(2, "2"), new Item(3, "3"));
 
-  static {
-    Entities.define(T_DETAIL,
+  void defineDetail() {
+    define(T_DETAIL,
             Properties.primaryKeyProperty(DETAIL_ID, Types.BIGINT),
             Properties.columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT),
             Properties.columnProperty(DETAIL_DOUBLE, Types.DOUBLE, DETAIL_DOUBLE),
@@ -102,9 +106,9 @@ public final class TestDomain {
             Properties.foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK, T_MASTER,
                     Properties.columnProperty(DETAIL_MASTER_ID, Types.BIGINT)),
             Properties.denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_FK,
-                    Entities.getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
+                    getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
             Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_FK,
-                    Entities.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE),
+                    getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE),
             Properties.valueListProperty(DETAIL_INT_VALUE_LIST, Types.INTEGER, DETAIL_INT_VALUE_LIST, ITEMS),
             Properties.derivedProperty(DETAIL_INT_DERIVED, Types.INTEGER, DETAIL_INT_DERIVED, linkedValues -> {
               final Integer intValue = (Integer) linkedValues.get(DETAIL_INT);
@@ -127,15 +131,14 @@ public final class TestDomain {
   @Entity.Table(tableName = "scott.dept")
   public static final String T_DEPARTMENT = "domain.scott.dept";
 
-  static {
-    Entities.define(T_DEPARTMENT,
+  void defineDepartment() {
+    define(T_DEPARTMENT,
             Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
                     .setUpdatable(true).setNullable(false),
             Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
                     .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
             Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
                     .setPreferredColumnWidth(150).setMaxLength(13))
-            .setDomainID(SCOTT_DOMAIN_ID)
             .setSmallDataset(true)
             .setSearchPropertyIDs(DEPARTMENT_NAME)
             .setOrderByClause(DEPARTMENT_NAME)
@@ -162,8 +165,8 @@ public final class TestDomain {
           keyGeneratorIncrementColumnName = "empno")
   public static final String T_EMP = "domain.scott.emp";
 
-  static {
-    Entities.define(T_EMP, "scott.emp",
+  void defineEmployee() {
+    define(T_EMP, "scott.emp",
             Properties.primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
             Properties.columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
                     .setMaxLength(10).setNullable(false),
@@ -181,9 +184,8 @@ public final class TestDomain {
             Properties.columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)
                     .setNullable(false),
             Properties.denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
-                    Entities.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
+                    getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     DEPARTMENT_LOCATION).setPreferredColumnWidth(100))
-            .setDomainID(SCOTT_DOMAIN_ID)
             .setStringProvider(new Entities.StringProvider(EMP_NAME))
             .setSearchPropertyIDs(EMP_NAME, EMP_JOB)
             .setCaption("Employee")
@@ -194,24 +196,5 @@ public final class TestDomain {
 
               return null;
             });
-  }
-
-  public static final class TestProcedure extends AbstractProcedure<EntityConnection> {
-
-    public TestProcedure(final String id) {
-      super(id, "TestProcedure");
-    }
-
-    @Override
-    public void execute(final EntityConnection connection, final Object... arguments) throws DatabaseException {
-      //do absolutely nothing
-    }
-  }
-
-  @Databases.Operation(className = "org.jminor.framework.domain.TestDomain$TestProcedure")
-  public static final String PROCEDURE_ID = "org.jminor.framework.domain.TestProcedureID";
-
-  static {
-    Entities.processAnnotations(TestDomain.class);
   }
 }

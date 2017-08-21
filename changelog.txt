@@ -4551,3 +4551,5 @@
   ConnectionPool.getDatabase() added, implementations refactored
   DefaultRemoteEntityConnection constructors tidied up
   MethodLogger public api reduced
+0.11.0
+  Major surgery, Entities and EntityConditions now instance based (unfinished, javadocs suffering)

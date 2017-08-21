@@ -28,10 +28,10 @@ public final class EntityConnectionUtil {
    * @throws DatabaseException in case of a db exception
    * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
    */
-  public static void copyEntities(final EntityConnection source, final EntityConnection destination, final int batchSize,
+  public static void copyEntities(final EntityConditions entityConditions, final EntityConnection source, final EntityConnection destination, final int batchSize,
                                   final boolean includePrimaryKeys, final String... entityIDs) throws DatabaseException {
     for (final String entityID : entityIDs) {
-      final List<Entity> entities = source.selectMany(EntityConditions.selectCondition(entityID).setForeignKeyFetchDepthLimit(0));
+      final List<Entity> entities = source.selectMany(entityConditions.selectCondition(entityID).setForeignKeyFetchDepthLimit(0));
       if (!includePrimaryKeys) {
         entities.forEach(Entity::clearKeyValues);
       }

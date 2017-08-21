@@ -5,6 +5,7 @@ package org.jminor.framework.demos.petstore.domain;
 
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.testing.EntityTestUnit;
 
 import org.junit.Test;
@@ -13,9 +14,15 @@ import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 public class PetstoreTest extends EntityTestUnit {
 
+  private static final Entities ENTITIES = new Petstore();
+
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
+
+  public PetstoreTest() {
+    super(ENTITIES);
+  }
 
   @Test
   public void address() throws Exception {
@@ -50,11 +57,6 @@ public class PetstoreTest extends EntityTestUnit {
   @Test
   public void tagItem() throws Exception {
     testEntity(T_TAG_ITEM);
-  }
-
-  @Override
-  protected void loadDomainModel() {
-    Petstore.init();
   }
 
   @Override

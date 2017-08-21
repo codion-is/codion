@@ -6,6 +6,7 @@ package org.jminor.framework.demos.chinook.javafx;
 import org.jminor.common.User;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.Chinook;
+import org.jminor.framework.domain.Entities;
 import org.jminor.javafx.framework.model.FXEntityEditModel;
 import org.jminor.javafx.framework.model.FXEntityModel;
 import org.jminor.javafx.framework.ui.EntityApplicationView;
@@ -15,6 +16,11 @@ public class ChinookFXAppView extends EntityApplicationView<ChinookFXAppModel> {
 
   public ChinookFXAppView() {
     super("Chinook FX Demo");
+  }
+
+  @Override
+  protected Entities initializeEntities() {
+    return new Chinook();
   }
 
   @Override

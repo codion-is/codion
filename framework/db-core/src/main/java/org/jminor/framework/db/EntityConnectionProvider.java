@@ -7,6 +7,7 @@ import org.jminor.common.Configuration;
 import org.jminor.common.StateObserver;
 import org.jminor.common.User;
 import org.jminor.common.Value;
+import org.jminor.framework.domain.Entities;
 
 /**
  * Interface for a class responsible for providing EntityConnection objects.
@@ -55,6 +56,11 @@ public interface EntityConnectionProvider {
    * Default value: true
    */
   Value<Boolean> CONNECTION_SCHEDULE_VALIDATION = Configuration.booleanValue("jminor.connection.scheduleValidation", true);
+
+  /**
+   * @return the underlying domain entities
+   */
+  Entities getEntities();
 
   /**
    * Provides a EntityConnection object, is responsible for returning a healthy EntityConnection object,

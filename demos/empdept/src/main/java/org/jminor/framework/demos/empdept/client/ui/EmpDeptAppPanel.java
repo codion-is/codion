@@ -13,6 +13,7 @@ import org.jminor.framework.demos.empdept.beans.ui.DepartmentEditPanel;
 import org.jminor.framework.demos.empdept.beans.ui.DepartmentTablePanel;
 import org.jminor.framework.demos.empdept.beans.ui.EmployeeEditPanel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.plugins.json.EntityJSONParser;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlSet;
@@ -34,9 +35,15 @@ import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpDeptApplicationModel> {
 
   @Override
+  protected Entities initializeDomainEntities() {
+    return new EmpDept();
+  }
+
+  @Override
   protected void setupEntityPanelProviders() {
     final EmployeeModelProvider employeeModelProvider = new EmployeeModelProvider();
-    final EmployeePanelProvider employeePanelProvider = new EmployeePanelProvider(employeeModelProvider);
+    final EmployeePanelProvider employeePanelProvider = new EmployeePanelProvider(employeeModelProvider,
+            getModel().getEntities().getCaption(T_EMPLOYEE));
     employeePanelProvider.setEditPanelClass(EmployeeEditPanel.class);
 
     final SwingEntityModelProvider departmentModelProvider = new SwingEntityModelProvider(T_DEPARTMENT) {
@@ -46,7 +53,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
       }
     };
     departmentModelProvider.addDetailModelProvider(employeeModelProvider);
-    final EntityPanelProvider departmentPanelProvider = new EntityPanelProvider(departmentModelProvider);
+    final EntityPanelProvider departmentPanelProvider = new EntityPanelProvider(departmentModelProvider,
+            getModel().getEntities().getCaption(T_DEPARTMENT));
     departmentPanelProvider.setEditPanelClass(DepartmentEditPanel.class);
     departmentPanelProvider.setTablePanelClass(DepartmentTablePanel.class);
     departmentPanelProvider.addDetailPanelProvider(employeePanelProvider);
@@ -56,8 +64,9 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
 
   public void importJSON() throws Exception {
     final File file = UiUtil.selectFile(this, null);
-    UiUtil.displayInDialog(this, EntityTablePanel.createStaticEntityTablePanel(EntityJSONParser.deserializeEntities(
-            TextUtil.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider()), "Import");
+    UiUtil.displayInDialog(this, EntityTablePanel.createStaticEntityTablePanel(
+            new EntityJSONParser(getModel().getEntities()).deserializeEntities(
+                    TextUtil.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider()), "Import");
   }
 
   @Override
@@ -84,10 +93,6 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
       super(connectionProvider);
     }
 
-    @Override
-    protected void loadDomainModel() {
-      EmpDept.init();
-    }
   }
 
   private static final class EmployeeModelProvider extends SwingEntityModelProvider {
@@ -103,8 +108,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   }
 
   private static final class EmployeePanelProvider extends EntityPanelProvider {
-    private EmployeePanelProvider(final EmployeeModelProvider modelProvider) {
-      super(modelProvider);
+    private EmployeePanelProvider(final EmployeeModelProvider modelProvider, final String caption) {
+      super(modelProvider, caption);
     }
 
     @Override

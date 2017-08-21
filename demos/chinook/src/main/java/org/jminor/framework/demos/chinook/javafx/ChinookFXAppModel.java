@@ -44,9 +44,4 @@ public final class ChinookFXAppModel extends FXEntityApplicationModel {
 
     addEntityModel(customers);
   }
-
-  @Override
-  protected void loadDomainModel() {
-    Chinook.init();
-  }
 }

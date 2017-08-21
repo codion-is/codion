@@ -14,7 +14,6 @@ import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -22,14 +21,11 @@ import static org.junit.Assert.assertTrue;
 
 public class LookupValueLinkTest {
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+  private static final Entities ENTITIES = new TestDomain();
+
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
-
-  @BeforeClass
-  public static void setUp() {
-    TestDomain.init();
-  }
 
   private final EntityEditModel model;
 
@@ -39,7 +35,7 @@ public class LookupValueLinkTest {
 
   @Test
   public void test() throws Exception {
-    final Property.ForeignKeyProperty fkProperty = Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
+    final Property.ForeignKeyProperty fkProperty = ENTITIES.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
     final EntityLookupModel lookupModel = EntityUiUtil.createForeignKeyLookupField(fkProperty, model, TestDomain.DEPARTMENT_NAME).getModel();
     assertTrue(lookupModel.getSelectedEntities().size() == 0);
     Entity department = model.getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");

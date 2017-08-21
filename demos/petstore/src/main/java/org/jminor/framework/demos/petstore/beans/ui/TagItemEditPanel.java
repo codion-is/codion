@@ -33,6 +33,7 @@ public class TagItemEditPanel extends EntityEditPanel {
     addPropertyPanel(TAG_ITEM_ITEM_FK);
     box = createForeignKeyComboBox(TAG_ITEM_TAG_FK);
     add(createPropertyPanel(TAG_ITEM_TAG_FK, EntityUiUtil.createEastButtonPanel(box,
-            createEditPanelAction(box, new EntityPanelProvider(Petstore.T_TAG).setEditPanelClass(TagEditPanel.class)), false)));
+            createEditPanelAction(box, new EntityPanelProvider(Petstore.T_TAG,
+                    getEditModel().getEntities().getCaption(Petstore.T_TAG)).setEditPanelClass(TagEditPanel.class)), false)));
   }
 }

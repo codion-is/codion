@@ -6,6 +6,7 @@ package org.jminor.framework.db;
 import org.jminor.common.User;
 import org.jminor.common.Version;
 import org.jminor.common.server.Server;
+import org.jminor.framework.domain.Entities;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
@@ -23,8 +24,8 @@ public final class EntityConnectionProviders {
    * @param clientTypeID the client type id
    * @return a EntityConnectionProvider
    */
-  public static EntityConnectionProvider connectionProvider(final User user, final String clientTypeID) {
-    return connectionProvider(user, clientTypeID, (Version) null);
+  public static EntityConnectionProvider connectionProvider(final Entities entities, final User user, final String clientTypeID) {
+    return connectionProvider(entities, user, clientTypeID, (Version) null);
   }
 
   /**
@@ -34,9 +35,9 @@ public final class EntityConnectionProviders {
    * @param clientVersion the client version, if any
    * @return a EntityConnectionProvider
    */
-  public static EntityConnectionProvider connectionProvider(final User user, final String clientTypeID,
+  public static EntityConnectionProvider connectionProvider(final Entities entities, final User user, final String clientTypeID,
                                                             final Version clientVersion) {
-    return connectionProvider(user, clientTypeID, UUID.randomUUID(), clientVersion);
+    return connectionProvider(entities, user, clientTypeID, UUID.randomUUID(), clientVersion);
   }
 
   /**
@@ -46,8 +47,9 @@ public final class EntityConnectionProviders {
    * @param clientID the unique identifier for the client requesting the connection provider
    * @return a EntityConnectionProvider
    */
-  public static EntityConnectionProvider connectionProvider(final User user, final String clientTypeID, final UUID clientID) {
-    return connectionProvider(user, clientTypeID, clientID, null);
+  public static EntityConnectionProvider connectionProvider(final Entities entities, final User user, final String clientTypeID,
+                                                            final UUID clientID) {
+    return connectionProvider(entities, user, clientTypeID, clientID, null);
   }
 
   /**
@@ -62,20 +64,20 @@ public final class EntityConnectionProviders {
    * @see org.jminor.framework.db.EntityConnectionProvider#REMOTE_CONNECTION_PROVIDER
    * @see org.jminor.framework.db.EntityConnectionProvider#LOCAL_CONNECTION_PROVIDER
    */
-  public static EntityConnectionProvider connectionProvider(final User user, final String clientTypeID, final UUID clientID,
-                                                            final Version clientVersion) {
+  public static EntityConnectionProvider connectionProvider(final Entities entities, final User user, final String clientTypeID,
+                                                            final UUID clientID, final Version clientVersion) {
     try {
       if (EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get().equals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE)) {
         final String serverHostName = Server.SERVER_HOST_NAME.get();
         final boolean scheduleValidityCheck = EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get();
 
         return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.REMOTE_CONNECTION_PROVIDER.get()).getConstructor(
-                String.class, User.class, UUID.class, String.class, Version.class, boolean.class)
-                .newInstance(serverHostName, user, clientID, clientTypeID, clientVersion, scheduleValidityCheck);
+                Entities.class, String.class, User.class, UUID.class, String.class, Version.class, boolean.class)
+                .newInstance(entities, serverHostName, user, clientID, clientTypeID, clientVersion, scheduleValidityCheck);
       }
       else {
         return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.LOCAL_CONNECTION_PROVIDER.get()).getConstructor(
-                User.class).newInstance(user);
+                Entities.class, User.class).newInstance(entities, user);
       }
     }
     catch (final InvocationTargetException ite) {

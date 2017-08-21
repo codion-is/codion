@@ -14,9 +14,7 @@ import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityComboBoxModel;
@@ -342,7 +340,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   public void selectInputComponent() {
     final List<String> propertyIDs = getSelectComponentPropertyIDs();
-    final List<Property> properties = EntityUtil.getSortedProperties(getEditModel().getEntityID(), propertyIDs);
+    final List<Property> properties = editModel.getEntities().getSortedProperties(getEditModel().getEntityID(), propertyIDs);
     final Property property = UiUtil.selectValue(this, properties, Messages.get(Messages.SELECT_INPUT_FIELD));
     if (property != null) {
       requestComponentFocus(property.getPropertyID());
@@ -541,7 +539,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     if (throwable instanceof RecordModifiedException) {
       UiUtil.showExceptionDialog(dialogParent, Messages.get(Messages.EXCEPTION),
               Messages.get(Messages.RECORD_MODIFIED_EXCEPTION) + ", "
-                      + EntityUtil.getModifiedExceptionMessage((RecordModifiedException) throwable), throwable);
+                      + editModel.getEntities().getModifiedExceptionMessage((RecordModifiedException) throwable), throwable);
     }
     else {
       DefaultDialogExceptionHandler.getInstance().handleException(throwable, dialogParent);
@@ -1025,7 +1023,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final JPanel createPropertyPanel(final String propertyID, final JComponent inputComponent,
                                              final boolean labelOnTop, final int labelAlignment) {
-    return createPropertyPanel(EntityUiUtil.createLabel(Entities.getProperty(editModel.getEntityID(),
+    return createPropertyPanel(EntityUiUtil.createLabel(editModel.getEntities().getProperty(editModel.getEntityID(),
             propertyID), labelAlignment), inputComponent, labelOnTop);
   }
 
@@ -1110,7 +1108,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final JTextArea createTextArea(final String propertyID, final int rows, final int columns, final boolean readOnly,
                                            final StateObserver enabledState) {
-    final Property property = Entities.getProperty(editModel.getEntityID(), propertyID);
+    final Property property = editModel.getEntities().getProperty(editModel.getEntityID(), propertyID);
     final JTextArea textArea = EntityUiUtil.createTextArea(property, editModel, rows, columns, readOnly, enabledState);
     setComponent(propertyID, textArea);
 
@@ -1160,7 +1158,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final TextInputPanel createTextInputPanel(final String propertyID, final boolean readOnly,
                                                       final boolean immediateUpdate, final boolean buttonFocusable) {
-    return createTextInputPanel(Entities.getProperty(editModel.getEntityID(), propertyID), readOnly,
+    return createTextInputPanel(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID), readOnly,
             immediateUpdate, buttonFocusable);
   }
 
@@ -1213,7 +1211,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @see Property#DATE_FORMAT
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton) {
-    final Property property = Entities.getProperty(editModel.getEntityID(), propertyID);
+    final Property property = editModel.getEntities().getProperty(editModel.getEntityID(), propertyID);
     return createDateInputPanel(property, includeButton, null);
   }
 
@@ -1239,7 +1237,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton,
                                                       final StateObserver enabledState, final boolean readOnly) {
-    return createDateInputPanel(Entities.getProperty(editModel.getEntityID(), propertyID),
+    return createDateInputPanel(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID),
             includeButton, enabledState, readOnly);
   }
 
@@ -1366,7 +1364,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final JTextField createTextField(final String propertyID, final boolean readOnly,
                                              final boolean immediateUpdate, final String maskString,
                                              final StateObserver enabledState, final boolean valueIncludesLiteralCharacters) {
-    return createTextField(Entities.getProperty(editModel.getEntityID(), propertyID),
+    return createTextField(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID),
             readOnly, maskString, immediateUpdate, enabledState, valueIncludesLiteralCharacters);
   }
 
@@ -1468,7 +1466,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final JCheckBox createCheckBox(final String propertyID, final StateObserver enabledState,
                                            final boolean includeCaption) {
-    return createCheckBox(Entities.getProperty(editModel.getEntityID(), propertyID), enabledState, includeCaption);
+    return createCheckBox(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID), enabledState, includeCaption);
   }
 
   /**
@@ -1533,7 +1531,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final TristateCheckBox createTristateCheckBox(final String propertyID, final StateObserver enabledState,
                                                           final boolean includeCaption) {
-    return createTristateCheckBox(Entities.getProperty(editModel.getEntityID(), propertyID), enabledState, includeCaption);
+    return createTristateCheckBox(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID), enabledState, includeCaption);
   }
 
   /**
@@ -1588,7 +1586,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return JComboBox for the given property
    */
   protected final JComboBox createBooleanComboBox(final String propertyID, final StateObserver enabledState) {
-    return createBooleanComboBox(Entities.getProperty(editModel.getEntityID(), propertyID),enabledState);
+    return createBooleanComboBox(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID),enabledState);
   }
 
   /**
@@ -1639,7 +1637,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final SteppedComboBox createComboBox(final String propertyID, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch, final StateObserver enabledState) {
-    return createComboBox(Entities.getProperty(editModel.getEntityID(), propertyID),
+    return createComboBox(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID),
             comboBoxModel, maximumMatch, enabledState);
   }
 
@@ -1721,7 +1719,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @throws IllegalArgumentException in case the property is not a value list property
    */
   protected final SteppedComboBox createValueListComboBox(final String propertyID, final boolean sortItems, final StateObserver enabledState) {
-    final Property property = Entities.getProperty(editModel.getEntityID(), propertyID);
+    final Property property = editModel.getEntities().getProperty(editModel.getEntityID(), propertyID);
     if (!(property instanceof Property.ValueListProperty)) {
       throw new IllegalArgumentException("Property identified by '" + propertyID + "' is not a ValueListProperty");
     }
@@ -1799,7 +1797,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final SteppedComboBox createEditableComboBox(final String propertyID, final ComboBoxModel comboBoxModel,
                                                          final StateObserver enabledState) {
-    return createEditableComboBox(Entities.getProperty(editModel.getEntityID(), propertyID),
+    return createEditableComboBox(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID),
             comboBoxModel, enabledState);
   }
 
@@ -1849,7 +1847,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final SteppedComboBox createPropertyComboBox(final String propertyID, final StateObserver enabledState,
                                                          final boolean editable) {
-    return createPropertyComboBox(Entities.getColumnProperty(editModel.getEntityID(), propertyID),
+    return createPropertyComboBox(editModel.getEntities().getColumnProperty(editModel.getEntityID(), propertyID),
             enabledState, editable);
   }
 
@@ -1898,7 +1896,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final EntityComboBox createForeignKeyComboBox(final String foreignKeyPropertyID, final StateObserver enabledState) {
     return createForeignKeyComboBox((Property.ForeignKeyProperty)
-            Entities.getProperty(editModel.getEntityID(), foreignKeyPropertyID), enabledState);
+            editModel.getEntities().getProperty(editModel.getEntityID(), foreignKeyPropertyID), enabledState);
   }
 
   /**
@@ -1909,7 +1907,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return an EntityComboBox bound to the property
    */
   protected final EntityComboBox createForeignKeyComboBox(final String foreignKeyPropertyID) {
-    return createForeignKeyComboBox(Entities.getForeignKeyProperty(editModel.getEntityID(),
+    return createForeignKeyComboBox(editModel.getEntities().getForeignKeyProperty(editModel.getEntityID(),
             foreignKeyPropertyID), null);
   }
 
@@ -1957,9 +1955,9 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyID,
                                                                 final StateObserver enabledState) {
-    final Property.ForeignKeyProperty fkProperty = Entities.getForeignKeyProperty(editModel.getEntityID(),
+    final Property.ForeignKeyProperty fkProperty = editModel.getEntities().getForeignKeyProperty(editModel.getEntityID(),
             foreignKeyPropertyID);
-    final Collection<String> searchPropertyIDs = Entities.getSearchPropertyIDs(fkProperty.getReferencedEntityID());
+    final Collection<String> searchPropertyIDs = editModel.getEntities().getSearchPropertyIDs(fkProperty.getReferencedEntityID());
     return createForeignKeyLookupField(fkProperty, enabledState, searchPropertyIDs.toArray(new String[searchPropertyIDs.size()]));
   }
 
@@ -1986,10 +1984,10 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyID,
                                                                 final StateObserver enabledState,
                                                                 final String... lookupPropertyIDs) {
-    final Property.ForeignKeyProperty fkProperty = Entities.getForeignKeyProperty(editModel.getEntityID(),
+    final Property.ForeignKeyProperty fkProperty = editModel.getEntities().getForeignKeyProperty(editModel.getEntityID(),
             foreignKeyPropertyID);
     if (lookupPropertyIDs == null || lookupPropertyIDs.length == 0) {
-      final Collection<String> propertyIDs = Entities.getSearchPropertyIDs(fkProperty.getReferencedEntityID());
+      final Collection<String> propertyIDs = editModel.getEntities().getSearchPropertyIDs(fkProperty.getReferencedEntityID());
       return createForeignKeyLookupField(fkProperty, enabledState, propertyIDs.toArray(new String[propertyIDs.size()]));
     }
 
@@ -2029,7 +2027,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return an uneditable JTextField bound to the property
    */
   protected final JTextField createForeignKeyField(final String propertyID) {
-    return createForeignKeyField(Entities.getForeignKeyProperty(editModel.getEntityID(), propertyID));
+    return createForeignKeyField(editModel.getEntities().getForeignKeyProperty(editModel.getEntityID(), propertyID));
   }
 
   /**
@@ -2060,7 +2058,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return a JLabel for the given property
    */
   protected final JLabel createLabel(final String propertyID, final int horizontalAlignment) {
-    return EntityUiUtil.createLabel(Entities.getProperty(editModel.getEntityID(), propertyID), horizontalAlignment);
+    return EntityUiUtil.createLabel(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID), horizontalAlignment);
   }
 
   /**
@@ -2141,7 +2139,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   private boolean readOnly(final String propertyID) {
-    final Property property = Entities.getProperty(editModel.getEntityID(), propertyID);
+    final Property property = editModel.getEntities().getProperty(editModel.getEntityID(), propertyID);
     return property.isReadOnly() || (property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).isUpdatable());
   }
 

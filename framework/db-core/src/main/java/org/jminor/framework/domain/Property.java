@@ -101,6 +101,17 @@ public interface Property extends Attribute {
   }
 
   /**
+   * @return the domain id
+   */
+  String getDomainID();
+
+  /**
+   * @param domainID the domain id
+   * @return this Property instance
+   */
+  Property setDomainID(final String domainID);
+
+  /**
    * @return the ID of the entity this property is associated with
    */
   String getEntityID();

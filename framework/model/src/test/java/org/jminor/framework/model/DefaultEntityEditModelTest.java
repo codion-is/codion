@@ -34,7 +34,10 @@ import static org.junit.Assert.*;
 
 public final class DefaultEntityEditModelTest {
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+  private static final Entities ENTITIES = new TestDomain();
+  private static final EntityConditions ENTITY_CONDITIONS = new EntityConditions(ENTITIES);
+
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
 
@@ -44,9 +47,8 @@ public final class DefaultEntityEditModelTest {
 
   @Before
   public void setUp() {
-    TestDomain.init();
-    jobProperty = Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
-    deptProperty = Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
+    jobProperty = ENTITIES.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
+    deptProperty = ENTITIES.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
     employeeEditModel = new TestEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 
@@ -66,7 +68,7 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void createForeignKeyLookupModel() {
-    final EntityLookupModel model = employeeEditModel.createForeignKeyLookupModel(Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
+    final EntityLookupModel model = employeeEditModel.createForeignKeyLookupModel(ENTITIES.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
     assertNotNull(model);
     assertEquals(TestDomain.T_DEPARTMENT, model.getEntityID());
   }
@@ -126,7 +128,7 @@ public final class DefaultEntityEditModelTest {
     dept = employeeEditModel.getForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK);
     assertNull(dept);
     dept = (Entity) employeeEditModel.getDefaultValue(
-            Entities.getProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
+            ENTITIES.getProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
     assertNotNull(dept);
   }
 
@@ -157,7 +159,8 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.addAfterRefreshListener(listener);
 
     assertEquals(TestDomain.T_EMP, employeeEditModel.getEntityID());
-    assertEquals(employeeEditModel.getConnectionProvider().getConnection().selectValues(TestDomain.EMP_JOB, EntityConditions.condition(TestDomain.T_EMP)),
+    assertEquals(employeeEditModel.getConnectionProvider().getConnection().selectValues(TestDomain.EMP_JOB,
+            ENTITY_CONDITIONS.condition(TestDomain.T_EMP)),
             employeeEditModel.getValueProvider(jobProperty).values());
 
     employeeEditModel.refresh();
@@ -220,13 +223,13 @@ public final class DefaultEntityEditModelTest {
     //test validation
     try {
       employeeEditModel.setValue(TestDomain.EMP_COMMISSION, 50d);
-      employeeEditModel.validate(Entities.getProperty(TestDomain.T_EMP, TestDomain.EMP_COMMISSION));
+      employeeEditModel.validate(ENTITIES.getProperty(TestDomain.T_EMP, TestDomain.EMP_COMMISSION));
       fail("Validation should fail on invalid commission value");
     }
     catch (final ValidationException e) {
       assertEquals(TestDomain.EMP_COMMISSION, e.getKey());
       assertEquals(50d, e.getValue());
-      final Property property = Entities.getProperty(TestDomain.T_EMP, (String) e.getKey());
+      final Property property = ENTITIES.getProperty(TestDomain.T_EMP, (String) e.getKey());
       assertEquals("Validation message should fit", "'" + property + "' " +
               FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin(), e.getMessage());
     }
@@ -274,7 +277,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.setValue(TestDomain.EMP_NAME, "Björn");
       employeeEditModel.setValue(TestDomain.EMP_SALARY, 1000d);
 
-      final Entity tmpDept = Entities.entity(TestDomain.T_DEPARTMENT);
+      final Entity tmpDept = ENTITIES.entity(TestDomain.T_DEPARTMENT);
       tmpDept.put(TestDomain.DEPARTMENT_ID, 99);
       tmpDept.put(TestDomain.DEPARTMENT_LOCATION, "Limbo");
       tmpDept.put(TestDomain.DEPARTMENT_NAME, "Judgment");

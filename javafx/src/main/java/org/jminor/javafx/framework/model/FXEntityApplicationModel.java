@@ -9,7 +9,7 @@ import org.jminor.framework.model.DefaultEntityApplicationModel;
 /**
  * A JavaFX implementation of {@link DefaultEntityApplicationModel}
  */
-public abstract class FXEntityApplicationModel extends DefaultEntityApplicationModel<FXEntityModel> {
+public class FXEntityApplicationModel extends DefaultEntityApplicationModel<FXEntityModel> {
 
   /**
    * Instantiates a new {@link FXEntityApplicationModel}

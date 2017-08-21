@@ -14,6 +14,7 @@ import org.jminor.framework.demos.petstore.beans.ui.ProductEditPanel;
 import org.jminor.framework.demos.petstore.beans.ui.TagEditPanel;
 import org.jminor.framework.demos.petstore.beans.ui.TagItemEditPanel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
+import org.jminor.framework.domain.Entities;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
@@ -25,26 +26,39 @@ import java.util.Locale;
 public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppPanel.PetstoreApplicationModel> {
 
   @Override
+  protected Entities initializeDomainEntities() {
+    return new Petstore();
+  }
+
+  @Override
   protected void setupEntityPanelProviders() {
    /* CATEGORY
     *   PRODUCT
     *     ITEM
     *       ITEMTAG
     */
-    final EntityPanelProvider tagItemProvider = new EntityPanelProvider(Petstore.T_TAG_ITEM).setEditPanelClass(TagItemEditPanel.class);
-    final EntityPanelProvider itemProvider = new EntityPanelProvider(Petstore.T_ITEM).setEditPanelClass(ItemEditPanel.class);
+    final Entities entities = getModel().getEntities();
+    final EntityPanelProvider tagItemProvider = new EntityPanelProvider(Petstore.T_TAG_ITEM,
+            entities.getCaption(Petstore.T_TAG_ITEM)).setEditPanelClass(TagItemEditPanel.class);
+    final EntityPanelProvider itemProvider = new EntityPanelProvider(Petstore.T_ITEM,
+            entities.getCaption(Petstore.T_ITEM)).setEditPanelClass(ItemEditPanel.class);
     itemProvider.addDetailPanelProvider(tagItemProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
-    final EntityPanelProvider productProvider = new EntityPanelProvider(Petstore.T_PRODUCT).setEditPanelClass(ProductEditPanel.class);
+    final EntityPanelProvider productProvider = new EntityPanelProvider(Petstore.T_PRODUCT,
+            entities.getCaption(Petstore.T_PRODUCT)).setEditPanelClass(ProductEditPanel.class);
     productProvider.addDetailPanelProvider(itemProvider).setDetailSplitPanelResizeWeight(0.3);
-    final EntityPanelProvider categoryProvider = new EntityPanelProvider(Petstore.T_CATEGORY).setEditPanelClass(CategoryEditPanel.class);
+    final EntityPanelProvider categoryProvider = new EntityPanelProvider(Petstore.T_CATEGORY,
+            entities.getCaption(Petstore.T_CATEGORY)).setEditPanelClass(CategoryEditPanel.class);
     categoryProvider.addDetailPanelProvider(productProvider).setDetailSplitPanelResizeWeight(0.3);
 
     addEntityPanelProvider(categoryProvider);
 
-    final EntityPanelProvider addressProvider = new EntityPanelProvider(Petstore.T_ADDRESS).setEditPanelClass(AddressEditPanel.class);
-    final EntityPanelProvider contactInfoProvider = new EntityPanelProvider(Petstore.T_SELLER_CONTACT_INFO).setEditPanelClass(ContactInfoEditPanel.class);
+    final EntityPanelProvider addressProvider = new EntityPanelProvider(Petstore.T_ADDRESS,
+            entities.getCaption(Petstore.T_ADDRESS)).setEditPanelClass(AddressEditPanel.class);
+    final EntityPanelProvider contactInfoProvider = new EntityPanelProvider(Petstore.T_SELLER_CONTACT_INFO,
+            entities.getCaption(Petstore.T_SELLER_CONTACT_INFO)).setEditPanelClass(ContactInfoEditPanel.class);
     contactInfoProvider.addDetailPanelProvider(itemProvider);
-    final EntityPanelProvider tagProvider = new EntityPanelProvider(Petstore.T_TAG).setEditPanelClass(TagEditPanel.class);
+    final EntityPanelProvider tagProvider = new EntityPanelProvider(Petstore.T_TAG,
+            entities.getCaption(Petstore.T_TAG)).setEditPanelClass(TagEditPanel.class);
     tagProvider.addDetailPanelProvider(tagItemProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
 
     addSupportPanelProviders(addressProvider, contactInfoProvider, tagProvider);
@@ -66,9 +80,5 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppPa
       super(connectionProvider);
     }
 
-    @Override
-    protected void loadDomainModel() {
-      Petstore.init();
-    }
   }
 }

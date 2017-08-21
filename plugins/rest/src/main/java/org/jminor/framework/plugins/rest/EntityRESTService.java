@@ -59,6 +59,7 @@ public final class EntityRESTService extends Application {
   private static final String CLIENT_ID = "clientId";
 
   private static Server server;
+  private static Entities domain;
 
   @GET
   @Consumes(MediaType.APPLICATION_JSON)
@@ -68,7 +69,8 @@ public final class EntityRESTService extends Application {
                          @QueryParam("keys") final String keys) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      return Response.ok(new EntityJSONParser().serialize(connection.selectMany(EntityJSONParser.deserializeKeys(keys)))).build();
+      final EntityJSONParser parser = new EntityJSONParser(domain);
+      return Response.ok(parser.serialize(connection.selectMany(parser.deserializeKeys(keys)))).build();
     }
     catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();
@@ -85,8 +87,8 @@ public final class EntityRESTService extends Application {
                          @QueryParam("values") final String values) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      return Response.ok(new EntityJSONParser().serialize(connection.selectMany(
-              EntityConditions.selectCondition(entityID, createPropertyCondition(entityID, conditionType, values))))).build();
+      return Response.ok(new EntityJSONParser(domain).serialize(connection.selectMany(
+              new EntityConditions(domain).selectCondition(entityID, createPropertyCondition(entityID, conditionType, values))))).build();
     }
     catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();
@@ -100,7 +102,8 @@ public final class EntityRESTService extends Application {
                          @QueryParam("entities") final String entities) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      return Response.ok(new EntityJSONParser().serializeKeys(connection.insert(EntityJSONParser.deserializeEntities(entities)))).build();
+      final EntityJSONParser parser = new EntityJSONParser(domain);
+      return Response.ok(parser.serializeKeys(connection.insert(parser.deserializeEntities(entities)))).build();
     }
     catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();
@@ -114,7 +117,8 @@ public final class EntityRESTService extends Application {
                        @QueryParam("entities") final String entities) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final List<Entity> parsedEntities = EntityJSONParser.deserializeEntities(entities);
+      final EntityJSONParser parser = new EntityJSONParser(domain);
+      final List<Entity> parsedEntities = parser.deserializeEntities(entities);
       final List<Entity> toInsert = new ArrayList<>(parsedEntities.size());
       final List<Entity> toUpdate = new ArrayList<>(parsedEntities.size());
       for (final Entity entity : parsedEntities) {
@@ -127,7 +131,7 @@ public final class EntityRESTService extends Application {
       }
       final List<Entity> savedEntities = saveEntities(connection, toInsert, toUpdate);
 
-      return Response.ok(new EntityJSONParser().serialize(savedEntities)).build();
+      return Response.ok(parser.serialize(savedEntities)).build();
     }
     catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();
@@ -141,7 +145,7 @@ public final class EntityRESTService extends Application {
                          @QueryParam("keys") final String keys) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      connection.delete(EntityJSONParser.deserializeKeys(keys));
+      connection.delete(new EntityJSONParser(domain).deserializeKeys(keys));
 
       return Response.ok().build();
     }
@@ -158,7 +162,7 @@ public final class EntityRESTService extends Application {
                          @QueryParam("values") final String values) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      connection.delete(EntityConditions.condition(entityID, createPropertyCondition(entityID, conditionType, values)));
+      connection.delete(new EntityConditions(domain).condition(entityID, createPropertyCondition(entityID, conditionType, values)));
 
       return Response.ok().build();
     }
@@ -206,6 +210,10 @@ public final class EntityRESTService extends Application {
     EntityRESTService.server = server;
   }
 
+  static void setEntities(final Entities entities) {
+    EntityRESTService.domain = entities;
+  }
+
   private static List<Entity> saveEntities(final RemoteEntityConnection connection, final List<Entity> toInsert,
                                            final List<Entity> toUpdate) throws DatabaseException, RemoteException {
     final List<Entity> savedEntities = new ArrayList<>(toInsert.size() + toUpdate.size());
@@ -227,7 +235,7 @@ public final class EntityRESTService extends Application {
     }
   }
 
-  private static Condition.Set<Property.ColumnProperty> createPropertyCondition(final String entityID, final Condition.Type conditionType,
+  private Condition.Set<Property.ColumnProperty> createPropertyCondition(final String entityID, final Condition.Type conditionType,
                                                                                 final String values) throws JSONException, ParseException {
     if (conditionType == null || Util.nullOrEmpty(values)) {
       return null;
@@ -235,9 +243,9 @@ public final class EntityRESTService extends Application {
     final JSONObject jsonObject = new JSONObject(values);
     final Condition.Set<Property.ColumnProperty> set = Conditions.conditionSet(Conjunction.AND);
     for (final String propertyID : JSONObject.getNames(jsonObject)) {
-      final Property.ColumnProperty property = Entities.getColumnProperty(entityID, propertyID);
-      final Condition<Property.ColumnProperty> condition = EntityConditions.propertyCondition(property,
-              conditionType, EntityJSONParser.parseValue(property, jsonObject));
+      final Property.ColumnProperty property = domain.getColumnProperty(entityID, propertyID);
+      final Condition<Property.ColumnProperty> condition = new EntityConditions(domain).propertyCondition(property,
+              conditionType, new EntityJSONParser(domain).parseValue(property, jsonObject));
       set.add(condition);
     }
 

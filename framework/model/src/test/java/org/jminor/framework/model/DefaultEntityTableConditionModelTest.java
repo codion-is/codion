@@ -11,7 +11,6 @@ import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -25,17 +24,13 @@ import static org.junit.Assert.*;
 
 public class DefaultEntityTableConditionModelTest {
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new TestDomain(), new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
 
   private final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_EMP,
           CONNECTION_PROVIDER, new DefaultPropertyFilterModelProvider(),
           new DefaultPropertyConditionModelProvider());
-
-  static {
-    TestDomain.init();
-  }
 
   @Test
   public void test() {
@@ -141,7 +136,7 @@ public class DefaultEntityTableConditionModelTest {
     conditionModel.setAdditionalTableFilterCondition(entity -> !Objects.equals(entity.get(TestDomain.EMP_ID), 1));
     assertNotNull(conditionModel.getAdditionalTableFilterCondition());
 
-    final Entity emp = Entities.entity(TestDomain.T_EMP);
+    final Entity emp = CONNECTION_PROVIDER.getEntities().entity(TestDomain.T_EMP);
     emp.put(TestDomain.EMP_ID, 1);
     assertFalse(conditionModel.include(emp));
 

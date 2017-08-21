@@ -18,6 +18,7 @@ import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.valuemap.ValueMapEditModel;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -157,6 +158,11 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @return a value provider for the given property
    */
   ValueCollectionProvider getValueProvider(final Property property);
+
+  /**
+   * @return the underlying domain model Entities
+   */
+  Entities getEntities();
 
   /**
    * @return true if this model is read only,

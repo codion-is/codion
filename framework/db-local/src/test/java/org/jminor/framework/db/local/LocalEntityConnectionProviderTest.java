@@ -9,6 +9,7 @@ import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
+import org.jminor.framework.domain.Entities;
 
 import org.junit.Test;
 
@@ -20,10 +21,12 @@ public class LocalEntityConnectionProviderTest {
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
+  private static final Entities ENTITIES = new TestDomain();
+
   @Test
   public void test() {
     final Database database = Databases.getInstance();
-    final LocalEntityConnectionProvider provider = new LocalEntityConnectionProvider(UNIT_TEST_USER, database);
+    final LocalEntityConnectionProvider provider = new LocalEntityConnectionProvider(ENTITIES, UNIT_TEST_USER, database);
 
     assertEquals(database.getHost(), provider.getServerHostName());
 
@@ -45,7 +48,7 @@ public class LocalEntityConnectionProviderTest {
   public void entityConnectionProviders() {
     final String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
-    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider(UNIT_TEST_USER, "test");
+    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider(ENTITIES, UNIT_TEST_USER, "test");
     assertEquals("LocalEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
     assertEquals(EntityConnection.Type.LOCAL, connectionProvider.getConnectionType());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);

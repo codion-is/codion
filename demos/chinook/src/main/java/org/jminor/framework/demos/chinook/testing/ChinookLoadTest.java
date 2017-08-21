@@ -34,6 +34,8 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.ChinookApplicationModel> {
 
+  private static final Entities ENTITIES = new Chinook();
+
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
@@ -172,7 +174,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
       final Entity artist = artistModel.getTableModel().getSelectionModel().getSelectedItem();
       final SwingEntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
       final EntityEditModel albumEditModel = albumModel.getEditModel();
-      final Entity album = Entities.entity(T_ALBUM);
+      final Entity album = application.getEntities().entity(T_ALBUM);
       album.put(ALBUM_ARTISTID_FK, artist);
       album.put(ALBUM_TITLE, "Title");
 
@@ -219,7 +221,8 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
 
   @Override
   protected ChinookAppPanel.ChinookApplicationModel initializeApplication() throws CancelException {
-    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider(getUser(), ChinookLoadTest.class.getSimpleName());
+    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider(ENTITIES, getUser(),
+            "org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel");
     final ChinookAppPanel.ChinookApplicationModel appModel = new ChinookAppPanel.ChinookApplicationModel(connectionProvider);
     /* ARTIST
     *   ALBUM

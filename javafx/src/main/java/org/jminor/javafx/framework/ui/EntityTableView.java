@@ -8,7 +8,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.FilterCondition;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
@@ -129,7 +128,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void initializeColumns() {
-    for (final Property property : Entities.getVisibleProperties(listModel.getEntityID())) {
+    for (final Property property : getListModel().getEntities().getVisibleProperties(listModel.getEntityID())) {
       getColumns().add(new EntityTableColumn(listModel, property, listModel.getConnectionProvider(),
               getCellValueFactory(property)));
     }
@@ -219,7 +218,7 @@ public class EntityTableView extends TableView<Entity> {
   private Menu createUpdateSelectedItem() {
     final Menu updateSelected = new Menu(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED));
     FXUiUtil.link(updateSelected.disableProperty(), listModel.getSelectionEmptyObserver());
-    EntityUtil.getUpdatableProperties(listModel.getEntityID()).stream().filter(
+    getListModel().getEntities().getUpdatableProperties(listModel.getEntityID()).stream().filter(
             this::includeUpdateSelectedProperty).forEach(property -> {
       final String caption = property.getCaption() == null ? property.getPropertyID() : property.getCaption();
       final MenuItem updateProperty = new MenuItem(caption);

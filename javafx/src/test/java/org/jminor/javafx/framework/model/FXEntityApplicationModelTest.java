@@ -3,10 +3,7 @@
  */
 package org.jminor.javafx.framework.model;
 
-import org.jminor.common.User;
-import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.model.testing.AbstractEntityApplicationModelTest;
 import org.jminor.framework.model.testing.TestDomain;
 import org.jminor.javafx.framework.ui.EntityTableView;
@@ -14,10 +11,6 @@ import org.jminor.javafx.framework.ui.EntityTableView;
 import javafx.embed.swing.JFXPanel;
 
 public final class FXEntityApplicationModelTest extends AbstractEntityApplicationModelTest<FXEntityModel, FXEntityEditModel, FXEntityListModel> {
-
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
 
   static {
     new JFXPanel();

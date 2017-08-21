@@ -5,7 +5,6 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.Value;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.MasterDetailPanel;
@@ -294,7 +293,8 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param entityModel the EntityModel
    */
   public EntityPanel(final SwingEntityModel entityModel) {
-    this(entityModel, Entities.getCaption(Objects.requireNonNull(entityModel, "entityModel").getEntityID()));
+    this(entityModel, entityModel.getEditModel().getEntities().getCaption(
+            Objects.requireNonNull(entityModel, "entityModel").getEntityID()));
   }
 
   /**
@@ -312,7 +312,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param editPanel the edit panel
    */
   public EntityPanel(final SwingEntityModel entityModel, final EntityEditPanel editPanel) {
-    this(entityModel, Entities.getCaption(entityModel.getEntityID()), editPanel);
+    this(entityModel, entityModel.getEditModel().getEntities().getCaption(entityModel.getEntityID()), editPanel);
   }
 
   /**
@@ -321,7 +321,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(final SwingEntityModel entityModel, final EntityTablePanel tablePanel) {
-    this(entityModel, Entities.getCaption(entityModel.getEntityID()), tablePanel);
+    this(entityModel, entityModel.getEditModel().getEntities().getCaption(entityModel.getEntityID()), tablePanel);
   }
 
   /**
@@ -351,7 +351,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(final SwingEntityModel entityModel, final EntityEditPanel editPanel, final EntityTablePanel tablePanel) {
-    this(entityModel, Entities.getCaption(entityModel.getEntityID()), editPanel, tablePanel);
+    this(entityModel, entityModel.getEditModel().getEntities().getCaption(entityModel.getEntityID()), editPanel, tablePanel);
   }
 
   /**
@@ -365,7 +365,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
                      final EntityTablePanel tablePanel) {
     Objects.requireNonNull(entityModel, "entityModel");
     this.entityModel = entityModel;
-    this.caption = caption == null ? Entities.getCaption(entityModel.getEntityID()) : caption;
+    this.caption = caption == null ? entityModel.getEditModel().getEntities().getCaption(entityModel.getEntityID()) : caption;
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
   }

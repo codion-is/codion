@@ -3,15 +3,18 @@
  */
 package org.jminor.framework.model.testing;
 
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
+import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableModel;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -32,23 +35,26 @@ import static org.junit.Assert.*;
  */
 public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
+  protected static final Entities ENTITIES = new TestDomain();
+
+  protected static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
+  protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, UNIT_TEST_USER, Databases.getInstance());
+
   protected final List<Entity> testEntities = initTestEntities();
 
   protected final TableModel testModel = createTestTableModel();
-
-  @BeforeClass
-  public static void setUp() {
-    TestDomain.init();
-  }
 
   @Test
   public void setSelectedByKey() {
     final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.refresh();
 
-    final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
+    final Entity.Key pk1 = ENTITIES.key(TestDomain.T_EMP);
     pk1.put(TestDomain.EMP_ID, 1);
-    final Entity.Key pk2 = Entities.key(TestDomain.T_EMP);
+    final Entity.Key pk2 = ENTITIES.key(TestDomain.T_EMP);
     pk2.put(TestDomain.EMP_ID, 2);
 
     tableModel.setSelectedByKey(Collections.singletonList(pk1));
@@ -102,7 +108,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     deptModel.refresh();
 
     deptModel.setInsertAction(EntityTableModel.InsertAction.ADD_BOTTOM);
-    final Entity dept = Entities.entity(TestDomain.T_DEPARTMENT);
+    final Entity dept = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     dept.put(TestDomain.DEPARTMENT_ID, -10);
     dept.put(TestDomain.DEPARTMENT_LOCATION, "Nowhere");
     dept.put(TestDomain.DEPARTMENT_NAME, "Noname");
@@ -112,7 +118,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertEquals(dept, deptModel.getAllItems().get(deptModel.getRowCount() - 1));
 
     deptModel.setInsertAction(EntityTableModel.InsertAction.DO_NOTHING);
-    final Entity dept2 = Entities.entity(TestDomain.T_DEPARTMENT);
+    final Entity dept2 = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     dept2.put(TestDomain.DEPARTMENT_ID, -20);
     dept2.put(TestDomain.DEPARTMENT_LOCATION, "Nowhere2");
     dept2.put(TestDomain.DEPARTMENT_NAME, "Noname2");
@@ -130,9 +136,9 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
-    final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
+    final Entity.Key pk1 = ENTITIES.key(TestDomain.T_EMP);
     pk1.put(TestDomain.EMP_ID, 1);
-    final Entity.Key pk2 = Entities.key(TestDomain.T_EMP);
+    final Entity.Key pk2 = ENTITIES.key(TestDomain.T_EMP);
     pk2.put(TestDomain.EMP_ID, 2);
     try {
       tableModel.getConnectionProvider().getConnection().beginTransaction();
@@ -161,11 +167,11 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.refresh();
 
-    final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
+    final Entity.Key pk1 = ENTITIES.key(TestDomain.T_EMP);
     pk1.put(TestDomain.EMP_ID, 1);
     assertNotNull(tableModel.getEntityByKey(pk1));
 
-    final Entity.Key pk2 = Entities.key(TestDomain.T_EMP);
+    final Entity.Key pk2 = ENTITIES.key(TestDomain.T_EMP);
     pk2.put(TestDomain.EMP_ID, -66);
     assertNull(tableModel.getEntityByKey(pk2));
   }
@@ -293,15 +299,15 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   @Test
   public void getEntitiesByKey() {
     testModel.refresh();
-    Entity tmpEnt = Entities.entity(TestDomain.T_DETAIL);
+    Entity tmpEnt = ENTITIES.entity(TestDomain.T_DETAIL);
     tmpEnt.put(TestDomain.DETAIL_ID, 3L);
     assertEquals("c", testModel.getEntityByKey(tmpEnt.getKey()).get(TestDomain.DETAIL_STRING));
     final List<Entity.Key> keys = new ArrayList<>();
     keys.add(tmpEnt.getKey());
-    tmpEnt = Entities.entity(TestDomain.T_DETAIL);
+    tmpEnt = ENTITIES.entity(TestDomain.T_DETAIL);
     tmpEnt.put(TestDomain.DETAIL_ID, 2L);
     keys.add(tmpEnt.getKey());
-    tmpEnt = Entities.entity(TestDomain.T_DETAIL);
+    tmpEnt = ENTITIES.entity(TestDomain.T_DETAIL);
     tmpEnt.put(TestDomain.DETAIL_ID, 1L);
     keys.add(tmpEnt.getKey());
 
@@ -317,6 +323,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   @Test
   public void getTableDataAsDelimitedString() {
     final TableModel deptModel = createDepartmentTableModel();
+    deptModel.setColumns(TestDomain.DEPARTMENT_ID, TestDomain.DEPARTMENT_NAME, TestDomain.DEPARTMENT_LOCATION);
     deptModel.refresh();
     final String expected =
             "deptno\tdname\tloc\n" +
@@ -361,7 +368,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final List<Entity> testEntities = new ArrayList<>(5);
     final String[] stringValues = new String[]{"a", "b", "c", "d", "e"};
     for (int i = 0; i < 5; i++) {
-      final Entity entity = Entities.entity(TestDomain.T_DETAIL);
+      final Entity entity = ENTITIES.entity(TestDomain.T_DETAIL);
       entity.put(TestDomain.DETAIL_ID, (long) i+1);
       entity.put(TestDomain.DETAIL_INT, i+1);
       entity.put(TestDomain.DETAIL_STRING, stringValues[i]);

@@ -13,9 +13,15 @@ import org.junit.Test;
 
 public final class WorldTest extends EntityTestUnit {
 
+  private static final Entities ENTITIES = new World();
+
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
+
+  public WorldTest() {
+    super(ENTITIES);
+  }
 
   @Test
   public void country() throws DatabaseException {
@@ -55,12 +61,12 @@ public final class WorldTest extends EntityTestUnit {
   protected Entity initializeReferenceEntity(final String entityID) {
     switch (entityID) {
       case World.T_COUNTRY:
-        final Entity iceland = Entities.entity(World.T_COUNTRY);
+        final Entity iceland = getEntities().entity(World.T_COUNTRY);
         iceland.put(World.COUNTRY_CODE, "ISL");
 
         return iceland;
       case World.T_CITY:
-        final Entity reykjavik = Entities.entity(World.T_CITY);
+        final Entity reykjavik = getEntities().entity(World.T_CITY);
         reykjavik.put(World.CITY_ID, 1449);
 
         return reykjavik;
@@ -72,10 +78,5 @@ public final class WorldTest extends EntityTestUnit {
   @Override
   protected User getTestUser() {
     return UNIT_TEST_USER;
-  }
-
-  @Override
-  protected void loadDomainModel() {
-    new World();
   }
 }

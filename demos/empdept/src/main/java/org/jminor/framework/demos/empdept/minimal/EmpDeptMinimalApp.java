@@ -34,20 +34,20 @@ public class EmpDeptMinimalApp {
   /**
    * This class initializes the domain model based on the SCOTT schema
    */
-  private static final class Domain {
+  private static final class Domain extends Entities {
 
-    private Domain() {
+    public Domain(){
       /*
        * We start by defining the entity based on the SCOTT.DEPT table
        */
-      Entities.define("scott.dept",
+      define("scott.dept",
               Properties.primaryKeyProperty("deptno"),
               Properties.columnProperty("dname", Types.VARCHAR, "Department name")
                       .setNullable(false)
                       .setMaxLength(14),
               Properties.columnProperty("loc", Types.VARCHAR, "Department location")
                       .setMaxLength(13))
-              .setKeyGenerator(Entities.incrementKeyGenerator("scott.dept", "deptno"))
+              .setKeyGenerator(incrementKeyGenerator("scott.dept", "deptno"))
               .setCaption("Departments")
               .setStringProvider(new Entities.StringProvider("dname"));
       /*
@@ -55,7 +55,7 @@ public class EmpDeptMinimalApp {
        * notice the foreign key wrapper properties, referencing the
        * department as well as the manager
        */
-      Entities.define("scott.emp",
+      define("scott.emp",
               Properties.primaryKeyProperty("empno"),
               Properties.columnProperty("ename", Types.VARCHAR, "Name")
                       .setNullable(false)
@@ -76,7 +76,7 @@ public class EmpDeptMinimalApp {
                       Properties.columnProperty("mgr")),
               Properties.columnProperty("hiredate", Types.DATE, "Hiredate")
                       .setNullable(false))
-              .setKeyGenerator(Entities.incrementKeyGenerator("scott.emp", "empno"))
+              .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
               .setCaption("Employees")
               .setStringProvider(new Entities.StringProvider("ename"));
     }
@@ -101,7 +101,7 @@ public class EmpDeptMinimalApp {
             final Property.ForeignKeyProperty foreignKeyProperty) {
       final EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
       if (foreignKeyProperty.is("mgr_fk")) {
-        comboBoxModel.setSelectConditionProvider(() -> EntityConditions.propertyCondition(
+        comboBoxModel.setSelectConditionProvider(() -> new EntityConditions(getEntities()).propertyCondition(
             "scott.emp", "job", Condition.Type.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
         comboBoxModel.refresh();
       }
@@ -179,11 +179,6 @@ public class EmpDeptMinimalApp {
     private EmpDeptApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
     }
-
-    @Override
-    protected void loadDomainModel() {
-      new Domain();
-    }
   }
 
   /**
@@ -196,13 +191,20 @@ public class EmpDeptMinimalApp {
   private static final class EmpDeptApplicationPanel extends EntityApplicationPanel<EmpDeptApplicationModel> {
 
     @Override
+    protected Entities initializeDomainEntities() {
+      return new Domain();
+    }
+
+    @Override
     protected void setupEntityPanelProviders() {
       //now, let's assemble our application
-      final EntityPanelProvider departmentProvider = new EntityPanelProvider("scott.dept")
+      final EntityPanelProvider departmentProvider = new EntityPanelProvider("scott.dept",
+              getModel().getEntities().getCaption("scott.dept"))
               .setEditPanelClass(DepartmentEditPanel.class);
       final SwingEntityModelProvider employeeModelProvider = new SwingEntityModelProvider("scott.emp")
               .setEditModelClass(EmployeeEditModel.class);
-      final EntityPanelProvider employeeProvider = new EntityPanelProvider(employeeModelProvider)
+      final EntityPanelProvider employeeProvider = new EntityPanelProvider(employeeModelProvider,
+              getModel().getEntities().getCaption("scott.emp"))
               .setEditPanelClass(EmployeeEditPanel.class);
       departmentProvider.addDetailPanelProvider(employeeProvider);
 

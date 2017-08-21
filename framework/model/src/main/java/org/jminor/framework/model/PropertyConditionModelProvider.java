@@ -4,6 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Property;
 
 /**
@@ -18,7 +19,7 @@ public interface PropertyConditionModelProvider {
    * should not be allowed for this property
    */
   PropertyConditionModel<Property.ColumnProperty> initializePropertyConditionModel(
-          final Property.ColumnProperty property);
+          final EntityConditions entityConditions, final Property.ColumnProperty property);
 
   /**
    * Initializes a PropertyConditionModel for the given property

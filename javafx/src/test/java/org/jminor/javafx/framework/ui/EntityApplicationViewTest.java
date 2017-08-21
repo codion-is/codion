@@ -7,6 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.javafx.framework.model.FXEntityApplicationModel;
 import org.jminor.javafx.framework.model.FXEntityEditModel;
 import org.jminor.javafx.framework.model.FXEntityListModel;
@@ -17,9 +18,13 @@ import org.junit.Test;
 
 public final class EntityApplicationViewTest {
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new User(
+  protected static final Entities ENTITIES = new TestDomain();
+
+  protected static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
+          System.getProperty("jminor.unittest.password", "tiger"));
+
+  protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, UNIT_TEST_USER, Databases.getInstance());
 
   static {
     new JFXPanel();
@@ -28,6 +33,10 @@ public final class EntityApplicationViewTest {
   @Test
   public void constructor() {
     final EntityApplicationView<FXEntityApplicationModel> applicationView = new EntityApplicationView<FXEntityApplicationModel>("EntityApplicationViewTest") {
+      @Override
+      protected Entities initializeEntities() {
+        return new TestDomain();
+      }
       @Override
       protected void initializeEntityViews() {
         final FXEntityEditModel editModel = new FXEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
@@ -40,10 +49,6 @@ public final class EntityApplicationViewTest {
       @Override
       protected FXEntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
         return new FXEntityApplicationModel(CONNECTION_PROVIDER) {
-          @Override
-          protected void loadDomainModel() throws ClassNotFoundException {
-            TestDomain.init();
-          }
         };
       }
     };

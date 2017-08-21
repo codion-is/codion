@@ -4,12 +4,16 @@
 package org.jminor.framework.model.testing;
 
 import org.jminor.common.EventListener;
+import org.jminor.common.User;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.DefaultEntityEditModel;
@@ -18,7 +22,6 @@ import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityModel;
 import org.jminor.framework.model.EntityTableModel;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -38,20 +41,23 @@ import static org.junit.Assert.*;
 public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<Model, EditModel, TableModel>,
         EditModel extends DefaultEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
+  protected static final Entities ENTITIES = new TestDomain();
+
+  protected static final User UNIT_TEST_USER = new User(
+          System.getProperty("jminor.unittest.username", "scott"),
+          System.getProperty("jminor.unittest.password", "tiger"));
+
+  protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, UNIT_TEST_USER, Databases.getInstance());
+
   protected final Model departmentModel = createDepartmentModel();
   private int eventCount = 0;
-
-  @BeforeClass
-  public static void setUp() {
-    TestDomain.init();
-  }
 
   @Test
   public void testUpdatePrimaryKey() throws DatabaseException, ValidationException {
     departmentModel.refresh();
     final EntityEditModel deptEditModel = departmentModel.getEditModel();
     final TableModel deptTableModel = departmentModel.getTableModel();
-    final Entity.Key operationsKey = Entities.key(TestDomain.T_DEPARTMENT);
+    final Entity.Key operationsKey = ENTITIES.key(TestDomain.T_DEPARTMENT);
     operationsKey.put(TestDomain.DEPARTMENT_ID, 40);//operations
     deptTableModel.setSelectedByKey(Collections.singletonList(operationsKey));
 
@@ -167,7 +173,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
     final EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-    final List<Entity> salesEmployees = connection.selectMany(EntityConditions.selectCondition(TestDomain.T_EMP,
+    final List<Entity> salesEmployees = connection.selectMany(new EntityConditions(ENTITIES).selectCondition(TestDomain.T_EMP,
             TestDomain.EMP_DEPARTMENT_FK, Condition.Type.LIKE, department));
     assertTrue("Number of employees for department should not be 0", !salesEmployees.isEmpty());
     departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);

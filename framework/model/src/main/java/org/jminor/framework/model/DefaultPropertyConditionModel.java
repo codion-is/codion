@@ -17,13 +17,17 @@ import java.util.Collection;
 public class DefaultPropertyConditionModel extends DefaultColumnConditionModel<Property.ColumnProperty>
         implements PropertyConditionModel<Property.ColumnProperty> {
 
+  private final EntityConditions entityConditions;
+
   /**
    * Constructs a DefaultPropertyConditionModel instance
+   * @param entityConditions
    * @param property the property
    * @throws IllegalArgumentException if an illegal constant is used
    */
-  public DefaultPropertyConditionModel(final Property.ColumnProperty property) {
+  public DefaultPropertyConditionModel(final EntityConditions entityConditions, final Property.ColumnProperty property) {
     super(property, property.getType(), Property.WILDCARD_CHARACTER.get(), property.getFormat());
+    this.entityConditions = entityConditions;
   }
 
   /** {@inheritDoc} */
@@ -43,8 +47,8 @@ public class DefaultPropertyConditionModel extends DefaultColumnConditionModel<P
   @Override
   public final Condition<Property.ColumnProperty> getCondition() {
     return getConditionType().getValues().equals(Condition.Type.Values.TWO) ?
-            EntityConditions.propertyCondition(getColumnIdentifier(), getConditionType(), isCaseSensitive(), Arrays.asList(getLowerBound(), getUpperBound())) :
-            EntityConditions.propertyCondition(getColumnIdentifier(), getConditionType(), isCaseSensitive(), getUpperBound());
+            entityConditions.propertyCondition(getColumnIdentifier(), getConditionType(), isCaseSensitive(), Arrays.asList(getLowerBound(), getUpperBound())) :
+            entityConditions.propertyCondition(getColumnIdentifier(), getConditionType(), isCaseSensitive(), getUpperBound());
   }
 
   private static String toString(final Object object) {

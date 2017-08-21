@@ -7,11 +7,11 @@ import org.jminor.common.DateFormats;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Types;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,9 +22,111 @@ import static org.junit.Assert.*;
 
 public class EntitiesTest {
 
-  @Before
-  public void setUp() {
-    TestDomain.init();
+  private static final TestDomain entities = new TestDomain();
+
+  @Test
+  public void isPrimaryKeyModified() {
+    assertFalse(entities.isKeyModified(null));
+    assertFalse(entities.isKeyModified(Collections.<Entity>emptyList()));
+
+    final Entity department = entities.entity(TestDomain.T_DEPARTMENT);
+    department.put(TestDomain.DEPARTMENT_ID, 1);
+    department.put(TestDomain.DEPARTMENT_NAME, "name");
+    department.put(TestDomain.DEPARTMENT_LOCATION, "loc");
+    assertFalse(entities.isKeyModified(Collections.singletonList(department)));
+
+    department.put(TestDomain.DEPARTMENT_NAME, "new name");
+    assertFalse(entities.isKeyModified(Collections.singletonList(department)));
+
+    department.put(TestDomain.DEPARTMENT_ID, 2);
+    assertTrue(entities.isKeyModified(Collections.singletonList(department)));
+
+    department.revert(TestDomain.DEPARTMENT_ID);
+    assertFalse(entities.isKeyModified(Collections.singletonList(department)));
+  }
+
+  @Test
+  public void getSortedProperties() {
+    final List<Property> properties = entities.getSortedProperties(TestDomain.T_EMP,
+            Arrays.asList(TestDomain.EMP_HIREDATE, TestDomain.EMP_COMMISSION,
+                    TestDomain.EMP_SALARY, TestDomain.EMP_JOB));
+    assertEquals(TestDomain.EMP_COMMISSION, properties.get(0).getPropertyID());
+    assertEquals(TestDomain.EMP_HIREDATE, properties.get(1).getPropertyID());
+    assertEquals(TestDomain.EMP_JOB, properties.get(2).getPropertyID());
+    assertEquals(TestDomain.EMP_SALARY, properties.get(3).getPropertyID());
+  }
+
+  @Test
+  public void getUpdatableProperties() {
+    final List<Property> properties = entities.getUpdatableProperties(TestDomain.T_DETAIL);
+    assertEquals(9, properties.size());
+    assertFalse(properties.contains(entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_NAME)));
+    assertFalse(properties.contains(entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_CODE)));
+    assertFalse(properties.contains(entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_INT_DERIVED)));
+  }
+
+  @Test
+  public void getSelectedProperties() {
+    final List<String> propertyIDs = new ArrayList<>();
+    propertyIDs.add(TestDomain.DEPARTMENT_ID);
+    propertyIDs.add(TestDomain.DEPARTMENT_NAME);
+
+    final Collection<Property> properties = entities.getProperties(TestDomain.T_DEPARTMENT, propertyIDs);
+    assertEquals(2, properties.size());
+    assertTrue(properties.contains(entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID)));
+    assertTrue(properties.contains(entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
+
+    final Collection<Property> noProperties = entities.getProperties(TestDomain.T_DEPARTMENT, Collections.emptyList());
+    assertEquals(0, noProperties.size());
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void getEntitySerializerUnconfigured() {
+    entities.ENTITY_SERIALIZER_CLASS.set(null);
+    entities.getEntitySerializer();
+  }
+
+  @Test
+  public void getModifiedProperty() {
+    final Entity entity = entities.entity(TestDomain.T_DEPARTMENT);
+    entity.put(TestDomain.DEPARTMENT_ID, 1);
+    entity.put(TestDomain.DEPARTMENT_LOCATION, "Location");
+    entity.put(TestDomain.DEPARTMENT_NAME, "Name");
+
+    final Entity current = entities.entity(TestDomain.T_DEPARTMENT);
+    current.put(TestDomain.DEPARTMENT_ID, 1);
+    current.put(TestDomain.DEPARTMENT_LOCATION, "Location");
+    current.put(TestDomain.DEPARTMENT_NAME, "Name");
+
+    assertFalse(entities.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_ID));
+    assertFalse(entities.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_LOCATION));
+    assertFalse(entities.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_NAME));
+
+    current.put(TestDomain.DEPARTMENT_ID, 2);
+    current.saveAll();
+    assertTrue(entities.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_ID));
+    assertEquals(entities.getModifiedProperty(current, entity).getPropertyID(), TestDomain.DEPARTMENT_ID);
+    current.remove(TestDomain.DEPARTMENT_ID);
+    current.saveAll();
+    assertTrue(entities.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_ID));
+    assertEquals(entities.getModifiedProperty(current, entity).getPropertyID(), TestDomain.DEPARTMENT_ID);
+    current.put(TestDomain.DEPARTMENT_ID, 1);
+    current.saveAll();
+    assertFalse(entities.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_ID));
+    assertNull(entities.getModifiedProperty(current, entity));
+
+    current.put(TestDomain.DEPARTMENT_LOCATION, "New location");
+    current.saveAll();
+    assertTrue(entities.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_LOCATION));
+    assertEquals(entities.getModifiedProperty(current, entity).getPropertyID(), TestDomain.DEPARTMENT_LOCATION);
+    current.remove(TestDomain.DEPARTMENT_LOCATION);
+    current.saveAll();
+    assertTrue(entities.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_LOCATION));
+    assertEquals(entities.getModifiedProperty(current, entity).getPropertyID(), TestDomain.DEPARTMENT_LOCATION);
+    current.put(TestDomain.DEPARTMENT_LOCATION, "Location");
+    current.saveAll();
+    assertFalse(entities.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_LOCATION));
+    assertNull(entities.getModifiedProperty(current, entity));
   }
 
   @Test
@@ -33,12 +135,12 @@ public class EntitiesTest {
     final String propertyID1 = "id1";
     final String propertyID2 = "id2";
     final String propertyID3 = "id3";
-    Entities.define(entityID,
+    entities.define(entityID,
             Properties.primaryKeyProperty(propertyID1),
             Properties.primaryKeyProperty(propertyID2).setPrimaryKeyIndex(1),
             Properties.primaryKeyProperty(propertyID3).setPrimaryKeyIndex(2).setNullable(true));
 
-    final Entity.Key key = Entities.key(entityID);
+    final Entity.Key key = entities.key(entityID);
     assertEquals(0, key.hashCode());
     assertTrue(key.isCompositeKey());
     assertTrue(key.isNull());
@@ -69,7 +171,7 @@ public class EntitiesTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void keyWithSameIndex() {
-    Entities.define("keyWithSameIndex",
+    entities.define("keyWithSameIndex",
             Properties.primaryKeyProperty("1").setPrimaryKeyIndex(0),
             Properties.primaryKeyProperty("2").setPrimaryKeyIndex(1),
             Properties.primaryKeyProperty("3").setPrimaryKeyIndex(1));
@@ -77,7 +179,7 @@ public class EntitiesTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void keyWithSameIndex2() {
-    Entities.define("keyWithSameIndex2",
+    entities.define("keyWithSameIndex2",
             Properties.primaryKeyProperty("1"),
             Properties.primaryKeyProperty("2"),
             Properties.primaryKeyProperty("3"));
@@ -85,10 +187,10 @@ public class EntitiesTest {
 
   @Test
   public void entity() {
-    final Entity.Key key = Entities.key(TestDomain.T_MASTER);
+    final Entity.Key key = entities.key(TestDomain.T_MASTER);
     key.put(TestDomain.MASTER_ID, 10L);
 
-    final Entity master = Entities.entity(key);
+    final Entity master = entities.entity(key);
     assertEquals(TestDomain.T_MASTER, master.getEntityID());
     assertTrue(master.containsKey(TestDomain.MASTER_ID));
     assertEquals(10L, master.get(TestDomain.MASTER_ID));
@@ -96,117 +198,116 @@ public class EntitiesTest {
 
   @Test
   public void getProperties() {
-    final Property id = Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID);
-    final Property location = Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_LOCATION);
-    final Property name = Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
-    final List<Property> properties = Entities.getProperties(TestDomain.T_DEPARTMENT, Arrays.asList(TestDomain.DEPARTMENT_LOCATION, TestDomain.DEPARTMENT_NAME));
+    final Property id = entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID);
+    final Property location = entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_LOCATION);
+    final Property name = entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
+    final List<Property> properties = entities.getProperties(TestDomain.T_DEPARTMENT, Arrays.asList(TestDomain.DEPARTMENT_LOCATION, TestDomain.DEPARTMENT_NAME));
     assertEquals(2, properties.size());
     assertFalse(properties.contains(id));
     assertTrue(properties.contains(location));
     assertTrue(properties.contains(name));
 
-    final Collection<Property> visibleProperties = Entities.getProperties(TestDomain.T_DEPARTMENT, false);
+    final Collection<Property> visibleProperties = entities.getProperties(TestDomain.T_DEPARTMENT, false);
     assertEquals(3, visibleProperties.size());
     assertTrue(visibleProperties.contains(id));
     assertTrue(visibleProperties.contains(location));
     assertTrue(visibleProperties.contains(name));
 
-    final Collection<Property> allProperties = Entities.getProperties(TestDomain.T_DEPARTMENT, true);
+    final Collection<Property> allProperties = entities.getProperties(TestDomain.T_DEPARTMENT, true);
     assertTrue(visibleProperties.containsAll(allProperties));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void getPropertyInvalid() {
-    Entities.getProperty(TestDomain.T_MASTER, "unknown property");
+    entities.getProperty(TestDomain.T_MASTER, "unknown property");
   }
 
   @Test
   public void getColumnProperties() {
-    List<Property.ColumnProperty> properties = Entities.getColumnProperties(TestDomain.T_MASTER);
+    List<Property.ColumnProperty> properties = entities.getColumnProperties(TestDomain.T_MASTER);
     assertEquals(3, properties.size());
-    properties = Entities.getColumnProperties(TestDomain.T_MASTER, null);
+    properties = entities.getColumnProperties(TestDomain.T_MASTER, null);
     assertTrue(properties.isEmpty());
-    properties = Entities.getColumnProperties(TestDomain.T_MASTER, Collections.emptyList());
+    properties = entities.getColumnProperties(TestDomain.T_MASTER, Collections.emptyList());
     assertTrue(properties.isEmpty());
   }
 
   @Test
   public void getForeignKeyProperties() {
-    List<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(TestDomain.T_DETAIL, TestDomain.T_EMP);
+    List<Property.ForeignKeyProperty> foreignKeyProperties = entities.getForeignKeyProperties(TestDomain.T_DETAIL, TestDomain.T_EMP);
     assertEquals(0, foreignKeyProperties.size());
-    foreignKeyProperties = Entities.getForeignKeyProperties(TestDomain.T_DETAIL, TestDomain.T_MASTER);
+    foreignKeyProperties = entities.getForeignKeyProperties(TestDomain.T_DETAIL, TestDomain.T_MASTER);
     assertEquals(1, foreignKeyProperties.size());
-    assertTrue(foreignKeyProperties.contains(Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK)));
+    assertTrue(foreignKeyProperties.contains(entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK)));
   }
 
   public void getForeignKeyProperty() {
-    assertNotNull(Entities.getForeignKeyProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK));
+    assertNotNull(entities.getForeignKeyProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void getForeignKeyPropertyInvalid() {
-    Entities.getForeignKeyProperty(TestDomain.T_DETAIL, "bla bla");
+    entities.getForeignKeyProperty(TestDomain.T_DETAIL, "bla bla");
   }
 
   @Test
   public void getDomainEntityIDs() {
-    final Collection<String> entityIDs = Entities.getDomainEntityIDs(TestDomain.SCOTT_DOMAIN_ID);
-    assertTrue(entityIDs.contains(TestDomain.T_DEPARTMENT));
-    assertTrue(entityIDs.contains(TestDomain.T_EMP));
-    assertFalse(entityIDs.contains(TestDomain.T_MASTER));
+    final Entities domain = Entities.getDomainEntities(TestDomain.class.getName());
+    assertNotNull(domain.getDefinition(TestDomain.T_DEPARTMENT));
+    assertNotNull(domain.getDefinition(TestDomain.T_EMP));
   }
 
   @Test
   public void hasDerivedProperties() {
-    assertFalse(Entities.hasDerivedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_BOOLEAN));
-    assertTrue(Entities.hasDerivedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_INT));
+    assertFalse(entities.hasDerivedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_BOOLEAN));
+    assertTrue(entities.hasDerivedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_INT));
   }
 
   @Test
   public void getDerivedProperties() {
-    Collection<Property.DerivedProperty> derivedProperties = Entities.getDerivedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_BOOLEAN);
+    Collection<Property.DerivedProperty> derivedProperties = entities.getDerivedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_BOOLEAN);
     assertTrue(derivedProperties.isEmpty());
-    derivedProperties = Entities.getDerivedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_INT);
+    derivedProperties = entities.getDerivedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_INT);
     assertEquals(1, derivedProperties.size());
-    assertTrue(derivedProperties.contains(Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_INT_DERIVED)));
+    assertTrue(derivedProperties.contains(entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_INT_DERIVED)));
   }
 
   @Test
   public void isSmallDataset() {
-    assertTrue(Entities.isSmallDataset(TestDomain.T_DETAIL));
+    assertTrue(entities.isSmallDataset(TestDomain.T_DETAIL));
   }
 
   @Test
   public void getStringProvider() {
-    assertNotNull(Entities.getStringProvider(TestDomain.T_DEPARTMENT));
+    assertNotNull(entities.getStringProvider(TestDomain.T_DEPARTMENT));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void redefine() {
     final String entityID = "entityID";
-    Entities.define(entityID, Properties.primaryKeyProperty("propertyID"));
-    Entities.define(entityID, Properties.primaryKeyProperty("propertyID"));
+    entities.define(entityID, Properties.primaryKeyProperty("propertyID"));
+    entities.define(entityID, Properties.primaryKeyProperty("propertyID"));
   }
 
   @Test
   public void redefineAllowed() {
     final String entityID = "entityID2";
-    Entities.define(entityID, Properties.primaryKeyProperty("id"));
-    assertEquals("id", Entities.getPrimaryKeyProperties(entityID).get(0).getPropertyID());
-    Entities.ALLOW_REDEFINE_ENTITY.set(true);
-    Entities.define(entityID, Properties.primaryKeyProperty("id2"));
-    assertEquals("id2", Entities.getPrimaryKeyProperties(entityID).get(0).getPropertyID());
-    Entities.ALLOW_REDEFINE_ENTITY.set(false);
+    entities.define(entityID, Properties.primaryKeyProperty("id"));
+    assertEquals("id", entities.getPrimaryKeyProperties(entityID).get(0).getPropertyID());
+    entities.ALLOW_REDEFINE_ENTITY.set(true);
+    entities.define(entityID, Properties.primaryKeyProperty("id2"));
+    assertEquals("id2", entities.getPrimaryKeyProperties(entityID).get(0).getPropertyID());
+    entities.ALLOW_REDEFINE_ENTITY.set(false);
   }
 
   @Test
   public void nullValidation() {
-    final Entity emp = Entities.entity(TestDomain.T_EMP);
+    final Entity emp = entities.entity(TestDomain.T_EMP);
     emp.put(TestDomain.EMP_NAME, "Name");
     emp.put(TestDomain.EMP_HIREDATE, new Date());
     emp.put(TestDomain.EMP_SALARY, 1200.0);
 
-    final Entities.Validator validator = new Entities.Validator(TestDomain.T_EMP);
+    final Entities.Validator validator = new Entities.Validator(entities, TestDomain.T_EMP);
     try {
       validator.validate(emp);
       fail();
@@ -235,36 +336,36 @@ public class EntitiesTest {
 
   @Test
   public void getSearchProperties() {
-    Collection<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(TestDomain.T_EMP);
-    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB)));
-    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME)));
+    Collection<Property.ColumnProperty> searchProperties = entities.getSearchProperties(TestDomain.T_EMP);
+    assertTrue(searchProperties.contains(entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB)));
+    assertTrue(searchProperties.contains(entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME)));
 
-    searchProperties = Entities.getSearchProperties(TestDomain.T_EMP, TestDomain.EMP_NAME);
-    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME)));
+    searchProperties = entities.getSearchProperties(TestDomain.T_EMP, TestDomain.EMP_NAME);
+    assertTrue(searchProperties.contains(entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME)));
 
-    searchProperties = Entities.getSearchProperties(TestDomain.T_DEPARTMENT);
+    searchProperties = entities.getSearchProperties(TestDomain.T_DEPARTMENT);
     //should contain all string based properties
-    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
+    assertTrue(searchProperties.contains(entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
   }
 
   @Test
   public void getSearchPropertyIDs() {
-    Collection<String> searchPropertyIDs = Entities.getSearchPropertyIDs(TestDomain.T_EMP);
+    Collection<String> searchPropertyIDs = entities.getSearchPropertyIDs(TestDomain.T_EMP);
     assertTrue(searchPropertyIDs.contains(TestDomain.EMP_JOB));
     assertTrue(searchPropertyIDs.contains(TestDomain.EMP_NAME));
 
-    searchPropertyIDs = Entities.getSearchPropertyIDs(TestDomain.T_DEPARTMENT);
+    searchPropertyIDs = entities.getSearchPropertyIDs(TestDomain.T_DEPARTMENT);
     assertTrue(searchPropertyIDs.contains(TestDomain.DEPARTMENT_NAME));
   }
 
   @Test
   public void stringProvider() {
-    final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
+    final Entity department = entities.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, -10);
     department.put(TestDomain.DEPARTMENT_LOCATION, "Reykjavik");
     department.put(TestDomain.DEPARTMENT_NAME, "Sales");
 
-    final Entity employee = Entities.entity(TestDomain.T_EMP);
+    final Entity employee = entities.entity(TestDomain.T_EMP);
     final Date hiredate = new Date();
     employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
     employee.put(TestDomain.EMP_NAME, "Darri");
@@ -274,7 +375,8 @@ public class EntitiesTest {
 
     Entities.StringProvider employeeToString = new Entities.StringProvider(TestDomain.EMP_NAME)
             .addText(" (department: ").addValue(TestDomain.EMP_DEPARTMENT_FK).addText(", location: ")
-            .addForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK, TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
+            .addForeignKeyValue(entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK),
+                    TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
             .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat).addText(")");
 
     assertEquals("Darri (department: Sales, location: Reykjavik, hiredate: " + dateFormat.format(hiredate) + ")", employeeToString.toString(employee));
@@ -288,7 +390,8 @@ public class EntitiesTest {
 
     employeeToString = new Entities.StringProvider(TestDomain.EMP_NAME)
             .addText(" (department: ").addValue(TestDomain.EMP_DEPARTMENT_FK).addText(", location: ")
-            .addForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK, TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
+            .addForeignKeyValue(entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK),
+                    TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
             .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat).addText(")");
 
     assertEquals(" (department: , location: , hiredate: )", employeeToString.toString(employee));
@@ -296,7 +399,7 @@ public class EntitiesTest {
 
   @Test (expected = IllegalArgumentException.class)
   public void foreignKeyReferencingUndefinedEntity() {
-    Entities.define("test.entity",
+    entities.define("test.entity",
             Properties.primaryKeyProperty("id"),
             Properties.foreignKeyProperty("fk_id_fk", "caption", "test.referenced_entity",
                     Properties.columnProperty("fk_id")));
@@ -305,7 +408,7 @@ public class EntitiesTest {
   @Test
   public void foreignKeyReferencingUndefinedEntityNonStrict() {
     Entity.Definition.STRICT_FOREIGN_KEYS.set(false);
-    Entities.define("test.entity",
+    entities.define("test.entity",
             Properties.primaryKeyProperty("id"),
             Properties.foreignKeyProperty("fk_id_fk", "caption", "test.referenced_entity",
                     Properties.columnProperty("fk_id")));
@@ -314,7 +417,7 @@ public class EntitiesTest {
 
   @Test (expected = IllegalArgumentException.class)
   public void setSearchPropertyIDsInvalidProperty() {
-    Entities.define("spids",
+    entities.define("spids",
             Properties.primaryKeyProperty("1"),
             Properties.columnProperty("test"))
             .setSearchPropertyIDs("invalid");
@@ -323,48 +426,48 @@ public class EntitiesTest {
   @Test
   public void hasSingleIntegerPrimaryKey() {
     String entityId = "hasSingleIntegerPrimaryKey";
-    Entities.define(entityId,
+    entities.define(entityId,
             Properties.columnProperty("test")
                     .setPrimaryKeyIndex(0));
-    assertTrue(Entities.hasSingleIntegerPrimaryKey(entityId));
+    assertTrue(entities.hasSingleIntegerPrimaryKey(entityId));
     entityId = "hasSingleIntegerPrimaryKey2";
-    Entities.define(entityId,
+    entities.define(entityId,
             Properties.columnProperty("test")
                     .setPrimaryKeyIndex(0),
             Properties.columnProperty("test2")
                     .setPrimaryKeyIndex(1));
-    assertFalse(Entities.hasSingleIntegerPrimaryKey(entityId));
+    assertFalse(entities.hasSingleIntegerPrimaryKey(entityId));
     entityId = "hasSingleIntegerPrimaryKey3";
-    Entities.define(entityId,
+    entities.define(entityId,
             Properties.columnProperty("test", Types.VARCHAR)
                     .setPrimaryKeyIndex(0));
-    assertFalse(Entities.hasSingleIntegerPrimaryKey(entityId));
+    assertFalse(entities.hasSingleIntegerPrimaryKey(entityId));
   }
 
   @Test
   public void havingClause() {
     final String havingClause = "p1 > 1";
-    Entities.define("entityID3",
+    entities.define("entityID3",
             Properties.primaryKeyProperty("p0")).setHavingClause(havingClause);
-    assertEquals(havingClause, Entities.getHavingClause("entityID3"));
+    assertEquals(havingClause, entities.getHavingClause("entityID3"));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void validateTypeEntity() {
-    final Entity entity = Entities.entity(TestDomain.T_DETAIL);
-    final Entity entity1 = Entities.entity(TestDomain.T_DETAIL);
+    final Entity entity = entities.entity(TestDomain.T_DETAIL);
+    final Entity entity1 = entities.entity(TestDomain.T_DETAIL);
     entity.put(TestDomain.DETAIL_MASTER_FK, entity1);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setValueDerived() {
-    final Entity entity = Entities.entity(TestDomain.T_DETAIL);
+    final Entity entity = entities.entity(TestDomain.T_DETAIL);
     entity.put(TestDomain.DETAIL_INT_DERIVED, 10);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setValueValueList() {
-    final Entity entity = Entities.entity(TestDomain.T_DETAIL);
+    final Entity entity = entities.entity(TestDomain.T_DETAIL);
     entity.put(TestDomain.DETAIL_INT_VALUE_LIST, -10);
   }
 }

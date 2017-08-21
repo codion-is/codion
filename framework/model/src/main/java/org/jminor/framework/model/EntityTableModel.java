@@ -10,6 +10,7 @@ import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.SelectionModel;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -46,6 +47,11 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
      */
     ADD_BOTTOM
   }
+
+  /**
+   * @return the underlying domain entities
+   */
+  Entities getEntities();
 
   /**
    * Returns the {@link EntityEditModel} associated with this table model

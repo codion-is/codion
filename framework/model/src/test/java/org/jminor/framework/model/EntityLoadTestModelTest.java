@@ -10,6 +10,7 @@ import org.jminor.common.db.Databases;
 import org.jminor.common.server.Server;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
@@ -23,6 +24,8 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 public class EntityLoadTestModelTest {
+
+  private static final Entities ENTITIES = new TestDomain();
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
@@ -69,9 +72,8 @@ public class EntityLoadTestModelTest {
     @Override
     protected DefaultEntityApplicationModel initializeApplication() {
       return new DefaultEntityApplicationModel(
-              EntityConnectionProviders.connectionProvider(getUser(), EntityLoadTestModelTest.class.getSimpleName())) {
-        @Override
-        protected void loadDomainModel() {}
+              EntityConnectionProviders.connectionProvider(ENTITIES, getUser(), EntityLoadTestModelTest.class.getSimpleName())) {
+
       };
     }
   }

@@ -3,7 +3,6 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.model.EntityModel;
 import org.jminor.javafx.framework.model.FXEntityListModel;
 
@@ -87,7 +86,7 @@ public class EntityView extends BorderPane implements ViewTreeNode {
    * @param tableView the tableView
    */
   public EntityView(final EntityModel model, final EntityEditView editView, final EntityTableView tableView) {
-    this(Entities.getCaption(model.getEntityID()), model, editView, tableView);
+    this(model.getEditModel().getEntities().getCaption(model.getEntityID()), model, editView, tableView);
   }
 
   /**

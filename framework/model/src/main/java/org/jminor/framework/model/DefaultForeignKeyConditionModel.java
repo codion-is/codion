@@ -19,6 +19,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
         implements ForeignKeyConditionModel {
 
   private final EntityLookupModel entityLookupModel;
+  private final EntityConditions entityConditions;
 
   private boolean updatingModel = false;
 
@@ -26,17 +27,20 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
    * Constructs a DefaultForeignKeyConditionModel instance
    * @param property the property
    */
-  public DefaultForeignKeyConditionModel(final Property.ForeignKeyProperty property) {
-    this(property, null);
+  public DefaultForeignKeyConditionModel(final EntityConditions entityConditions,
+                                         final Property.ForeignKeyProperty property) {
+    this(entityConditions, property, null);
   }
 
   /**
    * Constructs a DefaultForeignKeyConditionModel instance
+   * @param entityConditions
    * @param property the property
    * @param entityLookupModel a EntityLookupModel
    */
-  public DefaultForeignKeyConditionModel(final Property.ForeignKeyProperty property, final EntityLookupModel entityLookupModel) {
+  public DefaultForeignKeyConditionModel(final EntityConditions entityConditions, final Property.ForeignKeyProperty property, final EntityLookupModel entityLookupModel) {
     super(property, property.getType(), Property.WILDCARD_CHARACTER.get());
+    this.entityConditions = entityConditions;
     this.entityLookupModel = entityLookupModel;
     if (entityLookupModel != null) {
       bindLookupModelEvents();
@@ -78,10 +82,10 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
   public final Condition<Property.ColumnProperty> getCondition() {
     final Object upperBound = getUpperBound();
     if (upperBound instanceof Collection) {
-      return EntityConditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), (Collection) upperBound);
+      return entityConditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), (Collection) upperBound);
     }
 
-    return EntityConditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), Collections.singletonList(upperBound));
+    return entityConditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), Collections.singletonList(upperBound));
   }
 
   /** {@inheritDoc} */

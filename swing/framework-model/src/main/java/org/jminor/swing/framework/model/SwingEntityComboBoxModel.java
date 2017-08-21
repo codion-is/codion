@@ -14,7 +14,6 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
@@ -45,6 +44,10 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    * the EntityConnectionProvider instance used by this EntityComboBoxModel
    */
   private final EntityConnectionProvider connectionProvider;
+
+  private final Entities entities;
+
+  private final EntityConditions entityConditions;
 
   /**
    * true if the data should only be fetched once, unless {@code forceRefresh()} is called
@@ -92,7 +95,9 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     Objects.requireNonNull(connectionProvider, "connectionProvider");
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
-    setStaticData(Entities.isStaticData(entityID));
+    this.entities = connectionProvider.getEntities();
+    this.entityConditions = new EntityConditions(entities);
+    setStaticData(this.entities.isStaticData(entityID));
     final FilterCondition<Entity> superCondition = super.getFilterCondition();
     setFilterCondition(item -> superCondition.include(item) && foreignKeyFilterCondition.include(item));
   }
@@ -219,10 +224,10 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   /** {@inheritDoc} */
   @Override
   public final EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyID) {
-    final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(entityID, foreignKeyPropertyID);
+    final Property.ForeignKeyProperty foreignKeyProperty = entities.getForeignKeyProperty(entityID, foreignKeyPropertyID);
     final EntityComboBoxModel foreignKeyModel =
             new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
-    foreignKeyModel.setNullValue(EntityUtil.createToStringEntity(foreignKeyProperty.getReferencedEntityID(), "-"));
+    foreignKeyModel.setNullValue(entities.createToStringEntity(foreignKeyProperty.getReferencedEntityID(), "-"));
     foreignKeyModel.refresh();
     linkForeignKeyComboBoxModel(foreignKeyPropertyID, foreignKeyModel);
 
@@ -232,7 +237,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   /** {@inheritDoc} */
   @Override
   public final void linkForeignKeyComboBoxModel(final String foreignKeyPropertyID, final EntityComboBoxModel foreignKeyModel) {
-    final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(getEntityID(), foreignKeyPropertyID);
+    final Property.ForeignKeyProperty foreignKeyProperty = entities.getForeignKeyProperty(getEntityID(), foreignKeyPropertyID);
     if (!foreignKeyProperty.getReferencedEntityID().equals(foreignKeyModel.getEntityID())) {
       throw new IllegalArgumentException("Foreign key ComboBoxModel is of type: " + foreignKeyModel.getEntityID()
               + ", should be: " + foreignKeyProperty.getReferencedEntityID());
@@ -312,7 +317,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    */
   protected List<Entity> performQuery() {
     try {
-      return connectionProvider.getConnection().selectMany(EntityConditions.selectCondition(entityID,
+      return connectionProvider.getConnection().selectMany(entityConditions.selectCondition(entityID,
               selectConditionProvider == null ? null : selectConditionProvider.getCondition()));
     }
     catch (final DatabaseException e) {

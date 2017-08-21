@@ -9,7 +9,12 @@ import org.jminor.framework.domain.Properties;
 
 import java.sql.Types;
 
-public final class World {
+public final class World extends Entities{
+
+  public World() {
+    defineCityCountry();
+    defineCountryLanguage();
+  }
 
   public static final String T_CITY = "world.city";
   public static final String CITY_ID = "id";
@@ -37,11 +42,11 @@ public final class World {
   public static final String COUNTRY_CAPITAL_FK = "capital_fk";
   public static final String COUNTRY_CODE2 = "code2";
 
-  static {
+  void defineCityCountry() {
     //disable this default check so we can define a cyclical foreign key between country and city
     Entity.Definition.STRICT_FOREIGN_KEYS.set(false);
 
-    Entities.define(T_COUNTRY,
+    define(T_COUNTRY,
             Properties.columnProperty(COUNTRY_CODE, Types.VARCHAR, "Country code")
                     .setPrimaryKeyIndex(0)
                     .setUpdatable(true)
@@ -84,7 +89,7 @@ public final class World {
             .setStringProvider(new Entities.StringProvider(COUNTRY_NAME))
             .setCaption("Country");
 
-    Entities.define(T_CITY,
+    define(T_CITY,
             Properties.columnProperty(CITY_ID)
                     .setPrimaryKeyIndex(0),
             Properties.columnProperty(CITY_NAME, Types.VARCHAR, "Name")
@@ -98,7 +103,7 @@ public final class World {
                     .setMaxLength(20),
             Properties.columnProperty(CITY_POPULATION, Types.INTEGER, "Population")
                     .setNullable(false))
-            .setKeyGenerator(Entities.sequenceKeyGenerator("world.city_seq"))
+            .setKeyGenerator(sequenceKeyGenerator("world.city_seq"))
             .setOrderByClause(CITY_NAME)
             .setSearchPropertyIDs(CITY_NAME)
             .setStringProvider(new Entities.StringProvider(CITY_NAME))
@@ -112,8 +117,8 @@ public final class World {
   public static final String COUNTRYLANGUAGE_ISOFFICIAL = "isofficial";
   public static final String COUNTRYLANGUAGE_PERCENTAGE = "percentage";
 
-  static {
-    Entities.define(T_COUNTRYLANGUAGE,
+  void defineCountryLanguage() {
+    define(T_COUNTRYLANGUAGE,
             Properties.foreignKeyProperty(COUNTRYLANGUAGE_COUNTRYCODE_FK, "Country", T_COUNTRY,
                     Properties.columnProperty(COUNTRYLANGUAGE_COUNTRYCODE, Types.VARCHAR)
                             .setPrimaryKeyIndex(0)

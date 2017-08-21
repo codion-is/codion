@@ -4,8 +4,8 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.User;
-import org.jminor.common.Util;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.domain.Entities;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +17,7 @@ import java.util.Objects;
  * A central application model class.
  * @param <M> the {@link DefaultEntityModel} type this application model is based on
  */
-public abstract class DefaultEntityApplicationModel<M extends DefaultEntityModel> implements EntityApplicationModel<M> {
+public class DefaultEntityApplicationModel<M extends DefaultEntityModel> implements EntityApplicationModel<M> {
 
   private final EntityConnectionProvider connectionProvider;
   private final List<M> entityModels = new ArrayList<>();
@@ -30,12 +30,6 @@ public abstract class DefaultEntityApplicationModel<M extends DefaultEntityModel
   public DefaultEntityApplicationModel(final EntityConnectionProvider connectionProvider) {
     Objects.requireNonNull(connectionProvider, "connectionProvider");
     this.connectionProvider = connectionProvider;
-    try {
-      loadDomainModel();
-    }
-    catch (final ClassNotFoundException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   /** {@inheritDoc} */
@@ -67,6 +61,12 @@ public abstract class DefaultEntityApplicationModel<M extends DefaultEntityModel
   @Override
   public final EntityConnectionProvider getConnectionProvider() {
     return connectionProvider;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entities getEntities() {
+    return connectionProvider.getEntities();
   }
 
   /** {@inheritDoc} */
@@ -166,20 +166,6 @@ public abstract class DefaultEntityApplicationModel<M extends DefaultEntityModel
   @Override
   public final boolean containsUnsavedData() {
     return containsUnsavedData(entityModels);
-  }
-
-  /**
-   * This method loads the domain model by loading the class specified by {@link EntityApplicationModel#CLIENT_DOMAIN_MODEL_CLASS}.
-   * Override to load the domain class manually.
-   * @throws IllegalArgumentException in case {@link EntityApplicationModel#CLIENT_DOMAIN_MODEL_CLASS} is not available.
-   * @throws ClassNotFoundException in case the domain model class is not found on the classpath
-   */
-  protected void loadDomainModel() throws ClassNotFoundException {
-    final String className = EntityApplicationModel.CLIENT_DOMAIN_MODEL_CLASS.get();
-    if (Util.nullOrEmpty(className)) {
-      throw new IllegalArgumentException("Domain class configuration value not found '" + EntityApplicationModel.CLIENT_DOMAIN_MODEL_CLASS + "'");
-    }
-    Class.forName(className);
   }
 
   /**
