@@ -4557,3 +4557,5 @@
   Minor improvements to the above
   Javadocs fixed
   Entities.registerDomain() added
+  TestDomain cleanup
+  DefultEntityConnectionServer.WEB_SERVER_DOMAIN_ID configuration property added, EntityRESTServiceTest fixed

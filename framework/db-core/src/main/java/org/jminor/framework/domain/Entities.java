@@ -174,6 +174,10 @@ public class Entities {
     return entityDefinition;
   }
 
+  /**
+   * Adds all entity definitions from {@code domain} to this domain
+   * @param domain the domain
+   */
   public void addAll(final Entities domain) {
     entityDefinitions.putAll(domain.entityDefinitions);
   }
@@ -1673,13 +1677,13 @@ public class Entities {
     @Override
     public List<Entity> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       Objects.requireNonNull(resultSet, "resultSet");
-      final List<Entity> entities = new ArrayList<>();
+      final List<Entity> result = new ArrayList<>();
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        entities.add(loadEntity(resultSet));
+        result.add(loadEntity(resultSet));
       }
 
-      return entities;
+      return result;
     }
 
     private Entity loadEntity(final ResultSet resultSet) throws SQLException {

@@ -307,6 +307,9 @@ public final class EntityUtil {
     private final Map<Class, String> entityIDMap = new HashMap<>();
     private final Map<Class, Map<String, GetterSetter>> propertyMap = new HashMap<>();
 
+    /**
+     * @param entities the domain entities
+     */
     public EntityBeanMapper(final Entities entities) {
       this.entities = entities;
     }
@@ -404,12 +407,12 @@ public final class EntityUtil {
       if (Util.nullOrEmpty(beans)) {
         return Collections.emptyList();
       }
-      final List<Entity> entities = new ArrayList<>(beans.size());
+      final List<Entity> result = new ArrayList<>(beans.size());
       for (final Object bean : beans) {
-        entities.add(toEntity(bean));
+        result.add(toEntity(bean));
       }
 
-      return entities;
+      return result;
     }
 
     /**

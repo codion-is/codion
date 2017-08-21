@@ -172,13 +172,13 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
    * Called after a logout has been performed.
    * Override to add a logout handler.
    */
-  protected void handleLogout() {}
+  protected void handleLogout() {/*For subclasses*/}
 
   /**
    * Called after a login has been performed
    * Override to add a login handler.
    */
-  protected void handleLogin() {}
+  protected void handleLogin() {/*For subclasses*/}
 
   private static boolean containsUnsavedData(final Collection<? extends EntityModel> models) {
     for (final EntityModel model : models) {

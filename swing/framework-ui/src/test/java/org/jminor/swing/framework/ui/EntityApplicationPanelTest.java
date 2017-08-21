@@ -61,9 +61,9 @@ public class EntityApplicationPanelTest {
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.nextElement();
     assertNull(node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_COMPOSITE_MASTER, node.getUserObject());
+    assertEquals(TestDomain.T_MASTER, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_COMPOSITE_DETAIL, node.getUserObject());
+    assertEquals(TestDomain.T_DETAIL, node.getUserObject());
   }
 
   @Test

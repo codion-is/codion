@@ -25,7 +25,8 @@ public final class EntityRESTServer extends Server implements org.jminor.common.
    * @param documentRoot the document root
    * @param port the port on which to serve
    */
-  public EntityRESTServer(final Entities entities, final org.jminor.common.server.Server connectionServer, final String documentRoot, final Integer port) {
+  public EntityRESTServer(final Entities entities, final org.jminor.common.server.Server connectionServer,
+                          final String documentRoot, final Integer port) {
     super(port);
     EntityRESTService.setServer(connectionServer);
     EntityRESTService.setEntities(entities);

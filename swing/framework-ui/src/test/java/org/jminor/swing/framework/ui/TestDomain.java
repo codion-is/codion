@@ -6,7 +6,6 @@ package org.jminor.swing.framework.ui;
 import org.jminor.common.Item;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Properties;
-import org.jminor.framework.domain.Property;
 
 import java.awt.Color;
 import java.sql.Types;
@@ -16,37 +15,11 @@ import java.util.List;
 public final class TestDomain extends Entities {
 
   public TestDomain() {
-    defineCompositeMaster();
-    defineCompositeDetail();
     defineMaster();
     defineDetail();
     defineDepartment();
     defineEmployee();
     registerDomain();
-  }
-
-  public static final String T_COMPOSITE_MASTER = "domain.composite_master";
-  public static final String COMPOSITE_MASTER_ID = "id";
-  public static final String COMPOSITE_MASTER_ID_2 = "id2";
-
-  void defineCompositeMaster() {
-    define(T_COMPOSITE_MASTER,
-            Properties.columnProperty(COMPOSITE_MASTER_ID).setPrimaryKeyIndex(0).setNullable(true),
-            Properties.columnProperty(COMPOSITE_MASTER_ID_2).setPrimaryKeyIndex(1));
-  }
-
-  public static final String T_COMPOSITE_DETAIL = "domain.composite_detail";
-  public static final String COMPOSITE_DETAIL_MASTER_ID = "master_id";
-  public static final String COMPOSITE_DETAIL_MASTER_ID_2 = "master_id2";
-  public static final String COMPOSITE_DETAIL_MASTER_FK = "master_fk";
-
-  void defineCompositeDetail() {
-    define(T_COMPOSITE_DETAIL,
-            Properties.foreignKeyProperty(COMPOSITE_DETAIL_MASTER_FK, "master", T_COMPOSITE_MASTER,
-                    new Property.ColumnProperty[] {
-                            Properties.columnProperty(COMPOSITE_DETAIL_MASTER_ID).setPrimaryKeyIndex(0),
-                            Properties.columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).setPrimaryKeyIndex(1)
-                    }, null));
   }
 
   public static final String T_MASTER = "domain.master_entity";

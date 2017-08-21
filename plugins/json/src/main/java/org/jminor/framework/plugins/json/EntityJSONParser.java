@@ -222,12 +222,12 @@ public final class EntityJSONParser implements Serializer<Entity> {
     final DateFormat jsonDateFormat = DateFormats.getDateFormat(JSON_DATE_FORMAT);
     final DateFormat jsonTimestampFormat = DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT);
     final JSONArray jsonArray = new JSONArray(jsonString);
-    final List<Entity> entities = new ArrayList<>();
+    final List<Entity> parsedEntities = new ArrayList<>();
     for (int i = 0; i < jsonArray.length(); i++) {
-      entities.add(parseEntity(jsonArray.getJSONObject(i), jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
+      parsedEntities.add(parseEntity(jsonArray.getJSONObject(i), jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
     }
 
-    return entities;
+    return parsedEntities;
   }
 
   /**

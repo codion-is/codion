@@ -36,6 +36,9 @@ public final class EntityConditions {
 
   private final Entities entities;
 
+  /**
+   * @param entities the domain entities
+   */
   public EntityConditions(final Entities entities) {this.entities = entities;}
 
   /**
@@ -904,7 +907,7 @@ public final class EntityConditions {
       final String domainID = (String) stream.readObject();
       final String entityID = (String) stream.readObject();
       final String propertyID = (String) stream.readObject();
-      property = (Property.ColumnProperty) Entities.getDomainEntities(domainID).getColumnProperty(entityID, propertyID);
+      property = Entities.getDomainEntities(domainID).getColumnProperty(entityID, propertyID);
       conditionType = (Type) stream.readObject();
       isNullCondition = stream.readBoolean();
       caseSensitive = stream.readBoolean();

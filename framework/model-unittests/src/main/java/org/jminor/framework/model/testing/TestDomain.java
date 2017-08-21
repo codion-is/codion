@@ -6,67 +6,21 @@ package org.jminor.framework.model.testing;
 import org.jminor.common.Item;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Properties;
-import org.jminor.framework.domain.Property;
 
 import java.awt.Color;
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Defines the domain model available for framework model unittests
+ */
 public final class TestDomain extends Entities {
-
-  public TestDomain() {
-    defineCompositeMaster();
-    defineCompositeDetail();
-    defineMaster();
-    defineDetail();
-    defineDepartment();
-    defineEmployee();
-    registerDomain();
-  }
-
-  public static final String T_COMPOSITE_MASTER = "domain.composite_master";
-  public static final String COMPOSITE_MASTER_ID = "id";
-  public static final String COMPOSITE_MASTER_ID_2 = "id2";
-
-  void defineCompositeMaster() {
-    define(T_COMPOSITE_MASTER,
-            Properties.columnProperty(COMPOSITE_MASTER_ID).setPrimaryKeyIndex(0).setNullable(true),
-            Properties.columnProperty(COMPOSITE_MASTER_ID_2).setPrimaryKeyIndex(1));
-  }
-
-  public static final String T_COMPOSITE_DETAIL = "domain.composite_detail";
-  public static final String COMPOSITE_DETAIL_MASTER_ID = "master_id";
-  public static final String COMPOSITE_DETAIL_MASTER_ID_2 = "master_id2";
-  public static final String COMPOSITE_DETAIL_MASTER_FK = "master_fk";
-
-  void defineCompositeDetail() {
-    define(T_COMPOSITE_DETAIL,
-            Properties.foreignKeyProperty(COMPOSITE_DETAIL_MASTER_FK, "master", T_COMPOSITE_MASTER,
-                    new Property.ColumnProperty[] {
-                            Properties.columnProperty(COMPOSITE_DETAIL_MASTER_ID).setPrimaryKeyIndex(0),
-                            Properties.columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).setPrimaryKeyIndex(1)
-                    }, null));
-  }
 
   public static final String T_MASTER = "domain.master_entity";
   public static final String MASTER_ID = "id";
   public static final String MASTER_NAME = "name";
   public static final String MASTER_CODE = "code";
-
-  void defineMaster() {
-    define(T_MASTER,
-            Properties.primaryKeyProperty(MASTER_ID, Types.BIGINT),
-            Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
-            Properties.columnProperty(MASTER_CODE, Types.INTEGER))
-            .setComparator((o1, o2) -> {
-              final Integer code1 = o1.getInteger(MASTER_CODE);
-              final Integer code2 = o2.getInteger(MASTER_CODE);
-
-              return code1.compareTo(code2);
-            })
-            .setStringProvider(new Entities.StringProvider(MASTER_NAME));
-  }
 
   public static final String DETAIL_ID = "id";
   public static final String DETAIL_INT = "int";
@@ -89,6 +43,47 @@ public final class TestDomain extends Entities {
 
   private static final List<Item> ITEMS = Arrays.asList(new Item(0, "0"), new Item(1, "1"),
           new Item(2, "2"), new Item(3, "3"));
+
+  public static final String DEPARTMENT_ID = "deptno";
+  public static final String DEPARTMENT_NAME = "dname";
+  public static final String DEPARTMENT_LOCATION = "loc";
+
+  public static final String T_DEPARTMENT = "scott.dept";
+
+  public static final String EMP_ID = "empno";
+  public static final String EMP_NAME = "ename";
+  public static final String EMP_JOB = "job";
+  public static final String EMP_MGR = "mgr";
+  public static final String EMP_HIREDATE = "hiredate";
+  public static final String EMP_SALARY = "sal";
+  public static final String EMP_COMMISSION = "comm";
+  public static final String EMP_DEPARTMENT = "deptno";
+  public static final String EMP_DEPARTMENT_FK = "dept_fk";
+  public static final String EMP_MGR_FK = "mgr_fk";
+  public static final String EMP_DEPARTMENT_LOCATION = "location";
+  public static final String T_EMP = "scott.emp";
+
+  public TestDomain() {
+    defineMaster();
+    defineDetail();
+    defineDepartment();
+    defineEmployee();
+    registerDomain();
+  }
+
+  void defineMaster() {
+    define(T_MASTER,
+            Properties.primaryKeyProperty(MASTER_ID, Types.BIGINT),
+            Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
+            Properties.columnProperty(MASTER_CODE, Types.INTEGER))
+            .setComparator((o1, o2) -> {
+              final Integer code1 = o1.getInteger(MASTER_CODE);
+              final Integer code2 = o2.getInteger(MASTER_CODE);
+
+              return code1.compareTo(code2);
+            })
+            .setStringProvider(new Entities.StringProvider(MASTER_NAME));
+  }
 
   void defineDetail() {
     define(T_DETAIL,
@@ -125,14 +120,6 @@ public final class TestDomain extends Entities {
             .setStringProvider(new Entities.StringProvider(DETAIL_STRING));
   }
 
-  public static final String SCOTT_DOMAIN_ID = "domain.scott.domain";
-
-  public static final String DEPARTMENT_ID = "deptno";
-  public static final String DEPARTMENT_NAME = "dname";
-  public static final String DEPARTMENT_LOCATION = "loc";
-
-  public static final String T_DEPARTMENT = "scott.dept";
-
   void defineDepartment() {
     define(T_DEPARTMENT,
             Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
@@ -147,19 +134,6 @@ public final class TestDomain extends Entities {
             .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
             .setCaption("Department");
   }
-
-  public static final String EMP_ID = "empno";
-  public static final String EMP_NAME = "ename";
-  public static final String EMP_JOB = "job";
-  public static final String EMP_MGR = "mgr";
-  public static final String EMP_HIREDATE = "hiredate";
-  public static final String EMP_SALARY = "sal";
-  public static final String EMP_COMMISSION = "comm";
-  public static final String EMP_DEPARTMENT = "deptno";
-  public static final String EMP_DEPARTMENT_FK = "dept_fk";
-  public static final String EMP_MGR_FK = "mgr_fk";
-  public static final String EMP_DEPARTMENT_LOCATION = "location";
-  public static final String T_EMP = "scott.emp";
 
   void defineEmployee() {
     define(T_EMP,

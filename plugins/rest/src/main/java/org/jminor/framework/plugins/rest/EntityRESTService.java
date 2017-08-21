@@ -43,6 +43,7 @@ import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -196,7 +197,8 @@ public final class EntityRESTService extends Application {
     final byte[] decodedBytes = Base64.getDecoder().decode(auth);
     final User user = User.parseUser(new String(decodedBytes));
     try {
-      return (RemoteEntityConnection) server.connect(Clients.connectionRequest(user, clientId, EntityRESTService.class.getName()));
+      return (RemoteEntityConnection) server.connect(Clients.connectionRequest(user, clientId, EntityRESTService.class.getName(),
+              Collections.singletonMap("jminor.client.domainModelClass", domain.getClass())));
     }
     catch (final ServerException.AuthenticationException ae) {
       throw new WebApplicationException(ae, Response.Status.UNAUTHORIZED);

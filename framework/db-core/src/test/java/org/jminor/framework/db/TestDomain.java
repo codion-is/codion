@@ -119,8 +119,6 @@ public final class TestDomain extends Entities {
             .setStringProvider(new Entities.StringProvider(DETAIL_STRING));
   }
 
-  public static final String SCOTT_DOMAIN_ID = "db.scott.domain";
-
   public static final String DEPARTMENT_ID = "deptno";
   public static final String DEPARTMENT_NAME = "dname";
   public static final String DEPARTMENT_LOCATION = "loc";
@@ -193,9 +191,5 @@ public final class TestDomain extends Entities {
 
               return null;
             });
-  }
-
-  void define() {
-    processAnnotations(TestDomain.class);
   }
 }

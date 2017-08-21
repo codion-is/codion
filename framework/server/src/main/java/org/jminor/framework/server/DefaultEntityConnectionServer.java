@@ -107,6 +107,13 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   public static final Value<Integer> WEB_SERVER_PORT = Configuration.integerValue("jminor.server.web.port", DEFAULT_WEB_SERVER_PORT);
 
   /**
+   * Specifies the id of the domain to be supplied to the web server<br>.
+   * Value type: String<br>
+   * Default value: null
+   */
+  public static final Value<String> WEB_SERVER_DOMAIN_ID = Configuration.stringValue("jminor.server.web.domainId", null);
+
+  /**
    * The initial connection logging status on the server, either true (on) or false (off)<br>
    * Value type: Boolean<br>
    * Default value: false
@@ -183,12 +190,13 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @param database the Database implementation
    * @param sslEnabled if true then ssl is enabled
    * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
-   * @param clientDomainModelClassNames the domain model classes to load on startup
+   * @param domainModelClassNames the domain model classes to load on startup
    * @param loginProxyClassNames the login proxy classes to initialize on startup
    * @param connectionValidatorClassNames the connection validation classes to initialize on startup
    * @param initialPoolUsers the users for which to initialize connection pools on startup
    * @param webDocumentRoot the web root from which to server files, if any
    * @param webServerPort the web server port, if any
+   * @param webServerDomainID the id of the domain to supply the web server with
    * @param clientLoggingEnabled if true then client logging is enabled on startup
    * @param connectionTimeout the idle connection timeout
    * @param clientSpecificConnectionTimeouts client specific connection timeouts, mapped to clientTypeID
@@ -199,11 +207,12 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    */
   public DefaultEntityConnectionServer(final String serverName, final int serverPort, final int serverAdminPort,
                                        final int registryPort, final Database database, final boolean sslEnabled,
-                                       final int connectionLimit, final Collection<String> clientDomainModelClassNames,
+                                       final int connectionLimit, final Collection<String> domainModelClassNames,
                                        final Collection<String> loginProxyClassNames, final Collection<String> connectionValidatorClassNames,
                                        final Collection<User> initialPoolUsers, final String webDocumentRoot,
-                                       final Integer webServerPort, final boolean clientLoggingEnabled,
-                                       final int connectionTimeout, final Map<String, Integer> clientSpecificConnectionTimeouts,
+                                       final Integer webServerPort, final String webServerDomainID,
+                                       final boolean clientLoggingEnabled, final int connectionTimeout,
+                                       final Map<String, Integer> clientSpecificConnectionTimeouts,
                                        final User adminUser)
           throws RemoteException {
     super(serverPort, serverName, sslEnabled ? new SslRMIClientSocketFactory() : null, sslEnabled ? new SslRMIServerSocketFactory() : null);
@@ -218,12 +227,12 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       this.adminUser = adminUser;
       setConnectionTimeout(connectionTimeout);
       setClientSpecificConnectionTimeout(clientSpecificConnectionTimeouts);
-      loadDomainModels(clientDomainModelClassNames);
+      loadDomainModels(domainModelClassNames);
       initializeConnectionPools(database, initialPoolUsers);
       loadLoginProxies(loginProxyClassNames);
       loadConnectionValidators(connectionValidatorClassNames);
       setConnectionLimit(connectionLimit);
-      webServer = startWebServer(getCombinedEntities(), webDocumentRoot, webServerPort);
+      webServer = startWebServer(webServerDomainID, webDocumentRoot, webServerPort);
       serverAdmin = new DefaultEntityConnectionServerAdmin(this, serverAdminPort);
       bindToRegistry();
     }
@@ -614,15 +623,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
   }
 
-  private Entities getCombinedEntities() {
-    final Entities entities = new Entities();
-    for (final Entities domain : Entities.getAllDomains()) {
-      entities.addAll(domain);
-    }
-
-    return entities;
-  }
-
   private Runnable getShutdownHook() {
     return () -> {
       try {
@@ -667,16 +667,17 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     return timeoutMap;
   }
 
-  private AuxiliaryServer startWebServer(final Entities entities, final String webDocumentRoot, final Integer webServerPort)
+  private AuxiliaryServer startWebServer(final String domainID, final String webDocumentRoot, final Integer webServerPort)
           throws ExecutionException, InterruptedException, ClassNotFoundException, NoSuchMethodException,
           IllegalAccessException, InvocationTargetException, InstantiationException {
     final String webServerClassName = WEB_SERVER_IMPLEMENTATION_CLASS.get();
-    if (Util.nullOrEmpty(webDocumentRoot) || Util.nullOrEmpty(webServerClassName)) {
+    if (Util.nullOrEmpty(domainID) || Util.nullOrEmpty(webDocumentRoot) || Util.nullOrEmpty(webServerClassName)) {
       return null;
     }
 
     final AuxiliaryServer auxiliaryServer = (AuxiliaryServer) Class.forName(webServerClassName).getConstructor(
-            Entities.class, Server.class, String.class, Integer.class).newInstance(entities, this, webDocumentRoot, webServerPort);
+            Entities.class, Server.class, String.class, Integer.class).newInstance(Entities.getDomainEntities(domainID),
+            this, webDocumentRoot, webServerPort);
     Executors.newSingleThreadExecutor().submit((Callable) () -> {
       LOG.info("Starting web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
       try {
@@ -806,6 +807,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     final Collection<String> initialPoolUsers = TextUtil.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_INITIAL.get());
     final String webDocumentRoot = WEB_SERVER_DOCUMENT_ROOT.get();
     final Integer webServerPort = WEB_SERVER_PORT.get();
+    final String webServerDomainId = WEB_SERVER_DOMAIN_ID.get();
     final boolean clientLoggingEnabled = SERVER_CLIENT_LOGGING_ENABLED.get();
     final Integer connectionTimeout = Server.SERVER_CONNECTION_TIMEOUT.get();
     final Map<String, Integer> clientTimeouts = getClientTimeoutValues();
@@ -821,7 +823,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     try {
       server = new DefaultEntityConnectionServer(serverName, serverPort, serverAdminPort, registryPort, database,
               sslEnabled, connectionLimit, domainModelClassNames, loginProxyClassNames, connectionValidationClassNames,
-              getPoolUsers(initialPoolUsers), webDocumentRoot, webServerPort, clientLoggingEnabled, connectionTimeout,
+              getPoolUsers(initialPoolUsers), webDocumentRoot, webServerPort, webServerDomainId, clientLoggingEnabled, connectionTimeout,
               clientTimeouts, adminUser);
 
       return server;

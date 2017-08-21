@@ -363,9 +363,9 @@ public abstract class EntityTestUnit {
    */
   private Entity insertOrSelect(final Entity entity) throws DatabaseException {
     if (!entity.isKeyNull()) {
-      final List<Entity> entities = connection.selectMany(Collections.singletonList(entity.getKey()));
-      if (!entities.isEmpty()) {
-        return entities.get(0);
+      final List<Entity> selected = connection.selectMany(Collections.singletonList(entity.getKey()));
+      if (!selected.isEmpty()) {
+        return selected.get(0);
       }
     }
 

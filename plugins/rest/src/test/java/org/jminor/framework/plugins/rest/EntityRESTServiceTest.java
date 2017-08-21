@@ -30,7 +30,6 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.ws.rs.core.MediaType;
@@ -83,7 +82,6 @@ public class EntityRESTServiceTest {
   }
 
   @Test
-  @Ignore
   public void testREST() throws URISyntaxException, IOException, JSONException, ParseException, InterruptedException,
           Serializer.SerializeException {
     final RequestConfig requestConfig = RequestConfig.custom()
@@ -263,8 +261,10 @@ public class EntityRESTServiceTest {
     Server.SERVER_HOST_NAME.set("localhost");
     Server.RMI_SERVER_HOSTNAME.set("localhost");
     System.setProperty("java.security.policy", "resources/security/all_permissions.policy");
+    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
     DefaultEntityConnectionServer.WEB_SERVER_DOCUMENT_ROOT.set(System.getProperty("user.dir"));
     DefaultEntityConnectionServer.WEB_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
+    DefaultEntityConnectionServer.WEB_SERVER_DOMAIN_ID.set(TestDomain.class.getName());
   }
 
   private static void deconfigure() {
@@ -276,7 +276,9 @@ public class EntityRESTServiceTest {
     Server.SERVER_HOST_NAME.set(null);
     Server.RMI_SERVER_HOSTNAME.set(null);
     System.clearProperty("java.security.policy");
+    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(null);
     DefaultEntityConnectionServer.WEB_SERVER_DOCUMENT_ROOT.set(null);
     DefaultEntityConnectionServer.WEB_SERVER_PORT.set(null);
+    DefaultEntityConnectionServer.WEB_SERVER_DOMAIN_ID.set(null);
   }
 }
