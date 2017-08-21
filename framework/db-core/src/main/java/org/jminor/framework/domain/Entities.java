@@ -1382,7 +1382,7 @@ public class Entities {
     /**
      * Adds the value mapped to the given property in the {@link Entity} instance mapped to the given foreignKeyPropertyID
      * to this {@link StringProvider}
-     * @param foreignKeyPropertyID the ID of the foreign key property
+     * @param foreignKeyProperty the foreign key property
      * @param propertyID the ID of the property in the referenced entity to use
      * @return this {@link StringProvider} instance
      */
@@ -1493,6 +1493,7 @@ public class Entities {
 
     /**
      * Instantiates a new {@link Entity.Validator}
+     * @param entities the domain model entities
      * @param entityID the ID of the entities to validate
      */
     public Validator(final Entities entities, final String entityID) {

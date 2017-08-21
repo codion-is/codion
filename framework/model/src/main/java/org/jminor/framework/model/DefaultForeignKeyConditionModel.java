@@ -25,6 +25,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
 
   /**
    * Constructs a DefaultForeignKeyConditionModel instance
+   * @param entityConditions the {@link EntityConditions} instance to use
    * @param property the property
    */
   public DefaultForeignKeyConditionModel(final EntityConditions entityConditions,
@@ -34,7 +35,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
 
   /**
    * Constructs a DefaultForeignKeyConditionModel instance
-   * @param entityConditions
+   * @param entityConditions the {@link EntityConditions} instance to use
    * @param property the property
    * @param entityLookupModel a EntityLookupModel
    */

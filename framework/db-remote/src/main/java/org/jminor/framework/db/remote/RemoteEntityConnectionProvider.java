@@ -45,6 +45,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
 
   /**
    * Instantiates a new RemoteEntityConnectionProvider.
+   * @param entities the domain model entities
    * @param serverHostName the server host name
    * @param user the user to use when initializing connections
    * @param clientID a UUID identifying the client
@@ -57,6 +58,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
 
   /**
    * Instantiates a new RemoteEntityConnectionProvider.
+   * @param entities the domain model entities
    * @param serverHostName the server host name
    * @param user the user to use when initializing connections
    * @param clientID a UUID identifying the client
@@ -70,6 +72,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
 
   /**
    * Instantiates a new RemoteEntityConnectionProvider.
+   * @param entities the domain model entities
    * @param serverHostName the server host name
    * @param user the user to use when initializing connections
    * @param clientID a UUID identifying the client

@@ -21,7 +21,7 @@ public class DefaultPropertyConditionModel extends DefaultColumnConditionModel<P
 
   /**
    * Constructs a DefaultPropertyConditionModel instance
-   * @param entityConditions
+   * @param entityConditions the {@link EntityConditions} instance to use
    * @param property the property
    * @throws IllegalArgumentException if an illegal constant is used
    */

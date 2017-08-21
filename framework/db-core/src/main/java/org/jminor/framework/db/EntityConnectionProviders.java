@@ -20,6 +20,7 @@ public final class EntityConnectionProviders {
 
   /**
    * Returns a EntityConnectionProvider according to system properties, using a randomly generated clientID
+   * @param entities the domain model entities
    * @param user the user for the connection
    * @param clientTypeID the client type id
    * @return a EntityConnectionProvider
@@ -30,6 +31,7 @@ public final class EntityConnectionProviders {
 
   /**
    * Returns a EntityConnectionProvider according to system properties, using a randomly generated clientID
+   * @param entities the domain model entities
    * @param user the user for the connection
    * @param clientTypeID the client type id
    * @param clientVersion the client version, if any
@@ -42,6 +44,7 @@ public final class EntityConnectionProviders {
 
   /**
    * Returns a EntityConnectionProvider according to system properties
+   * @param entities the domain model entities
    * @param user the user for the connection
    * @param clientTypeID the client type id
    * @param clientID the unique identifier for the client requesting the connection provider
@@ -55,6 +58,7 @@ public final class EntityConnectionProviders {
   /**
    * Returns a remote or local EntityConnectionProvider according to system properties.
    * Loads classes by name, so these need to available on the classpath
+   * @param entities the domain model entities
    * @param user the user for the connection
    * @param clientTypeID the client type id
    * @param clientID a unique client ID

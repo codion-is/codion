@@ -64,7 +64,7 @@ public abstract class EntityTestUnit {
 
   /**
    * Instantiates a new EntityTestUnit.
-   * @param entities
+   * @param entities the domain model entities
    */
   public EntityTestUnit(final Entities entities) {
     this.entities = entities;
@@ -122,6 +122,7 @@ public abstract class EntityTestUnit {
   }
 
   /**
+   * @param entities the domain model entities
    * @param entityID the entity ID
    * @param referenceEntities entities referenced by the given entity ID
    * @return a Entity instance containing randomized values, based on the property definitions
@@ -131,6 +132,7 @@ public abstract class EntityTestUnit {
   }
 
   /**
+   * @param entities the domain model entities
    * @param entityID the entity ID
    * @param valueProvider the value provider
    * @return an Entity instance initialized with values provided by the given value provider
@@ -146,6 +148,7 @@ public abstract class EntityTestUnit {
   /**
    * Randomizes the values in the given entity, note that if a reference entity is not provided
    * the respective foreign key value in not modified
+   * @param entities the domain model entities
    * @param entity the entity to randomize
    * @param includePrimaryKey if true then the primary key values are include
    * @param referenceEntities entities referenced by the given entity via foreign keys

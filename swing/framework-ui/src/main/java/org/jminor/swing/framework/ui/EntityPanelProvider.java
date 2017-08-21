@@ -69,14 +69,6 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
   /**
    * Instantiates a new EntityPanelProvider
    * @param modelProvider the EntityModelProvider to base this panel provider on
-   */
-  public EntityPanelProvider (final String caption, final SwingEntityModelProvider modelProvider) {
-    this(modelProvider, caption);
-  }
-
-  /**
-   * Instantiates a new EntityPanelProvider
-   * @param modelProvider the EntityModelProvider to base this panel provider on
    * @param caption the panel caption to use
    */
   public EntityPanelProvider (final SwingEntityModelProvider modelProvider, final String caption) {

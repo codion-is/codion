@@ -14,6 +14,7 @@ public interface PropertyConditionModelProvider {
 
   /**
    * Initializes a PropertyConditionModel for the given property
+   * @param entityConditions the {@link EntityConditions} instance to use
    * @param property the Property for which to create a PropertyConditionModel
    * @return a PropertyConditionModel for the given property, null if searching
    * should not be allowed for this property

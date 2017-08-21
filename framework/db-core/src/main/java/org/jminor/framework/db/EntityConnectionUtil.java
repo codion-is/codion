@@ -20,6 +20,7 @@ public final class EntityConnectionUtil {
 
   /**
    * Copies the given entities from source to destination
+   * @param entityConditions the {@link EntityConditions} instance to use
    * @param source the source db
    * @param destination the destination db
    * @param batchSize the number of records to copy between commits

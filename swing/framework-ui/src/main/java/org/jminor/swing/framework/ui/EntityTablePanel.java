@@ -626,7 +626,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   /**
    * Exports the selected records as a text file using the available serializer
-   * @see org.jminor.framework.domain.EntityUtil#getEntitySerializer()
+   * @see org.jminor.framework.domain.Entities#getEntitySerializer()
    * @see Entities#ENTITY_SERIALIZER_CLASS
    */
   public final void exportSelected() {

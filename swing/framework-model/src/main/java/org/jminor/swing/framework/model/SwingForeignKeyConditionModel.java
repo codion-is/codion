@@ -20,6 +20,7 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
 
   /**
    * Constructs a SwingForeignKeyConditionModel instance
+   * @param entityConditions the {@link EntityConditions} instance to use
    * @param property the property
    * @param entityComboBoxModel a EntityComboBoxModel
    */

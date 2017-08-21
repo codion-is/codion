@@ -24,6 +24,7 @@ public abstract class EntityEditPanelTestUnit {
 
   /**
    * Instantiates a new edit panel test unit for the given edit panel class
+   * @param entities the domain model entities
    * @param editPanelClass the edit panel class
    * @param entityID the entityId
    * @param user the user

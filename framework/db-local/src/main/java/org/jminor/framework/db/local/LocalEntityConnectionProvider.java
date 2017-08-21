@@ -48,6 +48,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
+   * @param entities the domain model entities
    * @param user the user
    */
   public LocalEntityConnectionProvider(final Entities entities, final User user) {
@@ -56,6 +57,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
+   * @param entities the domain model entities
    * @param user the user
    * @param database the Database implementation
    */
@@ -65,6 +67,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
+   * @param entities the domain model entities
    * @param user the user
    * @param database the Database implementation
    * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection

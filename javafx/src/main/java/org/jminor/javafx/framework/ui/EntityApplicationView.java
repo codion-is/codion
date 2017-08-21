@@ -146,6 +146,7 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
 
   /**
    * Initializes the connection provider to use in this application
+   * @param entities the domain model entities
    * @param user the user on which to base the connection
    * @param clientTypeID a String identifying the client type
    * @return a {@link EntityConnectionProvider} based on the given user and client type

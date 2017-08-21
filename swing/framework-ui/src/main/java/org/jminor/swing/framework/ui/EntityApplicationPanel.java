@@ -744,6 +744,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * Initializes the entity db provider
+   * @param entities the domain model entities
    * @param user the user
    * @param clientTypeID a string specifying the client type
    * @return an initialized EntityConnectionProvider

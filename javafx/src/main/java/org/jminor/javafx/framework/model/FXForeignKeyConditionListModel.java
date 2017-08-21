@@ -19,6 +19,7 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
 
   /**
    * Constructs a FXForeignKeyConditionListModel instance
+   * @param entityConditions the {@link EntityConditions} instance to use
    * @param property the property
    * @param listModel the list model to use
    */

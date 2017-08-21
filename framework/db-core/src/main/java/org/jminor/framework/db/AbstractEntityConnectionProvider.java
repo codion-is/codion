@@ -39,6 +39,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   /**
    * Instantiates a new AbstractEntityConnectionProvider.
+   * @param entities the domain model entities
    * @param user the user to base the connection provider on
    */
   public AbstractEntityConnectionProvider(final Entities entities, final User user) {
@@ -47,6 +48,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   /**
    * Instantiates a new AbstractEntityConnectionProvider.
+   * @param entities the domain model entities
    * @param user the user to base the connection provider on
    * @param scheduleValidityCheck if true then a connection validity check is run every 10 seconds
    */

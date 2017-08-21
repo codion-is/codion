@@ -20,6 +20,7 @@ public final class EntityRESTServer extends Server implements org.jminor.common.
 
   /**
    * Instantiates a new EntityRESTServer on the given port.
+   * @param entities the domain model entities
    * @param connectionServer the Server serving the connection requests
    * @param documentRoot the document root
    * @param port the port on which to serve

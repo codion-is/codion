@@ -302,7 +302,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @param remoteClient the client requesting the connection
    * @param port the port to use when exporting this remote connection
    * @param clientLoggingEnabled specifies whether or not method logging is enabled
-   * @param sslEnabled specifies whether or not ssl should be enabled
+   * @param clientSocketFactory the client socket factory, null for default
+   * @param serverSocketFactory the server socket factory, null for default
    * @throws RemoteException in case of an exception
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
