@@ -158,7 +158,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
   private static final String FROM_CLASSPATH = "' from classpath";
 
-  private final Map<String, Entities> clientDomainModels = new HashMap<>();
+  private final Map<Class<? extends Entities>, Entities> clientDomainModels = new HashMap<>();
   private final AuxiliaryServer webServer;
   private final Database database;
   private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new DefaultEntityConnectionServer.MaintenanceTask(),
@@ -314,13 +314,18 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
                                                                   final RMIClientSocketFactory clientSocketFactory,
                                                                   final RMIServerSocketFactory serverSocketFactory)
           throws RemoteException, DatabaseException {
+    final Class domainModelClass = (Class) remoteClient.getParameters().get("jminor.client.domainModelClass");
+    final Entities domainModel = clientDomainModels.get(domainModelClass);
+    if (domainModel == null) {
+      throw new IllegalArgumentException("Domain model of type: '" + domainModelClass + "' is not available");
+    }
     if (connectionPool != null) {
-      return new DefaultRemoteEntityConnection(clientDomainModels.get(remoteClient.getConnectionRequest().getClientTypeID()),
-              connectionPool, remoteClient, port, clientLoggingEnabled, clientSocketFactory, serverSocketFactory);
+      return new DefaultRemoteEntityConnection(domainModel, connectionPool, remoteClient, port, clientLoggingEnabled,
+              clientSocketFactory, serverSocketFactory);
     }
 
-    return new DefaultRemoteEntityConnection(clientDomainModels.get(remoteClient.getConnectionRequest().getClientTypeID()), database,
-            remoteClient, port, clientLoggingEnabled, clientSocketFactory, serverSocketFactory);
+    return new DefaultRemoteEntityConnection(domainModel, database, remoteClient, port, clientLoggingEnabled,
+            clientSocketFactory, serverSocketFactory);
   }
 
   /**
@@ -727,13 +732,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
         for (final String className : domainModelClassNames) {
           final String message = "Server loading domain model class '" + className + FROM_CLASSPATH;
           LOG.info(message);
-          final String[] clientDomainModel = className.split(":");
-          if (clientDomainModel.length < 2) {
-            throw new IllegalArgumentException("Wrong client domain format (clientID:domainClassname)");
-          }
-
-          final Entities entities = (Entities) Class.forName(clientDomainModel[1]).getDeclaredConstructor().newInstance();
-          clientDomainModels.put(clientDomainModel[0], entities);
+          final Entities entities = (Entities) Class.forName(className).getDeclaredConstructor().newInstance();
+          clientDomainModels.put(entities.getClass(), entities);
         }
       }
     }
@@ -741,7 +741,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       throw cl;
     }
     catch (final Exception e) {
-      LOG.error("Exception while instantiating domain model", e);
+      LOG.error("Exception while constructing domain model", e);
     }
   }
 

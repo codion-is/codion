@@ -24,6 +24,7 @@ import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -283,6 +284,11 @@ public final class Servers {
     @Override
     public Version getFrameworkVersion() {
       return connectionRequest.getFrameworkVersion();
+    }
+
+    @Override
+    public Map<String, Object> getParameters() {
+      return connectionRequest.getParameters();
     }
 
     @Override

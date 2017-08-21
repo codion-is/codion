@@ -4553,3 +4553,4 @@
   MethodLogger public api reduced
 0.11.0
   Major surgery, Entities and EntityConditions now instance based (unfinished, javadocs suffering)
+  ConnectionRequest.getParameters() added, used to specify the required domain model class

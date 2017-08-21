@@ -25,6 +25,7 @@ import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -77,8 +78,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
    */
   public RemoteEntityConnectionProvider(final Entities entities, final String serverHostName, final User user, final UUID clientID,
-                                        final String clientTypeID, final Version clientVersion,
-                                        final boolean scheduleValidityCheck) {
+                                        final String clientTypeID, final Version clientVersion, final boolean scheduleValidityCheck) {
     super(entities, user, scheduleValidityCheck);
     this.serverHostName = Objects.requireNonNull(serverHostName, "serverHostName");
     this.clientID = Objects.requireNonNull(clientID, "clientID");
@@ -131,7 +131,8 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     try {
       LOG.debug("Initializing connection for {}", getUser());
       final RemoteEntityConnection remote = getServer().connect(
-              Clients.connectionRequest(getUser(), clientID, clientTypeID, clientVersion));
+              Clients.connectionRequest(getUser(), clientID, clientTypeID, clientVersion,
+                      Collections.singletonMap("jminor.client.domainModelClass", getEntities().getClass())));
 
       return Util.initializeProxy(EntityConnection.class, new RemoteEntityConnectionHandler(remote));
     }

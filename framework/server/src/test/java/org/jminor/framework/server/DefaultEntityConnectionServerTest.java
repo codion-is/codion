@@ -28,6 +28,8 @@ import org.junit.Test;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
@@ -43,6 +45,7 @@ public class DefaultEntityConnectionServerTest {
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
 
   private static final User ADMIN_USER = new User("scott", "tiger");
+  private static final Map<String, Object> CONNECTION_PARAMS = Collections.singletonMap("jminor.client.domainModelClass", TestDomain.class);
   private static Server<RemoteEntityConnection, EntityConnectionServerAdmin> server;
   private static EntityConnectionServerAdmin admin;
 
@@ -69,7 +72,7 @@ public class DefaultEntityConnectionServerTest {
   @Test(expected = ServerException.AuthenticationException.class)
   public void testWrongPassword() throws Exception {
     server.connect(Clients.connectionRequest(new User(UNIT_TEST_USER.getUsername(), "foobar"),
-            UUID.randomUUID(), getClass().getSimpleName()));
+            UUID.randomUUID(), getClass().getSimpleName(), CONNECTION_PARAMS));
   }
 
   @Test(expected = ServerException.AuthenticationException.class)
@@ -99,7 +102,8 @@ public class DefaultEntityConnectionServerTest {
 
   @Test
   public void test() throws Exception {
-    final ConnectionRequest connectionRequestOne = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID");
+    final ConnectionRequest connectionRequestOne = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
+            "ClientTypeID", CONNECTION_PARAMS);
 
     final RemoteEntityConnection remoteConnectionOne = server.connect(connectionRequestOne);
     assertTrue(remoteConnectionOne.isConnected());
@@ -111,7 +115,15 @@ public class DefaultEntityConnectionServerTest {
     admin.setMaximumPoolCheckOutTime(UNIT_TEST_USER, 2005);
     assertEquals(2005, admin.getMaximumPoolCheckOutTime(UNIT_TEST_USER));
 
-    final ConnectionRequest connectionRequestTwo = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID");
+    try {
+      server.connect(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID",
+              Collections.singletonMap("jminor.client.domainModelClass", EmptyDomain.class)));
+      fail();
+    }
+    catch (final ServerException.LoginException e) {}
+
+    final ConnectionRequest connectionRequestTwo = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
+            "ClientTypeID", CONNECTION_PARAMS);
     final RemoteEntityConnection remoteConnectionTwo = server.connect(connectionRequestTwo);
     admin.setLoggingEnabled(connectionRequestTwo.getClientID(), true);
     assertTrue(admin.isLoggingEnabled(connectionRequestOne.getClientID()));
@@ -177,11 +189,11 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(3, admin.getConnectionLimit());
     final String testClientTypeID = "TestLoginProxy";
     final ConnectionRequest connectionRequestJohn = Clients.connectionRequest(new User("john", "hello"),
-            UUID.randomUUID(), testClientTypeID);
+            UUID.randomUUID(), testClientTypeID, CONNECTION_PARAMS);
     final ConnectionRequest connectionRequestHelen = Clients.connectionRequest(new User("helen", "juno"),
-            UUID.randomUUID(), testClientTypeID);
+            UUID.randomUUID(), testClientTypeID, CONNECTION_PARAMS);
     final ConnectionRequest connectionRequestInvalid = Clients.connectionRequest(new User("foo", "bar"),
-            UUID.randomUUID(), testClientTypeID);
+            UUID.randomUUID(), testClientTypeID, CONNECTION_PARAMS);
     server.connect(connectionRequestJohn);
     server.connect(connectionRequestHelen);
     try {
@@ -202,7 +214,7 @@ public class DefaultEntityConnectionServerTest {
 
   @Test
   public void remoteEntityConnectionProvider() throws Exception {
-    final RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider(new Entities(), "localhost",
+    final RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider(ENTITIES, "localhost",
             UNIT_TEST_USER, UUID.randomUUID(), "TestClient");
 
     assertEquals(EntityConnection.Type.REMOTE, provider.getConnectionType());
@@ -277,7 +289,7 @@ public class DefaultEntityConnectionServerTest {
     Server.SERVER_ADMIN_USER.set("scott:tiger");
     DefaultEntityConnectionServer.SERVER_CONNECTION_POOLING_INITIAL.set(UNIT_TEST_USER.getUsername() + ":" + UNIT_TEST_USER.getPassword());
     DefaultEntityConnectionServer.SERVER_CLIENT_CONNECTION_TIMEOUT.set("ClientTypeID:10000");
-    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set("ClientTypeID:org.jminor.framework.server.TestDomain");
+    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set("org.jminor.framework.server.TestDomain");
     DefaultEntityConnectionServer.SERVER_LOGIN_PROXY_CLASSES.set("org.jminor.framework.server.TestLoginProxy");
     DefaultEntityConnectionServer.SERVER_CONNECTION_VALIDATOR_CLASSES.set("org.jminor.framework.server.TestConnectionValidator");
     DefaultEntityConnectionServer.SERVER_CLIENT_LOGGING_ENABLED.set(true);
@@ -289,6 +301,8 @@ public class DefaultEntityConnectionServerTest {
     System.setProperty("javax.net.ssl.keyStore", "../../resources/security/JMinorServerKeystore");
     System.setProperty("javax.net.ssl.keyStorePassword", "crappypass");
   }
+
+  public static class EmptyDomain extends Entities {}
 
   public static final class TestWebServer implements Server.AuxiliaryServer {
 

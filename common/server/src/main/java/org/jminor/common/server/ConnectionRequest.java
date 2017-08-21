@@ -7,6 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.Version;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -38,4 +39,9 @@ public interface ConnectionRequest extends Serializable {
    * @return the version of JMinor the client is using
    */
   Version getFrameworkVersion();
+
+  /**
+   * Misc. parameters
+   */
+  Map<String, Object> getParameters();
 }
