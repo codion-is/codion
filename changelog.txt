@@ -4400,3 +4400,4 @@
   ProgressWorker typo fixed
   Configuration.CLIENT_DOMAIN_MODEL_CLASS added
   DefaultEntityApplicationModel.loadDomainModel() default implementation added based on the above
+>>downstream bugfix from 0.10.9: SwingFilteredComboBoxModel bug fixed, filterContents() did not assume the contents of the selected item could have change during setContents()
