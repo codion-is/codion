@@ -16,7 +16,6 @@ import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.plugins.json.EntityJSONParser;
 
@@ -124,7 +123,7 @@ public final class EntityRESTService extends Application {
       final List<Entity> toInsert = new ArrayList<>(parsedEntities.size());
       final List<Entity> toUpdate = new ArrayList<>(parsedEntities.size());
       for (final Entity entity : parsedEntities) {
-        if (EntityUtil.isEntityNew(entity)) {
+        if (Entities.isEntityNew(entity)) {
           toInsert.add(entity);
         }
         else {

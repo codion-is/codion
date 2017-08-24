@@ -21,8 +21,8 @@ import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
@@ -201,7 +201,7 @@ public class LocalEntityConnectionTest {
     assertTrue(result.isEmpty());
     result = connection.selectMany(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID, 10, 20);
     assertEquals(2, result.size());
-    result = connection.selectMany(EntityUtil.getKeys(result));
+    result = connection.selectMany(Entities.getKeys(result));
     assertEquals(2, result.size());
     result = connection.selectMany(ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT, Conditions.<Property.ColumnProperty>stringCondition("deptno in (10, 20)")));
     assertEquals(2, result.size());

@@ -18,7 +18,6 @@ import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
 import org.junit.After;
@@ -343,7 +342,7 @@ public abstract class EntityTestUnit {
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
   private void testDelete(final Entity testEntity) throws DatabaseException {
-    connection.delete(EntityUtil.getKeys(Collections.singletonList(testEntity)));
+    connection.delete(Entities.getKeys(Collections.singletonList(testEntity)));
 
     boolean caught = false;
     try {

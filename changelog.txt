@@ -4561,3 +4561,4 @@
   DefultEntityConnectionServer.WEB_SERVER_DOMAIN_ID configuration property added, EntityRESTServiceTest fixed
   EntityConnectionProvider.getConditions() added, used where applicable
   EntityPanelProvider, re-added a couple of convenient constructors
+  EntityUtil removed, methods moved to Entities, EntityBeanMapper moved up

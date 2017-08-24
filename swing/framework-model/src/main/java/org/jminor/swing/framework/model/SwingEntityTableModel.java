@@ -13,7 +13,6 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.DefaultEntityTableConditionModel;
@@ -398,7 +397,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final void replaceEntities(final Collection<Entity> entities) {
-    replaceEntitiesByKey(EntityUtil.mapToKey(entities));
+    replaceEntitiesByKey(Entities.mapToKey(entities));
   }
 
   /** {@inheritDoc} */
@@ -555,7 +554,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
     final String[][] header = {headerValues.toArray(new String[headerValues.size()])};
 
-    return TextUtil.getDelimitedString(header, EntityUtil.getStringValueArray(properties,
+    return TextUtil.getDelimitedString(header, Entities.getStringValueArray(properties,
             getSelectionModel().isSelectionEmpty() ? getVisibleItems() : getSelectionModel().getSelectedItems()),
             String.valueOf(delimiter));
   }

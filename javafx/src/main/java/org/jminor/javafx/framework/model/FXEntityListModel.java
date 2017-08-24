@@ -12,7 +12,6 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.EntityEditModel;
@@ -208,7 +207,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final void replaceEntities(final Collection<Entity> entities) {
-    replaceEntitiesByKey(EntityUtil.mapToKey(entities));
+    replaceEntitiesByKey(Entities.mapToKey(entities));
   }
 
   /** {@inheritDoc} */
@@ -446,7 +445,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
     final String[][] header = {headerValues.toArray(new String[headerValues.size()])};
 
-    return TextUtil.getDelimitedString(header, EntityUtil.getStringValueArray(properties,
+    return TextUtil.getDelimitedString(header, Entities.getStringValueArray(properties,
             getSelectionModel().isSelectionEmpty() ? getVisibleItems() : getSelectionModel().getSelectedItems()),
             String.valueOf(delimiter));
   }

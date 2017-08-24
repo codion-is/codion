@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -75,6 +76,7 @@ public class Entities {
 
   private static final String ENTITY_PARAM = "entity";
   private static final String ENTITY_ID_PARAM = "entityID";
+  private static final String ENTITIES_PARAM = "entities";
   private static final String PROPERTY_ID_PARAM = "propertyID";
 
   private static final Map<String, Entities> DOMAIN_ENTITIES = new HashMap<>();
@@ -914,6 +916,271 @@ public class Entities {
   }
 
   /**
+   * Returns true if this entity has a null primary key or a null original primary key,
+   * which is the best guess about an entity being new, as in, not existing in a database.
+   * @param entity the entity
+   * @return true if this entity has not been persisted
+   */
+  public static boolean isEntityNew(final Entity entity) {
+    final Entity.Key key = entity.getKey();
+    final Entity.Key originalKey = entity.getOriginalKey();
+
+    return key.isNull() || originalKey.isNull();
+  }
+
+  /**
+   * @param entities the entities
+   * @return a List of entities that have been modified
+   */
+  public static List<Entity> getModifiedEntities(final Collection<Entity> entities) {
+    Objects.requireNonNull(entities, ENTITIES_PARAM);
+    final List<Entity> modifiedEntities = new ArrayList<>();
+    for (final Entity entity : entities) {
+      if (entity.isModified()) {
+        modifiedEntities.add(entity);
+      }
+    }
+
+    return modifiedEntities;
+  }
+
+  /**
+   * @param entities the entities
+   * @return a List containing the primary keys of the given entities
+   */
+  public static List<Entity.Key> getKeys(final Collection<Entity> entities) {
+    return getKeys(entities, false);
+  }
+
+  /**
+   * @param entities the entities
+   * @param originalValue if true then the original value of the primary key is used
+   * @return a List containing the primary keys of the given entities
+   */
+  public static List<Entity.Key> getKeys(final Collection<Entity> entities, final boolean originalValue) {
+    Objects.requireNonNull(entities, ENTITIES_PARAM);
+    final List<Entity.Key> keys = new ArrayList<>(entities.size());
+    for (final Entity entity : entities) {
+      keys.add(originalValue ? entity.getOriginalKey() : entity.getKey());
+    }
+
+    return keys;
+  }
+
+  /**
+   * Retrieves the values of the given keys, assuming they are single column keys.
+   * @param <T> the value type
+   * @param keys the keys
+   * @return the actual property values of the given keys
+   */
+  public static <T> List<T> getValues(final List<Entity.Key> keys) {
+    Objects.requireNonNull(keys, "keys");
+    final List<T> list = new ArrayList<>(keys.size());
+    for (int i = 0; i < keys.size(); i++) {
+      final Entity.Key key = keys.get(i);
+      list.add((T) key.get(key.getFirstProperty()));
+    }
+
+    return list;
+  }
+
+  /**
+   * @param <T> the value type
+   * @param propertyID the ID of the property for which to retrieve the values
+   * @param entities the entities from which to retrieve the property value
+   * @return a Collection containing the values of the property with the given ID from the given entities,
+   * null values are included
+   */
+  public static <T> Collection<T> getValues(final String propertyID, final Collection<Entity> entities) {
+    return getValues(propertyID, entities, true);
+  }
+
+  /**
+   * @param <T> the value type
+   * @param propertyID the ID of the property for which to retrieve the values
+   * @param entities the entities from which to retrieve the property value
+   * @param includeNullValues if true then null values are included
+   * @return a Collection containing the values of the property with the given ID from the given entities
+   */
+  public static <T> Collection<T> getValues(final String propertyID, final Collection<Entity> entities,
+                                            final boolean includeNullValues) {
+    return collectValues(new ArrayList<T>(entities == null ? 0 : entities.size()), propertyID, entities, includeNullValues);
+  }
+
+  /**
+   * Returns a Collection containing the distinct values of {@code propertyID} from the given entities, excluding null values.
+   * If the {@code entities} list is null an empty Collection is returned.
+   * @param <T> the value type
+   * @param propertyID the ID of the property for which to retrieve the values
+   * @param entities the entities from which to retrieve the values
+   * @return a Collection containing the distinct property values, excluding null values
+   */
+  public static <T> Collection<T> getDistinctValues(final String propertyID, final Collection<Entity> entities) {
+    return getDistinctValues(propertyID, entities, false);
+  }
+
+  /**
+   * Returns a Collection containing the distinct values of {@code propertyID} from the given entities.
+   * If the {@code entities} list is null an empty Collection is returned.
+   * @param <T> the value type
+   * @param propertyID the ID of the property for which to retrieve the values
+   * @param entities the entities from which to retrieve the values
+   * @param includeNullValue if true then null is considered a value
+   * @return a Collection containing the distinct property values
+   */
+  public static <T> Collection<T> getDistinctValues(final String propertyID, final Collection<Entity> entities,
+                                                    final boolean includeNullValue) {
+    return collectValues(new HashSet<T>(), propertyID, entities, includeNullValue);
+  }
+
+  /**
+   * Sets the value of the property with ID {@code propertyID} to {@code value}
+   * in the given entities
+   * @param propertyID the ID of the property for which to set the value
+   * @param value the value
+   * @param entities the entities for which to set the value
+   * @return the old property values mapped to their respective primary key
+   */
+  public static Map<Entity.Key, Object> put(final String propertyID, final Object value,
+                                            final Collection<Entity> entities) {
+    Objects.requireNonNull(entities, ENTITIES_PARAM);
+    final Map<Entity.Key, Object> oldValues = new HashMap<>(entities.size());
+    for (final Entity entity : entities) {
+      oldValues.put(entity.getKey(), entity.put(propertyID, value));
+    }
+
+    return oldValues;
+  }
+
+  /**
+   * Maps the given entities to their primary key
+   * @param entities the entities to map
+   * @return the mapped entities
+   */
+  public static Map<Entity.Key, Entity> mapToKey(final Collection<Entity> entities) {
+    Objects.requireNonNull(entities, ENTITIES_PARAM);
+    final Map<Entity.Key, Entity> entityMap = new HashMap<>();
+    for (final Entity entity : entities) {
+      entityMap.put(entity.getKey(), entity);
+    }
+
+    return entityMap;
+  }
+
+  /**
+   * Returns a LinkedHashMap containing the given entities mapped to the value of the property with ID {@code propertyID},
+   * respecting the iteration order of the given collection
+   * @param <K> the key type
+   * @param propertyID the ID of the property which value should be used for mapping
+   * @param entities the entities to map by property value
+   * @return a Map of entities mapped to property value
+   */
+  public static <K> LinkedHashMap<K, Collection<Entity>> mapToValue(final String propertyID, final Collection<Entity> entities) {
+    return Util.map(entities, value -> (K) value.get(propertyID));
+  }
+
+  /**
+   * Returns a LinkedHashMap containing the given entities mapped to their entityIDs,
+   * respecting the iteration order of the given collection
+   * @param entities the entities to map by entityID
+   * @return a Map of entities mapped to entityID
+   */
+  public static LinkedHashMap<String, Collection<Entity>> mapToEntityID(final Collection<Entity> entities) {
+    return Util.map(entities, Entity::getEntityID);
+  }
+
+  /**
+   * Returns a LinkedHashMap containing the given entity keys mapped to their entityIDs,
+   * respecting the iteration order of the given collection
+   * @param keys the entity keys to map by entityID
+   * @return a Map of entity keys mapped to entityID
+   */
+  public static LinkedHashMap<String, Collection<Entity.Key>> mapKeysToEntityID(final Collection<Entity.Key> keys) {
+    return Util.map(keys, Entity.Key::getEntityID);
+  }
+
+  /**
+   * Maps the given entities and their updated counterparts to their original primary keys,
+   * assumes a single copy of each entity in the given lists.
+   * @param entitiesBeforeUpdate the entities before update
+   * @param entitiesAfterUpdate the entities after update
+   * @return the updated entities mapped to their respective original primary keys
+   */
+  public static Map<Entity.Key, Entity> mapToOriginalPrimaryKey(final List<Entity> entitiesBeforeUpdate,
+                                                                final List<Entity> entitiesAfterUpdate) {
+    final List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
+    final Map<Entity.Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
+    for (final Entity entity : entitiesBeforeUpdate) {
+      keyMap.put(entity.getOriginalKey(), findAndRemove(entity.getKey(), entitiesAfterUpdateCopy.listIterator()));
+    }
+
+    return keyMap;
+  }
+
+  private static Entity findAndRemove(final Entity.Key primaryKey, final ListIterator<Entity> iterator) {
+    while (iterator.hasNext()) {
+      final Entity current = iterator.next();
+      if (current.getKey().equals(primaryKey)) {
+        iterator.remove();
+
+        return current;
+      }
+    }
+
+    return null;
+  }
+
+  private static <T> Collection<T> collectValues(final Collection<T> collection, final String propertyID,
+                                                 final Collection<Entity> entities, final boolean includeNullValues) {
+    Objects.requireNonNull(collection);
+    Objects.requireNonNull(propertyID);
+    if (!Util.nullOrEmpty(entities)) {
+      for (final Entity entity : entities) {
+        final Object value = entity.get(propertyID);
+        if (value != null || includeNullValues) {
+          collection.add((T) value);
+        }
+      }
+    }
+
+    return collection;
+  }
+
+  /**
+   * Creates a two dimensional array containing the values of the given properties for the given entities in string format.
+   * @param properties the properties
+   * @param entities the entities
+   * @return the values of the given properties from the given entities in a two dimensional array
+   */
+  public static String[][] getStringValueArray(final List<? extends Property> properties, final List<Entity> entities) {
+    final String[][] data = new String[entities.size()][];
+    for (int i = 0; i < data.length; i++) {
+      final List<String> line = new ArrayList<>();
+      for (final Property property : properties) {
+        line.add(entities.get(i).getAsString(property));
+      }
+
+      data[i] = line.toArray(new String[line.size()]);
+    }
+
+    return data;
+  }
+
+  /**
+   * @param entities the entities to copy
+   * @return deep copies of the entities, in the same order as they are received
+   */
+  public static List<Entity> copyEntities(final List<Entity> entities) {
+    Objects.requireNonNull(entities, ENTITIES_PARAM);
+    final List<Entity> copies = new ArrayList<>(entities.size());
+    for (final Entity entity : entities) {
+      copies.add((Entity) entity.getCopy());
+    }
+
+    return copies;
+  }
+
+  /**
    * Sorts the given properties by caption, or if that is not available, property ID, ignoring case
    * @param properties the properties to sort
    */
@@ -1514,7 +1781,7 @@ public class Entities {
      * @param entityID the ID of the entities to validate
      */
     public Validator(final Entities entities, final String entityID) {
-      this.entities = Objects.requireNonNull(entities, "entities");
+      this.entities = Objects.requireNonNull(entities, ENTITIES_PARAM);
       this.entityID = Objects.requireNonNull(entityID, ENTITY_ID_PARAM);
     }
 

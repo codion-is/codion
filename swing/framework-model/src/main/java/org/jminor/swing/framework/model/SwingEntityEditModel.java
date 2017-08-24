@@ -6,8 +6,8 @@ package org.jminor.swing.framework.model;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.DefaultEntityEditModel;
 import org.jminor.framework.model.EntityComboBoxModel;
@@ -193,7 +193,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   /** {@inheritDoc} */
   @Override
   public void addForeignKeyValues(final List<Entity> values) {
-    final Map<String, Collection<Entity>> mapped = EntityUtil.mapToEntityID(values);
+    final Map<String, Collection<Entity>> mapped = Entities.mapToEntityID(values);
     for (final Map.Entry<String, Collection<Entity>> entry : mapped.entrySet()) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : getEntities().getForeignKeyProperties(getEntityID(), entry.getKey())) {
         if (containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
@@ -209,7 +209,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   /** {@inheritDoc} */
   @Override
   public void removeForeignKeyValues(final List<Entity> values) {
-    final Map<String, Collection<Entity>> mapped = EntityUtil.mapToEntityID(values);
+    final Map<String, Collection<Entity>> mapped = Entities.mapToEntityID(values);
     for (final Map.Entry<String, Collection<Entity>> entry : mapped.entrySet()) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : getEntities().getForeignKeyProperties(getEntityID(), entry.getKey())) {
         if (containsComboBoxModel(foreignKeyProperty.getPropertyID())) {

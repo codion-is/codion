@@ -8,8 +8,8 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.FilterCondition;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.javafx.framework.model.FXEntityListModel;
@@ -252,9 +252,9 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void updateSelectedEntities(final Property property) {
-    final List<Entity> selectedEntities = EntityUtil.copyEntities(listModel.getSelectionModel().getSelectedItems());
+    final List<Entity> selectedEntities = Entities.copyEntities(listModel.getSelectionModel().getSelectedItems());
 
-    final Collection<Object> values = EntityUtil.getDistinctValues(property.getPropertyID(), selectedEntities);
+    final Collection<Object> values = Entities.getDistinctValues(property.getPropertyID(), selectedEntities);
     final Object defaultValue = values.size() == 1 ? values.iterator().next() : null;
 
     final PropertyInputDialog inputDialog = new PropertyInputDialog(property, defaultValue, listModel.getConnectionProvider());
@@ -263,7 +263,7 @@ public class EntityTableView extends TableView<Entity> {
     final Optional<PropertyInputDialog.InputResult> inputResult = inputDialog.showAndWait();
     try {
       if (inputResult.isPresent() && inputResult.get().isInputAccepted()) {
-        EntityUtil.put(property.getPropertyID(), inputResult.get().getValue(), selectedEntities);
+        Entities.put(property.getPropertyID(), inputResult.get().getValue(), selectedEntities);
         listModel.update(selectedEntities);
       }
     }

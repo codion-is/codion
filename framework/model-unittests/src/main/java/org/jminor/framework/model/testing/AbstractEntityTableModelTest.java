@@ -11,7 +11,6 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableModel;
 
@@ -264,7 +263,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     testModel.refresh();
     testModel.getSelectionModel().setSelectedIndexes(Arrays.asList(0, 1));
     final List<Entity> entities = testModel.getSelectionModel().getSelectedItems();
-    EntityUtil.put(TestDomain.DETAIL_STRING, "hello", entities);
+    Entities.put(TestDomain.DETAIL_STRING, "hello", entities);
     testModel.update(entities);
   }
 

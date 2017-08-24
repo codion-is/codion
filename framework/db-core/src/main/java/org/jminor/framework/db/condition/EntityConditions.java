@@ -8,7 +8,6 @@ import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.condition.Conditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
 import java.io.IOException;
@@ -66,7 +65,7 @@ public final class EntityConditions {
    * @return a select condition based on the given value
    */
   public EntitySelectCondition selectCondition(final String entityID, final String propertyID,
-                                                      final Condition.Type conditionType, final Object value) {
+                                               final Condition.Type conditionType, final Object value) {
     return selectCondition(entityID, propertyID, conditionType, -1, value);
   }
 
@@ -79,8 +78,8 @@ public final class EntityConditions {
    * @return a select condition based on the given value
    */
   public EntitySelectCondition selectCondition(final String entityID, final String propertyID,
-                                                      final Condition.Type conditionType, final int fetchCount,
-                                                      final Object value) {
+                                               final Condition.Type conditionType, final int fetchCount,
+                                               final Object value) {
     return selectCondition(entityID, propertyID, conditionType, null, fetchCount, value);
   }
 
@@ -94,8 +93,8 @@ public final class EntityConditions {
    * @return a select condition based on the given value
    */
   public EntitySelectCondition selectCondition(final String entityID, final String propertyID,
-                                                      final Condition.Type conditionType, final String orderByClause,
-                                                      final int fetchCount, final Object value) {
+                                               final Condition.Type conditionType, final String orderByClause,
+                                               final int fetchCount, final Object value) {
     return new DefaultEntitySelectCondition(entities, entityID, propertyCondition(entityID, propertyID, conditionType, value),
             fetchCount).setOrderByClause(orderByClause);
   }
@@ -115,9 +114,8 @@ public final class EntityConditions {
    * @param orderByClause the order by clause, without the 'order by' keywords
    * @return a select condition based on the given column condition
    */
-  public EntitySelectCondition selectCondition(final String entityID,
-                                                      final Condition<Property.ColumnProperty> propertyCondition,
-                                                      final String orderByClause) {
+  public EntitySelectCondition selectCondition(final String entityID, final Condition<Property.ColumnProperty> propertyCondition,
+                                               final String orderByClause) {
     return selectCondition(entityID, propertyCondition, orderByClause, -1);
   }
 
@@ -128,9 +126,8 @@ public final class EntityConditions {
    * @param fetchCount the maximum number of entities to fetch
    * @return a select condition based on the given column condition
    */
-  public EntitySelectCondition selectCondition(final String entityID,
-                                                      final Condition<Property.ColumnProperty> propertyCondition,
-                                                      final String orderByClause, final int fetchCount) {
+  public EntitySelectCondition selectCondition(final String entityID, final Condition<Property.ColumnProperty> propertyCondition,
+                                               final String orderByClause, final int fetchCount) {
     return new DefaultEntitySelectCondition(entities, entityID, propertyCondition, fetchCount).setOrderByClause(orderByClause);
   }
 
@@ -156,8 +153,7 @@ public final class EntityConditions {
    * @param propertyCondition the column condition
    * @return a select condition based on the given column condition
    */
-  public EntitySelectCondition selectCondition(final String entityID,
-                                                      final Condition<Property.ColumnProperty> propertyCondition) {
+  public EntitySelectCondition selectCondition(final String entityID, final Condition<Property.ColumnProperty> propertyCondition) {
     return new DefaultEntitySelectCondition(entities, entityID, propertyCondition);
   }
 
@@ -204,7 +200,7 @@ public final class EntityConditions {
    * @return a condition based on the given value
    */
   public EntityCondition condition(final String entityID, final String propertyID,
-                                          final Condition.Type conditionType, final Object value) {
+                                   final Condition.Type conditionType, final Object value) {
     return new DefaultEntityCondition(entityID, propertyCondition(entityID, propertyID, conditionType, value));
   }
 
@@ -216,7 +212,7 @@ public final class EntityConditions {
    * @return a property condition based on the given value
    */
   public Condition<Property.ColumnProperty> propertyCondition(final String entityID, final String propertyID,
-                                                                     final Condition.Type conditionType, final Object value) {
+                                                              final Condition.Type conditionType, final Object value) {
     return propertyCondition(entityID, propertyID, conditionType, true, value);
   }
 
@@ -229,8 +225,8 @@ public final class EntityConditions {
    * @return a property condition based on the given value
    */
   public Condition<Property.ColumnProperty> propertyCondition(final String entityID, final String propertyID,
-                                                                     final Condition.Type conditionType, final boolean caseSensitive,
-                                                                     final Object value) {
+                                                              final Condition.Type conditionType, final boolean caseSensitive,
+                                                              final Object value) {
     final Property property = entities.getProperty(entityID, propertyID);
     if (property instanceof Property.ForeignKeyProperty) {
       if (value instanceof Collection) {
@@ -253,7 +249,7 @@ public final class EntityConditions {
    * @return a property condition based on the given value
    */
   public Condition<Property.ColumnProperty> propertyCondition(final Property.ColumnProperty property,
-                                                                     final Condition.Type conditionType, final Object value) {
+                                                              final Condition.Type conditionType, final Object value) {
     return propertyCondition(property, conditionType, true, value);
   }
 
@@ -265,8 +261,8 @@ public final class EntityConditions {
    * @return a property condition based on the given value
    */
   public Condition<Property.ColumnProperty> propertyCondition(final Property.ColumnProperty property,
-                                                                     final Condition.Type conditionType, final boolean caseSensitive,
-                                                                     final Object value) {
+                                                              final Condition.Type conditionType, final boolean caseSensitive,
+                                                              final Object value) {
     return new PropertyCondition(property, conditionType, value).setCaseSensitive(caseSensitive);
   }
 
@@ -278,7 +274,7 @@ public final class EntityConditions {
    * @return a foreign key property condition based on the given value
    */
   public Condition<Property.ColumnProperty> foreignKeyCondition(final String entityID, final String fkPropertyID,
-                                                                       final Condition.Type conditionType, final Entity value) {
+                                                                final Condition.Type conditionType, final Entity value) {
     return foreignKeyCondition(entityID, fkPropertyID, conditionType, Collections.singletonList(value));
   }
 
@@ -290,7 +286,7 @@ public final class EntityConditions {
    * @return a foreign key property condition based on the given value
    */
   public Condition<Property.ColumnProperty> foreignKeyCondition(final String entityID, final String fkPropertyID,
-                                                                       final Condition.Type conditionType, final Entity.Key value) {
+                                                                final Condition.Type conditionType, final Entity.Key value) {
     return foreignKeyCondition(entityID, fkPropertyID, conditionType, Collections.singletonList(value));
   }
 
@@ -302,7 +298,7 @@ public final class EntityConditions {
    * @return a foreign key property condition based on the given values
    */
   public Condition<Property.ColumnProperty> foreignKeyCondition(final String entityID, final String fkPropertyID,
-                                                                       final Condition.Type conditionType, final Collection values) {
+                                                                final Condition.Type conditionType, final Collection values) {
     return foreignKeyCondition(entities.getForeignKeyProperty(entityID, fkPropertyID), conditionType, values);
   }
 
@@ -313,7 +309,7 @@ public final class EntityConditions {
    * @return a property condition based on the given value
    */
   public Condition<Property.ColumnProperty> foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                                       final Condition.Type conditionType, final Entity value) {
+                                                                final Condition.Type conditionType, final Entity value) {
     return foreignKeyCondition(foreignKeyProperty, conditionType, Collections.singletonList(value));
   }
 
@@ -324,7 +320,7 @@ public final class EntityConditions {
    * @return a property condition based on the given value
    */
   public Condition<Property.ColumnProperty> foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                                       final Condition.Type conditionType, final Entity.Key value) {
+                                                                final Condition.Type conditionType, final Entity.Key value) {
     return foreignKeyCondition(foreignKeyProperty, conditionType, Collections.singletonList(value));
   }
 
@@ -335,7 +331,7 @@ public final class EntityConditions {
    * @return a property condition based on the given values
    */
   public Condition<Property.ColumnProperty> foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                                       final Condition.Type conditionType, final Collection values) {
+                                                                final Condition.Type conditionType, final Collection values) {
     final List<Entity.Key> keys = getEntityKeys(values);
     if (foreignKeyProperty.isCompositeReference()) {
       return createCompositeKeyCondition(foreignKeyProperty.getReferenceProperties(),
@@ -348,7 +344,7 @@ public final class EntityConditions {
               entityKey == null ? null : entityKey.getFirstValue());
     }
 
-    return propertyCondition(foreignKeyProperty.getReferenceProperties().get(0), conditionType, EntityUtil.getValues(keys));
+    return propertyCondition(foreignKeyProperty.getReferenceProperties().get(0), conditionType, Entities.getValues(keys));
   }
 
   /** Assumes {@code keys} is not empty. */
@@ -358,7 +354,7 @@ public final class EntityConditions {
       return createCompositeKeyCondition(firstKey.getProperties(), firstKey.getProperties(), Condition.Type.LIKE, keys);
     }
 
-    return propertyCondition(firstKey.getFirstProperty(), Condition.Type.LIKE, EntityUtil.getValues(keys));
+    return propertyCondition(firstKey.getFirstProperty(), Condition.Type.LIKE, Entities.getValues(keys));
   }
 
   /** Assumes {@code keys} is not empty. */
