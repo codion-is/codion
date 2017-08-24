@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * A factory class for query condition implementations.
+ * A class for creating query conditions.
  */
 public final class EntityConditions {
 

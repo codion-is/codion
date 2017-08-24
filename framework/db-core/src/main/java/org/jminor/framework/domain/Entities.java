@@ -46,7 +46,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * A {@link Entity} repository
+ * A {@link Entity} repository specifying the {@link Entity.Definition}s for a given domain.
  */
 public class Entities {
 
@@ -127,14 +127,14 @@ public class Entities {
   /**
    * Defines a new entity, by default the {@code entityID} is used as the underlying table name
    * @param entityID the ID uniquely identifying the entity
-   * @param propertyDefinitions the {@link Property} objects to base this entity on. In case a select query is specified
+   * @param properties the {@link Property} objects to base this entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
    * @return a new {@link Entity.Definition}
    * @throws IllegalArgumentException in case the entityID has already been used to define an entity type or if
    * no primary key property is specified
    */
-  public Entity.Definition define(final String entityID, final Property... propertyDefinitions) {
-    return define(entityID, entityID, propertyDefinitions);
+  public Entity.Definition define(final String entityID, final Property... properties) {
+    return define(entityID, entityID, properties);
   }
 
   /**
@@ -155,13 +155,13 @@ public class Entities {
     final Map<String, Property> propertyMap = initializeProperties(domainID, entityID, properties);
     final List<Property.ColumnProperty> columnProperties = Collections.unmodifiableList(getColumnProperties(propertyMap.values()));
     final List<Property.ColumnProperty> primaryKeyProperties = Collections.unmodifiableList(getPrimaryKeyProperties(propertyMap.values()));
-    final String selectColumnsString = initializeSelectColumnsString(columnProperties);
     final List<Property> visibleProperties = Collections.unmodifiableList(getVisibleProperties(propertyMap.values()));
     final List<Property.TransientProperty> transientProperties = Collections.unmodifiableList(getTransientProperties(propertyMap.values()));
     final List<Property.ForeignKeyProperty> foreignKeyProperties = Collections.unmodifiableList(getForeignKeyProperties(propertyMap.values()));
     final Map<String, List<Property.DenormalizedProperty>> denormalizedProperties =
             Collections.unmodifiableMap(getDenormalizedProperties(propertyMap.values()));
     final Map<String, Set<Property.DerivedProperty>> derivedProperties = initializeDerivedProperties(propertyMap.values());
+    final String selectColumnsString = initializeSelectColumnsString(columnProperties);
 
     final EntityResultPacker resultPacker = new EntityResultPacker(this, entityID,
             columnProperties, transientProperties, propertyMap.size());
