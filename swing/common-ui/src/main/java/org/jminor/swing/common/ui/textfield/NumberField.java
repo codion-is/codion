@@ -152,12 +152,7 @@ public class NumberField extends JTextField {
       symbols.setDecimalSeparator(decimalSeparator);
       symbols.setGroupingSeparator(groupingSeparator);
       ((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
-      try {
-        remove(0, getLength());
-      }
-      catch (final BadLocationException e) {
-        throw new RuntimeException(e);
-      }
+      setText("");
     }
   }
 

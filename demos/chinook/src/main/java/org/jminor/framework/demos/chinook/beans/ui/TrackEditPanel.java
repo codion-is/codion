@@ -47,7 +47,8 @@ public class TrackEditPanel extends EntityEditPanel {
     txtComposer.getTextField().setColumns(18);
     final IntegerField txtMilliseconds = (IntegerField) createTextField(TRACK_MILLISECONDS);
     txtMilliseconds.setGroupingUsed(true);
-    final JTextField txtBytes = createTextField(TRACK_BYTES);
+    final IntegerField txtBytes = (IntegerField) createTextField(TRACK_BYTES);
+    txtBytes.setGroupingUsed(true);
     txtBytes.setColumns(18);
     final JTextField txtUnitPrice = createTextField(TRACK_UNITPRICE);
     txtUnitPrice.setColumns(18);

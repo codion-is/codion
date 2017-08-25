@@ -4568,3 +4568,4 @@
   Entities.registerDomain() called by client and server when instantiated, no longer called in constructor
   NumberField grouping separator implemented
   NumberField refactored, now relies on NumberFormat for formatting and validation
+  NumberField, SizedDocument minor refactoring

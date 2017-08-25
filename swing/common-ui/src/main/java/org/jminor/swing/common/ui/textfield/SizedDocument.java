@@ -155,25 +155,27 @@ public class SizedDocument extends PlainDocument {
       }
     }
 
-    private void doReplace(final FilterBypass fb, final StringBuilder builder, final int offset, final int stringLength,
-                           final AttributeSet attributeSet) throws BadLocationException {
+    private void doReplace(final FilterBypass fb, final StringBuilder builder, final int offset,
+                           final int stringLength, final AttributeSet attributeSet)
+            throws BadLocationException {
       final Document document = fb.getDocument();
-      final String text = transformString(builder.toString());
-      if (text != null) {
-        final String replacement = adjustReplacementString(text, document, offset, stringLength);
-        super.replace(fb, 0, document.getLength() - (text.length() - replacement.length()), replacement, attributeSet);
+      final String transformedString = transformString(builder.toString());
+      if (transformedString != null) {
+        final String replacement = removeCommonSuffix(transformedString, document.getText(0,
+                document.getLength()), offset, stringLength);
+        fb.replace(0, document.getLength() - (transformedString.length() - replacement.length()),
+                replacement, attributeSet);
       }
     }
 
     //We remove the common suffix if any, to preserve the caret position
-    private String adjustReplacementString(final String text, final Document document,
-                                           final int offset, final int length) throws BadLocationException {
-      final StringBuilder replacement = new StringBuilder(text);
-      final String documentText = document.getText(0, document.getLength());
+    private String removeCommonSuffix(final String replacementText, final String currentText, final int offset,
+                                      final int length) throws BadLocationException {
+      final StringBuilder replacement = new StringBuilder(replacementText);
       if (replacement.length() > 0) {
-        for (int i = documentText.length() - 1; i >= (offset + length); i--) {
+        for (int i = currentText.length() - 1; i >= (offset + length); i--) {
           final int replacementLength = replacement.length();
-          if (replacementLength > 0 && replacement.charAt(replacementLength - 1) == documentText.charAt(i)) {
+          if (replacementLength > 0 && replacement.charAt(replacementLength - 1) == currentText.charAt(i)) {
             replacement.replace(replacementLength - 1, replacementLength, "");
           }
           else {
