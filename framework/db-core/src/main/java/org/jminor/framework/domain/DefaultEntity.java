@@ -505,7 +505,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   /**
-   * Returns true if any of the properties involved in the given foreign key are null
+   * Returns true if any of the non-nullable properties involved in the given foreign key are null
    * @param foreignKeyProperty the foreign key property
    * @return true if the foreign key is null
    */
@@ -665,7 +665,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
     else {
       final Object value = super.get(referenceProperties.get(0));
-      if (!foreignColumnProperties.get(0).isNullable() && value == null) {
+      if (value == null) {
         return null;
       }
 
