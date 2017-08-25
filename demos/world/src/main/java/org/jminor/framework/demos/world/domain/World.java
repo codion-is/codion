@@ -14,7 +14,6 @@ public final class World extends Entities{
   public World() {
     defineCityCountry();
     defineCountryLanguage();
-    registerDomain();
   }
 
   public static final String T_CITY = "world.city";

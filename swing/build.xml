@@ -9,6 +9,15 @@
     <subant target="clean" buildpath="framework-bundle"/>
   </target>
 
+  <target name="clean_lib">
+    <subant target="clean_lib" buildpath="common-model"/>
+    <subant target="clean_lib" buildpath="common-ui"/>
+    <subant target="clean_lib" buildpath="framework-model"/>
+    <subant target="clean_lib" buildpath="framework-ui"/>
+    <subant target="clean_lib" buildpath="framework-ui-test"/>
+    <subant target="clean_lib" buildpath="framework-bundle"/>
+  </target>
+
   <target name="build">
     <subant target="build" buildpath="common-model"/>
     <subant target="build" buildpath="common-ui"/>

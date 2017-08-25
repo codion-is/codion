@@ -4562,3 +4562,7 @@
   EntityConnectionProvider.getConditions() added, used where applicable
   EntityPanelProvider, re-added a couple of convenient constructors
   EntityUtil removed, methods moved to Entities, EntityBeanMapper moved up
+  Entities, all public methods now final
+  Ant build target clean_lib added
+  EntityApplicationPanel/EntityApplicationView.initializeDomainEntities() renamed to initializeEntities()
+  Entities.registerDomain() called by client and server when instantiated, no longer called in constructor

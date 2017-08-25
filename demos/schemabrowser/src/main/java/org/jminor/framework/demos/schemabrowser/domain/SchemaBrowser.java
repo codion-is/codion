@@ -20,7 +20,6 @@ public final class SchemaBrowser extends Entities {
     defineColumn();
     defineConstraint();
     defineColumnConstraint();
-    registerDomain();
   }
 
   private static final ResourceBundle bundle =

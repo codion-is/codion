@@ -202,6 +202,16 @@
     <subant target="clean" buildpath="demos"/>
   </target>
 
+  <target name="clean_lib" description="Clears all module libraries">
+    <subant target="clean_lib" buildpath="common"/>
+    <subant target="clean_lib" buildpath="framework"/>
+    <subant target="clean_lib" buildpath="swing"/>
+    <subant target="clean_lib" buildpath="javafx"/>
+    <subant target="clean_lib" buildpath="server-monitor"/>
+    <subant target="clean_lib" buildpath="plugins"/>
+    <subant target="clean_lib" buildpath="demos"/>
+  </target>
+
   <target name="build" description="Builds all modules">
     <subant target="build" buildpath="common"/>
     <subant target="build" buildpath="framework"/>

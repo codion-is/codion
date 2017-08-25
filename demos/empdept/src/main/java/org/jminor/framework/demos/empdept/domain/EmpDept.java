@@ -24,7 +24,6 @@ public final class EmpDept extends Entities {
   public EmpDept() {
     defineDepartment();
     defineEmployee();
-    registerDomain();
   }
 
   /**Used for i18n*/

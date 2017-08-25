@@ -126,6 +126,7 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
     try {
       this.mainStage = stage;
       final User user = getApplicationUser();
+      final Entities domainEntities = initializeEntities().registerDomain();
       final EntityConnectionProvider connectionProvider = initializeConnectionProvider(initializeEntities(), user, getApplicationIdentifier());
       connectionProvider.getConnection();//throws exception if the server is not reachable or credentials are incorrect
       this.model = initializeApplicationModel(connectionProvider);
@@ -171,6 +172,9 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
     return getClass().getName();
   }
 
+  /**
+   * @return the domain Entities instance
+   */
   protected abstract Entities initializeEntities();
 
   /**

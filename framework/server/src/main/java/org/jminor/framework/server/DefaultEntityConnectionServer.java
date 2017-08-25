@@ -730,9 +730,10 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     try {
       if (domainModelClassNames != null) {
         for (final String className : domainModelClassNames) {
-          final String message = "Server loading domain model class '" + className + FROM_CLASSPATH;
+          final String message = "Server loading and registering domain model class '" + className + FROM_CLASSPATH;
           LOG.info(message);
-          Class.forName(className).getDeclaredConstructor().newInstance();
+          final Entities entities = (Entities) Class.forName(className).getDeclaredConstructor().newInstance();
+          entities.registerDomain();
         }
       }
     }
@@ -740,7 +741,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       throw cl;
     }
     catch (final Exception e) {
-      LOG.error("Exception while constructing domain model", e);
+      LOG.error("Exception while loading and registering domain model", e);
     }
   }
 

@@ -43,7 +43,7 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPanel.ChinookApplicationModel> {
 
   @Override
-  protected Entities initializeDomainEntities() {
+  protected Entities initializeEntities() {
     return new Chinook();
   }
 

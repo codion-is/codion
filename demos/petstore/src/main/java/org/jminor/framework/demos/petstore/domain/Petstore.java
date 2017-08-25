@@ -18,7 +18,6 @@ public final class Petstore extends Entities {
     defineItem();
     defineTag();
     defineTagItem();
-    registerDomain();
   }
 
   public static final String VERSION = "@petstore-v1";

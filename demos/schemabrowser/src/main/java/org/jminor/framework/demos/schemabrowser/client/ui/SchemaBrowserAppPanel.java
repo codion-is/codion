@@ -19,7 +19,7 @@ import javax.swing.JTable;
 public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
   @Override
-  protected Entities initializeDomainEntities() {
+  protected Entities initializeEntities() {
     return new SchemaBrowser();
   }
 

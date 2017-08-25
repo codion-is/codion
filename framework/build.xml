@@ -10,6 +10,16 @@
     <subant target="clean" buildpath="model-unittests"/>
   </target>
 
+  <target name="clean_lib">
+    <subant target="clean_lib" buildpath="db-core"/>
+    <subant target="clean_lib" buildpath="db-test"/>
+    <subant target="clean_lib" buildpath="db-local"/>
+    <subant target="clean_lib" buildpath="db-remote"/>
+    <subant target="clean_lib" buildpath="server"/>
+    <subant target="clean_lib" buildpath="model"/>
+    <subant target="clean_lib" buildpath="model-unittests"/>
+  </target>
+
   <target name="build">
     <subant target="build" buildpath="db-core"/>
     <subant target="build" buildpath="db-test"/>

@@ -35,7 +35,7 @@ import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpDeptApplicationModel> {
 
   @Override
-  protected Entities initializeDomainEntities() {
+  protected Entities initializeEntities() {
     return new EmpDept();
   }
 

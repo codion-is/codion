@@ -27,7 +27,6 @@ public final class Chinook extends Entities {
     definePlaylist();
     definePlaylistTrack();
     processAnnotations(Chinook.class);
-    registerDomain();
   }
 
   public static final String ARTIST_ARTISTID = "artistid";

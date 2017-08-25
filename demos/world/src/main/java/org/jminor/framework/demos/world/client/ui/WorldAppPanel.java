@@ -37,7 +37,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppPanel.Wo
   }
 
   @Override
-  protected Entities initializeDomainEntities() {
+  protected Entities initializeEntities() {
     return new World();
   }
 

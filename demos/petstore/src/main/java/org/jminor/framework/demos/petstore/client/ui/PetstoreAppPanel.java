@@ -26,7 +26,7 @@ import java.util.Locale;
 public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppPanel.PetstoreApplicationModel> {
 
   @Override
-  protected Entities initializeDomainEntities() {
+  protected Entities initializeEntities() {
     return new Petstore();
   }
 

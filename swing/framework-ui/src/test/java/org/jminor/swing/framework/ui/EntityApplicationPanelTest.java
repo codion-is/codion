@@ -44,7 +44,7 @@ public class EntityApplicationPanelTest {
   public void getDependencyTreeModel() {
     final EntityApplicationPanel panel = new EntityApplicationPanel() {
       @Override
-      protected Entities initializeDomainEntities() {
+      protected Entities initializeEntities() {
         return new TestDomain();
       }
 
@@ -72,7 +72,7 @@ public class EntityApplicationPanelTest {
     EntityApplicationModel.SAVE_DEFAULT_USERNAME.set(false);
     final EntityApplicationPanel<SwingEntityApplicationModel> panel = new EntityApplicationPanel<SwingEntityApplicationModel>() {
       @Override
-      protected Entities initializeDomainEntities() {
+      protected Entities initializeEntities() {
         return new TestDomain();
       }
       @Override

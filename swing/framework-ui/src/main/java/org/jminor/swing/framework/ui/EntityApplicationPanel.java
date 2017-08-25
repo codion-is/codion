@@ -1124,7 +1124,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected abstract M initializeApplicationModel(final EntityConnectionProvider connectionProvider);
 
-  protected abstract Entities initializeDomainEntities();
+  /**
+   * @return the domain Entities instance
+   */
+  protected abstract Entities initializeEntities();
 
   /**
    * Returns the user, either via a login dialog or via override, called during startup
@@ -1207,7 +1210,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
       EntityConnectionProvider connectionProvider = null;
       try {
-        connectionProvider = initializeConnectionProvider(initializeDomainEntities(), user, getApplicationIdentifier());
+        final Entities domainEntities = initializeEntities().registerDomain();
+        connectionProvider = initializeConnectionProvider(domainEntities, user, getApplicationIdentifier());
         connectionProvider.getConnection();//throws exception if the server is not reachable
         final long initializationStarted = System.currentTimeMillis();
         initialize(initializeApplicationModel(connectionProvider));

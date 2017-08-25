@@ -47,6 +47,10 @@
     <delete dir="${test}"/>
   </target>
 
+  <target name="clean_lib" description="Clears all module libraries">
+    <delete dir="${lib}"/>
+  </target>
+
   <target name="retrieve_libraries" depends="retrieve_build_libraries"
           description="Retrieves all libraries according to ivy.xml">
     <resolve_ivy/>

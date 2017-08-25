@@ -6,6 +6,13 @@
     <subant target="clean" buildpath="model"/>
     <subant target="clean" buildpath="server"/>
   </target>
+  
+  <target name="clean_lib">
+    <subant target="clean_lib" buildpath="core"/>
+    <subant target="clean_lib" buildpath="db"/>
+    <subant target="clean_lib" buildpath="model"/>
+    <subant target="clean_lib" buildpath="server"/>
+  </target>
 
   <target name="build">
     <subant target="build" buildpath="core"/>

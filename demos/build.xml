@@ -8,6 +8,14 @@
     <subant target="clean" buildpath="world"/>
   </target>
 
+  <target name="clean_lib">
+    <subant target="clean_lib" buildpath="chinook"/>
+    <subant target="clean_lib" buildpath="empdept"/>
+    <subant target="clean_lib" buildpath="petstore"/>
+    <subant target="clean_lib" buildpath="schemabrowser"/>
+    <subant target="clean_lib" buildpath="world"/>
+  </target>
+
   <target name="build">
     <subant target="build" buildpath="chinook"/>
     <subant target="build" buildpath="empdept"/>

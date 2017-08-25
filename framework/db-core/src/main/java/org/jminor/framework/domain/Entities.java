@@ -89,7 +89,7 @@ public class Entities {
    * @param entityID the entity ID
    * @return a new {@link Entity} instance
    */
-  public Entity entity(final String entityID) {
+  public final Entity entity(final String entityID) {
     return new DefaultEntity(this, entityID);
   }
 
@@ -98,7 +98,7 @@ public class Entities {
    * @param key the primary key
    * @return a new {@link Entity} instance
    */
-  public Entity entity(final Entity.Key key) {
+  public final Entity entity(final Entity.Key key) {
     return new DefaultEntity(this, key.getEntityID(), Objects.requireNonNull(key, "key"));
   }
 
@@ -111,7 +111,7 @@ public class Entities {
    * @param originalValues the original values
    * @return a new {@link Entity} instance
    */
-  public Entity entity(final String entityID, final Map<Property, Object> values, final Map<Property, Object> originalValues) {
+  public final Entity entity(final String entityID, final Map<Property, Object> values, final Map<Property, Object> originalValues) {
     return new DefaultEntity(this, entityID, values, originalValues);
   }
 
@@ -120,7 +120,7 @@ public class Entities {
    * @param entityID the entity ID
    * @return a new {@link Entity.Key} instance
    */
-  public Entity.Key key(final String entityID) {
+  public final Entity.Key key(final String entityID) {
     return new DefaultEntity.DefaultKey(this, getDefinition(entityID), null);
   }
 
@@ -133,7 +133,7 @@ public class Entities {
    * @throws IllegalArgumentException in case the entityID has already been used to define an entity type or if
    * no primary key property is specified
    */
-  public Entity.Definition define(final String entityID, final Property... properties) {
+  public final Entity.Definition define(final String entityID, final Property... properties) {
     return define(entityID, entityID, properties);
   }
 
@@ -147,7 +147,7 @@ public class Entities {
    * @throws IllegalArgumentException in case the entityID has already been used to define an entity type or if
    * no primary key property is specified
    */
-  public Entity.Definition define(final String entityID, final String tableName, final Property... properties) {
+  public final Entity.Definition define(final String entityID, final String tableName, final Property... properties) {
     if (entityDefinitions.containsKey(entityID) && !ALLOW_REDEFINE_ENTITY.get()) {
       throw new IllegalArgumentException("Entity has already been defined: " + entityID + ", for table: " + tableName);
     }
@@ -180,7 +180,7 @@ public class Entities {
    * Adds all entity definitions from {@code domain} to this domain
    * @param domain the domain
    */
-  public void addAll(final Entities domain) {
+  public final void addAll(final Entities domain) {
     entityDefinitions.putAll(domain.entityDefinitions);
   }
 
@@ -191,7 +191,7 @@ public class Entities {
    * @param columnName the primary key column name
    * @return a incrementing primary key generator
    */
-  public Entity.KeyGenerator incrementKeyGenerator(final String tableName, final String columnName) {
+  public final Entity.KeyGenerator incrementKeyGenerator(final String tableName, final String columnName) {
     return new IncrementKeyGenerator(tableName, columnName);
   }
 
@@ -200,7 +200,7 @@ public class Entities {
    * @param sequenceName the sequence name
    * @return a sequence based primary key generator
    */
-  public Entity.KeyGenerator sequenceKeyGenerator(final String sequenceName) {
+  public final Entity.KeyGenerator sequenceKeyGenerator(final String sequenceName) {
     return new SequenceKeyGenerator(sequenceName);
   }
 
@@ -209,7 +209,7 @@ public class Entities {
    * @param query the query
    * @return a query based primary key generator
    */
-  public Entity.KeyGenerator queriedKeyGenerator(final String query) {
+  public final Entity.KeyGenerator queriedKeyGenerator(final String query) {
     return queriedKeyGenerator(query);
   }
 
@@ -218,7 +218,7 @@ public class Entities {
    * @param valueSource the value source, whether a sequence or a table name
    * @return a auto-increment based primary key generator
    */
-  public Entity.KeyGenerator automaticKeyGenerator(final String valueSource) {
+  public final Entity.KeyGenerator automaticKeyGenerator(final String valueSource) {
     return new AutomaticKeyGenerator(valueSource);
   }
 
@@ -228,7 +228,7 @@ public class Entities {
    * for entities identified by {@code entityID}
    * @see Entity.Definition#setSearchPropertyIDs(String...)
    */
-  public Collection<String> getSearchPropertyIDs(final String entityID) {
+  public final Collection<String> getSearchPropertyIDs(final String entityID) {
     return getDefinition(entityID).getSearchPropertyIDs();
   }
 
@@ -239,7 +239,7 @@ public class Entities {
    * @return the search properties to use
    * @see Entity.Definition#setSearchPropertyIDs(String...)
    */
-  public Collection<Property.ColumnProperty> getSearchProperties(final String entityID) {
+  public final Collection<Property.ColumnProperty> getSearchProperties(final String entityID) {
     final Collection<String> searchPropertyIDs = getSearchPropertyIDs(entityID);
     return getSearchProperties(entityID, searchPropertyIDs.toArray(new String[searchPropertyIDs.size()]));
   }
@@ -251,7 +251,7 @@ public class Entities {
    * @return the search properties to use
    * @see Entity.Definition#setSearchPropertyIDs(String...)
    */
-  public Collection<Property.ColumnProperty> getSearchProperties(final String entityID, final String... searchPropertyIds) {
+  public final Collection<Property.ColumnProperty> getSearchProperties(final String entityID, final String... searchPropertyIds) {
     if (searchPropertyIds != null && searchPropertyIds.length > 0) {
       final List<Property.ColumnProperty> searchProperties = new ArrayList<>();
       for (final String propertyID : searchPropertyIds) {
@@ -268,7 +268,7 @@ public class Entities {
    * @param entityID the entity ID
    * @return a list containing the primary key properties of the entity identified by {@code entityID}
    */
-  public List<Property.ColumnProperty> getPrimaryKeyProperties(final String entityID) {
+  public final List<Property.ColumnProperty> getPrimaryKeyProperties(final String entityID) {
     return getDefinition(entityID).getPrimaryKeyProperties();
   }
 
@@ -277,7 +277,7 @@ public class Entities {
    * @return true if the entity identified by {@code entityID} is read only
    * @throws IllegalArgumentException if the entity is undefined
    */
-  public boolean isReadOnly(final String entityID) {
+  public final boolean isReadOnly(final String entityID) {
     return getDefinition(entityID).isReadOnly();
   }
 
@@ -286,7 +286,7 @@ public class Entities {
    * @return true if the entity identified by {@code entityID} is based on a small dataset
    * @throws IllegalArgumentException if the entity is undefined
    */
-  public boolean isSmallDataset(final String entityID) {
+  public final boolean isSmallDataset(final String entityID) {
     return getDefinition(entityID).isSmallDataset();
   }
 
@@ -295,7 +295,7 @@ public class Entities {
    * @return true if the entity identified by {@code entityID} is based on static data
    * @throws IllegalArgumentException if the entity is undefined
    */
-  public boolean isStaticData(final String entityID) {
+  public final boolean isStaticData(final String entityID) {
     return getDefinition(entityID).isStaticData();
   }
 
@@ -303,7 +303,7 @@ public class Entities {
    * @param entityID the entity ID
    * @return a comma separated list of columns to use in the order by clause
    */
-  public String getOrderByClause(final String entityID) {
+  public final String getOrderByClause(final String entityID) {
     return getDefinition(entityID).getOrderByClause();
   }
 
@@ -311,7 +311,7 @@ public class Entities {
    * @param entityID the entity ID
    * @return a comma separated list of columns to use in the group by clause
    */
-  public String getGroupByClause(final String entityID) {
+  public final String getGroupByClause(final String entityID) {
     return getDefinition(entityID).getGroupByClause();
   }
 
@@ -319,7 +319,7 @@ public class Entities {
    * @param entityID the entity ID
    * @return the having clause associated with this entity
    */
-  public String getHavingClause(final String entityID) {
+  public final String getHavingClause(final String entityID) {
     return getDefinition(entityID).getHavingClause();
   }
 
@@ -328,7 +328,7 @@ public class Entities {
    * @return the name of the table used to select entities identified by {@code entityID}
    * @throws IllegalArgumentException if the entity is undefined
    */
-  public String getSelectTableName(final String entityID) {
+  public final String getSelectTableName(final String entityID) {
     return getDefinition(entityID).getSelectTableName();
   }
 
@@ -337,7 +337,7 @@ public class Entities {
    * @return the name of the table on which entities identified by {@code entityID} are based
    * @throws IllegalArgumentException if the entity is undefined
    */
-  public String getTableName(final String entityID) {
+  public final String getTableName(final String entityID) {
     return getDefinition(entityID).getTableName();
   }
 
@@ -346,7 +346,7 @@ public class Entities {
    * @return the sql query used when selecting entities identified by {@code entityID}
    * @throws IllegalArgumentException if the entity is undefined
    */
-  public String getSelectQuery(final String entityID) {
+  public final String getSelectQuery(final String entityID) {
     return getDefinition(entityID).getSelectQuery();
   }
 
@@ -354,7 +354,7 @@ public class Entities {
    * @param entityID the entity ID
    * @return true if the select query for the given entity, if any, contains a where clause
    */
-  public boolean selectQueryContainsWhereClause(final String entityID) {
+  public final boolean selectQueryContainsWhereClause(final String entityID) {
     return getDefinition(entityID).selectQueryContainsWhereClause();
   }
 
@@ -363,7 +363,7 @@ public class Entities {
    * @return the query string used to select entities identified by {@code entityID}
    * @throws IllegalArgumentException if the entity is undefined
    */
-  public String getSelectColumnsString(final String entityID) {
+  public final String getSelectColumnsString(final String entityID) {
     return getDefinition(entityID).getSelectColumnsString();
   }
 
@@ -372,7 +372,7 @@ public class Entities {
    * @return the primary key generator for entities identified by {@code entityID}
    * @throws IllegalArgumentException if the entity is undefined
    */
-  public Entity.KeyGenerator getKeyGenerator(final String entityID) {
+  public final Entity.KeyGenerator getKeyGenerator(final String entityID) {
     return getDefinition(entityID).getKeyGenerator();
   }
 
@@ -381,7 +381,7 @@ public class Entities {
    * @return the type of primary key generator used by entities identified by {@code entityID}
    * @throws IllegalArgumentException if the entity is undefined
    */
-  public Entity.KeyGenerator.Type getKeyGeneratorType(final String entityID) {
+  public final Entity.KeyGenerator.Type getKeyGeneratorType(final String entityID) {
     return getDefinition(entityID).getKeyGeneratorType();
   }
 
@@ -391,7 +391,7 @@ public class Entities {
    * of entities of the given type
    * @throws IllegalArgumentException if the entity is undefined
    */
-  public Entity.ToString getStringProvider(final String entityID) {
+  public final Entity.ToString getStringProvider(final String entityID) {
     return getDefinition(entityID).getStringProvider();
   }
 
@@ -399,7 +399,7 @@ public class Entities {
    * @param entityID the entity ID
    * @return the default Comparator to use when sorting entities of the given type
    */
-  public Comparator<Entity> getComparator(final String entityID) {
+  public final Comparator<Entity> getComparator(final String entityID) {
     return getDefinition(entityID).getComparator();
   }
 
@@ -410,7 +410,7 @@ public class Entities {
    * @param entityID the entity ID
    * @return true if the value for the primary key is automatically generated
    */
-  public boolean isPrimaryKeyAutoGenerated(final String entityID) {
+  public final boolean isPrimaryKeyAutoGenerated(final String entityID) {
     return !getKeyGeneratorType(entityID).isManual();
   }
 
@@ -418,7 +418,7 @@ public class Entities {
    * @param entityID the entity ID
    * @return true if the primary key of the given type of entity is comprised of a single integer value
    */
-  public boolean hasSingleIntegerPrimaryKey(final String entityID) {
+  public final boolean hasSingleIntegerPrimaryKey(final String entityID) {
     final List<Property.ColumnProperty> primaryKeyProperties = getDefinition(entityID).getPrimaryKeyProperties();
     return primaryKeyProperties.size() == 1 && primaryKeyProperties.get(0).isInteger();
   }
@@ -432,7 +432,7 @@ public class Entities {
    * @return a list containing the database properties (properties that map to database columns) comprising
    * the entity identified by {@code entityID}
    */
-  public List<Property.ColumnProperty> getColumnProperties(final String entityID,
+  public final List<Property.ColumnProperty> getColumnProperties(final String entityID,
                                                            final boolean includePrimaryKeyProperties,
                                                            final boolean includeReadOnly,
                                                            final boolean includeNonUpdatable) {
@@ -450,7 +450,7 @@ public class Entities {
    * @return a list containing the visible (non-hidden) properties
    * in the entity identified by {@code entityID}
    */
-  public List<Property> getVisibleProperties(final String entityID) {
+  public final List<Property> getVisibleProperties(final String entityID) {
     Objects.requireNonNull(entityID, ENTITY_ID_PARAM);
     return getDefinition(entityID).getVisibleProperties();
   }
@@ -461,7 +461,7 @@ public class Entities {
    * @return the {@link Property.ColumnProperty}s specified by the given property IDs
    * @throws IllegalArgumentException in case a given propertyID does not represent a {@link Property.ColumnProperty}
    */
-  public List<Property.ColumnProperty> getColumnProperties(final String entityID, final Collection<String> propertyIDs) {
+  public final List<Property.ColumnProperty> getColumnProperties(final String entityID, final Collection<String> propertyIDs) {
     if (propertyIDs == null || propertyIDs.isEmpty()) {
       return Collections.emptyList();
     }
@@ -480,7 +480,7 @@ public class Entities {
    * @return the column property identified by property ID
    * @throws IllegalArgumentException in case the propertyID does not represent a {@link Property.ColumnProperty}
    */
-  public Property.ColumnProperty getColumnProperty(final String entityID, final String propertyID) {
+  public final Property.ColumnProperty getColumnProperty(final String entityID, final String propertyID) {
     final Property property = getProperty(entityID, propertyID);
     if (!(property instanceof Property.ColumnProperty)) {
       throw new IllegalArgumentException(propertyID + ", " + property.getClass() + " does not implement Property.ColumnProperty");
@@ -495,7 +495,7 @@ public class Entities {
    * @return the property identified by {@code propertyID} in the entity identified by {@code entityID}
    * @throws IllegalArgumentException in case no such property exists
    */
-  public Property getProperty(final String entityID, final String propertyID) {
+  public final Property getProperty(final String entityID, final String propertyID) {
     Objects.requireNonNull(entityID, ENTITY_ID_PARAM);
     Objects.requireNonNull(propertyID, PROPERTY_ID_PARAM);
     final Property property = getProperties(entityID).get(propertyID);
@@ -512,7 +512,7 @@ public class Entities {
    * @return a list containing the properties identified by {@code propertyIDs}, found in
    * the entity identified by {@code entityID}
    */
-  public List<Property> getProperties(final String entityID, final Collection<String> propertyIDs) {
+  public final List<Property> getProperties(final String entityID, final Collection<String> propertyIDs) {
     Objects.requireNonNull(propertyIDs, PROPERTY_ID_PARAM);
     return getProperties(entityID, propertyIDs.toArray(new String[propertyIDs.size()]));
   }
@@ -523,7 +523,7 @@ public class Entities {
    * @return a list containing the properties identified by {@code propertyIDs}, found in
    * the entity identified by {@code entityID}
    */
-  public List<Property> getProperties(final String entityID, final String... propertyIDs) {
+  public final List<Property> getProperties(final String entityID, final String... propertyIDs) {
     Objects.requireNonNull(entityID, ENTITY_ID_PARAM);
     Objects.requireNonNull(propertyIDs, PROPERTY_ID_PARAM);
     final List<Property> properties = new ArrayList<>();
@@ -539,7 +539,7 @@ public class Entities {
    * @param includeHidden true if hidden properties should be included in the result
    * @return a collection containing the properties found in the entity identified by {@code entityID}
    */
-  public Collection<Property> getProperties(final String entityID, final boolean includeHidden) {
+  public final Collection<Property> getProperties(final String entityID, final boolean includeHidden) {
     return includeHidden ? getProperties(entityID).values() : getVisibleProperties(entityID);
   }
 
@@ -548,7 +548,7 @@ public class Entities {
    * @return a list containing all database properties found in the entity identified by {@code entityID},
    * that is, properties that map to database columns
    */
-  public List<Property.ColumnProperty> getColumnProperties(final String entityID) {
+  public final List<Property.ColumnProperty> getColumnProperties(final String entityID) {
     return getDefinition(entityID).getColumnProperties();
   }
 
@@ -557,7 +557,7 @@ public class Entities {
    * @return a list containing all transient database properties found in the entity identified by {@code entityID},
    * that is, properties that do not map to database columns
    */
-  public List<Property.TransientProperty> getTransientProperties(final String entityID) {
+  public final List<Property.TransientProperty> getTransientProperties(final String entityID) {
     return getDefinition(entityID).getTransientProperties();
   }
 
@@ -566,7 +566,7 @@ public class Entities {
    * @return a list containing all the foreign key properties found in the entity
    * identified by {@code entityID}
    */
-  public List<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID) {
+  public final List<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID) {
     return getDefinition(entityID).getForeignKeyProperties();
   }
 
@@ -574,7 +574,7 @@ public class Entities {
    * @param entityID the entity ID
    * @return true if the given entity contains denormalized properties
    */
-  public boolean hasDenormalizedProperties(final String entityID) {
+  public final boolean hasDenormalizedProperties(final String entityID) {
     return getDefinition(entityID).hasDenormalizedProperties();
   }
 
@@ -584,7 +584,7 @@ public class Entities {
    * @return a list containing all denormalized properties of the entity identified by {@code entityID}
    * which source is the entity identified by {@code propertyOwnerEntityID}
    */
-  public List<Property.DenormalizedProperty> getDenormalizedProperties(final String entityID,
+  public final List<Property.DenormalizedProperty> getDenormalizedProperties(final String entityID,
                                                                        final String foreignKeyPropertyID) {
     return getDefinition(entityID).getDenormalizedProperties(foreignKeyPropertyID);
   }
@@ -595,7 +595,7 @@ public class Entities {
    * @return true if the entity identified by {@code entityID} contains denormalized properties
    * which source is the entity identified by {@code propertyOwnerEntityID}
    */
-  public boolean hasDenormalizedProperties(final String entityID, final String foreignKeyPropertyID) {
+  public final boolean hasDenormalizedProperties(final String entityID, final String foreignKeyPropertyID) {
     return getDefinition(entityID).hasDenormalizedProperties(foreignKeyPropertyID);
   }
 
@@ -605,7 +605,7 @@ public class Entities {
    * @param propertyID the ID of the property
    * @return true if any properties are derived from the given property
    */
-  public boolean hasDerivedProperties(final String entityID, final String propertyID) {
+  public final boolean hasDerivedProperties(final String entityID, final String propertyID) {
     return getDefinition(entityID).hasDerivedProperties(propertyID);
   }
 
@@ -616,7 +616,7 @@ public class Entities {
    * @param propertyID the ID of the property
    * @return a collection containing the properties which are derived from the given property
    */
-  public Collection<Property.DerivedProperty> getDerivedProperties(final String entityID, final String propertyID) {
+  public final Collection<Property.DerivedProperty> getDerivedProperties(final String entityID, final String propertyID) {
     return getDefinition(entityID).getDerivedProperties(propertyID);
   }
 
@@ -626,7 +626,7 @@ public class Entities {
    * @param referenceEntityID the ID of the reference entity
    * @return a List containing the properties, an empty list is returned in case no properties fit the condition
    */
-  public List<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID, final String referenceEntityID) {
+  public final List<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID, final String referenceEntityID) {
     final List<Property.ForeignKeyProperty> properties = new ArrayList<>();
     for (final Property.ForeignKeyProperty foreignKeyProperty : getForeignKeyProperties(entityID)) {
       if (foreignKeyProperty.getReferencedEntityID().equals(referenceEntityID)) {
@@ -643,7 +643,7 @@ public class Entities {
    * @return the Property.ForeignKeyProperty with the given propertyID
    * @throws IllegalArgumentException in case no such property exists
    */
-  public Property.ForeignKeyProperty getForeignKeyProperty(final String entityID, final String propertyID) {
+  public final Property.ForeignKeyProperty getForeignKeyProperty(final String entityID, final String propertyID) {
     final List<Property.ForeignKeyProperty> foreignKeyProperties = getForeignKeyProperties(entityID);
     for (int i = 0; i < foreignKeyProperties.size(); i++) {
       final Property.ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
@@ -659,7 +659,7 @@ public class Entities {
    * @param entityID the entityID
    * @return all foreign keys referencing entities of type {@code entityID}
    */
-  public Collection<Property.ForeignKeyProperty> getForeignKeyReferences(final String entityID) {
+  public final Collection<Property.ForeignKeyProperty> getForeignKeyReferences(final String entityID) {
     List<Property.ForeignKeyProperty> foreignKeyReferences = foreignKeyReferenceMap.get(entityID);
     if (foreignKeyReferences == null) {
       foreignKeyReferences = new ArrayList<>();
@@ -680,7 +680,7 @@ public class Entities {
    * @param entityID the entity ID
    * @return a map containing the properties the given entity is comprised of, mapped to their respective propertyIDs
    */
-  public Map<String, Property> getProperties(final String entityID) {
+  public final Map<String, Property> getProperties(final String entityID) {
     return getDefinition(entityID).getProperties();
   }
 
@@ -688,7 +688,7 @@ public class Entities {
    * @param entityID the entity ID
    * @return the caption associated with the given entity type
    */
-  public String getCaption(final String entityID) {
+  public final String getCaption(final String entityID) {
     return getDefinition(entityID).getCaption();
   }
 
@@ -696,7 +696,7 @@ public class Entities {
    * @param entityID the entityID
    * @return the validator for the given entity type
    */
-  public Entity.Validator getValidator(final String entityID) {
+  public final Entity.Validator getValidator(final String entityID) {
     return getDefinition(entityID).getValidator();
   }
 
@@ -704,14 +704,14 @@ public class Entities {
    * @param entityID the entityID
    * @return the ResultPacker responsible for packing this entity type
    */
-  public ResultPacker<Entity> getResultPacker(final String entityID) {
+  public final ResultPacker<Entity> getResultPacker(final String entityID) {
     return getDefinition(entityID).getResultPacker();
   }
 
   /**
    * @return the entityIDs of all defined entities
    */
-  public Collection<String> getDefinedEntities() {
+  public final Collection<String> getDefinedEntities() {
     return new ArrayList<>(entityDefinitions.keySet());
   }
 
@@ -719,7 +719,7 @@ public class Entities {
    * @param entityID the entity ID
    * @return true if the entity is defined
    */
-  public boolean isDefined(final String entityID) {
+  public final boolean isDefined(final String entityID) {
     return entityDefinitions.containsKey(entityID);
   }
 
@@ -727,7 +727,7 @@ public class Entities {
    * @param foreignKeyProperty the foreign key property
    * @return the properties referenced by this foreign key property, by default the primary key properties of the referenced entity type
    */
-  public List<Property.ColumnProperty> getReferencedProperties(final Property.ForeignKeyProperty foreignKeyProperty) {
+  public final List<Property.ColumnProperty> getReferencedProperties(final Property.ForeignKeyProperty foreignKeyProperty) {
     final List<Property.ColumnProperty> referencedProperties = foreignKeyProperty.getForeignProperties();
     if (referencedProperties == null) {
       return getPrimaryKeyProperties(foreignKeyProperty.getReferencedEntityID());
@@ -744,7 +744,7 @@ public class Entities {
    * @param valueProvider the value provider
    * @return the populated entity
    */
-  public Entity getEntity(final String entityID, final ValueProvider<Property, Object> valueProvider) {
+  public final Entity getEntity(final String entityID, final ValueProvider<Property, Object> valueProvider) {
     final Entity entity = entity(entityID);
     final Collection<Property.ColumnProperty> columnProperties = getColumnProperties(entityID);
     for (final Property.ColumnProperty property : columnProperties) {
@@ -771,7 +771,7 @@ public class Entities {
    * @param entityID the entity ID
    * @return a list containing all updatable properties associated with the given entity ID
    */
-  public List<Property> getUpdatableProperties(final String entityID) {
+  public final List<Property> getUpdatableProperties(final String entityID) {
     final List<Property.ColumnProperty> columnProperties = getColumnProperties(entityID,
             getKeyGeneratorType(entityID).isManual(), false, false);
     columnProperties.removeIf(property -> property.isForeignKeyProperty() || property.isDenormalized());
@@ -791,7 +791,7 @@ public class Entities {
    * @param entities the entities to check
    * @return true if any of the given entities has a modified primary key
    */
-  public boolean isKeyModified(final Collection<Entity> entities) {
+  public final boolean isKeyModified(final Collection<Entity> entities) {
     if (Util.nullOrEmpty(entities)) {
       return false;
     }
@@ -815,7 +815,7 @@ public class Entities {
    * @param toStringValue the string to return by a call to toString() on the resulting entity
    * @return an empty entity wrapping a string
    */
-  public Entity createToStringEntity(final String entityID, final String toStringValue) {
+  public final Entity createToStringEntity(final String entityID, final String toStringValue) {
     final Entity entity = entity(entityID);
     return Util.initializeProxy(Entity.class, (proxy, method, args) -> {
       if ("toString".equals(method.getName())) {
@@ -832,7 +832,7 @@ public class Entities {
    * @return the first property which value is missing or the original value differs from the one in the comparison
    * entity, returns null if all of {@code entity}s original values match the values found in {@code comparison}
    */
-  public Property getModifiedProperty(final Entity entity, final Entity comparison) {
+  public final Property getModifiedProperty(final Entity entity, final Entity comparison) {
     for (final Property property : comparison.keySet()) {
       //BLOB property values are not loaded, so we can't compare those
       if (!property.isType(Types.BLOB) && isValueMissingOrModified(entity, comparison, property.getPropertyID())) {
@@ -847,7 +847,7 @@ public class Entities {
    * @param exception the record modified exception
    * @return a human-readable String describing the modification
    */
-  public String getModifiedExceptionMessage(final RecordModifiedException exception) {
+  public final String getModifiedExceptionMessage(final RecordModifiedException exception) {
     final Entity entity = (Entity) exception.getRow();
     final Entity modified = (Entity) exception.getModifiedRow();
     if (modified == null) {//record has been deleted
@@ -860,20 +860,10 @@ public class Entities {
   }
 
   /**
-   * @param entity the entity instance to check
-   * @param comparison the entity instance to compare with
-   * @param propertyID the property to check
-   * @return true if the value is missing or the original value differs from the one in the comparison entity
-   */
-  static boolean isValueMissingOrModified(final Entity entity, final Entity comparison, final String propertyID) {
-    return !entity.containsKey(propertyID) || !Objects.equals(comparison.get(propertyID), entity.getOriginal(propertyID));
-  }
-
-  /**
    * @return a Serializer, if one is available on the classpath
    */
   @SuppressWarnings({"unchecked"})
-  public Serializer<Entity> getEntitySerializer() {
+  public final Serializer<Entity> getEntitySerializer() {
     if (!entitySerializerAvailable()) {
       throw new IllegalArgumentException("Required configuration property is missing: " + Entities.ENTITY_SERIALIZER_CLASS);
     }
@@ -893,7 +883,7 @@ public class Entities {
    * @param propertyIDs the property IDs
    * @return the given properties sorted by caption, or if that is not available, property ID
    */
-  public List<Property> getSortedProperties(final String entityID, final Collection<String> propertyIDs) {
+  public final List<Property> getSortedProperties(final String entityID, final Collection<String> propertyIDs) {
     final List<Property> properties = new ArrayList<>(getProperties(entityID, propertyIDs));
     sort(properties);
 
@@ -903,16 +893,17 @@ public class Entities {
   /**
    * @return true if a entity serializer is specified and available on the classpath
    */
-  public boolean entitySerializerAvailable() {
+  public final boolean entitySerializerAvailable() {
     final String serializerClass = ENTITY_SERIALIZER_CLASS.get();
     return serializerClass != null && Util.onClasspath(serializerClass);
   }
 
   /**
    * Registers this instance for lookup via {@link Entities#getDomainEntities(String)}
+   * @return this Entities instance
    */
-  public void registerDomain() {
-    setDomainEntities(getClass().getName(), this);
+  public final Entities registerDomain() {
+    return setDomainEntities(getClass().getName(), this);
   }
 
   /**
@@ -1198,8 +1189,21 @@ public class Entities {
     return DOMAIN_ENTITIES.get(domainID);
   }
 
+  /**
+   * @return all domains that have been registered via {@link #registerDomain()}
+   */
   public static Collection<Entities> getAllDomains() {
     return Collections.unmodifiableCollection(DOMAIN_ENTITIES.values());
+  }
+
+  /**
+   * @param entity the entity instance to check
+   * @param comparison the entity instance to compare with
+   * @param propertyID the property to check
+   * @return true if the value is missing or the original value differs from the one in the comparison entity
+   */
+  static boolean isValueMissingOrModified(final Entity entity, final Entity comparison, final String propertyID) {
+    return !entity.containsKey(propertyID) || !Objects.equals(comparison.get(propertyID), entity.getOriginal(propertyID));
   }
 
   Entity.Definition getDefinition(final String entityID) {
@@ -1280,10 +1284,12 @@ public class Entities {
     throw new IllegalArgumentException("Entity is missing a primary key: " + entityID);
   }
 
-  private static void setDomainEntities(final String domainID, final Entities entities) {
+  private Entities setDomainEntities(final String domainID, final Entities entities) {
     synchronized (DOMAIN_ENTITIES) {
       DOMAIN_ENTITIES.put(domainID, entities);
     }
+
+    return entities;
   }
 
   /**

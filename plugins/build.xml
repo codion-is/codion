@@ -12,6 +12,18 @@
     <subant target="clean" buildpath="tomcat-pool"/>
   </target>
 
+  <target name="clean_lib">
+    <subant target="clean_lib" buildpath="hikari-pool"/>
+    <subant target="clean_lib" buildpath="imagepanel"/>
+    <subant target="clean_lib" buildpath="jasperreports"/>
+    <subant target="clean_lib" buildpath="json"/>
+    <subant target="clean_lib" buildpath="log4j-proxy"/>
+    <subant target="clean_lib" buildpath="logback-proxy"/>
+    <subant target="clean_lib" buildpath="nextreports"/>
+    <subant target="clean_lib" buildpath="rest"/>
+    <subant target="clean_lib" buildpath="tomcat-pool"/>
+  </target>
+
   <target name="build">
     <subant target="build" buildpath="hikari-pool"/>
     <subant target="build" buildpath="imagepanel"/>
