@@ -22,19 +22,19 @@ public class DoubleFieldTest {
     txt.setText("22,3");
     assertEquals(Double.valueOf(22.3), txt.getDouble());
     txt.setText("22.3");//note this is a thousand separator
-    assertEquals(Double.valueOf(223), txt.getDouble());
-    assertEquals("223", txt.getText());
+    assertEquals(Double.valueOf(22), txt.getDouble());
+    assertEquals("22", txt.getText());
     txt.setText("22.123.123,123");
-    assertEquals("22123123,123", txt.getText());
-    assertEquals(Double.valueOf(22123123.123), txt.getDouble());
+    assertEquals("22", txt.getText());
+    assertEquals(Double.valueOf(22), txt.getDouble());
 
     txt.setSeparators('.', ',');
 
     txt.setDouble(42.2);
     assertEquals("42.2", txt.getText());
     txt.setText("2,123,123.123");
-    assertEquals("2123123.123", txt.getText());
-    assertEquals(Double.valueOf(2123123.123), txt.getDouble());
+    assertEquals("2", txt.getText());
+    assertEquals(Double.valueOf(2), txt.getDouble());
 
     txt.setDouble(10000000d);
     assertEquals("10000000", txt.getText());
@@ -127,8 +127,8 @@ public class DoubleFieldTest {
     assertEquals(Double.valueOf(123.34), txt.getDouble());
 
     txt.setText("1,5");
-    assertEquals(Double.valueOf(15), txt.getDouble());
+    assertEquals(Double.valueOf(1), txt.getDouble());
     txt.setText("1,4.5");
-    assertEquals(Double.valueOf(14.5), txt.getDouble());
+    assertEquals(Double.valueOf(1), txt.getDouble());
   }
 }

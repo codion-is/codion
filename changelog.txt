@@ -4569,3 +4569,4 @@
   NumberField grouping separator implemented
   NumberField refactored, now relies on NumberFormat for formatting and validation
   NumberField, SizedDocument minor refactoring
+  NumberDocumentFilter no longer concerns itself with valid characters, the format deals with it, redundant isValid() removed

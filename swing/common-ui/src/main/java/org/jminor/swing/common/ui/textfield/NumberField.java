@@ -125,19 +125,19 @@ public class NumberField extends JTextField {
       return number == null ? null : number.doubleValue();
     }
 
-    protected final String getText() {
+    protected final void setText(final String text) {
       try {
-        return getText(0, getLength());
+        remove(0, getLength());
+        insertString(0, text, null);
       }
       catch (final BadLocationException e) {
         throw new RuntimeException(e);
       }
     }
 
-    protected final void setText(final String text) {
+    private String getText() {
       try {
-        remove(0, getLength());
-        insertString(0, text, null);
+        return getText(0, getLength());
       }
       catch (final BadLocationException e) {
         throw new RuntimeException(e);
@@ -172,16 +172,35 @@ public class NumberField extends JTextField {
       this.format = format;
     }
 
+    @Override
+    protected String transformString(final String string) {
+      if (string.isEmpty() || MINUS_SIGN.equals(string)) {
+        return string;
+      }
+
+      final NumberFormat format = getFormat();
+      final StringBuilder builder = new StringBuilder(string);
+      final Number number = getNumber(format, builder.toString());
+      if (number != null && isWithinRange(number.doubleValue())) {
+        return builder.replace(0, builder.length(), format.format(number)).toString();
+      }
+
+      return null;
+    }
+
+    /**
+     * @return the format used by this document filter
+     */
     protected final NumberFormat getFormat() {
       return format;
     }
 
     /**
-     * Sets the range of values this field should allow
+     * Sets the range of values this document filter should allow
      * @param min the minimum value
      * @param max the maximum value
      */
-    protected final void setRange(final double min, final double max) {
+    private void setRange(final double min, final double max) {
       this.minimumValue = min;
       this.maximumValue = max;
     }
@@ -189,54 +208,30 @@ public class NumberField extends JTextField {
     /**
      * @return the minimum value this field should accept
      */
-    protected final double getMinimumValue() {
+    private double getMinimumValue() {
       return minimumValue;
     }
 
     /**
      * @return the maximum value this field should accept
      */
-    protected final double getMaximumValue() {
+    private final double getMaximumValue() {
       return maximumValue;
-    }
-
-    @Override
-    protected String transformString(final String string) {
-      if (string.isEmpty() || MINUS_SIGN.equals(string)) {
-        return string;
-      }
-
-      final StringBuilder builder = new StringBuilder();
-      int index = 0;
-      for (final char c : string.toCharArray()) {
-        if (isValidCharacter(index++, c)) {
-          builder.append(c);
-        }
-      }
-      final Number number = getNumber(getFormat(), builder.toString());
-      if (number != null && isValid(number)) {
-        return builder.replace(0, builder.length(), getFormat().format(number)).toString();
-      }
-
-      return null;
-    }
-
-    protected boolean isValidCharacter(final int index, final char character) {
-      return index == 0 && character == MINUS_SIGN.charAt(0) || Character.isDigit(character);
     }
 
     /**
      * @param value the value to check
      * @return true if this value falls within the allowed range for this document
      */
-    protected final boolean isWithinRange(final double value) {
+    private boolean isWithinRange(final double value) {
       return value >= minimumValue && value <= maximumValue;
     }
 
-    protected final boolean isValid(final Number number) {
-      return isWithinRange(number.doubleValue());
-    }
-
+    /**
+     * @param format the format
+     * @param text the text to parse
+     * @return a number if the given format can parse it, null otherwise
+     */
     private static Number getNumber(final NumberFormat format, final String text) {
       if (text.isEmpty()) {
         return null;

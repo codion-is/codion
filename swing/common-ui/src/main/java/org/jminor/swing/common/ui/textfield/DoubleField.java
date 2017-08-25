@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.common.ui.textfield;
 
-import javax.swing.text.BadLocationException;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -107,12 +106,7 @@ public final class DoubleField extends NumberField {
       else {
         getFormat().setMaximumFractionDigits(maximumFractionDigits);
       }
-      try {
-        remove(0, getLength());
-      }
-      catch (final BadLocationException e) {
-        throw new RuntimeException(e);
-      }
+      setText("");
     }
   }
 
@@ -130,13 +124,6 @@ public final class DoubleField extends NumberField {
       }
 
       return super.transformString(string);
-    }
-
-    @Override
-    protected boolean isValidCharacter(final int index, final char character) {
-      final char decimalSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getDecimalSeparator();
-
-      return character == decimalSeparator || super.isValidCharacter(index, character);
     }
   }
 }
