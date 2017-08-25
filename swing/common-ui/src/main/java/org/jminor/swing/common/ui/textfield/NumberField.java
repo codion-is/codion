@@ -6,6 +6,7 @@ package org.jminor.swing.common.ui.textfield;
 import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
@@ -21,6 +22,7 @@ public class NumberField extends JTextField {
    */
   public NumberField(final NumberDocument document, final int columns) {
     super(document, null, columns);
+    //todo remove this when grouping functionality is "bullet proof"
     document.getFormat().setGroupingUsed(false);
   }
 
@@ -70,6 +72,16 @@ public class NumberField extends JTextField {
   }
 
   /**
+   * Set the decimal and grouping separators for this field
+   * @param decimalSeparator the decimal separator
+   * @param groupingSeparator the grouping separator
+   * @throws IllegalArgumentException in case both separators are the same character
+   */
+  public void setSeparators(final char decimalSeparator, final char groupingSeparator) {
+    ((NumberDocument) getDocument()).setSeparators(decimalSeparator, groupingSeparator);
+  }
+
+  /**
    * A Document implementation for numerical values
    */
   protected static class NumberDocument extends SizedDocument {
@@ -92,17 +104,7 @@ public class NumberField extends JTextField {
     }
 
     protected final Number getNumber() {
-      final String text = getText();
-      if (text.isEmpty()) {
-        return null;
-      }
-
-      try {
-        return getFormat().parse(handleMinusSign(text));
-      }
-      catch (final ParseException e) {
-        throw new RuntimeException(e);
-      }
+      return NumberDocumentFilter.getNumber(getFormat(), getText());
     }
 
     protected final Integer getInteger() {
@@ -141,12 +143,30 @@ public class NumberField extends JTextField {
         throw new RuntimeException(e);
       }
     }
+
+    private void setSeparators(final char decimalSeparator, final char groupingSeparator) {
+      if (decimalSeparator == groupingSeparator) {
+        throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
+      }
+      final DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
+      symbols.setDecimalSeparator(decimalSeparator);
+      symbols.setGroupingSeparator(groupingSeparator);
+      ((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
+      try {
+        remove(0, getLength());
+      }
+      catch (final BadLocationException e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 
   /**
    * A DocumentFilter for restricting input to numerical values
    */
   protected static class NumberDocumentFilter extends SizedDocument.SizedDocumentFilter {
+
+    private static final String MINUS_SIGN = "-";
 
     private final NumberFormat format;
 
@@ -187,6 +207,10 @@ public class NumberField extends JTextField {
 
     @Override
     protected String transformString(final String string) {
+      if (string.isEmpty() || MINUS_SIGN.equals(string)) {
+        return string;
+      }
+
       final StringBuilder builder = new StringBuilder();
       int index = 0;
       for (final char c : string.toCharArray()) {
@@ -194,14 +218,16 @@ public class NumberField extends JTextField {
           builder.append(c);
         }
       }
+      final Number number = getNumber(getFormat(), builder.toString());
+      if (number != null && isValid(number)) {
+        return builder.replace(0, builder.length(), getFormat().format(number)).toString();
+      }
 
-      return builder.toString();
+      return null;
     }
 
     protected boolean isValidCharacter(final int index, final char character) {
-      final char groupingSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getGroupingSeparator();
-
-      return index == 0 && character == '-' || (character == groupingSeparator && getFormat().isGroupingUsed()) || Character.isDigit(character);
+      return index == 0 && character == MINUS_SIGN.charAt(0) || Character.isDigit(character);
     }
 
     /**
@@ -212,30 +238,32 @@ public class NumberField extends JTextField {
       return value >= minimumValue && value <= maximumValue;
     }
 
-    @Override
-    protected final boolean validValue(final String text) {
-      if (text.isEmpty()) {
-        return true;
-      }
-      try {
-        final Number number = format.parse(handleMinusSign(text));
+    protected final boolean isValid(final Number number) {
+      return isWithinRange(number.doubleValue());
+    }
 
-        return isWithinRange(number.doubleValue());
+    private static Number getNumber(final NumberFormat format, final String text) {
+      if (text.isEmpty()) {
+        return null;
+      }
+
+      try {
+        return format.parse(handleMinusSign(text));
       }
       catch (final ParseException e) {
-        return false;
+        return null;
       }
     }
-  }
 
-  /**
-   * We need to interpret - as -1
-   */
-  private static String handleMinusSign(final String text) {
-    if ("-".equals(text)) {
-      return text + "1";
+    /**
+     * We need to interpret - as -1
+     */
+    private static String handleMinusSign(final String text) {
+      if (MINUS_SIGN.equals(text)) {
+        return text + "1";
+      }
+
+      return text;
     }
-
-    return text;
   }
 }

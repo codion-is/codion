@@ -22,19 +22,19 @@ public class DoubleFieldTest {
     txt.setText("22,3");
     assertEquals(Double.valueOf(22.3), txt.getDouble());
     txt.setText("22.3");//note this is a thousand separator
-    assertEquals(Double.valueOf(22.3), txt.getDouble());
-    assertEquals("22,3", txt.getText());
+    assertEquals(Double.valueOf(223), txt.getDouble());
+    assertEquals("223", txt.getText());
     txt.setText("22.123.123,123");
-    assertEquals("22,123123123", txt.getText());
-    assertEquals(Double.valueOf(22.123123123), txt.getDouble());
+    assertEquals("22123123,123", txt.getText());
+    assertEquals(Double.valueOf(22123123.123), txt.getDouble());
 
     txt.setSeparators('.', ',');
 
     txt.setDouble(42.2);
     assertEquals("42.2", txt.getText());
-    txt.setText("22,123,123.123");
-    assertEquals("22.123123123", txt.getText());
-    assertEquals(Double.valueOf(22.123123123), txt.getDouble());
+    txt.setText("2,123,123.123");
+    assertEquals("2123123.123", txt.getText());
+    assertEquals(Double.valueOf(2123123.123), txt.getDouble());
 
     txt.setDouble(10000000d);
     assertEquals("10000000", txt.getText());
@@ -55,8 +55,11 @@ public class DoubleFieldTest {
     assertEquals(Double.valueOf(22.3), txt.getDouble());
     txt.setText("22.3");//note this is a thousand separator
     assertEquals(Double.valueOf(223), txt.getDouble());
-    assertEquals("22.3", txt.getText());
+    assertEquals("223", txt.getText());
     txt.setText("22.123.123,123");
+    assertEquals("22.123.123,123", txt.getText());
+    assertEquals(Double.valueOf(22123123.123), txt.getDouble());
+    txt.setText("22123123,123");
     assertEquals("22.123.123,123", txt.getText());
     assertEquals(Double.valueOf(22123123.123), txt.getDouble());
 
@@ -67,11 +70,23 @@ public class DoubleFieldTest {
     txt.setText("22,123,123.123");
     assertEquals("22,123,123.123", txt.getText());
     assertEquals(Double.valueOf(22123123.123), txt.getDouble());
+    txt.setText("22123123.123");
+    assertEquals("22,123,123.123", txt.getText());
+    assertEquals(Double.valueOf(22123123.123), txt.getDouble());
 
     txt.setDouble(10000000d);
     assertEquals("10,000,000", txt.getText());
     txt.setDouble(100000000.4d);
     assertEquals("100,000,000.4", txt.getText());
+
+    txt.setText("2.2.2");
+    assertEquals("2.2", txt.getText());
+    txt.setText("..22.2.2.2");
+    assertEquals("2.2", txt.getText());
+    txt.setText("22.2.2.2");
+    assertEquals("22.2", txt.getText());
+    txt.setText("2222.2.2.2");
+    assertEquals("2,222.2", txt.getText());
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -87,7 +102,7 @@ public class DoubleFieldTest {
     txt.setMaximumFractionDigits(2);
     assertEquals(2, txt.getMaximumFractionDigits());
     txt.setDouble(5.1254);
-    assertEquals("5,13", txt.getText());
+    assertEquals("5,12", txt.getText());
     txt.setText("5,123");
     assertEquals("5,12", txt.getText());
     txt.getDocument().insertString(3, "4", null);
@@ -109,11 +124,11 @@ public class DoubleFieldTest {
     txt.setText("1.5");
     assertEquals(Double.valueOf(1.5), txt.getDouble());
     txt.setText("123.34.56");
-    assertEquals(Double.valueOf(123.3456), txt.getDouble());
+    assertEquals(Double.valueOf(123.34), txt.getDouble());
 
     txt.setText("1,5");
-    assertEquals(Double.valueOf(1.5), txt.getDouble());
+    assertEquals(Double.valueOf(15), txt.getDouble());
     txt.setText("1,4.5");
-    assertEquals(Double.valueOf(1.45), txt.getDouble());
+    assertEquals(Double.valueOf(14.5), txt.getDouble());
   }
 }

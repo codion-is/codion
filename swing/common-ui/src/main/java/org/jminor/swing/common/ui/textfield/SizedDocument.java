@@ -118,13 +118,8 @@ public class SizedDocument extends PlainDocument {
       final Document document = fb.getDocument();
       final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
       builder.insert(offset, string);
-      if (getMaxLength() > 0 && builder.length() > getMaxLength()) {
-        return;
-      }
-      final String text = transformString(builder.toString());
-      if (validValue(text)) {
-        final String replacement = adjustReplacementString(text, document, offset, string.length());
-        super.replace(fb, 0, document.getLength() - (text.length() - replacement.length()), replacement, attributeSet);
+      if (getMaxLength() < 0 || builder.length() <= getMaxLength()) {
+        doReplace(fb, builder, offset, string.length(), attributeSet);
       }
     }
 
@@ -134,35 +129,39 @@ public class SizedDocument extends PlainDocument {
       final Document document = fb.getDocument();
       final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
       builder.replace(offset, offset + length, string);
-      if (getMaxLength() > 0 && builder.length() > getMaxLength()) {
-        return;
-      }
-      final String text = transformString(builder.toString());
-      if (validValue(text)) {
-        final String replacement = adjustReplacementString(text, document, offset, length);
-        super.replace(fb, 0, document.getLength() - (text.length() - replacement.length()), replacement, attributeSet);
+      if (getMaxLength() < 0 || builder.length() <= getMaxLength()) {
+        doReplace(fb, builder, offset, string.length(), attributeSet);
       }
     }
 
-    /**
-     * Validates the given value before it is added to the document, provided for subclasses.
-     * @param value the value to validate
-     * @return true if the value is valid, false otherwise
-     */
-    protected boolean validValue(final String value) {
-      return true;
+    @Override
+    public final void remove(final FilterBypass fb, final int offset, final int length) throws BadLocationException {
+      final Document document = fb.getDocument();
+      final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
+      builder.replace(offset, offset + length, "");
+      doReplace(fb, builder, offset, length, null);
     }
 
     /**
-     * Performs any required transformations on the string before it is added to the document.
+     * Performs any required transformations on the string before it is set as the document text.
      * @param string the string to transform
-     * @return the transformed string
+     * @return the transformed string or null if the value is invalid
      */
     protected String transformString(final String string) {
       switch (documentCase) {
         case UPPERCASE: return string.toUpperCase(Locale.getDefault());
         case LOWERCASE: return string.toLowerCase(Locale.getDefault());
         default: return string;
+      }
+    }
+
+    private void doReplace(final FilterBypass fb, final StringBuilder builder, final int offset, final int stringLength,
+                           final AttributeSet attributeSet) throws BadLocationException {
+      final Document document = fb.getDocument();
+      final String text = transformString(builder.toString());
+      if (text != null) {
+        final String replacement = adjustReplacementString(text, document, offset, stringLength);
+        super.replace(fb, 0, document.getLength() - (text.length() - replacement.length()), replacement, attributeSet);
       }
     }
 

@@ -4,8 +4,8 @@
 package org.jminor.swing.common.ui.textfield;
 
 import javax.swing.text.BadLocationException;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 
 /**
@@ -19,7 +19,7 @@ public final class DoubleField extends NumberField {
    * Instantiates a new DoubleField.
    */
   public DoubleField() {
-    this(createDefaultFormat());
+    this(0);
   }
 
   /**
@@ -62,15 +62,6 @@ public final class DoubleField extends NumberField {
   }
 
   /**
-   * Set the decimal and grouping separators for this field
-   * @param decimalSeparator the decimal separator
-   * @param groupingSeparator the grouping separator
-   */
-  public void setSeparators(final char decimalSeparator, final char groupingSeparator) {
-    ((DoubleDocument) getDocument()).setSeparators(decimalSeparator, groupingSeparator);
-  }
-
-  /**
    * @return the current value
    */
   public Double getDouble() {
@@ -87,6 +78,7 @@ public final class DoubleField extends NumberField {
   private static DecimalFormat createDefaultFormat() {
     final DecimalFormat format = new DecimalFormat();
     format.setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
+    format.setRoundingMode(RoundingMode.DOWN);
 
     return format;
   }
@@ -122,22 +114,6 @@ public final class DoubleField extends NumberField {
         throw new RuntimeException(e);
       }
     }
-
-    private void setSeparators(final char decimalSeparator, final char groupingSeparator) {
-      if (decimalSeparator == groupingSeparator) {
-        throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
-      }
-      final DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
-      symbols.setDecimalSeparator(decimalSeparator);
-      symbols.setGroupingSeparator(groupingSeparator);
-      ((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
-      try {
-        remove(0, getLength());
-      }
-      catch (final BadLocationException e) {
-        throw new RuntimeException(e);
-      }
-    }
   }
 
   private static final class DoubleDocumentFilter extends NumberDocumentFilter {
@@ -153,8 +129,7 @@ public final class DoubleField extends NumberField {
         return "0" + decimalSeparator;
       }
 
-      return removeExcessiveFractionDigits(removeExcessiveDecimalSeparators(
-              super.transformString(replaceGroupingSeparators(string, decimalSeparator))));
+      return super.transformString(string);
     }
 
     @Override
@@ -162,52 +137,6 @@ public final class DoubleField extends NumberField {
       final char decimalSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getDecimalSeparator();
 
       return character == decimalSeparator || super.isValidCharacter(index, character);
-    }
-
-    private String replaceGroupingSeparators(final String string, final char decimalSeparator) {
-      if (!getFormat().isGroupingUsed()) {
-        final char groupingSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getGroupingSeparator();
-
-        return string.replace(groupingSeparator, decimalSeparator);
-      }
-
-      return string;
-    }
-
-    private String removeExcessiveDecimalSeparators(final String string) {
-      final char decimalSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getDecimalSeparator();
-      final StringBuilder builder = new StringBuilder(string);
-      boolean decimalSeparatorFound = false;
-      int i = 0;
-      while (i < builder.length()) {
-        if (builder.charAt(i) == decimalSeparator) {
-          if (decimalSeparatorFound) {
-            builder.replace(i, i + 1, "");
-          }
-          else {
-            decimalSeparatorFound = true;
-          }
-        }
-        i++;
-      }
-
-      return builder.toString();
-    }
-
-    private String removeExcessiveFractionDigits(final String string) {
-      final char decimalSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getDecimalSeparator();
-      final int maximumFractionDigits = getFormat().getMaximumFractionDigits();
-      if (maximumFractionDigits != -1) {
-        final int decimalIndex = string.indexOf(decimalSeparator);
-        if (decimalIndex != -1) {
-          final int fractionDigits = string.length() - decimalIndex;
-          if (fractionDigits > maximumFractionDigits) {
-            return string.substring(0, decimalIndex + maximumFractionDigits + 1);
-          }
-        }
-      }
-
-      return string;
     }
   }
 }

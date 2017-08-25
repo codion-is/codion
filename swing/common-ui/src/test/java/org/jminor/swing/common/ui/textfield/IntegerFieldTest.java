@@ -5,6 +5,8 @@ package org.jminor.swing.common.ui.textfield;
 
 import org.junit.Test;
 
+import java.text.DecimalFormat;
+
 import static org.junit.Assert.assertEquals;
 
 public class IntegerFieldTest {
@@ -34,5 +36,21 @@ public class IntegerFieldTest {
     assertEquals("", txt.getText());
     txt.setInteger(-10);
     assertEquals("", txt.getText());
+
+    txt.setRange(0, Integer.MAX_VALUE);
+
+    final DecimalFormat decimalFormat = (DecimalFormat) ((NumberField.NumberDocument) txt.getDocument()).getFormat();
+    decimalFormat.setGroupingSize(3);
+    decimalFormat.setGroupingUsed(true);
+    txt.setSeparators(',', '.');
+    txt.setText("100.000.000");
+    assertEquals(100000000, (int) txt.getInteger());
+    txt.setText("10.00.000");
+    assertEquals("1.000.000", txt.getText());
+    assertEquals(1000000, (int) txt.getInteger());
+    txt.setInteger(123456789);
+    assertEquals("123.456.789", txt.getText());
+    txt.setText("987654321");
+    assertEquals(987654321, (int) txt.getInteger());
   }
 }

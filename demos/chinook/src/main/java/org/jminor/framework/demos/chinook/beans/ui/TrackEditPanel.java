@@ -5,6 +5,7 @@ package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
@@ -44,7 +45,8 @@ public class TrackEditPanel extends EntityEditPanel {
     final JPanel genrePanel = EntityUiUtil.createEastButtonPanel(genreBox, newGenreAction, false);
     final TextInputPanel txtComposer = createTextInputPanel(TRACK_COMPOSER);
     txtComposer.getTextField().setColumns(18);
-    final JTextField txtMilliseconds = createTextField(TRACK_MILLISECONDS);
+    final IntegerField txtMilliseconds = (IntegerField) createTextField(TRACK_MILLISECONDS);
+    txtMilliseconds.setGroupingUsed(true);
     final JTextField txtBytes = createTextField(TRACK_BYTES);
     txtBytes.setColumns(18);
     final JTextField txtUnitPrice = createTextField(TRACK_UNITPRICE);

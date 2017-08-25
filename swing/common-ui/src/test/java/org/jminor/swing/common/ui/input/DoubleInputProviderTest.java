@@ -30,11 +30,11 @@ public class DoubleInputProviderTest {
     provider.getInputComponent().setText("15.5");
     assertEquals(Double.valueOf(15.5), provider.getValue());
     provider.getInputComponent().setText("15,5");
-    assertEquals(Double.valueOf(15.5), provider.getValue());
+    assertEquals(Double.valueOf(155), provider.getValue());
 
     ((DoubleField) provider.getInputComponent()).setSeparators(',', '.');
     provider.getInputComponent().setText("15.5");
-    assertEquals(Double.valueOf(15.5), provider.getValue());
+    assertEquals(Double.valueOf(155), provider.getValue());
     provider.getInputComponent().setText("15,5");
     assertEquals(Double.valueOf(15.5), provider.getValue());
   }
