@@ -81,11 +81,6 @@ public class NumberField extends JTextField {
     ((NumberDocument) getDocument()).setSeparators(decimalSeparator, groupingSeparator);
   }
 
-  @Override
-  public NumberDocument getDocument() {
-    return (NumberDocument) super.getDocument();
-  }
-
   /**
    * A Document implementation for numerical values
    */
@@ -109,7 +104,7 @@ public class NumberField extends JTextField {
     }
 
     protected final Number getNumber() {
-      return NumberDocumentFilter.getNumber(getFormat(), getText());
+      return NumberDocumentFilter.parseNumber(getFormat(), getText());
     }
 
     protected final Integer getInteger() {
@@ -185,7 +180,7 @@ public class NumberField extends JTextField {
 
       final NumberFormat format = getFormat();
       final StringBuilder builder = new StringBuilder(string);
-      final Number number = getNumber(format, builder.toString());
+      final Number number = parseNumber(format, builder.toString());
       if (number != null && isWithinRange(number.doubleValue())) {
         return builder.replace(0, builder.length(), format.format(number)).toString();
       }
@@ -237,7 +232,7 @@ public class NumberField extends JTextField {
      * @param text the text to parse
      * @return a number if the given format can parse it, null otherwise
      */
-    private static Number getNumber(final NumberFormat format, final String text) {
+    private static Number parseNumber(final NumberFormat format, final String text) {
       if (text.isEmpty()) {
         return null;
       }
