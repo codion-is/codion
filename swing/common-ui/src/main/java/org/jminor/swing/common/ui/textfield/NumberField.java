@@ -81,6 +81,11 @@ public class NumberField extends JTextField {
     ((NumberDocument) getDocument()).setSeparators(decimalSeparator, groupingSeparator);
   }
 
+  @Override
+  public NumberDocument getDocument() {
+    return (NumberDocument) super.getDocument();
+  }
+
   /**
    * A Document implementation for numerical values
    */

@@ -4571,3 +4571,4 @@
   NumberField, SizedDocument minor refactoring
   NumberDocumentFilter no longer concerns itself with valid characters, the format deals with it, redundant isValid() removed
   DefaultEntity.initializeReferencedKey() bug fixed, used isNullable() for single column keys when isForeignKeyNull() did not
+  NumberField.getDocument() overridden with NumberDocument as return type
