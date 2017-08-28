@@ -13,12 +13,12 @@ import java.util.List;
 public final class TestDomain extends Entities {
 
   public TestDomain() {
-    defineCompositeMaster();
-    defineCompositeDetail();
-    defineMaster();
-    defineDetail();
-    defineDepartment();
-    defineEmployee();
+    compositeMaster();
+    compositeDetail();
+    master();
+    detail();
+    department();
+    employee();
     processAnnotations(TestDomain.class);
     registerDomain();
   }
@@ -27,7 +27,7 @@ public final class TestDomain extends Entities {
   public static final String COMPOSITE_MASTER_ID = "id";
   public static final String COMPOSITE_MASTER_ID_2 = "id2";
 
-  void defineCompositeMaster() {
+  void compositeMaster() {
     define(T_COMPOSITE_MASTER,
             Properties.columnProperty(COMPOSITE_MASTER_ID).setPrimaryKeyIndex(0).setNullable(true),
             Properties.columnProperty(COMPOSITE_MASTER_ID_2).setPrimaryKeyIndex(1));
@@ -38,7 +38,7 @@ public final class TestDomain extends Entities {
   public static final String COMPOSITE_DETAIL_MASTER_ID_2 = "master_id2";
   public static final String COMPOSITE_DETAIL_MASTER_FK = "master_fk";
 
-  void defineCompositeDetail() {
+  void compositeDetail() {
     define(T_COMPOSITE_DETAIL,
             Properties.foreignKeyProperty(COMPOSITE_DETAIL_MASTER_FK, "master", T_COMPOSITE_MASTER,
                     new Property.ColumnProperty[] {
@@ -52,7 +52,7 @@ public final class TestDomain extends Entities {
   public static final String MASTER_NAME = "name";
   public static final String MASTER_CODE = "code";
 
-  void defineMaster() {
+  void master() {
     define(T_MASTER,
             Properties.primaryKeyProperty(MASTER_ID, Types.BIGINT),
             Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
@@ -89,7 +89,7 @@ public final class TestDomain extends Entities {
   private static final List<Item> ITEMS = Arrays.asList(new Item(0, "0"), new Item(1, "1"),
           new Item(2, "2"), new Item(3, "3"));
 
-  void defineDetail() {
+  void detail() {
     define(T_DETAIL,
             Properties.primaryKeyProperty(DETAIL_ID, Types.BIGINT),
             Properties.columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT),
@@ -129,7 +129,7 @@ public final class TestDomain extends Entities {
   @Entity.Table(tableName = "scott.dept")
   public static final String T_DEPARTMENT = "domain.scott.dept";
 
-  void defineDepartment() {
+  void department() {
     define(T_DEPARTMENT,
             Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
                     .setUpdatable(true).setNullable(false),
@@ -163,7 +163,7 @@ public final class TestDomain extends Entities {
           keyGeneratorIncrementColumnName = "empno")
   public static final String T_EMP = "domain.scott.emp";
 
-  void defineEmployee() {
+  void employee() {
     define(T_EMP, "scott.emp",
             Properties.primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
             Properties.columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)

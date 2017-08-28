@@ -17,11 +17,11 @@ import java.util.List;
 public final class TestDomain extends Entities {
 
   public TestDomain() {
-    defineSuper();
-    defineMaster();
-    defineDetail();
-    defineDepartment();
-    defineEmployee();
+    superEntity();
+    master();
+    detail();
+    department();
+    employee();
     processAnnotations(TestDomain.class);
     registerDomain();
   }
@@ -29,7 +29,7 @@ public final class TestDomain extends Entities {
   public static final String T_SUPER = "db.super_entity";
   public static final String SUPER_ID = "id";
 
-  void defineSuper() {
+  void superEntity() {
     define(T_SUPER,
             Properties.primaryKeyProperty(SUPER_ID));
   }
@@ -42,7 +42,7 @@ public final class TestDomain extends Entities {
   public static final String MASTER_NAME = "name";
   public static final String MASTER_CODE = "code";
 
-  void defineMaster() {
+  void master() {
     define(T_MASTER,
             Properties.columnProperty(MASTER_ID_1).setPrimaryKeyIndex(0),
             Properties.columnProperty(MASTER_ID_2).setPrimaryKeyIndex(1),
@@ -83,7 +83,7 @@ public final class TestDomain extends Entities {
   private static final List<Item> ITEMS = Arrays.asList(new Item(0, "0"), new Item(1, "1"),
           new Item(2, "2"), new Item(3, "3"));
 
-  void defineDetail() {
+  void detail() {
     define(T_DETAIL,
             Properties.primaryKeyProperty(DETAIL_ID, Types.BIGINT),
             Properties.columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT),
@@ -126,7 +126,7 @@ public final class TestDomain extends Entities {
   @Entity.Table(tableName = "scott.dept")
   public static final String T_DEPARTMENT = "db.scott.dept";
 
-  void defineDepartment() {
+  void department() {
     define(T_DEPARTMENT,
             Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
                     .setUpdatable(true).setNullable(false),
@@ -160,7 +160,7 @@ public final class TestDomain extends Entities {
           keyGeneratorIncrementColumnName = "empno")
   public static final String T_EMP = "db.scott.emp";
 
-  void defineEmployee() {
+  void employee() {
     define(T_EMP, "scott.emp",
             Properties.primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
             Properties.columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)

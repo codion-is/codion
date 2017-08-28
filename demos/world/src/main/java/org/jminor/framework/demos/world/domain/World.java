@@ -12,8 +12,8 @@ import java.sql.Types;
 public final class World extends Entities{
 
   public World() {
-    defineCityCountry();
-    defineCountryLanguage();
+    cityCountry();
+    countryLanguage();
   }
 
   public static final String T_CITY = "world.city";
@@ -42,7 +42,7 @@ public final class World extends Entities{
   public static final String COUNTRY_CAPITAL_FK = "capital_fk";
   public static final String COUNTRY_CODE2 = "code2";
 
-  void defineCityCountry() {
+  void cityCountry() {
     //disable this default check so we can define a cyclical foreign key between country and city
     Entity.Definition.STRICT_FOREIGN_KEYS.set(false);
 
@@ -117,7 +117,7 @@ public final class World extends Entities{
   public static final String COUNTRYLANGUAGE_ISOFFICIAL = "isofficial";
   public static final String COUNTRYLANGUAGE_PERCENTAGE = "percentage";
 
-  void defineCountryLanguage() {
+  void countryLanguage() {
     define(T_COUNTRYLANGUAGE,
             Properties.foreignKeyProperty(COUNTRYLANGUAGE_COUNTRYCODE_FK, "Country", T_COUNTRY,
                     Properties.columnProperty(COUNTRYLANGUAGE_COUNTRYCODE, Types.VARCHAR)

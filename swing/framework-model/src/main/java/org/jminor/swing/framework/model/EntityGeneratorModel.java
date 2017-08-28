@@ -209,7 +209,7 @@ public final class EntityGeneratorModel {
   }
 
   private static void appendEntityDefinition(final StringBuilder builder, final Table table) {
-    builder.append("static {").append(Util.LINE_SEPARATOR);
+    builder.append("void " + getDefineMethodName(table) + "() {").append(Util.LINE_SEPARATOR);
     builder.append("  Entities.define(").append(getEntityID(table)).append(",").append(Util.LINE_SEPARATOR);
     for (final Column column : table.getColumns()) {
       builder.append("  ").append(getPropertyDefinition(table, column))
@@ -217,6 +217,18 @@ public final class EntityGeneratorModel {
     }
     builder.append("  );").append(Util.LINE_SEPARATOR);
     builder.append("}");
+  }
+
+  private static String getDefineMethodName(final Table table) {
+    final StringBuilder builder = new StringBuilder(table.getTableName().toLowerCase());
+    int underscoreIndex = builder.indexOf("_");
+    while (underscoreIndex >= 0) {
+      builder.replace(underscoreIndex, underscoreIndex + 1, "");
+      builder.replace(underscoreIndex, underscoreIndex + 1, builder.substring(underscoreIndex, underscoreIndex + 1).toUpperCase());
+      underscoreIndex = builder.indexOf("_");
+    }
+
+    return builder.toString();
   }
 
   private static void appendPropertyConstants(final StringBuilder builder, final Table table) {

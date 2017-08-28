@@ -22,8 +22,8 @@ public final class EmpDept extends Entities {
           ResourceBundle.getBundle("org.jminor.framework.demos.empdept.domain.EmpDept", Locale.getDefault());
 
   public EmpDept() {
-    defineDepartment();
-    defineEmployee();
+    department();
+    employee();
   }
 
   /**Used for i18n*/
@@ -41,7 +41,7 @@ public final class EmpDept extends Entities {
   public static final String DEPARTMENT_NAME = "dname";
   public static final String DEPARTMENT_LOCATION = "loc";
 
-  void defineDepartment() {
+  void department() {
     /*Defining the entity type T_DEPARTMENT*/
     define(T_DEPARTMENT,
             Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, getString(DEPARTMENT_ID))
@@ -75,7 +75,7 @@ public final class EmpDept extends Entities {
   /**Property identifier for the denormalized department location property*/
   public static final String EMPLOYEE_DEPARTMENT_LOCATION = "location";
 
-  void defineEmployee() {
+  void employee() {
     /*Defining the entity type T_EMPLOYEE*/
     define(T_EMPLOYEE,
             Properties.primaryKeyProperty(EMPLOYEE_ID, Types.INTEGER, getString(EMPLOYEE_ID)),

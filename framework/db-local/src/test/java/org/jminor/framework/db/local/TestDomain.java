@@ -14,8 +14,8 @@ import java.util.Arrays;
 public final class TestDomain extends Entities {
 
   public TestDomain() {
-    defineDepartment();
-    defineEmployee();
+    department();
+    employee();
     registerDomain();
   }
 
@@ -25,7 +25,7 @@ public final class TestDomain extends Entities {
 
   public static final String T_DEPARTMENT = "scott.dept";
 
-  void defineDepartment() {
+  void department() {
     define(T_DEPARTMENT,
             Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
                     .setUpdatable(true).setNullable(false),
@@ -53,7 +53,7 @@ public final class TestDomain extends Entities {
   public static final String EMP_DEPARTMENT_LOCATION = "location";
   public static final String T_EMP = "scott.emp";
 
-  void defineEmployee() {
+  void employee() {
     define(T_EMP,
             Properties.primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
             Properties.columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)

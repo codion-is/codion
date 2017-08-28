@@ -15,10 +15,10 @@ import java.util.List;
 public final class TestDomain extends Entities {
 
   public TestDomain() {
-    defineMaster();
-    defineDetail();
-    defineDepartment();
-    defineEmployee();
+    master();
+    detail();
+    department();
+    employee();
     registerDomain();
   }
 
@@ -27,7 +27,7 @@ public final class TestDomain extends Entities {
   public static final String MASTER_NAME = "name";
   public static final String MASTER_CODE = "code";
 
-  void defineMaster() {
+  void master() {
     define(T_MASTER,
             Properties.primaryKeyProperty(MASTER_ID, Types.BIGINT),
             Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
@@ -63,7 +63,7 @@ public final class TestDomain extends Entities {
   private static final List<Item> ITEMS = Arrays.asList(new Item(0, "0"), new Item(1, "1"),
           new Item(2, "2"), new Item(3, "3"));
 
-  void defineDetail() {
+  void detail() {
     define(T_DETAIL,
             Properties.primaryKeyProperty(DETAIL_ID, Types.BIGINT),
             Properties.columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT),
@@ -104,7 +104,7 @@ public final class TestDomain extends Entities {
 
   public static final String T_DEPARTMENT = "scott.dept";
 
-  void defineDepartment() {
+  void department() {
     define(T_DEPARTMENT,
             Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
                     .setUpdatable(true).setNullable(false),
@@ -132,7 +132,7 @@ public final class TestDomain extends Entities {
   public static final String EMP_DEPARTMENT_LOCATION = "location";
   public static final String T_EMP = "scott.emp";
 
-  void defineEmployee() {
+  void employee() {
     define(T_EMP,
             Properties.primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
             Properties.columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)

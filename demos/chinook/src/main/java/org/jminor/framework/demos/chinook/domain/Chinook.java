@@ -15,17 +15,17 @@ import java.text.NumberFormat;
 public final class Chinook extends Entities {
 
   public Chinook() {
-    defineArtist();
-    defineAlbum();
-    defineEmployee();
-    defineCustomer();
-    defineGenre();
-    defineMediaType();
-    defineTrack();
-    defineInvoice();
-    defineInvoiceLine();
-    definePlaylist();
-    definePlaylistTrack();
+    artist();
+    album();
+    employee();
+    customer();
+    genre();
+    mediaType();
+    track();
+    invoice();
+    invoiceLine();
+    playlist();
+    playlistTrack();
     processAnnotations(Chinook.class);
   }
 
@@ -37,7 +37,7 @@ public final class Chinook extends Entities {
           keyGeneratorSource = "chinook.artist")
   public static final String T_ARTIST = "artist@chinook";
 
-  void defineArtist() {
+  void artist() {
     define(T_ARTIST,
             Properties.primaryKeyProperty(ARTIST_ARTISTID, Types.BIGINT),
             Properties.columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
@@ -60,7 +60,7 @@ public final class Chinook extends Entities {
           keyGeneratorSource = "chinook.album")
   public static final String T_ALBUM = "album@chinook";
 
-  void defineAlbum() {
+  void album() {
     define(T_ALBUM,
             Properties.primaryKeyProperty(ALBUM_ALBUMID, Types.BIGINT),
             Properties.foreignKeyProperty(ALBUM_ARTISTID_FK, "Artist", T_ARTIST,
@@ -99,7 +99,7 @@ public final class Chinook extends Entities {
           keyGeneratorSource = "chinook.employee")
   public static final String T_EMPLOYEE = "employee@chinook";
 
-  void defineEmployee() {
+  void employee() {
     define(T_EMPLOYEE,
             Properties.primaryKeyProperty(EMPLOYEE_EMPLOYEEID, Types.BIGINT),
             Properties.columnProperty(EMPLOYEE_LASTNAME, Types.VARCHAR, "Last name")
@@ -157,7 +157,7 @@ public final class Chinook extends Entities {
           keyGeneratorSource = "chinook.customer")
   public static final String T_CUSTOMER = "customer@chinook";
 
-  void defineCustomer() {
+  void customer() {
     define(T_CUSTOMER,
             Properties.primaryKeyProperty(CUSTOMER_CUSTOMERID, Types.BIGINT),
             Properties.columnProperty(CUSTOMER_LASTNAME, Types.VARCHAR, "Last name")
@@ -202,7 +202,7 @@ public final class Chinook extends Entities {
           keyGeneratorSource = "chinook.genre")
   public static final String T_GENRE = "genre@chinook";
 
-  void defineGenre() {
+  void genre() {
     define(T_GENRE,
             Properties.primaryKeyProperty(GENRE_GENREID, Types.BIGINT),
             Properties.columnProperty(GENRE_NAME, Types.VARCHAR, "Name")
@@ -224,7 +224,7 @@ public final class Chinook extends Entities {
           keyGeneratorSource = "chinook.mediatype")
   public static final String T_MEDIATYPE = "mediatype@chinook";
 
-  void defineMediaType() {
+  void mediaType() {
     define(T_MEDIATYPE,
             Properties.primaryKeyProperty(MEDIATYPE_MEDIATYPEID, Types.BIGINT),
             Properties.columnProperty(MEDIATYPE_NAME, Types.VARCHAR, "Name")
@@ -270,7 +270,7 @@ public final class Chinook extends Entities {
             return minutes + " min " + seconds + " sec";
           };
 
-  void defineTrack() {
+  void track() {
     define(T_TRACK,
             Properties.primaryKeyProperty(TRACK_TRACKID, Types.BIGINT),
             Properties.denormalizedViewProperty(TRACK_ARTIST_DENORM, TRACK_ALBUMID_FK,
@@ -326,7 +326,7 @@ public final class Chinook extends Entities {
           keyGeneratorSource = "chinook.invoice")
   public static final String T_INVOICE = "invoice@chinook";
 
-  void defineInvoice() {
+  void invoice() {
     define(T_INVOICE,
             Properties.primaryKeyProperty(INVOICE_INVOICEID, Types.BIGINT, "Invoice no."),
             Properties.columnProperty(INVOICE_INVOICEID_AS_STRING, Types.VARCHAR, "Invoice no.")
@@ -382,7 +382,7 @@ public final class Chinook extends Entities {
             return quantity * unitPrice;
           };
 
-  void defineInvoiceLine() {
+  void invoiceLine() {
     define(T_INVOICELINE,
             Properties.primaryKeyProperty(INVOICELINE_INVOICELINEID, Types.BIGINT),
             Properties.foreignKeyProperty(INVOICELINE_INVOICEID_FK, "Invoice", T_INVOICE,
@@ -412,7 +412,7 @@ public final class Chinook extends Entities {
           keyGeneratorSource = "chinook.playlist")
   public static final String T_PLAYLIST = "playlist@chinook";
 
-  void definePlaylist() {
+  void playlist() {
     define(T_PLAYLIST,
             Properties.primaryKeyProperty(PLAYLIST_PLAYLISTID, Types.BIGINT),
             Properties.columnProperty(PLAYLIST_NAME, Types.VARCHAR, "Name")
@@ -434,7 +434,7 @@ public final class Chinook extends Entities {
   @Entity.Table(tableName = "chinook.playlisttrack")
   public static final String T_PLAYLISTTRACK = "playlisttrack@chinook";
 
-  void definePlaylistTrack() {
+  void playlistTrack() {
     define(T_PLAYLISTTRACK,
             Properties.foreignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
                     Properties.primaryKeyProperty(PLAYLISTTRACK_PLAYLISTID, Types.BIGINT)

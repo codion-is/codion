@@ -64,14 +64,14 @@ public final class TestDomain extends Entities {
   public static final String T_EMP = "scott.emp";
 
   public TestDomain() {
-    defineMaster();
-    defineDetail();
-    defineDepartment();
-    defineEmployee();
+    master();
+    detail();
+    department();
+    employee();
     registerDomain();
   }
 
-  void defineMaster() {
+  void master() {
     define(T_MASTER,
             Properties.primaryKeyProperty(MASTER_ID, Types.BIGINT),
             Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
@@ -85,7 +85,7 @@ public final class TestDomain extends Entities {
             .setStringProvider(new Entities.StringProvider(MASTER_NAME));
   }
 
-  void defineDetail() {
+  void detail() {
     define(T_DETAIL,
             Properties.primaryKeyProperty(DETAIL_ID, Types.BIGINT),
             Properties.columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT),
@@ -120,7 +120,7 @@ public final class TestDomain extends Entities {
             .setStringProvider(new Entities.StringProvider(DETAIL_STRING));
   }
 
-  void defineDepartment() {
+  void department() {
     define(T_DEPARTMENT,
             Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
                     .setUpdatable(true).setNullable(false),
@@ -135,7 +135,7 @@ public final class TestDomain extends Entities {
             .setCaption("Department");
   }
 
-  void defineEmployee() {
+  void employee() {
     define(T_EMP,
             Properties.primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
             Properties.columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
