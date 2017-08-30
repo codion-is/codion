@@ -266,14 +266,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     catch (final NoSuchObjectException e) {
       LOG.error("Exception while unexporting server on shutdown", e);
     }
-    loginProxies.values().forEach(loginProxy -> {
-      try {
-        loginProxy.close();
-      }
-      catch (final Exception e) {
-        LOG.error("Exception while closing loginProxy for client type: " + loginProxy.getClientTypeID(), e);
-      }
-    });
+    loginProxies.values().forEach(AbstractServer::closeLoginProxy);
 
     handleShutdown();
   }
@@ -333,6 +326,15 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
       }
 
       return connectionValidator;
+    }
+  }
+
+  private static void closeLoginProxy(final LoginProxy loginProxy) {
+    try {
+      loginProxy.close();
+    }
+    catch (final Exception e) {
+      LOG.error("Exception while closing loginProxy for client type: " + loginProxy.getClientTypeID(), e);
     }
   }
 

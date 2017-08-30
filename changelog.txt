@@ -4573,3 +4573,4 @@
   DefaultEntity.initializeReferencedKey() bug fixed, used isNullable() for single column keys when isForeignKeyNull() did not
   NumberDocumentFilter.getNumber() renamed to parseNumber()
   EntityGeneratorModel updated according to recent changes
+  Minor refactoring
