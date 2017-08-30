@@ -21,7 +21,7 @@ import java.util.UUID;
 
 public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
-  private static final Entities ENTITIES = new SchemaBrowser();
+  private static final Entities ENTITIES = new SchemaBrowser().registerDomain();
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),

@@ -96,7 +96,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   DefaultEntity(final Entities entities, final String entityID, final Map<Property, Object> values,
                 final Map<Property, Object> originalValues) {
     super(values, originalValues);
-    this.entities = entities;
+    this.entities = Objects.requireNonNull(entities, "entities");
     this.definition = entities.getDefinition(entityID);
   }
 

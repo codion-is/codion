@@ -261,10 +261,11 @@ public interface EntityConnectionServerAdmin extends Remote {
   String getSystemProperties() throws RemoteException;
 
   /**
-   * @return a list containing recent garbage collection notifications
+   * @param since the time since from which to get gc events
+   * @return a list containing garbage collection notifications
    * @throws RemoteException in case of an exception
    */
-  List<GcEvent> getGcEvents() throws RemoteException;
+  List<GcEvent> getGcEvents(final long since) throws RemoteException;
 
   /**
    * @return current thread statistics

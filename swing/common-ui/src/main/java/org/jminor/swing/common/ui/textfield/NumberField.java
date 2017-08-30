@@ -178,11 +178,11 @@ public class NumberField extends JTextField {
         return string;
       }
 
-      final NumberFormat format = getFormat();
+      final NumberFormat numberFormat = getFormat();
       final StringBuilder builder = new StringBuilder(string);
-      final Number number = parseNumber(format, builder.toString());
+      final Number number = parseNumber(numberFormat, builder.toString());
       if (number != null && isWithinRange(number.doubleValue())) {
-        return builder.replace(0, builder.length(), format.format(number)).toString();
+        return builder.replace(0, builder.length(), numberFormat.format(number)).toString();
       }
 
       return null;

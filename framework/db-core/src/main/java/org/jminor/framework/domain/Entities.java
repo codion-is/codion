@@ -1183,10 +1183,17 @@ public class Entities {
 
   /**
    * @param domainID the ID of the domain for which to retrieve the entity definitions
-   * @return a map containing all defined entityIDs, with their respective table names as an associated value
+   * @return the Entities instance registered for the given domainID
+   * @throws IllegalArgumentException in case the domain has not been registered
+   * @see #registerDomain()
    */
   public static Entities getDomainEntities(final String domainID) {
-    return DOMAIN_ENTITIES.get(domainID);
+    final Entities entities = DOMAIN_ENTITIES.get(domainID);
+    if (entities == null) {
+      throw new IllegalArgumentException("Domain '" + domainID + "' has not been registered");
+    }
+
+    return entities;
   }
 
   /**

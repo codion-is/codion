@@ -170,7 +170,7 @@ public class SizedDocument extends PlainDocument {
 
     //We remove the common suffix if any, to preserve the caret position
     private String removeCommonSuffix(final String replacementText, final String currentText, final int offset,
-                                      final int length) throws BadLocationException {
+                                      final int length) {
       final StringBuilder replacement = new StringBuilder(replacementText);
       if (replacement.length() > 0) {
         for (int i = currentText.length() - 1; i >= (offset + length); i--) {

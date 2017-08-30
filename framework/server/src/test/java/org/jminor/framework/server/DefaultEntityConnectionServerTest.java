@@ -45,7 +45,7 @@ public class DefaultEntityConnectionServerTest {
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
 
   private static final User ADMIN_USER = new User("scott", "tiger");
-  private static final Map<String, Object> CONNECTION_PARAMS = Collections.singletonMap("jminor.client.domainModelClass", TestDomain.class);
+  private static final Map<String, Object> CONNECTION_PARAMS = Collections.singletonMap("jminor.client.domainModelClass", TestDomain.class.getName());
   private static Server<RemoteEntityConnection, EntityConnectionServerAdmin> server;
   private static EntityConnectionServerAdmin admin;
 
@@ -123,7 +123,7 @@ public class DefaultEntityConnectionServerTest {
 
     try {
       server.connect(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID",
-              Collections.singletonMap("jminor.client.domainModelClass", EmptyDomain.class)));
+              Collections.singletonMap("jminor.client.domainModelClass", EmptyDomain.class.getName())));
       fail();
     }
     catch (final ServerException.LoginException e) {}
@@ -280,7 +280,7 @@ public class DefaultEntityConnectionServerTest {
     admin.getMaxMemory();
     admin.getRequestsPerSecond();
     admin.getThreadStatistics();
-    admin.getGcEvents();
+    admin.getGcEvents(0);
     admin.getServerInfo();
     admin.getSystemProperties();
     admin.getUsedMemory();

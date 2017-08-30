@@ -92,10 +92,14 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public List<GcEvent> getGcEvents() {
+  public List<GcEvent> getGcEvents(final long since) {
+    final List<GcEvent> gcEvents;
     synchronized (gcEventList) {
-      return gcEventList;
+      gcEvents = new LinkedList<>(gcEventList);
     }
+    gcEvents.removeIf(gcEvent -> gcEvent.getTimeStamp() < since);
+
+    return gcEvents;
   }
 
   /** {@inheritDoc} */

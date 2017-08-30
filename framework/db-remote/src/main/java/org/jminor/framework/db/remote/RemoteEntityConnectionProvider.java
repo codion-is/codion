@@ -135,7 +135,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       LOG.debug("Initializing connection for {}", getUser());
       final RemoteEntityConnection remote = getServer().connect(
               Clients.connectionRequest(getUser(), clientID, clientTypeID, clientVersion,
-                      Collections.singletonMap("jminor.client.domainModelClass", getEntities().getClass())));
+                      Collections.singletonMap("jminor.client.domainModelClass", getEntities().getClass().getName())));
 
       return Util.initializeProxy(EntityConnection.class, new RemoteEntityConnectionHandler(remote));
     }

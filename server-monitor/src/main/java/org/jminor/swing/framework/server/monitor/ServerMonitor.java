@@ -79,8 +79,8 @@ public final class ServerMonitor {
   private final XYSeries connectionLimitSeries = new XYSeries("Maximum connection count");
   private final XYSeriesCollection connectionCountCollection = new XYSeriesCollection();
 
-  private final XYSeries gcScavengeSeries = new XYSeries("Scavenge");
-  private final XYSeries gcMarkSweepSeries = new XYSeries("Mark & Sweep");
+  private final XYSeries gcScavengeSeries = new XYSeries("GC - Scavenge");
+  private final XYSeries gcMarkSweepSeries = new XYSeries("GC - Mark & Sweep");
   private final XYSeriesCollection gcEventsCollection = new XYSeriesCollection();
 
   private final XYSeries threadCountSeries = new XYSeries("Threads");
@@ -91,6 +91,8 @@ public final class ServerMonitor {
   private final XYSeries systemLoadSeries = new XYSeries("System Load");
   private final XYSeries processLoadSeries = new XYSeries("Process Load");
   private final XYSeriesCollection systemLoadCollection = new XYSeriesCollection();
+
+  private long lastStatisticsUpdateTime = System.currentTimeMillis();
 
   /**
    * Instantiates a new {@link ServerMonitor}
@@ -300,6 +302,8 @@ public final class ServerMonitor {
     daemonThreadCountSeries.clear();
     systemLoadSeries.clear();
     processLoadSeries.clear();
+    gcMarkSweepSeries.clear();
+    gcScavengeSeries.clear();
     threadStateSeries.values().forEach(XYSeries::clear);
   }
 
@@ -313,14 +317,6 @@ public final class ServerMonitor {
     for (final Map.Entry<String, String> definition : definitions.entrySet()) {
       domainListModel.addRow(new Object[] {definition.getKey(), definition.getValue()});
     }
-  }
-
-  /**
-   * Refreshes the garbage collection events info
-   * @throws RemoteException in case of an exception
-   */
-  public void refreshGCInfo() throws RemoteException {
-    refreshGCInfo(server.getGcEvents());
   }
 
   /**
@@ -427,27 +423,30 @@ public final class ServerMonitor {
         processLoadSeries.add(time, server.getProcessCpuLoad() * 100);
         connectionCountSeries.add(time, server.getConnectionCount());
         connectionLimitSeries.add(time, server.getConnectionLimit());
-        final EntityConnectionServerAdmin.ThreadStatistics threadStatistics = server.getThreadStatistics();
-        threadCountSeries.add(time, threadStatistics.getThreadCount());
-        daemonThreadCountSeries.add(time, threadStatistics.getDaemonThreadCount());
-        for (final Map.Entry<Thread.State, Integer> entry : threadStatistics.getThreadStateCount().entrySet()) {
-          XYSeries stateSeries = threadStateSeries.get(entry.getKey());
-          if (stateSeries == null) {
-            stateSeries = new XYSeries(entry.getKey());
-            threadStateSeries.put(entry.getKey(), stateSeries);
-            threadCountCollection.addSeries(stateSeries);
-          }
-          stateSeries.add(time, entry.getValue());
-        }
+        addThreadStatistics(time, server.getThreadStatistics());
+        addGCInfo(server.getGcEvents(lastStatisticsUpdateTime));
+        lastStatisticsUpdateTime = time;
         statisticsUpdatedEvent.fire();
       }
     }
     catch (final RemoteException ignored) {/*ignored*/}
   }
 
-  private void refreshGCInfo(final List<EntityConnectionServerAdmin.GcEvent> gcEvents) {
-    gcScavengeSeries.clear();
-    gcMarkSweepSeries.clear();
+  private void addThreadStatistics(final long time, final EntityConnectionServerAdmin.ThreadStatistics threadStatistics) {
+    threadCountSeries.add(time, threadStatistics.getThreadCount());
+    daemonThreadCountSeries.add(time, threadStatistics.getDaemonThreadCount());
+    for (final Map.Entry<Thread.State, Integer> entry : threadStatistics.getThreadStateCount().entrySet()) {
+      XYSeries stateSeries = threadStateSeries.get(entry.getKey());
+      if (stateSeries == null) {
+        stateSeries = new XYSeries(entry.getKey());
+        threadStateSeries.put(entry.getKey(), stateSeries);
+        threadCountCollection.addSeries(stateSeries);
+      }
+      stateSeries.add(time, entry.getValue());
+    }
+  }
+
+  private void addGCInfo(final List<EntityConnectionServerAdmin.GcEvent> gcEvents) {
     for (final EntityConnectionServerAdmin.GcEvent event : gcEvents) {
       switch (event.getGcName()) {
         case "PS Scavenge":

@@ -4574,3 +4574,8 @@
   NumberDocumentFilter.getNumber() renamed to parseNumber()
   EntityGeneratorModel updated according to recent changes
   Minor refactoring
+  Entities.getDomainEntities() now throws IllegalArguentException in case the domain has not been registered
+  LoadTests now register the domain model
+  EntityConnectionServerAdmin.getGcEvents(), added since parameter
+  ServerMonitor now collects gc event info automatically
+  ConnectionRequest, parameters now contains the domain model class name instead of the actual class

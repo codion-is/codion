@@ -33,7 +33,7 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.ChinookApplicationModel> {
 
-  private static final Entities ENTITIES = new Chinook();
+  private static final Entities ENTITIES = new Chinook().registerDomain();
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),

@@ -27,7 +27,7 @@ import java.util.Random;
 
 public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
-  private static final Entities ENTITIES = new EmpDept();
+  private static final Entities ENTITIES = new EmpDept().registerDomain();
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),

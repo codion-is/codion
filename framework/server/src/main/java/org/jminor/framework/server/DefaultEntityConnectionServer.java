@@ -323,14 +323,11 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
                                                                   final RMIClientSocketFactory clientSocketFactory,
                                                                   final RMIServerSocketFactory serverSocketFactory)
           throws RemoteException, DatabaseException {
-    final Class domainModelClass = (Class) remoteClient.getParameters().get("jminor.client.domainModelClass");
-    if (domainModelClass == null) {
+    final String domainModelClassName = (String) remoteClient.getParameters().get("jminor.client.domainModelClass");
+    if (domainModelClassName == null) {
       throw new IllegalArgumentException("'jminor.client.domainModelClass' parameter not specified");
     }
-    final Entities domainModel = Entities.getDomainEntities(domainModelClass.getName());
-    if (domainModel == null) {
-      throw new IllegalArgumentException("Domain model of type: '" + domainModelClass + "' is not available");
-    }
+    final Entities domainModel = Entities.getDomainEntities(domainModelClassName);
     if (connectionPool != null) {
       return new DefaultRemoteEntityConnection(domainModel, connectionPool, remoteClient, port, clientLoggingEnabled,
               clientSocketFactory, serverSocketFactory);

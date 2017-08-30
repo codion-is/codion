@@ -21,7 +21,7 @@ import java.util.UUID;
 
 public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppPanel.PetstoreApplicationModel> {
 
-  private static final Entities ENTITIES = new Petstore();
+  private static final Entities ENTITIES = new Petstore().registerDomain();
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),

@@ -198,7 +198,7 @@ public final class EntityRESTService extends Application {
     final User user = User.parseUser(new String(decodedBytes));
     try {
       return (RemoteEntityConnection) server.connect(Clients.connectionRequest(user, clientId, EntityRESTService.class.getName(),
-              Collections.singletonMap("jminor.client.domainModelClass", domain.getClass())));
+              Collections.singletonMap("jminor.client.domainModelClass", domain.getClass().getName())));
     }
     catch (final ServerException.AuthenticationException ae) {
       throw new WebApplicationException(ae, Response.Status.UNAUTHORIZED);

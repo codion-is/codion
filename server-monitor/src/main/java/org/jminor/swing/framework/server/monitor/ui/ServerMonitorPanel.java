@@ -65,7 +65,7 @@ public final class ServerMonitorPanel extends JPanel {
   private final ChartPanel threadCountChartPanel = new ChartPanel(threadCountChart);
 
   private final JFreeChart gcEventsChart = ChartFactory.createXYBarChart(null,
-          null, true, "Duration (ms)", null);
+          null, true, null, null);
   private final ChartPanel gcEventsChartPanel = new ChartPanel(gcEventsChart);
 
   /**
@@ -146,12 +146,13 @@ public final class ServerMonitorPanel extends JPanel {
     controlPanelBase.add(ControlProvider.createButton(Controls.control(model::resetStatistics, "Reset")), BorderLayout.EAST);
 
     final JPanel chartPanelLeft = new JPanel(new GridLayout(3, 1, 5, 5));
-    final JPanel chartPanelRight = new JPanel(new GridLayout(2, 1, 5, 5));
+    final JPanel chartPanelRight = new JPanel(new GridLayout(3, 1, 5, 5));
     chartPanelLeft.add(requestsPerSecondChartPanel);
     chartPanelLeft.add(connectionCountChartPanel);
     chartPanelLeft.add(systemLoadChartPanel);
     chartPanelRight.add(threadCountChartPanel);
     chartPanelRight.add(memoryUsageChartPanel);
+    chartPanelRight.add(gcEventsChartPanel);
     final JPanel chartPanel = new JPanel(new GridLayout(1, 2, 5, 5));
     chartPanel.add(chartPanelLeft);
     chartPanel.add(chartPanelRight);
@@ -161,30 +162,10 @@ public final class ServerMonitorPanel extends JPanel {
     overviewPanel.add(controlPanelBase, BorderLayout.SOUTH);
     overviewPanel.add(chartPanel, BorderLayout.CENTER);
 
-    final JTabbedPane tabPane = new JTabbedPane();
-    tabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
-    tabPane.addTab("Overview", overviewPanel);
-    tabPane.addTab("GC", initializeGCPanel());
-
     final JPanel ret = new JPanel(UiUtil.createBorderLayout());
-    ret.add(tabPane, BorderLayout.CENTER);
+    ret.add(overviewPanel, BorderLayout.CENTER);
 
     return ret;
-  }
-
-  private JPanel initializeGCPanel() {
-    final JPanel chartPanel = new JPanel(UiUtil.createBorderLayout());
-    chartPanel.add(gcEventsChartPanel);
-
-    final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-    southPanel.add(ControlProvider.createButton(Controls.control(model::refreshGCInfo, "Refresh")));
-
-    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
-
-    panel.add(chartPanel, BorderLayout.CENTER);
-    panel.add(southPanel, BorderLayout.SOUTH);
-
-    return panel;
   }
 
   private JTabbedPane initializeEnvironmentPanel() throws RemoteException {

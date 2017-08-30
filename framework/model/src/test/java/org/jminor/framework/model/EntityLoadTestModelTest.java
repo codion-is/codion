@@ -71,10 +71,8 @@ public class EntityLoadTestModelTest {
 
     @Override
     protected DefaultEntityApplicationModel initializeApplication() {
-      return new DefaultEntityApplicationModel(
-              EntityConnectionProviders.connectionProvider(ENTITIES, getUser(), EntityLoadTestModelTest.class.getSimpleName())) {
-
-      };
+      return new DefaultEntityApplicationModel(EntityConnectionProviders.connectionProvider(ENTITIES, getUser(),
+              EntityLoadTestModelTest.class.getSimpleName()));
     }
   }
 
