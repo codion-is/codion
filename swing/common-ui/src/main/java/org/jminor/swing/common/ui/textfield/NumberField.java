@@ -215,7 +215,7 @@ public class NumberField extends JTextField {
     /**
      * @return the maximum value this field should accept
      */
-    private final double getMaximumValue() {
+    private double getMaximumValue() {
       return maximumValue;
     }
 
