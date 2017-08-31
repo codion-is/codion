@@ -10,8 +10,8 @@ import static org.junit.Assert.*;
 public class SQLServerDatabaseTest {
 
   @Test(expected = UnsupportedOperationException.class)
-  public void getSequenceSQL() {
-    new SQLServerDatabase("host", 1234, "sid").getSequenceSQL("seq");
+  public void getSequenceQuery() {
+    new SQLServerDatabase("host", 1234, "sid").getSequenceQuery("seq");
   }
   
   @Test
@@ -27,9 +27,9 @@ public class SQLServerDatabaseTest {
   }
   
   @Test
-  public void getAutoIncrementValueSQL() {
+  public void getAutoIncrementQuery() {
     final SQLServerDatabase db = new SQLServerDatabase("host", 1234, "sid");
-    assertEquals(SQLServerDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementValueSQL(null));
+    assertEquals(SQLServerDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
   
   @Test

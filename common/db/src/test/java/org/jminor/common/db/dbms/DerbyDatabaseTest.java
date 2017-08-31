@@ -14,8 +14,8 @@ import static org.junit.Assert.*;
 public class DerbyDatabaseTest {
 
   @Test(expected = UnsupportedOperationException.class)
-  public void getSequenceSQL() {
-    new DerbyDatabase("host", 1234, "sid").getSequenceSQL("seq");
+  public void getSequenceQuery() {
+    new DerbyDatabase("host", 1234, "sid").getSequenceQuery("seq");
   }
 
   @Test
@@ -40,10 +40,10 @@ public class DerbyDatabaseTest {
   }
 
   @Test
-  public void getAutoIncrementValueSQL() {
+  public void getAutoIncrementQuery() {
     final DerbyDatabase db = new DerbyDatabase("host", 1234, "sid");
     final String idSource = "id_source";
-    assertEquals(DerbyDatabase.AUTO_INCREMENT_QUERY + idSource, db.getAutoIncrementValueSQL(idSource));
+    assertEquals(DerbyDatabase.AUTO_INCREMENT_QUERY + idSource, db.getAutoIncrementQuery(idSource));
   }
 
   @Test

@@ -148,6 +148,8 @@ public class Entities {
    * no primary key property is specified
    */
   public final Entity.Definition define(final String entityID, final String tableName, final Property... properties) {
+    Objects.requireNonNull(entityID, ENTITY_ID_PARAM);
+    Objects.requireNonNull(tableName, "tableName");
     if (entityDefinitions.containsKey(entityID) && !ALLOW_REDEFINE_ENTITY.get()) {
       throw new IllegalArgumentException("Entity has already been defined: " + entityID + ", for table: " + tableName);
     }
@@ -1926,9 +1928,7 @@ public class Entities {
      * @param entityID the ID of the entities this packer packs
      */
     private EntityResultPacker(final Entities entities, final String entityID, final List<Property.ColumnProperty> columnProperties,
-                               final List<Property.TransientProperty> transientProperties,
-                               final int propertyCount) {
-      Objects.requireNonNull(entityID, "entityID");
+                               final List<Property.TransientProperty> transientProperties, final int propertyCount) {
       this.entities = entities;
       this.entityID = entityID;
       this.properties = columnProperties;
@@ -1975,8 +1975,7 @@ public class Entities {
           values.put(property, property.fetchValue(resultSet));
         }
         catch (final Exception e) {
-          throw new SQLException("Exception fetching: " + property + ", entity: " + entityID + " [" + e.getMessage()
-                  + "]", e);
+          throw new SQLException("Exception fetching: " + property + ", entity: " + entityID + " [" + e.getMessage() + "]", e);
         }
       }
 
@@ -2076,7 +2075,7 @@ public class Entities {
 
     @Override
     protected String getQuery(final Database database) {
-      return database.getSequenceSQL(sequenceName);
+      return database.getSequenceQuery(sequenceName);
     }
   }
 
@@ -2101,7 +2100,7 @@ public class Entities {
 
     @Override
     protected String getQuery(final Database database) {
-      return database.getAutoIncrementValueSQL(valueSource);
+      return database.getAutoIncrementQuery(valueSource);
     }
   }
 }

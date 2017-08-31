@@ -16,7 +16,7 @@ public class H2DatabaseTest {
 
   @Test (expected = NullPointerException.class)
   public void getSequenceSQLNullSequence() {
-    new H2Database("host", 1234, "sid").getSequenceSQL(null);
+    new H2Database("host", 1234, "sid").getSequenceQuery(null);
   }
 
   @Test
@@ -35,16 +35,16 @@ public class H2DatabaseTest {
   }
 
   @Test
-  public void getAutoIncrementValueSQL()  {
+  public void getAutoIncrementQuery()  {
     final H2Database db = new H2Database("host", 1234, "sid");
-    assertEquals(H2Database.AUTO_INCREMENT_QUERY, db.getAutoIncrementValueSQL(null));
+    assertEquals(H2Database.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
 
   @Test
-  public void getSequenceSQL()  {
+  public void getSequenceQuery()  {
     final H2Database db = new H2Database("host", 1234, "sid");
     final String idSource = "seq";
-    assertEquals(H2Database.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceSQL(idSource));
+    assertEquals(H2Database.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceQuery(idSource));
   }
 
   @Test

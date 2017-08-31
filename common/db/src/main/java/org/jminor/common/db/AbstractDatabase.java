@@ -197,7 +197,7 @@ public abstract class AbstractDatabase implements Database {
 
   /** {@inheritDoc} */
   @Override
-  public String getSequenceSQL(final String sequenceName) {
+  public String getSequenceQuery(final String sequenceName) {
     throw new UnsupportedOperationException("Sequence support is not implemented for database type: " + databaseType);
   }
 

@@ -10,8 +10,8 @@ import static org.junit.Assert.*;
 public class PostgreSQLDatabaseTest {
 
   @Test (expected = NullPointerException.class)
-  public void getSequenceSQLNullSequence() {
-    new PostgreSQLDatabase("host", 1234, "sid").getSequenceSQL(null);
+  public void getSequenceQueryNullSequence() {
+    new PostgreSQLDatabase("host", 1234, "sid").getSequenceQuery(null);
   }
   
   @Test
@@ -27,15 +27,15 @@ public class PostgreSQLDatabaseTest {
   }
   
   @Test
-  public void getAutoIncrementValueSQL() {
+  public void getAutoIncrementQuery() {
     final PostgreSQLDatabase db = new PostgreSQLDatabase("host", 1234, "sid");
-    assertEquals("select currval('seq')", db.getAutoIncrementValueSQL("seq"));
+    assertEquals("select currval('seq')", db.getAutoIncrementQuery("seq"));
   }
   
   @Test
-  public void getSequenceSQL() {
+  public void getSequenceQuery() {
     final PostgreSQLDatabase db = new PostgreSQLDatabase("host", 1234, "sid");
-    assertEquals("select nextval('seq')", db.getSequenceSQL("seq"));
+    assertEquals("select nextval('seq')", db.getSequenceQuery("seq"));
   }
   
   @Test

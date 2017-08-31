@@ -16,7 +16,7 @@ public class HSQLDatabaseTest {
 
   @Test (expected = NullPointerException.class)
   public void getSequenceSQLNullSequence() {
-    new HSQLDatabase("host", 1234, "sid").getSequenceSQL(null);
+    new HSQLDatabase("host", 1234, "sid").getSequenceQuery(null);
   }
 
   @Test
@@ -35,16 +35,16 @@ public class HSQLDatabaseTest {
   }
 
   @Test
-  public void getAutoIncrementValueSQL() {
+  public void getAutoIncrementQuery() {
     final HSQLDatabase db = new HSQLDatabase("host", 1234, "sid");
-    assertEquals(HSQLDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementValueSQL(null));
+    assertEquals(HSQLDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
 
   @Test
-  public void getSequenceSQL() {
+  public void getSequenceQuery() {
     final HSQLDatabase db = new HSQLDatabase("host", 1234, "sid");
     final String idSource = "seq";
-    assertEquals(HSQLDatabase.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceSQL(idSource));
+    assertEquals(HSQLDatabase.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceQuery(idSource));
   }
 
   @Test

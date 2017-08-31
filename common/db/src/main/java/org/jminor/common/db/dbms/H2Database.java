@@ -116,13 +116,13 @@ public final class H2Database extends AbstractDatabase {
 
   /** {@inheritDoc} */
   @Override
-  public String getAutoIncrementValueSQL(final String idSource) {
+  public String getAutoIncrementQuery(final String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
 
   /** {@inheritDoc} */
   @Override
-  public String getSequenceSQL(final String sequenceName) {
+  public String getSequenceQuery(final String sequenceName) {
     return SEQUENCE_VALUE_QUERY + Objects.requireNonNull(sequenceName, "sequenceName");
   }
 

@@ -40,13 +40,13 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
 
   /** {@inheritDoc} */
   @Override
-  public String getAutoIncrementValueSQL(final String idSource) {
+  public String getAutoIncrementQuery(final String idSource) {
     return "select currval('" + Objects.requireNonNull(idSource, "idSource") + "')";
   }
 
   /** {@inheritDoc} */
   @Override
-  public String getSequenceSQL(final String sequenceName) {
+  public String getSequenceQuery(final String sequenceName) {
     return "select nextval('" + Objects.requireNonNull(sequenceName, "sequenceName") + "')";
   }
 

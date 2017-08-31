@@ -16,7 +16,7 @@ public final class AbstractDatabaseTest {
 
   private final AbstractDatabase database = new AbstractDatabase(Database.Type.H2, DRIVER_CLASS) {
     @Override
-    public String getAutoIncrementValueSQL(final String idSource) {
+    public String getAutoIncrementQuery(final String idSource) {
       return null;
     }
     @Override

@@ -124,7 +124,7 @@ public interface Database {
    * @return a query string for retrieving the last auto-increment value from idSource
    * @throws NullPointerException in case {@code idSource} is required and is null
    */
-  String getAutoIncrementValueSQL(final String idSource);
+  String getAutoIncrementQuery(final String idSource);
 
   /**
    * @param sequenceName the name of the sequence
@@ -132,7 +132,7 @@ public interface Database {
    * @throws UnsupportedOperationException in case the underlying database does not support sequences
    * @throws NullPointerException in case {@code sequenceName} is null
    */
-  String getSequenceSQL(final String sequenceName);
+  String getSequenceQuery(final String sequenceName);
 
   /**
    * @param connectionProperties the connection properties, used primarily to provide

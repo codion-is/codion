@@ -4582,3 +4582,4 @@
   DefaultEntity.setSingleForeignKeyValue() bug fixed, wrong property used when checking for MirrorProperty
   Entity.Definition.getProperties() renamed to getPropertyMap() and getPropertyList() renamed to getProperties()
   Entities.addAll() removed
+  Database.getAutoIncrementValueSQL() renamed to getAutoIncrementQuery(), getSequenceSQL() renamed to getSequenceQuery()

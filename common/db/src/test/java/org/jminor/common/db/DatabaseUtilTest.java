@@ -100,8 +100,8 @@ public class DatabaseUtilTest {
     }
 
     @Override
-    public String getAutoIncrementValueSQL(final String idSource) {
-      return database.getAutoIncrementValueSQL(idSource);
+    public String getAutoIncrementQuery(final String idSource) {
+      return database.getAutoIncrementQuery(idSource);
     }
 
     @Override
