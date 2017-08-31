@@ -608,7 +608,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   private void setSingleForeignKeyValue(final Entity referencedEntity,
                                         final Property.ColumnProperty referenceProperty,
                                         final Property.ColumnProperty foreignColumnProperty) {
-    if (!(foreignColumnProperty instanceof Property.MirrorProperty)) {
+    if (!(referenceProperty instanceof Property.MirrorProperty)) {
       put(referenceProperty, referencedEntity == null ? null : referencedEntity.get(foreignColumnProperty), false);
     }
   }
