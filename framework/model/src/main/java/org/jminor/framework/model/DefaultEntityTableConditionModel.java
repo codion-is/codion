@@ -386,7 +386,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   private void initializeFilterModels(final String entityID, final PropertyFilterModelProvider filterModelProvider) {
     if (filterModelProvider != null) {
-      for (final Property property : connectionProvider.getEntities().getProperties(entityID).values()) {
+      for (final Property property : connectionProvider.getEntities().getProperties(entityID)) {
         if (!property.isHidden()) {
           final ColumnConditionModel<Property> filterModel = filterModelProvider.initializePropertyFilterModel(property);
           this.propertyFilterModels.put(filterModel.getColumnIdentifier().getPropertyID(), filterModel);

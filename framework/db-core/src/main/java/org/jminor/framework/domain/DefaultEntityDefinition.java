@@ -472,13 +472,13 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Map<String, Property> getProperties() {
+  public Map<String, Property> getPropertyMap() {
     return properties;
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<Property> getPropertyList() {
+  public List<Property> getProperties() {
     return propertyList;
   }
 

@@ -177,14 +177,6 @@ public class Entities {
   }
 
   /**
-   * Adds all entity definitions from {@code domain} to this domain
-   * @param domain the domain
-   */
-  public final void addAll(final Entities domain) {
-    entityDefinitions.putAll(domain.entityDefinitions);
-  }
-
-  /**
    * Instantiates a primary key generator which fetches the current maximum primary key value and increments
    * it by one prior to insert.
    * @param tableName the table name
@@ -433,9 +425,9 @@ public class Entities {
    * the entity identified by {@code entityID}
    */
   public final List<Property.ColumnProperty> getColumnProperties(final String entityID,
-                                                           final boolean includePrimaryKeyProperties,
-                                                           final boolean includeReadOnly,
-                                                           final boolean includeNonUpdatable) {
+                                                                 final boolean includePrimaryKeyProperties,
+                                                                 final boolean includeReadOnly,
+                                                                 final boolean includeNonUpdatable) {
     final List<Property.ColumnProperty> properties = new ArrayList<>(getDefinition(entityID).getColumnProperties());
     properties.removeIf(property ->
             !includeReadOnly && property.isReadOnly()
@@ -498,7 +490,7 @@ public class Entities {
   public final Property getProperty(final String entityID, final String propertyID) {
     Objects.requireNonNull(entityID, ENTITY_ID_PARAM);
     Objects.requireNonNull(propertyID, PROPERTY_ID_PARAM);
-    final Property property = getProperties(entityID).get(propertyID);
+    final Property property = getDefinition(entityID).getPropertyMap().get(propertyID);
     if (property == null) {
       throw new IllegalArgumentException("Property '" + propertyID + "' not found in entity: " + entityID);
     }
@@ -540,7 +532,7 @@ public class Entities {
    * @return a collection containing the properties found in the entity identified by {@code entityID}
    */
   public final Collection<Property> getProperties(final String entityID, final boolean includeHidden) {
-    return includeHidden ? getProperties(entityID).values() : getVisibleProperties(entityID);
+    return includeHidden ? getProperties(entityID) : getVisibleProperties(entityID);
   }
 
   /**
@@ -585,7 +577,7 @@ public class Entities {
    * which source is the entity identified by {@code propertyOwnerEntityID}
    */
   public final List<Property.DenormalizedProperty> getDenormalizedProperties(final String entityID,
-                                                                       final String foreignKeyPropertyID) {
+                                                                             final String foreignKeyPropertyID) {
     return getDefinition(entityID).getDenormalizedProperties(foreignKeyPropertyID);
   }
 
@@ -678,9 +670,9 @@ public class Entities {
 
   /**
    * @param entityID the entity ID
-   * @return a map containing the properties the given entity is comprised of, mapped to their respective propertyIDs
+   * @return the properties comprising the given entity type
    */
-  public final Map<String, Property> getProperties(final String entityID) {
+  public final List<Property> getProperties(final String entityID) {
     return getDefinition(entityID).getProperties();
   }
 
@@ -1836,7 +1828,7 @@ public class Entities {
     @Override
     public void validate(final Entity entity) throws ValidationException {
       Objects.requireNonNull(entity, ENTITY_PARAM);
-      for (final Property property : entities.getProperties(entityID).values()) {
+      for (final Property property : entities.getProperties(entityID)) {
         if (!property.isReadOnly()) {
           validate(entity, property);
         }

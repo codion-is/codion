@@ -132,7 +132,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   public Property getProperty(final String propertyID) {
     Objects.requireNonNull(propertyID, PROPERTY_ID_PARAM);
-    final Property property = definition.getProperties().get(propertyID);
+    final Property property = definition.getPropertyMap().get(propertyID);
     if (property == null) {
       throw new IllegalArgumentException("Property " + propertyID + " not found in entity: " + definition.getEntityID());
     }
@@ -410,7 +410,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   public boolean valuesEqual(final Entity entity) {
     Objects.requireNonNull(entity, "entity");
-    final List<Property> propertyList = definition.getPropertyList();
+    final List<Property> propertyList = definition.getProperties();
     for (int i = 0; i < propertyList.size(); i++) {
       final Property property = propertyList.get(i);
       if (property instanceof Property.ColumnProperty && !Objects.equals(get(property), entity.get(property))) {
@@ -741,7 +741,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     stream.writeObject(definition.getEntityID());
     final boolean isModified = isModified();
     stream.writeBoolean(isModified);
-    final List<Property> propertyList = definition.getPropertyList();
+    final List<Property> propertyList = definition.getProperties();
     for (int i = 0; i < propertyList.size(); i++) {
       final Property property = propertyList.get(i);
       if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
@@ -766,7 +766,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityID);
     }
-    final List<Property> propertyList = definition.getPropertyList();
+    final List<Property> propertyList = definition.getProperties();
     for (int i = 0; i < propertyList.size(); i++) {
       final Property property = propertyList.get(i);
       if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {

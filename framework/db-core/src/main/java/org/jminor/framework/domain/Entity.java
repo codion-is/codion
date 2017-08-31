@@ -753,14 +753,14 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     Definition setSearchPropertyIDs(final String... searchPropertyIDs);
 
     /**
-     * @return the properties for this entity type
+     * @return the properties for this entity type mapped to propertyIDs
      */
-    Map<String, Property> getProperties();
+    Map<String, Property> getPropertyMap();
 
     /**
      * @return a unmodifiable list view of the properties
      */
-    List<Property> getPropertyList();
+    List<Property> getProperties();
 
     /**
      * @return true if this entity contains any properties which values are linked to other properties

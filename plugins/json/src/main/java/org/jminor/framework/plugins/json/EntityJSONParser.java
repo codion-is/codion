@@ -371,7 +371,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
   private JSONObject serializeOriginalValues(final Entity entity, final DateFormat jsonTimeFormat,
                                              final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat) throws JSONException {
     final JSONObject originalValues = new JSONObject();
-    for (final Property property : entities.getProperties(entity.getEntityID()).values()) {
+    for (final Property property : entities.getProperties(entity.getEntityID())) {
       if (entity.isModified(property.getPropertyID()) && (!(property instanceof Property.ForeignKeyProperty) || includeForeignKeyValues)) {
         originalValues.put(property.getPropertyID(),
                 serializeValue(entity.getOriginal(property.getPropertyID()), property,

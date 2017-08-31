@@ -86,10 +86,10 @@ public class DefaultEntityDefinitionTest {
             Properties.derivedProperty("derived", Types.VARCHAR, null, linkedValues ->
                     ((String) linkedValues.get("name")) + linkedValues.get("info"), "name", "info"));
     Collection<Property.DerivedProperty> linked = definition.getDerivedProperties("name");
-    assertTrue(linked.contains(definition.getProperties().get("derived")));
+    assertTrue(linked.contains(definition.getPropertyMap().get("derived")));
     assertEquals(1, linked.size());
     linked = definition.getDerivedProperties("info");
-    assertTrue(linked.contains(definition.getProperties().get("derived")));
+    assertTrue(linked.contains(definition.getPropertyMap().get("derived")));
     assertEquals(1, linked.size());
   }
 

@@ -4580,3 +4580,5 @@
   ServerMonitor now collects gc event info automatically
   ConnectionRequest, parameters now contains the domain model class name instead of the actual class
   DefaultEntity.setSingleForeignKeyValue() bug fixed, wrong property used when checking for MirrorProperty
+  Entity.Definition.getProperties() renamed to getPropertyMap() and getPropertyList() renamed to getProperties()
+  Entities.addAll() removed
