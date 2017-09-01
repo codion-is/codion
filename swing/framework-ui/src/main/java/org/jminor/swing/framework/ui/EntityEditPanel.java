@@ -1957,65 +1957,28 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
                                                                 final StateObserver enabledState) {
     final Property.ForeignKeyProperty fkProperty = editModel.getEntities().getForeignKeyProperty(editModel.getEntityID(),
             foreignKeyPropertyID);
-    final Collection<String> searchPropertyIDs = editModel.getEntities().getSearchPropertyIDs(fkProperty.getReferencedEntityID());
-    return createForeignKeyLookupField(fkProperty, enabledState, searchPropertyIDs.toArray(new String[searchPropertyIDs.size()]));
-  }
 
-  /**
-   * Creates an EntityLookupField bound to the property identified by {@code propertyID}, the property
-   * must be an Property.ForeignKeyProperty
-   * @param foreignKeyPropertyID the ID of the foreign key property to bind
-   * @param lookupPropertyIDs the IDs of the properties to use in the lookup
-   * @return an EntityLookupField bound the property
-   */
-  protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyID,
-                                                                final String... lookupPropertyIDs) {
-    return createForeignKeyLookupField(foreignKeyPropertyID, null, lookupPropertyIDs);
-  }
-
-  /**
-   * Creates an EntityLookupField bound to the property identified by {@code propertyID}, the property
-   * must be an Property.ForeignKeyProperty
-   * @param foreignKeyPropertyID the ID of the foreign key property to bind
-   * @param enabledState a state for controlling the enabled state of the component
-   * @param lookupPropertyIDs the IDs of the properties to use in the lookup
-   * @return an EntityLookupField bound the property
-   */
-  protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyID,
-                                                                final StateObserver enabledState,
-                                                                final String... lookupPropertyIDs) {
-    final Property.ForeignKeyProperty fkProperty = editModel.getEntities().getForeignKeyProperty(editModel.getEntityID(),
-            foreignKeyPropertyID);
-    if (lookupPropertyIDs == null || lookupPropertyIDs.length == 0) {
-      final Collection<String> propertyIDs = editModel.getEntities().getSearchPropertyIDs(fkProperty.getReferencedEntityID());
-      return createForeignKeyLookupField(fkProperty, enabledState, propertyIDs.toArray(new String[propertyIDs.size()]));
-    }
-
-    return createForeignKeyLookupField(fkProperty, enabledState, lookupPropertyIDs);
+    return createForeignKeyLookupField(fkProperty, enabledState);
   }
 
   /**
    * Creates an EntityLookupField bound to the given foreign key property
    * @param foreignKeyProperty the foreign key property to bind
-   * @param lookupPropertyIDs the IDs of the properties to use in the lookup
    * @return an EntityLookupField bound the property
    */
-  protected final EntityLookupField createForeignKeyLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                                final String... lookupPropertyIDs) {
-    return createForeignKeyLookupField(foreignKeyProperty, null, lookupPropertyIDs);
+  protected final EntityLookupField createForeignKeyLookupField(final Property.ForeignKeyProperty foreignKeyProperty) {
+    return createForeignKeyLookupField(foreignKeyProperty, null);
   }
 
   /**
    * Creates an EntityLookupField bound to the given foreign key property
    * @param foreignKeyProperty the foreign key property to bind
    * @param enabledState a state for controlling the enabled state of the component
-   * @param lookupPropertyIDs the IDs of the properties to use in the lookup
    * @return an EntityLookupField bound the property
    */
   protected final EntityLookupField createForeignKeyLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                                final StateObserver enabledState,
-                                                                final String... lookupPropertyIDs) {
-    final EntityLookupField ret = EntityUiUtil.createForeignKeyLookupField(foreignKeyProperty, editModel, enabledState, lookupPropertyIDs);
+                                                                final StateObserver enabledState) {
+    final EntityLookupField ret = EntityUiUtil.createForeignKeyLookupField(foreignKeyProperty, editModel, enabledState);
     setComponent(foreignKeyProperty.getPropertyID(), ret);
 
     return ret;
