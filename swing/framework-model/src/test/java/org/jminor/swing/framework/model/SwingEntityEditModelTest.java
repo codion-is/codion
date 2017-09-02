@@ -73,7 +73,7 @@ public class SwingEntityEditModelTest {
     assertNotNull(model);
     assertTrue(model.isCleared());
     assertTrue(model.getAllItems().isEmpty());
-    assertEquals(deptProperty.getReferencedEntityID(), model.getEntityID());
+    assertEquals(deptProperty.getForeignEntityID(), model.getEntityID());
   }
 
   @Test(expected = IllegalArgumentException.class)

@@ -512,13 +512,13 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   public boolean isForeignKeyNull(final Property.ForeignKeyProperty foreignKeyProperty) {
     Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-    final List<Property.ColumnProperty> referenceProperties = foreignKeyProperty.getReferenceProperties();
-    if (referenceProperties.size() == 1) {
-      return isValueNull(referenceProperties.get(0));
+    final List<Property.ColumnProperty> properties = foreignKeyProperty.getProperties();
+    if (properties.size() == 1) {
+      return isValueNull(properties.get(0));
     }
-    final List<Property.ColumnProperty> foreignProperties = entities.getReferencedProperties(foreignKeyProperty);
-    for (int i = 0; i < referenceProperties.size(); i++) {
-      if (!foreignProperties.get(i).isNullable() && isValueNull(referenceProperties.get(i))) {
+    final List<Property.ColumnProperty> foreignProperties = entities.getForeignProperties(foreignKeyProperty);
+    for (int i = 0; i < properties.size(); i++) {
+      if (!foreignProperties.get(i).isNullable() && isValueNull(properties.get(i))) {
         return true;
       }
     }
@@ -548,9 +548,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   protected void handleRemove(final Property property, final Object value) {
     if (property instanceof Property.ForeignKeyProperty) {
-      final List<Property.ColumnProperty> referenceProperties = ((Property.ForeignKeyProperty) property).getReferenceProperties();
-      for (int i = 0; i < referenceProperties.size(); i++) {
-        remove(referenceProperties.get(i));
+      final List<Property.ColumnProperty> properties = ((Property.ForeignKeyProperty) property).getProperties();
+      for (int i = 0; i < properties.size(); i++) {
+        remove(properties.get(i));
       }
     }
   }
@@ -587,13 +587,13 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
     referencedKeyCache = null;
-    final List<Property.ColumnProperty> referenceProperties = foreignKeyProperty.getReferenceProperties();
-    final List<Property.ColumnProperty> foreignColumnProperties = entities.getReferencedProperties(foreignKeyProperty);
-    if (referenceProperties.size() > 1) {
-      setCompositeForeignKeyValues(referencedEntity, referenceProperties, foreignColumnProperties);
+    final List<Property.ColumnProperty> properties = foreignKeyProperty.getProperties();
+    final List<Property.ColumnProperty> foreignProperties = entities.getForeignProperties(foreignKeyProperty);
+    if (properties.size() > 1) {
+      setCompositeForeignKeyValues(referencedEntity, properties, foreignProperties);
     }
     else {
-      setSingleForeignKeyValue(referencedEntity, referenceProperties.get(0), foreignColumnProperties.get(0));
+      setSingleForeignKeyValue(referencedEntity, properties.get(0), foreignProperties.get(0));
     }
   }
 
@@ -646,30 +646,30 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @return the referenced primary key or null if a valid key can not be created (null values for non-nullable properties)
    */
   private Key initializeReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty) {
-    final List<Property.ColumnProperty> foreignColumnProperties = entities.getReferencedProperties(foreignKeyProperty);
-    final List<Property.ColumnProperty> referenceProperties = foreignKeyProperty.getReferenceProperties();
-    if (foreignKeyProperty.isCompositeReference()) {
-      final Map<Property.ColumnProperty, Object> values = new HashMap<>(referenceProperties.size());
-      for (int i = 0; i < referenceProperties.size(); i++) {
-        final Property.ColumnProperty foreignColumnProperty = foreignColumnProperties.get(i);
-        final Object value = super.get(referenceProperties.get(i));
-        if (!foreignColumnProperty.isNullable() && value == null) {
+    final List<Property.ColumnProperty> properties = foreignKeyProperty.getProperties();
+    if (foreignKeyProperty.isCompositeKey()) {
+      final List<Property.ColumnProperty> foreignProperties = entities.getForeignProperties(foreignKeyProperty);
+      final Map<Property.ColumnProperty, Object> values = new HashMap<>(properties.size());
+      for (int i = 0; i < properties.size(); i++) {
+        final Property.ColumnProperty foreignProperty = foreignProperties.get(i);
+        final Object value = super.get(properties.get(i));
+        if (!foreignProperty.isNullable() && value == null) {
           return null;
         }
         else {
-          values.put(foreignColumnProperty, value);
+          values.put(foreignProperty, value);
         }
       }
 
-      return new DefaultKey(entities, entities.getDefinition(foreignKeyProperty.getReferencedEntityID()), values);
+      return new DefaultKey(entities, entities.getDefinition(foreignKeyProperty.getForeignEntityID()), values);
     }
     else {
-      final Object value = super.get(referenceProperties.get(0));
+      final Object value = super.get(properties.get(0));
       if (value == null) {
         return null;
       }
 
-      return new DefaultKey(entities, entities.getDefinition(foreignKeyProperty.getReferencedEntityID()), value);
+      return new DefaultKey(entities, entities.getDefinition(foreignKeyProperty.getForeignEntityID()), value);
     }
   }
 
@@ -770,7 +770,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     for (int i = 0; i < propertyList.size(); i++) {
       final Property property = propertyList.get(i);
       if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
-        super.put(property, stream.readObject());
+        final Object value = stream.readObject();
+        property.validateType(value);
+        super.put(property, value);
         if (isModified && stream.readBoolean()) {
           setOriginalValue(property, stream.readObject());
         }
@@ -807,7 +809,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
     property.validateType(value);
     if (property instanceof Property.ForeignKeyProperty) {
-      final String fkPropertyEntityID = ((Property.ForeignKeyProperty) property).getReferencedEntityID();
+      final String fkPropertyEntityID = ((Property.ForeignKeyProperty) property).getForeignEntityID();
       final String actualEntityID = ((Entity) value).getEntityID();
       if (!Objects.equals(fkPropertyEntityID, actualEntityID)) {
         throw new IllegalArgumentException("Entity of type " + fkPropertyEntityID + " expected for property " + property + ", got: " + actualEntityID);
@@ -1106,7 +1108,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
       compositeKey = properties.size() > 1;
       singleIntegerKey = !compositeKey && properties.get(0).isInteger();
       for (int i = 0; i < properties.size(); i++) {
-        super.put(properties.get(i), stream.readObject());
+        put(properties.get(i), stream.readObject());
       }
     }
 

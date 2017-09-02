@@ -11,7 +11,6 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.DatabaseUtil;
-import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.condition.Conditions;
@@ -525,7 +524,7 @@ public final class LocalEntityConnection implements EntityConnection {
     try {
       logAccess("executeFunction: " + functionID, arguments);
       synchronized (connection) {
-        return Databases.getFunction(functionID).execute(this, arguments);
+        return domain.getFunction(functionID).execute(this, arguments);
       }
     }
     catch (final DatabaseException e) {
@@ -548,7 +547,7 @@ public final class LocalEntityConnection implements EntityConnection {
     try {
       logAccess("executeProcedure: " + procedureID, arguments);
       synchronized (connection) {
-        Databases.getProcedure(procedureID).execute(this, arguments);
+        domain.getProcedure(procedureID).execute(this, arguments);
       }
     }
     catch (final DatabaseException e) {
@@ -819,14 +818,14 @@ public final class LocalEntityConnection implements EntityConnection {
       if (!limitForeignKeyFetchDepth || currentForeignKeyFetchDepth < conditionFetchDepthLimit) {
         try {
           logAccess("setForeignKeys", new Object[]{foreignKeyProperty});
-          final List<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
-          if (referencedPrimaryKeys.isEmpty()) {
+          final List<Entity.Key> referencedKeys = getReferencedKeys(entities, foreignKeyProperty);
+          if (referencedKeys.isEmpty()) {
             for (int j = 0; j < entities.size(); j++) {
               entities.get(j).put(foreignKeyProperty, null, false);
             }
           }
           else {
-            final EntitySelectCondition referencedEntitiesCondition = entityConditions.selectCondition(referencedPrimaryKeys);
+            final EntitySelectCondition referencedEntitiesCondition = entityConditions.selectCondition(referencedKeys);
             referencedEntitiesCondition.setForeignKeyFetchDepthLimit(conditionFetchDepthLimit);
             final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);
@@ -1008,8 +1007,8 @@ public final class LocalEntityConnection implements EntityConnection {
     }
   }
 
-  private static List<Entity.Key> getReferencedPrimaryKeys(final List<Entity> entities,
-                                                                 final Property.ForeignKeyProperty foreignKeyProperty) {
+  private static List<Entity.Key> getReferencedKeys(final List<Entity> entities,
+                                                    final Property.ForeignKeyProperty foreignKeyProperty) {
     final Set<Entity.Key> keySet = new HashSet<>(entities.size());
     for (int i = 0; i < entities.size(); i++) {
       final Entity.Key key = entities.get(i).getReferencedKey(foreignKeyProperty);

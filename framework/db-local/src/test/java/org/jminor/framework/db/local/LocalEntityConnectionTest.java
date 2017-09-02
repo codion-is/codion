@@ -284,7 +284,7 @@ public class LocalEntityConnectionTest {
         return null;
       }
     };
-    Databases.addOperation(func);
+    ENTITIES.addOperation(func);
     connection.executeFunction(func.getID());
   }
 
@@ -294,7 +294,7 @@ public class LocalEntityConnectionTest {
       @Override
       public void execute(final EntityConnection connection, final Object... arguments) {}
     };
-    Databases.addOperation(proc);
+    ENTITIES.addOperation(proc);
     connection.executeProcedure(proc.getID());
   }
 

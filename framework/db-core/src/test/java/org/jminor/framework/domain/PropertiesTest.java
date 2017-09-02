@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import java.sql.Types;
 import java.text.NumberFormat;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -28,7 +27,7 @@ public final class PropertiesTest {
 
   @Test(expected = NullPointerException.class)
   public void foreignKeyPropertyWithoutReferenceProperty() {
-    Properties.foreignKeyProperty("propertyID", "caption", "referencedEntityID", null);
+    Properties.foreignKeyProperty("propertyID", "caption", "referencedEntityID", (Property.ColumnProperty) null);
   }
 
   @Test(expected = NullPointerException.class)
@@ -103,12 +102,10 @@ public final class PropertiesTest {
 
   @Test
   public void foreignKeyPropertyNullable() {
-    final Property.ColumnProperty refProperty = Properties.columnProperty("refID");
-    final Property.ColumnProperty refProperty2 = Properties.columnProperty("refID2");
     final Property.ColumnProperty columnProperty = Properties.columnProperty("propertyID");
     final Property.ColumnProperty columnProperty2 = Properties.columnProperty("propertyID2");
     final Property.ForeignKeyProperty foreignKeyProperty= Properties.foreignKeyProperty("fkPropertyID", "fk", "referenceEntityID",
-            new Property.ColumnProperty[] {columnProperty, columnProperty2}, new Property.ColumnProperty[] {refProperty, refProperty2});
+            new Property.ColumnProperty[] {columnProperty, columnProperty2});
     foreignKeyProperty.setNullable(false);
     assertFalse(columnProperty.isNullable());
     assertFalse(columnProperty2.isNullable());
@@ -117,9 +114,6 @@ public final class PropertiesTest {
 
   @Test
   public void foreignKeyPropertyUpdatable() {
-    final Property.ColumnProperty refProperty = Properties.columnProperty("refID");
-    final Property.ColumnProperty refProperty2 = Properties.columnProperty("refID2");
-
     final Property.ColumnProperty updatableReferenceProperty = Properties.columnProperty("propertyID");
     final Property.ColumnProperty nonUpdatableReferenceProperty = Properties.columnProperty("propertyID").setUpdatable(false);
 
@@ -133,44 +127,17 @@ public final class PropertiesTest {
     assertFalse(nonUpdatableForeignKeyProperty.isUpdatable());
 
     final Property.ForeignKeyProperty nonUpdatableCompositeForeignKeyProperty = Properties.foreignKeyProperty("fkProperty", "test",
-            "referencedEntityID", new Property.ColumnProperty[] {updatableReferenceProperty, nonUpdatableReferenceProperty},
-            new Property.ColumnProperty[] {refProperty, refProperty2});
+            "referencedEntityID", new Property.ColumnProperty[] {updatableReferenceProperty, nonUpdatableReferenceProperty});
     assertFalse(nonUpdatableCompositeForeignKeyProperty.isUpdatable());
-  }
-
-  @Test
-  public void foreignKeyPropertyCompositeKey() {
-    final Property.ColumnProperty refProperty = Properties.columnProperty("refID");
-    final Property.ColumnProperty refProperty2 = Properties.columnProperty("refID2");
-
-    final Property.ColumnProperty columnProperty1 = Properties.columnProperty("fk1");
-    final Property.ColumnProperty columnProperty2 = Properties.columnProperty("fk2");
-    final Property.ForeignKeyProperty foreignKeyProperty = Properties.foreignKeyProperty("propertyID", "caption",
-            "referencedEntityID", new Property.ColumnProperty[] {columnProperty1, columnProperty2},
-            new Property.ColumnProperty[] {refProperty, refProperty2});
-    final List<Property.ColumnProperty> foreignProperties = foreignKeyProperty.getForeignProperties();
-    assertNotNull(foreignProperties);
-    assertEquals(2, foreignProperties.size());
-    assertEquals(refProperty, foreignProperties.get(0));
-    assertEquals(refProperty2, foreignProperties.get(1));
   }
 
   @Test(expected = NullPointerException.class)
   public void foreignKeyPropertyNullProperty() {
-    Properties.foreignKeyProperty("id", "caption", "entityID", null);
+    Properties.foreignKeyProperty("id", "caption", "entityID", (Property.ColumnProperty) null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void foreignKeyPropertyNoProperties() {
-    Properties.foreignKeyProperty("id", "caption", "entityID", new Property.ColumnProperty[0], new Property.ColumnProperty[0]);
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void foreignKeyPropertyCountMismatch() {
-    final Property.ColumnProperty refProperty = Properties.columnProperty("refID");
-    final Property.ColumnProperty columnProperty1 = Properties.columnProperty("fk1");
-    final Property.ColumnProperty columnProperty2 = Properties.columnProperty("fk2");
-    Properties.foreignKeyProperty("propertyID", "caption", "referencedEntityID",
-            new Property.ColumnProperty[] {columnProperty1, columnProperty2}, new Property.ColumnProperty[] {refProperty});
+    Properties.foreignKeyProperty("id", "caption", "entityID", new Property.ColumnProperty[0]);
   }
 }

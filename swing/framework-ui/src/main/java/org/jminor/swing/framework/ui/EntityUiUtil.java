@@ -72,6 +72,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -1003,7 +1004,7 @@ public final class EntityUiUtil {
         final boolean isLoaded = entity.isLoaded(property.getPropertyID());
         final boolean valid = isValid(validator, entity, property);
         final boolean modified = entity.isModified(property);
-        final String toolTipText = getReferenceColumnNames(property);
+        final String toolTipText = getForeignKeyColumnNames(property);
         if (!fkValueNull) {
           final Entity referencedEntity;
           if (isLoaded) {
@@ -1042,13 +1043,11 @@ public final class EntityUiUtil {
     }
   }
 
-  private static String getReferenceColumnNames(final Property.ForeignKeyProperty property) {
-    final List<String> columnNames = new ArrayList<>(property.getReferenceProperties().size());
-    for (final Property.ColumnProperty referenceProperty : property.getReferenceProperties()) {
-      columnNames.add(referenceProperty.getColumnName());
-    }
+  private static String getForeignKeyColumnNames(final Property.ForeignKeyProperty foreignKeyProperty) {
+    final List<String> columnNames = new LinkedList<>();
+    foreignKeyProperty.getProperties().forEach(property -> columnNames.add(property.getColumnName()));
 
-    return TextUtil.getArrayContentsAsString(columnNames.toArray(), false);
+    return String.join(", ", columnNames);
   }
 
   private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties,

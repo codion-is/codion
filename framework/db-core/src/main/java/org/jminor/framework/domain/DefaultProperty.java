@@ -865,48 +865,45 @@ class DefaultProperty implements Property {
 
   static final class DefaultForeignKeyProperty extends DefaultProperty implements Property.ForeignKeyProperty {
 
-    private final String referencedEntityID;
-    private final List<ColumnProperty> referenceProperties;
+    private final String foreignEntityID;
+    private final List<ColumnProperty> columnProperties;
     private final boolean compositeReference;
-    private final List<ColumnProperty> foreignProperties;
     private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
 
     /**
-     * @param propertyID the property ID, since ForeignKeyProperties are meta properties, the property ID should not
-     * be an underlying table column, it must only be unique for the entity
-     * @param caption the property caption
-     * @param referencedEntityID the ID of the referenced entity type
-     * @param referenceProperty the actual column property involved in the reference
+     * @param propertyID the property ID
+     * @param caption the caption
+     * @param foreignEntityID the ID of the entity referenced by this foreign key
+     * @param columnProperty the underlying column property comprising this foreign key
      */
-    DefaultForeignKeyProperty(final String propertyID, final String caption, final String referencedEntityID,
-                              final ColumnProperty referenceProperty) {
-      this(propertyID, caption, referencedEntityID, Collections.singletonList(referenceProperty), null);
+    DefaultForeignKeyProperty(final String propertyID, final String caption, final String foreignEntityID,
+                              final ColumnProperty columnProperty) {
+      this(propertyID, caption, foreignEntityID, Collections.singletonList(columnProperty));
     }
 
     /**
-     * @param propertyID the property ID, since ForeignKeyProperties are wrapper properties, the property ID should not
-     * be an underlying table column, it must only be unique for the entity
+     * @param propertyID the property ID, note that this is not a column name
      * @param caption the property caption
-     * @param referencedEntityID the ID of the referenced entity type
-     * @param referenceProperties the actual column properties involved in the reference
-     * @param referencedPropertyIDs the IDs of the properties referenced, in the same order as the reference properties
+     * @param foreignEntityID the ID of the entity referenced by this foreign key
+     * @param columnProperties the underlying column properties comprising this foreign key
+     * @param foreignProperties the properties referenced, in the same order as the column properties,
+     * if null then the primary key properties of the referenced entity are used when required
      */
-    DefaultForeignKeyProperty(final String propertyID, final String caption, final String referencedEntityID,
-                              final List<ColumnProperty> referenceProperties, final List<ColumnProperty> foreignProperties) {
+    DefaultForeignKeyProperty(final String propertyID, final String caption, final String foreignEntityID,
+                              final List<ColumnProperty> columnProperties) {
       super(propertyID, Types.REF, caption);
-      Objects.requireNonNull(referencedEntityID, "referencedEntityID");
-      validateParameters(propertyID, referencedEntityID, referenceProperties, foreignProperties);
-      referenceProperties.forEach(columnProperty -> columnProperty.setForeignKeyProperty(DefaultForeignKeyProperty.this));
-      this.referencedEntityID = referencedEntityID;
-      this.referenceProperties = Collections.unmodifiableList(referenceProperties);
-      this.compositeReference = this.referenceProperties.size() > 1;
-      this.foreignProperties = foreignProperties == null ? null : Collections.unmodifiableList(foreignProperties);
+      Objects.requireNonNull(foreignEntityID, "foreignEntityID");
+      validateParameters(propertyID, foreignEntityID, columnProperties);
+      columnProperties.forEach(columnProperty -> columnProperty.setForeignKeyProperty(this));
+      this.foreignEntityID = foreignEntityID;
+      this.columnProperties = Collections.unmodifiableList(columnProperties);
+      this.compositeReference = this.columnProperties.size() > 1;
     }
 
     @Override
     public boolean isUpdatable() {
-      for (final ColumnProperty referenceProperty : referenceProperties) {
-        if (!referenceProperty.isUpdatable()) {
+      for (final ColumnProperty columnProperty : columnProperties) {
+        if (!columnProperty.isUpdatable()) {
           return false;
         }
       }
@@ -916,7 +913,7 @@ class DefaultProperty implements Property {
 
     @Override
     public ForeignKeyProperty setNullable(final boolean nullable) {
-      for (final ColumnProperty columnProperty : referenceProperties) {
+      for (final ColumnProperty columnProperty : columnProperties) {
         columnProperty.setNullable(nullable);
       }
 
@@ -924,23 +921,18 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public String getReferencedEntityID() {
-      return referencedEntityID;
+    public String getForeignEntityID() {
+      return foreignEntityID;
     }
 
     @Override
-    public List<ColumnProperty> getReferenceProperties() {
-      return referenceProperties;
+    public List<ColumnProperty> getProperties() {
+      return columnProperties;
     }
 
     @Override
-    public boolean isCompositeReference() {
+    public boolean isCompositeKey() {
       return compositeReference;
-    }
-
-    @Override
-    public List<ColumnProperty> getForeignProperties() {
-      return foreignProperties;
     }
 
     @Override
@@ -954,20 +946,16 @@ class DefaultProperty implements Property {
       return this;
     }
 
-    private static void validateParameters(final String propertyID, final String referencedEntityID,
-                                           final List<ColumnProperty> referenceProperties,
-                                           final List<ColumnProperty> foreignProperties) {
-      if (Util.nullOrEmpty(referenceProperties)) {
-        throw new IllegalArgumentException("No reference properties specified");
+    private static void validateParameters(final String propertyID, final String foreignEntityID,
+                                           final List<ColumnProperty> columnProperties) {
+      if (Util.nullOrEmpty(columnProperties)) {
+        throw new IllegalArgumentException("No column properties specified");
       }
-      for (final Property referenceProperty : referenceProperties) {
-        Objects.requireNonNull(referenceProperty, "referenceProperty");
-        if (referenceProperty.getPropertyID().equals(propertyID)) {
-          throw new IllegalArgumentException(referencedEntityID + ", reference propertyID is the same as parent propertyID: " + propertyID);
+      for (final Property.ColumnProperty columnProperty : columnProperties) {
+        Objects.requireNonNull(columnProperty, "columnProperty");
+        if (columnProperty.getPropertyID().equals(propertyID)) {
+          throw new IllegalArgumentException(foreignEntityID + ", column propertyID is the same as foreign key propertyID: " + propertyID);
         }
-      }
-      if (foreignProperties != null && foreignProperties.size() != referenceProperties.size()) {
-        throw new IllegalArgumentException("The number of referenced properties must be equal to the number of properties referencing them");
       }
     }
   }

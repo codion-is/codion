@@ -333,18 +333,18 @@ public final class EntityConditions {
   public Condition<Property.ColumnProperty> foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
                                                                 final Condition.Type conditionType, final Collection values) {
     final List<Entity.Key> keys = getEntityKeys(values);
-    if (foreignKeyProperty.isCompositeReference()) {
-      return createCompositeKeyCondition(foreignKeyProperty.getReferenceProperties(),
-              entities.getReferencedProperties(foreignKeyProperty), conditionType, keys);
+    if (foreignKeyProperty.isCompositeKey()) {
+      return createCompositeKeyCondition(foreignKeyProperty.getProperties(),
+              entities.getForeignProperties(foreignKeyProperty), conditionType, keys);
     }
 
     if (keys.size() == 1) {
       final Entity.Key entityKey = keys.get(0);
-      return propertyCondition(foreignKeyProperty.getReferenceProperties().get(0), conditionType,
+      return propertyCondition(foreignKeyProperty.getProperties().get(0), conditionType,
               entityKey == null ? null : entityKey.getFirstValue());
     }
 
-    return propertyCondition(foreignKeyProperty.getReferenceProperties().get(0), conditionType, Entities.getValues(keys));
+    return propertyCondition(foreignKeyProperty.getProperties().get(0), conditionType, Entities.getValues(keys));
   }
 
   /** Assumes {@code keys} is not empty. */
@@ -358,37 +358,37 @@ public final class EntityConditions {
   }
 
   /** Assumes {@code keys} is not empty. */
-  private static Condition<Property.ColumnProperty> createCompositeKeyCondition(final List<Property.ColumnProperty> referenceProperties,
+  private static Condition<Property.ColumnProperty> createCompositeKeyCondition(final List<Property.ColumnProperty> properties,
                                                                                 final List<Property.ColumnProperty> foreignProperties,
                                                                                 final Condition.Type conditionType,
                                                                                 final List<Entity.Key> keys) {
     if (keys.size() == 1) {
-      return createSingleCompositeCondition(referenceProperties, foreignProperties, conditionType, keys.get(0));
+      return createSingleCompositeCondition(properties, foreignProperties, conditionType, keys.get(0));
     }
 
-    return createMultipleCompositeCondition(referenceProperties, foreignProperties, conditionType, keys);
+    return createMultipleCompositeCondition(properties, foreignProperties, conditionType, keys);
   }
 
   /** Assumes {@code keys} is not empty. */
-  private static Condition<Property.ColumnProperty> createMultipleCompositeCondition(final List<Property.ColumnProperty> referenceProperties,
+  private static Condition<Property.ColumnProperty> createMultipleCompositeCondition(final List<Property.ColumnProperty> properties,
                                                                                      final List<Property.ColumnProperty> foreignProperties,
                                                                                      final Condition.Type conditionType,
                                                                                      final List<Entity.Key> keys) {
     final Condition.Set<Property.ColumnProperty> conditionSet = Conditions.conditionSet(Conjunction.OR);
     for (int i = 0; i < keys.size(); i++) {
-      conditionSet.add(createSingleCompositeCondition(referenceProperties, foreignProperties, conditionType, keys.get(i)));
+      conditionSet.add(createSingleCompositeCondition(properties, foreignProperties, conditionType, keys.get(i)));
     }
 
     return conditionSet;
   }
 
-  private static Condition<Property.ColumnProperty> createSingleCompositeCondition(final List<Property.ColumnProperty> referenceProperties,
+  private static Condition<Property.ColumnProperty> createSingleCompositeCondition(final List<Property.ColumnProperty> properties,
                                                                                    final List<Property.ColumnProperty> foreignProperties,
                                                                                    final Condition.Type conditionType,
                                                                                    final Entity.Key entityKey) {
     final Condition.Set<Property.ColumnProperty> conditionSet = Conditions.conditionSet(Conjunction.AND);
-    for (int i = 0; i < referenceProperties.size(); i++) {
-      conditionSet.add(new PropertyCondition(referenceProperties.get(i), conditionType,
+    for (int i = 0; i < properties.size(); i++) {
+      conditionSet.add(new PropertyCondition(properties.get(i), conditionType,
               entityKey == null ? null : entityKey.get(foreignProperties.get(i))));
     }
 
@@ -827,16 +827,16 @@ public final class EntityConditions {
       return property.isString() && !caseSensitive ? "upper(?)" : "?";
     }
 
-    private String getLikeCondition(final String columnIdentifier, final String value, final boolean not) {
+    private String getLikeCondition(final String columnIdentifier, final String value, final boolean notLike) {
       if (getValueCount() > 1) {
-        return getInList(columnIdentifier, value, getValueCount(), not);
+        return getInList(columnIdentifier, value, getValueCount(), notLike);
       }
 
       if (property.isString()) {
-        return columnIdentifier + (not ? " not like " : " like ") + value;
+        return columnIdentifier + (notLike ? " not like " : " like ") + value;
       }
       else {
-        return columnIdentifier + (not ? " <> " : " = ") + value;
+        return columnIdentifier + (notLike ? " <> " : " = ") + value;
       }
     }
 
@@ -898,7 +898,6 @@ public final class EntityConditions {
       }
     }
 
-    @SuppressWarnings({"unchecked"})
     private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
       final String domainID = (String) stream.readObject();
       final String entityID = (String) stream.readObject();

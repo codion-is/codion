@@ -72,34 +72,31 @@ public final class Properties {
   }
 
   /**
+   * Instantiates a {@link Property.ForeignKeyProperty}
    * @param propertyID the property ID
    * @param caption the caption
-   * @param referencedEntityID the ID of the referenced entity
-   * @param referenceProperty the actual reference property
+   * @param foreignEntityID the ID of the entity referenced by this foreign key
+   * @param columnProperty the underlying column property comprising this foreign key
    * @return a new foreign key property
    */
   public static Property.ForeignKeyProperty foreignKeyProperty(final String propertyID, final String caption,
-                                                               final String referencedEntityID,
-                                                               final Property.ColumnProperty referenceProperty) {
-    return new DefaultProperty.DefaultForeignKeyProperty(propertyID, caption, referencedEntityID, referenceProperty);
+                                                               final String foreignEntityID,
+                                                               final Property.ColumnProperty columnProperty) {
+    return new DefaultProperty.DefaultForeignKeyProperty(propertyID, caption, foreignEntityID, columnProperty);
   }
 
   /**
-   * @param propertyID the property ID, since EntityProperties are meta properties, the property ID should not
-   * be a underlying table column, it must only be unique for this entity
+   * Instantiates a {@link Property.ForeignKeyProperty}
+   * @param propertyID the property ID, note that this is not a column name
    * @param caption the property caption
-   * @param referencedEntityID the ID of the referenced entity type
-   * @param referenceProperties the actual column properties involved in the reference
-   * @param foreignProperties the properties referenced, in the same order as the reference properties,
-   * if null then the primary key properties of the referenced entity are used when required
-   * @return a new foreign key proeprty
+   * @param foreignEntityID the ID of the entity referenced by this foreign key
+   * @param columnProperties the underlying column properties comprising this foreign key
+   * @return a new foreign key property
    */
   public static Property.ForeignKeyProperty foreignKeyProperty(final String propertyID, final String caption,
-                                                               final String referencedEntityID,
-                                                               final Property.ColumnProperty[] referenceProperties,
-                                                               final Property.ColumnProperty[] foreignProperties) {
-    return new DefaultProperty.DefaultForeignKeyProperty(propertyID, caption, referencedEntityID, Arrays.asList(referenceProperties),
-            foreignProperties == null ? null : Arrays.asList(foreignProperties));
+                                                               final String foreignEntityID,
+                                                               final Property.ColumnProperty[] columnProperties) {
+    return new DefaultProperty.DefaultForeignKeyProperty(propertyID, caption, foreignEntityID, Arrays.asList(columnProperties));
   }
 
   /**

@@ -238,8 +238,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   public final EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyID) {
     final Property.ForeignKeyProperty foreignKeyProperty = entities.getForeignKeyProperty(entityID, foreignKeyPropertyID);
     final EntityComboBoxModel foreignKeyModel =
-            new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
-    foreignKeyModel.setNullValue(entities.createToStringEntity(foreignKeyProperty.getReferencedEntityID(), "-"));
+            new SwingEntityComboBoxModel(foreignKeyProperty.getForeignEntityID(), connectionProvider);
+    foreignKeyModel.setNullValue(entities.createToStringEntity(foreignKeyProperty.getForeignEntityID(), "-"));
     foreignKeyModel.refresh();
     linkForeignKeyComboBoxModel(foreignKeyPropertyID, foreignKeyModel);
 
@@ -250,9 +250,9 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   @Override
   public final void linkForeignKeyComboBoxModel(final String foreignKeyPropertyID, final EntityComboBoxModel foreignKeyModel) {
     final Property.ForeignKeyProperty foreignKeyProperty = entities.getForeignKeyProperty(getEntityID(), foreignKeyPropertyID);
-    if (!foreignKeyProperty.getReferencedEntityID().equals(foreignKeyModel.getEntityID())) {
+    if (!foreignKeyProperty.getForeignEntityID().equals(foreignKeyModel.getEntityID())) {
       throw new IllegalArgumentException("Foreign key ComboBoxModel is of type: " + foreignKeyModel.getEntityID()
-              + ", should be: " + foreignKeyProperty.getReferencedEntityID());
+              + ", should be: " + foreignKeyProperty.getForeignEntityID());
     }
     final Collection<Entity> filterEntities = getForeignKeyFilterEntities(foreignKeyPropertyID);
     if (!Util.nullOrEmpty(filterEntities)) {

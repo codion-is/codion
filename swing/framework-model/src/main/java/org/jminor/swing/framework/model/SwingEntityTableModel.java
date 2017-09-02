@@ -832,7 +832,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     @Override
     protected Comparator initializeColumnComparator(final Property property) {
       if (property instanceof Property.ForeignKeyProperty) {
-        return entities.getComparator(((Property.ForeignKeyProperty) property).getReferencedEntityID());
+        return entities.getComparator(((Property.ForeignKeyProperty) property).getForeignEntityID());
       }
 
       return super.initializeColumnComparator(property);

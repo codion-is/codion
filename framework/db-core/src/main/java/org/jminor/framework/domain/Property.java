@@ -536,26 +536,20 @@ public interface Property extends Attribute {
     boolean isUpdatable();
 
     /**
-     * @return the ID of the referenced entity
+     * @return the ID of the entity referenced by this foreign key
      */
-    String getReferencedEntityID();
+    String getForeignEntityID();
 
     /**
-     * Returns an unmodifiable list containing the underlying reference properties
+     * Returns an unmodifiable list containing the properties that comprise this foreign key
      * @return the reference properties
      */
-    List<ColumnProperty> getReferenceProperties();
+    List<ColumnProperty> getProperties();
 
     /**
-     * @return true if this reference is based on multiple columns
+     * @return true if this foreign key is based on multiple columns
      */
-    boolean isCompositeReference();
-
-    /**
-     * Returns an unmodifiable list containing the properties referenced by this foreign key property
-     * @return the referenced properties
-     */
-    List<ColumnProperty> getForeignProperties();
+    boolean isCompositeKey();
 
     /**
      * @return the default query fetch depth for this foreign key

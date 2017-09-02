@@ -570,7 +570,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private boolean referencesOnlySelf(final String entityID) {
     for (final Property.ForeignKeyProperty fkProperty : applicationModel.getEntities().getForeignKeyProperties(entityID)) {
-      if (!fkProperty.getReferencedEntityID().equals(entityID)) {
+      if (!fkProperty.getForeignEntityID().equals(entityID)) {
         return false;
       }
     }
@@ -1365,7 +1365,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       final List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
       for (final String entityID : entities.getDefinedEntities()) {
         for (final Property.ForeignKeyProperty fkProperty : entities.getForeignKeyProperties(entityID)) {
-          if (fkProperty.getReferencedEntityID().equals(getEntityID()) && !foreignKeyCycle(fkProperty.getReferencedEntityID())) {
+          if (fkProperty.getForeignEntityID().equals(getEntityID()) && !foreignKeyCycle(fkProperty.getForeignEntityID())) {
             childrenList.add(new EntityDependencyTreeNode(domainID, entityID, entities));
           }
         }

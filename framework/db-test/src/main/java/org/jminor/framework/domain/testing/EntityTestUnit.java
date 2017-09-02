@@ -57,9 +57,9 @@ public abstract class EntityTestUnit {
 
   private final Entities entities;
   private final EntityConditions entityConditions;
+  private final Map<String, Entity> referencedEntities = new HashMap<>();
 
   private EntityConnection connection;
-  private final Map<String, Entity> referencedEntities = new HashMap<>();
 
   /**
    * Instantiates a new EntityTestUnit.
@@ -70,6 +70,9 @@ public abstract class EntityTestUnit {
     this.entityConditions = new EntityConditions(entities);
   }
 
+  /**
+   * @return the domain entities
+   */
   public final Entities getEntities() {
     return entities;
   }
@@ -261,14 +264,14 @@ public abstract class EntityTestUnit {
   private void initializeReferencedEntities(final String entityID, final Collection<String> visited) throws DatabaseException {
     visited.add(entityID);
     final List<Property.ForeignKeyProperty> foreignKeyProperties = new ArrayList<>(entities.getForeignKeyProperties(entityID));
-    foreignKeyProperties.sort((o1, o2) -> o1.getReferencedEntityID().equals(entityID) ? 1 : 0);
+    foreignKeyProperties.sort((o1, o2) -> o1.getForeignEntityID().equals(entityID) ? 1 : 0);
     for (final Property.ForeignKeyProperty foreignKeyProperty : entities.getForeignKeyProperties(entityID)) {
-      final String referencedEntityID = foreignKeyProperty.getReferencedEntityID();
-      if (!visited.contains(referencedEntityID)) {
-        initializeReferencedEntities(referencedEntityID, visited);
+      final String foreignEntityID = foreignKeyProperty.getForeignEntityID();
+      if (!visited.contains(foreignEntityID)) {
+        initializeReferencedEntities(foreignEntityID, visited);
       }
-      if (!referencedEntities.containsKey(referencedEntityID)) {
-        setReferenceEntity(referencedEntityID, initializeReferenceEntity(referencedEntityID));
+      if (!referencedEntities.containsKey(foreignEntityID)) {
+        setReferenceEntity(foreignEntityID, initializeReferenceEntity(foreignEntityID));
       }
     }
   }
@@ -440,7 +443,7 @@ public abstract class EntityTestUnit {
   }
 
   private static Object getReferenceEntity(final Property.ForeignKeyProperty property, final Map<String, Entity> referenceEntities) {
-    final String referenceEntityID = property.getReferencedEntityID();
+    final String referenceEntityID = property.getForeignEntityID();
 
     return referenceEntities == null ? null : referenceEntities.get(referenceEntityID);
   }

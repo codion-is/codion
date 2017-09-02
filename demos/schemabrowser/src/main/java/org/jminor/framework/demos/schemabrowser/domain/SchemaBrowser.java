@@ -65,12 +65,8 @@ public final class SchemaBrowser extends Entities {
     define(T_COLUMN, bundle.getString("t_column"),
             Properties.foreignKeyProperty(COLUMN_TABLE_FK, "Table", T_TABLE,
                     new Property.ColumnProperty[] {
-                            Properties.primaryKeyProperty(COLUMN_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
-                            Properties.primaryKeyProperty(COLUMN_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1)},
-                    new Property.ColumnProperty[] {
-                            getColumnProperty(T_TABLE, TABLE_SCHEMA),
-                            getColumnProperty(T_TABLE, TABLE_NAME)
-                    }),
+                            Properties.columnProperty(COLUMN_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
+                            Properties.columnProperty(COLUMN_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1)}),
             Properties.primaryKeyProperty(COLUMN_NAME, Types.VARCHAR, "Column name").setPrimaryKeyIndex(2),
             Properties.columnProperty(COLUMN_DATA_TYPE, Types.VARCHAR, "Data type"))
             .setOrderByClause(COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME)
@@ -90,12 +86,8 @@ public final class SchemaBrowser extends Entities {
     define(T_CONSTRAINT, bundle.getString("t_constraint"),
             Properties.foreignKeyProperty(CONSTRAINT_TABLE_FK, "Table", T_TABLE,
                     new Property.ColumnProperty[] {
-                            Properties.primaryKeyProperty(CONSTRAINT_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
-                            Properties.primaryKeyProperty(CONSTRAINT_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1)},
-                    new Property.ColumnProperty[] {
-                            getColumnProperty(T_TABLE, TABLE_SCHEMA),
-                            getColumnProperty(T_TABLE, TABLE_NAME)
-                    }),
+                            Properties.columnProperty(CONSTRAINT_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
+                            Properties.columnProperty(CONSTRAINT_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1)}),
             Properties.primaryKeyProperty(CONSTRAINT_NAME, Types.VARCHAR, "Constraint name").setPrimaryKeyIndex(2),
             Properties.columnProperty(CONSTRAINT_TYPE, Types.VARCHAR, "Type"))
             .setOrderByClause(CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME)
@@ -116,14 +108,9 @@ public final class SchemaBrowser extends Entities {
     define(T_COLUMN_CONSTRAINT, bundle.getString("t_column_constraint"),
             Properties.foreignKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_FK, "Constraint", T_CONSTRAINT,
                     new Property.ColumnProperty[] {
-                            Properties.primaryKeyProperty(COLUMN_CONSTRAINT_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
-                            Properties.primaryKeyProperty(COLUMN_CONSTRAINT_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1),
-                            Properties.primaryKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Types.VARCHAR).setPrimaryKeyIndex(2)},
-                    new Property.ColumnProperty[] {
-                            getColumnProperty(T_CONSTRAINT, CONSTRAINT_SCHEMA),
-                            getColumnProperty(T_CONSTRAINT, CONSTRAINT_TABLE_NAME),
-                            getColumnProperty(T_CONSTRAINT, CONSTRAINT_NAME)
-                    }),
+                            Properties.columnProperty(COLUMN_CONSTRAINT_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
+                            Properties.columnProperty(COLUMN_CONSTRAINT_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1),
+                            Properties.columnProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Types.VARCHAR).setPrimaryKeyIndex(2)}),
             Properties.columnProperty(COLUMN_CONSTRAINT_COLUMN_NAME, Types.VARCHAR, "Column name"),
             Properties.columnProperty(COLUMN_CONSTRAINT_POSITION, Types.INTEGER, "Position"))
             .setOrderByClause(COLUMN_CONSTRAINT_SCHEMA + ", " + COLUMN_CONSTRAINT_TABLE_NAME + ", " + COLUMN_CONSTRAINT_CONSTRAINT_NAME)

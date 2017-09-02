@@ -8,9 +8,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Provides Database implementations based on system settings.
@@ -18,8 +15,6 @@ import java.util.Map;
  * @see Database#DATABASE_TYPE
  */
 public final class Databases {
-
-  private static final Map<String, DatabaseConnection.Operation> OPERATIONS = Collections.synchronizedMap(new HashMap<>());
 
   private static Database instance;
 
@@ -58,49 +53,6 @@ public final class Databases {
     catch (final Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  /**
-   * Adds the given Operation to this repository
-   * @param operation the operation to add
-   * @throws IllegalArgumentException in case an operation with the same ID has already been added
-   */
-  public static void addOperation(final DatabaseConnection.Operation operation) {
-    if (OPERATIONS.containsKey(operation.getID())) {
-      throw new IllegalArgumentException("Operation already defined: " + OPERATIONS.get(operation.getID()).getName());
-    }
-
-    OPERATIONS.put(operation.getID(), operation);
-  }
-
-  /**
-   * @param <C> the type of the database connection this procedure requires
-   * @param procedureID the procedure ID
-   * @return the procedure
-   * @throws IllegalArgumentException in case the procedure is not found
-   */
-  public static <C> DatabaseConnection.Procedure<C> getProcedure(final String procedureID) {
-    final DatabaseConnection.Operation operation = OPERATIONS.get(procedureID);
-    if (operation == null) {
-      throw new IllegalArgumentException("Procedure not found: " + procedureID);
-    }
-
-    return (DatabaseConnection.Procedure) operation;
-  }
-
-  /**
-   * @param <C> the type of the database connection this function requires
-   * @param functionID the function ID
-   * @return the function
-   * @throws IllegalArgumentException in case the function is not found
-   */
-  public static <C> DatabaseConnection.Function<C> getFunction(final String functionID) {
-    final DatabaseConnection.Operation operation = OPERATIONS.get(functionID);
-    if (operation == null) {
-      throw new IllegalArgumentException("Function not found: " + functionID);
-    }
-
-    return (DatabaseConnection.Function) operation;
   }
 
   /**

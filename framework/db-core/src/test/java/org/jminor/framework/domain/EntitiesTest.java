@@ -4,6 +4,8 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.DateFormats;
+import org.jminor.common.db.AbstractProcedure;
+import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 
@@ -23,7 +25,7 @@ import static org.junit.Assert.*;
 
 public class EntitiesTest {
 
-  private static final TestDomain entities = new TestDomain();
+  private final TestDomain entities = new TestDomain();
 
   @Test
   public void isPrimaryKeyModified() {
@@ -673,5 +675,25 @@ public class EntitiesTest {
       assertTrue(dept.containsKey(property));
       assertTrue(dept.isValueNull(property));
     }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void addOperationExisting() {
+    final DatabaseConnection.Operation operation = new AbstractProcedure<DatabaseConnection>("operationId", "test") {
+      @Override
+      public void execute(final DatabaseConnection databaseConnection, final Object... arguments) {}
+    };
+    entities.addOperation(operation);
+    entities.addOperation(operation);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getFunctionNonExisting() {
+    entities.getFunction("nonexistingfunctionid");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getProcedureNonExisting() {
+    entities.getProcedure("nonexistingprocedureid");
   }
 }

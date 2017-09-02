@@ -83,6 +83,7 @@ public class Entities {
 
   private final Map<String, Entity.Definition> entityDefinitions = new LinkedHashMap<>();
   private final Map<String, List<Property.ForeignKeyProperty>> foreignKeyReferenceMap = new HashMap<>();
+  private final Map<String, DatabaseConnection.Operation> databaseOperations = new HashMap<>();
 
   /**
    * Creates a new {@link Entity} instance with the given entityID
@@ -617,13 +618,13 @@ public class Entities {
   /**
    * Returns the foreign key properties referencing entities of the given type
    * @param entityID the ID of the entity from which to retrieve the foreign key properties
-   * @param referenceEntityID the ID of the reference entity
+   * @param foreignEntityID the ID of the referenced entity
    * @return a List containing the properties, an empty list is returned in case no properties fit the condition
    */
-  public final List<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID, final String referenceEntityID) {
+  public final List<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID, final String foreignEntityID) {
     final List<Property.ForeignKeyProperty> properties = new ArrayList<>();
     for (final Property.ForeignKeyProperty foreignKeyProperty : getForeignKeyProperties(entityID)) {
-      if (foreignKeyProperty.getReferencedEntityID().equals(referenceEntityID)) {
+      if (foreignKeyProperty.getForeignEntityID().equals(foreignEntityID)) {
         properties.add(foreignKeyProperty);
       }
     }
@@ -659,7 +660,7 @@ public class Entities {
       foreignKeyReferences = new ArrayList<>();
       for (final String definedEntityID : entityDefinitions.keySet()) {
         for (final Property.ForeignKeyProperty foreignKeyProperty : getDefinition(definedEntityID).getForeignKeyProperties()) {
-          if (foreignKeyProperty.getReferencedEntityID().equals(entityID)) {
+          if (foreignKeyProperty.getForeignEntityID().equals(entityID)) {
             foreignKeyReferences.add(foreignKeyProperty);
           }
         }
@@ -719,15 +720,10 @@ public class Entities {
 
   /**
    * @param foreignKeyProperty the foreign key property
-   * @return the properties referenced by this foreign key property, by default the primary key properties of the referenced entity type
+   * @return the primary key properties of the referenced entity type
    */
-  public final List<Property.ColumnProperty> getReferencedProperties(final Property.ForeignKeyProperty foreignKeyProperty) {
-    final List<Property.ColumnProperty> referencedProperties = foreignKeyProperty.getForeignProperties();
-    if (referencedProperties == null) {
-      return getPrimaryKeyProperties(foreignKeyProperty.getReferencedEntityID());
-    }
-
-    return referencedProperties;
+  public final List<Property.ColumnProperty> getForeignProperties(final Property.ForeignKeyProperty foreignKeyProperty) {
+    return getPrimaryKeyProperties(foreignKeyProperty.getForeignEntityID());
   }
 
   /**
@@ -890,6 +886,49 @@ public class Entities {
   public final boolean entitySerializerAvailable() {
     final String serializerClass = ENTITY_SERIALIZER_CLASS.get();
     return serializerClass != null && Util.onClasspath(serializerClass);
+  }
+
+  /**
+   * Adds the given Operation to this domain
+   * @param operation the operation to add
+   * @throws IllegalArgumentException in case an operation with the same ID has already been added
+   */
+  public final void addOperation(final DatabaseConnection.Operation operation) {
+    if (databaseOperations.containsKey(operation.getID())) {
+      throw new IllegalArgumentException("Operation already defined: " + databaseOperations.get(operation.getID()).getName());
+    }
+
+    databaseOperations.put(operation.getID(), operation);
+  }
+
+  /**
+   * @param <C> the type of the database connection this procedure requires
+   * @param procedureID the procedure ID
+   * @return the procedure
+   * @throws IllegalArgumentException in case the procedure is not found
+   */
+  public final <C> DatabaseConnection.Procedure<C> getProcedure(final String procedureID) {
+    final DatabaseConnection.Operation operation = databaseOperations.get(procedureID);
+    if (operation == null) {
+      throw new IllegalArgumentException("Procedure not found: " + procedureID);
+    }
+
+    return (DatabaseConnection.Procedure) operation;
+  }
+
+  /**
+   * @param <C> the type of the database connection this function requires
+   * @param functionID the function ID
+   * @return the function
+   * @throws IllegalArgumentException in case the function is not found
+   */
+  public final <C> DatabaseConnection.Function<C> getFunction(final String functionID) {
+    final DatabaseConnection.Operation operation = databaseOperations.get(functionID);
+    if (operation == null) {
+      throw new IllegalArgumentException("Function not found: " + functionID);
+    }
+
+    return (DatabaseConnection.Function) operation;
   }
 
   /**
@@ -1216,59 +1255,61 @@ public class Entities {
     return definition;
   }
 
-  private Map<String, Property> initializeProperties(final String domainID, final String entityID, final Property... propertyDefinitions) {
-    final Map<String, Property> properties = new LinkedHashMap<>(propertyDefinitions.length);
-    for (final Property property : propertyDefinitions) {
-      if (properties.containsKey(property.getPropertyID())) {
-        throw new IllegalArgumentException("Property with ID " + property.getPropertyID()
-                + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
-                + " has already been defined as: " + properties.get(property.getPropertyID()) + " in entity: " + entityID);
-      }
-      property.setDomainID(domainID);
-      property.setEntityID(entityID);
-      properties.put(property.getPropertyID(), property);
+  private Map<String, Property> initializeProperties(final String domainID, final String entityID, final Property... properties) {
+    final Map<String, Property> propertyMap = new LinkedHashMap<>(properties.length);
+    for (final Property property : properties) {
+      validateAndAddProperty(property, domainID, entityID, propertyMap);
       if (property instanceof Property.ForeignKeyProperty) {
-        initializeForeignKeyProperty(domainID, entityID, properties, (Property.ForeignKeyProperty) property);
+        initializeForeignKeyProperty(domainID, entityID, propertyMap, (Property.ForeignKeyProperty) property);
       }
     }
-    checkPrimaryKey(entityID, properties);
+    checkIfPrimaryKeyIsSpecified(entityID, propertyMap);
 
-    return Collections.unmodifiableMap(properties);
+    return Collections.unmodifiableMap(propertyMap);
   }
 
-  private void initializeForeignKeyProperty(final String domainID, final String entityID, final Map<String, Property> properties,
+  private void initializeForeignKeyProperty(final String domainID, final String entityID, final Map<String, Property> propertyMap,
                                             final Property.ForeignKeyProperty foreignKeyProperty) {
-    final List<Property.ColumnProperty> referenceProperties = foreignKeyProperty.getReferenceProperties();
-    final boolean selfReferential = entityID.equals(foreignKeyProperty.getReferencedEntityID());
-    if (Entity.Definition.STRICT_FOREIGN_KEYS.get()) {
-      if (!selfReferential && !entityDefinitions.containsKey(foreignKeyProperty.getReferencedEntityID())) {
-        throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getReferencedEntityID()
+    final List<Property.ColumnProperty> properties = foreignKeyProperty.getProperties();
+    if (!entityID.equals(foreignKeyProperty.getForeignEntityID()) && Entity.Definition.STRICT_FOREIGN_KEYS.get()) {
+      final Entity.Definition foreignEntity = entityDefinitions.get(foreignKeyProperty.getForeignEntityID());
+      if (foreignEntity == null) {
+        throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getForeignEntityID()
                 + "' referenced by entity '" + entityID + "' via foreign key property '"
                 + foreignKeyProperty.getPropertyID() + "' has not been defined");
       }
-      if (!selfReferential && referenceProperties.size() != entityDefinitions.get(foreignKeyProperty.getReferencedEntityID()).getPrimaryKeyProperties().size()) {
-        throw new IllegalArgumentException("Number of reference properties in '" + entityID + "." + foreignKeyProperty.getPropertyID() +
-                "' does not match the number of primary key properties in the referenced entity '" + foreignKeyProperty.getReferencedEntityID() + "'");
+      if (properties.size() != foreignEntity.getPrimaryKeyProperties().size()) {
+        throw new IllegalArgumentException("Number of column properties in '" + entityID + "." + foreignKeyProperty.getPropertyID() +
+                "' does not match the number of foreign properties in the referenced entity '" + foreignKeyProperty.getForeignEntityID() + "'");
       }
     }
-    for (final Property.ColumnProperty referenceProperty : referenceProperties) {
-      if (!(referenceProperty instanceof Property.MirrorProperty)) {
-        if (properties.containsKey(referenceProperty.getPropertyID())) {
-          throw new IllegalArgumentException("Property with ID " + referenceProperty.getPropertyID()
-                  + (referenceProperty.getCaption() != null ? " (caption: " + referenceProperty.getCaption() + ")" : "")
-                  + " has already been defined as: " + properties.get(referenceProperty.getPropertyID()) + " in entity: " + entityID);
-        }
-        referenceProperty.setDomainID(domainID);
-        referenceProperty.setEntityID(entityID);
-        properties.put(referenceProperty.getPropertyID(), referenceProperty);
+    for (final Property.ColumnProperty property : properties) {
+      if (!(property instanceof Property.MirrorProperty)) {
+        validateAndAddProperty(property, domainID, entityID, propertyMap);
       }
     }
   }
 
-  private static void checkPrimaryKey(final String entityID, final Map<String, Property> propertyDefinitions) {
+  private static void validateAndAddProperty(final Property property, final String domainID, final String entityID,
+                                             final Map<String, Property> propertyMap) {
+    checkIfUniquePropertyID(property, entityID, propertyMap);
+    property.setDomainID(domainID);
+    property.setEntityID(entityID);
+    propertyMap.put(property.getPropertyID(), property);
+  }
+
+  private static void checkIfUniquePropertyID(final Property property, final String entityID, final Map<String, Property> propertyMap) {
+    if (propertyMap.containsKey(property.getPropertyID())) {
+      throw new IllegalArgumentException("Property with ID " + property.getPropertyID()
+              + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
+              + " has already been defined as: " + propertyMap.get(property.getPropertyID()) + " in entity: " + entityID);
+    }
+  }
+
+  private static void checkIfPrimaryKeyIsSpecified(final String entityID, final Map<String, Property> propertyMap) {
     final Collection<Integer> usedPrimaryKeyIndexes = new ArrayList<>();
     boolean primaryKeyPropertyFound = false;
-    for (final Property property : propertyDefinitions.values()) {
+    for (final Property property : propertyMap.values()) {
       if (property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) {
         final Integer index = ((Property.ColumnProperty) property).getPrimaryKeyIndex();
         if (usedPrimaryKeyIndexes.contains(index)) {
@@ -1298,7 +1339,7 @@ public class Entities {
    * and {@link org.jminor.common.db.Databases.Operation} annotations found in the given class
    * @param domainClass the domain class to process
    */
-  public void processAnnotations(final Class domainClass) {
+  public void processAnnotations(final Class<? extends Entities> domainClass) {
     final Map<Field, Annotation> tableAnnotations = new HashMap<>();
     final Map<Field, Annotation> columnAnnotations = new HashMap<>();
     final Map<Field, Annotation> operationAnnotations = new HashMap<>();
@@ -1410,11 +1451,11 @@ public class Entities {
     }
   }
 
-  private static void addDatabaseOperation(final String operationID, final Databases.Operation operation)
+  private void addDatabaseOperation(final String operationID, final Databases.Operation operation)
           throws IllegalAccessException {
     try {
       final Constructor constructor = Class.forName(operation.className()).getConstructor(String.class);
-      Databases.addOperation((DatabaseConnection.Operation) constructor.newInstance(operationID));
+      addOperation((DatabaseConnection.Operation) constructor.newInstance(operationID));
     }
     catch (final NoSuchMethodException | ClassNotFoundException | InstantiationException | InvocationTargetException e) {
       throw new RuntimeException(e);

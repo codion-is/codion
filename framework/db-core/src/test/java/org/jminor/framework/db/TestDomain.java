@@ -101,7 +101,7 @@ public final class TestDomain extends Entities {
                     new Property.ColumnProperty[] {
                             Properties.columnProperty(DETAIL_MASTER_ID_1),
                             Properties.columnProperty(DETAIL_MASTER_ID_2)
-                    }, null),
+                    }),
             Properties.denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_FK,
                     getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
             Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_FK,

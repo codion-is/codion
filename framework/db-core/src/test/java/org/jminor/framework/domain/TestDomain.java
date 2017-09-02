@@ -44,7 +44,7 @@ public final class TestDomain extends Entities {
                     new Property.ColumnProperty[] {
                             Properties.columnProperty(COMPOSITE_DETAIL_MASTER_ID).setPrimaryKeyIndex(0),
                             Properties.columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).setPrimaryKeyIndex(1)
-                    }, null));
+                    }));
   }
 
   public static final String T_MASTER = "domain.master_entity";

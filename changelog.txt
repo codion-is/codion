@@ -4584,3 +4584,7 @@
   Entities.addAll() removed
   Database.getAutoIncrementValueSQL() renamed to getAutoIncrementQuery(), getSequenceSQL() renamed to getSequenceQuery()
   EntityUiUtil.createForeignKeyLookupField() methods "underloaded", removed searchPropertyIDs parameter, EntityEditPanel updated accordingly
+  DefaultEntity and DefaultKey now validate value types during deserialization
+  Entities.initializeForeignKeyProperty() refactored, some renamings and clarifications in related classes
+  Databases no longer serves as a database operation repository, moved to Entities
+  ForeignKeyProperty no longer keeps the foreign column properties since primary keys are always used
