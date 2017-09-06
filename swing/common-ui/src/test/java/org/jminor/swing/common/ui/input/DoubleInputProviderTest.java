@@ -29,14 +29,14 @@ public class DoubleInputProviderTest {
     ((DoubleField) provider.getInputComponent()).setSeparators('.', ',');
     provider.getInputComponent().setText("15.5");
     assertEquals(Double.valueOf(15.5), provider.getValue());
-    provider.getInputComponent().setText("15,5");
+    provider.getInputComponent().setText("15,6");
     assertEquals(Double.valueOf(15.5), provider.getValue());
 
     ((DoubleField) provider.getInputComponent()).setSeparators(',', '.');
-    provider.getInputComponent().setText("15.5");
-    assertEquals(null, provider.getValue());
-    provider.getInputComponent().setText("15,5");
+    provider.getInputComponent().setText("15.7");
     assertEquals(Double.valueOf(15.5), provider.getValue());
+    provider.getInputComponent().setText("15,7");
+    assertEquals(Double.valueOf(15.7), provider.getValue());
   }
 
   @Test

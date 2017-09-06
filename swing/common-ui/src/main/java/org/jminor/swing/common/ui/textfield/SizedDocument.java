@@ -113,33 +113,26 @@ public class SizedDocument extends PlainDocument {
     }
 
     @Override
-    public final void insertString(final FilterBypass fb, final int offset, final String string,
+    public final void insertString(final FilterBypass filterBypass, final int offset, final String string,
                                    final AttributeSet attributeSet) throws BadLocationException {
-      final Document document = fb.getDocument();
-      final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
+      final StringBuilder builder = getStringBuilder(filterBypass.getDocument());
       builder.insert(offset, string);
-      if (getMaxLength() < 0 || builder.length() <= getMaxLength()) {
-        doReplace(fb, builder, offset, string.length(), attributeSet);
-      }
+      doReplace(filterBypass, builder.toString(), attributeSet);
     }
 
     @Override
-    public final void replace(final FilterBypass fb, final int offset, final int length, final String string,
+    public final void replace(final FilterBypass filterBypass, final int offset, final int length, final String string,
                               final AttributeSet attributeSet) throws BadLocationException {
-      final Document document = fb.getDocument();
-      final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
+      final StringBuilder builder = getStringBuilder(filterBypass.getDocument());
       builder.replace(offset, offset + length, string);
-      if (getMaxLength() < 0 || builder.length() <= getMaxLength()) {
-        doReplace(fb, builder, offset, string.length(), attributeSet);
-      }
+      doReplace(filterBypass, builder.toString(), attributeSet);
     }
 
     @Override
-    public final void remove(final FilterBypass fb, final int offset, final int length) throws BadLocationException {
-      final Document document = fb.getDocument();
-      final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
+    public final void remove(final FilterBypass filterBypass, final int offset, final int length) throws BadLocationException {
+      final StringBuilder builder = getStringBuilder(filterBypass.getDocument());
       builder.replace(offset, offset + length, "");
-      doReplace(fb, builder, offset, length, null);
+      doReplace(filterBypass, builder.toString(), null);
     }
 
     /**
@@ -155,22 +148,19 @@ public class SizedDocument extends PlainDocument {
       }
     }
 
-    private void doReplace(final FilterBypass fb, final StringBuilder builder, final int offset,
-                           final int stringLength, final AttributeSet attributeSet)
+    private void doReplace(final FilterBypass filterBypass, final String string, final AttributeSet attributeSet)
             throws BadLocationException {
-      final Document document = fb.getDocument();
-      final String transformedString = transformString(builder.toString());
-      if (transformedString != null) {
-        final String replacement = removeCommonSuffix(transformedString, document.getText(0,
-                document.getLength()), offset, stringLength);
-        fb.replace(0, document.getLength() - (transformedString.length() - replacement.length()),
+      final Document document = filterBypass.getDocument();
+      final String transformedString = transformString(string);
+      if (transformedString != null && (getMaxLength() < 0 || transformedString.length() <= getMaxLength())) {
+        final String replacement = removeCommonSuffix(transformedString, document.getText(0, document.getLength()));
+        filterBypass.replace(0, document.getLength() - (transformedString.length() - replacement.length()),
                 replacement, attributeSet);
       }
     }
 
     //We remove the common suffix if any, to preserve the caret position
-    private String removeCommonSuffix(final String replacementText, final String currentText, final int offset,
-                                      final int length) {
+    private String removeCommonSuffix(final String replacementText, final String currentText) {
       final StringBuilder replacement = new StringBuilder(replacementText);
       final StringBuilder current = new StringBuilder(currentText);
       while (replacement.length() > 0 && current.length() > 0 &&
@@ -180,6 +170,10 @@ public class SizedDocument extends PlainDocument {
       }
 
       return replacement.toString();
+    }
+
+    private static StringBuilder getStringBuilder(final Document document) throws BadLocationException {
+      return new StringBuilder(document.getText(0, document.getLength()));
     }
   }
 }

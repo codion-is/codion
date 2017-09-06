@@ -5,6 +5,8 @@ package org.jminor.swing.common.ui.textfield;
 
 import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -23,6 +25,7 @@ public class NumberField extends JTextField {
    */
   public NumberField(final NumberDocument document, final int columns) {
     super(document, null, columns);
+    addKeyListener(new GroupingSkipAdapter());
     //todo remove this when grouping functionality is "bullet proof"
     document.getFormat().setGroupingUsed(false);
   }
@@ -96,16 +99,11 @@ public class NumberField extends JTextField {
     }
 
     protected final void setNumber(final Number number) {
-      if (number == null) {
-        setText("");
-      }
-      else {
-        setText(getFormat().format(number));
-      }
+      setText(number == null ? "" : getFormat().format(number));
     }
 
     protected final Number getNumber() {
-      return NumberDocumentFilter.parseNumber(getFormat(), getText());
+      return ((NumberDocumentFilter) getDocumentFilter()).parseNumber(getText());
     }
 
     protected final Integer getInteger() {
@@ -152,8 +150,9 @@ public class NumberField extends JTextField {
       final DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
       symbols.setDecimalSeparator(decimalSeparator);
       symbols.setGroupingSeparator(groupingSeparator);
+      final Number number = getNumber();
       ((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
-      setText("");
+      setNumber(number);
     }
   }
 
@@ -180,7 +179,7 @@ public class NumberField extends JTextField {
         return string;
       }
 
-      final Number parsedNumber = parseNumber(format, string);
+      final Number parsedNumber = parseNumber(string);
       if (parsedNumber != null && isWithinRange(parsedNumber.doubleValue())) {
         String formattedNumber = format.format(parsedNumber);
         //handle trailing decimal symbol
@@ -237,11 +236,10 @@ public class NumberField extends JTextField {
     }
 
     /**
-     * @param format the format
      * @param text the text to parse
-     * @return a number if the given format can parse it, null otherwise
+     * @return a number if the format can parse it, null otherwise
      */
-    private static Number parseNumber(final NumberFormat format, final String text) {
+    private Number parseNumber(final String text) {
       if (text.isEmpty()) {
         return null;
       }
@@ -253,6 +251,43 @@ public class NumberField extends JTextField {
       }
 
       return number;
+    }
+  }
+
+  private final class GroupingSkipAdapter extends KeyAdapter {
+    @Override
+    public void keyReleased(final KeyEvent e) {
+      switch (e.getKeyCode()) {
+        case KeyEvent.VK_BACK_SPACE:
+          skipGroupingSeparator(false);
+          break;
+        case KeyEvent.VK_DELETE:
+          skipGroupingSeparator(true);
+          break;
+        default:
+          break;
+      }
+    }
+
+    private void skipGroupingSeparator(final boolean forward) {
+      final NumberDocument numberDocument = (NumberDocument) getDocument();
+      final DecimalFormatSymbols symbols = ((DecimalFormat) numberDocument.getFormat()).getDecimalFormatSymbols();
+      try {
+        final int caretPosition = getCaretPosition();
+        if (forward && caretPosition < getDocument().getLength() - 1) {
+          final String afterCaret = numberDocument.getText(caretPosition, 1);
+          if (afterCaret.charAt(0) == symbols.getGroupingSeparator()) {
+            setCaretPosition(caretPosition + 1);
+          }
+        }
+        else if (!forward && caretPosition > 0) {
+          final String beforeCaret = numberDocument.getText(caretPosition - 1, 1);
+          if (beforeCaret.charAt(0) == symbols.getGroupingSeparator()) {
+            setCaretPosition(caretPosition - 1);
+          }
+        }
+      }
+      catch (final BadLocationException ignored) {/*Not happening*/}
     }
   }
 }

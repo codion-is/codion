@@ -146,4 +146,15 @@ public class DoubleFieldTest {
     assertEquals("1.1", txt.getText());
     assertEquals(Double.valueOf(1.1), txt.getDouble());
   }
+
+  @Test
+  public void setSeparators() {
+    final DoubleField txt = new DoubleField();
+    txt.setGroupingUsed(true);
+    txt.setSeparators('.', ',');
+    txt.setNumber(12345678.9);
+    assertEquals("12,345,678.9", txt.getText());
+    txt.setSeparators(',', '.');
+    assertEquals("12.345.678,9", txt.getText());
+  }
 }
