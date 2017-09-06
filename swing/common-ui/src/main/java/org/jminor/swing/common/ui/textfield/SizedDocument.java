@@ -173,7 +173,8 @@ public class SizedDocument extends PlainDocument {
                                       final int length) {
       final StringBuilder replacement = new StringBuilder(replacementText);
       final StringBuilder current = new StringBuilder(currentText);
-      while (replacement.length() > 0 && current.length() > 0 && replacement.charAt(replacement.length() - 1) == current.charAt(current.length() - 1)) {
+      while (replacement.length() > 0 && current.length() > 0 &&
+              replacement.charAt(replacement.length() - 1) == current.charAt(current.length() - 1)) {
         replacement.replace(replacement.length() - 1, replacement.length(), "");
         current.replace(current.length() - 1, current.length(), "");
       }

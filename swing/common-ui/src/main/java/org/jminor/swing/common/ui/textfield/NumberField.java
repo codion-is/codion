@@ -180,19 +180,18 @@ public class NumberField extends JTextField {
         return string;
       }
 
-      final NumberFormat numberFormat = getFormat();
-      final Number number = parseNumber(numberFormat, string);
-      if (number != null) {
-        String formattedNumber = numberFormat.format(number);
-        if (numberFormat instanceof DecimalFormat) {
-          final String decimalSeparator = String.valueOf(((DecimalFormat) numberFormat).getDecimalFormatSymbols().getDecimalSeparator());
+      final Number parsedNumber = parseNumber(format, string);
+      if (parsedNumber != null && isWithinRange(parsedNumber.doubleValue())) {
+        String formattedNumber = format.format(parsedNumber);
+        //handle trailing decimal symbol
+        if (format instanceof DecimalFormat) {
+          final String decimalSeparator = String.valueOf(((DecimalFormat) format).getDecimalFormatSymbols().getDecimalSeparator());
           if (!formattedNumber.contains(decimalSeparator) && string.endsWith(decimalSeparator)) {
             formattedNumber += decimalSeparator;
           }
         }
-        if (number != null && isWithinRange(number.doubleValue())) {
-          return formattedNumber;
-        }
+
+        return formattedNumber;
       }
 
       return null;

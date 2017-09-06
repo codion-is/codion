@@ -4589,3 +4589,4 @@
   Databases no longer serves as a database operation repository, moved to Entities
   ForeignKeyProperty no longer keeps the foreign column properties since primary keys are always used
   NumberField bug fixed, did not accept trailing decimal separator, NumberField refactored, uses strict number parsing
+  NumberField refactored a bit
