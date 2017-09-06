@@ -5,10 +5,11 @@ package org.jminor.swing.common.ui.textfield;
 
 import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
-import java.text.ParseException;
+import java.text.ParsePosition;
 
 /**
  * A text field for numbers.
@@ -170,6 +171,7 @@ public class NumberField extends JTextField {
 
     protected NumberDocumentFilter(final NumberFormat format) {
       this.format = format;
+      this.format.setRoundingMode(RoundingMode.DOWN);
     }
 
     @Override
@@ -179,10 +181,18 @@ public class NumberField extends JTextField {
       }
 
       final NumberFormat numberFormat = getFormat();
-      final StringBuilder builder = new StringBuilder(string);
-      final Number number = parseNumber(numberFormat, builder.toString());
-      if (number != null && isWithinRange(number.doubleValue())) {
-        return builder.replace(0, builder.length(), numberFormat.format(number)).toString();
+      final Number number = parseNumber(numberFormat, string);
+      if (number != null) {
+        String formattedNumber = numberFormat.format(number);
+        if (numberFormat instanceof DecimalFormat) {
+          final String decimalSeparator = String.valueOf(((DecimalFormat) numberFormat).getDecimalFormatSymbols().getDecimalSeparator());
+          if (!formattedNumber.contains(decimalSeparator) && string.endsWith(decimalSeparator)) {
+            formattedNumber += decimalSeparator;
+          }
+        }
+        if (number != null && isWithinRange(number.doubleValue())) {
+          return formattedNumber;
+        }
       }
 
       return null;
@@ -237,23 +247,13 @@ public class NumberField extends JTextField {
         return null;
       }
 
-      try {
-        return format.parse(handleMinusSign(text));
-      }
-      catch (final ParseException e) {
+      final ParsePosition position = new ParsePosition(0);
+      final Number number = format.parse(text, position);
+      if (position.getIndex() != text.length() || position.getErrorIndex() != -1) {
         return null;
       }
-    }
 
-    /**
-     * We need to interpret - as -1
-     */
-    private static String handleMinusSign(final String text) {
-      if (MINUS_SIGN.equals(text)) {
-        return text + "1";
-      }
-
-      return text;
+      return number;
     }
   }
 }

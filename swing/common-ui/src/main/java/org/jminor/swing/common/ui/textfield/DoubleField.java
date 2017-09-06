@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.common.ui.textfield;
 
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -77,7 +76,6 @@ public final class DoubleField extends NumberField {
   private static DecimalFormat createDefaultFormat() {
     final DecimalFormat format = new DecimalFormat();
     format.setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
-    format.setRoundingMode(RoundingMode.DOWN);
 
     return format;
   }

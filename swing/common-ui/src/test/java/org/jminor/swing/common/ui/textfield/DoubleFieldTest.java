@@ -21,20 +21,20 @@ public class DoubleFieldTest {
     assertEquals("42,2", txt.getText());
     txt.setText("22,3");
     assertEquals(Double.valueOf(22.3), txt.getDouble());
-    txt.setText("22.3");//note this is a thousand separator
-    assertEquals(Double.valueOf(22), txt.getDouble());
-    assertEquals("22", txt.getText());
+    txt.setText("22.5");//note this is a thousand separator
+    assertEquals(Double.valueOf(22.3), txt.getDouble());
+    assertEquals("22,3", txt.getText());
     txt.setText("22.123.123,123");
-    assertEquals("22", txt.getText());
-    assertEquals(Double.valueOf(22), txt.getDouble());
+    assertEquals("22,3", txt.getText());
+    assertEquals(Double.valueOf(22.3), txt.getDouble());
 
     txt.setSeparators('.', ',');
 
     txt.setDouble(42.2);
     assertEquals("42.2", txt.getText());
     txt.setText("2,123,123.123");
-    assertEquals("2", txt.getText());
-    assertEquals(Double.valueOf(2), txt.getDouble());
+    assertEquals("42.2", txt.getText());
+    assertEquals(Double.valueOf(42.2), txt.getDouble());
 
     txt.setDouble(10000000d);
     assertEquals("10000000", txt.getText());
@@ -80,13 +80,13 @@ public class DoubleFieldTest {
     assertEquals("100,000,000.4", txt.getText());
 
     txt.setText("2.2.2");
-    assertEquals("2.2", txt.getText());
+    assertEquals("100,000,000.4", txt.getText());
     txt.setText("..22.2.2.2");
-    assertEquals("2.2", txt.getText());
+    assertEquals("100,000,000.4", txt.getText());
     txt.setText("22.2.2.2");
-    assertEquals("22.2", txt.getText());
+    assertEquals("100,000,000.4", txt.getText());
     txt.setText("2222.2.2.2");
-    assertEquals("2,222.2", txt.getText());
+    assertEquals("100,000,000.4", txt.getText());
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -124,11 +124,26 @@ public class DoubleFieldTest {
     txt.setText("1.5");
     assertEquals(Double.valueOf(1.5), txt.getDouble());
     txt.setText("123.34.56");
-    assertEquals(Double.valueOf(123.34), txt.getDouble());
+    assertEquals(Double.valueOf(1.5), txt.getDouble());
 
     txt.setText("1,5");
-    assertEquals(Double.valueOf(1), txt.getDouble());
+    assertEquals(Double.valueOf(1.5), txt.getDouble());
     txt.setText("1,4.5");
+    assertEquals(Double.valueOf(1.5), txt.getDouble());
+  }
+
+  @Test
+  public void trailingDecimalSeparator() throws BadLocationException {
+    final DoubleField txt = new DoubleField();
+    txt.setSeparators('.', ',');
+    final NumberField.NumberDocument document = (NumberField.NumberDocument) txt.getDocument();
+    document.insertString(0, "1", null);
     assertEquals(Double.valueOf(1), txt.getDouble());
+    document.insertString(1, ".", null);
+    assertEquals("1.", txt.getText());
+    assertEquals(Double.valueOf(1), txt.getDouble());
+    document.insertString(2, "1", null);
+    assertEquals("1.1", txt.getText());
+    assertEquals(Double.valueOf(1.1), txt.getDouble());
   }
 }

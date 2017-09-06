@@ -172,16 +172,10 @@ public class SizedDocument extends PlainDocument {
     private String removeCommonSuffix(final String replacementText, final String currentText, final int offset,
                                       final int length) {
       final StringBuilder replacement = new StringBuilder(replacementText);
-      if (replacement.length() > 0) {
-        for (int i = currentText.length() - 1; i >= (offset + length); i--) {
-          final int replacementLength = replacement.length();
-          if (replacementLength > 0 && replacement.charAt(replacementLength - 1) == currentText.charAt(i)) {
-            replacement.replace(replacementLength - 1, replacementLength, "");
-          }
-          else {
-            break;
-          }
-        }
+      final StringBuilder current = new StringBuilder(currentText);
+      while (replacement.length() > 0 && current.length() > 0 && replacement.charAt(replacement.length() - 1) == current.charAt(current.length() - 1)) {
+        replacement.replace(replacement.length() - 1, replacement.length(), "");
+        current.replace(current.length() - 1, current.length(), "");
       }
 
       return replacement.toString();
