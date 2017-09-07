@@ -9,7 +9,6 @@ import org.jminor.common.Events;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.DatabaseException;
@@ -154,7 +153,7 @@ public final class EntityGeneratorModel {
    * Closes the connection to the database
    */
   public void exit() {
-    DatabaseUtil.closeSilently(connection);
+    Databases.closeSilently(connection);
   }
 
   private TableModel initializeTableModel() {

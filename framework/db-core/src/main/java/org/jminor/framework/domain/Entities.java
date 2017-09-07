@@ -9,7 +9,6 @@ import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.RecordModifiedException;
@@ -2052,10 +2051,10 @@ public class Entities {
       final Object value;
       switch (keyProperty.getColumnType()) {
         case Types.INTEGER:
-          value = DatabaseUtil.queryInteger(connection, getQuery(connection.getDatabase()));
+          value = connection.queryInteger(getQuery(connection.getDatabase()));
           break;
         case Types.BIGINT:
-          value = DatabaseUtil.queryLong(connection, getQuery(connection.getDatabase()));
+          value = connection.queryLong(getQuery(connection.getDatabase()));
           break;
         default:
           throw new SQLException("Queried key generator only implemented for Types.INTEGER and Types.BIGINT datatypes", null, null);

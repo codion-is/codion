@@ -4592,3 +4592,4 @@
   NumberField refactored a bit
   NumberField refactored further, now skips over grouping separator on backspace and delete
   EntityTestUnit.getConditions() added
+  DatabaseUtil removed, methods moved to Databases and DefaultDatabaseConnection

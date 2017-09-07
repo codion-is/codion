@@ -11,7 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -152,14 +155,14 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     catch (final SQLException ex) {
       LOG.warn("DefaultDatabaseConnection.disconnect(), connection invalid", ex);
     }
-    DatabaseUtil.closeSilently(connection);
+    Databases.closeSilently(connection);
     connection = null;
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isConnected() {
-    return connection != null && DatabaseUtil.isValid(connection, database, validityCheckTimeout);
+    return connection != null && Databases.isValid(connection, database, validityCheckTimeout);
   }
 
   /** {@inheritDoc} */
@@ -178,6 +181,28 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   @Override
   public Database getDatabase() {
     return database;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int queryInteger(final String sql) throws SQLException {
+    final List<Integer> integers = query(sql, Databases.INTEGER_RESULT_PACKER, -1);
+    if (!integers.isEmpty()) {
+      return integers.get(0);
+    }
+
+    throw new SQLException("No records returned when querying for an integer", sql);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public long queryLong(final String sql) throws SQLException {
+    final List<Long> longs = query(sql, Databases.LONG_RESULT_PACKER, -1);
+    if (!longs.isEmpty()) {
+      return longs.get(0);
+    }
+
+    throw new SQLException("No records returned when querying for a long", sql);
   }
 
   /** {@inheritDoc} */
@@ -286,6 +311,46 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
     finally {
       logExit("rollback", exception, null);
+    }
+  }
+
+  /**
+   * Performs a query and returns the result packed by the {@code resultPacker}
+   * @param sql the sql query
+   * @param resultPacker the result packer
+   * @param fetchCount the number of records to fetch
+   * @param <T> the type of object returned by the query
+   * @return a List of records based on the given query
+   * @throws SQLException thrown if anything goes wrong during the execution
+   */
+  private <T> List<T> query(final String sql, final ResultPacker<T> resultPacker, final int fetchCount) throws SQLException {
+    Databases.QUERY_COUNTER.count(sql);
+    Statement statement = null;
+    SQLException exception = null;
+    ResultSet resultSet = null;
+    final MethodLogger methodLogger = getMethodLogger();
+    try {
+      if (methodLogger != null && methodLogger.isEnabled()) {
+        methodLogger.logAccess("query", new Object[]{sql});
+      }
+      statement = getConnection().createStatement();
+      resultSet = statement.executeQuery(sql);
+
+      return resultPacker.pack(resultSet, fetchCount);
+    }
+    catch (final SQLException e) {
+      exception = e;
+      throw e;
+    }
+    finally {
+      Databases.closeSilently(statement);
+      Databases.closeSilently(resultSet);
+      if (methodLogger != null && methodLogger.isEnabled()) {
+        final MethodLogger.Entry logEntry = methodLogger.logExit("query", exception, null);
+        if (LOG != null && LOG.isDebugEnabled()) {
+          LOG.debug(Databases.createLogMessage(getUser(), sql, null, exception, logEntry));
+        }
+      }
     }
   }
 

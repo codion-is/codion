@@ -3,6 +3,7 @@
  */
 package org.jminor.common.db;
 
+import org.jminor.common.User;
 import org.jminor.common.db.dbms.DerbyDatabase;
 import org.jminor.common.db.dbms.H2Database;
 import org.jminor.common.db.dbms.HSQLDatabase;
@@ -10,9 +11,17 @@ import org.jminor.common.db.dbms.MySQLDatabase;
 import org.jminor.common.db.dbms.OracleDatabase;
 import org.jminor.common.db.dbms.PostgreSQLDatabase;
 import org.jminor.common.db.dbms.SQLServerDatabase;
+import org.jminor.common.db.exception.DatabaseException;
 
 import org.junit.Test;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Properties;
+
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class DatabasesTest {
@@ -124,6 +133,63 @@ public class DatabasesTest {
       if (type != null) {
         Database.DATABASE_TYPE.set(type);
       }
+    }
+  }
+
+  @Test
+  public void closeSilently() {
+    Databases.closeSilently((Connection[]) null);
+    Databases.closeSilently((Statement) null);
+    Databases.closeSilently((ResultSet) null);
+
+    Databases.closeSilently((Statement[]) null);
+    Databases.closeSilently((ResultSet[]) null);
+
+    Databases.closeSilently(new Statement[]{null, null});
+    Databases.closeSilently(new ResultSet[]{null, null});
+  }
+
+  @Test
+  public void getDatabaseStatistics() {
+    Databases.getDatabaseStatistics();
+  }
+
+  @Test
+  public void validateWithQuery() throws DatabaseException, SQLException {
+    final Database testDatabase = new TestDatabase();
+    final Connection connection = testDatabase.createConnection(new User("scott", "tiger"));
+    assertTrue(Databases.isValid(connection, testDatabase, 2));
+    connection.close();
+    assertFalse(Databases.isValid(connection, testDatabase, 2));
+  }
+
+  private static final class TestDatabase extends AbstractDatabase {
+
+    private final Database database;
+
+    public TestDatabase() {
+      super(Type.H2, "org.h2.Driver");
+      this.database = Databases.getInstance();
+    }
+
+    @Override
+    public String getCheckConnectionQuery() {
+      return "select 1 from dual";
+    }
+
+    @Override
+    public boolean supportsIsValid() {
+      return false;
+    }
+
+    @Override
+    public String getAutoIncrementQuery(final String idSource) {
+      return database.getAutoIncrementQuery(idSource);
+    }
+
+    @Override
+    public String getURL(final Properties connectionProperties) {
+      return database.getURL(connectionProperties);
     }
   }
 

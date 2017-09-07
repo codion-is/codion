@@ -54,7 +54,7 @@ public class DatabaseConnectionsTest {
       assertTrue(UNIT_TEST_USER.getUsername().equalsIgnoreCase(databaseConnection.getUser().getUsername()));
     }
     finally {
-      DatabaseUtil.closeSilently(connection);
+      Databases.closeSilently(connection);
     }
   }
 
@@ -67,7 +67,7 @@ public class DatabaseConnectionsTest {
       DatabaseConnections.createConnection(DATABASE, connection);
     }
     finally {
-      DatabaseUtil.closeSilently(connection);
+      Databases.closeSilently(connection);
     }
   }
 }

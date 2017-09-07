@@ -76,6 +76,36 @@ public class DefaultDatabaseConnectionTest {
   }
 
   @Test
+  public void queryInteger() throws DatabaseException, SQLException {
+    DatabaseConnection connection = null;
+    try {
+      connection = new DefaultDatabaseConnection(Databases.getInstance(), UNIT_TEST_USER);
+      final int qInt = connection.queryInteger("select empno from scott.emp where ename = 'ADAMS'");
+      assertTrue(qInt == 10);
+    }
+    finally {
+      if (connection != null) {
+        connection.disconnect();
+      }
+    }
+  }
+
+  @Test
+  public void queryLong() throws DatabaseException, SQLException {
+    DatabaseConnection connection = null;
+    try {
+      connection = new DefaultDatabaseConnection(Databases.getInstance(), UNIT_TEST_USER);
+      final long qLong = connection.queryLong("select empno from scott.emp where ename = 'ADAMS'");
+      assertTrue(qLong == 10L);
+    }
+    finally {
+      if (connection != null) {
+        connection.disconnect();
+      }
+    }
+  }
+
+  @Test
   public void getDatabase() {
     assertEquals(DATABASE, dbConnection.getDatabase());
   }

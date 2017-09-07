@@ -57,6 +57,22 @@ public interface DatabaseConnection {
   int getRetryCount();
 
   /**
+   * Performs the given query and returns the result as an integer
+   * @param sql the query must select at least a single number column, any other subsequent columns are disregarded
+   * @return the first record in the result as a integer
+   * @throws SQLException thrown if anything goes wrong during the execution or if no record is returned
+   */
+  int queryInteger(final String sql) throws SQLException;
+
+  /**
+   * Performs the given query and returns the result as a long
+   * @param sql the query must select at least a single number column, any other subsequent columns are disregarded
+   * @return the first record in the result as a long
+   * @throws SQLException thrown if anything goes wrong during the execution or if no record is returned
+   */
+  long queryLong(final String sql) throws SQLException;
+
+  /**
    * Begins a transaction on this connection, to end the transaction use {@link #commitTransaction()} or {@link #rollbackTransaction()}.
    * @throws IllegalStateException in case a transaction is already open
    */

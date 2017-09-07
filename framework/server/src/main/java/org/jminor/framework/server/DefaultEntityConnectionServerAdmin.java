@@ -7,7 +7,7 @@ import org.jminor.common.LoggerProxy;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseUtil;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.ConnectionPools;
@@ -248,7 +248,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   /** {@inheritDoc} */
   @Override
   public Database.Statistics getDatabaseStatistics() {
-    return DatabaseUtil.getDatabaseStatistics();
+    return Databases.getDatabaseStatistics();
   }
 
   /** {@inheritDoc} */

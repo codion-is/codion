@@ -7,7 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnections;
-import org.jminor.common.db.DatabaseUtil;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPools;
@@ -137,8 +137,8 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
         if (connection != null) {
           application.pool.returnConnection(connection);
         }
-        DatabaseUtil.closeSilently(resultSet);
-        DatabaseUtil.closeSilently(statement);
+        Databases.closeSilently(resultSet);
+        Databases.closeSilently(statement);
       }
     }
 

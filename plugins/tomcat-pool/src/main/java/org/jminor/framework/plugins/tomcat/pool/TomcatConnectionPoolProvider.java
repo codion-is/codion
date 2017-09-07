@@ -6,7 +6,7 @@ package org.jminor.framework.plugins.tomcat.pool;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseUtil;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.AbstractConnectionPool;
 import org.jminor.common.db.pool.ConnectionPool;
@@ -179,7 +179,7 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
 
     @Override
     public boolean validate(final Connection connection, final int i) {
-      return DatabaseUtil.isValid(connection, database, 0);
+      return Databases.isValid(connection, database, 0);
     }
   }
 }
