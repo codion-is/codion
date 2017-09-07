@@ -94,6 +94,11 @@ public class DoubleFieldTest {
     new DoubleField().setMaximumFractionDigits(0);
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void setSeparatorsSameCharacter() {
+    new DoubleField().setSeparators('.', '.');
+  }
+
   @Test
   public void maximumFractionDigits() throws BadLocationException {
     final DoubleField txt = new DoubleField();

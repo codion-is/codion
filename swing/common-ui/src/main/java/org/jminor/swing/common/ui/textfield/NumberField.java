@@ -25,7 +25,9 @@ public class NumberField extends JTextField {
    */
   public NumberField(final NumberDocument document, final int columns) {
     super(document, null, columns);
-    addKeyListener(new GroupingSkipAdapter());
+    if (document.getFormat() instanceof DecimalFormat) {
+      addKeyListener(new GroupingSkipAdapter());
+    }
     //todo remove this when grouping functionality is "bullet proof"
     document.getFormat().setGroupingUsed(false);
   }
@@ -271,18 +273,18 @@ public class NumberField extends JTextField {
 
     private void skipGroupingSeparator(final boolean forward) {
       final NumberDocument numberDocument = (NumberDocument) getDocument();
-      final DecimalFormatSymbols symbols = ((DecimalFormat) numberDocument.getFormat()).getDecimalFormatSymbols();
+      final char groupingSeparator = ((DecimalFormat) numberDocument.getFormat()).getDecimalFormatSymbols().getGroupingSeparator();
       try {
         final int caretPosition = getCaretPosition();
         if (forward && caretPosition < getDocument().getLength() - 1) {
-          final String afterCaret = numberDocument.getText(caretPosition, 1);
-          if (afterCaret.charAt(0) == symbols.getGroupingSeparator()) {
+          final char afterCaret = numberDocument.getText(caretPosition, 1).charAt(0);
+          if (groupingSeparator == afterCaret) {
             setCaretPosition(caretPosition + 1);
           }
         }
         else if (!forward && caretPosition > 0) {
-          final String beforeCaret = numberDocument.getText(caretPosition - 1, 1);
-          if (beforeCaret.charAt(0) == symbols.getGroupingSeparator()) {
+          final char beforeCaret = numberDocument.getText(caretPosition - 1, 1).charAt(0);
+          if (groupingSeparator == beforeCaret) {
             setCaretPosition(caretPosition - 1);
           }
         }
