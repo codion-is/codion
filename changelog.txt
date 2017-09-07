@@ -4591,3 +4591,4 @@
   NumberField bug fixed, did not accept trailing decimal separator, NumberField refactored, uses strict number parsing
   NumberField refactored a bit
   NumberField refactored further, now skips over grouping separator on backspace and delete
+  EntityTestUnit.getConditions() added

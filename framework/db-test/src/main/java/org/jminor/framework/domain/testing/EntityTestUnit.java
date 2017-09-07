@@ -56,7 +56,7 @@ public abstract class EntityTestUnit {
   private static final String ENTITY_PARAM = "entity";
 
   private final Entities entities;
-  private final EntityConditions entityConditions;
+  private final EntityConditions conditions;
   private final Map<String, Entity> referencedEntities = new HashMap<>();
 
   private EntityConnection connection;
@@ -67,7 +67,7 @@ public abstract class EntityTestUnit {
    */
   public EntityTestUnit(final Entities entities) {
     this.entities = entities;
-    this.entityConditions = new EntityConditions(entities);
+    this.conditions = new EntityConditions(entities);
   }
 
   /**
@@ -75,6 +75,13 @@ public abstract class EntityTestUnit {
    */
   public final Entities getEntities() {
     return entities;
+  }
+
+  /**
+   * @return the domain conditions
+   */
+  public final EntityConditions getConditions() {
+    return conditions;
   }
 
   /**
@@ -307,7 +314,7 @@ public abstract class EntityTestUnit {
               testEntity.equals(tmp));
     }
     else {
-      connection.selectMany(entityConditions.selectCondition(entityID, SELECT_FETCH_COUNT));
+      connection.selectMany(conditions.selectCondition(entityID, SELECT_FETCH_COUNT));
     }
   }
 
