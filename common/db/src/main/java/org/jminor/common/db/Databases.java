@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Provides Database implementations based on system settings.
+ * Utility class for {@link Database} implementations and misc. database related things.
  * @see Database#DATABASE_IMPLEMENTATION_CLASS
  * @see Database#DATABASE_TYPE
  */
@@ -64,15 +64,29 @@ public final class Databases {
   private Databases() {}
 
   /**
-   * Returns the statistics gathered via {@link #QUERY_COUNTER}.
-   * @return a DatabaseStatistics object containing query statistics collected since
-   * the last time this function was called.
+   * @return a Database instance based on the current runtime database type property
+   * @see Database#DATABASE_TYPE
+   * @see Database#DATABASE_IMPLEMENTATION_CLASS
+   * @see Database#getDatabaseType()
+   * @throws IllegalArgumentException in case an unsupported database type is specified
+   * @throws RuntimeException in case of an exception occurring while instantiating the database implementation instance
    */
-  public static Database.Statistics getDatabaseStatistics() {
-    QUERY_COUNTER.updateQueriesPerSecond();
-    return new DatabaseStatistics(QUERY_COUNTER.getQueriesPerSecond(),
-            QUERY_COUNTER.getSelectsPerSecond(), QUERY_COUNTER.getInsertsPerSecond(),
-            QUERY_COUNTER.getDeletesPerSecond(), QUERY_COUNTER.getUpdatesPerSecond());
+  public static synchronized Database getInstance() {
+    try {
+      final Database.Type currentType = Database.getDatabaseType();
+      if (instance == null || !instance.getType().equals(currentType)) {
+        //refresh the instance
+        instance = (Database) Class.forName(Database.getDatabaseClassName()).getDeclaredConstructor().newInstance();
+      }
+
+      return instance;
+    }
+    catch (final IllegalArgumentException e) {
+      throw e;
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -153,6 +167,18 @@ public final class Databases {
   }
 
   /**
+   * Returns the statistics gathered via {@link #QUERY_COUNTER}.
+   * @return a {@link Database.Statistics} object containing query statistics collected since
+   * the last time this function was called.
+   */
+  public static Database.Statistics getDatabaseStatistics() {
+    QUERY_COUNTER.updateQueriesPerSecond();
+    return new DatabaseStatistics(QUERY_COUNTER.getQueriesPerSecond(),
+            QUERY_COUNTER.getSelectsPerSecond(), QUERY_COUNTER.getInsertsPerSecond(),
+            QUERY_COUNTER.getDeletesPerSecond(), QUERY_COUNTER.getUpdatesPerSecond());
+  }
+
+  /**
    * Creates a log message from the given information
    * @param user the user
    * @param sqlStatement the sql statement
@@ -175,41 +201,6 @@ public final class Databases {
     }
 
     return logMessage.toString();
-  }
-
-  /**
-   * @deprecated use {@link #getInstance()}
-   * @return a Database instance based on the current runtime database type property
-   */
-  @Deprecated
-  public static synchronized Database createInstance() {
-    return getInstance();
-  }
-
-  /**
-   * @return a Database instance based on the current runtime database type property
-   * @see Database#DATABASE_TYPE
-   * @see Database#DATABASE_IMPLEMENTATION_CLASS
-   * @see Database#getDatabaseType()
-   * @throws IllegalArgumentException in case an unsupported database type is specified
-   * @throws RuntimeException in case of an exception occurring while instantiating the database implementation instance
-   */
-  public static synchronized Database getInstance() {
-    try {
-      final Database.Type currentType = Database.getDatabaseType();
-      if (instance == null || !instance.getType().equals(currentType)) {
-        //refresh the instance
-        instance = (Database) Class.forName(Database.getDatabaseClassName()).getDeclaredConstructor().newInstance();
-      }
-
-      return instance;
-    }
-    catch (final IllegalArgumentException e) {
-      throw e;
-    }
-    catch (final Exception e) {
-      throw new RuntimeException(e);
-    }
   }
 
   private static boolean validateWithQuery(final Connection connection, final Database database,

@@ -55,8 +55,8 @@ public class ConfigurationTest {
   }
 
   @Test(expected = UnsupportedOperationException.class)
-  public void value() {
-    new Configuration.ConfigurationValue("configuration.test.value", null);
+  public void valueUnsupportedParseFromSystemSettings() {
+    Configuration.value("configuration.test.value", null);
   }
 
   @Test

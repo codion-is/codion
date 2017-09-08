@@ -21,7 +21,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 /**
- * A base utility class with no external dependencies
+ * Misc. utilities.
  */
 public class Util {
 
@@ -106,7 +106,7 @@ public class Util {
     Objects.requireNonNull(keyProvider, "keyProvider");
     final LinkedHashMap<K, Collection<V>> map = new LinkedHashMap<>(values.size());
     for (final V value : values) {
-      map(map, value, keyProvider.getKey(value));
+      map.computeIfAbsent(keyProvider.getKey(value), k -> new ArrayList<>()).add(value);
     }
 
     return map;
@@ -123,19 +123,6 @@ public class Util {
     }
     catch (final ClassNotFoundException e) {
       return false;
-    }
-  }
-
-  /**
-   * Throws a RuntimeException in case the given value is null or an empty string,
-   * using {@code propertyName} in the error message, as in: "propertyName is required"
-   * @param propertyName the name of the property that is required
-   * @param value the value
-   * @throws RuntimeException in case value is null or an empty string
-   */
-  public static void require(final String propertyName, final Object value) {
-    if (value == null || value instanceof String && ((String) value).isEmpty()) {
-      throw new RuntimeException(propertyName + " is required");
     }
   }
 
@@ -391,16 +378,5 @@ public class Util {
     }
 
     return ownerClass.getMethod("get" + propertyName);
-  }
-
-  private static <K, V> void map(final Map<K, Collection<V>> map, final V value, final K key) {
-    Objects.requireNonNull(value, "value");
-    Objects.requireNonNull(key, "key");
-    Objects.requireNonNull(map, "map");
-    if (!map.containsKey(key)) {
-      map.put(key, new ArrayList<>());
-    }
-
-    map.get(key).add(value);
   }
 }

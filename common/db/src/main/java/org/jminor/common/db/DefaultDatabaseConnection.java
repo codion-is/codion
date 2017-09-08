@@ -328,7 +328,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     Statement statement = null;
     SQLException exception = null;
     ResultSet resultSet = null;
-    final MethodLogger methodLogger = getMethodLogger();
     try {
       if (methodLogger != null && methodLogger.isEnabled()) {
         methodLogger.logAccess("query", new Object[]{sql});

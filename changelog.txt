@@ -4593,3 +4593,7 @@
   NumberField refactored further, now skips over grouping separator on backspace and delete
   EntityTestUnit.getConditions() added
   DatabaseUtil removed, methods moved to Databases and DefaultDatabaseConnection
+  Databases.createInstance() removed
+  Configuration.ConfigurationValue no longer public
+  Util.require() removed, Objects.requireNonNull() used instead
+  Util.map() now uses computeIfAbsent()

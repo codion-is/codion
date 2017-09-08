@@ -213,7 +213,7 @@ public final class Servers {
     @Override
     public int compare(final Server<T, A> o1, final Server<T, A> o2) {
       try {
-        return Integer.valueOf(o1.getServerLoad()).compareTo(o2.getServerLoad());
+        return Integer.compare(o1.getServerLoad(), o2.getServerLoad());
       }
       catch (final RemoteException e) {
         return 1;

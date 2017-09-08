@@ -3,9 +3,9 @@
  */
 package org.jminor.common.db.dbms;
 
-import org.jminor.common.Util;
 import org.jminor.common.db.AbstractDatabase;
 
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -31,7 +31,8 @@ public final class MySQLDatabase extends AbstractDatabase {
    * @param dbname the db name
    */
   public MySQLDatabase(final String host, final Integer port, final String dbname) {
-    super(Type.MYSQL, DRIVER_CLASS_NAME, host, port, dbname);
+    super(Type.MYSQL, DRIVER_CLASS_NAME, Objects.requireNonNull(host, "host"),
+            Objects.requireNonNull(port, "port"), Objects.requireNonNull(dbname, "dbname"));
   }
 
   /** {@inheritDoc} */
@@ -43,9 +44,6 @@ public final class MySQLDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getURL(final Properties connectionProperties) {
-    Util.require("host", getHost());
-    Util.require("port", getPort());
-    Util.require("sid", getSid());
     return URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid();
   }
 

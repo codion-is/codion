@@ -10,7 +10,7 @@ import java.util.ListIterator;
 import java.util.Objects;
 
 /**
- * A factory class for State objects.
+ * A factory class for {@link State} objects.
  * @see State
  */
 public final class States {

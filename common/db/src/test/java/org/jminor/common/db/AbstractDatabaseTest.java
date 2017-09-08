@@ -8,7 +8,8 @@ import org.junit.Test;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public final class AbstractDatabaseTest {
 
@@ -29,7 +30,6 @@ public final class AbstractDatabaseTest {
   public void test() throws Exception {
     assertTrue(database.supportsIsValid());
     assertTrue(database.supportsNowait());
-    assertNull(database.getCheckConnectionQuery());
     assertEquals(DRIVER_CLASS, database.getDriverClassName());
     database.shutdownEmbedded(null);
     database.getErrorMessage(new SQLException());

@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db.dbms;
 
-import org.jminor.common.Util;
 import org.jminor.common.db.AbstractDatabase;
 
 import java.sql.SQLException;
@@ -35,7 +34,8 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
    * @param database the database name
    */
   public PostgreSQLDatabase(final String host, final Integer port, final String database) {
-    super(Type.POSTGRESQL, DRIVER_CLASS_NAME, host, port, database, false);
+    super(Type.POSTGRESQL, DRIVER_CLASS_NAME, Objects.requireNonNull(host, "host"),
+            Objects.requireNonNull(port, "port"), Objects.requireNonNull(database, "database"), false);
   }
 
   /** {@inheritDoc} */
@@ -53,9 +53,6 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getURL(final Properties connectionProperties) {
-    Util.require("host", getHost());
-    Util.require("port", getPort());
-    Util.require("sid", getSid());
     return URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid();
   }
 

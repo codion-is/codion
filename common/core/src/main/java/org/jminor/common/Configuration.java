@@ -157,10 +157,10 @@ public final class Configuration {
    * A Value for configuration, setting the value also sets the System property
    * @param <T> the value type
    */
-  public static class ConfigurationValue<T> implements Value<T> {
+  private static class ConfigurationValue<T> implements Value<T> {
 
     private final Event<T> changeEvent = Events.event();
-    protected final String key;
+    private final String key;
     private T value;
 
     /**
@@ -169,13 +169,13 @@ public final class Configuration {
      * @param key the configuration key
      * @param defaultValue the default value
      */
-    public ConfigurationValue(final String key, final T defaultValue) {
+    private ConfigurationValue(final String key, final T defaultValue) {
       this.key = key;
       this.value = parseFromSystemProperties(defaultValue);
     }
 
     @Override
-    public void set(final T value) {
+    public final void set(final T value) {
       this.value = value;
       if (value == null) {
         System.clearProperty(key);
@@ -187,17 +187,21 @@ public final class Configuration {
     }
 
     @Override
-    public T get() {
+    public final T get() {
       return value;
     }
 
     @Override
-    public EventObserver<T> getObserver() {
+    public final EventObserver<T> getObserver() {
       return changeEvent.getObserver();
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
+      return key;
+    }
+
+    protected final String getKey() {
       return key;
     }
 
@@ -207,7 +211,7 @@ public final class Configuration {
      * @return the system properties value or the default value if none is specified
      */
     protected T parseFromSystemProperties(final T defaultValue) {
-      throw new UnsupportedOperationException("Parse from system properties is not supported for " + key);
+      throw new UnsupportedOperationException("Parsing system property is not supported for " + key);
     }
   }
 
@@ -219,7 +223,7 @@ public final class Configuration {
 
     @Override
     protected String parseFromSystemProperties(final String defaultValue) {
-      final String value = System.getProperty(key);
+      final String value = System.getProperty(getKey());
 
       return value == null ? defaultValue : value;
     }
@@ -233,7 +237,7 @@ public final class Configuration {
 
     @Override
     protected Boolean parseFromSystemProperties(final Boolean defaultValue) {
-      final String value = System.getProperty(key);
+      final String value = System.getProperty(getKey());
       if (value == null) {
         return defaultValue;
       }
@@ -250,7 +254,7 @@ public final class Configuration {
 
     @Override
     protected Integer parseFromSystemProperties(final Integer defaultValue) {
-      final String value = System.getProperty(key);
+      final String value = System.getProperty(getKey());
       if (value == null) {
         return defaultValue;
       }

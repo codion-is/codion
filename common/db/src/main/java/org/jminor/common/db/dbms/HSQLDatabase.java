@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db.dbms;
 
-import org.jminor.common.Util;
 import org.jminor.common.db.AbstractDatabase;
 
 import java.util.Objects;
@@ -32,7 +31,7 @@ public final class HSQLDatabase extends AbstractDatabase {
    * @param databaseName the path to the database files
    */
   public HSQLDatabase(final String databaseName) {
-    super(Type.HSQL, DRIVER_CLASS_NAME, databaseName, null, null, true);
+    super(Type.HSQL, DRIVER_CLASS_NAME, Objects.requireNonNull(databaseName, "databaseName"), null, null, true);
   }
 
   /**
@@ -42,7 +41,8 @@ public final class HSQLDatabase extends AbstractDatabase {
    * @param sid the service identifier
    */
   public HSQLDatabase(final String host, final Integer port, final String sid) {
-    super(Type.HSQL, DRIVER_CLASS_NAME, host, port, sid, false);
+    super(Type.HSQL, DRIVER_CLASS_NAME, Objects.requireNonNull(host, "host"), Objects.requireNonNull(port, "port"),
+            Objects.requireNonNull(sid, "sid"), false);
   }
 
   /** {@inheritDoc} */
@@ -62,13 +62,9 @@ public final class HSQLDatabase extends AbstractDatabase {
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
-      Util.require("host", getHost());
       return EMBEDDED_URL_PREFIX + getHost() + (authentication == null ? "" : ";" + authentication);
     }
     else {
-      Util.require("host", getHost());
-      Util.require("port", getPort());
-      Util.require("sid", getSid());
       return NETWORKED_URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication);
     }
   }

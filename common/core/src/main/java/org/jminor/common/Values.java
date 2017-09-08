@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
- * A factory class for Value objects
+ * A factory class for {@link Value} objects
  */
 public final class Values {
 

@@ -3,7 +3,6 @@
  */
 package org.jminor.common.db.dbms;
 
-import org.jminor.common.Util;
 import org.jminor.common.db.AbstractDatabase;
 import org.jminor.common.i18n.Messages;
 
@@ -69,7 +68,8 @@ public final class OracleDatabase extends AbstractDatabase {
    * @param sid the service identifier
    */
   public OracleDatabase(final String host, final Integer port, final String sid) {
-    super(Type.ORACLE, DRIVER_CLASS_NAME, host, port, sid);
+    super(Type.ORACLE, DRIVER_CLASS_NAME, Objects.requireNonNull(host, "host"),
+            Objects.requireNonNull(port, "port"), Objects.requireNonNull(sid, "sid"));
   }
 
   /** {@inheritDoc} */
@@ -87,9 +87,6 @@ public final class OracleDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getURL(final Properties connectionProperties) {
-    Util.require("host", getHost());
-    Util.require("port", getPort());
-    Util.require("sid", getSid());
     return URL_PREFIX + getHost() + ":" + getPort() + ":" + getSid();
   }
 

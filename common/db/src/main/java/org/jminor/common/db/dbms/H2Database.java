@@ -77,7 +77,8 @@ public final class H2Database extends AbstractDatabase {
    * @param databaseName the database name
    */
   public H2Database(final String host, final Integer port, final String databaseName) {
-    super(Type.H2, DRIVER_CLASS_NAME, host, port, databaseName, false);
+    super(Type.H2, DRIVER_CLASS_NAME, Objects.requireNonNull(host, "host"), Objects.requireNonNull(port, "port"),
+            Objects.requireNonNull(databaseName, "databaseName"), false);
     this.embeddedInMemory = false;
   }
 
@@ -99,7 +100,8 @@ public final class H2Database extends AbstractDatabase {
    * @throws RuntimeException in case of an error during initialization
    */
   public H2Database(final String databaseName, final String initScript, final boolean embeddedInMemory) {
-    super(Type.H2, DRIVER_CLASS_NAME, databaseName, null, null, true);
+    super(Type.H2, DRIVER_CLASS_NAME, Objects.requireNonNull(databaseName, "databaseName"),
+            null, null, true);
     initializeDatabase(databaseName, Collections.singletonList(initScript), embeddedInMemory);
     this.embeddedInMemory = embeddedInMemory;
 
@@ -131,7 +133,6 @@ public final class H2Database extends AbstractDatabase {
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
-      Util.require("host", getHost());
       if (connectionProperties != null && (Util.nullOrEmpty((String) connectionProperties.get(USER_PROPERTY)))) {
         connectionProperties.put(USER_PROPERTY, SYSADMIN_USERNAME);
       }
@@ -140,9 +141,6 @@ public final class H2Database extends AbstractDatabase {
       return urlPrefix + getHost() + (authentication == null ? "" : ";" + authentication) + urlAppend;
     }
     else {
-      Util.require("host", getHost());
-      Util.require("port", getPort());
-      Util.require("sid", getSid());
       return URL_PREFIX_SERVER + "//" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication) + urlAppend;
     }
   }

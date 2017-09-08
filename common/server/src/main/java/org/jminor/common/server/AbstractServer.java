@@ -26,7 +26,7 @@ import java.util.UUID;
 /**
  * A default Server implementation.
  * @param <T> the type of remote interface served by this server
- * @param <A> the type of the admin interface this server supplies
+ * @param <A> the type of the admin interface this server provides
  */
 public abstract class AbstractServer<T extends Remote, A extends Remote>
         extends UnicastRemoteObject implements Server<T, A> {
@@ -224,7 +224,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   }
 
   /**
-   * Sets the ConnectionValidator for the given client type id, if {@code connectionValidator} is null
+   * Sets the {@link ConnectionValidator} for the given client type id, if {@code connectionValidator} is null
    * the connection validator is removed.
    * @param clientTypeID the client type ID with which to associate the given connection validator
    * @param connectionValidator the connection validator
