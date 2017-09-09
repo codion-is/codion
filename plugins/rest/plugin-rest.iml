@@ -16,8 +16,9 @@
     <orderEntry type="module" module-name="jminor-framework-db-remote" />
     <orderEntry type="module" module-name="jminor-framework-db-local" scope="TEST" />
     <orderEntry type="module" module-name="jminor-framework-server" scope="TEST" />
+    <orderEntry type="module" module-name="plugin-jetty" />
     <orderEntry type="module" module-name="plugin-json" />
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="file://$MODULE_DIR$/lib/compile" />
@@ -47,9 +48,5 @@
         <jarDirectory url="file://$MODULE_DIR$/lib/test" recursive="false" />
       </library>
     </orderEntry>
-  </component>
-  <component name="sonarModuleSettings">
-    <option name="localAnalysisScripName" value="&lt;PROJECT&gt;" />
-    <option name="serverName" value="&lt;PROJECT&gt;" />
   </component>
 </module>

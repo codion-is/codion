@@ -28,9 +28,8 @@ public final class EmployeeServer extends DefaultEntityConnectionServer {
                         final int registryPort) throws RemoteException {
     super("Employee Server", serverPort, serverAdminPort, registryPort, database,
             false, -1, null, null,
-            null, null, null, null,
-            null, true, 600000,
-            null, new User("scott", "tiger"));
+            null, null, null, true,
+            600000,null, new User("scott", "tiger"));
   }
 
   @Override

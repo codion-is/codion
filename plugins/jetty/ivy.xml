@@ -1,0 +1,44 @@
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+  <info organisation="org.jminor" module="jminor-plugin-jetty"/>
+
+  <configurations defaultconfmapping="compile">
+    <conf name="compile"/>
+    <conf name="runtime" extends="compile"/>
+    <conf name="test" extends="runtime"/>
+    <conf name="sources"/>
+    <conf name="javadoc"/>
+  </configurations>
+
+  <publications>
+    <artifact name="jminor-plugin-jetty" type="jar" ext="jar" conf="compile"/>
+    <artifact name="jminor-plugin-jetty" type="pom" ext="pom" conf="compile"/>
+    <artifact name="jminor-plugin-jetty-sources" type="source" ext="jar" conf="sources" m:classifier="sources"/>
+    <artifact name="jminor-plugin-jetty-javadoc" type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
+  </publications>
+
+  <dependencies defaultconf="compile->default">
+    <dependency org="org.jminor" name="jminor-common-core" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-server" rev="${version}"/>
+
+    <dependency org="org.jminor" name="jminor-framework-db-core" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-framework-db-remote" rev="${version}"/>
+
+    <dependency org="org.eclipse.jetty.toolchain" name="jetty-osgi-servlet-api" rev="3.1.0.M3" conf="compile->master"/>
+    <dependency org="org.eclipse.jetty" name="jetty-server" rev="9.3.2.v20150730" conf="compile->master"/>
+    <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="9.3.2.v20150730" conf="compile->master"/>
+    <dependency org="org.eclipse.jetty" name="jetty-util" rev="9.3.2.v20150730" conf="compile->master"/>
+    <dependency org="org.eclipse.jetty" name="jetty-http" rev="9.3.2.v20150730" conf="runtime->master"/>
+    <dependency org="org.eclipse.jetty" name="jetty-io" rev="9.3.2.v20150730" conf="runtime->master"/>
+    <dependency org="org.eclipse.jetty" name="jetty-security" rev="9.3.2.v20150730" conf="runtime->master"/>
+
+    <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.5" conf="test->master"/>
+    <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.4.1" conf="test->master"/>
+    <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="test->master"/>
+
+    <dependency org="org.jminor" name="jminor-framework-db-local" rev="${version}" conf="test->master"/>
+    <dependency org="org.jminor" name="jminor-framework-server" rev="${version}" conf="test->default"/>
+    <dependency org="com.h2database" name="h2" rev="${h2.version}" conf="test->master"/>
+    <dependency org="junit" name="junit" rev="${junit.version}" conf="test->master"/>
+    <dependency org="org.hamcrest" name="hamcrest-core" rev="${hamcrest-core.version}" conf="test->master"/>
+  </dependencies>
+</ivy-module>

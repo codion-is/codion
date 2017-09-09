@@ -36,6 +36,7 @@
     <path location="plugins/hikari-pool/${build.main}"/>
     <path location="plugins/imagepanel/${build.main}"/>
     <path location="plugins/jasperreports/${build.main}"/>
+    <path location="plugins/jetty/${build.main}"/>
     <path location="plugins/json/${build.main}"/>
     <path location="plugins/log4j-proxy/${build.main}"/>
     <path location="plugins/logback-proxy/${build.main}"/>
@@ -48,6 +49,7 @@
     <fileset dir="plugins/hikari-pool/lib/test"/>
     <fileset dir="plugins/imagepanel/lib/test"/>
     <fileset dir="plugins/jasperreports/lib/test"/>
+    <fileset dir="plugins/jetty/lib/test"/>
     <fileset dir="plugins/json/lib/test"/>
     <fileset dir="plugins/log4j-proxy/lib/test"/>
     <fileset dir="plugins/logback-proxy/lib/test"/>
@@ -128,6 +130,7 @@
       <file file="plugins/jasperreports/${package}/jminor-plugin-jasperreports.jar"/>
       <fileset dir="plugins/jasperreports/lib/runtime" excludes="*jminor*"/>
 
+      <file file="plugins/jetty/${package}/jminor-plugin-jetty.jar"/>
       <file file="plugins/rest/${package}/jminor-plugin-rest.jar"/>
       <fileset dir="plugins/rest/lib/runtime" excludes="*jminor*"/>
 
@@ -311,6 +314,8 @@
       <jvmarg value="-Djminor.server.port=2222"/>
       <jvmarg value="-Djminor.server.admin.port=2223"/>
       <jvmarg value="-Djminor.server.admin.user=scott:tiger"/>
+      <jvmarg value="-Djminor.server.rest.domainId=org.jminor.framework.demos.empdept.domain.EmpDept"/>
+      <jvmarg value="-Djminor.server.auxiliaryServerClassNames=org.jminor.framework.plugins.rest.EntityRESTServer"/>
       <jvmarg value="-Djminor.server.domain.classes=org.jminor.framework.demos.empdept.domain.EmpDept, org.jminor.framework.demos.petstore.domain.Petstore, org.jminor.framework.demos.chinook.domain.Chinook, org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser, org.jminor.framework.demos.world.domain.World"/>
       <jvmarg value="-Djavax.net.ssl.keyStore=${deploy.server.keystore}"/>
       <jvmarg value="-Djava.security.policy=${deploy.server.policy}"/>

@@ -10,6 +10,7 @@ import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.Server;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.plugins.jetty.JettyServer;
 import org.jminor.framework.plugins.json.EntityJSONParser;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
@@ -36,7 +37,6 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.rmi.registry.Registry;
 import java.text.ParseException;
 import java.util.Base64;
@@ -46,9 +46,8 @@ import java.util.List;
 import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-public class EntityRESTServiceTest {
+public class EntityRESTServerTest {
 
   private static final Entities ENTITIES = new TestDomain();
 
@@ -56,7 +55,7 @@ public class EntityRESTServiceTest {
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
-  private static final int WEB_SERVER_PORT_NUMBER = 8089;
+  private static final int REST_SERVER_PORT_NUMBER = 8089;
   private static final User ADMIN_USER = new User("scott", "tiger");
   private static final String BASIC = "Basic ";
   private static final String HTTP = "http";
@@ -67,16 +66,16 @@ public class EntityRESTServiceTest {
   private static EntityConnectionServerAdmin admin;
 
   @BeforeClass
-  public static synchronized void setUp() throws Exception {
+  public static void setUp() throws Exception {
     configure();
     HOSTNAME = Server.SERVER_HOST_NAME.get();
-    REST_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities/";
+    REST_BASEURL = HOSTNAME + ":" + REST_SERVER_PORT_NUMBER + "/entities/";
     server = DefaultEntityConnectionServer.startServer();
     admin = server.getServerAdmin(ADMIN_USER);
   }
 
   @AfterClass
-  public static synchronized void tearDown() throws Exception {
+  public static void tearDown() throws Exception {
     server.shutdown();
     deconfigure();
   }
@@ -223,13 +222,6 @@ public class EntityRESTServiceTest {
     admin.disconnect(clients.iterator().next().getClientID());
   }
 
-  @Test
-  public void testWebServer() throws Exception {
-    try (final InputStream input = new URL("http://localhost:" + WEB_SERVER_PORT_NUMBER + "/ivy.xml").openStream()) {
-      assertTrue(input.read() > 0);
-    }
-  }
-
   private static URIBuilder createURIBuilder() {
     final URIBuilder builder = new URIBuilder();
     builder.setScheme(HTTP).setHost(REST_BASEURL);
@@ -262,9 +254,9 @@ public class EntityRESTServiceTest {
     Server.RMI_SERVER_HOSTNAME.set("localhost");
     System.setProperty("java.security.policy", "resources/security/all_permissions.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
-    DefaultEntityConnectionServer.WEB_SERVER_DOCUMENT_ROOT.set(System.getProperty("user.dir"));
-    DefaultEntityConnectionServer.WEB_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
-    DefaultEntityConnectionServer.WEB_SERVER_DOMAIN_ID.set(TestDomain.class.getName());
+    Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityRESTServer.class.getName());
+    JettyServer.WEB_SERVER_PORT.set(REST_SERVER_PORT_NUMBER);
+    EntityRESTServer.REST_SERVER_DOMAIN_ID.set(TestDomain.class.getName());
   }
 
   private static void deconfigure() {
@@ -277,8 +269,8 @@ public class EntityRESTServiceTest {
     Server.RMI_SERVER_HOSTNAME.set(null);
     System.clearProperty("java.security.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(null);
-    DefaultEntityConnectionServer.WEB_SERVER_DOCUMENT_ROOT.set(null);
-    DefaultEntityConnectionServer.WEB_SERVER_PORT.set(null);
-    DefaultEntityConnectionServer.WEB_SERVER_DOMAIN_ID.set(null);
+    Server.AUXILIARY_SERVER_CLASS_NAMES.set(null);
+    JettyServer.WEB_SERVER_PORT.set(null);
+    EntityRESTServer.REST_SERVER_DOMAIN_ID.set(null);
   }
 }

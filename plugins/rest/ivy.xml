@@ -22,6 +22,7 @@
 
     <dependency org="org.jminor" name="jminor-framework-db-core" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-framework-db-remote" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-plugin-jetty" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-plugin-json" rev="${version}"/>
 
     <dependency org="org.json" name="json" rev="${json.version}"/>

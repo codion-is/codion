@@ -3,20 +3,26 @@
  */
 package org.jminor.framework.plugins.rest;
 
+import org.jminor.common.Configuration;
+import org.jminor.common.Value;
 import org.jminor.framework.domain.Entities;
+import org.jminor.framework.plugins.jetty.JettyServer;
 
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.servlet.ServletContainer;
 
 /**
- * A simple Jetty/Jersey based REST and file server
+ * A simple Jetty/Jersey based REST server
  */
-public final class EntityRESTServer extends Server implements org.jminor.common.server.Server.AuxiliaryServer {
+public final class EntityRESTServer extends JettyServer {
+
+  /**
+   * Specifies the id of the domain to be supplied to the web server<br>.
+   * Value type: String<br>
+   * Default value: null
+   */
+  public static final Value<String> REST_SERVER_DOMAIN_ID = Configuration.stringValue("jminor.server.rest.domainId", null);
 
   /**
    * Instantiates a new EntityRESTServer on the given port.
@@ -25,30 +31,27 @@ public final class EntityRESTServer extends Server implements org.jminor.common.
    * @param documentRoot the document root
    * @param port the port on which to serve
    */
-  public EntityRESTServer(final Entities entities, final org.jminor.common.server.Server connectionServer,
-                          final String documentRoot, final Integer port) {
-    super(port);
+  public EntityRESTServer(final org.jminor.common.server.Server connectionServer) {
+    this(connectionServer, JettyServer.WEB_SERVER_PORT.get());
+  }
+
+  /**
+   * Instantiates a new EntityRESTServer on the given port.
+   * @param entities the domain model entities
+   * @param connectionServer the Server serving the connection requests
+   * @param documentRoot the document root
+   * @param port the port on which to serve
+   */
+  public EntityRESTServer(final org.jminor.common.server.Server connectionServer, final Integer port) {
+    super(connectionServer, JettyServer.DOCUMENT_ROOT.get(), port);
     EntityRESTService.setServer(connectionServer);
-    EntityRESTService.setEntities(entities);
+    EntityRESTService.setEntities(Entities.getDomainEntities(REST_SERVER_DOMAIN_ID.get()));
     final ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
     servletHandler.setContextPath("/");
     final ServletHolder holder = servletHandler.addServlet(ServletContainer.class, "/entities/*");
     holder.setInitOrder(0);
     holder.setInitParameter("jersey.config.server.provider.classnames", EntityRESTService.class.getCanonicalName());
-
-    final ResourceHandler fileHandler = new ResourceHandler();
-    fileHandler.setResourceBase(documentRoot);
-
-    final HandlerList handlers = new HandlerList();
-    handlers.setHandlers(new Handler[] {fileHandler, servletHandler});
-
-    setHandler(handlers);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void startServer() throws Exception {
-    start();
+    addHandler(servletHandler);
   }
 
   /** {@inheritDoc} */
@@ -56,7 +59,6 @@ public final class EntityRESTServer extends Server implements org.jminor.common.
   public void stopServer() throws Exception {
     EntityRESTService.setServer(null);
     EntityRESTService.setEntities(null);
-    stop();
-    join();
+    super.stopServer();
   }
 }

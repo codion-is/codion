@@ -4,6 +4,7 @@
     <subant target="clean" buildpath="hikari-pool"/>
     <subant target="clean" buildpath="imagepanel"/>
     <subant target="clean" buildpath="jasperreports"/>
+    <subant target="clean" buildpath="jetty"/>
     <subant target="clean" buildpath="json"/>
     <subant target="clean" buildpath="log4j-proxy"/>
     <subant target="clean" buildpath="logback-proxy"/>
@@ -16,6 +17,7 @@
     <subant target="clean_lib" buildpath="hikari-pool"/>
     <subant target="clean_lib" buildpath="imagepanel"/>
     <subant target="clean_lib" buildpath="jasperreports"/>
+    <subant target="clean_lib" buildpath="jetty"/>
     <subant target="clean_lib" buildpath="json"/>
     <subant target="clean_lib" buildpath="log4j-proxy"/>
     <subant target="clean_lib" buildpath="logback-proxy"/>
@@ -28,6 +30,7 @@
     <subant target="build" buildpath="hikari-pool"/>
     <subant target="build" buildpath="imagepanel"/>
     <subant target="build" buildpath="jasperreports"/>
+    <subant target="build" buildpath="jetty"/>
     <subant target="build" buildpath="json"/>
     <subant target="build" buildpath="log4j-proxy"/>
     <subant target="build" buildpath="logback-proxy"/>
@@ -40,6 +43,7 @@
     <subant target="javadoc" buildpath="hikari-pool"/>
     <subant target="javadoc" buildpath="imagepanel"/>
     <subant target="javadoc" buildpath="jasperreports"/>
+    <subant target="javadoc" buildpath="jetty"/>
     <subant target="javadoc" buildpath="json"/>
     <subant target="javadoc" buildpath="log4j-proxy"/>
     <subant target="javadoc" buildpath="logback-proxy"/>
@@ -52,6 +56,7 @@
     <subant target="package" buildpath="hikari-pool"/>
     <subant target="package" buildpath="imagepanel"/>
     <subant target="package" buildpath="jasperreports"/>
+    <subant target="package" buildpath="jetty"/>
     <subant target="package" buildpath="json"/>
     <subant target="package" buildpath="log4j-proxy"/>
     <subant target="package" buildpath="logback-proxy"/>
@@ -64,6 +69,7 @@
     <subant target="jdeps" buildpath="hikari-pool"/>
     <subant target="jdeps" buildpath="imagepanel"/>
     <subant target="jdeps" buildpath="jasperreports"/>
+    <subant target="jdeps" buildpath="jetty"/>
     <subant target="jdeps" buildpath="json"/>
     <subant target="jdeps" buildpath="log4j-proxy"/>
     <subant target="jdeps" buildpath="logback-proxy"/>
@@ -76,6 +82,7 @@
     <subant target="deploy" buildpath="hikari-pool"/>
     <subant target="deploy" buildpath="imagepanel"/>
     <subant target="deploy" buildpath="jasperreports"/>
+    <subant target="deploy" buildpath="jetty"/>
     <subant target="deploy" buildpath="json"/>
     <subant target="deploy" buildpath="log4j-proxy"/>
     <subant target="deploy" buildpath="logback-proxy"/>
@@ -88,6 +95,7 @@
     <subant target="install" buildpath="hikari-pool"/>
     <subant target="install" buildpath="imagepanel"/>
     <subant target="install" buildpath="jasperreports"/>
+    <subant target="install" buildpath="jetty"/>
     <subant target="install" buildpath="json"/>
     <subant target="install" buildpath="log4j-proxy"/>
     <subant target="install" buildpath="logback-proxy"/>
@@ -100,6 +108,7 @@
     <subant target="run_unit_tests" buildpath="hikari-pool"/>
     <subant target="run_unit_tests" buildpath="imagepanel"/>
     <subant target="run_unit_tests" buildpath="jasperreports"/>
+    <subant target="run_unit_tests" buildpath="jetty"/>
     <subant target="run_unit_tests" buildpath="json"/>
     <subant target="run_unit_tests" buildpath="log4j-proxy"/>
     <subant target="run_unit_tests" buildpath="logback-proxy"/>

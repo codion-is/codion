@@ -4597,3 +4597,5 @@
   Configuration.ConfigurationValue no longer public
   Util.require() removed, Objects.requireNonNull() used instead
   Util.map() now uses computeIfAbsent()
+  DefaultEntityConnectionServer, web server removed, auxiliary servers added
+  Jetty plugin module added, split from rest plugin

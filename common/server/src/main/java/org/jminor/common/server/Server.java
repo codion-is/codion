@@ -99,6 +99,15 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
   Value<Integer> SERVER_CONNECTION_TIMEOUT = Configuration.integerValue("jminor.server.connectionTimeout",  DEFAULT_SERVER_CONNECTION_TIMEOUT);
 
   /**
+   * A comma separated list of auxiliary servers to run alongside this Server<br>
+   * Those must extend {@link AuxiliaryServer}.<br>
+   * Value type: String<br>
+   * Default value: none
+   * @see AuxiliaryServer
+   */
+  Value<String> AUXILIARY_SERVER_CLASS_NAMES = Configuration.stringValue("jminor.server.auxiliaryServerClassNames", null);
+
+  /**
    * Establishes a connection to this Server
    * @param connectionRequest the information required for establishing a connection
    * @return a remote connection instance
@@ -176,8 +185,7 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
 
   /**
    * Auxiliary servers to be run in conjunction with a Server must implement this interface,
-   * as well as provide a constructor with the following signature: (Server, String, Integer)
-   * for the server, file document root and port respectively
+   * as well as provide a constructor with the following signature: (Server) for the associated server
    */
   interface AuxiliaryServer {
 

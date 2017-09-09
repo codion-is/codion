@@ -42,16 +42,10 @@ public class DefaultEntityConnectionServerTest {
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
-  private static final int WEB_SERVER_PORT_NUMBER = 8089;
-
   private static final User ADMIN_USER = new User("scott", "tiger");
   private static final Map<String, Object> CONNECTION_PARAMS = Collections.singletonMap("jminor.client.domainModelClass", TestDomain.class.getName());
   private static Server<RemoteEntityConnection, EntityConnectionServerAdmin> server;
   private static EntityConnectionServerAdmin admin;
-
-  public static EntityConnectionServerAdmin getServerAdmin() {
-    return admin;
-  }
 
   @BeforeClass
   public static synchronized void setUp() throws Exception {
@@ -156,7 +150,7 @@ public class DefaultEntityConnectionServerTest {
             .orderByAscending(TestDomain.EMP_NAME);
     remoteConnectionTwo.selectMany(selectCondition);
 
-    final Database.Statistics stats = admin.getDatabaseStatistics();
+    admin.getDatabaseStatistics();
 
     final ClientLog log = admin.getClientLog(connectionRequestTwo.getClientID());
 
@@ -299,9 +293,7 @@ public class DefaultEntityConnectionServerTest {
     DefaultEntityConnectionServer.SERVER_LOGIN_PROXY_CLASSES.set("org.jminor.framework.server.TestLoginProxy");
     DefaultEntityConnectionServer.SERVER_CONNECTION_VALIDATOR_CLASSES.set("org.jminor.framework.server.TestConnectionValidator");
     DefaultEntityConnectionServer.SERVER_CLIENT_LOGGING_ENABLED.set(true);
-    DefaultEntityConnectionServer.WEB_SERVER_PORT.set(2224);
-    DefaultEntityConnectionServer.WEB_SERVER_DOCUMENT_ROOT.set(System.getProperty("user.dir"));
-    DefaultEntityConnectionServer.WEB_SERVER_IMPLEMENTATION_CLASS.set(TestWebServer.class.getName());
+    Server.AUXILIARY_SERVER_CLASS_NAMES.set(TestWebServer.class.getName());
     Server.RMI_SERVER_HOSTNAME.set("localhost");
     Server.TRUSTSTORE.set("../../resources/security/JMinorClientTruststore");
     System.setProperty("javax.net.ssl.keyStore", "../../resources/security/JMinorServerKeystore");
@@ -312,7 +304,7 @@ public class DefaultEntityConnectionServerTest {
 
   public static final class TestWebServer implements Server.AuxiliaryServer {
 
-    public TestWebServer(final Entities entities, final Server connectionServer, final String documentRoot, final Integer port) {}
+    public TestWebServer(final Server connectionServer) {}
 
     @Override
     public void startServer() throws Exception {}
