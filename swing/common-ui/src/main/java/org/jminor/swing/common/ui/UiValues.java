@@ -385,7 +385,7 @@ public final class UiValues {
   private static final class DateUIValue extends TextUIValue<Date> {
     private final int sqlType;
 
-    private DateUIValue(final JFormattedTextField textComponent, final Format format, final int sqlType,
+    private DateUIValue(final JFormattedTextField textComponent, final DateFormat format, final int sqlType,
                         final boolean immediateUpdate) {
       super(textComponent, Objects.requireNonNull(format, "format"), immediateUpdate);
       if (sqlType != Types.DATE && sqlType != Types.TIMESTAMP && sqlType != Types.TIME) {

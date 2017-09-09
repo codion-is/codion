@@ -776,7 +776,7 @@ public final class EntityConditions {
     }
 
     /**
-     * @return the number values contained in this condition.
+     * @return the number of values contained in this condition.
      */
     private int getValueCount() {
       if (isNullCondition) {
