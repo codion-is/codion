@@ -157,27 +157,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private final boolean hasDenormalizedProperties;
 
   /**
-   * Defines a new entity type, with the entityID serving as the initial entity caption
-   * as well as the table name.
-   * @param entityID the ID uniquely identifying the entity
-   * @param propertyDefinitions the Property objects this entity should encompass
-   * @throws IllegalArgumentException if no primary key property is specified
-   */
-  DefaultEntityDefinition(final String domainID, final String entityID, final Map<String, Property> properties,
-                          final ResultPacker<Entity> resultPacker,
-                          final Map<String, Set<Property.DerivedProperty>> derivedProperties,
-                          final List<Property.ColumnProperty> primaryKeyProperties,
-                          final List<Property.ForeignKeyProperty> foreignKeyProperties,
-                          final List<Property .TransientProperty> transientProperties,
-                          final List<Property> visibleProperties,
-                          final List<Property.ColumnProperty> columnProperties,
-                          final Map<String, List<Property.DenormalizedProperty>> denormalizedProperties,
-                          final String selectColumnsString, final String groupByClause) {
-    this(domainID, entityID, entityID, properties, resultPacker, derivedProperties, primaryKeyProperties, foreignKeyProperties,
-            transientProperties, visibleProperties, columnProperties, denormalizedProperties, selectColumnsString, groupByClause);
-  }
-
-  /**
    * Defines a new entity type with the entityID serving as the initial entity caption.
    * @param propertyDefinitions the Property objects this entity should encompass
    * @param entityID the ID uniquely identifying the entity

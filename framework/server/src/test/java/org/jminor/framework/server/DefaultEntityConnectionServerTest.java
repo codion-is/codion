@@ -43,7 +43,8 @@ public class DefaultEntityConnectionServerTest {
           System.getProperty("jminor.unittest.password", "tiger"));
 
   private static final User ADMIN_USER = new User("scott", "tiger");
-  private static final Map<String, Object> CONNECTION_PARAMS = Collections.singletonMap("jminor.client.domainModelClass", TestDomain.class.getName());
+  private static final Map<String, Object> CONNECTION_PARAMS =
+          Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, ENTITIES.getDomainID());
   private static Server<RemoteEntityConnection, EntityConnectionServerAdmin> server;
   private static EntityConnectionServerAdmin admin;
 
@@ -117,7 +118,7 @@ public class DefaultEntityConnectionServerTest {
 
     try {
       server.connect(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID",
-              Collections.singletonMap("jminor.client.domainModelClass", EmptyDomain.class.getName())));
+              Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, new EmptyDomain().getDomainID())));
       fail();
     }
     catch (final ServerException.LoginException e) {}

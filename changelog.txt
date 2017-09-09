@@ -4599,3 +4599,9 @@
   Util.map() now uses computeIfAbsent()
   DefaultEntityConnectionServer, web server removed, auxiliary servers added
   Jetty plugin module added, split from rest plugin
+  Entities.getDomainID() added, now uses the simple class name for domain ids
+  EntityRESTService, added domainID parameter to api
+  EmpDeptRESTLoadTest updated accordingly
+  ExceptionUtil removed
+  EntityJSONParser refactored, now uses ThreadLocal date formats
+  JettyServer, logging added

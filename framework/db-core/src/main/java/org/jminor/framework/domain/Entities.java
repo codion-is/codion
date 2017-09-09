@@ -80,9 +80,24 @@ public class Entities {
 
   private static final Map<String, Entities> DOMAIN_ENTITIES = new HashMap<>();
 
+  private final String domainID;
   private final Map<String, Entity.Definition> entityDefinitions = new LinkedHashMap<>();
   private final Map<String, List<Property.ForeignKeyProperty>> foreignKeyReferenceMap = new HashMap<>();
   private final Map<String, DatabaseConnection.Operation> databaseOperations = new HashMap<>();
+
+  /**
+   * Instantiates a Entities instance
+   */
+  public Entities() {
+    this.domainID = getClass().getSimpleName();
+  }
+
+  /**
+   * @return the domain Id
+   */
+  public final String getDomainID() {
+    return domainID;
+  }
 
   /**
    * Creates a new {@link Entity} instance with the given entityID
@@ -153,7 +168,6 @@ public class Entities {
     if (entityDefinitions.containsKey(entityID) && !ALLOW_REDEFINE_ENTITY.get()) {
       throw new IllegalArgumentException("Entity has already been defined: " + entityID + ", for table: " + tableName);
     }
-    final String domainID = getClass().getName();
     final Map<String, Property> propertyMap = initializeProperties(domainID, entityID, properties);
     final List<Property.ColumnProperty> columnProperties = Collections.unmodifiableList(getColumnProperties(propertyMap.values()));
     final List<Property.ColumnProperty> primaryKeyProperties = Collections.unmodifiableList(getPrimaryKeyProperties(propertyMap.values()));
@@ -933,9 +947,10 @@ public class Entities {
   /**
    * Registers this instance for lookup via {@link Entities#getDomainEntities(String)}
    * @return this Entities instance
+   * @see #getDomainID()
    */
   public final Entities registerDomain() {
-    return setDomainEntities(getClass().getName(), this);
+    return setDomainEntities(domainID, this);
   }
 
   /**

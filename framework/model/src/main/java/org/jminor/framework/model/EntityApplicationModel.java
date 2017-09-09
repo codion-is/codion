@@ -20,11 +20,6 @@ import java.util.List;
 public interface EntityApplicationModel<M extends EntityModel> extends Refreshable {
 
   /**
-   * Specifies the name of the client side domain model class. This class is automatically loaded by the client model.
-   */
-  Value<String> CLIENT_DOMAIN_MODEL_CLASS = Configuration.stringValue("jminor.client.domainModelClass", null);
-
-  /**
    * Specifies a string to prepend to the username field in the login dialog<br>
    * Value type: String<br>
    * Default value: [empty string]

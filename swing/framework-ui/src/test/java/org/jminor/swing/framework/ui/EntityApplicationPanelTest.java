@@ -55,7 +55,7 @@ public class EntityApplicationPanelTest {
       }
     };
     panel.initialize(panel.initializeApplicationModel(CONNECTION_PROVIDER));
-    final TreeModel model = panel.getDependencyTreeModel(TestDomain.class.getName());
+    final TreeModel model = panel.getDependencyTreeModel();
     final DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
     final Enumeration tree = root.preorderEnumeration();
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.nextElement();

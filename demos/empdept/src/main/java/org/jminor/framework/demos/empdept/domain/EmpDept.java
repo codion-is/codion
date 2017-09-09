@@ -10,6 +10,7 @@ import org.jminor.framework.domain.Properties;
 import java.awt.Color;
 import java.sql.Types;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -75,6 +76,9 @@ public final class EmpDept extends Entities {
   /**Property identifier for the denormalized department location property*/
   public static final String EMPLOYEE_DEPARTMENT_LOCATION = "location";
 
+  public static final List<Item> JOB_VALUES = Arrays.asList(
+          new Item("ANALYST"), new Item("CLERK"), new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN"));
+
   void employee() {
     /*Defining the entity type T_EMPLOYEE*/
     define(T_EMPLOYEE,
@@ -84,8 +88,7 @@ public final class EmpDept extends Entities {
             Properties.foreignKeyProperty(EMPLOYEE_DEPARTMENT_FK, getString(EMPLOYEE_DEPARTMENT_FK), T_DEPARTMENT,
                     Properties.columnProperty(EMPLOYEE_DEPARTMENT))
                     .setNullable(false),
-            Properties.valueListProperty(EMPLOYEE_JOB, Types.VARCHAR, getString(EMPLOYEE_JOB),
-                    Arrays.asList(new Item("ANALYST"), new Item("CLERK"), new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN"))),
+            Properties.valueListProperty(EMPLOYEE_JOB, Types.VARCHAR, getString(EMPLOYEE_JOB), JOB_VALUES),
             Properties.columnProperty(EMPLOYEE_SALARY, Types.DOUBLE, getString(EMPLOYEE_SALARY))
                     .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
             Properties.columnProperty(EMPLOYEE_COMMISSION, Types.DOUBLE, getString(EMPLOYEE_COMMISSION))

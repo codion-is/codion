@@ -549,19 +549,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return a tree model showing the dependencies between entities via foreign keys
    */
   public TreeModel getDependencyTreeModel() {
-    return getDependencyTreeModel(null);
-  }
-
-  /**
-   * @param domainID the ID of the domain for which to return a dependency tree model
-   * @return a tree model showing the dependencies between entities via foreign keys
-   */
-  public TreeModel getDependencyTreeModel(final String domainID) {
     final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
     final Entities entities = applicationModel.getEntities();
     for (final String entityID : entities.getDefinedEntities()) {
       if (entities.getForeignKeyProperties(entityID).isEmpty() || referencesOnlySelf(entityID)) {
-        root.add(new EntityDependencyTreeNode(domainID, entityID, entities));
+        root.add(new EntityDependencyTreeNode(entities.getDomainID(), entityID, entities));
       }
     }
 

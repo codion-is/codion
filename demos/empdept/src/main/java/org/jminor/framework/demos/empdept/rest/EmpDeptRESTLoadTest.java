@@ -19,6 +19,7 @@ import org.jminor.swing.common.ui.tools.LoadTestPanel;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -36,6 +37,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -69,8 +71,8 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
     setWeight(UpdateLocation.NAME, 2);
     setWeight(Accounting.NAME, 4);
     setWeight(Employees.NAME, 5);
-    setWeight(AddDepartment.NAME, 0);
-    setWeight(AddEmployee.NAME, 0);
+    setWeight(AddDepartment.NAME, 1);
+    setWeight(AddEmployee.NAME, 4);
   }
 
   @Override
@@ -133,16 +135,20 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
       try {
         URIBuilder builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
+                .addParameter("domainID", ENTITIES.getDomainID())
                 .addParameter("entityID", EmpDept.T_DEPARTMENT);
         HttpResponse response = client.execute(new HttpGet(builder.build()));
+        checkResponse(response);
         final String queryResult = getContentStream(response.getEntity());
         final List<Entity> queryEntities = new EntityJSONParser(ENTITIES).deserializeEntities(queryResult);
 
         final Entity entity = queryEntities.get(new Random().nextInt(queryEntities.size()));
         entity.put(EmpDept.DEPARTMENT_LOCATION, TextUtil.createRandomString(10, 13));
         builder = createURIBuilder();
-        builder.addParameter("entities", new EntityJSONParser(ENTITIES).serialize(Collections.singletonList(entity)));
+        builder.addParameter("domainID", ENTITIES.getDomainID())
+                .addParameter("entities", new EntityJSONParser(ENTITIES).serialize(Collections.singletonList(entity)));
         response = client.execute(new HttpPut(builder.build()));
+        checkResponse(response);
         getContentStream(response.getEntity());
       }
       catch (final Exception e) {
@@ -164,12 +170,14 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
       try {
         final URIBuilder builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
+                .addParameter("domainID", ENTITIES.getDomainID())
                 .addParameter("entityID", EmpDept.T_DEPARTMENT)
                 .addParameter("conditionType", Condition.Type.NOT_LIKE.toString())
                 .addParameter("values", "{\"dname\":\"ACCOUNTING\"}");
         final HttpResponse response = client.execute(new HttpGet(builder.build()));
+        checkResponse(response);
         final String queryResult = getContentStream(response.getEntity());
-        final List<Entity> queryEntities = new EntityJSONParser(ENTITIES).deserializeEntities(queryResult);
+        new EntityJSONParser(ENTITIES).deserializeEntities(queryResult);
       }
       catch (final Exception e) {
         e.printStackTrace();
@@ -191,22 +199,26 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
       try {
         URIBuilder builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
+                .addParameter("domainID", ENTITIES.getDomainID())
                 .addParameter("entityID", EmpDept.T_DEPARTMENT)
                 .addParameter("conditionType", Condition.Type.NOT_LIKE.toString())
                 .addParameter("values", "{\"dname\":\"ACCOUNTING\"}");
 
         HttpResponse response = client.execute(new HttpGet(builder.build()));
+        checkResponse(response);
         String queryResult = getContentStream(response.getEntity());
         List<Entity> queryEntities = parser.deserializeEntities(queryResult);
 
         builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
+                .addParameter("domainID", ENTITIES.getDomainID())
                 .addParameter("entityID", EmpDept.T_EMPLOYEE)
                 .addParameter("conditionType", Condition.Type.LIKE.toString())
                 .addParameter("values", "{\"deptno\":\"" + queryEntities.get(new Random().nextInt(queryEntities.size()))
                         .getAsString(EmpDept.DEPARTMENT_ID) + "\"}");
 
         response = client.execute(new HttpGet(builder.build()));
+        checkResponse(response);
         queryResult = getContentStream(response.getEntity());
         queryEntities = parser.deserializeEntities(queryResult);
       }
@@ -226,15 +238,17 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
     @Override
     protected void performScenario(final CloseableHttpClient client) throws ScenarioException {
       try {
-        final int deptNo = new Random().nextInt(500);
+        final int deptNo = new Random().nextInt(5000);
         final Entity propaganda = ENTITIES.entity(EmpDept.T_DEPARTMENT);
         propaganda.put(EmpDept.DEPARTMENT_ID, deptNo);
-        propaganda.put(EmpDept.DEPARTMENT_NAME, "PROPAGANDA");
-        propaganda.put(EmpDept.DEPARTMENT_LOCATION, "Hell");
+        propaganda.put(EmpDept.DEPARTMENT_NAME, TextUtil.createRandomString(4, 8));
+        propaganda.put(EmpDept.DEPARTMENT_LOCATION, TextUtil.createRandomString(5, 10));
 
         final URIBuilder builder = createURIBuilder();
-        builder.addParameter("entities", new EntityJSONParser(ENTITIES).serialize(Collections.singletonList(propaganda)));
+        builder.addParameter("domainID", ENTITIES.getDomainID())
+                .addParameter("entities", new EntityJSONParser(ENTITIES).serialize(Collections.singletonList(propaganda)));
         final HttpResponse response = client.execute(new HttpPost(builder.build()));
+        checkResponse(response);
         EntityUtils.consume(response.getEntity());
       }
       catch (final Exception e) {
@@ -247,6 +261,8 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
   private static final class AddEmployee extends AbstractUsageScenario<CloseableHttpClient> {
     public static final String NAME = "AddEmployee";
 
+    private final Random random = new Random();
+
     private AddEmployee() {
       super(NAME);
     }
@@ -254,19 +270,40 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
     @Override
     protected void performScenario(final CloseableHttpClient client) throws ScenarioException {
       try {
-        final URIBuilder builder = createURIBuilder();
+        URIBuilder builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
+                .addParameter("domainID", ENTITIES.getDomainID())
                 .addParameter("entityID", EmpDept.T_DEPARTMENT);
-        final HttpResponse response = client.execute(new HttpGet(builder.build()));
-
+        HttpResponse response = client.execute(new HttpGet(builder.build()));
+        checkResponse(response);
         final String queryResult = getContentStream(response.getEntity());
         final List<Entity> queryEntities = new EntityJSONParser(ENTITIES).deserializeEntities(queryResult);
-        final Entity department = queryEntities.get(0);;
+        final Entity department = queryEntities.get(random.nextInt(queryEntities.size()));
+        final Entity employee = ENTITIES.entity(EmpDept.T_EMPLOYEE);
+        employee.put(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
+        employee.put(EmpDept.EMPLOYEE_NAME, TextUtil.createRandomString(5, 10));
+        employee.put(EmpDept.EMPLOYEE_JOB, EmpDept.JOB_VALUES.get(random.nextInt(EmpDept.JOB_VALUES.size())).getItem());
+        employee.put(EmpDept.EMPLOYEE_SALARY, (double) random.nextInt(1000) + 1000);
+        employee.put(EmpDept.EMPLOYEE_HIREDATE, new Date());
+        employee.put(EmpDept.EMPLOYEE_COMMISSION, random.nextDouble() * 500);
+
+        builder = createURIBuilder();
+        builder.addParameter("domainID", ENTITIES.getDomainID())
+                .addParameter("entities", new EntityJSONParser(ENTITIES).serialize(Collections.singletonList(employee)));
+        response = client.execute(new HttpPost(builder.build()));
+        checkResponse(response);
+        EntityUtils.consume(response.getEntity());
       }
       catch (final Exception e) {
         e.printStackTrace();
         throw new ScenarioException(e);
       }
+    }
+  }
+
+  private static void checkResponse(final HttpResponse response) throws Exception {
+    if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+      throw new Exception("Error from server: " + getContentStream(response.getEntity()));
     }
   }
 }

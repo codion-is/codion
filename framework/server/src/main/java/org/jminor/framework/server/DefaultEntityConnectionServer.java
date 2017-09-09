@@ -4,6 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.Configuration;
+import org.jminor.common.DaemonThreadFactory;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.TextUtil;
 import org.jminor.common.User;
@@ -26,6 +27,7 @@ import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
 import org.jminor.common.server.Servers;
 import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 
 import org.slf4j.Logger;
@@ -290,11 +292,11 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
                                                                   final RMIClientSocketFactory clientSocketFactory,
                                                                   final RMIServerSocketFactory serverSocketFactory)
           throws RemoteException, DatabaseException {
-    final String domainModelClassName = (String) remoteClient.getParameters().get("jminor.client.domainModelClass");
-    if (domainModelClassName == null) {
-      throw new IllegalArgumentException("'jminor.client.domainModelClass' parameter not specified");
+    final String domainId = (String) remoteClient.getParameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID);
+    if (domainId == null) {
+      throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID + "' parameter not specified");
     }
-    final Entities domainModel = Entities.getDomainEntities(domainModelClassName);
+    final Entities domainModel = Entities.getDomainEntities(domainId);
     if (connectionPool != null) {
       return new DefaultRemoteEntityConnection(domainModel, connectionPool, remoteClient, port, clientLoggingEnabled,
               clientSocketFactory, serverSocketFactory);
@@ -554,7 +556,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
           final AuxiliaryServer server = serverClass.getDeclaredConstructor(Server.class).newInstance(this);
           auxiliaryServers.add(server);
           LOG.info("Server starting auxiliary server: " + serverClass);
-          Executors.newSingleThreadScheduledExecutor().submit((Callable) () ->
+          Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit((Callable) () ->
                   startAuxiliaryServer(server)).get();
         }
       }

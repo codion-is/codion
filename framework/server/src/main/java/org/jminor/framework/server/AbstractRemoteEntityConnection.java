@@ -7,7 +7,6 @@ import org.jminor.common.DaemonThreadFactory;
 import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.Events;
-import org.jminor.common.ExceptionUtil;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.Util;
@@ -317,9 +316,19 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 
         return method.invoke(getConnection(), args);
       }
+      catch (final InvocationTargetException e) {
+        exception = (Exception) e.getCause();
+        LOG.error(exception.getMessage(), exception);
+
+        throw exception;
+      }
+      catch (final ConnectionPoolException.NoConnectionAvailable e) {
+        exception = e;
+        throw exception;
+      }
       catch (final Exception e) {
-        exception = ExceptionUtil.unwrapAndLog(e, InvocationTargetException.class, LOG,
-                Collections.<Class<? extends Exception>>singletonList(ConnectionPoolException.NoConnectionAvailable.class));
+        LOG.error(e.getMessage(), e);
+        exception = e;
         throw exception;
       }
       finally {

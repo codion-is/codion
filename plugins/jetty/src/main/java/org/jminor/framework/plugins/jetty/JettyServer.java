@@ -11,11 +11,15 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple Jetty based file server
  */
 public class JettyServer extends Server implements org.jminor.common.server.Server.AuxiliaryServer {
+
+  private static final Logger LOG = LoggerFactory.getLogger(JettyServer.class);
 
   /**
    * Specifies the document root for file serving<br>.
@@ -50,10 +54,12 @@ public class JettyServer extends Server implements org.jminor.common.server.Serv
    */
   public JettyServer(final org.jminor.common.server.Server connectionServer, final String documentRoot, final Integer port) {
     super(port);
+    LOG.info(getClass().getSimpleName() + " created on port: " + port);
     this.connectionServer = connectionServer;
     this.handlers = new HandlerList();
     setHandler(handlers);
     if (!Util.nullOrEmpty(documentRoot)) {
+      LOG.info("JettyServer serving files from: " + documentRoot);
       final ResourceHandler fileHandler = new ResourceHandler();
       fileHandler.setResourceBase(documentRoot);
       addHandler(fileHandler);
@@ -64,6 +70,7 @@ public class JettyServer extends Server implements org.jminor.common.server.Serv
   @Override
   public final void startServer() throws Exception {
     start();
+    LOG.info(getClass().getSimpleName() + " started");
   }
 
   /** {@inheritDoc} */
@@ -71,6 +78,7 @@ public class JettyServer extends Server implements org.jminor.common.server.Serv
   public void stopServer() throws Exception {
     stop();
     join();
+    LOG.info(getClass().getSimpleName() + " stopped");
   }
 
   /**
@@ -78,6 +86,7 @@ public class JettyServer extends Server implements org.jminor.common.server.Serv
    * @param handler the handler to add
    */
   protected final void addHandler(final Handler handler) {
+    LOG.info(getClass().getSimpleName() + " adding handler: " + handler);
     handlers.addHandler(handler);
   }
 

@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.db.remote;
 
-import org.jminor.common.ExceptionUtil;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.Version;
@@ -35,6 +34,11 @@ import java.util.UUID;
 public final class RemoteEntityConnectionProvider extends AbstractEntityConnectionProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionProvider.class);
+
+  /**
+   * A key for specifying the ID of the domain required by a remote client
+   */
+  public static final String REMOTE_CLIENT_DOMAIN_ID = "jminor.client.domainId";
 
   private final String serverHostName;
   private final UUID clientID;
@@ -135,7 +139,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       LOG.debug("Initializing connection for {}", getUser());
       final RemoteEntityConnection remote = getServer().connect(
               Clients.connectionRequest(getUser(), clientID, clientTypeID, clientVersion,
-                      Collections.singletonMap("jminor.client.domainModelClass", getEntities().getClass().getName())));
+                      Collections.singletonMap(REMOTE_CLIENT_DOMAIN_ID, getEntities().getDomainID())));
 
       return Util.initializeProxy(EntityConnection.class, new RemoteEntityConnectionHandler(remote));
     }
@@ -208,8 +212,14 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       try {
         return remoteMethod.invoke(remote, args);
       }
+      catch (final InvocationTargetException e) {
+        final Exception exception = (Exception) e.getCause();
+        LOG.error(exception.getMessage(), exception);
+        throw exception;
+      }
       catch (final Exception e) {
-        throw ExceptionUtil.unwrapAndLog(e, InvocationTargetException.class, LOG);
+        LOG.error(e.getMessage(), e);
+        throw e;
       }
     }
 

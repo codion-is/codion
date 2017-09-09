@@ -244,6 +244,7 @@ public class EntitiesTest {
     assertTrue(foreignKeyProperties.contains(entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK)));
   }
 
+  @Test
   public void getForeignKeyProperty() {
     assertNotNull(entities.getForeignKeyProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK));
   }
@@ -255,7 +256,7 @@ public class EntitiesTest {
 
   @Test
   public void getDomainEntityIDs() {
-    final Entities domain = Entities.getDomainEntities(TestDomain.class.getName());
+    final Entities domain = Entities.getDomainEntities(new TestDomain().getDomainID());
     assertNotNull(domain.getDefinition(TestDomain.T_DEPARTMENT));
     assertNotNull(domain.getDefinition(TestDomain.T_EMP));
   }

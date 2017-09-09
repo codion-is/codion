@@ -4,7 +4,6 @@
 package org.jminor.framework.db.local;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.ExceptionUtil;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.Util;
@@ -152,8 +151,14 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
         return method.invoke(connection, args);
       }
+      catch (final InvocationTargetException e) {
+        exception = (Exception) e.getCause();
+        LOG.error(exception.getMessage(), exception);
+        throw exception;
+      }
       catch (final Exception e) {
-        exception = ExceptionUtil.unwrapAndLog(e, InvocationTargetException.class, LOG);
+        exception = e;
+        LOG.error(e.getMessage(), e);
         throw exception;
       }
       finally {

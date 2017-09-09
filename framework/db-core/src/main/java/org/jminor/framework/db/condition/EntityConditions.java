@@ -677,7 +677,7 @@ public final class EntityConditions {
     }
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
-      stream.writeObject(entities.getClass().getName());
+      stream.writeObject(entities.getDomainID());
       stream.writeObject(orderBy);
       stream.writeObject(orderByClause);
       stream.writeInt(fetchCount);
@@ -931,7 +931,7 @@ public final class EntityConditions {
       Objects.requireNonNull(entities, "entities");
       Objects.requireNonNull(entityID, "entityID");
       this.entities = entities;
-      this.domainID = entities.getClass().getName();
+      this.domainID = entities.getDomainID();
       this.entityID = entityID;
     }
 
