@@ -23,6 +23,16 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
   int DEFAULT_SERVER_CONNECTION_TIMEOUT = 120000;
 
   /**
+   * The system property key for specifying a ssl keystore
+   */
+  String JAVAX_NET_KEYSTORE = "javax.net.ssl.keyStore";
+
+  /**
+   * The system property key for specifying a ssl keystore password
+   */
+  String JAVAX_NET_KEYSTORE_PASSWORD = "javax.net.ssl.keyStorePassword";
+
+  /**
    * The system property key for specifying a ssl truststore
    */
   String JAVAX_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
@@ -56,6 +66,20 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
    * Default value: Registry.REGISTRY_PORT (1099)
    */
   Value<Integer> REGISTRY_PORT = Configuration.integerValue("jminor.server.registryPort", Registry.REGISTRY_PORT);
+
+  /**
+   * The rmi ssl keystore to use<br>
+   * Value type: String
+   * Default value: null
+   */
+  Value<String> KEYSTORE = Configuration.stringValue(JAVAX_NET_KEYSTORE, null);
+
+  /**
+   * The rmi ssl keystore password to use<br>
+   * Value type: String
+   * Default value: null
+   */
+  Value<String> KEYSTORE_PASSWORD = Configuration.stringValue(JAVAX_NET_KEYSTORE_PASSWORD, null);
 
   /**
    * The rmi ssl truststore to use<br>

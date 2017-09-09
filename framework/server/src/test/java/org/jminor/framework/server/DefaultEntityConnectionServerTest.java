@@ -287,6 +287,7 @@ public class DefaultEntityConnectionServerTest {
     Server.SERVER_HOST_NAME.set("localhost");
     Server.SERVER_ADMIN_PORT.set(2223);
     Server.SERVER_ADMIN_USER.set("scott:tiger");
+    Server.SERVER_CONNECTION_SSL_ENABLED.set(true);
     DefaultEntityConnectionServer.SERVER_CONNECTION_POOLING_INITIAL.set(UNIT_TEST_USER.getUsername() + ":" + UNIT_TEST_USER.getPassword());
     DefaultEntityConnectionServer.SERVER_CLIENT_CONNECTION_TIMEOUT.set("ClientTypeID:10000");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set("org.jminor.framework.server.TestDomain");
@@ -296,8 +297,8 @@ public class DefaultEntityConnectionServerTest {
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(TestWebServer.class.getName());
     Server.RMI_SERVER_HOSTNAME.set("localhost");
     Server.TRUSTSTORE.set("../../resources/security/JMinorClientTruststore");
-    System.setProperty("javax.net.ssl.keyStore", "../../resources/security/JMinorServerKeystore");
-    System.setProperty("javax.net.ssl.keyStorePassword", "crappypass");
+    Server.KEYSTORE.set("../../resources/security/JMinorServerKeystore");
+    Server.KEYSTORE_PASSWORD.set("crappypass");
   }
 
   public static class EmptyDomain extends Entities {}
