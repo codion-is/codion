@@ -80,7 +80,7 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
     try {
       LOG.debug("Initializing connection for {}", getUser());
 
-      final DefaultHttpEntityConnection connection = new DefaultHttpEntityConnection(getEntities(), getUser());
+      final DefaultHttpEntityConnection connection = new DefaultHttpEntityConnection(getEntities(), getUser(), clientId);
 
       return Util.initializeProxy(EntityConnection.class, new HttpEntityConnectionHandler(connection));
     }

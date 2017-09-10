@@ -4,18 +4,25 @@
 package org.jminor.framework.plugins.db.http;
 
 import org.jminor.common.Item;
+import org.jminor.common.db.AbstractFunction;
+import org.jminor.common.db.AbstractProcedure;
+import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Properties;
 
 import java.awt.Color;
 import java.sql.Types;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public final class TestDomain extends Entities {
 
   public TestDomain() {
     department();
     employee();
+    operations();
     registerDomain();
   }
 
@@ -86,5 +93,22 @@ public final class TestDomain extends Entities {
 
               return null;
             });
+  }
+
+  public static final String FUNCTION_ID = "functionId";
+  public static final String PROCEDURE_ID = "procedureId";
+
+  void operations() {
+    addOperation(new AbstractProcedure<EntityConnection>(PROCEDURE_ID, "Test Procedure") {
+      @Override
+      public void execute(final EntityConnection connection, final Object... objects) throws DatabaseException {}
+    });
+
+    addOperation(new AbstractFunction<EntityConnection>(FUNCTION_ID, "Test Function") {
+      @Override
+      public List execute(final EntityConnection connection, final Object... objects) throws DatabaseException {
+        return Collections.emptyList();
+      }
+    });
   }
 }

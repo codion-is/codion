@@ -3,25 +3,21 @@
  */
 package org.jminor.framework.plugins.rest;
 
-import org.jminor.common.Conjunction;
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.db.condition.Condition;
-import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.reports.ReportResult;
+import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.server.Clients;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
-import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.condition.EntityCondition;
+import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
-import org.jminor.framework.plugins.json.EntityJSONParser;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,11 +38,13 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.rmi.RemoteException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -57,69 +55,138 @@ public final class EntityRESTService extends Application {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityRESTService.class);
 
-  public static final String BY_KEY_PATH = "key";
-  public static final String BY_VALUE_PATH = "value";
   public static final String AUTHORIZATION = "Authorization";
-
-  private static final String CLIENT_ID = "clientId";
+  public static final String CLIENT_ID = "clientId";
+  public static final String ERROR_WHILE_SELECTING = "Error while selecting";
 
   private static Server server;
 
   @GET
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @Path(BY_KEY_PATH)
-  public Response select(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                         @QueryParam("domainId") final String domainId,
-                         @QueryParam("keys") final String keys) {
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("procedure")
+  public Response procedure(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
+                            @QueryParam("domainId") final String domainId,
+                            @QueryParam("procedureId") final String procedureId,
+                            @QueryParam("parameters") final String parameters) {
     final RemoteEntityConnection connection = authenticate(request, headers, domainId);
     try {
-      final Entities domain = Entities.getDomainEntities(domainId);
-      final EntityJSONParser parser = new EntityJSONParser(domain);
-      return Response.ok(parser.serialize(connection.selectMany(parser.deserializeKeys(keys)))).build();
+      final List parameterList = Util.base64DecodeAndDeserialize(parameters);
+      connection.executeProcedure(procedureId, parameterList.toArray());
+      return Response.ok().build();
     }
     catch (final Exception e) {
-      LOG.error("Error when selecing by key", e);
+      LOG.error("Error while executing procedure: " + procedureId, e);
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
 
   @GET
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @Path(BY_VALUE_PATH)
-  public Response select(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                         @QueryParam("domainId") final String domainId,
-                         @QueryParam("entityId") final String entityId,
-                         @QueryParam("conditionType") final Condition.Type conditionType,
-                         @QueryParam("values") final String values) {
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("function")
+  public Response function(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
+                           @QueryParam("domainId") final String domainId,
+                           @QueryParam("functionId") final String functionId,
+                           @QueryParam("parameters") final String parameters) {
     final RemoteEntityConnection connection = authenticate(request, headers, domainId);
     try {
-      final Entities domain = Entities.getDomainEntities(domainId);
-      final EntityConditions conditions = new EntityConditions(domain);
-      final EntityJSONParser jsonParser = new EntityJSONParser(domain);
-      final Condition<Property.ColumnProperty> propertyCondition = createPropertyCondition(domain, conditions,
-              jsonParser, entityId, conditionType, values);
-      return Response.ok(new EntityJSONParser(domain).serialize(connection.selectMany(
-              conditions.selectCondition(entityId, propertyCondition)))).build();
+      final List parameterList = Util.base64DecodeAndDeserialize(parameters);
+      final List result = connection.executeFunction(functionId, parameterList.toArray());
+      return Response.ok(Util.serializeAndBase64Encode(result)).build();
     }
     catch (final Exception e) {
-      LOG.error("Error when selecing by value", e);
+      LOG.error("Error while executing function: " + functionId, e);
+      return Response.serverError().entity(e.getMessage()).build();
+    }
+  }
+
+  @GET
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("report")
+  public Response report(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
+                         @QueryParam("domainId") final String domainId,
+                         @QueryParam("reportWrapper") final String reportWrapper) {
+    final RemoteEntityConnection connection = authenticate(request, headers, domainId);
+    try {
+      final List<ReportWrapper> wrapperList = Util.base64DecodeAndDeserialize(reportWrapper);
+      final ReportResult result = connection.fillReport(wrapperList.get(0));
+      return Response.ok(Util.serializeAndBase64Encode(Collections.singletonList(result))).build();
+    }
+    catch (final Exception e) {
+      LOG.error("Error while filling report", e);
+      return Response.serverError().entity(e.getMessage()).build();
+    }
+  }
+
+  @GET
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("dependencies")
+  public Response dependencies(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
+                               @QueryParam("domainId") final String domainId,
+                               @QueryParam("entities") final String entities) {
+    final RemoteEntityConnection connection = authenticate(request, headers, domainId);
+    try {
+      final List<Entity> entityList = Util.base64DecodeAndDeserialize(entities);
+      final Map<String, Collection<Entity>> dependencies = connection.selectDependentEntities(entityList);
+      return Response.ok(Util.serializeAndBase64Encode(Collections.singletonList(dependencies))).build();
+    }
+    catch (final Exception e) {
+      LOG.error(ERROR_WHILE_SELECTING, e);
+      return Response.serverError().entity(e.getMessage()).build();
+    }
+  }
+
+  @GET
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("count")
+  public Response count(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
+                        @QueryParam("domainId") final String domainId,
+                        @QueryParam("condition") final String condition) {
+    final RemoteEntityConnection connection = authenticate(request, headers, domainId);
+    try {
+      final List<EntitySelectCondition> selectConditions = Util.base64DecodeAndDeserialize(condition);
+      return Response.ok(Util.serializeAndBase64Encode(
+              Collections.singletonList(connection.selectRowCount(selectConditions.get(0))))).build();
+    }
+    catch (final Exception e) {
+      LOG.error(ERROR_WHILE_SELECTING, e);
+      return Response.serverError().entity(e.getMessage()).build();
+    }
+  }
+
+  @GET
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  public Response select(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
+                         @QueryParam("domainId") final String domainId,
+                         @QueryParam("condition") final String condition) {
+    final RemoteEntityConnection connection = authenticate(request, headers, domainId);
+    try {
+      if (condition == null) {
+        return Response.ok().build();
+      }
+      final List<EntitySelectCondition> selectConditions = Util.base64DecodeAndDeserialize(condition);
+      return Response.ok(Util.serializeAndBase64Encode(connection.selectMany(selectConditions.get(0)))).build();
+    }
+    catch (final Exception e) {
+      LOG.error(ERROR_WHILE_SELECTING, e);
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
 
   @POST
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
   public Response insert(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
                          @QueryParam("domainId") final String domainId,
                          @QueryParam("entities") final String entities) {
     final RemoteEntityConnection connection = authenticate(request, headers, domainId);
     try {
-      final Entities domain = Entities.getDomainEntities(domainId);
-      final EntityJSONParser parser = new EntityJSONParser(domain);
-      return Response.ok(parser.serializeKeys(connection.insert(parser.deserializeEntities(entities)))).build();
+      return Response.ok(Util.serializeAndBase64Encode(connection.insert(Util.base64DecodeAndDeserialize(entities)))).build();
     }
     catch (final Exception e) {
       LOG.error("Error while inserting", e);
@@ -128,16 +195,14 @@ public final class EntityRESTService extends Application {
   }
 
   @PUT
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
   public Response save(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
                        @QueryParam("domainId") final String domainId,
                        @QueryParam("entities") final String entities) {
     final RemoteEntityConnection connection = authenticate(request, headers, domainId);
     try {
-      final Entities domain = Entities.getDomainEntities(domainId);
-      final EntityJSONParser parser = new EntityJSONParser(domain);
-      final List<Entity> parsedEntities = parser.deserializeEntities(entities);
+      final List<Entity> parsedEntities = Util.base64DecodeAndDeserialize(entities);
       final List<Entity> toInsert = new ArrayList<>(parsedEntities.size());
       final List<Entity> toUpdate = new ArrayList<>(parsedEntities.size());
       for (final Entity entity : parsedEntities) {
@@ -150,7 +215,7 @@ public final class EntityRESTService extends Application {
       }
       final List<Entity> savedEntities = saveEntities(connection, toInsert, toUpdate);
 
-      return Response.ok(parser.serialize(savedEntities)).build();
+      return Response.ok(Util.serializeAndBase64Encode(savedEntities)).build();
     }
     catch (final Exception e) {
       LOG.error("Error while saving", e);
@@ -159,43 +224,19 @@ public final class EntityRESTService extends Application {
   }
 
   @DELETE
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Path(BY_KEY_PATH)
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   public Response delete(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
                          @QueryParam("domainId") final String domainId,
-                         @QueryParam("keys") final String keys) {
+                         @QueryParam("condition") final String condition) {
     final RemoteEntityConnection connection = authenticate(request, headers, domainId);
     try {
-      final Entities domain = Entities.getDomainEntities(domainId);
-      connection.delete(new EntityJSONParser(domain).deserializeKeys(keys));
+      final List<EntityCondition> conditions = Util.base64DecodeAndDeserialize(condition);
+      connection.delete(conditions.get(0));
 
       return Response.ok().build();
     }
     catch (final Exception e) {
-      LOG.error("Error while deleting by key", e);
-      return Response.serverError().entity(e.getMessage()).build();
-    }
-  }
-
-  @DELETE
-  @Path(BY_VALUE_PATH)
-  public Response delete(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                         @QueryParam("domainId") final String domainId,
-                         @QueryParam("entityId") final String entityId,
-                         @QueryParam("conditionType") final Condition.Type conditionType,
-                         @QueryParam("values") final String values) {
-    final RemoteEntityConnection connection = authenticate(request, headers, domainId);
-    try {
-      final Entities domain = Entities.getDomainEntities(domainId);
-      final EntityConditions conditions = new EntityConditions(domain);
-      final EntityJSONParser jsonParser = new EntityJSONParser(domain);
-      connection.delete(conditions.condition(entityId, createPropertyCondition(domain, conditions, jsonParser,
-              entityId, conditionType, values)));
-
-      return Response.ok().build();
-    }
-    catch (final Exception e) {
-      LOG.error("Error while deleting by value", e);
+      LOG.error("Error while deleting", e);
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
@@ -205,29 +246,16 @@ public final class EntityRESTService extends Application {
     if (server == null) {
       throw new IllegalStateException("EntityConnectionServer has not been set for REST service");
     }
-    final HttpSession session = request.getSession();
-    UUID clientId = (UUID) session.getAttribute(CLIENT_ID);
-    if (clientId == null) {
-      clientId = UUID.randomUUID();
-      session.setAttribute(CLIENT_ID, clientId);
-    }
 
-    final List<String> basic = headers.getRequestHeader(AUTHORIZATION);
-    if (Util.nullOrEmpty(basic)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
-
-    String auth = basic.get(0);
-    if (!auth.toLowerCase().startsWith("basic ")) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
-
-    auth = auth.replaceFirst("[B|b]asic ", "");
-    final byte[] decodedBytes = Base64.getDecoder().decode(auth);
-    final User user = User.parseUser(new String(decodedBytes));
+    final UUID clientId = getClientId(request, headers);
+    final User user = getUser(headers);
     try {
-      return (RemoteEntityConnection) server.connect(Clients.connectionRequest(user, clientId, EntityRESTService.class.getName(),
-              Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, domainId)));
+      final Map<String, Object> parameters = new HashMap<>(2);
+      parameters.put(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, domainId);
+      parameters.put(Server.CLIENT_HOST_KEY, request.getRemoteHost());
+
+      return (RemoteEntityConnection) server.connect(Clients.connectionRequest(user, clientId,
+              EntityRESTService.class.getName(), parameters));
     }
     catch (final ServerException.AuthenticationException ae) {
       throw new WebApplicationException(ae, Response.Status.UNAUTHORIZED);
@@ -240,6 +268,40 @@ public final class EntityRESTService extends Application {
 
   static void setServer(final Server server) {
     EntityRESTService.server = server;
+  }
+
+  private static UUID getClientId(final HttpServletRequest request, final HttpHeaders headers) {
+    final List<String> clientIdHeaders = headers.getRequestHeader(CLIENT_ID);
+    if (Util.nullOrEmpty(clientIdHeaders)) {
+      throw new WebApplicationException(CLIENT_ID + " header parameter is missing", Response.Status.UNAUTHORIZED);
+    }
+    final UUID clientId = UUID.fromString(clientIdHeaders.get(0));
+    final HttpSession session = request.getSession();
+    final UUID sessionClientId = (UUID) session.getAttribute(CLIENT_ID);
+    if (sessionClientId == null) {
+      session.setAttribute(CLIENT_ID, clientId);
+    }
+    else if (!clientId.equals(sessionClientId)) {
+      session.invalidate();
+      session.setAttribute(CLIENT_ID, clientId);
+    }
+    return clientId;
+  }
+
+  private static User getUser(final HttpHeaders headers) {
+    final List<String> basic = headers.getRequestHeader(AUTHORIZATION);
+    if (Util.nullOrEmpty(basic)) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+
+    final String basicAuth = basic.get(0);
+    if (!basicAuth.toLowerCase().startsWith("basic ")) {
+      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    }
+
+    final byte[] decodedBytes = Base64.getDecoder().decode(basicAuth.replaceFirst("[B|b]asic ", ""));
+
+    return User.parseUser(new String(decodedBytes));
   }
 
   private static List<Entity> saveEntities(final RemoteEntityConnection connection, final List<Entity> toInsert,
@@ -261,25 +323,5 @@ public final class EntityRESTService extends Application {
       connection.rollbackTransaction();
       throw dbe;
     }
-  }
-
-  private static Condition.Set<Property.ColumnProperty> createPropertyCondition(final Entities domain, final EntityConditions conditions,
-                                                                                final EntityJSONParser jsonParser,
-                                                                                final String entityId,
-                                                                                final Condition.Type conditionType,
-                                                                                final String values) throws JSONException, ParseException {
-    if (conditionType == null || Util.nullOrEmpty(values)) {
-      return null;
-    }
-    final JSONObject jsonObject = new JSONObject(values);
-    final Condition.Set<Property.ColumnProperty> set = Conditions.conditionSet(Conjunction.AND);
-    for (final String propertyId : JSONObject.getNames(jsonObject)) {
-      final Property.ColumnProperty property = domain.getColumnProperty(entityId, propertyId);
-      final Condition<Property.ColumnProperty> condition = conditions.propertyCondition(property,
-              conditionType, jsonParser.parseValue(property, jsonObject));
-      set.add(condition);
-    }
-
-    return set;
   }
 }

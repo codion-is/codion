@@ -88,8 +88,7 @@ public final class EntityConnectionProviders {
         final String serverHostName = Server.SERVER_HOST_NAME.get();
 
         return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.HTTP_CONNECTION_PROVIDER.get()).getConstructor(
-                Entities.class, String.class, User.class, UUID.class)
-                .newInstance(entities, serverHostName, user, clientId);
+                Entities.class, String.class, User.class, UUID.class).newInstance(entities, serverHostName, user, clientId);
       }
 
       throw new IllegalArgumentException("Unknown connection provider type: " + clientConnectionType);

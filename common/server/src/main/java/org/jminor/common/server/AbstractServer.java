@@ -172,10 +172,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
       LOG.debug("No active connection found for client {}, establishing a new connection", connectionRequest);
       final RemoteClient remoteClient = Servers.remoteClient(connectionRequest);
-      try {
-        remoteClient.setClientHost(getClientHost());
-      }
-      catch (final ServerNotActiveException ignored) {/*ignored*/}
+      setClientHost(remoteClient, (String) connectionRequest.getParameters().get(CLIENT_HOST_KEY));
       remoteClientConnection = new RemoteClientConnection<>(remoteClient, doConnect(loginProxy.doLogin(remoteClient)));
       connections.put(remoteClient.getClientId(), remoteClientConnection);
 
@@ -335,6 +332,18 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
     catch (final Exception e) {
       LOG.error("Exception while closing loginProxy for client type: " + loginProxy.getClientTypeId(), e);
+    }
+  }
+
+  private void setClientHost(final RemoteClient remoteClient, final String requestParameterHost) {
+    if (requestParameterHost == null) {
+      try {
+        remoteClient.setClientHost(getClientHost());
+      }
+      catch (final ServerNotActiveException ignored) {/*ignored*/}
+    }
+    else {
+      remoteClient.setClientHost(requestParameterHost);
     }
   }
 

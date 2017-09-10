@@ -6,11 +6,18 @@ package org.jminor.common;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -258,6 +265,65 @@ public class Util {
   @SuppressWarnings({"unchecked"})
   public static <T> T initializeProxy(final Class<T> clazz, final InvocationHandler invocationHandler) {
     return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {clazz}, invocationHandler);
+  }
+
+  /**
+   * Serializes the given objects and base64 encodes the resulting byte array
+   * @param objects the objects to serialize
+   * @param <T> the value type
+   * @return a base64 encoded string
+   * @throws IOException in case of an exeption
+   */
+  public static <T> String serializeAndBase64Encode(final List<T> objects) throws IOException {
+    return Base64.getEncoder().encodeToString(serialize(objects));
+  }
+
+  /**
+   * Base64 decodes the given string and deserializes the resulting byte array
+   * @param base64Binary the base64 encoded binary string
+   * @param <T> the value type
+   * @return deserialized Objects
+   * @throws IOException in case of an exeption
+   */
+  public static <T> List<T> base64DecodeAndDeserialize(final String base64Binary) throws IOException, ClassNotFoundException {
+    return deserialize(Base64.getDecoder().decode(base64Binary));
+  }
+
+  /**
+   * Serializes the given Objects
+   * @param objects the objects
+   * @return a byte array representing the serialized objects
+   * @throws IOException in case of an exception
+   */
+  public static byte[] serialize(final List objects) throws IOException {
+    final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    final ObjectOutputStream outputStream = new ObjectOutputStream(byteArrayOutputStream);
+    for (final Object obj : objects) {
+      outputStream.writeObject(obj);
+    }
+
+    return byteArrayOutputStream.toByteArray();
+  }
+
+  /**
+   * Deserializes the given byte array into a list of T
+   * @param bytes a byte array representing the serialized objects
+   * @param <T> the type of objects represented in the byte array
+   * @return the deserialized objects
+   * @throws IOException in case of an exception
+   * @throws ClassNotFoundException in case the deserialized class is not found
+   */
+  public static <T> List<T> deserialize(final byte[] bytes) throws IOException, ClassNotFoundException {
+    final ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
+    final List<T> result = new ArrayList<>();
+    try {
+      while (true) {
+        result.add((T) inputStream.readObject());
+      }
+    }
+    catch (final EOFException ignored) {/*done*/}
+
+    return result;
   }
 
   /**

@@ -23,19 +23,8 @@
     <dependency org="org.jminor" name="jminor-framework-db-core" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-framework-db-remote" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-plugin-jetty" rev="${version}"/>
-    <dependency org="org.jminor" name="jminor-plugin-json" rev="${version}"/>
-
-    <dependency org="org.json" name="json" rev="${json.version}"/>
 
     <dependency org="org.glassfish.jersey.bundles" name="jaxrs-ri" rev="2.22" conf="compile->master;runtime->default"/>
-
-    <dependency org="org.eclipse.jetty.toolchain" name="jetty-osgi-servlet-api" rev="${jetty.servlet.api.version}" conf="compile->master"/>
-    <dependency org="org.eclipse.jetty" name="jetty-server" rev="${jetty.version}" conf="compile->master"/>
-    <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="${jetty.version}" conf="compile->master"/>
-    <dependency org="org.eclipse.jetty" name="jetty-util" rev="${jetty.version}" conf="compile->master"/>
-    <dependency org="org.eclipse.jetty" name="jetty-http" rev="${jetty.version}" conf="runtime->master"/>
-    <dependency org="org.eclipse.jetty" name="jetty-io" rev="${jetty.version}" conf="runtime->master"/>
-    <dependency org="org.eclipse.jetty" name="jetty-security" rev="${jetty.version}" conf="runtime->master"/>
 
     <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.5" conf="test->master"/>
     <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.4.1" conf="test->master"/>

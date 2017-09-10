@@ -9,6 +9,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.tools.LoadTestModel;
 import org.jminor.common.server.Server;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -25,7 +26,8 @@ import java.util.UUID;
 
 public final class EmpDeptRESTLoadTest extends LoadTestModel<EntityConnectionProvider> {
 
-  private static final Entities ENTITIES = new EmpDept();
+  private static final Entities ENTITIES = new EmpDept().registerDomain();
+  private static final EntityConditions CONDITIONS = new EntityConditions(ENTITIES);
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
@@ -66,14 +68,12 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<EntityConnectionPro
     @Override
     protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final List<Entity> queryEntities = client.getConnection().selectMany(EmpDept.T_DEPARTMENT, null, null);
-
-        final Entity entity = queryEntities.get(new Random().nextInt(queryEntities.size()));
+        final List<Entity> departments = client.getConnection().selectMany(CONDITIONS.selectCondition(EmpDept.T_DEPARTMENT));
+        final Entity entity = departments.get(new Random().nextInt(departments.size()));
         entity.put(EmpDept.DEPARTMENT_LOCATION, TextUtil.createRandomString(10, 13));
         client.getConnection().update(Collections.singletonList(entity));
       }
       catch (final Exception e) {
-        e.printStackTrace();
         throw new ScenarioException(e);
       }
     }
@@ -92,7 +92,6 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<EntityConnectionPro
         client.getConnection().selectMany(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "ACCOUNTING");
       }
       catch (final Exception e) {
-        e.printStackTrace();
         throw new ScenarioException(e);
       }
     }
@@ -108,13 +107,12 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<EntityConnectionPro
     @Override
     protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final List<Entity> departments = client.getConnection().selectMany(EmpDept.T_DEPARTMENT, null, null);
+        final List<Entity> departments = client.getConnection().selectMany(CONDITIONS.selectCondition(EmpDept.T_DEPARTMENT));
 
         client.getConnection().selectMany(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT,
                 departments.get(new Random().nextInt(departments.size())).getAsString(EmpDept.DEPARTMENT_ID));
       }
       catch (final Exception e) {
-        e.printStackTrace();
         throw new ScenarioException(e);
       }
     }
@@ -139,7 +137,6 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<EntityConnectionPro
         client.getConnection().insert(Collections.singletonList(department));
       }
       catch (final Exception e) {
-        e.printStackTrace();
         throw new ScenarioException(e);
       }
     }
@@ -157,7 +154,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<EntityConnectionPro
     @Override
     protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final List<Entity> departments = client.getConnection().selectMany(EmpDept.T_DEPARTMENT, null, null);
+        final List<Entity> departments = client.getConnection().selectMany(CONDITIONS.selectCondition(EmpDept.T_DEPARTMENT));
         final Entity department = departments.get(random.nextInt(departments.size()));
         final Entity employee = ENTITIES.entity(EmpDept.T_EMPLOYEE);
         employee.put(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
@@ -170,7 +167,6 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<EntityConnectionPro
         client.getConnection().insert(Collections.singletonList(employee));
       }
       catch (final Exception e) {
-        e.printStackTrace();
         throw new ScenarioException(e);
       }
     }

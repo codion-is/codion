@@ -5,6 +5,7 @@ package org.jminor.framework.plugins.db.http;
 
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
+import org.jminor.common.Util;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
@@ -15,12 +16,11 @@ import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.server.Server;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityCondition;
+import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.plugins.json.EntityJSONParser;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpRequestInterceptor;
@@ -36,18 +36,20 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.UUID;
 
 /**
  * A Http based {@link EntityConnection} implementation based on EntityRESTService
@@ -56,26 +58,29 @@ public final class DefaultHttpEntityConnection implements HttpEntityConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(HttpEntityConnection.class);
 
+  private static final String BASEURL = Server.SERVER_HOST_NAME.get() + ":" + WEB_SERVER_PORT.get() + "/entities/";
+
   private static final String DOMAIN_ID_PARAM = "domainId";
   private static final String ENTITIES_PARAM = "entities";
-  private static final String KEYS_PARAM = "keys";
-  private static final String ENTITY_ID_PARAM = "entityId";
-  private static final String CONDITION_TYPE_PARAM = "conditionType";
-  private static final String VALUES_PARAM = "values";
-
-  private static final String BY_KEY_PATH = "key";
-  private static final String BY_VALUE_PATH = "value";
+  private static final String CONDITION_PARAM = "condition";
+  private static final String FUNCTION_ID_PARAM = "functionId";
+  private static final String PROCEDURE_ID_PARAM = "procedureId";
+  private static final String PARAMETERS_PARAM = "parameters";
+  private static final String REPORT_WRAPPER_PARAM = "reportWrapper";
+  private static final String CLIENT_ID = "clientId";
   private static final String AUTHORIZATION = "Authorization";
-
+  private static final String CONTENT_TYPE = "Content-Type";
+  private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
   private static final String BASIC = "Basic ";
   private static final String HTTP = "http";
+
   private static final RequestConfig REQUEST_CONFIG = RequestConfig.custom()
           .setSocketTimeout(2000)
           .setConnectTimeout(2000)
           .build();
 
-  private final String baseurl;
   private final Entities domain;
+  private final EntityConditions conditions;
   private final User user;
 
   private CloseableHttpClient httpClient;
@@ -84,21 +89,13 @@ public final class DefaultHttpEntityConnection implements HttpEntityConnection {
    * Instantiates a new {@link DefaultHttpEntityConnection} instance
    * @param domain the domain entities
    * @param user the user
+   * @param clientId the client id
    */
-  public DefaultHttpEntityConnection(final Entities domain, final User user) {
+  public DefaultHttpEntityConnection(final Entities domain, final User user, final UUID clientId) {
     this.domain = domain;
+    this.conditions = new EntityConditions(domain);
     this.user = user;
-    this.baseurl = Server.SERVER_HOST_NAME.get() + ":" + WEB_SERVER_PORT.get() + "/entities/";
-    final HttpRequestInterceptor requestInterceptor = (request, httpContext) -> {
-      request.setHeader(AUTHORIZATION, BASIC +
-              Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
-      request.setHeader("Content-Type", "application/json");
-    };
-    this.httpClient = HttpClientBuilder.create()
-            .setDefaultRequestConfig(REQUEST_CONFIG)
-            .setConnectionManager(new PoolingHttpClientConnectionManager())
-            .addInterceptorFirst(requestInterceptor)
-            .build();
+    this.httpClient = createHttpClient(user, clientId);
   }
 
   /** {@inheritDoc} */
@@ -159,27 +156,62 @@ public final class DefaultHttpEntityConnection implements HttpEntityConnection {
   /** {@inheritDoc} */
   @Override
   public List executeFunction(final String functionId, final Object... arguments) throws IOException, DatabaseException {
-    throw new UnsupportedOperationException();
+    try {
+      final URIBuilder builder = createURIBuilder();
+      builder.setPath("function")
+              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
+              .addParameter(FUNCTION_ID_PARAM, functionId)
+              .addParameter(PARAMETERS_PARAM, Util.serializeAndBase64Encode(
+                      Util.notNull(arguments) ? Arrays.asList(arguments) : Collections.emptyList()));
+      final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
+      checkResponse(response);
+
+      return Util.base64DecodeAndDeserialize(getContentStream(response.getEntity()));
+    }
+    catch (final IOException e) {
+      LOG.error(e.getMessage(), e);
+      throw e;
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public void executeProcedure(final String procedureId, final Object... arguments) throws IOException, DatabaseException {
-    throw new UnsupportedOperationException();
+    try {
+      final URIBuilder builder = createURIBuilder();
+      builder.setPath("procedure")
+              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
+              .addParameter(PROCEDURE_ID_PARAM, procedureId)
+              .addParameter(PARAMETERS_PARAM, Util.serializeAndBase64Encode(
+                      Util.notNull(arguments) ? Arrays.asList(arguments) : Collections.emptyList()));
+      final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
+      checkResponse(response);
+    }
+    catch (final IOException e) {
+      LOG.error(e.getMessage(), e);
+      throw e;
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public List<Entity.Key> insert(final List<Entity> entities) throws IOException, DatabaseException {
     try {
-      final EntityJSONParser parser = new EntityJSONParser(domain);
       final URIBuilder builder = createURIBuilder();
       builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(ENTITIES_PARAM, parser.serialize(entities));
+              .addParameter(ENTITIES_PARAM, Util.serializeAndBase64Encode(entities));
       final HttpResponse response = httpClient.execute(new HttpPost(builder.build()));
       checkResponse(response);
 
-      return parser.deserializeKeys(getContentStream(response.getEntity()));
+      return Util.base64DecodeAndDeserialize(getContentStream(response.getEntity()));
     }
     catch (final IOException e) {
       LOG.error(e.getMessage(), e);
@@ -195,14 +227,13 @@ public final class DefaultHttpEntityConnection implements HttpEntityConnection {
   @Override
   public List<Entity> update(final List<Entity> entities) throws IOException, DatabaseException {
     try {
-      final EntityJSONParser parser = new EntityJSONParser(domain);
       final URIBuilder builder = createURIBuilder();
       builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(ENTITIES_PARAM, parser.serialize(entities));
+              .addParameter(ENTITIES_PARAM, Util.serializeAndBase64Encode(entities));
       final HttpResponse response = httpClient.execute(new HttpPut(builder.build()));
       checkResponse(response);
 
-      return parser.deserializeEntities(getContentStream(response.getEntity()));
+      return Util.base64DecodeAndDeserialize(getContentStream(response.getEntity()));
     }
     catch (final IOException e) {
       LOG.error(e.getMessage(), e);
@@ -217,12 +248,16 @@ public final class DefaultHttpEntityConnection implements HttpEntityConnection {
   /** {@inheritDoc} */
   @Override
   public void delete(final List<Entity.Key> keys) throws IOException, DatabaseException {
+    delete(conditions.condition(keys));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void delete(final EntityCondition condition) throws IOException, DatabaseException {
     try {
-      final EntityJSONParser parser = new EntityJSONParser(domain);
       final URIBuilder builder = createURIBuilder();
-      builder.setPath(BY_KEY_PATH)
-              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(KEYS_PARAM, parser.serializeKeys(keys));
+      builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
+              .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(Collections.singletonList(condition)));
       final HttpResponse response  = httpClient.execute(new HttpDelete(builder.build()));
       checkResponse(response);
     }
@@ -238,12 +273,6 @@ public final class DefaultHttpEntityConnection implements HttpEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public void delete(final EntityCondition condition) throws IOException, DatabaseException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public List<Object> selectValues(final String propertyId, final EntityCondition condition) throws IOException, DatabaseException {
     throw new UnsupportedOperationException();
   }
@@ -251,21 +280,19 @@ public final class DefaultHttpEntityConnection implements HttpEntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws IOException, DatabaseException {
-    final List<Entity> entities = selectMany(entityId, propertyId, value);
-    if (entities.isEmpty()) {
-      throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
-    }
-    if (entities.size() > 1) {
-      throw new DatabaseException(FrameworkMessages.get(FrameworkMessages.MANY_RECORDS_FOUND));
-    }
-
-    return entities.get(0);
+    return selectSingle(conditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, value));
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final Entity.Key key) throws IOException, DatabaseException {
-    final List<Entity> entities = selectMany(Collections.singletonList(key));
+    return selectSingle(conditions.selectCondition(key));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity selectSingle(final EntitySelectCondition condition) throws IOException, DatabaseException {
+    final List<Entity> entities = selectMany(condition);
     if (entities.isEmpty()) {
       throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
     }
@@ -278,67 +305,21 @@ public final class DefaultHttpEntityConnection implements HttpEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public Entity selectSingle(final EntitySelectCondition condition) throws IOException, DatabaseException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public List<Entity> selectMany(final List<Entity.Key> keys) throws IOException, DatabaseException {
-    try {
-      final EntityJSONParser parser = new EntityJSONParser(domain);
-      final URIBuilder builder = createURIBuilder();
-      builder.setPath(BY_KEY_PATH)
-              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(KEYS_PARAM, parser.serializeKeys(keys));
-      final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
-      checkResponse(response);
-
-      return parser.deserializeEntities(getContentStream(response.getEntity()));
-    }
-    catch (final IOException e) {
-      LOG.error(e.getMessage(), e);
-      throw e;
-    }
-    catch (final Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
-    }
+    return selectMany(conditions.selectCondition(keys));
   }
 
   /** {@inheritDoc} */
   @Override
   public List<Entity> selectMany(final EntitySelectCondition condition) throws IOException, DatabaseException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public List<Entity> selectMany(final String entityId, final String propertyId, final Object... values) throws
-          IOException, DatabaseException {
     try {
-      final EntityJSONParser parser = new EntityJSONParser(domain);
       final URIBuilder builder = createURIBuilder();
-      builder.setPath(BY_VALUE_PATH)
-              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(ENTITY_ID_PARAM, entityId)
-              .addParameter(CONDITION_TYPE_PARAM, Condition.Type.LIKE.toString());
-      if (propertyId != null) {
-        final Property property = domain.getProperty(entityId, propertyId);
-
-        final JSONObject jsonObject = new JSONObject();
-        for (final Object value : values) {
-          jsonObject.put(property.getPropertyId(), parser.serializeValue(value, property));
-        }
-        builder.addParameter(VALUES_PARAM, jsonObject.toString());
-      }
-
+      builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
+              .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(Collections.singletonList(condition)));
       final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
       checkResponse(response);
 
-      final String queryResult = getContentStream(response.getEntity());
-
-      return parser.deserializeEntities(queryResult);
+      return Util.base64DecodeAndDeserialize(getContentStream(response.getEntity()));
     }
     catch (final IOException e) {
       LOG.error(e.getMessage(), e);
@@ -352,20 +333,85 @@ public final class DefaultHttpEntityConnection implements HttpEntityConnection {
 
   /** {@inheritDoc} */
   @Override
+  public List<Entity> selectMany(final String entityId, final String propertyId, final Object... values)
+          throws IOException, DatabaseException {
+    return selectMany(conditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, Arrays.asList(values)));
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws IOException, DatabaseException {
-    throw new UnsupportedOperationException();
+    try {
+      final URIBuilder builder = createURIBuilder();
+      builder.setPath("dependencies")
+              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
+              .addParameter(ENTITIES_PARAM, Util.serializeAndBase64Encode(new ArrayList<>(entities)));
+      final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
+      checkResponse(response);
+
+      final List<Map<String, Collection<Entity>>> dependencies =
+              Util.<Map<String, Collection<Entity>>>base64DecodeAndDeserialize(getContentStream(response.getEntity()));
+
+      if (dependencies.isEmpty()) {
+        return Collections.emptyMap();
+      }
+
+      return dependencies.get(0);
+    }
+    catch (final IOException e) {
+      LOG.error(e.getMessage(), e);
+      throw e;
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public int selectRowCount(final EntityCondition condition) throws IOException, DatabaseException {
-    throw new UnsupportedOperationException();
+    try {
+      final URIBuilder builder = createURIBuilder();
+      builder.setPath("count")
+              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
+              .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(Collections.singletonList(condition)));
+      final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
+      checkResponse(response);
+
+      return Util.<Integer>base64DecodeAndDeserialize(getContentStream(response.getEntity())).get(0);
+    }
+    catch (final IOException e) {
+      LOG.error(e.getMessage(), e);
+      throw e;
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public ReportResult fillReport(final ReportWrapper reportWrapper) throws IOException, DatabaseException, ReportException {
-    throw new UnsupportedOperationException();
+    try {
+      final URIBuilder builder = createURIBuilder();
+      builder.setPath("report")
+              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
+              .addParameter(REPORT_WRAPPER_PARAM, Util.serializeAndBase64Encode(Collections.singletonList(reportWrapper)));
+      final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
+      checkResponse(response);
+
+      return Util.<ReportResult>base64DecodeAndDeserialize(getContentStream(response.getEntity())).get(0);
+    }
+    catch (final IOException e) {
+      LOG.error(e.getMessage(), e);
+      throw e;
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
   }
 
   /** {@inheritDoc} */
@@ -387,13 +433,6 @@ public final class DefaultHttpEntityConnection implements HttpEntityConnection {
     throw new UnsupportedOperationException();
   }
 
-  private URIBuilder createURIBuilder() {
-    final URIBuilder builder = new URIBuilder();
-    builder.setScheme(HTTP).setHost(baseurl);
-
-    return builder;
-  }
-
   private static void checkResponse(final HttpResponse response) throws Exception {
     if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
       throw new Exception("Error from server: " + getContentStream(response.getEntity()));
@@ -413,5 +452,23 @@ public final class DefaultHttpEntityConnection implements HttpEntityConnection {
       }
       EntityUtils.consume(entity);
     }
+  }
+
+  private static CloseableHttpClient createHttpClient(final User user, final UUID clientId) {
+    final String authorizationHeader = BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes());
+
+    return HttpClientBuilder.create()
+            .setDefaultRequestConfig(REQUEST_CONFIG)
+            .setConnectionManager(new PoolingHttpClientConnectionManager())
+            .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
+              request.setHeader(CLIENT_ID, clientId.toString());
+              request.setHeader(AUTHORIZATION, authorizationHeader);
+              request.setHeader(CONTENT_TYPE, APPLICATION_OCTET_STREAM);
+            })
+            .build();
+  }
+
+  private static URIBuilder createURIBuilder() {
+    return new URIBuilder().setScheme(HTTP).setHost(BASEURL);
   }
 }
