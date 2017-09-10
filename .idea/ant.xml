@@ -28,6 +28,7 @@
     <buildFile url="file://$PROJECT_DIR$/javafx/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/server-monitor/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/plugins/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/plugins/db-http/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/plugins/hikari-pool/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/plugins/imagepanel/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/plugins/jasperreports/build.xml" />

@@ -204,6 +204,32 @@ public final class EntityJSONParser implements Serializer<Entity> {
   }
 
   /**
+   * Serializes the given property value
+   * @param value the value
+   * @param property the property
+   * @return the value as a string
+   * @throws JSONException in case of an exception
+   */
+  public Object serializeValue(final Object value, final Property property) throws JSONException {
+    if (value == null) {
+      return JSONObject.NULL;
+    }
+    if (property instanceof Property.ForeignKeyProperty) {
+      return toJSONObject((Entity) value);
+    }
+    if (property.isTime()) {
+      final Time time = (Time) value;
+      return jsonTimeFormat.format(new Date(time.getTime()));
+    }
+    if (property.isDateOrTime()) {
+      final Date date = (Date) value;
+      return property.isDate() ? jsonDateFormat.format(date) : jsonTimestampFormat.format(date);
+    }
+
+    return value;
+  }
+
+  /**
    * Deserializes the given JSON string into a list of Entity instances
    * @param jsonString the JSON string to parse
    * @return a List containing the Entity instances represented by the given JSON string
@@ -356,8 +382,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     final JSONObject propertyValues = new JSONObject();
     for (final Property property : entity.keySet()) {
       if (include(property, entity)) {
-        propertyValues.put(property.getPropertyId(),
-                serializeValue(entity.get(property), property));
+        propertyValues.put(property.getPropertyId(), serializeValue(entity.get(property), property));
       }
     }
 
@@ -383,25 +408,6 @@ public final class EntityJSONParser implements Serializer<Entity> {
     }
 
     return originalValues;
-  }
-
-  private Object serializeValue(final Object value, final Property property) throws JSONException {
-    if (value == null) {
-      return JSONObject.NULL;
-    }
-    if (property instanceof Property.ForeignKeyProperty) {
-      return toJSONObject((Entity) value);
-    }
-    if (property.isTime()) {
-      final Time time = (Time) value;
-      return jsonTimeFormat.format(new Date(time.getTime()));
-    }
-    if (property.isDateOrTime()) {
-      final Date date = (Date) value;
-      return property.isDate() ? jsonDateFormat.format(date) : jsonTimestampFormat.format(date);
-    }
-
-    return value;
   }
 
   private boolean include(final Property property, final Entity entity) {

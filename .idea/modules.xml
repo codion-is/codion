@@ -27,6 +27,7 @@
       <module fileurl="file://$PROJECT_DIR$/swing/framework-model/jminor-swing-framework-model.iml" filepath="$PROJECT_DIR$/swing/framework-model/jminor-swing-framework-model.iml" />
       <module fileurl="file://$PROJECT_DIR$/swing/framework-ui/jminor-swing-framework-ui.iml" filepath="$PROJECT_DIR$/swing/framework-ui/jminor-swing-framework-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/swing/framework-ui-test/jminor-swing-framework-ui-test.iml" filepath="$PROJECT_DIR$/swing/framework-ui-test/jminor-swing-framework-ui-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugins/db-http/plugin-db-http.iml" filepath="$PROJECT_DIR$/plugins/db-http/plugin-db-http.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugins/hikari-pool/plugin-hikari-pool.iml" filepath="$PROJECT_DIR$/plugins/hikari-pool/plugin-hikari-pool.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugins/imagepanel/plugin-imagepanel.iml" filepath="$PROJECT_DIR$/plugins/imagepanel/plugin-imagepanel.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugins/jasperreports/plugin-jasperreports.iml" filepath="$PROJECT_DIR$/plugins/jasperreports/plugin-jasperreports.iml" />

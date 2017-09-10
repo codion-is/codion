@@ -753,12 +753,9 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @throws RemoteException in case of an exception
    */
   public static synchronized DefaultEntityConnectionServer startServer() throws RemoteException {
-    final Integer serverPort = Server.SERVER_PORT.get();
-    if (serverPort == null) {
-      throw new IllegalArgumentException("Configuration property '" + Server.SERVER_PORT + "' is required");
-    }
-    final Integer registryPort = Server.REGISTRY_PORT.get();
-    final Integer serverAdminPort = Server.SERVER_ADMIN_PORT.get();
+    final Integer serverPort = Objects.requireNonNull(Server.SERVER_PORT.get(), Server.SERVER_PORT.toString());
+    final Integer registryPort = Objects.requireNonNull(Server.REGISTRY_PORT.get(), Server.REGISTRY_PORT.toString());
+    final Integer serverAdminPort = Objects.requireNonNull(Server.SERVER_ADMIN_PORT.get(), Server.SERVER_ADMIN_PORT.toString());
     final boolean sslEnabled = Server.SERVER_CONNECTION_SSL_ENABLED.get();
     final Integer connectionLimit = SERVER_CONNECTION_LIMIT.get();
     final Database database = Databases.getInstance();

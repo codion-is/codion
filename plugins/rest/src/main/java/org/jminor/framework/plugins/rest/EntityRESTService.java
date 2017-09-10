@@ -98,9 +98,10 @@ public final class EntityRESTService extends Application {
       final Entities domain = Entities.getDomainEntities(domainId);
       final EntityConditions conditions = new EntityConditions(domain);
       final EntityJSONParser jsonParser = new EntityJSONParser(domain);
+      final Condition<Property.ColumnProperty> propertyCondition = createPropertyCondition(domain, conditions,
+              jsonParser, entityId, conditionType, values);
       return Response.ok(new EntityJSONParser(domain).serialize(connection.selectMany(
-              conditions.selectCondition(entityId, createPropertyCondition(domain, conditions, jsonParser, entityId,
-                      conditionType, values))))).build();
+              conditions.selectCondition(entityId, propertyCondition)))).build();
     }
     catch (final Exception e) {
       LOG.error("Error when selecing by value", e);

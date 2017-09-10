@@ -28,14 +28,28 @@ public interface EntityConnectionProvider {
   String CONNECTION_TYPE_REMOTE = "remote";
 
   /**
-   * Specifies whether the client should connect locally or remotely,
-   * accepted values: local, remote<br>
+   * Indicates a http database connection
+   * @see #CLIENT_CONNECTION_TYPE
+   */
+  String CONNECTION_TYPE_HTTP = "http";
+
+  /**
+   * Specifies whether the client should connect locally, remotely or via http,
+   * accepted values: local, remote, http<br>
    * Value type: String<br>
    * Default value: local
    * @see #CONNECTION_TYPE_LOCAL
    * @see #CONNECTION_TYPE_REMOTE
+   * @see #CONNECTION_TYPE_HTTP
    */
   Value<String> CLIENT_CONNECTION_TYPE = Configuration.stringValue("jminor.client.connectionType", CONNECTION_TYPE_LOCAL);
+
+  /**
+   * Specifies the class providing http db connections<br>
+   * Value type: String (the name of a class implementing org.jminor.framework.db.EntityConnectionProvider)<br>
+   * Default value: org.jminor.framework.plugins.db.http.HttpEntityConnectionProvider
+   */
+  Value<String> HTTP_CONNECTION_PROVIDER = Configuration.stringValue("jminor.client.httpConnectionProvider", "org.jminor.framework.plugins.db.http.HttpEntityConnectionProvider");
 
   /**
    * Specifies the class providing remote db connections<br>

@@ -71,7 +71,8 @@ public final class EntityConnectionProviders {
   public static EntityConnectionProvider connectionProvider(final Entities entities, final User user, final String clientTypeId,
                                                             final UUID clientId, final Version clientVersion) {
     try {
-      if (EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get().equals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE)) {
+      final String clientConnectionType = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
+      if (clientConnectionType.equals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE)) {
         final String serverHostName = Server.SERVER_HOST_NAME.get();
         final boolean scheduleValidityCheck = EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get();
 
@@ -79,10 +80,19 @@ public final class EntityConnectionProviders {
                 Entities.class, String.class, User.class, UUID.class, String.class, Version.class, boolean.class)
                 .newInstance(entities, serverHostName, user, clientId, clientTypeId, clientVersion, scheduleValidityCheck);
       }
-      else {
+      else if (clientConnectionType.equals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL)) {
         return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.LOCAL_CONNECTION_PROVIDER.get()).getConstructor(
                 Entities.class, User.class).newInstance(entities, user);
       }
+      else if (clientConnectionType.equals(EntityConnectionProvider.CONNECTION_TYPE_HTTP)) {
+        final String serverHostName = Server.SERVER_HOST_NAME.get();
+
+        return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.HTTP_CONNECTION_PROVIDER.get()).getConstructor(
+                Entities.class, String.class, User.class, UUID.class)
+                .newInstance(entities, serverHostName, user, clientId);
+      }
+
+      throw new IllegalArgumentException("Unknown connection provider type: " + clientConnectionType);
     }
     catch (final InvocationTargetException ite) {
       if (ite.getTargetException() instanceof RuntimeException) {
