@@ -14,11 +14,11 @@ import java.util.Objects;
 public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
   /** Instantiates a new SwingEntityModel with default EntityEditModel and EntityTableModel implementations.
-   * @param entityID the ID of the Entity this DefaultEntityModel represents
+   * @param entityId the ID of the Entity this DefaultEntityModel represents
    * @param connectionProvider a EntityConnectionProvider
    */
-  public SwingEntityModel(final String entityID, final EntityConnectionProvider connectionProvider) {
-    this(new SwingEntityEditModel(Objects.requireNonNull(entityID, "entityID"),
+  public SwingEntityModel(final String entityId, final EntityConnectionProvider connectionProvider) {
+    this(new SwingEntityEditModel(Objects.requireNonNull(entityId, "entityId"),
             Objects.requireNonNull(connectionProvider, "connectionProvider")));
   }
 
@@ -27,7 +27,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
    * @param editModel the edit model
    */
   public SwingEntityModel(final SwingEntityEditModel editModel) {
-    super(editModel, new SwingEntityTableModel(editModel.getEntityID(), editModel.getConnectionProvider()));
+    super(editModel, new SwingEntityTableModel(editModel.getEntityId(), editModel.getConnectionProvider()));
   }
 
   /**
@@ -35,7 +35,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
    * @param tableModel the table model
    */
   public SwingEntityModel(final SwingEntityTableModel tableModel) {
-    this(tableModel.hasEditModel() ? tableModel.getEditModel() : new SwingEntityEditModel(tableModel.getEntityID(),
+    this(tableModel.hasEditModel() ? tableModel.getEditModel() : new SwingEntityEditModel(tableModel.getEntityId(),
             tableModel.getConnectionProvider()), tableModel);
   }
 

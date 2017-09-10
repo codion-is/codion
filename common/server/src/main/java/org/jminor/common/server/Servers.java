@@ -267,13 +267,13 @@ public final class Servers {
     }
 
     @Override
-    public UUID getClientID() {
-      return connectionRequest.getClientID();
+    public UUID getClientId() {
+      return connectionRequest.getClientId();
     }
 
     @Override
-    public String getClientTypeID() {
-      return connectionRequest.getClientTypeID();
+    public String getClientTypeId() {
+      return connectionRequest.getClientTypeId();
     }
 
     @Override
@@ -317,9 +317,9 @@ public final class Servers {
       if (databaseUser != null && !connectionRequest.getUser().equals(databaseUser)) {
         builder.append(" (databaseUser: ").append(databaseUser.toString()).append(")");
       }
-      builder.append("@").append(clientHost).append(" [").append(connectionRequest.getClientTypeID())
+      builder.append("@").append(clientHost).append(" [").append(connectionRequest.getClientTypeId())
               .append(connectionRequest.getClientVersion() != null ? "-" + connectionRequest.getClientVersion() : "")
-              .append("] - ").append(connectionRequest.getClientID().toString());
+              .append("] - ").append(connectionRequest.getClientId().toString());
 
       return builder.toString();
     }

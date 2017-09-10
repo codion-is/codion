@@ -52,8 +52,8 @@ public abstract class EntityEditView extends BorderPane {
 
   private boolean initialized = false;
   private boolean requestFocusAfterInsert = true;
-  private String initialFocusPropertyID;
-  private String afterInsertFocusPropertyID;
+  private String initialFocusPropertyId;
+  private String afterInsertFocusPropertyId;
 
   /**
    * Instantiates a new {@link EntityEditView} instance
@@ -115,25 +115,25 @@ public abstract class EntityEditView extends BorderPane {
    * Displays a dialog for choosing a input component to receive focus
    */
   public void selectInputControl() {
-    final List<Property> properties = getEditModel().getEntities().getProperties(editModel.getEntityID(), controls.keySet());
+    final List<Property> properties = getEditModel().getEntities().getProperties(editModel.getEntityId(), controls.keySet());
     properties.sort((o1, o2) -> o1.toString().compareToIgnoreCase(o2.toString()));
-    controls.get(FXUiUtil.selectValues(properties).get(0).getPropertyID()).requestFocus();
+    controls.get(FXUiUtil.selectValues(properties).get(0).getPropertyId()).requestFocus();
   }
 
   /**
    * Sets the given property as the property which component should receive focus when this edit view is initialized
-   * @param initialFocusPropertyID the propertyID
+   * @param initialFocusPropertyId the propertyId
    */
-  public final void setInitialFocusProperty(final String initialFocusPropertyID) {
-    this.initialFocusPropertyID = initialFocusPropertyID;
+  public final void setInitialFocusProperty(final String initialFocusPropertyId) {
+    this.initialFocusPropertyId = initialFocusPropertyId;
   }
 
   /**
    * Sets the given property as the property which component should receive focus after an insert has been performed
-   * @param afterInsertFocusPropertyID the propertyID
+   * @param afterInsertFocusPropertyId the propertyId
    */
-  public final void setAfterInsertFocusProperty(final String afterInsertFocusPropertyID) {
-    this.afterInsertFocusPropertyID = afterInsertFocusPropertyID;
+  public final void setAfterInsertFocusProperty(final String afterInsertFocusPropertyId) {
+    this.afterInsertFocusPropertyId = afterInsertFocusPropertyId;
   }
 
   /**
@@ -157,101 +157,101 @@ public abstract class EntityEditView extends BorderPane {
 
   /**
    * Creates a {@link EntityLookupField} based on the entities referenced by the given foreign key property
-   * @param foreignKeyPropertyID the foreign key propertyID
+   * @param foreignKeyPropertyId the foreign key propertyId
    * @return a {@link EntityLookupField} based on the given property
    */
-  protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyID) {
-    checkControl(foreignKeyPropertyID);
-    return FXUiUtil.createLookupField(getEditModel().getEntities().getForeignKeyProperty(editModel.getEntityID(), foreignKeyPropertyID), editModel);
+  protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyId) {
+    checkControl(foreignKeyPropertyId);
+    return FXUiUtil.createLookupField(getEditModel().getEntities().getForeignKeyProperty(editModel.getEntityId(), foreignKeyPropertyId), editModel);
   }
 
   /**
    * Creates a {@link ComboBox} based on the entities referenced by the given foreign key property
-   * @param foreignKeyPropertyID the foreign key propertyID
+   * @param foreignKeyPropertyId the foreign key propertyId
    * @return a {@link ComboBox} based on the given property
    */
-  protected final ComboBox<Entity> createForeignKeyComboBox(final String foreignKeyPropertyID) {
-    checkControl(foreignKeyPropertyID);
+  protected final ComboBox<Entity> createForeignKeyComboBox(final String foreignKeyPropertyId) {
+    checkControl(foreignKeyPropertyId);
     final ComboBox<Entity> box = FXUiUtil.createForeignKeyComboBox(getEditModel().getEntities().getForeignKeyProperty(
-            editModel.getEntityID(), foreignKeyPropertyID), editModel);
+            editModel.getEntityId(), foreignKeyPropertyId), editModel);
 
-    controls.put(foreignKeyPropertyID, box);
+    controls.put(foreignKeyPropertyId, box);
 
     return box;
   }
 
   /**
    * Creates a {@link ComboBox} based on the values of the given property
-   * @param propertyID the propertyID
+   * @param propertyId the propertyId
    * @return a {@link ComboBox} for the given property
    */
-  protected final ComboBox<Item> createValueListComboBox(final String propertyID) {
-    checkControl(propertyID);
+  protected final ComboBox<Item> createValueListComboBox(final String propertyId) {
+    checkControl(propertyId);
     final ComboBox<Item> box = FXUiUtil.createValueListComboBox((Property.ValueListProperty)
-            getEditModel().getEntities().getProperty(editModel.getEntityID(), propertyID), editModel);
+            getEditModel().getEntities().getProperty(editModel.getEntityId(), propertyId), editModel);
 
-    controls.put(propertyID, box);
+    controls.put(propertyId, box);
 
     return box;
   }
 
   /**
    * Creates a {@link TextField} for the given property
-   * @param propertyID the propertyID
+   * @param propertyId the propertyId
    * @return a {@link TextField} for the given property
    */
-  protected final TextField createTextField(final String propertyID) {
-    checkControl(propertyID);
-    final Property property = getEditModel().getEntities().getProperty(editModel.getEntityID(), propertyID);
+  protected final TextField createTextField(final String propertyId) {
+    checkControl(propertyId);
+    final Property property = getEditModel().getEntities().getProperty(editModel.getEntityId(), propertyId);
     final TextField textField;
     switch (property.getType()) {
       case Types.INTEGER:
-        textField = FXUiUtil.createIntegerField(getEditModel().getEntities().getProperty(editModel.getEntityID(), propertyID), editModel);
+        textField = FXUiUtil.createIntegerField(getEditModel().getEntities().getProperty(editModel.getEntityId(), propertyId), editModel);
         break;
       case Types.BIGINT:
-        textField = FXUiUtil.createLongField(getEditModel().getEntities().getProperty(editModel.getEntityID(), propertyID), editModel);
+        textField = FXUiUtil.createLongField(getEditModel().getEntities().getProperty(editModel.getEntityId(), propertyId), editModel);
         break;
       case Types.DOUBLE:
-        textField = FXUiUtil.createDoubleField(getEditModel().getEntities().getProperty(editModel.getEntityID(), propertyID), editModel);
+        textField = FXUiUtil.createDoubleField(getEditModel().getEntities().getProperty(editModel.getEntityId(), propertyId), editModel);
         break;
       case Types.VARCHAR:
-        textField = FXUiUtil.createTextField(getEditModel().getEntities().getProperty(editModel.getEntityID(), propertyID), editModel);
+        textField = FXUiUtil.createTextField(getEditModel().getEntities().getProperty(editModel.getEntityId(), propertyId), editModel);
         break;
       default:
-        throw new IllegalArgumentException("Text field type for property: " + propertyID + " is not defined");
+        throw new IllegalArgumentException("Text field type for property: " + propertyId + " is not defined");
     }
 
-    controls.put(propertyID, textField);
+    controls.put(propertyId, textField);
 
     return textField;
   }
 
   /**
    * Creates a {@link DatePicker} for the given property, assuming the property is date based
-   * @param propertyID the propertyID
+   * @param propertyId the propertyId
    * @return a {@link DatePicker} based on the given property
    */
-  protected final DatePicker createDatePicker(final String propertyID) {
-    checkControl(propertyID);
-    final DatePicker picker = FXUiUtil.createDatePicker(getEditModel().getEntities().getProperty(editModel.getEntityID(), propertyID), editModel);
-    controls.put(propertyID, picker);
+  protected final DatePicker createDatePicker(final String propertyId) {
+    checkControl(propertyId);
+    final DatePicker picker = FXUiUtil.createDatePicker(getEditModel().getEntities().getProperty(editModel.getEntityId(), propertyId), editModel);
+    controls.put(propertyId, picker);
 
     return picker;
   }
 
   /**
    * Creates a {@link Label} with caption associated with the given property
-   * @param propertyID the propertyID
+   * @param propertyId the propertyId
    * @return a {@link Label} for the given property
    */
-  protected final Label createLabel(final String propertyID) {
-    return new Label(getEditModel().getEntities().getProperty(getEditModel().getEntityID(), propertyID).getCaption());
+  protected final Label createLabel(final String propertyId) {
+    return new Label(getEditModel().getEntities().getProperty(getEditModel().getEntityId(), propertyId).getCaption());
   }
 
-  protected final BorderPane createPropertyPanel(final String propertyID) {
+  protected final BorderPane createPropertyPanel(final String propertyId) {
     final BorderPane pane = new BorderPane();
-    pane.setTop(createLabel(propertyID));
-    final Control control = controls.get(propertyID);
+    pane.setTop(createLabel(propertyId));
+    final Control control = controls.get(propertyId);
     control.setMaxWidth(Double.MAX_VALUE);
     pane.setCenter(control);
 
@@ -384,9 +384,9 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private void requestInitialFocus(final boolean afterInsert) {
-    final Control focusControl = afterInsert && afterInsertFocusPropertyID != null ?
-            controls.get(afterInsertFocusPropertyID) :
-            controls.get(initialFocusPropertyID);
+    final Control focusControl = afterInsert && afterInsertFocusPropertyId != null ?
+            controls.get(afterInsertFocusPropertyId) :
+            controls.get(initialFocusPropertyId);
     if (focusControl != null && focusControl.isFocusTraversable()) {
       focusControl.requestFocus();
     }
@@ -395,9 +395,9 @@ public abstract class EntityEditView extends BorderPane {
     }
   }
 
-  private void checkControl(final String propertyID) {
-    if (controls.containsKey(propertyID)) {
-      throw new IllegalStateException("Control has already been created for property: " + propertyID);
+  private void checkControl(final String propertyId) {
+    if (controls.containsKey(propertyId)) {
+      throw new IllegalStateException("Control has already been created for property: " + propertyId);
     }
   }
 

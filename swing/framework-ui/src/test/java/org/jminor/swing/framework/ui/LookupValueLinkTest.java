@@ -44,6 +44,6 @@ public class LookupValueLinkTest {
     assertEquals(lookupModel.getSelectedEntities().iterator().next(), department);
     department = model.getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "OPERATIONS");
     lookupModel.setSelectedEntity(department);
-    assertEquals(model.getValue(fkProperty.getPropertyID()), department);
+    assertEquals(model.getValue(fkProperty.getPropertyId()), department);
   }
 }

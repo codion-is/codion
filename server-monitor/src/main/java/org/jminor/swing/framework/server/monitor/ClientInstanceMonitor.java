@@ -67,7 +67,7 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public long getCreationDate() throws RemoteException {
-    final ClientLog log = server.getClientLog(remoteClient.getClientID());
+    final ClientLog log = server.getClientLog(remoteClient.getClientId());
     return log != null ? log.getConnectionCreationDate() : 0;
   }
 
@@ -76,7 +76,7 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public ClientLog getLog() throws RemoteException {
-    return server.getClientLog(remoteClient.getClientID());
+    return server.getClientLog(remoteClient.getClientId());
   }
 
   /**
@@ -84,7 +84,7 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public boolean isLoggingEnabled() throws RemoteException {
-    return server.isLoggingEnabled(remoteClient.getClientID());
+    return server.isLoggingEnabled(remoteClient.getClientId());
   }
 
   /**
@@ -92,7 +92,7 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public void setLoggingEnabled(final boolean status) throws RemoteException {
-    server.setLoggingEnabled(remoteClient.getClientID(), status);
+    server.setLoggingEnabled(remoteClient.getClientId(), status);
     loggingStatusChangedEvent.fire(status);
   }
 
@@ -101,7 +101,7 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public void disconnect() throws RemoteException {
-    server.disconnect(remoteClient.getClientID());
+    server.disconnect(remoteClient.getClientId());
   }
 
   /**
@@ -109,7 +109,7 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public void refreshLogTreeModel() throws RemoteException {
-    final ClientLog log = server.getClientLog(remoteClient.getClientID());
+    final ClientLog log = server.getClientLog(remoteClient.getClientId());
     logRootNode.removeAllChildren();
     if (log != null) {
       for (final MethodLogger.Entry entry : log.getEntries()) {

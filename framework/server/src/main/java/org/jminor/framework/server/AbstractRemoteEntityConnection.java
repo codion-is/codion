@@ -284,7 +284,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       this.database = database;
       this.methodLogger = LocalEntityConnections.createLogger(entities);
       this.methodLogger.setEnabled(loggingEnabled);
-      this.logIdentifier = remoteClient.getUser().getUsername().toLowerCase() +"@" + remoteClient.getClientTypeID();
+      this.logIdentifier = remoteClient.getUser().getUsername().toLowerCase() +"@" + remoteClient.getClientTypeId();
       try {
         if (connectionPool == null) {
           localEntityConnection = LocalEntityConnections.createConnection(entities, this.database, this.remoteClient.getDatabaseUser());
@@ -461,7 +461,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 
     private ClientLog getClientLog() {
       synchronized (methodLogger) {
-        return new ClientLog(remoteClient.getClientID(), creationDate, methodLogger.getEntries());
+        return new ClientLog(remoteClient.getClientId(), creationDate, methodLogger.getEntries());
       }
     }
   }

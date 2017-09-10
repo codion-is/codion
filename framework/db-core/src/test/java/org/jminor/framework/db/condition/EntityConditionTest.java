@@ -28,7 +28,7 @@ public class EntityConditionTest {
             entityConditions.propertyCondition(Properties.columnProperty("stringProperty", Types.VARCHAR), Condition.Type.LIKE, "value"),
             entityConditions.propertyCondition(Properties.columnProperty("intProperty", Types.INTEGER), Condition.Type.LIKE, 666)
     );
-    final EntityCondition condition = entityConditions.condition("entityID", set1);
+    final EntityCondition condition = entityConditions.condition("entityId", set1);
     assertEquals("(stringProperty like ? and intProperty = ?)", condition.getWhereClause());
     assertEquals(set1, condition.getCondition());
     final Condition.Set<Property.ColumnProperty> set2 = Conditions.conditionSet(
@@ -38,6 +38,6 @@ public class EntityConditionTest {
     );
     final Condition.Set<Property.ColumnProperty> set3 = Conditions.conditionSet(Conjunction.OR, set1, set2);
     assertEquals("((stringProperty like ? and intProperty = ?) or (doubleProperty = ? and upper(stringProperty2) like upper(?)))",
-            entityConditions.condition("entityID", set3).getWhereClause());
+            entityConditions.condition("entityId", set3).getWhereClause());
   }
 }

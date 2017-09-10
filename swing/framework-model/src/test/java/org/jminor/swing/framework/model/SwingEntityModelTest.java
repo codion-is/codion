@@ -184,7 +184,7 @@ public final class SwingEntityModelTest
   }
 
   @Test(expected = NullPointerException.class)
-  public void constructorNullEntityID() {
+  public void constructorNullEntityId() {
     new SwingEntityModel(null, CONNECTION_PROVIDER);
   }
 

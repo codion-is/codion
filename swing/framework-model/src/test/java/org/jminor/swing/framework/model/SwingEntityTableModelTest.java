@@ -94,7 +94,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void nonMatchingConditionModelEntityID() {
+  public void nonMatchingConditionModelEntityId() {
     final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER,
             new DefaultPropertyFilterModelProvider(), new DefaultPropertyConditionModelProvider());
     new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER,

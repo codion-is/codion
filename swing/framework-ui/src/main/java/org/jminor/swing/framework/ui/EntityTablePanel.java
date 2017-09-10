@@ -236,7 +236,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityTableConditionPanel conditionPanel) {
     super((FilteredTableModel<Entity, Property>) tableModel, column ->
             new PropertyFilterPanel(tableModel.getConditionModel().getPropertyFilterModel(
-                    ((Property) column.getIdentifier()).getPropertyID()), true, true));
+                    ((Property) column.getIdentifier()).getPropertyId()), true, true));
     getJTable().setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     this.conditionPanel = conditionPanel;
     if (conditionPanel != null) {
@@ -421,7 +421,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    return getClass().getSimpleName() + ": " + getEntityTableModel().getEntityID();
+    return getClass().getSimpleName() + ": " + getEntityTableModel().getEntityId();
   }
 
   /**
@@ -460,9 +460,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
     getEntityTableModel().getConnectionProvider().getEntities().getUpdatableProperties(
-            getEntityTableModel().getEntityID()).forEach(property -> {
+            getEntityTableModel().getEntityId()).forEach(property -> {
       if (includeUpdateSelectedProperty(property)) {
-        final String caption = property.getCaption() == null ? property.getPropertyID() : property.getCaption();
+        final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
         controlSet.add(Controls.control(() -> updateSelectedEntities(property),caption, enabled));
       }
     });
@@ -561,7 +561,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     UiUtil.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), true,
             inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
-      Entities.put(propertyToUpdate.getPropertyID(), inputPanel.getValue(), selectedEntities);
+      Entities.put(propertyToUpdate.getPropertyId(), inputPanel.getValue(), selectedEntities);
       try {
         UiUtil.setWaitCursor(true, this);
         getEntityTableModel().update(selectedEntities);
@@ -753,20 +753,20 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       throw new IllegalArgumentException("Cannot create a static EntityTablePanel without the entities");
     }
 
-    return createStaticEntityTablePanel(entities, connectionProvider, entities.iterator().next().getEntityID());
+    return createStaticEntityTablePanel(entities, connectionProvider, entities.iterator().next().getEntityId());
   }
 
   /**
    * Creates a static read-only entity table panel showing the given entities.
    * @param entities the entities to show in the panel
    * @param connectionProvider the EntityConnectionProvider, in case the returned panel should require one
-   * @param entityID the entityID
+   * @param entityId the entityId
    * @return a static EntityTablePanel showing the given entities
    */
   public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities,
                                                               final EntityConnectionProvider connectionProvider,
-                                                              final String entityID) {
-    final SwingEntityTableModel tableModel = new SwingEntityTableModel(entityID, connectionProvider) {
+                                                              final String entityId) {
+    final SwingEntityTableModel tableModel = new SwingEntityTableModel(entityId, connectionProvider) {
       @Override
       protected List<Entity> performQuery() {
         return new ArrayList<>(entities);
@@ -1152,7 +1152,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @see #updateSelectedEntities(org.jminor.framework.domain.Property)
    */
   protected InputProvider getInputProvider(final Property property, final List<Entity> toUpdate) {
-    final Collection values = Entities.getDistinctValues(property.getPropertyID(), toUpdate);
+    final Collection values = Entities.getDistinctValues(property.getPropertyId(), toUpdate);
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
     if (property instanceof Property.ValueListProperty) {
       return new ValueListInputProvider(currentValue, ((Property.ValueListProperty) property).getValues());
@@ -1196,7 +1196,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   protected final InputProvider createEntityInputProvider(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final Entity currentValue,
                                                           final EntityEditModel editModel) {
-    if (getEntityTableModel().getConnectionProvider().getEntities().isSmallDataset(foreignKeyProperty.getForeignEntityID())) {
+    if (getEntityTableModel().getConnectionProvider().getEntities().isSmallDataset(foreignKeyProperty.getForeignEntityId())) {
       return new EntityComboProvider(((SwingEntityEditModel) editModel).createForeignKeyComboBoxModel(foreignKeyProperty), currentValue);
     }
     else {
@@ -1439,7 +1439,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       final Property property = (Property) tableColumn.getIdentifier();
       final boolean indicateSearch = renderer instanceof EntityTableCellRenderer
               && ((EntityTableCellRenderer) renderer).isIndicateCondition()
-              && tableModel1.getConditionModel().isEnabled(property.getPropertyID());
+              && tableModel1.getConditionModel().isEnabled(property.getPropertyId());
       label.setFont(indicateSearch ? searchFont : defaultFont);
 
       return label;

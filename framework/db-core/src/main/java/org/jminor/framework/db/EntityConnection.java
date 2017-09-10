@@ -115,20 +115,20 @@ public interface EntityConnection {
 
   /**
    * Executes the function with the given id
-   * @param functionID the function ID
+   * @param functionId the function ID
    * @param arguments the arguments, if any
    * @return the function return arguments
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  List executeFunction(final String functionID, final Object... arguments) throws DatabaseException;
+  List executeFunction(final String functionId, final Object... arguments) throws DatabaseException;
 
   /**
    * Executes the procedure with the given id
-   * @param procedureID the procedure ID
+   * @param procedureId the procedure ID
    * @param arguments the arguments, if any
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException;
+  void executeProcedure(final String procedureId, final Object... arguments) throws DatabaseException;
 
   /**
    * Inserts the given entities, returning a list containing the primary keys of the inserted entities
@@ -168,26 +168,26 @@ public interface EntityConnection {
   /**
    * Selects ordered and distinct non-null values of the given property, note that the given property
    * must be of type {@link org.jminor.framework.domain.Property.ColumnProperty}.
-   * @param propertyID the ID of the property
+   * @param propertyId the ID of the property
    * @param condition the condition
    * @return the values in the given column (Property)
    * @throws DatabaseException in case of a db exception
    * @throws IllegalArgumentException in case the given property is not a column based property
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
-  List<Object> selectValues(final String propertyID, final EntityCondition condition) throws DatabaseException;
+  List<Object> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException;
 
   /**
    * Selects a single entity
-   * @param entityID the entity type
-   * @param propertyID the ID of the property to use as a condition
+   * @param entityId the entity type
+   * @param propertyId the ID of the property to use as a condition
    * @param value the value to use in the condition
-   * @return an entity of the type {@code entityID}, having the
-   * value of {@code propertyID} as {@code value}
+   * @return an entity of the type {@code entityId}, having the
+   * value of {@code propertyId} as {@code value}
    * @throws DatabaseException in case of a db exception or if many records were found
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
    */
-  Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DatabaseException;
+  Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException;
 
   /**
    * Selects a single entity by key
@@ -225,17 +225,17 @@ public interface EntityConnection {
   List<Entity> selectMany(final EntitySelectCondition condition) throws DatabaseException;
 
   /**
-   * Selects entities according to one property ({@code propertyID}), using {@code values} as a condition
-   * @param entityID the entity type
-   * @param propertyID the ID of the condition property
+   * Selects entities according to one property ({@code propertyId}), using {@code values} as a condition
+   * @param entityId the entity type
+   * @param propertyId the ID of the condition property
    * @param values the property values to use as condition
-   * @return entities of the type {@code entityID} according to {@code propertyID} and {@code values}
+   * @return entities of the type {@code entityId} according to {@code propertyId} and {@code values}
    * @throws DatabaseException in case of a db exception
    */
-  List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws DatabaseException;
+  List<Entity> selectMany(final String entityId, final String propertyId, final Object... values) throws DatabaseException;
 
   /**
-   * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityIDs
+   * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityIds
    * @param entities the entities for which to retrieve dependencies, must be of same type
    * @return the entities that depend on {@code entities}
    * @throws DatabaseException in case of a db exception
@@ -261,23 +261,23 @@ public interface EntityConnection {
   ReportResult fillReport(final ReportWrapper reportWrapper) throws DatabaseException, ReportException;
 
   /**
-   * Writes {@code blobData} in the blob field specified by the property identified by {@code propertyID}
+   * Writes {@code blobData} in the blob field specified by the property identified by {@code propertyId}
    * for the given entity
    * @param primaryKey the primary key of the entity for which to write the blob field
-   * @param blobPropertyID the ID of the blob property
+   * @param blobPropertyId the ID of the blob property
    * @param blobData the blob data
    * @throws DatabaseException in case of a db exception
    */
-  void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final byte[] blobData) throws DatabaseException;
+  void writeBlob(final Entity.Key primaryKey, final String blobPropertyId, final byte[] blobData) throws DatabaseException;
 
   /**
-   * Reads the blob specified by the property identified by {@code propertyID} from the given entity
+   * Reads the blob specified by the property identified by {@code propertyId} from the given entity
    * @param primaryKey the primary key of the entity
-   * @param blobPropertyID the ID of the blob property
+   * @param blobPropertyId the ID of the blob property
    * @return a byte array containing the blob data
    * @throws DatabaseException in case of a db exception
    */
-  byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException;
+  byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyId) throws DatabaseException;
 
   /**
    * @return the underlying connection

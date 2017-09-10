@@ -135,8 +135,8 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
       try {
         URIBuilder builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
-                .addParameter("domainID", ENTITIES.getDomainID())
-                .addParameter("entityID", EmpDept.T_DEPARTMENT);
+                .addParameter("domainId", ENTITIES.getDomainId())
+                .addParameter("entityId", EmpDept.T_DEPARTMENT);
         HttpResponse response = client.execute(new HttpGet(builder.build()));
         checkResponse(response);
         final String queryResult = getContentStream(response.getEntity());
@@ -145,7 +145,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
         final Entity entity = queryEntities.get(new Random().nextInt(queryEntities.size()));
         entity.put(EmpDept.DEPARTMENT_LOCATION, TextUtil.createRandomString(10, 13));
         builder = createURIBuilder();
-        builder.addParameter("domainID", ENTITIES.getDomainID())
+        builder.addParameter("domainId", ENTITIES.getDomainId())
                 .addParameter("entities", new EntityJSONParser(ENTITIES).serialize(Collections.singletonList(entity)));
         response = client.execute(new HttpPut(builder.build()));
         checkResponse(response);
@@ -170,8 +170,8 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
       try {
         final URIBuilder builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
-                .addParameter("domainID", ENTITIES.getDomainID())
-                .addParameter("entityID", EmpDept.T_DEPARTMENT)
+                .addParameter("domainId", ENTITIES.getDomainId())
+                .addParameter("entityId", EmpDept.T_DEPARTMENT)
                 .addParameter("conditionType", Condition.Type.NOT_LIKE.toString())
                 .addParameter("values", "{\"dname\":\"ACCOUNTING\"}");
         final HttpResponse response = client.execute(new HttpGet(builder.build()));
@@ -199,8 +199,8 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
       try {
         URIBuilder builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
-                .addParameter("domainID", ENTITIES.getDomainID())
-                .addParameter("entityID", EmpDept.T_DEPARTMENT)
+                .addParameter("domainId", ENTITIES.getDomainId())
+                .addParameter("entityId", EmpDept.T_DEPARTMENT)
                 .addParameter("conditionType", Condition.Type.NOT_LIKE.toString())
                 .addParameter("values", "{\"dname\":\"ACCOUNTING\"}");
 
@@ -211,8 +211,8 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
 
         builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
-                .addParameter("domainID", ENTITIES.getDomainID())
-                .addParameter("entityID", EmpDept.T_EMPLOYEE)
+                .addParameter("domainId", ENTITIES.getDomainId())
+                .addParameter("entityId", EmpDept.T_EMPLOYEE)
                 .addParameter("conditionType", Condition.Type.LIKE.toString())
                 .addParameter("values", "{\"deptno\":\"" + queryEntities.get(new Random().nextInt(queryEntities.size()))
                         .getAsString(EmpDept.DEPARTMENT_ID) + "\"}");
@@ -245,7 +245,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
         propaganda.put(EmpDept.DEPARTMENT_LOCATION, TextUtil.createRandomString(5, 10));
 
         final URIBuilder builder = createURIBuilder();
-        builder.addParameter("domainID", ENTITIES.getDomainID())
+        builder.addParameter("domainId", ENTITIES.getDomainId())
                 .addParameter("entities", new EntityJSONParser(ENTITIES).serialize(Collections.singletonList(propaganda)));
         final HttpResponse response = client.execute(new HttpPost(builder.build()));
         checkResponse(response);
@@ -272,8 +272,8 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
       try {
         URIBuilder builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
-                .addParameter("domainID", ENTITIES.getDomainID())
-                .addParameter("entityID", EmpDept.T_DEPARTMENT);
+                .addParameter("domainId", ENTITIES.getDomainId())
+                .addParameter("entityId", EmpDept.T_DEPARTMENT);
         HttpResponse response = client.execute(new HttpGet(builder.build()));
         checkResponse(response);
         final String queryResult = getContentStream(response.getEntity());
@@ -288,7 +288,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
         employee.put(EmpDept.EMPLOYEE_COMMISSION, random.nextDouble() * 500);
 
         builder = createURIBuilder();
-        builder.addParameter("domainID", ENTITIES.getDomainID())
+        builder.addParameter("domainId", ENTITIES.getDomainId())
                 .addParameter("entities", new EntityJSONParser(ENTITIES).serialize(Collections.singletonList(employee)));
         response = client.execute(new HttpPost(builder.build()));
         checkResponse(response);

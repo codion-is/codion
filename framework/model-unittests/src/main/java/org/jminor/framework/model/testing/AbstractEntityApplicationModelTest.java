@@ -76,7 +76,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
   }
 
   @Test
-  public void getEntityModelByEntityID() {
+  public void getEntityModelByEntityId() {
     final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER) {
     };
     final Model departmentModel = createDepartmentModel();

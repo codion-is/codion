@@ -25,14 +25,14 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private static final Entity.KeyGenerator DEFAULT_KEY_GENERATOR = new Entities.DefaultKeyGenerator();
 
   /**
-   * The domainID
+   * The domainId
    */
-  private final String domainID;
+  private final String domainId;
 
   /**
-   * The entityID
+   * The entityId
    */
-  private final String entityID;
+  private final String entityId;
 
   /**
    * The properties
@@ -110,7 +110,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /**
    * The Entity.ToString instance used when toString() is called for this entity type
    */
-  private Entity.ToString stringProvider = entity -> DefaultEntityDefinition.this.entityID + ": " +
+  private Entity.ToString stringProvider = entity -> DefaultEntityDefinition.this.entityId + ": " +
           Objects.requireNonNull(entity, "entity").getKey();
 
   /**
@@ -141,7 +141,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /**
    * The IDs of the properties to use when performing a string based lookup on this entity
    */
-  private Collection<String> searchPropertyIDs;
+  private Collection<String> searchPropertyIds;
 
   /**
    * Links a set of derived property ids to a parent property id
@@ -157,9 +157,9 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private final boolean hasDenormalizedProperties;
 
   /**
-   * Defines a new entity type with the entityID serving as the initial entity caption.
+   * Defines a new entity type with the entityId serving as the initial entity caption.
    * @param propertyDefinitions the Property objects this entity should encompass
-   * @param entityID the ID uniquely identifying the entity
+   * @param entityId the ID uniquely identifying the entity
    * @param tableName the name of the underlying table
    * @param derivedProperties
    * @param primaryKeyProperties
@@ -171,7 +171,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * @param selectColumnsString
    * @throws IllegalArgumentException if no primary key property is specified
    */
-  DefaultEntityDefinition(final String domainID, final String entityID, final String tableName,
+  DefaultEntityDefinition(final String domainId, final String entityId, final String tableName,
                           final Map<String, Property> properties,
                           final ResultPacker<Entity> resultPacker,
                           final Map<String, Set<Property.DerivedProperty>> derivedProperties,
@@ -182,11 +182,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
                           final List<Property.ColumnProperty> columnProperties,
                           final Map<String, List<Property.DenormalizedProperty>> denormalizedProperties,
                           final String selectColumnsString, final String groupByClause) {
-    Util.rejectNullOrEmpty(entityID, "entityID");
+    Util.rejectNullOrEmpty(entityId, "entityId");
     Util.rejectNullOrEmpty(tableName, "tableName");
-    this.domainID = domainID;
-    this.entityID = entityID;
-    this.caption = entityID;
+    this.domainId = domainId;
+    this.entityId = entityId;
+    this.caption = entityId;
     this.tableName = tableName;
     this.properties = properties;
     this.derivedProperties = derivedProperties;
@@ -205,8 +205,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public String getEntityID() {
-    return entityID;
+  public String getEntityId() {
+    return entityId;
   }
 
   /** {@inheritDoc} */
@@ -225,8 +225,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public String getDomainID() {
-    return domainID;
+  public String getDomainId() {
+    return domainId;
   }
 
   /** {@inheritDoc} */
@@ -424,28 +424,28 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Collection<String> getSearchPropertyIDs() {
-    if (searchPropertyIDs == null) {
+  public Collection<String> getSearchPropertyIds() {
+    if (searchPropertyIds == null) {
       return Collections.emptyList();
     }
-    return Collections.unmodifiableCollection(searchPropertyIDs);
+    return Collections.unmodifiableCollection(searchPropertyIds);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Entity.Definition setSearchPropertyIDs(final String... searchPropertyIDs) {
-    Objects.requireNonNull(searchPropertyIDs, "searchPropertyIDs");
-    for (final String propertyID : searchPropertyIDs) {
-      final Property property = properties.get(propertyID);
+  public Entity.Definition setSearchPropertyIds(final String... searchPropertyIds) {
+    Objects.requireNonNull(searchPropertyIds, "searchPropertyIds");
+    for (final String propertyId : searchPropertyIds) {
+      final Property property = properties.get(propertyId);
       if (property == null) {
-        throw new IllegalArgumentException("Property with ID '" + propertyID + "' not found in entity '" + getEntityID() + "'");
+        throw new IllegalArgumentException("Property with ID '" + propertyId + "' not found in entity '" + getEntityId() + "'");
       }
-      if (!properties.get(propertyID).isString()) {
-        throw new IllegalArgumentException("Entity search property must be of type String: " + properties.get(propertyID));
+      if (!properties.get(propertyId).isString()) {
+        throw new IllegalArgumentException("Entity search property must be of type String: " + properties.get(propertyId));
       }
     }
 
-    this.searchPropertyIDs = Arrays.asList(searchPropertyIDs);
+    this.searchPropertyIds = Arrays.asList(searchPropertyIds);
     return this;
   }
 
@@ -469,8 +469,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public boolean hasDerivedProperties(final String propertyID) {
-    return derivedProperties.containsKey(propertyID);
+  public boolean hasDerivedProperties(final String propertyId) {
+    return derivedProperties.containsKey(propertyId);
   }
 
   /** {@inheritDoc} */
@@ -527,20 +527,20 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public boolean hasDenormalizedProperties(final String foreignKeyPropertyID) {
-    return hasDenormalizedProperties && denormalizedProperties.containsKey(foreignKeyPropertyID);
+  public boolean hasDenormalizedProperties(final String foreignKeyPropertyId) {
+    return hasDenormalizedProperties && denormalizedProperties.containsKey(foreignKeyPropertyId);
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<Property.DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyID) {
-    return denormalizedProperties.get(foreignKeyPropertyID);
+  public List<Property.DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyId) {
+    return denormalizedProperties.get(foreignKeyPropertyId);
   }
 
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    return entityID;
+    return entityId;
   }
 
   /** {@inheritDoc} */

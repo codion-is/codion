@@ -23,33 +23,33 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   private final Map<Property.ForeignKeyProperty, FXEntityListModel> foreignKeyListModels = new HashMap<>();
 
   /**
-   * Instantiates a new {@link FXEntityEditModel} based on the entity identified by {@code entityID}.
-   * @param entityID the ID of the entity to base this {@link DefaultEntityEditModel} on
+   * Instantiates a new {@link FXEntityEditModel} based on the entity identified by {@code entityId}.
+   * @param entityId the ID of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
-  public FXEntityEditModel(final String entityID, final EntityConnectionProvider connectionProvider) {
-    super(entityID, connectionProvider);
+  public FXEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider) {
+    super(entityId, connectionProvider);
   }
 
   /**
-   * Instantiates a new {@link FXEntityEditModel} based on the entity identified by {@code entityID}.
-   * @param entityID the ID of the entity to base this {@link FXEntityEditModel} on
+   * Instantiates a new {@link FXEntityEditModel} based on the entity identified by {@code entityId}.
+   * @param entityId the ID of the entity to base this {@link FXEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
-  public FXEntityEditModel(final String entityID, final EntityConnectionProvider connectionProvider,
+  public FXEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider,
                            final Entity.Validator validator) {
-    super(entityID, connectionProvider, validator);
+    super(entityId, connectionProvider, validator);
   }
 
   /**
    * Returns a {@link FXEntityListModel} for the given foreign key property. If one does not exist it is created.
-   * @param foreignKeyPropertyID the ID of the foreign key property
+   * @param foreignKeyPropertyId the ID of the foreign key property
    * @return a {@link FXEntityListModel} based on the entity referenced by the given foreign key property
    * @see #createForeignKeyListModel(Property.ForeignKeyProperty)
    */
-  public final FXEntityListModel getForeignKeyListModel(final String foreignKeyPropertyID) {
-    return getForeignKeyListModel(getEntities().getForeignKeyProperty(getEntityID(), foreignKeyPropertyID));
+  public final FXEntityListModel getForeignKeyListModel(final String foreignKeyPropertyId) {
+    return getForeignKeyListModel(getEntities().getForeignKeyProperty(getEntityId(), foreignKeyPropertyId));
   }
 
   /**
@@ -71,10 +71,10 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   public FXEntityListModel createForeignKeyListModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Objects.requireNonNull(foreignKeyProperty);
-    return new FXEntityListModel(foreignKeyProperty.getForeignEntityID(), getConnectionProvider());
+    return new FXEntityListModel(foreignKeyProperty.getForeignEntityId(), getConnectionProvider());
     //todo
-//    if (getValidator().isNullable(getEntity(), foreignKeyProperty.getPropertyID())) {
-//      model.setNullValue(Entities.createToStringEntity(foreignKeyProperty.getForeignEntityID(),
+//    if (getValidator().isNullable(getEntity(), foreignKeyProperty.getPropertyId())) {
+//      model.setNullValue(Entities.createToStringEntity(foreignKeyProperty.getForeignEntityId(),
 //              (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM)));
 //    }
   }
@@ -91,9 +91,9 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   @Override
   public void addForeignKeyValues(final List<Entity> values) {
-    final Map<String, Collection<Entity>> mapped = Entities.mapToEntityID(values);
+    final Map<String, Collection<Entity>> mapped = Entities.mapToEntityId(values);
     for (final Map.Entry<String, Collection<Entity>> entry : mapped.entrySet()) {
-      for (final Property.ForeignKeyProperty foreignKeyProperty : getEntities().getForeignKeyProperties(getEntityID(), entry.getKey())) {
+      for (final Property.ForeignKeyProperty foreignKeyProperty : getEntities().getForeignKeyProperties(getEntityId(), entry.getKey())) {
         final FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
         if (listModel != null) {
            listModel.addAll(entry.getValue());
@@ -108,9 +108,9 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   @Override
   public void removeForeignKeyValues(final List<Entity> values) {
-    final Map<String, Collection<Entity>> mapped = Entities.mapToEntityID(values);
+    final Map<String, Collection<Entity>> mapped = Entities.mapToEntityId(values);
     for (final Map.Entry<String, Collection<Entity>> entry : mapped.entrySet()) {
-      for (final Property.ForeignKeyProperty foreignKeyProperty : getEntities().getForeignKeyProperties(getEntityID(), entry.getKey())) {
+      for (final Property.ForeignKeyProperty foreignKeyProperty : getEntities().getForeignKeyProperties(getEntityId(), entry.getKey())) {
         final FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
         if (listModel != null) {
           listModel.removeAll(entry.getValue());

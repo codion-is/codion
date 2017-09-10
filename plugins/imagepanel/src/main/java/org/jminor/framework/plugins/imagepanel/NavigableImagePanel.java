@@ -379,23 +379,23 @@ public final class NavigableImagePanel extends JPanel {
 
   /**
    * Creates a Control for viewing an image based on the entity selected in this EntityTablePanel.
-   * The action shows an image found at the path specified by the value of the given propertyID.
+   * The action shows an image found at the path specified by the value of the given propertyId.
    * If no entity is selected or the image path value is null no action is performed.
    * @param tablePanel the EntityTablePanel on which to base the control
-   * @param imagePathPropertyID the ID of the property specifying the image path
+   * @param imagePathPropertyId the ID of the property specifying the image path
    * @return a Control for viewing an image based on the selected entity in a EntityTablePanel
    * @see NavigableImagePanel#showImage(String, JComponent)
    */
-  public static Control getViewImageControl(final EntityTablePanel tablePanel, final String imagePathPropertyID) {
-    Objects.requireNonNull(imagePathPropertyID, "imagePathPropertyID");
+  public static Control getViewImageControl(final EntityTablePanel tablePanel, final String imagePathPropertyId) {
+    Objects.requireNonNull(imagePathPropertyId, "imagePathPropertyId");
     return new Control() {
       @Override
       public void actionPerformed(final ActionEvent e) {
         try {
           if (!tablePanel.getTableModel().getSelectionModel().isSelectionEmpty()) {
             final Entity selected = tablePanel.getTableModel().getSelectionModel().getSelectedItem();
-            if (!selected.isValueNull(imagePathPropertyID)) {
-              showImage(selected.getString(imagePathPropertyID), tablePanel);
+            if (!selected.isValueNull(imagePathPropertyId)) {
+              showImage(selected.getString(imagePathPropertyId), tablePanel);
             }
           }
         }

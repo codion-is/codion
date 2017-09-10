@@ -117,17 +117,17 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   /** {@inheritDoc} */
   @Override
-  public void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException {
+  public void executeProcedure(final String procedureId, final Object... arguments) throws DatabaseException {
     synchronized (connectionProxy) {
-      connectionProxy.executeProcedure(procedureID, arguments);
+      connectionProxy.executeProcedure(procedureId, arguments);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public List executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
+  public List executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.executeFunction(functionID, arguments);
+      return connectionProxy.executeFunction(functionId, arguments);
     }
   }
 
@@ -197,17 +197,17 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   /** {@inheritDoc} */
   @Override
-  public List<Object> selectValues(final String propertyID, final EntityCondition condition) throws DatabaseException {
+  public List<Object> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectValues(propertyID, condition);
+      return connectionProxy.selectValues(propertyId, condition);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DatabaseException {
+  public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectSingle(entityID, propertyID, value);
+      return connectionProxy.selectSingle(entityId, propertyId, value);
     }
   }
 
@@ -245,10 +245,10 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> selectMany(final String entityID, final String propertyID,
+  public List<Entity> selectMany(final String entityId, final String propertyId,
                                  final Object... values) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectMany(entityID, propertyID, values);
+      return connectionProxy.selectMany(entityId, propertyId, values);
     }
   }
 
@@ -262,17 +262,17 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   /** {@inheritDoc} */
   @Override
-  public void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final byte[] blobData) throws DatabaseException {
+  public void writeBlob(final Entity.Key primaryKey, final String blobPropertyId, final byte[] blobData) throws DatabaseException {
     synchronized (connectionProxy) {
-      connectionProxy.writeBlob(primaryKey, blobPropertyID, blobData);
+      connectionProxy.writeBlob(primaryKey, blobPropertyId, blobData);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException {
+  public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyId) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.readBlob(primaryKey, blobPropertyID);
+      return connectionProxy.readBlob(primaryKey, blobPropertyId);
     }
   }
 }

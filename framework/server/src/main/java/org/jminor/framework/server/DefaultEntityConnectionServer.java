@@ -166,7 +166,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @param auxiliaryServerClassNames the class names of auxiliary servers to run alongside this server
    * @param clientLoggingEnabled if true then client logging is enabled on startup
    * @param connectionTimeout the idle connection timeout
-   * @param clientSpecificConnectionTimeouts client specific connection timeouts, mapped to clientTypeID
+   * @param clientSpecificConnectionTimeouts client specific connection timeouts, mapped to clientTypeId
    * @param adminUser the admin user
    * @throws RemoteException in case of a remote exception
    * @throws RuntimeException in case the domain model classes are not found on the classpath or if the
@@ -332,7 +332,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   /**
-   * @param clientSpecificTimeouts the timeout values mapped to each clientTypeID
+   * @param clientSpecificTimeouts the timeout values mapped to each clientTypeId
    */
   final void setClientSpecificConnectionTimeout(final Map<String, Integer> clientSpecificTimeouts) {
     if (clientSpecificTimeouts != null) {
@@ -375,14 +375,14 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   /**
-   * @param clientTypeID the client type ID
+   * @param clientTypeId the client type ID
    * @return all clients of the given type
    */
-  Collection<RemoteClient> getClients(final String clientTypeID) {
+  Collection<RemoteClient> getClients(final String clientTypeId) {
     final Collection<RemoteClient> clients = new ArrayList<>();
     //using the remoteClient from the connection since it contains the correct database user
     for (final AbstractRemoteEntityConnection connection : getConnections().values()) {
-      if (connection.getRemoteClient().getClientTypeID().equals(clientTypeID)) {
+      if (connection.getRemoteClient().getClientTypeId().equals(clientTypeId)) {
         clients.add(connection.getRemoteClient());
       }
     }
@@ -391,13 +391,13 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   /**
-   * @return a map containing all defined entityIDs, with their respective table names as an associated value
+   * @return a map containing all defined entityIds, with their respective table names as an associated value
    */
   Map<String, String> getEntityDefinitions() {
     final Map<String, String> definitions = new HashMap<>();
     for (final Entities entities : Entities.getAllDomains()) {
-      for (final String entityID : entities.getDefinedEntities()) {
-        definitions.put(entityID, entities.getTableName(entityID));
+      for (final String entityId : entities.getDefinedEntities()) {
+        definitions.put(entityId, entities.getTableName(entityId));
       }
     }
 
@@ -420,24 +420,24 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
 
   /**
    * Returns the server log for the connection identified by the given key.
-   * @param clientID the UUID identifying the client
+   * @param clientId the UUID identifying the client
    * @return the server log for the given connection
    */
-  final ClientLog getClientLog(final UUID clientID) {
-    final AbstractRemoteEntityConnection connection = getConnection(clientID);
+  final ClientLog getClientLog(final UUID clientId) {
+    final AbstractRemoteEntityConnection connection = getConnection(clientId);
     if (connection != null) {
       return connection.getClientLog();
     }
 
-    throw new IllegalArgumentException("Client not connected: " + clientID);
+    throw new IllegalArgumentException("Client not connected: " + clientId);
   }
 
   /**
-   * @param clientID the client ID
+   * @param clientId the client ID
    * @return true if logging is enabled for the given client
    */
-  final boolean isLoggingEnabled(final UUID clientID) {
-    final AbstractRemoteEntityConnection connection = getConnection(clientID);
+  final boolean isLoggingEnabled(final UUID clientId) {
+    final AbstractRemoteEntityConnection connection = getConnection(clientId);
     if (connection != null) {
       return connection.isLoggingEnabled();
     }
@@ -446,11 +446,11 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   /**
-   * @param clientID the client ID
+   * @param clientId the client ID
    * @param status the new logging status
    */
-  final void setLoggingEnabled(final UUID clientID, final boolean status) {
-    final AbstractRemoteEntityConnection connection = getConnection(clientID);
+  final void setLoggingEnabled(final UUID clientId, final boolean status) {
+    final AbstractRemoteEntityConnection connection = getConnection(clientId);
     if (connection != null) {
       connection.setLoggingEnabled(status);
     }
@@ -477,13 +477,13 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   final void maintainConnections() throws RemoteException {
     final List<RemoteClient> clients = new ArrayList<>(getConnections().keySet());
     for (final RemoteClient client : clients) {
-      final AbstractRemoteEntityConnection connection = getConnection(client.getClientID());
+      final AbstractRemoteEntityConnection connection = getConnection(client.getClientId());
       if (!connection.isActive()) {
         final boolean valid = connection.isConnected();
-        final boolean timedOut = hasConnectionTimedOut(client.getClientTypeID(), connection);
+        final boolean timedOut = hasConnectionTimedOut(client.getClientTypeId(), connection);
         if (!valid || timedOut) {
           LOG.debug("Removing connection {}, valid: {}, timeout: {}", new Object[] {client, valid, timedOut});
-          disconnect(client.getClientID());
+          disconnect(client.getClientId());
         }
       }
     }
@@ -497,15 +497,15 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   final void removeConnections(final boolean timedOutOnly) throws RemoteException {
     final List<RemoteClient> clients = new ArrayList<>(getConnections().keySet());
     for (final RemoteClient client : clients) {
-      final AbstractRemoteEntityConnection connection = getConnection(client.getClientID());
+      final AbstractRemoteEntityConnection connection = getConnection(client.getClientId());
       if (timedOutOnly) {
         final boolean active = connection.isActive();
-        if (!active && hasConnectionTimedOut(client.getClientTypeID(), connection)) {
-          disconnect(client.getClientID());
+        if (!active && hasConnectionTimedOut(client.getClientTypeId(), connection)) {
+          disconnect(client.getClientId());
         }
       }
       else {
-        disconnect(client.getClientID());
+        disconnect(client.getClientId());
       }
     }
   }
@@ -530,7 +530,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
 
   private void disconnectQuietly(final AbstractRemoteEntityConnection connection) {
     try {
-      disconnect(connection.getRemoteClient().getClientID());
+      disconnect(connection.getRemoteClient().getClientId());
     }
     catch (final RemoteException ex) {
       LOG.error(ex.getMessage(), ex);
@@ -574,7 +574,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
         final Class<?> loginProxyClass = Class.forName(loginProxyClassName);
         try {
           final LoginProxy proxy = (LoginProxy) loginProxyClass.getConstructor().newInstance();
-          setLoginProxy(proxy.getClientTypeID(), proxy);
+          setLoginProxy(proxy.getClientTypeId(), proxy);
         }
         catch (final Exception ex) {
           LOG.error("Exception while instantiating LoginProxy: " + loginProxyClassName, ex);
@@ -591,7 +591,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
         final Class<?> clientValidatorClass = Class.forName(connectionValidatorClassName);
         try {
           final ConnectionValidator validator = (ConnectionValidator) clientValidatorClass.getConstructor().newInstance();
-          setConnectionValidator(validator.getClientTypeID(), validator);
+          setConnectionValidator(validator.getClientTypeId(), validator);
         }
         catch (final Exception ex) {
           LOG.error("Exception while instantiating ConnectionValidator: " + connectionValidatorClassName, ex);
@@ -658,8 +658,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
   }
 
-  private boolean hasConnectionTimedOut(final String clientTypeID, final AbstractRemoteEntityConnection connection) {
-    Integer timeout = clientTimeouts.get(clientTypeID);
+  private boolean hasConnectionTimedOut(final String clientTypeId, final AbstractRemoteEntityConnection connection) {
+    Integer timeout = clientTimeouts.get(clientTypeId);
     if (timeout == null) {
       timeout = connectionTimeout;
     }

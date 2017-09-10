@@ -11,7 +11,7 @@ public interface ConnectionValidator {
   /**
    * @return the String identifying the client type for which to use this validator
    */
-  String getClientTypeID();
+  String getClientTypeId();
 
   /**
    * Validates the given connection, throwing an exception in case the validation fails

@@ -25,14 +25,14 @@ public final class EntityConnectionUtil {
    * @param destination the destination db
    * @param batchSize the number of records to copy between commits
    * @param includePrimaryKeys if true primary key values are included, if false then they are assumed to be auto-generated
-   * @param entityIDs the IDs of the entity types to copy
+   * @param entityIds the IDs of the entity types to copy
    * @throws DatabaseException in case of a db exception
    * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
    */
   public static void copyEntities(final EntityConditions entityConditions, final EntityConnection source, final EntityConnection destination, final int batchSize,
-                                  final boolean includePrimaryKeys, final String... entityIDs) throws DatabaseException {
-    for (final String entityID : entityIDs) {
-      final List<Entity> entities = source.selectMany(entityConditions.selectCondition(entityID).setForeignKeyFetchDepthLimit(0));
+                                  final boolean includePrimaryKeys, final String... entityIds) throws DatabaseException {
+    for (final String entityId : entityIds) {
+      final List<Entity> entities = source.selectMany(entityConditions.selectCondition(entityId).setForeignKeyFetchDepthLimit(0));
       if (!includePrimaryKeys) {
         entities.forEach(Entity::clearKeyValues);
       }

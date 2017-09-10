@@ -34,7 +34,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   /**
    * @return the entity ID
    */
-  String getEntityID();
+  String getEntityId();
 
   /**
    * @return the primary key of this entity
@@ -47,89 +47,89 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   Key getOriginalKey();
 
   /**
-   * Retrieves the property identified by propertyID from the entity repository
-   * @param propertyID the ID of the property to retrieve
-   * @return the property identified by propertyID
+   * Retrieves the property identified by propertyId from the entity repository
+   * @param propertyId the ID of the property to retrieve
+   * @return the property identified by propertyId
    * @throws IllegalArgumentException in case the property does not exist in this entity
    */
-  Property getProperty(final String propertyID);
+  Property getProperty(final String propertyId);
 
   /**
-   * @param propertyID the ID of the property for which to retrieve the value
+   * @param propertyId the ID of the property for which to retrieve the value
    * @return the value of the given property
    */
-  Object get(final String propertyID);
+  Object get(final String propertyId);
 
   /**
-   * @param propertyID the ID of the property for which to retrieve the original value
+   * @param propertyId the ID of the property for which to retrieve the original value
    * @return the original value of the given property
    */
-  Object getOriginal(final String propertyID);
+  Object getOriginal(final String propertyId);
 
   /**
-   * @param propertyID the ID of the property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyID},
+   * @param propertyId the ID of the property for which to retrieve the value
+   * @return the value of the property identified by {@code propertyId},
    * assuming it is a String
    * @throws ClassCastException if the value is not a String instance
    */
-  String getString(final String propertyID);
+  String getString(final String propertyId);
 
   /**
-   * @param propertyID the ID of the property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyID},
+   * @param propertyId the ID of the property for which to retrieve the value
+   * @return the value of the property identified by {@code propertyId},
    * assuming it is an Integer
    * @throws ClassCastException if the value is not a Integer instance
    */
-  Integer getInteger(final String propertyID);
+  Integer getInteger(final String propertyId);
 
   /**
-   * @param propertyID the ID of the property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyID},
+   * @param propertyId the ID of the property for which to retrieve the value
+   * @return the value of the property identified by {@code propertyId},
    * assuming it is a Character
    * @throws ClassCastException if the value is not a Character instance
    */
-  Character getCharacter(final String propertyID);
+  Character getCharacter(final String propertyId);
 
   /**
-   * @param propertyID the ID of the property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyID},
+   * @param propertyId the ID of the property for which to retrieve the value
+   * @return the value of the property identified by {@code propertyId},
    * assuming it is a Double. Rounds the value before returning it in case
    * maximumFractionDigits have been specified.
    * @throws ClassCastException if the value is not a Double instance
    * @see Property#getMaximumFractionDigits()
    */
-  Double getDouble(final String propertyID);
+  Double getDouble(final String propertyId);
 
   /**
-   * @param propertyID the ID of the date property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyID},
+   * @param propertyId the ID of the date property for which to retrieve the value
+   * @return the value of the property identified by {@code propertyId},
    * assuming it is a Date
    * @throws ClassCastException if the value is not a Date instance
    */
-  Date getDate(final String propertyID);
+  Date getDate(final String propertyId);
 
   /**
-   * @param propertyID the ID of the date property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyID},
+   * @param propertyId the ID of the date property for which to retrieve the value
+   * @return the value of the property identified by {@code propertyId},
    * assuming it is a Timestamp
    * @throws ClassCastException if the value is not a Timestamp instance
    */
-  Timestamp getTimestamp(final String propertyID);
+  Timestamp getTimestamp(final String propertyId);
 
   /**
-   * @param propertyID the ID of the property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyID},
+   * @param propertyId the ID of the property for which to retrieve the value
+   * @return the value of the property identified by {@code propertyId},
    * assuming it is a Boolean
    * @throws ClassCastException if the value is not a Boolean instance
    */
-  Boolean getBoolean(final String propertyID);
+  Boolean getBoolean(final String propertyId);
 
   /**
-   * @param propertyID the ID of the property for which to retrieve the formatted value
+   * @param propertyId the ID of the property for which to retrieve the formatted value
    * @param format the format object
-   * @return the value of the property identified by {@code propertyID}, formatted with {@code format}
+   * @return the value of the property identified by {@code propertyId}, formatted with {@code format}
    */
-  String getFormatted(final String propertyID, final Format format);
+  String getFormatted(final String propertyId, final Format format);
 
   /**
    * @param property the property for which to retrieve the formatted value
@@ -141,11 +141,11 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   /**
    * This method returns a String representation of the value associated with the given property,
    * if the property has a format it is used.
-   * @param propertyID the ID of the property for which to retrieve the value
+   * @param propertyId the ID of the property for which to retrieve the value
    * @return a String representation of the value of {@code property}
    * @see #getFormatted(Property, java.text.Format)
    */
-  String getAsString(final String propertyID);
+  String getAsString(final String propertyId);
 
   /**
    * Returns the Entity instance referenced by the given foreign key property.
@@ -153,13 +153,13 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * a foreign key value exists but the actual referenced entity has not
    * been loaded, an "empty" entity is returned, containing only the primary
    * key value. Null is returned only if the actual reference property is null.
-   * @param foreignKeyPropertyID the ID of the property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyID},
+   * @param foreignKeyPropertyId the ID of the property for which to retrieve the value
+   * @return the value of the property identified by {@code propertyId},
    * assuming it is an Entity
    * @throws IllegalArgumentException if the property is not a foreign key property
    * @see #isLoaded(String)
    */
-  Entity getForeignKey(final String foreignKeyPropertyID);
+  Entity getForeignKey(final String foreignKeyPropertyId);
 
   /**
    * Returns the Entity instance referenced by the given foreign key property.
@@ -191,12 +191,12 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
 
   /**
    * Sets the value of the given property
-   * @param propertyID the ID of the property
+   * @param propertyId the ID of the property
    * @param value the value
    * @return the previous value
    * @throws IllegalArgumentException in case the value type does not fit the property
    */
-  Object put(final String propertyID, final Object value);
+  Object put(final String propertyId, final Object value);
 
   /**
    * Sets the value of the given property
@@ -214,10 +214,10 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   boolean isKeyNull();
 
   /**
-   * @param propertyID the propertyID
+   * @param propertyId the propertyId
    * @return true if the value associated with the given property has been modified
    */
-  boolean isModified(final String propertyID);
+  boolean isModified(final String propertyId);
 
   /**
    * Clears the primary key values from this entity,
@@ -226,10 +226,10 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   void clearKeyValues();
 
   /**
-   * @param entityID the entityID
+   * @param entityId the entityId
    * @return true if this entity is of the given type
    */
-  boolean is(final String entityID);
+  boolean is(final String entityId);
 
   /**
    * @param entity the entity to compare to
@@ -239,10 +239,10 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
 
   /**
    * Returns true if the entity referenced via the given foreign key property has been loaded
-   * @param foreignKeyPropertyID the property id
+   * @param foreignKeyPropertyId the property id
    * @return true if the reference entity has been loaded
    */
-  boolean isLoaded(final String foreignKeyPropertyID);
+  boolean isLoaded(final String foreignKeyPropertyId);
 
   /**
    * @param property the property for which to retrieve the background color
@@ -253,37 +253,37 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   /**
    * Reverts the value associated with the given property to its original value.
    * If the value has not been modified then calling this method has no effect.
-   * @param propertyID the ID of the property for which to revert the value
+   * @param propertyId the ID of the property for which to revert the value
    */
-  void revert(final String propertyID);
+  void revert(final String propertyId);
 
   /**
    * Saves the value associated with the given key, that is, removes the original value.
    * If no original value exists calling this method has no effect.
-   * @param propertyID the ID of the property for which to save the value
+   * @param propertyId the ID of the property for which to save the value
    */
-  void save(final String propertyID);
+  void save(final String propertyId);
 
   /**
    * Returns true if a null value is mapped to the given property.
-   * @param propertyID the ID of the property
+   * @param propertyId the ID of the property
    * @return true if the value mapped to the given property is null
    */
-  boolean isValueNull(final String propertyID);
+  boolean isValueNull(final String propertyId);
 
   /**
    * Returns true if this Entity contains a value for the given property, that value can be null.
-   * @param propertyID the propertyID
+   * @param propertyId the propertyId
    * @return true if a value is mapped to this property
    */
-  boolean containsKey(final String propertyID);
+  boolean containsKey(final String propertyId);
 
   /**
    * Removes the given property and value from this Entity along with the original value if any.
    * If no value is mapped to the given property, this method has no effect.
-   * @param propertyID the ID of the property to remove
+   * @param propertyId the ID of the property to remove
    */
-  void remove(final String propertyID);
+  void remove(final String propertyId);
 
   /**
    * A class representing a primary key.
@@ -293,7 +293,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     /**
      * @return the entity ID
      */
-    String getEntityID();
+    String getEntityId();
 
     /**
      * @return a List containing the properties comprising this key
@@ -312,10 +312,10 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
 
     /**
      * Returns true if a null value is mapped to the given property.
-     * @param propertyID the propertyID
+     * @param propertyId the propertyId
      * @return true if the value mapped to the given property is null
      */
-    boolean isValueNull(final String propertyID);
+    boolean isValueNull(final String propertyId);
 
     /**
      * @return true if this primary key is based on a single integer column
@@ -338,17 +338,17 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     Object getFirstValue();
 
     /**
-     * @param propertyID the propertyID
+     * @param propertyId the propertyId
      * @param value the value to associate with the property
      * @return the previous value
      */
-    Object put(final String propertyID, final Object value);
+    Object put(final String propertyId, final Object value);
 
     /**
-     * @param propertyID the propertyID
+     * @param propertyId the propertyId
      * @return the value associated with the given property
      */
-    Object get(final String propertyID);
+    Object get(final String propertyId);
   }
 
   /**
@@ -460,7 +460,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     /**
      * @return the ID of the entity this validator validates
      */
-    String getEntityID();
+    String getEntityId();
 
     /**
      * Validates the given Entity objects.
@@ -517,7 +517,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     /**
      * @return the entity ID
      */
-    String getEntityID();
+    String getEntityId();
 
     /**
      * Sets the underlying table name for this entity type
@@ -534,7 +534,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     /**
      * @return the ID of the domain this entity type belongs to
      */
-    String getDomainID();
+    String getDomainId();
 
     /**
      * @param colorProvider the background color provider
@@ -743,17 +743,17 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return a collection of property IDs identifying the properties to use when performing
      * a default lookup for this entity type
      */
-    Collection<String> getSearchPropertyIDs();
+    Collection<String> getSearchPropertyIds();
 
     /**
      * Sets the IDs of the properties to use when performing a default lookup for this entity type
-     * @param searchPropertyIDs the search property IDs
+     * @param searchPropertyIds the search property IDs
      * @return this {@link Entity.Definition} instance
      */
-    Definition setSearchPropertyIDs(final String... searchPropertyIDs);
+    Definition setSearchPropertyIds(final String... searchPropertyIds);
 
     /**
-     * @return the properties for this entity type mapped to propertyIDs
+     * @return the properties for this entity type mapped to propertyIds
      */
     Map<String, Property> getPropertyMap();
 
@@ -769,18 +769,18 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
 
     /**
      * Returns true if this entity contains properties which values are derived from the value of the given property
-     * @param propertyID the ID of the property
+     * @param propertyId the ID of the property
      * @return true if any properties are derived from the given property
      */
-    boolean hasDerivedProperties(final String propertyID);
+    boolean hasDerivedProperties(final String propertyId);
 
     /**
      * Returns the properties which values are derived from the value of the given property,
      * an empty collection if no such derived properties exist
-     * @param propertyID the ID of the property
+     * @param propertyId the ID of the property
      * @return a collection containing the properties which are derived from the given property
      */
-    Collection<Property.DerivedProperty> getDerivedProperties(final String propertyID);
+    Collection<Property.DerivedProperty> getDerivedProperties(final String propertyId);
 
     /**
      * @return the primary key properties of this entity type, sorted by primary key column index
@@ -819,18 +819,18 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     boolean hasDenormalizedProperties();
 
     /**
-     * @param foreignKeyPropertyID the ID of the foreign key property
+     * @param foreignKeyPropertyId the ID of the foreign key property
      * @return true if this entity type has any denormalized properties associated with the give foreign key
      */
-    boolean hasDenormalizedProperties(final String foreignKeyPropertyID);
+    boolean hasDenormalizedProperties(final String foreignKeyPropertyId);
 
     /**
      * Retrieves the denormalized properties which values originate from the entity referenced by the given foreign key property
-     * @param foreignKeyPropertyID the foreign key property ID
+     * @param foreignKeyPropertyId the foreign key property ID
      * @return a list containing the denormalized properties which values originate from the entity
      * referenced by the given foreign key property
      */
-    List<Property.DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyID);
+    List<Property.DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyId);
 
     /**
      * Compares the given entities.
@@ -855,7 +855,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   }
 
   /**
-   * Annotation for entityID domain model fields, containing database related information about the entity
+   * Annotation for entityId domain model fields, containing database related information about the entity
    */
   @Target(ElementType.FIELD)
   @Retention(RetentionPolicy.RUNTIME)

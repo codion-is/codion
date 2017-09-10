@@ -107,49 +107,49 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   boolean containsUnsavedData();
 
   /**
-   * @param propertyID the ID of the property
+   * @param propertyId the ID of the property
    * @return true if the value of the given property is null
    */
-  boolean isValueNull(final String propertyID);
+  boolean isValueNull(final String propertyId);
 
   /**
    * Sets the given value in the underlying value map
-   * @param propertyID the ID of the property to associate the given value with
+   * @param propertyId the ID of the property to associate the given value with
    * @param value the value to associate with the given property
    */
-  void setValue(final String propertyID, final Object value);
+  void setValue(final String propertyId, final Object value);
 
   /**
    * Removes the given value from the underlying value map
-   * @param propertyID the ID of the property
+   * @param propertyId the ID of the property
    * @return the value, if any
    */
-  Object removeValue(final String propertyID);
+  Object removeValue(final String propertyId);
 
   /**
    * Returns the value associated with the given property
-   * @param propertyID the ID of the property
+   * @param propertyId the ID of the property
    * @return the value associated with the given property
    */
-  Object getValue(final String propertyID);
+  Object getValue(final String propertyId);
 
   /**
-   * Returns the value associated with the given propertyID assuming it
+   * Returns the value associated with the given propertyId assuming it
    * is an {@link Entity} instance
-   * @param foreignKeyPropertyID the ID of the property
+   * @param foreignKeyPropertyId the ID of the property
    * @return the value assuming it is an {@link Entity}
    * @throws ClassCastException in case the value was not an {@link Entity}
    */
-  Entity getForeignKeyValue(final String foreignKeyPropertyID);
+  Entity getForeignKeyValue(final String foreignKeyPropertyId);
 
   /**
    * For every field referencing the given foreign key values, replaces that foreign key instance with
    * the corresponding entity from {@code foreignKeyValues}, useful when property
    * values have been changed in the referenced entity that must be reflected in the edit model.
-   * @param foreignKeyEntityID the entity ID of the foreign key values
+   * @param foreignKeyEntityId the entity ID of the foreign key values
    * @param foreignKeyValues the new foreign key entities
    */
-  void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> foreignKeyValues);
+  void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues);
 
   /**
    * Initializes a value provider for the given property, useful for adding lookup
@@ -222,18 +222,18 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
 
   /**
    * Returns true if this edit model contains a {@link EntityLookupModel} for the given foreign key property
-   * @param foreignKeyPropertyID the ID of the property
+   * @param foreignKeyPropertyId the ID of the property
    * @return true if a {@link EntityLookupModel} has been initialized for the given foreign key property
    */
-  boolean containsLookupModel(final String foreignKeyPropertyID);
+  boolean containsLookupModel(final String foreignKeyPropertyId);
 
   /**
-   * @param foreignKeyPropertyID the ID of the property for which to retrieve the {@link EntityLookupModel}
+   * @param foreignKeyPropertyId the ID of the property for which to retrieve the {@link EntityLookupModel}
    * @return the {@link EntityLookupModel} associated with the {@code property}, if no lookup model
    * has been initialized for the given property, a new one is created and associated with
    * the property, to be returned the next time this method is called
    */
-  EntityLookupModel getForeignKeyLookupModel(final String foreignKeyPropertyID);
+  EntityLookupModel getForeignKeyLookupModel(final String foreignKeyPropertyId);
 
   /**
    * @param foreignKeyProperty the foreign key property for which to retrieve the {@link EntityLookupModel}
@@ -278,12 +278,12 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   boolean isLookupAllowed(Property property);
 
   /**
-   * @param propertyID the property ID
+   * @param propertyId the property ID
    * @param persistValueOnClear true if this model should persist the value of the given property on clear
    * @return this edit model instance
    * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
-  EntityEditModel setValuePersistent(final String propertyID, final boolean persistValueOnClear);
+  EntityEditModel setValuePersistent(final String propertyId, final boolean persistValueOnClear);
 
   /**
    * Performs a insert on the active entity, sets the primary key values of the active entity
@@ -417,37 +417,37 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   StateObserver getAllowInsertObserver();
 
   /**
-   * @param propertyID the ID of the property for which to retrieve the event
+   * @param propertyId the ID of the property for which to retrieve the event
    * @return an EventObserver notified when the value of the given property changes
    */
-  EventObserver<ValueChange<Property, ?>> getValueObserver(final String propertyID);
+  EventObserver<ValueChange<Property, ?>> getValueObserver(final String propertyId);
 
   /**
    * Adds a listener notified each time the value associated with the given property is set via
    * {@link ValueMapEditModel#setValue(Attribute, Object)}, note that this event is only fired when the the value changes
-   * @param propertyID the ID of the property for which to monitor value changes
+   * @param propertyId the ID of the property for which to monitor value changes
    * @param listener a listener notified each time the value of the given property is set via this model
    */
-  void addValueSetListener(final String propertyID, final EventInfoListener<ValueChange<Property, ?>> listener);
+  void addValueSetListener(final String propertyId, final EventInfoListener<ValueChange<Property, ?>> listener);
 
   /**
-   * @param propertyID the propertyID
+   * @param propertyId the propertyId
    * @param listener the listener to remove
    */
-  void removeValueSetListener(final String propertyID, final EventInfoListener listener);
+  void removeValueSetListener(final String propertyId, final EventInfoListener listener);
 
   /**
    * Adds a listener notified each time the value associated with the given key changes
-   * @param propertyID the ID of the property for which to monitor value changes
-   * @param listener a listener notified each time the value of the property identified by {@code propertyID} changes
+   * @param propertyId the ID of the property for which to monitor value changes
+   * @param listener a listener notified each time the value of the property identified by {@code propertyId} changes
    */
-  void addValueListener(final String propertyID, final EventInfoListener<ValueChange<Property, ?>> listener);
+  void addValueListener(final String propertyId, final EventInfoListener<ValueChange<Property, ?>> listener);
 
   /**
-   * @param propertyID the ID of the property for which to remove the listener
+   * @param propertyId the ID of the property for which to remove the listener
    * @param listener the listener to remove
    */
-  void removeValueListener(final String propertyID, final EventInfoListener listener);
+  void removeValueListener(final String propertyId, final EventInfoListener listener);
 
   /**
    * @param listener a listener notified each time the entity is set

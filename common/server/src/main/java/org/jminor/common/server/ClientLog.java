@@ -16,18 +16,18 @@ public final class ClientLog implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final UUID clientID;
+  private final UUID clientId;
   private final long connectionCreationDate;
   private final List<MethodLogger.Entry> entries;
 
   /**
    * Instantiates a new ClientLog instance.
-   * @param clientID the ID of the client this log represents
+   * @param clientId the ID of the client this log represents
    * @param connectionCreationDate the date this client connection was created
    * @param entries the log entries
    */
-  public ClientLog(final UUID clientID, final long connectionCreationDate, final List<MethodLogger.Entry> entries) {
-    this.clientID = clientID;
+  public ClientLog(final UUID clientId, final long connectionCreationDate, final List<MethodLogger.Entry> entries) {
+    this.clientId = clientId;
     this.connectionCreationDate = connectionCreationDate;
     this.entries = entries;
   }
@@ -42,8 +42,8 @@ public final class ClientLog implements Serializable {
   /**
    * @return the UUID identifying this logs client
    */
-  public UUID getClientID() {
-    return clientID;
+  public UUID getClientId() {
+    return clientId;
   }
 
   /**
@@ -57,12 +57,12 @@ public final class ClientLog implements Serializable {
   @Override
   public boolean equals(final Object obj) {
     return this == obj || !((obj == null) || (obj.getClass() != this.getClass()))
-            && clientID.equals(((ClientLog) obj).clientID);
+            && clientId.equals(((ClientLog) obj).clientId);
   }
 
   /** {@inheritDoc} */
   @Override
   public int hashCode() {
-    return clientID.hashCode();
+    return clientId.hashCode();
   }
 }

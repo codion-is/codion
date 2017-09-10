@@ -39,22 +39,22 @@ public class SwingEntityEditModelTest {
 
   @Test
   public void getComboBoxModel() {
-    final FilteredComboBoxModel<String> model = (FilteredComboBoxModel<String>) employeeEditModel.getComboBoxModel(jobProperty.getPropertyID());
+    final FilteredComboBoxModel<String> model = (FilteredComboBoxModel<String>) employeeEditModel.getComboBoxModel(jobProperty.getPropertyId());
     model.setNullValue("null");
     assertNotNull(model);
-    assertTrue(employeeEditModel.containsComboBoxModel(jobProperty.getPropertyID()));
-    assertEquals(model, employeeEditModel.getComboBoxModel(jobProperty.getPropertyID()));
+    assertTrue(employeeEditModel.containsComboBoxModel(jobProperty.getPropertyId()));
+    assertEquals(model, employeeEditModel.getComboBoxModel(jobProperty.getPropertyId()));
     employeeEditModel.refreshComboBoxModels();
     employeeEditModel.clearComboBoxModels();
-    assertTrue(employeeEditModel.getComboBoxModel(jobProperty.getPropertyID()).isCleared());
+    assertTrue(employeeEditModel.getComboBoxModel(jobProperty.getPropertyId()).isCleared());
     employeeEditModel.refreshComboBoxModels();
     employeeEditModel.clear();
-    assertTrue(employeeEditModel.getComboBoxModel(jobProperty.getPropertyID()).isCleared());
+    assertTrue(employeeEditModel.getComboBoxModel(jobProperty.getPropertyId()).isCleared());
   }
 
   @Test
   public void getForeignKeyComboBoxModel() {
-    assertFalse(employeeEditModel.containsComboBoxModel(deptProperty.getPropertyID()));
+    assertFalse(employeeEditModel.containsComboBoxModel(deptProperty.getPropertyId()));
     final EntityComboBoxModel model = employeeEditModel.getForeignKeyComboBoxModel(deptProperty);
     assertNotNull(model);
     assertTrue(model.isCleared());
@@ -73,11 +73,11 @@ public class SwingEntityEditModelTest {
     assertNotNull(model);
     assertTrue(model.isCleared());
     assertTrue(model.getAllItems().isEmpty());
-    assertEquals(deptProperty.getForeignEntityID(), model.getEntityID());
+    assertEquals(deptProperty.getForeignEntityId(), model.getEntityId());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void getForeignKeyComboBoxModelNonFKProperty() {
-    employeeEditModel.getForeignKeyComboBoxModel(jobProperty.getPropertyID());
+    employeeEditModel.getForeignKeyComboBoxModel(jobProperty.getPropertyId());
   }
 }

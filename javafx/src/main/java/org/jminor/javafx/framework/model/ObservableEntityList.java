@@ -39,7 +39,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   private static final String SELECTION_MODEL_HAS_NOT_BEEN_SET = "Selection model has not been set";
 
-  private final String entityID;
+  private final String entityId;
   private final EntityConnectionProvider connectionProvider;
   private final SortedList<Entity> sortedList;
   private final FilteredList<Entity> filteredList;
@@ -56,23 +56,23 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   /**
    * Instantiates a new {@link ObservableEntityList}
-   * @param entityID the entity on which to base the list
+   * @param entityId the entity on which to base the list
    * @param connectionProvider the connection provider
    */
-  public ObservableEntityList(final String entityID, final EntityConnectionProvider connectionProvider) {
+  public ObservableEntityList(final String entityId, final EntityConnectionProvider connectionProvider) {
     super(FXCollections.observableArrayList());
-    this.entityID = entityID;
+    this.entityId = entityId;
     this.connectionProvider = connectionProvider;
     this.filteredList = new FilteredList<>(this);
-    this.sortedList = new SortedList<>(filteredList, connectionProvider.getEntities().getComparator(entityID));
+    this.sortedList = new SortedList<>(filteredList, connectionProvider.getEntities().getComparator(entityId));
     this.entityConditions = connectionProvider.getConditions();
   }
 
   /**
    * @return the ID of the underlying entity
    */
-  public final String getEntityID() {
-    return entityID;
+  public final String getEntityId() {
+    return entityId;
   }
 
   /**
@@ -287,8 +287,8 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
    */
   protected List<Entity> performQuery() {
     try {
-      return connectionProvider.getConnection().selectMany(entityConditions.selectCondition(entityID, selectCondition)
-              .setOrderByClause(connectionProvider.getEntities().getOrderByClause(entityID)));
+      return connectionProvider.getConnection().selectMany(entityConditions.selectCondition(entityId, selectCondition)
+              .setOrderByClause(connectionProvider.getEntities().getOrderByClause(entityId)));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);

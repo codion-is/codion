@@ -417,7 +417,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
     /** {@inheritDoc} */
     @Override
-    public final String getID() {
+    public final String getId() {
       return id;
     }
 

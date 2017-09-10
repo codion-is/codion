@@ -4605,3 +4605,4 @@
   ExceptionUtil removed
   EntityJSONParser refactored, now uses ThreadLocal date formats
   JettyServer, logging added
+  Major cosmetic surgery, entityID, propertyID and domainID changed to entityId, propertyId and domainId respectively, all IDs replaced with Ids

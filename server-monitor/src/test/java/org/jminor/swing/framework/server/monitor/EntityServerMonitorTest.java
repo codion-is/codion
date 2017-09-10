@@ -72,12 +72,12 @@ public class EntityServerMonitorTest {
     assertEquals(1, clientUserMonitor.getUserListModel().size());
     assertEquals(1, clientUserMonitor.getClientTypeListModel().size());
     final ClientMonitor clientMonitor = clientUserMonitor.getClientTypeListModel().firstElement();
-    assertEquals(clientTypeId, clientMonitor.getClientTypeID());
+    assertEquals(clientTypeId, clientMonitor.getClientTypeId());
     clientMonitor.refresh();
     assertEquals(1, clientMonitor.getClientInstanceListModel().size());
     final ClientInstanceMonitor clientInstanceMonitor = clientMonitor.getClientInstanceListModel().firstElement();
     final RemoteClient remoteClient = clientInstanceMonitor.getRemoteClient();
-    assertEquals(clientId, remoteClient.getClientID());
+    assertEquals(clientId, remoteClient.getClientId());
     assertEquals(UNIT_TEST_USER, remoteClient.getUser());
 
     clientInstanceMonitor.disconnect();//disconnects the client

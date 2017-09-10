@@ -18,7 +18,7 @@ public final class ClientLogTest {
     final UUID uuid = UUID.randomUUID();
     final long currentTime = System.currentTimeMillis();
     final ClientLog log = new ClientLog(uuid, currentTime, Collections.emptyList());
-    assertEquals(uuid, log.getClientID());
+    assertEquals(uuid, log.getClientId());
     assertEquals(currentTime, log.getConnectionCreationDate());
     assertEquals(log, new ClientLog(uuid, currentTime, Collections.emptyList()));
     assertEquals(uuid.hashCode(), log.hashCode());

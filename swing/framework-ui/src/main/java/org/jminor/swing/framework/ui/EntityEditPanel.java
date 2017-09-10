@@ -114,7 +114,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   private final SwingEntityEditModel editModel;
 
   /**
-   * Input components mapped to their respective propertyIDs
+   * Input components mapped to their respective propertyIds
    */
   private final Map<String, JComponent> components = new HashMap<>();
 
@@ -139,9 +139,9 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   private JComponent initialFocusComponent;
 
   /**
-   * The propertyID for which component should receive the focus when the UI is prepared
+   * The propertyId for which component should receive the focus when the UI is prepared
    */
-  private String initialFocusPropertyID;
+  private String initialFocusPropertyId;
 
   /**
    * The component that should receive focus when the UI is prepared after insert
@@ -149,9 +149,9 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   private JComponent afterInsertFocusComponent;
 
   /**
-   * The propertyID for which component should receive the focus when the UI is prepared after insert
+   * The propertyId for which component should receive the focus when the UI is prepared after insert
    */
-  private String afterInsertFocusPropertyID;
+  private String afterInsertFocusPropertyId;
 
   /**
    * Indicates whether or not the UI should be cleared after insert has been performed
@@ -257,14 +257,14 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * Sets the component associated with the given propertyID as the component
+   * Sets the component associated with the given propertyId as the component
    * that should receive the initial focus in this edit panel.
    * This is overridden by setInitialFocusComponent().
-   * @param propertyID the component propertyID
+   * @param propertyId the component propertyId
    * @see #setInitialFocusComponent(javax.swing.JComponent)
    */
-  public final void setInitialFocusProperty(final String propertyID) {
-    this.initialFocusPropertyID = propertyID;
+  public final void setInitialFocusProperty(final String propertyId) {
+    this.initialFocusPropertyId = propertyId;
   }
 
   /**
@@ -279,18 +279,18 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * Sets the component associated with the given propertyID as the component
+   * Sets the component associated with the given propertyId as the component
    * that should receive the focus after an insert is performed in this edit panel.
    * This is overridden by setAfterInsertFocusComponent().
-   * @param propertyID the component propertyID
+   * @param propertyId the component propertyId
    * @see #setAfterInsertFocusComponent(JComponent)
    */
-  public final void setAfterInsertFocusProperty(final String propertyID) {
-    this.afterInsertFocusPropertyID = propertyID;
+  public final void setAfterInsertFocusProperty(final String propertyId) {
+    this.afterInsertFocusPropertyId = propertyId;
   }
 
   /**
-   * Sets the initial focus, if a initial focus component or component propertyID
+   * Sets the initial focus, if a initial focus component or component propertyId
    * has been set that component receives the focus, if not, or if that component
    * is not focusable, this panel receives the focus
    * @see #setInitialFocusProperty
@@ -303,27 +303,27 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * @return the propertyIDs that have been associated with components.
+   * @return the propertyIds that have been associated with components.
    */
-  public final Collection<String> getComponentPropertyIDs() {
+  public final Collection<String> getComponentPropertyIds() {
     return new ArrayList<>(components.keySet());
   }
 
   /**
-   * @param propertyID the propertyID
-   * @return the component associated with the given propertyID, null if no component has been
-   * associated with the given propertyID
+   * @param propertyId the propertyId
+   * @return the component associated with the given propertyId, null if no component has been
+   * associated with the given propertyId
    */
-  public final JComponent getComponent(final String propertyID) {
-    return components.get(propertyID);
+  public final JComponent getComponent(final String propertyId) {
+    return components.get(propertyId);
   }
 
   /**
    * @param component the component
-   * @return the propertyID the given component is associated with, null if the component has not been
-   * associated with a propertyID
+   * @return the propertyId the given component is associated with, null if the component has not been
+   * associated with a propertyId
    */
-  public final String getComponentPropertyID(final JComponent component) {
+  public final String getComponentPropertyId(final JComponent component) {
     for (final Map.Entry<String, JComponent> entry : components.entrySet()) {
       if (entry.getValue().equals(component)) {
         return entry.getKey();
@@ -335,56 +335,56 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
 
   /**
    * Displays a dialog allowing the user the select a input component which should receive the keyboard focus
-   * @see #includeComponentSelectionPropertyID(String)
+   * @see #includeComponentSelectionPropertyId(String)
    * @see #requestComponentFocus(String)
    */
   public void selectInputComponent() {
-    final List<String> propertyIDs = getSelectComponentPropertyIDs();
-    final List<Property> properties = editModel.getEntities().getSortedProperties(getEditModel().getEntityID(), propertyIDs);
+    final List<String> propertyIds = getSelectComponentPropertyIds();
+    final List<Property> properties = editModel.getEntities().getSortedProperties(getEditModel().getEntityId(), propertyIds);
     final Property property = UiUtil.selectValue(this, properties, Messages.get(Messages.SELECT_INPUT_FIELD));
     if (property != null) {
-      requestComponentFocus(property.getPropertyID());
+      requestComponentFocus(property.getPropertyId());
     }
   }
 
   /**
-   * Request focus for the component associated with the given propertyID
-   * @param propertyID the propertyID of the component to select
+   * Request focus for the component associated with the given propertyId
+   * @param propertyId the propertyId of the component to select
    */
-  public final void requestComponentFocus(final String propertyID) {
-    if (components.containsKey(propertyID)) {
-      components.get(propertyID).requestFocus();
+  public final void requestComponentFocus(final String propertyId) {
+    if (components.containsKey(propertyId)) {
+      components.get(propertyId).requestFocus();
     }
   }
 
   /**
-   * @return a list of propertyIDs to use when selecting a input component in this panel,
-   * this returns all propertyIDs that have mapped components in this panel
+   * @return a list of propertyIds to use when selecting a input component in this panel,
+   * this returns all propertyIds that have mapped components in this panel
    * that are enabled, visible and focusable.
-   * @see #includeComponentSelectionPropertyID(String) (String)
+   * @see #includeComponentSelectionPropertyId(String) (String)
    * @see #setComponent(String, javax.swing.JComponent)
    */
-  public final List<String> getSelectComponentPropertyIDs() {
-    final Collection<String> propertyIDs = getComponentPropertyIDs();
-    final List<String> selectableComponentPropertyIDs = new ArrayList<>(propertyIDs.size());
-    propertyIDs.forEach(propertyID -> {
-      final JComponent component = getComponent(propertyID);
-      if (component != null && includeComponentSelectionPropertyID(propertyID) && component.isVisible() &&
+  public final List<String> getSelectComponentPropertyIds() {
+    final Collection<String> propertyIds = getComponentPropertyIds();
+    final List<String> selectableComponentPropertyIds = new ArrayList<>(propertyIds.size());
+    propertyIds.forEach(propertyId -> {
+      final JComponent component = getComponent(propertyId);
+      if (component != null && includeComponentSelectionPropertyId(propertyId) && component.isVisible() &&
               component.isFocusable() && component.isEnabled()) {
-        selectableComponentPropertyIDs.add(propertyID);
+        selectableComponentPropertyIds.add(propertyId);
       }
     });
 
-    return selectableComponentPropertyIDs;
+    return selectableComponentPropertyIds;
   }
 
   /**
    * Override to exclude components from the component focus selection.
-   * @param propertyID the component propertyID
-   * @return true if the component associated with the given propertyID should be included when allowing the user
+   * @param propertyId the component propertyId
+   * @return true if the component associated with the given propertyId should be included when allowing the user
    * to select a input component in this panel, true by default.
    */
-  public boolean includeComponentSelectionPropertyID(final String propertyID) {
+  public boolean includeComponentSelectionPropertyId(final String propertyId) {
     return true;
   }
 
@@ -923,8 +923,8 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
       return initialFocusComponent;
     }
 
-    if (initialFocusPropertyID != null) {
-      return components.get(initialFocusPropertyID);
+    if (initialFocusPropertyId != null) {
+      return components.get(initialFocusPropertyId);
     }
 
     return null;
@@ -938,100 +938,100 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
       return afterInsertFocusComponent;
     }
 
-    if (afterInsertFocusPropertyID != null) {
-      return components.get(afterInsertFocusPropertyID);
+    if (afterInsertFocusPropertyId != null) {
+      return components.get(afterInsertFocusPropertyId);
     }
 
     return getInitialFocusComponent();
   }
 
   /**
-   * Associates the given input component with the given propertyID,
+   * Associates the given input component with the given propertyId,
    * preferably this should be called for components associated with
    * properties.
-   * @param propertyID the propertyID
+   * @param propertyId the propertyId
    * @param component the input component
    */
-  protected final void setComponent(final String propertyID, final JComponent component) {
-    if (components.containsKey(propertyID)) {
-      throw new IllegalStateException("Component already set for propertyID: " + propertyID);
+  protected final void setComponent(final String propertyId, final JComponent component) {
+    if (components.containsKey(propertyId)) {
+      throw new IllegalStateException("Component already set for propertyId: " + propertyId);
     }
-    components.put(propertyID, component);
+    components.put(propertyId, component);
   }
 
   /**
    * Adds a property panel for the given property to this panel
-   * @param propertyID the ID of the property
+   * @param propertyId the ID of the property
    * @see #createPropertyPanel(String)
    */
-  protected final void addPropertyPanel(final String propertyID) {
-    add(createPropertyPanel(propertyID));
+  protected final void addPropertyPanel(final String propertyId) {
+    add(createPropertyPanel(propertyId));
   }
 
   /**
    * Creates a panel containing a label and the component associated with the given property.
-   * The label text is the caption of the property identified by {@code propertyID}.
+   * The label text is the caption of the property identified by {@code propertyId}.
    * The default layout of the resulting panel is with the label on top and inputComponent below.
-   * @param propertyID the id of the property from which to retrieve the label caption
+   * @param propertyId the id of the property from which to retrieve the label caption
    * @return a panel containing a label and a component
    * @throws IllegalArgumentException in case no component has been associated with the given property
    */
-  protected final JPanel createPropertyPanel(final String propertyID) {
-    final JComponent component = getComponent(propertyID);
+  protected final JPanel createPropertyPanel(final String propertyId) {
+    final JComponent component = getComponent(propertyId);
     if (component == null) {
-      throw new IllegalArgumentException("No component associated with property: " + propertyID);
+      throw new IllegalArgumentException("No component associated with property: " + propertyId);
     }
 
-    return createPropertyPanel(propertyID, component, true);
+    return createPropertyPanel(propertyId, component, true);
   }
 
   /**
    * Creates a panel containing a label and the given component.
-   * The label text is the caption of the property identified by {@code propertyID}.
+   * The label text is the caption of the property identified by {@code propertyId}.
    * The default layout of the resulting panel is with the label on top and {@code inputComponent} below.
-   * @param propertyID the id of the property from which to retrieve the label caption
-   * @param inputComponent a component bound to the property with id {@code propertyID}
+   * @param propertyId the id of the property from which to retrieve the label caption
+   * @param inputComponent a component bound to the property with id {@code propertyId}
    * @return a panel containing a label and a component
    */
-  protected final JPanel createPropertyPanel(final String propertyID, final JComponent inputComponent) {
-    return createPropertyPanel(propertyID, inputComponent, true);
+  protected final JPanel createPropertyPanel(final String propertyId, final JComponent inputComponent) {
+    return createPropertyPanel(propertyId, inputComponent, true);
   }
 
   /**
    * Creates a panel containing a label and the given component.
-   * The label text is the caption of the property identified by {@code propertyID}.
-   * @param propertyID the id of the property from which to retrieve the label caption
-   * @param inputComponent a component bound to the property with id {@code propertyID}
+   * The label text is the caption of the property identified by {@code propertyId}.
+   * @param propertyId the id of the property from which to retrieve the label caption
+   * @param inputComponent a component bound to the property with id {@code propertyId}
    * @param labelOnTop if true then the label is positioned above {@code inputComponent},
    * otherwise it uses FlowLayout.LEADING in a FlowLayout.
    * @return a panel containing a label and a component
    */
-  protected final JPanel createPropertyPanel(final String propertyID, final JComponent inputComponent,
+  protected final JPanel createPropertyPanel(final String propertyId, final JComponent inputComponent,
                                              final boolean labelOnTop) {
-    return createPropertyPanel(propertyID, inputComponent, labelOnTop, JLabel.LEADING);
+    return createPropertyPanel(propertyId, inputComponent, labelOnTop, JLabel.LEADING);
   }
 
   /**
    * Creates a panel containing a label and the given component.
-   * The label text is the caption of the property identified by {@code propertyID}.
-   * @param propertyID the id of the property from which to retrieve the label caption
-   * @param inputComponent a component bound to the property with id {@code propertyID}
+   * The label text is the caption of the property identified by {@code propertyId}.
+   * @param propertyId the id of the property from which to retrieve the label caption
+   * @param inputComponent a component bound to the property with id {@code propertyId}
    * @param labelOnTop if true then the label is positioned above {@code inputComponent},
    * otherwise it uses FlowLayout.LEADING in a FlowLayout.
    * @param labelAlignment the label alignment
    * @return a panel containing a label and a component
    */
-  protected final JPanel createPropertyPanel(final String propertyID, final JComponent inputComponent,
+  protected final JPanel createPropertyPanel(final String propertyId, final JComponent inputComponent,
                                              final boolean labelOnTop, final int labelAlignment) {
-    return createPropertyPanel(EntityUiUtil.createLabel(editModel.getEntities().getProperty(editModel.getEntityID(),
-            propertyID), labelAlignment), inputComponent, labelOnTop);
+    return createPropertyPanel(EntityUiUtil.createLabel(editModel.getEntities().getProperty(editModel.getEntityId(),
+            propertyId), labelAlignment), inputComponent, labelOnTop);
   }
 
   /**
    * Creates a panel containing a label component and the {@code inputComponent} with the label
    * component positioned above the input component.
    * @param labelComponent the label component
-   * @param inputComponent a component bound to the property with id {@code propertyID}
+   * @param inputComponent a component bound to the property with id {@code propertyId}
    * @return a panel containing a label and a component
    */
   protected final JPanel createPropertyPanel(final JComponent labelComponent, final JComponent inputComponent) {
@@ -1041,7 +1041,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   /**
    * Creates a panel containing a label component and the {@code inputComponent}.
    * @param labelComponent the label component
-   * @param inputComponent a component bound to the property with id {@code propertyID}
+   * @param inputComponent a component bound to the property with id {@code propertyId}
    * @param labelOnTop if true then the label is positioned above {@code inputComponent},
    * otherwise it uses FlowLayout.LEADING in a FlowLayout.
    * @return a panel containing a label and a component
@@ -1066,104 +1066,104 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * Creates a JTextArea component bound to the property identified by {@code propertyID}.
-   * @param propertyID the ID of the property to bind
+   * Creates a JTextArea component bound to the property identified by {@code propertyId}.
+   * @param propertyId the ID of the property to bind
    * @return a JTextArea bound to the property
    */
-  protected final JTextArea createTextArea(final String propertyID) {
-    return createTextArea(propertyID, -1, -1);
+  protected final JTextArea createTextArea(final String propertyId) {
+    return createTextArea(propertyId, -1, -1);
   }
 
   /**
-   * Creates a JTextArea component bound to the property identified by {@code propertyID}.
-   * @param propertyID the ID of the property to bind
+   * Creates a JTextArea component bound to the property identified by {@code propertyId}.
+   * @param propertyId the ID of the property to bind
    * @param rows the number of rows in the text area
    * @param columns the number of columns in the text area
    * @return a JTextArea bound to the property
    */
-  protected final JTextArea createTextArea(final String propertyID, final int rows, final int columns) {
-    return createTextArea(propertyID, rows, columns, readOnly(propertyID));
+  protected final JTextArea createTextArea(final String propertyId, final int rows, final int columns) {
+    return createTextArea(propertyId, rows, columns, readOnly(propertyId));
   }
 
   /**
-   * Creates a JTextArea component bound to the property identified by {@code propertyID}.
-   * @param propertyID the ID of the property to bind
+   * Creates a JTextArea component bound to the property identified by {@code propertyId}.
+   * @param propertyId the ID of the property to bind
    * @param rows the number of rows in the text area
    * @param columns the number of columns in the text area
    * @param readOnly if true the component will be read only
    * @return a JTextArea bound to the property
    */
-  protected final JTextArea createTextArea(final String propertyID, final int rows, final int columns, final boolean readOnly) {
-    return createTextArea(propertyID, rows, columns, readOnly, null);
+  protected final JTextArea createTextArea(final String propertyId, final int rows, final int columns, final boolean readOnly) {
+    return createTextArea(propertyId, rows, columns, readOnly, null);
   }
 
   /**
-   * Creates a JTextArea component bound to the property identified by {@code propertyID}.
-   * @param propertyID the ID of the property to bind
+   * Creates a JTextArea component bound to the property identified by {@code propertyId}.
+   * @param propertyId the ID of the property to bind
    * @param rows the number of rows in the text area
    * @param columns the number of columns in the text area
    * @param readOnly if true the component will be read only
    * @param enabledState a state indicating when this text area should be enabled
    * @return a JTextArea bound to the property
    */
-  protected final JTextArea createTextArea(final String propertyID, final int rows, final int columns, final boolean readOnly,
+  protected final JTextArea createTextArea(final String propertyId, final int rows, final int columns, final boolean readOnly,
                                            final StateObserver enabledState) {
-    final Property property = editModel.getEntities().getProperty(editModel.getEntityID(), propertyID);
+    final Property property = editModel.getEntities().getProperty(editModel.getEntityId(), propertyId);
     final JTextArea textArea = EntityUiUtil.createTextArea(property, editModel, rows, columns, readOnly, enabledState);
-    setComponent(propertyID, textArea);
+    setComponent(propertyId, textArea);
 
     return textArea;
   }
 
   /**
-   * Creates a TextInputPanel bound to the property identified by {@code propertyID}.
-   * @param propertyID the ID of the property to bind
+   * Creates a TextInputPanel bound to the property identified by {@code propertyId}.
+   * @param propertyId the ID of the property to bind
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final String propertyID) {
-    return createTextInputPanel(propertyID, readOnly(propertyID));
+  protected final TextInputPanel createTextInputPanel(final String propertyId) {
+    return createTextInputPanel(propertyId, readOnly(propertyId));
   }
 
   /**
-   * Creates a TextInputPanel bound to the property identified by {@code propertyID}.
-   * @param propertyID the ID of the property to bind
+   * Creates a TextInputPanel bound to the property identified by {@code propertyId}.
+   * @param propertyId the ID of the property to bind
    * @param readOnly if true the component will be read only
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final String propertyID, final boolean readOnly) {
-    return createTextInputPanel(propertyID, readOnly, true);
+  protected final TextInputPanel createTextInputPanel(final String propertyId, final boolean readOnly) {
+    return createTextInputPanel(propertyId, readOnly, true);
   }
 
   /**
-   * Creates a TextInputPanel bound to the property identified by {@code propertyID}.
-   * @param propertyID the ID of the property to bind
+   * Creates a TextInputPanel bound to the property identified by {@code propertyId}.
+   * @param propertyId the ID of the property to bind
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final String propertyID, final boolean readOnly,
+  protected final TextInputPanel createTextInputPanel(final String propertyId, final boolean readOnly,
                                                       final boolean immediateUpdate) {
-    return createTextInputPanel(propertyID, readOnly, immediateUpdate, true);
+    return createTextInputPanel(propertyId, readOnly, immediateUpdate, true);
   }
 
   /**
-   * Creates a TextInputPanel bound to the property identified by {@code propertyID}.
-   * @param propertyID the ID of the property to bind
+   * Creates a TextInputPanel bound to the property identified by {@code propertyId}.
+   * @param propertyId the ID of the property to bind
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
    * @param buttonFocusable specifies whether the edit button should be focusable.
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final String propertyID, final boolean readOnly,
+  protected final TextInputPanel createTextInputPanel(final String propertyId, final boolean readOnly,
                                                       final boolean immediateUpdate, final boolean buttonFocusable) {
-    return createTextInputPanel(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID), readOnly,
+    return createTextInputPanel(editModel.getEntities().getProperty(editModel.getEntityId(), propertyId), readOnly,
             immediateUpdate, buttonFocusable);
   }
 
   /**
-   * Creates a TextInputPanel bound to the property identified by {@code propertyID}.
+   * Creates a TextInputPanel bound to the property identified by {@code propertyId}.
    * @param property the property to bind
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
@@ -1176,7 +1176,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * Creates a TextInputPanel bound to the property identified by {@code propertyID}.
+   * Creates a TextInputPanel bound to the property identified by {@code propertyId}.
    * @param property the property to bind
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
@@ -1187,62 +1187,62 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final TextInputPanel createTextInputPanel(final Property property, final boolean readOnly,
                                                       final boolean immediateUpdate, final boolean buttonFocusable) {
     final TextInputPanel ret = EntityUiUtil.createTextInputPanel(property, editModel, readOnly, immediateUpdate, buttonFocusable);
-    setComponent(property.getPropertyID(), ret.getTextField());
+    setComponent(property.getPropertyId(), ret.getTextField());
 
     return ret;
   }
 
   /**
    * Creates a new DateInputPanel using the default short date format, bound to the property
-   * identified by {@code propertyID}.
-   * @param propertyID the ID of the property for which to create the panel
+   * identified by {@code propertyId}.
+   * @param propertyId the ID of the property for which to create the panel
    * @return a DateInputPanel using the default short date format
    * @see Property#DATE_FORMAT
    */
-  protected final DateInputPanel createDateInputPanel(final String propertyID) {
-    return createDateInputPanel(propertyID, true);
+  protected final DateInputPanel createDateInputPanel(final String propertyId) {
+    return createDateInputPanel(propertyId, true);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by {@code propertyID}.
-   * @param propertyID the ID of the property for which to create the panel
+   * Creates a new DateInputPanel bound to the property identified by {@code propertyId}.
+   * @param propertyId the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @return a DateInputPanel using the default short date format
    * @see Property#DATE_FORMAT
    */
-  protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton) {
-    final Property property = editModel.getEntities().getProperty(editModel.getEntityID(), propertyID);
+  protected final DateInputPanel createDateInputPanel(final String propertyId, final boolean includeButton) {
+    final Property property = editModel.getEntities().getProperty(editModel.getEntityId(), propertyId);
     return createDateInputPanel(property, includeButton, null);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by {@code propertyID}.
-   * @param propertyID the ID of the property for which to create the panel
+   * Creates a new DateInputPanel bound to the property identified by {@code propertyId}.
+   * @param propertyId the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton,
+  protected final DateInputPanel createDateInputPanel(final String propertyId, final boolean includeButton,
                                                       final StateObserver enabledState) {
-    return createDateInputPanel(propertyID, includeButton, enabledState, readOnly(propertyID));
+    return createDateInputPanel(propertyId, includeButton, enabledState, readOnly(propertyId));
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by {@code propertyID}.
-   * @param propertyID the ID of the property for which to create the panel
+   * Creates a new DateInputPanel bound to the property identified by {@code propertyId}.
+   * @param propertyId the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @param readOnly if true the component will be read only
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton,
+  protected final DateInputPanel createDateInputPanel(final String propertyId, final boolean includeButton,
                                                       final StateObserver enabledState, final boolean readOnly) {
-    return createDateInputPanel(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID),
+    return createDateInputPanel(editModel.getEntities().getProperty(editModel.getEntityId(), propertyId),
             includeButton, enabledState, readOnly);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by {@code propertyID}.
+   * Creates a new DateInputPanel bound to the property identified by {@code propertyId}.
    * @param property the property for which to create the panel
    * @return a DateInputPanel bound to the property
    */
@@ -1269,7 +1269,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final DateInputPanel createDateInputPanel(final Property property, final boolean includeButton,
                                                       final StateObserver enabledState) {
-    return createDateInputPanel(property, includeButton, enabledState, readOnly(property.getPropertyID()));
+    return createDateInputPanel(property, includeButton, enabledState, readOnly(property.getPropertyId()));
   }
 
   /**
@@ -1283,60 +1283,60 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final DateInputPanel createDateInputPanel(final Property property, final boolean includeButton,
                                                       final StateObserver enabledState, final boolean readOnly) {
     final DateInputPanel panel = EntityUiUtil.createDateInputPanel(property, editModel, readOnly, includeButton, enabledState);
-    setComponent(property.getPropertyID(), panel);
+    setComponent(property.getPropertyId(), panel);
 
     return panel;
   }
 
   /**
-   * Creates a JTextField bound to the property identified by {@code propertyID}
-   * @param propertyID the ID of the property to bind
+   * Creates a JTextField bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyID) {
-    return createTextField(propertyID, readOnly(propertyID));
+  protected final JTextField createTextField(final String propertyId) {
+    return createTextField(propertyId, readOnly(propertyId));
   }
 
   /**
-   * Creates a JTextField bound to the property identified by {@code propertyID}
-   * @param propertyID the ID of the property to bind
+   * Creates a JTextField bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
    * @param readOnly if true the component will be read only
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyID, final boolean readOnly) {
-    return createTextField(propertyID, readOnly, true);
+  protected final JTextField createTextField(final String propertyId, final boolean readOnly) {
+    return createTextField(propertyId, readOnly, true);
   }
 
   /**
-   * Creates a JTextField bound to the property identified by {@code propertyID}
-   * @param propertyID the ID of the property to bind
+   * Creates a JTextField bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyID, final boolean readOnly,
+  protected final JTextField createTextField(final String propertyId, final boolean readOnly,
                                              final boolean immediateUpdate) {
-    return createTextField(propertyID, readOnly, immediateUpdate, null);
+    return createTextField(propertyId, readOnly, immediateUpdate, null);
   }
 
   /**
-   * Creates a JTextField bound to the property identified by {@code propertyID}
-   * @param propertyID the ID of the property to bind
+   * Creates a JTextField bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyID, final boolean readOnly,
+  protected final JTextField createTextField(final String propertyId, final boolean readOnly,
                                              final boolean immediateUpdate, final String maskString) {
-    return createTextField(propertyID, readOnly, immediateUpdate, maskString, null);
+    return createTextField(propertyId, readOnly, immediateUpdate, maskString, null);
   }
 
   /**
-   * Creates a JTextField bound to the property identified by {@code propertyID}
-   * @param propertyID the ID of the property to bind
+   * Creates a JTextField bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
@@ -1344,15 +1344,15 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param enabledState a state for controlling the enabled state of the component
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyID, final boolean readOnly,
+  protected final JTextField createTextField(final String propertyId, final boolean readOnly,
                                              final boolean immediateUpdate, final String maskString,
                                              final StateObserver enabledState) {
-    return createTextField(propertyID, readOnly, immediateUpdate, maskString, enabledState, false);
+    return createTextField(propertyId, readOnly, immediateUpdate, maskString, enabledState, false);
   }
 
   /**
-   * Creates a JTextField bound to the property identified by {@code propertyID}
-   * @param propertyID the ID of the property to bind
+   * Creates a JTextField bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
@@ -1361,10 +1361,10 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param valueIncludesLiteralCharacters only applicable if {@code maskString} is specified
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyID, final boolean readOnly,
+  protected final JTextField createTextField(final String propertyId, final boolean readOnly,
                                              final boolean immediateUpdate, final String maskString,
                                              final StateObserver enabledState, final boolean valueIncludesLiteralCharacters) {
-    return createTextField(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID),
+    return createTextField(editModel.getEntities().getProperty(editModel.getEntityId(), propertyId),
             readOnly, maskString, immediateUpdate, enabledState, valueIncludesLiteralCharacters);
   }
 
@@ -1374,7 +1374,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final Property property) {
-    return createTextField(property, readOnly(property.getPropertyID()));
+    return createTextField(property, readOnly(property.getPropertyId()));
   }
 
   /**
@@ -1433,40 +1433,40 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
                                              final StateObserver enabledState, final boolean valueIncludesLiteralCharacters) {
     final JTextField txt = EntityUiUtil.createTextField(property, editModel, readOnly, maskString, immediateUpdate,
             enabledState, valueIncludesLiteralCharacters);
-    setComponent(property.getPropertyID(), txt);
+    setComponent(property.getPropertyId(), txt);
 
     return txt;
   }
 
   /**
-   * Creates a JCheckBox bound to the property identified by {@code propertyID}
-   * @param propertyID the ID of the property to bind
+   * Creates a JCheckBox bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
    * @return a JCheckBox bound to the property
    */
-  protected final JCheckBox createCheckBox(final String propertyID) {
-    return createCheckBox(propertyID, null);
+  protected final JCheckBox createCheckBox(final String propertyId) {
+    return createCheckBox(propertyId, null);
   }
 
   /**
-   * Creates a JCheckBox bound to the property identified by {@code propertyID}
-   * @param propertyID the ID of the property to bind
+   * Creates a JCheckBox bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return a JCheckBox bound to the property
    */
-  protected final JCheckBox createCheckBox(final String propertyID, final StateObserver enabledState) {
-    return createCheckBox(propertyID, enabledState, true);
+  protected final JCheckBox createCheckBox(final String propertyId, final StateObserver enabledState) {
+    return createCheckBox(propertyId, enabledState, true);
   }
 
   /**
-   * Creates a JCheckBox bound to the property identified by {@code propertyID}
-   * @param propertyID the ID of the property to bind
+   * Creates a JCheckBox bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @param includeCaption specifies whether or not the caption should be included
    * @return a JCheckBox bound to the property
    */
-  protected final JCheckBox createCheckBox(final String propertyID, final StateObserver enabledState,
+  protected final JCheckBox createCheckBox(final String propertyId, final StateObserver enabledState,
                                            final boolean includeCaption) {
-    return createCheckBox(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID), enabledState, includeCaption);
+    return createCheckBox(editModel.getEntities().getProperty(editModel.getEntityId(), propertyId), enabledState, includeCaption);
   }
 
   /**
@@ -1498,40 +1498,40 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final JCheckBox createCheckBox(final Property property, final StateObserver enabledState,
                                            final boolean includeCaption) {
     final JCheckBox box = EntityUiUtil.createCheckBox(property, editModel, enabledState, includeCaption);
-    setComponent(property.getPropertyID(), box);
+    setComponent(property.getPropertyId(), box);
 
     return box;
   }
 
   /**
-   * Creates a TristateCheckBox bound to the property identified by {@code propertyID}
-   * @param propertyID the ID of the property to bind
+   * Creates a TristateCheckBox bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
    * @return a TristateCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final String propertyID) {
-    return createTristateCheckBox(propertyID, null);
+  protected final TristateCheckBox createTristateCheckBox(final String propertyId) {
+    return createTristateCheckBox(propertyId, null);
   }
 
   /**
-   * Creates a TristateCheckBox bound to the property identified by {@code propertyID}
-   * @param propertyID the ID of the property to bind
+   * Creates a TristateCheckBox bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return a TristateCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final String propertyID, final StateObserver enabledState) {
-    return createTristateCheckBox(propertyID, enabledState, true);
+  protected final TristateCheckBox createTristateCheckBox(final String propertyId, final StateObserver enabledState) {
+    return createTristateCheckBox(propertyId, enabledState, true);
   }
 
   /**
-   * Creates a TristateCheckBox bound to the property identified by {@code propertyID}
-   * @param propertyID the ID of the property to bind
+   * Creates a TristateCheckBox bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @param includeCaption specifies whether or not the caption should be included
    * @return a TristateCheckBox bound to the property
    */
-  protected final TristateCheckBox createTristateCheckBox(final String propertyID, final StateObserver enabledState,
+  protected final TristateCheckBox createTristateCheckBox(final String propertyId, final StateObserver enabledState,
                                                           final boolean includeCaption) {
-    return createTristateCheckBox(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID), enabledState, includeCaption);
+    return createTristateCheckBox(editModel.getEntities().getProperty(editModel.getEntityId(), propertyId), enabledState, includeCaption);
   }
 
   /**
@@ -1563,30 +1563,30 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final TristateCheckBox createTristateCheckBox(final Property property, final StateObserver enabledState,
                                                           final boolean includeCaption) {
     final TristateCheckBox box = EntityUiUtil.createTristateCheckBox(property, editModel, enabledState, includeCaption);
-    setComponent(property.getPropertyID(), box);
+    setComponent(property.getPropertyId(), box);
 
     return box;
   }
 
   /**
-   * Create a JComboBox for the property identified by {@code propertyID}, containing
+   * Create a JComboBox for the property identified by {@code propertyId}, containing
    * values for the boolean values: true, false, null
-   * @param propertyID the ID of the property to bind
+   * @param propertyId the ID of the property to bind
    * @return JComboBox for the given property
    */
-  protected final JComboBox createBooleanComboBox(final String propertyID) {
-    return createBooleanComboBox(propertyID, null);
+  protected final JComboBox createBooleanComboBox(final String propertyId) {
+    return createBooleanComboBox(propertyId, null);
   }
 
   /**
-   * Create a JComboBox for the property identified by {@code propertyID}, containing
+   * Create a JComboBox for the property identified by {@code propertyId}, containing
    * values for the boolean values: true, false, null
-   * @param propertyID the ID of the property to bind
+   * @param propertyId the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return JComboBox for the given property
    */
-  protected final JComboBox createBooleanComboBox(final String propertyID, final StateObserver enabledState) {
-    return createBooleanComboBox(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID),enabledState);
+  protected final JComboBox createBooleanComboBox(final String propertyId, final StateObserver enabledState) {
+    return createBooleanComboBox(editModel.getEntities().getProperty(editModel.getEntityId(), propertyId),enabledState);
   }
 
   /**
@@ -1608,36 +1608,36 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final JComboBox createBooleanComboBox(final Property property, final StateObserver enabledState) {
     final JComboBox ret = EntityUiUtil.createBooleanComboBox(property, editModel, enabledState);
-    setComponent(property.getPropertyID(), ret);
+    setComponent(property.getPropertyId(), ret);
 
     return ret;
   }
 
   /**
-   * Creates a SteppedComboBox bound to the property identified by {@code propertyID}
-   * @param propertyID the ID of the property to bind
+   * Creates a SteppedComboBox bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
    * @param comboBoxModel the ComboBoxModel
    * @param maximumMatch true if maximum match should be used
    * @return a SteppedComboBox bound the the property
    * @see org.jminor.swing.common.ui.combobox.MaximumMatch
    */
-  protected final SteppedComboBox createComboBox(final String propertyID, final ComboBoxModel comboBoxModel,
+  protected final SteppedComboBox createComboBox(final String propertyId, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch) {
-    return createComboBox(propertyID, comboBoxModel, maximumMatch, null);
+    return createComboBox(propertyId, comboBoxModel, maximumMatch, null);
   }
 
   /**
-   * Creates a SteppedComboBox bound to the property identified by {@code propertyID}
-   * @param propertyID the ID of the property to bind
+   * Creates a SteppedComboBox bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
    * @param comboBoxModel the ComboBoxModel
    * @param maximumMatch true if maximum match should be used
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound the the property
    * @see org.jminor.swing.common.ui.combobox.MaximumMatch
    */
-  protected final SteppedComboBox createComboBox(final String propertyID, final ComboBoxModel comboBoxModel,
+  protected final SteppedComboBox createComboBox(final String propertyId, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch, final StateObserver enabledState) {
-    return createComboBox(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID),
+    return createComboBox(editModel.getEntities().getProperty(editModel.getEntityId(), propertyId),
             comboBoxModel, maximumMatch, enabledState);
   }
 
@@ -1669,7 +1669,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     if (maximumMatch) {
       MaximumMatch.enable(comboBox);
     }
-    setComponent(property.getPropertyID(), comboBox);
+    setComponent(property.getPropertyId(), comboBox);
 
     return comboBox;
   }
@@ -1677,51 +1677,51 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   /**
    * Creates a SteppedComboBox containing the values defined by the given value list property,
    * bound to the given property.
-   * @param propertyID the propertyID
+   * @param propertyId the propertyId
    * @return a SteppedComboBox bound to the property
    * @throws IllegalArgumentException in case the property is not a value list property
    */
-  protected final SteppedComboBox createValueListComboBox(final String propertyID) {
-    return createValueListComboBox(propertyID, true);
+  protected final SteppedComboBox createValueListComboBox(final String propertyId) {
+    return createValueListComboBox(propertyId, true);
   }
 
   /**
    * Creates a SteppedComboBox containing the values defined by the given value list property,
    * bound to the given property.
-   * @param propertyID the propertyID
+   * @param propertyId the propertyId
    * @param sortItems if true the items are sorted, otherwise the original ordering is preserved
    * @return a SteppedComboBox bound to the property
    * @throws IllegalArgumentException in case the property is not a value list property
    */
-  protected final SteppedComboBox createValueListComboBox(final String propertyID, final boolean sortItems) {
-    return createValueListComboBox(propertyID, sortItems, null);
+  protected final SteppedComboBox createValueListComboBox(final String propertyId, final boolean sortItems) {
+    return createValueListComboBox(propertyId, sortItems, null);
   }
 
   /**
    * Creates a SteppedComboBox containing the values defined by the given value list property,
    * bound to the given property.
-   * @param propertyID the propertyID
+   * @param propertyId the propertyId
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound to the property
    * @throws IllegalArgumentException in case the property is not a value list property
    */
-  protected final SteppedComboBox createValueListComboBox(final String propertyID, final StateObserver enabledState) {
-    return createValueListComboBox(propertyID, true, enabledState);
+  protected final SteppedComboBox createValueListComboBox(final String propertyId, final StateObserver enabledState) {
+    return createValueListComboBox(propertyId, true, enabledState);
   }
 
   /**
    * Creates a SteppedComboBox containing the values defined by the given value list property,
    * bound to the given property.
-   * @param propertyID the propertyID
+   * @param propertyId the propertyId
    * @param sortItems if true the items are sorted, otherwise the original ordering is preserved
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound to the property
    * @throws IllegalArgumentException in case the property is not a value list property
    */
-  protected final SteppedComboBox createValueListComboBox(final String propertyID, final boolean sortItems, final StateObserver enabledState) {
-    final Property property = editModel.getEntities().getProperty(editModel.getEntityID(), propertyID);
+  protected final SteppedComboBox createValueListComboBox(final String propertyId, final boolean sortItems, final StateObserver enabledState) {
+    final Property property = editModel.getEntities().getProperty(editModel.getEntityId(), propertyId);
     if (!(property instanceof Property.ValueListProperty)) {
-      throw new IllegalArgumentException("Property identified by '" + propertyID + "' is not a ValueListProperty");
+      throw new IllegalArgumentException("Property identified by '" + propertyId + "' is not a ValueListProperty");
     }
 
     return createValueListComboBox((Property.ValueListProperty) property, sortItems, enabledState);
@@ -1757,7 +1757,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final StateObserver enabledState) {
     final SteppedComboBox box = EntityUiUtil.createValueListComboBox(property, editModel, true, enabledState);
-    setComponent(property.getPropertyID(), box);
+    setComponent(property.getPropertyId(), box);
 
     return box;
   }
@@ -1773,31 +1773,31 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final boolean sortItems,
                                                           final StateObserver enabledState) {
     final SteppedComboBox box = EntityUiUtil.createValueListComboBox(property, editModel, sortItems, enabledState);
-    setComponent(property.getPropertyID(), box);
+    setComponent(property.getPropertyId(), box);
 
     return box;
   }
 
   /**
-   * Creates an editable SteppedComboBox bound to the property identified by {@code propertyID}
-   * @param propertyID the ID of the property to bind
+   * Creates an editable SteppedComboBox bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
    * @param comboBoxModel the ComboBoxModel
    * @return an editable SteppedComboBox bound the the property
    */
-  protected final SteppedComboBox createEditableComboBox(final String propertyID, final ComboBoxModel comboBoxModel) {
-    return createEditableComboBox(propertyID, comboBoxModel, null);
+  protected final SteppedComboBox createEditableComboBox(final String propertyId, final ComboBoxModel comboBoxModel) {
+    return createEditableComboBox(propertyId, comboBoxModel, null);
   }
 
   /**
-   * Creates an editable SteppedComboBox bound to the property identified by {@code propertyID}
-   * @param propertyID the ID of the property to bind
+   * Creates an editable SteppedComboBox bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
    * @param comboBoxModel the ComboBoxModel
    * @param enabledState a state for controlling the enabled state of the component
    * @return an editable SteppedComboBox bound the the property
    */
-  protected final SteppedComboBox createEditableComboBox(final String propertyID, final ComboBoxModel comboBoxModel,
+  protected final SteppedComboBox createEditableComboBox(final String propertyId, final ComboBoxModel comboBoxModel,
                                                          final StateObserver enabledState) {
-    return createEditableComboBox(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID),
+    return createEditableComboBox(editModel.getEntities().getProperty(editModel.getEntityId(), propertyId),
             comboBoxModel, enabledState);
   }
 
@@ -1811,43 +1811,43 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final SteppedComboBox createEditableComboBox(final Property property, final ComboBoxModel comboBoxModel,
                                                          final StateObserver enabledState) {
     final SteppedComboBox ret = EntityUiUtil.createComboBox(property, editModel, comboBoxModel, enabledState, true);
-    setComponent(property.getPropertyID(), ret);
+    setComponent(property.getPropertyId(), ret);
 
     return ret;
   }
 
   /**
-   * Creates a SteppedComboBox bound to the property identified by {@code propertyID}, the combo box
+   * Creates a SteppedComboBox bound to the property identified by {@code propertyId}, the combo box
    * contains the underlying values of the property
-   * @param propertyID the ID of the property to bind
+   * @param propertyId the ID of the property to bind
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final String propertyID) {
-    return createPropertyComboBox(propertyID, null);
+  protected final SteppedComboBox createPropertyComboBox(final String propertyId) {
+    return createPropertyComboBox(propertyId, null);
   }
 
   /**
-   * Creates a SteppedComboBox bound to the property identified by {@code propertyID}, the combo box
+   * Creates a SteppedComboBox bound to the property identified by {@code propertyId}, the combo box
    * contains the underlying values of the property
-   * @param propertyID the ID of the property to bind
+   * @param propertyId the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final String propertyID, final StateObserver enabledState) {
-    return createPropertyComboBox(propertyID, enabledState, false);
+  protected final SteppedComboBox createPropertyComboBox(final String propertyId, final StateObserver enabledState) {
+    return createPropertyComboBox(propertyId, enabledState, false);
   }
 
   /**
-   * Creates a SteppedComboBox bound to the property identified by {@code propertyID}, the combo box
+   * Creates a SteppedComboBox bound to the property identified by {@code propertyId}, the combo box
    * contains the underlying values of the property
-   * @param propertyID the ID of the property to bind
+   * @param propertyId the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @param editable true if the combo box should be editable, only works with combo boxes based on String.class properties
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final String propertyID, final StateObserver enabledState,
+  protected final SteppedComboBox createPropertyComboBox(final String propertyId, final StateObserver enabledState,
                                                          final boolean editable) {
-    return createPropertyComboBox(editModel.getEntities().getColumnProperty(editModel.getEntityID(), propertyID),
+    return createPropertyComboBox(editModel.getEntities().getColumnProperty(editModel.getEntityId(), propertyId),
             enabledState, editable);
   }
 
@@ -1883,32 +1883,32 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final StateObserver enabledState,
                                                          final boolean editable) {
     final SteppedComboBox ret = EntityUiUtil.createPropertyComboBox(property, editModel, enabledState, editable);
-    setComponent(property.getPropertyID(), ret);
+    setComponent(property.getPropertyId(), ret);
 
     return ret;
   }
 
   /**
-   * Creates a EntityComboBox bound to the foreign key property identified by {@code foreignKeyPropertyID}
-   * @param foreignKeyPropertyID the ID of the property to bind
+   * Creates a EntityComboBox bound to the foreign key property identified by {@code foreignKeyPropertyId}
+   * @param foreignKeyPropertyId the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return a EntityComboBox bound to the property
    */
-  protected final EntityComboBox createForeignKeyComboBox(final String foreignKeyPropertyID, final StateObserver enabledState) {
+  protected final EntityComboBox createForeignKeyComboBox(final String foreignKeyPropertyId, final StateObserver enabledState) {
     return createForeignKeyComboBox((Property.ForeignKeyProperty)
-            editModel.getEntities().getProperty(editModel.getEntityID(), foreignKeyPropertyID), enabledState);
+            editModel.getEntities().getProperty(editModel.getEntityId(), foreignKeyPropertyId), enabledState);
   }
 
   /**
-   * Creates an EntityComboBox bound to the foreign key property identified by {@code foreignKeyPropertyID}
-   * @param foreignKeyPropertyID the ID of the foreign key property to bind
+   * Creates an EntityComboBox bound to the foreign key property identified by {@code foreignKeyPropertyId}
+   * @param foreignKeyPropertyId the ID of the foreign key property to bind
    * combination used to create new instances of the entity this EntityComboBox is based on
    * EntityComboBox is focusable
    * @return an EntityComboBox bound to the property
    */
-  protected final EntityComboBox createForeignKeyComboBox(final String foreignKeyPropertyID) {
-    return createForeignKeyComboBox(editModel.getEntities().getForeignKeyProperty(editModel.getEntityID(),
-            foreignKeyPropertyID), null);
+  protected final EntityComboBox createForeignKeyComboBox(final String foreignKeyPropertyId) {
+    return createForeignKeyComboBox(editModel.getEntities().getForeignKeyProperty(editModel.getEntityId(),
+            foreignKeyPropertyId), null);
   }
 
   /**
@@ -1931,32 +1931,32 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final EntityComboBox createForeignKeyComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final StateObserver enabledState) {
     final EntityComboBox ret = EntityUiUtil.createForeignKeyComboBox(foreignKeyProperty, editModel, enabledState);
-    setComponent(foreignKeyProperty.getPropertyID(), ret);
+    setComponent(foreignKeyProperty.getPropertyId(), ret);
 
     return ret;
   }
 
   /**
-   * Creates an EntityLookupField bound to the property identified by {@code propertyID}, the property
+   * Creates an EntityLookupField bound to the property identified by {@code foreignKeypropertyId}, the property
    * must be an Property.ForeignKeyProperty
-   * @param foreignKeyPropertyID the ID of the foreign key property to bind
+   * @param foreignKeyPropertyId the ID of the foreign key property to bind
    * @return an EntityLookupField bound the property
    */
-  protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyID) {
-    return createForeignKeyLookupField(foreignKeyPropertyID, (StateObserver) null);
+  protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyId) {
+    return createForeignKeyLookupField(foreignKeyPropertyId, (StateObserver) null);
   }
 
   /**
-   * Creates an EntityLookupField bound to the property identified by {@code propertyID}, the property
+   * Creates an EntityLookupField bound to the property identified by {@code foreignKeypropertyId}, the property
    * must be an Property.ForeignKeyProperty
-   * @param foreignKeyPropertyID the ID of the foreign key property to bind
+   * @param foreignKeyPropertyId the ID of the foreign key property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return an EntityLookupField bound the property
    */
-  protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyID,
+  protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyId,
                                                                 final StateObserver enabledState) {
-    final Property.ForeignKeyProperty fkProperty = editModel.getEntities().getForeignKeyProperty(editModel.getEntityID(),
-            foreignKeyPropertyID);
+    final Property.ForeignKeyProperty fkProperty = editModel.getEntities().getForeignKeyProperty(editModel.getEntityId(),
+            foreignKeyPropertyId);
 
     return createForeignKeyLookupField(fkProperty, enabledState);
   }
@@ -1979,18 +1979,18 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final EntityLookupField createForeignKeyLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                                 final StateObserver enabledState) {
     final EntityLookupField ret = EntityUiUtil.createForeignKeyLookupField(foreignKeyProperty, editModel, enabledState);
-    setComponent(foreignKeyProperty.getPropertyID(), ret);
+    setComponent(foreignKeyProperty.getPropertyId(), ret);
 
     return ret;
   }
 
   /**
-   * Creates an uneditable JTextField bound to the property identified by {@code propertyID}
-   * @param propertyID the ID of the property to bind
+   * Creates an uneditable JTextField bound to the property identified by {@code propertyId}
+   * @param propertyId the ID of the property to bind
    * @return an uneditable JTextField bound to the property
    */
-  protected final JTextField createForeignKeyField(final String propertyID) {
-    return createForeignKeyField(editModel.getEntities().getForeignKeyProperty(editModel.getEntityID(), propertyID));
+  protected final JTextField createForeignKeyField(final String propertyId) {
+    return createForeignKeyField(editModel.getEntities().getForeignKeyProperty(editModel.getEntityId(), propertyId));
   }
 
   /**
@@ -2000,28 +2000,28 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final JTextField createForeignKeyField(final Property.ForeignKeyProperty foreignKeyProperty) {
     final JTextField ret = EntityUiUtil.createForeignKeyField(foreignKeyProperty, editModel);
-    setComponent(foreignKeyProperty.getPropertyID(), ret);
+    setComponent(foreignKeyProperty.getPropertyId(), ret);
 
     return ret;
   }
 
   /**
-   * Creates a JLabel with a caption from the property identified by {@code propertyID}
-   * @param propertyID the ID of the property from which to retrieve the caption
+   * Creates a JLabel with a caption from the property identified by {@code propertyId}
+   * @param propertyId the ID of the property from which to retrieve the caption
    * @return a JLabel for the given property
    */
-  protected final JLabel createLabel(final String propertyID) {
-    return createLabel(propertyID, JLabel.LEFT);
+  protected final JLabel createLabel(final String propertyId) {
+    return createLabel(propertyId, JLabel.LEFT);
   }
 
   /**
-   * Creates a JLabel with a caption from the given property identified by {@code propertyID}
-   * @param propertyID the ID of the property from which to retrieve the caption
+   * Creates a JLabel with a caption from the given property identified by {@code propertyId}
+   * @param propertyId the ID of the property from which to retrieve the caption
    * @param horizontalAlignment the horizontal text alignment
    * @return a JLabel for the given property
    */
-  protected final JLabel createLabel(final String propertyID, final int horizontalAlignment) {
-    return EntityUiUtil.createLabel(editModel.getEntities().getProperty(editModel.getEntityID(), propertyID), horizontalAlignment);
+  protected final JLabel createLabel(final String propertyId, final int horizontalAlignment) {
+    return EntityUiUtil.createLabel(editModel.getEntities().getProperty(editModel.getEntityId(), propertyId), horizontalAlignment);
   }
 
   /**
@@ -2101,8 +2101,8 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     }
   }
 
-  private boolean readOnly(final String propertyID) {
-    final Property property = editModel.getEntities().getProperty(editModel.getEntityID(), propertyID);
+  private boolean readOnly(final String propertyId) {
+    final Property property = editModel.getEntities().getProperty(editModel.getEntityId(), propertyId);
     return property.isReadOnly() || (property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).isUpdatable());
   }
 

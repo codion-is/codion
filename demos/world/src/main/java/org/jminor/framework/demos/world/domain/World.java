@@ -85,7 +85,7 @@ public final class World extends Entities{
                     .setNullable(false)
                     .setMaxLength(2))
             .setOrderByClause(COUNTRY_NAME)
-            .setSearchPropertyIDs(COUNTRY_NAME)
+            .setSearchPropertyIds(COUNTRY_NAME)
             .setStringProvider(new Entities.StringProvider(COUNTRY_NAME))
             .setCaption("Country");
 
@@ -105,7 +105,7 @@ public final class World extends Entities{
                     .setNullable(false))
             .setKeyGenerator(sequenceKeyGenerator("world.city_seq"))
             .setOrderByClause(CITY_NAME)
-            .setSearchPropertyIDs(CITY_NAME)
+            .setSearchPropertyIds(CITY_NAME)
             .setStringProvider(new Entities.StringProvider(CITY_NAME))
             .setCaption("City");
   }

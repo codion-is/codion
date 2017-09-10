@@ -75,7 +75,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
    * @see #deleteSelected()
    * @see #update(java.util.List)
    * @throws IllegalStateException in case an {@link EntityEditModel} has already been associated with this {@link EntityTableModel}
-   * @throws IllegalArgumentException in case the given {@link EntityEditModel} is not based on the same entityID as this {@link EntityTableModel}
+   * @throws IllegalArgumentException in case the given {@link EntityEditModel} is not based on the same entityId as this {@link EntityTableModel}
    */
   void setEditModel(final E editModel);
 
@@ -91,10 +91,10 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
    * For every entity in this table model, replaces the foreign key instance bearing the primary
    * key with the corresponding entity from {@code foreignKeyValues}, useful when property
    * values have been changed in the referenced entity that must be reflected in the table model.
-   * @param foreignKeyEntityID the entity ID of the foreign key values
+   * @param foreignKeyEntityId the entity ID of the foreign key values
    * @param foreignKeyValues the foreign key entities
    */
-  void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> foreignKeyValues);
+  void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues);
 
   /**
    * Adds the given entities to this table model, it is recommended to only add entities
@@ -161,11 +161,11 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   EntityTableModel<E> setBatchUpdateAllowed(final boolean batchUpdateAllowed);
 
   /**
-   * Returns the {@link ColumnSummaryModel} associated with the property identified by {@code propertyID}
-   * @param propertyID the ID of the property
+   * Returns the {@link ColumnSummaryModel} associated with the property identified by {@code propertyId}
+   * @param propertyId the ID of the property
    * @return the {@link ColumnSummaryModel} for the given property ID
    */
-  ColumnSummaryModel getColumnSummaryModel(final String propertyID);
+  ColumnSummaryModel getColumnSummaryModel(final String propertyId);
 
   /**
    * @param row the row for which to retrieve the background color
@@ -176,10 +176,10 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   Object getPropertyBackgroundColor(final int row, final Property property);
 
   /**
-   * @param propertyID the propertyID
+   * @param propertyId the propertyId
    * @return the index of the column representing the given property
    */
-  int getPropertyColumnIndex(final String propertyID);
+  int getPropertyColumnIndex(final String propertyId);
 
   /**
    * @return a String describing the selected/filtered state of this table model
@@ -276,7 +276,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   /**
    * Finds entities according to the values of propertyValues
    * @param values the property values to use as condition mapped
-   * to their respective propertyIDs
+   * to their respective propertyIds
    * @return the entities having the exact same property values as in properties
    */
   Collection<Entity> getEntitiesByPropertyValue(final Map<String, Object> values);
@@ -306,9 +306,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
 
   /**
    * Arranges the column model so that only the given columns are visible and in the given order
-   * @param propertyIDs the column identifiers
+   * @param propertyIds the column identifiers
    */
-  void setColumns(final String... propertyIDs);
+  void setColumns(final String... propertyIds);
 
   /**
    * @param delimiter the delimiter

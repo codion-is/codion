@@ -51,7 +51,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
   /** {@inheritDoc} */
   @Override
   public final String toString() {
-    final StringBuilder stringBuilder = new StringBuilder(getColumnIdentifier().getPropertyID());
+    final StringBuilder stringBuilder = new StringBuilder(getColumnIdentifier().getPropertyId());
     if (isEnabled()) {
       stringBuilder.append(getConditionType());
       stringBuilder.append(getUpperBound() != null ? toString(getUpperBound()) : "null");

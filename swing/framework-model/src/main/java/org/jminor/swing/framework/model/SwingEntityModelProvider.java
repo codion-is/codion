@@ -21,7 +21,7 @@ public class SwingEntityModelProvider
 
   protected static final Logger LOG = LoggerFactory.getLogger(SwingEntityModelProvider.class);
 
-  private final String entityID;
+  private final String entityId;
 
   private final List<EntityModelProvider<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel>> detailModelProviders = new ArrayList<>();
 
@@ -31,26 +31,26 @@ public class SwingEntityModelProvider
 
   /**
    * Instantiates a new SwingeEntityModelProvider based on the given entity ID
-   * @param entityID the entity ID
+   * @param entityId the entity ID
    */
-  public SwingEntityModelProvider(final String entityID) {
-    this.entityID = entityID;
+  public SwingEntityModelProvider(final String entityId) {
+    this.entityId = entityId;
   }
 
   /**
    * Instantiates a new SwingEntityModelProvider based on the given entity ID
-   * @param entityID the entity ID
+   * @param entityId the entity ID
    * @param entityModelClass the entity model class
    */
-  public SwingEntityModelProvider(final String entityID, final Class<? extends SwingEntityModel> entityModelClass) {
-    this.entityID = entityID;
+  public SwingEntityModelProvider(final String entityId, final Class<? extends SwingEntityModel> entityModelClass) {
+    this.entityId = entityId;
     this.modelClass = entityModelClass;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final String getEntityID() {
-    return entityID;
+  public final String getEntityId() {
+    return entityId;
   }
 
   /** {@inheritDoc} */
@@ -116,13 +116,13 @@ public class SwingEntityModelProvider
   /** {@inheritDoc} */
   @Override
   public final boolean equals(final Object obj) {
-    return obj instanceof EntityModelProvider && ((EntityModelProvider) obj).getEntityID().equals(getEntityID());
+    return obj instanceof EntityModelProvider && ((EntityModelProvider) obj).getEntityId().equals(getEntityId());
   }
 
   /** {@inheritDoc} */
   @Override
   public final int hashCode() {
-    return getEntityID().hashCode();
+    return getEntityId().hashCode();
   }
 
   /** {@inheritDoc} */
@@ -238,10 +238,10 @@ public class SwingEntityModelProvider
   }
 
   private SwingEntityEditModel initializeDefaultEditModel(final EntityConnectionProvider connectionProvider) {
-    return new SwingEntityEditModel(entityID, connectionProvider);
+    return new SwingEntityEditModel(entityId, connectionProvider);
   }
 
   private SwingEntityTableModel initializeDefaultTableModel(final EntityConnectionProvider connectionProvider) {
-    return new SwingEntityTableModel(entityID, connectionProvider);
+    return new SwingEntityTableModel(entityId, connectionProvider);
   }
 }

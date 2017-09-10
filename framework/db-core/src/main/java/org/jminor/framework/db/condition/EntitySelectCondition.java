@@ -22,18 +22,18 @@ public interface EntitySelectCondition extends EntityCondition {
   /**
    * Adds the given property to the underlying order by clause, as ascending
    * Overrides {@link #setOrderByClause(String)}.
-   * @param propertyID the propertyID
+   * @param propertyId the propertyId
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition orderByAscending(final String propertyID);
+  EntitySelectCondition orderByAscending(final String propertyId);
 
   /**
    * Adds the given property to the underlying order by clause, as descending.
    * Overrides {@link #setOrderByClause(String)}.
-   * @param propertyID the propertyID
+   * @param propertyId the propertyId
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition orderByDescending(final String propertyID);
+  EntitySelectCondition orderByDescending(final String propertyId);
 
   /**
    * @return the limit to use for the given condition
@@ -79,18 +79,18 @@ public interface EntitySelectCondition extends EntityCondition {
   /**
    * Returns the number of levels of foreign key values to fetch, with 0 meaning no referenced entities
    * should be fetched.
-   * @param foreignKeyPropertyID the foreign key property ID
+   * @param foreignKeyPropertyId the foreign key property ID
    * @return the number of levels of foreign key values to fetch
    */
-  int getForeignKeyFetchDepthLimit(final String foreignKeyPropertyID);
+  int getForeignKeyFetchDepthLimit(final String foreignKeyPropertyId);
 
   /**
    * Limit the levels of foreign keys to fetch via the given foreign key property, default 1
-   * @param foreignKeyPropertyID the property id
+   * @param foreignKeyPropertyId the property id
    * @param fetchDepthLimit the foreign key fetch depth limit
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setForeignKeyFetchDepthLimit(final String foreignKeyPropertyID, final int fetchDepthLimit);
+  EntitySelectCondition setForeignKeyFetchDepthLimit(final String foreignKeyPropertyId, final int fetchDepthLimit);
 
   /**
    * Limit the levels of foreign keys to fetch, default 1

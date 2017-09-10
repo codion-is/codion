@@ -137,8 +137,8 @@ public final class EntityUiUtil {
 
   /**
    * Performs a lookup for the given entity type, using a EntityLookupField displayed
-   * in a dialog, using the default search properties for the given entityID.
-   * @param entityID the entityID of the entity to perform a lookup for
+   * in a dialog, using the default search properties for the given entityId.
+   * @param entityId the entityId of the entity to perform a lookup for
    * @param connectionProvider the connection provider
    * @param singleSelection if true only a single entity can be selected
    * @param dialogParent the component serving as the dialog parent
@@ -147,16 +147,16 @@ public final class EntityUiUtil {
    * @see EntityLookupField
    * @see Entities#getSearchProperties(String)
    */
-  public static Collection<Entity> lookupEntities(final String entityID, final EntityConnectionProvider connectionProvider,
+  public static Collection<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
                                                   final boolean singleSelection, final JComponent dialogParent,
                                                   final String lookupCaption) {
-    return lookupEntities(entityID, connectionProvider, singleSelection, dialogParent, lookupCaption, lookupCaption);
+    return lookupEntities(entityId, connectionProvider, singleSelection, dialogParent, lookupCaption, lookupCaption);
   }
 
   /**
    * Performs a lookup for the given entity type, using a EntityLookupField displayed
-   * in a dialog, using the default search properties for the given entityID.
-   * @param entityID the entityID of the entity to perform a lookup for
+   * in a dialog, using the default search properties for the given entityId.
+   * @param entityId the entityId of the entity to perform a lookup for
    * @param connectionProvider the connection provider
    * @param singleSelection if true only a single entity can be selected
    * @param dialogParent the component serving as the dialog parent
@@ -166,10 +166,10 @@ public final class EntityUiUtil {
    * @see EntityLookupField
    * @see Entities#getSearchProperties(String)
    */
-  public static Collection<Entity> lookupEntities(final String entityID, final EntityConnectionProvider connectionProvider,
+  public static Collection<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
                                                   final boolean singleSelection, final JComponent dialogParent,
                                                   final String lookupCaption, final String dialogTitle) {
-    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityID, connectionProvider);
+    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityId, connectionProvider);
     if (singleSelection) {
       lookupModel.getMultipleSelectionAllowedValue().set(false);
     }
@@ -387,7 +387,7 @@ public final class EntityUiUtil {
       public void set(final String value) {/*read only*/}
       @Override
       public String get() {
-        final Entity value = editModel.getForeignKeyValue(foreignKeyProperty.getPropertyID());
+        final Entity value = editModel.getForeignKeyValue(foreignKeyProperty.getPropertyId());
 
         return value == null ? "" : value.toString();
       }
@@ -751,24 +751,24 @@ public final class EntityUiUtil {
 
   /**
    * Creates a combo box based on the values of the given property
-   * @param propertyID the propertyID
+   * @param propertyId the propertyId
    * @param editModel the edit model to bind with the value
    * @return a combo box based on the property values
    */
-  public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel) {
-    return createPropertyComboBox(propertyID, editModel, null);
+  public static SteppedComboBox createPropertyComboBox(final String propertyId, final EntityEditModel editModel) {
+    return createPropertyComboBox(propertyId, editModel, null);
   }
 
   /**
    * Creates a combo box based on the values of the given property
-   * @param propertyID the propertyID
+   * @param propertyId the propertyId
    * @param editModel the edit model to bind with the value
    * @param enabledState the state controlling the enabled state of the panel
    * @return a combo box based on the property values
    */
-  public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel,
+  public static SteppedComboBox createPropertyComboBox(final String propertyId, final EntityEditModel editModel,
                                                        final StateObserver enabledState) {
-    return createPropertyComboBox(editModel.getEntities().getColumnProperty(editModel.getEntityID(), propertyID),
+    return createPropertyComboBox(editModel.getEntities().getColumnProperty(editModel.getEntityId(), propertyId),
             editModel, enabledState);
   }
 
@@ -805,7 +805,7 @@ public final class EntityUiUtil {
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
                                                        final StateObserver enabledState, final boolean editable) {
     final SteppedComboBox comboBox = createComboBox(property, editModel,
-            (ComboBoxModel) ((SwingEntityEditModel) editModel).getComboBoxModel(property.getPropertyID()), enabledState, editable);
+            (ComboBoxModel) ((SwingEntityEditModel) editModel).getComboBoxModel(property.getPropertyId()), enabledState, editable);
     if (!editable) {
       addComboBoxCompletion(comboBox);
     }
@@ -816,13 +816,13 @@ public final class EntityUiUtil {
   /**
    * Creates a panel containing an EntityComboBox and a button for filtering that combo box based on a foreign key
    * @param entityComboBox the combo box
-   * @param foreignKeyPropertyID the foreign key to base the filtering on
+   * @param foreignKeyPropertyId the foreign key to base the filtering on
    * @param filterButtonTakesFocus if true then the filter button is focusable
    * @return a panel with a combo box and a button
    */
-  public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final String foreignKeyPropertyID,
+  public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final String foreignKeyPropertyId,
                                                        final boolean filterButtonTakesFocus) {
-    return createEastButtonPanel(entityComboBox, entityComboBox.createForeignKeyFilterControl(foreignKeyPropertyID),
+    return createEastButtonPanel(entityComboBox, entityComboBox.createForeignKeyFilterControl(foreignKeyPropertyId),
             filterButtonTakesFocus);
   }
 
@@ -959,8 +959,8 @@ public final class EntityUiUtil {
   }
 
   private static void checkProperty(final Property property, final EntityEditModel editModel) {
-    if (!property.getEntityID().equals(editModel.getEntityID())) {
-      throw new IllegalArgumentException("Entity type mismatch: " + property.getEntityID() + ", should be: " + editModel.getEntityID());
+    if (!property.getEntityId().equals(editModel.getEntityId())) {
+      throw new IllegalArgumentException("Entity type mismatch: " + property.getEntityId() + ", should be: " + editModel.getEntityId());
     }
   }
 
@@ -973,22 +973,22 @@ public final class EntityUiUtil {
   private static void populateEntityMenu(final JComponent rootMenu, final Entity entity,
                                          final EntityConnectionProvider connectionProvider) {
     final Entities entities = connectionProvider.getEntities();
-    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entities.getPrimaryKeyProperties(entity.getEntityID())));
-    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(entities.getForeignKeyProperties(entity.getEntityID())));
-    populateValueMenu(rootMenu, entity, new ArrayList<>(entities.getProperties(entity.getEntityID(), true)), entities);
+    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entities.getPrimaryKeyProperties(entity.getEntityId())));
+    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(entities.getForeignKeyProperties(entity.getEntityId())));
+    populateValueMenu(rootMenu, entity, new ArrayList<>(entities.getProperties(entity.getEntityId(), true)), entities);
   }
 
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.ColumnProperty> primaryKeyProperties) {
     TextUtil.collate(primaryKeyProperties);
     for (final Property.ColumnProperty property : primaryKeyProperties) {
       final boolean modified = entity.isModified(property);
-      final StringBuilder builder = new StringBuilder("[PK] ").append(property.getPropertyID()).append(": ").append(entity.getAsString(property));
+      final StringBuilder builder = new StringBuilder("[PK] ").append(property.getPropertyId()).append(": ").append(entity.getAsString(property));
       if (modified) {
         builder.append(getOriginalValue(entity, property));
       }
       final JMenuItem menuItem = new JMenuItem(builder.toString());
       setInvalidModified(menuItem, true, modified);
-      menuItem.setToolTipText(property.getPropertyID());
+      menuItem.setToolTipText(property.getPropertyId());
       rootMenu.add(menuItem);
     }
   }
@@ -998,17 +998,17 @@ public final class EntityUiUtil {
                                              final List<Property.ForeignKeyProperty> fkProperties) {
     try {
       TextUtil.collate(fkProperties);
-      final Entity.Validator validator = connectionProvider.getEntities().getValidator(entity.getEntityID());
+      final Entity.Validator validator = connectionProvider.getEntities().getValidator(entity.getEntityId());
       for (final Property.ForeignKeyProperty property : fkProperties) {
         final boolean fkValueNull = entity.isForeignKeyNull(property);
-        final boolean isLoaded = entity.isLoaded(property.getPropertyID());
+        final boolean isLoaded = entity.isLoaded(property.getPropertyId());
         final boolean valid = isValid(validator, entity, property);
         final boolean modified = entity.isModified(property);
         final String toolTipText = getForeignKeyColumnNames(property);
         if (!fkValueNull) {
           final Entity referencedEntity;
           if (isLoaded) {
-            referencedEntity = entity.getForeignKey(property.getPropertyID());
+            referencedEntity = entity.getForeignKey(property.getPropertyId());
           }
           else {
             referencedEntity = connectionProvider.getConnection().selectSingle(entity.getReferencedKey(property));
@@ -1023,7 +1023,7 @@ public final class EntityUiUtil {
           final JMenu foreignKeyMenu = new JMenu(builder.toString());
           setInvalidModified(foreignKeyMenu, valid, modified);
           foreignKeyMenu.setToolTipText(toolTipText);
-          populateEntityMenu(foreignKeyMenu, entity.getForeignKey(property.getPropertyID()), connectionProvider);
+          populateEntityMenu(foreignKeyMenu, entity.getForeignKey(property.getPropertyId()), connectionProvider);
           rootMenu.add(foreignKeyMenu);
         }
         else {
@@ -1054,7 +1054,7 @@ public final class EntityUiUtil {
                                         final Entities entities) {
     TextUtil.collate(properties);
     final int maxValueLength = 20;
-    final Entity.Validator validator = entities.getValidator(entity.getEntityID());
+    final Entity.Validator validator = entities.getValidator(entity.getEntityId());
     for (final Property property : properties) {
       final boolean valid = isValid(validator, entity, property);
       final boolean modified = entity.isModified(property);
@@ -1080,7 +1080,7 @@ public final class EntityUiUtil {
         setInvalidModified(menuItem, valid, modified);
         final StringBuilder toolTipBuilder = new StringBuilder();
         if (property instanceof Property.ColumnProperty) {
-          toolTipBuilder.append(property.getPropertyID());
+          toolTipBuilder.append(property.getPropertyId());
         }
         if (longValue) {
           if (value.length() > MAXIMUM_VALUE_LENGTH) {

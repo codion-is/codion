@@ -100,9 +100,9 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
 
   /** {@inheritDoc} */
   @Override
-  public final boolean containsEntityModel(final String entityID) {
+  public final boolean containsEntityModel(final String entityId) {
     for (final M entityModel : entityModels) {
-      if (entityModel.getEntityID().equals(entityID)) {
+      if (entityModel.getEntityId().equals(entityId)) {
         return true;
       }
     }
@@ -152,14 +152,14 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
 
   /** {@inheritDoc} */
   @Override
-  public final M getEntityModel(final String entityID) {
+  public final M getEntityModel(final String entityId) {
     for (final M entityModel : entityModels) {
-      if (entityModel.getEntityID().equals(entityID)) {
+      if (entityModel.getEntityId().equals(entityId)) {
         return entityModel;
       }
     }
 
-    throw new IllegalArgumentException("EntityModel for type " + entityID + " not  found in model: " + this);
+    throw new IllegalArgumentException("EntityModel for type " + entityId + " not  found in model: " + this);
   }
 
   /** {@inheritDoc} */

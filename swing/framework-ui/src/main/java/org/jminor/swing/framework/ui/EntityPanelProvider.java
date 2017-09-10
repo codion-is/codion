@@ -42,36 +42,36 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
 
   /**
    * Instantiates a new EntityPanelProvider for the given entity type
-   * @param entityID the entity ID
+   * @param entityId the entity ID
    */
-  public EntityPanelProvider(final String entityID) {
-    this(entityID, null);
+  public EntityPanelProvider(final String entityId) {
+    this(entityId, null);
   }
 
   /**
    * Instantiates a new EntityPanelProvider for the given entity type
-   * @param entityID the entity ID
+   * @param entityId the entity ID
    * @param caption the panel caption
    */
-  public EntityPanelProvider(final String entityID, final String caption) {
-    this(entityID, caption, SwingEntityModel.class, EntityPanel.class);
+  public EntityPanelProvider(final String entityId, final String caption) {
+    this(entityId, caption, SwingEntityModel.class, EntityPanel.class);
   }
 
   /**
    * Instantiates a new EntityPanelProvider
-   * @param entityID the entityID
+   * @param entityId the entityId
    * @param caption the caption to use when this EntityPanelProvider is shown in f.x. menus
    * @param entityModelClass the Class of the EntityModel
    * @param entityPanelClass the Class of the EntityPanel
    */
-  public EntityPanelProvider(final String entityID, final String caption, final Class<? extends SwingEntityModel> entityModelClass,
+  public EntityPanelProvider(final String entityId, final String caption, final Class<? extends SwingEntityModel> entityModelClass,
                              final Class<? extends EntityPanel> entityPanelClass) {
-    Objects.requireNonNull(entityID, "entityID");
+    Objects.requireNonNull(entityId, "entityId");
     Objects.requireNonNull(entityModelClass, "entityModelClass");
     Objects.requireNonNull(entityPanelClass, "entityPanelClass");
     this.caption = caption;
     this.panelClass = entityPanelClass;
-    this.modelProvider = new SwingEntityModelProvider(entityID, entityModelClass);
+    this.modelProvider = new SwingEntityModelProvider(entityId, entityModelClass);
   }
 
   /**
@@ -96,8 +96,8 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
   /**
    * @return the entity ID
    */
-  public final String getEntityID() {
-    return modelProvider.getEntityID();
+  public final String getEntityId() {
+    return modelProvider.getEntityId();
   }
 
   /**
@@ -266,14 +266,14 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
   @Override
   public final boolean equals(final Object obj) {
     return obj instanceof EntityPanelProvider &&
-            ((EntityPanelProvider) obj).modelProvider.getEntityID().equals(modelProvider.getEntityID()) &&
+            ((EntityPanelProvider) obj).modelProvider.getEntityId().equals(modelProvider.getEntityId()) &&
             ((EntityPanelProvider) obj).modelProvider.getModelClass().equals(modelProvider.getModelClass());
   }
 
   /** {@inheritDoc} */
   @Override
   public final int hashCode() {
-    return modelProvider.getEntityID().hashCode() + modelProvider.getModelClass().hashCode();
+    return modelProvider.getEntityId().hashCode() + modelProvider.getModelClass().hashCode();
   }
 
   /**
@@ -324,7 +324,7 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
         for (final EntityPanelProvider detailPanelProvider : detailPanelProviders) {
-          final SwingEntityModel detailModel = model.getDetailModel(detailPanelProvider.getEntityID());
+          final SwingEntityModel detailModel = model.getDetailModel(detailPanelProvider.getEntityId());
           final EntityPanel detailPanel = detailPanelProvider.createPanel(detailModel);
           entityPanel.addDetailPanel(detailPanel);
         }
@@ -387,7 +387,7 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
       if (panelClass.equals(EntityPanel.class)) {
         final EntityTablePanel tablePanel = entityModel.containsTableModel() ? initializeTablePanel(entityModel.getTableModel()) : null;
         final EntityEditPanel editPanel = editPanelClass == null ? null : initializeEditPanel(entityModel.getEditModel());
-        final String panelCaption = caption == null ? entityModel.getConnectionProvider().getEntities().getCaption(entityModel.getEntityID()) : caption;
+        final String panelCaption = caption == null ? entityModel.getConnectionProvider().getEntities().getCaption(entityModel.getEntityId()) : caption;
         entityPanel = panelClass.getConstructor(SwingEntityModel.class, String.class, EntityEditPanel.class, EntityTablePanel.class)
                 .newInstance(entityModel, panelCaption, editPanel, tablePanel);
       }
@@ -407,10 +407,10 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
 
   private EntityEditPanel initializeEditPanel(final SwingEntityEditModel editModel) {
     if (editPanelClass == null) {
-      throw new IllegalArgumentException("No edit panel class has been specified for entity panel provider: " + getEntityID());
+      throw new IllegalArgumentException("No edit panel class has been specified for entity panel provider: " + getEntityId());
     }
-    if (!editModel.getEntityID().equals(getEntityID())) {
-      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityID() + ", required: " + getEntityID());
+    if (!editModel.getEntityId().equals(getEntityId())) {
+      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityId() + ", required: " + getEntityId());
     }
     try {
       final EntityEditPanel editPanel = editPanelClass.getConstructor(SwingEntityEditModel.class).newInstance(editModel);
@@ -428,8 +428,8 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
 
   private EntityTablePanel initializeTablePanel(final SwingEntityTableModel tableModel) {
     try {
-      if (!tableModel.getEntityID().equals(getEntityID())) {
-        throw new IllegalArgumentException("Entity ID mismatch, tableModel: " + tableModel.getEntityID() + ", required: " + getEntityID());
+      if (!tableModel.getEntityId().equals(getEntityId())) {
+        throw new IllegalArgumentException("Entity ID mismatch, tableModel: " + tableModel.getEntityId() + ", required: " + getEntityId());
       }
       final EntityTablePanel tablePanel = tablePanelClass.getConstructor(SwingEntityTableModel.class).newInstance(tableModel);
       configureTablePanel(tablePanel);

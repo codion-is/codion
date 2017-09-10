@@ -24,7 +24,7 @@ public final class TestLoginProxy implements LoginProxy {
   }
 
   @Override
-  public String getClientTypeID() {
+  public String getClientTypeId() {
     return "TestLoginProxy";
   }
 

@@ -46,7 +46,7 @@ public final class Chinook extends Entities {
                     .setPreferredColumnWidth(160))
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setStringProvider(new Entities.StringProvider(ARTIST_NAME))
-            .setSearchPropertyIDs(ARTIST_NAME)
+            .setSearchPropertyIds(ARTIST_NAME)
             .setCaption("Artists");
   }
 
@@ -73,7 +73,7 @@ public final class Chinook extends Entities {
                     .setPreferredColumnWidth(160))
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setStringProvider(new Entities.StringProvider(ALBUM_TITLE))
-            .setSearchPropertyIDs(ALBUM_TITLE)
+            .setSearchPropertyIds(ALBUM_TITLE)
             .setCaption("Albums");
   }
 
@@ -133,7 +133,7 @@ public final class Chinook extends Entities {
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setStringProvider(new Entities.StringProvider(EMPLOYEE_LASTNAME)
                     .addText(", ").addValue(EMPLOYEE_FIRSTNAME))
-            .setSearchPropertyIDs(EMPLOYEE_FIRSTNAME, EMPLOYEE_LASTNAME, EMPLOYEE_EMAIL)
+            .setSearchPropertyIds(EMPLOYEE_FIRSTNAME, EMPLOYEE_LASTNAME, EMPLOYEE_EMAIL)
             .setCaption("Employees");
   }
 
@@ -190,7 +190,7 @@ public final class Chinook extends Entities {
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setStringProvider(new Entities.StringProvider(CUSTOMER_LASTNAME)
                     .addText(", ").addValue(CUSTOMER_FIRSTNAME))
-            .setSearchPropertyIDs(CUSTOMER_FIRSTNAME, CUSTOMER_LASTNAME, CUSTOMER_EMAIL)
+            .setSearchPropertyIds(CUSTOMER_FIRSTNAME, CUSTOMER_LASTNAME, CUSTOMER_EMAIL)
             .setCaption("Customers");
   }
 
@@ -211,7 +211,7 @@ public final class Chinook extends Entities {
                     .setPreferredColumnWidth(160))
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setStringProvider(new Entities.StringProvider(GENRE_NAME))
-            .setSearchPropertyIDs(GENRE_NAME)
+            .setSearchPropertyIds(GENRE_NAME)
             .setSmallDataset(true)
             .setCaption("Genres");
   }
@@ -303,7 +303,7 @@ public final class Chinook extends Entities {
                     .setNullable(false))
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setStringProvider(new Entities.StringProvider(TRACK_NAME))
-            .setSearchPropertyIDs(TRACK_NAME)
+            .setSearchPropertyIds(TRACK_NAME)
             .setCaption("Tracks");
   }
 
@@ -354,7 +354,7 @@ public final class Chinook extends Entities {
                     .setMaximumFractionDigits(2))
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setStringProvider(new Entities.StringProvider(INVOICE_INVOICEID))
-            .setSearchPropertyIDs(INVOICE_INVOICEID_AS_STRING)
+            .setSearchPropertyIds(INVOICE_INVOICEID_AS_STRING)
             .setCaption("Invoices");
   }
 
@@ -421,7 +421,7 @@ public final class Chinook extends Entities {
                     .setPreferredColumnWidth(160))
             .setKeyGeneratorType(Entity.KeyGenerator.Type.AUTOMATIC)
             .setStringProvider(new Entities.StringProvider(PLAYLIST_NAME))
-            .setSearchPropertyIDs(PLAYLIST_NAME)
+            .setSearchPropertyIds(PLAYLIST_NAME)
             .setCaption("Playlists");
   }
 

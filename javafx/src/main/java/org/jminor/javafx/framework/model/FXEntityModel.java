@@ -16,11 +16,11 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
   /**
    * Instantiates a new {@link FXEntityModel} with default {@link FXEntityEditModel}
    * and {@link FXEntityListModel} implementations
-   * @param entityID the ID of the entity on which to base the model
+   * @param entityId the ID of the entity on which to base the model
    * @param connectionProvider the connection provider
    */
-  public FXEntityModel(final String entityID, final EntityConnectionProvider connectionProvider) {
-    this(new FXEntityEditModel(entityID, connectionProvider), new FXEntityListModel(entityID, connectionProvider));
+  public FXEntityModel(final String entityId, final EntityConnectionProvider connectionProvider) {
+    this(new FXEntityEditModel(entityId, connectionProvider), new FXEntityListModel(entityId, connectionProvider));
   }
 
   /**
@@ -29,7 +29,7 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
    * @throws IllegalArgumentException in case editModel is null
    */
   public FXEntityModel(final FXEntityEditModel editModel) {
-    this(Objects.requireNonNull(editModel), new FXEntityListModel(editModel.getEntityID(), editModel.getConnectionProvider()));
+    this(Objects.requireNonNull(editModel), new FXEntityListModel(editModel.getEntityId(), editModel.getConnectionProvider()));
   }
 
   /**
@@ -38,7 +38,7 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
    * @param listModel the {@link FXEntityListModel} to use
    */
   public FXEntityModel(final FXEntityListModel listModel) {
-    this(Objects.requireNonNull(listModel).getEditModel() == null ? new FXEntityEditModel(listModel.getEntityID(),
+    this(Objects.requireNonNull(listModel).getEditModel() == null ? new FXEntityEditModel(listModel.getEntityId(),
             listModel.getConnectionProvider()) : listModel.getEditModel(), listModel);
   }
 

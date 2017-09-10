@@ -20,11 +20,11 @@ public final class ClientsTest {
     final UUID uuid = UUID.randomUUID();
     final ConnectionRequest info = Clients.connectionRequest(user, uuid, "test");
     assertEquals(user, info.getUser());
-    assertEquals(uuid, info.getClientID());
+    assertEquals(uuid, info.getClientId());
     assertNull(info.getClientVersion());
     assertEquals(Version.getVersion(), info.getFrameworkVersion());
     assertEquals(uuid.hashCode(), info.hashCode());
-    assertEquals("test", info.getClientTypeID());
+    assertEquals("test", info.getClientTypeId());
     assertTrue(info.toString().contains(user.getUsername()));
   }
 }

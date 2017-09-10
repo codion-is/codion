@@ -11,14 +11,14 @@ public interface LoginProxy {
   /**
    * @return the String identifying the client type for which to use this login proxy
    */
-  String getClientTypeID();
+  String getClientTypeId();
 
   /**
    * Performs login validation for the user specified by the remote client
-   * and returns a remote client with the same clientID and user but possibly
+   * and returns a remote client with the same clientId and user but possibly
    * a different databaseUser to propagate to further login procedures
    * @param remoteClient the client
-   * @return a new client with the same clientID but not necessarily the same user or databaseUser
+   * @return a new client with the same clientId but not necessarily the same user or databaseUser
    * @throws ServerException.LoginException in case the login fails
    * @see RemoteClient#getDatabaseUser()
    */

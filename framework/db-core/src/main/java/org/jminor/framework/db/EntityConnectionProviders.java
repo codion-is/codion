@@ -19,40 +19,40 @@ public final class EntityConnectionProviders {
   private EntityConnectionProviders() {}
 
   /**
-   * Returns a EntityConnectionProvider according to system properties, using a randomly generated clientID
+   * Returns a EntityConnectionProvider according to system properties, using a randomly generated clientId
    * @param entities the domain model entities
    * @param user the user for the connection
-   * @param clientTypeID the client type id
+   * @param clientTypeId the client type id
    * @return a EntityConnectionProvider
    */
-  public static EntityConnectionProvider connectionProvider(final Entities entities, final User user, final String clientTypeID) {
-    return connectionProvider(entities, user, clientTypeID, (Version) null);
+  public static EntityConnectionProvider connectionProvider(final Entities entities, final User user, final String clientTypeId) {
+    return connectionProvider(entities, user, clientTypeId, (Version) null);
   }
 
   /**
-   * Returns a EntityConnectionProvider according to system properties, using a randomly generated clientID
+   * Returns a EntityConnectionProvider according to system properties, using a randomly generated clientId
    * @param entities the domain model entities
    * @param user the user for the connection
-   * @param clientTypeID the client type id
+   * @param clientTypeId the client type id
    * @param clientVersion the client version, if any
    * @return a EntityConnectionProvider
    */
-  public static EntityConnectionProvider connectionProvider(final Entities entities, final User user, final String clientTypeID,
+  public static EntityConnectionProvider connectionProvider(final Entities entities, final User user, final String clientTypeId,
                                                             final Version clientVersion) {
-    return connectionProvider(entities, user, clientTypeID, UUID.randomUUID(), clientVersion);
+    return connectionProvider(entities, user, clientTypeId, UUID.randomUUID(), clientVersion);
   }
 
   /**
    * Returns a EntityConnectionProvider according to system properties
    * @param entities the domain model entities
    * @param user the user for the connection
-   * @param clientTypeID the client type id
-   * @param clientID the unique identifier for the client requesting the connection provider
+   * @param clientTypeId the client type id
+   * @param clientId the unique identifier for the client requesting the connection provider
    * @return a EntityConnectionProvider
    */
-  public static EntityConnectionProvider connectionProvider(final Entities entities, final User user, final String clientTypeID,
-                                                            final UUID clientID) {
-    return connectionProvider(entities, user, clientTypeID, clientID, null);
+  public static EntityConnectionProvider connectionProvider(final Entities entities, final User user, final String clientTypeId,
+                                                            final UUID clientId) {
+    return connectionProvider(entities, user, clientTypeId, clientId, null);
   }
 
   /**
@@ -60,16 +60,16 @@ public final class EntityConnectionProviders {
    * Loads classes by name, so these need to available on the classpath
    * @param entities the domain model entities
    * @param user the user for the connection
-   * @param clientTypeID the client type id
-   * @param clientID a unique client ID
+   * @param clientTypeId the client type id
+   * @param clientId a unique client ID
    * @param clientVersion the client version, if any
    * @return a EntityConnectionProvider
    * @see org.jminor.framework.db.EntityConnectionProvider#CLIENT_CONNECTION_TYPE
    * @see org.jminor.framework.db.EntityConnectionProvider#REMOTE_CONNECTION_PROVIDER
    * @see org.jminor.framework.db.EntityConnectionProvider#LOCAL_CONNECTION_PROVIDER
    */
-  public static EntityConnectionProvider connectionProvider(final Entities entities, final User user, final String clientTypeID,
-                                                            final UUID clientID, final Version clientVersion) {
+  public static EntityConnectionProvider connectionProvider(final Entities entities, final User user, final String clientTypeId,
+                                                            final UUID clientId, final Version clientVersion) {
     try {
       if (EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get().equals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE)) {
         final String serverHostName = Server.SERVER_HOST_NAME.get();
@@ -77,7 +77,7 @@ public final class EntityConnectionProviders {
 
         return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.REMOTE_CONNECTION_PROVIDER.get()).getConstructor(
                 Entities.class, String.class, User.class, UUID.class, String.class, Version.class, boolean.class)
-                .newInstance(entities, serverHostName, user, clientID, clientTypeID, clientVersion, scheduleValidityCheck);
+                .newInstance(entities, serverHostName, user, clientId, clientTypeId, clientVersion, scheduleValidityCheck);
       }
       else {
         return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.LOCAL_CONNECTION_PROVIDER.get()).getConstructor(

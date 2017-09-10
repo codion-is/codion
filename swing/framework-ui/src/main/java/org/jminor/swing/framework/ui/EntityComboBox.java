@@ -34,28 +34,28 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
 
   /**
    * Creates an Action which displays a dialog for filtering this combo box via a foreign key
-   * @param foreignKeyPropertyID the ID of the foreign key property on which to filter
+   * @param foreignKeyPropertyId the ID of the foreign key property on which to filter
    * @return a Control for filtering this combo box
    */
-  public Control createForeignKeyFilterControl(final String foreignKeyPropertyID) {
+  public Control createForeignKeyFilterControl(final String foreignKeyPropertyId) {
     return Controls.control(() -> {
-      final Collection<Entity> current = ((EntityComboBoxModel) getModel()).getForeignKeyFilterEntities(foreignKeyPropertyID);
-      final int result = JOptionPane.showOptionDialog(EntityComboBox.this, createForeignKeyFilterComboBox(foreignKeyPropertyID),
+      final Collection<Entity> current = ((EntityComboBoxModel) getModel()).getForeignKeyFilterEntities(foreignKeyPropertyId);
+      final int result = JOptionPane.showOptionDialog(EntityComboBox.this, createForeignKeyFilterComboBox(foreignKeyPropertyId),
               FrameworkMessages.get(FrameworkMessages.FILTER_BY), JOptionPane.OK_CANCEL_OPTION,
               JOptionPane.QUESTION_MESSAGE, null, null, null);
       if (result != JOptionPane.OK_OPTION) {
-        ((EntityComboBoxModel) getModel()).setForeignKeyFilterEntities(foreignKeyPropertyID, current);
+        ((EntityComboBoxModel) getModel()).setForeignKeyFilterEntities(foreignKeyPropertyId, current);
       }
     }, null, null, null, 0, null, Images.loadImage(Images.IMG_FILTER_16));
   }
 
   /**
    * Creates a EntityComboBox for filtering this combo box via a foreign key
-   * @param foreignKeyPropertyID the ID of the foreign key property on which to filter
+   * @param foreignKeyPropertyId the ID of the foreign key property on which to filter
    * @return an EntityComboBox for filtering this combo box
    */
-  public EntityComboBox createForeignKeyFilterComboBox(final String foreignKeyPropertyID) {
-    final EntityComboBox comboBox = new EntityComboBox(((EntityComboBoxModel) getModel()).createForeignKeyFilterComboBoxModel(foreignKeyPropertyID));
+  public EntityComboBox createForeignKeyFilterComboBox(final String foreignKeyPropertyId) {
+    final EntityComboBox comboBox = new EntityComboBox(((EntityComboBoxModel) getModel()).createForeignKeyFilterComboBoxModel(foreignKeyPropertyId));
     MaximumMatch.enable(comboBox);
     return comboBox;
   }

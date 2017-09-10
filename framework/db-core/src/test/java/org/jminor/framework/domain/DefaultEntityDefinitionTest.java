@@ -20,14 +20,14 @@ public class DefaultEntityDefinitionTest {
   public void test() {
     final Entities.StringProvider stringProvider = new Entities.StringProvider("name");
     final Comparator<Entity> comparator = (o1, o2) -> 0;
-    final Entity.Definition definition = entities.define("entityID", "tableName",
+    final Entity.Definition definition = entities.define("entityId", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR))
             .setSelectQuery("select * from dual", false).setOrderByClause("order by name")
             .setReadOnly(true).setSelectTableName("selectTableName").setGroupByClause("name")
             .setStringProvider(stringProvider).setComparator(comparator);
-    assertEquals("entityID", definition.toString());
-    assertEquals("entityID", definition.getEntityID());
+    assertEquals("entityId", definition.toString());
+    assertEquals("entityId", definition.getEntityId());
     assertEquals("tableName", definition.getTableName());
     assertNotNull(definition.getKeyGenerator());
     assertEquals("select * from dual", definition.getSelectQuery());
@@ -53,33 +53,33 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void duplicatePropertyIDs() {
-    entities.define("entityID", "tableName",
+  public void duplicatePropertyIds() {
+    entities.define("entityId", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR),
             Properties.columnProperty("id"));
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void duplicateForeignKeyPropertyIDs() {
-    entities.define("entityID", "tableName",
+  public void duplicateForeignKeyPropertyIds() {
+    entities.define("entityId", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR),
-            Properties.foreignKeyProperty("fkProperty", null, "entityID",
+            Properties.foreignKeyProperty("fkProperty", null, "entityId",
                     Properties.columnProperty("id")));
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void setSearchPropertyIDs() {
-    final Entity.Definition definition = entities.define("entityID", "tableName",
+  public void setSearchPropertyIds() {
+    final Entity.Definition definition = entities.define("entityId", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR));
-    definition.setSearchPropertyIDs("id");
+    definition.setSearchPropertyIds("id");
   }
 
   @Test
   public void derivedProperty() {
-    final Entity.Definition definition = entities.define("entityID", "tableName",
+    final Entity.Definition definition = entities.define("entityId", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR),
             Properties.columnProperty("info", Types.VARCHAR),
@@ -95,7 +95,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void testGroupingProperties() {
-    final Entity.Definition definition = entities.define("entityID",
+    final Entity.Definition definition = entities.define("entityId",
             Properties.primaryKeyProperty("p0").setAggregateColumn(true),
             Properties.columnProperty("p1").setGroupingColumn(true),
             Properties.columnProperty("p2").setGroupingColumn(true));
@@ -104,7 +104,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test(expected = IllegalStateException.class)
   public void testSetGroupByClauseWithGroupingProperties() {
-    final Entity.Definition definition = entities.define("entityID",
+    final Entity.Definition definition = entities.define("entityId",
             Properties.primaryKeyProperty("p0").setAggregateColumn(true),
             Properties.columnProperty("p1").setGroupingColumn(true),
             Properties.columnProperty("p2").setGroupingColumn(true));
@@ -114,7 +114,7 @@ public class DefaultEntityDefinitionTest {
   @Test
   public void testSetHavingClause() {
     final String havingClause = "p1 > 1";
-    final Entity.Definition definition = entities.define("entityID",
+    final Entity.Definition definition = entities.define("entityId",
             Properties.primaryKeyProperty("p0")).setHavingClause(havingClause);
     assertEquals(havingClause, definition.getHavingClause());
   }
@@ -122,23 +122,23 @@ public class DefaultEntityDefinitionTest {
   @Test(expected = IllegalStateException.class)
   public void testSetHavingClauseAlreadySet() {
     final String havingClause = "p1 > 1";
-    final Entity.Definition definition = entities.define("entityID",
+    final Entity.Definition definition = entities.define("entityId",
             Properties.primaryKeyProperty("p0")).setHavingClause(havingClause);
     definition.setHavingClause(havingClause);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testNoPrimaryKey() {
-    entities.define("entityID", "tableName",
-            Properties.columnProperty("propertyID", Types.INTEGER));
+    entities.define("entityId", "tableName",
+            Properties.columnProperty("propertyId", Types.INTEGER));
   }
 
   @Test
   public void testForeignPrimaryKey() {
     Entity.Definition.STRICT_FOREIGN_KEYS.set(false);
-    entities.define("entityID", "tableName",
+    entities.define("entityId", "tableName",
             Properties.foreignKeyProperty("fkPropertyID", "caption", "parent",
-                    Properties.primaryKeyProperty("propertyID")));
+                    Properties.primaryKeyProperty("propertyId")));
     Entity.Definition.STRICT_FOREIGN_KEYS.set(true);
   }
 
@@ -173,7 +173,7 @@ public class DefaultEntityDefinitionTest {
   @Test
   public void getBackgroundColor() {
     final Entity.Definition def = entities.define("entity", "tableName",
-            Properties.primaryKeyProperty("propertyID"));
+            Properties.primaryKeyProperty("propertyId"));
     final Entity entity = entities.entity("entity");
     assertNull(def.getBackgroundColor(entity, entity.getKey().getFirstProperty()));
     def.setBackgroundColorProvider((entity1, property) -> Color.BLUE);
@@ -183,13 +183,13 @@ public class DefaultEntityDefinitionTest {
   @Test
   public void setToStringProvider() {
     final Entity.Definition def = entities.define("entityToString", "tableName",
-            Properties.primaryKeyProperty("propertyID"));
+            Properties.primaryKeyProperty("propertyId"));
     final Entity entity = entities.entity("entityToString");
-    entity.put("propertyID", 1);
-    assertEquals("entityToString: propertyID:1", entity.toString());
+    entity.put("propertyId", 1);
+    assertEquals("entityToString: propertyId:1", entity.toString());
     def.setStringProvider(valueMap -> "test");
     //the toString value is cached, so we need to clear it by setting a value
-    entity.put("propertyID", 2);
+    entity.put("propertyId", 2);
     assertEquals("test", entity.toString());
   }
 }

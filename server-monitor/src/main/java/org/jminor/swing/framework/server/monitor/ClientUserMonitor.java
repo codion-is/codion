@@ -214,14 +214,14 @@ public final class ClientUserMonitor {
     protected void doRefresh() {
       try {
         for (final RemoteClient remoteClient : server.getClients()) {
-          final UserInfo newUserInfo = new UserInfo(remoteClient.getUser(), remoteClient.getClientTypeID(),
-                  remoteClient.getClientHost(), new Date(), remoteClient.getClientID());
+          final UserInfo newUserInfo = new UserInfo(remoteClient.getUser(), remoteClient.getClientTypeId(),
+                  remoteClient.getClientHost(), new Date(), remoteClient.getClientId());
           if (contains(newUserInfo, true)) {
             final UserInfo currentUserInfo = getItemAt(indexOf(newUserInfo));
             currentUserInfo.setLastSeen(newUserInfo.getLastSeen());
-            if (currentUserInfo.isNewConnection(newUserInfo.getClientID())) {
+            if (currentUserInfo.isNewConnection(newUserInfo.getClientId())) {
               currentUserInfo.incrementConnectionCount();
-              currentUserInfo.setClientID(newUserInfo.getClientID());
+              currentUserInfo.setClientID(newUserInfo.getClientId());
             }
           }
           else {
@@ -240,7 +240,7 @@ public final class ClientUserMonitor {
       final UserInfo userInfo = getItemAt(row);
       switch (column) {
         case USERNAME_COLUMN: return userInfo.getUser().getUsername();
-        case CLIENT_TYPE_COLUMN: return userInfo.getClientTypeID();
+        case CLIENT_TYPE_COLUMN: return userInfo.getClientTypeId();
         case CLIENT_HOST_COLUMN: return userInfo.getClientHost();
         case LAST_SEEN_COLUMN: return userInfo.getLastSeen();
         case CONNECTION_COUNT_COLUMN: return userInfo.getConnectionCount();
@@ -252,27 +252,27 @@ public final class ClientUserMonitor {
   private static final class UserInfo {
 
     private final User user;
-    private final String clientTypeID;
+    private final String clientTypeId;
     private final String clientHost;
     private Date lastSeen;
-    private UUID clientID;
+    private UUID clientId;
     private int connectionCount = 1;
 
-    private UserInfo(final User user, final String clientTypeID, final String clientHost, final Date lastSeen,
-                     final UUID clientID) {
+    private UserInfo(final User user, final String clientTypeId, final String clientHost, final Date lastSeen,
+                     final UUID clientId) {
       this.user = user;
-      this.clientTypeID = clientTypeID;
+      this.clientTypeId = clientTypeId;
       this.clientHost = clientHost;
       this.lastSeen = lastSeen;
-      this.clientID = clientID;
+      this.clientId = clientId;
     }
 
     public User getUser() {
       return user;
     }
 
-    public String getClientTypeID() {
-      return clientTypeID;
+    public String getClientTypeId() {
+      return clientTypeId;
     }
 
     public String getClientHost() {
@@ -283,8 +283,8 @@ public final class ClientUserMonitor {
       return lastSeen;
     }
 
-    public UUID getClientID() {
-      return clientID;
+    public UUID getClientId() {
+      return clientId;
     }
 
     public int getConnectionCount() {
@@ -295,8 +295,8 @@ public final class ClientUserMonitor {
       this.lastSeen = lastSeen;
     }
 
-    public void setClientID(final UUID clientID) {
-      this.clientID = clientID;
+    public void setClientID(final UUID clientId) {
+      this.clientId = clientId;
     }
 
     public void incrementConnectionCount() {
@@ -315,20 +315,20 @@ public final class ClientUserMonitor {
       final UserInfo that = (UserInfo) obj;
 
       return this.user.getUsername().equalsIgnoreCase(that.user.getUsername()) &&
-              this.clientTypeID.equals(that.clientTypeID) && this.clientHost.equals(that.clientHost);
+              this.clientTypeId.equals(that.clientTypeId) && this.clientHost.equals(that.clientHost);
     }
 
     @Override
     public int hashCode() {
       int result = user.getUsername().toLowerCase().hashCode();
-      result = 31 * result + clientTypeID.hashCode();
+      result = 31 * result + clientTypeId.hashCode();
       result = 31 * result + clientHost.hashCode();
 
       return result;
     }
 
-    public boolean isNewConnection(final UUID clientID) {
-      return !this.clientID.equals(clientID);
+    public boolean isNewConnection(final UUID clientId) {
+      return !this.clientId.equals(clientId);
     }
   }
 
@@ -354,7 +354,7 @@ public final class ClientUserMonitor {
     protected Comparable getComparable(final UserInfo rowObject, final Integer columnIdentifier) {
       switch (columnIdentifier) {
         case USERNAME_COLUMN: return rowObject.getUser().getUsername();
-        case CLIENT_TYPE_COLUMN: return rowObject.getClientTypeID();
+        case CLIENT_TYPE_COLUMN: return rowObject.getClientTypeId();
         case CLIENT_HOST_COLUMN: return rowObject.getClientHost();
         case LAST_SEEN_COLUMN: return rowObject.getLastSeen();
         case CONNECTION_COUNT_COLUMN: return rowObject.getConnectionCount();

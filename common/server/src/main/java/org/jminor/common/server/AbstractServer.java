@@ -82,22 +82,22 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   }
 
   /**
-   * @param clientID the client id
+   * @param clientId the client id
    * @return true if such a client is connected
    */
-  public final boolean containsConnection(final UUID clientID) {
+  public final boolean containsConnection(final UUID clientId) {
     synchronized (connections) {
-      return connections.containsKey(clientID);
+      return connections.containsKey(clientId);
     }
   }
 
   /**
-   * @param clientID the client id
+   * @param clientId the client id
    * @return the connection associated with the given client, null if none exists
    */
-  public final T getConnection(final UUID clientID) {
+  public final T getConnection(final UUID clientId) {
     synchronized (connections) {
-      final RemoteClientConnection<T> clientConnection = connections.get(clientID);
+      final RemoteClientConnection<T> clientConnection = connections.get(clientId);
       if (clientConnection != null) {
         return clientConnection.getConnection();
       }
@@ -152,14 +152,14 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
     Objects.requireNonNull(connectionRequest, "connectionRequest");
     Objects.requireNonNull(connectionRequest.getUser(), "user");
-    Objects.requireNonNull(connectionRequest.getClientID(), "clientID");
-    Objects.requireNonNull(connectionRequest.getClientTypeID(), "clientTypeID");
+    Objects.requireNonNull(connectionRequest.getClientId(), "clientId");
+    Objects.requireNonNull(connectionRequest.getClientTypeId(), "clientTypeId");
 
-    getConnectionValidator(connectionRequest.getClientTypeID()).validate(connectionRequest);
-    final LoginProxy loginProxy = getLoginProxy(connectionRequest.getClientTypeID());
+    getConnectionValidator(connectionRequest.getClientTypeId()).validate(connectionRequest);
+    final LoginProxy loginProxy = getLoginProxy(connectionRequest.getClientTypeId());
     LOG.debug("Connecting client {}, loginProxy {}", connectionRequest, loginProxy);
     synchronized (connections) {
-      RemoteClientConnection<T> remoteClientConnection = connections.get(connectionRequest.getClientID());
+      RemoteClientConnection<T> remoteClientConnection = connections.get(connectionRequest.getClientId());
       if (remoteClientConnection != null) {
         validateUserCredentials(connectionRequest.getUser(), remoteClientConnection.getClient().getUser());
         LOG.debug("Active connection exists {}", connectionRequest);
@@ -177,7 +177,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
       }
       catch (final ServerNotActiveException ignored) {/*ignored*/}
       remoteClientConnection = new RemoteClientConnection<>(remoteClient, doConnect(loginProxy.doLogin(remoteClient)));
-      connections.put(remoteClient.getClientID(), remoteClientConnection);
+      connections.put(remoteClient.getClientId(), remoteClientConnection);
 
       return remoteClientConnection.getConnection();
     }
@@ -185,19 +185,19 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   /** {@inheritDoc} */
   @Override
-  public final void disconnect(final UUID clientID) throws RemoteException {
-    if (clientID == null) {
+  public final void disconnect(final UUID clientId) throws RemoteException {
+    if (clientId == null) {
       return;
     }
 
     final RemoteClientConnection<T> remoteClientConnection;
     synchronized (connections) {
-      remoteClientConnection = connections.remove(clientID);
+      remoteClientConnection = connections.remove(clientId);
     }
     if (remoteClientConnection != null) {
       doDisconnect(remoteClientConnection.getConnection());
       final RemoteClient remoteClient = remoteClientConnection.getClient();
-      getLoginProxy(remoteClient.getClientTypeID()).doLogout(remoteClient);
+      getLoginProxy(remoteClient.getClientTypeId()).doLogout(remoteClient);
       LOG.debug("Client disconnected {}", remoteClient);
     }
   }
@@ -205,20 +205,20 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   /**
    * Sets the LoginProxy for the given client type id, if {@code loginProxy} is null
    * the login proxy is removed.
-   * @param clientTypeID the client type ID with which to associate the given login proxy
+   * @param clientTypeId the client type ID with which to associate the given login proxy
    * @param loginProxy the login proxy
    * @throws IllegalStateException in case the login proxy has already been set for the given client type
    */
-  public final void setLoginProxy(final String clientTypeID, final LoginProxy loginProxy) {
+  public final void setLoginProxy(final String clientTypeId, final LoginProxy loginProxy) {
     synchronized (loginProxies) {
       if (loginProxy == null) {
-        loginProxies.remove(clientTypeID);
+        loginProxies.remove(clientTypeId);
       }
       else {
-        if (loginProxies.containsKey(clientTypeID)) {
-          throw new IllegalStateException("Login proxy has already been set for: " + clientTypeID);
+        if (loginProxies.containsKey(clientTypeId)) {
+          throw new IllegalStateException("Login proxy has already been set for: " + clientTypeId);
         }
-        loginProxies.put(clientTypeID, loginProxy);
+        loginProxies.put(clientTypeId, loginProxy);
       }
     }
   }
@@ -226,20 +226,20 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   /**
    * Sets the {@link ConnectionValidator} for the given client type id, if {@code connectionValidator} is null
    * the connection validator is removed.
-   * @param clientTypeID the client type ID with which to associate the given connection validator
+   * @param clientTypeId the client type ID with which to associate the given connection validator
    * @param connectionValidator the connection validator
    * @throws IllegalStateException in case the connection validator has already been set for the given client type
    */
-  public final void setConnectionValidator(final String clientTypeID, final ConnectionValidator connectionValidator) {
+  public final void setConnectionValidator(final String clientTypeId, final ConnectionValidator connectionValidator) {
     synchronized (connectionValidators) {
       if (connectionValidator == null) {
-        connectionValidators.remove(clientTypeID);
+        connectionValidators.remove(clientTypeId);
       }
       else {
-        if (connectionValidators.containsKey(clientTypeID)) {
-          throw new IllegalStateException("Connection validator has already been set for: " + clientTypeID);
+        if (connectionValidators.containsKey(clientTypeId)) {
+          throw new IllegalStateException("Connection validator has already been set for: " + clientTypeId);
         }
-        connectionValidators.put(clientTypeID, connectionValidator);
+        connectionValidators.put(clientTypeId, connectionValidator);
       }
     }
   }
@@ -307,9 +307,9 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     return connectionLimit > -1 && getConnectionCount() >= connectionLimit;
   }
 
-  private LoginProxy getLoginProxy(final String clientTypeID) {
+  private LoginProxy getLoginProxy(final String clientTypeId) {
     synchronized (loginProxies) {
-      final LoginProxy loginProxy = loginProxies.get(clientTypeID);
+      final LoginProxy loginProxy = loginProxies.get(clientTypeId);
       if (loginProxy == null) {
         return defaultLoginProxy;
       }
@@ -318,9 +318,9 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
   }
 
-  private ConnectionValidator getConnectionValidator(final String clientTypeID) {
+  private ConnectionValidator getConnectionValidator(final String clientTypeId) {
     synchronized (connectionValidators) {
-      final ConnectionValidator connectionValidator = connectionValidators.get(clientTypeID);
+      final ConnectionValidator connectionValidator = connectionValidators.get(clientTypeId);
       if (connectionValidator == null) {
         return defaultConnectionValidator;
       }
@@ -334,7 +334,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
       loginProxy.close();
     }
     catch (final Exception e) {
-      LOG.error("Exception while closing loginProxy for client type: " + loginProxy.getClientTypeID(), e);
+      LOG.error("Exception while closing loginProxy for client type: " + loginProxy.getClientTypeId(), e);
     }
   }
 
@@ -359,14 +359,14 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   private static final class DefaultServerInfo implements ServerInfo, Serializable {
     private static final long serialVersionUID = 1;
 
-    private final UUID serverID;
+    private final UUID serverId;
     private final String serverName;
     private final int serverPort;
     private final long serverStartupTime;
     private final Version serverVersion = Version.getVersion();
 
-    private DefaultServerInfo(final UUID serverID, final String serverName, final int serverPort, final long serverStartupTime) {
-      this.serverID = serverID;
+    private DefaultServerInfo(final UUID serverId, final String serverName, final int serverPort, final long serverStartupTime) {
+      this.serverId = serverId;
       this.serverName = serverName;
       this.serverPort = serverPort;
       this.serverStartupTime = serverStartupTime;
@@ -378,8 +378,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
 
     @Override
-    public UUID getServerID() {
-      return serverID;
+    public UUID getServerId() {
+      return serverId;
     }
 
     @Override
@@ -400,7 +400,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   private static final class DefaultLoginProxy implements LoginProxy {
     @Override
-    public String getClientTypeID() {
+    public String getClientTypeId() {
       return "defaultClient";
     }
 
@@ -418,7 +418,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   private static final class DefaultConnectionValidator implements ConnectionValidator {
     @Override
-    public String getClientTypeID() {
+    public String getClientTypeId() {
       return "defaultClient";
     }
 

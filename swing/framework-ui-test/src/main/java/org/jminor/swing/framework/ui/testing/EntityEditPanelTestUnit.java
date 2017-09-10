@@ -20,30 +20,30 @@ public abstract class EntityEditPanelTestUnit {
 
   private final EntityConnectionProvider connectionProvider;
   private final Class<? extends EntityEditPanel> editPanelClass;
-  private final String entityID;
+  private final String entityId;
 
   /**
    * Instantiates a new edit panel test unit for the given edit panel class
    * @param entities the domain model entities
    * @param editPanelClass the edit panel class
-   * @param entityID the entityId
+   * @param entityId the entityId
    * @param user the user
    */
   protected EntityEditPanelTestUnit(final Entities entities, final Class<? extends EntityEditPanel> editPanelClass,
-                                    final String entityID, final User user) {
+                                    final String entityId, final User user) {
     Objects.requireNonNull(editPanelClass, "editPanelClass");
-    Objects.requireNonNull(entityID, "entityID");
+    Objects.requireNonNull(entityId, "entityId");
     Objects.requireNonNull(user, "user");
     this.connectionProvider = EntityConnectionProviders.connectionProvider(entities, user, getClass().getName());
     this.editPanelClass = editPanelClass;
-    this.entityID = entityID;
+    this.entityId = entityId;
   }
 
   /**
-   * @return the entityID of the panel being tested
+   * @return the entityId of the panel being tested
    */
-  public final String getEntityID() {
-    return entityID;
+  public final String getEntityId() {
+    return entityId;
   }
 
   /**
@@ -67,7 +67,7 @@ public abstract class EntityEditPanelTestUnit {
    * @return the edit model to base the edit panel on, by default a default edit model implementation
    */
   protected EntityEditModel createEditModel() {
-    return new SwingEntityEditModel(getEntityID(), getConnectionProvider());
+    return new SwingEntityEditModel(getEntityId(), getConnectionProvider());
   }
 
   /**

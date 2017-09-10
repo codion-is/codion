@@ -153,8 +153,8 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public Collection<RemoteClient> getClients(final String clientTypeID) {
-    return server.getClients(clientTypeID);
+  public Collection<RemoteClient> getClients(final String clientTypeId) {
+    return server.getClients(clientTypeId);
   }
 
   /** {@inheritDoc} */
@@ -168,7 +168,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   public Collection<String> getClientTypes() {
     final Set<String> clientTypes = new HashSet<>();
     for (final RemoteClient client : getClients()) {
-      clientTypes.add(client.getClientTypeID());
+      clientTypes.add(client.getClientTypeId());
     }
 
     return clientTypes;
@@ -176,9 +176,9 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public void disconnect(final UUID clientID) throws RemoteException {
-    LOG.info("disconnect({})", clientID);
-    server.disconnect(clientID);
+  public void disconnect(final UUID clientId) throws RemoteException {
+    LOG.info("disconnect({})", clientId);
+    server.disconnect(clientId);
   }
 
   /** {@inheritDoc} */
@@ -404,21 +404,21 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public ClientLog getClientLog(final UUID clientID) {
-    return server.getClientLog(clientID);
+  public ClientLog getClientLog(final UUID clientId) {
+    return server.getClientLog(clientId);
   }
 
   /** {@inheritDoc} */
   @Override
-  public boolean isLoggingEnabled(final UUID clientID) {
-    return server.isLoggingEnabled(clientID);
+  public boolean isLoggingEnabled(final UUID clientId) {
+    return server.isLoggingEnabled(clientId);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setLoggingEnabled(final UUID clientID, final boolean status) {
-    LOG.info("setLoggingEnabled({}, {})", clientID, status);
-    server.setLoggingEnabled(clientID, status);
+  public void setLoggingEnabled(final UUID clientId, final boolean status) {
+    LOG.info("setLoggingEnabled({}, {})", clientId, status);
+    server.setLoggingEnabled(clientId, status);
   }
 
   /** {@inheritDoc} */

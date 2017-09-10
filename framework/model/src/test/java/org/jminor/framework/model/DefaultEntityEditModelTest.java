@@ -53,23 +53,23 @@ public final class DefaultEntityEditModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void getForeignKeyLookupModelNonFKProperty() {
-    employeeEditModel.getForeignKeyLookupModel(jobProperty.getPropertyID());
+    employeeEditModel.getForeignKeyLookupModel(jobProperty.getPropertyId());
   }
 
   @Test
   public void getForeignKeyLookupModel() {
-    assertFalse(employeeEditModel.containsLookupModel(deptProperty.getPropertyID()));
-    final EntityLookupModel model = employeeEditModel.getForeignKeyLookupModel(deptProperty.getPropertyID());
-    assertTrue(employeeEditModel.containsLookupModel(deptProperty.getPropertyID()));
+    assertFalse(employeeEditModel.containsLookupModel(deptProperty.getPropertyId()));
+    final EntityLookupModel model = employeeEditModel.getForeignKeyLookupModel(deptProperty.getPropertyId());
+    assertTrue(employeeEditModel.containsLookupModel(deptProperty.getPropertyId()));
     assertNotNull(model);
-    assertEquals(model, employeeEditModel.getForeignKeyLookupModel(deptProperty.getPropertyID()));
+    assertEquals(model, employeeEditModel.getForeignKeyLookupModel(deptProperty.getPropertyId()));
   }
 
   @Test
   public void createForeignKeyLookupModel() {
     final EntityLookupModel model = employeeEditModel.createForeignKeyLookupModel(ENTITIES.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
     assertNotNull(model);
-    assertEquals(TestDomain.T_DEPARTMENT, model.getEntityID());
+    assertEquals(TestDomain.T_DEPARTMENT, model.getEntityId());
   }
 
   @Test
@@ -103,7 +103,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void constructorNullEntityID() {
+  public void constructorNullEntityId() {
     new TestEntityEditModel(null, CONNECTION_PROVIDER);
   }
 
@@ -157,7 +157,7 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.addBeforeRefreshListener(listener);
     employeeEditModel.addAfterRefreshListener(listener);
 
-    assertEquals(TestDomain.T_EMP, employeeEditModel.getEntityID());
+    assertEquals(TestDomain.T_EMP, employeeEditModel.getEntityId());
     assertEquals(employeeEditModel.getConnectionProvider().getConnection().selectValues(TestDomain.EMP_JOB,
             ENTITY_CONDITIONS.condition(TestDomain.T_EMP)),
             employeeEditModel.getValueProvider(jobProperty).values());
@@ -439,8 +439,8 @@ public final class DefaultEntityEditModelTest {
 
   private static final class TestEntityEditModel extends DefaultEntityEditModel {
 
-    public TestEntityEditModel(final String entityID, final EntityConnectionProvider connectionProvider) {
-      super(entityID, connectionProvider);
+    public TestEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider) {
+      super(entityId, connectionProvider);
     }
 
     @Override

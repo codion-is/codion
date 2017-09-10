@@ -34,7 +34,7 @@ public class DefaultEntityTableConditionModelTest {
 
   @Test
   public void test() {
-    assertEquals(TestDomain.T_EMP, conditionModel.getEntityID());
+    assertEquals(TestDomain.T_EMP, conditionModel.getEntityId());
     conditionModel.setConjunction(Conjunction.OR);
     assertEquals(Conjunction.OR, conditionModel.getConjunction());
     assertEquals(9, conditionModel.getPropertyFilterModels().size());

@@ -27,7 +27,7 @@
 
     <dependency org="org.json" name="json" rev="${json.version}"/>
 
-    <dependency org="org.glassfish.jersey.bundles" name="jaxrs-ri" rev="2.25.1" conf="compile->master;runtime->default"/>
+    <dependency org="org.glassfish.jersey.bundles" name="jaxrs-ri" rev="2.22" conf="compile->master;runtime->default"/>
 
     <dependency org="org.eclipse.jetty.toolchain" name="jetty-osgi-servlet-api" rev="${jetty.servlet.api.version}" conf="compile->master"/>
     <dependency org="org.eclipse.jetty" name="jetty-server" rev="${jetty.version}" conf="compile->master"/>

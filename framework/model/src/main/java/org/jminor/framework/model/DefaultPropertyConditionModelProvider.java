@@ -23,7 +23,7 @@ public class DefaultPropertyConditionModelProvider implements PropertyConditionM
   @Override
   public PropertyConditionModel<Property.ForeignKeyProperty> initializeForeignKeyConditionModel(
           final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
-    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getForeignEntityID(), connectionProvider);
+    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getForeignEntityId(), connectionProvider);
     lookupModel.getMultipleSelectionAllowedValue().set(true);
 
     return new DefaultForeignKeyConditionModel(connectionProvider.getConditions(), property, lookupModel);

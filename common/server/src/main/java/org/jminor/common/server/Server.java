@@ -154,10 +154,10 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
 
   /**
    * Disconnects the connection identified by the given key.
-   * @param clientID the UUID identifying the client that should be disconnected
+   * @param clientId the UUID identifying the client that should be disconnected
    * @throws RemoteException in case of a communication error
    */
-  void disconnect(final UUID clientID) throws RemoteException;
+  void disconnect(final UUID clientId) throws RemoteException;
 
   /**
    * @return static information about this server
@@ -189,7 +189,7 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
     /**
      * @return a unique identifier for this server
      */
-    UUID getServerID();
+    UUID getServerId();
 
     /**
      * @return the server Version

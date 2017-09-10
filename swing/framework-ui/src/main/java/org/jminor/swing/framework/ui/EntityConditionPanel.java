@@ -142,7 +142,7 @@ public final class EntityConditionPanel extends JPanel {
         return propertyOne.getCaption().compareTo(propertyTwo.getCaption());
       }
       else {
-        return propertyOne.getPropertyID().compareTo(propertyTwo.getPropertyID());
+        return propertyOne.getPropertyId().compareTo(propertyTwo.getPropertyId());
       }
     }
   }

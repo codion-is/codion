@@ -31,7 +31,7 @@ public class EntityConditionsTest {
             entityConditions.propertyCondition(Properties.columnProperty("stringProperty", Types.VARCHAR), Condition.Type.LIKE, "value"),
             entityConditions.propertyCondition(Properties.columnProperty("intProperty", Types.INTEGER), Condition.Type.LIKE, 666)
     );
-    final EntityCondition condition = entityConditions.condition("entityID", set1);
+    final EntityCondition condition = entityConditions.condition("entityId", set1);
     assertEquals("(stringProperty like ? and intProperty = ?)", condition.getWhereClause());
     assertEquals(set1, condition.getCondition());
     final Condition.Set<Property.ColumnProperty> set2 = Conditions.conditionSet(
@@ -41,7 +41,7 @@ public class EntityConditionsTest {
     );
     final Condition.Set<Property.ColumnProperty> set3 = Conditions.conditionSet(Conjunction.OR, set1, set2);
     assertEquals("((stringProperty like ? and intProperty = ?) or (doubleProperty = ? and upper(stringProperty2) like upper(?)))",
-            entityConditions.condition("entityID", set3).getWhereClause());
+            entityConditions.condition("entityId", set3).getWhereClause());
   }
 
   @Test
@@ -249,27 +249,27 @@ public class EntityConditionsTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void selectConditionOrderBySamePropertyID() {
+  public void selectConditionOrderBySamePropertyId() {
     entityConditions.selectCondition(TestDomain.T_EMP)
             .orderByAscending(TestDomain.EMP_DEPARTMENT).orderByDescending(TestDomain.EMP_DEPARTMENT);
   }
 
   private void assertKeyCondition(final EntityCondition condition) {
-    assertEquals(TestDomain.T_DEPARTMENT, condition.getEntityID());
+    assertEquals(TestDomain.T_DEPARTMENT, condition.getEntityId());
     assertEquals("deptno = ?", condition.getWhereClause());
     assertEquals(1, condition.getValues().size());
     assertEquals(1, condition.getColumns().size());
     final Object val = condition.getValues().get(0);
     assertEquals(10, condition.getValues().get(0));
-    assertEquals(TestDomain.DEPARTMENT_ID, condition.getColumns().get(0).getPropertyID());
+    assertEquals(TestDomain.DEPARTMENT_ID, condition.getColumns().get(0).getPropertyId());
   }
 
   private void assertCondition(final EntityCondition condition) {
-    assertEquals(TestDomain.T_DEPARTMENT, condition.getEntityID());
+    assertEquals(TestDomain.T_DEPARTMENT, condition.getEntityId());
     assertEquals("dname not like ?", condition.getWhereClause());
     assertEquals(1, condition.getValues().size());
     assertEquals(1, condition.getColumns().size());
     assertEquals("DEPT", condition.getValues().get(0));
-    assertEquals(TestDomain.DEPARTMENT_NAME, condition.getColumns().get(0).getPropertyID());
+    assertEquals(TestDomain.DEPARTMENT_NAME, condition.getColumns().get(0).getPropertyId());
   }
 }

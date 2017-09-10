@@ -39,9 +39,9 @@ public final class WorldTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeTestEntity(final String entityID) {
-    final Entity entity = super.initializeTestEntity(entityID);
-    if (entityID.equals(World.T_COUNTRY)) {
+  protected Entity initializeTestEntity(final String entityId) {
+    final Entity entity = super.initializeTestEntity(entityId);
+    if (entityId.equals(World.T_COUNTRY)) {
       entity.put(World.COUNTRY_CODE, "XXX");
       entity.put(World.COUNTRY_CONTINENT, "Asia");
     }
@@ -58,8 +58,8 @@ public final class WorldTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeReferenceEntity(final String entityID) {
-    switch (entityID) {
+  protected Entity initializeReferenceEntity(final String entityId) {
+    switch (entityId) {
       case World.T_COUNTRY:
         final Entity iceland = getEntities().entity(World.T_COUNTRY);
         iceland.put(World.COUNTRY_CODE, "ISL");
@@ -72,7 +72,7 @@ public final class WorldTest extends EntityTestUnit {
         return reykjavik;
     }
 
-    return super.initializeReferenceEntity(entityID);
+    return super.initializeReferenceEntity(entityId);
   }
 
   @Override

@@ -24,18 +24,18 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
   Entity getEntity(final Entity.Key primaryKey);
 
   /**
-   * @param foreignKeyPropertyID the ID of the foreign key property
+   * @param foreignKeyPropertyId the ID of the foreign key property
    * @return the entity values currently used to filter the contents of this model
    */
-  Collection<Entity> getForeignKeyFilterEntities(final String foreignKeyPropertyID);
+  Collection<Entity> getForeignKeyFilterEntities(final String foreignKeyPropertyId);
 
   /**
    * Filters this combo box model so that only entities referencing the given foreign key entities
    * via the given foreign key property are shown.
-   * @param foreignKeyPropertyID the property ID
+   * @param foreignKeyPropertyId the property ID
    * @param entities the entities
    */
-  void setForeignKeyFilterEntities(final String foreignKeyPropertyID, final Collection<Entity> entities);
+  void setForeignKeyFilterEntities(final String foreignKeyPropertyId, final Collection<Entity> entities);
 
   /**
    * Specifies whether foreign key filtering should be strict or not.
@@ -54,19 +54,19 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
 
   /**
    * Returns a combo box model for selecting a foreign key value for filtering this model
-   * @param foreignKeyPropertyID the ID of the property with which values to create the combo box model
+   * @param foreignKeyPropertyId the ID of the property with which values to create the combo box model
    * @return a combo box model for selecting a filtering value for this combo box model
    * @see #linkForeignKeyComboBoxModel(String, EntityComboBoxModel)
    */
-  EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyID);
+  EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyId);
 
   /**
    * Links the given combo box model representing master entities to this combo box model
    * so that selection in the master model filters this model according to the selected master entity
-   * @param foreignKeyPropertyID the ID of the foreign key property
+   * @param foreignKeyPropertyId the ID of the foreign key property
    * @param foreignKeyModel the combo box model to link
    */
-  void linkForeignKeyComboBoxModel(final String foreignKeyPropertyID, final EntityComboBoxModel foreignKeyModel);
+  void linkForeignKeyComboBoxModel(final String foreignKeyPropertyId, final EntityComboBoxModel foreignKeyModel);
 
   /**
    * Selects the entity with the given primary key, if the entity is not available

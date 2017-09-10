@@ -28,13 +28,13 @@ import java.util.Set;
  * A default EntityModel implementation.
  *
  * <pre>
- * String entityID = "some.entity";
- * String clientTypeID = "JavadocDemo";
+ * String entityId = "some.entity";
+ * String clientTypeId = "JavadocDemo";
  * User user = new User("scott", "tiger");
  *
- * EntityConnectionProvider connectionProvider = EntityConnectionProviders.createConnectionProvider(user, clientTypeID);
+ * EntityConnectionProvider connectionProvider = EntityConnectionProviders.createConnectionProvider(user, clientTypeId);
  *
- * EntityModel model = new DefaultEntityModel(entityID, connectionProvider);
+ * EntityModel model = new DefaultEntityModel(entityId, connectionProvider);
  *
  * EntityPanel panel = new EntityPanel(model);
  * </pre>
@@ -54,7 +54,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /**
    * The entity ID
    */
-  private final String entityID;
+  private final String entityId;
 
   /**
    * The EntityEditModel instance
@@ -108,7 +108,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    */
   public DefaultEntityModel(final E editModel, final T tableModel) {
     Objects.requireNonNull(editModel, "editModel");
-    this.entityID = editModel.getEntityID();
+    this.entityId = editModel.getEntityId();
     this.connectionProvider = editModel.getConnectionProvider();
     this.editModel = editModel;
     this.tableModel = tableModel;
@@ -123,13 +123,13 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    */
   @Override
   public final String toString() {
-    return getClass().getSimpleName() + ": " + entityID;
+    return getClass().getSimpleName() + ": " + entityId;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final String getEntityID() {
-    return entityID;
+  public final String getEntityId() {
+    return entityId;
   }
 
   /** {@inheritDoc} */
@@ -213,9 +213,9 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   /** {@inheritDoc} */
   @Override
-  public final boolean containsDetailModel(final String entityID) {
+  public final boolean containsDetailModel(final String entityId) {
     for (final M detailModel : detailModels) {
-      if (detailModel.getEntityID().equals(entityID)) {
+      if (detailModel.getEntityId().equals(entityId)) {
         return true;
       }
     }
@@ -272,30 +272,30 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   /** {@inheritDoc} */
   @Override
-  public final M getDetailModel(final String entityID) {
+  public final M getDetailModel(final String entityId) {
     for (final M detailModel : detailModels) {
-      if (detailModel.getEntityID().equals(entityID)) {
+      if (detailModel.getEntityId().equals(entityId)) {
         return detailModel;
       }
     }
 
-    throw new IllegalArgumentException("No detail model for entity " + entityID + " found in model: " + this);
+    throw new IllegalArgumentException("No detail model for entity " + entityId + " found in model: " + this);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setDetailModelForeignKey(final M detailModel, final String foreignKeyPropertyID) {
+  public final void setDetailModelForeignKey(final M detailModel, final String foreignKeyPropertyId) {
     Objects.requireNonNull(detailModel, "detailModel");
     if (!containsDetailModel(detailModel)) {
       throw new IllegalArgumentException(this + " does not contain detail model: " + detailModel);
     }
 
-    if (foreignKeyPropertyID == null) {
+    if (foreignKeyPropertyId == null) {
       detailModelForeignKeys.remove(detailModel);
     }
     else {
       detailModelForeignKeys.put(detailModel,
-              connectionProvider.getEntities().getForeignKeyProperty(detailModel.getEntityID(), foreignKeyPropertyID));
+              connectionProvider.getEntities().getForeignKeyProperty(detailModel.getEntityId(), foreignKeyPropertyId));
     }
   }
 
@@ -355,9 +355,9 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   /** {@inheritDoc} */
   @Override
-  public final void initialize(final String foreignKeyEntityID, final List<Entity> foreignKeyValues) {
+  public final void initialize(final String foreignKeyEntityId, final List<Entity> foreignKeyValues) {
     final List<Property.ForeignKeyProperty> foreignKeyProperties = connectionProvider.getEntities()
-            .getForeignKeyProperties(entityID, foreignKeyEntityID);
+            .getForeignKeyProperties(entityId, foreignKeyEntityId);
     if (!foreignKeyProperties.isEmpty()) {
       initialize(foreignKeyProperties.get(0), foreignKeyValues);
     }
@@ -453,7 +453,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
         detailModel.initialize(detailModelForeignKeys.get(detailModel), activeEntities);
       }
       else {
-        detailModel.initialize(entityID, activeEntities);
+        detailModel.initialize(entityId, activeEntities);
       }
     }
   }
@@ -470,7 +470,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     if (containsTableModel() && filterOnMasterInsert) {
       Property.ForeignKeyProperty foreignKeyProperty = masterModel.getDetailModelForeignKey((M) this);
       if (foreignKeyProperty == null) {
-        foreignKeyProperty = connectionProvider.getEntities().getForeignKeyProperties(entityID, masterModel.getEntityID()).get(0);
+        foreignKeyProperty = connectionProvider.getEntities().getForeignKeyProperties(entityId, masterModel.getEntityId()).get(0);
       }
       tableModel.setForeignKeyConditionValues(foreignKeyProperty, insertEvent.getInsertedEntities());
     }
@@ -481,9 +481,9 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @param updateEvent the update event
    */
   private void handleMasterUpdate(final EntityEditModel.UpdateEvent updateEvent) {
-    editModel.replaceForeignKeyValues(masterModel.getEntityID(), updateEvent.getUpdatedEntities().values());
+    editModel.replaceForeignKeyValues(masterModel.getEntityId(), updateEvent.getUpdatedEntities().values());
     if (containsTableModel()) {
-      getTableModel().replaceForeignKeyValues(masterModel.getEntityID(), updateEvent.getUpdatedEntities().values());
+      getTableModel().replaceForeignKeyValues(masterModel.getEntityId(), updateEvent.getUpdatedEntities().values());
     }
   }
 
@@ -508,8 +508,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   private void setTableEditModel(final EntityEditModel editModel, final EntityTableModel tableModel) {
-    if (tableModel != null && !entityID.equals(tableModel.getEntityID())) {
-      throw new IllegalArgumentException("Table model entityID mismatch, found: " + tableModel.getEntityID() + ", required: " + entityID);
+    if (tableModel != null && !entityId.equals(tableModel.getEntityId())) {
+      throw new IllegalArgumentException("Table model entityId mismatch, found: " + tableModel.getEntityId() + ", required: " + entityId);
     }
     if (tableModel != null) {
       if (tableModel.hasEditModel()) {

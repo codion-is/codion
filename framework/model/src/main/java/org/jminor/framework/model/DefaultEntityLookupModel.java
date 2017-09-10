@@ -45,7 +45,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /**
    * The ID of the entity this lookup model is based on
    */
-  private final String entityID;
+  private final String entityId;
 
   /**
    * The properties to use when doing the lookup
@@ -84,29 +84,29 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /**
    * Instantiates a new EntityLookupModel, using the search properties for the given entity type
-   * @param entityID the ID of the entity to lookup
+   * @param entityId the ID of the entity to lookup
    * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
    * @see Entities#getSearchProperties(String)
    */
-  public DefaultEntityLookupModel(final String entityID, final EntityConnectionProvider connectionProvider) {
-    this(entityID, connectionProvider, connectionProvider.getEntities().getSearchProperties(entityID));
+  public DefaultEntityLookupModel(final String entityId, final EntityConnectionProvider connectionProvider) {
+    this(entityId, connectionProvider, connectionProvider.getEntities().getSearchProperties(entityId));
   }
 
   /**
    * Instantiates a new EntityLookupModel
-   * @param entityID the ID of the entity to lookup
+   * @param entityId the ID of the entity to lookup
    * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
    * @param lookupProperties the properties to search by, these must be string based
    */
-  public DefaultEntityLookupModel(final String entityID, final EntityConnectionProvider connectionProvider,
+  public DefaultEntityLookupModel(final String entityId, final EntityConnectionProvider connectionProvider,
                                   final Collection<Property.ColumnProperty> lookupProperties) {
-    Objects.requireNonNull(entityID, "entityID");
+    Objects.requireNonNull(entityId, "entityId");
     Objects.requireNonNull(connectionProvider, "connectionProvider");
     Objects.requireNonNull(lookupProperties, "lookupProperties");
-    validateLookupProperties(entityID, lookupProperties);
+    validateLookupProperties(entityId, lookupProperties);
     this.connectionProvider = connectionProvider;
     this.entityConditions = connectionProvider.getConditions();
-    this.entityID = entityID;
+    this.entityId = entityId;
     this.lookupProperties = lookupProperties;
     this.description = TextUtil.getCollectionContentsAsString(getLookupProperties(), false);
     initializeDefaultSettings();
@@ -115,8 +115,8 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public final String getEntityID() {
-    return entityID;
+  public final String getEntityId() {
+    return entityId;
   }
 
   /** {@inheritDoc} */
@@ -299,7 +299,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    */
   private EntitySelectCondition getEntitySelectCondition() {
     if (lookupProperties.isEmpty()) {
-      throw new IllegalStateException("No lookup properties provided for lookup model: " + entityID);
+      throw new IllegalStateException("No lookup properties provided for lookup model: " + entityId);
     }
     final Condition.Set<Property.ColumnProperty> baseCondition = Conditions.conditionSet(Conjunction.OR);
     final String[] lookupTexts = multipleSelectionAllowedValue.get() ? searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
@@ -314,9 +314,9 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
       }
     }
 
-    return entityConditions.selectCondition(entityID, additionalConditionProvider == null ? baseCondition :
+    return entityConditions.selectCondition(entityId, additionalConditionProvider == null ? baseCondition :
                     Conditions.conditionSet(Conjunction.AND, additionalConditionProvider.getCondition(), baseCondition),
-            connectionProvider.getEntities().getOrderByClause(getEntityID()));
+            connectionProvider.getEntities().getOrderByClause(entityId));
   }
 
   private void initializeDefaultSettings() {
@@ -350,10 +350,10 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     return stringBuilder.toString();
   }
 
-  private static void validateLookupProperties(final String entityID, final Collection<Property.ColumnProperty> lookupProperties) {
+  private static void validateLookupProperties(final String entityId, final Collection<Property.ColumnProperty> lookupProperties) {
     for (final Property.ColumnProperty property : lookupProperties) {
-      if (!entityID.equals(property.getEntityID())) {
-        throw new IllegalArgumentException("Property '" + property + "' is not part of entity " + entityID);
+      if (!entityId.equals(property.getEntityId())) {
+        throw new IllegalArgumentException("Property '" + property + "' is not part of entity " + entityId);
       }
       if (!property.isString()) {
         throw new IllegalArgumentException("Property '" + property + "' is not a String property");

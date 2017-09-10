@@ -240,10 +240,10 @@ public final class EntityGeneratorModel {
             .append(EQUALS).append(schemaName.toLowerCase()).append(".").append(table.getTableName().toLowerCase())
             .append("\";").append(Util.LINE_SEPARATOR);
     for (final Column column : table.getColumns()) {
-      builder.append(PUBLIC_STATIC_FINAL_STRING).append(getPropertyID(table, column, false))
+      builder.append(PUBLIC_STATIC_FINAL_STRING).append(getPropertyId(table, column, false))
               .append(EQUALS).append(column.getColumnName().toLowerCase()).append("\";").append(Util.LINE_SEPARATOR);
       if (column.foreignKeyColumn != null) {
-        builder.append(PUBLIC_STATIC_FINAL_STRING).append(getPropertyID(table, column, true))
+        builder.append(PUBLIC_STATIC_FINAL_STRING).append(getPropertyId(table, column, true))
                 .append(EQUALS).append(column.getColumnName().toLowerCase())
                 .append(FOREIGN_KEY_PROPERTY_SUFFIX.toLowerCase()).append("\";").append(Util.LINE_SEPARATOR);
       }
@@ -263,9 +263,9 @@ public final class EntityGeneratorModel {
   private static String getForeignKeyPropertyDefinition(final Table table, final Column column) {
     final String columnPropertyDefinition = getColumnPropertyDefinition(table, column, true);
     final StringBuilder builder = new StringBuilder();
-    final String foreignKeyID = getPropertyID(table, column, true);
+    final String foreignKeyId = getPropertyId(table, column, true);
     final String caption = getCaption(column);
-    builder.append("        Properties.foreignKeyProperty(").append(foreignKeyID).append(", \"").append(caption)
+    builder.append("        Properties.foreignKeyProperty(").append(foreignKeyId).append(", \"").append(caption)
             .append("\", ").append(getEntityID(column.getForeignKeyColumn().getReferencedTable()))
             .append(",").append(Util.LINE_SEPARATOR);
     builder.append("        ").append(columnPropertyDefinition).append(")");
@@ -301,14 +301,14 @@ public final class EntityGeneratorModel {
 
   private static void addPropertyDefinition(final StringBuilder builder, final Table table, final Column column,
                                             final boolean foreignKeyColumn) {
-    final String propertyID = getPropertyID(table, column, false);
+    final String propertyId = getPropertyId(table, column, false);
     final String caption = getCaption(column);
     if (column.getKeySeq() != -1) {
       if (TYPES_INTEGER.equals(column.getColumnTypeName())) {
-        builder.append(PROPERTIES_COLUMN_PROPERTY).append(propertyID).append(")");
+        builder.append(PROPERTIES_COLUMN_PROPERTY).append(propertyId).append(")");
       }
       else {
-        builder.append(PROPERTIES_COLUMN_PROPERTY).append(propertyID).append(", ")
+        builder.append(PROPERTIES_COLUMN_PROPERTY).append(propertyId).append(", ")
                 .append(column.getColumnTypeName()).append(")");
       }
       if (column.getKeySeq() > 0) {
@@ -321,10 +321,10 @@ public final class EntityGeneratorModel {
     }
     else {
       if (column.getForeignKeyColumn() != null && column.getColumnType() == Types.INTEGER) {
-        builder.append(PROPERTIES_COLUMN_PROPERTY).append(propertyID).append(")");
+        builder.append(PROPERTIES_COLUMN_PROPERTY).append(propertyId).append(")");
       }
       else {
-        builder.append(PROPERTIES_COLUMN_PROPERTY).append(propertyID).append(", ")
+        builder.append(PROPERTIES_COLUMN_PROPERTY).append(propertyId).append(", ")
                 .append(column.getColumnTypeName()).append(", \"").append(caption).append("\")");
       }
     }
@@ -334,7 +334,7 @@ public final class EntityGeneratorModel {
     return ENTITY_ID_PREFIX + table.getTableName().toUpperCase();
   }
 
-  private static String getPropertyID(final Table table, final Column column, final boolean isForeignKey) {
+  private static String getPropertyId(final Table table, final Column column, final boolean isForeignKey) {
     return table.getTableName().toUpperCase() + "_" + column.getColumnName().toUpperCase()
             + (isForeignKey ? FOREIGN_KEY_PROPERTY_SUFFIX : "");
   }

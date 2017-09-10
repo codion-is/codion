@@ -103,38 +103,38 @@ public interface Property extends Attribute {
   /**
    * @return the domain id
    */
-  String getDomainID();
+  String getDomainId();
 
   /**
-   * @param domainID the domain id
+   * @param domainId the domain id
    * @return this Property instance
    */
-  Property setDomainID(final String domainID);
+  Property setDomainID(final String domainId);
 
   /**
    * @return the ID of the entity this property is associated with
    */
-  String getEntityID();
+  String getEntityId();
 
   /**
-   * @param entityID the ID of the entity this property is associated with
-   * @throws IllegalStateException in case the entityID has already been set
+   * @param entityId the ID of the entity this property is associated with
+   * @throws IllegalStateException in case the entityId has already been set
    * @return this Property instance
    */
-  Property setEntityID(final String entityID);
+  Property setEntityID(final String entityId);
 
   /**
    * The property identifier, should be unique within an Entity.
    * By default this ID serves as column name for database properties.
    * @return the ID of this property
    */
-  String getPropertyID();
+  String getPropertyId();
 
   /**
-   * @param propertyID the property ID
+   * @param propertyId the property ID
    * @return true if this property is of the given type
    */
-  boolean is(final String propertyID);
+  boolean is(final String propertyId);
 
   /**
    * @param property the property
@@ -538,7 +538,7 @@ public interface Property extends Attribute {
     /**
      * @return the ID of the entity referenced by this foreign key
      */
-    String getForeignEntityID();
+    String getForeignEntityId();
 
     /**
      * Returns an unmodifiable list containing the properties that comprise this foreign key
@@ -579,7 +579,7 @@ public interface Property extends Attribute {
     /**
      * @return the id of the foreign key property from which this property should retrieve its value
      */
-    String getForeignKeyPropertyID();
+    String getForeignKeyPropertyId();
 
     /**
      * @return the property in the referenced entity from which this property gets its value
@@ -625,7 +625,7 @@ public interface Property extends Attribute {
     /**
      * @return the IDs of properties this property derives from.
      */
-    List<String> getSourcePropertyIDs();
+    List<String> getSourcePropertyIds();
 
     /**
      * @return the value provider, providing the derived value
@@ -638,7 +638,7 @@ public interface Property extends Attribute {
     interface Provider {
 
       /**
-       * @param linkedValues the linked values, mapped to their respective propertyIDs
+       * @param linkedValues the linked values, mapped to their respective propertyIds
        * @return the derived value
        */
       Object getValue(final Map<String, Object> linkedValues);
@@ -654,7 +654,7 @@ public interface Property extends Attribute {
     /**
      * @return the id of the foreign key property (entity) from which this property should retrieve its value
      */
-    String getForeignKeyPropertyID();
+    String getForeignKeyPropertyId();
 
     /**
      * @return the property from which this property gets its value
@@ -709,9 +709,9 @@ public interface Property extends Attribute {
   @interface Column {
 
     /**
-     * @return the entityID of the entity this column belongs to
+     * @return the entityId of the entity this column belongs to
      */
-    String entityID();
+    String entityId();
 
     /**
      * @return the name of the underlying column

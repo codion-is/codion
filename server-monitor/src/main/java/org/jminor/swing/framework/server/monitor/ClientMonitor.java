@@ -20,7 +20,7 @@ public final class ClientMonitor {
 
   private static final Comparator<RemoteClient> CLIENT_INFO_COMPARATOR = (c1, c2) -> c1.getUser().getUsername().compareToIgnoreCase(c2.getUser().getUsername());
   private final EntityConnectionServerAdmin server;
-  private final String clientTypeID;
+  private final String clientTypeId;
   private final User user;
 
   private final DefaultListModel<ClientInstanceMonitor> clientInstanceListModel = new DefaultListModel<>();
@@ -28,13 +28,13 @@ public final class ClientMonitor {
   /**
    * Instantiates a new {@link ClientMonitor}
    * @param server the server being monitored
-   * @param clientTypeID the clientTypeID of the clients to monitor
+   * @param clientTypeId the clientTypeId of the clients to monitor
    * @param user the user to monitor
    * @throws RemoteException in case of an exception
    */
-  public ClientMonitor(final EntityConnectionServerAdmin server, final String clientTypeID, final User user) throws RemoteException {
+  public ClientMonitor(final EntityConnectionServerAdmin server, final String clientTypeId, final User user) throws RemoteException {
     this.server = server;
-    this.clientTypeID = clientTypeID;
+    this.clientTypeId = clientTypeId;
     this.user = user;
     refresh();
   }
@@ -45,7 +45,7 @@ public final class ClientMonitor {
    */
   public void refresh() throws RemoteException {
     clientInstanceListModel.clear();
-    final List<RemoteClient> clients = new ArrayList<>(clientTypeID == null ? server.getClients(user) : server.getClients(clientTypeID));
+    final List<RemoteClient> clients = new ArrayList<>(clientTypeId == null ? server.getClients(user) : server.getClients(clientTypeId));
     clients.sort(CLIENT_INFO_COMPARATOR);
     for (final RemoteClient client : clients) {
       clientInstanceListModel.addElement(new ClientInstanceMonitor(server, client));
@@ -60,14 +60,14 @@ public final class ClientMonitor {
   }
 
   /**
-   * @return the clientTypeID being monitored
+   * @return the clientTypeId being monitored
    */
-  public String getClientTypeID() {
-    return clientTypeID;
+  public String getClientTypeId() {
+    return clientTypeId;
   }
 
   @Override
   public String toString() {
-    return clientTypeID == null ? user.toString() : clientTypeID;
+    return clientTypeId == null ? user.toString() : clientTypeId;
   }
 }

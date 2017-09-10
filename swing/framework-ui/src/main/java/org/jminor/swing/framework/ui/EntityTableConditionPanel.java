@@ -138,7 +138,7 @@ public final class EntityTableConditionPanel extends JPanel {
       Entities.sort(conditionProperties);
       final Property property = UiUtil.selectValue(this, conditionProperties, Messages.get(Messages.SELECT_INPUT_FIELD));
       if (property != null) {
-        final ColumnConditionPanel conditionPanel = getConditionPanel(property.getPropertyID());
+        final ColumnConditionPanel conditionPanel = getConditionPanel(property.getPropertyId());
         if (conditionPanel != null) {
           conditionPanel.requestInputFocus();
         }
@@ -201,14 +201,14 @@ public final class EntityTableConditionPanel extends JPanel {
   }
 
   /**
-   * @param propertyID the property ID
+   * @param propertyId the property ID
    * @return the condition panel associated with the given property, null if none is specified
    */
-  public ColumnConditionPanel getConditionPanel(final String propertyID) {
+  public ColumnConditionPanel getConditionPanel(final String propertyId) {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
       for (final TableColumn column : columns) {
         final Property property = (Property) column.getIdentifier();
-        if (property.is(propertyID)) {
+        if (property.is(propertyId)) {
           return (ColumnConditionPanel) ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().get(column);
         }
       }
@@ -250,8 +250,8 @@ public final class EntityTableConditionPanel extends JPanel {
       @Override
       protected JPanel initializeColumnPanel(final TableColumn column) {
         final Property property = (Property) column.getIdentifier();
-        if (tableModel.getConditionModel().containsPropertyConditionModel(property.getPropertyID())) {
-          final PropertyConditionModel propertyConditionModel = tableModel.getConditionModel().getPropertyConditionModel(property.getPropertyID());
+        if (tableModel.getConditionModel().containsPropertyConditionModel(property.getPropertyId())) {
+          final PropertyConditionModel propertyConditionModel = tableModel.getConditionModel().getPropertyConditionModel(property.getPropertyId());
           return initializeConditionPanel(propertyConditionModel);
         }
         else {

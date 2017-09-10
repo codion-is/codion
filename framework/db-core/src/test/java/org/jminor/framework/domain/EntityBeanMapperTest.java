@@ -138,29 +138,29 @@ public class EntityBeanMapperTest {
   @Test(expected = IllegalArgumentException.class)
   public void getBeanClassUndefinedEntity() {
     final EntityBeanMapper beanMapper = new EntityBeanMapper(entities);
-    beanMapper.getBeanClass("entityID");
+    beanMapper.getBeanClass("entityId");
   }
 
   @Test(expected = NullPointerException.class)
   public void setEntityIDNullBeanClass() {
     final EntityBeanMapper beanMapper = new EntityBeanMapper(entities);
-    beanMapper.setEntityID(null, "entityID");
+    beanMapper.setEntityId(null, "entityId");
   }
 
   @Test(expected = NullPointerException.class)
-  public void setEntityIDNullEntityID() {
+  public void setEntityIDNullEntityId() {
     final EntityBeanMapper beanMapper = new EntityBeanMapper(entities);
-    beanMapper.setEntityID(EmployeeBean.class, null);
+    beanMapper.setEntityId(EmployeeBean.class, null);
   }
 
   @Test(expected = NullPointerException.class)
   public void getEntityIDNullBeanClass() {
     final EntityBeanMapper beanMapper = new EntityBeanMapper(entities);
-    beanMapper.getEntityID(null);
+    beanMapper.getEntityId(null);
   }
 
   @Test(expected = NullPointerException.class)
-  public void getBeanClassNullEntityID() {
+  public void getBeanClassNullEntityId() {
     final EntityBeanMapper beanMapper = new EntityBeanMapper(entities);
     beanMapper.getBeanClass(null);
   }
@@ -178,7 +178,7 @@ public class EntityBeanMapperTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void setPropertyNullPropertyID() throws NoSuchMethodException {
+  public void setPropertyNullPropertyId() throws NoSuchMethodException {
     final EntityBeanMapper beanMapper = new EntityBeanMapper(entities);
     beanMapper.setProperty(EmployeeBean.class, null, "");
   }
@@ -191,12 +191,12 @@ public class EntityBeanMapperTest {
 
   private EntityBeanMapper createEmpDeptBeanMapper() throws NoSuchMethodException {
     final EntityBeanMapper beanMap = new EntityBeanMapper(entities);
-    beanMap.setEntityID(DepartmentBean.class, TestDomain.T_DEPARTMENT);
+    beanMap.setEntityId(DepartmentBean.class, TestDomain.T_DEPARTMENT);
     beanMap.setProperty(DepartmentBean.class, TestDomain.DEPARTMENT_ID, "deptNo");
     beanMap.setProperty(DepartmentBean.class, TestDomain.DEPARTMENT_NAME, "name");
     beanMap.setProperty(DepartmentBean.class, TestDomain.DEPARTMENT_LOCATION, "location");
 
-    beanMap.setEntityID(EmployeeBean.class, TestDomain.T_EMP);
+    beanMap.setEntityId(EmployeeBean.class, TestDomain.T_EMP);
     beanMap.setProperty(EmployeeBean.class, TestDomain.EMP_ID, "id");
     beanMap.setProperty(EmployeeBean.class, TestDomain.EMP_COMMISSION, "commission");
     beanMap.setProperty(EmployeeBean.class, TestDomain.EMP_DEPARTMENT, "deptno");

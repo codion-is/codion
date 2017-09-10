@@ -23,17 +23,17 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
   private final ValueCollectionProvider<T> valueProvider;
 
   /**
-   * @param entityID the ID of the underlying entity
+   * @param entityId the ID of the underlying entity
    * @param connectionProvider a EntityConnectionProvider instance
    * @param property the underlying property
    * @param nullValue the value to use to represent a null value
    */
-  public SwingPropertyComboBoxModel(final String entityID, final EntityConnectionProvider connectionProvider,
+  public SwingPropertyComboBoxModel(final String entityId, final EntityConnectionProvider connectionProvider,
                                     final Property.ColumnProperty property, final T nullValue) {
     this(() -> {
       try {
-        return (Collection<T>) connectionProvider.getConnection().selectValues(property.getPropertyID(),
-                connectionProvider.getConditions().condition(entityID));
+        return (Collection<T>) connectionProvider.getConnection().selectValues(property.getPropertyId(),
+                connectionProvider.getConditions().condition(entityId));
       }
       catch (final DatabaseException e) {
         throw new RuntimeException(e);

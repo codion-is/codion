@@ -73,11 +73,11 @@ public interface EntityConnectionServerAdmin extends Remote {
   void setMaintenanceInterval(final int interval) throws RemoteException;
 
   /**
-   * @param clientID the ID of the client for which to retrieve the log
+   * @param clientId the ID of the client for which to retrieve the log
    * @return the log for the given connection
    * @throws RemoteException in case of a communication error
    */
-  ClientLog getClientLog(final UUID clientID) throws RemoteException;
+  ClientLog getClientLog(final UUID clientId) throws RemoteException;
 
   /**
    * @return the number of active connections
@@ -87,19 +87,19 @@ public interface EntityConnectionServerAdmin extends Remote {
 
   /**
    * Returns true if logging is enabled for the given connection
-   * @param clientID the ID of the client
+   * @param clientId the ID of the client
    * @return true if logging is on for the given connection
    * @throws RemoteException in case of a communication error
    */
-  boolean isLoggingEnabled(final UUID clientID) throws RemoteException;
+  boolean isLoggingEnabled(final UUID clientId) throws RemoteException;
 
   /**
    * Sets the logging status for the given connection
-   * @param clientID the ID of the client
+   * @param clientId the ID of the client
    * @param status the new logging status
    * @throws RemoteException in case of a communication error
    */
-  void setLoggingEnabled(final UUID clientID, final boolean status) throws RemoteException;
+  void setLoggingEnabled(final UUID clientId, final boolean status) throws RemoteException;
 
   /**
    * @return the total amount of memory allocated by the server process
@@ -136,10 +136,10 @@ public interface EntityConnectionServerAdmin extends Remote {
   /**
    * Unregisters the connection from the server, if connection pooling is enabled
    * for the user the connection is pooled.
-   * @param clientID the ID of the client
+   * @param clientId the ID of the client
    * @throws RemoteException in case of a communication error
    */
-  void disconnect(final UUID clientID) throws RemoteException;
+  void disconnect(final UUID clientId) throws RemoteException;
 
   /**
    * @return the server logging level
@@ -173,11 +173,11 @@ public interface EntityConnectionServerAdmin extends Remote {
   Collection<RemoteClient> getClients(final User user) throws RemoteException;
 
   /**
-   * @param clientTypeID the client type for which to retrieve the clients
+   * @param clientTypeId the client type for which to retrieve the clients
    * @return the clients associated with the given user
    * @throws RemoteException in case of a communication error
    */
-  Collection<RemoteClient> getClients(final String clientTypeID) throws RemoteException;
+  Collection<RemoteClient> getClients(final String clientTypeId) throws RemoteException;
 
   /**
    * Returns the connection timeout in ms
@@ -274,7 +274,7 @@ public interface EntityConnectionServerAdmin extends Remote {
   ThreadStatistics getThreadStatistics() throws RemoteException;
 
   /**
-   * @return a map containing all entityIDs, with their respective table names as an associated value
+   * @return a map containing all entityIds, with their respective table names as an associated value
    * @throws RemoteException in case of an exception
    */
   Map<String, String> getEntityDefinitions() throws RemoteException;

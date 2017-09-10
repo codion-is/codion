@@ -27,13 +27,13 @@ public class DefaultPropertyConditionModelTest {
     model.setConditionType(Condition.Type.LIKE);
     assertFalse(model.isLowerBoundRequired());
     model.setUpperBound("upper");
-    assertEquals(property.getPropertyID() + " like ?", model.getCondition().getWhereClause());
+    assertEquals(property.getPropertyId() + " like ?", model.getCondition().getWhereClause());
     model.setConditionType(Condition.Type.NOT_LIKE);
-    assertEquals(property.getPropertyID() + " not like ?", model.getCondition().getWhereClause());
+    assertEquals(property.getPropertyId() + " not like ?", model.getCondition().getWhereClause());
     model.setConditionType(Condition.Type.GREATER_THAN);
-    assertEquals(property.getPropertyID() + " >= ?", model.getCondition().getWhereClause());
+    assertEquals(property.getPropertyId() + " >= ?", model.getCondition().getWhereClause());
     model.setConditionType(Condition.Type.LESS_THAN);
-    assertEquals(property.getPropertyID() + " <= ?", model.getCondition().getWhereClause());
+    assertEquals(property.getPropertyId() + " <= ?", model.getCondition().getWhereClause());
 
     model.setConditionType(Condition.Type.WITHIN_RANGE);
     assertTrue(model.isLowerBoundRequired());
@@ -41,14 +41,14 @@ public class DefaultPropertyConditionModelTest {
     List values = model.getCondition().getValues();
     assertTrue(values.contains("upper"));
     assertTrue(values.contains("lower"));
-    assertEquals("(" + property.getPropertyID() + " >= ? and " + property.getPropertyID() + " <= ?)", model.getCondition().getWhereClause());
+    assertEquals("(" + property.getPropertyId() + " >= ? and " + property.getPropertyId() + " <= ?)", model.getCondition().getWhereClause());
 
     model.setConditionType(Condition.Type.LIKE);
     model.setAutomaticWildcard(true);
     values = model.getCondition().getValues();
     assertTrue(values.contains("%upper%"));
-    assertEquals(property.getPropertyID() + " like ?", model.getCondition().getWhereClause());
+    assertEquals(property.getPropertyId() + " like ?", model.getCondition().getWhereClause());
     model.setConditionType(Condition.Type.NOT_LIKE);
-    assertEquals(property.getPropertyID() + " not like ?", model.getCondition().getWhereClause());
+    assertEquals(property.getPropertyId() + " not like ?", model.getCondition().getWhereClause());
   }
 }

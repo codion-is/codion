@@ -53,8 +53,8 @@ public final class EntityTableCellRenderers {
    * @see org.jminor.framework.domain.Entity.Definition#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
    */
   public static EntityTableCellRenderer getTableCellRenderer(final EntityTableModel tableModel, final Property property) {
-    if (!Objects.equals(tableModel.getEntityID(), property.getEntityID())) {
-      throw new IllegalArgumentException("Property " + property + " not found in entity : " + tableModel.getEntityID());
+    if (!Objects.equals(tableModel.getEntityId(), property.getEntityId())) {
+      throw new IllegalArgumentException("Property " + property + " not found in entity : " + tableModel.getEntityId());
     }
     if (property.isBoolean()) {
       return new BooleanRenderer(tableModel, property);
@@ -158,8 +158,8 @@ public final class EntityTableCellRenderers {
         return this;
       }
 
-      final boolean propertyConditionEnabled = tableModel.getConditionModel().isEnabled(property.getPropertyID());
-      final boolean propertyFilterEnabled = tableModel.getConditionModel().isFilterEnabled(property.getPropertyID());
+      final boolean propertyConditionEnabled = tableModel.getConditionModel().isEnabled(property.getPropertyId());
+      final boolean propertyFilterEnabled = tableModel.getConditionModel().isFilterEnabled(property.getPropertyId());
       final boolean showCondition = indicateCondition && (propertyConditionEnabled || propertyFilterEnabled);
       final Color cellColor = (Color) tableModel.getPropertyBackgroundColor(row, property);
       if (showCondition) {

@@ -16,94 +16,94 @@ public final class PropertiesTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void derivedPropertyWithoutLinkedProperties() {
-    Properties.derivedProperty("propertyID", Types.INTEGER, "caption", linkedValues -> null);
+    Properties.derivedProperty("propertyId", Types.INTEGER, "caption", linkedValues -> null);
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void foreignKeyPropertyNonUniqueReferencePropertyID() {
-    final String propertyID = "propertyID";
-    Properties.foreignKeyProperty(propertyID, "caption", "referencedEntityID", Properties.columnProperty(propertyID));
+  public void foreignKeyPropertyNonUniqueReferencePropertyId() {
+    final String propertyId = "propertyId";
+    Properties.foreignKeyProperty(propertyId, "caption", "referencedEntityId", Properties.columnProperty(propertyId));
   }
 
   @Test(expected = NullPointerException.class)
   public void foreignKeyPropertyWithoutReferenceProperty() {
-    Properties.foreignKeyProperty("propertyID", "caption", "referencedEntityID", (Property.ColumnProperty) null);
+    Properties.foreignKeyProperty("propertyId", "caption", "referencedEntityId", (Property.ColumnProperty) null);
   }
 
   @Test(expected = NullPointerException.class)
-  public void foreignKeyPropertyWithoutReferenceEntityID() {
-    Properties.foreignKeyProperty("propertyID", "caption", null, Properties.columnProperty("col"));
+  public void foreignKeyPropertyWithoutReferenceEntityId() {
+    Properties.foreignKeyProperty("propertyId", "caption", null, Properties.columnProperty("col"));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void intPropertyWithDateFormat() {
-    Properties.columnProperty("propertyID", Types.INTEGER).setFormat(DateFormats.getDateFormat(DateFormats.COMPACT));
+    Properties.columnProperty("propertyId", Types.INTEGER).setFormat(DateFormats.getDateFormat(DateFormats.COMPACT));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void doublePropertyWithDateFormat() {
-    Properties.columnProperty("propertyID", Types.DOUBLE).setFormat(DateFormats.getDateFormat(DateFormats.COMPACT));
+    Properties.columnProperty("propertyId", Types.DOUBLE).setFormat(DateFormats.getDateFormat(DateFormats.COMPACT));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void datePropertyWithNumberFormat() {
-    Properties.columnProperty("propertyID", Types.DATE).setFormat(NumberFormat.getIntegerInstance());
+    Properties.columnProperty("propertyId", Types.DATE).setFormat(NumberFormat.getIntegerInstance());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void timestampPropertyWithNumberFormat() {
-    Properties.columnProperty("propertyID", Types.TIMESTAMP).setFormat(NumberFormat.getIntegerInstance());
+    Properties.columnProperty("propertyId", Types.TIMESTAMP).setFormat(NumberFormat.getIntegerInstance());
   }
 
   @Test(expected = IllegalStateException.class)
   public void setMaximumFractionDigitsNotNumerical() {
-    Properties.columnProperty("propertyID", Types.DATE).setMaximumFractionDigits(5);
+    Properties.columnProperty("propertyId", Types.DATE).setMaximumFractionDigits(5);
   }
 
   @Test(expected = IllegalStateException.class)
   public void getMaximumFractionDigitsNotNumerical() {
-    Properties.columnProperty("propertyID", Types.DATE).getMaximumFractionDigits();
+    Properties.columnProperty("propertyId", Types.DATE).getMaximumFractionDigits();
   }
 
   @Test(expected = IllegalStateException.class)
   public void setUserNumberFormatGroupingNotNumerical() {
-    Properties.columnProperty("propertyID", Types.DATE).setUseNumberFormatGrouping(false);
+    Properties.columnProperty("propertyId", Types.DATE).setUseNumberFormatGrouping(false);
   }
 
   @Test
   public void setColumnName() {
-    assertEquals("hello", Properties.columnProperty("propertyID").setColumnName("hello").getColumnName());
+    assertEquals("hello", Properties.columnProperty("propertyId").setColumnName("hello").getColumnName());
   }
 
   @Test(expected = NullPointerException.class)
   public void setColumnNameNull() {
-    Properties.columnProperty("propertyID").setColumnName(null);
+    Properties.columnProperty("propertyId").setColumnName(null);
   }
 
   @Test
   public void description() {
     final String description = "Here is a description";
-    final Property property = Properties.columnProperty("propertyID").setDescription(description);
+    final Property property = Properties.columnProperty("propertyId").setDescription(description);
     assertEquals(description, property.getDescription());
   }
 
   @Test
   public void mnemonic() {
     final Character mnemonic = 'M';
-    final Property property = Properties.columnProperty("propertyID").setMnemonic(mnemonic);
+    final Property property = Properties.columnProperty("propertyId").setMnemonic(mnemonic);
     assertEquals(mnemonic, property.getMnemonic());
   }
 
   @Test(expected = IllegalStateException.class)
   public void setEntityIDAlreadySet() {
-    final Property property = Properties.columnProperty("propertyID").setEntityID("entityID");
+    final Property property = Properties.columnProperty("propertyId").setEntityID("entityId");
     property.setEntityID("test");
   }
 
   @Test
   public void foreignKeyPropertyNullable() {
-    final Property.ColumnProperty columnProperty = Properties.columnProperty("propertyID");
-    final Property.ColumnProperty columnProperty2 = Properties.columnProperty("propertyID2");
+    final Property.ColumnProperty columnProperty = Properties.columnProperty("propertyId");
+    final Property.ColumnProperty columnProperty2 = Properties.columnProperty("propertyId2");
     final Property.ForeignKeyProperty foreignKeyProperty= Properties.foreignKeyProperty("fkPropertyID", "fk", "referenceEntityID",
             new Property.ColumnProperty[] {columnProperty, columnProperty2});
     foreignKeyProperty.setNullable(false);
@@ -114,8 +114,8 @@ public final class PropertiesTest {
 
   @Test
   public void foreignKeyPropertyUpdatable() {
-    final Property.ColumnProperty updatableReferenceProperty = Properties.columnProperty("propertyID");
-    final Property.ColumnProperty nonUpdatableReferenceProperty = Properties.columnProperty("propertyID").setUpdatable(false);
+    final Property.ColumnProperty updatableReferenceProperty = Properties.columnProperty("propertyId");
+    final Property.ColumnProperty nonUpdatableReferenceProperty = Properties.columnProperty("propertyId").setUpdatable(false);
 
     final Property.ForeignKeyProperty updatableForeignKeyProperty = Properties.foreignKeyProperty("fkProperty", "test",
             "referencedEntityID", updatableReferenceProperty);
@@ -133,11 +133,11 @@ public final class PropertiesTest {
 
   @Test(expected = NullPointerException.class)
   public void foreignKeyPropertyNullProperty() {
-    Properties.foreignKeyProperty("id", "caption", "entityID", (Property.ColumnProperty) null);
+    Properties.foreignKeyProperty("id", "caption", "entityId", (Property.ColumnProperty) null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void foreignKeyPropertyNoProperties() {
-    Properties.foreignKeyProperty("id", "caption", "entityID", new Property.ColumnProperty[0]);
+    Properties.foreignKeyProperty("id", "caption", "entityId", new Property.ColumnProperty[0]);
   }
 }

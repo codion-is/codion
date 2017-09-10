@@ -38,19 +38,19 @@ class DefaultProperty implements Property {
   /**
    * The domain id
    */
-  private String domainID;
+  private String domainId;
 
   /**
    * The ID of the entity this property is associated with
    */
-  private String entityID;
+  private String entityId;
 
   /**
    * The property identifier, should be unique within an Entity.
    * By default this ID serves as column name for database properties.
-   * @see #getPropertyID()
+   * @see #getPropertyId()
    */
-  private final String propertyID;
+  private final String propertyId;
 
   /**
    * The property type, java.sql.Types
@@ -136,14 +136,14 @@ class DefaultProperty implements Property {
   private Format format;
 
   /**
-   * @param propertyID the property ID, this is used as the underlying column name
+   * @param propertyId the property ID, this is used as the underlying column name
    * @param type the data type of this property
    * @param caption the caption of this property, if this is null then this property is defined as hidden
    */
-  DefaultProperty(final String propertyID, final int type, final String caption) {
-    Objects.requireNonNull(propertyID, "propertyID");
-    this.propertyID = propertyID;
-    this.hashCode = propertyID.hashCode();
+  DefaultProperty(final String propertyId, final int type, final String caption) {
+    Objects.requireNonNull(propertyId, "propertyId");
+    this.propertyId = propertyId;
+    this.hashCode = propertyId.hashCode();
     this.type = type;
     this.caption = caption;
     this.typeClass = getTypeClass(type);
@@ -162,14 +162,14 @@ class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean is(final String propertyID) {
-    return this.propertyID.equals(propertyID);
+  public final boolean is(final String propertyId) {
+    return this.propertyId.equals(propertyId);
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean is(final Property property) {
-    return is(property.getPropertyID());
+    return is(property.getPropertyId());
   }
 
   /** {@inheritDoc} */
@@ -240,39 +240,39 @@ class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public final String getPropertyID() {
-    return propertyID;
+  public final String getPropertyId() {
+    return propertyId;
   }
 
   /** {@inheritDoc} */
   @Override
-  public String getDomainID() {
-    return domainID;
+  public String getDomainId() {
+    return domainId;
   }
 
   /** {@inheritDoc} */
   @Override
-  public Property setDomainID(final String domainID) {
-    if (this.domainID != null) {
-      throw new IllegalStateException("domainID (" + this.domainID + ") has already been set for property: " + propertyID);
+  public Property setDomainID(final String domainId) {
+    if (this.domainId != null) {
+      throw new IllegalStateException("domainId (" + this.domainId + ") has already been set for property: " + propertyId);
     }
-    this.domainID = domainID;
+    this.domainId = domainId;
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public String getEntityID() {
-    return entityID;
+  public String getEntityId() {
+    return entityId;
   }
 
   /** {@inheritDoc} */
   @Override
-  public Property setEntityID(final String entityID) {
-    if (this.entityID != null) {
-      throw new IllegalStateException("entityID (" + this.entityID + ") has already been set for property: " + propertyID);
+  public Property setEntityID(final String entityId) {
+    if (this.entityId != null) {
+      throw new IllegalStateException("entityId (" + this.entityId + ") has already been set for property: " + propertyId);
     }
-    this.entityID = entityID;
+    this.entityId = entityId;
     return this;
   }
 
@@ -441,10 +441,10 @@ class DefaultProperty implements Property {
   public final Property setFormat(final Format format) {
     Objects.requireNonNull(format, "format");
     if (isNumerical() && !(format instanceof NumberFormat)) {
-      throw new IllegalArgumentException("NumberFormat expected for numerical property: " + propertyID);
+      throw new IllegalArgumentException("NumberFormat expected for numerical property: " + propertyId);
     }
     if (isDateOrTime() && !(format instanceof DateFormat)) {
-      throw new IllegalArgumentException("DateFormat expected for time based property: " + propertyID);
+      throw new IllegalArgumentException("DateFormat expected for time based property: " + propertyId);
     }
     this.format = format;
     return this;
@@ -475,7 +475,7 @@ class DefaultProperty implements Property {
   @Override
   public String getCaption() {
     if (caption == null) {
-      return propertyID;
+      return propertyId;
     }
 
     return caption;
@@ -484,7 +484,7 @@ class DefaultProperty implements Property {
   /** {@inheritDoc} */
   @Override
   public final boolean equals(final Object obj) {
-    return this == obj || obj instanceof Property && this.propertyID.equals(((Property) obj).getPropertyID());
+    return this == obj || obj instanceof Property && this.propertyId.equals(((Property) obj).getPropertyId());
   }
 
   /** {@inheritDoc} */
@@ -578,13 +578,13 @@ class DefaultProperty implements Property {
     private boolean aggregateColumn = false;
     private ForeignKeyProperty foreignKeyProperty = null;
 
-    DefaultColumnProperty(final String propertyID, final int type, final String caption) {
-      this(propertyID, type, caption, type);
+    DefaultColumnProperty(final String propertyId, final int type, final String caption) {
+      this(propertyId, type, caption, type);
     }
 
-    DefaultColumnProperty(final String propertyID, final int type, final String caption, final int columnType) {
-      super(propertyID, type, caption);
-      this.columnName = propertyID;
+    DefaultColumnProperty(final String propertyId, final int type, final String caption, final int columnType) {
+      super(propertyId, type, caption);
+      this.columnName = propertyId;
       this.columnType = columnType;
       this.valueConverter = initializeValueConverter(this);
       this.valueFetcher = initializeValueFetcher(this);
@@ -865,37 +865,37 @@ class DefaultProperty implements Property {
 
   static final class DefaultForeignKeyProperty extends DefaultProperty implements Property.ForeignKeyProperty {
 
-    private final String foreignEntityID;
+    private final String foreignEntityId;
     private final List<ColumnProperty> columnProperties;
     private final boolean compositeReference;
     private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
 
     /**
-     * @param propertyID the property ID
+     * @param propertyId the property ID
      * @param caption the caption
-     * @param foreignEntityID the ID of the entity referenced by this foreign key
+     * @param foreignEntityId the ID of the entity referenced by this foreign key
      * @param columnProperty the underlying column property comprising this foreign key
      */
-    DefaultForeignKeyProperty(final String propertyID, final String caption, final String foreignEntityID,
+    DefaultForeignKeyProperty(final String propertyId, final String caption, final String foreignEntityId,
                               final ColumnProperty columnProperty) {
-      this(propertyID, caption, foreignEntityID, Collections.singletonList(columnProperty));
+      this(propertyId, caption, foreignEntityId, Collections.singletonList(columnProperty));
     }
 
     /**
-     * @param propertyID the property ID, note that this is not a column name
+     * @param propertyId the property ID, note that this is not a column name
      * @param caption the property caption
-     * @param foreignEntityID the ID of the entity referenced by this foreign key
+     * @param foreignEntityId the ID of the entity referenced by this foreign key
      * @param columnProperties the underlying column properties comprising this foreign key
      * @param foreignProperties the properties referenced, in the same order as the column properties,
      * if null then the primary key properties of the referenced entity are used when required
      */
-    DefaultForeignKeyProperty(final String propertyID, final String caption, final String foreignEntityID,
+    DefaultForeignKeyProperty(final String propertyId, final String caption, final String foreignEntityId,
                               final List<ColumnProperty> columnProperties) {
-      super(propertyID, Types.REF, caption);
-      Objects.requireNonNull(foreignEntityID, "foreignEntityID");
-      validateParameters(propertyID, foreignEntityID, columnProperties);
+      super(propertyId, Types.REF, caption);
+      Objects.requireNonNull(foreignEntityId, "foreignEntityId");
+      validateParameters(propertyId, foreignEntityId, columnProperties);
       columnProperties.forEach(columnProperty -> columnProperty.setForeignKeyProperty(this));
-      this.foreignEntityID = foreignEntityID;
+      this.foreignEntityId = foreignEntityId;
       this.columnProperties = Collections.unmodifiableList(columnProperties);
       this.compositeReference = this.columnProperties.size() > 1;
     }
@@ -921,8 +921,8 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public String getForeignEntityID() {
-      return foreignEntityID;
+    public String getForeignEntityId() {
+      return foreignEntityId;
     }
 
     @Override
@@ -946,15 +946,15 @@ class DefaultProperty implements Property {
       return this;
     }
 
-    private static void validateParameters(final String propertyID, final String foreignEntityID,
+    private static void validateParameters(final String propertyId, final String foreignEntityId,
                                            final List<ColumnProperty> columnProperties) {
       if (Util.nullOrEmpty(columnProperties)) {
         throw new IllegalArgumentException("No column properties specified");
       }
       for (final Property.ColumnProperty columnProperty : columnProperties) {
         Objects.requireNonNull(columnProperty, "columnProperty");
-        if (columnProperty.getPropertyID().equals(propertyID)) {
-          throw new IllegalArgumentException(foreignEntityID + ", column propertyID is the same as foreign key propertyID: " + propertyID);
+        if (columnProperty.getPropertyId().equals(propertyId)) {
+          throw new IllegalArgumentException(foreignEntityId + ", column propertyId is the same as foreign key propertyId: " + propertyId);
         }
       }
     }
@@ -962,8 +962,8 @@ class DefaultProperty implements Property {
 
   static final class DefaultMirrorProperty extends DefaultColumnProperty implements MirrorProperty {
 
-    DefaultMirrorProperty(final String propertyID) {
-      super(propertyID, -1, null);
+    DefaultMirrorProperty(final String propertyId) {
+      super(propertyId, -1, null);
       super.setReadOnly(true);
     }
   }
@@ -973,26 +973,26 @@ class DefaultProperty implements Property {
    */
   static final class DefaultDenormalizedProperty extends DefaultColumnProperty implements DenormalizedProperty {
 
-    private final String foreignKeyPropertyID;
+    private final String foreignKeyPropertyId;
     private final Property denormalizedProperty;
 
     /**
-     * @param propertyID the property ID
-     * @param foreignKeyPropertyID the ID of the foreign key property which references the entity which owns
+     * @param propertyId the property ID
+     * @param foreignKeyPropertyId the ID of the foreign key property which references the entity which owns
      * the denormalized property
      * @param denormalizedProperty the property from which this property should get its value
      * @param caption the caption if this property
      */
-    DefaultDenormalizedProperty(final String propertyID, final String foreignKeyPropertyID,
+    DefaultDenormalizedProperty(final String propertyId, final String foreignKeyPropertyId,
                                 final Property denormalizedProperty, final String caption) {
-      super(propertyID, denormalizedProperty.getType(), caption);
-      this.foreignKeyPropertyID = foreignKeyPropertyID;
+      super(propertyId, denormalizedProperty.getType(), caption);
+      this.foreignKeyPropertyId = foreignKeyPropertyId;
       this.denormalizedProperty = denormalizedProperty;
     }
 
     @Override
-    public String getForeignKeyPropertyID() {
-      return foreignKeyPropertyID;
+    public String getForeignKeyPropertyId() {
+      return foreignKeyPropertyId;
     }
 
     @Override
@@ -1011,14 +1011,14 @@ class DefaultProperty implements Property {
     private final List<Item> values;
 
     /**
-     * @param propertyID the property ID
+     * @param propertyId the property ID
      * @param type the data type of this property
      * @param caption the property caption
      * @param values the values to base this property on
      */
-    DefaultValueListProperty(final String propertyID, final int type, final String caption,
+    DefaultValueListProperty(final String propertyId, final int type, final String caption,
                              final List<Item> values) {
-      super(propertyID, type, caption);
+      super(propertyId, type, caption);
       this.values = Collections.unmodifiableList(values);
     }
 
@@ -1047,30 +1047,30 @@ class DefaultProperty implements Property {
   static class DefautTransientProperty extends DefaultProperty implements TransientProperty {
 
     /**
-     * @param propertyID the property ID, since TransientProperties do not map to underlying table columns,
+     * @param propertyId the property ID, since TransientProperties do not map to underlying table columns,
      * the property ID should not be column name, only be unique for this entity
      * @param type the data type of this property
      * @param caption the caption of this property
      */
-    DefautTransientProperty(final String propertyID, final int type, final String caption) {
-      super(propertyID, type, caption);
+    DefautTransientProperty(final String propertyId, final int type, final String caption) {
+      super(propertyId, type, caption);
     }
   }
 
   static final class DefaultDerivedProperty extends DefautTransientProperty implements DerivedProperty {
 
     private final Provider valueProvider;
-    private final List<String> sourcePropertyIDs;
+    private final List<String> sourcePropertyIds;
 
-    DefaultDerivedProperty(final String propertyID, final int type, final String caption,
-                           final Provider valueProvider, final String... sourcePropertyIDs) {
-      super(propertyID, type, caption);
+    DefaultDerivedProperty(final String propertyId, final int type, final String caption,
+                           final Provider valueProvider, final String... sourcePropertyIds) {
+      super(propertyId, type, caption);
       this.valueProvider = valueProvider;
-      if (sourcePropertyIDs == null || sourcePropertyIDs.length == 0) {
-        throw new IllegalArgumentException("No source propertyIDs, a derived property must be derived from one or more existing properties");
+      if (sourcePropertyIds == null || sourcePropertyIds.length == 0) {
+        throw new IllegalArgumentException("No source propertyIds, a derived property must be derived from one or more existing properties");
       }
       else {
-        this.sourcePropertyIDs = Arrays.asList(sourcePropertyIDs);
+        this.sourcePropertyIds = Arrays.asList(sourcePropertyIds);
       }
       setReadOnly(true);
     }
@@ -1081,34 +1081,34 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public List<String> getSourcePropertyIDs() {
-      return sourcePropertyIDs;
+    public List<String> getSourcePropertyIds() {
+      return sourcePropertyIds;
     }
   }
 
   static final class DefaultDenormalizedViewProperty extends DefautTransientProperty implements DenormalizedViewProperty {
 
-    private final String foreignKeyPropertyID;
+    private final String foreignKeyPropertyId;
     private final Property denormalizedProperty;
 
     /**
-     * @param propertyID the ID of the property, this should not be a column name since this property does not
+     * @param propertyId the ID of the property, this should not be a column name since this property does not
      * map to a table column
-     * @param foreignKeyPropertyID the ID of the foreign key property from which entity value this property gets its value
+     * @param foreignKeyPropertyId the ID of the foreign key property from which entity value this property gets its value
      * @param property the property from which this property gets its value
      * @param caption the caption of this property
      */
-    DefaultDenormalizedViewProperty(final String propertyID, final String foreignKeyPropertyID, final Property property,
+    DefaultDenormalizedViewProperty(final String propertyId, final String foreignKeyPropertyId, final Property property,
                                     final String caption) {
-      super(propertyID, property.getType(), caption);
-      this.foreignKeyPropertyID = foreignKeyPropertyID;
+      super(propertyId, property.getType(), caption);
+      this.foreignKeyPropertyId = foreignKeyPropertyId;
       this.denormalizedProperty = property;
       setReadOnly(true);
     }
 
     @Override
-    public String getForeignKeyPropertyID() {
-      return foreignKeyPropertyID;
+    public String getForeignKeyPropertyId() {
+      return foreignKeyPropertyId;
     }
 
     @Override
@@ -1122,16 +1122,16 @@ class DefaultProperty implements Property {
     private final String subquery;
 
     /**
-     * @param propertyID the property ID, since SubqueryProperties do not map to underlying table columns,
+     * @param propertyId the property ID, since SubqueryProperties do not map to underlying table columns,
      * the property ID should not be column name, only be unique for this entity
      * @param type the data type of this property
      * @param caption the caption of this property
      * @param subquery the sql query
      * @param columnType the actual column type
      */
-    DefaultSubqueryProperty(final String propertyID, final int type, final String caption, final String subquery,
+    DefaultSubqueryProperty(final String propertyId, final int type, final String caption, final String subquery,
                             final int columnType) {
-      super(propertyID, type, caption, columnType);
+      super(propertyId, type, caption, columnType);
       super.setReadOnly(true);
       super.setUpdatable(false);
       this.subquery = subquery;
@@ -1147,8 +1147,8 @@ class DefaultProperty implements Property {
 
     private final AuditAction auditAction;
 
-    DefaultAuditProperty(final String propertyID, final int type, final AuditAction auditAction, final String caption) {
-      super(propertyID, type, caption);
+    DefaultAuditProperty(final String propertyId, final int type, final AuditAction auditAction, final String caption) {
+      super(propertyId, type, caption);
       this.auditAction = auditAction;
       super.setReadOnly(true);
     }
@@ -1161,15 +1161,15 @@ class DefaultProperty implements Property {
 
   static final class DefaultAuditTimeProperty extends DefaultAuditProperty implements AuditTimeProperty {
 
-    DefaultAuditTimeProperty(final String propertyID, final AuditAction auditAction, final String caption) {
-      super(propertyID, Types.TIMESTAMP, auditAction, caption);
+    DefaultAuditTimeProperty(final String propertyId, final AuditAction auditAction, final String caption) {
+      super(propertyId, Types.TIMESTAMP, auditAction, caption);
     }
   }
 
   static final class DefaultAuditUserProperty extends DefaultAuditProperty implements AuditUserProperty {
 
-    DefaultAuditUserProperty(final String propertyID, final AuditAction auditAction, final String caption) {
-      super(propertyID, Types.VARCHAR, auditAction, caption);
+    DefaultAuditUserProperty(final String propertyId, final AuditAction auditAction, final String caption) {
+      super(propertyId, Types.VARCHAR, auditAction, caption);
     }
   }
 

@@ -285,7 +285,7 @@ public class LocalEntityConnectionTest {
       }
     };
     ENTITIES.addOperation(func);
-    connection.executeFunction(func.getID());
+    connection.executeFunction(func.getId());
   }
 
   @Test
@@ -295,7 +295,7 @@ public class LocalEntityConnectionTest {
       public void execute(final EntityConnection connection, final Object... arguments) {}
     };
     ENTITIES.addOperation(proc);
-    connection.executeProcedure(proc.getID());
+    connection.executeProcedure(proc.getId());
   }
 
   @Test(expected = RecordNotFoundException.class)

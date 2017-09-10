@@ -54,9 +54,9 @@ import java.util.Objects;
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
  * <pre>
- *   String entityID = ...;
+ *   String entityId = ...;
  *   EntityConnectionProvider connectionProvider = ...;
- *   EntityModel entityModel = new DefaultEntityModel(entityID, connectionProvider);
+ *   EntityModel entityModel = new DefaultEntityModel(entityId, connectionProvider);
  *   EntityPanel entityPanel = new EntityPanel(entityModel);
  *   entityPanel.initializePanel();
  *   JFrame frame = new JFrame();
@@ -294,7 +294,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    */
   public EntityPanel(final SwingEntityModel entityModel) {
     this(entityModel, entityModel.getEditModel().getEntities().getCaption(
-            Objects.requireNonNull(entityModel, "entityModel").getEntityID()));
+            Objects.requireNonNull(entityModel, "entityModel").getEntityId()));
   }
 
   /**
@@ -312,7 +312,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param editPanel the edit panel
    */
   public EntityPanel(final SwingEntityModel entityModel, final EntityEditPanel editPanel) {
-    this(entityModel, entityModel.getEditModel().getEntities().getCaption(entityModel.getEntityID()), editPanel);
+    this(entityModel, entityModel.getEditModel().getEntities().getCaption(entityModel.getEntityId()), editPanel);
   }
 
   /**
@@ -321,7 +321,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(final SwingEntityModel entityModel, final EntityTablePanel tablePanel) {
-    this(entityModel, entityModel.getEditModel().getEntities().getCaption(entityModel.getEntityID()), tablePanel);
+    this(entityModel, entityModel.getEditModel().getEntities().getCaption(entityModel.getEntityId()), tablePanel);
   }
 
   /**
@@ -351,7 +351,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(final SwingEntityModel entityModel, final EntityEditPanel editPanel, final EntityTablePanel tablePanel) {
-    this(entityModel, entityModel.getEditModel().getEntities().getCaption(entityModel.getEntityID()), editPanel, tablePanel);
+    this(entityModel, entityModel.getEditModel().getEntities().getCaption(entityModel.getEntityId()), editPanel, tablePanel);
   }
 
   /**
@@ -365,7 +365,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
                      final EntityTablePanel tablePanel) {
     Objects.requireNonNull(entityModel, "entityModel");
     this.entityModel = entityModel;
-    this.caption = caption == null ? entityModel.getEditModel().getEntities().getCaption(entityModel.getEntityID()) : caption;
+    this.caption = caption == null ? entityModel.getEditModel().getEntities().getCaption(entityModel.getEntityId()) : caption;
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
   }
@@ -571,29 +571,29 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * Returns the detail panel for the given {@code entityID}, if one is available
-   * @param entityID the entity ID of the detail panel to retrieve
+   * Returns the detail panel for the given {@code entityId}, if one is available
+   * @param entityId the entity ID of the detail panel to retrieve
    * @return the detail panel of the given type
    * @throws IllegalArgumentException in case the panel was not found
    */
-  public final EntityPanel getDetailPanel(final String entityID) {
+  public final EntityPanel getDetailPanel(final String entityId) {
     for (final EntityPanel detailPanel : detailEntityPanels) {
-      if (detailPanel.entityModel.getEntityID().equals(entityID)) {
+      if (detailPanel.entityModel.getEntityId().equals(entityId)) {
         return detailPanel;
       }
     }
 
-    throw new IllegalArgumentException("Detail panel for entity: " + entityID + " not found in panel: " + getClass());
+    throw new IllegalArgumentException("Detail panel for entity: " + entityId + " not found in panel: " + getClass());
   }
 
   /**
-   * Returns true if this panel contains a detail panel for the given {@code entityID}
-   * @param entityID the entityID
-   * @return true if a detail panel for the given entityID is found
+   * Returns true if this panel contains a detail panel for the given {@code entityId}
+   * @param entityId the entityId
+   * @return true if a detail panel for the given entityId is found
    */
-  public final boolean containsDetailPanel(final String entityID) {
+  public final boolean containsDetailPanel(final String entityId) {
     for (final EntityPanel detailPanel : detailEntityPanels) {
-      if (detailPanel.entityModel.getEntityID().equals(entityID)) {
+      if (detailPanel.entityModel.getEntityId().equals(entityId)) {
         return true;
       }
     }
@@ -1022,7 +1022,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @see EntityEditPanel#setInitialFocusComponent(javax.swing.JComponent)
    */
   public final void prepareUI(final boolean setInitialFocus, final boolean clearUI) {
-    LOG.debug("{} prepareUI({}, {})", new Object[] {getEditModel().getEntityID(), setInitialFocus, clearUI});
+    LOG.debug("{} prepareUI({}, {})", new Object[] {getEditModel().getEntityId(), setInitialFocus, clearUI});
     if (editPanel != null && editPanelState != PanelState.HIDDEN) {
       editPanel.prepareUI(setInitialFocus, clearUI);
     }

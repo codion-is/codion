@@ -129,7 +129,7 @@ public final class TestDomain extends Entities {
             Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
                     .setPreferredColumnWidth(150).setMaxLength(13))
             .setSmallDataset(true)
-            .setSearchPropertyIDs(DEPARTMENT_NAME)
+            .setSearchPropertyIds(DEPARTMENT_NAME)
             .setOrderByClause(DEPARTMENT_NAME)
             .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
             .setCaption("Department");
@@ -158,7 +158,7 @@ public final class TestDomain extends Entities {
                     DEPARTMENT_LOCATION).setPreferredColumnWidth(100))
             .setStringProvider(new Entities.StringProvider(EMP_NAME))
             .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
-            .setSearchPropertyIDs(EMP_NAME, EMP_JOB)
+            .setSearchPropertyIds(EMP_NAME, EMP_JOB)
             .setOrderByClause(EMP_DEPARTMENT + ", ename")
             .setCaption("Employee")
             .setBackgroundColorProvider((entity, property) -> {

@@ -13,7 +13,7 @@ public interface EntityDataProvider {
   /**
    * @return the ID of the entity this data provider is based on
    */
-  String getEntityID();
+  String getEntityId();
 
   /**
    * @return the connection provider used by this data provider

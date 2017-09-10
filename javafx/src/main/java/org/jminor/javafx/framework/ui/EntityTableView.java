@@ -128,7 +128,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void initializeColumns() {
-    for (final Property property : getListModel().getEntities().getVisibleProperties(listModel.getEntityID())) {
+    for (final Property property : getListModel().getEntities().getVisibleProperties(listModel.getEntityId())) {
       getColumns().add(new EntityTableColumn(listModel, property, listModel.getConnectionProvider(),
               getCellValueFactory(property)));
     }
@@ -136,7 +136,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private Callback<TableColumn.CellDataFeatures<Entity, Object>, ObservableValue<Object>> getCellValueFactory(final Property property) {
-    return row -> new ReadOnlyObjectWrapper<>(row.getValue().get(property.getPropertyID()));
+    return row -> new ReadOnlyObjectWrapper<>(row.getValue().get(property.getPropertyId()));
   }
 
   private void initializeToolPane() {
@@ -218,9 +218,9 @@ public class EntityTableView extends TableView<Entity> {
   private Menu createUpdateSelectedItem() {
     final Menu updateSelected = new Menu(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED));
     FXUiUtil.link(updateSelected.disableProperty(), listModel.getSelectionEmptyObserver());
-    getListModel().getEntities().getUpdatableProperties(listModel.getEntityID()).stream().filter(
+    getListModel().getEntities().getUpdatableProperties(listModel.getEntityId()).stream().filter(
             this::includeUpdateSelectedProperty).forEach(property -> {
-      final String caption = property.getCaption() == null ? property.getPropertyID() : property.getCaption();
+      final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
       final MenuItem updateProperty = new MenuItem(caption);
       updateProperty.setOnAction(actionEvent -> updateSelectedEntities(property));
       updateSelected.getItems().add(updateProperty);
@@ -254,7 +254,7 @@ public class EntityTableView extends TableView<Entity> {
   private void updateSelectedEntities(final Property property) {
     final List<Entity> selectedEntities = Entities.copyEntities(listModel.getSelectionModel().getSelectedItems());
 
-    final Collection<Object> values = Entities.getDistinctValues(property.getPropertyID(), selectedEntities);
+    final Collection<Object> values = Entities.getDistinctValues(property.getPropertyId(), selectedEntities);
     final Object defaultValue = values.size() == 1 ? values.iterator().next() : null;
 
     final PropertyInputDialog inputDialog = new PropertyInputDialog(property, defaultValue, listModel.getConnectionProvider());
@@ -263,7 +263,7 @@ public class EntityTableView extends TableView<Entity> {
     final Optional<PropertyInputDialog.InputResult> inputResult = inputDialog.showAndWait();
     try {
       if (inputResult.isPresent() && inputResult.get().isInputAccepted()) {
-        Entities.put(property.getPropertyID(), inputResult.get().getValue(), selectedEntities);
+        Entities.put(property.getPropertyId(), inputResult.get().getValue(), selectedEntities);
         listModel.update(selectedEntities);
       }
     }

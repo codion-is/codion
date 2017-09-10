@@ -14,7 +14,7 @@ public interface EntityCondition extends Condition<Property.ColumnProperty> {
   /**
    * @return the entity ID
    */
-  String getEntityID();
+  String getEntityId();
 
   /**
    * @return the underlying {@link Condition} object, can be null

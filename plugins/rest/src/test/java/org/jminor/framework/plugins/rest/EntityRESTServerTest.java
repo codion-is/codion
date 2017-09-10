@@ -95,7 +95,7 @@ public class EntityRESTServerTest {
     //test with missing authentication info
     URIBuilder uriBuilder = createURIBuilder();
     uriBuilder.setPath(EntityRESTService.BY_VALUE_PATH)
-            .addParameter("entityID", TestDomain.T_DEPARTMENT);
+            .addParameter("entityId", TestDomain.T_DEPARTMENT);
     HttpResponse response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(401, response.getStatusLine().getStatusCode());
     client.close();
@@ -111,11 +111,11 @@ public class EntityRESTServerTest {
               request.setHeader("Content-Type", MediaType.APPLICATION_JSON);
             })
             .build();
-    final String domainID = new TestDomain().getDomainID();
+    final String domainId = new TestDomain().getDomainId();
     uriBuilder = createURIBuilder();
     uriBuilder.setPath(EntityRESTService.BY_VALUE_PATH)
-            .addParameter("domainID", domainID)
-            .addParameter("entityID", TestDomain.T_DEPARTMENT);
+            .addParameter("domainId", domainId)
+            .addParameter("entityId", TestDomain.T_DEPARTMENT);
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(401, response.getStatusLine().getStatusCode());
     client.close();
@@ -135,8 +135,8 @@ public class EntityRESTServerTest {
     //select all/GET
     uriBuilder = createURIBuilder();
     uriBuilder.setPath(EntityRESTService.BY_VALUE_PATH)
-            .addParameter("domainID", domainID)
-            .addParameter("entityID", TestDomain.T_DEPARTMENT);
+            .addParameter("domainId", domainId)
+            .addParameter("entityId", TestDomain.T_DEPARTMENT);
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     String queryResult = getContentStream(response.getEntity());
@@ -151,7 +151,7 @@ public class EntityRESTServerTest {
 
     //insert/POST
     uriBuilder = createURIBuilder();
-    uriBuilder.addParameter("domainID", domainID)
+    uriBuilder.addParameter("domainId", domainId)
             .addParameter("entities", parser.serialize(Collections.singletonList(department)));
     response = client.execute(new HttpPost(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
@@ -163,14 +163,14 @@ public class EntityRESTServerTest {
     //delete/DELETE by key
     uriBuilder = createURIBuilder();
     uriBuilder.setPath(EntityRESTService.BY_KEY_PATH)
-            .addParameter("domainID", domainID)
+            .addParameter("domainId", domainId)
             .addParameter("keys", parser.serializeKeys(Collections.singletonList(department.getKey())));
     response = client.execute(new HttpDelete(uriBuilder.build()));
     queryResult = getContentStream(response.getEntity());
 
     //insert/PUT
     uriBuilder = createURIBuilder();
-    uriBuilder.addParameter("domainID", domainID)
+    uriBuilder.addParameter("domainId", domainId)
             .addParameter("entities", parser.serialize(Collections.singletonList(department)));
     response = client.execute(new HttpPut(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
@@ -184,7 +184,7 @@ public class EntityRESTServerTest {
     department.put(TestDomain.DEPARTMENT_LOCATION, "New location");
     department.put(TestDomain.DEPARTMENT_NAME, "New name");
     uriBuilder = createURIBuilder();
-    uriBuilder.addParameter("domainID", domainID)
+    uriBuilder.addParameter("domainId", domainId)
             .addParameter("entities", parser.serialize(Collections.singletonList(department)));
     response = client.execute(new HttpPut(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
@@ -196,8 +196,8 @@ public class EntityRESTServerTest {
     //select/GET by value
     uriBuilder = createURIBuilder();
     uriBuilder.setPath(EntityRESTService.BY_VALUE_PATH)
-            .addParameter("domainID", domainID)
-            .addParameter("entityID", TestDomain.T_DEPARTMENT)
+            .addParameter("domainId", domainId)
+            .addParameter("entityId", TestDomain.T_DEPARTMENT)
             .addParameter("conditionType", Condition.Type.LIKE.toString())
             .addParameter("values", "{\"dname\":\"New name\"}");
     response = client.execute(new HttpGet(uriBuilder.build()));
@@ -209,7 +209,7 @@ public class EntityRESTServerTest {
     //select/GET by key
     uriBuilder = createURIBuilder();
     uriBuilder.setPath(EntityRESTService.BY_KEY_PATH)
-            .addParameter("domainID", domainID)
+            .addParameter("domainId", domainId)
             .addParameter("keys", parser.serializeKeys(Collections.singletonList(department.getKey())));
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
@@ -220,8 +220,8 @@ public class EntityRESTServerTest {
     //delete/DELETE by value
     uriBuilder = createURIBuilder();
     uriBuilder.setPath(EntityRESTService.BY_VALUE_PATH)
-            .addParameter("domainID", domainID)
-            .addParameter("entityID", TestDomain.T_DEPARTMENT)
+            .addParameter("domainId", domainId)
+            .addParameter("entityId", TestDomain.T_DEPARTMENT)
             .addParameter("conditionType", Condition.Type.LIKE.toString())
             .addParameter("values", "{\"deptno\":\"-42\"}");
     response = client.execute(new HttpDelete(uriBuilder.build()));
@@ -231,7 +231,7 @@ public class EntityRESTServerTest {
     final Collection<RemoteClient> clients = admin.getClients(EntityRESTService.class.getName());
     assertEquals(1, clients.size());
 
-    admin.disconnect(clients.iterator().next().getClientID());
+    admin.disconnect(clients.iterator().next().getClientId());
   }
 
   private static URIBuilder createURIBuilder() {

@@ -23,12 +23,12 @@ public interface ConnectionRequest extends Serializable {
   /**
    * @return the client id
    */
-  UUID getClientID();
+  UUID getClientId();
 
   /**
    * @return the client type id
    */
-  String getClientTypeID();
+  String getClientTypeId();
 
   /**
    * @return the client version

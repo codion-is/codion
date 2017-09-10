@@ -53,10 +53,10 @@ public class EntitiesTest {
     final List<Property> properties = entities.getSortedProperties(TestDomain.T_EMP,
             Arrays.asList(TestDomain.EMP_HIREDATE, TestDomain.EMP_COMMISSION,
                     TestDomain.EMP_SALARY, TestDomain.EMP_JOB));
-    assertEquals(TestDomain.EMP_COMMISSION, properties.get(0).getPropertyID());
-    assertEquals(TestDomain.EMP_HIREDATE, properties.get(1).getPropertyID());
-    assertEquals(TestDomain.EMP_JOB, properties.get(2).getPropertyID());
-    assertEquals(TestDomain.EMP_SALARY, properties.get(3).getPropertyID());
+    assertEquals(TestDomain.EMP_COMMISSION, properties.get(0).getPropertyId());
+    assertEquals(TestDomain.EMP_HIREDATE, properties.get(1).getPropertyId());
+    assertEquals(TestDomain.EMP_JOB, properties.get(2).getPropertyId());
+    assertEquals(TestDomain.EMP_SALARY, properties.get(3).getPropertyId());
   }
 
   @Test
@@ -70,11 +70,11 @@ public class EntitiesTest {
 
   @Test
   public void getSelectedProperties() {
-    final List<String> propertyIDs = new ArrayList<>();
-    propertyIDs.add(TestDomain.DEPARTMENT_ID);
-    propertyIDs.add(TestDomain.DEPARTMENT_NAME);
+    final List<String> propertyIds = new ArrayList<>();
+    propertyIds.add(TestDomain.DEPARTMENT_ID);
+    propertyIds.add(TestDomain.DEPARTMENT_NAME);
 
-    final Collection<Property> properties = entities.getProperties(TestDomain.T_DEPARTMENT, propertyIDs);
+    final Collection<Property> properties = entities.getProperties(TestDomain.T_DEPARTMENT, propertyIds);
     assertEquals(2, properties.size());
     assertTrue(properties.contains(entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID)));
     assertTrue(properties.contains(entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
@@ -108,11 +108,11 @@ public class EntitiesTest {
     current.put(TestDomain.DEPARTMENT_ID, 2);
     current.saveAll();
     assertTrue(entities.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_ID));
-    assertEquals(entities.getModifiedProperty(current, entity).getPropertyID(), TestDomain.DEPARTMENT_ID);
+    assertEquals(entities.getModifiedProperty(current, entity).getPropertyId(), TestDomain.DEPARTMENT_ID);
     current.remove(TestDomain.DEPARTMENT_ID);
     current.saveAll();
     assertTrue(entities.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_ID));
-    assertEquals(entities.getModifiedProperty(current, entity).getPropertyID(), TestDomain.DEPARTMENT_ID);
+    assertEquals(entities.getModifiedProperty(current, entity).getPropertyId(), TestDomain.DEPARTMENT_ID);
     current.put(TestDomain.DEPARTMENT_ID, 1);
     current.saveAll();
     assertFalse(entities.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_ID));
@@ -121,11 +121,11 @@ public class EntitiesTest {
     current.put(TestDomain.DEPARTMENT_LOCATION, "New location");
     current.saveAll();
     assertTrue(entities.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_LOCATION));
-    assertEquals(entities.getModifiedProperty(current, entity).getPropertyID(), TestDomain.DEPARTMENT_LOCATION);
+    assertEquals(entities.getModifiedProperty(current, entity).getPropertyId(), TestDomain.DEPARTMENT_LOCATION);
     current.remove(TestDomain.DEPARTMENT_LOCATION);
     current.saveAll();
     assertTrue(entities.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_LOCATION));
-    assertEquals(entities.getModifiedProperty(current, entity).getPropertyID(), TestDomain.DEPARTMENT_LOCATION);
+    assertEquals(entities.getModifiedProperty(current, entity).getPropertyId(), TestDomain.DEPARTMENT_LOCATION);
     current.put(TestDomain.DEPARTMENT_LOCATION, "Location");
     current.saveAll();
     assertFalse(entities.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_LOCATION));
@@ -134,40 +134,40 @@ public class EntitiesTest {
 
   @Test
   public void key() {
-    final String entityID = "EntitiesTest.key";
-    final String propertyID1 = "id1";
-    final String propertyID2 = "id2";
-    final String propertyID3 = "id3";
-    entities.define(entityID,
-            Properties.primaryKeyProperty(propertyID1),
-            Properties.primaryKeyProperty(propertyID2).setPrimaryKeyIndex(1),
-            Properties.primaryKeyProperty(propertyID3).setPrimaryKeyIndex(2).setNullable(true));
+    final String entityId = "EntitiesTest.key";
+    final String propertyId1 = "id1";
+    final String propertyId2 = "id2";
+    final String propertyId3 = "id3";
+    entities.define(entityId,
+            Properties.primaryKeyProperty(propertyId1),
+            Properties.primaryKeyProperty(propertyId2).setPrimaryKeyIndex(1),
+            Properties.primaryKeyProperty(propertyId3).setPrimaryKeyIndex(2).setNullable(true));
 
-    final Entity.Key key = entities.key(entityID);
+    final Entity.Key key = entities.key(entityId);
     assertEquals(0, key.hashCode());
     assertTrue(key.isCompositeKey());
     assertTrue(key.isNull());
 
-    key.put(propertyID1, 1);
-    key.put(propertyID2, 2);
-    key.put(propertyID3, 3);
+    key.put(propertyId1, 1);
+    key.put(propertyId2, 2);
+    key.put(propertyId3, 3);
     assertFalse(key.isNull());
     assertEquals(6, key.hashCode());
 
-    key.put(propertyID2, 3);
+    key.put(propertyId2, 3);
     assertEquals(7, key.hashCode());
 
-    key.put(propertyID3, null);
+    key.put(propertyId3, null);
     assertFalse(key.isNull());
     assertEquals(4, key.hashCode());
-    key.put(propertyID2, null);
+    key.put(propertyId2, null);
     assertTrue(key.isNull());
     assertEquals(0, key.hashCode());
-    key.put(propertyID2, 4);
+    key.put(propertyId2, 4);
     assertFalse(key.isNull());
     assertEquals(5, key.hashCode());
 
-    key.put(propertyID2, 42);
+    key.put(propertyId2, 42);
     assertFalse(key.isNull());
     assertEquals(43, key.hashCode());
   }
@@ -194,7 +194,7 @@ public class EntitiesTest {
     key.put(TestDomain.MASTER_ID, 10L);
 
     final Entity master = entities.entity(key);
-    assertEquals(TestDomain.T_MASTER, master.getEntityID());
+    assertEquals(TestDomain.T_MASTER, master.getEntityId());
     assertTrue(master.containsKey(TestDomain.MASTER_ID));
     assertEquals(10L, master.get(TestDomain.MASTER_ID));
   }
@@ -255,8 +255,8 @@ public class EntitiesTest {
   }
 
   @Test
-  public void getDomainEntityIDs() {
-    final Entities domain = Entities.getDomainEntities(new TestDomain().getDomainID());
+  public void getDomainEntityIds() {
+    final Entities domain = Entities.getDomainEntities(new TestDomain().getDomainId());
     assertNotNull(domain.getDefinition(TestDomain.T_DEPARTMENT));
     assertNotNull(domain.getDefinition(TestDomain.T_EMP));
   }
@@ -288,19 +288,19 @@ public class EntitiesTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void redefine() {
-    final String entityID = "entityID";
-    entities.define(entityID, Properties.primaryKeyProperty("propertyID"));
-    entities.define(entityID, Properties.primaryKeyProperty("propertyID"));
+    final String entityId = "entityId";
+    entities.define(entityId, Properties.primaryKeyProperty("propertyId"));
+    entities.define(entityId, Properties.primaryKeyProperty("propertyId"));
   }
 
   @Test
   public void redefineAllowed() {
-    final String entityID = "entityID2";
-    entities.define(entityID, Properties.primaryKeyProperty("id"));
-    assertEquals("id", entities.getPrimaryKeyProperties(entityID).get(0).getPropertyID());
+    final String entityId = "entityId2";
+    entities.define(entityId, Properties.primaryKeyProperty("id"));
+    assertEquals("id", entities.getPrimaryKeyProperties(entityId).get(0).getPropertyId());
     entities.ALLOW_REDEFINE_ENTITY.set(true);
-    entities.define(entityID, Properties.primaryKeyProperty("id2"));
-    assertEquals("id2", entities.getPrimaryKeyProperties(entityID).get(0).getPropertyID());
+    entities.define(entityId, Properties.primaryKeyProperty("id2"));
+    assertEquals("id2", entities.getPrimaryKeyProperties(entityId).get(0).getPropertyId());
     entities.ALLOW_REDEFINE_ENTITY.set(false);
   }
 
@@ -353,12 +353,12 @@ public class EntitiesTest {
   }
 
   @Test
-  public void getSearchPropertyIDs() {
-    Collection<String> searchPropertyIDs = entities.getSearchPropertyIDs(TestDomain.T_EMP);
+  public void getSearchPropertyIds() {
+    Collection<String> searchPropertyIDs = entities.getSearchPropertyIds(TestDomain.T_EMP);
     assertTrue(searchPropertyIDs.contains(TestDomain.EMP_JOB));
     assertTrue(searchPropertyIDs.contains(TestDomain.EMP_NAME));
 
-    searchPropertyIDs = entities.getSearchPropertyIDs(TestDomain.T_DEPARTMENT);
+    searchPropertyIDs = entities.getSearchPropertyIds(TestDomain.T_DEPARTMENT);
     assertTrue(searchPropertyIDs.contains(TestDomain.DEPARTMENT_NAME));
   }
 
@@ -424,7 +424,7 @@ public class EntitiesTest {
     entities.define("spids",
             Properties.primaryKeyProperty("1"),
             Properties.columnProperty("test"))
-            .setSearchPropertyIDs("invalid");
+            .setSearchPropertyIds("invalid");
   }
 
   @Test
@@ -451,9 +451,9 @@ public class EntitiesTest {
   @Test
   public void havingClause() {
     final String havingClause = "p1 > 1";
-    entities.define("entityID3",
+    entities.define("entityId3",
             Properties.primaryKeyProperty("p0")).setHavingClause(havingClause);
-    assertEquals(havingClause, entities.getHavingClause("entityID3"));
+    assertEquals(havingClause, entities.getHavingClause("entityId3"));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -488,7 +488,7 @@ public class EntitiesTest {
     final Property property = entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID);
     Collection<Integer> propertyValues = Entities.getValues(TestDomain.DEPARTMENT_ID, entityList);
     assertTrue(propertyValues.containsAll(values));
-    propertyValues = Entities.getValues(property.getPropertyID(), entityList);
+    propertyValues = Entities.getValues(property.getPropertyId(), entityList);
     assertTrue(propertyValues.containsAll(values));
     assertTrue(Entities.getValues(TestDomain.DEPARTMENT_ID, null).isEmpty());
     assertTrue(Entities.getValues(TestDomain.DEPARTMENT_ID, Collections.<Entity>emptyList()).isEmpty());
@@ -640,14 +640,14 @@ public class EntitiesTest {
   }
 
   @Test
-  public void mapToEntitID() {
+  public void mapToEntitId() {
     final Entity one = entities.entity(TestDomain.T_EMP);
     final Entity two = entities.entity(TestDomain.T_DEPARTMENT);
     final Entity three = entities.entity(TestDomain.T_DETAIL);
     final Entity four = entities.entity(TestDomain.T_EMP);
 
     final Collection<Entity> entities = Arrays.asList(one, two, three, four);
-    final Map<String, Collection<Entity>> map = Entities.mapToEntityID(entities);
+    final Map<String, Collection<Entity>> map = Entities.mapToEntityId(entities);
 
     Collection<Entity> mapped = map.get(TestDomain.T_EMP);
     assertTrue(mapped.contains(one));

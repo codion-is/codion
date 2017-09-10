@@ -25,39 +25,39 @@ public final class Clients {
   /**
    * Instantiates a ConnectionRequest
    * @param user the user
-   * @param clientID the client id
-   * @param clientTypeID the client type id
+   * @param clientId the client id
+   * @param clientTypeId the client type id
    * @return a ConnectionRequest
    */
-  public static ConnectionRequest connectionRequest(final User user, final UUID clientID, final String clientTypeID) {
-    return connectionRequest(user, clientID, clientTypeID, null);
+  public static ConnectionRequest connectionRequest(final User user, final UUID clientId, final String clientTypeId) {
+    return connectionRequest(user, clientId, clientTypeId, null);
   }
 
   /**
    * Instantiates a ConnectionRequest
    * @param user the user
-   * @param clientID the client id
-   * @param clientTypeID the client type id
+   * @param clientId the client id
+   * @param clientTypeId the client type id
    * @param parameters misc. parameters, values must implement {@link java.io.Serializable}
    * @return a ConnectionRequest
    */
-  public static ConnectionRequest connectionRequest(final User user, final UUID clientID, final String clientTypeID,
+  public static ConnectionRequest connectionRequest(final User user, final UUID clientId, final String clientTypeId,
                                                     final Map<String, Object> parameters) {
-    return connectionRequest(user, clientID, clientTypeID, null, parameters);
+    return connectionRequest(user, clientId, clientTypeId, null, parameters);
   }
 
   /**
    * Instantiates a ConnectionRequest
    * @param user the user
-   * @param clientID the client id
-   * @param clientTypeID the client type id
+   * @param clientId the client id
+   * @param clientTypeId the client type id
    * @param clientVersion the client application version
    * @param parameters misc. parameters, values must implement {@link java.io.Serializable}
    * @return a ConnectionRequest
    */
-  public static ConnectionRequest connectionRequest(final User user, final UUID clientID, final String clientTypeID,
+  public static ConnectionRequest connectionRequest(final User user, final UUID clientId, final String clientTypeId,
                                                     final Version clientVersion, final Map<String, Object> parameters) {
-    return new DefaultConnectionRequest(user, clientID, clientTypeID, clientVersion, Version.getVersion(), parameters);
+    return new DefaultConnectionRequest(user, clientId, clientTypeId, clientVersion, Version.getVersion(), parameters);
   }
 
   /**
@@ -84,18 +84,18 @@ public final class Clients {
     private static final long serialVersionUID = 1;
 
     private final User user;
-    private final UUID clientID;
-    private final String clientTypeID;
+    private final UUID clientId;
+    private final String clientTypeId;
     private final Version clientVersion;
     private final Version frameworkVersion;
     private final Map<String, Object> parameters;
 
-    private DefaultConnectionRequest(final User user, final UUID clientID, final String clientTypeID,
+    private DefaultConnectionRequest(final User user, final UUID clientId, final String clientTypeId,
                                      final Version clientVersion, final Version frameworkVersion,
                                      final Map<String, Object> parameters) {
       this.user = Objects.requireNonNull(user, "user");
-      this.clientID = Objects.requireNonNull(clientID, "clientID");
-      this.clientTypeID = Objects.requireNonNull(clientTypeID, "clientTypeID");
+      this.clientId = Objects.requireNonNull(clientId, "clientId");
+      this.clientTypeId = Objects.requireNonNull(clientTypeId, "clientTypeId");
       this.clientVersion = clientVersion;
       this.frameworkVersion = frameworkVersion;
       this.parameters = parameters;
@@ -107,13 +107,13 @@ public final class Clients {
     }
 
     @Override
-    public UUID getClientID() {
-      return clientID;
+    public UUID getClientId() {
+      return clientId;
     }
 
     @Override
-    public String getClientTypeID() {
-      return clientTypeID;
+    public String getClientTypeId() {
+      return clientTypeId;
     }
 
     @Override
@@ -133,17 +133,17 @@ public final class Clients {
 
     @Override
     public boolean equals(final Object obj) {
-      return this == obj || obj instanceof ConnectionRequest && clientID.equals(((ConnectionRequest) obj).getClientID());
+      return this == obj || obj instanceof ConnectionRequest && clientId.equals(((ConnectionRequest) obj).getClientId());
     }
 
     @Override
     public int hashCode() {
-      return clientID.hashCode();
+      return clientId.hashCode();
     }
 
     @Override
     public String toString() {
-      return user.toString() + " [" + clientTypeID + "] - " + clientID.toString();
+      return user.toString() + " [" + clientTypeId + "] - " + clientId.toString();
     }
   }
 }

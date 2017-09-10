@@ -10,7 +10,7 @@ import org.jminor.common.server.ServerException;
 public class TestConnectionValidator implements ConnectionValidator {
 
   @Override
-  public String getClientTypeID() {
+  public String getClientTypeId() {
     return "testClient";
   }
 

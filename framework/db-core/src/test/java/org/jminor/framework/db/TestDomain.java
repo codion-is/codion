@@ -135,15 +135,15 @@ public final class TestDomain extends Entities {
             Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
                     .setPreferredColumnWidth(150).setMaxLength(13))
             .setSmallDataset(true)
-            .setSearchPropertyIDs(DEPARTMENT_NAME)
+            .setSearchPropertyIds(DEPARTMENT_NAME)
             .setOrderByClause(DEPARTMENT_NAME)
             .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
             .setCaption("Department");
   }
 
-  @Property.Column(entityID = "db.scott.emp", columnName = "empno")
+  @Property.Column(entityId = "db.scott.emp", columnName = "empno")
   public static final String EMP_ID = "emp_id";
-  @Property.Column(entityID = "db.scott.emp", columnName = "ename")
+  @Property.Column(entityId = "db.scott.emp", columnName = "ename")
   public static final String EMP_NAME = "emp_name";
   public static final String EMP_JOB = "job";
   public static final String EMP_MGR = "mgr";
@@ -182,7 +182,7 @@ public final class TestDomain extends Entities {
                     getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     DEPARTMENT_LOCATION).setPreferredColumnWidth(100))
             .setStringProvider(new Entities.StringProvider(EMP_NAME))
-            .setSearchPropertyIDs(EMP_NAME, EMP_JOB)
+            .setSearchPropertyIds(EMP_NAME, EMP_JOB)
             .setCaption("Employee")
             .setBackgroundColorProvider((entity, property) -> {
               if (property.is(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {

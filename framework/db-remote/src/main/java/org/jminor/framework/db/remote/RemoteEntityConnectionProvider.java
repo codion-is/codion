@@ -41,8 +41,8 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   public static final String REMOTE_CLIENT_DOMAIN_ID = "jminor.client.domainId";
 
   private final String serverHostName;
-  private final UUID clientID;
-  private final String clientTypeID;
+  private final UUID clientId;
+  private final String clientTypeId;
   private final Version clientVersion;
   private Server<RemoteEntityConnection, Remote> server;
   private Server.ServerInfo serverInfo;
@@ -52,12 +52,12 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @param entities the domain model entities
    * @param serverHostName the server host name
    * @param user the user to use when initializing connections
-   * @param clientID a UUID identifying the client
-   * @param clientTypeID a string identifying the client type
+   * @param clientId a UUID identifying the client
+   * @param clientTypeId a string identifying the client type
    */
-  public RemoteEntityConnectionProvider(final Entities entities, final String serverHostName, final User user, final UUID clientID,
-                                        final String clientTypeID) {
-    this(entities, serverHostName, user, clientID, clientTypeID, null);
+  public RemoteEntityConnectionProvider(final Entities entities, final String serverHostName, final User user, final UUID clientId,
+                                        final String clientTypeId) {
+    this(entities, serverHostName, user, clientId, clientTypeId, null);
   }
 
   /**
@@ -65,13 +65,13 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @param entities the domain model entities
    * @param serverHostName the server host name
    * @param user the user to use when initializing connections
-   * @param clientID a UUID identifying the client
-   * @param clientTypeID a string identifying the client type
+   * @param clientId a UUID identifying the client
+   * @param clientTypeId a string identifying the client type
    * @param clientVersion the client version
    */
-  public RemoteEntityConnectionProvider(final Entities entities, final String serverHostName, final User user, final UUID clientID,
-                                        final String clientTypeID, final Version clientVersion) {
-    this(entities, serverHostName, user, clientID, clientTypeID, clientVersion, true);
+  public RemoteEntityConnectionProvider(final Entities entities, final String serverHostName, final User user, final UUID clientId,
+                                        final String clientTypeId, final Version clientVersion) {
+    this(entities, serverHostName, user, clientId, clientTypeId, clientVersion, true);
   }
 
   /**
@@ -79,19 +79,19 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @param entities the domain model entities
    * @param serverHostName the server host name
    * @param user the user to use when initializing connections
-   * @param clientID a UUID identifying the client
-   * @param clientTypeID a string identifying the client type
+   * @param clientId a UUID identifying the client
+   * @param clientTypeId a string identifying the client type
    * @param clientVersion the client version, if any
    * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
    */
-  public RemoteEntityConnectionProvider(final Entities entities, final String serverHostName, final User user, final UUID clientID,
-                                        final String clientTypeID, final Version clientVersion, final boolean scheduleValidityCheck) {
+  public RemoteEntityConnectionProvider(final Entities entities, final String serverHostName, final User user, final UUID clientId,
+                                        final String clientTypeId, final Version clientVersion, final boolean scheduleValidityCheck) {
     super(entities, user, scheduleValidityCheck);
     this.serverHostName = Objects.requireNonNull(serverHostName, "serverHostName");
-    this.clientID = Objects.requireNonNull(clientID, "clientID");
-    this.clientTypeID = Objects.requireNonNull(clientTypeID, "clientTypeID");
+    this.clientId = Objects.requireNonNull(clientId, "clientId");
+    this.clientTypeId = Objects.requireNonNull(clientTypeId, "clientTypeId");
     this.clientVersion = clientVersion;
-    Servers.resolveTrustStoreFromClasspath(clientTypeID);
+    Servers.resolveTrustStoreFromClasspath(clientTypeId);
   }
 
   /** {@inheritDoc} */
@@ -121,8 +121,8 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   /**
    * @return the client ID
    */
-  public UUID getClientID() {
-    return clientID;
+  public UUID getClientId() {
+    return clientId;
   }
 
   /**
@@ -138,8 +138,8 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     try {
       LOG.debug("Initializing connection for {}", getUser());
       final RemoteEntityConnection remote = getServer().connect(
-              Clients.connectionRequest(getUser(), clientID, clientTypeID, clientVersion,
-                      Collections.singletonMap(REMOTE_CLIENT_DOMAIN_ID, getEntities().getDomainID())));
+              Clients.connectionRequest(getUser(), clientId, clientTypeId, clientVersion,
+                      Collections.singletonMap(REMOTE_CLIENT_DOMAIN_ID, getEntities().getDomainId())));
 
       return Util.initializeProxy(EntityConnection.class, new RemoteEntityConnectionHandler(remote));
     }
@@ -152,7 +152,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   @Override
   protected void disconnect(final EntityConnection connection) {
     try {
-      server.disconnect(clientID);
+      server.disconnect(clientId);
     }
     catch (final RemoteException e) {
       throw new RuntimeException(e);
@@ -172,13 +172,13 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       }//just to check the connection
     }
     catch (final RemoteException e) {
-      LOG.info("{} was unreachable, {} - {} reconnecting...", new Object[] {serverInfo.getServerName(), getUser(), clientID});
+      LOG.info("{} was unreachable, {} - {} reconnecting...", new Object[] {serverInfo.getServerName(), getUser(), clientId});
       unreachable = true;
     }
     if (server == null || unreachable) {
       //if server is not reachable, try to reconnect once and return
       connectToServer();
-      LOG.info("ClientID: {}, {} connected to server: {}", new Object[] {getUser(), clientID, serverInfo.getServerName()});
+      LOG.info("ClientID: {}, {} connected to server: {}", new Object[] {getUser(), clientId, serverInfo.getServerName()});
     }
 
     return this.server;

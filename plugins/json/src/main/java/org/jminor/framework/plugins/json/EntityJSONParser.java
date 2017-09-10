@@ -32,7 +32,7 @@ import java.util.Map;
  */
 public final class EntityJSONParser implements Serializer<Entity> {
 
-  private static final String ENTITY_ID = "entityID";
+  private static final String ENTITY_ID = "entityId";
   private static final String VALUES = "values";
   private static final String ORIGINAL_VALUES = "originalValues";
   private static final String JSON_TIME_FORMAT = "HH:mm";
@@ -277,16 +277,16 @@ public final class EntityJSONParser implements Serializer<Entity> {
    */
   public Entity.Key parseKey(final JSONObject keyObject)
           throws JSONException, ParseException {
-    final String entityID = keyObject.getString(ENTITY_ID);
-    if (!entities.isDefined(entityID)) {
-      throw new IllegalArgumentException("Undefined entity found in JSON string: '" + entityID + "'");
+    final String entityId = keyObject.getString(ENTITY_ID);
+    if (!entities.isDefined(entityId)) {
+      throw new IllegalArgumentException("Undefined entity found in JSON string: '" + entityId + "'");
     }
 
-    final Entity.Key key = entities.key(entityID);
+    final Entity.Key key = entities.key(entityId);
     final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
     for (int j = 0; j < propertyValues.names().length(); j++) {
-      final String propertyID = propertyValues.names().get(j).toString();
-      key.put(propertyID, parseValue(entities.getProperty(entityID, propertyID), propertyValues));
+      final String propertyId = propertyValues.names().get(j).toString();
+      key.put(propertyId, parseValue(entities.getProperty(entityId, propertyId), propertyValues));
     }
 
     return key;
@@ -302,40 +302,40 @@ public final class EntityJSONParser implements Serializer<Entity> {
    */
   public Object parseValue(final Property property, final JSONObject propertyValues)
           throws JSONException, ParseException {
-        if (propertyValues.isNull(property.getPropertyID())) {
+        if (propertyValues.isNull(property.getPropertyId())) {
       return null;
     }
     if (property.isString()) {
-      return propertyValues.getString(property.getPropertyID());
+      return propertyValues.getString(property.getPropertyId());
     }
     else if (property.isBoolean()) {
-      return propertyValues.getBoolean(property.getPropertyID());
+      return propertyValues.getBoolean(property.getPropertyId());
     }
     else if (property.isTime()) {
-      return jsonTimeFormat.parse(propertyValues.getString(property.getPropertyID()));
+      return jsonTimeFormat.parse(propertyValues.getString(property.getPropertyId()));
     }
     else if (property.isDate()) {
-      return jsonDateFormat.parse(propertyValues.getString(property.getPropertyID()));
+      return jsonDateFormat.parse(propertyValues.getString(property.getPropertyId()));
     }
     else if (property.isTimestamp()) {
-      return new Timestamp(jsonTimestampFormat.parse(propertyValues.getString(property.getPropertyID())).getTime());
+      return new Timestamp(jsonTimestampFormat.parse(propertyValues.getString(property.getPropertyId())).getTime());
     }
     else if (property.isDouble()) {
-      return propertyValues.getDouble(property.getPropertyID());
+      return propertyValues.getDouble(property.getPropertyId());
     }
     else if (property.isInteger()) {
-      return propertyValues.getInt(property.getPropertyID());
+      return propertyValues.getInt(property.getPropertyId());
     }
     else if (property instanceof Property.ForeignKeyProperty) {
-      return parseEntity(propertyValues.getJSONObject(property.getPropertyID()));
+      return parseEntity(propertyValues.getJSONObject(property.getPropertyId()));
     }
 
-    return propertyValues.getString(property.getPropertyID());
+    return propertyValues.getString(property.getPropertyId());
   }
 
   private JSONObject toJSONObject(final Entity entity) throws JSONException {
     final JSONObject jsonEntity = new JSONObject();
-    jsonEntity.put(ENTITY_ID, entity.getEntityID());
+    jsonEntity.put(ENTITY_ID, entity.getEntityId());
     jsonEntity.put(VALUES, serializeValues(entity));
     if (entity.isModified()) {
       jsonEntity.put(ORIGINAL_VALUES, serializeOriginalValues(entity));
@@ -346,7 +346,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
 
   private JSONObject toJSONObject(final Entity.Key key) throws JSONException {
     final JSONObject jsonKey = new JSONObject();
-    jsonKey.put(ENTITY_ID, key.getEntityID());
+    jsonKey.put(ENTITY_ID, key.getEntityId());
     jsonKey.put(VALUES, serializeValues(key));
 
     return jsonKey;
@@ -356,7 +356,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     final JSONObject propertyValues = new JSONObject();
     for (final Property property : entity.keySet()) {
       if (include(property, entity)) {
-        propertyValues.put(property.getPropertyID(),
+        propertyValues.put(property.getPropertyId(),
                 serializeValue(entity.get(property), property));
       }
     }
@@ -366,8 +366,8 @@ public final class EntityJSONParser implements Serializer<Entity> {
 
   private JSONObject serializeValues(final Entity.Key key) throws JSONException {
     final JSONObject propertyValues = new JSONObject();
-    for (final Property.ColumnProperty property : entities.getPrimaryKeyProperties(key.getEntityID())) {
-      propertyValues.put(property.getPropertyID(), serializeValue(key.get(property), property));
+    for (final Property.ColumnProperty property : entities.getPrimaryKeyProperties(key.getEntityId())) {
+      propertyValues.put(property.getPropertyId(), serializeValue(key.get(property), property));
     }
 
     return propertyValues;
@@ -375,10 +375,10 @@ public final class EntityJSONParser implements Serializer<Entity> {
 
   private JSONObject serializeOriginalValues(final Entity entity) throws JSONException {
     final JSONObject originalValues = new JSONObject();
-    for (final Property property : entities.getProperties(entity.getEntityID())) {
-      if (entity.isModified(property.getPropertyID()) && (!(property instanceof Property.ForeignKeyProperty) || includeForeignKeyValues)) {
-        originalValues.put(property.getPropertyID(),
-                serializeValue(entity.getOriginal(property.getPropertyID()), property));
+    for (final Property property : entities.getProperties(entity.getEntityId())) {
+      if (entity.isModified(property.getPropertyId()) && (!(property instanceof Property.ForeignKeyProperty) || includeForeignKeyValues)) {
+        originalValues.put(property.getPropertyId(),
+                serializeValue(entity.getOriginal(property.getPropertyId()), property));
       }
     }
 
@@ -431,28 +431,28 @@ public final class EntityJSONParser implements Serializer<Entity> {
    */
   private Entity parseEntity(final JSONObject entityObject) throws JSONException, ParseException {
     final Map<Property, Object> propertyValueMap = new HashMap<>();
-    final String entityID = entityObject.getString(ENTITY_ID);
-    if (!entities.isDefined(entityID)) {
-      throw new IllegalArgumentException("Undefined entity found in JSON string: '" + entityID + "'");
+    final String entityId = entityObject.getString(ENTITY_ID);
+    if (!entities.isDefined(entityId)) {
+      throw new IllegalArgumentException("Undefined entity found in JSON string: '" + entityId + "'");
     }
 
     final JSONObject propertyValues = entityObject.getJSONObject(VALUES);
     for (int j = 0; j < propertyValues.names().length(); j++) {
-      final String propertyID = propertyValues.names().get(j).toString();
-      propertyValueMap.put(entities.getProperty(entityID, propertyID),
-              parseValue(entities.getProperty(entityID, propertyID), propertyValues));
+      final String propertyId = propertyValues.names().get(j).toString();
+      propertyValueMap.put(entities.getProperty(entityId, propertyId),
+              parseValue(entities.getProperty(entityId, propertyId), propertyValues));
     }
     Map<Property, Object> originalValueMap = null;
     if (!entityObject.isNull(ORIGINAL_VALUES)) {
       originalValueMap = new HashMap<>();
       final JSONObject originalValues = entityObject.getJSONObject(ORIGINAL_VALUES);
       for (int j = 0; j < originalValues.names().length(); j++) {
-        final String propertyID = originalValues.names().get(j).toString();
-        originalValueMap.put(entities.getProperty(entityID, propertyID),
-                parseValue(entities.getProperty(entityID, propertyID), originalValues));
+        final String propertyId = originalValues.names().get(j).toString();
+        originalValueMap.put(entities.getProperty(entityId, propertyId),
+                parseValue(entities.getProperty(entityId, propertyId), originalValues));
       }
     }
 
-    return entities.entity(entityID, propertyValueMap, originalValueMap);
+    return entities.entity(entityId, propertyValueMap, originalValueMap);
   }
 }

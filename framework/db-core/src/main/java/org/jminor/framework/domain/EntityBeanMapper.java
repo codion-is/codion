@@ -20,13 +20,13 @@ import java.util.Objects;
 public class EntityBeanMapper {
 
   private static final String BEAN_CLASS_PARAM = "beanClass";
-  private static final String ENTITY_ID_PARAM = "entityID";
-  private static final String PROPERTY_ID_PARAM = "propertyID";
+  private static final String ENTITY_ID_PARAM = "entityId";
+  private static final String PROPERTY_ID_PARAM = "propertyId";
   private static final String PROPERTY_NAME_PARAM = "propertyName";
 
   private final Entities entities;
 
-  private final Map<Class, String> entityIDMap = new HashMap<>();
+  private final Map<Class, String> entityIdMap = new HashMap<>();
   private final Map<Class, Map<String, GetterSetter>> propertyMap = new HashMap<>();
 
   /**
@@ -37,62 +37,62 @@ public class EntityBeanMapper {
   }
 
   /**
-   * Associates the given bean class with the given entityID
-   * @param beanClass the bean class representing entities with the given entityID
-   * @param entityID the ID of the entity represented by the given bean class
+   * Associates the given bean class with the given entityId
+   * @param beanClass the bean class representing entities with the given entityId
+   * @param entityId the ID of the entity represented by the given bean class
    */
-  public final void setEntityID(final Class beanClass, final String entityID) {
+  public final void setEntityId(final Class beanClass, final String entityId) {
     Objects.requireNonNull(beanClass, BEAN_CLASS_PARAM);
-    Objects.requireNonNull(entityID, ENTITY_ID_PARAM);
-    entityIDMap.put(beanClass, entityID);
+    Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
+    entityIdMap.put(beanClass, entityId);
   }
 
   /**
    * @param beanClass the bean class
-   * @return the entityID of the entity represented by the given bean class, null if none is specified
+   * @return the entityId of the entity represented by the given bean class, null if none is specified
    */
-  public final String getEntityID(final Class beanClass) {
+  public final String getEntityId(final Class beanClass) {
     Objects.requireNonNull(beanClass, BEAN_CLASS_PARAM);
-    return entityIDMap.get(beanClass);
+    return entityIdMap.get(beanClass);
   }
 
   /**
-   * @param entityID the entityID
-   * @return the class of the bean representing entities with the given entityID
-   * @throws IllegalArgumentException in case no bean class has been defined for the given entityID
+   * @param entityId the entityId
+   * @return the class of the bean representing entities with the given entityId
+   * @throws IllegalArgumentException in case no bean class has been defined for the given entityId
    */
-  public final Class getBeanClass(final String entityID) {
-    Objects.requireNonNull(entityID, ENTITY_ID_PARAM);
-    for (final Map.Entry<Class, String> entry : entityIDMap.entrySet()) {
-      if (entry.getValue().equals(entityID)) {
+  public final Class getBeanClass(final String entityId) {
+    Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
+    for (final Map.Entry<Class, String> entry : entityIdMap.entrySet()) {
+      if (entry.getValue().equals(entityId)) {
         return entry.getKey();
       }
     }
 
-    throw new IllegalArgumentException("No bean class defined for entityID: " + entityID);
+    throw new IllegalArgumentException("No bean class defined for entityId: " + entityId);
   }
 
   /**
-   * Links the given bean property name to the property identified by the given propertyID in the specified bean class
+   * Links the given bean property name to the property identified by the given propertyId in the specified bean class
    * @param beanClass the bean class
-   * @param propertyID the propertyID of the entity property
+   * @param propertyId the propertyId of the entity property
    * @param propertyName the name of the bean property
    * @throws NoSuchMethodException if the required setter/getter methods are not found
    */
-  public final void setProperty(final Class beanClass, final String propertyID, final String propertyName) throws NoSuchMethodException {
+  public final void setProperty(final Class beanClass, final String propertyId, final String propertyName) throws NoSuchMethodException {
     Objects.requireNonNull(beanClass, BEAN_CLASS_PARAM);
-    Objects.requireNonNull(propertyID, PROPERTY_ID_PARAM);
+    Objects.requireNonNull(propertyId, PROPERTY_ID_PARAM);
     Objects.requireNonNull(propertyName, PROPERTY_NAME_PARAM);
     final Map<String, GetterSetter> beanPropertyMap = propertyMap.computeIfAbsent(beanClass, k -> new HashMap<>());
-    final Property property = entities.getProperty(getEntityID(beanClass), propertyID);
+    final Property property = entities.getProperty(getEntityId(beanClass), propertyId);
     final Method getter = Util.getGetMethod(property.getTypeClass(), propertyName, beanClass);
     final Method setter = Util.getSetMethod(property.getTypeClass(), propertyName, beanClass);
-    beanPropertyMap.put(propertyID, new GetterSetter(getter, setter));
+    beanPropertyMap.put(propertyId, new GetterSetter(getter, setter));
   }
 
   /**
    * @param beanClass the bean class
-   * @return a Map mapping bean property names to propertyIDs for the given bean class
+   * @return a Map mapping bean property names to propertyIds for the given bean class
    */
   public final Map<String, GetterSetter> getPropertyMap(final Class beanClass) {
     Objects.requireNonNull(beanClass, BEAN_CLASS_PARAM);
@@ -108,10 +108,10 @@ public class EntityBeanMapper {
    */
   public Entity toEntity(final Object bean) throws InvocationTargetException, IllegalAccessException {
     Objects.requireNonNull(bean, "bean");
-    final Entity entity = entities.entity(getEntityID(bean.getClass()));
+    final Entity entity = entities.entity(getEntityId(bean.getClass()));
     final Map<String, GetterSetter> beanPropertyMap = getPropertyMap(bean.getClass());
     for (final Map.Entry<String, GetterSetter> propertyEntry : beanPropertyMap.entrySet()) {
-      final Property property = entities.getProperty(entity.getEntityID(), propertyEntry.getKey());
+      final Property property = entities.getProperty(entity.getEntityId(), propertyEntry.getKey());
       entity.put(property, propertyEntry.getValue().getter.invoke(bean));
     }
 
@@ -149,11 +149,11 @@ public class EntityBeanMapper {
   public Object toBean(final Entity entity) throws NoSuchMethodException,
           InvocationTargetException, IllegalAccessException, InstantiationException {
     Objects.requireNonNull(entity, "entity");
-    final Class<?> beanClass = getBeanClass(entity.getEntityID());
+    final Class<?> beanClass = getBeanClass(entity.getEntityId());
     final Object bean = beanClass.getConstructor().newInstance();
     final Map<String, GetterSetter> beanPropertyMap = getPropertyMap(beanClass);
     for (final Map.Entry<String, GetterSetter> propertyEntry : beanPropertyMap.entrySet()) {
-      final Property property = entities.getProperty(entity.getEntityID(), propertyEntry.getKey());
+      final Property property = entities.getProperty(entity.getEntityId(), propertyEntry.getKey());
       propertyEntry.getValue().setter.invoke(bean, entity.get(property));
     }
 
