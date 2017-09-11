@@ -4608,3 +4608,4 @@
   Major cosmetic surgery, entityID, propertyID and domainID changed to entityId, propertyId and domainId respectively, all IDs replaced with Ids
   db-http module added
   EntityRESTService assumes parameters are base64 encoded byte array, now uses EntityConditions, api simplified
+  DefaultHttpEntityConnection, almost fully implemented

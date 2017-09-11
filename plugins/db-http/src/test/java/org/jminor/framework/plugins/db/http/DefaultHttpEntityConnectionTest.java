@@ -83,6 +83,7 @@ public final class DefaultHttpEntityConnectionTest {
     final List<Entity.Key> keys = connection.insert(Collections.singletonList(entity));
     assertEquals(1, keys.size());
     assertEquals(33, keys.get(0).getFirstValue());
+    connection.delete(keys);
   }
 
   @Test
@@ -128,7 +129,32 @@ public final class DefaultHttpEntityConnectionTest {
 
   @Test
   public void selectRowCount() throws IOException, DatabaseException {
-    assertEquals(5, connection.selectRowCount(CONDITIONS.condition(TestDomain.T_DEPARTMENT)));
+    assertEquals(4, connection.selectRowCount(CONDITIONS.condition(TestDomain.T_DEPARTMENT)));
+  }
+
+  @Test
+  public void selectValues() throws IOException, DatabaseException {
+    final List<Object> values = connection.selectValues(TestDomain.DEPARTMENT_NAME, CONDITIONS.condition(TestDomain.T_DEPARTMENT));
+    assertEquals(4, values.size());
+  }
+
+  @Test
+  public void transactions() throws IOException, DatabaseException {
+    assertFalse(connection.isTransactionOpen());
+    connection.beginTransaction();
+    assertTrue(connection.isTransactionOpen());
+    connection.rollbackTransaction();
+    assertFalse(connection.isTransactionOpen());
+    connection.beginTransaction();
+    assertTrue(connection.isTransactionOpen());
+    connection.commitTransaction();
+    assertFalse(connection.isTransactionOpen());
+  }
+
+  @Test
+  public void disconnect() throws IOException, DatabaseException {
+    connection.disconnect();
+    assertFalse(connection.isConnected());
   }
 
   private static void configure() {

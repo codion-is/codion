@@ -61,6 +61,7 @@ public final class DefaultHttpEntityConnection implements HttpEntityConnection {
   private static final String BASEURL = Server.SERVER_HOST_NAME.get() + ":" + WEB_SERVER_PORT.get() + "/entities/";
 
   private static final String DOMAIN_ID_PARAM = "domainId";
+  private static final String PROPERTY_ID_PARAM = "propertyId";
   private static final String ENTITIES_PARAM = "entities";
   private static final String CONDITION_PARAM = "condition";
   private static final String FUNCTION_ID_PARAM = "functionId";
@@ -125,32 +126,107 @@ public final class DefaultHttpEntityConnection implements HttpEntityConnection {
   /** {@inheritDoc} */
   @Override
   public void disconnect() throws IOException {
-    httpClient.close();
-    httpClient = null;
+    try {
+      final URIBuilder builder = createURIBuilder();
+      builder.setPath("disconnect")
+              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId());
+      final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
+      checkResponse(response);
+      httpClient.close();
+      httpClient = null;
+    }
+    catch (final IOException e) {
+      LOG.error(e.getMessage(), e);
+      throw e;
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isTransactionOpen() throws IOException {
-    throw new UnsupportedOperationException();
+    try {
+      final URIBuilder builder = createURIBuilder();
+      builder.setPath("isTransactionOpen")
+              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId());
+      final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
+      checkResponse(response);
+
+      final List result = Util.base64DecodeAndDeserialize(getContentStream(response.getEntity()));
+
+      return (boolean) result.get(0);
+    }
+    catch (final IOException e) {
+      LOG.error(e.getMessage(), e);
+      throw e;
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public void beginTransaction() throws IOException {
-    throw new UnsupportedOperationException();
+    try {
+      final URIBuilder builder = createURIBuilder();
+      builder.setPath("beginTransaction")
+              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId());
+      final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
+      checkResponse(response);
+    }
+    catch (final IOException e) {
+      LOG.error(e.getMessage(), e);
+      throw e;
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public void rollbackTransaction() throws IOException {
-    throw new UnsupportedOperationException();
+    try {
+      final URIBuilder builder = createURIBuilder();
+      builder.setPath("rollbackTransaction")
+              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId());
+      final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
+      checkResponse(response);
+    }
+    catch (final IOException e) {
+      LOG.error(e.getMessage(), e);
+      throw e;
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public void commitTransaction() throws IOException {
-    throw new UnsupportedOperationException();
+    try {
+      final URIBuilder builder = createURIBuilder();
+      builder.setPath("commitTransaction")
+              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId());
+      final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
+      checkResponse(response);
+    }
+    catch (final IOException e) {
+      LOG.error(e.getMessage(), e);
+      throw e;
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
   }
 
   /** {@inheritDoc} */
@@ -274,7 +350,25 @@ public final class DefaultHttpEntityConnection implements HttpEntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Object> selectValues(final String propertyId, final EntityCondition condition) throws IOException, DatabaseException {
-    throw new UnsupportedOperationException();
+    try {
+      final URIBuilder builder = createURIBuilder();
+      builder.setPath("values")
+              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
+              .addParameter(PROPERTY_ID_PARAM, propertyId)
+              .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(Collections.singletonList(condition)));
+      final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
+      checkResponse(response);
+
+      return Util.base64DecodeAndDeserialize(getContentStream(response.getEntity()));
+    }
+    catch (final IOException e) {
+      LOG.error(e.getMessage(), e);
+      throw e;
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
   }
 
   /** {@inheritDoc} */

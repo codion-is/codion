@@ -15,8 +15,10 @@ import org.glassfish.jersey.servlet.ServletContainer;
 public final class EntityRESTServer extends JettyServer {
 
   /**
-   * Instantiates a new EntityRESTServer on the given port.
+   * Instantiates a new EntityRESTServer.
    * @param connectionServer the Server serving the connection requests
+   * @see JettyServer#DOCUMENT_ROOT
+   * @see JettyServer#WEB_SERVER_PORT
    */
   public EntityRESTServer(final org.jminor.common.server.Server connectionServer) {
     super(connectionServer, JettyServer.DOCUMENT_ROOT.get(), JettyServer.WEB_SERVER_PORT.get());

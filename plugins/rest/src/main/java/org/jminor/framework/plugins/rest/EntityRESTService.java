@@ -57,9 +57,95 @@ public final class EntityRESTService extends Application {
 
   public static final String AUTHORIZATION = "Authorization";
   public static final String CLIENT_ID = "clientId";
-  public static final String ERROR_WHILE_SELECTING = "Error while selecting";
 
   private static Server server;
+
+  @GET
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("disconnect")
+  public Response disconnect(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
+                             @QueryParam("domainId") final String domainId) {
+    final RemoteEntityConnection connection = authenticate(request, headers, domainId);
+    try {
+      connection.disconnect();
+      return Response.ok().build();
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      return Response.serverError().entity(e.getMessage()).build();
+    }
+  }
+
+  @GET
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("isTransactionOpen")
+  public Response isTransactionOpen(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
+                                    @QueryParam("domainId") final String domainId) {
+    final RemoteEntityConnection connection = authenticate(request, headers, domainId);
+    try {
+      return Response.ok(Util.serializeAndBase64Encode(Collections.singletonList(connection.isTransactionOpen()))).build();
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      return Response.serverError().entity(e.getMessage()).build();
+    }
+  }
+
+  @GET
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("beginTransaction")
+  public Response beginTransaction(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
+                                   @QueryParam("domainId") final String domainId) {
+    final RemoteEntityConnection connection = authenticate(request, headers, domainId);
+    try {
+      connection.beginTransaction();
+
+      return Response.ok().build();
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      return Response.serverError().entity(e.getMessage()).build();
+    }
+  }
+
+  @GET
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("commitTransaction")
+  public Response commitTransaction(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
+                                    @QueryParam("domainId") final String domainId) {
+    final RemoteEntityConnection connection = authenticate(request, headers, domainId);
+    try {
+      connection.commitTransaction();
+
+      return Response.ok().build();
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      return Response.serverError().entity(e.getMessage()).build();
+    }
+  }
+
+  @GET
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("rollbackTransaction")
+  public Response rollbackTransaction(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
+                                      @QueryParam("domainId") final String domainId) {
+    final RemoteEntityConnection connection = authenticate(request, headers, domainId);
+    try {
+      connection.rollbackTransaction();
+
+      return Response.ok().build();
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      return Response.serverError().entity(e.getMessage()).build();
+    }
+  }
 
   @GET
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
@@ -76,7 +162,7 @@ public final class EntityRESTService extends Application {
       return Response.ok().build();
     }
     catch (final Exception e) {
-      LOG.error("Error while executing procedure: " + procedureId, e);
+      LOG.error(e.getMessage(), e);
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
@@ -96,7 +182,7 @@ public final class EntityRESTService extends Application {
       return Response.ok(Util.serializeAndBase64Encode(result)).build();
     }
     catch (final Exception e) {
-      LOG.error("Error while executing function: " + functionId, e);
+      LOG.error(e.getMessage(), e);
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
@@ -115,7 +201,7 @@ public final class EntityRESTService extends Application {
       return Response.ok(Util.serializeAndBase64Encode(Collections.singletonList(result))).build();
     }
     catch (final Exception e) {
-      LOG.error("Error while filling report", e);
+      LOG.error(e.getMessage(), e);
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
@@ -134,7 +220,7 @@ public final class EntityRESTService extends Application {
       return Response.ok(Util.serializeAndBase64Encode(Collections.singletonList(dependencies))).build();
     }
     catch (final Exception e) {
-      LOG.error(ERROR_WHILE_SELECTING, e);
+      LOG.error(e.getMessage(), e);
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
@@ -153,7 +239,27 @@ public final class EntityRESTService extends Application {
               Collections.singletonList(connection.selectRowCount(selectConditions.get(0))))).build();
     }
     catch (final Exception e) {
-      LOG.error(ERROR_WHILE_SELECTING, e);
+      LOG.error(e.getMessage(), e);
+      return Response.serverError().entity(e.getMessage()).build();
+    }
+  }
+
+  @GET
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("values")
+  public Response values(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
+                         @QueryParam("domainId") final String domainId,
+                         @QueryParam("propertyId") final String propertyId,
+                         @QueryParam("condition") final String condition) {
+    final RemoteEntityConnection connection = authenticate(request, headers, domainId);
+    try {
+      final List<EntitySelectCondition> selectConditions = Util.base64DecodeAndDeserialize(condition);
+      final List values = connection.selectValues(propertyId, selectConditions.get(0));
+      return Response.ok(Util.serializeAndBase64Encode(values)).build();
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
@@ -173,7 +279,7 @@ public final class EntityRESTService extends Application {
       return Response.ok(Util.serializeAndBase64Encode(connection.selectMany(selectConditions.get(0)))).build();
     }
     catch (final Exception e) {
-      LOG.error(ERROR_WHILE_SELECTING, e);
+      LOG.error(e.getMessage(), e);
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
@@ -189,7 +295,7 @@ public final class EntityRESTService extends Application {
       return Response.ok(Util.serializeAndBase64Encode(connection.insert(Util.base64DecodeAndDeserialize(entities)))).build();
     }
     catch (final Exception e) {
-      LOG.error("Error while inserting", e);
+      LOG.error(e.getMessage(), e);
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
@@ -218,7 +324,7 @@ public final class EntityRESTService extends Application {
       return Response.ok(Util.serializeAndBase64Encode(savedEntities)).build();
     }
     catch (final Exception e) {
-      LOG.error("Error while saving", e);
+      LOG.error(e.getMessage(), e);
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
@@ -236,7 +342,7 @@ public final class EntityRESTService extends Application {
       return Response.ok().build();
     }
     catch (final Exception e) {
-      LOG.error("Error while deleting", e);
+      LOG.error(e.getMessage(), e);
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
@@ -285,6 +391,7 @@ public final class EntityRESTService extends Application {
       session.invalidate();
       session.setAttribute(CLIENT_ID, clientId);
     }
+
     return clientId;
   }
 
