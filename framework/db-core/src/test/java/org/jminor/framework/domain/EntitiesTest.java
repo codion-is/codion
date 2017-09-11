@@ -420,7 +420,7 @@ public class EntitiesTest {
   }
 
   @Test (expected = IllegalArgumentException.class)
-  public void setSearchPropertyIDsInvalidProperty() {
+  public void setSearchPropertyIdsInvalidProperty() {
     entities.define("spids",
             Properties.primaryKeyProperty("1"),
             Properties.columnProperty("test"))
