@@ -37,6 +37,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -60,6 +61,13 @@ public final class EntityRESTService extends Application {
 
   private static Server server;
 
+  /**
+   * Disconnects the underlying connection
+   * @param request the servlet request
+   * @param headers the headers
+   * @param domainId the domain id
+   * @return a response
+   */
   @GET
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -69,14 +77,22 @@ public final class EntityRESTService extends Application {
     final RemoteEntityConnection connection = authenticate(request, headers, domainId);
     try {
       connection.disconnect();
+
       return Response.ok().build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      return Response.serverError().entity(e.getMessage()).build();
+      return getExceptionResponse(e);
     }
   }
 
+  /**
+   * Checks if a transaction is open
+   * @param request the servlet request
+   * @param headers the headers
+   * @param domainId the domain id
+   * @return a response
+   */
   @GET
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -85,14 +101,23 @@ public final class EntityRESTService extends Application {
                                     @QueryParam("domainId") final String domainId) {
     final RemoteEntityConnection connection = authenticate(request, headers, domainId);
     try {
-      return Response.ok(Util.serializeAndBase64Encode(Collections.singletonList(connection.isTransactionOpen()))).build();
+      final Boolean transactionOpen = connection.isTransactionOpen();
+
+      return Response.ok(Util.serializeAndBase64Encode(Collections.singletonList(transactionOpen))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      return Response.serverError().entity(e.getMessage()).build();
+      return getExceptionResponse(e);
     }
   }
 
+  /**
+   * Begins a transaction
+   * @param request the servlet request
+   * @param headers the headers
+   * @param domainId the domain id
+   * @return a response
+   */
   @GET
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -107,10 +132,17 @@ public final class EntityRESTService extends Application {
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      return Response.serverError().entity(e.getMessage()).build();
+      return getExceptionResponse(e);
     }
   }
 
+  /**
+   * Commits a transaction
+   * @param request the servlet request
+   * @param headers the headers
+   * @param domainId the domain id
+   * @return a response
+   */
   @GET
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -125,10 +157,17 @@ public final class EntityRESTService extends Application {
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      return Response.serverError().entity(e.getMessage()).build();
+      return getExceptionResponse(e);
     }
   }
 
+  /**
+   * Rolls back an open transaction
+   * @param request the servlet request
+   * @param headers the headers
+   * @param domainId the domain id
+   * @return a response
+   */
   @GET
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -143,10 +182,19 @@ public final class EntityRESTService extends Application {
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      return Response.serverError().entity(e.getMessage()).build();
+      return getExceptionResponse(e);
     }
   }
 
+  /**
+   * Executes the procedure identified by {@code procedureId}, with the given parameters
+   * @param request the servlet request
+   * @param headers the headers
+   * @param domainId the domain id
+   * @param procedureId the procedure id
+   * @param parameters the procedure parameters
+   * @return a response
+   */
   @GET
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -159,14 +207,24 @@ public final class EntityRESTService extends Application {
     try {
       final List parameterList = Util.base64DecodeAndDeserialize(parameters);
       connection.executeProcedure(procedureId, parameterList.toArray());
+
       return Response.ok().build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      return Response.serverError().entity(e.getMessage()).build();
+      return getExceptionResponse(e);
     }
   }
 
+  /**
+   * Executes the function identified by {@code functionId}, with the given parameters
+   * @param request the servlet request
+   * @param headers the headers
+   * @param domainId the domain id
+   * @param functionId the function id
+   * @param parameters the procedure parameters
+   * @return a response
+   */
   @GET
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -179,14 +237,23 @@ public final class EntityRESTService extends Application {
     try {
       final List parameterList = Util.base64DecodeAndDeserialize(parameters);
       final List result = connection.executeFunction(functionId, parameterList.toArray());
+
       return Response.ok(Util.serializeAndBase64Encode(result)).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      return Response.serverError().entity(e.getMessage()).build();
+      return getExceptionResponse(e);
     }
   }
 
+  /**
+   * Fills the given report
+   * @param request the servlet request
+   * @param headers the headers
+   * @param domainId the domain id
+   * @param reportWrapper the report wrapper
+   * @return a response
+   */
   @GET
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -198,14 +265,23 @@ public final class EntityRESTService extends Application {
     try {
       final List<ReportWrapper> wrapperList = Util.base64DecodeAndDeserialize(reportWrapper);
       final ReportResult result = connection.fillReport(wrapperList.get(0));
+
       return Response.ok(Util.serializeAndBase64Encode(Collections.singletonList(result))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      return Response.serverError().entity(e.getMessage()).build();
+      return getExceptionResponse(e);
     }
   }
 
+  /**
+   * Returns the entities referencing the given entities via foreign keys, mapped to their respective entityIds
+   * @param request the servlet request
+   * @param headers the headers
+   * @param domainId the domain id
+   * @param entities the entities
+   * @return a response
+   */
   @GET
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -217,14 +293,23 @@ public final class EntityRESTService extends Application {
     try {
       final List<Entity> entityList = Util.base64DecodeAndDeserialize(entities);
       final Map<String, Collection<Entity>> dependencies = connection.selectDependentEntities(entityList);
+
       return Response.ok(Util.serializeAndBase64Encode(Collections.singletonList(dependencies))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      return Response.serverError().entity(e.getMessage()).build();
+      return getExceptionResponse(e);
     }
   }
 
+  /**
+   * Returns the record count for the given condition
+   * @param request the servlet request
+   * @param headers the headers
+   * @param domainId the domain id
+   * @param condition the query condition
+   * @return a response
+   */
   @GET
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -235,15 +320,25 @@ public final class EntityRESTService extends Application {
     final RemoteEntityConnection connection = authenticate(request, headers, domainId);
     try {
       final List<EntitySelectCondition> selectConditions = Util.base64DecodeAndDeserialize(condition);
-      return Response.ok(Util.serializeAndBase64Encode(
-              Collections.singletonList(connection.selectRowCount(selectConditions.get(0))))).build();
+      final Integer rowCount = connection.selectRowCount(selectConditions.get(0));
+
+      return Response.ok(Util.serializeAndBase64Encode(Collections.singletonList(rowCount))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      return Response.serverError().entity(e.getMessage()).build();
+      return getExceptionResponse(e);
     }
   }
 
+  /**
+   * Selects the values for the given propertyId using the given query condition
+   * @param request the servlet request
+   * @param headers the headers
+   * @param domainId the domain id
+   * @param propertyId the propertyId
+   * @param conditiont the query condition
+   * @return a response
+   */
   @GET
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -256,14 +351,23 @@ public final class EntityRESTService extends Application {
     try {
       final List<EntitySelectCondition> selectConditions = Util.base64DecodeAndDeserialize(condition);
       final List values = connection.selectValues(propertyId, selectConditions.get(0));
+
       return Response.ok(Util.serializeAndBase64Encode(values)).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      return Response.serverError().entity(e.getMessage()).build();
+      return getExceptionResponse(e);
     }
   }
 
+  /**
+   * Returns the entities for the given query condition
+   * @param request the servlet request
+   * @param headers the headers
+   * @param domainId the domain id
+   * @param condition the query condition
+   * @return a response
+   */
   @GET
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -273,17 +377,26 @@ public final class EntityRESTService extends Application {
     final RemoteEntityConnection connection = authenticate(request, headers, domainId);
     try {
       if (condition == null) {
-        return Response.ok().build();
+        return Response.ok(Util.serializeAndBase64Encode(Collections.emptyList())).build();
       }
       final List<EntitySelectCondition> selectConditions = Util.base64DecodeAndDeserialize(condition);
+
       return Response.ok(Util.serializeAndBase64Encode(connection.selectMany(selectConditions.get(0)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      return Response.serverError().entity(e.getMessage()).build();
+      return getExceptionResponse(e);
     }
   }
 
+  /**
+   * Inserts the given entities, returning their keys
+   * @param request the servlet request
+   * @param headers the headers
+   * @param domainId the domain id
+   * @param entities the entities to insert
+   * @return a response
+   */
   @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -292,14 +405,24 @@ public final class EntityRESTService extends Application {
                          @QueryParam("entities") final String entities) {
     final RemoteEntityConnection connection = authenticate(request, headers, domainId);
     try {
-      return Response.ok(Util.serializeAndBase64Encode(connection.insert(Util.base64DecodeAndDeserialize(entities)))).build();
+      final List<Entity.Key> keys = connection.insert(Util.base64DecodeAndDeserialize(entities));
+
+      return Response.ok(Util.serializeAndBase64Encode(keys)).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      return Response.serverError().entity(e.getMessage()).build();
+      return getExceptionResponse(e);
     }
   }
 
+  /**
+   * Saves, as in, inserts or updates the given entities
+   * @param request the servlet request
+   * @param headers the headers
+   * @param domainId the domain id
+   * @param entities the entities to save
+   * @return a response
+   */
   @PUT
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -325,10 +448,18 @@ public final class EntityRESTService extends Application {
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      return Response.serverError().entity(e.getMessage()).build();
+      return getExceptionResponse(e);
     }
   }
 
+  /**
+   * Deletes the entities for the given condition
+   * @param request the servlet request
+   * @param headers the headers
+   * @param domainId the domain id
+   * @param condition the query condition
+   * @return a response
+   */
   @DELETE
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   public Response delete(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
@@ -343,7 +474,7 @@ public final class EntityRESTService extends Application {
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
-      return Response.serverError().entity(e.getMessage()).build();
+      return getExceptionResponse(e);
     }
   }
 
@@ -374,6 +505,17 @@ public final class EntityRESTService extends Application {
 
   static void setServer(final Server server) {
     EntityRESTService.server = server;
+  }
+
+  private static Response getExceptionResponse(final Exception exeption) {
+    try {
+      return Response.serverError().entity(Util.serializeAndBase64Encode(
+              Collections.singletonList(exeption))).build();
+    }
+    catch (final IOException e) {
+      LOG.error(e.getMessage(), e);
+      return Response.serverError().entity(exeption.getMessage()).build();
+    }
   }
 
   private static UUID getClientId(final HttpServletRequest request, final HttpHeaders headers) {

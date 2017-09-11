@@ -67,31 +67,22 @@ public final class EntityConnectionProviders {
    * @see org.jminor.framework.db.EntityConnectionProvider#CLIENT_CONNECTION_TYPE
    * @see org.jminor.framework.db.EntityConnectionProvider#REMOTE_CONNECTION_PROVIDER
    * @see org.jminor.framework.db.EntityConnectionProvider#LOCAL_CONNECTION_PROVIDER
+   * @see org.jminor.framework.db.EntityConnectionProvider#HTTP_CONNECTION_PROVIDER
    */
   public static EntityConnectionProvider connectionProvider(final Entities entities, final User user, final String clientTypeId,
                                                             final UUID clientId, final Version clientVersion) {
     try {
       final String clientConnectionType = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
-      if (clientConnectionType.equals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE)) {
-        final String serverHostName = Server.SERVER_HOST_NAME.get();
-        final boolean scheduleValidityCheck = EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get();
-
-        return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.REMOTE_CONNECTION_PROVIDER.get()).getConstructor(
-                Entities.class, String.class, User.class, UUID.class, String.class, Version.class, boolean.class)
-                .newInstance(entities, serverHostName, user, clientId, clientTypeId, clientVersion, scheduleValidityCheck);
+      switch (clientConnectionType) {
+        case EntityConnectionProvider.CONNECTION_TYPE_REMOTE:
+          return createRemoteConnectionProvider(entities, user, clientTypeId, clientId, clientVersion);
+        case EntityConnectionProvider.CONNECTION_TYPE_HTTP:
+          return createHttpConnectionProvider(entities, user, clientId);
+        case EntityConnectionProvider.CONNECTION_TYPE_LOCAL:
+          return createLocalConnectionProvider(entities, user);
+        default:
+          throw new IllegalArgumentException("Unknown connection type: " + clientConnectionType);
       }
-      else if (clientConnectionType.equals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL)) {
-        return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.LOCAL_CONNECTION_PROVIDER.get()).getConstructor(
-                Entities.class, User.class).newInstance(entities, user);
-      }
-      else if (clientConnectionType.equals(EntityConnectionProvider.CONNECTION_TYPE_HTTP)) {
-        final String serverHostName = Server.SERVER_HOST_NAME.get();
-
-        return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.HTTP_CONNECTION_PROVIDER.get()).getConstructor(
-                Entities.class, String.class, User.class, UUID.class).newInstance(entities, serverHostName, user, clientId);
-      }
-
-      throw new IllegalArgumentException("Unknown connection provider type: " + clientConnectionType);
     }
     catch (final InvocationTargetException ite) {
       if (ite.getTargetException() instanceof RuntimeException) {
@@ -106,5 +97,36 @@ public final class EntityConnectionProviders {
     catch (final Exception e) {
       throw new RuntimeException("Exception while initializing connection provider", e);
     }
+  }
+
+  private static EntityConnectionProvider createRemoteConnectionProvider(final Entities entities, final User user, final String clientTypeId,
+                                                                         final UUID clientId, final Version clientVersion)
+          throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
+          InvocationTargetException, InstantiationException {
+    final String serverHostName = Server.SERVER_HOST_NAME.get();
+    final boolean scheduleValidityCheck = EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get();
+
+    return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.REMOTE_CONNECTION_PROVIDER.get()).getConstructor(
+            Entities.class, String.class, User.class, UUID.class, String.class, Version.class, boolean.class)
+            .newInstance(entities, serverHostName, user, clientId, clientTypeId, clientVersion, scheduleValidityCheck);
+  }
+
+  private static EntityConnectionProvider createHttpConnectionProvider(final Entities entities, final User user,
+                                                                       final UUID clientId)
+          throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
+          InvocationTargetException, InstantiationException {
+    final String serverHostName = Server.WEB_SERVER_HOST_NAME.get();
+    final Integer serverPort = Server.WEB_SERVER_PORT.get();
+
+    return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.HTTP_CONNECTION_PROVIDER.get()).getConstructor(
+            Entities.class, String.class, Integer.class, User.class, UUID.class)
+            .newInstance(entities, serverHostName, serverPort, user, clientId);
+  }
+
+  private static EntityConnectionProvider createLocalConnectionProvider(final Entities entities, final User user)
+          throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
+          InvocationTargetException, InstantiationException {
+    return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.LOCAL_CONNECTION_PROVIDER.get()).getConstructor(
+            Entities.class, User.class).newInstance(entities, user);
   }
 }

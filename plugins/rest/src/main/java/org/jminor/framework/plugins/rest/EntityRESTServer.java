@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.plugins.rest;
 
+import org.jminor.common.server.Server;
 import org.jminor.framework.plugins.jetty.JettyServer;
 
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -18,10 +19,10 @@ public final class EntityRESTServer extends JettyServer {
    * Instantiates a new EntityRESTServer.
    * @param connectionServer the Server serving the connection requests
    * @see JettyServer#DOCUMENT_ROOT
-   * @see JettyServer#WEB_SERVER_PORT
+   * @see Server#WEB_SERVER_PORT
    */
   public EntityRESTServer(final org.jminor.common.server.Server connectionServer) {
-    super(connectionServer, JettyServer.DOCUMENT_ROOT.get(), JettyServer.WEB_SERVER_PORT.get());
+    super(connectionServer, JettyServer.DOCUMENT_ROOT.get(), Server.WEB_SERVER_PORT.get());
     EntityRESTService.setServer(connectionServer);
     final ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
     servletHandler.setContextPath("/");

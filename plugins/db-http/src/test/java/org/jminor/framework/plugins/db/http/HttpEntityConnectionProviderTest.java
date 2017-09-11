@@ -24,7 +24,8 @@ public class HttpEntityConnectionProviderTest {
   public void entityConnectionProviders() {
     final String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_HTTP);
-    Server.SERVER_HOST_NAME.set("localhost");
+    Server.WEB_SERVER_HOST_NAME.set("localhost");
+    Server.WEB_SERVER_PORT.set(8089);
     final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider(new Entities(), UNIT_TEST_USER, "test");
     assertEquals("HttpEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
     assertEquals(EntityConnection.Type.HTTP, connectionProvider.getConnectionType());

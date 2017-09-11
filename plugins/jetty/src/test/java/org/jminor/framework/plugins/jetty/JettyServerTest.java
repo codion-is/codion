@@ -52,7 +52,7 @@ public class JettyServerTest {
     System.setProperty("java.security.policy", "resources/security/all_permissions.policy");
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(JettyServer.class.getName());
     JettyServer.DOCUMENT_ROOT.set(System.getProperty("user.dir"));
-    JettyServer.WEB_SERVER_PORT.set(FILE_SERVER_PORT_NUMBER);
+    Server.WEB_SERVER_PORT.set(FILE_SERVER_PORT_NUMBER);
   }
 
   private static void deconfigure() {
@@ -66,6 +66,6 @@ public class JettyServerTest {
     System.clearProperty("java.security.policy");
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(null);
     JettyServer.DOCUMENT_ROOT.set(null);
-    JettyServer.WEB_SERVER_PORT.set(null);
+    Server.WEB_SERVER_PORT.set(null);
   }
 }

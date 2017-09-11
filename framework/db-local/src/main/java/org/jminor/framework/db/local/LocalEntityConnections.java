@@ -13,7 +13,7 @@ import org.jminor.framework.domain.Entities;
 import java.sql.Connection;
 
 /**
- * A factory class providing EntityConnection instances.
+ * A factory class providing a local EntityConnection instances.
  */
 public final class LocalEntityConnections {
 

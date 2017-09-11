@@ -4,7 +4,6 @@
 package org.jminor.framework.plugins.db.http;
 
 import org.jminor.common.User;
-import org.jminor.common.Util;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
@@ -13,10 +12,6 @@ import org.jminor.framework.domain.Entities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -28,18 +23,22 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
   private static final Logger LOG = LoggerFactory.getLogger(HttpEntityConnectionProvider.class);
 
   private final String serverHostName;
+  private final Integer serverPort;
   private final UUID clientId;
 
   /**
    * Instantiates a new HttpEntityConnectionProvider.
    * @param entities the domain model entities
    * @param serverHostName the server host name
+   * @param serverPort the server port
    * @param user the user to use when initializing connections
    * @param clientId a UUID identifying the client
    */
-  public HttpEntityConnectionProvider(final Entities entities, final String serverHostName, final User user, final UUID clientId) {
+  public HttpEntityConnectionProvider(final Entities entities, final String serverHostName, final Integer serverPort,
+                                      final User user, final UUID clientId) {
     super(entities, user, false);
     this.serverHostName = Objects.requireNonNull(serverHostName, "serverHostName");
+    this.serverPort = Objects.requireNonNull(serverPort, "serverPort");
     this.clientId = Objects.requireNonNull(clientId, "clientId");
   }
 
@@ -79,10 +78,7 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-
-      final DefaultHttpEntityConnection connection = new DefaultHttpEntityConnection(getEntities(), getUser(), clientId);
-
-      return Util.initializeProxy(EntityConnection.class, new HttpEntityConnectionHandler(connection));
+      return HttpEntityConnections.createConnection(getEntities(), serverHostName, serverPort, getUser(), clientId);
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
@@ -93,44 +89,5 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
   @Override
   protected void disconnect(final EntityConnection connection) {
     connection.disconnect();
-  }
-
-  private static final class HttpEntityConnectionHandler implements InvocationHandler {
-    private final HttpEntityConnection httpConnection;
-
-    private HttpEntityConnectionHandler(final HttpEntityConnection httpConnection) {
-      this.httpConnection = httpConnection;
-    }
-
-    @Override
-    public synchronized Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
-      final String methodName = method.getName();
-      if (methodName.equals(IS_CONNECTED)) {
-        return isConnected();
-      }
-
-      final Method remoteMethod = HttpEntityConnection.class.getMethod(methodName, method.getParameterTypes());
-      try {
-        return remoteMethod.invoke(httpConnection, args);
-      }
-      catch (final InvocationTargetException e) {
-        final Exception exception = (Exception) e.getCause();
-        LOG.error(exception.getMessage(), exception);
-        throw exception;
-      }
-      catch (final Exception e) {
-        LOG.error(e.getMessage(), e);
-        throw e;
-      }
-    }
-
-    private Object isConnected() {
-      try {
-        return httpConnection.isConnected();
-      }
-      catch (final IOException e) {
-        return false;
-      }
-    }
   }
 }

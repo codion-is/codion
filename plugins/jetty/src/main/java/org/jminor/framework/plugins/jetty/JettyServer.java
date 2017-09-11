@@ -28,13 +28,6 @@ public class JettyServer extends Server implements org.jminor.common.server.Serv
    */
   public static final Value<String> DOCUMENT_ROOT = Configuration.stringValue("jminor.server.web.documentRoot", null);
 
-  /**
-   * Specifies the web server port<br>.
-   * Value type: String<br>
-   * Default value: 8080
-   */
-  public static final Value<Integer> WEB_SERVER_PORT = Configuration.integerValue("jminor.server.web.port", 8080);
-
   private final org.jminor.common.server.Server connectionServer;
   private final HandlerList handlers;
 
@@ -43,7 +36,7 @@ public class JettyServer extends Server implements org.jminor.common.server.Serv
    * @param connectionServer the Server serving the connection requests
    */
   public JettyServer(final org.jminor.common.server.Server connectionServer) {
-    this(connectionServer, DOCUMENT_ROOT.get(), WEB_SERVER_PORT.get());
+    this(connectionServer, DOCUMENT_ROOT.get(), org.jminor.common.server.Server.WEB_SERVER_PORT.get());
   }
 
   /**

@@ -13,7 +13,6 @@ import org.jminor.common.server.Server;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.plugins.jetty.JettyServer;
 import org.jminor.framework.plugins.rest.EntityRESTServer;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 
@@ -44,7 +43,8 @@ public final class DefaultHttpEntityConnectionTest {
   private static final EntityConditions CONDITIONS = new EntityConditions(ENTITIES);
   private static DefaultEntityConnectionServer server;
 
-  private final DefaultHttpEntityConnection connection = new DefaultHttpEntityConnection(ENTITIES, UNIT_TEST_USER, UUID.randomUUID());
+  private final DefaultHttpEntityConnection connection = new DefaultHttpEntityConnection(ENTITIES, Server.WEB_SERVER_HOST_NAME.get(),
+          Server.WEB_SERVER_PORT.get(), UNIT_TEST_USER, UUID.randomUUID());
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -157,17 +157,24 @@ public final class DefaultHttpEntityConnectionTest {
     assertFalse(connection.isConnected());
   }
 
+  @Test(expected = DatabaseException.class)
+  public void deleteDepartmentWithEmployees() throws IOException, DatabaseException {
+    final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT,
+            TestDomain.DEPARTMENT_NAME, "SALES");
+    connection.delete(CONDITIONS.condition(department.getKey()));
+  }
+
   private static void configure() {
     Server.REGISTRY_PORT.set(2221);
     Server.SERVER_CONNECTION_SSL_ENABLED.set(false);
     Server.SERVER_PORT.set(2223);
     Server.SERVER_ADMIN_PORT.set(2223);
     Server.SERVER_HOST_NAME.set("localhost");
-    HttpEntityConnection.WEB_SERVER_PORT.set(REST_SERVER_PORT_NUMBER);
+    Server.WEB_SERVER_HOST_NAME.set("localhost");
+    Server.WEB_SERVER_PORT.set(REST_SERVER_PORT_NUMBER);
     System.setProperty("java.security.policy", "resources/security/all_permissions.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityRESTServer.class.getName());
-    JettyServer.WEB_SERVER_PORT.set(REST_SERVER_PORT_NUMBER);
   }
 
   private static void deconfigure() {
@@ -176,11 +183,11 @@ public final class DefaultHttpEntityConnectionTest {
     Server.SERVER_PORT.set(null);
     Server.SERVER_ADMIN_PORT.set(null);
     Server.SERVER_HOST_NAME.set(null);
-    HttpEntityConnection.WEB_SERVER_PORT.set(null);
+    Server.WEB_SERVER_HOST_NAME.set(null);
+    Server.WEB_SERVER_PORT.set(null);
     System.clearProperty("java.security.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(null);
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(null);
-    JettyServer.WEB_SERVER_PORT.set(null);
   }
 
   private static class TestReportWrapper implements ReportWrapper, Serializable {

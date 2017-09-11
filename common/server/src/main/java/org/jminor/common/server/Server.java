@@ -50,6 +50,14 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
   Value<String> SERVER_HOST_NAME = Configuration.stringValue("jminor.server.hostname", "localhost");
 
   /**
+   * Specifies the rmi server hostname<br>
+   * Note that this is the standard Java property 'java.rmi.server.hostname'<br>
+   * Value type: String<br>
+   * Default value: localhost
+   */
+  Value<String> RMI_SERVER_HOSTNAME = Configuration.stringValue("java.rmi.server.hostname", "localhost");
+
+  /**
    * Specifies the prefix used when exporting/looking up the JMinor server<br>
    * Value type: String<br>
    * Default value: JMinor Server
@@ -94,13 +102,6 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
   Value<String> TRUSTSTORE = Configuration.stringValue(JAVAX_NET_TRUSTSTORE, null);
 
   /**
-   * Specifies the rmi server hostname<br>
-   * Value type: String<br>
-   * Default value: localhost
-   */
-  Value<String> RMI_SERVER_HOSTNAME = Configuration.stringValue("java.rmi.server.hostname", "localhost");
-
-  /**
    * The port on which the server should export the remote admin interface<br>
    * Value type: Integer<br>
    * Default value: none
@@ -135,6 +136,20 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
    * @see AuxiliaryServer
    */
   Value<String> AUXILIARY_SERVER_CLASS_NAMES = Configuration.stringValue("jminor.server.auxiliaryServerClassNames", null);
+
+  /**
+   * The host on which to locate the web server<br>
+   * Value type: String<br>
+   * Default value: localhost
+   */
+  Value<String> WEB_SERVER_HOST_NAME = Configuration.stringValue("jminor.server.web.hostname", "localhost");
+
+  /**
+   * The port on which the web server is made available to clients.<br>
+   * Value type: Integer<br>
+   * Default value: 8080
+   */
+  Value<Integer> WEB_SERVER_PORT = Configuration.integerValue("jminor.server.web.port", 8080);
 
   /**
    * Establishes a connection to this Server
