@@ -32,7 +32,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 
-public final class DefaultHttpEntityConnectionTest {
+public final class HttpEntityConnectionTest {
 
   private static final Integer REST_SERVER_PORT_NUMBER = 8089;
   private static final User UNIT_TEST_USER = new User(
@@ -43,8 +43,8 @@ public final class DefaultHttpEntityConnectionTest {
   private static final EntityConditions CONDITIONS = new EntityConditions(ENTITIES);
   private static DefaultEntityConnectionServer server;
 
-  private final DefaultHttpEntityConnection connection = new DefaultHttpEntityConnection(ENTITIES, Server.WEB_SERVER_HOST_NAME.get(),
-          Server.WEB_SERVER_PORT.get(), UNIT_TEST_USER, UUID.randomUUID());
+  private final HttpEntityConnection connection = new HttpEntityConnection(ENTITIES, Server.WEB_SERVER_HOST_NAME.get(),
+          Server.WEB_SERVER_PORT.get(), UNIT_TEST_USER, "HttpEntityConnectionTest", UUID.randomUUID());
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -162,6 +162,11 @@ public final class DefaultHttpEntityConnectionTest {
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "SALES");
     connection.delete(CONDITIONS.condition(department.getKey()));
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void rollbackWithNoOpenTransaction() {
+    connection.rollbackTransaction();
   }
 
   private static void configure() {

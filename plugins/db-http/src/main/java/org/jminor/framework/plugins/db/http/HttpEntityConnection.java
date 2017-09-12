@@ -53,9 +53,9 @@ import java.util.UUID;
 /**
  * A Http based {@link EntityConnection} implementation based on EntityRESTService
  */
-final class DefaultHttpEntityConnection implements EntityConnection {
+final class HttpEntityConnection implements EntityConnection {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DefaultHttpEntityConnection.class);
+  private static final Logger LOG = LoggerFactory.getLogger(HttpEntityConnection.class);
 
   private static final String DOMAIN_ID_PARAM = "domainId";
   private static final String PROPERTY_ID_PARAM = "propertyId";
@@ -65,6 +65,7 @@ final class DefaultHttpEntityConnection implements EntityConnection {
   private static final String PROCEDURE_ID_PARAM = "procedureId";
   private static final String PARAMETERS_PARAM = "parameters";
   private static final String REPORT_WRAPPER_PARAM = "reportWrapper";
+  private static final String CLIENT_TYPE_ID = "clientTypeId";
   private static final String CLIENT_ID = "clientId";
   private static final String AUTHORIZATION = "Authorization";
   private static final String CONTENT_TYPE = "Content-Type";
@@ -85,20 +86,21 @@ final class DefaultHttpEntityConnection implements EntityConnection {
   private CloseableHttpClient httpClient;
 
   /**
-   * Instantiates a new {@link DefaultHttpEntityConnection} instance
+   * Instantiates a new {@link HttpEntityConnection} instance
    * @param domain the domain entities
    * @param serverHostName the http server host name
    * @param serverPort the http server port
    * @param user the user
+   * @param clientTypeId the client type id
    * @param clientId the client id
    */
-  DefaultHttpEntityConnection(final Entities domain, final String serverHostName, final int serverPort,
-                              final User user, final UUID clientId) {
+  HttpEntityConnection(final Entities domain, final String serverHostName, final int serverPort,
+                       final User user, final String clientTypeId, final UUID clientId) {
     this.domain = domain;
     this.conditions = new EntityConditions(domain);
     this.user = user;
     this.baseurl =  serverHostName + ":" + serverPort + "/entities/";
-    this.httpClient = createHttpClient(user, clientId);
+    this.httpClient = createHttpClient(user, clientTypeId, clientId);
   }
 
   /** {@inheritDoc} */
@@ -160,6 +162,9 @@ final class DefaultHttpEntityConnection implements EntityConnection {
     try {
       executeGet("beginTransaction");
     }
+    catch (final RuntimeException e) {
+      throw e;
+    }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
@@ -172,6 +177,9 @@ final class DefaultHttpEntityConnection implements EntityConnection {
     try {
       executeGet("rollbackTransaction");
     }
+    catch (final RuntimeException e) {
+      throw e;
+    }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
@@ -183,6 +191,9 @@ final class DefaultHttpEntityConnection implements EntityConnection {
   public void commitTransaction() {
     try {
       executeGet("commitTransaction");
+    }
+    catch (final RuntimeException e) {
+      throw e;
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -232,7 +243,7 @@ final class DefaultHttpEntityConnection implements EntityConnection {
       builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
               .addParameter(ENTITIES_PARAM, Util.serializeAndBase64Encode(entities));
       final HttpResponse response = httpClient.execute(new HttpPost(builder.build()));
-      checkResponse(response);
+      ifExceptionThrow(response);
 
       return Util.base64DecodeAndDeserialize(getContentStream(response.getEntity()));
     }
@@ -254,7 +265,7 @@ final class DefaultHttpEntityConnection implements EntityConnection {
       builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
               .addParameter(ENTITIES_PARAM, Util.serializeAndBase64Encode(entities));
       final HttpResponse response = httpClient.execute(new HttpPut(builder.build()));
-      checkResponse(response);
+      ifExceptionThrow(response);
 
       return Util.base64DecodeAndDeserialize(getContentStream(response.getEntity()));
     }
@@ -282,7 +293,7 @@ final class DefaultHttpEntityConnection implements EntityConnection {
       builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
               .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(Collections.singletonList(condition)));
       final HttpResponse response  = httpClient.execute(new HttpDelete(builder.build()));
-      checkResponse(response);
+      ifExceptionThrow(response);
     }
     catch (final DatabaseException e) {
       LOG.error(e.getMessage(), e);
@@ -304,7 +315,7 @@ final class DefaultHttpEntityConnection implements EntityConnection {
               .addParameter(PROPERTY_ID_PARAM, propertyId)
               .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(Collections.singletonList(condition)));
       final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
-      checkResponse(response);
+      ifExceptionThrow(response);
 
       return Util.base64DecodeAndDeserialize(getContentStream(response.getEntity()));
     }
@@ -358,7 +369,7 @@ final class DefaultHttpEntityConnection implements EntityConnection {
       builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
               .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(Collections.singletonList(condition)));
       final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
-      checkResponse(response);
+      ifExceptionThrow(response);
 
       return Util.base64DecodeAndDeserialize(getContentStream(response.getEntity()));
     }
@@ -388,7 +399,7 @@ final class DefaultHttpEntityConnection implements EntityConnection {
               .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
               .addParameter(ENTITIES_PARAM, Util.serializeAndBase64Encode(new ArrayList<>(entities)));
       final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
-      checkResponse(response);
+      ifExceptionThrow(response);
 
       final List<Map<String, Collection<Entity>>> dependencies =
               Util.<Map<String, Collection<Entity>>>base64DecodeAndDeserialize(getContentStream(response.getEntity()));
@@ -418,7 +429,7 @@ final class DefaultHttpEntityConnection implements EntityConnection {
               .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
               .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(Collections.singletonList(condition)));
       final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
-      checkResponse(response);
+      ifExceptionThrow(response);
 
       return Util.<Integer>base64DecodeAndDeserialize(getContentStream(response.getEntity())).get(0);
     }
@@ -441,7 +452,7 @@ final class DefaultHttpEntityConnection implements EntityConnection {
               .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
               .addParameter(REPORT_WRAPPER_PARAM, Util.serializeAndBase64Encode(Collections.singletonList(reportWrapper)));
       final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
-      checkResponse(response);
+      ifExceptionThrow(response);
 
       return Util.<ReportResult>base64DecodeAndDeserialize(getContentStream(response.getEntity())).get(0);
     }
@@ -479,7 +490,7 @@ final class DefaultHttpEntityConnection implements EntityConnection {
     builder.setPath(path)
             .addParameter(DOMAIN_ID_PARAM, domain.getDomainId());
     final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
-    checkResponse(response);
+    ifExceptionThrow(response);
 
     return response;
   }
@@ -493,12 +504,12 @@ final class DefaultHttpEntityConnection implements EntityConnection {
             .addParameter(PARAMETERS_PARAM, Util.serializeAndBase64Encode(
                     Util.notNull(arguments) ? Arrays.asList(arguments) : Collections.emptyList()));
     final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
-    checkResponse(response);
+    ifExceptionThrow(response);
 
     return response;
   }
 
-  private static void checkResponse(final HttpResponse response) throws Exception {
+  private static void ifExceptionThrow(final HttpResponse response) throws Exception {
     if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
       final List<Exception> exceptionList = Util.base64DecodeAndDeserialize(
               getContentStream(response.getEntity()));
@@ -525,13 +536,14 @@ final class DefaultHttpEntityConnection implements EntityConnection {
     }
   }
 
-  private static CloseableHttpClient createHttpClient(final User user, final UUID clientId) {
+  private static CloseableHttpClient createHttpClient(final User user, final String clientTypeId, final UUID clientId) {
     final String authorizationHeader = BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes());
 
     return HttpClientBuilder.create()
             .setDefaultRequestConfig(REQUEST_CONFIG)
             .setConnectionManager(new PoolingHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
+              request.setHeader(CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(CLIENT_ID, clientId.toString());
               request.setHeader(AUTHORIZATION, authorizationHeader);
               request.setHeader(CONTENT_TYPE, APPLICATION_OCTET_STREAM);

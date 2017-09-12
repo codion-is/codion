@@ -43,11 +43,16 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
   String JAVAX_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
 
   /**
+   * Localhost
+   */
+  String LOCALHOST = "localhost";
+
+  /**
    * The host on which to locate the server<br>
    * Value type: String<br>
    * Default value: localhost
    */
-  Value<String> SERVER_HOST_NAME = Configuration.stringValue("jminor.server.hostname", "localhost");
+  Value<String> SERVER_HOST_NAME = Configuration.stringValue("jminor.server.hostname", LOCALHOST);
 
   /**
    * Specifies the rmi server hostname<br>
@@ -55,7 +60,7 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
    * Value type: String<br>
    * Default value: localhost
    */
-  Value<String> RMI_SERVER_HOSTNAME = Configuration.stringValue("java.rmi.server.hostname", "localhost");
+  Value<String> RMI_SERVER_HOSTNAME = Configuration.stringValue("java.rmi.server.hostname", LOCALHOST);
 
   /**
    * Specifies the prefix used when exporting/looking up the JMinor server<br>
@@ -142,7 +147,7 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
    * Value type: String<br>
    * Default value: localhost
    */
-  Value<String> WEB_SERVER_HOST_NAME = Configuration.stringValue("jminor.server.web.hostname", "localhost");
+  Value<String> WEB_SERVER_HOST_NAME = Configuration.stringValue("jminor.server.web.hostname", LOCALHOST);
 
   /**
    * The port on which the web server is made available to clients.<br>

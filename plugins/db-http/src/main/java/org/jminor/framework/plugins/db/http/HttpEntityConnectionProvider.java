@@ -24,6 +24,7 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
 
   private final String serverHostName;
   private final Integer serverPort;
+  private final String clientTypeId;
   private final UUID clientId;
 
   /**
@@ -32,13 +33,15 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    * @param serverHostName the server host name
    * @param serverPort the server port
    * @param user the user to use when initializing connections
+   * @param clientTypeId the client type id
    * @param clientId a UUID identifying the client
    */
   public HttpEntityConnectionProvider(final Entities entities, final String serverHostName, final Integer serverPort,
-                                      final User user, final UUID clientId) {
+                                      final User user, final String clientTypeId, final UUID clientId) {
     super(entities, user, false);
     this.serverHostName = Objects.requireNonNull(serverHostName, "serverHostName");
     this.serverPort = Objects.requireNonNull(serverPort, "serverPort");
+    this.clientTypeId = Objects.requireNonNull(clientTypeId, "clientTypeId");
     this.clientId = Objects.requireNonNull(clientId, "clientId");
   }
 
@@ -78,7 +81,8 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      return HttpEntityConnections.createConnection(getEntities(), serverHostName, serverPort, getUser(), clientId);
+      return HttpEntityConnections.createConnection(getEntities(), serverHostName, serverPort, getUser(),
+              clientTypeId, clientId);
     }
     catch (final Exception e) {
       throw new RuntimeException(e);

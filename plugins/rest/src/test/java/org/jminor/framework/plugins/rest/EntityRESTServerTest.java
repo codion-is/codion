@@ -45,6 +45,7 @@ import java.util.Scanner;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EntityRESTServerTest {
 
@@ -99,12 +100,14 @@ public class EntityRESTServerTest {
     assertEquals(401, response.getStatusLine().getStatusCode());
     client.close();
 
+    final String clientTypeId = "EntityRESTServerTest";
     //test with missing clientId header
     client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(new PoolingHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = UNIT_TEST_USER;
+              request.setHeader(EntityRESTService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityRESTService.AUTHORIZATION,
                       BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
@@ -126,6 +129,7 @@ public class EntityRESTServerTest {
             .setConnectionManager(new PoolingHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = new User("who", "areu");
+              request.setHeader(EntityRESTService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityRESTService.CLIENT_ID, clientId.toString());
               request.setHeader(EntityRESTService.AUTHORIZATION,
                       BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
@@ -145,6 +149,7 @@ public class EntityRESTServerTest {
             .setConnectionManager(new PoolingHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = UNIT_TEST_USER;
+              request.setHeader(EntityRESTService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityRESTService.CLIENT_ID, clientId.toString());
               request.setHeader(EntityRESTService.AUTHORIZATION,
                       BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
@@ -261,12 +266,18 @@ public class EntityRESTServerTest {
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
 
-    client.close();
-
-    final Collection<RemoteClient> clients = admin.getClients(EntityRESTService.class.getName());
+    Collection<RemoteClient> clients = admin.getClients(clientTypeId);
     assertEquals(1, clients.size());
 
-    admin.disconnect(clients.iterator().next().getClientId());
+    uriBuilder = createURIBuilder();
+    uriBuilder.setPath("disconnect")
+            .addParameter("domainId", domainId);
+    client.execute(new HttpGet(uriBuilder.build()));
+
+    client.close();
+
+    clients = admin.getClients(clientTypeId);
+    assertTrue(clients.isEmpty());
   }
 
   private static URIBuilder createURIBuilder() {

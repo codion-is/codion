@@ -51,7 +51,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<EntityConnectionPro
   @Override
   protected EntityConnectionProvider initializeApplication() throws CancelException {
     return new HttpEntityConnectionProvider(ENTITIES, Server.WEB_SERVER_HOST_NAME.get(), Server.WEB_SERVER_PORT.get(),
-            UNIT_TEST_USER, UUID.randomUUID());
+            UNIT_TEST_USER, "EmpDeptRESTLoadTest", UUID.randomUUID());
   }
 
   public static void main(final String[] args) throws Exception {

@@ -22,10 +22,11 @@ public final class HttpEntityConnections {
    * @param serverHostName the http server host name
    * @param serverPort the http server port
    * @param user the user
+   * @param clientTypeId the client type id
    * @param clientId the client id
    */
   public static EntityConnection createConnection(final Entities domain, final String serverHostName, final int serverPort,
-                                                  final User user, final UUID clientId) {
-    return new DefaultHttpEntityConnection(domain, serverHostName, serverPort, user, clientId);
+                                                  final User user, final String clientTypeId, final UUID clientId) {
+    return new HttpEntityConnection(domain, serverHostName, serverPort, user, clientTypeId, clientId);
   }
 }

@@ -4610,3 +4610,5 @@
   EntityRESTService assumes parameters are base64 encoded byte array, now uses EntityConditions, api simplified
   DefaultHttpEntityConnection, almost fully implemented
   DefaultHttpEntityConnection, EntityRESTService, exception handling improved, refactored
+  DefaultHttpEntityConnection renamed to HttpEntityConnection
+  EntityRESTService, clientTypeId is now a required header

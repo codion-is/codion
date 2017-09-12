@@ -57,6 +57,7 @@ public final class EntityRESTService extends Application {
   private static final Logger LOG = LoggerFactory.getLogger(EntityRESTService.class);
 
   public static final String AUTHORIZATION = "Authorization";
+  public static final String CLIENT_TYPE_ID = "clientTypeId";
   public static final String CLIENT_ID = "clientId";
 
   private static Server server;
@@ -484,6 +485,7 @@ public final class EntityRESTService extends Application {
       throw new IllegalStateException("EntityConnectionServer has not been set for REST service");
     }
 
+    final String clientTypeId = getClientTypeId(headers);
     final UUID clientId = getClientId(request, headers);
     final User user = getUser(headers);
     try {
@@ -492,7 +494,7 @@ public final class EntityRESTService extends Application {
       parameters.put(Server.CLIENT_HOST_KEY, request.getRemoteHost());
 
       return (RemoteEntityConnection) server.connect(Clients.connectionRequest(user, clientId,
-              EntityRESTService.class.getName(), parameters));
+              clientTypeId, parameters));
     }
     catch (final ServerException.AuthenticationException ae) {
       throw new WebApplicationException(ae, Response.Status.UNAUTHORIZED);
@@ -535,6 +537,15 @@ public final class EntityRESTService extends Application {
     }
 
     return clientId;
+  }
+
+  private static String getClientTypeId(final HttpHeaders headers) {
+    final List<String> clientTypeIdHeaders = headers.getRequestHeader(CLIENT_TYPE_ID);
+    if (Util.nullOrEmpty(clientTypeIdHeaders)) {
+      throw new WebApplicationException(CLIENT_TYPE_ID + " header parameter is missing", Response.Status.UNAUTHORIZED);
+    }
+
+    return clientTypeIdHeaders.get(0);
   }
 
   private static User getUser(final HttpHeaders headers) {

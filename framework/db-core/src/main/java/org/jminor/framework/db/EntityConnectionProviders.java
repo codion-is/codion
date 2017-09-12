@@ -77,7 +77,7 @@ public final class EntityConnectionProviders {
         case EntityConnectionProvider.CONNECTION_TYPE_REMOTE:
           return createRemoteConnectionProvider(entities, user, clientTypeId, clientId, clientVersion);
         case EntityConnectionProvider.CONNECTION_TYPE_HTTP:
-          return createHttpConnectionProvider(entities, user, clientId);
+          return createHttpConnectionProvider(entities, user, clientTypeId, clientId);
         case EntityConnectionProvider.CONNECTION_TYPE_LOCAL:
           return createLocalConnectionProvider(entities, user);
         default:
@@ -112,15 +112,15 @@ public final class EntityConnectionProviders {
   }
 
   private static EntityConnectionProvider createHttpConnectionProvider(final Entities entities, final User user,
-                                                                       final UUID clientId)
+                                                                       final String clientTypeId, final UUID clientId)
           throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
           InvocationTargetException, InstantiationException {
     final String serverHostName = Server.WEB_SERVER_HOST_NAME.get();
     final Integer serverPort = Server.WEB_SERVER_PORT.get();
 
     return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.HTTP_CONNECTION_PROVIDER.get()).getConstructor(
-            Entities.class, String.class, Integer.class, User.class, UUID.class)
-            .newInstance(entities, serverHostName, serverPort, user, clientId);
+            Entities.class, String.class, Integer.class, User.class, String.class, UUID.class)
+            .newInstance(entities, serverHostName, serverPort, user, clientTypeId, clientId);
   }
 
   private static EntityConnectionProvider createLocalConnectionProvider(final Entities entities, final User user)
