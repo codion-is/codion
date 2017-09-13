@@ -4612,3 +4612,4 @@
   DefaultHttpEntityConnection, EntityRESTService, exception handling improved, refactored
   DefaultHttpEntityConnection renamed to HttpEntityConnection
   EntityRESTService, clientTypeId is now a required header
+  HttpEntityConnection and EntityRESTService no longer wrap parameters and results in a List

@@ -117,7 +117,7 @@ public class EntityRESTServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.addParameter("domainId", domainId)
             .addParameter("condition",
-                    Util.serializeAndBase64Encode(Collections.singletonList(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT))));
+                    Util.serializeAndBase64Encode(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT)));
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(401, response.getStatusLine().getStatusCode());
     client.close();
@@ -139,7 +139,7 @@ public class EntityRESTServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.addParameter("domainId", domainId)
             .addParameter("condition",
-                    Util.serializeAndBase64Encode(Collections.singletonList(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT))));
+                    Util.serializeAndBase64Encode(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT)));
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(401, response.getStatusLine().getStatusCode());
     client.close();
@@ -161,10 +161,10 @@ public class EntityRESTServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.addParameter("domainId", domainId)
             .addParameter("condition",
-                    Util.serializeAndBase64Encode(Collections.singletonList(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT))));
+                    Util.serializeAndBase64Encode(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT)));
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
-    String queryResult = getContentStream(response.getEntity());
+    String queryResult = getStringContent(response.getEntity());
     List<Entity> queryEntities = Util.base64DecodeAndDeserialize(queryResult);
     assertEquals(4, queryEntities.size());
 
@@ -180,7 +180,7 @@ public class EntityRESTServerTest {
             .addParameter("entities", Util.serializeAndBase64Encode(Collections.singletonList(department)));
     response = client.execute(new HttpPost(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
-    queryResult = getContentStream(response.getEntity());
+    queryResult = getStringContent(response.getEntity());
     final List<Entity.Key> queryKeys = Util.base64DecodeAndDeserialize(queryResult);
     assertEquals(1, queryKeys.size());
     assertEquals(department.getKey(), queryKeys.get(0));
@@ -189,9 +189,9 @@ public class EntityRESTServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.addParameter("domainId", domainId)
             .addParameter("condition",
-                    Util.serializeAndBase64Encode(Collections.singletonList(CONDITIONS.selectCondition(department.getKey()))));
+                    Util.serializeAndBase64Encode(CONDITIONS.selectCondition(department.getKey())));
     response = client.execute(new HttpDelete(uriBuilder.build()));
-    queryResult = getContentStream(response.getEntity());
+    queryResult = getStringContent(response.getEntity());
 
     //insert/PUT
     uriBuilder = createURIBuilder();
@@ -199,7 +199,7 @@ public class EntityRESTServerTest {
             .addParameter("entities", Util.serializeAndBase64Encode(Collections.singletonList(department)));
     response = client.execute(new HttpPut(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
-    queryResult = getContentStream(response.getEntity());
+    queryResult = getStringContent(response.getEntity());
     queryEntities = Util.base64DecodeAndDeserialize(queryResult);
     assertEquals(1, queryEntities.size());
     assertEquals(department, queryEntities.get(0));
@@ -213,7 +213,7 @@ public class EntityRESTServerTest {
             .addParameter("entities", Util.serializeAndBase64Encode(Collections.singletonList(department)));
     response = client.execute(new HttpPut(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
-    queryResult = getContentStream(response.getEntity());
+    queryResult = getStringContent(response.getEntity());
     queryEntities = Util.base64DecodeAndDeserialize(queryResult);
     assertEquals(1, queryEntities.size());
     assertEquals(department, queryEntities.get(0));
@@ -222,11 +222,11 @@ public class EntityRESTServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.addParameter("domainId", domainId)
             .addParameter("condition",
-                    Util.serializeAndBase64Encode(Collections.singletonList(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
-                            TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "New name"))));
+                    Util.serializeAndBase64Encode(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
+                            TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "New name")));
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
-    queryResult = getContentStream(response.getEntity());
+    queryResult = getStringContent(response.getEntity());
     queryEntities = Util.base64DecodeAndDeserialize(queryResult);
     assertEquals(1, queryEntities.size());
 
@@ -234,10 +234,10 @@ public class EntityRESTServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.addParameter("domainId", domainId)
             .addParameter("condition",
-                    Util.serializeAndBase64Encode(Collections.singletonList(CONDITIONS.selectCondition(department.getKey()))));
+                    Util.serializeAndBase64Encode(CONDITIONS.selectCondition(department.getKey())));
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
-    queryResult = getContentStream(response.getEntity());
+    queryResult = getStringContent(response.getEntity());
     queryEntities = Util.base64DecodeAndDeserialize(queryResult);
     assertEquals(1, queryEntities.size());
 
@@ -245,8 +245,8 @@ public class EntityRESTServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.addParameter("domainId", domainId)
             .addParameter("condition",
-                    Util.serializeAndBase64Encode(Collections.singletonList(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
-                            TestDomain.DEPARTMENT_ID, Condition.Type.LIKE, -42))));
+                    Util.serializeAndBase64Encode(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
+                            TestDomain.DEPARTMENT_ID, Condition.Type.LIKE, -42)));
     response = client.execute(new HttpDelete(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
 
@@ -287,17 +287,15 @@ public class EntityRESTServerTest {
     return builder;
   }
 
-  private static String getContentStream(final HttpEntity entity) throws IOException {
+  private static String getStringContent(final HttpEntity entity) throws IOException {
     Scanner scanner = null;
     try (final InputStream stream = entity.getContent()) {
       scanner = new Scanner(stream).useDelimiter("\\A");
 
-      return scanner.hasNext() ? scanner.next() : "";
+      return scanner.hasNext() ? scanner.next() : null;
     }
     finally {
-      if (scanner != null) {
-        scanner.close();
-      }
+      Util.closeSilently(scanner);
       EntityUtils.consume(entity);
     }
   }

@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -36,6 +35,8 @@ public class Util {
 
   private static final int K = 1024;
   private static final int TEN = 10;
+  private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+
 
   /**
    * The line separator for the current system
@@ -268,62 +269,60 @@ public class Util {
   }
 
   /**
-   * Serializes the given objects and base64 encodes the resulting byte array
-   * @param objects the objects to serialize
+   * Serializes the given object and base64 encodes the resulting byte array
+   * @param object the object to serialize
    * @param <T> the value type
-   * @return a base64 encoded string
+   * @return a base64 encoded string, null in case of null input
    * @throws IOException in case of an exeption
    */
-  public static <T> String serializeAndBase64Encode(final List<T> objects) throws IOException {
-    return Base64.getEncoder().encodeToString(serialize(objects));
+  public static <T> String serializeAndBase64Encode(final T object) throws IOException {
+    return object == null ? null : Base64.getEncoder().encodeToString(serialize(object));
   }
 
   /**
    * Base64 decodes the given string and deserializes the resulting byte array
    * @param base64Binary the base64 encoded binary string
    * @param <T> the value type
-   * @return deserialized Objects
+   * @return the deserialized Object, null in case of null input
    * @throws IOException in case of an exeption
    */
-  public static <T> List<T> base64DecodeAndDeserialize(final String base64Binary) throws IOException, ClassNotFoundException {
-    return deserialize(Base64.getDecoder().decode(base64Binary));
+  public static <T> T base64DecodeAndDeserialize(final String base64Binary) throws IOException, ClassNotFoundException {
+    return base64Binary == null ? null : deserialize(Base64.getDecoder().decode(base64Binary));
   }
 
   /**
-   * Serializes the given Objects
-   * @param objects the objects
-   * @return a byte array representing the serialized objects
+   * Serializes the given Object, null object results in an empty byte array
+   * @param object the object
+   * @return a byte array representing the serialized object, an empty byte array in case of null
    * @throws IOException in case of an exception
    */
-  public static byte[] serialize(final List objects) throws IOException {
-    final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    final ObjectOutputStream outputStream = new ObjectOutputStream(byteArrayOutputStream);
-    for (final Object obj : objects) {
-      outputStream.writeObject(obj);
-    }
+  public static byte[] serialize(final Object object) throws IOException {
+    if (object != null) {
+      final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+      new ObjectOutputStream(byteArrayOutputStream).writeObject(object);
 
-    return byteArrayOutputStream.toByteArray();
+      return byteArrayOutputStream.toByteArray();
+    }
+    
+    return EMPTY_BYTE_ARRAY;
   }
 
   /**
-   * Deserializes the given byte array into a list of T
-   * @param bytes a byte array representing the serialized objects
+   * Deserializes the given byte array into a list of T, null or an empty byte array result in a null return value
+   * @param bytes a byte array representing the serialized object
    * @param <T> the type of objects represented in the byte array
    * @return the deserialized objects
    * @throws IOException in case of an exception
    * @throws ClassNotFoundException in case the deserialized class is not found
    */
-  public static <T> List<T> deserialize(final byte[] bytes) throws IOException, ClassNotFoundException {
-    final ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
-    final List<T> result = new ArrayList<>();
-    try {
-      while (true) {
-        result.add((T) inputStream.readObject());
-      }
-    }
-    catch (final EOFException ignored) {/*done*/}
+  public static <T> T deserialize(final byte[] bytes) throws IOException, ClassNotFoundException {
+    if (bytes != null && bytes.length > 0) {
+      final ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
 
-    return result;
+      return (T) inputStream.readObject();
+    }
+
+    return null;
   }
 
   /**

@@ -102,9 +102,7 @@ public final class EntityRESTService extends Application {
                                     @QueryParam("domainId") final String domainId) {
     final RemoteEntityConnection connection = authenticate(request, headers, domainId);
     try {
-      final Boolean transactionOpen = connection.isTransactionOpen();
-
-      return Response.ok(Util.serializeAndBase64Encode(Collections.singletonList(transactionOpen))).build();
+      return Response.ok(Util.serializeAndBase64Encode(connection.isTransactionOpen())).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -264,10 +262,10 @@ public final class EntityRESTService extends Application {
                          @QueryParam("reportWrapper") final String reportWrapper) {
     final RemoteEntityConnection connection = authenticate(request, headers, domainId);
     try {
-      final List<ReportWrapper> wrapperList = Util.base64DecodeAndDeserialize(reportWrapper);
-      final ReportResult result = connection.fillReport(wrapperList.get(0));
+      final ReportWrapper wrapper = Util.base64DecodeAndDeserialize(reportWrapper);
+      final ReportResult result = connection.fillReport(wrapper);
 
-      return Response.ok(Util.serializeAndBase64Encode(Collections.singletonList(result))).build();
+      return Response.ok(Util.serializeAndBase64Encode(result)).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -295,7 +293,7 @@ public final class EntityRESTService extends Application {
       final List<Entity> entityList = Util.base64DecodeAndDeserialize(entities);
       final Map<String, Collection<Entity>> dependencies = connection.selectDependentEntities(entityList);
 
-      return Response.ok(Util.serializeAndBase64Encode(Collections.singletonList(dependencies))).build();
+      return Response.ok(Util.serializeAndBase64Encode(dependencies)).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -320,10 +318,9 @@ public final class EntityRESTService extends Application {
                         @QueryParam("condition") final String condition) {
     final RemoteEntityConnection connection = authenticate(request, headers, domainId);
     try {
-      final List<EntitySelectCondition> selectConditions = Util.base64DecodeAndDeserialize(condition);
-      final Integer rowCount = connection.selectRowCount(selectConditions.get(0));
+      final EntityCondition entityCondition = Util.base64DecodeAndDeserialize(condition);
 
-      return Response.ok(Util.serializeAndBase64Encode(Collections.singletonList(rowCount))).build();
+      return Response.ok(Util.serializeAndBase64Encode(connection.selectRowCount(entityCondition))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -350,8 +347,8 @@ public final class EntityRESTService extends Application {
                          @QueryParam("condition") final String condition) {
     final RemoteEntityConnection connection = authenticate(request, headers, domainId);
     try {
-      final List<EntitySelectCondition> selectConditions = Util.base64DecodeAndDeserialize(condition);
-      final List values = connection.selectValues(propertyId, selectConditions.get(0));
+      final EntityCondition entityCondition = Util.base64DecodeAndDeserialize(condition);
+      final List values = connection.selectValues(propertyId, entityCondition);
 
       return Response.ok(Util.serializeAndBase64Encode(values)).build();
     }
@@ -380,9 +377,9 @@ public final class EntityRESTService extends Application {
       if (condition == null) {
         return Response.ok(Util.serializeAndBase64Encode(Collections.emptyList())).build();
       }
-      final List<EntitySelectCondition> selectConditions = Util.base64DecodeAndDeserialize(condition);
+      final EntitySelectCondition selectCondition = Util.base64DecodeAndDeserialize(condition);
 
-      return Response.ok(Util.serializeAndBase64Encode(connection.selectMany(selectConditions.get(0)))).build();
+      return Response.ok(Util.serializeAndBase64Encode(connection.selectMany(selectCondition))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -468,8 +465,8 @@ public final class EntityRESTService extends Application {
                          @QueryParam("condition") final String condition) {
     final RemoteEntityConnection connection = authenticate(request, headers, domainId);
     try {
-      final List<EntityCondition> conditions = Util.base64DecodeAndDeserialize(condition);
-      connection.delete(conditions.get(0));
+      final EntityCondition entityCondition = Util.base64DecodeAndDeserialize(condition);
+      connection.delete(entityCondition);
 
       return Response.ok().build();
     }
@@ -511,8 +508,7 @@ public final class EntityRESTService extends Application {
 
   private static Response getExceptionResponse(final Exception exeption) {
     try {
-      return Response.serverError().entity(Util.serializeAndBase64Encode(
-              Collections.singletonList(exeption))).build();
+      return Response.serverError().entity(Util.serializeAndBase64Encode(exeption)).build();
     }
     catch (final IOException e) {
       LOG.error(e.getMessage(), e);

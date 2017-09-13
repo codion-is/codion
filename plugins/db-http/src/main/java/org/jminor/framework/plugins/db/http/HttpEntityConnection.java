@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
@@ -146,9 +145,8 @@ final class HttpEntityConnection implements EntityConnection {
   public boolean isTransactionOpen() {
     try {
       final HttpResponse response = executeGet("isTransactionOpen");
-      final List result = Util.base64DecodeAndDeserialize(getContentStream(response.getEntity()));
 
-      return (boolean) result.get(0);
+      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -207,10 +205,9 @@ final class HttpEntityConnection implements EntityConnection {
     try {
       final HttpResponse response = executeOperation("function", FUNCTION_ID_PARAM, functionId, arguments);
 
-      return Util.base64DecodeAndDeserialize(getContentStream(response.getEntity()));
+      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
     }
     catch (final DatabaseException e) {
-      LOG.error(e.getMessage(), e);
       throw e;
     }
     catch (final Exception e) {
@@ -226,7 +223,6 @@ final class HttpEntityConnection implements EntityConnection {
       executeOperation("procedure", PROCEDURE_ID_PARAM, procedureId, arguments);
     }
     catch (final DatabaseException e) {
-      LOG.error(e.getMessage(), e);
       throw e;
     }
     catch (final Exception e) {
@@ -245,10 +241,9 @@ final class HttpEntityConnection implements EntityConnection {
       final HttpResponse response = httpClient.execute(new HttpPost(builder.build()));
       ifExceptionThrow(response);
 
-      return Util.base64DecodeAndDeserialize(getContentStream(response.getEntity()));
+      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
     }
     catch (final DatabaseException e) {
-      LOG.error(e.getMessage(), e);
       throw e;
     }
     catch (final Exception e) {
@@ -267,10 +262,9 @@ final class HttpEntityConnection implements EntityConnection {
       final HttpResponse response = httpClient.execute(new HttpPut(builder.build()));
       ifExceptionThrow(response);
 
-      return Util.base64DecodeAndDeserialize(getContentStream(response.getEntity()));
+      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
     }
     catch (final DatabaseException e) {
-      LOG.error(e.getMessage(), e);
       throw e;
     }
     catch (final Exception e) {
@@ -291,12 +285,11 @@ final class HttpEntityConnection implements EntityConnection {
     try {
       final URIBuilder builder = createURIBuilder();
       builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(Collections.singletonList(condition)));
+              .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(condition));
       final HttpResponse response  = httpClient.execute(new HttpDelete(builder.build()));
       ifExceptionThrow(response);
     }
     catch (final DatabaseException e) {
-      LOG.error(e.getMessage(), e);
       throw e;
     }
     catch (final Exception e) {
@@ -313,14 +306,13 @@ final class HttpEntityConnection implements EntityConnection {
       builder.setPath("values")
               .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
               .addParameter(PROPERTY_ID_PARAM, propertyId)
-              .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(Collections.singletonList(condition)));
+              .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(condition));
       final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
       ifExceptionThrow(response);
 
-      return Util.base64DecodeAndDeserialize(getContentStream(response.getEntity()));
+      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
     }
     catch (final DatabaseException e) {
-      LOG.error(e.getMessage(), e);
       throw e;
     }
     catch (final Exception e) {
@@ -367,14 +359,13 @@ final class HttpEntityConnection implements EntityConnection {
     try {
       final URIBuilder builder = createURIBuilder();
       builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(Collections.singletonList(condition)));
+              .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(condition));
       final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
       ifExceptionThrow(response);
 
-      return Util.base64DecodeAndDeserialize(getContentStream(response.getEntity()));
+      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
     }
     catch (final DatabaseException e) {
-      LOG.error(e.getMessage(), e);
       throw e;
     }
     catch (final Exception e) {
@@ -397,21 +388,13 @@ final class HttpEntityConnection implements EntityConnection {
       final URIBuilder builder = createURIBuilder();
       builder.setPath("dependencies")
               .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(ENTITIES_PARAM, Util.serializeAndBase64Encode(new ArrayList<>(entities)));
+              .addParameter(ENTITIES_PARAM, Util.serializeAndBase64Encode(entities));
       final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
       ifExceptionThrow(response);
 
-      final List<Map<String, Collection<Entity>>> dependencies =
-              Util.<Map<String, Collection<Entity>>>base64DecodeAndDeserialize(getContentStream(response.getEntity()));
-
-      if (dependencies.isEmpty()) {
-        return Collections.emptyMap();
-      }
-
-      return dependencies.get(0);
+      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
     }
     catch (final DatabaseException e) {
-      LOG.error(e.getMessage(), e);
       throw e;
     }
     catch (final Exception e) {
@@ -427,14 +410,13 @@ final class HttpEntityConnection implements EntityConnection {
       final URIBuilder builder = createURIBuilder();
       builder.setPath("count")
               .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(Collections.singletonList(condition)));
+              .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(condition));
       final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
       ifExceptionThrow(response);
 
-      return Util.<Integer>base64DecodeAndDeserialize(getContentStream(response.getEntity())).get(0);
+      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
     }
     catch (final DatabaseException e) {
-      LOG.error(e.getMessage(), e);
       throw e;
     }
     catch (final Exception e) {
@@ -450,14 +432,13 @@ final class HttpEntityConnection implements EntityConnection {
       final URIBuilder builder = createURIBuilder();
       builder.setPath("report")
               .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(REPORT_WRAPPER_PARAM, Util.serializeAndBase64Encode(Collections.singletonList(reportWrapper)));
+              .addParameter(REPORT_WRAPPER_PARAM, Util.serializeAndBase64Encode(reportWrapper));
       final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
       ifExceptionThrow(response);
 
-      return Util.<ReportResult>base64DecodeAndDeserialize(getContentStream(response.getEntity())).get(0);
+      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
     }
     catch (final ReportException | DatabaseException e) {
-      LOG.error(e.getMessage(), e);
       throw e;
     }
     catch (final Exception e) {
@@ -511,27 +492,19 @@ final class HttpEntityConnection implements EntityConnection {
 
   private static void ifExceptionThrow(final HttpResponse response) throws Exception {
     if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-      final List<Exception> exceptionList = Util.base64DecodeAndDeserialize(
-              getContentStream(response.getEntity()));
-      if (!exceptionList.isEmpty()) {
-        throw exceptionList.get(0);
-      }
-
-      throw new Exception("Error from server: " + getContentStream(response.getEntity()));
+      throw Util.<Exception>base64DecodeAndDeserialize(getStringContent(response.getEntity()));
     }
   }
 
-  private static String getContentStream(final HttpEntity entity) throws IOException {
+  private static String getStringContent(final HttpEntity entity) throws IOException {
     Scanner scanner = null;
     try (final InputStream stream = entity.getContent()) {
       scanner = new Scanner(stream).useDelimiter("\\A");
 
-      return scanner.hasNext() ? scanner.next() : "";
+      return scanner.hasNext() ? scanner.next() : null;
     }
     finally {
-      if (scanner != null) {
-        scanner.close();
-      }
+      Util.closeSilently(scanner);
       EntityUtils.consume(entity);
     }
   }
