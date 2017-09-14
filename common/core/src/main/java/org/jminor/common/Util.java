@@ -271,11 +271,10 @@ public class Util {
   /**
    * Serializes the given object and base64 encodes the resulting byte array
    * @param object the object to serialize
-   * @param <T> the value type
    * @return a base64 encoded string, null in case of null input
    * @throws IOException in case of an exeption
    */
-  public static <T> String serializeAndBase64Encode(final T object) throws IOException {
+  public static String serializeAndBase64Encode(final Object object) throws IOException {
     return object == null ? null : Base64.getEncoder().encodeToString(serialize(object));
   }
 
@@ -285,6 +284,7 @@ public class Util {
    * @param <T> the value type
    * @return the deserialized Object, null in case of null input
    * @throws IOException in case of an exeption
+   * @throws ClassNotFoundException in case the deserialized class is not found
    */
   public static <T> T base64DecodeAndDeserialize(final String base64Binary) throws IOException, ClassNotFoundException {
     return base64Binary == null ? null : deserialize(Base64.getDecoder().decode(base64Binary));

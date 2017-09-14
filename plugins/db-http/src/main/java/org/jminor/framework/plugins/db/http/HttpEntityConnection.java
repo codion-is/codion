@@ -46,6 +46,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -202,6 +203,7 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public List executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
+    Objects.requireNonNull(functionId);
     try {
       final HttpResponse response = executeOperation("function", FUNCTION_ID_PARAM, functionId, arguments);
 
@@ -219,6 +221,7 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public void executeProcedure(final String procedureId, final Object... arguments) throws DatabaseException {
+    Objects.requireNonNull(procedureId);
     try {
       executeOperation("procedure", PROCEDURE_ID_PARAM, procedureId, arguments);
     }
@@ -234,6 +237,7 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
+    Objects.requireNonNull(entities);
     try {
       final URIBuilder builder = createURIBuilder();
       builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
@@ -255,6 +259,7 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity> update(final List<Entity> entities) throws DatabaseException {
+    Objects.requireNonNull(entities);
     try {
       final URIBuilder builder = createURIBuilder();
       builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
@@ -276,12 +281,13 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public void delete(final List<Entity.Key> keys) throws DatabaseException {
-    delete(conditions.condition(keys));
+    delete(conditions.condition(Objects.requireNonNull(keys)));
   }
 
   /** {@inheritDoc} */
   @Override
   public void delete(final EntityCondition condition) throws DatabaseException {
+    Objects.requireNonNull(condition);
     try {
       final URIBuilder builder = createURIBuilder();
       builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
@@ -301,6 +307,8 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Object> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
+    Objects.requireNonNull(propertyId);
+    Objects.requireNonNull(condition);
     try {
       final URIBuilder builder = createURIBuilder();
       builder.setPath("values")
@@ -356,6 +364,7 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity> selectMany(final EntitySelectCondition condition) throws DatabaseException {
+    Objects.requireNonNull(condition, "condition");
     try {
       final URIBuilder builder = createURIBuilder();
       builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
@@ -384,6 +393,7 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException {
+    Objects.requireNonNull(entities, "entities");
     try {
       final URIBuilder builder = createURIBuilder();
       builder.setPath("dependencies")
@@ -406,6 +416,7 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public int selectRowCount(final EntityCondition condition) throws DatabaseException {
+    Objects.requireNonNull(condition);
     try {
       final URIBuilder builder = createURIBuilder();
       builder.setPath("count")
@@ -428,6 +439,7 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public ReportResult fillReport(final ReportWrapper reportWrapper) throws DatabaseException, ReportException {
+    Objects.requireNonNull(reportWrapper, "reportWrapper");
     try {
       final URIBuilder builder = createURIBuilder();
       builder.setPath("report")

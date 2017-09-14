@@ -4,6 +4,7 @@
 package org.jminor.framework.db.condition;
 
 import org.jminor.common.Conjunction;
+import org.jminor.common.Util;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.condition.Conditions;
 import org.jminor.framework.domain.Entities;
@@ -38,14 +39,16 @@ public final class EntityConditions {
   /**
    * @param entities the domain entities
    */
-  public EntityConditions(final Entities entities) {this.entities = entities;}
+  public EntityConditions(final Entities entities) {
+    this.entities = Objects.requireNonNull(entities, "entities");
+  }
 
   /**
    * @param key the key
    * @return a select condition based on the given key
    */
   public EntitySelectCondition selectCondition(final Entity.Key key) {
-    return selectCondition(Collections.singletonList(key));
+    return selectCondition(Collections.singletonList(Objects.requireNonNull(key, "key")));
   }
 
   /**
@@ -227,6 +230,9 @@ public final class EntityConditions {
   public Condition<Property.ColumnProperty> propertyCondition(final String entityId, final String propertyId,
                                                               final Condition.Type conditionType, final boolean caseSensitive,
                                                               final Object value) {
+    Objects.requireNonNull(entityId, "entityId");
+    Objects.requireNonNull(propertyId, "propertyId");
+    Objects.requireNonNull(conditionType, "conditionType");
     final Property property = entities.getProperty(entityId, propertyId);
     if (property instanceof Property.ForeignKeyProperty) {
       if (value instanceof Collection) {
@@ -332,6 +338,8 @@ public final class EntityConditions {
    */
   public Condition<Property.ColumnProperty> foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
                                                                 final Condition.Type conditionType, final Collection values) {
+    Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
+    Objects.requireNonNull(conditionType, "conditionType");
     final List<Entity.Key> keys = getEntityKeys(values);
     if (foreignKeyProperty.isCompositeKey()) {
       return createCompositeKeyCondition(foreignKeyProperty.getProperties(),
@@ -426,8 +434,7 @@ public final class EntityConditions {
   }
 
   private static void checkKeysParameter(final Collection<Entity.Key> keys) {
-    Objects.requireNonNull(keys, "keys");
-    if (keys.isEmpty()) {
+    if (Util.nullOrEmpty(keys)) {
       throw new IllegalArgumentException("Entity key condition requires at least one key");
     }
   }
@@ -458,8 +465,7 @@ public final class EntityConditions {
      * @see EntityKeyCondition
      */
     private DefaultEntityCondition(final String entityId, final Condition<Property.ColumnProperty> condition) {
-      Objects.requireNonNull(entityId, "entityId");
-      this.entityId = entityId;
+      this.entityId = Objects.requireNonNull(entityId, "entityId");
       this.condition = condition;
     }
 
@@ -549,7 +555,7 @@ public final class EntityConditions {
      */
     private DefaultEntitySelectCondition(final Entities entities, final String entityId,
                                          final Condition<Property.ColumnProperty> condition, final int fetchCount) {
-      this.entities = entities;
+      this.entities = Objects.requireNonNull(entities);
       this.condition = new DefaultEntityCondition(entityId, condition);
       this.fetchCount = fetchCount;
     }

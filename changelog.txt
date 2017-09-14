@@ -4613,3 +4613,5 @@
   DefaultHttpEntityConnection renamed to HttpEntityConnection
   EntityRESTService, clientTypeId is now a required header
   HttpEntityConnection and EntityRESTService no longer wrap parameters and results in a List
+  Util.serializeAndBase64Encode() removed superfluous generic parameter
+  HttpEntityConnection and EntityConditions, added a few null checks
