@@ -6,9 +6,9 @@ package org.jminor.common.server.http;
 import org.jminor.common.Configuration;
 import org.jminor.common.Util;
 import org.jminor.common.Value;
+import org.jminor.common.server.Server;
 
 import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.slf4j.Logger;
@@ -17,12 +17,12 @@ import org.slf4j.LoggerFactory;
 /**
  * A simple Jetty based http file server
  */
-public class HttpServer extends Server implements org.jminor.common.server.Server.AuxiliaryServer {
+public class HttpServer extends org.eclipse.jetty.server.Server implements Server.AuxiliaryServer {
 
   private static final Logger LOG = LoggerFactory.getLogger(HttpServer.class);
 
   /**
-   * The host on which to locate the web server<br>
+   * The host on which to locate the http server<br>
    * Value type: String<br>
    * Default value: localhost
    */
@@ -30,7 +30,7 @@ public class HttpServer extends Server implements org.jminor.common.server.Serve
           org.jminor.common.server.Server.LOCALHOST);
 
   /**
-   * The port on which the web server is made available to clients.<br>
+   * The port on which the http server is made available to clients.<br>
    * Value type: Integer<br>
    * Default value: 8080
    */
@@ -41,33 +41,33 @@ public class HttpServer extends Server implements org.jminor.common.server.Serve
    * Value type: String<br>
    * Default value: null
    */
-  public static final Value<String> DOCUMENT_ROOT = Configuration.stringValue("jminor.server.web.documentRoot", null);
+  public static final Value<String> DOCUMENT_ROOT = Configuration.stringValue("jminor.server.http.documentRoot", null);
 
-  private final org.jminor.common.server.Server connectionServer;
+  private final Server connectionServer;
   private final HandlerList handlers;
 
   /**
-   * Instantiates a new JettyServer on the given port.
+   * Instantiates a new HttpServer on the given port.
    * @param connectionServer the Server serving the connection requests
    */
-  public HttpServer(final org.jminor.common.server.Server connectionServer) {
+  public HttpServer(final Server connectionServer) {
     this(connectionServer, DOCUMENT_ROOT.get(), HTTP_SERVER_PORT.get());
   }
 
   /**
-   * Instantiates a new JettyServer on the given port.
+   * Instantiates a new HttpServer on the given port.
    * @param connectionServer the Server serving the connection requests
    * @param documentRoot the document root, null to disable file serving
    * @param port the port on which to serve
    */
-  public HttpServer(final org.jminor.common.server.Server connectionServer, final String documentRoot, final Integer port) {
+  public HttpServer(final Server connectionServer, final String documentRoot, final Integer port) {
     super(port);
     LOG.info(getClass().getSimpleName() + " created on port: " + port);
     this.connectionServer = connectionServer;
     this.handlers = new HandlerList();
     setHandler(handlers);
     if (!Util.nullOrEmpty(documentRoot)) {
-      LOG.info("JettyServer serving files from: " + documentRoot);
+      LOG.info("HttpServer serving files from: " + documentRoot);
       final ResourceHandler fileHandler = new ResourceHandler();
       fileHandler.setResourceBase(documentRoot);
       addHandler(fileHandler);
@@ -90,7 +90,7 @@ public class HttpServer extends Server implements org.jminor.common.server.Serve
   }
 
   /**
-   * Adds a handler to this Jetty server
+   * Adds a handler to this http server
    * @param handler the handler to add
    */
   protected final void addHandler(final Handler handler) {
@@ -99,9 +99,9 @@ public class HttpServer extends Server implements org.jminor.common.server.Serve
   }
 
   /**
-   * @return the {@link org.jminor.common.server.Server} this Jetty server is associated with
+   * @return the {@link Server} this http server is running alongside
    */
-  protected final org.jminor.common.server.Server getConnectionServer() {
+  protected final Server getConnectionServer() {
     return connectionServer;
   }
 }
