@@ -77,6 +77,7 @@ public final class EntityRESTService extends Application {
                              @QueryParam("domainId") final String domainId) {
     final RemoteEntityConnection connection = authenticate(request, headers, domainId);
     try {
+      request.getSession().invalidate();
       connection.disconnect();
 
       return Response.ok().build();
@@ -523,13 +524,14 @@ public final class EntityRESTService extends Application {
     }
     final UUID clientId = UUID.fromString(clientIdHeaders.get(0));
     final HttpSession session = request.getSession();
-    final UUID sessionClientId = (UUID) session.getAttribute(CLIENT_ID);
-    if (sessionClientId == null) {
+    if (session.isNew()) {
       session.setAttribute(CLIENT_ID, clientId);
     }
-    else if (!clientId.equals(sessionClientId)) {
-      session.invalidate();
-      session.setAttribute(CLIENT_ID, clientId);
+    else {
+      final UUID sessionClientId = (UUID) session.getAttribute(CLIENT_ID);
+      if (sessionClientId == null || !sessionClientId.equals(clientId)) {
+        throw new WebApplicationException(CLIENT_ID + " invalid", Response.Status.UNAUTHORIZED);
+      }
     }
 
     return clientId;

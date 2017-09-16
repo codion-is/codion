@@ -23,17 +23,19 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,8 +84,10 @@ final class HttpEntityConnection implements EntityConnection {
   private final EntityConditions conditions;
   private final User user;
   private final String baseurl;
+  private final HttpClientConnectionManager connectionManager = new BasicHttpClientConnectionManager();
+  private final CloseableHttpClient httpClient;
 
-  private CloseableHttpClient httpClient;
+  private boolean closed;
 
   /**
    * Instantiates a new {@link HttpEntityConnection} instance
@@ -100,7 +104,7 @@ final class HttpEntityConnection implements EntityConnection {
     this.conditions = new EntityConditions(domain);
     this.user = user;
     this.baseurl =  serverHostName + ":" + serverPort + "/entities/";
-    this.httpClient = createHttpClient(user, clientTypeId, clientId);
+    this.httpClient = createHttpClient(clientTypeId, clientId);
   }
 
   /** {@inheritDoc} */
@@ -124,20 +128,25 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public boolean isConnected() {
-    return httpClient != null;
+    return !closed;
   }
 
   /** {@inheritDoc} */
   @Override
   public void disconnect() {
+    CloseableHttpResponse response = null;
     try {
-      executeGet("disconnect");
+      response = executeGet("disconnect");
+      connectionManager.shutdown();
       httpClient.close();
-      httpClient = null;
+      closed = true;
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
+    }
+    finally {
+      Util.closeSilently(response);
     }
   }
 
@@ -145,9 +154,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public boolean isTransactionOpen() {
     try {
-      final HttpResponse response = executeGet("isTransactionOpen");
-
-      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
+      return getAndCloseResponse(executeGet("isTransactionOpen"));
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -159,7 +166,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public void beginTransaction() {
     try {
-      executeGet("beginTransaction");
+      executeGetAndClose("beginTransaction");
     }
     catch (final RuntimeException e) {
       throw e;
@@ -174,7 +181,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public void rollbackTransaction() {
     try {
-      executeGet("rollbackTransaction");
+      executeGetAndClose("rollbackTransaction");
     }
     catch (final RuntimeException e) {
       throw e;
@@ -189,7 +196,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public void commitTransaction() {
     try {
-      executeGet("commitTransaction");
+      executeGetAndClose("commitTransaction");
     }
     catch (final RuntimeException e) {
       throw e;
@@ -205,9 +212,7 @@ final class HttpEntityConnection implements EntityConnection {
   public List executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
     Objects.requireNonNull(functionId);
     try {
-      final HttpResponse response = executeOperation("function", FUNCTION_ID_PARAM, functionId, arguments);
-
-      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
+      return getAndCloseResponse(executeOperation("function", FUNCTION_ID_PARAM, functionId, arguments));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -223,7 +228,7 @@ final class HttpEntityConnection implements EntityConnection {
   public void executeProcedure(final String procedureId, final Object... arguments) throws DatabaseException {
     Objects.requireNonNull(procedureId);
     try {
-      executeOperation("procedure", PROCEDURE_ID_PARAM, procedureId, arguments);
+      getAndCloseResponse(executeOperation("procedure", PROCEDURE_ID_PARAM, procedureId, arguments));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -239,13 +244,12 @@ final class HttpEntityConnection implements EntityConnection {
   public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
-      final URIBuilder builder = createURIBuilder();
-      builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(ENTITIES_PARAM, Util.serializeAndBase64Encode(entities));
-      final HttpResponse response = httpClient.execute(new HttpPost(builder.build()));
-      ifExceptionThrow(response);
+      final CloseableHttpResponse response = execute(new HttpPost(
+              createURIBuilder().addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
+                      .addParameter(ENTITIES_PARAM, Util.serializeAndBase64Encode(entities)).build()));
+      ifExceptionCloseAndThrow(response);
 
-      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
+      return getAndCloseResponse(response);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -261,13 +265,12 @@ final class HttpEntityConnection implements EntityConnection {
   public List<Entity> update(final List<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
-      final URIBuilder builder = createURIBuilder();
-      builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(ENTITIES_PARAM, Util.serializeAndBase64Encode(entities));
-      final HttpResponse response = httpClient.execute(new HttpPut(builder.build()));
-      ifExceptionThrow(response);
+      final CloseableHttpResponse response = execute(new HttpPut(
+              createURIBuilder().addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
+                      .addParameter(ENTITIES_PARAM, Util.serializeAndBase64Encode(entities)).build()));
+      ifExceptionCloseAndThrow(response);
 
-      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
+      return getAndCloseResponse(response);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -289,11 +292,10 @@ final class HttpEntityConnection implements EntityConnection {
   public void delete(final EntityCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      final URIBuilder builder = createURIBuilder();
-      builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(condition));
-      final HttpResponse response  = httpClient.execute(new HttpDelete(builder.build()));
-      ifExceptionThrow(response);
+      final CloseableHttpResponse response  = execute(new HttpDelete(
+              createURIBuilder().addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
+                      .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(condition)).build()));
+      ifExceptionCloseAndThrow(response);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -310,15 +312,14 @@ final class HttpEntityConnection implements EntityConnection {
     Objects.requireNonNull(propertyId);
     Objects.requireNonNull(condition);
     try {
-      final URIBuilder builder = createURIBuilder();
-      builder.setPath("values")
-              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(PROPERTY_ID_PARAM, propertyId)
-              .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(condition));
-      final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
-      ifExceptionThrow(response);
+      final CloseableHttpResponse response = execute(new HttpGet(
+              createURIBuilder().setPath("values")
+                      .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
+                      .addParameter(PROPERTY_ID_PARAM, propertyId)
+                      .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(condition)).build()));
+      ifExceptionCloseAndThrow(response);
 
-      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
+      return getAndCloseResponse(response);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -366,13 +367,12 @@ final class HttpEntityConnection implements EntityConnection {
   public List<Entity> selectMany(final EntitySelectCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition, "condition");
     try {
-      final URIBuilder builder = createURIBuilder();
-      builder.addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(condition));
-      final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
-      ifExceptionThrow(response);
+      final CloseableHttpResponse response = execute(new HttpGet(
+              createURIBuilder().addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
+                      .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(condition)).build()));
+      ifExceptionCloseAndThrow(response);
 
-      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
+      return getAndCloseResponse(response);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -395,14 +395,13 @@ final class HttpEntityConnection implements EntityConnection {
   public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
-      final URIBuilder builder = createURIBuilder();
-      builder.setPath("dependencies")
-              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(ENTITIES_PARAM, Util.serializeAndBase64Encode(entities));
-      final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
-      ifExceptionThrow(response);
+      final CloseableHttpResponse response = execute(new HttpGet(
+              createURIBuilder().setPath("dependencies")
+                      .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
+                      .addParameter(ENTITIES_PARAM, Util.serializeAndBase64Encode(entities)).build()));
+      ifExceptionCloseAndThrow(response);
 
-      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
+      return getAndCloseResponse(response);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -418,14 +417,13 @@ final class HttpEntityConnection implements EntityConnection {
   public int selectRowCount(final EntityCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      final URIBuilder builder = createURIBuilder();
-      builder.setPath("count")
-              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(condition));
-      final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
-      ifExceptionThrow(response);
+      final CloseableHttpResponse response = execute(new HttpGet(
+              createURIBuilder().setPath("count")
+                      .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
+                      .addParameter(CONDITION_PARAM, Util.serializeAndBase64Encode(condition)).build()));
+      ifExceptionCloseAndThrow(response);
 
-      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
+      return getAndCloseResponse(response);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -441,14 +439,13 @@ final class HttpEntityConnection implements EntityConnection {
   public ReportResult fillReport(final ReportWrapper reportWrapper) throws DatabaseException, ReportException {
     Objects.requireNonNull(reportWrapper, "reportWrapper");
     try {
-      final URIBuilder builder = createURIBuilder();
-      builder.setPath("report")
-              .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-              .addParameter(REPORT_WRAPPER_PARAM, Util.serializeAndBase64Encode(reportWrapper));
-      final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
-      ifExceptionThrow(response);
+      final CloseableHttpResponse response = execute(new HttpGet(
+              createURIBuilder().setPath("report")
+                      .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
+                      .addParameter(REPORT_WRAPPER_PARAM, Util.serializeAndBase64Encode(reportWrapper)).build()));
+      ifExceptionCloseAndThrow(response);
 
-      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
+      return getAndCloseResponse(response);
     }
     catch (final ReportException | DatabaseException e) {
       throw e;
@@ -478,33 +475,58 @@ final class HttpEntityConnection implements EntityConnection {
     throw new UnsupportedOperationException();
   }
 
-  private HttpResponse executeGet(final String path) throws Exception {
-    final URIBuilder builder = createURIBuilder();
-    builder.setPath(path)
-            .addParameter(DOMAIN_ID_PARAM, domain.getDomainId());
-    final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
-    ifExceptionThrow(response);
+  private void executeGetAndClose(final String path) throws Exception {
+    CloseableHttpResponse response = null;
+    try {
+      response = executeGet(path);
+    }
+    finally {
+      Util.closeSilently(response);
+    }
+  }
+
+  private CloseableHttpResponse executeGet(final String path) throws Exception {
+    final CloseableHttpResponse response = execute(new HttpGet(
+            createURIBuilder().setPath(path)
+                    .addParameter(DOMAIN_ID_PARAM, domain.getDomainId()).build()));
+    ifExceptionCloseAndThrow(response);
 
     return response;
   }
 
-  private HttpResponse executeOperation(final String path, final String operationIdParam, final String operationId,
-                                        final Object... arguments) throws Exception {
-    final URIBuilder builder = createURIBuilder();
-    builder.setPath(path)
-            .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
-            .addParameter(operationIdParam, operationId)
-            .addParameter(PARAMETERS_PARAM, Util.serializeAndBase64Encode(
-                    Util.notNull(arguments) ? Arrays.asList(arguments) : Collections.emptyList()));
-    final HttpResponse response = httpClient.execute(new HttpGet(builder.build()));
-    ifExceptionThrow(response);
+  private CloseableHttpResponse executeOperation(final String path, final String operationIdParam,
+                                                 final String operationId,
+                                                 final Object... arguments) throws Exception {
+    final CloseableHttpResponse response = execute(new HttpGet(
+            createURIBuilder().setPath(path)
+                    .addParameter(DOMAIN_ID_PARAM, domain.getDomainId())
+                    .addParameter(operationIdParam, operationId)
+                    .addParameter(PARAMETERS_PARAM, Util.serializeAndBase64Encode(
+                            Util.notNull(arguments) ? Arrays.asList(arguments) : Collections.emptyList())).build()));
+    ifExceptionCloseAndThrow(response);
 
     return response;
   }
 
-  private static void ifExceptionThrow(final HttpResponse response) throws Exception {
+  private CloseableHttpResponse execute(final HttpUriRequest operation) throws IOException {
+    synchronized (httpClient) {
+      return httpClient.execute(operation);
+    }
+  }
+
+  private static void ifExceptionCloseAndThrow(final CloseableHttpResponse response) throws Exception {
     if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-      throw Util.<Exception>base64DecodeAndDeserialize(getStringContent(response.getEntity()));
+      Util.closeSilently(response);
+      throw HttpEntityConnection.<Exception>getAndCloseResponse(response);
+    }
+  }
+
+  private static <T> T getAndCloseResponse(final CloseableHttpResponse response) throws IOException, ClassNotFoundException {
+    try {
+      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
+    }
+    finally {
+      Util.closeSilently(response);
     }
   }
 
@@ -521,12 +543,12 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  private static CloseableHttpClient createHttpClient(final User user, final String clientTypeId, final UUID clientId) {
+  private CloseableHttpClient createHttpClient(final String clientTypeId, final UUID clientId) {
     final String authorizationHeader = BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes());
 
     return HttpClientBuilder.create()
             .setDefaultRequestConfig(REQUEST_CONFIG)
-            .setConnectionManager(new PoolingHttpClientConnectionManager())
+            .setConnectionManager(connectionManager)
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               request.setHeader(CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(CLIENT_ID, clientId.toString());

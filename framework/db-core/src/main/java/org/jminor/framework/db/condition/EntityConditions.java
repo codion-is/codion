@@ -33,6 +33,8 @@ public final class EntityConditions {
   private static final int IN_CLAUSE_LIMIT = 100;//JDBC limit
   private static final String IN_PREFIX = " in (";
   private static final String NOT_IN_PREFIX = " not in (";
+  private static final String ENTITY_ID_PARAM = "entityId";
+  private static final String CONDITION_TYPE_PARAM = "conditionType";
 
   private final Entities entities;
 
@@ -230,9 +232,9 @@ public final class EntityConditions {
   public Condition<Property.ColumnProperty> propertyCondition(final String entityId, final String propertyId,
                                                               final Condition.Type conditionType, final boolean caseSensitive,
                                                               final Object value) {
-    Objects.requireNonNull(entityId, "entityId");
+    Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
     Objects.requireNonNull(propertyId, "propertyId");
-    Objects.requireNonNull(conditionType, "conditionType");
+    Objects.requireNonNull(conditionType, CONDITION_TYPE_PARAM);
     final Property property = entities.getProperty(entityId, propertyId);
     if (property instanceof Property.ForeignKeyProperty) {
       if (value instanceof Collection) {
@@ -339,7 +341,7 @@ public final class EntityConditions {
   public Condition<Property.ColumnProperty> foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
                                                                 final Condition.Type conditionType, final Collection values) {
     Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-    Objects.requireNonNull(conditionType, "conditionType");
+    Objects.requireNonNull(conditionType, CONDITION_TYPE_PARAM);
     final List<Entity.Key> keys = getEntityKeys(values);
     if (foreignKeyProperty.isCompositeKey()) {
       return createCompositeKeyCondition(foreignKeyProperty.getProperties(),
@@ -465,7 +467,7 @@ public final class EntityConditions {
      * @see EntityKeyCondition
      */
     private DefaultEntityCondition(final String entityId, final Condition<Property.ColumnProperty> condition) {
-      this.entityId = Objects.requireNonNull(entityId, "entityId");
+      this.entityId = Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
       this.condition = condition;
     }
 
@@ -748,7 +750,7 @@ public final class EntityConditions {
      */
     private PropertyCondition(final Property.ColumnProperty property, final Type conditionType, final Object value) {
       Objects.requireNonNull(property, "property");
-      Objects.requireNonNull(conditionType, "conditionType");
+      Objects.requireNonNull(conditionType, CONDITION_TYPE_PARAM);
       this.values = initializeValues(value);
       if (values.isEmpty()) {
         throw new IllegalArgumentException("No values specified for PropertyCondition: " + property);
@@ -935,7 +937,7 @@ public final class EntityConditions {
 
     private OrderBy(final Entities entities, final String entityId) {
       Objects.requireNonNull(entities, "entities");
-      Objects.requireNonNull(entityId, "entityId");
+      Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
       this.entities = entities;
       this.domainId = entities.getDomainId();
       this.entityId = entityId;

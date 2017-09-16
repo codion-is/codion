@@ -6,6 +6,8 @@ package org.jminor.framework.plugins.rest;
 import org.jminor.common.Serializer;
 import org.jminor.common.User;
 import org.jminor.common.Util;
+import org.jminor.common.Value;
+import org.jminor.common.Values;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.Server;
@@ -17,8 +19,8 @@ import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -96,8 +98,9 @@ public class EntityRESTServerTest {
     //test with missing authentication info
     URIBuilder uriBuilder = createURIBuilder();
     uriBuilder.addParameter("domainId", ENTITIES.getDomainId());
-    HttpResponse response = client.execute(new HttpGet(uriBuilder.build()));
+    CloseableHttpResponse response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(401, response.getStatusLine().getStatusCode());
+    response.close();
     client.close();
 
     final String clientTypeId = "EntityRESTServerTest";
@@ -120,17 +123,18 @@ public class EntityRESTServerTest {
                     Util.serializeAndBase64Encode(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT)));
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(401, response.getStatusLine().getStatusCode());
+    response.close();
     client.close();
 
+    final Value<UUID> clientIdValue = Values.value(UUID.randomUUID());
     //test with unknown user authentication
-    final UUID clientId = UUID.randomUUID();
     client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(new PoolingHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = new User("who", "areu");
               request.setHeader(EntityRESTService.CLIENT_TYPE_ID, clientTypeId);
-              request.setHeader(EntityRESTService.CLIENT_ID, clientId.toString());
+              request.setHeader(EntityRESTService.CLIENT_ID, clientIdValue.get().toString());
               request.setHeader(EntityRESTService.AUTHORIZATION,
                       BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
@@ -142,6 +146,7 @@ public class EntityRESTServerTest {
                     Util.serializeAndBase64Encode(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT)));
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(401, response.getStatusLine().getStatusCode());
+    response.close();
     client.close();
 
     client = HttpClientBuilder.create()
@@ -150,9 +155,10 @@ public class EntityRESTServerTest {
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = UNIT_TEST_USER;
               request.setHeader(EntityRESTService.CLIENT_TYPE_ID, clientTypeId);
-              request.setHeader(EntityRESTService.CLIENT_ID, clientId.toString());
+              request.setHeader(EntityRESTService.CLIENT_ID, clientIdValue.get().toString());
               request.setHeader(EntityRESTService.AUTHORIZATION,
-                      BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
+                      BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword())
+                              .getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             })
             .build();
@@ -167,6 +173,7 @@ public class EntityRESTServerTest {
     String queryResult = getStringContent(response.getEntity());
     List<Entity> queryEntities = Util.base64DecodeAndDeserialize(queryResult);
     assertEquals(4, queryEntities.size());
+    response.close();
 
     Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, null);
@@ -184,6 +191,7 @@ public class EntityRESTServerTest {
     final List<Entity.Key> queryKeys = Util.base64DecodeAndDeserialize(queryResult);
     assertEquals(1, queryKeys.size());
     assertEquals(department.getKey(), queryKeys.get(0));
+    response.close();
 
     //delete/DELETE by condition
     uriBuilder = createURIBuilder();
@@ -191,7 +199,8 @@ public class EntityRESTServerTest {
             .addParameter("condition",
                     Util.serializeAndBase64Encode(CONDITIONS.selectCondition(department.getKey())));
     response = client.execute(new HttpDelete(uriBuilder.build()));
-    queryResult = getStringContent(response.getEntity());
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    response.close();
 
     //insert/PUT
     uriBuilder = createURIBuilder();
@@ -204,6 +213,7 @@ public class EntityRESTServerTest {
     assertEquals(1, queryEntities.size());
     assertEquals(department, queryEntities.get(0));
     department = queryEntities.get(0);
+    response.close();
 
     //update/PUT
     department.put(TestDomain.DEPARTMENT_LOCATION, "New location");
@@ -217,6 +227,7 @@ public class EntityRESTServerTest {
     queryEntities = Util.base64DecodeAndDeserialize(queryResult);
     assertEquals(1, queryEntities.size());
     assertEquals(department, queryEntities.get(0));
+    response.close();
 
     //select/GET by condition
     uriBuilder = createURIBuilder();
@@ -229,6 +240,7 @@ public class EntityRESTServerTest {
     queryResult = getStringContent(response.getEntity());
     queryEntities = Util.base64DecodeAndDeserialize(queryResult);
     assertEquals(1, queryEntities.size());
+    response.close();
 
     //select/GET by condition
     uriBuilder = createURIBuilder();
@@ -240,6 +252,7 @@ public class EntityRESTServerTest {
     queryResult = getStringContent(response.getEntity());
     queryEntities = Util.base64DecodeAndDeserialize(queryResult);
     assertEquals(1, queryEntities.size());
+    response.close();
 
     //delete/DELETE by condition
     uriBuilder = createURIBuilder();
@@ -249,6 +262,7 @@ public class EntityRESTServerTest {
                             TestDomain.DEPARTMENT_ID, Condition.Type.LIKE, -42)));
     response = client.execute(new HttpDelete(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
+    response.close();
 
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("function")
@@ -257,6 +271,7 @@ public class EntityRESTServerTest {
             .addParameter("parameters", Util.serializeAndBase64Encode(Collections.emptyList()));
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
+    response.close();
 
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("procedure")
@@ -265,14 +280,31 @@ public class EntityRESTServerTest {
             .addParameter("parameters", Util.serializeAndBase64Encode(Collections.emptyList()));
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
+    response.close();
 
     Collection<RemoteClient> clients = admin.getClients(clientTypeId);
     assertEquals(1, clients.size());
 
+    //try to change the clientId
+    final UUID originalClientId = clientIdValue.get();
+    clientIdValue.set(UUID.randomUUID());
+
+    uriBuilder = createURIBuilder();
+    uriBuilder.setPath("procedure")
+            .addParameter("domainId", domainId)
+            .addParameter("procedureId", TestDomain.PROCEDURE_ID)
+            .addParameter("parameters", Util.serializeAndBase64Encode(Collections.emptyList()));
+    response = client.execute(new HttpGet(uriBuilder.build()));
+    assertEquals(401, response.getStatusLine().getStatusCode());
+    response.close();
+
+    clientIdValue.set(originalClientId);
+
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("disconnect")
             .addParameter("domainId", domainId);
-    client.execute(new HttpGet(uriBuilder.build()));
+    response = client.execute(new HttpGet(uriBuilder.build()));
+    response.close();
 
     client.close();
 
@@ -296,7 +328,7 @@ public class EntityRESTServerTest {
     }
     finally {
       Util.closeSilently(scanner);
-      EntityUtils.consume(entity);
+      EntityUtils.consumeQuietly(entity);
     }
   }
 

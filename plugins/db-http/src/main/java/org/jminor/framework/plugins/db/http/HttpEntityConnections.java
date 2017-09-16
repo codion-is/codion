@@ -24,6 +24,7 @@ public final class HttpEntityConnections {
    * @param user the user
    * @param clientTypeId the client type id
    * @param clientId the client id
+   * @return a http based EntityConnection
    */
   public static EntityConnection createConnection(final Entities domain, final String serverHostName, final int serverPort,
                                                   final User user, final String clientTypeId, final UUID clientId) {
