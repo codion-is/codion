@@ -57,7 +57,7 @@ public class EntityServerMonitorTest {
   public void test() throws Exception {
     final UUID clientId = UUID.randomUUID();
     final String clientTypeId = EntityServerMonitorTest.class.getName();
-    final RemoteEntityConnectionProvider connectionProvider = new RemoteEntityConnectionProvider(ENTITIES, "localhost",
+    final RemoteEntityConnectionProvider connectionProvider = new RemoteEntityConnectionProvider(ENTITIES,
             UNIT_TEST_USER, clientId, clientTypeId);
     connectionProvider.getConnection();
     final EntityServerMonitor model = new EntityServerMonitor("localhost", Server.REGISTRY_PORT.get());

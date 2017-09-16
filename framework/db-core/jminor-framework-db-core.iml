@@ -14,7 +14,6 @@
     <orderEntry type="module" module-name="jminor-common-core" />
     <orderEntry type="module" module-name="jminor-common-db" />
     <orderEntry type="module" module-name="jminor-common-server" />
-    <orderEntry type="module" module-name="jminor-common-server-http" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

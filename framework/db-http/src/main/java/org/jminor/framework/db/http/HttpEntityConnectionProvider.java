@@ -5,6 +5,7 @@ package org.jminor.framework.db.http;
 
 import org.jminor.common.User;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.server.http.HttpServer;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Entities;
@@ -26,6 +27,21 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
   private final Integer serverPort;
   private final String clientTypeId;
   private final UUID clientId;
+
+  /**
+   * Instantiates a new HttpEntityConnectionProvider.
+   * @param entities the domain model entities
+   * @param user the user to use when initializing connections
+   * @param clientTypeId the client type id
+   * @param clientId a UUID identifying the client
+   * @see HttpServer#HTTP_SERVER_HOST_NAME
+   * @see HttpServer#HTTP_SERVER_PORT
+   */
+  public HttpEntityConnectionProvider(final Entities entities, final User user, final String clientTypeId,
+                                      final UUID clientId) {
+    this(entities, HttpServer.HTTP_SERVER_HOST_NAME.get(), HttpServer.HTTP_SERVER_PORT.get(), user,
+            clientTypeId, clientId);
+  }
 
   /**
    * Instantiates a new HttpEntityConnectionProvider.

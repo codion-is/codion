@@ -5,7 +5,6 @@ package org.jminor.framework.demos.schemabrowser.testing;
 
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.server.Server;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
@@ -47,8 +46,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
   protected SchemaBrowserAppPanel.SchemaBrowserApplicationModel initializeApplication() throws CancelException {
     final SchemaBrowserAppPanel.SchemaBrowserApplicationModel applicationModel =
             new SchemaBrowserAppPanel.SchemaBrowserApplicationModel(
-                    new RemoteEntityConnectionProvider(ENTITIES, Server.SERVER_HOST_NAME.get(),
-                            getUser(), UUID.randomUUID(), getClass().getSimpleName()));
+                    new RemoteEntityConnectionProvider(ENTITIES, getUser(), UUID.randomUUID(), getClass().getSimpleName()));
     final SwingEntityModel schemaModel = applicationModel.getEntityModel(SchemaBrowser.T_SCHEMA);
     final SwingEntityModel dbObjectModel = schemaModel.getDetailModel(SchemaBrowser.T_TABLE);
     schemaModel.addLinkedDetailModel(dbObjectModel);

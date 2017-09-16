@@ -17,6 +17,10 @@
   </publications>
 
   <dependencies defaultconf="compile">
+    <dependency org="org.jminor" name="jminor-common-core" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-db" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-server-http" rev="${version}"/>
+
     <dependency org="org.jminor" name="jminor-framework-db-core" rev="${version}"/>
 
     <dependency org="org.json" name="json" rev="${json.version}"/>
@@ -25,7 +29,6 @@
     <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.4.1"/>
     <dependency org="commons-logging" name="commons-logging" rev="1.1.1"/>
 
-    <dependency org="org.jminor" name="jminor-common-server-http" rev="${version}" conf="test->default"/>
     <dependency org="org.jminor" name="jminor-framework-server" rev="${version}" conf="test->default"/>
     <dependency org="org.jminor" name="jminor-framework-servlet" rev="${version}" conf="test->default"/>
     <dependency org="com.h2database" name="h2" rev="${h2.version}" conf="test->master"/>

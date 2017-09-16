@@ -5,8 +5,6 @@ package org.jminor.framework.db;
 
 import org.jminor.common.User;
 import org.jminor.common.Version;
-import org.jminor.common.server.Server;
-import org.jminor.common.server.http.HttpServer;
 import org.jminor.framework.domain.Entities;
 
 import java.lang.reflect.InvocationTargetException;
@@ -104,30 +102,25 @@ public final class EntityConnectionProviders {
                                                                          final UUID clientId, final Version clientVersion)
           throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
           InvocationTargetException, InstantiationException {
-    final String serverHostName = Server.SERVER_HOST_NAME.get();
-    final boolean scheduleValidityCheck = EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get();
-
     return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.REMOTE_CONNECTION_PROVIDER.get()).getConstructor(
-            Entities.class, String.class, User.class, UUID.class, String.class, Version.class, boolean.class)
-            .newInstance(entities, serverHostName, user, clientId, clientTypeId, clientVersion, scheduleValidityCheck);
+            Entities.class, User.class, UUID.class, String.class, Version.class)
+            .newInstance(entities, user, clientId, clientTypeId, clientVersion);
   }
 
   private static EntityConnectionProvider createHttpConnectionProvider(final Entities entities, final User user,
                                                                        final String clientTypeId, final UUID clientId)
           throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
           InvocationTargetException, InstantiationException {
-    final String serverHostName = HttpServer.HTTP_SERVER_HOST_NAME.get();
-    final Integer serverPort = HttpServer.HTTP_SERVER_PORT.get();
-
     return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.HTTP_CONNECTION_PROVIDER.get()).getConstructor(
-            Entities.class, String.class, Integer.class, User.class, String.class, UUID.class)
-            .newInstance(entities, serverHostName, serverPort, user, clientTypeId, clientId);
+            Entities.class, User.class, String.class, UUID.class)
+            .newInstance(entities, user, clientTypeId, clientId);
   }
 
   private static EntityConnectionProvider createLocalConnectionProvider(final Entities entities, final User user)
           throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
           InvocationTargetException, InstantiationException {
     return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.LOCAL_CONNECTION_PROVIDER.get()).getConstructor(
-            Entities.class, User.class).newInstance(entities, user);
+            Entities.class, User.class)
+            .newInstance(entities, user);
   }
 }

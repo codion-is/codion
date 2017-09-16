@@ -50,28 +50,26 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   /**
    * Instantiates a new RemoteEntityConnectionProvider.
    * @param entities the domain model entities
-   * @param serverHostName the server host name
    * @param user the user to use when initializing connections
    * @param clientId a UUID identifying the client
    * @param clientTypeId a string identifying the client type
    */
-  public RemoteEntityConnectionProvider(final Entities entities, final String serverHostName, final User user, final UUID clientId,
+  public RemoteEntityConnectionProvider(final Entities entities, final User user, final UUID clientId,
                                         final String clientTypeId) {
-    this(entities, serverHostName, user, clientId, clientTypeId, null);
+    this(entities, user, clientId, clientTypeId, null);
   }
 
   /**
    * Instantiates a new RemoteEntityConnectionProvider.
    * @param entities the domain model entities
-   * @param serverHostName the server host name
    * @param user the user to use when initializing connections
    * @param clientId a UUID identifying the client
    * @param clientTypeId a string identifying the client type
    * @param clientVersion the client version
    */
-  public RemoteEntityConnectionProvider(final Entities entities, final String serverHostName, final User user, final UUID clientId,
+  public RemoteEntityConnectionProvider(final Entities entities, final User user, final UUID clientId,
                                         final String clientTypeId, final Version clientVersion) {
-    this(entities, serverHostName, user, clientId, clientTypeId, clientVersion, true);
+    this(entities, Server.SERVER_HOST_NAME.get(), user, clientId, clientTypeId, clientVersion, true);
   }
 
   /**
