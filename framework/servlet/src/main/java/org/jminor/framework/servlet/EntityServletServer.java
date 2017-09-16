@@ -17,7 +17,7 @@ public final class EntityServletServer extends HttpServer {
   /**
    * Instantiates a new EntityServletServer.
    * @param connectionServer the Server serving the connection requests
-   * @see JettyServer#DOCUMENT_ROOT
+   * @see HttpServer#DOCUMENT_ROOT
    * @see HttpServer#HTTP_SERVER_PORT
    */
   public EntityServletServer(final org.jminor.common.server.Server connectionServer) {

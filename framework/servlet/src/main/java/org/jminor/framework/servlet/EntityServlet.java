@@ -38,11 +38,11 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +60,7 @@ public final class EntityServlet extends Application {
   public static final String CLIENT_TYPE_ID = "clientTypeId";
   public static final String CLIENT_ID = "clientId";
 
-  private static Server server;
+  private static Server<RemoteEntityConnection, Remote> server;
 
   /**
    * Disconnects the underlying connection
@@ -375,9 +375,6 @@ public final class EntityServlet extends Application {
                          @QueryParam("condition") final String condition) {
     final RemoteEntityConnection connection = authenticate(request, headers, domainId);
     try {
-      if (condition == null) {
-        return Response.ok(Util.serializeAndBase64Encode(Collections.emptyList())).build();
-      }
       final EntitySelectCondition selectCondition = Util.base64DecodeAndDeserialize(condition);
 
       return Response.ok(Util.serializeAndBase64Encode(connection.selectMany(selectCondition))).build();
@@ -491,8 +488,7 @@ public final class EntityServlet extends Application {
       parameters.put(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, domainId);
       parameters.put(Server.CLIENT_HOST_KEY, request.getRemoteHost());
 
-      return (RemoteEntityConnection) server.connect(Clients.connectionRequest(user, clientId,
-              clientTypeId, parameters));
+      return server.connect(Clients.connectionRequest(user, clientId, clientTypeId, parameters));
     }
     catch (final ServerException.AuthenticationException ae) {
       throw new WebApplicationException(ae, Response.Status.UNAUTHORIZED);

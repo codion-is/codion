@@ -10,7 +10,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="demo-chinook" />
     <orderEntry type="module" module-name="jminor-common-core" />
     <orderEntry type="module" module-name="jminor-common-db" />
     <orderEntry type="module" module-name="jminor-common-model" />
