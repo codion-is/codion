@@ -5,6 +5,7 @@
     <subant target="clean" buildpath="db"/>
     <subant target="clean" buildpath="model"/>
     <subant target="clean" buildpath="server"/>
+    <subant target="clean" buildpath="server-http"/>
   </target>
   
   <target name="clean_lib">
@@ -12,6 +13,7 @@
     <subant target="clean_lib" buildpath="db"/>
     <subant target="clean_lib" buildpath="model"/>
     <subant target="clean_lib" buildpath="server"/>
+    <subant target="clean_lib" buildpath="server-http"/>
   </target>
 
   <target name="build">
@@ -19,6 +21,7 @@
     <subant target="build" buildpath="db"/>
     <subant target="build" buildpath="model"/>
     <subant target="build" buildpath="server"/>
+    <subant target="build" buildpath="server-http"/>
   </target>
 
   <target name="javadoc">
@@ -26,6 +29,7 @@
     <subant target="javadoc" buildpath="db"/>
     <subant target="javadoc" buildpath="model"/>
     <subant target="javadoc" buildpath="server"/>
+    <subant target="javadoc" buildpath="server-http"/>
   </target>
 
   <target name="package">
@@ -33,6 +37,7 @@
     <subant target="package" buildpath="db"/>
     <subant target="package" buildpath="model"/>
     <subant target="package" buildpath="server"/>
+    <subant target="package" buildpath="server-http"/>
   </target>
 
   <target name="jdeps">
@@ -40,6 +45,7 @@
     <subant target="jdeps" buildpath="db"/>
     <subant target="jdeps" buildpath="model"/>
     <subant target="jdeps" buildpath="server"/>
+    <subant target="jdeps" buildpath="server-http"/>
   </target>
 
   <target name="install">
@@ -47,6 +53,7 @@
     <subant target="install" buildpath="db"/>
     <subant target="install" buildpath="model"/>
     <subant target="install" buildpath="server"/>
+    <subant target="install" buildpath="server-http"/>
   </target>
 
   <target name="deploy">
@@ -54,6 +61,7 @@
     <subant target="deploy" buildpath="db"/>
     <subant target="deploy" buildpath="model"/>
     <subant target="deploy" buildpath="server"/>
+    <subant target="deploy" buildpath="server-http"/>
   </target>
 
   <target name="run_unit_tests">
@@ -61,5 +69,6 @@
     <subant target="run_unit_tests" buildpath="db"/>
     <subant target="run_unit_tests" buildpath="model"/>
     <subant target="run_unit_tests" buildpath="server"/>
+    <subant target="run_unit_tests" buildpath="server-http"/>
   </target>
 </project>

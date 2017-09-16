@@ -4,7 +4,7 @@
 package org.jminor.framework.plugins.rest;
 
 import org.jminor.common.server.Server;
-import org.jminor.framework.plugins.jetty.JettyServer;
+import org.jminor.common.server.http.HttpServer;
 
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -13,7 +13,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 /**
  * A simple Jetty/Jersey based REST server
  */
-public final class EntityRESTServer extends JettyServer {
+public final class EntityRESTServer extends HttpServer {
 
   /**
    * Instantiates a new EntityRESTServer.
@@ -22,7 +22,7 @@ public final class EntityRESTServer extends JettyServer {
    * @see Server#WEB_SERVER_PORT
    */
   public EntityRESTServer(final org.jminor.common.server.Server connectionServer) {
-    super(connectionServer, JettyServer.DOCUMENT_ROOT.get(), Server.WEB_SERVER_PORT.get());
+    super(connectionServer, HttpServer.DOCUMENT_ROOT.get(), Server.WEB_SERVER_PORT.get());
     EntityRESTService.setServer(connectionServer);
     final ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
     servletHandler.setContextPath("/");

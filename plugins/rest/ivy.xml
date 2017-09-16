@@ -19,10 +19,10 @@
   <dependencies defaultconf="compile->default">
     <dependency org="org.jminor" name="jminor-common-core" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-common-server" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-server-http" rev="${version}"/>
 
     <dependency org="org.jminor" name="jminor-framework-db-core" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-framework-db-remote" rev="${version}"/>
-    <dependency org="org.jminor" name="jminor-plugin-jetty" rev="${version}"/>
 
     <dependency org="org.glassfish.jersey.bundles" name="jaxrs-ri" rev="2.22" conf="compile->master;runtime->default"/>
 

@@ -4617,3 +4617,4 @@
   HttpEntityConnection and EntityConditions, added a few null checks
   EntityRESTService now handles changing clientIds
   HttpEntityConnection, some refactoring
+  Jetty plugin promoted into common-server-http module

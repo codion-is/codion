@@ -11,6 +11,7 @@
       <module fileurl="file://$PROJECT_DIR$/common/db/jminor-common-db.iml" filepath="$PROJECT_DIR$/common/db/jminor-common-db.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/model/jminor-common-model.iml" filepath="$PROJECT_DIR$/common/model/jminor-common-model.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/server/jminor-common-server.iml" filepath="$PROJECT_DIR$/common/server/jminor-common-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/server-http/jminor-common-server-http.iml" filepath="$PROJECT_DIR$/common/server-http/jminor-common-server-http.iml" />
       <module fileurl="file://$PROJECT_DIR$/framework/db-core/jminor-framework-db-core.iml" filepath="$PROJECT_DIR$/framework/db-core/jminor-framework-db-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/framework/db-local/jminor-framework-db-local.iml" filepath="$PROJECT_DIR$/framework/db-local/jminor-framework-db-local.iml" />
       <module fileurl="file://$PROJECT_DIR$/framework/db-remote/jminor-framework-db-remote.iml" filepath="$PROJECT_DIR$/framework/db-remote/jminor-framework-db-remote.iml" />
@@ -31,7 +32,6 @@
       <module fileurl="file://$PROJECT_DIR$/plugins/hikari-pool/plugin-hikari-pool.iml" filepath="$PROJECT_DIR$/plugins/hikari-pool/plugin-hikari-pool.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugins/imagepanel/plugin-imagepanel.iml" filepath="$PROJECT_DIR$/plugins/imagepanel/plugin-imagepanel.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugins/jasperreports/plugin-jasperreports.iml" filepath="$PROJECT_DIR$/plugins/jasperreports/plugin-jasperreports.iml" />
-      <module fileurl="file://$PROJECT_DIR$/plugins/jetty/plugin-jetty.iml" filepath="$PROJECT_DIR$/plugins/jetty/plugin-jetty.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugins/json/plugin-json.iml" filepath="$PROJECT_DIR$/plugins/json/plugin-json.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugins/log4j-proxy/plugin-log4j-proxy.iml" filepath="$PROJECT_DIR$/plugins/log4j-proxy/plugin-log4j-proxy.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugins/logback-proxy/plugin-logback-proxy.iml" filepath="$PROJECT_DIR$/plugins/logback-proxy/plugin-logback-proxy.iml" />

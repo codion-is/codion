@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.plugins.jetty;
+package org.jminor.common.server.http;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.Util;
@@ -15,11 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A simple Jetty based file server
+ * A simple Jetty based http file server
  */
-public class JettyServer extends Server implements org.jminor.common.server.Server.AuxiliaryServer {
+public class HttpServer extends Server implements org.jminor.common.server.Server.AuxiliaryServer {
 
-  private static final Logger LOG = LoggerFactory.getLogger(JettyServer.class);
+  private static final Logger LOG = LoggerFactory.getLogger(HttpServer.class);
 
   /**
    * Specifies the document root for file serving<br>.
@@ -35,7 +35,7 @@ public class JettyServer extends Server implements org.jminor.common.server.Serv
    * Instantiates a new JettyServer on the given port.
    * @param connectionServer the Server serving the connection requests
    */
-  public JettyServer(final org.jminor.common.server.Server connectionServer) {
+  public HttpServer(final org.jminor.common.server.Server connectionServer) {
     this(connectionServer, DOCUMENT_ROOT.get(), org.jminor.common.server.Server.WEB_SERVER_PORT.get());
   }
 
@@ -45,7 +45,7 @@ public class JettyServer extends Server implements org.jminor.common.server.Serv
    * @param documentRoot the document root, null to disable file serving
    * @param port the port on which to serve
    */
-  public JettyServer(final org.jminor.common.server.Server connectionServer, final String documentRoot, final Integer port) {
+  public HttpServer(final org.jminor.common.server.Server connectionServer, final String documentRoot, final Integer port) {
     super(port);
     LOG.info(getClass().getSimpleName() + " created on port: " + port);
     this.connectionServer = connectionServer;

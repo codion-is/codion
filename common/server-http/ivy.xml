@@ -1,5 +1,5 @@
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-  <info organisation="org.jminor" module="jminor-plugin-jetty"/>
+  <info organisation="org.jminor" module="jminor-common-server-http"/>
 
   <configurations defaultconfmapping="compile">
     <conf name="compile"/>
@@ -10,18 +10,15 @@
   </configurations>
 
   <publications>
-    <artifact name="jminor-plugin-jetty" type="jar" ext="jar" conf="compile"/>
-    <artifact name="jminor-plugin-jetty" type="pom" ext="pom" conf="compile"/>
-    <artifact name="jminor-plugin-jetty-sources" type="source" ext="jar" conf="sources" m:classifier="sources"/>
-    <artifact name="jminor-plugin-jetty-javadoc" type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
+    <artifact name="jminor-common-server-http" type="jar" ext="jar" conf="compile"/>
+    <artifact name="jminor-common-server-http" type="pom" ext="pom" conf="compile"/>
+    <artifact name="jminor-common-server-http-sources" type="source" ext="jar" conf="sources" m:classifier="sources"/>
+    <artifact name="jminor-common-server-http-javadoc" type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
   </publications>
 
   <dependencies defaultconf="compile->default">
     <dependency org="org.jminor" name="jminor-common-core" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-common-server" rev="${version}"/>
-
-    <dependency org="org.jminor" name="jminor-framework-db-core" rev="${version}"/>
-    <dependency org="org.jminor" name="jminor-framework-db-remote" rev="${version}"/>
 
     <dependency org="org.eclipse.jetty.toolchain" name="jetty-osgi-servlet-api" rev="${jetty.servlet.api.version}" conf="compile->master"/>
     <dependency org="org.eclipse.jetty" name="jetty-server" rev="${jetty.version}" conf="compile->master"/>
@@ -35,9 +32,6 @@
     <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.4.1" conf="test->master"/>
     <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="test->master"/>
 
-    <dependency org="org.jminor" name="jminor-framework-db-local" rev="${version}" conf="test->master"/>
-    <dependency org="org.jminor" name="jminor-framework-server" rev="${version}" conf="test->default"/>
-    <dependency org="com.h2database" name="h2" rev="${h2.version}" conf="test->master"/>
     <dependency org="junit" name="junit" rev="${junit.version}" conf="test->master"/>
     <dependency org="org.hamcrest" name="hamcrest-core" rev="${hamcrest-core.version}" conf="test->master"/>
   </dependencies>
