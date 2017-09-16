@@ -1,5 +1,5 @@
-<project name="jminor-plugin-rest">
+<project name="jminor-framework-servlet">
   <property name="project.root" value="../.."/>
-  <property name="java.module.name" value="org.jminor.plugin.rest"/>
+  <property name="java.module.name" value="org.jminor.framework.servlet"/>
   <import file="${project.root}/build-common.xml"/>
 </project>

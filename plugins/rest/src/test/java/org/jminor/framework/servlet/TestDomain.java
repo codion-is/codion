@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.plugins.rest;
+package org.jminor.framework.servlet;
 
 import org.jminor.common.Item;
 import org.jminor.common.db.AbstractFunction;

@@ -19,6 +19,7 @@
       <module fileurl="file://$PROJECT_DIR$/framework/model/jminor-framework-model.iml" filepath="$PROJECT_DIR$/framework/model/jminor-framework-model.iml" />
       <module fileurl="file://$PROJECT_DIR$/framework/model-unittests/jminor-framework-model-unittests.iml" filepath="$PROJECT_DIR$/framework/model-unittests/jminor-framework-model-unittests.iml" />
       <module fileurl="file://$PROJECT_DIR$/framework/server/jminor-framework-server.iml" filepath="$PROJECT_DIR$/framework/server/jminor-framework-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugins/rest/jminor-framework-servlet.iml" filepath="$PROJECT_DIR$/plugins/rest/jminor-framework-servlet.iml" />
       <module fileurl="file://$PROJECT_DIR$/javafx/jminor-javafx.iml" filepath="$PROJECT_DIR$/javafx/jminor-javafx.iml" />
       <module fileurl="file://$PROJECT_DIR$/jminor-parent.iml" filepath="$PROJECT_DIR$/jminor-parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/server-monitor/jminor-server-monitor.iml" filepath="$PROJECT_DIR$/server-monitor/jminor-server-monitor.iml" />
@@ -36,7 +37,6 @@
       <module fileurl="file://$PROJECT_DIR$/plugins/log4j-proxy/plugin-log4j-proxy.iml" filepath="$PROJECT_DIR$/plugins/log4j-proxy/plugin-log4j-proxy.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugins/logback-proxy/plugin-logback-proxy.iml" filepath="$PROJECT_DIR$/plugins/logback-proxy/plugin-logback-proxy.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugins/nextreports/plugin-nextreports.iml" filepath="$PROJECT_DIR$/plugins/nextreports/plugin-nextreports.iml" />
-      <module fileurl="file://$PROJECT_DIR$/plugins/rest/plugin-rest.iml" filepath="$PROJECT_DIR$/plugins/rest/plugin-rest.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugins/tomcat-pool/plugin-tomcat-pool.iml" filepath="$PROJECT_DIR$/plugins/tomcat-pool/plugin-tomcat-pool.iml" />
     </modules>
   </component>
