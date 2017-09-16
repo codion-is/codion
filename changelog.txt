@@ -4618,4 +4618,4 @@
   EntityRESTService now handles changing clientIds
   HttpEntityConnection, some refactoring
   Jetty plugin promoted into common-server-http module
-  Preparing rest module for promotion to framework-servlet module, continued
+  Preparing rest module for promotion to framework-servlet module, continued, and continued
