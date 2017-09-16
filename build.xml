@@ -15,6 +15,8 @@
   <path id="lib.runtime.server">
     <path location="framework/server/${build.main}"/>
     <fileset dir="framework/server/${lib}/test"/>
+    <path location="framework/servlet/${build.main}"/>
+    <fileset dir="framework/servlet/${lib}/test"/>
   </path>
 
   <path id="lib.runtime.server.monitor">
@@ -36,12 +38,10 @@
     <path location="plugins/hikari-pool/${build.main}"/>
     <path location="plugins/imagepanel/${build.main}"/>
     <path location="plugins/jasperreports/${build.main}"/>
-    <path location="plugins/jetty/${build.main}"/>
     <path location="plugins/json/${build.main}"/>
     <path location="plugins/log4j-proxy/${build.main}"/>
     <path location="plugins/logback-proxy/${build.main}"/>
     <path location="plugins/nextreports/${build.main}"/>
-    <path location="plugins/rest/${build.main}"/>
     <path location="plugins/tomcat-pool/${build.main}"/>
   </path>
 
@@ -49,12 +49,10 @@
     <fileset dir="plugins/hikari-pool/lib/test"/>
     <fileset dir="plugins/imagepanel/lib/test"/>
     <fileset dir="plugins/jasperreports/lib/test"/>
-    <fileset dir="plugins/jetty/lib/test"/>
     <fileset dir="plugins/json/lib/test"/>
     <fileset dir="plugins/log4j-proxy/lib/test"/>
     <fileset dir="plugins/logback-proxy/lib/test"/>
     <fileset dir="plugins/nextreports/lib/test"/>
-    <fileset dir="plugins/rest/lib/test"/>
     <fileset dir="plugins/tomcat-pool/lib/test"/>
   </path>
 
@@ -116,23 +114,14 @@
     <subant target="package" buildpath="plugins"/>
 
     <copy todir="${deploy.server.path}/lib">
-      <file file="common/core/${package}/jminor-common-core.jar"/>
-      <file file="common/db/${package}/jminor-common-db.jar"/>
-      <file file="common/server/${package}/jminor-common-server.jar"/>
-
-      <file file="framework/db-core/${package}/jminor-framework-db-core.jar"/>
-      <file file="framework/db-local/${package}/jminor-framework-db-local.jar"/>
-      <file file="framework/db-remote/${package}/jminor-framework-db-remote.jar"/>
       <file file="framework/server/${package}/jminor-framework-server.jar"/>
+      <file file="framework/servlet/${package}/jminor-framework-servlet.jar"/>
 
       <fileset dir="framework/server/${lib}/test" includes="h2*.jar"/>
+      <fileset dir="framework/servlet/${lib}/runtime"/>
 
       <file file="plugins/jasperreports/${package}/jminor-plugin-jasperreports.jar"/>
       <fileset dir="plugins/jasperreports/lib/runtime" excludes="*jminor*"/>
-
-      <file file="plugins/jetty/${package}/jminor-plugin-jetty.jar"/>
-      <file file="plugins/rest/${package}/jminor-plugin-rest.jar"/>
-      <fileset dir="plugins/rest/lib/runtime" excludes="*jminor*"/>
 
       <file file="plugins/json/${package}/jminor-plugin-json.jar"/>
       <file file="plugins/logback-proxy/${package}/jminor-plugin-logback-proxy.jar"/>

@@ -85,7 +85,7 @@ public class EntityServletServerTest {
   }
 
   @Test
-  public void testREST() throws URISyntaxException, IOException, InterruptedException,
+  public void test() throws URISyntaxException, IOException, InterruptedException,
           Serializer.SerializeException, ClassNotFoundException {
     final RequestConfig requestConfig = RequestConfig.custom()
             .setSocketTimeout(2000)
