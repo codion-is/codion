@@ -6,6 +6,7 @@ package org.jminor.framework.db;
 import org.jminor.common.User;
 import org.jminor.common.Version;
 import org.jminor.common.server.Server;
+import org.jminor.common.server.http.HttpServer;
 import org.jminor.framework.domain.Entities;
 
 import java.lang.reflect.InvocationTargetException;
@@ -115,8 +116,8 @@ public final class EntityConnectionProviders {
                                                                        final String clientTypeId, final UUID clientId)
           throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
           InvocationTargetException, InstantiationException {
-    final String serverHostName = Server.WEB_SERVER_HOST_NAME.get();
-    final Integer serverPort = Server.WEB_SERVER_PORT.get();
+    final String serverHostName = HttpServer.HTTP_SERVER_HOST_NAME.get();
+    final Integer serverPort = HttpServer.HTTP_SERVER_PORT.get();
 
     return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.HTTP_CONNECTION_PROVIDER.get()).getConstructor(
             Entities.class, String.class, Integer.class, User.class, String.class, UUID.class)

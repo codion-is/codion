@@ -4623,3 +4623,4 @@
   EntityRESTService renamed to EntityServlet and EntityRESTServer renamed to EntityServletServer
   Preparing db-http plugin for promotion to framework-db-http module
   db-http module promoted to framework-db-http module
+  Cleanup after module promotions

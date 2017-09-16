@@ -20,6 +20,7 @@
     <dependency org="org.jminor" name="jminor-common-core" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-common-db" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-common-server" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-server-http" rev="${version}"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="${slf4j-api.version}"/>
 

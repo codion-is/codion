@@ -11,6 +11,7 @@ import org.jminor.common.Values;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.Server;
+import org.jminor.common.server.http.HttpServer;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -343,7 +344,7 @@ public class EntityServletServerTest {
     System.setProperty("java.security.policy", "resources/security/all_permissions.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityServletServer.class.getName());
-    Server.WEB_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
+    HttpServer.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
   }
 
   private static void deconfigure() {
@@ -357,6 +358,6 @@ public class EntityServletServerTest {
     System.clearProperty("java.security.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(null);
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(null);
-    Server.WEB_SERVER_PORT.set(null);
+    HttpServer.HTTP_SERVER_PORT.set(null);
   }
 }

@@ -22,6 +22,21 @@ public class HttpServer extends Server implements org.jminor.common.server.Serve
   private static final Logger LOG = LoggerFactory.getLogger(HttpServer.class);
 
   /**
+   * The host on which to locate the web server<br>
+   * Value type: String<br>
+   * Default value: localhost
+   */
+  public static final Value<String> HTTP_SERVER_HOST_NAME = Configuration.stringValue("jminor.server.http.hostname",
+          org.jminor.common.server.Server.LOCALHOST);
+
+  /**
+   * The port on which the web server is made available to clients.<br>
+   * Value type: Integer<br>
+   * Default value: 8080
+   */
+  public static final Value<Integer> HTTP_SERVER_PORT = Configuration.integerValue("jminor.server.http.port", 8080);
+
+  /**
    * Specifies the document root for file serving<br>.
    * Value type: String<br>
    * Default value: null
@@ -36,7 +51,7 @@ public class HttpServer extends Server implements org.jminor.common.server.Serve
    * @param connectionServer the Server serving the connection requests
    */
   public HttpServer(final org.jminor.common.server.Server connectionServer) {
-    this(connectionServer, DOCUMENT_ROOT.get(), org.jminor.common.server.Server.WEB_SERVER_PORT.get());
+    this(connectionServer, DOCUMENT_ROOT.get(), HTTP_SERVER_PORT.get());
   }
 
   /**

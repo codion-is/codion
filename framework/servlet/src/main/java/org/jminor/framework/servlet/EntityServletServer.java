@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.servlet;
 
-import org.jminor.common.server.Server;
 import org.jminor.common.server.http.HttpServer;
 
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -19,10 +18,10 @@ public final class EntityServletServer extends HttpServer {
    * Instantiates a new EntityServletServer.
    * @param connectionServer the Server serving the connection requests
    * @see JettyServer#DOCUMENT_ROOT
-   * @see Server#WEB_SERVER_PORT
+   * @see HttpServer#HTTP_SERVER_PORT
    */
   public EntityServletServer(final org.jminor.common.server.Server connectionServer) {
-    super(connectionServer, HttpServer.DOCUMENT_ROOT.get(), Server.WEB_SERVER_PORT.get());
+    super(connectionServer, HttpServer.DOCUMENT_ROOT.get(), HttpServer.HTTP_SERVER_PORT.get());
     EntityServlet.setServer(connectionServer);
     final ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
     servletHandler.setContextPath("/");

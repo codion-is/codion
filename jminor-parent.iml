@@ -9,20 +9,29 @@
     <orderEntry type="module" module-name="jminor-common-db" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-common-model" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-common-server" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-common-server-http" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-framework-db-core" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-framework-db-local" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-framework-db-remote" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-framework-db-http" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-framework-db-test" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-framework-model" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-framework-model-unittests" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-framework-server" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-framework-servlet" />
+    <orderEntry type="module" module-name="jminor-swing-common-model" />
+    <orderEntry type="module" module-name="jminor-swing-common-ui" />
+    <orderEntry type="module" module-name="jminor-swing-framework-model" />
+    <orderEntry type="module" module-name="jminor-swing-framework-ui" />
+    <orderEntry type="module" module-name="jminor-swing-framework-ui-test" />
     <orderEntry type="module" module-name="jminor-javafx" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-server-monitor" scope="RUNTIME" />
     <orderEntry type="module" module-name="plugin-imagepanel" scope="RUNTIME" />
     <orderEntry type="module" module-name="plugin-jasperreports" scope="RUNTIME" />
     <orderEntry type="module" module-name="plugin-json" scope="RUNTIME" />
+    <orderEntry type="module" module-name="plugin-log4j-proxy" />
+    <orderEntry type="module" module-name="plugin-logback-proxy" />
     <orderEntry type="module" module-name="plugin-nextreports" scope="RUNTIME" />
-    <orderEntry type="module" module-name="plugin-rest" scope="RUNTIME" />
     <orderEntry type="module" module-name="plugin-tomcat-pool" scope="RUNTIME" />
     <orderEntry type="module" module-name="plugin-hikari-pool" scope="RUNTIME" />
     <orderEntry type="module" module-name="demo-chinook" scope="RUNTIME" />
