@@ -10,10 +10,10 @@ import org.jminor.common.model.tools.LoadTestModel;
 import org.jminor.common.server.Server;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.db.http.HttpEntityConnectionProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.plugins.db.http.HttpEntityConnectionProvider;
 import org.jminor.swing.common.ui.tools.LoadTestPanel;
 
 import javax.swing.UIManager;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-public final class EmpDeptRESTLoadTest extends LoadTestModel<EntityConnectionProvider> {
+public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnectionProvider> {
 
   private static final Entities ENTITIES = new EmpDept().registerDomain();
   private static final EntityConditions CONDITIONS = new EntityConditions(ENTITIES);
@@ -33,7 +33,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<EntityConnectionPro
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
-  public EmpDeptRESTLoadTest(final User user) {
+  public EmpDeptServletLoadTest(final User user) {
     super(user, Arrays.asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()),
             5000, 2, 10, 500);
     setWeight(UpdateLocation.NAME, 2);
@@ -51,12 +51,12 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<EntityConnectionPro
   @Override
   protected EntityConnectionProvider initializeApplication() throws CancelException {
     return new HttpEntityConnectionProvider(ENTITIES, Server.WEB_SERVER_HOST_NAME.get(), Server.WEB_SERVER_PORT.get(),
-            UNIT_TEST_USER, "EmpDeptRESTLoadTest", UUID.randomUUID());
+            UNIT_TEST_USER, "EmpDeptServletLoadTest", UUID.randomUUID());
   }
 
   public static void main(final String[] args) throws Exception {
     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    new LoadTestPanel(new EmpDeptRESTLoadTest(UNIT_TEST_USER)).showFrame();
+    new LoadTestPanel(new EmpDeptServletLoadTest(UNIT_TEST_USER)).showFrame();
   }
 
   private static final class UpdateLocation extends AbstractUsageScenario<EntityConnectionProvider> {

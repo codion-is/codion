@@ -4621,3 +4621,4 @@
   Preparing rest module for promotion to framework-servlet module, continued, and continued
   Rest module promoted to framework-servlet
   EntityRESTService renamed to EntityServlet and EntityRESTServer renamed to EntityServletServer
+  Preparing db-http plugin for promotion to framework-db-http module

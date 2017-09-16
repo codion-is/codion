@@ -49,7 +49,7 @@ public interface EntityConnectionProvider {
    * Value type: String (the name of a class implementing org.jminor.framework.db.EntityConnectionProvider)<br>
    * Default value: org.jminor.framework.plugins.db.http.HttpEntityConnectionProvider
    */
-  Value<String> HTTP_CONNECTION_PROVIDER = Configuration.stringValue("jminor.client.httpConnectionProvider", "org.jminor.framework.plugins.db.http.HttpEntityConnectionProvider");
+  Value<String> HTTP_CONNECTION_PROVIDER = Configuration.stringValue("jminor.client.httpConnectionProvider", "org.jminor.framework.db.http.HttpEntityConnectionProvider");
 
   /**
    * Specifies the class providing remote db connections<br>

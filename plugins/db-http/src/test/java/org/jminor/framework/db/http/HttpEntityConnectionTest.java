@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.plugins.db.http;
+package org.jminor.framework.db.http;
 
 import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
@@ -13,8 +13,8 @@ import org.jminor.common.server.Server;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.plugins.rest.EntityRESTServer;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
+import org.jminor.framework.servlet.EntityServletServer;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -34,7 +34,7 @@ import static org.junit.Assert.*;
 
 public final class HttpEntityConnectionTest {
 
-  private static final Integer REST_SERVER_PORT_NUMBER = 8089;
+  private static final Integer WEB_SERVER_PORT_NUMBER = 8089;
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
@@ -176,10 +176,10 @@ public final class HttpEntityConnectionTest {
     Server.SERVER_ADMIN_PORT.set(2223);
     Server.SERVER_HOST_NAME.set("localhost");
     Server.WEB_SERVER_HOST_NAME.set("localhost");
-    Server.WEB_SERVER_PORT.set(REST_SERVER_PORT_NUMBER);
+    Server.WEB_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
     System.setProperty("java.security.policy", "resources/security/all_permissions.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
-    Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityRESTServer.class.getName());
+    Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityServletServer.class.getName());
   }
 
   private static void deconfigure() {

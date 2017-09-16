@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.plugins.db.http;
+package org.jminor.framework.db.http;
 
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;

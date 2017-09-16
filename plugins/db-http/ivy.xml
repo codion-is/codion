@@ -1,5 +1,5 @@
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-  <info organisation="org.jminor" module="jminor-plugin-db-http"/>
+  <info organisation="org.jminor" module="jminor-framework-db-http"/>
 
   <configurations defaultconfmapping="compile->default">
     <conf name="compile"/>
@@ -10,10 +10,10 @@
   </configurations>
 
   <publications>
-    <artifact name="jminor-plugin-db-http" type="jar" ext="jar" conf="compile"/>
-    <artifact name="jminor-plugin-db-http" type="pom" ext="pom" conf="compile"/>
-    <artifact name="jminor-plugin-db-http-sources" type="source" ext="jar" conf="sources" m:classifier="sources"/>
-    <artifact name="jminor-plugin-db-http-javadoc" type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
+    <artifact name="jminor-framework-db-http" type="jar" ext="jar" conf="compile"/>
+    <artifact name="jminor-framework-db-http" type="pom" ext="pom" conf="compile"/>
+    <artifact name="jminor-framework-db-http-sources" type="source" ext="jar" conf="sources" m:classifier="sources"/>
+    <artifact name="jminor-framework-db-http-javadoc" type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
   </publications>
 
   <dependencies defaultconf="compile">

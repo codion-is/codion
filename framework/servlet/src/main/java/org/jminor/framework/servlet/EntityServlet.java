@@ -480,7 +480,7 @@ public final class EntityServlet extends Application {
   private static RemoteEntityConnection authenticate(final HttpServletRequest request, final HttpHeaders headers,
                                                      final String domainId) {
     if (server == null) {
-      throw new IllegalStateException("EntityConnectionServer has not been set for REST service");
+      throw new IllegalStateException("EntityConnectionServer has not been set for EntityServlet");
     }
 
     final String clientTypeId = getClientTypeId(headers);

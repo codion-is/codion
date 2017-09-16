@@ -58,12 +58,12 @@ public class EntityServletServerTest {
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
-  private static final int REST_SERVER_PORT_NUMBER = 8089;
+  private static final int WEB_SERVER_PORT_NUMBER = 8089;
   private static final User ADMIN_USER = new User("scott", "tiger");
   private static final String BASIC = "Basic ";
   private static final String HTTP = "http";
   private static String HOSTNAME;
-  private static String REST_BASEURL;
+  private static String SERVER_BASEURL;
 
   private static DefaultEntityConnectionServer server;
   private static EntityConnectionServerAdmin admin;
@@ -72,7 +72,7 @@ public class EntityServletServerTest {
   public static void setUp() throws Exception {
     configure();
     HOSTNAME = Server.SERVER_HOST_NAME.get();
-    REST_BASEURL = HOSTNAME + ":" + REST_SERVER_PORT_NUMBER + "/entities/";
+    SERVER_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities/";
     server = DefaultEntityConnectionServer.startServer();
     admin = server.getServerAdmin(ADMIN_USER);
   }
@@ -314,7 +314,7 @@ public class EntityServletServerTest {
 
   private static URIBuilder createURIBuilder() {
     final URIBuilder builder = new URIBuilder();
-    builder.setScheme(HTTP).setHost(REST_BASEURL);
+    builder.setScheme(HTTP).setHost(SERVER_BASEURL);
 
     return builder;
   }
@@ -343,7 +343,7 @@ public class EntityServletServerTest {
     System.setProperty("java.security.policy", "resources/security/all_permissions.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityServletServer.class.getName());
-    Server.WEB_SERVER_PORT.set(REST_SERVER_PORT_NUMBER);
+    Server.WEB_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
   }
 
   private static void deconfigure() {
