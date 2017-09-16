@@ -13,7 +13,7 @@
       <module fileurl="file://$PROJECT_DIR$/common/server/jminor-common-server.iml" filepath="$PROJECT_DIR$/common/server/jminor-common-server.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/server-http/jminor-common-server-http.iml" filepath="$PROJECT_DIR$/common/server-http/jminor-common-server-http.iml" />
       <module fileurl="file://$PROJECT_DIR$/framework/db-core/jminor-framework-db-core.iml" filepath="$PROJECT_DIR$/framework/db-core/jminor-framework-db-core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/plugins/db-http/jminor-framework-db-http.iml" filepath="$PROJECT_DIR$/plugins/db-http/jminor-framework-db-http.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/db-http/jminor-framework-db-http.iml" filepath="$PROJECT_DIR$/framework/db-http/jminor-framework-db-http.iml" />
       <module fileurl="file://$PROJECT_DIR$/framework/db-local/jminor-framework-db-local.iml" filepath="$PROJECT_DIR$/framework/db-local/jminor-framework-db-local.iml" />
       <module fileurl="file://$PROJECT_DIR$/framework/db-remote/jminor-framework-db-remote.iml" filepath="$PROJECT_DIR$/framework/db-remote/jminor-framework-db-remote.iml" />
       <module fileurl="file://$PROJECT_DIR$/framework/db-test/jminor-framework-db-test.iml" filepath="$PROJECT_DIR$/framework/db-test/jminor-framework-db-test.iml" />

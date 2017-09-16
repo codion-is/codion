@@ -11,12 +11,12 @@
 
   <dependencies defaultconf="compile->default">
     <dependency org="org.jminor" name="jminor-framework-server" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-framework-servlet" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-framework-db-http" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-swing-framework-bundle" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-plugin-jasperreports" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-plugin-json" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-plugin-logback-proxy" rev="${version}" conf="runtime->default"/>
-    <dependency org="org.jminor" name="jminor-plugin-rest" rev="${version}"/>
-    <dependency org="org.jminor" name="jminor-plugin-db-http" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-swing-framework-ui-test" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-javafx" rev="${version}"/>
 

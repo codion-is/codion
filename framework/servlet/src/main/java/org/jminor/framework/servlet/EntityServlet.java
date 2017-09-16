@@ -335,7 +335,7 @@ public final class EntityServlet extends Application {
    * @param headers the headers
    * @param domainId the domain id
    * @param propertyId the propertyId
-   * @param conditiont the query condition
+   * @param condition the query condition
    * @return a response
    */
   @GET

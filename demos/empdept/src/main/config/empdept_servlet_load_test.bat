@@ -1,0 +1,1 @@
+java -Xmx512m -Djminor.configurationFile=servlet_load_test.config -cp empdept.jar;config org.jminor.framework.demos.empdept.servlet.EmpDeptServletLoadTest
