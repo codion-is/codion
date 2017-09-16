@@ -4625,3 +4625,5 @@
   db-http module promoted to framework-db-http module
   Cleanup after module promotions
   More cleanup
+  EntityServlet, domainId parameter moved to header
+  AbstractRemoteEntityConnection.RemoteEntityConnectionHandler, removed redundant methodLogger null check

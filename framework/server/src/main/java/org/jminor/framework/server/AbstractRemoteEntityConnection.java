@@ -217,6 +217,9 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
      */
     private static final List<AbstractRemoteEntityConnection> ACTIVE_CONNECTIONS = Collections.synchronizedList(new ArrayList<>());
 
+    /**
+     * The domain model Entities
+     */
     private final Entities entities;
 
     /**
@@ -347,7 +350,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     private EntityConnection getConnection() throws DatabaseException {
       DatabaseException exception = null;
       try {
-        if (methodLogger != null && methodLogger.isEnabled()) {
+        if (methodLogger.isEnabled()) {
           methodLogger.logAccess(GET_CONNECTION, new Object[]{remoteClient.getDatabaseUser(), remoteClient.getUser()});
         }
         if (connectionPool != null) {
@@ -361,7 +364,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
         throw ex;
       }
       finally {
-        if (methodLogger != null && methodLogger.isEnabled()) {
+        if (methodLogger.isEnabled()) {
           String message = null;
           final int retryCount = poolEntityConnection == null ? 0 : poolEntityConnection.getDatabaseConnection().getRetryCount();
           if (retryCount > 0) {
@@ -400,7 +403,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
         return;
       }
       try {
-        if (methodLogger != null && methodLogger.isEnabled()) {
+        if (methodLogger.isEnabled()) {
           methodLogger.logAccess(RETURN_CONNECTION, new Object[]{remoteClient.getDatabaseUser(), remoteClient.getUser()});
         }
         poolEntityConnection.setMethodLogger(null);
@@ -410,7 +413,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
         LOG.info("Exception while returning connection to pool", e);
       }
       finally {
-        if (methodLogger != null && methodLogger.isEnabled()) {
+        if (methodLogger.isEnabled()) {
           methodLogger.logExit(RETURN_CONNECTION, null, null);
         }
       }
@@ -472,13 +475,15 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 
     private static final double THOUSAND = 1000d;
 
-    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory());
+    private final ScheduledExecutorService executorService =
+            Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory());
     private long requestsPerSecondTime = System.currentTimeMillis();
     private int requestsPerSecond = 0;
     private int requestsPerSecondCounter = 0;
 
     private RequestCounter() {
-      executorService.scheduleWithFixedDelay(this::updateRequestsPerSecond, 0, DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL, TimeUnit.MILLISECONDS);
+      executorService.scheduleWithFixedDelay(this::updateRequestsPerSecond, 0,
+              DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL, TimeUnit.MILLISECONDS);
     }
 
     private void updateRequestsPerSecond() {

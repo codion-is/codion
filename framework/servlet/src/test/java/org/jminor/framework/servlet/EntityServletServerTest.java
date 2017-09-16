@@ -104,6 +104,7 @@ public class EntityServletServerTest {
     response.close();
     client.close();
 
+    final String domainId = new TestDomain().getDomainId();
     final String clientTypeId = "EntityServletServerTest";
     //test with missing clientId header
     client = HttpClientBuilder.create()
@@ -111,17 +112,16 @@ public class EntityServletServerTest {
             .setConnectionManager(new PoolingHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = UNIT_TEST_USER;
+              request.setHeader(EntityServlet.DOMAIN_ID, domainId);
               request.setHeader(EntityServlet.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityServlet.AUTHORIZATION,
                       BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             })
             .build();
-    final String domainId = new TestDomain().getDomainId();
     uriBuilder = createURIBuilder();
-    uriBuilder.addParameter("domainId", domainId)
-            .addParameter("condition",
-                    Util.serializeAndBase64Encode(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT)));
+    uriBuilder.addParameter("condition",
+            Util.serializeAndBase64Encode(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT)));
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(401, response.getStatusLine().getStatusCode());
     response.close();
@@ -134,6 +134,7 @@ public class EntityServletServerTest {
             .setConnectionManager(new PoolingHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = new User("who", "areu");
+              request.setHeader(EntityServlet.DOMAIN_ID, domainId);
               request.setHeader(EntityServlet.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityServlet.CLIENT_ID, clientIdValue.get().toString());
               request.setHeader(EntityServlet.AUTHORIZATION,
@@ -142,9 +143,8 @@ public class EntityServletServerTest {
             })
             .build();
     uriBuilder = createURIBuilder();
-    uriBuilder.addParameter("domainId", domainId)
-            .addParameter("condition",
-                    Util.serializeAndBase64Encode(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT)));
+    uriBuilder.addParameter("condition",
+            Util.serializeAndBase64Encode(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT)));
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(401, response.getStatusLine().getStatusCode());
     response.close();
@@ -155,6 +155,7 @@ public class EntityServletServerTest {
             .setConnectionManager(new PoolingHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = UNIT_TEST_USER;
+              request.setHeader(EntityServlet.DOMAIN_ID, domainId);
               request.setHeader(EntityServlet.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityServlet.CLIENT_ID, clientIdValue.get().toString());
               request.setHeader(EntityServlet.AUTHORIZATION,
@@ -166,9 +167,8 @@ public class EntityServletServerTest {
 
     //select all/GET
     uriBuilder = createURIBuilder();
-    uriBuilder.addParameter("domainId", domainId)
-            .addParameter("condition",
-                    Util.serializeAndBase64Encode(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT)));
+    uriBuilder.addParameter("condition",
+            Util.serializeAndBase64Encode(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT)));
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     String queryResult = getStringContent(response.getEntity());
@@ -184,8 +184,7 @@ public class EntityServletServerTest {
 
     //insert/POST
     uriBuilder = createURIBuilder();
-    uriBuilder.addParameter("domainId", domainId)
-            .addParameter("entities", Util.serializeAndBase64Encode(Collections.singletonList(department)));
+    uriBuilder.addParameter("entities", Util.serializeAndBase64Encode(Collections.singletonList(department)));
     response = client.execute(new HttpPost(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryResult = getStringContent(response.getEntity());
@@ -196,17 +195,15 @@ public class EntityServletServerTest {
 
     //delete/DELETE by condition
     uriBuilder = createURIBuilder();
-    uriBuilder.addParameter("domainId", domainId)
-            .addParameter("condition",
-                    Util.serializeAndBase64Encode(CONDITIONS.selectCondition(department.getKey())));
+    uriBuilder.addParameter("condition",
+            Util.serializeAndBase64Encode(CONDITIONS.selectCondition(department.getKey())));
     response = client.execute(new HttpDelete(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
 
     //insert/PUT
     uriBuilder = createURIBuilder();
-    uriBuilder.addParameter("domainId", domainId)
-            .addParameter("entities", Util.serializeAndBase64Encode(Collections.singletonList(department)));
+    uriBuilder.addParameter("entities", Util.serializeAndBase64Encode(Collections.singletonList(department)));
     response = client.execute(new HttpPut(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryResult = getStringContent(response.getEntity());
@@ -220,8 +217,7 @@ public class EntityServletServerTest {
     department.put(TestDomain.DEPARTMENT_LOCATION, "New location");
     department.put(TestDomain.DEPARTMENT_NAME, "New name");
     uriBuilder = createURIBuilder();
-    uriBuilder.addParameter("domainId", domainId)
-            .addParameter("entities", Util.serializeAndBase64Encode(Collections.singletonList(department)));
+    uriBuilder.addParameter("entities", Util.serializeAndBase64Encode(Collections.singletonList(department)));
     response = client.execute(new HttpPut(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryResult = getStringContent(response.getEntity());
@@ -232,10 +228,9 @@ public class EntityServletServerTest {
 
     //select/GET by condition
     uriBuilder = createURIBuilder();
-    uriBuilder.addParameter("domainId", domainId)
-            .addParameter("condition",
-                    Util.serializeAndBase64Encode(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
-                            TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "New name")));
+    uriBuilder.addParameter("condition",
+            Util.serializeAndBase64Encode(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
+                    TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "New name")));
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryResult = getStringContent(response.getEntity());
@@ -245,9 +240,8 @@ public class EntityServletServerTest {
 
     //select/GET by condition
     uriBuilder = createURIBuilder();
-    uriBuilder.addParameter("domainId", domainId)
-            .addParameter("condition",
-                    Util.serializeAndBase64Encode(CONDITIONS.selectCondition(department.getKey())));
+    uriBuilder.addParameter("condition",
+            Util.serializeAndBase64Encode(CONDITIONS.selectCondition(department.getKey())));
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryResult = getStringContent(response.getEntity());
@@ -257,17 +251,15 @@ public class EntityServletServerTest {
 
     //delete/DELETE by condition
     uriBuilder = createURIBuilder();
-    uriBuilder.addParameter("domainId", domainId)
-            .addParameter("condition",
-                    Util.serializeAndBase64Encode(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
-                            TestDomain.DEPARTMENT_ID, Condition.Type.LIKE, -42)));
+    uriBuilder.addParameter("condition",
+            Util.serializeAndBase64Encode(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
+                    TestDomain.DEPARTMENT_ID, Condition.Type.LIKE, -42)));
     response = client.execute(new HttpDelete(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
 
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("function")
-            .addParameter("domainId", domainId)
             .addParameter("functionId", TestDomain.FUNCTION_ID)
             .addParameter("parameters", Util.serializeAndBase64Encode(Collections.emptyList()));
     response = client.execute(new HttpGet(uriBuilder.build()));
@@ -276,7 +268,6 @@ public class EntityServletServerTest {
 
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("procedure")
-            .addParameter("domainId", domainId)
             .addParameter("procedureId", TestDomain.PROCEDURE_ID)
             .addParameter("parameters", Util.serializeAndBase64Encode(Collections.emptyList()));
     response = client.execute(new HttpGet(uriBuilder.build()));
@@ -292,7 +283,6 @@ public class EntityServletServerTest {
 
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("procedure")
-            .addParameter("domainId", domainId)
             .addParameter("procedureId", TestDomain.PROCEDURE_ID)
             .addParameter("parameters", Util.serializeAndBase64Encode(Collections.emptyList()));
     response = client.execute(new HttpGet(uriBuilder.build()));
@@ -302,8 +292,7 @@ public class EntityServletServerTest {
     clientIdValue.set(originalClientId);
 
     uriBuilder = createURIBuilder();
-    uriBuilder.setPath("disconnect")
-            .addParameter("domainId", domainId);
+    uriBuilder.setPath("disconnect");
     response = client.execute(new HttpGet(uriBuilder.build()));
     response.close();
 
