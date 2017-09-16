@@ -49,7 +49,7 @@ import java.util.UUID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class EntityRESTServerTest {
+public class EntityServletServerTest {
 
   private static final Entities ENTITIES = new TestDomain();
   private static final EntityConditions CONDITIONS = new EntityConditions(ENTITIES);
@@ -103,15 +103,15 @@ public class EntityRESTServerTest {
     response.close();
     client.close();
 
-    final String clientTypeId = "EntityRESTServerTest";
+    final String clientTypeId = "EntityServletServerTest";
     //test with missing clientId header
     client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(new PoolingHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = UNIT_TEST_USER;
-              request.setHeader(EntityRESTService.CLIENT_TYPE_ID, clientTypeId);
-              request.setHeader(EntityRESTService.AUTHORIZATION,
+              request.setHeader(EntityServlet.CLIENT_TYPE_ID, clientTypeId);
+              request.setHeader(EntityServlet.AUTHORIZATION,
                       BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             })
@@ -133,9 +133,9 @@ public class EntityRESTServerTest {
             .setConnectionManager(new PoolingHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = new User("who", "areu");
-              request.setHeader(EntityRESTService.CLIENT_TYPE_ID, clientTypeId);
-              request.setHeader(EntityRESTService.CLIENT_ID, clientIdValue.get().toString());
-              request.setHeader(EntityRESTService.AUTHORIZATION,
+              request.setHeader(EntityServlet.CLIENT_TYPE_ID, clientTypeId);
+              request.setHeader(EntityServlet.CLIENT_ID, clientIdValue.get().toString());
+              request.setHeader(EntityServlet.AUTHORIZATION,
                       BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             })
@@ -154,9 +154,9 @@ public class EntityRESTServerTest {
             .setConnectionManager(new PoolingHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = UNIT_TEST_USER;
-              request.setHeader(EntityRESTService.CLIENT_TYPE_ID, clientTypeId);
-              request.setHeader(EntityRESTService.CLIENT_ID, clientIdValue.get().toString());
-              request.setHeader(EntityRESTService.AUTHORIZATION,
+              request.setHeader(EntityServlet.CLIENT_TYPE_ID, clientTypeId);
+              request.setHeader(EntityServlet.CLIENT_ID, clientIdValue.get().toString());
+              request.setHeader(EntityServlet.AUTHORIZATION,
                       BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword())
                               .getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
@@ -342,7 +342,7 @@ public class EntityRESTServerTest {
     Server.RMI_SERVER_HOSTNAME.set("localhost");
     System.setProperty("java.security.policy", "resources/security/all_permissions.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
-    Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityRESTServer.class.getName());
+    Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityServletServer.class.getName());
     Server.WEB_SERVER_PORT.set(REST_SERVER_PORT_NUMBER);
   }
 

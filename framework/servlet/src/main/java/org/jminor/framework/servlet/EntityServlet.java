@@ -49,12 +49,12 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * A proof of concept implementation of a REST service for dealing with Entities
+ * A Servlet implementation for dealing with Entities
  */
 @Path("/")
-public final class EntityRESTService extends Application {
+public final class EntityServlet extends Application {
 
-  private static final Logger LOG = LoggerFactory.getLogger(EntityRESTService.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EntityServlet.class);
 
   public static final String AUTHORIZATION = "Authorization";
   public static final String CLIENT_TYPE_ID = "clientTypeId";
@@ -504,7 +504,7 @@ public final class EntityRESTService extends Application {
   }
 
   static void setServer(final Server server) {
-    EntityRESTService.server = server;
+    EntityServlet.server = server;
   }
 
   private static Response getExceptionResponse(final Exception exeption) {

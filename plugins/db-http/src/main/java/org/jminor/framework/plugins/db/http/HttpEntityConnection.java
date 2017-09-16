@@ -53,7 +53,7 @@ import java.util.Scanner;
 import java.util.UUID;
 
 /**
- * A Http based {@link EntityConnection} implementation based on EntityRESTService
+ * A Http based {@link EntityConnection} implementation based on EntityServlet
  */
 final class HttpEntityConnection implements EntityConnection {
 
