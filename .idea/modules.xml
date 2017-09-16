@@ -19,7 +19,7 @@
       <module fileurl="file://$PROJECT_DIR$/framework/model/jminor-framework-model.iml" filepath="$PROJECT_DIR$/framework/model/jminor-framework-model.iml" />
       <module fileurl="file://$PROJECT_DIR$/framework/model-unittests/jminor-framework-model-unittests.iml" filepath="$PROJECT_DIR$/framework/model-unittests/jminor-framework-model-unittests.iml" />
       <module fileurl="file://$PROJECT_DIR$/framework/server/jminor-framework-server.iml" filepath="$PROJECT_DIR$/framework/server/jminor-framework-server.iml" />
-      <module fileurl="file://$PROJECT_DIR$/plugins/servlet/jminor-framework-servlet.iml" filepath="$PROJECT_DIR$/plugins/servlet/jminor-framework-servlet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/servlet/jminor-framework-servlet.iml" filepath="$PROJECT_DIR$/framework/servlet/jminor-framework-servlet.iml" />
       <module fileurl="file://$PROJECT_DIR$/javafx/jminor-javafx.iml" filepath="$PROJECT_DIR$/javafx/jminor-javafx.iml" />
       <module fileurl="file://$PROJECT_DIR$/jminor-parent.iml" filepath="$PROJECT_DIR$/jminor-parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/server-monitor/jminor-server-monitor.iml" filepath="$PROJECT_DIR$/server-monitor/jminor-server-monitor.iml" />

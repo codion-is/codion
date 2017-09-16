@@ -8,7 +8,6 @@
     <subant target="clean" buildpath="log4j-proxy"/>
     <subant target="clean" buildpath="logback-proxy"/>
     <subant target="clean" buildpath="nextreports"/>
-    <subant target="clean" buildpath="rest"/>
     <subant target="clean" buildpath="tomcat-pool"/>
     <subant target="clean" buildpath="db-http"/>
   </target>
@@ -21,7 +20,6 @@
     <subant target="clean_lib" buildpath="log4j-proxy"/>
     <subant target="clean_lib" buildpath="logback-proxy"/>
     <subant target="clean_lib" buildpath="nextreports"/>
-    <subant target="clean_lib" buildpath="rest"/>
     <subant target="clean_lib" buildpath="tomcat-pool"/>
     <subant target="clean_lib" buildpath="db-http"/>
   </target>
@@ -34,7 +32,6 @@
     <subant target="build" buildpath="log4j-proxy"/>
     <subant target="build" buildpath="logback-proxy"/>
     <subant target="build" buildpath="nextreports"/>
-    <subant target="build" buildpath="rest"/>
     <subant target="build" buildpath="tomcat-pool"/>
     <subant target="build" buildpath="db-http"/>
   </target>
@@ -47,7 +44,6 @@
     <subant target="javadoc" buildpath="log4j-proxy"/>
     <subant target="javadoc" buildpath="logback-proxy"/>
     <subant target="javadoc" buildpath="nextreports"/>
-    <subant target="javadoc" buildpath="rest"/>
     <subant target="javadoc" buildpath="tomcat-pool"/>
     <subant target="javadoc" buildpath="db-http"/>
   </target>
@@ -60,7 +56,6 @@
     <subant target="package" buildpath="log4j-proxy"/>
     <subant target="package" buildpath="logback-proxy"/>
     <subant target="package" buildpath="nextreports"/>
-    <subant target="package" buildpath="rest"/>
     <subant target="package" buildpath="tomcat-pool"/>
     <subant target="package" buildpath="db-http"/>
   </target>
@@ -73,7 +68,6 @@
     <subant target="jdeps" buildpath="log4j-proxy"/>
     <subant target="jdeps" buildpath="logback-proxy"/>
     <subant target="jdeps" buildpath="nextreports"/>
-    <subant target="jdeps" buildpath="rest"/>
     <subant target="jdeps" buildpath="tomcat-pool"/>
     <subant target="jdeps" buildpath="db-http"/>
   </target>
@@ -86,7 +80,6 @@
     <subant target="deploy" buildpath="log4j-proxy"/>
     <subant target="deploy" buildpath="logback-proxy"/>
     <subant target="deploy" buildpath="nextreports"/>
-    <subant target="deploy" buildpath="rest"/>
     <subant target="deploy" buildpath="tomcat-pool"/>
     <subant target="deploy" buildpath="db-http"/>
   </target>
@@ -99,7 +92,6 @@
     <subant target="install" buildpath="log4j-proxy"/>
     <subant target="install" buildpath="logback-proxy"/>
     <subant target="install" buildpath="nextreports"/>
-    <subant target="install" buildpath="rest"/>
     <subant target="install" buildpath="tomcat-pool"/>
     <subant target="install" buildpath="db-http"/>
   </target>
@@ -112,7 +104,6 @@
     <subant target="run_unit_tests" buildpath="log4j-proxy"/>
     <subant target="run_unit_tests" buildpath="logback-proxy"/>
     <subant target="run_unit_tests" buildpath="nextreports"/>
-    <subant target="run_unit_tests" buildpath="rest"/>
     <subant target="run_unit_tests" buildpath="tomcat-pool"/>
     <subant target="run_unit_tests" buildpath="db-http"/>
   </target>

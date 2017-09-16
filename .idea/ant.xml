@@ -19,6 +19,7 @@
     <buildFile url="file://$PROJECT_DIR$/framework/model/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/framework/model-unittests/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/framework/server/build.xml" />
+    <buildFile url="file://$PROJECT_DIR$/framework/servlet/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/swing/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/swing/common-model/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/swing/common-ui/build.xml" />
@@ -37,7 +38,6 @@
     <buildFile url="file://$PROJECT_DIR$/plugins/log4j-proxy/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/plugins/logback-proxy/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/plugins/nextreports/build.xml" />
-    <buildFile url="file://$PROJECT_DIR$/plugins/rest/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/plugins/tomcat-pool/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/demos/build.xml" />
     <buildFile url="file://$PROJECT_DIR$/demos/chinook/build.xml" />

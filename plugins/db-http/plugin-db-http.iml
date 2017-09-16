@@ -16,8 +16,7 @@
     <orderEntry type="module" module-name="jminor-framework-db-remote" scope="TEST" />
     <orderEntry type="module" module-name="jminor-framework-db-local" scope="TEST" />
     <orderEntry type="module" module-name="jminor-framework-server" scope="TEST" />
-    <orderEntry type="module" module-name="plugin-rest" scope="TEST" />
-    <orderEntry type="module" module-name="plugin-json" />
+    <orderEntry type="module" module-name="jminor-framework-servlet" scope="TEST" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
