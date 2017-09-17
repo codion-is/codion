@@ -117,6 +117,7 @@
       <file file="framework/server/${package}/jminor-framework-server.jar"/>
       <file file="framework/servlet/${package}/jminor-framework-servlet.jar"/>
 
+      <fileset dir="framework/server/${lib}/runtime"/>
       <fileset dir="framework/server/${lib}/test" includes="h2*.jar"/>
       <fileset dir="framework/servlet/${lib}/runtime"/>
 
