@@ -24,10 +24,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -38,6 +35,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -69,7 +67,7 @@ public final class EntityServlet extends Application {
    * @param headers the headers
    * @return a response
    */
-  @GET
+  @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("disconnect")
@@ -93,7 +91,7 @@ public final class EntityServlet extends Application {
    * @param headers the headers
    * @return a response
    */
-  @GET
+  @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("isTransactionOpen")
@@ -114,7 +112,7 @@ public final class EntityServlet extends Application {
    * @param headers the headers
    * @return a response
    */
-  @GET
+  @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("beginTransaction")
@@ -137,7 +135,7 @@ public final class EntityServlet extends Application {
    * @param headers the headers
    * @return a response
    */
-  @GET
+  @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("commitTransaction")
@@ -160,7 +158,7 @@ public final class EntityServlet extends Application {
    * @param headers the headers
    * @return a response
    */
-  @GET
+  @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("rollbackTransaction")
@@ -182,19 +180,17 @@ public final class EntityServlet extends Application {
    * @param request the servlet request
    * @param headers the headers
    * @param procedureId the procedure id
-   * @param parameters the procedure parameters
    * @return a response
    */
-  @GET
+  @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("procedure")
   public Response procedure(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                            @QueryParam("procedureId") final String procedureId,
-                            @QueryParam("parameters") final String parameters) {
+                            @QueryParam("procedureId") final String procedureId) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final List parameterList = Util.base64DecodeAndDeserialize(parameters);
+      final List parameterList = deserializeRequestData(request);
       connection.executeProcedure(procedureId, parameterList.toArray());
 
       return Response.ok().build();
@@ -210,19 +206,17 @@ public final class EntityServlet extends Application {
    * @param request the servlet request
    * @param headers the headers
    * @param functionId the function id
-   * @param parameters the procedure parameters
    * @return a response
    */
-  @GET
+  @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("function")
   public Response function(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                           @QueryParam("functionId") final String functionId,
-                           @QueryParam("parameters") final String parameters) {
+                           @QueryParam("functionId") final String functionId) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final List parameterList = Util.base64DecodeAndDeserialize(parameters);
+      final List parameterList = deserializeRequestData(request);
       final List result = connection.executeFunction(functionId, parameterList.toArray());
 
       return Response.ok(Util.serializeAndBase64Encode(result)).build();
@@ -237,18 +231,16 @@ public final class EntityServlet extends Application {
    * Fills the given report
    * @param request the servlet request
    * @param headers the headers
-   * @param reportWrapper the report wrapper
    * @return a response
    */
-  @GET
+  @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("report")
-  public Response report(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                         @QueryParam("reportWrapper") final String reportWrapper) {
+  public Response report(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final ReportWrapper wrapper = Util.base64DecodeAndDeserialize(reportWrapper);
+      final ReportWrapper wrapper = deserializeRequestData(request);
       final ReportResult result = connection.fillReport(wrapper);
 
       return Response.ok(Util.serializeAndBase64Encode(result)).build();
@@ -263,18 +255,16 @@ public final class EntityServlet extends Application {
    * Returns the entities referencing the given entities via foreign keys, mapped to their respective entityIds
    * @param request the servlet request
    * @param headers the headers
-   * @param entities the entities
    * @return a response
    */
-  @GET
+  @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("dependencies")
-  public Response dependencies(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                               @QueryParam("entities") final String entities) {
+  public Response dependencies(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final List<Entity> entityList = Util.base64DecodeAndDeserialize(entities);
+      final List<Entity> entityList = deserializeRequestData(request);
       final Map<String, Collection<Entity>> dependencies = connection.selectDependentEntities(entityList);
 
       return Response.ok(Util.serializeAndBase64Encode(dependencies)).build();
@@ -289,18 +279,16 @@ public final class EntityServlet extends Application {
    * Returns the record count for the given condition
    * @param request the servlet request
    * @param headers the headers
-   * @param condition the query condition
    * @return a response
    */
-  @GET
+  @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("count")
-  public Response count(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                        @QueryParam("condition") final String condition) {
+  public Response count(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final EntityCondition entityCondition = Util.base64DecodeAndDeserialize(condition);
+      final EntityCondition entityCondition = deserializeRequestData(request);
 
       return Response.ok(Util.serializeAndBase64Encode(connection.selectRowCount(entityCondition))).build();
     }
@@ -315,19 +303,17 @@ public final class EntityServlet extends Application {
    * @param request the servlet request
    * @param headers the headers
    * @param propertyId the propertyId
-   * @param condition the query condition
    * @return a response
    */
-  @GET
+  @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("values")
   public Response values(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                         @QueryParam("propertyId") final String propertyId,
-                         @QueryParam("condition") final String condition) {
+                         @QueryParam("propertyId") final String propertyId) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final EntityCondition entityCondition = Util.base64DecodeAndDeserialize(condition);
+      final EntityCondition entityCondition = deserializeRequestData(request);
       final List values = connection.selectValues(propertyId, entityCondition);
 
       return Response.ok(Util.serializeAndBase64Encode(values)).build();
@@ -345,14 +331,14 @@ public final class EntityServlet extends Application {
    * @param condition the query condition
    * @return a response
    */
-  @GET
+  @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  public Response select(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                         @QueryParam("condition") final String condition) {
+  @Path("select")
+  public Response select(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final EntitySelectCondition selectCondition = Util.base64DecodeAndDeserialize(condition);
+      final EntitySelectCondition selectCondition = deserializeRequestData(request);
 
       return Response.ok(Util.serializeAndBase64Encode(connection.selectMany(selectCondition))).build();
     }
@@ -372,11 +358,11 @@ public final class EntityServlet extends Application {
   @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  public Response insert(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                         @QueryParam("entities") final String entities) {
+  @Path("insert")
+  public Response insert(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final List<Entity.Key> keys = connection.insert(Util.base64DecodeAndDeserialize(entities));
+      final List<Entity.Key> keys = connection.insert(deserializeRequestData(request));
 
       return Response.ok(Util.serializeAndBase64Encode(keys)).build();
     }
@@ -393,14 +379,14 @@ public final class EntityServlet extends Application {
    * @param entities the entities to save
    * @return a response
    */
-  @PUT
+  @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  public Response save(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                       @QueryParam("entities") final String entities) {
+  @Path("save")
+  public Response save(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final List<Entity> parsedEntities = Util.base64DecodeAndDeserialize(entities);
+      final List<Entity> parsedEntities = deserializeRequestData(request);
       final List<Entity> toInsert = new ArrayList<>(parsedEntities.size());
       final List<Entity> toUpdate = new ArrayList<>(parsedEntities.size());
       for (final Entity entity : parsedEntities) {
@@ -428,13 +414,13 @@ public final class EntityServlet extends Application {
    * @param condition the query condition
    * @return a response
    */
-  @DELETE
+  @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-  public Response delete(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                         @QueryParam("condition") final String condition) {
+  @Path("delete")
+  public Response delete(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final EntityCondition entityCondition = Util.base64DecodeAndDeserialize(condition);
+      final EntityCondition entityCondition = deserializeRequestData(request);
       connection.delete(entityCondition);
 
       return Response.ok().build();
@@ -536,6 +522,10 @@ public final class EntityServlet extends Application {
     final byte[] decodedBytes = Base64.getDecoder().decode(basicAuth.replaceFirst("[B|b]asic ", ""));
 
     return User.parseUser(new String(decodedBytes));
+  }
+
+  private static <T> T deserializeRequestData(final HttpServletRequest request) throws IOException, ClassNotFoundException {
+    return (T) new ObjectInputStream(request.getInputStream()).readObject();
   }
 
   private static List<Entity> saveEntities(final RemoteEntityConnection connection, final List<Entity> toInsert,

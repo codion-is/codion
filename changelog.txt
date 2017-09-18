@@ -4627,3 +4627,4 @@
   More cleanup
   EntityServlet, domainId parameter moved to header
   AbstractRemoteEntityConnection.RemoteEntityConnectionHandler, removed redundant methodLogger null check
+  EntityServlet now uses POST only, assumes byte request data
