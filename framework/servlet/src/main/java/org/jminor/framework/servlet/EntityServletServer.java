@@ -22,12 +22,12 @@ public final class EntityServletServer extends HttpServer {
    */
   public EntityServletServer(final org.jminor.common.server.Server connectionServer) {
     super(connectionServer, HttpServer.DOCUMENT_ROOT.get(), HttpServer.HTTP_SERVER_PORT.get());
-    EntityServlet.setServer(connectionServer);
+    EntityService.setServer(connectionServer);
     final ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
     servletHandler.setContextPath("/");
     final ServletHolder holder = servletHandler.addServlet(ServletContainer.class, "/entities/*");
     holder.setInitOrder(0);
-    holder.setInitParameter("jersey.config.server.provider.classnames", EntityServlet.class.getCanonicalName());
+    holder.setInitParameter("jersey.config.server.provider.classnames", EntityService.class.getCanonicalName());
     addHandler(servletHandler);
   }
 
@@ -35,6 +35,6 @@ public final class EntityServletServer extends HttpServer {
   @Override
   public void stopServer() throws Exception {
     super.stopServer();
-    EntityServlet.setServer(null);
+    EntityService.setServer(null);
   }
 }

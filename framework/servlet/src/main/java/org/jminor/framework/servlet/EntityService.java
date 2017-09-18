@@ -47,12 +47,12 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * A Servlet implementation for dealing with Entities
+ * A service for dealing with Entities
  */
 @Path("/")
-public final class EntityServlet extends Application {
+public final class EntityService extends Application {
 
-  private static final Logger LOG = LoggerFactory.getLogger(EntityServlet.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EntityService.class);
 
   public static final String AUTHORIZATION = "Authorization";
   public static final String DOMAIN_ID = "domainId";
@@ -430,7 +430,7 @@ public final class EntityServlet extends Application {
 
   private static RemoteEntityConnection authenticate(final HttpServletRequest request, final HttpHeaders headers) {
     if (server == null) {
-      throw new IllegalStateException("EntityConnectionServer has not been set for EntityServlet");
+      throw new IllegalStateException("EntityConnectionServer has not been set for EntityService");
     }
 
     final String domainId = getDomainId(headers);
@@ -454,7 +454,7 @@ public final class EntityServlet extends Application {
   }
 
   static void setServer(final Server server) {
-    EntityServlet.server = server;
+    EntityService.server = server;
   }
 
   private static Response getExceptionResponse(final Exception exeption) {

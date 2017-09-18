@@ -49,19 +49,15 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
- * A Http based {@link EntityConnection} implementation based on EntityServlet
+ * A Http based {@link EntityConnection} implementation based on EntityService
  */
 final class HttpEntityConnection implements EntityConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(HttpEntityConnection.class);
 
   private static final String PROPERTY_ID_PARAM = "propertyId";
-  private static final String ENTITIES_PARAM = "entities";
-  private static final String CONDITION_PARAM = "condition";
   private static final String FUNCTION_ID_PARAM = "functionId";
   private static final String PROCEDURE_ID_PARAM = "procedureId";
-  private static final String PARAMETERS_PARAM = "parameters";
-  private static final String REPORT_WRAPPER_PARAM = "reportWrapper";
   private static final String DOMAIN_ID = "domainId";
   private static final String CLIENT_TYPE_ID = "clientTypeId";
   private static final String CLIENT_ID = "clientId";
@@ -535,15 +531,13 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  private static <T> T deserializeAndClose(final CloseableHttpResponse response) throws IOException, ClassNotFoundException {
-    try {
+  private static <T> T deserializeAndClose(final CloseableHttpResponse response)
+          throws IOException, ClassNotFoundException {
+    try (final CloseableHttpResponse closeable = response) {
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      response.getEntity().writeTo(outputStream);
+      closeable.getEntity().writeTo(outputStream);
 
       return Util.deserialize(outputStream.toByteArray());
-    }
-    finally {
-      Util.closeSilently(response);
     }
   }
 }

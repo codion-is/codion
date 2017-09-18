@@ -92,10 +92,10 @@ public class EntityServletServerTest {
             .setConnectionManager(new BasicHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = UNIT_TEST_USER;
-              request.setHeader(EntityServlet.DOMAIN_ID, domainId);
-              request.setHeader(EntityServlet.CLIENT_TYPE_ID, clientTypeId);
-              request.setHeader(EntityServlet.CLIENT_ID, clientId.toString());
-              request.setHeader(EntityServlet.AUTHORIZATION,
+              request.setHeader(EntityService.DOMAIN_ID, domainId);
+              request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
+              request.setHeader(EntityService.CLIENT_ID, clientId.toString());
+              request.setHeader(EntityService.AUTHORIZATION,
                       BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             })
@@ -141,9 +141,9 @@ public class EntityServletServerTest {
             .setConnectionManager(new BasicHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = UNIT_TEST_USER;
-              request.setHeader(EntityServlet.DOMAIN_ID, domainId);
-              request.setHeader(EntityServlet.CLIENT_TYPE_ID, clientTypeId);
-              request.setHeader(EntityServlet.AUTHORIZATION,
+              request.setHeader(EntityService.DOMAIN_ID, domainId);
+              request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
+              request.setHeader(EntityService.AUTHORIZATION,
                       BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             })
@@ -162,10 +162,10 @@ public class EntityServletServerTest {
             .setConnectionManager(new BasicHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = new User("who", "areu");
-              request.setHeader(EntityServlet.DOMAIN_ID, domainId);
-              request.setHeader(EntityServlet.CLIENT_TYPE_ID, clientTypeId);
-              request.setHeader(EntityServlet.CLIENT_ID, clientIdValue.get().toString());
-              request.setHeader(EntityServlet.AUTHORIZATION,
+              request.setHeader(EntityService.DOMAIN_ID, domainId);
+              request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
+              request.setHeader(EntityService.CLIENT_ID, clientIdValue.get().toString());
+              request.setHeader(EntityService.AUTHORIZATION,
                       BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             })
@@ -182,10 +182,10 @@ public class EntityServletServerTest {
             .setConnectionManager(new BasicHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = UNIT_TEST_USER;
-              request.setHeader(EntityServlet.DOMAIN_ID, domainId);
-              request.setHeader(EntityServlet.CLIENT_TYPE_ID, clientTypeId);
-              request.setHeader(EntityServlet.CLIENT_ID, clientIdValue.get().toString());
-              request.setHeader(EntityServlet.AUTHORIZATION,
+              request.setHeader(EntityService.DOMAIN_ID, domainId);
+              request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
+              request.setHeader(EntityService.CLIENT_ID, clientIdValue.get().toString());
+              request.setHeader(EntityService.AUTHORIZATION,
                       BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword())
                               .getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
