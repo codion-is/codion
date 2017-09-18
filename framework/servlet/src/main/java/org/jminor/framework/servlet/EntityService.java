@@ -5,9 +5,6 @@ package org.jminor.framework.servlet;
 
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.reports.ReportResult;
-import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.server.Clients;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
@@ -15,8 +12,6 @@ import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.Entity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +32,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -190,8 +182,7 @@ public final class EntityService extends Application {
                             @QueryParam("procedureId") final String procedureId) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final List parameterList = deserialize(request);
-      connection.executeProcedure(procedureId, parameterList.toArray());
+      connection.executeProcedure(procedureId, EntityService.<List>deserialize(request).toArray());
 
       return Response.ok().build();
     }
@@ -216,10 +207,9 @@ public final class EntityService extends Application {
                            @QueryParam("functionId") final String functionId) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final List parameterList = deserialize(request);
-      final List result = connection.executeFunction(functionId, parameterList.toArray());
-
-      return Response.ok(Util.serialize(result)).build();
+      return Response.ok(Util.serialize(
+              connection.executeFunction(functionId,
+                      EntityService.<List>deserialize(request).toArray()))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -240,10 +230,7 @@ public final class EntityService extends Application {
   public Response report(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final ReportWrapper wrapper = deserialize(request);
-      final ReportResult result = connection.fillReport(wrapper);
-
-      return Response.ok(Util.serialize(result)).build();
+      return Response.ok(Util.serialize(connection.fillReport(deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -264,10 +251,8 @@ public final class EntityService extends Application {
   public Response dependencies(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final List<Entity> entityList = deserialize(request);
-      final Map<String, Collection<Entity>> dependencies = connection.selectDependentEntities(entityList);
-
-      return Response.ok(Util.serialize(dependencies)).build();
+      return Response.ok(Util.serialize(
+              connection.selectDependentEntities(deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -288,9 +273,7 @@ public final class EntityService extends Application {
   public Response count(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final EntityCondition entityCondition = deserialize(request);
-
-      return Response.ok(Util.serialize(connection.selectRowCount(entityCondition))).build();
+      return Response.ok(Util.serialize(connection.selectRowCount(deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -313,10 +296,8 @@ public final class EntityService extends Application {
                          @QueryParam("propertyId") final String propertyId) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final EntityCondition entityCondition = deserialize(request);
-      final List values = connection.selectValues(propertyId, entityCondition);
-
-      return Response.ok(Util.serialize(values)).build();
+      return Response.ok(Util.serialize(
+              connection.selectValues(propertyId, deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -360,9 +341,7 @@ public final class EntityService extends Application {
   public Response insert(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final List<Entity.Key> keys = connection.insert(deserialize(request));
-
-      return Response.ok(Util.serialize(keys)).build();
+      return Response.ok(Util.serialize(connection.insert(deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -371,7 +350,7 @@ public final class EntityService extends Application {
   }
 
   /**
-   * Saves, as in, inserts or updates the given entities
+   * Updates the given entities
    * @param request the servlet request
    * @param headers the headers
    * @return a response
@@ -379,24 +358,11 @@ public final class EntityService extends Application {
   @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  @Path("save")
-  public Response save(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  @Path("update")
+  public Response update(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final List<Entity> parsedEntities = deserialize(request);
-      final List<Entity> toInsert = new ArrayList<>(parsedEntities.size());
-      final List<Entity> toUpdate = new ArrayList<>(parsedEntities.size());
-      for (final Entity entity : parsedEntities) {
-        if (Entities.isEntityNew(entity)) {
-          toInsert.add(entity);
-        }
-        else {
-          toUpdate.add(entity);
-        }
-      }
-      final List<Entity> savedEntities = saveEntities(connection, toInsert, toUpdate);
-
-      return Response.ok(Util.serialize(savedEntities)).build();
+      return Response.ok(Util.serialize(connection.update(deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -469,27 +435,21 @@ public final class EntityService extends Application {
 
   private static String getDomainId(final HttpHeaders headers) {
     final List<String> domainIdHeaders = headers.getRequestHeader(DOMAIN_ID);
-    if (Util.nullOrEmpty(domainIdHeaders)) {
-      throw new WebApplicationException(DOMAIN_ID + " header parameter is missing", Response.Status.UNAUTHORIZED);
-    }
+    checkHeaderParameter(domainIdHeaders, DOMAIN_ID);
 
     return domainIdHeaders.get(0);
   }
 
   private static String getClientTypeId(final HttpHeaders headers) {
     final List<String> clientTypeIdHeaders = headers.getRequestHeader(CLIENT_TYPE_ID);
-    if (Util.nullOrEmpty(clientTypeIdHeaders)) {
-      throw new WebApplicationException(CLIENT_TYPE_ID + " header parameter is missing", Response.Status.UNAUTHORIZED);
-    }
+    checkHeaderParameter(clientTypeIdHeaders, CLIENT_TYPE_ID);
 
     return clientTypeIdHeaders.get(0);
   }
 
   private static UUID getClientId(final HttpServletRequest request, final HttpHeaders headers) {
     final List<String> clientIdHeaders = headers.getRequestHeader(CLIENT_ID);
-    if (Util.nullOrEmpty(clientIdHeaders)) {
-      throw new WebApplicationException(CLIENT_ID + " header parameter is missing", Response.Status.UNAUTHORIZED);
-    }
+    checkHeaderParameter(clientIdHeaders, CLIENT_ID);
     final UUID clientId = UUID.fromString(clientIdHeaders.get(0));
     final HttpSession session = request.getSession();
     if (session.isNew()) {
@@ -525,24 +485,10 @@ public final class EntityService extends Application {
     return (T) new ObjectInputStream(request.getInputStream()).readObject();
   }
 
-  private static List<Entity> saveEntities(final RemoteEntityConnection connection, final List<Entity> toInsert,
-                                           final List<Entity> toUpdate) throws DatabaseException, RemoteException {
-    final List<Entity> savedEntities = new ArrayList<>(toInsert.size() + toUpdate.size());
-    try {
-      connection.beginTransaction();
-      if (!toInsert.isEmpty()) {
-        savedEntities.addAll(connection.selectMany(connection.insert(toInsert)));
-      }
-      if (!toUpdate.isEmpty()) {
-        savedEntities.addAll(connection.update(toUpdate));
-      }
-      connection.commitTransaction();
-
-      return savedEntities;
-    }
-    catch (final DatabaseException dbe) {
-      connection.rollbackTransaction();
-      throw dbe;
+  private static void checkHeaderParameter(final List<String> headers, final String headerParameter) {
+    if (Util.nullOrEmpty(headers)) {
+      throw new WebApplicationException(headerParameter + " header parameter is missing",
+              Response.Status.UNAUTHORIZED);
     }
   }
 }

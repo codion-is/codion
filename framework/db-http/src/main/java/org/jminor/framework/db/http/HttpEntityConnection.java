@@ -126,9 +126,8 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public void disconnect() {
-    CloseableHttpResponse response = null;
     try {
-      response = executePost("disconnect");
+      handleResponse(execute(createHttpPost("disconnect")));
       connectionManager.shutdown();
       httpClient.close();
       closed = true;
@@ -137,16 +136,13 @@ final class HttpEntityConnection implements EntityConnection {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
-    finally {
-      Util.closeSilently(response);
-    }
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isTransactionOpen() {
     try {
-      return deserializeAndClose(executePost("isTransactionOpen"));
+      return handleResponse(execute(createHttpPost("isTransactionOpen")));
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -158,7 +154,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public void beginTransaction() {
     try {
-      executePostAndClose("beginTransaction");
+      handleResponse(execute(createHttpPost("beginTransaction")));
     }
     catch (final RuntimeException e) {
       throw e;
@@ -173,7 +169,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public void rollbackTransaction() {
     try {
-      executePostAndClose("rollbackTransaction");
+      handleResponse(execute(createHttpPost("rollbackTransaction")));
     }
     catch (final RuntimeException e) {
       throw e;
@@ -188,7 +184,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public void commitTransaction() {
     try {
-      executePostAndClose("commitTransaction");
+      handleResponse(execute(createHttpPost("commitTransaction")));
     }
     catch (final RuntimeException e) {
       throw e;
@@ -204,7 +200,7 @@ final class HttpEntityConnection implements EntityConnection {
   public List executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
     Objects.requireNonNull(functionId);
     try {
-      return deserializeAndClose(executeOperation("function", FUNCTION_ID_PARAM, functionId, arguments));
+      return executeOperation("function", FUNCTION_ID_PARAM, functionId, arguments);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -220,7 +216,7 @@ final class HttpEntityConnection implements EntityConnection {
   public void executeProcedure(final String procedureId, final Object... arguments) throws DatabaseException {
     Objects.requireNonNull(procedureId);
     try {
-      deserializeAndClose(executeOperation("procedure", PROCEDURE_ID_PARAM, procedureId, arguments));
+      executeOperation("procedure", PROCEDURE_ID_PARAM, procedureId, arguments);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -236,12 +232,7 @@ final class HttpEntityConnection implements EntityConnection {
   public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
-      final HttpPost httpPost = new HttpPost(createURIBuilder().setPath("insert").build());
-      httpPost.setEntity(new ByteArrayEntity(Util.serialize(entities)));
-      final CloseableHttpResponse response = execute(httpPost);
-      ifExceptionCloseAndThrow(response);
-
-      return deserializeAndClose(response);
+      return handleResponse(execute(createHttpPost("insert", entities)));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -257,12 +248,7 @@ final class HttpEntityConnection implements EntityConnection {
   public List<Entity> update(final List<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
-      final HttpPost httpPost = createHttpPost("save");
-      httpPost.setEntity(new ByteArrayEntity(Util.serialize(entities)));
-      final CloseableHttpResponse response = execute(httpPost);
-      ifExceptionCloseAndThrow(response);
-
-      return deserializeAndClose(response);
+      return handleResponse(execute(createHttpPost("update", entities)));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -284,10 +270,7 @@ final class HttpEntityConnection implements EntityConnection {
   public void delete(final EntityCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      final HttpPost httpPost = createHttpPost("delete");
-      httpPost.setEntity(new ByteArrayEntity(Util.serialize(condition)));
-      final CloseableHttpResponse response = execute(httpPost);
-      ifExceptionCloseAndThrow(response);
+      handleResponse(execute(createHttpPost("delete", condition)));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -304,13 +287,8 @@ final class HttpEntityConnection implements EntityConnection {
     Objects.requireNonNull(propertyId);
     Objects.requireNonNull(condition);
     try {
-      final HttpPost httpPost = new HttpPost(createURIBuilder().setPath("values")
-              .addParameter(PROPERTY_ID_PARAM, propertyId).build());
-      httpPost.setEntity(new ByteArrayEntity(Util.serialize(condition)));
-      final CloseableHttpResponse response = execute(httpPost);
-      ifExceptionCloseAndThrow(response);
-
-      return deserializeAndClose(response);
+      return handleResponse(execute(createHttpPost(createURIBuilder("values")
+              .addParameter(PROPERTY_ID_PARAM, propertyId), condition)));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -337,7 +315,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException {
     final List<Entity> entities = selectMany(condition);
-    if (entities.isEmpty()) {
+    if (Util.nullOrEmpty(entities)) {
       throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
     }
     if (entities.size() > 1) {
@@ -358,12 +336,7 @@ final class HttpEntityConnection implements EntityConnection {
   public List<Entity> selectMany(final EntitySelectCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition, "condition");
     try {
-      final HttpPost httpPost = createHttpPost("select");
-      httpPost.setEntity(new ByteArrayEntity(Util.serialize(condition)));
-      final CloseableHttpResponse response = execute(httpPost);
-      ifExceptionCloseAndThrow(response);
-
-      return deserializeAndClose(response);
+      return handleResponse(execute(createHttpPost("select", condition)));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -386,12 +359,7 @@ final class HttpEntityConnection implements EntityConnection {
   public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
-      final HttpPost httpPost = createHttpPost("dependencies");
-      httpPost.setEntity(new ByteArrayEntity(Util.serialize(entities)));
-      final CloseableHttpResponse response = execute(httpPost);
-      ifExceptionCloseAndThrow(response);
-
-      return deserializeAndClose(response);
+      return handleResponse(execute(createHttpPost("dependencies", entities)));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -407,12 +375,7 @@ final class HttpEntityConnection implements EntityConnection {
   public int selectRowCount(final EntityCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      final HttpPost httpPost = createHttpPost("count");
-      httpPost.setEntity(new ByteArrayEntity(Util.serialize(condition)));
-      final CloseableHttpResponse response = execute(httpPost);
-      ifExceptionCloseAndThrow(response);
-
-      return deserializeAndClose(response);
+      return handleResponse(execute(createHttpPost("count", condition)));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -428,12 +391,7 @@ final class HttpEntityConnection implements EntityConnection {
   public ReportResult fillReport(final ReportWrapper reportWrapper) throws DatabaseException, ReportException {
     Objects.requireNonNull(reportWrapper, "reportWrapper");
     try {
-      final HttpPost httpPost = createHttpPost("report");
-      httpPost.setEntity(new ByteArrayEntity(Util.serialize(reportWrapper)));
-      final CloseableHttpResponse response = execute(httpPost);
-      ifExceptionCloseAndThrow(response);
-
-      return deserializeAndClose(response);
+      return handleResponse(execute(createHttpPost("report", reportWrapper)));
     }
     catch (final ReportException | DatabaseException e) {
       throw e;
@@ -463,33 +421,11 @@ final class HttpEntityConnection implements EntityConnection {
     throw new UnsupportedOperationException();
   }
 
-  private void executePostAndClose(final String path) throws Exception {
-    CloseableHttpResponse response = null;
-    try {
-      response = executePost(path);
-    }
-    finally {
-      Util.closeSilently(response);
-    }
-  }
-
-  private CloseableHttpResponse executePost(final String path) throws Exception {
-    final CloseableHttpResponse response = execute(createHttpPost(path));
-    ifExceptionCloseAndThrow(response);
-
-    return response;
-  }
-
-  private CloseableHttpResponse executeOperation(final String path, final String operationIdParam,
-                                                 final String operationId,
-                                                 final Object... arguments) throws Exception {
-    final HttpPost httpPost = new HttpPost(createURIBuilder().setPath(path)
-            .addParameter(operationIdParam, operationId).build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(Util.notNull(arguments) ? Arrays.asList(arguments) : Collections.emptyList())));
-    final CloseableHttpResponse response = execute(httpPost);
-    ifExceptionCloseAndThrow(response);
-
-    return response;
+  private List executeOperation(final String path, final String operationIdParam, final String operationId,
+                                final Object... arguments) throws Exception {
+    return handleResponse(execute(createHttpPost(createURIBuilder(path)
+                    .addParameter(operationIdParam, operationId),
+            Util.notNull(arguments) ? Arrays.asList(arguments) : Collections.emptyList())));
   }
 
   private CloseableHttpResponse execute(final HttpUriRequest operation) throws IOException {
@@ -499,7 +435,8 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   private CloseableHttpClient createHttpClient(final String clientTypeId, final UUID clientId) {
-    final String authorizationHeader = BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes());
+    final String authorizationHeader = BASIC + Base64.getEncoder().encodeToString((
+            user.getUsername() + ":" + user.getPassword()).getBytes());
     final String domainId = domain.getDomainId();
     final String clientIdString = clientId.toString();
 
@@ -516,28 +453,42 @@ final class HttpEntityConnection implements EntityConnection {
             .build();
   }
 
-  private HttpPost createHttpPost(final String path) throws URISyntaxException {
-    return new HttpPost(createURIBuilder().setPath(path).build());
+  private HttpPost createHttpPost(final String path) throws URISyntaxException, IOException {
+    return createHttpPost(path, null);
   }
 
-  private URIBuilder createURIBuilder() {
-    return new URIBuilder().setScheme(HTTP).setHost(baseurl);
+  private HttpPost createHttpPost(final String path, final Object data) throws URISyntaxException, IOException {
+    return createHttpPost(createURIBuilder(path), data);
   }
 
-  private static void ifExceptionCloseAndThrow(final CloseableHttpResponse response) throws Exception {
-    if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-      Util.closeSilently(response);
-      throw HttpEntityConnection.<Exception>deserializeAndClose(response);
+  private HttpPost createHttpPost(final URIBuilder uriBuilder, final Object data) throws URISyntaxException, IOException {
+    final HttpPost post = new HttpPost(uriBuilder.build());
+    if (data != null) {
+      post.setEntity(new ByteArrayEntity(Util.serialize(data)));
     }
+
+    return post;
   }
 
-  private static <T> T deserializeAndClose(final CloseableHttpResponse response)
-          throws IOException, ClassNotFoundException {
-    try (final CloseableHttpResponse closeable = response) {
-      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      closeable.getEntity().writeTo(outputStream);
+  private URIBuilder createURIBuilder(final String path) {
+    return new URIBuilder().setScheme(HTTP).setHost(baseurl).setPath(path);
+  }
 
-      return Util.deserialize(outputStream.toByteArray());
+  private static <T> T handleResponse(final CloseableHttpResponse closeableHttpResponse) throws Exception {
+    try (final CloseableHttpResponse response = closeableHttpResponse) {
+      final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+        response.getEntity().writeTo(outputStream);
+
+        throw Util.<Exception>deserialize(outputStream.toByteArray());
+      }
+      if (response.getEntity().getContentLength() > 0) {
+        response.getEntity().writeTo(outputStream);
+
+        return Util.deserialize(outputStream.toByteArray());
+      }
+
+      return null;
     }
   }
 }

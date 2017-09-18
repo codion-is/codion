@@ -203,7 +203,7 @@ public class EntityServletServerTest {
     assertEquals(4, queryEntities.size());
     response.close();
 
-    Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
+    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, null);
     department.put(TestDomain.DEPARTMENT_ID, -42);
     department.put(TestDomain.DEPARTMENT_NAME, "Test");
@@ -232,22 +232,22 @@ public class EntityServletServerTest {
 
     //insert
     uriBuilder = createURIBuilder();
-    uriBuilder.setPath("save");
+    uriBuilder.setPath("insert");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.singletonList(department))));
     response = client.execute(httpPost);
     assertEquals(200, response.getStatusLine().getStatusCode());
-    queryEntities = deserializeResponse(response);
-    assertEquals(1, queryEntities.size());
-    assertEquals(department, queryEntities.get(0));
-    department = queryEntities.get(0);
+    final List<Entity.Key> keys = deserializeResponse(response);
+    assertEquals(1, keys.size());
+    assertEquals(department.getKey(), keys.get(0));
     response.close();
 
     //update
+    department.saveAll();
     department.put(TestDomain.DEPARTMENT_LOCATION, "New location");
     department.put(TestDomain.DEPARTMENT_NAME, "New name");
     uriBuilder = createURIBuilder();
-    uriBuilder.setPath("save");
+    uriBuilder.setPath("update");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.singletonList(department))));
     response = client.execute(httpPost);
