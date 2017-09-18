@@ -21,7 +21,6 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
@@ -34,12 +33,11 @@ import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
@@ -47,7 +45,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Scanner;
 import java.util.UUID;
 
 /**
@@ -292,7 +289,7 @@ final class HttpEntityConnection implements EntityConnection {
     try {
       final HttpPost httpPost = new HttpPost(createURIBuilder().setPath("delete").build());
       httpPost.setEntity(new ByteArrayEntity(Util.serialize(condition)));
-      final CloseableHttpResponse response  = execute(httpPost);
+      final CloseableHttpResponse response = execute(httpPost);
       ifExceptionCloseAndThrow(response);
     }
     catch (final DatabaseException e) {
@@ -513,24 +510,18 @@ final class HttpEntityConnection implements EntityConnection {
 
   private static <T> T getAndCloseResponse(final CloseableHttpResponse response) throws IOException, ClassNotFoundException {
     try {
-      return Util.base64DecodeAndDeserialize(getStringContent(response.getEntity()));
+      return deserialize(response);
     }
     finally {
       Util.closeSilently(response);
     }
   }
 
-  private static String getStringContent(final HttpEntity entity) throws IOException {
-    Scanner scanner = null;
-    try (final InputStream stream = entity.getContent()) {
-      scanner = new Scanner(stream).useDelimiter("\\A");
+  private static <T> T deserialize(final CloseableHttpResponse response) throws IOException, ClassNotFoundException {
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    response.getEntity().writeTo(outputStream);
 
-      return scanner.hasNext() ? scanner.next() : null;
-    }
-    finally {
-      Util.closeSilently(scanner);
-      EntityUtils.consume(entity);
-    }
+    return Util.deserialize(outputStream.toByteArray());
   }
 
   private CloseableHttpClient createHttpClient(final String clientTypeId, final UUID clientId) {

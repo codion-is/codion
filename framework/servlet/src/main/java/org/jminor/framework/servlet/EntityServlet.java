@@ -98,7 +98,7 @@ public final class EntityServlet extends Application {
   public Response isTransactionOpen(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      return Response.ok(Util.serializeAndBase64Encode(connection.isTransactionOpen())).build();
+      return Response.ok(Util.serialize(connection.isTransactionOpen())).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -190,7 +190,7 @@ public final class EntityServlet extends Application {
                             @QueryParam("procedureId") final String procedureId) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final List parameterList = deserializeRequestData(request);
+      final List parameterList = deserialize(request);
       connection.executeProcedure(procedureId, parameterList.toArray());
 
       return Response.ok().build();
@@ -216,10 +216,10 @@ public final class EntityServlet extends Application {
                            @QueryParam("functionId") final String functionId) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final List parameterList = deserializeRequestData(request);
+      final List parameterList = deserialize(request);
       final List result = connection.executeFunction(functionId, parameterList.toArray());
 
-      return Response.ok(Util.serializeAndBase64Encode(result)).build();
+      return Response.ok(Util.serialize(result)).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -240,10 +240,10 @@ public final class EntityServlet extends Application {
   public Response report(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final ReportWrapper wrapper = deserializeRequestData(request);
+      final ReportWrapper wrapper = deserialize(request);
       final ReportResult result = connection.fillReport(wrapper);
 
-      return Response.ok(Util.serializeAndBase64Encode(result)).build();
+      return Response.ok(Util.serialize(result)).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -264,10 +264,10 @@ public final class EntityServlet extends Application {
   public Response dependencies(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final List<Entity> entityList = deserializeRequestData(request);
+      final List<Entity> entityList = deserialize(request);
       final Map<String, Collection<Entity>> dependencies = connection.selectDependentEntities(entityList);
 
-      return Response.ok(Util.serializeAndBase64Encode(dependencies)).build();
+      return Response.ok(Util.serialize(dependencies)).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -288,9 +288,9 @@ public final class EntityServlet extends Application {
   public Response count(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final EntityCondition entityCondition = deserializeRequestData(request);
+      final EntityCondition entityCondition = deserialize(request);
 
-      return Response.ok(Util.serializeAndBase64Encode(connection.selectRowCount(entityCondition))).build();
+      return Response.ok(Util.serialize(connection.selectRowCount(entityCondition))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -313,10 +313,10 @@ public final class EntityServlet extends Application {
                          @QueryParam("propertyId") final String propertyId) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final EntityCondition entityCondition = deserializeRequestData(request);
+      final EntityCondition entityCondition = deserialize(request);
       final List values = connection.selectValues(propertyId, entityCondition);
 
-      return Response.ok(Util.serializeAndBase64Encode(values)).build();
+      return Response.ok(Util.serialize(values)).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -328,7 +328,6 @@ public final class EntityServlet extends Application {
    * Returns the entities for the given query condition
    * @param request the servlet request
    * @param headers the headers
-   * @param condition the query condition
    * @return a response
    */
   @POST
@@ -338,9 +337,9 @@ public final class EntityServlet extends Application {
   public Response select(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final EntitySelectCondition selectCondition = deserializeRequestData(request);
+      final EntitySelectCondition selectCondition = deserialize(request);
 
-      return Response.ok(Util.serializeAndBase64Encode(connection.selectMany(selectCondition))).build();
+      return Response.ok(Util.serialize(connection.selectMany(selectCondition))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -352,7 +351,6 @@ public final class EntityServlet extends Application {
    * Inserts the given entities, returning their keys
    * @param request the servlet request
    * @param headers the headers
-   * @param entities the entities to insert
    * @return a response
    */
   @POST
@@ -362,9 +360,9 @@ public final class EntityServlet extends Application {
   public Response insert(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final List<Entity.Key> keys = connection.insert(deserializeRequestData(request));
+      final List<Entity.Key> keys = connection.insert(deserialize(request));
 
-      return Response.ok(Util.serializeAndBase64Encode(keys)).build();
+      return Response.ok(Util.serialize(keys)).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -376,7 +374,6 @@ public final class EntityServlet extends Application {
    * Saves, as in, inserts or updates the given entities
    * @param request the servlet request
    * @param headers the headers
-   * @param entities the entities to save
    * @return a response
    */
   @POST
@@ -386,7 +383,7 @@ public final class EntityServlet extends Application {
   public Response save(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final List<Entity> parsedEntities = deserializeRequestData(request);
+      final List<Entity> parsedEntities = deserialize(request);
       final List<Entity> toInsert = new ArrayList<>(parsedEntities.size());
       final List<Entity> toUpdate = new ArrayList<>(parsedEntities.size());
       for (final Entity entity : parsedEntities) {
@@ -399,7 +396,7 @@ public final class EntityServlet extends Application {
       }
       final List<Entity> savedEntities = saveEntities(connection, toInsert, toUpdate);
 
-      return Response.ok(Util.serializeAndBase64Encode(savedEntities)).build();
+      return Response.ok(Util.serialize(savedEntities)).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -420,7 +417,7 @@ public final class EntityServlet extends Application {
   public Response delete(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      final EntityCondition entityCondition = deserializeRequestData(request);
+      final EntityCondition entityCondition = deserialize(request);
       connection.delete(entityCondition);
 
       return Response.ok().build();
@@ -462,7 +459,7 @@ public final class EntityServlet extends Application {
 
   private static Response getExceptionResponse(final Exception exeption) {
     try {
-      return Response.serverError().entity(Util.serializeAndBase64Encode(exeption)).build();
+      return Response.serverError().entity(Util.serialize(exeption)).build();
     }
     catch (final IOException e) {
       LOG.error(e.getMessage(), e);
@@ -524,7 +521,7 @@ public final class EntityServlet extends Application {
     return User.parseUser(new String(decodedBytes));
   }
 
-  private static <T> T deserializeRequestData(final HttpServletRequest request) throws IOException, ClassNotFoundException {
+  private static <T> T deserialize(final HttpServletRequest request) throws IOException, ClassNotFoundException {
     return (T) new ObjectInputStream(request.getInputStream()).readObject();
   }
 

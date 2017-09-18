@@ -16,7 +16,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -269,28 +268,6 @@ public class Util {
   }
 
   /**
-   * Serializes the given object and base64 encodes the resulting byte array
-   * @param object the object to serialize
-   * @return a base64 encoded string, null in case of null input
-   * @throws IOException in case of an exeption
-   */
-  public static String serializeAndBase64Encode(final Object object) throws IOException {
-    return object == null ? null : Base64.getEncoder().encodeToString(serialize(object));
-  }
-
-  /**
-   * Base64 decodes the given string and deserializes the resulting byte array
-   * @param base64Binary the base64 encoded binary string
-   * @param <T> the value type
-   * @return the deserialized Object, null in case of null input
-   * @throws IOException in case of an exeption
-   * @throws ClassNotFoundException in case the deserialized class is not found
-   */
-  public static <T> T base64DecodeAndDeserialize(final String base64Binary) throws IOException, ClassNotFoundException {
-    return base64Binary == null ? null : deserialize(Base64.getDecoder().decode(base64Binary));
-  }
-
-  /**
    * Serializes the given Object, null object results in an empty byte array
    * @param object the object
    * @return a byte array representing the serialized object, an empty byte array in case of null
@@ -317,9 +294,7 @@ public class Util {
    */
   public static <T> T deserialize(final byte[] bytes) throws IOException, ClassNotFoundException {
     if (bytes != null && bytes.length > 0) {
-      final ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
-
-      return (T) inputStream.readObject();
+      return (T) new ObjectInputStream(new ByteArrayInputStream(bytes)).readObject();
     }
 
     return null;

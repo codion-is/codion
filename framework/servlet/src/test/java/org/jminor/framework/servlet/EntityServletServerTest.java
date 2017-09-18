@@ -18,7 +18,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -27,26 +26,23 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.util.EntityUtils;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.ws.rs.core.MediaType;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.rmi.registry.Registry;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class EntityServletServerTest {
 
@@ -83,6 +79,40 @@ public class EntityServletServerTest {
   }
 
   @Test
+  public void isTransactionOpen() throws URISyntaxException, IOException, ClassNotFoundException {
+    final RequestConfig requestConfig = RequestConfig.custom()
+            .setSocketTimeout(2000)
+            .setConnectTimeout(2000)
+            .build();
+    final String domainId = new TestDomain().getDomainId();
+    final String clientTypeId = "EntityServletServerTest";
+    final UUID clientId = UUID.randomUUID();
+    final CloseableHttpClient client = HttpClientBuilder.create()
+            .setDefaultRequestConfig(requestConfig)
+            .setConnectionManager(new BasicHttpClientConnectionManager())
+            .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
+              final User user = UNIT_TEST_USER;
+              request.setHeader(EntityServlet.DOMAIN_ID, domainId);
+              request.setHeader(EntityServlet.CLIENT_TYPE_ID, clientTypeId);
+              request.setHeader(EntityServlet.CLIENT_ID, clientId.toString());
+              request.setHeader(EntityServlet.AUTHORIZATION,
+                      BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
+              request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
+            })
+            .build();
+
+    final URIBuilder uriBuilder = createURIBuilder();
+    uriBuilder.setPath("isTransactionOpen");
+
+    final HttpPost httpPost = new HttpPost(uriBuilder.build());
+    final CloseableHttpResponse response = client.execute(httpPost);
+    assertEquals(200, response.getStatusLine().getStatusCode());
+    final Boolean result = deserializeResponse(response);
+    assertFalse(result);
+    response.close();
+  }
+
+  @Test
   public void test() throws URISyntaxException, IOException, InterruptedException,
           Serializer.SerializeException, ClassNotFoundException {
     final RequestConfig requestConfig = RequestConfig.custom()
@@ -91,7 +121,7 @@ public class EntityServletServerTest {
             .build();
     CloseableHttpClient client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
-            .setConnectionManager(new PoolingHttpClientConnectionManager())
+            .setConnectionManager(new BasicHttpClientConnectionManager())
             .build();
 
     //test with missing authentication info
@@ -108,7 +138,7 @@ public class EntityServletServerTest {
     //test with missing clientId header
     client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
-            .setConnectionManager(new PoolingHttpClientConnectionManager())
+            .setConnectionManager(new BasicHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = UNIT_TEST_USER;
               request.setHeader(EntityServlet.DOMAIN_ID, domainId);
@@ -129,7 +159,7 @@ public class EntityServletServerTest {
     //test with unknown user authentication
     client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
-            .setConnectionManager(new PoolingHttpClientConnectionManager())
+            .setConnectionManager(new BasicHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = new User("who", "areu");
               request.setHeader(EntityServlet.DOMAIN_ID, domainId);
@@ -149,7 +179,7 @@ public class EntityServletServerTest {
 
     client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
-            .setConnectionManager(new PoolingHttpClientConnectionManager())
+            .setConnectionManager(new BasicHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               final User user = UNIT_TEST_USER;
               request.setHeader(EntityServlet.DOMAIN_ID, domainId);
@@ -169,8 +199,7 @@ public class EntityServletServerTest {
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT))));
     response = client.execute(httpPost);
     assertEquals(200, response.getStatusLine().getStatusCode());
-    String queryResult = getStringContent(response.getEntity());
-    List<Entity> queryEntities = Util.base64DecodeAndDeserialize(queryResult);
+    List<Entity> queryEntities = deserializeResponse(response);
     assertEquals(4, queryEntities.size());
     response.close();
 
@@ -187,8 +216,7 @@ public class EntityServletServerTest {
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.singletonList(department))));
     response = client.execute(httpPost);
     assertEquals(200, response.getStatusLine().getStatusCode());
-    queryResult = getStringContent(response.getEntity());
-    final List<Entity.Key> queryKeys = Util.base64DecodeAndDeserialize(queryResult);
+    final List<Entity.Key> queryKeys = deserializeResponse(response);
     assertEquals(1, queryKeys.size());
     assertEquals(department.getKey(), queryKeys.get(0));
     response.close();
@@ -209,8 +237,7 @@ public class EntityServletServerTest {
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.singletonList(department))));
     response = client.execute(httpPost);
     assertEquals(200, response.getStatusLine().getStatusCode());
-    queryResult = getStringContent(response.getEntity());
-    queryEntities = Util.base64DecodeAndDeserialize(queryResult);
+    queryEntities = deserializeResponse(response);
     assertEquals(1, queryEntities.size());
     assertEquals(department, queryEntities.get(0));
     department = queryEntities.get(0);
@@ -225,8 +252,7 @@ public class EntityServletServerTest {
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.singletonList(department))));
     response = client.execute(httpPost);
     assertEquals(200, response.getStatusLine().getStatusCode());
-    queryResult = getStringContent(response.getEntity());
-    queryEntities = Util.base64DecodeAndDeserialize(queryResult);
+    queryEntities = deserializeResponse(response);
     assertEquals(1, queryEntities.size());
     assertEquals(department, queryEntities.get(0));
     response.close();
@@ -239,8 +265,7 @@ public class EntityServletServerTest {
                     TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "New name"))));
     response = client.execute(httpPost);
     assertEquals(200, response.getStatusLine().getStatusCode());
-    queryResult = getStringContent(response.getEntity());
-    queryEntities = Util.base64DecodeAndDeserialize(queryResult);
+    queryEntities = deserializeResponse(response);
     assertEquals(1, queryEntities.size());
     response.close();
 
@@ -251,8 +276,7 @@ public class EntityServletServerTest {
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(department.getKey()))));
     response = client.execute(httpPost);
     assertEquals(200, response.getStatusLine().getStatusCode());
-    queryResult = getStringContent(response.getEntity());
-    queryEntities = Util.base64DecodeAndDeserialize(queryResult);
+    queryEntities = deserializeResponse(response);
     assertEquals(1, queryEntities.size());
     response.close();
 
@@ -320,17 +344,11 @@ public class EntityServletServerTest {
     return builder;
   }
 
-  private static String getStringContent(final HttpEntity entity) throws IOException {
-    Scanner scanner = null;
-    try (final InputStream stream = entity.getContent()) {
-      scanner = new Scanner(stream).useDelimiter("\\A");
+  private static <T> T deserializeResponse(final CloseableHttpResponse response) throws IOException, ClassNotFoundException {
+    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    response.getEntity().writeTo(outputStream);
 
-      return scanner.hasNext() ? scanner.next() : null;
-    }
-    finally {
-      Util.closeSilently(scanner);
-      EntityUtils.consumeQuietly(entity);
-    }
+    return Util.deserialize(outputStream.toByteArray());
   }
 
   private static void configure() {
