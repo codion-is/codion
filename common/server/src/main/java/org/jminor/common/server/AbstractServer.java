@@ -140,7 +140,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   /** {@inheritDoc} */
   @Override
   public final boolean connectionsAvailable() {
-    return !maximumNumberOfConnectionReached();
+    return !maximumNumberOfConnectionsReached();
   }
 
   /** {@inheritDoc} */
@@ -166,7 +166,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
         return remoteClientConnection.getConnection();
       }
 
-      if (maximumNumberOfConnectionReached()) {
+      if (maximumNumberOfConnectionsReached()) {
         throw ServerException.serverFullException();
       }
 
@@ -300,7 +300,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
   }
 
-  private boolean maximumNumberOfConnectionReached() {
+  private boolean maximumNumberOfConnectionsReached() {
     return connectionLimit > -1 && getConnectionCount() >= connectionLimit;
   }
 
