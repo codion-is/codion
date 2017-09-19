@@ -28,6 +28,7 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -50,6 +51,8 @@ public final class EntityService extends Application {
   public static final String DOMAIN_ID = "domainId";
   public static final String CLIENT_TYPE_ID = "clientTypeId";
   public static final String CLIENT_ID = "clientId";
+  public static final String BASIC_PREFIX = "basic ";
+  public static final int BASIC_PREFIX_LENGTH = BASIC_PREFIX.length();
 
   private static Server<RemoteEntityConnection, Remote> server;
 
@@ -399,10 +402,11 @@ public final class EntityService extends Application {
       throw new IllegalStateException("EntityConnectionServer has not been set for EntityService");
     }
 
-    final String domainId = getDomainId(headers);
-    final String clientTypeId = getClientTypeId(headers);
-    final UUID clientId = getClientId(request, headers);
-    final User user = getUser(headers);
+    final MultivaluedMap<String, String> headerValues = headers.getRequestHeaders();
+    final String domainId = getDomainId(headerValues);
+    final String clientTypeId = getClientTypeId(headerValues);
+    final UUID clientId = getClientId(headerValues, request.getSession());
+    final User user = getUser(headerValues);
     try {
       final Map<String, Object> parameters = new HashMap<>(2);
       parameters.put(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, domainId);
@@ -433,25 +437,24 @@ public final class EntityService extends Application {
     }
   }
 
-  private static String getDomainId(final HttpHeaders headers) {
-    final List<String> domainIdHeaders = headers.getRequestHeader(DOMAIN_ID);
+  private static String getDomainId(final MultivaluedMap<String, String> headers) {
+    final List<String> domainIdHeaders = headers.get(DOMAIN_ID);
     checkHeaderParameter(domainIdHeaders, DOMAIN_ID);
 
     return domainIdHeaders.get(0);
   }
 
-  private static String getClientTypeId(final HttpHeaders headers) {
-    final List<String> clientTypeIdHeaders = headers.getRequestHeader(CLIENT_TYPE_ID);
+  private static String getClientTypeId(final MultivaluedMap<String, String> headers) {
+    final List<String> clientTypeIdHeaders = headers.get(CLIENT_TYPE_ID);
     checkHeaderParameter(clientTypeIdHeaders, CLIENT_TYPE_ID);
 
     return clientTypeIdHeaders.get(0);
   }
 
-  private static UUID getClientId(final HttpServletRequest request, final HttpHeaders headers) {
-    final List<String> clientIdHeaders = headers.getRequestHeader(CLIENT_ID);
+  private static UUID getClientId(final MultivaluedMap<String, String> headers, final HttpSession session) {
+    final List<String> clientIdHeaders = headers.get(CLIENT_ID);
     checkHeaderParameter(clientIdHeaders, CLIENT_ID);
     final UUID clientId = UUID.fromString(clientIdHeaders.get(0));
-    final HttpSession session = request.getSession();
     if (session.isNew()) {
       session.setAttribute(CLIENT_ID, clientId);
     }
@@ -465,18 +468,19 @@ public final class EntityService extends Application {
     return clientId;
   }
 
-  private static User getUser(final HttpHeaders headers) {
-    final List<String> basic = headers.getRequestHeader(AUTHORIZATION);
+  private static User getUser(final MultivaluedMap<String, String> headers) {
+    final List<String> basic = headers.get(AUTHORIZATION);
     if (Util.nullOrEmpty(basic)) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
 
     final String basicAuth = basic.get(0);
-    if (!basicAuth.toLowerCase().startsWith("basic ")) {
+    if (basicAuth.length() > BASIC_PREFIX_LENGTH &&
+            BASIC_PREFIX.equals(basicAuth.substring(0, BASIC_PREFIX_LENGTH + 1).toLowerCase())) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
 
-    final byte[] decodedBytes = Base64.getDecoder().decode(basicAuth.replaceFirst("[B|b]asic ", ""));
+    final byte[] decodedBytes = Base64.getDecoder().decode(basicAuth.substring(BASIC_PREFIX_LENGTH, basicAuth.length()));
 
     return User.parseUser(new String(decodedBytes));
   }
@@ -487,8 +491,7 @@ public final class EntityService extends Application {
 
   private static void checkHeaderParameter(final List<String> headers, final String headerParameter) {
     if (Util.nullOrEmpty(headers)) {
-      throw new WebApplicationException(headerParameter + " header parameter is missing",
-              Response.Status.UNAUTHORIZED);
+      throw new WebApplicationException(headerParameter + " header parameter is missing", Response.Status.UNAUTHORIZED);
     }
   }
 }

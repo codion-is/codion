@@ -4633,3 +4633,5 @@
   EntityService.save changed to update
   HttpEntityConnection and EntityService refactored
   Property.setDefaultValueProvider() added for dynamic default values
+  EntityService authentication refactored
+  HttpEntityConnection no longer relies on http entity content length

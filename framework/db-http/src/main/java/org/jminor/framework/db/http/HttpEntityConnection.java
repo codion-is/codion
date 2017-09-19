@@ -477,18 +477,12 @@ final class HttpEntityConnection implements EntityConnection {
   private static <T> T handleResponse(final CloseableHttpResponse closeableHttpResponse) throws Exception {
     try (final CloseableHttpResponse response = closeableHttpResponse) {
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      response.getEntity().writeTo(outputStream);
       if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-        response.getEntity().writeTo(outputStream);
-
         throw Util.<Exception>deserialize(outputStream.toByteArray());
       }
-      if (response.getEntity().getContentLength() > 0) {
-        response.getEntity().writeTo(outputStream);
 
-        return Util.deserialize(outputStream.toByteArray());
-      }
-
-      return null;
+      return Util.deserialize(outputStream.toByteArray());
     }
   }
 }
