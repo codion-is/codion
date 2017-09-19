@@ -216,6 +216,13 @@ public interface Property extends Attribute {
   Property setDefaultValue(final Object defaultValue);
 
   /**
+   * Sets the default value provider, use in case of dynamic default values.
+   * @param provider the default value provider
+   * @return this Property instance
+   */
+  Property setDefaultValueProvider(final ValueProvider provider);
+
+  /**
    * @return the default value for this property, if any
    */
   Object getDefaultValue();
@@ -700,6 +707,16 @@ public interface Property extends Attribute {
    * Specifies a audit property with a username value
    */
   interface AuditUserProperty extends AuditProperty {}
+
+  /**
+   * Provides a single value
+   */
+  interface ValueProvider {
+    /**
+     * @return the provided value
+     */
+    Object getValue();
+  }
 
   /**
    * Annotation for the underlying column name for properties

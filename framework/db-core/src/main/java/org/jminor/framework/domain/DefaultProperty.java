@@ -34,6 +34,7 @@ class DefaultProperty implements Property {
 
   private static final ValueConverter<Object, Object> DEFAULT_VALUE_CONVERTER = new DefaultValueConverter();
   private static final ValueConverter<java.util.Date, java.sql.Date> DATE_VALUE_CONVERTER = new DateValueConverter();
+  private static final ValueProvider DEFAULT_VALUE_PROVIDER = () -> null;
 
   /**
    * The domain id
@@ -78,9 +79,9 @@ class DefaultProperty implements Property {
   private final boolean isDouble;
 
   /**
-   * The default value for this property
+   * The default value provider for this property
    */
-  private Object defaultValue;
+  private ValueProvider defaultValueProvider = DEFAULT_VALUE_PROVIDER;
 
   /**
    * True if the value of this property is allowed to be null
@@ -317,15 +318,23 @@ class DefaultProperty implements Property {
   /** {@inheritDoc} */
   @Override
   public final Property setDefaultValue(final Object defaultValue) {
-    validateType(defaultValue);
-    this.defaultValue = defaultValue;
+    return setDefaultValueProvider(() -> defaultValue);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Property setDefaultValueProvider(final ValueProvider provider) {
+    if (provider != null) {
+      validateType(provider.getValue());
+    }
+    this.defaultValueProvider = provider == null ? DEFAULT_VALUE_PROVIDER : provider;
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
   public final Object getDefaultValue() {
-    return this.defaultValue;
+    return this.defaultValueProvider.getValue();
   }
 
   /** {@inheritDoc} */

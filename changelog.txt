@@ -4632,3 +4632,4 @@
   EntityServlet renamed to EntityService
   EntityService.save changed to update
   HttpEntityConnection and EntityService refactored
+  Property.setDefaultValueProvider() added for dynamic default values
