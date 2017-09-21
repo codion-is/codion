@@ -739,7 +739,7 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public final Property setReadOnly(final boolean readOnly) {
+    public Property setReadOnly(final boolean readOnly) {
       if (isForeignKeyProperty()) {
         throw new IllegalStateException("Can not set the read only status of a property which is part of a foreign key property");
       }
@@ -1053,7 +1053,9 @@ class DefaultProperty implements Property {
     }
   }
 
-  static class DefautTransientProperty extends DefaultProperty implements TransientProperty {
+  static class DefaultTransientProperty extends DefaultProperty implements TransientProperty {
+
+    private boolean modifiesEntity = true;
 
     /**
      * @param propertyId the property ID, since TransientProperties do not map to underlying table columns,
@@ -1061,12 +1063,23 @@ class DefaultProperty implements Property {
      * @param type the data type of this property
      * @param caption the caption of this property
      */
-    DefautTransientProperty(final String propertyId, final int type, final String caption) {
+    DefaultTransientProperty(final String propertyId, final int type, final String caption) {
       super(propertyId, type, caption);
+    }
+
+    @Override
+    public final TransientProperty setModifiesEntity(final boolean modifiesEntity) {
+      this.modifiesEntity = modifiesEntity;
+      return this;
+    }
+
+    @Override
+    public final boolean isModifiesEntity() {
+      return modifiesEntity;
     }
   }
 
-  static final class DefaultDerivedProperty extends DefautTransientProperty implements DerivedProperty {
+  static final class DefaultDerivedProperty extends DefaultTransientProperty implements DerivedProperty {
 
     private final Provider valueProvider;
     private final List<String> sourcePropertyIds;
@@ -1081,7 +1094,7 @@ class DefaultProperty implements Property {
       else {
         this.sourcePropertyIds = Arrays.asList(sourcePropertyIds);
       }
-      setReadOnly(true);
+      super.setReadOnly(true);
     }
 
     @Override
@@ -1093,9 +1106,14 @@ class DefaultProperty implements Property {
     public List<String> getSourcePropertyIds() {
       return sourcePropertyIds;
     }
+
+    @Override
+    public Property setReadOnly(final boolean readOnly) {
+      throw new UnsupportedOperationException("Derived properties are always read only");
+    }
   }
 
-  static final class DefaultDenormalizedViewProperty extends DefautTransientProperty implements DenormalizedViewProperty {
+  static final class DefaultDenormalizedViewProperty extends DefaultTransientProperty implements DenormalizedViewProperty {
 
     private final String foreignKeyPropertyId;
     private final Property denormalizedProperty;
@@ -1112,7 +1130,7 @@ class DefaultProperty implements Property {
       super(propertyId, property.getType(), caption);
       this.foreignKeyPropertyId = foreignKeyPropertyId;
       this.denormalizedProperty = property;
-      setReadOnly(true);
+      super.setReadOnly(true);
     }
 
     @Override
@@ -1123,6 +1141,11 @@ class DefaultProperty implements Property {
     @Override
     public Property getDenormalizedProperty() {
       return denormalizedProperty;
+    }
+
+    @Override
+    public Property setReadOnly(final boolean readOnly) {
+      throw new UnsupportedOperationException("Denormalized properties are always read only");
     }
   }
 
@@ -1149,6 +1172,11 @@ class DefaultProperty implements Property {
     @Override
     public String getSubQuery() {
       return subquery;
+    }
+
+    @Override
+    public Property setReadOnly(final boolean readOnly) {
+      throw new UnsupportedOperationException("Subquery properties are always read only");
     }
   }
 

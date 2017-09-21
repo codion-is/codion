@@ -93,6 +93,13 @@ public class Entities {
   }
 
   /**
+   * @param domainId the domain identifier
+   */
+  public Entities(final String domainId) {
+    this.domainId = Objects.requireNonNull(domainId, "domainId");
+  }
+
+  /**
    * @return the domain Id
    */
   public final String getDomainId() {

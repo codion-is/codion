@@ -5,10 +5,12 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.DateUtil;
 import org.jminor.common.FileUtil;
+import org.jminor.common.Util;
 
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Collections;
@@ -30,11 +32,11 @@ public class DefaultEntityTest {
 
   private final String masterName = "master";
 
-  private static final Entities entities = new TestDomain();
+  private static final Entities ENTITIES = new TestDomain();
 
   @Test
   public void serialization() throws Exception {
-    final Entity referencedEntityValue = entities.entity(TestDomain.T_MASTER);
+    final Entity referencedEntityValue = ENTITIES.entity(TestDomain.T_MASTER);
     referencedEntityValue.put(TestDomain.MASTER_ID, 1L);
     referencedEntityValue.put(TestDomain.MASTER_NAME, "name");
     referencedEntityValue.put(TestDomain.MASTER_CODE, 10);
@@ -62,12 +64,12 @@ public class DefaultEntityTest {
 
   @Test
   public void setAs() {
-    final Entity referencedEntityValue = entities.entity(TestDomain.T_MASTER);
+    final Entity referencedEntityValue = ENTITIES.entity(TestDomain.T_MASTER);
     referencedEntityValue.put(TestDomain.MASTER_ID, 2L);
     referencedEntityValue.put(TestDomain.MASTER_NAME, masterName);
     referencedEntityValue.put(TestDomain.MASTER_CODE, 7);
 
-    final Entity test = entities.entity(TestDomain.T_DETAIL);
+    final Entity test = ENTITIES.entity(TestDomain.T_DETAIL);
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
     test.setAs(testEntity);
@@ -83,7 +85,7 @@ public class DefaultEntityTest {
 
   @Test
   public void saveRevertValue() {
-    final Entity entity = entities.entity(TestDomain.T_MASTER);
+    final Entity entity = ENTITIES.entity(TestDomain.T_MASTER);
     final String newName = "aname";
 
     entity.put(TestDomain.MASTER_ID, 2L);
@@ -113,11 +115,11 @@ public class DefaultEntityTest {
 
   @Test
   public void getReferencedKeyCache() {
-    final Entity detail = entities.entity(TestDomain.T_COMPOSITE_DETAIL);
+    final Entity detail = ENTITIES.entity(TestDomain.T_COMPOSITE_DETAIL);
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID, 1);
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, 2);
 
-    final Property.ForeignKeyProperty foreignKeyProperty = entities.getForeignKeyProperty(TestDomain.T_COMPOSITE_DETAIL,
+    final Property.ForeignKeyProperty foreignKeyProperty = ENTITIES.getForeignKeyProperty(TestDomain.T_COMPOSITE_DETAIL,
             TestDomain.COMPOSITE_DETAIL_MASTER_FK);
     final Entity.Key referencedKey = detail.getReferencedKey(foreignKeyProperty);
     final Entity.Key cachedKey = detail.getReferencedKey(foreignKeyProperty);
@@ -127,14 +129,14 @@ public class DefaultEntityTest {
 
   @Test
   public void compositeReferenceKey() {
-    final Entity master = entities.entity(TestDomain.T_COMPOSITE_MASTER);
+    final Entity master = ENTITIES.entity(TestDomain.T_COMPOSITE_MASTER);
     master.put(TestDomain.COMPOSITE_MASTER_ID, null);
     master.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
 
-    final Entity detail = entities.entity(TestDomain.T_COMPOSITE_DETAIL);
+    final Entity detail = ENTITIES.entity(TestDomain.T_COMPOSITE_DETAIL);
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, master);
 
-    final Property.ForeignKeyProperty foreignKeyProperty = entities.getForeignKeyProperty(TestDomain.T_COMPOSITE_DETAIL, TestDomain.COMPOSITE_DETAIL_MASTER_FK);
+    final Property.ForeignKeyProperty foreignKeyProperty = ENTITIES.getForeignKeyProperty(TestDomain.T_COMPOSITE_DETAIL, TestDomain.COMPOSITE_DETAIL_MASTER_FK);
     assertEquals(master.getKey(), detail.getReferencedKey(foreignKeyProperty));
 
     master.put(TestDomain.COMPOSITE_MASTER_ID, 1);
@@ -146,7 +148,7 @@ public class DefaultEntityTest {
 
   @Test
   public void compositeKeyNull() {
-    final Entity master = entities.entity(TestDomain.T_COMPOSITE_MASTER);
+    final Entity master = ENTITIES.entity(TestDomain.T_COMPOSITE_MASTER);
     assertTrue(master.getKey().isNull());
 
     master.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
@@ -165,7 +167,7 @@ public class DefaultEntityTest {
 
   @Test
   public void singleKeyNull() {
-    final Entity.Key key = entities.key(TestDomain.T_DETAIL);
+    final Entity.Key key = ENTITIES.key(TestDomain.T_DETAIL);
     assertTrue(key.isNull());
     key.put(TestDomain.DETAIL_ID, null);
     assertTrue(key.isNull());
@@ -175,18 +177,18 @@ public class DefaultEntityTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void compositeKeySingleValueConstructor() {
-    new DefaultEntity.DefaultKey(entities, entities.getDefinition(TestDomain.T_COMPOSITE_MASTER), 1);
+    new DefaultEntity.DefaultKey(ENTITIES, ENTITIES.getDefinition(TestDomain.T_COMPOSITE_MASTER), 1);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void getPropertyWrongEntityType() {
-    final Entity testEntity = entities.entity(TestDomain.T_DETAIL);
+    final Entity testEntity = ENTITIES.entity(TestDomain.T_DETAIL);
     testEntity.getProperty(TestDomain.MASTER_CODE);
   }
 
   @Test
   public void entity() throws Exception {
-    final Entity referencedEntityValue = entities.entity(TestDomain.T_MASTER);
+    final Entity referencedEntityValue = ENTITIES.entity(TestDomain.T_MASTER);
     //assert not modified
     assertFalse(referencedEntityValue.isModified());
 
@@ -258,7 +260,7 @@ public class DefaultEntityTest {
     assertEquals(testEntity.get(TestDomain.DETAIL_MASTER_CODE), 7);
     assertFalse(testEntity.isValueNull(TestDomain.DETAIL_MASTER_ID));
 
-    testEntity.getReferencedKey(entities.getForeignKeyProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK));
+    testEntity.getReferencedKey(ENTITIES.getForeignKeyProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK));
 
     //test copy()
     final Entity test2 = (Entity) testEntity.getCopy();
@@ -297,7 +299,7 @@ public class DefaultEntityTest {
   public void getReferencedKeyIncorrectFK() {
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
-    testEntity.getReferencedKey(entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
+    testEntity.getReferencedKey(ENTITIES.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
   }
 
   @Test
@@ -306,7 +308,7 @@ public class DefaultEntityTest {
             detailString, detailDate, detailTimestamp, detailBoolean, null);
     assertTrue(testEntity.isValueNull(TestDomain.DETAIL_MASTER_ID));
     assertTrue(testEntity.isValueNull(TestDomain.DETAIL_MASTER_FK));
-    assertTrue(testEntity.isForeignKeyNull(entities.getForeignKeyProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK)));
+    assertTrue(testEntity.isForeignKeyNull(ENTITIES.getForeignKeyProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK)));
     testEntity.put(TestDomain.DETAIL_MASTER_ID, 10L);
 
     assertFalse(testEntity.isLoaded(TestDomain.DETAIL_MASTER_FK));
@@ -316,8 +318,8 @@ public class DefaultEntityTest {
     assertFalse(testEntity.isValueNull(TestDomain.DETAIL_MASTER_FK));
     assertFalse(testEntity.isValueNull(TestDomain.DETAIL_MASTER_ID));
 
-    final Property.ForeignKeyProperty foreignKeyProperty = entities.getForeignKeyProperty(TestDomain.T_COMPOSITE_DETAIL, TestDomain.COMPOSITE_DETAIL_MASTER_FK);
-    final Entity composite = entities.entity(TestDomain.T_COMPOSITE_DETAIL);
+    final Property.ForeignKeyProperty foreignKeyProperty = ENTITIES.getForeignKeyProperty(TestDomain.T_COMPOSITE_DETAIL, TestDomain.COMPOSITE_DETAIL_MASTER_FK);
+    final Entity composite = ENTITIES.entity(TestDomain.T_COMPOSITE_DETAIL);
     composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID, null);
     assertTrue(composite.isForeignKeyNull(foreignKeyProperty));
     composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID, 1);
@@ -330,7 +332,7 @@ public class DefaultEntityTest {
 
   @Test
   public void clear() {
-    final Entity referencedEntityValue = entities.entity(TestDomain.T_MASTER);
+    final Entity referencedEntityValue = ENTITIES.entity(TestDomain.T_MASTER);
     Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
     testEntity.put(TestDomain.DETAIL_STRING, "TestString");
@@ -357,32 +359,32 @@ public class DefaultEntityTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void setStringValueInt() {
-    final Entity employee = entities.entity(TestDomain.T_EMP);
+    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_NAME, 1);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setStringValueDouble() {
-    final Entity employee = entities.entity(TestDomain.T_EMP);
+    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_NAME, 1d);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setStringValueBoolean() {
-    final Entity employee = entities.entity(TestDomain.T_EMP);
+    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_NAME, false);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setStringValueChar() {
-    final Entity employee = entities.entity(TestDomain.T_EMP);
+    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_NAME, 'c');
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setStringValueEntity() {
-    final Entity employee = entities.entity(TestDomain.T_EMP);
-    final Entity department = entities.entity(TestDomain.T_DEPARTMENT);
+    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
+    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, -10);
 
     employee.put(TestDomain.EMP_NAME, department);
@@ -390,19 +392,19 @@ public class DefaultEntityTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void setStringValueDate() {
-    final Entity employee = entities.entity(TestDomain.T_EMP);
+    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_NAME, new Date());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setStringValueTimestamp() {
-    final Entity employee = entities.entity(TestDomain.T_EMP);
+    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_NAME, new Timestamp(System.currentTimeMillis()));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setDoubleValueString() {
-    final Entity employee = entities.entity(TestDomain.T_EMP);
+    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_SALARY, "test");
   }
 
@@ -429,10 +431,10 @@ public class DefaultEntityTest {
 
   @Test
   public void setValue() {
-    final Entity department = entities.entity(TestDomain.T_DEPARTMENT);
+    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, -10);
 
-    final Entity employee = entities.entity(TestDomain.T_EMP);
+    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
 
     employee.put(TestDomain.EMP_COMMISSION, 1200d);
     assertEquals(employee.get(TestDomain.EMP_COMMISSION), 1200d);
@@ -475,7 +477,7 @@ public class DefaultEntityTest {
 
   @Test
   public void getDoubleValue() {
-    final Entity employee = entities.entity(TestDomain.T_EMP);
+    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_ID, -10);
 
     assertNull(employee.getDouble(TestDomain.EMP_SALARY));
@@ -487,25 +489,25 @@ public class DefaultEntityTest {
 
   @Test
   public void getForeignKeyValue() {
-    final Entity department = entities.entity(TestDomain.T_DEPARTMENT);
+    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, -10);
-    final Entity employee = entities.entity(TestDomain.T_EMP);
+    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_ID, -10);
-    assertTrue(employee.isForeignKeyNull(entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK)));
+    assertTrue(employee.isForeignKeyNull(ENTITIES.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK)));
     assertNull(employee.get(TestDomain.EMP_DEPARTMENT_FK));
     assertNull(employee.get(TestDomain.EMP_DEPARTMENT));
 
     employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
-    assertFalse(employee.isForeignKeyNull(entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK)));
+    assertFalse(employee.isForeignKeyNull(ENTITIES.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK)));
     assertNotNull(employee.get(TestDomain.EMP_DEPARTMENT_FK));
     assertNotNull(employee.get(TestDomain.EMP_DEPARTMENT));
   }
 
   @Test (expected = IllegalArgumentException.class)
   public void getForeignKeyValueNonFKProperty() {
-    final Entity department = entities.entity(TestDomain.T_DEPARTMENT);
+    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, -10);
-    final Entity employee = entities.entity(TestDomain.T_EMP);
+    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_ID, -10);
     employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
 
@@ -514,9 +516,9 @@ public class DefaultEntityTest {
 
   @Test
   public void removeValue() {
-    final Entity department = entities.entity(TestDomain.T_DEPARTMENT);
+    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, -10);
-    final Entity employee = entities.entity(TestDomain.T_EMP);
+    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_ID, -10);
     employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
     assertNotNull(employee.getForeignKey(TestDomain.EMP_DEPARTMENT_FK));
@@ -526,38 +528,38 @@ public class DefaultEntityTest {
     assertNull(employee.getForeignKey(TestDomain.EMP_DEPARTMENT_FK));
     assertNull(employee.get(TestDomain.EMP_DEPARTMENT));
     assertFalse(employee.containsKey(TestDomain.EMP_DEPARTMENT_FK));
-    assertFalse(employee.containsKey(entities.getProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT)));
+    assertFalse(employee.containsKey(ENTITIES.getProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT)));
   }
 
   @Test
   public void maximumFractionDigits() {
-    final Entity employee = entities.entity(TestDomain.T_EMP);
+    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_COMMISSION, 1.1234);
     assertEquals(1.12, employee.get(TestDomain.EMP_COMMISSION));
     employee.put(TestDomain.EMP_COMMISSION, 1.1255);
     assertEquals(1.13, employee.get(TestDomain.EMP_COMMISSION));
 
-    final Entity detail = entities.entity(TestDomain.T_DETAIL);
+    final Entity detail = ENTITIES.entity(TestDomain.T_DETAIL);
     detail.put(TestDomain.DETAIL_DOUBLE, 1.123456789567);
     assertEquals(1.1234567896, detail.get(TestDomain.DETAIL_DOUBLE));//default 10 fraction digits
   }
 
   @Test
   public void keyEquality() {
-    final Entity.Key empKey1 = entities.key(TestDomain.T_EMP);
+    final Entity.Key empKey1 = ENTITIES.key(TestDomain.T_EMP);
     empKey1.put(TestDomain.EMP_ID, 1);
-    final Entity.Key empKey2 = entities.key(TestDomain.T_EMP);
+    final Entity.Key empKey2 = ENTITIES.key(TestDomain.T_EMP);
     empKey2.put(TestDomain.EMP_ID, 2);
     assertFalse(empKey1.equals(empKey2));
 
     empKey2.put(TestDomain.EMP_ID, 1);
     assertTrue(empKey1.equals(empKey2));
 
-    final Entity.Key deptKey = entities.key(TestDomain.T_DEPARTMENT);
+    final Entity.Key deptKey = ENTITIES.key(TestDomain.T_DEPARTMENT);
     deptKey.put(TestDomain.DEPARTMENT_ID, 1);
     assertFalse(empKey1.equals(deptKey));
 
-    final Entity.Key compMasterKey = entities.key(TestDomain.T_COMPOSITE_MASTER);
+    final Entity.Key compMasterKey = ENTITIES.key(TestDomain.T_COMPOSITE_MASTER);
     compMasterKey.put(TestDomain.COMPOSITE_MASTER_ID, 1);
     compMasterKey.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
     //noinspection EqualsWithItself
@@ -565,16 +567,16 @@ public class DefaultEntityTest {
     assertFalse(empKey1.equals(compMasterKey));
     assertFalse(compMasterKey.equals(new Object()));
 
-    final Entity.Key compMasterKey2 = entities.key(TestDomain.T_COMPOSITE_MASTER);
+    final Entity.Key compMasterKey2 = ENTITIES.key(TestDomain.T_COMPOSITE_MASTER);
     compMasterKey2.put(TestDomain.COMPOSITE_MASTER_ID, 1);
     assertFalse(compMasterKey.equals(compMasterKey2));
 
     compMasterKey2.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
     assertTrue(compMasterKey.equals(compMasterKey2));
 
-    final Entity.Key detailKey = entities.key(TestDomain.T_DETAIL);
+    final Entity.Key detailKey = ENTITIES.key(TestDomain.T_DETAIL);
     detailKey.put(TestDomain.DETAIL_ID, 1L);
-    final Entity.Key detailKey2 = entities.key(TestDomain.T_DETAIL);
+    final Entity.Key detailKey2 = ENTITIES.key(TestDomain.T_DETAIL);
     detailKey2.put(TestDomain.DETAIL_ID, 2L);
     assertFalse(detailKey.equals(detailKey2));
 
@@ -584,16 +586,39 @@ public class DefaultEntityTest {
 
   @Test
   public void nullKeyEquals() {
-    final Entity.Key nullKey = entities.key(TestDomain.T_EMP);
-    final Entity.Key zeroKey = entities.key(TestDomain.T_EMP);
+    final Entity.Key nullKey = ENTITIES.key(TestDomain.T_EMP);
+    final Entity.Key zeroKey = ENTITIES.key(TestDomain.T_EMP);
     zeroKey.put(TestDomain.EMP_ID, 0);
     assertFalse(nullKey.equals(zeroKey));
+  }
+
+  @Test
+  public void transientPropertyModifiesEntity() throws IOException, ClassNotFoundException {
+    final Entities entities = new Entities("transient").registerDomain();
+    final Property.TransientProperty transientProperty = Properties.transientProperty("trans", Types.INTEGER);
+    entities.define("entityId",
+            Properties.primaryKeyProperty("id"),
+            transientProperty);
+
+    final Entity entity = entities.entity("entityId");
+    entity.put("id", 42);
+    entity.put("trans", null);
+    entity.saveAll();
+
+    entity.put("trans", 1);
+    assertTrue(entity.isModified());
+
+    transientProperty.setModifiesEntity(false);
+    assertFalse(entity.isModified());
+
+    final Entity deserialized = Util.deserialize(Util.serialize(entity));
+    assertTrue(deserialized.isModified("trans"));
   }
 
   private Entity getDetailEntity(final long id, final Integer intValue, final Double doubleValue,
                                         final String stringValue, final Date dateValue, final Timestamp timestampValue,
                                         final Boolean booleanValue, final Entity entityValue) {
-    final Entity entity = entities.entity(TestDomain.T_DETAIL);
+    final Entity entity = ENTITIES.entity(TestDomain.T_DETAIL);
     entity.put(TestDomain.DETAIL_ID, id);
     entity.put(TestDomain.DETAIL_INT, intValue);
     entity.put(TestDomain.DETAIL_DOUBLE, doubleValue);

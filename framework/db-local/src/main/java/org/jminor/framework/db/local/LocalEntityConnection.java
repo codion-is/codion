@@ -60,7 +60,7 @@ import java.util.Set;
  *
  * EntityConnection connection = new LocalEntityConnection(domain, database, user, true, true, 2);
  *
- * List<Entity> entities = connection.selectMany(conditions.selectCondition(Domain.ENTITY_ID));
+ * List&lt;Entity&gt; entities = connection.selectMany(conditions.selectCondition(Domain.ENTITY_ID));
  *
  * connection.disconnect();
  * </pre>

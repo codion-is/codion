@@ -622,7 +622,19 @@ public interface Property extends Attribute {
    * is initialized to null when entities are loaded, which means transient properties always have null as the original value.
    * The value of transient properties can be set and retrieved like normal properties but are ignored during DML operations.
    */
-  interface TransientProperty extends Property {}
+  interface TransientProperty extends Property {
+
+    /**
+     * @param modifiesEntity if true then modifications to the value result in the owning entity becoming modified
+     * @return this property instance
+     */
+    TransientProperty setModifiesEntity(final boolean modifiesEntity);
+
+    /**
+     * @return true if the value of this property being modified should result in a modified entity
+     */
+    boolean isModifiesEntity();
+  }
 
   /**
    * A property which value is derived from the values of one or more properties.

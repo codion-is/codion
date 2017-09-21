@@ -377,7 +377,6 @@ public final class EntityService extends Application {
    * Deletes the entities for the given condition
    * @param request the servlet request
    * @param headers the headers
-   * @param condition the query condition
    * @return a response
    */
   @POST
@@ -476,7 +475,7 @@ public final class EntityService extends Application {
 
     final String basicAuth = basic.get(0);
     if (basicAuth.length() > BASIC_PREFIX_LENGTH &&
-            BASIC_PREFIX.equals(basicAuth.substring(0, BASIC_PREFIX_LENGTH + 1).toLowerCase())) {
+            BASIC_PREFIX.equalsIgnoreCase(basicAuth.substring(0, BASIC_PREFIX_LENGTH + 1))) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
 

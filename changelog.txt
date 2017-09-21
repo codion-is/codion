@@ -4635,3 +4635,7 @@
   Property.setDefaultValueProvider() added for dynamic default values
   EntityService authentication refactored
   HttpEntityConnection no longer relies on http entity content length
+  Property.TransientProperty.modifiesEntity added, if false then changes to the value do not result in the owning entity becoming modified
+  DefaultEntity.isModifiedInternal() added, used during writeObject() to handle the above
+  Properties that are read only by definition can no longer be made writeable
+  Entities, constructor added with domainId parameter

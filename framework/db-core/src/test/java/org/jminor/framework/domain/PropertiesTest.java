@@ -140,4 +140,23 @@ public final class PropertiesTest {
   public void foreignKeyPropertyNoProperties() {
     Properties.foreignKeyProperty("id", "caption", "entityId", new Property.ColumnProperty[0]);
   }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void subqueryPropertySetReadOnlyFalse() {
+    Properties.subqueryProperty("test", Types.INTEGER, "caption", "select").setReadOnly(false);
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void derivedPropertySetReadOnlyFalse() {
+    Properties.derivedProperty("test", Types.INTEGER, "caption", linkedValues ->
+            null, "linked").setReadOnly(false);
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void denormalizedViewPropertySetReadOnlyFalse() {
+    final Property.ColumnProperty columnProperty = Properties.columnProperty("property", Types.INTEGER);
+    final Property.ForeignKeyProperty foreignKeyProperty = Properties.foreignKeyProperty("foreignId", "caption",
+            "entityId", columnProperty);
+    Properties.denormalizedViewProperty("test", "foreignId", columnProperty, "caption").setReadOnly(false);
+  }
 }

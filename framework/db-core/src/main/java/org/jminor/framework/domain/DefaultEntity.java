@@ -147,7 +147,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   @Override
   public boolean isModified() {
-    return super.isModified() && writablePropertiesModified();
+    return isModifiedInternal(false);
   }
 
   /** {@inheritDoc} */
@@ -720,7 +720,11 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return derivedProperty.getValueProvider().getValue(values);
   }
 
-  private boolean writablePropertiesModified() {
+  private boolean isModifiedInternal(final boolean overrideModifiesEntity) {
+    return super.isModified() && writablePropertiesModified(overrideModifiesEntity);
+  }
+
+  private boolean writablePropertiesModified(final boolean overrideModifiesEntity) {
     for (final Property property : originalKeySet()) {
       if (property instanceof Property.ColumnProperty) {
         final Property.ColumnProperty columnProperty = (Property.ColumnProperty) property;
@@ -729,7 +733,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
         }
       }
       if (property instanceof Property.TransientProperty) {
-        return true;
+        return overrideModifiesEntity || ((Property.TransientProperty) property).isModifiesEntity();
       }
     }
 
@@ -739,7 +743,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     stream.writeObject(definition.getDomainId());
     stream.writeObject(definition.getEntityId());
-    final boolean isModified = isModified();
+    final boolean isModified = isModifiedInternal(true);
     stream.writeBoolean(isModified);
     final List<Property> propertyList = definition.getProperties();
     for (int i = 0; i < propertyList.size(); i++) {
