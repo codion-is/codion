@@ -1062,7 +1062,7 @@ public final class EntityUiUtil {
               && ((Property.ColumnProperty) property).isForeignKeyProperty();
       if (!isForeignKeyProperty && !(property instanceof Property.ForeignKeyProperty)) {
         final String prefix = "[" + property.getTypeClass().getSimpleName().substring(0, 1)
-                + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
+                + (property instanceof Property.DerivedProperty ? "*" : "")
                 + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
         final String value = entity.isValueNull(property) ? "<null>" : entity.getAsString(property);
         final boolean longValue = value != null && value.length() > maxValueLength;

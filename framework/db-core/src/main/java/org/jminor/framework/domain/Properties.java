@@ -5,6 +5,7 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.Item;
 import org.jminor.common.db.ValueConverter;
+import org.jminor.common.db.valuemap.ValueMap;
 
 import java.sql.Types;
 import java.util.Arrays;
@@ -107,9 +108,13 @@ public final class Properties {
    * @param caption the caption of this property
    * @return a new denormalized view property
    */
-  public static Property.DenormalizedViewProperty denormalizedViewProperty(final String propertyId, final String foreignKeyPropertyId,
-                                                                           final Property property, final String caption) {
-    return new DefaultProperty.DefaultDenormalizedViewProperty(propertyId, foreignKeyPropertyId, property, caption);
+  public static Property.DerivedProperty denormalizedViewProperty(final String propertyId, final String foreignKeyPropertyId,
+                                                                  final Property property, final String caption) {
+    return new DefaultProperty.DefaultDerivedProperty(propertyId, property.getType(), caption, linkedValues -> {
+      final ValueMap foreignKeyValue = (ValueMap) linkedValues.get(foreignKeyPropertyId);
+
+      return foreignKeyValue == null ? null : foreignKeyValue.get(property);
+    }, foreignKeyPropertyId);
   }
 
   /**

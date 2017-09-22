@@ -13,6 +13,7 @@ import java.io.ObjectOutputStream;
 import java.sql.Timestamp;
 import java.text.Format;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -203,9 +204,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   public Object get(final Property property) {
     Objects.requireNonNull(property, PROPERTY_PARAM);
-    if (property instanceof Property.DenormalizedViewProperty) {
-      return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
-    }
     if (property instanceof Property.DerivedProperty) {
       return getDerivedValue((Property.DerivedProperty) property);
     }
@@ -631,15 +629,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
   }
 
-  private Object getDenormalizedViewValue(final Property.DenormalizedViewProperty denormalizedViewProperty) {
-    final Entity valueSource = (Entity) get(denormalizedViewProperty.getForeignKeyPropertyId());
-    if (valueSource == null) {
-      return null;
-    }
-
-    return valueSource.get(denormalizedViewProperty.getDenormalizedProperty());
-  }
-
   /**
    * Creates the primary key referenced by the given foreign key
    * @param foreignKeyProperty the foreign key
@@ -710,14 +699,24 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   private Object getDerivedValue(final Property.DerivedProperty derivedProperty) {
-    final Map<String, Object> values = new HashMap<>(derivedProperty.getSourcePropertyIds().size());
-    final List<String> sourcePropertyIds = derivedProperty.getSourcePropertyIds();
-    for (int i = 0; i < sourcePropertyIds.size(); i++) {
-      final String linkedPropertyId = sourcePropertyIds.get(i);
-      values.put(linkedPropertyId, get(linkedPropertyId));
-    }
+    return derivedProperty.getValueProvider().getValue(getSourceValues(derivedProperty.getSourcePropertyIds()));
+  }
 
-    return derivedProperty.getValueProvider().getValue(values);
+  private Map<String, Object> getSourceValues(final List<String> sourcePropertyIds) {
+    if (sourcePropertyIds.size() == 1) {
+      final String sourcePropertyId = sourcePropertyIds.get(0);
+
+      return Collections.singletonMap(sourcePropertyId, get(sourcePropertyId));
+    }
+    else {
+      final Map<String, Object> values = new HashMap<>(sourcePropertyIds.size());
+      for (int i = 0; i < sourcePropertyIds.size(); i++) {
+        final String sourcePropertyId = sourcePropertyIds.get(i);
+        values.put(sourcePropertyId, get(sourcePropertyId));
+      }
+
+      return values;
+    }
   }
 
   private boolean isModifiedInternal(final boolean overrideModifiesEntity) {
@@ -748,7 +747,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     final List<Property> propertyList = definition.getProperties();
     for (int i = 0; i < propertyList.size(); i++) {
       final Property property = propertyList.get(i);
-      if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
+      if (!(property instanceof Property.DerivedProperty)) {
         stream.writeObject(super.get(property));
         if (isModified) {
           final boolean valueModified = isModified(property);
@@ -773,7 +772,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     final List<Property> propertyList = definition.getProperties();
     for (int i = 0; i < propertyList.size(); i++) {
       final Property property = propertyList.get(i);
-      if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
+      if (!(property instanceof Property.DerivedProperty)) {
         final Object value = stream.readObject();
         property.validateType(value);
         super.put(property, value);
@@ -822,9 +821,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   private static void validateValue(final Property property, final Object value) {
-    if (property instanceof Property.DenormalizedViewProperty) {
-      throw new IllegalArgumentException("Can not set the value of a denormalized view property");
-    }
     if (property instanceof Property.DerivedProperty) {
       throw new IllegalArgumentException("Can not set the value of a derived property");
     }

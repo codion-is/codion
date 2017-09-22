@@ -411,7 +411,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
   }
 
   private boolean include(final Property property, final Entity entity) {
-    if (property instanceof Property.DerivedProperty || property instanceof Property.DenormalizedViewProperty) {
+    if (property instanceof Property.DerivedProperty) {
       return false;
     }
     if (!includeForeignKeyValues && property instanceof Property.ForeignKeyProperty) {

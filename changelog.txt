@@ -4639,3 +4639,4 @@
   DefaultEntity.isModifiedInternal() added, used during writeObject() to handle the above
   Properties that are read only by definition can no longer be made writeable
   Entities, constructor added with domainId parameter
+  Property.DenormalizedViewProperty removed, implemented with DerivedProperty, some refactoring in related classes

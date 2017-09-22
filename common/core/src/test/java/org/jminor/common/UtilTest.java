@@ -6,6 +6,7 @@ package org.jminor.common;
 import org.junit.Test;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,6 +17,13 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 public final class UtilTest {
+
+  @Test
+  public void serializeDeserialize() throws IOException, ClassNotFoundException {
+    assertNull(Util.deserialize(new byte[0]));
+    assertEquals(0, Util.serialize(null).length);
+    assertEquals(Integer.valueOf(4), Util.deserialize(Util.serialize(4)));
+  }
 
   @Test
   public void roundDouble() {

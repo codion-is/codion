@@ -503,6 +503,16 @@ public class DefaultEntityTest {
     assertNotNull(employee.get(TestDomain.EMP_DEPARTMENT));
   }
 
+  @Test
+  public void getDerivedValue() {
+    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
+    department.put(TestDomain.DEPARTMENT_NAME, "dname");
+    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
+    employee.put(TestDomain.EMP_NAME, "ename");
+    employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
+    assertEquals("ename - dname", employee.getString(TestDomain.EMP_NAME_DEPARTMENT));
+  }
+
   @Test (expected = IllegalArgumentException.class)
   public void getForeignKeyValueNonFKProperty() {
     final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);

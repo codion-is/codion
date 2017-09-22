@@ -665,23 +665,6 @@ public interface Property extends Attribute {
   }
 
   /**
-   * A property that gets its value from a entity referenced by a foreign key, but is for
-   * display only, and does not map to a database column
-   */
-  interface DenormalizedViewProperty extends Property.TransientProperty {
-
-    /**
-     * @return the id of the foreign key property (entity) from which this property should retrieve its value
-     */
-    String getForeignKeyPropertyId();
-
-    /**
-     * @return the property from which this property gets its value
-     */
-    Property getDenormalizedProperty();
-  }
-
-  /**
    * A property based on a subquery, returning a single value
    */
   interface SubqueryProperty extends ColumnProperty {

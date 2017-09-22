@@ -1088,12 +1088,10 @@ class DefaultProperty implements Property {
                            final Provider valueProvider, final String... sourcePropertyIds) {
       super(propertyId, type, caption);
       this.valueProvider = valueProvider;
-      if (sourcePropertyIds == null || sourcePropertyIds.length == 0) {
+      if (Util.nullOrEmpty(sourcePropertyIds)) {
         throw new IllegalArgumentException("No source propertyIds, a derived property must be derived from one or more existing properties");
       }
-      else {
-        this.sourcePropertyIds = Arrays.asList(sourcePropertyIds);
-      }
+      this.sourcePropertyIds = Arrays.asList(sourcePropertyIds);
       super.setReadOnly(true);
     }
 
@@ -1110,42 +1108,6 @@ class DefaultProperty implements Property {
     @Override
     public Property setReadOnly(final boolean readOnly) {
       throw new UnsupportedOperationException("Derived properties are always read only");
-    }
-  }
-
-  static final class DefaultDenormalizedViewProperty extends DefaultTransientProperty implements DenormalizedViewProperty {
-
-    private final String foreignKeyPropertyId;
-    private final Property denormalizedProperty;
-
-    /**
-     * @param propertyId the ID of the property, this should not be a column name since this property does not
-     * map to a table column
-     * @param foreignKeyPropertyId the ID of the foreign key property from which entity value this property gets its value
-     * @param property the property from which this property gets its value
-     * @param caption the caption of this property
-     */
-    DefaultDenormalizedViewProperty(final String propertyId, final String foreignKeyPropertyId, final Property property,
-                                    final String caption) {
-      super(propertyId, property.getType(), caption);
-      this.foreignKeyPropertyId = foreignKeyPropertyId;
-      this.denormalizedProperty = property;
-      super.setReadOnly(true);
-    }
-
-    @Override
-    public String getForeignKeyPropertyId() {
-      return foreignKeyPropertyId;
-    }
-
-    @Override
-    public Property getDenormalizedProperty() {
-      return denormalizedProperty;
-    }
-
-    @Override
-    public Property setReadOnly(final boolean readOnly) {
-      throw new UnsupportedOperationException("Denormalized properties are always read only");
     }
   }
 

@@ -57,7 +57,8 @@ public class Util {
     if (strings == null || strings.length == 0) {
       return true;
     }
-    for (final String string : strings) {
+    for (int i = 0; i < strings.length; i++) {
+      final String string = strings[i];
       if (string == null || string.length() == 0) {
         return true;
       }

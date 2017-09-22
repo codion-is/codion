@@ -764,7 +764,7 @@ public class Entities {
     }
     final Collection<Property.TransientProperty> transientProperties = getTransientProperties(entityId);
     for (final Property.TransientProperty transientProperty : transientProperties) {
-      if (!(transientProperty instanceof Property.DerivedProperty) && !(transientProperty instanceof Property.DenormalizedViewProperty)) {
+      if (!(transientProperty instanceof Property.DerivedProperty)) {
         entity.put(transientProperty, valueProvider.get(transientProperty));
       }
     }
@@ -2025,8 +2025,7 @@ public class Entities {
       if (hasTransientProperties) {
         for (int i = 0; i < transientProperties.size(); i++) {
           final Property.TransientProperty transientProperty = transientProperties.get(i);
-          if (!(transientProperty instanceof Property.DenormalizedViewProperty)
-                  && !(transientProperty instanceof Property.DerivedProperty)) {
+          if (!(transientProperty instanceof Property.DerivedProperty)) {
             values.put(transientProperty, null);
           }
         }
