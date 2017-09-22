@@ -209,7 +209,7 @@ public final class Properties {
    * @return a new transient property
    */
   public static Property.TransientProperty transientProperty(final String propertyId, final int type, final String caption) {
-    return new DefaultProperty.DefautTransientProperty(propertyId, type, caption);
+    return new DefaultProperty.DefaultTransientProperty(propertyId, type, caption);
   }
 
   /**
