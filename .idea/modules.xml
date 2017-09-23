@@ -7,37 +7,37 @@
       <module fileurl="file://$PROJECT_DIR$/demos/petstore/demo-petstore.iml" filepath="$PROJECT_DIR$/demos/petstore/demo-petstore.iml" />
       <module fileurl="file://$PROJECT_DIR$/demos/schemabrowser/demo-schemabrowser.iml" filepath="$PROJECT_DIR$/demos/schemabrowser/demo-schemabrowser.iml" />
       <module fileurl="file://$PROJECT_DIR$/demos/world/demo-world.iml" filepath="$PROJECT_DIR$/demos/world/demo-world.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common/core/jminor-common-core.iml" filepath="$PROJECT_DIR$/common/core/jminor-common-core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common/db/jminor-common-db.iml" filepath="$PROJECT_DIR$/common/db/jminor-common-db.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common/model/jminor-common-model.iml" filepath="$PROJECT_DIR$/common/model/jminor-common-model.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common/server/jminor-common-server.iml" filepath="$PROJECT_DIR$/common/server/jminor-common-server.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common/server-http/jminor-common-server-http.iml" filepath="$PROJECT_DIR$/common/server-http/jminor-common-server-http.iml" />
-      <module fileurl="file://$PROJECT_DIR$/framework/db-core/jminor-framework-db-core.iml" filepath="$PROJECT_DIR$/framework/db-core/jminor-framework-db-core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/framework/db-http/jminor-framework-db-http.iml" filepath="$PROJECT_DIR$/framework/db-http/jminor-framework-db-http.iml" />
-      <module fileurl="file://$PROJECT_DIR$/framework/db-local/jminor-framework-db-local.iml" filepath="$PROJECT_DIR$/framework/db-local/jminor-framework-db-local.iml" />
-      <module fileurl="file://$PROJECT_DIR$/framework/db-remote/jminor-framework-db-remote.iml" filepath="$PROJECT_DIR$/framework/db-remote/jminor-framework-db-remote.iml" />
-      <module fileurl="file://$PROJECT_DIR$/framework/db-test/jminor-framework-db-test.iml" filepath="$PROJECT_DIR$/framework/db-test/jminor-framework-db-test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/framework/model/jminor-framework-model.iml" filepath="$PROJECT_DIR$/framework/model/jminor-framework-model.iml" />
-      <module fileurl="file://$PROJECT_DIR$/framework/model-unittests/jminor-framework-model-unittests.iml" filepath="$PROJECT_DIR$/framework/model-unittests/jminor-framework-model-unittests.iml" />
-      <module fileurl="file://$PROJECT_DIR$/framework/server/jminor-framework-server.iml" filepath="$PROJECT_DIR$/framework/server/jminor-framework-server.iml" />
-      <module fileurl="file://$PROJECT_DIR$/framework/servlet/jminor-framework-servlet.iml" filepath="$PROJECT_DIR$/framework/servlet/jminor-framework-servlet.iml" />
-      <module fileurl="file://$PROJECT_DIR$/javafx/jminor-javafx.iml" filepath="$PROJECT_DIR$/javafx/jminor-javafx.iml" />
       <module fileurl="file://$PROJECT_DIR$/jminor-parent.iml" filepath="$PROJECT_DIR$/jminor-parent.iml" />
-      <module fileurl="file://$PROJECT_DIR$/server-monitor/jminor-server-monitor.iml" filepath="$PROJECT_DIR$/server-monitor/jminor-server-monitor.iml" />
-      <module fileurl="file://$PROJECT_DIR$/swing/common-model/jminor-swing-common-model.iml" filepath="$PROJECT_DIR$/swing/common-model/jminor-swing-common-model.iml" />
-      <module fileurl="file://$PROJECT_DIR$/swing/common-ui/jminor-swing-common-ui.iml" filepath="$PROJECT_DIR$/swing/common-ui/jminor-swing-common-ui.iml" />
-      <module fileurl="file://$PROJECT_DIR$/swing/framework-bundle/jminor-swing-framework-bundle.iml" filepath="$PROJECT_DIR$/swing/framework-bundle/jminor-swing-framework-bundle.iml" />
-      <module fileurl="file://$PROJECT_DIR$/swing/framework-model/jminor-swing-framework-model.iml" filepath="$PROJECT_DIR$/swing/framework-model/jminor-swing-framework-model.iml" />
-      <module fileurl="file://$PROJECT_DIR$/swing/framework-ui/jminor-swing-framework-ui.iml" filepath="$PROJECT_DIR$/swing/framework-ui/jminor-swing-framework-ui.iml" />
-      <module fileurl="file://$PROJECT_DIR$/swing/framework-ui-test/jminor-swing-framework-ui-test.iml" filepath="$PROJECT_DIR$/swing/framework-ui-test/jminor-swing-framework-ui-test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/plugins/hikari-pool/plugin-hikari-pool.iml" filepath="$PROJECT_DIR$/plugins/hikari-pool/plugin-hikari-pool.iml" />
-      <module fileurl="file://$PROJECT_DIR$/plugins/imagepanel/plugin-imagepanel.iml" filepath="$PROJECT_DIR$/plugins/imagepanel/plugin-imagepanel.iml" />
-      <module fileurl="file://$PROJECT_DIR$/plugins/jasperreports/plugin-jasperreports.iml" filepath="$PROJECT_DIR$/plugins/jasperreports/plugin-jasperreports.iml" />
-      <module fileurl="file://$PROJECT_DIR$/plugins/json/plugin-json.iml" filepath="$PROJECT_DIR$/plugins/json/plugin-json.iml" />
-      <module fileurl="file://$PROJECT_DIR$/plugins/log4j-proxy/plugin-log4j-proxy.iml" filepath="$PROJECT_DIR$/plugins/log4j-proxy/plugin-log4j-proxy.iml" />
-      <module fileurl="file://$PROJECT_DIR$/plugins/logback-proxy/plugin-logback-proxy.iml" filepath="$PROJECT_DIR$/plugins/logback-proxy/plugin-logback-proxy.iml" />
-      <module fileurl="file://$PROJECT_DIR$/plugins/nextreports/plugin-nextreports.iml" filepath="$PROJECT_DIR$/plugins/nextreports/plugin-nextreports.iml" />
-      <module fileurl="file://$PROJECT_DIR$/plugins/tomcat-pool/plugin-tomcat-pool.iml" filepath="$PROJECT_DIR$/plugins/tomcat-pool/plugin-tomcat-pool.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/core/org.jminor.common.core.iml" filepath="$PROJECT_DIR$/common/core/org.jminor.common.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/db/org.jminor.common.db.iml" filepath="$PROJECT_DIR$/common/db/org.jminor.common.db.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/model/org.jminor.common.model.iml" filepath="$PROJECT_DIR$/common/model/org.jminor.common.model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/server/org.jminor.common.server.iml" filepath="$PROJECT_DIR$/common/server/org.jminor.common.server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/server-http/org.jminor.common.server.http.iml" filepath="$PROJECT_DIR$/common/server-http/org.jminor.common.server.http.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/db-core/org.jminor.framework.db.core.iml" filepath="$PROJECT_DIR$/framework/db-core/org.jminor.framework.db.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/db-http/org.jminor.framework.db.http.iml" filepath="$PROJECT_DIR$/framework/db-http/org.jminor.framework.db.http.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/db-local/org.jminor.framework.db.local.iml" filepath="$PROJECT_DIR$/framework/db-local/org.jminor.framework.db.local.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/db-remote/org.jminor.framework.db.remote.iml" filepath="$PROJECT_DIR$/framework/db-remote/org.jminor.framework.db.remote.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/db-test/org.jminor.framework.db.test.iml" filepath="$PROJECT_DIR$/framework/db-test/org.jminor.framework.db.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/model/org.jminor.framework.model.iml" filepath="$PROJECT_DIR$/framework/model/org.jminor.framework.model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/model-unittests/org.jminor.framework.model.unittests.iml" filepath="$PROJECT_DIR$/framework/model-unittests/org.jminor.framework.model.unittests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugins/hikari-pool/org.jminor.framework.plugin.hikari.pool.iml" filepath="$PROJECT_DIR$/plugins/hikari-pool/org.jminor.framework.plugin.hikari.pool.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugins/imagepanel/org.jminor.framework.plugin.imagepanel.iml" filepath="$PROJECT_DIR$/plugins/imagepanel/org.jminor.framework.plugin.imagepanel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugins/jasperreports/org.jminor.framework.plugin.jasperreports.iml" filepath="$PROJECT_DIR$/plugins/jasperreports/org.jminor.framework.plugin.jasperreports.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugins/json/org.jminor.framework.plugin.json.iml" filepath="$PROJECT_DIR$/plugins/json/org.jminor.framework.plugin.json.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugins/log4j-proxy/org.jminor.framework.plugin.log4j.proxy.iml" filepath="$PROJECT_DIR$/plugins/log4j-proxy/org.jminor.framework.plugin.log4j.proxy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugins/logback-proxy/org.jminor.framework.plugin.logback.proxy.iml" filepath="$PROJECT_DIR$/plugins/logback-proxy/org.jminor.framework.plugin.logback.proxy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugins/nextreports/org.jminor.framework.plugin.nextreports.iml" filepath="$PROJECT_DIR$/plugins/nextreports/org.jminor.framework.plugin.nextreports.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugins/tomcat-pool/org.jminor.framework.plugin.tomcat.pool.iml" filepath="$PROJECT_DIR$/plugins/tomcat-pool/org.jminor.framework.plugin.tomcat.pool.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/server/org.jminor.framework.server.iml" filepath="$PROJECT_DIR$/framework/server/org.jminor.framework.server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/framework/servlet/org.jminor.framework.servlet.iml" filepath="$PROJECT_DIR$/framework/servlet/org.jminor.framework.servlet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/javafx/org.jminor.javafx.framework.iml" filepath="$PROJECT_DIR$/javafx/org.jminor.javafx.framework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swing/common-model/org.jminor.swing.common.model.iml" filepath="$PROJECT_DIR$/swing/common-model/org.jminor.swing.common.model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swing/common-ui/org.jminor.swing.common.ui.iml" filepath="$PROJECT_DIR$/swing/common-ui/org.jminor.swing.common.ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swing/framework-bundle/org.jminor.swing.framework.bundle.iml" filepath="$PROJECT_DIR$/swing/framework-bundle/org.jminor.swing.framework.bundle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swing/framework-model/org.jminor.swing.framework.model.iml" filepath="$PROJECT_DIR$/swing/framework-model/org.jminor.swing.framework.model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/server-monitor/org.jminor.swing.framework.server.monitor.iml" filepath="$PROJECT_DIR$/server-monitor/org.jminor.swing.framework.server.monitor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swing/framework-ui/org.jminor.swing.framework.ui.iml" filepath="$PROJECT_DIR$/swing/framework-ui/org.jminor.swing.framework.ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swing/framework-ui-test/org.jminor.swing.framework.ui.test.iml" filepath="$PROJECT_DIR$/swing/framework-ui-test/org.jminor.swing.framework.ui.test.iml" />
     </modules>
   </component>
 </project>

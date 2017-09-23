@@ -10,10 +10,14 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="jminor-common-core" />
-    <orderEntry type="module" module-name="jminor-common-db" />
-    <orderEntry type="module" module-name="jminor-common-model" />
-    <orderEntry type="module" module-name="jminor-framework-db-core" />
+    <orderEntry type="module" module-name="org.jminor.common.core" />
+    <orderEntry type="module" module-name="org.jminor.common.db" />
+    <orderEntry type="module" module-name="org.jminor.common.model" />
+    <orderEntry type="module" module-name="org.jminor.framework.db.core" />
+    <orderEntry type="module" module-name="org.jminor.common.server" scope="TEST" />
+    <orderEntry type="module" module-name="org.jminor.framework.db.local" scope="TEST" />
+    <orderEntry type="module" module-name="org.jminor.framework.db.remote" scope="TEST" />
+    <orderEntry type="module" module-name="org.jminor.framework.server" scope="TEST" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

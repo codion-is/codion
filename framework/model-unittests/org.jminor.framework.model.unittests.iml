@@ -9,15 +9,13 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="jminor-common-core" />
-    <orderEntry type="module" module-name="jminor-common-model" />
-    <orderEntry type="module" module-name="jminor-framework-db-core" />
-    <orderEntry type="module" module-name="jminor-framework-model" />
-    <orderEntry type="module" module-name="jminor-swing-common-model" />
-    <orderEntry type="module" module-name="jminor-swing-common-ui" />
-    <orderEntry type="module" module-name="jminor-swing-framework-model" />
-    <orderEntry type="module" module-name="jminor-swing-framework-ui" />
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="module" module-name="org.jminor.common.core" />
+    <orderEntry type="module" module-name="org.jminor.common.db" />
+    <orderEntry type="module" module-name="org.jminor.common.model" />
+    <orderEntry type="module" module-name="org.jminor.framework.db.core" />
+    <orderEntry type="module" module-name="org.jminor.framework.db.local" />
+    <orderEntry type="module" module-name="org.jminor.framework.model" />
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="file://$MODULE_DIR$/lib/compile" />

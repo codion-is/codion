@@ -4640,3 +4640,4 @@
   Properties that are read only by definition can no longer be made writeable
   Entities, constructor added with domainId parameter
   Property.DenormalizedViewProperty removed, implemented with DerivedProperty, some refactoring in related classes
+  IntelliJ modules renamed to java 9 module names

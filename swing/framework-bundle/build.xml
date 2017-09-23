@@ -13,6 +13,7 @@
     <unzip dest="src">
       <fileset dir="lib/sources"/>
     </unzip>
+    <delete file="src/module-info.java"/>
     <javadoc destdir="${javadoc}" sourcepath="src" packagenames="org.jminor.*" Encoding="UTF-8"
              docencoding="UTF-8" author="true" version="true" use="true"
              windowtitle="JMinor v${version} ${ant.project.name}" doctitle="JMinor v${version} ${ant.project.name}">

@@ -11,15 +11,16 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="jminor-common-server-http" />
-    <orderEntry type="module" module-name="jminor-framework-server" />
-    <orderEntry type="module" module-name="jminor-framework-servlet" />
-    <orderEntry type="module" module-name="jminor-framework-db-http" />
-    <orderEntry type="module" module-name="jminor-swing-framework-bundle" />
-    <orderEntry type="module" module-name="jminor-javafx" />
-    <orderEntry type="module" module-name="plugin-jasperreports" />
-    <orderEntry type="module" module-name="plugin-json" />
-    <orderEntry type="module" module-name="plugin-logback-proxy" scope="RUNTIME" />
+    <orderEntry type="module" module-name="org.jminor.common.server" />
+    <orderEntry type="module" module-name="org.jminor.common.server.http" />
+    <orderEntry type="module" module-name="org.jminor.framework.db.http" />
+    <orderEntry type="module" module-name="org.jminor.framework.plugin.jasperreports" />
+    <orderEntry type="module" module-name="org.jminor.framework.plugin.json" />
+    <orderEntry type="module" module-name="org.jminor.framework.server" />
+    <orderEntry type="module" module-name="org.jminor.framework.servlet" />
+    <orderEntry type="module" module-name="org.jminor.javafx.framework" />
+    <orderEntry type="module" module-name="org.jminor.swing.framework.bundle" />
+    <orderEntry type="module" module-name="org.jminor.framework.plugin.logback.proxy" scope="RUNTIME" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

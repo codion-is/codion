@@ -10,11 +10,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="jminor-swing-framework-bundle" />
-    <orderEntry type="module" module-name="jminor-javafx" />
-    <orderEntry type="module" module-name="plugin-jasperreports" />
-    <orderEntry type="module" module-name="plugin-logback-proxy" scope="RUNTIME" />
-    <orderEntry type="module" module-name="jminor-framework-db-http" scope="RUNTIME" />
+    <orderEntry type="module" module-name="org.jminor.javafx.framework" />
+    <orderEntry type="module" module-name="org.jminor.swing.framework.bundle" />
+    <orderEntry type="module" module-name="org.jminor.framework.plugin.jasperreports" />
+    <orderEntry type="module" module-name="org.jminor.framework.plugin.logback.proxy" scope="RUNTIME" />
+    <orderEntry type="module" module-name="org.jminor.framework.db.http" scope="RUNTIME" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
