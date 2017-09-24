@@ -1,3 +1,5 @@
+ant.importBuild('build.xml')
+
 subprojects {
     apply plugin: 'java'
     apply plugin: 'jacoco'
@@ -43,7 +45,7 @@ subprojects {
         systemProperty "jminor.db.initScript", "src/test/sql/create_h2_db.sql"
         systemProperty "jminor.unittest.username", "scott"
         systemProperty "jminor.unittest.password", "tiger"
-    }
+    }.dependsOn create_keystore
 
     jacoco {
         toolVersion = "0.7.9"
