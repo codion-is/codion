@@ -1,0 +1,9 @@
+dependencies {
+    compile project(':org.jminor.common.core')
+    compile project(':org.jminor.common.db')
+
+    compile 'org.apache.tomcat:tomcat-jdbc:8.0.24'
+    compile 'org.apache.tomcat:tomcat-juli:8.0.24'
+
+    testRuntime "com.h2database:h2:${h2Version}"
+}

@@ -1,0 +1,21 @@
+dependencies {
+    compile project(':org.jminor.common.core')
+    compile project(':org.jminor.common.db')
+    compile project(':org.jminor.common.model')
+    compile project(':org.jminor.common.server')
+
+    compile project(':org.jminor.framework.server')
+    compile project(':org.jminor.swing.common.model')
+    compile project(':org.jminor.swing.common.ui')
+
+    testRuntime project(':org.jminor.framework.db.core')
+    testRuntime project(':org.jminor.framework.db.local')
+    testRuntime project(':org.jminor.framework.db.remote')
+    testRuntime project(':org.jminor.framework.model.unittests')
+
+    compile "org.json:json:${jsonVersion}"
+    compile "org.jfree:jcommon:${jcommonVersion}"
+    compile "org.jfree:jfreechart:${jfreechartVersion}"
+
+    testRuntime "com.h2database:h2:${h2Version}"
+}

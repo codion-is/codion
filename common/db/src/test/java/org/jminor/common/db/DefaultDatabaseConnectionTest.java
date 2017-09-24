@@ -24,7 +24,7 @@ public class DefaultDatabaseConnectionTest {
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
-  private static final Database DATABASE = DatabasesTest.createTestDatabaseInstance();
+  private final Database DATABASE = Databases.getInstance();
   private DefaultDatabaseConnection dbConnection;
 
   @Before

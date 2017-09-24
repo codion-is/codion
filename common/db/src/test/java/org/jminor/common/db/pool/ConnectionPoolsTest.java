@@ -2,7 +2,7 @@ package org.jminor.common.db.pool;
 
 import org.jminor.common.User;
 import org.jminor.common.db.DatabaseConnectionsTest;
-import org.jminor.common.db.DatabasesTest;
+import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 
 import org.junit.Test;
@@ -20,7 +20,7 @@ public final class ConnectionPoolsTest {
 
   @Test
   public void initializeConnectionPools() throws DatabaseException, ClassNotFoundException {
-    ConnectionPools.initializeConnectionPools(null, DatabasesTest.createTestDatabaseInstance(),
+    ConnectionPools.initializeConnectionPools(null, Databases.getInstance(),
             Collections.singletonList(UNIT_TEST_USER), 1000);
     assertNotNull(ConnectionPools.getConnectionPool(UNIT_TEST_USER));
     ConnectionPools.closeConnectionPools();

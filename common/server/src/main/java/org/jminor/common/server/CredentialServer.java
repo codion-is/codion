@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
@@ -61,7 +60,7 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
     super(port);
     this.tokenValidity = tokenValidity;
     this.expiredCleaner = new TaskScheduler(this::removeExpired, cleanupInterval, TimeUnit.MILLISECONDS).start();
-    this.registry = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+    this.registry = Servers.initializeRegistry(Registry.REGISTRY_PORT);
     this.registry.bind(CredentialService.class.getSimpleName(), this);
   }
 

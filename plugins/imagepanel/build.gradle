@@ -1,0 +1,10 @@
+dependencies {
+    compile project(':org.jminor.common.core')
+
+    compile project(':org.jminor.framework.db.core')
+
+    compile project(':org.jminor.swing.common.model')
+    compile project(':org.jminor.swing.common.ui')
+
+    compile project(':org.jminor.swing.framework.ui')
+}

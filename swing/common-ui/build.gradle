@@ -1,0 +1,11 @@
+dependencies {
+    compile project(':org.jminor.common.core')
+    compile project(':org.jminor.common.model')
+
+    compile project(':org.jminor.framework.db.core')
+    compile project(':org.jminor.swing.common.model')
+
+    runtime "com.toedter:jcalendar:${jcalendarVersion}"
+
+    testRuntime "com.h2database:h2:${h2Version}"
+}

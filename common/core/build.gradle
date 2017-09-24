@@ -1,0 +1,8 @@
+dependencies {
+    testCompile "junit:junit:${junitVersion}"
+}
+
+task writeVersion {
+    ant.concat(destFile:"build/classes/java/main/org/jminor/common/version.txt", "${version}")
+}
+classes.dependsOn writeVersion

@@ -1,0 +1,19 @@
+dependencies {
+    compile project(':org.jminor.common.core')
+    compile project(':org.jminor.common.server')
+    compile project(':org.jminor.common.server.http')
+
+    compile project(':org.jminor.framework.db.core')
+    compile project(':org.jminor.framework.db.remote')
+
+    compile 'org.glassfish.jersey.bundles:jaxrs-ri:2.22'
+
+    testCompile project(':org.jminor.framework.db.local')
+    testCompile project(':org.jminor.framework.server')
+
+    testCompile "org.apache.httpcomponents:httpclient:${httpclientVersion}"
+    testCompile "org.apache.httpcomponents:httpcore:${httpcoreVersion}"
+    testRuntime "commons-logging:commons-logging:${commonsloggingVersion}"
+
+    testRuntime "com.h2database:h2:${h2Version}"
+}

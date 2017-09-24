@@ -1,0 +1,41 @@
+dependencies {
+    compile project(':org.jminor.common.core')
+    compile project(':org.jminor.common.db')
+    compile project(':org.jminor.common.model')
+
+    compile project(':org.jminor.framework.db.core')
+
+    compile project(':org.jminor.swing.common.model')
+    compile project(':org.jminor.swing.common.ui')
+
+    testCompile project(':org.jminor.framework.db.local')
+    testCompile project(':org.jminor.framework.model.unittests')
+
+    testCompile project(':org.jminor.swing.framework.model')
+
+    compile ('net.sf.jasperreports:jasperreports:6.0.0') {
+        transitive = false
+    }
+
+    runtime 'commons-logging:commons-logging:1.1.1'
+    runtime 'commons-digester:commons-digester:2.1'
+    runtime 'commons-collections:commons-collections:3.2.1'
+    runtime 'commons-beanutils:commons-beanutils:1.9.0'
+    runtime 'org.eclipse.jdt.core.compiler:ecj:4.3.1'
+
+    testRuntime "com.h2database:h2:${h2Version}"
+}
+
+task compileJasper(dependsOn: 'compileJava') {
+    def jasperSourceDir = file('src/test/reports')
+    def jasperTargetDir = file('build/test')
+    ant {
+        taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.runtime.asPath)
+        jasperTargetDir.mkdirs()
+        jrc(srcdir: jasperSourceDir, destdir: jasperTargetDir) {
+            classpath(path: sourceSets.main.output.classesDirs)
+            include(name: '**/*.jrxml')
+        }
+    }
+}
+classes.dependsOn compileJasper

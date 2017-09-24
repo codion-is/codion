@@ -1,0 +1,88 @@
+rootProject.name = 'jminor-parent'
+
+include 'org.jminor.common.core'
+project(':org.jminor.common.core').projectDir = file('common/core')
+
+include 'org.jminor.common.db'
+project(':org.jminor.common.db').projectDir = file('common/db')
+
+include 'org.jminor.common.model'
+project(':org.jminor.common.model').projectDir = file('common/model')
+
+include 'org.jminor.common.server'
+project(':org.jminor.common.server').projectDir = file('common/server')
+
+include 'org.jminor.common.server.http'
+project(':org.jminor.common.server.http').projectDir = file('common/server-http')
+
+include 'org.jminor.framework.db.core'
+project(':org.jminor.framework.db.core').projectDir = file('framework/db-core')
+
+include 'org.jminor.framework.db.local'
+project(':org.jminor.framework.db.local').projectDir = file('framework/db-local')
+
+include 'org.jminor.framework.db.remote'
+project(':org.jminor.framework.db.remote').projectDir = file('framework/db-remote')
+
+include 'org.jminor.framework.db.http'
+project(':org.jminor.framework.db.http').projectDir = file('framework/db-http')
+
+include 'org.jminor.framework.db.test'
+project(':org.jminor.framework.db.test').projectDir = file('framework/db-test')
+
+include 'org.jminor.framework.model'
+project(':org.jminor.framework.model').projectDir = file('framework/model')
+
+include 'org.jminor.framework.model.unittests'
+project(':org.jminor.framework.model.unittests').projectDir = file('framework/model-unittests')
+
+include 'org.jminor.framework.server'
+project(':org.jminor.framework.server').projectDir = file('framework/server')
+
+include 'org.jminor.framework.servlet'
+project(':org.jminor.framework.servlet').projectDir = file('framework/servlet')
+
+include 'org.jminor.javafx.framework'
+project(':org.jminor.javafx.framework').projectDir = file('javafx')
+
+include 'org.jminor.swing.common.model'
+project(':org.jminor.swing.common.model').projectDir = file('swing/common-model')
+
+include 'org.jminor.swing.common.ui'
+project(':org.jminor.swing.common.ui').projectDir = file('swing/common-ui')
+
+include 'org.jminor.swing.framework.model'
+project(':org.jminor.swing.framework.model').projectDir = file('swing/framework-model')
+
+include 'org.jminor.swing.framework.ui'
+project(':org.jminor.swing.framework.ui').projectDir = file('swing/framework-ui')
+
+include 'org.jminor.swing.framework.ui.test'
+project(':org.jminor.swing.framework.ui.test').projectDir = file('swing/framework-ui-test')
+
+include 'org.jminor.swing.framework.server.monitor'
+project(':org.jminor.swing.framework.server.monitor').projectDir = file('server-monitor')
+
+include 'org.jminor.framework.plugin.hikari.pool'
+project(':org.jminor.framework.plugin.hikari.pool').projectDir = file('plugins/hikari-pool')
+
+include 'org.jminor.framework.plugin.imagepanel'
+project(':org.jminor.framework.plugin.imagepanel').projectDir = file('plugins/imagepanel')
+
+include 'org.jminor.framework.plugin.jasperreports'
+project(':org.jminor.framework.plugin.jasperreports').projectDir = file('plugins/jasperreports')
+
+include 'org.jminor.framework.plugin.json'
+project(':org.jminor.framework.plugin.json').projectDir = file('plugins/json')
+
+include 'org.jminor.framework.plugin.log4j.proxy'
+project(':org.jminor.framework.plugin.log4j.proxy').projectDir = file('plugins/log4j-proxy')
+
+include 'org.jminor.framework.plugin.logback.proxy'
+project(':org.jminor.framework.plugin.logback.proxy').projectDir = file('plugins/logback-proxy')
+
+include 'org.jminor.framework.plugin.nextreports'
+project(':org.jminor.framework.plugin.nextreports').projectDir = file('plugins/nextreports')
+
+include 'org.jminor.framework.plugin.tomcat.pool'
+project(':org.jminor.framework.plugin.tomcat.pool').projectDir = file('plugins/tomcat-pool')

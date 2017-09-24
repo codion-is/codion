@@ -1,0 +1,9 @@
+dependencies {
+    compile project(':org.jminor.common.core')
+    compile project(':org.jminor.common.db')
+
+    compile "org.jfree:jcommon:${jcommonVersion}"
+    compile "org.jfree:jfreechart:${jfreechartVersion}"
+
+    testRuntime "com.h2database:h2:${h2Version}"
+}

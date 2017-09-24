@@ -1,0 +1,19 @@
+dependencies {
+    compile project(':org.jminor.common.core')
+    compile project(':org.jminor.common.db')
+    compile project(':org.jminor.common.model')
+
+    testCompile project(':org.jminor.framework.db.local')
+    testCompile project(':org.jminor.swing.framework.model')
+
+    compile ('ro.nextreports:nextreports-engine:9.2') {
+        transitive = false
+    }
+
+    testRuntime 'org.apache.commons:commons-jexl:2.1.1'
+    testRuntime 'com.thoughtworks.xstream:xstream:1.4.8'
+    testRuntime 'commons-logging:commons-logging:1.1.1'
+    testRuntime 'com.itextpdf:itextpdf:5.5.0'
+
+    testRuntime "com.h2database:h2:${h2Version}"
+}

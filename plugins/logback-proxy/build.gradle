@@ -1,0 +1,6 @@
+dependencies {
+    compile project(':org.jminor.common.core')
+
+    compile "ch.qos.logback:logback-classic:${logbackVersion}"
+    compile "ch.qos.logback:logback-core:${logbackVersion}"
+}

@@ -1,0 +1,15 @@
+dependencies {
+    compile project(':org.jminor.common.core')
+    compile project(':org.jminor.common.db')
+    compile project(':org.jminor.common.model')
+    compile project(':org.jminor.common.server')
+
+    compile project(':org.jminor.framework.db.core')
+    compile project(':org.jminor.framework.db.local')
+    compile project(':org.jminor.framework.db.remote')
+    compile project(':org.jminor.framework.server')
+
+    compile "org.json:json:${jsonVersion}"
+
+    testRuntime "com.h2database:h2:${h2Version}"
+}
