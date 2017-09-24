@@ -1,0 +1,42 @@
+def mainProjects = [
+        ':org.jminor.common.core',
+        ':org.jminor.common.model',
+        ':org.jminor.common.db',
+        ':org.jminor.common.server',
+        ':org.jminor.framework.db.core',
+        ':org.jminor.framework.db.local',
+        ':org.jminor.framework.db.remote',
+        ':org.jminor.framework.model',
+        ':org.jminor.swing.common.model',
+        ':org.jminor.swing.common.ui',
+        ':org.jminor.swing.framework.model',
+        ':org.jminor.swing.framework.ui']
+
+jar {
+    from files(mainProjects.collect{ project(it).sourceSets.main.output })
+}
+
+classes.setDependsOn(mainProjects.collect{ project(it).classes })
+
+javadoc.setDependsOn(mainProjects.collect{ project(it).javadoc })
+
+task createSourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from files(mainProjects.collect{ project(it).sourceSets.main.allSource })
+}
+
+task createJavadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from files(mainProjects.collect{ project(it).javadoc.destinationDir })
+}
+
+artifacts {
+    archives createSourcesJar
+    archives createJavadocJar
+}
+
+sonarqube {
+    properties {
+        property "sonar.skip", "true"
+    }
+}
