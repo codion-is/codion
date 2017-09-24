@@ -1,3 +1,7 @@
+plugins {
+    id "org.sonarqube" version "2.5"
+}
+
 ant.importBuild('build.xml')
 
 subprojects {
@@ -82,5 +86,15 @@ subprojects {
     artifacts {
         archives sourcesJar
         archives javadocJar
+    }
+
+    sonarqube {
+        properties {
+            property "sonar.projectName", "JMinor"
+            property "sonar.projectKey", "org.jminor:jminor"
+            property "sonar.projectVersion", "${version}"
+            property "sonar.java.source", "1.8"
+            property "sonar.sourceEncoding", "UTF-8"
+        }
     }
 }
