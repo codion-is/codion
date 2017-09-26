@@ -15,6 +15,19 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="org.jminor.common.core" exported="" />
+    <orderEntry type="module" module-name="org.jminor.common.db" exported="" />
+    <orderEntry type="module" module-name="org.jminor.common.model" exported="" />
+    <orderEntry type="module" module-name="org.jminor.common.server" exported="" />
+    <orderEntry type="module" module-name="org.jminor.framework.db.core" exported="" />
+    <orderEntry type="module" module-name="org.jminor.framework.db.local" exported="" />
+    <orderEntry type="module" module-name="org.jminor.framework.db.remote" exported="" />
+    <orderEntry type="module" module-name="org.jminor.framework.model" exported="" />
+    <orderEntry type="module" module-name="org.jminor.swing.common.model" exported="" />
+    <orderEntry type="module" module-name="org.jminor.swing.common.ui" exported="" />
+    <orderEntry type="module" module-name="org.jminor.swing.framework.model" exported="" />
+    <orderEntry type="module" module-name="org.jminor.swing.framework.ui" exported="" />
+    <orderEntry type="module" module-name="org.jminor.swing.framework.ui.test" exported="" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: org.slf4j:slf4j-api:1.7.7" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.slf4j:slf4j-api:1.7.7" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.slf4j:slf4j-api:1.7.7" level="project" />
