@@ -1,4 +1,4 @@
-rootProject.name = 'jminor-parent'
+rootProject.name = 'org.jminor'
 
 include 'org.jminor.common.core'
 project(':org.jminor.common.core').projectDir = file('common/core')

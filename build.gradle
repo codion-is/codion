@@ -2,11 +2,15 @@ plugins {
     id "org.sonarqube" version "2.5"
 }
 
-ant.importBuild('build.xml')
+ant.importBuild('gradle-ant.xml')
+
+allprojects {
+    version='0.11.0-SNAPSHOT'
+}
+
+apply plugin: 'java'
 
 subprojects {
-    version='0.11.0-SNAPSHOT'
-
     apply plugin: 'java'
     apply plugin: 'jacoco'
 
