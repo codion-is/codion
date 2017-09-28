@@ -12,6 +12,7 @@ allprojects {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'jacoco'
+    apply plugin: 'maven-publish'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -99,6 +100,30 @@ subprojects {
     artifacts {
         archives sourcesJar
         archives javadocJar
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact sourcesJar
+                artifact javadocJar
+            }
+        }
+        repositories {
+            maven {
+                credentials {
+                    username "${artifactoryUsername}"
+                    password "${artifactoryPassword}"
+                }
+
+                if (project.version.endsWith('-SNAPSHOT')) {
+                    url "${artifactorySnapshotUrl}"
+                } else {
+                    url "${artifactoryReleaseUrl}"
+                }
+            }
+        }
     }
 
     sonarqube {
