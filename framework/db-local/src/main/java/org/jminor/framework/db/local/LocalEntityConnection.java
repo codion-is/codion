@@ -700,22 +700,26 @@ public final class LocalEntityConnection implements EntityConnection {
   /**
    * Returns a result set iterator based on the given query condition, this iterator closes all underlying
    * resources in case of an exception and when it finishes iterating.
-   * Calling {@link ResultIterator#close()} is recommended.
+   * Calling {@link ResultIterator#close()} is required if the iterator is not exhausted and always recommended.
    * @param condition the query condition
    * @return an iterator for the given query condition
    * @throws DatabaseException in case of an exception
    */
   public ResultIterator<Entity> iterator(final EntityCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
+    PreparedStatement statement = null;
+    ResultSet resultSet = null;
     String selectSQL = null;
     try {
       selectSQL = getSelectSQL(condition, connection.getDatabase());
-      final PreparedStatement statement = prepareStatement(selectSQL);
-      final ResultSet resultSet = executePreparedSelect(statement, selectSQL, condition);
+      statement = prepareStatement(selectSQL);
+      resultSet = executePreparedSelect(statement, selectSQL, condition);
 
       return new EntityResultIterator(statement, resultSet, domain.getResultPacker(condition.getEntityId()));
     }
     catch (final SQLException e) {
+      Databases.closeSilently(resultSet);
+      Databases.closeSilently(statement);
       LOG.error(Databases.createLogMessage(getUser(), selectSQL, condition.getValues(), e, null));
       throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e), selectSQL);
     }
@@ -808,12 +812,12 @@ public final class LocalEntityConnection implements EntityConnection {
         while (iterator.hasNext()) {
           result.add(iterator.next());
         }
-        if (!condition.isForUpdate()) {
-          setForeignKeys(result, condition, currentForeignKeyFetchDepth);
-        }
       }
       finally {
         iterator.close();
+      }
+      if (!condition.isForUpdate()) {
+        setForeignKeys(result, condition, currentForeignKeyFetchDepth);
       }
 
       return result;
@@ -1350,8 +1354,8 @@ public final class LocalEntityConnection implements EntityConnection {
         if (resultSet.next()) {
           return true;
         }
-
         close();
+
         return false;
       }
       catch (final SQLException e) {
