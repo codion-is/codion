@@ -4648,3 +4648,4 @@
   ResultPacker.fetch() added
   ResultIterator added
   LocalEntityConnection.iterator(EntityCondition) added
+  LocalEntityConnections.createConnection() now returns LocalEntityConnection instead of EntityConnection
