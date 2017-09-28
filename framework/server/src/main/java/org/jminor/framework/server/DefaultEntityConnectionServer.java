@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
+import java.lang.reflect.InvocationTargetException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -667,7 +668,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     return connection.hasBeenInactive(timeout);
   }
 
-  private void loadDomainModels(final Collection<String> domainModelClassNames) throws ClassNotFoundException {
+  private void loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
     try {
       if (domainModelClassNames != null) {
         for (final String className : domainModelClassNames) {
@@ -678,11 +679,13 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
         }
       }
     }
-    catch (final ClassNotFoundException cl) {
-      throw cl;
+    catch (final InvocationTargetException ite) {
+      LOG.error("Exception while loading and registering domain model", ite);
+      throw ite.getCause();
     }
     catch (final Exception e) {
       LOG.error("Exception while loading and registering domain model", e);
+      throw e;
     }
   }
 

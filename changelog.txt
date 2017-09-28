@@ -4642,3 +4642,4 @@
   Property.DenormalizedViewProperty removed, implemented with DerivedProperty, some refactoring in related classes
   IntelliJ modules renamed to java 9 module names
   Trying out Gradle
+  DefaultEntityConnectionServer now exits in case of an exception during domain model loading
