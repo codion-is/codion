@@ -28,7 +28,7 @@ dependencies {
 
 task compileJasper(dependsOn: 'compileJava') {
     def jasperSourceDir = file('src/test/reports')
-    def jasperTargetDir = file('build/test')
+    def jasperTargetDir = file('build/classes/reports/test')
     ant {
         taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.runtime.asPath)
         jasperTargetDir.mkdirs()
@@ -38,4 +38,8 @@ task compileJasper(dependsOn: 'compileJava') {
         }
     }
 }
-classes.dependsOn compileJasper
+compileTestJava {
+    doLast {
+        compileJasper
+    }
+}

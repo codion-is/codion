@@ -30,6 +30,8 @@ public class JasperReportsWrapperTest {
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
+  private static final String REPORT_PATH = "build/classes/reports/test/empdept_employees.jasper";
+
   @Test
   public void fillJdbcReport() throws ReportException {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(ENTITIES, UNIT_TEST_USER,
@@ -37,17 +39,17 @@ public class JasperReportsWrapperTest {
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", Arrays.asList(10, 20));
     final JasperPrint print = EntityReportUtil.fillReport(
-            new JasperReportsWrapper("build/test/empdept_employees.jasper", reportParameters),
+            new JasperReportsWrapper(REPORT_PATH, reportParameters),
             connectionProvider).getResult();
     assertNotNull(print);
     EntityReportUtil.fillReport(
-            new JasperReportsWrapper("build/test/empdept_employees.jasper"),
+            new JasperReportsWrapper(REPORT_PATH),
             connectionProvider).getResult();
   }
 
   @Test
   public void fillDataSourceReport() throws ReportException {
-    final JasperReportsWrapper wrapper = new JasperReportsWrapper("build/test/empdept_employees.jasper");
+    final JasperReportsWrapper wrapper = new JasperReportsWrapper(REPORT_PATH);
     final JasperReportsDataWrapper dataWrapper = new JasperReportsDataWrapper(new JRDataSource() {
           boolean done = false;
           @Override
@@ -71,7 +73,7 @@ public class JasperReportsWrapperTest {
   public void fillJdbcReportInvalidReport() throws Exception {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(ENTITIES, UNIT_TEST_USER,
             new H2Database("JasperReportsWrapperTest.fillJdbcReportInvalidReport", System.getProperty("jminor.db.initScript")));
-    EntityReportUtil.fillReport(new JasperReportsWrapper("build/test/non_existing.jasper",
+    EntityReportUtil.fillReport(new JasperReportsWrapper("build/classes/reports/test/non_existing.jasper",
             new HashMap<>()), connectionProvider).getResult();
   }
 }

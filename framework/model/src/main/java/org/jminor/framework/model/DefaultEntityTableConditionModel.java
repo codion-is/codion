@@ -223,7 +223,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final Condition<Property.ColumnProperty> getTableCondition() {
+  public final Condition<Property.ColumnProperty> getCondition() {
     final Condition.Set<Property.ColumnProperty> conditionSet = Conditions.conditionSet(conjunction);
     for (final PropertyConditionModel<? extends Property> conditionModel : propertyConditionModels.values()) {
       if (conditionModel.isEnabled()) {
@@ -239,26 +239,26 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
 
   /** {@inheritDoc} */
   @Override
-  public final Condition.Provider<Property.ColumnProperty> getAdditionalTableConditionProvider() {
+  public final Condition.Provider<Property.ColumnProperty> getAdditionalConditionProvider() {
     return additionalConditionProvider;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableConditionModel setAdditionalTableConditionProvider(final Condition.Provider<Property.ColumnProperty> conditionProvider) {
+  public final EntityTableConditionModel setAdditionalConditionProvider(final Condition.Provider<Property.ColumnProperty> conditionProvider) {
     this.additionalConditionProvider = conditionProvider;
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public FilterCondition<Entity> getAdditionalTableFilterCondition() {
+  public FilterCondition<Entity> getAdditionalFilterCondition() {
     return this.additionalFilterCondition;
   }
 
   /** {@inheritDoc} */
   @Override
-  public EntityTableConditionModel setAdditionalTableFilterCondition(final FilterCondition<Entity> filterCondition) {
+  public EntityTableConditionModel setAdditionalFilterCondition(final FilterCondition<Entity> filterCondition) {
     this.additionalFilterCondition = filterCondition;
 
     return this;

@@ -589,7 +589,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * Queries for the data used to populate this EntityTableModel when it is refreshed,
    * using the order by clause returned by {@link #getOrderByClause()}
    * @return entities selected from the database according the the query condition.
-   * @see EntityTableConditionModel#getTableCondition()
+   * @see EntityTableConditionModel#getCondition()
    */
   protected List<Entity> performQuery() {
     if (!getConditionModel().isEnabled() && queryConditionRequired) {
@@ -598,7 +598,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
     try {
       return connectionProvider.getConnection().selectMany(entityConditions.selectCondition(entityId,
-              getConditionModel().getTableCondition(), getOrderByClause(), fetchCount));
+              getConditionModel().getCondition(), getOrderByClause(), fetchCount));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);

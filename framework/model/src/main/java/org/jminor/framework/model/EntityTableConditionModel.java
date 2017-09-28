@@ -46,31 +46,31 @@ public interface EntityTableConditionModel extends FilterCondition<Entity>, Refr
   /**
    * @return the current condition based on the state of the underlying condition models
    */
-  Condition<Property.ColumnProperty> getTableCondition();
+  Condition<Property.ColumnProperty> getCondition();
 
   /**
    * @return any additional search condition, not based on any individual property condition
    */
-  Condition.Provider<Property.ColumnProperty> getAdditionalTableConditionProvider();
+  Condition.Provider<Property.ColumnProperty> getAdditionalConditionProvider();
 
   /**
    * Sets the additional condition provider, one not based on any individual property condition
    * @param conditionProvider the condition provider
    * @return this EntityTableConditionModel instance
    */
-  EntityTableConditionModel setAdditionalTableConditionProvider(final Condition.Provider<Property.ColumnProperty> conditionProvider);
+  EntityTableConditionModel setAdditionalConditionProvider(final Condition.Provider<Property.ColumnProperty> conditionProvider);
 
   /**
    * @return any additional filter condition, not based on any individual property condition
    */
-  FilterCondition<Entity> getAdditionalTableFilterCondition();
+  FilterCondition<Entity> getAdditionalFilterCondition();
 
   /**
    * Sets the additional filter condition, one not based on any individual property condition
    * @param filterCondition the condition
    * @return this EntityTableConditionModel instance
    */
-  EntityTableConditionModel setAdditionalTableFilterCondition(final FilterCondition<Entity> filterCondition);
+  EntityTableConditionModel setAdditionalFilterCondition(final FilterCondition<Entity> filterCondition);
 
   /**
    * @return true if any of the underlying PropertyConditionModels is enabled

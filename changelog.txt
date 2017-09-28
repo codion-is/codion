@@ -4643,3 +4643,5 @@
   IntelliJ modules renamed to java 9 module names
   Trying out Gradle
   DefaultEntityConnectionServer now exits in case of an exception during domain model loading
+  Some minor gradle related fixes
+  EntityTableConditionModel.additionalTableConditionProvider renamed to additionalConditionProvider,additionalTableFilterCondition to additionalFilterCondition and getTableCondition() to getCondition()

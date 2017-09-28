@@ -7,6 +7,6 @@
     <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
       <classpath refid="lib.test"/>
     </taskdef>
-    <jrc srcdir="src/test/reports" includes="**/*.jrxml" destdir="build/test"/>
+    <jrc srcdir="src/test/reports" includes="**/*.jrxml" destdir="build/classes/reports/test"/>
   </target>
 </project>
