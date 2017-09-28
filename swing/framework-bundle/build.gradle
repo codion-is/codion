@@ -1,38 +1,47 @@
-def mainProjects = [
-        ':org.jminor.common.core',
-        ':org.jminor.common.model',
-        ':org.jminor.common.db',
-        ':org.jminor.common.server',
-        ':org.jminor.framework.db.core',
-        ':org.jminor.framework.db.local',
-        ':org.jminor.framework.db.remote',
-        ':org.jminor.framework.model',
-        ':org.jminor.swing.common.model',
-        ':org.jminor.swing.common.ui',
-        ':org.jminor.swing.framework.model',
-        ':org.jminor.swing.framework.ui']
-
-jar {
-    from files(mainProjects.collect{ project(it).sourceSets.main.output })
+dependencies {
+    compile "org.jfree:jcommon:${jcommonVersion}"
+    compile "org.jfree:jfreechart:${jfreechartVersion}"
+    compile "org.json:json:${jsonVersion}"
+    runtime "com.toedter:jcalendar:${jcalendarVersion}"
 }
 
-classes.setDependsOn(mainProjects.collect{ project(it).classes })
-
-javadoc.setDependsOn(mainProjects.collect{ project(it).javadoc })
-
-task createSourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from files(mainProjects.collect{ project(it).sourceSets.main.allSource })
+sourceSets {
+    main {
+        java {
+            srcDir '../../common/core/src/main/java'
+            srcDir '../../common/model/src/main/java'
+            srcDir '../../common/db/src/main/java'
+            srcDir '../../common/server/src/main/java'
+            srcDir '../../framework/db-core/src/main/java'
+            srcDir '../../framework/db-local/src/main/java'
+            srcDir '../../framework/db-remote/src/main/java'
+            srcDir '../../framework/model/src/main/java'
+            srcDir '../../swing/common-model/src/main/java'
+            srcDir '../../swing/common-ui/src/main/java'
+            srcDir '../../swing/framework-model/src/main/java'
+            srcDir '../../swing/framework-ui/src/main/java'
+        }
+        resources {
+            srcDir '../../common/core/src/main/resources'
+            srcDir '../../common/model/src/main/resources'
+            srcDir '../../common/db/src/main/resources'
+            srcDir '../../common/server/src/main/resources'
+            srcDir '../../framework/db-core/src/main/resources'
+            srcDir '../../framework/db-local/src/main/resources'
+            srcDir '../../framework/db-remote/src/main/resources'
+            srcDir '../../framework/model/src/main/resources'
+            srcDir '../../swing/common-model/src/main/resources'
+            srcDir '../../swing/common-ui/src/main/resources'
+            srcDir '../../swing/framework-model/src/main/resources'
+            srcDir '../../swing/framework-ui/src/main/resources'
+        }
+    }
 }
 
-task createJavadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from files(mainProjects.collect{ project(it).javadoc.destinationDir })
-}
-
-artifacts {
-    archives createSourcesJar
-    archives createJavadocJar
+compileJava {
+    doFirst {
+        writeVersion
+    }
 }
 
 sonarqube {
