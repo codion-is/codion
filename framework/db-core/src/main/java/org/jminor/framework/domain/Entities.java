@@ -2014,13 +2014,14 @@ public class Entities {
       final List<Entity> result = new ArrayList<>();
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        result.add(loadEntity(resultSet));
+        result.add(fetch(resultSet));
       }
 
       return result;
     }
 
-    private Entity loadEntity(final ResultSet resultSet) throws SQLException {
+    @Override
+    public Entity fetch(final ResultSet resultSet) throws SQLException {
       final Map<Property, Object> values = new HashMap<>(propertyCount);
       if (hasTransientProperties) {
         for (int i = 0; i < transientProperties.size(); i++) {

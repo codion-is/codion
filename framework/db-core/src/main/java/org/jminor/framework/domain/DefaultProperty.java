@@ -1264,20 +1264,25 @@ class DefaultProperty implements Property {
       final List<Object> result = new ArrayList<>(50);
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        if (property.isInteger()) {
-          result.add(DefaultColumnProperty.getInteger(resultSet, COLUMN_INDEX));
-        }
-        else if (property.isLong()) {
-          result.add(DefaultColumnProperty.getLong(resultSet, COLUMN_INDEX));
-        }
-        else if (property.isDouble()) {
-          result.add(DefaultColumnProperty.getDouble(resultSet, COLUMN_INDEX));
-        }
-        else {
-          result.add(resultSet.getObject(1));
-        }
+        result.add(fetch(resultSet));
       }
       return result;
+    }
+
+    @Override
+    public Object fetch(final ResultSet resultSet) throws SQLException {
+      if (property.isInteger()) {
+        return DefaultColumnProperty.getInteger(resultSet, COLUMN_INDEX);
+      }
+      else if (property.isLong()) {
+        return DefaultColumnProperty.getLong(resultSet, COLUMN_INDEX);
+      }
+      else if (property.isDouble()) {
+        return DefaultColumnProperty.getDouble(resultSet, COLUMN_INDEX);
+      }
+      else {
+        return resultSet.getObject(1);
+      }
     }
   }
 }

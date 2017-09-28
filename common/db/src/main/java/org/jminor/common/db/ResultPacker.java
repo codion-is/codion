@@ -23,4 +23,12 @@ public interface ResultPacker<T> {
    * @throws SQLException thrown if anything goes wrong during the packing
    */
   List<T> pack(final ResultSet resultSet, final int fetchCount) throws SQLException;
+
+  /**
+   * Fetches a single instance from the given result set, assumes {@link ResultSet#next()} has been called
+   * @param resultSet the result set
+   * @return the instance
+   * @throws SQLException in case anything goes wrong
+   */
+  T fetch(final ResultSet resultSet) throws SQLException;
 }

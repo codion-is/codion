@@ -622,17 +622,23 @@ public final class EntityGeneratorModel {
     public List<Table> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Table> tables = new ArrayList<>();
       while (resultSet.next()) {
-        final String tableName = resultSet.getString("TABLE_NAME");
-        String dbSchema = resultSet.getString(TABLE_SCHEMA);
-        if (dbSchema == null) {
-          dbSchema = this.schema;
-        }
-        tables.add(new Table(dbSchema, tableName));
+        tables.add(fetch(resultSet));
       }
 
       resultSet.close();
 
       return tables;
+    }
+
+    @Override
+    public Table fetch(final ResultSet resultSet) throws SQLException {
+      final String tableName = resultSet.getString("TABLE_NAME");
+      String dbSchema = resultSet.getString(TABLE_SCHEMA);
+      if (dbSchema == null) {
+        dbSchema = this.schema;
+      }
+
+      return new Table(dbSchema, tableName);
     }
   }
 
@@ -648,25 +654,36 @@ public final class EntityGeneratorModel {
     public List<Column> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Column> columns = new ArrayList<>();
       while (resultSet.next()) {
-        final int dataType = resultSet.getInt("DATA_TYPE");
-        int decimalDigits = resultSet.getInt("DECIMAL_DIGITS");
-        if (resultSet.wasNull()) {
-          decimalDigits = -1;
-        }
-        final String translatedType = translateType(dataType, decimalDigits);
-        if (translatedType != null) {
-          final String tableName = resultSet.getString("TABLE_NAME");
-          final String columnName = resultSet.getString("COLUMN_NAME");
-          columns.add(new Column(columnName, dataType, translatedType,
-                  resultSet.getInt("COLUMN_SIZE"), decimalDigits, resultSet.getInt("NULLABLE"),
-                  resultSet.getObject("COLUMN_DEF") != null, resultSet.getString("REMARKS"),
-                  getForeignKeyColumn(tableName, columnName), getPrimaryKeyColumnIndex(columnName)));
+        final Column column = fetch(resultSet);
+        if (column != null) {
+          columns.add(column);
         }
       }
 
       resultSet.close();
 
       return columns;
+    }
+
+    @Override
+    public Column fetch(final ResultSet resultSet) throws SQLException {
+      final int dataType = resultSet.getInt("DATA_TYPE");
+      int decimalDigits = resultSet.getInt("DECIMAL_DIGITS");
+      if (resultSet.wasNull()) {
+        decimalDigits = -1;
+      }
+      final String translatedType = translateType(dataType, decimalDigits);
+      if (translatedType != null) {
+        final String tableName = resultSet.getString("TABLE_NAME");
+        final String columnName = resultSet.getString("COLUMN_NAME");
+
+        return new Column(columnName, dataType, translatedType,
+                resultSet.getInt("COLUMN_SIZE"), decimalDigits, resultSet.getInt("NULLABLE"),
+                resultSet.getObject("COLUMN_DEF") != null, resultSet.getString("REMARKS"),
+                getForeignKeyColumn(tableName, columnName), getPrimaryKeyColumnIndex(columnName));
+      }
+
+      return null;
     }
 
     private int getPrimaryKeyColumnIndex(final String columnName) {
@@ -729,13 +746,18 @@ public final class EntityGeneratorModel {
     public List<ForeignKeyColumn> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<ForeignKeyColumn> foreignKeys = new ArrayList<>();
       while (resultSet.next()) {
-        foreignKeys.add(new ForeignKeyColumn(resultSet.getString("PKTABLE_SCHEM"), resultSet.getString("PKTABLE_NAME"),
-                resultSet.getString("FKTABLE_NAME"), resultSet.getString("FKCOLUMN_NAME")));
+        foreignKeys.add(fetch(resultSet));
       }
 
       resultSet.close();
 
       return foreignKeys;
+    }
+
+    @Override
+    public ForeignKeyColumn fetch(final ResultSet resultSet) throws SQLException {
+      return new ForeignKeyColumn(resultSet.getString("PKTABLE_SCHEM"), resultSet.getString("PKTABLE_NAME"),
+                resultSet.getString("FKTABLE_NAME"), resultSet.getString("FKCOLUMN_NAME"));
     }
   }
 
@@ -744,12 +766,17 @@ public final class EntityGeneratorModel {
     public List<PrimaryKeyColumn> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<PrimaryKeyColumn> primaryKeys = new ArrayList<>();
       while (resultSet.next()) {
-        primaryKeys.add(new PrimaryKeyColumn(resultSet.getString("COLUMN_NAME"), resultSet.getInt("KEY_SEQ")));
+        primaryKeys.add(fetch(resultSet));
       }
 
       resultSet.close();
 
       return primaryKeys;
+    }
+
+    @Override
+    public PrimaryKeyColumn fetch(final ResultSet resultSet) throws SQLException {
+      return new PrimaryKeyColumn(resultSet.getString("COLUMN_NAME"), resultSet.getInt("KEY_SEQ"));
     }
   }
 }

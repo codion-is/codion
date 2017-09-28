@@ -11,6 +11,7 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.ResultIterator;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.condition.Conditions;
@@ -38,6 +39,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -696,6 +698,30 @@ public final class LocalEntityConnection implements EntityConnection {
   }
 
   /**
+   * Returns a result set iterator based on the given query condition, this iterator closes all underlying
+   * resources in case of an exception and when it finishes iterating.
+   * Calling {@link ResultIterator#close()} is recommended.
+   * @param condition the query condition
+   * @return an iterator for the given query condition
+   * @throws DatabaseException in case of an exception
+   */
+  public ResultIterator<Entity> iterator(final EntityCondition condition) throws DatabaseException {
+    Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
+    String selectSQL = null;
+    try {
+      selectSQL = getSelectSQL(condition, connection.getDatabase());
+      final PreparedStatement statement = prepareStatement(selectSQL);
+      final ResultSet resultSet = executePreparedSelect(statement, selectSQL, condition);
+
+      return new EntityResultIterator(statement, resultSet, domain.getResultPacker(condition.getEntityId()));
+    }
+    catch (final SQLException e) {
+      LOG.error(Databases.createLogMessage(getUser(), selectSQL, condition.getValues(), e, null));
+      throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e), selectSQL);
+    }
+  }
+
+  /**
    * @return true if optimistic locking is enabled
    */
   public boolean isOptimisticLocking() {
@@ -773,16 +799,21 @@ public final class LocalEntityConnection implements EntityConnection {
 
   private List<Entity> doSelectMany(final EntitySelectCondition condition, final int currentForeignKeyFetchDepth) throws DatabaseException {
     Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
-    PreparedStatement statement = null;
-    ResultSet resultSet = null;
     String selectSQL = null;
     try {
       selectSQL = getSelectSQL(condition, connection.getDatabase());
-      statement = prepareStatement(selectSQL);
-      resultSet = executePreparedSelect(statement, selectSQL, condition);
-      final List<Entity> result = packResult(condition, resultSet);
-      if (!condition.isForUpdate()) {
-        setForeignKeys(result, condition, currentForeignKeyFetchDepth);
+      final List<Entity> result = new ArrayList<>();
+      final ResultIterator<Entity> iterator = iterator(condition);
+      try {
+        while (iterator.hasNext()) {
+          result.add(iterator.next());
+        }
+        if (!condition.isForUpdate()) {
+          setForeignKeys(result, condition, currentForeignKeyFetchDepth);
+        }
+      }
+      finally {
+        iterator.close();
       }
 
       return result;
@@ -790,10 +821,6 @@ public final class LocalEntityConnection implements EntityConnection {
     catch (final SQLException e) {
       LOG.error(Databases.createLogMessage(getUser(), selectSQL, condition.getValues(), e, null));
       throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e), selectSQL);
-    }
-    finally {
-      Databases.closeSilently(resultSet);
-      Databases.closeSilently(statement);
     }
   }
 
@@ -1211,10 +1238,15 @@ public final class LocalEntityConnection implements EntityConnection {
       final List<java.sql.Blob> blobs = new ArrayList<>();
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        blobs.add(resultSet.getBlob(1));
+        blobs.add(fetch(resultSet));
       }
 
       return blobs;
+    }
+
+    @Override
+    public Blob fetch(final ResultSet resultSet) throws SQLException {
+      return resultSet.getBlob(1);
     }
   }
 
@@ -1297,6 +1329,52 @@ public final class LocalEntityConnection implements EntityConnection {
 
     private static String getEntityKeyParameterString(final Entity.Key argument) {
       return argument.getEntityId() + ", " + argument.toString();
+    }
+  }
+
+  private static final class EntityResultIterator implements ResultIterator<Entity> {
+
+    private final Statement statement;
+    private final ResultSet resultSet;
+    private final ResultPacker<Entity> resultPacker;
+
+    private EntityResultIterator(final Statement statement, final ResultSet resultSet, final ResultPacker<Entity> resultPacker) {
+      this.statement = statement;
+      this.resultSet = resultSet;
+      this.resultPacker = resultPacker;
+    }
+
+    @Override
+    public boolean hasNext() throws SQLException {
+      try {
+        if (resultSet.next()) {
+          return true;
+        }
+
+        close();
+        return false;
+      }
+      catch (final SQLException e) {
+        close();
+        throw e;
+      }
+    }
+
+    @Override
+    public Entity next() throws SQLException {
+      try {
+        return resultPacker.fetch(resultSet);
+      }
+      catch (final SQLException e) {
+        close();
+        throw e;
+      }
+    }
+
+    @Override
+    public void close() {
+      Databases.closeSilently(resultSet);
+      Databases.closeSilently(statement);
     }
   }
 }
