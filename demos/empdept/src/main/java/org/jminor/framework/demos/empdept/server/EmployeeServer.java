@@ -22,7 +22,7 @@ import java.util.List;
 
 public final class EmployeeServer extends DefaultEntityConnectionServer {
 
-  private static final Entities ENTITIES = new EmpDept();
+  private static final Entities ENTITIES = new EmpDept().registerDomain();
 
   public EmployeeServer(final Database database, final int serverPort, final int serverAdminPort,
                         final int registryPort) throws RemoteException {
