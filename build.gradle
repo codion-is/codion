@@ -12,7 +12,9 @@ allprojects {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'jacoco'
-    apply plugin: 'maven-publish'
+    if (!project.name.contains("demos")) {
+        apply plugin: 'maven-publish'
+    }
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -41,11 +43,6 @@ subprojects {
     dependencies {
         compile "org.slf4j:slf4j-api:${slf4jApiVersion}"
         testCompile "junit:junit:${junitVersion}"
-    }
-
-    task writeVersion {
-        ant.concat(destFile:"build/classes/java/main/org/jminor/common/version.txt",
-                project.version + " " + new Date().format("yyyy.MM.dd HH:mm"))
     }
 
     sourceSets {
@@ -103,74 +100,76 @@ subprojects {
         toolVersion = "0.7.9"
     }
 
-    jar {
-        manifest {
-            attributes(
-                    "Specification-Title": project.name,
-                    "Specification-Version": "${version}",
-                    "Specification-Vendor": "JMinor",
-                    "Implementation-Title": project.name,
-                    "Implementation-Version": "${version}",
-                    "Implementation-Vendor": "JMinor",
-                    "Implementation-Vendor-Id": "org.jminor",
-                    "Implementation-URL": "http://jminor.org",
-                    "Automatic-Module-Name": project.name,
-                    "Build-Jdk": org.gradle.internal.jvm.Jvm.current(),
-                    "Built-By": System.getProperty("user.name"),
-                    "Build-Time": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"))
-        }
-    }
-
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        classifier = 'javadoc'
-        from javadoc.destinationDir
-    }
-
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
-    }
-
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                groupId 'org.jminor'
-                artifactId project.name.replace("org.", "").replace(".", "-")
-
-                from components.java
-                artifact sourcesJar
-                artifact javadocJar
+    if (!project.name.contains("demos")) {
+        jar {
+            manifest {
+                attributes(
+                        "Specification-Title": project.name,
+                        "Specification-Version": "${version}",
+                        "Specification-Vendor": "JMinor",
+                        "Implementation-Title": project.name,
+                        "Implementation-Version": "${version}",
+                        "Implementation-Vendor": "JMinor",
+                        "Implementation-Vendor-Id": "org.jminor",
+                        "Implementation-URL": "http://jminor.org",
+                        "Automatic-Module-Name": project.name,
+                        "Build-Jdk": org.gradle.internal.jvm.Jvm.current(),
+                        "Built-By": System.getProperty("user.name"),
+                        "Build-Time": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"))
             }
         }
-        repositories {
-            maven {
-                credentials {
-                    username "${artifactoryUsername}"
-                    password "${artifactoryPassword}"
-                }
 
-                if (project.version.endsWith('-SNAPSHOT')) {
-                    url "${artifactorySnapshotUrl}"
-                } else {
-                    url "${artifactoryReleaseUrl}"
+        task sourcesJar(type: Jar, dependsOn: classes) {
+            classifier = 'sources'
+            from sourceSets.main.allSource
+        }
+
+        task javadocJar(type: Jar, dependsOn: javadoc) {
+            classifier = 'javadoc'
+            from javadoc.destinationDir
+        }
+
+        artifacts {
+            archives sourcesJar
+            archives javadocJar
+        }
+
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    groupId 'org.jminor'
+                    artifactId project.name.replace("org.", "").replace(".", "-")
+
+                    from components.java
+                    artifact sourcesJar
+                    artifact javadocJar
+                }
+            }
+            repositories {
+                maven {
+                    credentials {
+                        username "${artifactoryUsername}"
+                        password "${artifactoryPassword}"
+                    }
+
+                    if (project.version.endsWith('-SNAPSHOT')) {
+                        url "${artifactorySnapshotUrl}"
+                    } else {
+                        url "${artifactoryReleaseUrl}"
+                    }
                 }
             }
         }
-    }
 
-    sonarqube {
-        properties {
-            property "sonar.projectName", project.name
-            property "sonar.projectKey", "org.jminor:jminor"
-            property "sonar.projectVersion", version
-            property "sonar.java.source", "1.8"
-            property "sonar.sourceEncoding", "UTF-8"
-            property "sonar.exclusions", "**/*module-info.java"
+        sonarqube {
+            properties {
+                property "sonar.projectName", project.name
+                property "sonar.projectKey", "org.jminor:jminor"
+                property "sonar.projectVersion", version
+                property "sonar.java.source", "1.8"
+                property "sonar.sourceEncoding", "UTF-8"
+                property "sonar.exclusions", "**/*module-info.java"
+            }
         }
     }
 }

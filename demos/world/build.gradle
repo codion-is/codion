@@ -1,0 +1,12 @@
+dependencies {
+    compile project(':org.jminor.swing.framework.bundle')
+    compile project(':org.jminor.swing.framework.ui.test')
+    runtime project(':org.jminor.framework.plugin.logback.proxy')
+    testCompile project(':org.jminor.framework.db.test')
+
+    runtime "com.h2database:h2:${h2Version}"
+}
+
+test {
+    systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
+}

@@ -304,7 +304,6 @@
       <jvmarg value="-Djminor.server.port=2222"/>
       <jvmarg value="-Djminor.server.admin.port=2223"/>
       <jvmarg value="-Djminor.server.admin.user=scott:tiger"/>
-      <jvmarg value="-Djminor.server.rest.domainIds=EmpDept,Chinook"/>
       <jvmarg value="-Djminor.server.auxiliaryServerClassNames=org.jminor.framework.servlet.EntityServletServer"/>
       <jvmarg value="-Djminor.server.domain.classes=org.jminor.framework.demos.empdept.domain.EmpDept, org.jminor.framework.demos.petstore.domain.Petstore, org.jminor.framework.demos.chinook.domain.Chinook, org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser, org.jminor.framework.demos.world.domain.World"/>
       <jvmarg value="-Djavax.net.ssl.keyStore=${deploy.server.keystore}"/>

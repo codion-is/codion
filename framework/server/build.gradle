@@ -1,3 +1,7 @@
+configurations {
+    serverRuntime
+}
+
 dependencies {
     compile project(':org.jminor.common.core')
     compile project(':org.jminor.common.db')
@@ -8,4 +12,38 @@ dependencies {
     compile project(':org.jminor.framework.db.remote')
 
     testRuntime "com.h2database:h2:${h2Version}"
+
+    serverRuntime project(':org.jminor.framework.server')
+    serverRuntime project(':org.jminor.framework.servlet')
+    serverRuntime project(':org.jminor.framework.plugin.jasperreports')
+    serverRuntime project(':org.jminor.framework.plugin.hikari.pool')
+    serverRuntime project(':org.jminor.framework.plugin.logback.proxy')
+    serverRuntime project(':org.jminor.framework.demos.chinook')
+
+    serverRuntime "com.h2database:h2:${h2Version}"
+}
+
+task runServer(type: JavaExec) {
+    classpath = configurations.serverRuntime
+
+    main = 'org.jminor.framework.server.DefaultEntityConnectionServer'
+
+    systemProperties = [
+            'jminor.db.type': 'h2',
+            'jminor.db.host': 'h2db',
+            'jminor.db.embedded': 'true',
+            'jminor.db.embeddedInMemory': 'true',
+            'jminor.db.initScript': '../../demos/chinook/src/main/sql/create_schema.sql',
+            'jminor.server.pooling.initial': 'scott:tiger',
+            'jminor.server.port': '2222',
+            'jminor.server.admin.port': '2223',
+            'jminor.server.admin.user': 'scott:tiger',
+            'jminor.server.pooling.poolProviderClass': 'org.jminor.framework.plugins.hikari.pool.HikariConnectionPoolProvider',
+            'jminor.server.auxiliaryServerClassNames': 'org.jminor.framework.servlet.EntityServletServer',
+            'jminor.server.domain.classes': 'org.jminor.framework.demos.chinook.domain.Chinook',
+            'javax.net.ssl.keyStore': '../../resources/security/JMinorServerKeystore',
+            'java.security.policy': '../../resources/security/all_permissions.policy',
+            'javax.net.ssl.keyStorePassword': 'crappypass',
+            'java.rmi.server.hostname': 'localhost'
+    ]
 }

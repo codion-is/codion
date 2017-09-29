@@ -89,3 +89,18 @@ project(':org.jminor.framework.plugin.nextreports').projectDir = file('plugins/n
 
 include 'org.jminor.framework.plugin.tomcat.pool'
 project(':org.jminor.framework.plugin.tomcat.pool').projectDir = file('plugins/tomcat-pool')
+
+include 'org.jminor.framework.demos.chinook'
+project(':org.jminor.framework.demos.chinook').projectDir = file('demos/chinook')
+
+include 'org.jminor.framework.demos.empdept'
+project(':org.jminor.framework.demos.empdept').projectDir = file('demos/empdept')
+
+include 'org.jminor.framework.demos.petstore'
+project(':org.jminor.framework.demos.petstore').projectDir = file('demos/petstore')
+
+include 'org.jminor.framework.demos.schemabrowser'
+project(':org.jminor.framework.demos.schemabrowser').projectDir = file('demos/schemabrowser')
+
+include 'org.jminor.framework.demos.world'
+project(':org.jminor.framework.demos.world').projectDir = file('demos/world')
