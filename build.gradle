@@ -139,6 +139,9 @@ subprojects {
     publishing {
         publications {
             mavenJava(MavenPublication) {
+                groupId 'org.jminor'
+                artifactId project.name.replace("org.", "").replace(".", "-")
+
                 from components.java
                 artifact sourcesJar
                 artifact javadocJar
