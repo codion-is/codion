@@ -35,7 +35,7 @@ test {
 
 task compileJasper(dependsOn: 'compileJava') {
     def jasperSourceDir = file('src/main/reports')
-    def jasperTargetDir = file('build/reports')
+    def jasperTargetDir = file('build/classes/reports')
     ant {
         taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.runtime.asPath)
         jasperTargetDir.mkdirs()
@@ -49,4 +49,71 @@ compileTestJava {
     doLast {
         compileJasper
     }
+}
+
+task runClientLocal(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
+
+    systemProperties = [
+            'jminor.client.connectionType': 'local',
+            'jminor.db.type': 'h2',
+            'jminor.db.host': 'h2db',
+            'jminor.db.embedded': 'true',
+            'jminor.db.embeddedInMemory': 'true',
+            'jminor.db.initScript': 'src/main/sql/create_schema.sql',
+            'jminor.report.path': 'build/classes/reports'
+    ]
+}
+
+task runClientRemote(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
+
+    systemProperties = [
+            'jminor.client.connectionType': 'remote',
+            'jminor.server.hostname': 'localhost',
+            'jminor.report.path': '../../demos/empdept/build/classes/reports',
+            'javax.net.ssl.trustStore': '../../resources/security/JMinorClientTruststore',
+            'java.security.policy': '../../resources/security/jminor_client.policy'
+    ]
+}
+
+task runClientHttp(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
+
+    systemProperties = [
+            'jminor.client.connectionType': 'http',
+            'jminor.server.hostname': 'localhost',
+            'jminor.report.path': '../../demos/empdept/build/classes/reports',
+    ]
+}
+
+task runLoadTestRemote(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
+
+    systemProperties = [
+            'jminor.client.connectionType': 'remote',
+            'jminor.server.hostname': 'localhost',
+            'jminor.report.path': '../../demos/empdept/build/classes/reports',
+            'javax.net.ssl.trustStore': '../../resources/security/JMinorClientTruststore',
+            'java.security.policy': '../../resources/security/jminor_client.policy'
+    ]
+}
+
+task runLoadTestHttp(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'org.jminor.framework.demos.empdept.testing.EmptDeptLoadTest'
+
+    systemProperties = [
+            'jminor.client.connectionType': 'http',
+            'jminor.server.hostname': 'localhost',
+    ]
 }
