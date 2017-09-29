@@ -211,9 +211,8 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
         return remoteMethod.invoke(remote, args);
       }
       catch (final InvocationTargetException e) {
-        final Exception exception = (Exception) e.getCause();
-        LOG.error(exception.getMessage(), exception);
-        throw exception;
+        LOG.error(e.getMessage(), e);
+        throw e.getCause() instanceof Exception ? (Exception) e.getCause() : e;
       }
       catch (final Exception e) {
         LOG.error(e.getMessage(), e);

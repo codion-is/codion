@@ -320,8 +320,8 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
         return method.invoke(getConnection(), args);
       }
       catch (final InvocationTargetException e) {
-        exception = (Exception) e.getCause();
-        LOG.error(exception.getMessage(), exception);
+        LOG.error(e.getMessage(), e);
+        exception = e.getCause() instanceof Exception ? (Exception) e.getCause() : e;
 
         throw exception;
       }

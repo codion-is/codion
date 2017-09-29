@@ -162,8 +162,8 @@ public class DefaultRemoteEntityConnectionTest {
         try {
           return remoteMethod.invoke(finalAdapter, args);
         }
-        catch (final InvocationTargetException ie) {
-          throw (Exception) ie.getTargetException();
+        catch (final InvocationTargetException e) {
+          throw e.getCause() instanceof Exception ? (Exception) e.getCause() : e;
         }
       });
 

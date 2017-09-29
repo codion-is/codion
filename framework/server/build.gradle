@@ -13,6 +13,12 @@ dependencies {
 
     testRuntime "com.h2database:h2:${h2Version}"
 
+    serverRuntime project(':org.jminor.common.core')
+    serverRuntime project(':org.jminor.common.db')
+    serverRuntime project(':org.jminor.common.server')
+    serverRuntime project(':org.jminor.framework.db.core')
+    serverRuntime project(':org.jminor.framework.db.local')
+    serverRuntime project(':org.jminor.framework.db.remote')
     serverRuntime project(':org.jminor.framework.server')
     serverRuntime project(':org.jminor.framework.servlet')
     serverRuntime project(':org.jminor.framework.plugin.jasperreports')

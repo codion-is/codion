@@ -4649,3 +4649,5 @@
   ResultIterator added
   LocalEntityConnection.iterator(EntityCondition) added
   LocalEntityConnections.createConnection() now returns LocalEntityConnection instead of EntityConnection
+  Added a few run configurations to gradle build
+  Improved server level handling of InvocationTargetException
