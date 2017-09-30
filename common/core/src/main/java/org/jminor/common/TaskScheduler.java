@@ -111,7 +111,7 @@ public final class TaskScheduler {
   }
 
   /**
-   * @return an EventObserver notified each time the interval changes
+   * @return an EventObserver notified each time the interval is set
    */
   public EventObserver<Integer> getIntervalObserver() {
     return intervalChangedEvent.getObserver();

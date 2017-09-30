@@ -347,7 +347,7 @@ public final class ConnectionPoolMonitor {
     private static final long serialVersionUID = 1;
     @Override
     public int compare(final ConnectionPoolState o1, final ConnectionPoolState o2) {
-      return ((Long) o1.getTimestamp()).compareTo(o2.getTimestamp());
+      return Long.compare(o1.getTimestamp(), o2.getTimestamp());
     }
   }
 }

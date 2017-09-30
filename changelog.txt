@@ -4655,3 +4655,5 @@
   Entities.PERFORM_NULL_VALIDATION configuration value removed, Entities.Validator constructor overloaded with parameter instead
   DefaultValueMap.saveAll() simplified, removeOrigialValue() removed redundant containsKey() call
   Removed sonarqube plugin from demo gradle projects
+  Swing framework bundle module removed, wont jive with jigsaw since it exports the same packages as other modules, a big nono
+  Some minor modue-info.java fixes

@@ -7,7 +7,6 @@ import org.jminor.common.Item;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Properties;
 
-import java.awt.Color;
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +15,11 @@ import java.util.List;
  * Defines the domain model available for framework model unittests
  */
 public final class TestDomain extends Entities {
+
+  /**
+   * Otherwise we'd depend on java.awt.Color
+   */
+  public static final Object CYAN = new Object();
 
   public static final String T_MASTER = "domain.master_entity";
   public static final String MASTER_ID = "id";
@@ -163,7 +167,7 @@ public final class TestDomain extends Entities {
             .setCaption("Employee")
             .setBackgroundColorProvider((entity, property) -> {
               if (property.is(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {
-                return Color.CYAN;
+                return CYAN;
               }
 
               return null;

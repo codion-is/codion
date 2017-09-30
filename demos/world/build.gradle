@@ -1,5 +1,5 @@
 dependencies {
-    compile project(':org.jminor.swing.framework.bundle')
+    compile project(':org.jminor.swing.framework.ui')
     compile project(':org.jminor.swing.framework.ui.test')
     runtime project(':org.jminor.framework.plugin.logback.proxy')
     testCompile project(':org.jminor.framework.db.test')

@@ -60,9 +60,6 @@ project(':org.jminor.swing.framework.ui').projectDir = file('swing/framework-ui'
 include 'org.jminor.swing.framework.ui.test'
 project(':org.jminor.swing.framework.ui.test').projectDir = file('swing/framework-ui-test')
 
-include 'org.jminor.swing.framework.bundle'
-project(':org.jminor.swing.framework.bundle').projectDir = file('swing/framework-bundle')
-
 include 'org.jminor.swing.framework.server.monitor'
 project(':org.jminor.swing.framework.server.monitor').projectDir = file('server-monitor')
 

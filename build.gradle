@@ -203,7 +203,7 @@ subprojects {
             systemProperties = [
                     'jminor.client.connectionType': 'remote',
                     'jminor.server.hostname': 'localhost',
-                    'jminor.report.path': '../../demos/chinook/build/classes/reports',
+                    'jminor.report.path': 'build/classes/reports',
                     'javax.net.ssl.trustStore': '../../resources/security/JMinorClientTruststore',
                     'java.security.policy': '../../resources/security/jminor_client.policy'
             ]
@@ -215,7 +215,7 @@ subprojects {
             systemProperties = [
                     'jminor.client.connectionType': 'http',
                     'jminor.server.hostname': 'localhost',
-                    'jminor.report.path': '../../demos/chinook/build/classes/reports',
+                    'jminor.report.path': 'build/classes/reports',
             ]
         }
 
@@ -225,7 +225,7 @@ subprojects {
             systemProperties = [
                     'jminor.client.connectionType': 'remote',
                     'jminor.server.hostname': 'localhost',
-                    'jminor.report.path': '../../demos/chinook/build/classes/reports',
+                    'jminor.report.path': 'build/classes/reports',
                     'javax.net.ssl.trustStore': '../../resources/security/JMinorClientTruststore',
                     'java.security.policy': '../../resources/security/jminor_client.policy'
             ]

@@ -79,8 +79,6 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
    */
   public static class QueryScenario extends AbstractUsageScenario<QueryApplication> {
 
-    private static final long serialVersionUID = 1;
-
     private final String query;
     private final boolean transactional;
 

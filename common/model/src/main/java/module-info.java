@@ -1,9 +1,7 @@
 module org.jminor.common.model {
   requires java.sql;
   requires java.prefs;
-  requires java.desktop;
   requires slf4j.api;
-  requires jcommon;
   requires jfreechart;
   requires org.jminor.common.core;
   requires org.jminor.common.db;

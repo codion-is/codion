@@ -4,9 +4,9 @@ dependencies {
     compile project(':org.jminor.framework.db.http')
     compile project(':org.jminor.framework.db.test')
 
-    compile project(':org.jminor.swing.framework.bundle')
     compile project(':org.jminor.framework.plugin.jasperreports')
     compile project(':org.jminor.framework.plugin.json')
+    compile project(':org.jminor.swing.framework.ui')
     testCompile project(':org.jminor.swing.framework.ui.test')
     compile project(':org.jminor.javafx.framework')
 
