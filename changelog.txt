@@ -4653,7 +4653,10 @@
   Improved server level handling of InvocationTargetException
   DefaultEntityEditModel.insert() now calls saveAll() on the entity before inserting to remove unnecessary original values
   Entities.PERFORM_NULL_VALIDATION configuration value removed, Entities.Validator constructor overloaded with parameter instead
-  DefaultValueMap.saveAll() simplified, removeOrigialValue() removed redundant containsKey() call
+  DefaultValueMap.saveAll() simplified, removeOriginalValue() removed redundant containsKey() call
   Removed sonarqube plugin from demo gradle projects
   Swing framework bundle module removed, wont jive with jigsaw since it exports the same packages as other modules, a big nono
   Some minor modue-info.java fixes
+  common-tools module split from common-model, due to JFreeChart dependency
+  swing-common-ui-tools module split from common-ui, same reason
+  framework-tools module split from framework-model

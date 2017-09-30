@@ -1,0 +1,13 @@
+dependencies {
+    compile project(':org.jminor.common.core')
+    compile project(':org.jminor.common.tools')
+
+    compile project(':org.jminor.framework.db.core')
+    compile project(':org.jminor.framework.model')
+
+    testRuntime project(':org.jminor.framework.db.local')
+    testRuntime project(':org.jminor.framework.db.remote')
+    testRuntime project(':org.jminor.framework.server')
+
+    testRuntime "com.h2database:h2:${h2Version}"
+}

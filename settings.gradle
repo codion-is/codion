@@ -15,6 +15,9 @@ project(':org.jminor.common.server').projectDir = file('common/server')
 include 'org.jminor.common.server.http'
 project(':org.jminor.common.server.http').projectDir = file('common/server-http')
 
+include 'org.jminor.common.tools'
+project(':org.jminor.common.tools').projectDir = file('common/tools')
+
 include 'org.jminor.framework.db.core'
 project(':org.jminor.framework.db.core').projectDir = file('framework/db-core')
 
@@ -42,6 +45,9 @@ project(':org.jminor.framework.server').projectDir = file('framework/server')
 include 'org.jminor.framework.servlet'
 project(':org.jminor.framework.servlet').projectDir = file('framework/servlet')
 
+include 'org.jminor.framework.tools'
+project(':org.jminor.framework.tools').projectDir = file('framework/tools')
+
 include 'org.jminor.javafx.framework'
 project(':org.jminor.javafx.framework').projectDir = file('javafx')
 
@@ -50,6 +56,9 @@ project(':org.jminor.swing.common.model').projectDir = file('swing/common-model'
 
 include 'org.jminor.swing.common.ui'
 project(':org.jminor.swing.common.ui').projectDir = file('swing/common-ui')
+
+include 'org.jminor.swing.common.ui.tools'
+project(':org.jminor.swing.common.ui.tools').projectDir = file('swing/common-ui-tools')
 
 include 'org.jminor.swing.framework.model'
 project(':org.jminor.swing.framework.model').projectDir = file('swing/framework-model')

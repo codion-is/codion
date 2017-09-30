@@ -9,7 +9,7 @@ import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
 import org.jminor.framework.domain.Entities;
-import org.jminor.framework.model.EntityLoadTestModel;
+import org.jminor.framework.tools.EntityLoadTestModel;
 import org.jminor.swing.common.ui.tools.LoadTestPanel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 

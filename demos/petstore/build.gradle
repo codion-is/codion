@@ -1,9 +1,8 @@
 dependencies {
+    compile project(':org.jminor.framework.tools')
+    compile project(':org.jminor.swing.common.ui.tools')
     compile project(':org.jminor.swing.framework.ui')
     compile project(':org.jminor.swing.framework.ui.test')
-
-    compile "org.jfree:jcommon:${jcommonVersion}"
-    compile "org.jfree:jfreechart:${jfreechartVersion}"
 
     runtime project(':org.jminor.framework.db.http')
     runtime project(':org.jminor.framework.plugin.logback.proxy')
