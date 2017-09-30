@@ -24,8 +24,11 @@ dependencies {
     serverRuntime project(':org.jminor.framework.plugin.jasperreports')
     serverRuntime project(':org.jminor.framework.plugin.hikari.pool')
     serverRuntime project(':org.jminor.framework.plugin.logback.proxy')
-    serverRuntime project(':org.jminor.framework.demos.chinook')
     serverRuntime project(':org.jminor.framework.demos.empdept')
+    serverRuntime project(':org.jminor.framework.demos.chinook')
+    serverRuntime project(':org.jminor.framework.demos.petstore')
+    serverRuntime project(':org.jminor.framework.demos.schemabrowser')
+    serverRuntime project(':org.jminor.framework.demos.world')
 
     serverRuntime "com.h2database:h2:${h2Version}"
 }
@@ -40,14 +43,14 @@ task runServer(type: JavaExec) {
             'jminor.db.host': 'h2db',
             'jminor.db.embedded': 'true',
             'jminor.db.embeddedInMemory': 'true',
-            'jminor.db.initScript': '../../demos/chinook/src/main/sql/create_schema.sql,../../demos/empdept/src/main/sql/create_schema.sql',
+            'jminor.db.initScript': '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',
             'jminor.server.pooling.initial': 'scott:tiger',
             'jminor.server.port': '2222',
             'jminor.server.admin.port': '2223',
             'jminor.server.admin.user': 'scott:tiger',
             'jminor.server.pooling.poolProviderClass': 'org.jminor.framework.plugins.hikari.pool.HikariConnectionPoolProvider',
             'jminor.server.auxiliaryServerClassNames': 'org.jminor.framework.servlet.EntityServletServer',
-            'jminor.server.domain.classes': 'org.jminor.framework.demos.chinook.domain.Chinook,org.jminor.framework.demos.empdept.domain.EmpDept',
+            'jminor.server.domain.classes': 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.Chinook,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
             'javax.net.ssl.keyStore': '../../resources/security/JMinorServerKeystore',
             'java.security.policy': '../../resources/security/all_permissions.policy',
             'javax.net.ssl.keyStorePassword': 'crappypass',

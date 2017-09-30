@@ -5,6 +5,7 @@ dependencies {
     compile "org.jfree:jcommon:${jcommonVersion}"
     compile "org.jfree:jfreechart:${jfreechartVersion}"
 
+    runtime project(':org.jminor.framework.db.http')
     runtime project(':org.jminor.framework.plugin.logback.proxy')
 
     testCompile project(':org.jminor.framework.db.test')
@@ -16,17 +17,14 @@ test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
 }
 
-task runClientLocal(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-
+runClientLocal {
     main = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+}
 
-    systemProperties = [
-            'jminor.client.connectionType': 'local',
-            'jminor.db.type': 'h2',
-            'jminor.db.host': 'h2db',
-            'jminor.db.embedded': 'true',
-            'jminor.db.embeddedInMemory': 'true',
-            'jminor.db.initScript': 'src/main/sql/create_schema.sql'
-    ]
+runClientRemote {
+    main = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+}
+
+runClientHttp {
+    main = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
 }
