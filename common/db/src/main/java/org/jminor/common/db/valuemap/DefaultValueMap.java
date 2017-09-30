@@ -299,9 +299,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
   /** {@inheritDoc} */
   @Override
   public final void saveAll() {
-    for (final K key : keySet()) {
-      save(key);
-    }
+    originalValues = null;
   }
 
   /** {@inheritDoc} */
@@ -354,7 +352,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
   }
 
   protected final void removeOriginalValue(final K key) {
-    if (originalValues != null && originalValues.containsKey(key)) {
+    if (originalValues != null) {
       originalValues.remove(key);
       if (originalValues.isEmpty()) {
         originalValues = null;

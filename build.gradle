@@ -164,6 +164,9 @@ subprojects {
         }
 
         sonarqube {
+            System.setProperty("sonar.host.url", "${sonarHostUrl}")
+            System.setProperty("sonar.login", "${sonarLogin}")
+            System.setProperty("sonar.password", "${sonarPassword}")
             properties {
                 property "sonar.projectName", project.name
                 property "sonar.projectKey", "org.jminor:jminor"
@@ -176,6 +179,10 @@ subprojects {
     }
 
     if (demoProject) {
+        sonarqube {
+            skipProject = true
+        }
+
         task runClientLocal(type: JavaExec) {
             classpath = sourceSets.main.runtimeClasspath
 

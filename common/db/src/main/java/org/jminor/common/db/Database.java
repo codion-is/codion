@@ -67,7 +67,7 @@ public interface Database {
   Value<Boolean> DATABASE_EMBEDDED_IN_MEMORY = Configuration.booleanValue("jminor.db.embeddedInMemory", false);
 
   /**
-   * A script to run when initializing the database, implementation specific
+   * A comma separated list of paths to scripts to run when initializing the database, implementation specific
    */
   Value<String> DATABASE_INIT_SCRIPT = Configuration.stringValue("jminor.db.initScript", null);
 

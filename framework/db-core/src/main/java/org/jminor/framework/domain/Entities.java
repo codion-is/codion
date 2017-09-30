@@ -58,15 +58,6 @@ public class Entities {
   public static final Value<Boolean> ALLOW_REDEFINE_ENTITY = Configuration.booleanValue("jminor.domain.allowRedefineEntity", false);
 
   /**
-   * Specifies whether the client layer should perform null validation on entities
-   * before update/insert actions are performed<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   * @see Property#setNullable(boolean)
-   */
-  public static final Value<Boolean> PERFORM_NULL_VALIDATION = Configuration.booleanValue("jminor.client.performNullValidation", true);
-
-  /**
    * Specifies the class used for serializing and deserializing entity instances.<br>
    * Value type: String, the name of the class implementing org.jminor.common.Serializer&#60;Entity&#62;<br>
    * Default value: none
@@ -1842,7 +1833,7 @@ public class Entities {
 
     private final Entities entities;
     private final String entityId;
-    private final boolean performNullValidation = PERFORM_NULL_VALIDATION.get();
+    private final boolean performNullValidation;
 
     /**
      * Instantiates a new {@link Entity.Validator}
@@ -1850,8 +1841,19 @@ public class Entities {
      * @param entityId the ID of the entities to validate
      */
     public Validator(final Entities entities, final String entityId) {
+      this(entities, entityId, true);
+    }
+
+    /**
+     * Instantiates a new {@link Entity.Validator}
+     * @param entities the domain model entities
+     * @param entityId the ID of the entities to validate
+     * @param performNullValidation if true then automatic null validation is performed
+     */
+    public Validator(final Entities entities, final String entityId, final boolean performNullValidation) {
       this.entities = Objects.requireNonNull(entities, ENTITIES_PARAM);
       this.entityId = Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
+      this.performNullValidation = performNullValidation;
     }
 
     /** {@inheritDoc} */

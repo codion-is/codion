@@ -50,7 +50,5 @@ compileJava {
 }
 
 sonarqube {
-    properties {
-        property "sonar.skip", "true"
-    }
+    skipProject = true
 }

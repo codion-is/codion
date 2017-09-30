@@ -4651,3 +4651,7 @@
   LocalEntityConnections.createConnection() now returns LocalEntityConnection instead of EntityConnection
   Added a few run configurations to gradle build
   Improved server level handling of InvocationTargetException
+  DefaultEntityEditModel.insert() now calls saveAll() on the entity before inserting to remove unnecessary original values
+  Entities.PERFORM_NULL_VALIDATION configuration value removed, Entities.Validator constructor overloaded with parameter instead
+  DefaultValueMap.saveAll() simplified, removeOrigialValue() removed redundant containsKey() call
+  Removed sonarqube plugin from demo gradle projects
