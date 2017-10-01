@@ -3,10 +3,12 @@
  */
 package org.jminor.swing.common.tools.ui;
 
-import org.jminor.common.tools.ItemRandomizer;
-import org.jminor.common.tools.ItemRandomizerModel;
+import org.jminor.swing.common.tools.ItemRandomizer;
+import org.jminor.swing.common.tools.ItemRandomizerModel;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class ItemRandomizerPanelTest {
 

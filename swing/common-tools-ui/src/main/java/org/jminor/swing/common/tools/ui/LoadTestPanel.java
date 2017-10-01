@@ -51,7 +51,7 @@ import java.util.Objects;
 
 /**
  * A default UI component for the LoadTestModel class.
- * @see org.jminor.common.tools.LoadTestModel
+ * @see org.jminor.swing.common.tools.LoadTestModel
  */
 public final class LoadTestPanel extends JPanel {
 

@@ -48,11 +48,11 @@ project(':org.jminor.javafx.framework').projectDir = file('javafx')
 include 'org.jminor.swing.common.model'
 project(':org.jminor.swing.common.model').projectDir = file('swing/common-model')
 
-include 'org.jminor.swing.common.tools'
-project(':org.jminor.swing.common.tools').projectDir = file('swing/common-tools')
-
 include 'org.jminor.swing.common.ui'
 project(':org.jminor.swing.common.ui').projectDir = file('swing/common-ui')
+
+include 'org.jminor.swing.common.tools'
+project(':org.jminor.swing.common.tools').projectDir = file('swing/common-tools')
 
 include 'org.jminor.swing.common.tools.ui'
 project(':org.jminor.swing.common.tools.ui').projectDir = file('swing/common-tools-ui')
