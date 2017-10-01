@@ -5,6 +5,7 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.Conjunction;
+import org.jminor.common.EventInfoListener;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
@@ -778,16 +779,17 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
 
   /**
    * Creates a new Action which shows the edit panel provided by {@code panelProvider} and if an insert is performed
-   * {@code listener} is notified.
+   * {@code insertListener} is notified.
    * @param component this component used as dialog parent, receives the focus after insert
    * @param panelProvider the EntityPanelProvider for providing the EntityEditPanel to use for creating the new entity
    * @param connectionProvider the connection provider
-   * @param listener the listener notified when insert has been performed
+   * @param insertListener the listener notified when insert has been performed
    * @return the Action
    */
   public static Action createEditPanelAction(final JComponent component, final EntityPanelProvider panelProvider,
-                                             final EntityConnectionProvider connectionProvider, final EntitiesInsertedListener listener) {
-    return new InsertEntityAction(component, panelProvider, connectionProvider, listener);
+                                             final EntityConnectionProvider connectionProvider,
+                                             final EventInfoListener<List<Entity>> insertListener) {
+    return new InsertEntityAction(component, panelProvider, connectionProvider, insertListener);
   }
 
   /**
@@ -2119,7 +2121,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     private final JComponent component;
     private final EntityPanelProvider panelProvider;
     private final EntityConnectionProvider connectionProvider;
-    private final EntitiesInsertedListener listener;
+    private final EventInfoListener<List<Entity>> listener;
     private final List<Entity> lastInsertedEntities = new ArrayList<>();
 
     private InsertEntityAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
@@ -2136,7 +2138,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     }
 
     private InsertEntityAction(final JComponent component, final EntityPanelProvider panelProvider,
-                               final EntityConnectionProvider connectionProvider, final EntitiesInsertedListener listener) {
+                               final EntityConnectionProvider connectionProvider, final EventInfoListener<List<Entity>> listener) {
       super("", Images.loadImage(Images.IMG_ADD_16));
       this.component = component;
       this.panelProvider = panelProvider;
@@ -2160,7 +2162,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
       if (pane.getValue() != null && pane.getValue().equals(0)) {
         final boolean insertPerformed = editPanel.insert();//todo exception during insert, f.ex validation failure not handled
         if (insertPerformed && !lastInsertedEntities.isEmpty()) {
-          listener.entitiesInserted(lastInsertedEntities);
+          listener.eventOccurred(lastInsertedEntities);
         }
       }
       component.requestFocusInWindow();

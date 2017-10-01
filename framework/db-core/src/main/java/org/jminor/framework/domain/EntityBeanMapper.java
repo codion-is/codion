@@ -91,15 +91,6 @@ public class EntityBeanMapper {
   }
 
   /**
-   * @param beanClass the bean class
-   * @return a Map mapping bean property names to propertyIds for the given bean class
-   */
-  public final Map<String, GetterSetter> getPropertyMap(final Class beanClass) {
-    Objects.requireNonNull(beanClass, BEAN_CLASS_PARAM);
-    return propertyMap.get(beanClass);
-  }
-
-  /**
    * Transforms the given bean into a Entity according to the information found in this EntityBeanMapper instance
    * @param bean the bean to transform
    * @return a Entity derived from the given bean
@@ -109,7 +100,7 @@ public class EntityBeanMapper {
   public Entity toEntity(final Object bean) throws InvocationTargetException, IllegalAccessException {
     Objects.requireNonNull(bean, "bean");
     final Entity entity = entities.entity(getEntityId(bean.getClass()));
-    final Map<String, GetterSetter> beanPropertyMap = getPropertyMap(bean.getClass());
+    final Map<String, GetterSetter> beanPropertyMap = propertyMap.get(bean.getClass());
     for (final Map.Entry<String, GetterSetter> propertyEntry : beanPropertyMap.entrySet()) {
       final Property property = entities.getProperty(entity.getEntityId(), propertyEntry.getKey());
       entity.put(property, propertyEntry.getValue().getter.invoke(bean));
@@ -151,7 +142,7 @@ public class EntityBeanMapper {
     Objects.requireNonNull(entity, "entity");
     final Class<?> beanClass = getBeanClass(entity.getEntityId());
     final Object bean = beanClass.getConstructor().newInstance();
-    final Map<String, GetterSetter> beanPropertyMap = getPropertyMap(beanClass);
+    final Map<String, GetterSetter> beanPropertyMap = propertyMap.get(beanClass);
     for (final Map.Entry<String, GetterSetter> propertyEntry : beanPropertyMap.entrySet()) {
       final Property property = entities.getProperty(entity.getEntityId(), propertyEntry.getKey());
       propertyEntry.getValue().setter.invoke(bean, entity.get(property));

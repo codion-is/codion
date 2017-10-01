@@ -166,12 +166,6 @@ public class EntityBeanMapperTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void getPropertyMapNullBeanClass() {
-    final EntityBeanMapper beanMapper = new EntityBeanMapper(entities);
-    beanMapper.getPropertyMap(null);
-  }
-
-  @Test(expected = NullPointerException.class)
   public void setPropertyNullBeanClass() throws NoSuchMethodException {
     final EntityBeanMapper beanMapper = new EntityBeanMapper(entities);
     beanMapper.setProperty(null, "", "");

@@ -210,9 +210,9 @@ public final class EntityGeneratorModel {
   private static void appendEntityDefinition(final StringBuilder builder, final Table table) {
     builder.append("void " + getDefineMethodName(table) + "() {").append(Util.LINE_SEPARATOR);
     builder.append("  Entities.define(").append(getEntityID(table)).append(",").append(Util.LINE_SEPARATOR);
-    for (final Column column : table.getColumns()) {
+    for (final Column column : table.columns) {
       builder.append("  ").append(getPropertyDefinition(table, column))
-              .append(table.getColumns().indexOf(column) < table.getColumns().size() - 1 ? "," : "").append(Util.LINE_SEPARATOR);
+              .append(table.columns.indexOf(column) < table.columns.size() - 1 ? "," : "").append(Util.LINE_SEPARATOR);
     }
     builder.append("  );").append(Util.LINE_SEPARATOR);
     builder.append("}");
@@ -239,7 +239,7 @@ public final class EntityGeneratorModel {
     final StringBuilder builder = new StringBuilder(PUBLIC_STATIC_FINAL_STRING).append(getEntityID(table))
             .append(EQUALS).append(schemaName.toLowerCase()).append(".").append(table.getTableName().toLowerCase())
             .append("\";").append(Util.LINE_SEPARATOR);
-    for (final Column column : table.getColumns()) {
+    for (final Column column : table.columns) {
       builder.append(PUBLIC_STATIC_FINAL_STRING).append(getPropertyId(table, column, false))
               .append(EQUALS).append(column.getColumnName().toLowerCase()).append("\";").append(Util.LINE_SEPARATOR);
       if (column.foreignKeyColumn != null) {
@@ -390,7 +390,7 @@ public final class EntityGeneratorModel {
         final List<Table> tables = new TablePacker(schema).pack(metaData.getTables(catalog, schema, null, null), -1);
         for (final Table table : tables) {
           populateTable(table);
-          for (final ForeignKeyColumn foreignKeyColumn : table.getForeignKeyColumns()) {
+          for (final ForeignKeyColumn foreignKeyColumn : table.foreignKeys) {
             final Table referencedTable = foreignKeyColumn.getReferencedTable();
             populateTable(referencedTable);
             items.add(referencedTable);
@@ -406,9 +406,9 @@ public final class EntityGeneratorModel {
     }
 
     private void populateTable(final Table table) throws SQLException {
-      table.setForeignKeys(new ForeignKeyColumnPacker().pack(metaData.getImportedKeys(catalog, table.getSchemaName(), table.getTableName()), -1));
-      table.setPrimaryKeyColumns(new PrimaryKeyColumnPacker().pack(metaData.getPrimaryKeys(catalog, table.getSchemaName(), table.getTableName()), -1));
-      table.setColumns(new ColumnPacker(table).pack(metaData.getColumns(catalog, table.getSchemaName(), table.getTableName(), null), -1));
+      table.foreignKeys = new ForeignKeyColumnPacker().pack(metaData.getImportedKeys(catalog, table.getSchemaName(), table.getTableName()), -1);
+      table.primaryKeyColumns = new PrimaryKeyColumnPacker().pack(metaData.getPrimaryKeys(catalog, table.getSchemaName(), table.getTableName()), -1);
+      table.columns = new ColumnPacker(table).pack(metaData.getColumns(catalog, table.getSchemaName(), table.getTableName(), null), -1);
     }
 
     @Override
@@ -437,30 +437,6 @@ public final class EntityGeneratorModel {
     public Table(final String schemaName, final String tableName) {
       this.schemaName = schemaName;
       this.tableName = tableName;
-    }
-
-    public List<Column> getColumns() {
-      return columns;
-    }
-
-    public void setColumns(final List<Column> columns) {
-      this.columns = columns;
-    }
-
-    public Collection<PrimaryKeyColumn> getPrimaryKeyColumns() {
-      return primaryKeyColumns;
-    }
-
-    public void setPrimaryKeyColumns(final Collection<PrimaryKeyColumn> primaryKeyColumns) {
-      this.primaryKeyColumns = primaryKeyColumns;
-    }
-
-    public Collection<ForeignKeyColumn> getForeignKeyColumns() {
-      return foreignKeys;
-    }
-
-    public void setForeignKeys(final Collection<ForeignKeyColumn> foreignKeys) {
-      this.foreignKeys = foreignKeys;
     }
 
     @Override
@@ -687,7 +663,7 @@ public final class EntityGeneratorModel {
     }
 
     private int getPrimaryKeyColumnIndex(final String columnName) {
-      for (final PrimaryKeyColumn primaryKeyColumn : table.getPrimaryKeyColumns()) {
+      for (final PrimaryKeyColumn primaryKeyColumn : table.primaryKeyColumns) {
         if (columnName.equals(primaryKeyColumn.getColumnName())) {
           return primaryKeyColumn.getKeySeq();
         }
@@ -697,7 +673,7 @@ public final class EntityGeneratorModel {
     }
 
     private ForeignKeyColumn getForeignKeyColumn(final String tableName, final String columnName) {
-      for (final ForeignKeyColumn foreignKeyColumn : table.getForeignKeyColumns()) {
+      for (final ForeignKeyColumn foreignKeyColumn : table.foreignKeys) {
         if (foreignKeyColumn.getFkTableName().equals(tableName) && foreignKeyColumn.getFkColumnName().equals(columnName)) {
           return foreignKeyColumn;
         }
