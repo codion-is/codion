@@ -54,14 +54,14 @@ project(':org.jminor.swing.common.model').projectDir = file('swing/common-model'
 include 'org.jminor.swing.common.ui'
 project(':org.jminor.swing.common.ui').projectDir = file('swing/common-ui')
 
-include 'org.jminor.swing.common.ui.tools'
-project(':org.jminor.swing.common.ui.tools').projectDir = file('swing/common-ui-tools')
+include 'org.jminor.swing.common.tools.ui'
+project(':org.jminor.swing.common.tools.ui').projectDir = file('swing/common-tools-ui')
 
 include 'org.jminor.swing.framework.model'
 project(':org.jminor.swing.framework.model').projectDir = file('swing/framework-model')
 
 include 'org.jminor.swing.framework.tools'
-project(':org.jminor.swing.framework.tools').projectDir = file('swing/tools')
+project(':org.jminor.swing.framework.tools').projectDir = file('swing/framework-tools')
 
 include 'org.jminor.swing.framework.ui'
 project(':org.jminor.swing.framework.ui').projectDir = file('swing/framework-ui')

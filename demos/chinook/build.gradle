@@ -1,5 +1,5 @@
 dependencies {
-    compile project(':org.jminor.swing.common.ui.tools')
+    compile project(':org.jminor.swing.common.tools.ui')
     compile project(':org.jminor.swing.framework.ui')
     compile project(':org.jminor.swing.framework.ui.test')
     compile project(':org.jminor.swing.framework.tools')

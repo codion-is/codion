@@ -7,7 +7,7 @@ dependencies {
     compile project(':org.jminor.framework.plugin.jasperreports')
     compile project(':org.jminor.framework.plugin.json')
 
-    compile project(':org.jminor.swing.common.ui.tools')
+    compile project(':org.jminor.swing.common.tools.ui')
     compile project(':org.jminor.swing.framework.ui')
     compile project(':org.jminor.swing.framework.tools')
     testCompile project(':org.jminor.swing.framework.ui.test')
