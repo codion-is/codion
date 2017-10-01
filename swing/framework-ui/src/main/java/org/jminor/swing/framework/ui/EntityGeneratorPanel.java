@@ -5,9 +5,11 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.User;
 import org.jminor.common.Util;
+import org.jminor.common.Values;
 import org.jminor.common.model.CancelException;
 import org.jminor.swing.common.ui.LoginPanel;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.UiValues;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.table.FilteredTablePanel;
 import org.jminor.swing.framework.model.EntityGeneratorModel;
@@ -47,7 +49,9 @@ public class EntityGeneratorPanel extends JPanel {
     final JSplitPane splitPane = new JSplitPane();
     splitPane.setLeftComponent(scroller);
 
-    final JTextArea textArea = new JTextArea(generatorModel.getDocument(), "", 40, 60);
+    final JTextArea textArea = new JTextArea(40, 60);
+    Values.link(generatorModel.getDefinitionTextValue(),
+            UiValues.textValue(textArea, null, true));
     final JScrollPane documentScroller = new JScrollPane(textArea);
     splitPane.setRightComponent(documentScroller);
 

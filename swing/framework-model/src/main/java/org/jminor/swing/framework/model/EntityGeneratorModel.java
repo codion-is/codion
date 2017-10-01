@@ -8,6 +8,8 @@ import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.User;
 import org.jminor.common.Util;
+import org.jminor.common.Value;
+import org.jminor.common.Values;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
@@ -20,9 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.table.TableColumn;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Document;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -59,7 +58,7 @@ public final class EntityGeneratorModel {
   private final String catalog;
   private final DatabaseMetaData metaData;
   private final AbstractFilteredTableModel<Table, Integer> tableModel;
-  private final Document document = new DefaultStyledDocument();
+  private final Value<String> definitionTextValue = Values.value();
   private final Event refreshStartedEvent = Events.event();
   private final Event refreshEndedEvent = Events.event();
 
@@ -103,22 +102,10 @@ public final class EntityGeneratorModel {
   }
 
   /**
-   * @return the text document containing the entity definitions of the selected tables
+   * @return the entity definition text value
    */
-  public Document getDocument() {
-    return document;
-  }
-
-  /**
-   * @return the text from the entity definition document
-   */
-  public String getDocumentText() {
-    try {
-      return document.getText(0, document.getLength());
-    }
-    catch (final BadLocationException e) {
-      throw new RuntimeException(e);
-    }
+  public Value<String> getDefinitionTextValue() {
+    return definitionTextValue;
   }
 
   /**
@@ -181,23 +168,18 @@ public final class EntityGeneratorModel {
   }
 
   private void generateDefinitions(final List<Table> tables) {
-    try {
-      int counter = 0;
-      document.remove(0, document.getLength());
-      for (final Table table : tables) {
-        final String constantsString = getPropertyConstants(table);
-        document.insertString(document.getLength(), constantsString, null);
-        document.insertString(document.getLength(), Util.LINE_SEPARATOR, null);
-        final String entityString = getEntityDefinition(table);
-        document.insertString(document.getLength(), entityString, null);
-        if (counter++ < tables.size() - 1) {
-          document.insertString(document.getLength(), Util.LINE_SEPARATOR + Util.LINE_SEPARATOR, null);
-        }
+    final StringBuilder builder = new StringBuilder();
+    int counter = 0;
+    for (final Table table : tables) {
+      final String constantsString = getPropertyConstants(table);
+      builder.append(constantsString).append(Util.LINE_SEPARATOR);
+      final String entityString = getEntityDefinition(table);
+      builder.append(entityString);
+      if (counter++ < tables.size() - 1) {
+        builder.append(Util.LINE_SEPARATOR + Util.LINE_SEPARATOR);
       }
     }
-    catch (final BadLocationException e) {
-      throw new RuntimeException(e);
-    }
+    definitionTextValue.set(builder.toString());
   }
 
   private String getPropertyConstants(final Table table) {
@@ -733,7 +715,7 @@ public final class EntityGeneratorModel {
     @Override
     public ForeignKeyColumn fetch(final ResultSet resultSet) throws SQLException {
       return new ForeignKeyColumn(resultSet.getString("PKTABLE_SCHEM"), resultSet.getString("PKTABLE_NAME"),
-                resultSet.getString("FKTABLE_NAME"), resultSet.getString("FKCOLUMN_NAME"));
+              resultSet.getString("FKTABLE_NAME"), resultSet.getString("FKCOLUMN_NAME"));
     }
   }
 

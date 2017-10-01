@@ -15,7 +15,6 @@ import org.junit.Test;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class EntityGeneratorModelTest {
 
@@ -135,7 +134,6 @@ public class EntityGeneratorModelTest {
 
   @Test
   public void address() {
-    assertNotNull(model.getDocument());
     final AtomicInteger counter = new AtomicInteger();
     final EventListener listener = counter::incrementAndGet;
     model.addRefreshStartedListener(listener);
@@ -143,7 +141,7 @@ public class EntityGeneratorModelTest {
 
     model.getTableModel().getSelectionModel().setSelectedIndex(0);
     assertEquals(2, counter.get());
-    final String addressDef = model.getDocumentText();
+    final String addressDef = model.getDefinitionTextValue().get();
     assertEquals(ADDRESS_DEF, addressDef);
 
     model.removeRefreshStartedListener(listener);
@@ -153,14 +151,14 @@ public class EntityGeneratorModelTest {
   @Test
   public void product() {
     model.getTableModel().getSelectionModel().setSelectedIndex(3);
-    final String productDef = model.getDocumentText();
+    final String productDef = model.getDefinitionTextValue().get();
     assertEquals(PRODUCT_DEF, productDef);
   }
 
   @Test
   public void tagItem() throws Exception {
     model.getTableModel().getSelectionModel().setSelectedIndex(6);
-    final String tagItemDef = model.getDocumentText();
+    final String tagItemDef = model.getDefinitionTextValue().get();
     assertEquals(TAG_ITEM_DEF, tagItemDef);
   }
 }
