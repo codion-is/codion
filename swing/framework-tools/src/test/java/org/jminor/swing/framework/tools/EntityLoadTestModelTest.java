@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.tools;
+package org.jminor.swing.framework.tools;
 
 import org.jminor.common.User;
 import org.jminor.common.Version;
@@ -144,7 +144,7 @@ public class EntityLoadTestModelTest {
     Server.SERVER_ADMIN_USER.set("scott:tiger");
     DefaultEntityConnectionServer.SERVER_CONNECTION_POOLING_INITIAL.set(UNIT_TEST_USER.getUsername() + ":" + UNIT_TEST_USER.getPassword());
     DefaultEntityConnectionServer.SERVER_CLIENT_CONNECTION_TIMEOUT.set("ClientTypeID:10000");
-    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set("org.jminor.framework.tools.TestDomain");
+    DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set("org.jminor.swing.framework.tools.TestDomain");
     Server.SERVER_CONNECTION_SSL_ENABLED.set(false);
     Server.RMI_SERVER_HOSTNAME.set("localhost");
   }

@@ -14,9 +14,9 @@ import org.jminor.framework.domain.testing.EntityTestUnit;
 import org.jminor.framework.model.DefaultEntityApplicationModel;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.framework.model.EntityModel;
-import org.jminor.framework.tools.EntityLoadTestModel;
 import org.jminor.swing.common.ui.tools.LoadTestPanel;
 import org.jminor.swing.framework.model.SwingEntityModel;
+import org.jminor.swing.framework.tools.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;

@@ -5,5 +5,5 @@ module org.jminor.swing.framework.tools {
   requires org.jminor.common.model;
   requires org.jminor.framework.db.core;
   requires org.jminor.framework.model;
-  exports org.jminor.framework.tools;
+  exports org.jminor.swing.framework.tools;
 }

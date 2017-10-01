@@ -9,9 +9,9 @@ import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.domain.Entities;
-import org.jminor.framework.tools.EntityLoadTestModel;
 import org.jminor.swing.common.ui.tools.LoadTestPanel;
 import org.jminor.swing.framework.model.SwingEntityModel;
+import org.jminor.swing.framework.tools.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;

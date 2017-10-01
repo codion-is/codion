@@ -15,9 +15,6 @@ project(':org.jminor.common.server').projectDir = file('common/server')
 include 'org.jminor.common.server.http'
 project(':org.jminor.common.server.http').projectDir = file('common/server-http')
 
-include 'org.jminor.common.tools'
-project(':org.jminor.common.tools').projectDir = file('common/tools')
-
 include 'org.jminor.framework.db.core'
 project(':org.jminor.framework.db.core').projectDir = file('framework/db-core')
 
@@ -50,6 +47,9 @@ project(':org.jminor.javafx.framework').projectDir = file('javafx')
 
 include 'org.jminor.swing.common.model'
 project(':org.jminor.swing.common.model').projectDir = file('swing/common-model')
+
+include 'org.jminor.swing.common.tools'
+project(':org.jminor.swing.common.tools').projectDir = file('swing/tools')
 
 include 'org.jminor.swing.common.ui'
 project(':org.jminor.swing.common.ui').projectDir = file('swing/common-ui')

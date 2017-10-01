@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.tools;
+package org.jminor.swing.framework.tools;
 
 import org.jminor.common.Item;
 import org.jminor.framework.domain.Entities;
