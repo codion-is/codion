@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui;
+package org.jminor.swing.framework.tools.ui;
 
 import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.swing.framework.model.EntityGeneratorModel;
+import org.jminor.swing.framework.tools.EntityGeneratorModel;
 
 import org.junit.Test;
 

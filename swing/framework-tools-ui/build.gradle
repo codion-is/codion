@@ -1,8 +1,6 @@
 dependencies {
-    compile project(':org.jminor.framework.model')
-
-    compile project(':org.jminor.swing.common.model')
-    compile project(':org.jminor.swing.common.tools')
+    compile project(':org.jminor.swing.common.ui')
+    compile project(':org.jminor.swing.framework.tools')
 
     testRuntime project(':org.jminor.framework.db.local')
     testRuntime project(':org.jminor.framework.db.remote')

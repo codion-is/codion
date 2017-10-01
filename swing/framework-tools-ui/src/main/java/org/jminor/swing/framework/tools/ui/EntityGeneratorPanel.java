@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui;
+package org.jminor.swing.framework.tools.ui;
 
 import org.jminor.common.User;
 import org.jminor.common.Util;
@@ -12,7 +12,7 @@ import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.UiValues;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.table.FilteredTablePanel;
-import org.jminor.swing.framework.model.EntityGeneratorModel;
+import org.jminor.swing.framework.tools.EntityGeneratorModel;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -28,7 +28,7 @@ import java.awt.BorderLayout;
 
 /**
  * A UI class based on the EntityGeneratorModel.
- * @see org.jminor.swing.framework.model.EntityGeneratorModel
+ * @see org.jminor.swing.framework.tools.EntityGeneratorModel
  */
 public class EntityGeneratorPanel extends JPanel {
 

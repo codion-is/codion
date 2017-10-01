@@ -66,6 +66,9 @@ project(':org.jminor.swing.framework.tools').projectDir = file('swing/framework-
 include 'org.jminor.swing.framework.ui'
 project(':org.jminor.swing.framework.ui').projectDir = file('swing/framework-ui')
 
+include 'org.jminor.swing.framework.tools.ui'
+project(':org.jminor.swing.framework.tools.ui').projectDir = file('swing/framework-tools-ui')
+
 include 'org.jminor.swing.framework.ui.test'
 project(':org.jminor.swing.framework.ui.test').projectDir = file('swing/framework-ui-test')
 

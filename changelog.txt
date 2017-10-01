@@ -4665,3 +4665,4 @@
   Server monitor module moved to Swing directory
   Server monitor now uses gradle application plugin
   Module names no longer used as artifact names
+  EntityGeneratorModel moved to swing.framework.tools and EntityGeneratorPanel to swing.framework.tools.ui
