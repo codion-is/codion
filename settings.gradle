@@ -49,7 +49,7 @@ include 'org.jminor.swing.common.model'
 project(':org.jminor.swing.common.model').projectDir = file('swing/common-model')
 
 include 'org.jminor.swing.common.tools'
-project(':org.jminor.swing.common.tools').projectDir = file('swing/tools')
+project(':org.jminor.swing.common.tools').projectDir = file('swing/common-tools')
 
 include 'org.jminor.swing.common.ui'
 project(':org.jminor.swing.common.ui').projectDir = file('swing/common-ui')

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.tools;
+package org.jminor.swing.common.tools.ui;
 
 import org.jminor.common.User;
 import org.jminor.common.Util;

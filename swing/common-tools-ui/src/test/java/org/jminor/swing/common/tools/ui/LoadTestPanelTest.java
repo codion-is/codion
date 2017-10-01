@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.tools;
+package org.jminor.swing.common.tools.ui;
 
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
@@ -10,8 +10,6 @@ import org.jminor.common.tools.LoadTestModel;
 import org.junit.Test;
 
 import java.util.Collections;
-
-import static org.junit.Assert.assertEquals;
 
 public class LoadTestPanelTest {
 

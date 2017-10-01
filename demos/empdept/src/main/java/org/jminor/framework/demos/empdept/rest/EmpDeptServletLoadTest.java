@@ -14,7 +14,7 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.swing.common.tools.LoadTestModel;
-import org.jminor.swing.common.ui.tools.LoadTestPanel;
+import org.jminor.swing.common.tools.ui.LoadTestPanel;
 
 import javax.swing.UIManager;
 import java.util.Arrays;
