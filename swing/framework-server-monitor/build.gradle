@@ -1,3 +1,5 @@
+apply plugin: 'application'
+
 dependencies {
     compile project(':org.jminor.common.core')
     compile project(':org.jminor.common.db')
@@ -22,6 +24,22 @@ dependencies {
     runtime project(':org.jminor.framework.plugin.logback.proxy')
 }
 
+mainClassName = "org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel"
+
+applicationDistribution.from(files(
+        '../../resources/security/JMinorServerMonitorTruststore',
+        '../../resources/security/jminor_server_monitor.policy',
+        'resources/config/logback.xml',
+        'resources/config/server_monitor.config')) {
+    into("config")
+}
+
+applicationDefaultJvmArgs = [
+        "-Djavax.net.ssl.trustStore=../config/JMinorServerMonitorTruststore",
+        "-Djava.security.policy=../config/jminor_server_monitor.policy",
+        "-Djminor.configurationFile=../config/server_monitor.config"
+]
+
 task runServerMonitor(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 
@@ -30,7 +48,7 @@ task runServerMonitor(type: JavaExec) {
     systemProperties = [
             'jminor.server.hostname': 'localhost',
             'jminor.server.admin.user': 'scott:tiger',
-            'javax.net.ssl.trustStore': '../resources/security/JMinorServerMonitorTruststore',
-            'java.security.policy': '../resources/security/jminor_server_monitor.policy',
+            'javax.net.ssl.trustStore': '../../resources/security/JMinorServerMonitorTruststore',
+            'java.security.policy': '../../resources/security/jminor_server_monitor.policy',
     ]
 }

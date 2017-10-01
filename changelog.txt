@@ -4663,3 +4663,5 @@
   Rearranging modules due to java.desktop dependency
   module-info.java added to Swing modules
   Server monitor module moved to Swing directory
+  Server monitor now uses gradle application plugin
+  Module names no longer used as artifact names
