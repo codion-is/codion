@@ -1,4 +1,4 @@
-module org.jminor.framework.tools {
+module org.jminor.swing.framework.tools {
   requires slf4j.api;
   requires org.jminor.common.core;
   requires org.jminor.common.db;

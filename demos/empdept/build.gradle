@@ -3,13 +3,13 @@ dependencies {
     compile project(':org.jminor.framework.servlet')
     compile project(':org.jminor.framework.db.http')
     compile project(':org.jminor.framework.db.test')
-    compile project(':org.jminor.framework.tools')
 
     compile project(':org.jminor.framework.plugin.jasperreports')
     compile project(':org.jminor.framework.plugin.json')
 
     compile project(':org.jminor.swing.common.ui.tools')
     compile project(':org.jminor.swing.framework.ui')
+    compile project(':org.jminor.swing.framework.tools')
     testCompile project(':org.jminor.swing.framework.ui.test')
     compile project(':org.jminor.javafx.framework')
 

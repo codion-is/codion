@@ -1,8 +1,8 @@
 dependencies {
-    compile project(':org.jminor.framework.tools')
     compile project(':org.jminor.swing.common.ui.tools')
     compile project(':org.jminor.swing.framework.ui')
     compile project(':org.jminor.swing.framework.ui.test')
+    compile project(':org.jminor.swing.framework.tools')
 
     runtime project(':org.jminor.framework.db.http')
     runtime project(':org.jminor.framework.plugin.logback.proxy')

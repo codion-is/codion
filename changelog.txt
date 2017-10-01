@@ -4660,3 +4660,4 @@
   common-tools module split from common-model, due to JFreeChart dependency
   swing-common-ui-tools module split from common-ui, same reason
   framework-tools module split from framework-model
+  Rearranging modules due to java.desktop dependency
