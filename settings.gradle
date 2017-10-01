@@ -70,7 +70,7 @@ include 'org.jminor.swing.framework.ui.test'
 project(':org.jminor.swing.framework.ui.test').projectDir = file('swing/framework-ui-test')
 
 include 'org.jminor.swing.framework.server.monitor'
-project(':org.jminor.swing.framework.server.monitor').projectDir = file('swing/server-monitor')
+project(':org.jminor.swing.framework.server.monitor').projectDir = file('swing/framework-server-monitor')
 
 include 'org.jminor.framework.plugin.hikari.pool'
 project(':org.jminor.framework.plugin.hikari.pool').projectDir = file('plugins/hikari-pool')
