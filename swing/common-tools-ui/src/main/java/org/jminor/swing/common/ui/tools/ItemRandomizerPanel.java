@@ -9,8 +9,8 @@ import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
-import org.jminor.common.tools.ItemRandomizer;
-import org.jminor.common.tools.ItemRandomizerModel;
+import org.jminor.swing.common.tools.ItemRandomizer;
+import org.jminor.swing.common.tools.ItemRandomizerModel;
 import org.jminor.swing.common.ui.UiUtil;
 
 import javax.swing.ButtonModel;

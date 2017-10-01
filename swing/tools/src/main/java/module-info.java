@@ -1,9 +1,9 @@
-module org.jminor.common.tools {
+module org.jminor.swing.common.tools {
   requires java.sql;
   requires java.desktop;
   requires slf4j.api;
   requires jfreechart;
   requires org.jminor.common.core;
   requires org.jminor.common.db;
-  exports org.jminor.common.tools;
+  exports org.jminor.swing.common.tools;
 }

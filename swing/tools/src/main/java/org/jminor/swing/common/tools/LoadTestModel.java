@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.tools;
+package org.jminor.swing.common.tools;
 
 import org.jminor.common.Event;
 import org.jminor.common.EventListener;
@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
  * A default LoadTest implementation.
  * @param <T> the type of the applications this load test uses
  */
-public abstract class LoadTestModel<T> implements org.jminor.common.tools.LoadTest {
+public abstract class LoadTestModel<T> implements LoadTest {
 
   public static final int DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS = 2000;
   public static final int DEFAULT_WARNING_TIME_MS = 2000;
@@ -567,7 +567,7 @@ public abstract class LoadTestModel<T> implements org.jminor.common.tools.LoadTe
   }
 
   private ItemRandomizer<UsageScenario> initializeScenarioChooser() {
-    final ItemRandomizer<UsageScenario> model = new org.jminor.common.tools.ItemRandomizerModel<>();
+    final ItemRandomizer<UsageScenario> model = new ItemRandomizerModel<>();
     for (final UsageScenario scenario : this.usageScenarios) {
       model.addItem(scenario, scenario.getDefaultWeight());
     }
@@ -717,7 +717,7 @@ public abstract class LoadTestModel<T> implements org.jminor.common.tools.LoadTe
    * An abstract usage scenario.
    * @param <T> the type used to run this scenario
    */
-  public abstract static class AbstractUsageScenario<T> implements org.jminor.common.tools.LoadTest.UsageScenario<T> {
+  public abstract static class AbstractUsageScenario<T> implements LoadTest.UsageScenario<T> {
 
     private final String name;
     private volatile int successfulRunCount = 0;

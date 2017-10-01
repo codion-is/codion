@@ -5,9 +5,9 @@ package org.jminor.swing.common.ui.tools;
 
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.tools.ItemRandomizer;
-import org.jminor.common.tools.LoadTest;
-import org.jminor.common.tools.LoadTestModel;
+import org.jminor.swing.common.tools.ItemRandomizer;
+import org.jminor.swing.common.tools.LoadTest;
+import org.jminor.swing.common.tools.LoadTestModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Control;

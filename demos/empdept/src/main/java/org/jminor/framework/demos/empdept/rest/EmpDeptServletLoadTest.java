@@ -7,13 +7,13 @@ import org.jminor.common.TextUtil;
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.server.http.HttpServer;
-import org.jminor.common.tools.LoadTestModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.http.HttpEntityConnectionProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.swing.common.tools.LoadTestModel;
 import org.jminor.swing.common.ui.tools.LoadTestPanel;
 
 import javax.swing.UIManager;

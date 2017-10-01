@@ -6,12 +6,12 @@ package org.jminor.swing.framework.tools;
 import org.jminor.common.Configuration;
 import org.jminor.common.User;
 import org.jminor.common.Value;
-import org.jminor.common.tools.LoadTestModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityTableModel;
+import org.jminor.swing.common.tools.LoadTestModel;
 
 import java.util.ArrayList;
 import java.util.Collection;

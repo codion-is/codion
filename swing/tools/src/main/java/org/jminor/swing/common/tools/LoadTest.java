@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.tools;
+package org.jminor.swing.common.tools;
 
 import org.jminor.common.EventObserver;
 import org.jminor.common.User;
