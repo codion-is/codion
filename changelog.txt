@@ -4662,3 +4662,4 @@
   framework-tools module split from framework-model
   Rearranging modules due to java.desktop dependency
   module-info.java added to Swing modules
+  Server monitor module moved to Swing directory
