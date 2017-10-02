@@ -4,9 +4,9 @@ dependencies {
     compile project(':org.jminor.swing.common.model')
     compile project(':org.jminor.swing.common.tools')
 
+    testCompile project(':org.jminor.framework.server')
     testRuntime project(':org.jminor.framework.db.local')
     testRuntime project(':org.jminor.framework.db.remote')
-    testRuntime project(':org.jminor.framework.server')
 
     testRuntime "com.h2database:h2:${h2Version}"
 }
