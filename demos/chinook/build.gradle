@@ -4,11 +4,11 @@ dependencies {
     compile project(':org.jminor.swing.framework.ui.test')
     compile project(':org.jminor.swing.framework.tools')
     compile project(':org.jminor.javafx.framework')
-    compile project(':org.jminor.framework.plugin.jasperreports')
+    compile project(':org.jminor.plugin.jasperreports')
 
     runtime project(':org.jminor.framework.db.http')
-    runtime project(':org.jminor.framework.plugin.logback.proxy')
-    runtime project(':org.jminor.framework.plugin.jasperreports')
+    runtime project(':org.jminor.plugin.logback.proxy')
+    runtime project(':org.jminor.plugin.jasperreports')
 
     testCompile project(':org.jminor.framework.db.test')
 

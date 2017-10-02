@@ -7,7 +7,6 @@ dependencies {
     compile project(':org.jminor.framework.db.core')
     compile project(':org.jminor.framework.db.local')
     compile project(':org.jminor.framework.db.remote')
-    compile project(':org.jminor.framework.server')
 
     compile "org.json:json:${jsonVersion}"
 

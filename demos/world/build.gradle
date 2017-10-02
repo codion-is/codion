@@ -1,7 +1,7 @@
 dependencies {
     compile project(':org.jminor.swing.framework.ui')
     compile project(':org.jminor.swing.framework.ui.test')
-    runtime project(':org.jminor.framework.plugin.logback.proxy')
+    runtime project(':org.jminor.plugin.logback.proxy')
     testCompile project(':org.jminor.framework.db.test')
 
     runtime project(':org.jminor.framework.db.http')

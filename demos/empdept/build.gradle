@@ -4,8 +4,8 @@ dependencies {
     compile project(':org.jminor.framework.db.http')
     compile project(':org.jminor.framework.db.test')
 
-    compile project(':org.jminor.framework.plugin.jasperreports')
-    compile project(':org.jminor.framework.plugin.json')
+    compile project(':org.jminor.plugin.jasperreports')
+    compile project(':org.jminor.plugin.json')
 
     compile project(':org.jminor.swing.common.tools.ui')
     compile project(':org.jminor.swing.framework.ui')
@@ -17,7 +17,7 @@ dependencies {
     compile "org.jfree:jcommon:${jcommonVersion}"
     compile "org.jfree:jfreechart:${jfreechartVersion}"
 
-    runtime project(':org.jminor.framework.plugin.logback.proxy')
+    runtime project(':org.jminor.plugin.logback.proxy')
 
     compile ('net.sf.jasperreports:jasperreports:6.0.0') {
         transitive = false

@@ -75,29 +75,29 @@ project(':org.jminor.swing.framework.ui.test').projectDir = file('swing/framewor
 include 'org.jminor.swing.framework.server.monitor'
 project(':org.jminor.swing.framework.server.monitor').projectDir = file('swing/framework-server-monitor')
 
-include 'org.jminor.framework.plugin.hikari.pool'
-project(':org.jminor.framework.plugin.hikari.pool').projectDir = file('plugins/hikari-pool')
+include 'org.jminor.plugin.hikari.pool'
+project(':org.jminor.plugin.hikari.pool').projectDir = file('plugins/hikari-pool')
 
-include 'org.jminor.framework.plugin.imagepanel'
-project(':org.jminor.framework.plugin.imagepanel').projectDir = file('plugins/imagepanel')
+include 'org.jminor.plugin.imagepanel'
+project(':org.jminor.plugin.imagepanel').projectDir = file('plugins/imagepanel')
 
-include 'org.jminor.framework.plugin.jasperreports'
-project(':org.jminor.framework.plugin.jasperreports').projectDir = file('plugins/jasperreports')
+include 'org.jminor.plugin.jasperreports'
+project(':org.jminor.plugin.jasperreports').projectDir = file('plugins/jasperreports')
 
-include 'org.jminor.framework.plugin.json'
-project(':org.jminor.framework.plugin.json').projectDir = file('plugins/json')
+include 'org.jminor.plugin.json'
+project(':org.jminor.plugin.json').projectDir = file('plugins/json')
 
-include 'org.jminor.framework.plugin.log4j.proxy'
-project(':org.jminor.framework.plugin.log4j.proxy').projectDir = file('plugins/log4j-proxy')
+include 'org.jminor.plugin.log4j.proxy'
+project(':org.jminor.plugin.log4j.proxy').projectDir = file('plugins/log4j-proxy')
 
-include 'org.jminor.framework.plugin.logback.proxy'
-project(':org.jminor.framework.plugin.logback.proxy').projectDir = file('plugins/logback-proxy')
+include 'org.jminor.plugin.logback.proxy'
+project(':org.jminor.plugin.logback.proxy').projectDir = file('plugins/logback-proxy')
 
-include 'org.jminor.framework.plugin.nextreports'
-project(':org.jminor.framework.plugin.nextreports').projectDir = file('plugins/nextreports')
+include 'org.jminor.plugin.nextreports'
+project(':org.jminor.plugin.nextreports').projectDir = file('plugins/nextreports')
 
-include 'org.jminor.framework.plugin.tomcat.pool'
-project(':org.jminor.framework.plugin.tomcat.pool').projectDir = file('plugins/tomcat-pool')
+include 'org.jminor.plugin.tomcat.pool'
+project(':org.jminor.plugin.tomcat.pool').projectDir = file('plugins/tomcat-pool')
 
 include 'org.jminor.framework.demos.chinook'
 project(':org.jminor.framework.demos.chinook').projectDir = file('demos/chinook')
