@@ -4667,4 +4667,4 @@
   Module names no longer used as artifact names
   EntityGeneratorModel moved to swing.framework.tools and EntityGeneratorPanel to swing.framework.tools.ui
   Removed 'framework' from plugin module names
-  NumberField can now handle trailing decimal zeros (needs refactoring, perhaps even rethinking)
+  NumberField bug fixed, can now handle trailing decimal zeros (needs refactoring, perhaps even rethinking)
