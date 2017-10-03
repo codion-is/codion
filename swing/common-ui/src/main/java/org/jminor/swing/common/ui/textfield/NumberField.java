@@ -184,11 +184,16 @@ public class NumberField extends JTextField {
       final Number parsedNumber = parseNumber(string);
       if (parsedNumber != null && isWithinRange(parsedNumber.doubleValue())) {
         String formattedNumber = format.format(parsedNumber);
-        //handle trailing decimal symbol
+        //handle trailing decimal symbol and trailing decimal zeros
         if (format instanceof DecimalFormat) {
           final String decimalSeparator = String.valueOf(((DecimalFormat) format).getDecimalFormatSymbols().getDecimalSeparator());
           if (!formattedNumber.contains(decimalSeparator) && string.endsWith(decimalSeparator)) {
             formattedNumber += decimalSeparator;
+          }
+          final int decimalSeparatorIndex = string.indexOf(decimalSeparator);
+          if (decimalSeparatorIndex >= 0 && string.substring(decimalSeparatorIndex, string.length()).endsWith("0")) {
+            formattedNumber += (formattedNumber.contains(decimalSeparator) ? "" : decimalSeparator) +
+                    getTrailingDecimalZeros(string, decimalSeparatorIndex);
           }
         }
 
@@ -253,6 +258,18 @@ public class NumberField extends JTextField {
       }
 
       return number;
+    }
+
+    private static String getTrailingDecimalZeros(final String string, final int decimalSeparatorIndex) {
+      final StringBuilder builder = new StringBuilder();
+      int index = string.length() - 1;
+      char c = string.charAt(index);
+      while (c == '0' && index > decimalSeparatorIndex) {
+        builder.append('0');
+        c = string.charAt(--index);
+      }
+
+      return builder.toString();
     }
   }
 

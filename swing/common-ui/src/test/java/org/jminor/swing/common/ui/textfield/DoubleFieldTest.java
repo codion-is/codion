@@ -162,4 +162,46 @@ public class DoubleFieldTest {
     txt.setSeparators(',', '.');
     assertEquals("12.345.678,9", txt.getText());
   }
+
+  @Test
+  public void trailingDecimalZeros() throws BadLocationException {
+    final DoubleField txt = new DoubleField();
+    final NumberField.NumberDocument document = (NumberField.NumberDocument) txt.getDocument();
+    txt.setSeparators('.', ',');
+
+    document.insertString(0, "1", null);
+    document.insertString(1, ".", null);
+    assertEquals("1.", txt.getText());
+
+    document.insertString(2, "0", null);
+    assertEquals("1.0", txt.getText());
+
+    document.insertString(3, "0", null);
+    assertEquals("1.00", txt.getText());
+
+    document.insertString(4, "1", null);
+    assertEquals("1.001", txt.getText());
+
+    document.insertString(5, "0", null);
+    assertEquals("1.0010", txt.getText());
+
+    document.insertString(6, "0", null);
+    assertEquals("1.00100", txt.getText());
+
+    document.insertString(7, "2", null);
+    assertEquals("1.001002", txt.getText());
+
+    document.insertString(8, "0", null);
+    assertEquals("1.0010020", txt.getText());
+
+    txt.setText("");
+    document.insertString(0, ".", null);
+    assertEquals("0.", txt.getText());
+
+    document.insertString(2, "0", null);
+    assertEquals("0.0", txt.getText());
+
+    document.insertString(3, "1", null);
+    assertEquals("0.01", txt.getText());
+  }
 }
