@@ -886,7 +886,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     setLayout(new BorderLayout());
     applicationTabPane = new JTabbedPane(TAB_PLACEMENT.get());
     applicationTabPane.setFocusable(false);
-    applicationTabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     applicationTabPane.addChangeListener(e -> ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel());
     for (final EntityPanel entityPanel : entityPanels) {
       applicationTabPane.addTab(entityPanel.getCaption(), entityPanel);
@@ -972,9 +971,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * @return the look and feel class name to use
+   * @see UiUtil#getDefaultLookAndFeelClassName()
    */
   protected String getDefaultLookAndFeelClassName() {
-    return PreferencesUtil.getUserPreference(applicationLookAndFeelProperty, UIManager.getSystemLookAndFeelClassName());
+    return PreferencesUtil.getUserPreference(applicationLookAndFeelProperty, UiUtil.getDefaultLookAndFeelClassName());
   }
 
   /**

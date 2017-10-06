@@ -4668,3 +4668,6 @@
   EntityGeneratorModel moved to swing.framework.tools and EntityGeneratorPanel to swing.framework.tools.ui
   Removed 'framework' from plugin module names
   NumberField bug fixed, can now handle trailing decimal zeros (needs refactoring, perhaps even rethinking)
+  UiUtil.getBorderlessTabbedPaneUI() removed, didn't work with GTKLookAndFeel
+  UiUtil.getDefaultLookAndFeelClassName() added, overrides GTKLookAndFeel with MetalLookAndFeel due to ugly tabbed panes, sets the TabbedPane.contentBorderInsets property in a static block
+  EntityApplicationPanel.getDefaultLookAndFeelClassName() uses the above, as does EntityServerMonitorPanel

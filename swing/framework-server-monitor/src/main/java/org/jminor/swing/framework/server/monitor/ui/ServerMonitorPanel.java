@@ -120,7 +120,6 @@ public final class ServerMonitorPanel extends JPanel {
     setLayout(new BorderLayout());
     add(infoPanel, BorderLayout.NORTH);
     final JTabbedPane pane = new JTabbedPane();
-    pane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     pane.addTab("Performance", initializePerformancePanel());
     pane.addTab("Database", new DatabaseMonitorPanel(model.getDatabaseMonitor()));
     pane.addTab("Clients/Users", new ClientUserMonitorPanel(model.getClientMonitor()));

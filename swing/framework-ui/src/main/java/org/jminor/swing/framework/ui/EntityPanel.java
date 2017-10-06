@@ -1276,7 +1276,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private JTabbedPane initializeDetailTabPane() {
     final JTabbedPane tabbedPane = new JTabbedPane();
     tabbedPane.setFocusable(false);
-    tabbedPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     for (final EntityPanel detailPanel : detailEntityPanels) {
       tabbedPane.addTab(detailPanel.caption, detailPanel);
     }

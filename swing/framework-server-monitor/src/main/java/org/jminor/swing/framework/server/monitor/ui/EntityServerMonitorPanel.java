@@ -137,7 +137,6 @@ public final class EntityServerMonitorPanel extends JPanel {
   private void initializeUI() throws RemoteException {
     setLayout(new BorderLayout());
     final JTabbedPane hostPane = new JTabbedPane();
-    hostPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     for (final HostMonitor hostMonitor : model.getHostMonitors()) {
       hostPane.addTab(hostMonitor.getHostName() + ":" + hostMonitor.getRegistryPort(), new HostMonitorPanel(hostMonitor));
     }
@@ -208,7 +207,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     Servers.resolveTrustStoreFromClasspath(EntityServerMonitorPanel.class.getSimpleName());
     SwingUtilities.invokeLater(() -> {
       try {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        UIManager.setLookAndFeel(UiUtil.getDefaultLookAndFeelClassName());
         new EntityServerMonitorPanel().showFrame();
       }
       catch (final Exception e) {

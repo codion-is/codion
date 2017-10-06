@@ -281,7 +281,7 @@ public class Util {
 
       return byteArrayOutputStream.toByteArray();
     }
-    
+
     return EMPTY_BYTE_ARRAY;
   }
 

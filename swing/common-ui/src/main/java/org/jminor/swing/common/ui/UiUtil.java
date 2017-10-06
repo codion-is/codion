@@ -53,8 +53,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
-import javax.swing.plaf.TabbedPaneUI;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
@@ -123,6 +121,11 @@ import java.util.concurrent.TimeUnit;
  */
 public final class UiUtil {
 
+  static {
+    //otherwise a hierachy of tabbed panes looks crappy
+    UIManager.put("TabbedPane.contentBorderInsets", new Insets(2,0,0,0));
+  }
+
   /**
    * A wait cursor
    */
@@ -154,6 +157,21 @@ public final class UiUtil {
   private static int horizontalVerticalComponentGap = DEFAULT_HOR_VERT_GAP;
 
   private UiUtil() {}
+
+  /**
+   * Note that GTKLookAndFeel is overridden with MetalLookAndFeel, since JTabbedPane
+   * does not respect the 'TabbedPane.contentBorderInsets' setting, making hierachical
+   * tabbed panes look bad
+   * @return the default look and feel for the platform we're running on
+   */
+  public static String getDefaultLookAndFeelClassName() {
+    String systemLookAndFeel = UIManager.getSystemLookAndFeelClassName();
+    if (systemLookAndFeel.endsWith("GTKLookAndFeel")) {
+      systemLookAndFeel = "javax.swing.plaf.metal.MetalLookAndFeel";
+    }
+
+    return systemLookAndFeel;
+  }
 
   /**
    * Sets the default horizontal and vertical component gap, used by the layout factory methods, by default this is 5
@@ -826,19 +844,6 @@ public final class UiUtil {
     }
 
     return textField.getPreferredSize().height;
-  }
-
-  /**
-   * Creates a TabbedPaneUI with content border insets only at the top, disregarding the tab placement
-   * @return a tabbed pane ui without borders
-   */
-  public static TabbedPaneUI getBorderlessTabbedPaneUI() {
-    return new BasicTabbedPaneUI() {
-      @Override
-      protected Insets getContentBorderInsets(final int tabPlacement) {
-        return new Insets(2,0,0,0);
-      }
-    };
   }
 
   /**

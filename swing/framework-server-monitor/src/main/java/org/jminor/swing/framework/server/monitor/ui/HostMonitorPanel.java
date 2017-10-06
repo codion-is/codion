@@ -40,7 +40,6 @@ public final class HostMonitorPanel extends JPanel {
     setLayout(UiUtil.createBorderLayout());
     add(ControlProvider.createToolbar(getControls(), JToolBar.HORIZONTAL), BorderLayout.NORTH);
     serverPane = new JTabbedPane();
-    serverPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     add(serverPane, BorderLayout.CENTER);
     initializeServerTabs();
   }

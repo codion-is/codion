@@ -4,7 +4,6 @@
 package org.jminor.swing.framework.server.monitor.ui;
 
 import org.jminor.common.Util;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.server.monitor.ConnectionPoolMonitor;
 import org.jminor.swing.framework.server.monitor.PoolMonitor;
 
@@ -39,7 +38,6 @@ public final class PoolMonitorPanel extends JPanel {
   private void initializeUI() {
     setLayout(new BorderLayout());
     final JTabbedPane connectionPoolPane = new JTabbedPane();
-    connectionPoolPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     for (final ConnectionPoolMonitor monitor : model.getConnectionPoolInstanceMonitors()) {
       connectionPoolPane.addTab(monitor.getUser().getUsername(), new ConnectionPoolMonitorPanel(monitor));
     }
