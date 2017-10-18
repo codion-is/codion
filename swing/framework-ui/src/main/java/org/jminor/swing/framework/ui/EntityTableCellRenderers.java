@@ -182,7 +182,7 @@ public final class EntityTableCellRenderers {
         super.setValue(value);
       }
       else {
-        if (value instanceof String) {
+        if (property instanceof Property.ValueListProperty) {
           setText((String) value);
         }
         else {

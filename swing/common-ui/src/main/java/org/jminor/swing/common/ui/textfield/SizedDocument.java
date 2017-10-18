@@ -5,14 +5,15 @@ package org.jminor.swing.common.ui.textfield;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Caret;
 import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 import java.util.Locale;
 
 /**
- * A Document implementation which allows for setting the max text length
- * and automatic conversion to upper or lower case.
+ * A Document implementation which allows for setting the max text length and automatic conversion to upper or lower case.
+ * Unfortunately for this document to function properly you must call document.setCaret(textField.getCaret());
  */
 public class SizedDocument extends PlainDocument {
 
@@ -28,6 +29,14 @@ public class SizedDocument extends PlainDocument {
    */
   public SizedDocument() {
     setDocumentFilterInternal(new SizedDocumentFilter());
+  }
+
+  /**
+   * Sets the caret, necessary for keeping the correct caret position when editing
+   * @param caret the text field caret
+   */
+  public void setCaret(final Caret caret) {
+    ((SizedDocumentFilter) getDocumentFilter()).setCaret(caret);
   }
 
   /**
@@ -81,8 +90,17 @@ public class SizedDocument extends PlainDocument {
    */
   protected static class SizedDocumentFilter extends DocumentFilter {
 
+    private Caret caret;
     private DocumentCase documentCase = DocumentCase.NONE;
     private int maxLength = -1;
+
+    /**
+   * Sets the caret, necessary for keeping the correct caret position when editing
+   * @param caret the text field caret
+   */
+  public void setCaret(final Caret caret) {
+      this.caret = caret;
+    }
 
     /**
      * @param documentCase the document case setting
@@ -115,9 +133,7 @@ public class SizedDocument extends PlainDocument {
     @Override
     public final void insertString(final FilterBypass filterBypass, final int offset, final String string,
                                    final AttributeSet attributeSet) throws BadLocationException {
-      final StringBuilder builder = getStringBuilder(filterBypass.getDocument());
-      builder.insert(offset, string);
-      doReplace(filterBypass, builder.toString(), attributeSet);
+      replace(filterBypass, offset, 0, string, attributeSet);
     }
 
     @Override
@@ -125,14 +141,14 @@ public class SizedDocument extends PlainDocument {
                               final AttributeSet attributeSet) throws BadLocationException {
       final StringBuilder builder = getStringBuilder(filterBypass.getDocument());
       builder.replace(offset, offset + length, string);
-      doReplace(filterBypass, builder.toString(), attributeSet);
+      doReplace(filterBypass, builder.toString(), attributeSet, offset + string.length());
     }
 
     @Override
     public final void remove(final FilterBypass filterBypass, final int offset, final int length) throws BadLocationException {
       final StringBuilder builder = getStringBuilder(filterBypass.getDocument());
       builder.replace(offset, offset + length, "");
-      doReplace(filterBypass, builder.toString(), null);
+      doReplace(filterBypass, builder.toString(), null, offset);
     }
 
     /**
@@ -148,28 +164,16 @@ public class SizedDocument extends PlainDocument {
       }
     }
 
-    private void doReplace(final FilterBypass filterBypass, final String string, final AttributeSet attributeSet)
+    private void doReplace(final FilterBypass filterBypass, final String string, final AttributeSet attributeSet, final int caretPosition)
             throws BadLocationException {
       final Document document = filterBypass.getDocument();
       final String transformedString = transformString(string);
       if (transformedString != null && (getMaxLength() < 0 || transformedString.length() <= getMaxLength())) {
-        final String replacement = removeCommonSuffix(transformedString, document.getText(0, document.getLength()));
-        filterBypass.replace(0, document.getLength() - (transformedString.length() - replacement.length()),
-                replacement, attributeSet);
+        filterBypass.replace(0, document.getLength(), transformedString, attributeSet);
+        if (caret != null) {
+          caret.setDot(caretPosition);
+        }
       }
-    }
-
-    //We remove the common suffix if any, to preserve the caret position
-    private String removeCommonSuffix(final String replacementText, final String currentText) {
-      final StringBuilder replacement = new StringBuilder(replacementText);
-      final StringBuilder current = new StringBuilder(currentText);
-      while (replacement.length() > 0 && current.length() > 0 &&
-              replacement.charAt(replacement.length() - 1) == current.charAt(current.length() - 1)) {
-        replacement.replace(replacement.length() - 1, replacement.length(), "");
-        current.replace(current.length() - 1, current.length(), "");
-      }
-
-      return replacement.toString();
     }
 
     private static StringBuilder getStringBuilder(final Document document) throws BadLocationException {

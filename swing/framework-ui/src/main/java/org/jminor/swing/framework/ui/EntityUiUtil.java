@@ -721,7 +721,7 @@ public final class EntityUiUtil {
     checkProperty(property, editModel);
     final JTextField textField = initializeTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     if (property.isString()) {
-      ValueLinks.textValueLink(textField, EditModelValues.<String>value(editModel, property), null, immediateUpdate, readOnly);
+      ValueLinks.textValueLink(textField, EditModelValues.<String>value(editModel, property), property.getFormat(), immediateUpdate, readOnly);
     }
     else if (property.isInteger()) {
       ValueLinks.integerValueLink((IntegerField) textField, EditModelValues.<Integer>value(editModel, property), false, readOnly, immediateUpdate);
@@ -909,7 +909,9 @@ public final class EntityUiUtil {
   private static JTextField initializeStringField(final String formatMaskString, final boolean valueContainsLiteralCharacters) {
     final JTextField field;
     if (formatMaskString == null) {
-      field = new JTextField(new SizedDocument(), "", 0);
+      final SizedDocument document = new SizedDocument();
+      field = new JTextField(document, "", 0);
+      document.setCaret(field.getCaret());
     }
     else {
       field = UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters);

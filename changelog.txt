@@ -4671,3 +4671,6 @@
   UiUtil.getBorderlessTabbedPaneUI() removed, didn't work with GTKLookAndFeel
   UiUtil.getDefaultLookAndFeelClassName() added, overrides GTKLookAndFeel with MetalLookAndFeel due to ugly tabbed panes, sets the TabbedPane.contentBorderInsets property in a static block
   EntityApplicationPanel.getDefaultLookAndFeelClassName() uses the above, as does EntityServerMonitorPanel
+  SizedDocument.setCaret() added, hack to set the correct caret position when replacing text (the old solution did not work with text selected)
+  DefaultEntityTableCellRenderer.setValue() bug fixed, did not use format for string based properties, now handles ValueListProperty correctly
+  EntityUiUtil.createTextField() bug fixed, did not use the format for string based properties

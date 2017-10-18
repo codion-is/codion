@@ -28,6 +28,7 @@ public class NumberField extends JTextField {
     if (document.getFormat() instanceof DecimalFormat) {
       addKeyListener(new GroupingSkipAdapter());
     }
+    document.setCaret(getCaret());
     //todo remove this when grouping functionality is "bullet proof"
     document.getFormat().setGroupingUsed(false);
   }
