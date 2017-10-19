@@ -311,7 +311,6 @@ public final class EntityLookupField extends JTextField {
       final SizedDocument document = new SizedDocument();
       document.setMaxLength(1);
       final JTextField txtMultipleValueSeparator = new JTextField(document, "", 1);
-      document.setCaret(txtMultipleValueSeparator.getCaret());
       ValueLinks.textValueLink(txtMultipleValueSeparator, lookupModel.getMultipleItemSeparatorValue(), null, true, false);
 
       final JPanel generalSettingsPanel = new JPanel(UiUtil.createGridLayout(2, 1));

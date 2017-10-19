@@ -9,7 +9,6 @@ import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class SizedDocumentTest {
 
@@ -46,25 +45,5 @@ public class SizedDocumentTest {
 
     document.insertString(2, "HOLA", null);
     assertEquals("heHOLAllo", txt.getText());
-  }
-
-  @Test
-  public void selection() throws BadLocationException {
-    final JTextField txt = new JTextField();
-    final SizedDocument document = new SizedDocument();
-    txt.setDocument(document);
-    document.setCaret(txt.getCaret());
-
-    document.insertString(0, "5", null);
-    txt.setSelectionStart(0);
-    txt.setSelectionEnd(1);
-    document.replace(0, document.getLength(), "5", null);
-    assertNull(txt.getSelectedText());
-
-    document.replace(0, document.getLength(), "hello", null);
-    txt.setSelectionStart(2);
-    txt.setSelectionEnd(4);
-    document.replace(2, 4, "rr", null);
-    assertNull(txt.getSelectedText());
   }
 }

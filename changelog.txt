@@ -4674,3 +4674,5 @@
   SizedDocument.setCaret() added, hack to set the correct caret position when replacing text (the old solution did not work with text selected)
   DefaultEntityTableCellRenderer.setValue() bug fixed, did not use format for string based properties, now handles ValueListProperty correctly
   EntityUiUtil.createTextField() bug fixed, did not use the format for string based properties
+  SizedDocument refactored and simplified
+  NumberField.NumberDocument no longer extends SizedDocument, bug fixed, refactored

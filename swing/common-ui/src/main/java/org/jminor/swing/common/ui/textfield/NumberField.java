@@ -4,7 +4,12 @@
 package org.jminor.swing.common.ui.textfield;
 
 import javax.swing.JTextField;
+import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Caret;
+import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.math.RoundingMode;
@@ -25,10 +30,10 @@ public class NumberField extends JTextField {
    */
   public NumberField(final NumberDocument document, final int columns) {
     super(document, null, columns);
+    document.setCaret(getCaret());
     if (document.getFormat() instanceof DecimalFormat) {
       addKeyListener(new GroupingSkipAdapter());
     }
-    document.setCaret(getCaret());
     //todo remove this when grouping functionality is "bullet proof"
     document.getFormat().setGroupingUsed(false);
   }
@@ -91,10 +96,19 @@ public class NumberField extends JTextField {
   /**
    * A Document implementation for numerical values
    */
-  protected static class NumberDocument extends SizedDocument {
+  protected static class NumberDocument extends PlainDocument {
 
     protected NumberDocument(final NumberDocumentFilter documentFilter) {
-      setDocumentFilterInternal(documentFilter);
+      super.setDocumentFilter(documentFilter);
+    }
+
+    /**
+     * @param filter the filter
+     * @throws UnsupportedOperationException always
+     */
+    @Override
+    public final void setDocumentFilter(final DocumentFilter filter) {
+      throw new UnsupportedOperationException("Changing the DocumentFilter of SizedDocument and its descendants is not allowed");
     }
 
     protected final NumberFormat getFormat() {
@@ -106,7 +120,12 @@ public class NumberField extends JTextField {
     }
 
     protected final Number getNumber() {
-      return ((NumberDocumentFilter) getDocumentFilter()).parseNumber(getText());
+      try {
+        return ((NumberDocumentFilter) getDocumentFilter()).parseNumber(getText(0, getLength()));
+      }
+      catch (final BadLocationException e) {
+        throw new RuntimeException(e);
+      }
     }
 
     protected final Integer getInteger() {
@@ -137,13 +156,8 @@ public class NumberField extends JTextField {
       }
     }
 
-    private String getText() {
-      try {
-        return getText(0, getLength());
-      }
-      catch (final BadLocationException e) {
-        throw new RuntimeException(e);
-      }
+    private void setCaret(final Caret caret) {
+      ((NumberDocumentFilter) getDocumentFilter()).setCaret(caret);
     }
 
     private void setSeparators(final char decimalSeparator, final char groupingSeparator) {
@@ -162,11 +176,13 @@ public class NumberField extends JTextField {
   /**
    * A DocumentFilter for restricting input to numerical values
    */
-  protected static class NumberDocumentFilter extends SizedDocument.SizedDocumentFilter {
+  protected static class NumberDocumentFilter extends DocumentFilter {
 
     private static final String MINUS_SIGN = "-";
 
     private final NumberFormat format;
+
+    private Caret caret;
 
     private double minimumValue = Double.NEGATIVE_INFINITY;
     private double maximumValue = Double.POSITIVE_INFINITY;
@@ -177,9 +193,34 @@ public class NumberField extends JTextField {
     }
 
     @Override
-    protected String transformString(final String string) {
+    public final void insertString(final FilterBypass filterBypass, final int offset, final String string,
+                                   final AttributeSet attributeSet) throws BadLocationException {
+      replace(filterBypass, offset, 0, string, attributeSet);
+    }
+
+    @Override
+    public final void remove(final FilterBypass filterBypass, final int offset, final int length) throws BadLocationException {
+      replace(filterBypass, offset, length, "", null);
+    }
+
+    @Override
+    public final void replace(final FilterBypass filterBypass, final int offset, final int length, final String string,
+                              final AttributeSet attributeSet) throws BadLocationException {
+      final Document document = filterBypass.getDocument();
+      final StringBuilder numberBuilder = new StringBuilder(document.getText(0, document.getLength()));
+      numberBuilder.replace(offset, offset + length, string);
+      final FormatResult formatedResult = format(numberBuilder.toString());
+      if (formatedResult != null) {
+        super.replace(filterBypass, 0, document.getLength(), formatedResult.formatted, attributeSet);
+        if (caret != null) {
+          caret.setDot(offset + string.length() + formatedResult.added);
+        }
+      }
+    }
+
+    protected FormatResult format(final String string) {
       if (string.isEmpty() || MINUS_SIGN.equals(string)) {
-        return string;
+        return new FormatResult(0, string);
       }
 
       final Number parsedNumber = parseNumber(string);
@@ -198,7 +239,7 @@ public class NumberField extends JTextField {
           }
         }
 
-        return formattedNumber;
+        return new FormatResult(countAddedGroupingSeparators(string, formattedNumber), formattedNumber);
       }
 
       return null;
@@ -219,6 +260,14 @@ public class NumberField extends JTextField {
     private void setRange(final double min, final double max) {
       this.minimumValue = min;
       this.maximumValue = max;
+    }
+
+    /**
+     * Sets the caret, necessary for keeping the correct caret position when editing
+     * @param caret the text field caret
+     */
+    private void setCaret(final Caret caret) {
+      this.caret = caret;
     }
 
     /**
@@ -271,6 +320,33 @@ public class NumberField extends JTextField {
       }
 
       return builder.toString();
+    }
+
+    private int countAddedGroupingSeparators(final String currentNumber, final String newNumber) {
+      final DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
+
+      return count(newNumber, symbols.getGroupingSeparator()) - count(currentNumber, symbols.getGroupingSeparator());
+    }
+
+    private int count(final String string, final char groupingSeparator) {
+      int counter = 0;
+      for (final char c : string.toCharArray()) {
+        if (c == groupingSeparator) {
+          counter++;
+        }
+      }
+
+      return counter;
+    }
+  }
+
+  protected static final class FormatResult {
+    private final int added;
+    private final String formatted;
+
+    protected FormatResult(final int added, final String formatted) {
+      this.added = added;
+      this.formatted = formatted;
     }
   }
 

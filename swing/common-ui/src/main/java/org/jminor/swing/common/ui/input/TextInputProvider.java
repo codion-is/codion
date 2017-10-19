@@ -53,7 +53,6 @@ public final class TextInputProvider extends AbstractInputProvider<String, TextI
       document.setMaxLength(maxLength);
     }
     final JTextField txtField = new JTextField(document, initialValue != null ? initialValue.toString() : "", DEFAULT_COLUMNS);
-    document.setCaret(txtField.getCaret());
     if (valueProvider != null) {
       UiUtil.addLookupDialog(txtField, valueProvider);
     }

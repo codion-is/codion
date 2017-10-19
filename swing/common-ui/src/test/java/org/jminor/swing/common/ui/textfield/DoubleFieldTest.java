@@ -6,6 +6,8 @@ package org.jminor.swing.common.ui.textfield;
 import org.junit.Test;
 
 import javax.swing.text.BadLocationException;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 
 import static org.junit.Assert.assertEquals;
 
@@ -47,10 +49,13 @@ public class DoubleFieldTest {
     final DoubleField txt = new DoubleField();
     txt.setGroupingUsed(true);
     txt.setSeparators(',', '.');
+    assertEquals(0, txt.getCaretPosition());
     txt.setText(",");
     assertEquals("0,", txt.getText());
+    assertEquals(2, txt.getCaretPosition());
     txt.setDouble(42.2);
     assertEquals("42,2", txt.getText());
+    assertEquals(4, txt.getCaretPosition());
     txt.setText("22,3");
     assertEquals(Double.valueOf(22.3), txt.getDouble());
     txt.setText("22.3");//note this is a thousand separator
@@ -87,6 +92,80 @@ public class DoubleFieldTest {
     assertEquals("100,000,000.4", txt.getText());
     txt.setText("2222.2.2.2");
     assertEquals("100,000,000.4", txt.getText());
+  }
+
+  @Test
+  public void caretPosition() throws BadLocationException {
+    final DoubleField txt = new DoubleField();
+    txt.setGroupingUsed(true);
+    txt.setSeparators(',', '.');
+    final NumberField.NumberDocument document = (NumberField.NumberDocument) txt.getDocument();
+
+    txt.setText("123456789");
+    assertEquals("123.456.789", txt.getText());
+
+    txt.setCaretPosition(3);
+    txt.moveCaretPosition(8);
+    assertEquals(".456.", txt.getSelectedText());
+
+    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(""), null);
+
+    txt.paste();
+    assertEquals("123.789", txt.getText());
+    assertEquals(4, txt.getCaretPosition());
+
+    document.insertString(3, "456", null);
+    assertEquals("123.456.789", txt.getText());
+    assertEquals(7, txt.getCaretPosition());
+
+    txt.setCaretPosition(3);
+    txt.moveCaretPosition(11);
+    assertEquals(".456.789", txt.getSelectedText());
+
+    txt.paste();
+    assertEquals("123", txt.getText());
+    assertEquals(3, txt.getCaretPosition());
+
+    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(".456.789"), null);
+
+    txt.paste();
+    assertEquals("123.456.789", txt.getText());
+    assertEquals(11, txt.getCaretPosition());
+
+    txt.setText("");
+
+    document.insertString(0, ",", null);
+    assertEquals("0,", txt.getText());
+    assertEquals(2, txt.getCaretPosition());
+
+    txt.setText("");
+    document.insertString(0, "1", null);
+    assertEquals("1", txt.getText());
+    assertEquals(1, txt.getCaretPosition());
+
+    document.insertString(1, "2", null);
+    assertEquals("12", txt.getText());
+    assertEquals(2, txt.getCaretPosition());
+
+    document.insertString(2, "3", null);
+    assertEquals("123", txt.getText());
+    assertEquals(3, txt.getCaretPosition());
+
+    document.insertString(3, "4", null);
+    assertEquals("1.234", txt.getText());
+    assertEquals(5, txt.getCaretPosition());
+
+    document.insertString(5, "5", null);
+    assertEquals("12.345", txt.getText());
+    assertEquals(6, txt.getCaretPosition());
+
+    document.insertString(6, "6", null);
+    assertEquals("123.456", txt.getText());
+    assertEquals(7, txt.getCaretPosition());
+
+    document.insertString(7, "7", null);
+    assertEquals("1.234.567", txt.getText());
+    assertEquals(9, txt.getCaretPosition());
   }
 
   @Test(expected = IllegalArgumentException.class)

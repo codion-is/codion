@@ -909,9 +909,7 @@ public final class EntityUiUtil {
   private static JTextField initializeStringField(final String formatMaskString, final boolean valueContainsLiteralCharacters) {
     final JTextField field;
     if (formatMaskString == null) {
-      final SizedDocument document = new SizedDocument();
-      field = new JTextField(document, "", 0);
-      document.setCaret(field.getCaret());
+      field = new JTextField(new SizedDocument(), "", 0);
     }
     else {
       field = UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters);

@@ -4,7 +4,6 @@
 package org.jminor.swing.common.ui.textfield;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
 /**
  * A text field for doubles.
@@ -110,18 +109,18 @@ public final class DoubleField extends NumberField {
 
   private static final class DoubleDocumentFilter extends NumberDocumentFilter {
 
-    private DoubleDocumentFilter(final NumberFormat format) {
+    private DoubleDocumentFilter(final DecimalFormat format) {
       super(format);
     }
 
     @Override
-    protected String transformString(final String string) {
+    protected FormatResult format(final String string) {
       final char decimalSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getDecimalSeparator();
       if (string.equals(Character.toString(decimalSeparator))) {
-        return "0" + decimalSeparator;
+        return new FormatResult(1, "0" + decimalSeparator);
       }
 
-      return super.transformString(string);
+      return super.format(string);
     }
   }
 }
