@@ -93,6 +93,13 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   public static final Value<Boolean> ALL_PANELS_ACTIVE = Configuration.booleanValue("jminor.client.allPanelsActive", false);
 
   /**
+   * Specifies whether edit panels should include a SAVE button (insert or update, depending on selection) or just a INSERT button<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final Value<Boolean> USE_SAVE_CONTROL = Configuration.booleanValue("jminor.client.useSaveControl", true);
+
+  /**
    * The standard controls available to the EditPanel
    */
   public enum ControlCode {
@@ -175,7 +182,8 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
    */
   public EntityEditPanel(final SwingEntityEditModel editModel) {
-    this(editModel, ControlCode.SAVE, ControlCode.UPDATE, ControlCode.DELETE, ControlCode.CLEAR, ControlCode.REFRESH);
+    this(editModel, (USE_SAVE_CONTROL.get() ? ControlCode.SAVE : ControlCode.INSERT), ControlCode.UPDATE, ControlCode.DELETE,
+            ControlCode.CLEAR, ControlCode.REFRESH);
   }
 
   /**
@@ -189,7 +197,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     if (!ALL_PANELS_ACTIVE.get()) {
       ACTIVE_STATE_GROUP.addState(activeState);
     }
-    setupDefaultControls(controlCodes);
+    setupControls(controlCodes);
     bindEventsInternal();
   }
 
@@ -2027,32 +2035,32 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * Initializes the default controls available to this EntityEditPanel by mapping them to their respective
-   * control codes (EntityEditPanel.INSERT, UPDATE etc) via the {@code setControl(String, Control) method,
-   * these can then be retrieved via the {@code getControl(String)} method.
+   * Initializes the controls available to this EntityEditPanel by mapping them to their respective
+   * control codes ({@link ControlCode#INSERT}, {@link ControlCode#UPDATE} etc)
+   * via the {@code setControl(String, Control) method, these can then be retrieved via the {@link #getControl(ControlCode)} method.
    * @param controlCodes the control codes for which controls should be initialized
    * @see org.jminor.swing.common.ui.control.Control
-   * @see #setControl(String, org.jminor.swing.common.ui.control.Control)
-   * @see #getControl(String)
+   * @see #setControl(ControlCode, org.jminor.swing.common.ui.control.Control)
+   * @see #getControl(ControlCode)
    * todo updateAllowed(false) þá vantar Insert control nema það sé tiltekið í smið
    */
-  private void setupDefaultControls(final ControlCode... controlCodes) {
+  private void setupControls(final ControlCode... controlCodes) {
     if (controlCodes == null || controlCodes.length == 0) {
       return;
     }
-    final Collection<ControlCode> keys = Arrays.asList(controlCodes);
+    final Collection<ControlCode> codes = Arrays.asList(controlCodes);
     if (!editModel.isReadOnly()) {
-      setupDefaultEditModelControls(keys);
+      setupEditControls(codes);
     }
-    if (keys.contains(ControlCode.CLEAR)) {
+    if (codes.contains(ControlCode.CLEAR)) {
       setControl(ControlCode.CLEAR, getClearControl());
     }
-    if (keys.contains(ControlCode.REFRESH)) {
+    if (codes.contains(ControlCode.REFRESH)) {
       setControl(ControlCode.REFRESH, getRefreshControl());
     }
   }
 
-  private void setupDefaultEditModelControls(final Collection<ControlCode> controlCodes) {
+  private void setupEditControls(final Collection<ControlCode> controlCodes) {
     if (editModel.isInsertAllowed() && editModel.isUpdateAllowed() && controlCodes.contains(ControlCode.SAVE)) {
       setControl(ControlCode.SAVE, getSaveControl());
     }

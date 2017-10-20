@@ -4676,3 +4676,4 @@
   EntityUiUtil.createTextField() bug fixed, did not use the format for string based properties
   SizedDocument refactored and simplified
   NumberField.NumberDocument no longer extends SizedDocument, bug fixed, refactored
+  EntityEditPanel.USE_SAVE_CONTROL configuration value added
