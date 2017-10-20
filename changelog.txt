@@ -4677,3 +4677,4 @@
   SizedDocument refactored and simplified
   NumberField.NumberDocument no longer extends SizedDocument, bug fixed, refactored
   EntityEditPanel.USE_SAVE_CONTROL configuration value added
+  FileUtil.serializeToFile() and desierializeFromFile() now throw IOException instead of SerializeException

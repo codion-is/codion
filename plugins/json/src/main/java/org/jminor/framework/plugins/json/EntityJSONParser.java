@@ -328,7 +328,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
    */
   public Object parseValue(final Property property, final JSONObject propertyValues)
           throws JSONException, ParseException {
-        if (propertyValues.isNull(property.getPropertyId())) {
+    if (propertyValues.isNull(property.getPropertyId())) {
       return null;
     }
     if (property.isString()) {

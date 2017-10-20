@@ -40,7 +40,7 @@ public class FileUtilTest {
   }
 
   @Test
-  public void serialize() throws IOException, Serializer.SerializeException {
+  public void serialize() throws IOException, ClassNotFoundException {
     final List<Integer> ints = Arrays.asList(1, 2, 3, 4);
     final File file = File.createTempFile("FileUtilTest.serialize", ".txt");
     file.deleteOnExit();

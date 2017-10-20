@@ -106,9 +106,10 @@ public final class FileUtil {
    * @param file the file
    * @param <T> the type of objects to read from the file
    * @return deserialized objects
-   * @throws Serializer.SerializeException in case of an exception
+   * @throws IOException in case the file can not be read
+   * @throws ClassNotFoundException in case the deserialized class is not found
    */
-  public static <T> List<T> deserializeFromFile(final File file) throws Serializer.SerializeException {
+  public static <T> List<T> deserializeFromFile(final File file) throws IOException, ClassNotFoundException {
     final List<T> objects = new ArrayList<>();
     try (final ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file))) {
       while (true) {
@@ -116,9 +117,6 @@ public final class FileUtil {
       }
     }
     catch (final EOFException ignored) {/*ignored*/}
-    catch (final Exception e) {
-      throw new Serializer.SerializeException(e.getMessage(), e);
-    }
 
     return objects;
   }
@@ -127,16 +125,13 @@ public final class FileUtil {
    * Srializes a Collection of Objects to a given file
    * @param objects the objects to serialize
    * @param file the file
-   * @throws Serializer.SerializeException in case of an exception
+   * @throws IOException in case the file can not be written
    */
-  public static void serializeToFile(final Collection objects, final File file) throws Serializer.SerializeException {
+  public static void serializeToFile(final Collection objects, final File file) throws IOException {
     try (final ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
       for (final Object object : objects) {
         outputStream.writeObject(object);
       }
-    }
-    catch (final IOException e) {
-      throw new Serializer.SerializeException(e.getMessage(), e);
     }
   }
 
