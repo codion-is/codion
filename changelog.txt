@@ -4678,3 +4678,5 @@
   NumberField.NumberDocument no longer extends SizedDocument, bug fixed, refactored
   EntityEditPanel.USE_SAVE_CONTROL configuration value added
   FileUtil.serializeToFile() and desierializeFromFile() now throw IOException instead of SerializeException
+  EntityEditPanel, EntityEditView, clear now requests initial focus
+  TextInputPanel bug fixed, text field now receives focus when input panel is closed, now uses SizedDocument

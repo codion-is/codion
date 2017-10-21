@@ -295,7 +295,10 @@ public abstract class EntityEditView extends BorderPane {
 
   private Button createClearButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.CLEAR));
-    button.setOnAction(event -> editModel.setEntity(null));
+    button.setOnAction(event -> {
+      editModel.setEntity(null);
+      requestInitialFocus();
+    });
 
     return button;
   }

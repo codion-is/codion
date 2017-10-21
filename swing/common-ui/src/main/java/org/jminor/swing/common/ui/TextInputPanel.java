@@ -6,16 +6,14 @@ package org.jminor.swing.common.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.common.ui.textfield.SizedDocument;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
-import javax.swing.text.PlainDocument;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.Objects;
@@ -32,7 +30,7 @@ public final class TextInputPanel extends JPanel {
   private final JButton button;
   private final String dialogTitle;
   private final Dimension txtAreaSize;
-  private int maxLength = 0;
+  private int maxLength = -1;
 
   /**
    * Instantiates a new TextInputPanel.
@@ -142,16 +140,10 @@ public final class TextInputPanel extends JPanel {
     final JTextArea txtArea = new JTextArea(textField.getText()) {
       @Override
       protected Document createDefaultModel() {
-        return new PlainDocument() {
-          @Override
-          public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
-            if (getMaxLength() > 0 && getLength() + (str != null ? str.length() : 0) > getMaxLength()) {
-              return;
-            }
+        final SizedDocument document = new SizedDocument();
+        document.setMaxLength(getMaxLength());
 
-            super.insertString(offs, str, a);
-          }
-        };
+        return document;
       }
     };
     txtArea.setPreferredSize(txtAreaSize);
@@ -160,5 +152,6 @@ public final class TextInputPanel extends JPanel {
     final Control okControl = Controls.control(() -> textField.setText(txtArea.getText()),
             Messages.get(Messages.OK), null, null, Messages.get(Messages.OK_MNEMONIC).charAt(0));
     UiUtil.displayInDialog(textField, new JScrollPane(txtArea), dialogTitle, okControl);
+    textField.requestFocusInWindow();
   }
 }

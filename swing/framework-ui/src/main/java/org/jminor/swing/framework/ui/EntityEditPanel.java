@@ -168,7 +168,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
 
   /**
    * Indicates whether or not the UI should request focus after insert has been performed
-   * @see #setInitialFocus()
+   * @see #requestInitialFocus()
    */
   private boolean requestFocusAfterInsert = true;
 
@@ -240,16 +240,16 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
 
   /**
    * Prepares the UI.
-   * @param setInitialFocus if true then the initial focus is set
+   * @param requestInitialFocus if true then the initial focus is set
    * @param clearUI if true the UI is cleared.
    * @see EntityEditModel#clear()
    */
-  public final void prepareUI(final boolean setInitialFocus, final boolean clearUI) {
+  public final void prepareUI(final boolean requestInitialFocus, final boolean clearUI) {
     if (clearUI) {
       clearModelValues();
     }
-    if (setInitialFocus) {
-      setInitialFocus();
+    if (requestInitialFocus) {
+      requestInitialFocus();
     }
   }
 
@@ -305,9 +305,9 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @see #setInitialFocusProperty
    * @see #setInitialFocusComponent(javax.swing.JComponent)
    */
-  public final void setInitialFocus() {
+  public final void requestInitialFocus() {
     if (isVisible()) {
-      setInitialFocus(false);
+      requestInitialFocus(false);
     }
   }
 
@@ -420,7 +420,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
 
   /**
    * @return true if the UI should request focus after insert has been performed
-   * @see #setInitialFocus()
+   * @see #requestInitialFocus()
    */
   public final boolean isRequestFocusAfterInsert() {
     return requestFocusAfterInsert;
@@ -428,7 +428,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
 
   /**
    * @param requestFocusAfterInsert true if the UI should request focus after insert has been performed
-   * @see #setInitialFocus()
+   * @see #requestInitialFocus()
    */
   public final void setRequestFocusAfterInsert(final boolean requestFocusAfterInsert) {
     this.requestFocusAfterInsert = requestFocusAfterInsert;
@@ -476,7 +476,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   public final Control getClearControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC);
-    return Controls.control(this::clearModelValues, FrameworkMessages.get(FrameworkMessages.CLEAR),
+    return Controls.control(() -> prepareUI(true, true), FrameworkMessages.get(FrameworkMessages.CLEAR),
             getActiveObserver(), FrameworkMessages.get(FrameworkMessages.CLEAR_ALL_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_NEW_16));
   }
@@ -677,7 +677,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
           clearModelValues();
         }
         if (requestFocusAfterInsert) {
-          setInitialFocus(true);
+          requestInitialFocus(true);
         }
         return true;
       }
@@ -747,7 +747,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
         finally {
           UiUtil.setWaitCursor(false, this);
         }
-        setInitialFocus(false);
+        requestInitialFocus(false);
 
         return true;
       }
@@ -1092,7 +1092,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return a JTextArea bound to the property
    */
   protected final JTextArea createTextArea(final String propertyId, final int rows, final int columns) {
-    return createTextArea(propertyId, rows, columns, readOnly(propertyId));
+    return createTextArea(propertyId, rows, columns, isReadOnly(propertyId));
   }
 
   /**
@@ -1131,7 +1131,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return a TextInputPanel bound to the property
    */
   protected final TextInputPanel createTextInputPanel(final String propertyId) {
-    return createTextInputPanel(propertyId, readOnly(propertyId));
+    return createTextInputPanel(propertyId, isReadOnly(propertyId));
   }
 
   /**
@@ -1234,7 +1234,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final DateInputPanel createDateInputPanel(final String propertyId, final boolean includeButton,
                                                       final StateObserver enabledState) {
-    return createDateInputPanel(propertyId, includeButton, enabledState, readOnly(propertyId));
+    return createDateInputPanel(propertyId, includeButton, enabledState, isReadOnly(propertyId));
   }
 
   /**
@@ -1279,7 +1279,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final DateInputPanel createDateInputPanel(final Property property, final boolean includeButton,
                                                       final StateObserver enabledState) {
-    return createDateInputPanel(property, includeButton, enabledState, readOnly(property.getPropertyId()));
+    return createDateInputPanel(property, includeButton, enabledState, isReadOnly(property.getPropertyId()));
   }
 
   /**
@@ -1304,7 +1304,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final String propertyId) {
-    return createTextField(propertyId, readOnly(propertyId));
+    return createTextField(propertyId, isReadOnly(propertyId));
   }
 
   /**
@@ -1384,7 +1384,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final Property property) {
-    return createTextField(property, readOnly(property.getPropertyId()));
+    return createTextField(property, isReadOnly(property.getPropertyId()));
   }
 
   /**
@@ -2101,7 +2101,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     });
   }
 
-  private void setInitialFocus(final boolean afterInsert) {
+  private void requestInitialFocus(final boolean afterInsert) {
     final JComponent focusComponent = afterInsert ? getAfterInsertFocusComponent() : getInitialFocusComponent();
     if (focusComponent != null && focusComponent.isFocusable()) {
       focusComponent.requestFocus();
@@ -2111,7 +2111,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     }
   }
 
-  private boolean readOnly(final String propertyId) {
+  private boolean isReadOnly(final String propertyId) {
     final Property property = editModel.getEntities().getProperty(editModel.getEntityId(), propertyId);
     return property.isReadOnly() || (property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).isUpdatable());
   }
@@ -2187,7 +2187,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-      editPanel.setInitialFocus();
+      editPanel.requestInitialFocus();
     }
   }
 }
