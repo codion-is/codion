@@ -23,7 +23,6 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityApplicationModel;
-import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.DialogExceptionHandler;
 import org.jminor.swing.common.ui.LoginPanel;
@@ -440,11 +439,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Exits this application
    * @see #addOnExitListener(EventListener)
    * @see EntityApplicationPanel#CONFIRM_EXIT
-   * @see EntityEditModel#WARN_ABOUT_UNSAVED_DATA
+   * @see EntityApplicationModel#isWarnAboutUnsavedData()
    * @throws CancelException if the exit is cancelled
    */
   public final void exit() {
-    if (EntityEditModel.WARN_ABOUT_UNSAVED_DATA.get() && getModel().containsUnsavedData() &&
+    if (getModel().isWarnAboutUnsavedData() && getModel().containsUnsavedData() &&
             JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING),
                     FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
                     JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {

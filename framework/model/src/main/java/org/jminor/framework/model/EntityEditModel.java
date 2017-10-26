@@ -177,6 +177,19 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   EntityEditModel setReadOnly(final boolean readOnly);
 
   /**
+   * @return true if this model warns about unsaved data
+   * @see #WARN_ABOUT_UNSAVED_DATA
+   */
+  boolean isWarnAboutUnsavedData();
+
+  /**
+   * @param warnAboutUnsavedData if true then this model warns about unsaved data
+   * @return this edit model instance
+   * @see #WARN_ABOUT_UNSAVED_DATA
+   */
+  EntityEditModel setWarnAboutUnsavedData(final boolean warnAboutUnsavedData);
+
+  /**
    * @return true if this model should allow records to be inserted
    */
   boolean isInsertAllowed();

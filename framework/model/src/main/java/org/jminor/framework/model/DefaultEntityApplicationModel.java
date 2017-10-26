@@ -22,6 +22,8 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
   private final EntityConnectionProvider connectionProvider;
   private final List<M> entityModels = new ArrayList<>();
 
+  private boolean warnAboutUnsavedData = EntityEditModel.WARN_ABOUT_UNSAVED_DATA.get();
+
   /**
    * Instantiates a new DefaultEntityApplicationModel
    * @param connectionProvider the EntityConnectionProvider instance
@@ -160,6 +162,18 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
     }
 
     throw new IllegalArgumentException("EntityModel for type " + entityId + " not  found in model: " + this);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isWarnAboutUnsavedData() {
+    return warnAboutUnsavedData;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void setWarnAboutUnsavedData(final boolean warnAboutUnsavedData) {
+    this.warnAboutUnsavedData = warnAboutUnsavedData;
   }
 
   /** {@inheritDoc} */

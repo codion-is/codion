@@ -116,6 +116,11 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   private boolean readOnly;
 
   /**
+   * Specifies whether this edit model should warn about unsaved data
+   */
+  private boolean warnAboutUnsavedData = WARN_ABOUT_UNSAVED_DATA.get();
+
+  /**
    * Instantiates a new {@link DefaultEntityEditModel} based on the entity identified by {@code entityId}.
    * @param entityId the ID of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
@@ -178,6 +183,19 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   @Override
   public final EntityEditModel setReadOnly(final boolean readOnly) {
     this.readOnly = readOnly;
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isWarnAboutUnsavedData() {
+    return warnAboutUnsavedData;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final EntityEditModel setWarnAboutUnsavedData(final boolean warnAboutUnsavedData) {
+    this.warnAboutUnsavedData = warnAboutUnsavedData;
     return this;
   }
 
@@ -878,7 +896,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   }
 
   private boolean isSetEntityAllowed() {
-    if (EntityEditModel.WARN_ABOUT_UNSAVED_DATA.get() && containsUnsavedData()) {
+    if (warnAboutUnsavedData && containsUnsavedData()) {
       final State confirmation = States.state(true);
       confirmSetEntityEvent.fire(confirmation);
 

@@ -119,6 +119,18 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
   boolean containsEntityModel(final M entityModel);
 
   /**
+   * @return true if this model warns about unsaved data
+   * @see EntityEditModel#WARN_ABOUT_UNSAVED_DATA
+   */
+  boolean isWarnAboutUnsavedData();
+
+  /**
+   * @param warnAboutUnsavedData if true then this model warns about unsaved data
+   * @see EntityEditModel#WARN_ABOUT_UNSAVED_DATA
+   */
+  void setWarnAboutUnsavedData(final boolean warnAboutUnsavedData);
+
+  /**
    * @return true if any edit model associated with this application model contains
    * modified and unsaved data, that is, existing entities that have been modified but not saved
    */

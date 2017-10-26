@@ -404,7 +404,7 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void containsUnsavedData() throws DatabaseException {
-    EntityEditModel.WARN_ABOUT_UNSAVED_DATA.set(true);
+    employeeEditModel.setWarnAboutUnsavedData(true);
     employeeEditModel.setValuePersistent(TestDomain.EMP_DEPARTMENT_FK, false);
 
     final EventInfoListener<State> alwaysConfirmListener = info -> info.setActive(true);
@@ -434,7 +434,7 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setEntity(adams);
     assertEquals(king.get(TestDomain.EMP_DEPARTMENT_FK), employeeEditModel.getValue(TestDomain.EMP_DEPARTMENT_FK));
 
-    EntityEditModel.WARN_ABOUT_UNSAVED_DATA.set(false);
+    employeeEditModel.setWarnAboutUnsavedData(false);
   }
 
   private static final class TestEntityEditModel extends DefaultEntityEditModel {

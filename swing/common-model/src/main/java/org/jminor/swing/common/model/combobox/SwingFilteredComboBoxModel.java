@@ -326,7 +326,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
     if (Objects.equals(nullValue, toSelect)) {
       toSelect = null;
     }
-    if (allowSelectionChange(toSelect) && !Objects.equals(selectedItem, toSelect)) {
+    if (!Objects.equals(selectedItem, toSelect) && allowSelectionChange(toSelect)) {
       selectedItem = toSelect;
       fireContentsChanged();
       selectionChangedEvent.fire(selectedItem);
