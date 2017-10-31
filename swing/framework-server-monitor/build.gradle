@@ -50,5 +50,6 @@ task runServerMonitor(type: JavaExec) {
             'jminor.server.admin.user': 'scott:tiger',
             'javax.net.ssl.trustStore': '../../resources/security/JMinorServerMonitorTruststore',
             'java.security.policy': '../../resources/security/jminor_server_monitor.policy',
+            'logback.configurationFile': 'resources/config/logback.xml'
     ]
 }

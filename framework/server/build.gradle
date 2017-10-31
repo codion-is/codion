@@ -56,6 +56,7 @@ task runServer(type: JavaExec) {
             'javax.net.ssl.keyStore': '../../resources/security/JMinorServerKeystore',
             'java.security.policy': '../../resources/security/all_permissions.policy',
             'javax.net.ssl.keyStorePassword': 'crappypass',
-            'java.rmi.server.hostname': 'localhost'
+            'java.rmi.server.hostname': 'localhost',
+            'logback.configurationFile': '../../resources/server/config/logback.xml'
     ]
 }

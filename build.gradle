@@ -1,6 +1,18 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.netflix.nebula:gradle-aggregate-javadocs-plugin:2.2.+'
+    }
+}
+
 plugins {
     id "org.sonarqube" version "2.5"
 }
+
+apply plugin: 'nebula-aggregate-javadocs'
 
 ant.importBuild('gradle-ant.xml')
 
@@ -197,7 +209,8 @@ subprojects {
                     'jminor.db.embedded': 'true',
                     'jminor.db.embeddedInMemory': 'true',
                     'jminor.db.initScript': 'src/main/sql/create_schema.sql',
-                    'jminor.report.path': 'build/classes/reports'
+                    'jminor.report.path': 'build/classes/reports',
+                    'logback.configurationFile': 'src/main/resources/logback.xml'
             ]
         }
 
@@ -209,7 +222,8 @@ subprojects {
                     'jminor.server.hostname': 'localhost',
                     'jminor.report.path': 'build/classes/reports',
                     'javax.net.ssl.trustStore': '../../resources/security/JMinorClientTruststore',
-                    'java.security.policy': '../../resources/security/jminor_client.policy'
+                    'java.security.policy': '../../resources/security/jminor_client.policy',
+                    'logback.configurationFile': 'src/main/resources/logback.xml'
             ]
         }
 
@@ -220,6 +234,7 @@ subprojects {
                     'jminor.client.connectionType': 'http',
                     'jminor.server.hostname': 'localhost',
                     'jminor.report.path': 'build/classes/reports',
+                    'logback.configurationFile': 'src/main/resources/logback.xml'
             ]
         }
 
@@ -231,7 +246,8 @@ subprojects {
                     'jminor.server.hostname': 'localhost',
                     'jminor.report.path': 'build/classes/reports',
                     'javax.net.ssl.trustStore': '../../resources/security/JMinorClientTruststore',
-                    'java.security.policy': '../../resources/security/jminor_client.policy'
+                    'java.security.policy': '../../resources/security/jminor_client.policy',
+                    'logback.configurationFile': 'src/main/resources/logback.xml'
             ]
         }
 
@@ -241,6 +257,7 @@ subprojects {
             systemProperties = [
                     'jminor.client.connectionType': 'http',
                     'jminor.server.hostname': 'localhost',
+                    'logback.configurationFile': 'src/main/resources/logback.xml'
             ]
         }
     }
