@@ -16,7 +16,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,17 +37,6 @@ public final class Databases {
    */
   public static final ResultPacker<Integer> INTEGER_RESULT_PACKER = new ResultPacker<Integer>() {
     @Override
-    public List<Integer> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Integer> integers = new ArrayList<>();
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        integers.add(fetch(resultSet));
-      }
-
-      return integers;
-    }
-
-    @Override
     public Integer fetch(final ResultSet resultSet) throws SQLException {
       return resultSet.getInt(1);
     }
@@ -58,17 +46,6 @@ public final class Databases {
    * A result packer for fetching longs from a result set containing a single long column
    */
   public static final ResultPacker<Long> LONG_RESULT_PACKER = new ResultPacker<Long>() {
-    @Override
-    public List<Long> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Long> longs = new ArrayList<>();
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        longs.add(fetch(resultSet));
-      }
-
-      return longs;
-    }
-
     @Override
     public Long fetch(final ResultSet resultSet) throws SQLException {
       return resultSet.getLong(1);

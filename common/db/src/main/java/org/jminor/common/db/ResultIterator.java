@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 /**
  * Iterates through a ResultSet fetching instances of T.
+ * Closes the ResultSet when iteration is finished or in case of an exception.
  * @param <T> the type to fetch from the result set
  */
 public interface ResultIterator<T> {

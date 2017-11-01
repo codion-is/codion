@@ -20,7 +20,6 @@ import java.sql.Types;
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -1257,16 +1256,6 @@ class DefaultProperty implements Property {
 
     private PropertyResultPacker(final Property.ColumnProperty property) {
       this.property = property;
-    }
-
-    @Override
-    public List<Object> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Object> result = new ArrayList<>(50);
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        result.add(fetch(resultSet));
-      }
-      return result;
     }
 
     @Override

@@ -369,7 +369,9 @@ public final class EntityGeneratorModel {
       try {
         clear();
         final Set<Table> items = new HashSet<>();
-        final List<Table> tables = new TablePacker(schema).pack(metaData.getTables(catalog, schema, null, null), -1);
+        final ResultSet resultSet = metaData.getTables(catalog, schema, null, null);
+        final List<Table> tables = new TablePacker(schema).pack(resultSet, -1);
+        resultSet.close();
         for (final Table table : tables) {
           populateTable(table);
           for (final ForeignKeyColumn foreignKeyColumn : table.foreignKeys) {
@@ -388,9 +390,15 @@ public final class EntityGeneratorModel {
     }
 
     private void populateTable(final Table table) throws SQLException {
-      table.foreignKeys = new ForeignKeyColumnPacker().pack(metaData.getImportedKeys(catalog, table.getSchemaName(), table.getTableName()), -1);
-      table.primaryKeyColumns = new PrimaryKeyColumnPacker().pack(metaData.getPrimaryKeys(catalog, table.getSchemaName(), table.getTableName()), -1);
-      table.columns = new ColumnPacker(table).pack(metaData.getColumns(catalog, table.getSchemaName(), table.getTableName(), null), -1);
+      ResultSet resultSet = metaData.getImportedKeys(catalog, table.getSchemaName(), table.getTableName());
+      table.foreignKeys = new ForeignKeyColumnPacker().pack(resultSet, -1);
+      resultSet.close();
+      resultSet = metaData.getPrimaryKeys(catalog, table.getSchemaName(), table.getTableName());
+      table.primaryKeyColumns = new PrimaryKeyColumnPacker().pack(resultSet, -1);
+      resultSet.close();
+      resultSet = metaData.getColumns(catalog, table.getSchemaName(), table.getTableName(), null);
+      table.columns = new ColumnPacker(table).pack(resultSet, -1);
+      resultSet.close();
     }
 
     @Override
@@ -577,18 +585,6 @@ public final class EntityGeneratorModel {
     }
 
     @Override
-    public List<Table> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Table> tables = new ArrayList<>();
-      while (resultSet.next()) {
-        tables.add(fetch(resultSet));
-      }
-
-      resultSet.close();
-
-      return tables;
-    }
-
-    @Override
     public Table fetch(final ResultSet resultSet) throws SQLException {
       final String tableName = resultSet.getString("TABLE_NAME");
       String dbSchema = resultSet.getString(TABLE_SCHEMA);
@@ -606,21 +602,6 @@ public final class EntityGeneratorModel {
 
     private ColumnPacker(final Table table) {
       this.table = table;
-    }
-
-    @Override
-    public List<Column> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Column> columns = new ArrayList<>();
-      while (resultSet.next()) {
-        final Column column = fetch(resultSet);
-        if (column != null) {
-          columns.add(column);
-        }
-      }
-
-      resultSet.close();
-
-      return columns;
     }
 
     @Override
@@ -701,18 +682,6 @@ public final class EntityGeneratorModel {
 
   private static final class ForeignKeyColumnPacker implements ResultPacker<ForeignKeyColumn> {
     @Override
-    public List<ForeignKeyColumn> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<ForeignKeyColumn> foreignKeys = new ArrayList<>();
-      while (resultSet.next()) {
-        foreignKeys.add(fetch(resultSet));
-      }
-
-      resultSet.close();
-
-      return foreignKeys;
-    }
-
-    @Override
     public ForeignKeyColumn fetch(final ResultSet resultSet) throws SQLException {
       return new ForeignKeyColumn(resultSet.getString("PKTABLE_SCHEM"), resultSet.getString("PKTABLE_NAME"),
               resultSet.getString("FKTABLE_NAME"), resultSet.getString("FKCOLUMN_NAME"));
@@ -720,18 +689,6 @@ public final class EntityGeneratorModel {
   }
 
   private static final class PrimaryKeyColumnPacker implements ResultPacker<PrimaryKeyColumn> {
-    @Override
-    public List<PrimaryKeyColumn> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<PrimaryKeyColumn> primaryKeys = new ArrayList<>();
-      while (resultSet.next()) {
-        primaryKeys.add(fetch(resultSet));
-      }
-
-      resultSet.close();
-
-      return primaryKeys;
-    }
-
     @Override
     public PrimaryKeyColumn fetch(final ResultSet resultSet) throws SQLException {
       return new PrimaryKeyColumn(resultSet.getString("COLUMN_NAME"), resultSet.getInt("KEY_SEQ"));

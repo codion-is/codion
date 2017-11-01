@@ -700,7 +700,7 @@ public final class LocalEntityConnection implements EntityConnection {
   /**
    * Returns a result set iterator based on the given query condition, this iterator closes all underlying
    * resources in case of an exception and when it finishes iterating.
-   * Calling {@link ResultIterator#close()} is required if the iterator is not exhausted and always recommended.
+   * Calling {@link ResultIterator#close()} is required if the iterator has not been exhausted and is always recommended.
    * @param condition the query condition
    * @return an iterator for the given query condition
    * @throws DatabaseException in case of an exception
@@ -1237,17 +1237,6 @@ public final class LocalEntityConnection implements EntityConnection {
   }
 
   private static final class BlobPacker implements ResultPacker<Blob> {
-    @Override
-    public List<Blob> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<java.sql.Blob> blobs = new ArrayList<>();
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        blobs.add(fetch(resultSet));
-      }
-
-      return blobs;
-    }
-
     @Override
     public Blob fetch(final ResultSet resultSet) throws SQLException {
       return resultSet.getBlob(1);

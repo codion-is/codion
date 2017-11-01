@@ -4682,3 +4682,4 @@
   TextInputPanel bug fixed, text field now receives focus when input panel is closed, now uses SizedDocument
   EntityEditModel and EntityApplicationModel is/setWarnAboutUnsavedData() added
   SwingFilteredComboBoxModel.setSelectedItem() bug fixed, allowSelectionChange() was called prematurely
+  ResultPacker.pack() default implementation added

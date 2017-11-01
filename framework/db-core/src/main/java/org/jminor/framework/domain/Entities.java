@@ -2001,27 +2001,6 @@ public class Entities {
       this.propertyCount = propertyCount;
     }
 
-    /**
-     * Packs the contents of {@code resultSet} into a List of Entity objects.
-     * The resulting entities do not contain values for foreign key properties (Property.ForeignKeyProperty).
-     * This method does not close the ResultSet object.
-     * @param resultSet the ResultSet object
-     * @param fetchCount the maximum number of records to retrieve from the result set
-     * @return a List of Entity objects representing the contents of {@code resultSet}
-     * @throws java.sql.SQLException in case of an exception
-     */
-    @Override
-    public List<Entity> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      Objects.requireNonNull(resultSet, "resultSet");
-      final List<Entity> result = new ArrayList<>();
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        result.add(fetch(resultSet));
-      }
-
-      return result;
-    }
-
     @Override
     public Entity fetch(final ResultSet resultSet) throws SQLException {
       final Map<Property, Object> values = new HashMap<>(propertyCount);
