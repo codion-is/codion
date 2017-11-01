@@ -11,8 +11,6 @@ import org.jminor.swing.framework.ui.EntityEditPanel;
 import javax.swing.JTextField;
 import java.awt.GridLayout;
 
-import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
-
 public class DepartmentEditPanel extends EntityEditPanel {
 
   public DepartmentEditPanel(final SwingEntityEditModel editModel) {
@@ -21,12 +19,12 @@ public class DepartmentEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    final JTextField txtDepartmentNumber = createTextField(DEPARTMENT_ID);
-    UiUtil.makeUpperCase(createTextField(DEPARTMENT_NAME));
-    UiUtil.makeUpperCase(createTextField(DEPARTMENT_LOCATION));
-
     setInitialFocusProperty(EmpDept.DEPARTMENT_ID);
+
+    final JTextField txtDepartmentNumber = createTextField(EmpDept.DEPARTMENT_ID);
     txtDepartmentNumber.setColumns(10);
+    UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_NAME));
+    UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_LOCATION));
 
     //we don't allow editing of the department number since it's a primary key
     getEditModel().getPrimaryKeyNullObserver().addListener(() -> {
@@ -41,8 +39,9 @@ public class DepartmentEditPanel extends EntityEditPanel {
     });
 
     setLayout(new GridLayout(3,1,5,5));
-    addPropertyPanel(DEPARTMENT_ID);
-    addPropertyPanel(DEPARTMENT_NAME);
-    addPropertyPanel(DEPARTMENT_LOCATION);
+
+    addPropertyPanel(EmpDept.DEPARTMENT_ID);
+    addPropertyPanel(EmpDept.DEPARTMENT_NAME);
+    addPropertyPanel(EmpDept.DEPARTMENT_LOCATION);
   }
 }

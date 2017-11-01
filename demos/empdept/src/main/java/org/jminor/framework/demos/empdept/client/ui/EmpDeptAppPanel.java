@@ -30,8 +30,6 @@ import org.jminor.swing.framework.ui.EntityTablePanel;
 import java.io.File;
 import java.nio.charset.Charset;
 
-import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
-
 public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpDeptApplicationModel> {
 
   @Override
@@ -43,10 +41,10 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   protected void setupEntityPanelProviders() {
     final EmployeeModelProvider employeeModelProvider = new EmployeeModelProvider();
     final EmployeePanelProvider employeePanelProvider = new EmployeePanelProvider(employeeModelProvider,
-            getModel().getEntities().getCaption(T_EMPLOYEE));
+            getModel().getEntities().getCaption(EmpDept.T_EMPLOYEE));
     employeePanelProvider.setEditPanelClass(EmployeeEditPanel.class);
 
-    final SwingEntityModelProvider departmentModelProvider = new SwingEntityModelProvider(T_DEPARTMENT) {
+    final SwingEntityModelProvider departmentModelProvider = new SwingEntityModelProvider(EmpDept.T_DEPARTMENT) {
       @Override
       protected void configureModel(final SwingEntityModel entityModel) {
         entityModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().setQueryConditionRequired(false);
@@ -54,7 +52,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     };
     departmentModelProvider.addDetailModelProvider(employeeModelProvider);
     final EntityPanelProvider departmentPanelProvider = new EntityPanelProvider(departmentModelProvider,
-            getModel().getEntities().getCaption(T_DEPARTMENT));
+            getModel().getEntities().getCaption(EmpDept.T_DEPARTMENT));
     departmentPanelProvider.setEditPanelClass(DepartmentEditPanel.class);
     departmentPanelProvider.setTablePanelClass(DepartmentTablePanel.class);
     departmentPanelProvider.addDetailPanelProvider(employeePanelProvider);
@@ -72,7 +70,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   @Override
   protected ControlSet getToolsControlSet() {
     final ControlSet toolsSet = super.getToolsControlSet();
-    toolsSet.add(Controls.control(this::importJSON, EmpDept.getString(IMPORT_JSON)));
+    toolsSet.add(Controls.control(this::importJSON, EmpDept.getString(EmpDept.IMPORT_JSON)));
 
     return toolsSet;
   }
@@ -89,10 +87,10 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   }
 
   public static final class EmpDeptApplicationModel extends SwingEntityApplicationModel {
+
     public EmpDeptApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
     }
-
   }
 
   private static final class EmployeeModelProvider extends SwingEntityModelProvider {
@@ -103,7 +101,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
 
     @Override
     protected void configureTableModel(final SwingEntityTableModel tableModel) {
-      tableModel.getColumnSummaryModel(EMPLOYEE_SALARY).setSummary(ColumnSummary.AVERAGE);
+      tableModel.getColumnSummaryModel(EmpDept.EMPLOYEE_SALARY).setSummary(ColumnSummary.AVERAGE);
     }
   }
 

@@ -110,10 +110,6 @@ subprojects {
         systemProperty "jminor.unittest.password", "tiger"
     }.dependsOn create_keystore
 
-    jacoco {
-        toolVersion = "0.7.9"
-    }
-
     if (!demoProject) {
         def artifactName = project.name.replace("org.", "").replace(".", "-")
         jar {

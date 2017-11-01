@@ -17,9 +17,6 @@ import org.jminor.swing.framework.ui.reporting.EntityReportUiUtil;
 import java.util.Collection;
 import java.util.HashMap;
 
-import static org.jminor.framework.demos.empdept.domain.EmpDept.DEPARTMENT_ID;
-import static org.jminor.framework.demos.empdept.domain.EmpDept.EMPLOYEE_REPORT;
-
 public class DepartmentTablePanel extends EntityTablePanel {
 
   public DepartmentTablePanel(final SwingEntityTableModel tableModel) {
@@ -33,7 +30,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
 
     final String reportPath = EntityApplicationModel.getReportPath() + "/empdept_employees.jasper";
     final Collection departmentNumbers =
-            Entities.getDistinctValues(DEPARTMENT_ID, getEntityTableModel().getSelectionModel().getSelectedItems());
+            Entities.getDistinctValues(EmpDept.DEPARTMENT_ID, getEntityTableModel().getSelectionModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", departmentNumbers);
     EntityReportUiUtil.viewJdbcReport(DepartmentTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
@@ -43,7 +40,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
   @Override
   protected ControlSet getPrintControls() {
     final ControlSet printControlSet = super.getPrintControls();
-    printControlSet.add(Controls.control(this::viewEmployeeReport, EmpDept.getString(EMPLOYEE_REPORT)));
+    printControlSet.add(Controls.control(this::viewEmployeeReport, EmpDept.getString(EmpDept.EMPLOYEE_REPORT)));
 
     return printControlSet;
   }

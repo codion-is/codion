@@ -22,11 +22,6 @@ public final class EmpDept extends Entities {
   private static final ResourceBundle bundle =
           ResourceBundle.getBundle("org.jminor.framework.demos.empdept.domain.EmpDept", Locale.getDefault());
 
-  public EmpDept() {
-    department();
-    employee();
-  }
-
   /**Used for i18n*/
   public static final String DEPARTMENT = "department";
   public static final String EMPLOYEE = "employee";
@@ -41,21 +36,6 @@ public final class EmpDept extends Entities {
   public static final String DEPARTMENT_ID = "deptno";
   public static final String DEPARTMENT_NAME = "dname";
   public static final String DEPARTMENT_LOCATION = "loc";
-
-  void department() {
-    /*Defining the entity type T_DEPARTMENT*/
-    define(T_DEPARTMENT,
-            Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, getString(DEPARTMENT_ID))
-                    .setUpdatable(true).setNullable(false),
-            Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, getString(DEPARTMENT_NAME))
-                    .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
-            Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, getString(DEPARTMENT_LOCATION))
-                    .setPreferredColumnWidth(150).setMaxLength(13))
-            .setSmallDataset(true)
-            .setOrderByClause(DEPARTMENT_NAME)
-            .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
-            .setCaption(getString(DEPARTMENT));
-  }
 
   /**Entity identifier for the table scott.emp*/
   public static final String T_EMPLOYEE = "scott.emp";
@@ -78,6 +58,27 @@ public final class EmpDept extends Entities {
 
   public static final List<Item> JOB_VALUES = Arrays.asList(
           new Item("ANALYST"), new Item("CLERK"), new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN"));
+
+  /** Initializes this domain model */
+  public EmpDept() {
+    department();
+    employee();
+  }
+
+  void department() {
+    /*Defining the entity type T_DEPARTMENT*/
+    define(T_DEPARTMENT,
+            Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, getString(DEPARTMENT_ID))
+                    .setUpdatable(true).setNullable(false),
+            Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, getString(DEPARTMENT_NAME))
+                    .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
+            Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, getString(DEPARTMENT_LOCATION))
+                    .setPreferredColumnWidth(150).setMaxLength(13))
+            .setSmallDataset(true)
+            .setOrderByClause(DEPARTMENT_NAME)
+            .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
+            .setCaption(getString(DEPARTMENT));
+  }
 
   void employee() {
     /*Defining the entity type T_EMPLOYEE*/
