@@ -9,6 +9,7 @@ import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
+import org.jminor.common.Version;
 import org.jminor.common.server.RemoteClient;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
@@ -43,9 +44,11 @@ public final class ClientUserMonitor {
 
   private static final int USERNAME_COLUMN = 0;
   private static final int CLIENT_TYPE_COLUMN = 1;
-  private static final int CLIENT_HOST_COLUMN = 2;
-  private static final int LAST_SEEN_COLUMN = 3;
-  private static final int CONNECTION_COUNT_COLUMN = 4;
+  private static final int CLIENT_VERSION_COLUMN = 2;
+  private static final int FRAMEWORK_VERSION_COLUMN = 3;
+  private static final int CLIENT_HOST_COLUMN = 4;
+  private static final int LAST_SEEN_COLUMN = 5;
+  private static final int CONNECTION_COUNT_COLUMN = 6;
   private static final Comparator<User> USER_COMPARATOR = (u1, u2) -> u1.getUsername().compareToIgnoreCase(u2.getUsername());
 
   private final EntityConnectionServerAdmin server;
@@ -215,7 +218,8 @@ public final class ClientUserMonitor {
       try {
         for (final RemoteClient remoteClient : server.getClients()) {
           final UserInfo newUserInfo = new UserInfo(remoteClient.getUser(), remoteClient.getClientTypeId(),
-                  remoteClient.getClientHost(), new Date(), remoteClient.getClientId());
+                  remoteClient.getClientHost(), new Date(), remoteClient.getClientId(), remoteClient.getClientVersion(),
+                  remoteClient.getFrameworkVersion());
           if (contains(newUserInfo, true)) {
             final UserInfo currentUserInfo = getItemAt(indexOf(newUserInfo));
             currentUserInfo.setLastSeen(newUserInfo.getLastSeen());
@@ -241,6 +245,8 @@ public final class ClientUserMonitor {
       switch (column) {
         case USERNAME_COLUMN: return userInfo.getUser().getUsername();
         case CLIENT_TYPE_COLUMN: return userInfo.getClientTypeId();
+        case CLIENT_VERSION_COLUMN: return userInfo.getClientVersion();
+        case FRAMEWORK_VERSION_COLUMN: return userInfo.getFrameworkVersion();
         case CLIENT_HOST_COLUMN: return userInfo.getClientHost();
         case LAST_SEEN_COLUMN: return userInfo.getLastSeen();
         case CONNECTION_COUNT_COLUMN: return userInfo.getConnectionCount();
@@ -254,17 +260,21 @@ public final class ClientUserMonitor {
     private final User user;
     private final String clientTypeId;
     private final String clientHost;
+    private final Version clientVersion;
+    private final Version frameworkVersion;
     private Date lastSeen;
     private UUID clientId;
     private int connectionCount = 1;
 
     private UserInfo(final User user, final String clientTypeId, final String clientHost, final Date lastSeen,
-                     final UUID clientId) {
+                     final UUID clientId, final Version clientVersion, final Version frameworkVersion) {
       this.user = user;
       this.clientTypeId = clientTypeId;
       this.clientHost = clientHost;
       this.lastSeen = lastSeen;
       this.clientId = clientId;
+      this.clientVersion = clientVersion;
+      this.frameworkVersion = frameworkVersion;
     }
 
     public User getUser() {
@@ -285,6 +295,14 @@ public final class ClientUserMonitor {
 
     public UUID getClientId() {
       return clientId;
+    }
+
+    public Version getClientVersion() {
+      return clientVersion;
+    }
+
+    public Version getFrameworkVersion() {
+      return frameworkVersion;
     }
 
     public int getConnectionCount() {
@@ -341,8 +359,10 @@ public final class ClientUserMonitor {
     @Override
     public Class getColumnClass(final Integer columnIdentifier) {
       switch (columnIdentifier) {
-        case USERNAME_COLUMN:
-        case CLIENT_TYPE_COLUMN:
+        case USERNAME_COLUMN: return String.class;
+        case CLIENT_TYPE_COLUMN: return String.class;
+        case CLIENT_VERSION_COLUMN: return Version.class;
+        case FRAMEWORK_VERSION_COLUMN: return Version.class;
         case CLIENT_HOST_COLUMN: return String.class;
         case LAST_SEEN_COLUMN: return Date.class;
         case CONNECTION_COUNT_COLUMN: return Integer.class;
@@ -355,6 +375,8 @@ public final class ClientUserMonitor {
       switch (columnIdentifier) {
         case USERNAME_COLUMN: return rowObject.getUser().getUsername();
         case CLIENT_TYPE_COLUMN: return rowObject.getClientTypeId();
+        case CLIENT_VERSION_COLUMN: return rowObject.getClientVersion();
+        case FRAMEWORK_VERSION_COLUMN: return rowObject.getFrameworkVersion();
         case CLIENT_HOST_COLUMN: return rowObject.getClientHost();
         case LAST_SEEN_COLUMN: return rowObject.getLastSeen();
         case CONNECTION_COUNT_COLUMN: return rowObject.getConnectionCount();
@@ -369,6 +391,12 @@ public final class ClientUserMonitor {
       final TableColumn clientType = new TableColumn(CLIENT_TYPE_COLUMN);
       clientType.setIdentifier(CLIENT_TYPE_COLUMN);
       clientType.setHeaderValue("Client type");
+      final TableColumn clientVersion = new TableColumn(CLIENT_VERSION_COLUMN);
+      clientVersion.setIdentifier(CLIENT_VERSION_COLUMN);
+      clientVersion.setHeaderValue("Client version");
+      final TableColumn frameworkVersion = new TableColumn(FRAMEWORK_VERSION_COLUMN);
+      frameworkVersion.setIdentifier(FRAMEWORK_VERSION_COLUMN);
+      frameworkVersion.setHeaderValue("Framework version");
       final TableColumn host = new TableColumn(CLIENT_HOST_COLUMN);
       host.setIdentifier(CLIENT_HOST_COLUMN);
       host.setHeaderValue("Host");
@@ -380,7 +408,7 @@ public final class ClientUserMonitor {
       connectionCount.setIdentifier(CONNECTION_COUNT_COLUMN);
       connectionCount.setHeaderValue("Connections");
 
-      return Arrays.asList(username, clientType, host, lastSeen, connectionCount);
+      return Arrays.asList(username, clientType, clientVersion, frameworkVersion, host, lastSeen, connectionCount);
     }
   }
 

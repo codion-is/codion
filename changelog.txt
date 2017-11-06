@@ -4683,3 +4683,4 @@
   EntityEditModel and EntityApplicationModel is/setWarnAboutUnsavedData() added
   SwingFilteredComboBoxModel.setSelectedItem() bug fixed, allowSelectionChange() was called prematurely
   ResultPacker.pack() default implementation added
+  ClientUserMonitor, clientVersion and frameworkVersion columns added to user history table
