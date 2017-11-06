@@ -209,11 +209,11 @@ public class NumberField extends JTextField {
       final Document document = filterBypass.getDocument();
       final StringBuilder numberBuilder = new StringBuilder(document.getText(0, document.getLength()));
       numberBuilder.replace(offset, offset + length, string);
-      final FormatResult formatedResult = format(numberBuilder.toString());
-      if (formatedResult != null) {
-        super.replace(filterBypass, 0, document.getLength(), formatedResult.formatted, attributeSet);
+      final FormatResult formatResult = format(numberBuilder.toString());
+      if (formatResult != null) {
+        super.replace(filterBypass, 0, document.getLength(), formatResult.formatted, attributeSet);
         if (caret != null) {
-          caret.setDot(offset + string.length() + formatedResult.added);
+          caret.setDot(offset + string.length() + formatResult.added);
         }
       }
     }
