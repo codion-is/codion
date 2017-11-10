@@ -219,9 +219,8 @@ public class EntityView extends BorderPane implements ViewTreeNode {
   /**
    * Saves any user preferences for all entity panels and associated elements
    */
-  public final void savePreferences() {
+  public void savePreferences() {
     detailViews.forEach(EntityView::savePreferences);
-    getModel().savePreferences();
   }
 
   private void checkIfInitalized() {

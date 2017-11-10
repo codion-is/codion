@@ -182,6 +182,12 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
     return containsUnsavedData(entityModels);
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public void savePreferences() {
+    getEntityModels().forEach(EntityModel::savePreferences);
+  }
+
   /**
    * Called after a logout has been performed.
    * Override to add a logout handler.

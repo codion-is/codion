@@ -101,6 +101,7 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -1370,13 +1371,13 @@ public final class UiUtil {
   }
 
   /**
-   * @param support a drag'n drop transfer support instance
+   * @param transferSupport a drag'n drop transfer support instance
    * @return true if the given transfer support instance represents a file or a list of files
    */
-  public static boolean isFileDataFlavor(final TransferHandler.TransferSupport support) {
+  public static boolean isFileDataFlavor(final TransferHandler.TransferSupport transferSupport) {
     try {
       final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-      for (final DataFlavor flavor : support.getDataFlavors()) {
+      for (final DataFlavor flavor : transferSupport.getDataFlavors()) {
         if (flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor)) {
           return true;
         }
@@ -1390,23 +1391,24 @@ public final class UiUtil {
   }
 
   /**
-   * Returns the File described by the given transfer support object, in case of many files the first one is used.
-   * Null is returned if no files are found.
+   * Returns the files described by the given transfer support object.
+   * An empty list is returned if no files are found.
    * @param support the drag'n drop transfer support
-   * @return the absolute path of the first file described the given transfer support object
+   * @return the files described by the given transfer support object
    * @throws RuntimeException in case of an exception
    */
   @SuppressWarnings({"unchecked"})
-  public static File getFileDataFlavor(final TransferHandler.TransferSupport support) {
+  public static List<File> getTransferFiles(final TransferHandler.TransferSupport support) {
     try {
       for (final DataFlavor flavor : support.getDataFlavors()) {
         if (flavor.isFlavorJavaFileListType()) {
           final List<File> files = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
 
-          return files.isEmpty() ? null : files.get(0);
+          return files.isEmpty() ? Collections.emptyList() : files;
         }
       }
       //the code below is for handling unix/linux
+      final List<File> files = new ArrayList<>();
       final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
       final String data = (String) support.getTransferable().getTransferData(nixFileDataFlavor);
       for (final StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens();) {
@@ -1415,14 +1417,14 @@ public final class UiUtil {
           continue;
         }
 
-        return new File(new URI(token));
+        files.add(new File(new URI(token)));
       }
+
+      return files;
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
     }
-
-    return null;
   }
 
   /**
@@ -1855,18 +1857,18 @@ public final class UiUtil {
     }
 
     @Override
-    public boolean canImport(final TransferSupport support) {
-      return isFileDataFlavor(support);
+    public boolean canImport(final TransferSupport transferSupport) {
+      return isFileDataFlavor(transferSupport);
     }
 
     @Override
-    public boolean importData(final TransferSupport support) {
-      final File file = getFileDataFlavor(support);
-      if (file == null) {
+    public boolean importData(final TransferSupport transferSupport) {
+      final List<File> files = getTransferFiles(transferSupport);
+      if (files.isEmpty()) {
         return false;
       }
 
-      textComponent.setText(file.getAbsolutePath());
+      textComponent.setText(files.get(0).getAbsolutePath());
       textComponent.requestFocusInWindow();
       return true;
     }

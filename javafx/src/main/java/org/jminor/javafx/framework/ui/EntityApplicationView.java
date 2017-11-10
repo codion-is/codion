@@ -218,9 +218,11 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
   /**
    * Called on application exit, override to save user preferences on program exit,
    * remember to call super.savePreferences() when overriding
+   * @see EntityApplicationModel#savePreferences()
    */
   protected void savePreferences() {
     entityViews.forEach(EntityView::savePreferences);
+    getModel().savePreferences();
   }
 
   /**

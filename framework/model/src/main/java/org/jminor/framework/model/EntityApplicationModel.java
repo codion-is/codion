@@ -137,6 +137,11 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
   boolean containsUnsavedData();
 
   /**
+   * Saves user preferences relating to this application model, remember to call super.savePreferences() when overriding
+   */
+  void savePreferences();
+
+  /**
    * @return an unmodifiable List containing the EntityModel instances contained
    * in this EntityApplicationModel
    */

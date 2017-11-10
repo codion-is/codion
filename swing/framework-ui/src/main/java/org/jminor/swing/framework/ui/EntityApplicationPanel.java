@@ -1161,11 +1161,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Called during the exit() method, override to save user preferences on program exit,
    * remember to call super.savePreferences() when overriding
+   * @see EntityApplicationModel#savePreferences()
    */
   protected void savePreferences() {
-    for (final EntityPanel entityPanel : entityPanels) {
-      entityPanel.savePreferences();
-    }
+    getEntityPanels().forEach(EntityPanel::savePreferences);
+    getModel().savePreferences();
   }
 
   private void clearEntityPanelProviders() {

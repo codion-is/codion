@@ -4684,3 +4684,6 @@
   SwingFilteredComboBoxModel.setSelectedItem() bug fixed, allowSelectionChange() was called prematurely
   ResultPacker.pack() default implementation added
   ClientUserMonitor, clientVersion and frameworkVersion columns added to user history table
+  UiUtil.getFileDataFlavor() renamed to getTransferFiles(), now handles multiple files
+  EntityApplicationModel.savePreferences() added, called from EntityApplicationPanel and EntityApplicationView
+  EntityPanel, EntityView, savePreferences() is no longer final and does not call model.savePreferences()

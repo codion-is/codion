@@ -1039,11 +1039,8 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   /**
    * Saves any user preferences for all entity panels and associated elements
    */
-  public final void savePreferences() {
-    for (final EntityPanel detailPanel : detailEntityPanels) {
-      detailPanel.savePreferences();
-    }
-    getModel().savePreferences();
+  public void savePreferences() {
+    detailEntityPanels.forEach(EntityPanel::savePreferences);
   }
 
   //#############################################################################################
