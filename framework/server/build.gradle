@@ -33,30 +33,31 @@ dependencies {
     serverRuntime "com.h2database:h2:${h2Version}"
 }
 
-task runServer(type: JavaExec) {
-    classpath = configurations.serverRuntime
-
-    main = 'org.jminor.framework.server.DefaultEntityConnectionServer'
-
-//    jvmArgs '--add-modules', 'java.xml.bind'
-
-    systemProperties = [
-            'jminor.db.type': 'h2',
-            'jminor.db.host': 'h2db',
-            'jminor.db.embedded': 'true',
-            'jminor.db.embeddedInMemory': 'true',
-            'jminor.db.initScript': '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',
-            'jminor.server.pooling.initial': 'scott:tiger',
-            'jminor.server.port': '2222',
-            'jminor.server.admin.port': '2223',
-            'jminor.server.admin.user': 'scott:tiger',
-            'jminor.server.pooling.poolProviderClass': 'org.jminor.framework.plugins.hikari.pool.HikariConnectionPoolProvider',
-            'jminor.server.auxiliaryServerClassNames': 'org.jminor.framework.servlet.EntityServletServer',
-            'jminor.server.domain.classes': 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.Chinook,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
-            'javax.net.ssl.keyStore': '../../resources/security/JMinorServerKeystore',
-            'java.security.policy': '../../resources/security/all_permissions.policy',
-            'javax.net.ssl.keyStorePassword': 'crappypass',
-            'java.rmi.server.hostname': 'localhost',
-            'logback.configurationFile': '../../resources/server/config/logback.xml'
-    ]
+task runServer() {
+    doLast {
+        ant.java(
+                classname: 'org.jminor.framework.server.DefaultEntityConnectionServer',
+                classpath: configurations.serverRuntime.asPath,
+                fork: true
+        ) {
+            sysproperty(key: 'jminor.server.port', value: '2222')
+            sysproperty(key:'jminor.db.type', value: 'h2')
+            sysproperty(key:'jminor.db.host', value: 'h2db')
+            sysproperty(key:'jminor.db.embedded', value: 'true')
+            sysproperty(key:'jminor.db.embeddedInMemory', value: 'true')
+            sysproperty(key:'jminor.db.initScript', value: '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql')
+            sysproperty(key:'jminor.server.pooling.initial', value: 'scott:tiger')
+            sysproperty(key:'jminor.server.port', value: '2222')
+            sysproperty(key:'jminor.server.admin.port', value: '2223')
+            sysproperty(key:'jminor.server.admin.user', value: 'scott:tiger')
+            sysproperty(key:'jminor.server.pooling.poolProviderClass', value: 'org.jminor.framework.plugins.hikari.pool.HikariConnectionPoolProvider')
+            sysproperty(key:'jminor.server.auxiliaryServerClassNames', value: 'org.jminor.framework.servlet.EntityServletServer')
+            sysproperty(key:'jminor.server.domain.classes', value: 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.Chinook,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World')
+            sysproperty(key:'javax.net.ssl.keyStore', value: '../../resources/security/JMinorServerKeystore')
+            sysproperty(key:'java.security.policy', value: '../../resources/security/all_permissions.policy')
+            sysproperty(key:'javax.net.ssl.keyStorePassword', value: 'crappypass')
+            sysproperty(key:'java.rmi.server.hostname', value: 'localhost')
+            sysproperty(key:'logback.configurationFile', value: '../../resources/server/config/logback.xml')
+        }
+    }
 }

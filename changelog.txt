@@ -4687,3 +4687,4 @@
   UiUtil.getFileDataFlavor() renamed to getTransferFiles(), now handles multiple files
   EntityApplicationModel.savePreferences() added, called from EntityApplicationPanel and EntityApplicationView
   EntityPanel, EntityView, savePreferences() is no longer final and does not call model.savePreferences()
+  Demo gradle run tasks now ant based, running multiple applications from different modules via gradle JavaExec did not work due to NoClassDefFoundError

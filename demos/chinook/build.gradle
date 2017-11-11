@@ -47,22 +47,84 @@ compileTestJava {
     }
 }
 
-runClientLocal {
-    main = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
+task runClientLocal() {
+    doLast {
+        ant.java(
+                classname: "org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel",
+                classpath: sourceSets.main.runtimeClasspath.asPath,
+                fork: true
+        ) {
+            sysproperty(key: 'jminor.client.connectionType', value: 'local')
+            sysproperty(key: 'jminor.db.type', value: 'h2')
+            sysproperty(key: 'jminor.db.host', value: 'h2db')
+            sysproperty(key: 'jminor.db.embedded', value: 'true')
+            sysproperty(key: 'jminor.db.embeddedInMemory', value: 'true')
+            sysproperty(key: 'jminor.db.initScript', value: 'src/main/sql/create_schema.sql')
+            sysproperty(key: 'jminor.report.path', value: 'build/classes/reports')
+            sysproperty(key: 'logback.configurationFile', value: 'src/main/resources/logback.xml')
+
+        }
+    }
 }
 
-runClientRemote {
-    main = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
+task runClientRemote {
+    doLast {
+        ant.java(
+                classname: "org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel",
+                classpath: sourceSets.main.runtimeClasspath.asPath,
+                fork: true
+        ) {
+            sysproperty(key: 'jminor.client.connectionType', value: 'remote')
+            sysproperty(key: 'jminor.server.hostname', value: 'localhost')
+            sysproperty(key: 'javax.net.ssl.trustStore', value: '../../resources/security/JMinorClientTruststore')
+            sysproperty(key: 'java.security.policy', value: '../../resources/security/jminor_client.policy')
+            sysproperty(key: 'logback.configurationFile', value: 'src/main/resources/logback.xml')
+        }
+    }
 }
 
-runClientHttp {
-    main = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
+task runClientHttp {
+    doLast {
+        ant.java(
+                classname: "org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel",
+                classpath: sourceSets.main.runtimeClasspath.asPath,
+                fork: true
+        ) {
+            sysproperty(key: 'jminor.client.connectionType', value: 'http')
+            sysproperty(key: 'jminor.server.hostname', value: 'localhost')
+            sysproperty(key: 'jminor.report.path', value: 'build/classes/reports')
+            sysproperty(key: 'logback.configurationFile', value: 'src/main/resources/logback.xml')
+        }
+    }
 }
 
-runLoadTestRemote {
-    main = 'org.jminor.framework.demos.chinook.testing.ChinookLoadTest'
+task runLoadTestRemote {
+    doLast {
+        ant.java(
+                classname: "org.jminor.framework.demos.chinook.testing.ChinookLoadTest",
+                classpath: sourceSets.main.runtimeClasspath.asPath,
+                fork: true
+        ) {
+            sysproperty(key: 'jminor.client.connectionType', value: 'remote')
+            sysproperty(key: 'jminor.server.hostname', value: 'localhost')
+            sysproperty(key: 'jminor.report.path', value: 'build/classes/reports')
+            sysproperty(key: 'javax.net.ssl.trustStore', value: '../../resources/security/JMinorClientTruststore')
+            sysproperty(key: 'java.security.policy', value: '../../resources/security/jminor_client.policy')
+            sysproperty(key: 'logback.configurationFile', value: 'src/main/resources/logback.xml')
+        }
+    }
 }
 
-runLoadTestHttp {
-    main = 'org.jminor.framework.demos.chinook.testing.ChinookLoadTest'
+task runLoadTestHttp {
+    doLast {
+        ant.java(
+                classname: "org.jminor.framework.demos.chinook.testing.ChinookLoadTest",
+                classpath: sourceSets.main.runtimeClasspath.asPath,
+                fork: true
+        ) {
+            sysproperty(key: 'jminor.client.connectionType', value: 'http')
+            sysproperty(key: 'jminor.server.hostname', value: 'localhost')
+            sysproperty(key: 'logback.configurationFile', value: 'src/main/resources/logback.xml')
+        }
+    }
 }
