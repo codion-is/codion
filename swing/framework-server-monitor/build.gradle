@@ -40,7 +40,7 @@ applicationDefaultJvmArgs = [
         "-Djminor.configurationFile=../config/server_monitor.config"
 ]
 
-task runServerMonitor() {
+task runServerMonitor {
     doLast {
         ant.java(
                 classname: 'org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel',

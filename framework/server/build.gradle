@@ -16,6 +16,7 @@ dependencies {
     serverRuntime project(':org.jminor.common.core')
     serverRuntime project(':org.jminor.common.db')
     serverRuntime project(':org.jminor.common.server')
+    serverRuntime project(':org.jminor.common.server.http')
     serverRuntime project(':org.jminor.framework.db.core')
     serverRuntime project(':org.jminor.framework.db.local')
     serverRuntime project(':org.jminor.framework.db.remote')
@@ -33,7 +34,7 @@ dependencies {
     serverRuntime "com.h2database:h2:${h2Version}"
 }
 
-task runServer() {
+task runServer {
     doLast {
         ant.java(
                 classname: 'org.jminor.framework.server.DefaultEntityConnectionServer',
@@ -41,23 +42,23 @@ task runServer() {
                 fork: true
         ) {
             sysproperty(key: 'jminor.server.port', value: '2222')
-            sysproperty(key:'jminor.db.type', value: 'h2')
-            sysproperty(key:'jminor.db.host', value: 'h2db')
-            sysproperty(key:'jminor.db.embedded', value: 'true')
-            sysproperty(key:'jminor.db.embeddedInMemory', value: 'true')
-            sysproperty(key:'jminor.db.initScript', value: '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql')
-            sysproperty(key:'jminor.server.pooling.initial', value: 'scott:tiger')
-            sysproperty(key:'jminor.server.port', value: '2222')
-            sysproperty(key:'jminor.server.admin.port', value: '2223')
-            sysproperty(key:'jminor.server.admin.user', value: 'scott:tiger')
-            sysproperty(key:'jminor.server.pooling.poolProviderClass', value: 'org.jminor.framework.plugins.hikari.pool.HikariConnectionPoolProvider')
-            sysproperty(key:'jminor.server.auxiliaryServerClassNames', value: 'org.jminor.framework.servlet.EntityServletServer')
-            sysproperty(key:'jminor.server.domain.classes', value: 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.Chinook,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World')
-            sysproperty(key:'javax.net.ssl.keyStore', value: '../../resources/security/JMinorServerKeystore')
-            sysproperty(key:'java.security.policy', value: '../../resources/security/all_permissions.policy')
-            sysproperty(key:'javax.net.ssl.keyStorePassword', value: 'crappypass')
-            sysproperty(key:'java.rmi.server.hostname', value: 'localhost')
-            sysproperty(key:'logback.configurationFile', value: '../../resources/server/config/logback.xml')
+            sysproperty(key: 'jminor.db.type', value: 'h2')
+            sysproperty(key: 'jminor.db.host', value: 'h2db')
+            sysproperty(key: 'jminor.db.embedded', value: 'true')
+            sysproperty(key: 'jminor.db.embeddedInMemory', value: 'true')
+            sysproperty(key: 'jminor.db.initScript', value: '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql')
+            sysproperty(key: 'jminor.server.pooling.initial', value: 'scott:tiger')
+            sysproperty(key: 'jminor.server.port', value: '2222')
+            sysproperty(key: 'jminor.server.admin.port', value: '2223')
+            sysproperty(key: 'jminor.server.admin.user', value: 'scott:tiger')
+            sysproperty(key: 'jminor.server.pooling.poolProviderClass', value: 'org.jminor.framework.plugins.hikari.pool.HikariConnectionPoolProvider')
+            sysproperty(key: 'jminor.server.auxiliaryServerClassNames', value: 'org.jminor.framework.servlet.EntityServletServer')
+            sysproperty(key: 'jminor.server.domain.classes', value: 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.Chinook,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World')
+            sysproperty(key: 'javax.net.ssl.keyStore', value: '../../resources/security/JMinorServerKeystore')
+            sysproperty(key: 'java.security.policy', value: '../../resources/security/all_permissions.policy')
+            sysproperty(key: 'javax.net.ssl.keyStorePassword', value: 'crappypass')
+            sysproperty(key: 'java.rmi.server.hostname', value: 'localhost')
+            sysproperty(key: 'logback.configurationFile', value: '../../resources/server/config/logback.xml')
         }
     }
 }
