@@ -52,8 +52,7 @@ task runClientLocal() {
         ant.java(
                 classname: "org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel",
                 classpath: sourceSets.main.runtimeClasspath.asPath,
-                fork: true
-        ) {
+                fork: true) {
             sysproperty(key: 'jminor.client.connectionType', value: 'local')
             sysproperty(key: 'jminor.db.type', value: 'h2')
             sysproperty(key: 'jminor.db.host', value: 'h2db')
@@ -62,7 +61,6 @@ task runClientLocal() {
             sysproperty(key: 'jminor.db.initScript', value: 'src/main/sql/create_schema.sql')
             sysproperty(key: 'jminor.report.path', value: 'build/classes/reports')
             sysproperty(key: 'logback.configurationFile', value: 'src/main/resources/logback.xml')
-
         }
     }
 }
@@ -72,10 +70,10 @@ task runClientRemote {
         ant.java(
                 classname: "org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel",
                 classpath: sourceSets.main.runtimeClasspath.asPath,
-                fork: true
-        ) {
+                fork: true) {
             sysproperty(key: 'jminor.client.connectionType', value: 'remote')
             sysproperty(key: 'jminor.server.hostname', value: 'localhost')
+            sysproperty(key: 'jminor.report.path', value: '../../demos/chinook/build/classes/reports')
             sysproperty(key: 'javax.net.ssl.trustStore', value: '../../resources/security/JMinorClientTruststore')
             sysproperty(key: 'java.security.policy', value: '../../resources/security/jminor_client.policy')
             sysproperty(key: 'logback.configurationFile', value: 'src/main/resources/logback.xml')
@@ -88,11 +86,10 @@ task runClientHttp {
         ant.java(
                 classname: "org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel",
                 classpath: sourceSets.main.runtimeClasspath.asPath,
-                fork: true
-        ) {
+                fork: true) {
             sysproperty(key: 'jminor.client.connectionType', value: 'http')
             sysproperty(key: 'jminor.server.hostname', value: 'localhost')
-            sysproperty(key: 'jminor.report.path', value: 'build/classes/reports')
+            sysproperty(key: 'jminor.report.path', value: '../../demos/chinook/build/classes/reports')
             sysproperty(key: 'logback.configurationFile', value: 'src/main/resources/logback.xml')
         }
     }
@@ -103,11 +100,10 @@ task runLoadTestRemote {
         ant.java(
                 classname: "org.jminor.framework.demos.chinook.testing.ChinookLoadTest",
                 classpath: sourceSets.main.runtimeClasspath.asPath,
-                fork: true
-        ) {
+                fork: true) {
             sysproperty(key: 'jminor.client.connectionType', value: 'remote')
             sysproperty(key: 'jminor.server.hostname', value: 'localhost')
-            sysproperty(key: 'jminor.report.path', value: 'build/classes/reports')
+            sysproperty(key: 'jminor.report.path', value: '../../demos/chinook/build/classes/reports')
             sysproperty(key: 'javax.net.ssl.trustStore', value: '../../resources/security/JMinorClientTruststore')
             sysproperty(key: 'java.security.policy', value: '../../resources/security/jminor_client.policy')
             sysproperty(key: 'logback.configurationFile', value: 'src/main/resources/logback.xml')
@@ -120,10 +116,10 @@ task runLoadTestHttp {
         ant.java(
                 classname: "org.jminor.framework.demos.chinook.testing.ChinookLoadTest",
                 classpath: sourceSets.main.runtimeClasspath.asPath,
-                fork: true
-        ) {
+                fork: true) {
             sysproperty(key: 'jminor.client.connectionType', value: 'http')
             sysproperty(key: 'jminor.server.hostname', value: 'localhost')
+            sysproperty(key: 'jminor.report.path', value: '../../demos/chinook/build/classes/reports')
             sysproperty(key: 'logback.configurationFile', value: 'src/main/resources/logback.xml')
         }
     }

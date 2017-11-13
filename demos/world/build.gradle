@@ -17,17 +17,14 @@ task runClientLocal() {
         ant.java(
                 classname: "org.jminor.framework.demos.world.client.ui.WorldAppPanel",
                 classpath: sourceSets.main.runtimeClasspath.asPath,
-                fork: true
-        ) {
+                fork: true) {
             sysproperty(key: 'jminor.client.connectionType', value: 'local')
             sysproperty(key: 'jminor.db.type', value: 'h2')
             sysproperty(key: 'jminor.db.host', value: 'h2db')
             sysproperty(key: 'jminor.db.embedded', value: 'true')
             sysproperty(key: 'jminor.db.embeddedInMemory', value: 'true')
             sysproperty(key: 'jminor.db.initScript', value: 'src/main/sql/create_schema.sql')
-            sysproperty(key: 'jminor.report.path', value: 'build/classes/reports')
             sysproperty(key: 'logback.configurationFile', value: 'src/main/resources/logback.xml')
-
         }
     }
 }
@@ -37,8 +34,7 @@ task runClientRemote {
         ant.java(
                 classname: "org.jminor.framework.demos.world.client.ui.WorldAppPanel",
                 classpath: sourceSets.main.runtimeClasspath.asPath,
-                fork: true
-        ) {
+                fork: true) {
             sysproperty(key: 'jminor.client.connectionType', value: 'remote')
             sysproperty(key: 'jminor.server.hostname', value: 'localhost')
             sysproperty(key: 'javax.net.ssl.trustStore', value: '../../resources/security/JMinorClientTruststore')
@@ -53,11 +49,9 @@ task runClientHttp {
         ant.java(
                 classname: "org.jminor.framework.demos.world.client.ui.WorldAppPanel",
                 classpath: sourceSets.main.runtimeClasspath.asPath,
-                fork: true
-        ) {
+                fork: true) {
             sysproperty(key: 'jminor.client.connectionType', value: 'http')
             sysproperty(key: 'jminor.server.hostname', value: 'localhost')
-            sysproperty(key: 'jminor.report.path', value: 'build/classes/reports')
             sysproperty(key: 'logback.configurationFile', value: 'src/main/resources/logback.xml')
         }
     }

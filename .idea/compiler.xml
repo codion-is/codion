@@ -13,6 +13,16 @@
       <file url="file://$PROJECT_DIR$/framework/model/src/main/java/module-info.java" />
       <file url="file://$PROJECT_DIR$/framework/model-unittests/src/main/java/module-info.java" />
       <file url="file://$PROJECT_DIR$/framework/server/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/framework/servlet/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/swing/common-model/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/swing/common-ui/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/swing/common-tools/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/swing/common-tools-ui/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/swing/framework-server-monitor/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/swing/framework-model/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/swing/framework-ui/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/swing/framework-tools/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/swing/framework-tools-ui/src/main/java/module-info.java" />
     </excludeFromCompile>
     <wildcardResourcePatterns>
       <entry name="!?*.java" />

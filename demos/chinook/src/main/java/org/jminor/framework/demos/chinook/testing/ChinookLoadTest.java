@@ -5,7 +5,6 @@ package org.jminor.framework.demos.chinook.testing;
 
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
@@ -220,9 +219,8 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
 
   @Override
   protected ChinookAppPanel.ChinookApplicationModel initializeApplication() throws CancelException {
-    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider(ENTITIES, getUser(),
-            "org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel");
-    final ChinookAppPanel.ChinookApplicationModel appModel = new ChinookAppPanel.ChinookApplicationModel(connectionProvider);
+    final ChinookAppPanel.ChinookApplicationModel applicationModel = new ChinookAppPanel.ChinookApplicationModel(
+            EntityConnectionProviders.connectionProvider(ENTITIES, getUser(), ChinookLoadTest.class.getSimpleName()));
     /* ARTIST
     *   ALBUM
     *     TRACK
@@ -234,30 +232,30 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
     *   INVOICE
     *     INVOICELINE
     */
-    final SwingEntityModel artistModel = appModel.getEntityModel(T_ARTIST);
+    final SwingEntityModel artistModel = applicationModel.getEntityModel(T_ARTIST);
     final SwingEntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
     final SwingEntityModel trackModel = albumModel.getDetailModel(T_TRACK);
     artistModel.addLinkedDetailModel(albumModel);
     albumModel.addLinkedDetailModel(trackModel);
 
-    final SwingEntityModel playlistModel = appModel.getEntityModel(T_PLAYLIST);
+    final SwingEntityModel playlistModel = applicationModel.getEntityModel(T_PLAYLIST);
     final SwingEntityModel playlistTrackModel = playlistModel.getDetailModel(T_PLAYLISTTRACK);
     playlistModel.addLinkedDetailModel(playlistTrackModel);
 
-    final SwingEntityModel customerModel = appModel.getEntityModel(T_CUSTOMER);
+    final SwingEntityModel customerModel = applicationModel.getEntityModel(T_CUSTOMER);
     final SwingEntityModel invoiceModel = customerModel.getDetailModel(T_INVOICE);
     final SwingEntityModel invoicelineModel = invoiceModel.getDetailModel(T_INVOICELINE);
     customerModel.addLinkedDetailModel(invoiceModel);
     invoiceModel.addLinkedDetailModel(invoicelineModel);
 
-    final SwingEntityModel genreModel = new SwingEntityModel(T_GENRE, connectionProvider);
-    final SwingEntityModel genreTrackModel = new SwingEntityModel(T_TRACK, connectionProvider);
+    final SwingEntityModel genreModel = new SwingEntityModel(T_GENRE, applicationModel.getConnectionProvider());
+    final SwingEntityModel genreTrackModel = new SwingEntityModel(T_TRACK, applicationModel.getConnectionProvider());
     genreModel.addDetailModel(genreTrackModel);
     genreModel.addLinkedDetailModel(genreTrackModel);
 
-    appModel.addEntityModel(genreModel);
+    applicationModel.addEntityModel(genreModel);
 
-    return appModel;
+    return applicationModel;
   }
 
   public static void main(final String[] args) throws Exception {
