@@ -4689,3 +4689,4 @@
   EntityPanel, EntityView, savePreferences() is no longer final and does not call model.savePreferences()
   Demo gradle run tasks now ant based, running multiple applications from different modules via gradle JavaExec did not work due to NoClassDefFoundError
   ServerMonitor, GC event types no longer hardcoded
+  Gradle run tasks reverted back to gradle JavaExec, problem was jar manifest timestamp entry which resulted in jar task never being up-to-date, which killed the classpath of a running application

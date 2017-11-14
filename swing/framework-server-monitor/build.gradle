@@ -40,18 +40,16 @@ applicationDefaultJvmArgs = [
         "-Djminor.configurationFile=../config/server_monitor.config"
 ]
 
-task runServerMonitor {
-    doLast {
-        ant.java(
-                classname: 'org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel',
-                classpath: sourceSets.main.runtimeClasspath.asPath,
-                fork: true
-        ) {
-            sysproperty(key: 'jminor.server.hostname', value: 'localhost')
-            sysproperty(key: 'jminor.server.admin.user', value: 'scott:tiger')
-            sysproperty(key: 'javax.net.ssl.trustStore', value: '../../resources/security/JMinorServerMonitorTruststore')
-            sysproperty(key: 'java.security.policy', value: '../../resources/security/jminor_server_monitor.policy')
-            sysproperty(key: 'logback.configurationFile', value: 'resources/config/logback.xml')
-        }
-    }
+task runServerMonitor(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel'
+
+    systemProperties = [
+            'jminor.server.hostname': 'localhost',
+            'jminor.server.admin.user': 'scott:tiger',
+            'javax.net.ssl.trustStore': '../../resources/security/JMinorServerMonitorTruststore',
+            'java.security.policy': '../../resources/security/jminor_server_monitor.policy',
+            'logback.configurationFile': 'resources/config/logback.xml'
+    ]
 }

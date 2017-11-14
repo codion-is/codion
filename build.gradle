@@ -125,9 +125,8 @@ subprojects {
                         "Implementation-Vendor-Id": "org.jminor",
                         "Implementation-URL": "http://jminor.org",
                         "Automatic-Module-Name": project.name,
-                        "Build-Jdk": org.gradle.internal.jvm.Jvm.current(),
-                        "Built-By": System.getProperty("user.name"),
-                        "Build-Time": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"))
+                        "Build-Jdk": org.gradle.internal.jvm.Jvm.current()/*,
+                        "Built-By": System.getProperty("user.name")*/)
             }
         }
 
