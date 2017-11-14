@@ -42,6 +42,7 @@ public final class ServerMonitor {
   private static final Logger LOG = LoggerFactory.getLogger(ServerMonitor.class);
   private static final Format MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
   private static final double THOUSAND = 1000;
+  private static final String GC_EVENT_PREFIX = "GC ";
 
   private final Event serverShutDownEvent = Events.event();
   private final Event<String> statisticsUpdatedEvent = Events.event();
@@ -79,8 +80,7 @@ public final class ServerMonitor {
   private final XYSeries connectionLimitSeries = new XYSeries("Maximum connection count");
   private final XYSeriesCollection connectionCountCollection = new XYSeriesCollection();
 
-  private final XYSeries gcScavengeSeries = new XYSeries("GC - Scavenge");
-  private final XYSeries gcMarkSweepSeries = new XYSeries("GC - Mark & Sweep");
+  private final Map<String, XYSeries> gcTypeSeries = new HashMap<>();
   private final XYSeriesCollection gcEventsCollection = new XYSeriesCollection();
 
   private final XYSeries threadCountSeries = new XYSeries("Threads");
@@ -117,8 +117,6 @@ public final class ServerMonitor {
     memoryUsageCollection.addSeries(usedMemorySeries);
     connectionCountCollection.addSeries(connectionCountSeries);
     connectionCountCollection.addSeries(connectionLimitSeries);
-    gcEventsCollection.addSeries(gcScavengeSeries);
-    gcEventsCollection.addSeries(gcMarkSweepSeries);
     threadCountCollection.addSeries(threadCountSeries);
     threadCountCollection.addSeries(daemonThreadCountSeries);
     systemLoadCollection.addSeries(systemLoadSeries);
@@ -302,8 +300,7 @@ public final class ServerMonitor {
     daemonThreadCountSeries.clear();
     systemLoadSeries.clear();
     processLoadSeries.clear();
-    gcMarkSweepSeries.clear();
-    gcScavengeSeries.clear();
+    gcTypeSeries.values().forEach(XYSeries::clear);
     threadStateSeries.values().forEach(XYSeries::clear);
   }
 
@@ -448,18 +445,13 @@ public final class ServerMonitor {
 
   private void addGCInfo(final List<EntityConnectionServerAdmin.GcEvent> gcEvents) {
     for (final EntityConnectionServerAdmin.GcEvent event : gcEvents) {
-      switch (event.getGcName()) {
-        case "PS Scavenge":
-        case "Copy":
-          gcScavengeSeries.add(event.getTimeStamp(), event.getDuration());
-          break;
-        case "PS MarkSweep":
-        case "MarkSweepCompact":
-          gcMarkSweepSeries.add(event.getTimeStamp(), event.getDuration());
-          break;
-        default:
-          LOG.info("Unknown GC name: " + event.getGcName());
+      XYSeries typeSeries = gcTypeSeries.get(GC_EVENT_PREFIX + event.getGcName());
+      if (typeSeries == null) {
+        typeSeries = new XYSeries(GC_EVENT_PREFIX + event.getGcName());
+        gcTypeSeries.put(GC_EVENT_PREFIX + event.getGcName(), typeSeries);
+        gcEventsCollection.addSeries(typeSeries);
       }
+      typeSeries.add(event.getTimeStamp(), event.getDuration());
     }
   }
 
