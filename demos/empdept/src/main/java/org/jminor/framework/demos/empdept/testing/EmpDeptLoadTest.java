@@ -11,7 +11,6 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.testing.EntityTestUnit;
-import org.jminor.framework.model.DefaultEntityApplicationModel;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.framework.model.EntityModel;
 import org.jminor.swing.common.tools.ui.LoadTestPanel;
@@ -40,7 +39,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
-    final EntityApplicationModel applicationModel = new DefaultEntityApplicationModel(
+    final EntityApplicationModel applicationModel = new EmpDeptAppPanel.EmpDeptApplicationModel(
             EntityConnectionProviders.connectionProvider(ENTITIES, getUser(), EmpDeptLoadTest.class.getSimpleName()));
     final EntityModel deptModel = new SwingEntityModel(EmpDept.T_DEPARTMENT, applicationModel.getConnectionProvider());
     deptModel.addDetailModel(new SwingEntityModel(EmpDept.T_EMPLOYEE, applicationModel.getConnectionProvider()));
