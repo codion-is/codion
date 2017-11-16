@@ -314,7 +314,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   /**
    * @return the propertyIds that have been associated with components.
    */
-  public final Collection<String> getComponentPropertyIds() {
+  public final List<String> getComponentPropertyIds() {
     return new ArrayList<>(components.keySet());
   }
 
@@ -369,22 +369,20 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   /**
    * @return a list of propertyIds to use when selecting a input component in this panel,
    * this returns all propertyIds that have mapped components in this panel
-   * that are enabled, visible and focusable.
+   * that are enabled, displayable, visible and focusable.
    * @see #includeComponentSelectionPropertyId(String) (String)
    * @see #setComponent(String, javax.swing.JComponent)
    */
   public final List<String> getSelectComponentPropertyIds() {
-    final Collection<String> propertyIds = getComponentPropertyIds();
-    final List<String> selectableComponentPropertyIds = new ArrayList<>(propertyIds.size());
-    propertyIds.forEach(propertyId -> {
+    final List<String> propertyIds = getComponentPropertyIds();
+    propertyIds.removeIf(propertyId -> {
       final JComponent component = getComponent(propertyId);
-      if (component != null && includeComponentSelectionPropertyId(propertyId) && component.isVisible() &&
-              component.isFocusable() && component.isEnabled()) {
-        selectableComponentPropertyIds.add(propertyId);
-      }
+
+      return component == null || !includeComponentSelectionPropertyId(propertyId) || !component.isDisplayable() ||
+              !component.isVisible() || !component.isFocusable() || !component.isEnabled();
     });
 
-    return selectableComponentPropertyIds;
+    return propertyIds;
   }
 
   /**

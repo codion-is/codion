@@ -4690,3 +4690,5 @@
   Demo gradle run tasks now ant based, running multiple applications from different modules via gradle JavaExec did not work due to NoClassDefFoundError
   ServerMonitor, GC event types no longer hardcoded
   Gradle run tasks reverted back to gradle JavaExec, problem was jar manifest timestamp entry which resulted in jar task never being up-to-date, which killed the classpath of a running application
+  EntityEditPanel.getSelectComponentPropertyIds() bug fixed, did not take isDisplayable() into account, refactored
+  EntityEditView.selectInputControl() refactored
