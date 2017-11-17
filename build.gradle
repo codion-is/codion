@@ -194,5 +194,14 @@ subprojects {
         sonarqube {
             skipProject = true
         }
+
+        task domainJar(type: Jar, dependsOn: classes) {
+            baseName = project.name + '-domain'
+            from sourceSets.main.output
+        }
+
+        artifacts {
+            archives domainJar
+        }
     }
 }

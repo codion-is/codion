@@ -24,7 +24,7 @@ dependencies {
     runtime project(':org.jminor.plugin.logback.proxy')
 }
 
-mainClassName = "org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel"
+mainClassName = 'org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel'
 
 applicationDistribution.from(files(
         '../../resources/security/JMinorServerMonitorTruststore',

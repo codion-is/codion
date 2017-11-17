@@ -1,3 +1,5 @@
+apply plugin: 'application'
+
 configurations {
     serverRuntime
 }
@@ -25,14 +27,35 @@ dependencies {
     serverRuntime project(':org.jminor.plugin.jasperreports')
     serverRuntime project(':org.jminor.plugin.hikari.pool')
     serverRuntime project(':org.jminor.plugin.logback.proxy')
-    serverRuntime project(':org.jminor.framework.demos.empdept')
-    serverRuntime project(':org.jminor.framework.demos.chinook')
-    serverRuntime project(':org.jminor.framework.demos.petstore')
-    serverRuntime project(':org.jminor.framework.demos.schemabrowser')
-    serverRuntime project(':org.jminor.framework.demos.world')
+
+    serverRuntime files("../../demos/empdept/build/libs/org.jminor.framework.demos.empdept-domain-${version}.jar")
+    serverRuntime files("../../demos/chinook/build/libs/org.jminor.framework.demos.chinook-domain-${version}.jar")
+    serverRuntime files("../../demos/petstore/build/libs/org.jminor.framework.demos.petstore-domain-${version}.jar")
+    serverRuntime files("../../demos/schemabrowser/build/libs/org.jminor.framework.demos.schemabrowser-domain-${version}.jar")
+    serverRuntime files("../../demos/world/build/libs/org.jminor.framework.demos.world-domain-${version}.jar")
 
     serverRuntime "com.h2database:h2:${h2Version}"
 }
+
+mainClassName = 'org.jminor.framework.server.DefaultEntityConnectionServer'
+
+applicationDistribution.from(files(
+        '../../resources/security/JMinorServerKeystore',
+        '../../resources/security/JMinorServerMonitorTruststore',
+        '../../resources/security/jminor_server.policy',
+        '../../resources/security/all_permissions.policy',
+        '../../resources/security/notsoserial-whitelist.txt')) {
+    into("config")
+}
+
+applicationDistribution.from(fileTree(dir: '../../resources/server/config', include: '**/*')) {
+    into("config")
+}
+
+applicationDefaultJvmArgs = [
+        "-Djava.security.policy=../config/all_permissions.policy",
+        "-Djminor.configurationFile=../config/h2_embedded.config"
+]
 
 task runServer(type: JavaExec) {
     classpath = configurations.serverRuntime

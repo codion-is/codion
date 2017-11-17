@@ -12,6 +12,10 @@ test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
 }
 
+domainJar {
+    include 'org/jminor/framework/demos/world/domain/**/*'
+}
+
 task runClientLocal(type: JavaExec) {
     main = 'org.jminor.framework.demos.world.client.ui.WorldAppPanel'
 
