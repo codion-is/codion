@@ -97,7 +97,7 @@ public class EntityServerMonitorTest {
     Server.SERVER_ADMIN_PORT.set(2223);
     Server.SERVER_ADMIN_USER.set("scott:tiger");
     Server.SERVER_HOST_NAME.set("localhost");
-    DefaultEntityConnectionServer.SERVER_CONNECTION_POOLING_INITIAL.set(UNIT_TEST_USER.getUsername() + ":" + UNIT_TEST_USER.getPassword());
+    DefaultEntityConnectionServer.SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.set(UNIT_TEST_USER.getUsername() + ":" + UNIT_TEST_USER.getPassword());
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
     Server.SERVER_CONNECTION_SSL_ENABLED.set(false);
     Server.RMI_SERVER_HOSTNAME.set("localhost");

@@ -4694,3 +4694,4 @@
   EntityEditView.selectInputControl() refactored
   LocalEntityConnection.update() now rollbacks and throws exception in case the number of selected rows does not match the number of rows to update
   ResultIterator now extends AutoCloseable
+  jminor.server.pooling.initial server configuration key changed to jminor.server.pooling.startupPoolUsers

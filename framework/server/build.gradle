@@ -47,7 +47,7 @@ task runServer(type: JavaExec) {
             'jminor.db.embedded': 'true',
             'jminor.db.embeddedInMemory': 'true',
             'jminor.db.initScript': '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',
-            'jminor.server.pooling.initial': 'scott:tiger',
+            'jminor.server.pooling.startupPoolUsers': 'scott:tiger',
             'jminor.server.port': '2222',
             'jminor.server.admin.port': '2223',
             'jminor.server.admin.user': 'scott:tiger',

@@ -299,7 +299,7 @@
       <jvmarg value="-Djminor.db.type=h2"/>
       <jvmarg value="-Djminor.db.host=${basedir}/.h2db/h2"/>
       <jvmarg value="-Djminor.db.embedded=true"/>
-      <jvmarg value="-Djminor.server.pooling.initial=scott:tiger"/>
+      <jvmarg value="-Djminor.server.pooling.startupPoolUsers=scott:tiger"/>
       <jvmarg value="-Djminor.server.clientLoggingEnabled=true"/>
       <jvmarg value="-Djminor.server.port=2222"/>
       <jvmarg value="-Djminor.server.admin.port=2223"/>

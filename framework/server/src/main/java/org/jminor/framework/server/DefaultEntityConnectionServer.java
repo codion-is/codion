@@ -101,7 +101,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * Specifies a comma separated list of username:password combinations for which to create connection pools on startup
    * Example: scott:tiger,john:foo,paul:bar
    */
-  public static final Value<String> SERVER_CONNECTION_POOLING_INITIAL = Configuration.stringValue("jminor.server.pooling.initial", null);
+  public static final Value<String> SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS = Configuration.stringValue("jminor.server.pooling.startupPoolUsers", null);
 
   /**
    * Specifies a comma separated list of ConnectionValidator class names, which should be initialized on server startup,
@@ -163,7 +163,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @param domainModelClassNames the domain model classes to load on startup
    * @param loginProxyClassNames the login proxy classes to initialize on startup
    * @param connectionValidatorClassNames the connection validation classes to initialize on startup
-   * @param initialPoolUsers the users for which to initialize connection pools on startup
+   * @param startupPoolUsers the users for which to initialize connection pools on startup
    * @param auxiliaryServerClassNames the class names of auxiliary servers to run alongside this server
    * @param clientLoggingEnabled if true then client logging is enabled on startup
    * @param connectionTimeout the idle connection timeout
@@ -178,7 +178,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
                                        final int connectionLimit, final Collection<String> domainModelClassNames,
                                        final Collection<String> loginProxyClassNames,
                                        final Collection<String> connectionValidatorClassNames,
-                                       final Collection<User> initialPoolUsers,
+                                       final Collection<User> startupPoolUsers,
                                        final Collection<String> auxiliaryServerClassNames,
                                        final boolean clientLoggingEnabled, final int connectionTimeout,
                                        final Map<String, Integer> clientSpecificConnectionTimeouts,
@@ -198,7 +198,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       setConnectionTimeout(connectionTimeout);
       setClientSpecificConnectionTimeout(clientSpecificConnectionTimeouts);
       loadDomainModels(domainModelClassNames);
-      initializeConnectionPools(database, initialPoolUsers);
+      initializeConnectionPools(database, startupPoolUsers);
       loadLoginProxies(loginProxyClassNames);
       loadConnectionValidators(connectionValidatorClassNames);
       setConnectionLimit(connectionLimit);
@@ -689,9 +689,9 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
   }
 
-  private static void initializeConnectionPools(final Database database, final Collection<User> initialPoolUsers)
+  private static void initializeConnectionPools(final Database database, final Collection<User> startupPoolUsers)
           throws ClassNotFoundException, DatabaseException {
-    if (initialPoolUsers != null) {
+    if (startupPoolUsers != null) {
       final String connectionPoolProviderClassName = SERVER_CONNECTION_POOL_PROVIDER_CLASS.get();
       final Class<? extends ConnectionPoolProvider> providerClass;
       if (Util.nullOrEmpty(connectionPoolProviderClassName)) {
@@ -700,7 +700,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       else {
         providerClass = (Class<? extends ConnectionPoolProvider>) Class.forName(connectionPoolProviderClassName);
       }
-      ConnectionPools.initializeConnectionPools(providerClass, database, initialPoolUsers,
+      ConnectionPools.initializeConnectionPools(providerClass, database, startupPoolUsers,
               EntityConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
     }
   }
@@ -767,7 +767,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     final Collection<String> domainModelClassNames = TextUtil.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get());
     final Collection<String> loginProxyClassNames = TextUtil.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get());
     final Collection<String> connectionValidationClassNames = TextUtil.parseCommaSeparatedValues(SERVER_CONNECTION_VALIDATOR_CLASSES.get());
-    final Collection<String> initialPoolUsers = TextUtil.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_INITIAL.get());
+    final Collection<String> startupPoolUsers = TextUtil.parseCommaSeparatedValues(SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.get());
     final Collection<String> auxiliaryServerClassNames = TextUtil.parseCommaSeparatedValues(AUXILIARY_SERVER_CLASS_NAMES.get());
     final boolean clientLoggingEnabled = SERVER_CLIENT_LOGGING_ENABLED.get();
     final Integer connectionTimeout = Server.SERVER_CONNECTION_TIMEOUT.get();
@@ -784,7 +784,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     try {
       server = new DefaultEntityConnectionServer(serverName, serverPort, serverAdminPort, registryPort, database,
               sslEnabled, connectionLimit, domainModelClassNames, loginProxyClassNames, connectionValidationClassNames,
-              getPoolUsers(initialPoolUsers), auxiliaryServerClassNames, clientLoggingEnabled, connectionTimeout,
+              getPoolUsers(startupPoolUsers), auxiliaryServerClassNames, clientLoggingEnabled, connectionTimeout,
               clientTimeouts, adminUser);
 
       return server;
