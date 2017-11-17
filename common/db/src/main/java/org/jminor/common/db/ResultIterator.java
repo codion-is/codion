@@ -10,7 +10,7 @@ import java.sql.SQLException;
  * Closes the ResultSet when iteration is finished or in case of an exception.
  * @param <T> the type to fetch from the result set
  */
-public interface ResultIterator<T> {
+public interface ResultIterator<T> extends AutoCloseable {
 
   /**
    * Returns true if a row is available in the underlying result set.

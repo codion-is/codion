@@ -290,9 +290,18 @@ public final class LocalEntityConnection implements EntityConnection {
             statementValues.clear();
           }
         }
+        final List<Entity> updatedEntities = selectMany(Entities.getKeys(entities));
+        if (entities.size() != updatedEntities.size()) {
+          throw new SQLException(entities.size() + " updated rows expected, query returned " + updatedEntities.size());
+        }
+
         commitIfTransactionIsNotOpen();
 
-        return selectMany(Entities.getKeys(entities));
+        return updatedEntities;
+      }
+      catch (final DatabaseException dbe) {
+        rollbackQuietlyIfTransactionIsNotOpen();
+        throw dbe;
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
@@ -807,14 +816,10 @@ public final class LocalEntityConnection implements EntityConnection {
     try {
       selectSQL = getSelectSQL(condition, connection.getDatabase());
       final List<Entity> result = new ArrayList<>();
-      final ResultIterator<Entity> iterator = iterator(condition);
-      try {
+      try (final ResultIterator<Entity> iterator = iterator(condition)) {
         while (iterator.hasNext()) {
           result.add(iterator.next());
         }
-      }
-      finally {
-        iterator.close();
       }
       if (!condition.isForUpdate()) {
         setForeignKeys(result, condition, currentForeignKeyFetchDepth);

@@ -111,8 +111,8 @@ public class DefaultConnectionPoolTest {
       assertTrue(pool.isCollectFineGrainedStatistics());
       ConnectionPoolStatistics statistics = pool.getStatistics(startDate.getTime());
       assertEquals(new User(UNIT_TEST_USER.getUsername(), null), statistics.getUser());
-      assertNotNull(statistics.getTimestamp());
-      assertNotNull(statistics.getCreationDate());
+      statistics.getTimestamp();
+      statistics.getCreationDate();
       assertEquals(0, statistics.getDestroyed());
       assertEquals(0, statistics.getRequests());
       assertEquals(4, statistics.getAvailable());
@@ -187,9 +187,9 @@ public class DefaultConnectionPoolTest {
       assertEquals(0, statistics.getInUse());
       assertEquals(3, statistics.getSize());
 
-      assertNotNull(statistics.getRequestsPerSecond());
-      assertNotNull(statistics.getDelayedRequestsPerSecond());
-      assertNotNull(statistics.getDelayedRequests());
+      statistics.getRequestsPerSecond();
+      statistics.getDelayedRequestsPerSecond();
+      statistics.getDelayedRequests();
 
       final List<ConnectionPoolState> states = statistics.getFineGrainedStatistics();
       assertFalse(states.isEmpty());
@@ -202,7 +202,8 @@ public class DefaultConnectionPoolTest {
       statistics = pool.getStatistics(startDate.getTime());
       assertEquals(0, statistics.getRequests());
       assertEquals(0, statistics.getCreated());
-      assertNotNull(statistics.getResetTime());
+
+      statistics.getResetTime();
 
       pool.setCollectFineGrainedStatistics(false);
       statistics = pool.getStatistics(startDate.getTime());

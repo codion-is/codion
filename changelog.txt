@@ -4692,3 +4692,5 @@
   Gradle run tasks reverted back to gradle JavaExec, problem was jar manifest timestamp entry which resulted in jar task never being up-to-date, which killed the classpath of a running application
   EntityEditPanel.getSelectComponentPropertyIds() bug fixed, did not take isDisplayable() into account, refactored
   EntityEditView.selectInputControl() refactored
+  LocalEntityConnection.update() now rollbacks and throws exception in case the number of selected rows does not match the number of rows to update
+  ResultIterator now extends AutoCloseable
