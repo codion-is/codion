@@ -4696,3 +4696,4 @@
   ResultIterator now extends AutoCloseable
   jminor.server.pooling.initial server configuration key changed to jminor.server.pooling.startupPoolUsers
   domainJar gradle task added to demo projects, experimenting with server application configuration (not working yet)
+  DefaultEntityModel.savePreferences() now calls savePreferences() for all detail models

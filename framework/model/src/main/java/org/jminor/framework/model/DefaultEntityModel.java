@@ -378,6 +378,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     if (containsTableModel()) {
       getTableModel().savePreferences();
     }
+    getDetailModels().forEach(EntityModel::savePreferences);
   }
 
   /** {@inheritDoc} */
