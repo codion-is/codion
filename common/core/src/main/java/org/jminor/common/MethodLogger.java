@@ -115,7 +115,7 @@ public final class MethodLogger {
       return null;
     }
     if (callStack.isEmpty()) {
-      throw new IllegalStateException("Call stack is empty when trying to log method exit");
+      throw new IllegalStateException("Call stack is empty when trying to log method exit: " + method);
     }
     final Entry entry = callStack.pop();
     if (!entry.getMethod().equals(method)) {//todo pop until found or empty?

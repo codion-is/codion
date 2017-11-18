@@ -4699,3 +4699,4 @@
   DefaultEntityModel.savePreferences() now calls savePreferences() for all detail models
   LocalEntityConnection.update() bug fixed, refactored
   LocalEntityConnection.doSelectMany() method logging added for result packing
+  LocalEntityConnection.doSelectMany() bug fixed, try with resources did not play happily with method logging

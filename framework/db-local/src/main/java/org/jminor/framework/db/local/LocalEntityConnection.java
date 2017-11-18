@@ -817,20 +817,12 @@ public final class LocalEntityConnection implements EntityConnection {
     try {
       selectSQL = getSelectSQL(condition, connection.getDatabase());
       final List<Entity> result = new ArrayList<>();
-      SQLException packingException = null;
-      try (final ResultIterator<Entity> iterator = iterator(condition)) {
-        logAccess("packResult", null);
-        while (iterator.hasNext()) {
-          result.add(iterator.next());
-        }
-      }
-      catch (final SQLException e) {
-        packingException = e;
-        throw e;
+      final ResultIterator<Entity> iterator = iterator(condition);
+      try {
+        packResult(result, iterator);
       }
       finally {
-        final String message = result != null ? "row count: " + result.size() : "";
-        logExit("packResult", packingException, message);
+        iterator.close();
       }
       if (!condition.isForUpdate()) {
         setForeignKeys(result, condition, currentForeignKeyFetchDepth);
@@ -958,6 +950,24 @@ public final class LocalEntityConnection implements EntityConnection {
     }
     finally {
       logExit("prepareStatement", null, null);
+    }
+  }
+
+  private void packResult(final List<Entity> result, final ResultIterator<Entity> iterator) throws SQLException {
+    SQLException packingException = null;
+    try {
+      logAccess("packResult", new Object[0]);
+      while (iterator.hasNext()) {
+        result.add(iterator.next());
+      }
+    }
+    catch (final SQLException e) {
+      packingException = e;
+      throw e;
+    }
+    finally {
+      final String message = result != null ? "row count: " + result.size() : "";
+      logExit("packResult", packingException, message);
     }
   }
 
