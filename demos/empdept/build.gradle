@@ -70,7 +70,7 @@ task runClientLocal(type: JavaExec) {
     ]
 }
 
-task runClientFXLocal(type: JavaExec) {
+task runClientLocalFX(type: JavaExec) {
     group 'run'
     main = 'org.jminor.framework.demos.empdept.javafx.EmpDeptFX'
     classpath = sourceSets.main.runtimeClasspath

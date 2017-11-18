@@ -108,7 +108,7 @@ subprojects {
         systemProperty "jminor.db.initScript", "src/test/sql/create_h2_db.sql"
         systemProperty "jminor.unittest.username", "scott"
         systemProperty "jminor.unittest.password", "tiger"
-    }.dependsOn create_keystore
+    }.dependsOn createKeystore
 
     if (!demoProject) {
         def artifactName = project.name.replace("org.", "").replace(".", "-")
@@ -131,21 +131,23 @@ subprojects {
             }
         }
 
-        task sourcesJar(type: Jar, dependsOn: classes) {
+        task jarSources(type: Jar, dependsOn: classes) {
+            group 'build'
             baseName = artifactName
             classifier = 'sources'
             from sourceSets.main.allSource
         }
 
-        task javadocJar(type: Jar, dependsOn: javadoc) {
+        task jarJavadoc(type: Jar, dependsOn: javadoc) {
+            group 'build'
             baseName = artifactName
             classifier = 'javadoc'
             from javadoc.destinationDir
         }
 
         artifacts {
-            archives sourcesJar
-            archives javadocJar
+            archives jarSources
+            archives jarJavadoc
         }
 
         publishing {
@@ -155,8 +157,8 @@ subprojects {
                     artifactId artifactName
 
                     from components.java
-                    artifact sourcesJar
-                    artifact javadocJar
+                    artifact jarSources
+                    artifact jarJavadoc
                 }
             }
             repositories {
@@ -199,7 +201,8 @@ subprojects {
             domain
         }
 
-        task domainJar(type: Jar, dependsOn: classes) {
+        task jarDomain(type: Jar, dependsOn: classes) {
+            group 'build'
             baseName = project.name + '-domain'
             from sourceSets.main.output
             include '**/domain/**/*'
@@ -207,7 +210,7 @@ subprojects {
         }
 
         artifacts {
-            domain domainJar
+            domain jarDomain
         }
     }
 }

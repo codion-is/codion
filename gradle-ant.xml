@@ -6,7 +6,7 @@
     <available file="resources/security/JMinorServerKeystore"/>
   </condition>
 
-  <target name="create_keystore" unless="keystore.available"
+  <target name="createKeystore" unless="keystore.available"
           description="Creates a client/server keystore for running the demos">
     <mkdir dir="resources/security"/>
     <genkey alias="JMinorServer" keyalg="RSA" storepass="${demo.server.keystorePassword}" validity="365"
