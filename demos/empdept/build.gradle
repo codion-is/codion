@@ -36,11 +36,6 @@ test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
 }
 
-domainJar {
-    include 'org/jminor/framework/demos/empdept/domain/**/*'
-    include 'org/jminor/framework/demos/empdept/server/**/*'
-}
-
 task compileJasper(dependsOn: 'compileJava') {
     def jasperSourceDir = file('src/main/reports')
     def jasperTargetDir = file('build/classes/reports')

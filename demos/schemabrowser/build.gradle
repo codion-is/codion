@@ -16,10 +16,6 @@ test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
 }
 
-domainJar {
-    include 'org/jminor/framework/demos/schemabrowser/domain/**/*'
-}
-
 task runClientLocal(type: JavaExec) {
     group 'run'
     main = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
