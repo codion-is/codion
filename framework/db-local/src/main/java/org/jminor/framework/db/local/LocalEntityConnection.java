@@ -290,7 +290,8 @@ public final class LocalEntityConnection implements EntityConnection {
             statementValues.clear();
           }
         }
-        final List<Entity> updatedEntities = selectMany(Entities.getKeys(entities));
+        final List<Entity> updatedEntities = doSelectMany(entityConditions.selectCondition(
+                Entities.getKeys(entities)), 0);
         if (entities.size() != updatedEntities.size()) {
           throw new SQLException(entities.size() + " updated rows expected, query returned " + updatedEntities.size());
         }
@@ -816,10 +817,20 @@ public final class LocalEntityConnection implements EntityConnection {
     try {
       selectSQL = getSelectSQL(condition, connection.getDatabase());
       final List<Entity> result = new ArrayList<>();
+      SQLException packingException = null;
       try (final ResultIterator<Entity> iterator = iterator(condition)) {
+        logAccess("packResult", null);
         while (iterator.hasNext()) {
           result.add(iterator.next());
         }
+      }
+      catch (final SQLException e) {
+        packingException = e;
+        throw e;
+      }
+      finally {
+        final String message = result != null ? "row count: " + result.size() : "";
+        logExit("packResult", packingException, message);
       }
       if (!condition.isForUpdate()) {
         setForeignKeys(result, condition, currentForeignKeyFetchDepth);
@@ -948,25 +959,6 @@ public final class LocalEntityConnection implements EntityConnection {
     finally {
       logExit("prepareStatement", null, null);
     }
-  }
-
-  private List<Entity> packResult(final EntitySelectCondition condition, final ResultSet resultSet) throws SQLException {
-    List<Entity> result = null;
-    SQLException packingException = null;
-    try {
-      logAccess("packResult", new Object[0]);
-      result = domain.getResultPacker(condition.getEntityId()).pack(resultSet, condition.getFetchCount());
-    }
-    catch (final SQLException e) {
-      packingException = e;
-      throw e;
-    }
-    finally {
-      final String message = result != null ? "row count: " + result.size() : "";
-      logExit("packResult", packingException, message);
-    }
-
-    return result;
   }
 
   private void commitQuietly() {

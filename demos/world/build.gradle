@@ -17,10 +17,9 @@ domainJar {
 }
 
 task runClientLocal(type: JavaExec) {
+    group 'run'
     main = 'org.jminor.framework.demos.world.client.ui.WorldAppPanel'
-
     classpath = sourceSets.main.runtimeClasspath
-
     systemProperties = [
             'jminor.client.connectionType': 'local',
             'jminor.db.type': 'h2',
@@ -33,10 +32,9 @@ task runClientLocal(type: JavaExec) {
 }
 
 task runClientRemote(type: JavaExec) {
+    group 'run'
     main = 'org.jminor.framework.demos.world.client.ui.WorldAppPanel'
-
     classpath = sourceSets.main.runtimeClasspath
-
     systemProperties = [
             'jminor.client.connectionType': 'remote',
             'jminor.server.hostname': 'localhost',
@@ -47,10 +45,9 @@ task runClientRemote(type: JavaExec) {
 }
 
 task runClientHttp(type: JavaExec) {
+    group 'run'
     main = 'org.jminor.framework.demos.world.client.ui.WorldAppPanel'
-
     classpath = sourceSets.main.runtimeClasspath
-
     systemProperties = [
             'jminor.client.connectionType': 'http',
             'jminor.server.hostname': 'localhost',

@@ -58,12 +58,10 @@ applicationDefaultJvmArgs = [
 ]
 
 task runServer(type: JavaExec) {
+    group = 'run'
     classpath = configurations.serverRuntime
-
     main = 'org.jminor.framework.server.DefaultEntityConnectionServer'
-
 //    jvmArgs '--add-modules', 'java.xml.bind'
-
     systemProperties = [
             'jminor.db.type': 'h2',
             'jminor.db.host': 'h2db',

@@ -41,10 +41,9 @@ applicationDefaultJvmArgs = [
 ]
 
 task runServerMonitor(type: JavaExec) {
+    group 'run'
     classpath = sourceSets.main.runtimeClasspath
-
     main = 'org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel'
-
     systemProperties = [
             'jminor.server.hostname': 'localhost',
             'jminor.server.admin.user': 'scott:tiger',

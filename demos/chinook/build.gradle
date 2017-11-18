@@ -53,10 +53,9 @@ compileTestJava {
 }
 
 task runClientLocal(type: JavaExec) {
+    group 'run'
     main = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
-
     classpath = sourceSets.main.runtimeClasspath
-
     systemProperties = [
             'jminor.client.connectionType': 'local',
             'jminor.db.type': 'h2',
@@ -70,10 +69,9 @@ task runClientLocal(type: JavaExec) {
 }
 
 task runClientRemote(type: JavaExec) {
+    group 'run'
     main = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
-
     classpath = sourceSets.main.runtimeClasspath
-
     systemProperties = [
             'jminor.client.connectionType': 'remote',
             'jminor.server.hostname': 'localhost',
@@ -85,10 +83,9 @@ task runClientRemote(type: JavaExec) {
 }
 
 task runClientHttp(type: JavaExec) {
+    group 'run'
     main = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
-
     classpath = sourceSets.main.runtimeClasspath
-
     systemProperties = [
             'jminor.client.connectionType': 'http',
             'jminor.server.hostname': 'localhost',
@@ -98,10 +95,9 @@ task runClientHttp(type: JavaExec) {
 }
 
 task runLoadTestRemote(type: JavaExec) {
+    group 'run'
     main = 'org.jminor.framework.demos.chinook.testing.ChinookLoadTest'
-
     classpath = sourceSets.main.runtimeClasspath
-
     systemProperties = [
             'jminor.client.connectionType': 'remote',
             'jminor.server.hostname': 'localhost',
@@ -113,10 +109,9 @@ task runLoadTestRemote(type: JavaExec) {
 }
 
 task runLoadTestHttp(type: JavaExec) {
+    group 'run'
     main = 'org.jminor.framework.demos.chinook.testing.ChinookLoadTest'
-
     classpath = sourceSets.main.runtimeClasspath
-
     systemProperties = [
             'jminor.client.connectionType': 'http',
             'jminor.server.hostname': 'localhost',

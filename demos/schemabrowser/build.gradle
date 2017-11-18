@@ -21,10 +21,9 @@ domainJar {
 }
 
 task runClientLocal(type: JavaExec) {
+    group 'run'
     main = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
-
     classpath = sourceSets.main.runtimeClasspath
-
     systemProperties = [
             'jminor.client.connectionType': 'local',
             'jminor.db.type': 'h2',
@@ -36,10 +35,9 @@ task runClientLocal(type: JavaExec) {
 }
 
 task runClientRemote(type: JavaExec) {
+    group 'run'
     main = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
-
     classpath = sourceSets.main.runtimeClasspath
-
     systemProperties = [
             'jminor.db.type': 'h2',
             'jminor.client.connectionType': 'remote',
@@ -51,10 +49,9 @@ task runClientRemote(type: JavaExec) {
 }
 
 task runClientHttp(type: JavaExec) {
+    group 'run'
     main = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
-
     classpath = sourceSets.main.runtimeClasspath
-
     systemProperties = [
             'jminor.db.type': 'h2',
             'jminor.client.connectionType': 'http',
