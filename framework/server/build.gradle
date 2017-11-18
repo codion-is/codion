@@ -35,6 +35,30 @@ dependencies {
 
 mainClassName = 'org.jminor.framework.server.DefaultEntityConnectionServer'
 
+distTar {
+    dependsOn(':org.jminor.framework.demos.empdept:jarDomain')
+    dependsOn(':org.jminor.framework.demos.chinook:jarDomain')
+    dependsOn(':org.jminor.framework.demos.petstore:jarDomain')
+    dependsOn(':org.jminor.framework.demos.schemabrowser:jarDomain')
+    dependsOn(':org.jminor.framework.demos.world:jarDomain')
+}
+
+distZip {
+    dependsOn(':org.jminor.framework.demos.empdept:jarDomain')
+    dependsOn(':org.jminor.framework.demos.chinook:jarDomain')
+    dependsOn(':org.jminor.framework.demos.petstore:jarDomain')
+    dependsOn(':org.jminor.framework.demos.schemabrowser:jarDomain')
+    dependsOn(':org.jminor.framework.demos.world:jarDomain')
+}
+
+startScripts {
+    classpath = configurations.serverRuntime
+}
+
+applicationDistribution.from(configurations.serverRuntime.files) {
+    duplicatesStrategy= DuplicatesStrategy.EXCLUDE
+    into("lib")
+}
 applicationDistribution.from(files(
         '../../resources/security/JMinorServerKeystore',
         '../../resources/security/JMinorServerMonitorTruststore',
@@ -43,9 +67,20 @@ applicationDistribution.from(files(
         '../../resources/security/notsoserial-whitelist.txt')) {
     into("config")
 }
-
 applicationDistribution.from(fileTree(dir: '../../resources/server/config', include: '**/*')) {
     into("config")
+}
+applicationDistribution.from(files('../../demos/empdept/src/main/sql/create_schema.sql')) {
+    into("config/empdept")
+}
+applicationDistribution.from(files('../../demos/chinook/src/main/sql/create_schema.sql')) {
+    into("config/chinook")
+}
+applicationDistribution.from(files('../../demos/petstore/src/main/sql/create_schema.sql')) {
+    into("config/petstore")
+}
+applicationDistribution.from(files('../../demos/world/src/main/sql/create_schema.sql')) {
+    into("config/world")
 }
 
 applicationDefaultJvmArgs = [
