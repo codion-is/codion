@@ -1,7 +1,9 @@
 apply plugin: 'application'
 
 configurations {
-    serverRuntime
+    serverRuntime {
+        extendsFrom compile
+    }
 }
 
 dependencies {
@@ -15,24 +17,18 @@ dependencies {
 
     testRuntime "com.h2database:h2:${h2Version}"
 
-    serverRuntime project(':org.jminor.common.core')
-    serverRuntime project(':org.jminor.common.db')
-    serverRuntime project(':org.jminor.common.server')
     serverRuntime project(':org.jminor.common.server.http')
-    serverRuntime project(':org.jminor.framework.db.core')
-    serverRuntime project(':org.jminor.framework.db.local')
-    serverRuntime project(':org.jminor.framework.db.remote')
     serverRuntime project(':org.jminor.framework.server')
     serverRuntime project(':org.jminor.framework.servlet')
     serverRuntime project(':org.jminor.plugin.jasperreports')
     serverRuntime project(':org.jminor.plugin.hikari.pool')
     serverRuntime project(':org.jminor.plugin.logback.proxy')
 
-    serverRuntime files("../../demos/empdept/build/libs/org.jminor.framework.demos.empdept-domain-${version}.jar")
-    serverRuntime files("../../demos/chinook/build/libs/org.jminor.framework.demos.chinook-domain-${version}.jar")
-    serverRuntime files("../../demos/petstore/build/libs/org.jminor.framework.demos.petstore-domain-${version}.jar")
-    serverRuntime files("../../demos/schemabrowser/build/libs/org.jminor.framework.demos.schemabrowser-domain-${version}.jar")
-    serverRuntime files("../../demos/world/build/libs/org.jminor.framework.demos.world-domain-${version}.jar")
+    serverRuntime project(path: ':org.jminor.framework.demos.empdept', configuration: 'domain')
+    serverRuntime project(path: ':org.jminor.framework.demos.chinook', configuration: 'domain')
+    serverRuntime project(path: ':org.jminor.framework.demos.petstore', configuration: 'domain')
+    serverRuntime project(path: ':org.jminor.framework.demos.schemabrowser', configuration: 'domain')
+    serverRuntime project(path: ':org.jminor.framework.demos.world', configuration: 'domain')
 
     serverRuntime "com.h2database:h2:${h2Version}"
 }

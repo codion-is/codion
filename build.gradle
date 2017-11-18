@@ -195,13 +195,17 @@ subprojects {
             skipProject = true
         }
 
+        configurations {
+            domain
+        }
+
         task domainJar(type: Jar, dependsOn: classes) {
             baseName = project.name + '-domain'
             from sourceSets.main.output
         }
 
         artifacts {
-            archives domainJar
+            domain domainJar
         }
     }
 }
