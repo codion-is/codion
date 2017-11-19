@@ -2,7 +2,6 @@ dependencies {
     compile project(':org.jminor.common.core')
     compile project(':org.jminor.common.server')
 
-    compile "org.eclipse.jetty.toolchain:jetty-osgi-servlet-api:${jettyServletApiVersion}"
     compile "org.eclipse.jetty:jetty-server:${jettyVersion}"
     compile "org.eclipse.jetty:jetty-servlet:${jettyVersion}"
     compile "org.eclipse.jetty:jetty-util:${jettyVersion}"
