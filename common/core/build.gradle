@@ -1,10 +1,11 @@
 task writeVersion {
-    ant.concat(destFile:"build/classes/java/main/org/jminor/common/version.txt",
-            project.version + " " + new Date().format("yyyy.MM.dd HH:mm"))
-}
-
-compileJava {
     doFirst {
-        writeVersion
+        def file = new File("build/classes/java/main/org/jminor/common")
+        file.mkdirs()
+        file = new File("build/classes/java/main/org/jminor/common/version.txt")
+        file.createNewFile()
+        file.text = project.version + " " + new Date().format("yyyy.MM.dd HH:mm")
     }
 }
+
+classes.dependsOn writeVersion
