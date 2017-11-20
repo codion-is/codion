@@ -14,7 +14,26 @@ plugins {
 
 apply plugin: 'nebula-aggregate-javadocs'
 
-ant.importBuild('gradle-ant.xml')
+task createKeystore {
+    doLast {
+        if (!new File('resources/security/JMinorServerKeystore').exists()) {
+            ant.genkey(alias: 'JMinorServer', keyalg: 'RSA', keystore: 'resources/security/JMinorServerKeystore',
+                    storepass: 'crappypass', dname: 'CN=Dummy, OU=dummy, O=dummy.org, C=DU')
+            exec {
+                executable = System.getProperty('java.home') + '/bin/keytool'
+                args = ['-exportcert', '-keystore', 'resources/security/JMinorServerKeystore', '-alias', 'JMinorServer',
+                        '-rfc', '-file', 'resources/security/JMinorServer.cer']
+            }
+            exec {
+                executable = System.getProperty('java.home') + '/bin/keytool'
+                args = ['-import', '-alias', 'JMinorServer', '-storepass', 'crappypass', '-file', 'resources/security/JMinorServer.cer',
+                        '-keystore', 'resources/security/JMinorClientTruststore', '-noprompt']
+            }
+            ant.copy(file: 'resources/security/JMinorClientTruststore', toFile: 'resources/security/JMinorServerMonitorTruststore')
+            ant.delete(file: 'resources/security/JMinorServer.cer')
+        }
+    }
+}
 
 allprojects {
     version='0.11.0-SNAPSHOT'
