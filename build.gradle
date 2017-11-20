@@ -14,6 +14,7 @@ plugins {
 
 apply plugin: 'nebula-aggregate-javadocs'
 
+/** Creates a keystore used when running server unit tests and demos with remote connection */
 task createKeystore {
     doLast {
         if (!new File('resources/security/JMinorServerKeystore').exists()) {
@@ -216,6 +217,7 @@ subprojects {
         }
 
         configurations {
+            /** A configuration with a single jar file containing the domain model (and server classes) */
             domain
         }
 
