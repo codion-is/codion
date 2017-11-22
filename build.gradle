@@ -263,7 +263,6 @@ subprojects {
             defaultJvmOpts = [
                     '-Djminor.client.connectionType=remote',
                     '-Djminor.server.hostname=localhost',
-                    '-Djminor.report.path=../../demos/chinook/build/classes/reports',
                     '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
                     '-Djava.security.policy=../config/jminor_client.policy',
                     '-Dlogback.configurationFile=../config/logback.xml'
@@ -277,7 +276,6 @@ subprojects {
             defaultJvmOpts = [
                     '-Djminor.client.connectionType=http',
                     '-Djminor.client.http.hostname=localhost',
-                    '-Djminor.report.path=../../demos/chinook/build/classes/reports',
                     '-Dlogback.configurationFile=../config/logback.xml'
             ]
         }
@@ -290,7 +288,6 @@ subprojects {
             defaultJvmOpts = [
                     '-Djminor.client.connectionType=remote',
                     '-Djminor.server.hostname=localhost',
-                    '-Djminor.report.path=../../demos/chinook/build/classes/reports',
                     '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
                     '-Djava.security.policy=../config/jminor_client.policy',
                     '-Dlogback.configurationFile=../config/logback.xml'
@@ -305,7 +302,6 @@ subprojects {
             defaultJvmOpts = [
                     '-Djminor.client.connectionType=http',
                     '-Djminor.client.http.hostname=localhost',
-                    '-Djminor.report.path=../../demos/chinook/build/classes/reports',
                     '-Dlogback.configurationFile=../config/logback.xml'
             ]
         }
