@@ -6,7 +6,6 @@ package org.jminor.framework.demos.empdept.rest;
 import org.jminor.common.TextUtil;
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.server.http.HttpServer;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.http.HttpEntityConnectionProvider;
@@ -50,8 +49,8 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
 
   @Override
   protected EntityConnectionProvider initializeApplication() throws CancelException {
-    return new HttpEntityConnectionProvider(ENTITIES, HttpServer.HTTP_SERVER_HOST_NAME.get(), HttpServer.HTTP_SERVER_PORT.get(),
-            UNIT_TEST_USER, "EmpDeptServletLoadTest", UUID.randomUUID());
+    return new HttpEntityConnectionProvider(ENTITIES, HttpEntityConnectionProvider.HTTP_SERVER_HOST_NAME.get(),
+            HttpEntityConnectionProvider.HTTP_SERVER_PORT.get(), UNIT_TEST_USER, "EmpDeptServletLoadTest", UUID.randomUUID());
   }
 
   public static void main(final String[] args) throws Exception {

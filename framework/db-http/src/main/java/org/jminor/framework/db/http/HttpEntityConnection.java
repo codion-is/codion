@@ -92,10 +92,10 @@ final class HttpEntityConnection implements EntityConnection {
    */
   HttpEntityConnection(final Entities domain, final String serverHostName, final int serverPort,
                        final User user, final String clientTypeId, final UUID clientId) {
-    this.domain = domain;
+    this.domain = Objects.requireNonNull(domain, "domain");
     this.conditions = new EntityConditions(domain);
-    this.user = user;
-    this.baseurl =  serverHostName + ":" + serverPort + "/entities/";
+    this.user = Objects.requireNonNull(user, "user");
+    this.baseurl =  Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + "/entities/";
     this.httpClient = createHttpClient(clientTypeId, clientId);
   }
 

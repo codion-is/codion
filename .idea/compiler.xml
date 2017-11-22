@@ -6,7 +6,9 @@
       <file url="file://$PROJECT_DIR$/common/db/src/main/java/module-info.java" />
       <file url="file://$PROJECT_DIR$/common/model/src/main/java/module-info.java" />
       <file url="file://$PROJECT_DIR$/common/server/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/common/server-http/src/main/java/module-info.java" />
       <file url="file://$PROJECT_DIR$/framework/db-core/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/framework/db-http/src/main/java/module-info.java" />
       <file url="file://$PROJECT_DIR$/framework/db-local/src/main/java/module-info.java" />
       <file url="file://$PROJECT_DIR$/framework/db-remote/src/main/java/module-info.java" />
       <file url="file://$PROJECT_DIR$/framework/db-test/src/main/java/module-info.java" />

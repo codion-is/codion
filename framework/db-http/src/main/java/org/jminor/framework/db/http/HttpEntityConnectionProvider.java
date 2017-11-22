@@ -3,9 +3,10 @@
  */
 package org.jminor.framework.db.http;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.User;
+import org.jminor.common.Value;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.server.http.HttpServer;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Entities;
@@ -23,6 +24,20 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
 
   private static final Logger LOG = LoggerFactory.getLogger(HttpEntityConnectionProvider.class);
 
+  /**
+   * The host on which to locate the http server<br>
+   * Value type: String<br>
+   * Default value: localhost
+   */
+  public static final Value<String> HTTP_SERVER_HOST_NAME = Configuration.stringValue("jminor.client.http.hostname", "localhost");
+
+  /**
+   * The port which the http client should use.<br>
+   * Value type: Integer<br>
+   * Default value: 8080
+   */
+  public static final Value<Integer> HTTP_SERVER_PORT = Configuration.integerValue("jminor.client.http.port", 8080);
+
   private final String serverHostName;
   private final Integer serverPort;
   private final String clientTypeId;
@@ -34,13 +49,12 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    * @param user the user to use when initializing connections
    * @param clientTypeId the client type id
    * @param clientId a UUID identifying the client
-   * @see HttpServer#HTTP_SERVER_HOST_NAME
-   * @see HttpServer#HTTP_SERVER_PORT
+   * @see HttpEntityConnectionProvider#HTTP_SERVER_HOST_NAME
+   * @see HttpEntityConnectionProvider#HTTP_SERVER_PORT
    */
   public HttpEntityConnectionProvider(final Entities entities, final User user, final String clientTypeId,
                                       final UUID clientId) {
-    this(entities, HttpServer.HTTP_SERVER_HOST_NAME.get(), HttpServer.HTTP_SERVER_PORT.get(), user,
-            clientTypeId, clientId);
+    this(entities, HTTP_SERVER_HOST_NAME.get(), HTTP_SERVER_PORT.get(), user, clientTypeId, clientId);
   }
 
   /**

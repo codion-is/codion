@@ -22,14 +22,6 @@ public class HttpServer extends org.eclipse.jetty.server.Server implements Serve
   private static final Logger LOG = LoggerFactory.getLogger(HttpServer.class);
 
   /**
-   * The host on which to locate the http server<br>
-   * Value type: String<br>
-   * Default value: localhost
-   */
-  public static final Value<String> HTTP_SERVER_HOST_NAME = Configuration.stringValue("jminor.server.http.hostname",
-          org.jminor.common.server.Server.LOCALHOST);
-
-  /**
    * The port on which the http server is made available to clients.<br>
    * Value type: Integer<br>
    * Default value: 8080

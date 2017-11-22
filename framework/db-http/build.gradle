@@ -1,7 +1,6 @@
 dependencies {
     compile project(':org.jminor.common.core')
     compile project(':org.jminor.common.db')
-    compile project(':org.jminor.common.server.http')
 
     compile project(':org.jminor.framework.db.core')
 
@@ -9,6 +8,7 @@ dependencies {
     compile "org.apache.httpcomponents:httpcore:${httpcoreVersion}"
     compile "commons-logging:commons-logging:${commonsloggingVersion}"
 
+    testCompile project(':org.jminor.common.server.http')
     testCompile project(':org.jminor.framework.server')
     testCompile project(':org.jminor.framework.servlet')
 

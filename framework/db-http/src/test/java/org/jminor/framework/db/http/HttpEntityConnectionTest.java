@@ -44,8 +44,8 @@ public final class HttpEntityConnectionTest {
   private static final EntityConditions CONDITIONS = new EntityConditions(ENTITIES);
   private static DefaultEntityConnectionServer server;
 
-  private final HttpEntityConnection connection = new HttpEntityConnection(ENTITIES, HttpServer.HTTP_SERVER_HOST_NAME.get(),
-          HttpServer.HTTP_SERVER_PORT.get(), UNIT_TEST_USER, "HttpEntityConnectionTest", UUID.randomUUID());
+  private final HttpEntityConnection connection = new HttpEntityConnection(ENTITIES, HttpEntityConnectionProvider.HTTP_SERVER_HOST_NAME.get(),
+          HttpEntityConnectionProvider.HTTP_SERVER_PORT.get(), UNIT_TEST_USER, "HttpEntityConnectionTest", UUID.randomUUID());
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -176,8 +176,8 @@ public final class HttpEntityConnectionTest {
     Server.SERVER_PORT.set(2223);
     Server.SERVER_ADMIN_PORT.set(2223);
     Server.SERVER_HOST_NAME.set("localhost");
-    HttpServer.HTTP_SERVER_HOST_NAME.set("localhost");
     HttpServer.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
+    HttpEntityConnectionProvider.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
     System.setProperty("java.security.policy", "resources/security/all_permissions.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityServletServer.class.getName());
@@ -189,8 +189,8 @@ public final class HttpEntityConnectionTest {
     Server.SERVER_PORT.set(null);
     Server.SERVER_ADMIN_PORT.set(null);
     Server.SERVER_HOST_NAME.set(null);
-    HttpServer.HTTP_SERVER_HOST_NAME.set(null);
     HttpServer.HTTP_SERVER_PORT.set(null);
+    HttpEntityConnectionProvider.HTTP_SERVER_PORT.set(null);
     System.clearProperty("java.security.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(null);
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(null);
