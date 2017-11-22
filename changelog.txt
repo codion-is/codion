@@ -4706,3 +4706,4 @@
   org.jminor.framework.db.http no longer depends on org.jminor.common.server.http
   Chinook demo, application gradle plugin configured
   Gradle dependencies improved, chinook demo application fixed
+  Gradle application plugin configuration for demos moved to root script

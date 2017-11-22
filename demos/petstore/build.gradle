@@ -16,6 +16,18 @@ test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
 }
 
+startScripts {
+    mainClassName = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+}
+
+clientRemoteScript {
+    mainClassName = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+}
+
+clientHttpScript {
+    mainClassName = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+}
+
 task runClientLocal(type: JavaExec) {
     group 'run'
     main = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'

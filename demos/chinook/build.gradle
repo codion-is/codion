@@ -1,5 +1,3 @@
-apply plugin: 'application'
-
 dependencies {
     compile project(':org.jminor.swing.common.tools.ui')
     compile project(':org.jminor.swing.framework.ui')
@@ -48,95 +46,24 @@ compileTestJava {
     }
 }
 
-startScripts.applicationName = 'Chinook'
-
 startScripts {
-    applicationName = 'ChinookLocal'
     mainClassName = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
-    defaultJvmOpts = [
-            '-Djminor.client.connectionType=local',
-            '-Djminor.db.type=h2',
-            '-Djminor.db.host=h2db',
-            '-Djminor.db.embedded=true',
-            '-Djminor.db.embeddedInMemory=true',
-            '-Djminor.db.initScript=../config/create_schema.sql',
-            '-Djminor.report.path=../reports',
-            '-Dlogback.configurationFile=../config/logback.xml'
-    ]
 }
 
-task clientRemoteScript(type: CreateStartScripts) {
-    applicationName = 'ChinookRemote'
+clientRemoteScript {
     mainClassName = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
-    classpath = startScripts.classpath
-    outputDir = startScripts.outputDir
-    defaultJvmOpts = [
-            '-Djminor.client.connectionType=remote',
-            '-Djminor.server.hostname=localhost',
-            '-Djminor.report.path=../../demos/chinook/build/classes/reports',
-            '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
-            '-Djava.security.policy=../config/jminor_client.policy',
-            '-Dlogback.configurationFile=../config/logback.xml'
-    ]
 }
 
-task clientHttpScript(type: CreateStartScripts) {
-    applicationName = 'ChinookHttp'
+clientHttpScript {
     mainClassName = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
-    classpath = startScripts.classpath
-    outputDir = startScripts.outputDir
-    defaultJvmOpts = [
-            '-Djminor.client.connectionType=http',
-            '-Djminor.client.http.hostname=localhost',
-            '-Djminor.report.path=../../demos/chinook/build/classes/reports',
-            '-Dlogback.configurationFile=../config/logback.xml'
-    ]
 }
 
-task loadTestRemoteScript(type: CreateStartScripts) {
-    applicationName = 'ChinookLoadTestRemote'
+loadTestRemoteScript {
     mainClassName = 'org.jminor.framework.demos.chinook.testing.ChinookLoadTest'
-    classpath = startScripts.classpath
-    outputDir = startScripts.outputDir
-    defaultJvmOpts = [
-            '-Djminor.client.connectionType=remote',
-            '-Djminor.server.hostname=localhost',
-            '-Djminor.report.path=../../demos/chinook/build/classes/reports',
-            '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
-            '-Djava.security.policy=../config/jminor_client.policy',
-            '-Dlogback.configurationFile=../config/logback.xml'
-    ]
 }
 
-task loadTestHttpScript(type: CreateStartScripts) {
-    applicationName = 'ChinookLoadTestHttp'
+loadTestHttpScript {
     mainClassName = 'org.jminor.framework.demos.chinook.testing.ChinookLoadTest'
-    classpath = startScripts.classpath
-    outputDir = startScripts.outputDir
-    defaultJvmOpts = [
-            '-Djminor.client.connectionType=http',
-            '-Djminor.client.http.hostname=localhost',
-            '-Djminor.report.path=../../demos/chinook/build/classes/reports',
-            '-Dlogback.configurationFile=../config/logback.xml'
-    ]
-}
-
-applicationDistribution.into('config') {
-    from(files('src/main/sql/create_schema.sql'))
-    from(files('src/main/resources/logback.xml'))
-    from(files('../../resources/security/JMinorClientTruststore'))
-}
-
-applicationDistribution.into('reports') {
-    from(fileTree(dir: 'build/classes/reports', include: '*.jasper'))
-}
-
-applicationDistribution.into('bin') {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from(clientRemoteScript)
-    from(clientHttpScript)
-    from(loadTestHttpScript)
-    from(loadTestRemoteScript)
 }
 
 task runClientLocal(type: JavaExec) {

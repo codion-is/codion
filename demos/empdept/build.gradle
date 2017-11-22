@@ -54,6 +54,26 @@ compileTestJava {
     }
 }
 
+startScripts {
+    mainClassName = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
+}
+
+clientRemoteScript {
+    mainClassName = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
+}
+
+clientHttpScript {
+    mainClassName = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
+}
+
+loadTestRemoteScript {
+    mainClassName = 'org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
+}
+
+loadTestHttpScript {
+    mainClassName = 'org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
+}
+
 task runClientLocal(type: JavaExec) {
     group 'run'
     main = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'

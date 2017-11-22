@@ -131,10 +131,13 @@ subprojects {
         systemProperty "jminor.unittest.password", "tiger"
     }.dependsOn createKeystore
 
+    def artifactName = project.name.replace("org.", "").replace(".", "-")
+    jar {
+        baseName = artifactName
+    }
+
     if (!demoProject) {
-        def artifactName = project.name.replace("org.", "").replace(".", "-")
         jar {
-            baseName = artifactName
             manifest {
                 attributes(
                         "Specification-Title": project.name,
@@ -214,6 +217,8 @@ subprojects {
     }
 
     if (demoProject) {
+        apply plugin: 'application'
+
         sonarqube {
             skipProject = true
         }
@@ -233,6 +238,94 @@ subprojects {
 
         artifacts {
             domain jarDomain
+        }
+
+        startScripts.applicationName = project.name
+
+        startScripts {
+            applicationName = project.name + '-local'
+            defaultJvmOpts = [
+                    '-Djminor.client.connectionType=local',
+                    '-Djminor.db.type=h2',
+                    '-Djminor.db.host=h2db',
+                    '-Djminor.db.embedded=true',
+                    '-Djminor.db.embeddedInMemory=true',
+                    '-Djminor.db.initScript=../config/create_schema.sql',
+                    '-Djminor.report.path=../reports',
+                    '-Dlogback.configurationFile=../config/logback.xml'
+            ]
+        }
+
+        task clientRemoteScript(type: CreateStartScripts) {
+            applicationName = project.name + '-remote'
+            classpath = startScripts.classpath
+            outputDir = startScripts.outputDir
+            defaultJvmOpts = [
+                    '-Djminor.client.connectionType=remote',
+                    '-Djminor.server.hostname=localhost',
+                    '-Djminor.report.path=../../demos/chinook/build/classes/reports',
+                    '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
+                    '-Djava.security.policy=../config/jminor_client.policy',
+                    '-Dlogback.configurationFile=../config/logback.xml'
+            ]
+        }
+
+        task clientHttpScript(type: CreateStartScripts) {
+            applicationName = project.name + '-http'
+            classpath = startScripts.classpath
+            outputDir = startScripts.outputDir
+            defaultJvmOpts = [
+                    '-Djminor.client.connectionType=http',
+                    '-Djminor.client.http.hostname=localhost',
+                    '-Djminor.report.path=../../demos/chinook/build/classes/reports',
+                    '-Dlogback.configurationFile=../config/logback.xml'
+            ]
+        }
+
+        task loadTestRemoteScript(type: CreateStartScripts) {
+            applicationName = project.name + '-loadtest-remote'
+            mainClassName = 'org.jminor.framework.demos.DummyLoadTest'
+            classpath = startScripts.classpath
+            outputDir = startScripts.outputDir
+            defaultJvmOpts = [
+                    '-Djminor.client.connectionType=remote',
+                    '-Djminor.server.hostname=localhost',
+                    '-Djminor.report.path=../../demos/chinook/build/classes/reports',
+                    '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
+                    '-Djava.security.policy=../config/jminor_client.policy',
+                    '-Dlogback.configurationFile=../config/logback.xml'
+            ]
+        }
+
+        task loadTestHttpScript(type: CreateStartScripts) {
+            applicationName = project.name + '-loadtest-http'
+            mainClassName = 'org.jminor.framework.demos.DummyLoadTest'
+            classpath = startScripts.classpath
+            outputDir = startScripts.outputDir
+            defaultJvmOpts = [
+                    '-Djminor.client.connectionType=http',
+                    '-Djminor.client.http.hostname=localhost',
+                    '-Djminor.report.path=../../demos/chinook/build/classes/reports',
+                    '-Dlogback.configurationFile=../config/logback.xml'
+            ]
+        }
+
+        applicationDistribution.into('config') {
+            from(files('src/main/sql/create_schema.sql'))
+            from(files('src/main/resources/logback.xml'))
+            from(files('../../resources/security/JMinorClientTruststore'))
+        }
+
+        applicationDistribution.into('reports') {
+            from(fileTree(dir: 'build/classes/reports', include: '*.jasper'))
+        }
+
+        applicationDistribution.into('bin') {
+            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+            from(clientRemoteScript)
+            from(clientHttpScript)
+            from(loadTestHttpScript)
+            from(loadTestRemoteScript)
         }
     }
 }

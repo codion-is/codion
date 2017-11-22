@@ -16,6 +16,28 @@ test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
 }
 
+startScripts {
+    mainClassName = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
+    //overwrite the defaults to leave out initScript
+    defaultJvmOpts = [
+            '-Djminor.client.connectionType=local',
+            '-Djminor.db.type=h2',
+            '-Djminor.db.host=h2db',
+            '-Djminor.db.embedded=true',
+            '-Djminor.db.embeddedInMemory=true',
+            '-Djminor.report.path=../reports',
+            '-Dlogback.configurationFile=../config/logback.xml'
+    ]
+}
+
+clientRemoteScript {
+    mainClassName = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
+}
+
+clientHttpScript {
+    mainClassName = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
+}
+
 task runClientLocal(type: JavaExec) {
     group 'run'
     main = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
