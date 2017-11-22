@@ -46,6 +46,11 @@ compileTestJava {
     }
 }
 
+
+jnlp {
+    mainClassName = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
+}
+
 startScripts {
     mainClassName = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
 }

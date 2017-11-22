@@ -4707,3 +4707,4 @@
   Chinook demo, application gradle plugin configured
   Gradle dependencies improved, chinook demo application fixed
   Gradle application plugin configuration for demos moved to root script
+  Gradle, testing the jnlp plugin

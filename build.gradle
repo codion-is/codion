@@ -5,6 +5,7 @@ buildscript {
 
     dependencies {
         classpath 'com.netflix.nebula:gradle-aggregate-javadocs-plugin:2.2.+'
+        classpath 'de.gliderpilot.gradle.jnlp:gradle-jnlp-plugin:+'
     }
 }
 
@@ -218,6 +219,7 @@ subprojects {
 
     if (demoProject) {
         apply plugin: 'application'
+        apply plugin: 'de.gliderpilot.jnlp'
 
         sonarqube {
             skipProject = true
@@ -238,6 +240,19 @@ subprojects {
 
         artifacts {
             domain jarDomain
+        }
+
+        jnlp {
+            withXml {
+                information {
+                    title project.name
+                    vendor project.group ?: project.name
+                }
+                security {
+                    'all-permissions'()
+                }
+            }
+            signJarParams = [keystore: "${jarSignKeystore}", alias: "${jarSignAlias}", storepass: "${jarSignStorepass}"]
         }
 
         startScripts.applicationName = project.name
