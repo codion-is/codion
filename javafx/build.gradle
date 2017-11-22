@@ -5,10 +5,12 @@ dependencies {
 
     compile project(':org.jminor.framework.db.core')
     compile project(':org.jminor.framework.model')
-    compile project(':org.jminor.framework.model.unittests')
+
+    testCompile project(':org.jminor.framework.model.unittests')
 
     runtime project(':org.jminor.framework.db.local')
     runtime project(':org.jminor.framework.db.remote')
+    runtime project(':org.jminor.framework.db.http')
 
     compile "org.json:json:${jsonVersion}"
 

@@ -1,13 +1,13 @@
 dependencies {
     compile project(':org.jminor.swing.common.tools.ui')
     compile project(':org.jminor.swing.framework.ui')
-    compile project(':org.jminor.swing.framework.ui.test')
     compile project(':org.jminor.swing.framework.tools')
 
     runtime project(':org.jminor.framework.db.http')
     runtime project(':org.jminor.plugin.logback.proxy')
 
     testCompile project(':org.jminor.framework.db.test')
+    testCompile project(':org.jminor.swing.framework.ui.test')
 
     runtime "com.h2database:h2:${h2Version}"
 }

@@ -3,7 +3,6 @@ apply plugin: 'application'
 dependencies {
     compile project(':org.jminor.swing.common.tools.ui')
     compile project(':org.jminor.swing.framework.ui')
-    compile project(':org.jminor.swing.framework.ui.test')
     compile project(':org.jminor.swing.framework.tools')
     compile project(':org.jminor.javafx.framework')
     compile project(':org.jminor.plugin.jasperreports')
@@ -49,18 +48,22 @@ compileTestJava {
     }
 }
 
-mainClassName = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
-applicationName = 'Chinook'
-applicationDefaultJvmArgs = [
-        '-Djminor.client.connectionType=local',
-        '-Djminor.db.type=h2',
-        '-Djminor.db.host=h2db',
-        '-Djminor.db.embedded=true',
-        '-Djminor.db.embeddedInMemory=true',
-        '-Djminor.db.initScript=../config/create_schema.sql',
-        '-Djminor.report.path=../reports',
-        '-Dlogback.configurationFile=../config/logback.xml'
-]
+startScripts.applicationName = 'Chinook'
+
+startScripts {
+    applicationName = 'ChinookLocal'
+    mainClassName = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
+    defaultJvmOpts = [
+            '-Djminor.client.connectionType=local',
+            '-Djminor.db.type=h2',
+            '-Djminor.db.host=h2db',
+            '-Djminor.db.embedded=true',
+            '-Djminor.db.embeddedInMemory=true',
+            '-Djminor.db.initScript=../config/create_schema.sql',
+            '-Djminor.report.path=../reports',
+            '-Dlogback.configurationFile=../config/logback.xml'
+    ]
+}
 
 task clientRemoteScript(type: CreateStartScripts) {
     applicationName = 'ChinookRemote'
@@ -129,6 +132,7 @@ applicationDistribution.into('reports') {
 }
 
 applicationDistribution.into('bin') {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from(clientRemoteScript)
     from(clientHttpScript)
     from(loadTestHttpScript)
