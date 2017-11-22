@@ -61,7 +61,7 @@ applicationDistribution.from(configurations.serverRuntime.files) {
 }
 applicationDistribution.from(files(
         '../../resources/security/JMinorServerKeystore',
-        '../../resources/security/JMinorServerMonitorTruststore',
+        '../../resources/security/JMinorClientTruststore',
         '../../resources/security/jminor_server.policy',
         '../../resources/security/all_permissions.policy',
         '../../resources/security/notsoserial-whitelist.txt')) {

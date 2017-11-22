@@ -67,6 +67,12 @@ public abstract class EntityLoadTestModel<M extends EntityApplicationModel> exte
     EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.set(false);
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public String getTitle() {
+    return super.getTitle() + " " + EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
+  }
+
   /**
    * Selects a random row in the given table model
    * @param tableModel the table model

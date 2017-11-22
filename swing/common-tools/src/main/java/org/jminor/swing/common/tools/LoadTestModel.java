@@ -195,6 +195,12 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   /** {@inheritDoc} */
   @Override
+  public String getTitle() {
+    return getClass().getSimpleName();
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final UsageScenario<T> getUsageScenario(final String usageScenarioName) {
     for (final UsageScenario<T> scenario : usageScenarios) {
       if (scenario.getName().equals(usageScenarioName)) {

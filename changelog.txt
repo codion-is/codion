@@ -4701,3 +4701,5 @@
   LocalEntityConnection.doSelectMany() method logging added for result packing
   LocalEntityConnection.doSelectMany() bug fixed, try with resources did not play happily with method logging
   module-info.java files added and fixed
+  Build improvements
+  LoadTest.getTitle() added, overridden in EntityLoadTestModel adding connection type, used in LoadTestPanel

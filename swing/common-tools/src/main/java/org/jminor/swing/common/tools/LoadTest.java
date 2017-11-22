@@ -33,6 +33,12 @@ public interface LoadTest {
   void setUser(User user);
 
   /**
+   * The title of this LoadTest
+   * @return the title
+   */
+  String getTitle();
+
+  /**
    * Sets the random chooser weight for the given scenario
    * @param scenarioName the name of the scenario
    * @param weight the new weight to assign to the scenario
