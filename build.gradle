@@ -16,7 +16,7 @@ plugins {
 apply plugin: 'nebula-aggregate-javadocs'
 
 /** Creates a key- and truststore pair used when running server unit tests and demos with remote connection */
-task createKeystore {
+task createServerKeystore {
     doLast {
         def rootDir = project.rootDir.toString() + '/resources/security/'
         def keystore = rootDir + 'JMinorServerKeystore'
@@ -125,7 +125,7 @@ subprojects {
         systemProperty "jminor.db.initScript", "src/test/sql/create_h2_db.sql"
         systemProperty "jminor.unittest.username", "scott"
         systemProperty "jminor.unittest.password", "tiger"
-    }.dependsOn createKeystore
+    }.dependsOn createServerKeystore
 
     def artifactName = project.name.replace("org.", "").replace(".", "-")
     jar {
