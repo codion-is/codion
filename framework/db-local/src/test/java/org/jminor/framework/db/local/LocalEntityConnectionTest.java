@@ -339,6 +339,25 @@ public class LocalEntityConnectionTest {
     assertTrue(pks.isEmpty());
   }
 
+  @Test
+  public void updateDifferentEntities() throws DatabaseException {
+    try {
+      connection.beginTransaction();
+      final Entity sales = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+      final Entity king = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
+      final String newName = "New name";
+      sales.put(TestDomain.DEPARTMENT_NAME, newName);
+      king.put(TestDomain.EMP_NAME, newName);
+      final List<Entity> updated = connection.update(Arrays.asList(sales, king));
+      assertTrue(updated.containsAll(Arrays.asList(sales, king)));
+      assertEquals(newName, updated.get(updated.indexOf(sales)).getString(TestDomain.DEPARTMENT_NAME));
+      assertEquals(newName, updated.get(updated.indexOf(king)).getString(TestDomain.EMP_NAME));
+    }
+    finally {
+      connection.rollbackTransaction();
+    }
+  }
+
   @Test(expected = UpdateException.class)
   public void updateNonExisting() throws DatabaseException {
     //otherwise the optimistic locking triggers an error

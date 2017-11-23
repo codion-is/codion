@@ -4713,3 +4713,4 @@
   LocalEntityConnection.update() bug fixed, did not expect entities of different types
   LocalEntityConnection.executePreparedUpdate() now returns the number of affected rows
   LocalEntityConnection.update() uses the above to throw UpdateException in case no rows are affected
+  LocalEntityConnection, refactored, exeption handling improved (more work needed)

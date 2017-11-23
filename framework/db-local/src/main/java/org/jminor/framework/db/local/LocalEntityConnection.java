@@ -267,7 +267,9 @@ public final class LocalEntityConnection implements EntityConnection {
     synchronized (connection) {
       try {
         final Map<String, Collection<Entity>> mappedEntities = Entities.mapToEntityId(entities);
-        performOptimisticLocking(mappedEntities);
+        if (optimisticLocking) {
+          lockAndCheckForUpdate(mappedEntities);
+        }
 
         final List<Property.ColumnProperty> statementProperties = new ArrayList<>();
         final List<Entity> updatedEntities = new ArrayList<>(entities.size());
@@ -306,14 +308,20 @@ public final class LocalEntityConnection implements EntityConnection {
 
         return updatedEntities;
       }
-      catch (final DatabaseException dbe) {
-        rollbackQuietlyIfTransactionIsNotOpen();
-        throw dbe;
-      }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(Databases.createLogMessage(getUser(), updateSQL, statementValues, e, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+      }
+      catch (final RecordModifiedException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
+        LOG.debug(domain.getModifiedExceptionMessage(e), e);
+        throw e;
+      }
+      catch (final UpdateException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(Databases.createLogMessage(getUser(), updateSQL, statementValues, e, null));
+        throw e;
       }
       finally {
         Databases.closeSilently(statement);
@@ -439,9 +447,9 @@ public final class LocalEntityConnection implements EntityConnection {
 
         return result;
       }
-      catch (final DatabaseException dbe) {
+      catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        throw dbe;
+        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
     }
   }
@@ -722,22 +730,11 @@ public final class LocalEntityConnection implements EntityConnection {
    * @throws DatabaseException in case of an exception
    */
   public ResultIterator<Entity> iterator(final EntityCondition condition) throws DatabaseException {
-    Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
-    PreparedStatement statement = null;
-    ResultSet resultSet = null;
-    String selectSQL = null;
     try {
-      selectSQL = getSelectSQL(condition, connection.getDatabase());
-      statement = prepareStatement(selectSQL);
-      resultSet = executePreparedSelect(statement, selectSQL, condition);
-
-      return new EntityResultIterator(statement, resultSet, domain.getResultPacker(condition.getEntityId()));
+      return createIterator(condition);
     }
     catch (final SQLException e) {
-      Databases.closeSilently(resultSet);
-      Databases.closeSilently(statement);
-      LOG.error(Databases.createLogMessage(getUser(), selectSQL, condition.getValues(), e, null));
-      throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e), selectSQL);
+      throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
     }
   }
 
@@ -770,34 +767,17 @@ public final class LocalEntityConnection implements EntityConnection {
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
   }
 
-  private void performOptimisticLocking(final Map<String, Collection<Entity>> entitiesToLock) throws DatabaseException {
-    if (optimisticLocking) {
-      try {
-        lockAndCheckForUpdate(entitiesToLock);
-      }
-      catch (final RecordModifiedException e) {
-        rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
-        LOG.debug(domain.getModifiedExceptionMessage(e), e);
-        throw e;
-      }
-      catch (final DatabaseException e) {
-        rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
-        throw e;
-      }
-    }
-  }
-
   /**
    * Selects the given entities for update and checks if they have been modified by comparing
    * the property values to the current values in the database. Note that this does not
    * include BLOB properties.
    * The calling method is responsible for releasing the select for update lock.
    * @param entities the entities to check, mapped to entityId
-   * @throws DatabaseException in case of a database exception
+   * @throws SQLException in case of exception
    * @throws RecordModifiedException in case an entity has been modified, if an entity has been deleted,
    * the {@code modifiedRow} provided by the exception is null
    */
-  private void lockAndCheckForUpdate(final Map<String, Collection<Entity>> entities) throws DatabaseException {
+  private void lockAndCheckForUpdate(final Map<String, Collection<Entity>> entities) throws SQLException, RecordModifiedException {
     for (final Map.Entry<String, Collection<Entity>> entry : entities.entrySet()) {
       final List<Entity.Key> originalKeys = Entities.getKeys(entry.getValue(), true);
       final EntitySelectCondition selectForUpdateCondition = entityConditions.selectCondition(originalKeys);
@@ -817,13 +797,13 @@ public final class LocalEntityConnection implements EntityConnection {
     }
   }
 
-  private List<Entity> doSelectMany(final EntitySelectCondition condition, final int currentForeignKeyFetchDepth) throws DatabaseException {
+  private List<Entity> doSelectMany(final EntitySelectCondition condition, final int currentForeignKeyFetchDepth) throws SQLException {
     Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
     String selectSQL = null;
     try {
       selectSQL = getSelectSQL(condition, connection.getDatabase());
       final List<Entity> result = new ArrayList<>();
-      final ResultIterator<Entity> iterator = iterator(condition);
+      final ResultIterator<Entity> iterator = createIterator(condition);
       try {
         packResult(result, iterator);
       }
@@ -838,7 +818,7 @@ public final class LocalEntityConnection implements EntityConnection {
     }
     catch (final SQLException e) {
       LOG.error(Databases.createLogMessage(getUser(), selectSQL, condition.getValues(), e, null));
-      throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e), selectSQL);
+      throw e;
     }
   }
 
@@ -849,12 +829,12 @@ public final class LocalEntityConnection implements EntityConnection {
    * @param entities the entities for which to set the foreign key entity values
    * @param condition the condition
    * @param currentForeignKeyFetchDepth the current foreign key fetch depth
-   * @throws DatabaseException in case of a database exception
+   * @throws SQLException in case of a database exception
    * @see #setLimitForeignKeyFetchDepth(boolean)
    * @see EntitySelectCondition#setForeignKeyFetchDepthLimit(int)
    */
   private void setForeignKeys(final List<Entity> entities, final EntitySelectCondition condition,
-                              final int currentForeignKeyFetchDepth) throws DatabaseException {
+                              final int currentForeignKeyFetchDepth) throws SQLException {
     if (Util.nullOrEmpty(entities)) {
       return;
     }
@@ -903,6 +883,26 @@ public final class LocalEntityConnection implements EntityConnection {
     }
 
     return referencedEntity;
+  }
+
+  private ResultIterator<Entity> createIterator(final EntityCondition condition) throws SQLException {
+    Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
+    PreparedStatement statement = null;
+    ResultSet resultSet = null;
+    String selectSQL = null;
+    try {
+      selectSQL = getSelectSQL(condition, connection.getDatabase());
+      statement = prepareStatement(selectSQL);
+      resultSet = executePreparedSelect(statement, selectSQL, condition);
+
+      return new EntityResultIterator(statement, resultSet, domain.getResultPacker(condition.getEntityId()));
+    }
+    catch (final SQLException e) {
+      Databases.closeSilently(resultSet);
+      Databases.closeSilently(statement);
+      LOG.error(Databases.createLogMessage(getUser(), selectSQL, condition.getValues(), e, null));
+      throw e;
+    }
   }
 
   private int executePreparedUpdate(final PreparedStatement statement, final String sqlStatement,
