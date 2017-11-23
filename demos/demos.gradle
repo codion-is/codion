@@ -1,0 +1,181 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'application'
+//apply plugin: 'de.gliderpilot.jnlp'
+
+sonarqube {
+    skipProject = true
+}
+
+configurations {
+    /** A configuration with a single jar file containing the domain model (and server classes) */
+    domain
+}
+
+task jarDomain(type: Jar, dependsOn: classes) {
+    group 'build'
+    baseName = project.name + '-domain'
+    from sourceSets.main.output
+    include '**/domain/**/*'
+    include '**/server/**/*'
+}
+
+artifacts {
+    domain jarDomain
+}
+
+//jnlp {
+//    withXml {
+//        information {
+//            title project.name
+//            vendor project.group ?: project.name
+//        }
+//        security {
+//            'all-permissions'()
+//        }
+//    }
+//    signJarParams = [keystore: "${jarSignKeystore}", alias: "${jarSignAlias}", storepass: "${jarSignStorepass}"]
+//}
+
+startScripts.applicationName = project.name
+
+startScripts {
+    applicationName = project.name + '-local'
+    defaultJvmOpts = [
+            '-Djminor.client.connectionType=local',
+            '-Djminor.db.type=h2',
+            '-Djminor.db.host=h2db',
+            '-Djminor.db.embedded=true',
+            '-Djminor.db.embeddedInMemory=true',
+            '-Djminor.db.initScript=../config/create_schema.sql',
+            '-Djminor.report.path=../reports',
+            '-Dlogback.configurationFile=../config/logback.xml'
+    ]
+}
+
+task clientRemoteScript(type: CreateStartScripts) {
+    applicationName = project.name + '-remote'
+    classpath = startScripts.classpath
+    outputDir = startScripts.outputDir
+    defaultJvmOpts = [
+            '-Djminor.client.connectionType=remote',
+            '-Djminor.server.hostname=localhost',
+            '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
+            '-Djava.security.policy=../config/jminor_client.policy',
+            '-Dlogback.configurationFile=../config/logback.xml'
+    ]
+}
+
+task clientHttpScript(type: CreateStartScripts) {
+    applicationName = project.name + '-http'
+    classpath = startScripts.classpath
+    outputDir = startScripts.outputDir
+    defaultJvmOpts = [
+            '-Djminor.client.connectionType=http',
+            '-Djminor.client.http.hostname=localhost',
+            '-Dlogback.configurationFile=../config/logback.xml'
+    ]
+}
+
+task loadTestRemoteScript(type: CreateStartScripts) {
+    applicationName = project.name + '-loadtest-remote'
+    mainClassName = 'org.jminor.framework.demos.DummyLoadTest'
+    classpath = startScripts.classpath
+    outputDir = startScripts.outputDir
+    defaultJvmOpts = [
+            '-Djminor.client.connectionType=remote',
+            '-Djminor.server.hostname=localhost',
+            '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
+            '-Djava.security.policy=../config/jminor_client.policy',
+            '-Dlogback.configurationFile=../config/logback.xml'
+    ]
+}
+
+task loadTestHttpScript(type: CreateStartScripts) {
+    applicationName = project.name + '-loadtest-http'
+    mainClassName = 'org.jminor.framework.demos.DummyLoadTest'
+    classpath = startScripts.classpath
+    outputDir = startScripts.outputDir
+    defaultJvmOpts = [
+            '-Djminor.client.connectionType=http',
+            '-Djminor.client.http.hostname=localhost',
+            '-Dlogback.configurationFile=../config/logback.xml'
+    ]
+}
+
+applicationDistribution.into('config') {
+    from(files('src/main/sql/create_schema.sql'))
+    from(files('src/main/resources/logback.xml'))
+    from(files('../../resources/security/JMinorClientTruststore'))
+}
+
+applicationDistribution.into('reports') {
+    from(fileTree(dir: 'build/classes/reports', include: '*.jasper'))
+}
+
+applicationDistribution.into('bin') {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(clientRemoteScript)
+    from(clientHttpScript)
+    from(loadTestHttpScript)
+    from(loadTestRemoteScript)
+}
+
+task runClientLocal(type: JavaExec) {
+    group 'run'
+    classpath = sourceSets.main.runtimeClasspath
+    systemProperties = [
+            'jminor.client.connectionType': 'local',
+            'jminor.db.type': 'h2',
+            'jminor.db.host': 'h2db',
+            'jminor.db.embedded': 'true',
+            'jminor.db.embeddedInMemory': 'true',
+            'jminor.db.initScript': 'src/main/sql/create_schema.sql',
+            'jminor.report.path': 'build/classes/reports',
+            'logback.configurationFile': 'src/main/resources/logback.xml'
+    ]
+}
+
+task runClientRemote(type: JavaExec) {
+    group 'run'
+    classpath = sourceSets.main.runtimeClasspath
+    systemProperties = [
+            'jminor.client.connectionType': 'remote',
+            'jminor.server.hostname': 'localhost',
+            'javax.net.ssl.trustStore': '../../resources/security/JMinorClientTruststore',
+            'java.security.policy': '../../resources/security/jminor_client.policy',
+            'logback.configurationFile': 'src/main/resources/logback.xml'
+    ]
+}
+
+task runClientHttp(type: JavaExec) {
+    group 'run'
+    classpath = sourceSets.main.runtimeClasspath
+    systemProperties = [
+            'jminor.client.connectionType': 'http',
+            'jminor.client.http.hostname': 'localhost',
+            'logback.configurationFile': 'src/main/resources/logback.xml'
+    ]
+}
+
+task runLoadTestRemote(type: JavaExec) {
+    group 'run'
+    classpath = sourceSets.main.runtimeClasspath
+    systemProperties = [
+            'jminor.client.connectionType': 'remote',
+            'jminor.server.hostname': 'localhost',
+            'javax.net.ssl.trustStore': '../../resources/security/JMinorClientTruststore',
+            'java.security.policy': '../../resources/security/jminor_client.policy',
+            'logback.configurationFile': 'src/main/resources/logback.xml'
+    ]
+}
+
+task runLoadTestHttp(type: JavaExec) {
+    group 'run'
+    classpath = sourceSets.main.runtimeClasspath
+    systemProperties = [
+            'jminor.client.connectionType': 'http',
+            'jminor.client.http.hostname': 'localhost',
+            'logback.configurationFile': 'src/main/resources/logback.xml'
+    ]
+}

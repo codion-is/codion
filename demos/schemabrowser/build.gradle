@@ -1,3 +1,5 @@
+apply from: '../demos.gradle'
+
 dependencies {
     compile project(':org.jminor.swing.common.tools.ui')
     compile project(':org.jminor.swing.framework.ui')
@@ -25,7 +27,6 @@ startScripts {
             '-Djminor.db.host=h2db',
             '-Djminor.db.embedded=true',
             '-Djminor.db.embeddedInMemory=true',
-            '-Djminor.report.path=../reports',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -38,10 +39,9 @@ clientHttpScript {
     mainClassName = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
 }
 
-task runClientLocal(type: JavaExec) {
-    group 'run'
+runClientLocal {
     main = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
-    classpath = sourceSets.main.runtimeClasspath
+    //overwrite the defaults to leave out initScript
     systemProperties = [
             'jminor.client.connectionType': 'local',
             'jminor.db.type': 'h2',
@@ -52,28 +52,10 @@ task runClientLocal(type: JavaExec) {
     ]
 }
 
-task runClientRemote(type: JavaExec) {
-    group 'run'
+runClientRemote {
     main = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
-    classpath = sourceSets.main.runtimeClasspath
-    systemProperties = [
-            'jminor.db.type': 'h2',
-            'jminor.client.connectionType': 'remote',
-            'jminor.server.hostname': 'localhost',
-            'javax.net.ssl.trustStore': '../../resources/security/JMinorClientTruststore',
-            'java.security.policy': '../../resources/security/jminor_client.policy',
-            'logback.configurationFile': 'src/main/resources/logback.xml'
-    ]
 }
 
-task runClientHttp(type: JavaExec) {
-    group 'run'
+runClientHttp {
     main = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
-    classpath = sourceSets.main.runtimeClasspath
-    systemProperties = [
-            'jminor.db.type': 'h2',
-            'jminor.client.connectionType': 'http',
-            'jminor.server.hostname': 'localhost',
-            'logback.configurationFile': 'src/main/resources/logback.xml'
-    ]
 }

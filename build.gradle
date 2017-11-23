@@ -45,13 +45,8 @@ allprojects {
 }
 
 subprojects {
-    def demoProject = project.name.contains("demos")
-
     apply plugin: 'java'
     apply plugin: 'jacoco'
-    if (!demoProject) {
-        apply plugin: 'maven-publish'
-    }
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -137,7 +132,9 @@ subprojects {
         baseName = artifactName
     }
 
-    if (!demoProject) {
+    if (!project.name.contains("demos")) {
+        apply plugin: 'maven-publish'
+
         jar {
             manifest {
                 attributes(
@@ -214,129 +211,6 @@ subprojects {
                 property "sonar.sourceEncoding", "UTF-8"
                 property "sonar.exclusions", "**/*module-info.java"
             }
-        }
-    }
-
-    if (demoProject) {
-        apply plugin: 'application'
-        apply plugin: 'de.gliderpilot.jnlp'
-
-        sonarqube {
-            skipProject = true
-        }
-
-        configurations {
-            /** A configuration with a single jar file containing the domain model (and server classes) */
-            domain
-        }
-
-        task jarDomain(type: Jar, dependsOn: classes) {
-            group 'build'
-            baseName = project.name + '-domain'
-            from sourceSets.main.output
-            include '**/domain/**/*'
-            include '**/server/**/*'
-        }
-
-        artifacts {
-            domain jarDomain
-        }
-
-        jnlp {
-            withXml {
-                information {
-                    title project.name
-                    vendor project.group ?: project.name
-                }
-                security {
-                    'all-permissions'()
-                }
-            }
-            signJarParams = [keystore: "${jarSignKeystore}", alias: "${jarSignAlias}", storepass: "${jarSignStorepass}"]
-        }
-
-        startScripts.applicationName = project.name
-
-        startScripts {
-            applicationName = project.name + '-local'
-            defaultJvmOpts = [
-                    '-Djminor.client.connectionType=local',
-                    '-Djminor.db.type=h2',
-                    '-Djminor.db.host=h2db',
-                    '-Djminor.db.embedded=true',
-                    '-Djminor.db.embeddedInMemory=true',
-                    '-Djminor.db.initScript=../config/create_schema.sql',
-                    '-Djminor.report.path=../reports',
-                    '-Dlogback.configurationFile=../config/logback.xml'
-            ]
-        }
-
-        task clientRemoteScript(type: CreateStartScripts) {
-            applicationName = project.name + '-remote'
-            classpath = startScripts.classpath
-            outputDir = startScripts.outputDir
-            defaultJvmOpts = [
-                    '-Djminor.client.connectionType=remote',
-                    '-Djminor.server.hostname=localhost',
-                    '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
-                    '-Djava.security.policy=../config/jminor_client.policy',
-                    '-Dlogback.configurationFile=../config/logback.xml'
-            ]
-        }
-
-        task clientHttpScript(type: CreateStartScripts) {
-            applicationName = project.name + '-http'
-            classpath = startScripts.classpath
-            outputDir = startScripts.outputDir
-            defaultJvmOpts = [
-                    '-Djminor.client.connectionType=http',
-                    '-Djminor.client.http.hostname=localhost',
-                    '-Dlogback.configurationFile=../config/logback.xml'
-            ]
-        }
-
-        task loadTestRemoteScript(type: CreateStartScripts) {
-            applicationName = project.name + '-loadtest-remote'
-            mainClassName = 'org.jminor.framework.demos.DummyLoadTest'
-            classpath = startScripts.classpath
-            outputDir = startScripts.outputDir
-            defaultJvmOpts = [
-                    '-Djminor.client.connectionType=remote',
-                    '-Djminor.server.hostname=localhost',
-                    '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
-                    '-Djava.security.policy=../config/jminor_client.policy',
-                    '-Dlogback.configurationFile=../config/logback.xml'
-            ]
-        }
-
-        task loadTestHttpScript(type: CreateStartScripts) {
-            applicationName = project.name + '-loadtest-http'
-            mainClassName = 'org.jminor.framework.demos.DummyLoadTest'
-            classpath = startScripts.classpath
-            outputDir = startScripts.outputDir
-            defaultJvmOpts = [
-                    '-Djminor.client.connectionType=http',
-                    '-Djminor.client.http.hostname=localhost',
-                    '-Dlogback.configurationFile=../config/logback.xml'
-            ]
-        }
-
-        applicationDistribution.into('config') {
-            from(files('src/main/sql/create_schema.sql'))
-            from(files('src/main/resources/logback.xml'))
-            from(files('../../resources/security/JMinorClientTruststore'))
-        }
-
-        applicationDistribution.into('reports') {
-            from(fileTree(dir: 'build/classes/reports', include: '*.jasper'))
-        }
-
-        applicationDistribution.into('bin') {
-            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-            from(clientRemoteScript)
-            from(clientHttpScript)
-            from(loadTestHttpScript)
-            from(loadTestRemoteScript)
         }
     }
 }
