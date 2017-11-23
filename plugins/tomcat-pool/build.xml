@@ -1,5 +1,0 @@
-<project name="jminor-plugin-tomcat-pool">
-  <property name="project.root" value="../.."/>
-  <property name="java.module.name" value="org.jminor.plugin.tomcat.pool"/>
-  <import file="${project.root}/build-common.xml"/>
-</project>

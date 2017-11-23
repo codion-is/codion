@@ -1,5 +1,0 @@
-<project name="jminor-common-server-http">
-  <property name="project.root" value="../.."/>
-  <property name="java.module.name" value="org.jminor.common.server.http"/>
-  <import file="${project.root}/build-common.xml"/>
-</project>

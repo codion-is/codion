@@ -1,5 +1,0 @@
-<project name="jminor-swing-framework-model">
-  <property name="project.root" value="../.."/>
-  <property name="java.module.name" value="org.jminor.swing.framework.model"/>
-  <import file="${project.root}/build-common.xml"/>
-</project>

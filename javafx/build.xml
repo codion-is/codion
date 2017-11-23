@@ -1,5 +1,0 @@
-<project name="jminor-javafx">
-  <property name="project.root" value=".."/>
-  <property name="java.module.name" value="org.jminor.javafx"/>
-  <import file="${project.root}/build-common.xml"/>
-</project>
