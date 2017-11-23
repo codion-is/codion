@@ -26,22 +26,30 @@ artifacts {
 }
 
 //jnlp {
+//    signJarAddedManifestEntries = [
+//        'Codebase': 'http://jminor.no-ip.org/demos/chinook',
+//        'Permissions': 'all-permissions',
+//        'Application-Name': artifactName
+//    ]
 //    withXml {
 //        information {
-//            title project.name
+//            title artifactName
 //            vendor project.group ?: project.name
 //        }
 //        security {
 //            'all-permissions'()
 //        }
+//        resources {
+//            property('name' : 'jminor.client.connectionType', 'value' : 'remote')
+//        }
 //    }
 //    signJarParams = [keystore: "${jarSignKeystore}", alias: "${jarSignAlias}", storepass: "${jarSignStorepass}"]
 //}
 
-startScripts.applicationName = project.name
+startScripts.applicationName = artifactName
 
 startScripts {
-    applicationName = project.name + '-local'
+    applicationName = artifactName + '-local'
     defaultJvmOpts = [
             '-Djminor.client.connectionType=local',
             '-Djminor.db.type=h2',
@@ -55,7 +63,7 @@ startScripts {
 }
 
 task clientRemoteScript(type: CreateStartScripts) {
-    applicationName = project.name + '-remote'
+    applicationName = artifactName + '-remote'
     classpath = startScripts.classpath
     outputDir = startScripts.outputDir
     defaultJvmOpts = [
@@ -69,7 +77,7 @@ task clientRemoteScript(type: CreateStartScripts) {
 }
 
 task clientHttpScript(type: CreateStartScripts) {
-    applicationName = project.name + '-http'
+    applicationName = artifactName + '-http'
     classpath = startScripts.classpath
     outputDir = startScripts.outputDir
     defaultJvmOpts = [
@@ -81,7 +89,7 @@ task clientHttpScript(type: CreateStartScripts) {
 }
 
 task loadTestRemoteScript(type: CreateStartScripts) {
-    applicationName = project.name + '-loadtest-remote'
+    applicationName = artifactName + '-loadtest-remote'
     mainClassName = 'org.jminor.framework.demos.DummyLoadTest'
     classpath = startScripts.classpath
     outputDir = startScripts.outputDir
@@ -96,7 +104,7 @@ task loadTestRemoteScript(type: CreateStartScripts) {
 }
 
 task loadTestHttpScript(type: CreateStartScripts) {
-    applicationName = project.name + '-loadtest-http'
+    applicationName = artifactName + '-loadtest-http'
     mainClassName = 'org.jminor.framework.demos.DummyLoadTest'
     classpath = startScripts.classpath
     outputDir = startScripts.outputDir
