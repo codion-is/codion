@@ -31,7 +31,7 @@ public class HttpServerTest {
 
   @Test
   public void testWebServer() throws Exception {
-    try (final InputStream input = new URL("http://localhost:" + FILE_SERVER_PORT_NUMBER + "/ivy.xml").openStream()) {
+    try (final InputStream input = new URL("http://localhost:" + FILE_SERVER_PORT_NUMBER + "/build.gradle").openStream()) {
       assertTrue(input.read() > 0);
     }
   }

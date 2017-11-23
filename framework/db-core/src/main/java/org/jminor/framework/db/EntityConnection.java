@@ -141,11 +141,12 @@ public interface EntityConnection {
   List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException;
 
   /**
-   * Updates the given entities according to their properties.
+   * Updates the given entities according to their properties. Returns the updated entities, in no particular order.
    * Throws an exception if any of the given entities is unmodified.
    * @param entities the entities to update
-   * @return the updated entities
+   * @return the updated entities, in no particular order
    * @throws DatabaseException in case of a db exception
+   * @throws org.jminor.common.db.exception.UpdateException in case there is a mismatch between expected and actual umber of updated rows
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    */
   List<Entity> update(final List<Entity> entities) throws DatabaseException;

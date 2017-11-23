@@ -14,6 +14,7 @@ import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
+import org.jminor.common.db.exception.UpdateException;
 import org.jminor.common.db.reports.ReportDataWrapper;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
@@ -336,6 +337,18 @@ public class LocalEntityConnectionTest {
   public void insert() throws DatabaseException {
     final List<Entity.Key> pks = connection.insert(new ArrayList<>());
     assertTrue(pks.isEmpty());
+  }
+
+  @Test(expected = UpdateException.class)
+  public void updateNonExisting() throws DatabaseException {
+    //otherwise the optimistic locking triggers an error
+    connection.setOptimisticLocking(false);
+    final Entity employee = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 4);
+    employee.put(TestDomain.EMP_ID, -888);//non existing
+    employee.saveAll();
+    employee.put(TestDomain.EMP_NAME, "New name");
+    connection.update(Collections.singletonList(employee));
+    fail("Update of non-existing record should throw exception");
   }
 
   @Test

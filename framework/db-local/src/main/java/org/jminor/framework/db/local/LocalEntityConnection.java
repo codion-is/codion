@@ -18,6 +18,7 @@ import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
+import org.jminor.common.db.exception.UpdateException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
@@ -269,13 +270,15 @@ public final class LocalEntityConnection implements EntityConnection {
         performOptimisticLocking(mappedEntities);
 
         final List<Property.ColumnProperty> statementProperties = new ArrayList<>();
+        final List<Entity> updatedEntities = new ArrayList<>(entities.size());
         for (final Map.Entry<String, Collection<Entity>> mappedEntitiesMapEntry : mappedEntities.entrySet()) {
           final String entityId = mappedEntitiesMapEntry.getKey();
+          final Collection<Entity> toUpdate = mappedEntitiesMapEntry.getValue();
           final String tableName = domain.getTableName(entityId);
           final List<Property.ColumnProperty> updateColumnProperties =
                   domain.getColumnProperties(entityId, true, false, false);
 
-          for (final Entity entity : mappedEntitiesMapEntry.getValue()) {
+          for (final Entity entity : toUpdate) {
             populateStatementPropertiesAndValues(false, entity, updateColumnProperties, statementProperties, statementValues);
 
             final EntityCondition condition = entityConditions.condition(entity.getOriginalKey());
@@ -283,17 +286,20 @@ public final class LocalEntityConnection implements EntityConnection {
             statementProperties.addAll(condition.getColumns());
             statementValues.addAll(condition.getValues());
             statement = prepareStatement(updateSQL);
-            executePreparedUpdate(statement, updateSQL, statementProperties, statementValues);
+            final int updated = executePreparedUpdate(statement, updateSQL, statementProperties, statementValues);
+            if (updated == 0) {
+              throw new UpdateException("Update did not affect any rows");
+            }
 
             statement.close();
             statementProperties.clear();
             statementValues.clear();
           }
-        }
-        final List<Entity> updatedEntities = doSelectMany(entityConditions.selectCondition(
-                Entities.getKeys(entities)), 0);
-        if (entities.size() != updatedEntities.size()) {
-          throw new SQLException(entities.size() + " updated rows expected, query returned " + updatedEntities.size());
+          final List<Entity> selected = doSelectMany(entityConditions.selectCondition(Entities.getKeys(toUpdate)), 0);
+          if (selected.size() != toUpdate.size()) {
+            throw new UpdateException(toUpdate.size() + " updated rows expected, query returned " + selected.size() + " entityId: " + entityId);
+          }
+          updatedEntities.addAll(selected);
         }
 
         commitIfTransactionIsNotOpen();
@@ -899,14 +905,14 @@ public final class LocalEntityConnection implements EntityConnection {
     return referencedEntity;
   }
 
-  private void executePreparedUpdate(final PreparedStatement statement, final String sqlStatement,
-                                     final List<Property.ColumnProperty> properties, final List<?> values) throws SQLException {
+  private int executePreparedUpdate(final PreparedStatement statement, final String sqlStatement,
+                                    final List<Property.ColumnProperty> properties, final List<?> values) throws SQLException {
     SQLException exception = null;
     Databases.QUERY_COUNTER.count(sqlStatement);
     try {
       logAccess("executePreparedUpdate", new Object[]{sqlStatement, values});
       setParameterValues(statement, values, properties);
-      statement.executeUpdate();
+      return statement.executeUpdate();
     }
     catch (final SQLException e) {
       exception = e;

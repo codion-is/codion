@@ -4709,3 +4709,7 @@
   Gradle application plugin configuration for demos moved to root script
   Gradle, testing the jnlp plugin
   Unused ant build files removed (most of them)
+  UpdateException added, extended by RecordModifiedException
+  LocalEntityConnection.update() bug fixed, did not expect entities of different types
+  LocalEntityConnection.executePreparedUpdate() now returns the number of affected rows
+  LocalEntityConnection.update() uses the above to throw UpdateException in case no rows are affected
