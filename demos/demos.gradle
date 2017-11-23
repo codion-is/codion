@@ -12,9 +12,10 @@ configurations {
     domain
 }
 
+def artifactName = project.name.replace("org.", "").replace(".", "-")
 task jarDomain(type: Jar, dependsOn: classes) {
     group 'build'
-    baseName = project.name + '-domain'
+    baseName = artifactName + '-domain'
     from sourceSets.main.output
     include '**/domain/**/*'
     include '**/server/**/*'
@@ -60,6 +61,7 @@ task clientRemoteScript(type: CreateStartScripts) {
     defaultJvmOpts = [
             '-Djminor.client.connectionType=remote',
             '-Djminor.server.hostname=localhost',
+            '-Djminor.report.path=../reports',
             '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
             '-Djava.security.policy=../config/jminor_client.policy',
             '-Dlogback.configurationFile=../config/logback.xml'
@@ -73,6 +75,7 @@ task clientHttpScript(type: CreateStartScripts) {
     defaultJvmOpts = [
             '-Djminor.client.connectionType=http',
             '-Djminor.client.http.hostname=localhost',
+            '-Djminor.report.path=../reports',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -85,6 +88,7 @@ task loadTestRemoteScript(type: CreateStartScripts) {
     defaultJvmOpts = [
             '-Djminor.client.connectionType=remote',
             '-Djminor.server.hostname=localhost',
+            '-Djminor.report.path=../reports',
             '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
             '-Djava.security.policy=../config/jminor_client.policy',
             '-Dlogback.configurationFile=../config/logback.xml'
@@ -99,6 +103,7 @@ task loadTestHttpScript(type: CreateStartScripts) {
     defaultJvmOpts = [
             '-Djminor.client.connectionType=http',
             '-Djminor.client.http.hostname=localhost',
+            '-Djminor.report.path=../reports',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }

@@ -58,47 +58,18 @@ startScripts {
 
 clientRemoteScript {
     mainClassName = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
-    defaultJvmOpts = [
-            '-Djminor.client.connectionType=remote',
-            '-Djminor.server.hostname=localhost',
-            '-Djminor.report.path=../../demos/chinook/build/classes/reports',
-            '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
-            '-Djava.security.policy=../config/jminor_client.policy',
-            '-Dlogback.configurationFile=../config/logback.xml'
-    ]
-
 }
 
 clientHttpScript {
     mainClassName = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
-    defaultJvmOpts = [
-            '-Djminor.client.connectionType=http',
-            '-Djminor.client.http.hostname=localhost',
-            '-Djminor.report.path=../../demos/chinook/build/classes/reports',
-            '-Dlogback.configurationFile=../config/logback.xml'
-    ]
 }
 
 loadTestRemoteScript {
     mainClassName = 'org.jminor.framework.demos.chinook.testing.ChinookLoadTest'
-    defaultJvmOpts = [
-            '-Djminor.client.connectionType=remote',
-            '-Djminor.server.hostname=localhost',
-            '-Djminor.report.path=../../demos/chinook/build/classes/reports',
-            '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
-            '-Djava.security.policy=../config/jminor_client.policy',
-            '-Dlogback.configurationFile=../config/logback.xml'
-    ]
 }
 
 loadTestHttpScript {
     mainClassName = 'org.jminor.framework.demos.chinook.testing.ChinookLoadTest'
-    defaultJvmOpts = [
-            '-Djminor.client.connectionType=http',
-            '-Djminor.client.http.hostname=localhost',
-            '-Djminor.report.path=../../demos/chinook/build/classes/reports',
-            '-Dlogback.configurationFile=../config/logback.xml'
-    ]
 }
 
 runClientLocal {

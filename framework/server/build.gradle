@@ -82,7 +82,12 @@ applicationDistribution.from(files('../../demos/petstore/src/main/sql/create_sch
 applicationDistribution.from(files('../../demos/world/src/main/sql/create_schema.sql')) {
     into("config/world")
 }
-
+applicationDistribution.from(files('../../demos/empdept/build/classes/reports/empdept_employees.jasper')) {
+    into("reports")
+}
+applicationDistribution.from(files('../../demos/chinook/build/classes/reports/customer_report.jasper')) {
+    into("reports")
+}
 applicationDefaultJvmArgs = [
         "-Djava.security.policy=../config/all_permissions.policy",
         "-Djminor.configurationFile=../config/h2_embedded.config"
