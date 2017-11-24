@@ -4714,3 +4714,5 @@
   LocalEntityConnection.executePreparedUpdate() now returns the number of affected rows
   LocalEntityConnection.update() uses the above to throw UpdateException in case no rows are affected
   LocalEntityConnection, refactored, exeption handling improved (more work needed)
+  DefaultEntity.DefaultKey.newInstance() overloaded, so that getCopy() and getOriginalCopy() work
+  ColumnProperty.setValueConverter() now with wildcards

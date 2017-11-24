@@ -945,6 +945,11 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
 
     @Override
+    public ValueMap<Property.ColumnProperty, Object> newInstance() {
+      return new DefaultKey(entities, definition, (Map) null);
+    }
+
+    @Override
     public int getPropertyCount() {
       if (compositeKey) {
         return getProperties().size();

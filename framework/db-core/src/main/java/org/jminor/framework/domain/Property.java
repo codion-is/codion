@@ -520,7 +520,7 @@ public interface Property extends Attribute {
      * @param valueConverter the converter
      * @return this Property instance
      */
-    ColumnProperty setValueConverter(final ValueConverter<Object, Object> valueConverter);
+    ColumnProperty setValueConverter(final ValueConverter<?, ?> valueConverter);
 
     /**
      * @return a ResultPacker responsible for packing this property

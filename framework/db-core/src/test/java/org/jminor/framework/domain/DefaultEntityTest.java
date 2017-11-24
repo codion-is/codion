@@ -555,6 +555,20 @@ public class DefaultEntityTest {
   }
 
   @Test
+  public void keyGetCopy() {
+    final Entity.Key empKey1 = ENTITIES.key(TestDomain.T_EMP);
+    empKey1.put(TestDomain.EMP_ID, 1);
+    final Entity.Key copy = (Entity.Key) empKey1.getCopy();
+    assertEquals(empKey1, copy);
+
+    empKey1.put(TestDomain.EMP_ID, 2);
+    final Entity.Key originalCopy = (Entity.Key) empKey1.getOriginalCopy();
+    final Entity.Key originalCreated = ENTITIES.key(TestDomain.T_EMP);
+    originalCreated.put(TestDomain.EMP_ID, 1);
+    assertEquals(originalCopy, originalCreated);
+  }
+
+  @Test
   public void keyEquality() {
     final Entity.Key empKey1 = ENTITIES.key(TestDomain.T_EMP);
     empKey1.put(TestDomain.EMP_ID, 1);

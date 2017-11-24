@@ -771,9 +771,9 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public final ColumnProperty setValueConverter(final ValueConverter<Object, Object> valueConverter) {
+    public final ColumnProperty setValueConverter(final ValueConverter<?, ?> valueConverter) {
       Objects.requireNonNull(valueConverter, "valueConverter");
-      this.valueConverter = valueConverter;
+      this.valueConverter = (ValueConverter<Object, Object>) valueConverter;
       return this;
     }
 
