@@ -37,3 +37,9 @@ idea.project.ipr {
         exclude.appendNode('file', [url: 'file://$PROJECT_DIR$/swing/framework-tools-ui/src/main/java/module-info.java'])
     }
 }
+
+idea.module {
+    iml {
+        generateTo = projectDir
+    }
+}
