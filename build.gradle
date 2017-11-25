@@ -109,6 +109,12 @@ subprojects {
 //        }
 //    }
 
+//    javadoc {
+//        doFirst {
+//            options.addStringOption('-module-path', classpath.asPath)
+//        }
+//    }
+
     test {
 //        inputs.property("moduleName", moduleName)
 //        doFirst {
