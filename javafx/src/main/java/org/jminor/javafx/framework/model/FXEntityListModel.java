@@ -9,7 +9,6 @@ import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -43,7 +42,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private static final Logger LOG = LoggerFactory.getLogger(FXEntityListModel.class);
 
   private final EntityTableConditionModel conditionModel;
-  private final EntityConditions entityConditions;
 
   private FXEntityEditModel editModel;
   private ObservableList<? extends TableColumn<Entity, ?>> columns;
@@ -85,7 +83,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       throw new IllegalStateException("No visible properties defined for entity: " + entityId);
     }
     this.conditionModel = conditionModel;
-    this.entityConditions = connectionProvider.getConditions();
     bindEvents();
   }
 
@@ -458,8 +455,10 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
 
     try {
-      return getConnectionProvider().getConnection().selectMany(entityConditions.selectCondition(getEntityId(),
-              conditionModel.getCondition(), getOrderByClause(), fetchCount));
+      final EntityConnectionProvider connectionProvider = getConnectionProvider();
+      return connectionProvider.getConnection().selectMany(
+              connectionProvider.getConditions().selectCondition(getEntityId(),
+                      conditionModel.getCondition(), getOrderByClause(), fetchCount));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);

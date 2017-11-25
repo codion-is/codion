@@ -4,7 +4,6 @@
 package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.javafx.framework.model.FXEntityListModel;
@@ -23,11 +22,9 @@ public final class EntityTableColumn extends FXEntityListModel.PropertyTableColu
    * Instantiates a new table column for the given list model based on the given property
    * @param listModel the list model this column is for
    * @param property the property
-   * @param connectionProvider the connection provider
    * @param cellValueFactory the cell value factory for this column
    */
   public EntityTableColumn(final FXEntityListModel listModel, final Property property,
-                           final EntityConnectionProvider connectionProvider,
                            final Callback<CellDataFeatures<Entity, Object>, ObservableValue<Object>> cellValueFactory) {
     super(property);
     this.conditionView = initializeConditionView(listModel);

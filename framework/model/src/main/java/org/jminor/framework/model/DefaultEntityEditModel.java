@@ -585,7 +585,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final Entity getDefaultEntity() {
-    return getEntities().getEntity(entityId, defaultValueProvider);
+    return getEntities().entity(entityId, defaultValueProvider);
   }
 
   /** {@inheritDoc} */

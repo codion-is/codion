@@ -43,7 +43,7 @@ task createServerKeystore {
 }
 
 allprojects {
-    version='0.11.0-SNAPSHOT'
+    version = '0.11.0-SNAPSHOT'
 }
 
 subprojects {
@@ -211,7 +211,7 @@ subprojects {
                 property "sonar.projectVersion", version
                 property "sonar.java.source", "1.8"
                 property "sonar.sourceEncoding", "UTF-8"
-                property "sonar.exclusions", "**/*module-info.java"
+                property "sonar.exclusions", "**/*module-info.java,**/*TestDomain.java"
             }
         }
     }

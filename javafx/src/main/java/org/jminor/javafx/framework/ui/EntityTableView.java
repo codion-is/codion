@@ -129,8 +129,7 @@ public class EntityTableView extends TableView<Entity> {
 
   private void initializeColumns() {
     for (final Property property : getListModel().getEntities().getVisibleProperties(listModel.getEntityId())) {
-      getColumns().add(new EntityTableColumn(listModel, property, listModel.getConnectionProvider(),
-              getCellValueFactory(property)));
+      getColumns().add(new EntityTableColumn(listModel, property, getCellValueFactory(property)));
     }
     listModel.setColumns(getColumns());
   }

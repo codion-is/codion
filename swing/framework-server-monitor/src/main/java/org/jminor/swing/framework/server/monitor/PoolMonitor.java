@@ -59,14 +59,6 @@ public final class PoolMonitor {
     }
   }
 
-  /**
-   * @param usernames the usernames
-   * @throws UnsupportedOperationException always
-   */
-  public void addConnectionPools(final String[] usernames) {
-    throw new UnsupportedOperationException("Not implemented");
-  }
-
   private static final class MonitorPool implements ConnectionPool {
 
     private final EntityConnectionServerAdmin server;

@@ -117,7 +117,7 @@ public class Entities {
 
   /**
    * Instantiates a new {@link Entity} instance using the given maps for the values and original values respectively.
-   * Note that the given map instances are used internally, modifying the contents of those maps outside this
+   * Note that the given map instances are used internally, modifying the contents of those maps outside the
    * {@link Entity} instance will definitely result in some unexpected and unpleasant behaviour.
    * @param entityId the entity ID
    * @param values the values
@@ -126,6 +126,37 @@ public class Entities {
    */
   public final Entity entity(final String entityId, final Map<Property, Object> values, final Map<Property, Object> originalValues) {
     return new DefaultEntity(this, entityId, values, originalValues);
+  }
+
+  /**
+   * Instantiates a new {@link Entity} of the given type using the values provided by {@code valueProvider}.
+   * Values are fetched for {@link Property.ColumnProperty} and its descendants, {@link Property.ForeignKeyProperty}
+   * and {@link Property.TransientProperty} (excluding its descendants)
+   * @param entityId the entity ID
+   * @param valueProvider the value provider
+   * @return the populated entity
+   */
+  public final Entity entity(final String entityId, final ValueProvider<Property, Object> valueProvider) {
+    final Entity entity = entity(entityId);
+    final Collection<Property.ColumnProperty> columnProperties = getColumnProperties(entityId);
+    for (final Property.ColumnProperty property : columnProperties) {
+      if (!property.isForeignKeyProperty() && !property.isDenormalized()) {//these are set via their respective parent properties
+        entity.put(property, valueProvider.get(property));
+      }
+    }
+    final Collection<Property.TransientProperty> transientProperties = getTransientProperties(entityId);
+    for (final Property.TransientProperty transientProperty : transientProperties) {
+      if (!(transientProperty instanceof Property.DerivedProperty)) {
+        entity.put(transientProperty, valueProvider.get(transientProperty));
+      }
+    }
+    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = getForeignKeyProperties(entityId);
+    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+      entity.put(foreignKeyProperty, valueProvider.get(foreignKeyProperty));
+    }
+    entity.saveAll();
+
+    return entity;
   }
 
   /**
@@ -735,37 +766,6 @@ public class Entities {
    */
   public final List<Property.ColumnProperty> getForeignProperties(final Property.ForeignKeyProperty foreignKeyProperty) {
     return getPrimaryKeyProperties(foreignKeyProperty.getForeignEntityId());
-  }
-
-  /**
-   * Populates an entity of the given type using the values provided by {@code valueProvider}.
-   * Values are fetched for {@link Property.ColumnProperty} and its descendants, {@link Property.TransientProperty}
-   * excluding its descendants and {@link Property.ForeignKeyProperty}.
-   * @param entityId the entity ID
-   * @param valueProvider the value provider
-   * @return the populated entity
-   */
-  public final Entity getEntity(final String entityId, final ValueProvider<Property, Object> valueProvider) {
-    final Entity entity = entity(entityId);
-    final Collection<Property.ColumnProperty> columnProperties = getColumnProperties(entityId);
-    for (final Property.ColumnProperty property : columnProperties) {
-      if (!property.isForeignKeyProperty() && !property.isDenormalized()) {//these are set via their respective parent properties
-        entity.put(property, valueProvider.get(property));
-      }
-    }
-    final Collection<Property.TransientProperty> transientProperties = getTransientProperties(entityId);
-    for (final Property.TransientProperty transientProperty : transientProperties) {
-      if (!(transientProperty instanceof Property.DerivedProperty)) {
-        entity.put(transientProperty, valueProvider.get(transientProperty));
-      }
-    }
-    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = getForeignKeyProperties(entityId);
-    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      entity.put(foreignKeyProperty, valueProvider.get(foreignKeyProperty));
-    }
-    entity.saveAll();
-
-    return entity;
   }
 
   /**

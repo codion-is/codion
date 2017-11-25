@@ -3,11 +3,9 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
-import org.jminor.common.Util;
 import org.jminor.swing.framework.server.monitor.ConnectionPoolMonitor;
 import org.jminor.swing.framework.server.monitor.PoolMonitor;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
@@ -26,13 +24,6 @@ public final class PoolMonitorPanel extends JPanel {
   public PoolMonitorPanel(final PoolMonitor model) {
     this.model = model;
     initializeUI();
-  }
-
-  public void addConnectionPool() {
-    final String usernames = JOptionPane.showInputDialog("User name(s) (comma separated)");
-    if (!Util.nullOrEmpty(usernames)) {
-      model.addConnectionPools(usernames.split(","));
-    }
   }
 
   private void initializeUI() {
