@@ -1,5 +1,0 @@
-<project name="petstore">
-  <import file="../build-demo.xml"/>
-  <property name="client.main.class" value="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel"/>
-  <property name="loadtest.main.class" value="org.jminor.framework.demos.petstore.testing.PetstoreLoadTest"/>
-</project>

@@ -1,5 +1,0 @@
-<project name="chinook">
-  <import file="../build-demo.xml"/>
-  <property name="client.main.class" value="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel"/>
-  <property name="loadtest.main.class" value="org.jminor.framework.demos.chinook.testing.ChinookLoadTest"/>
-</project>
