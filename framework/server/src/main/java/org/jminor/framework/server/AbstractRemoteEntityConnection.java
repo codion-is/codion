@@ -134,6 +134,9 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    */
   public final void disconnect() {
     synchronized (connectionProxy) {
+      if (connectionHandler.disconnected) {
+        return;
+      }
       try {
         UnicastRemoteObject.unexportObject(this, true);
       }

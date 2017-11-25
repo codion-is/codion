@@ -4721,3 +4721,5 @@
   Entities.getEntity() renamed to entity()
   Removed generic wildcard parameter from ValueMap, ValueMapEditModel and descendants
   Farewell sweet Ant, remaining build files removed
+  AbstractRemoteEntityConnection.disconnect() returns if already disconnected
+  Databases.closeSilently() no longer varargs

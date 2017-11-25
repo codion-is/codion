@@ -286,10 +286,10 @@ public class Util {
   }
 
   /**
-   * Deserializes the given byte array into a list of T, null or an empty byte array result in a null return value
+   * Deserializes the given byte array into a T, null or an empty byte array result in a null return value
    * @param bytes a byte array representing the serialized object
-   * @param <T> the type of objects represented in the byte array
-   * @return the deserialized objects
+   * @param <T> the type of the object represented in the byte array
+   * @return the deserialized object
    * @throws IOException in case of an exception
    * @throws ClassNotFoundException in case the deserialized class is not found
    */

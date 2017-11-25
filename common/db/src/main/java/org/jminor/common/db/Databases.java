@@ -35,22 +35,12 @@ public final class Databases {
   /**
    * A result packer for fetching integers from a result set containing a single integer column
    */
-  public static final ResultPacker<Integer> INTEGER_RESULT_PACKER = new ResultPacker<Integer>() {
-    @Override
-    public Integer fetch(final ResultSet resultSet) throws SQLException {
-      return resultSet.getInt(1);
-    }
-  };
+  public static final ResultPacker<Integer> INTEGER_RESULT_PACKER = resultSet -> resultSet.getInt(1);
 
   /**
    * A result packer for fetching longs from a result set containing a single long column
    */
-  public static final ResultPacker<Long> LONG_RESULT_PACKER = new ResultPacker<Long>() {
-    @Override
-    public Long fetch(final ResultSet resultSet) throws SQLException {
-      return resultSet.getLong(1);
-    }
-  };
+  public static final ResultPacker<Long> LONG_RESULT_PACKER = resultSet -> resultSet.getLong(1);
 
   private static Database instance;
 
@@ -83,57 +73,42 @@ public final class Databases {
   }
 
   /**
-   * Closes the given ResultSet instances, swallowing any SQLExceptions that occur
-   * @param resultSets the result sets to close
+   * Closes the given ResultSet instance, swallowing any SQLExceptions that occur
+   * @param resultSet the result set to close
    */
-  public static void closeSilently(final ResultSet... resultSets) {
-    if (resultSets == null) {
-      return;
-    }
-    for (final ResultSet resultSet : resultSets) {
-      try {
-        if (resultSet != null) {
-          resultSet.close();
-        }
+  public static void closeSilently(final ResultSet resultSet) {
+    try {
+      if (resultSet != null) {
+        resultSet.close();
       }
-      catch (final SQLException ignored) {/*ignored*/}
     }
+    catch (final SQLException ignored) {/*ignored*/}
   }
 
   /**
-   * Closes the given Statement instances, swallowing any SQLExceptions that occur
-   * @param statements the statements to close
+   * Closes the given Statement instance, swallowing any SQLExceptions that occur
+   * @param statement the statement to close
    */
-  public static void closeSilently(final Statement... statements) {
-    if (statements == null) {
-      return;
-    }
-    for (final Statement statement : statements) {
-      try {
-        if (statement != null) {
-          statement.close();
-        }
+  public static void closeSilently(final Statement statement) {
+    try {
+      if (statement != null) {
+        statement.close();
       }
-      catch (final SQLException ignored) {/*ignored*/}
     }
+    catch (final SQLException ignored) {/*ignored*/}
   }
 
   /**
-   * Closes the given Connection instances, swallowing any SQLExceptions that occur
-   * @param connections the connections to close
+   * Closes the given Connection instance, swallowing any SQLExceptions that occur
+   * @param connection the connection to close
    */
-  public static void closeSilently(final Connection... connections) {
-    if (connections == null) {
-      return;
-    }
-    for (final Connection connection : connections) {
-      try {
-        if (connection != null) {
-          connection.close();
-        }
+  public static void closeSilently(final Connection connection) {
+    try {
+      if (connection != null) {
+        connection.close();
       }
-      catch (final SQLException ignored) {/*ignored*/}
     }
+    catch (final SQLException ignored) {/*ignored*/}
   }
 
   /**

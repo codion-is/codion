@@ -91,15 +91,9 @@ public class DatabasesTest {
 
   @Test
   public void closeSilently() {
-    Databases.closeSilently((Connection[]) null);
     Databases.closeSilently((Statement) null);
     Databases.closeSilently((ResultSet) null);
-
-    Databases.closeSilently((Statement[]) null);
-    Databases.closeSilently((ResultSet[]) null);
-
-    Databases.closeSilently(new Statement[]{null, null});
-    Databases.closeSilently(new ResultSet[]{null, null});
+    Databases.closeSilently((Connection) null);
   }
 
   @Test
