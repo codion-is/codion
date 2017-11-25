@@ -243,7 +243,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public EventObserver<ValueChange<Property, ?>> getValueObserver(final String propertyId) {
+  public EventObserver<ValueChange<Property, Object>> getValueObserver(final String propertyId) {
     return getValueObserver(getEntities().getProperty(entityId, propertyId));
   }
 
@@ -624,7 +624,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public void addValueSetListener(final String propertyId, final EventInfoListener<ValueChange<Property, ?>> listener) {
+  public void addValueSetListener(final String propertyId, final EventInfoListener<ValueChange<Property, Object>> listener) {
     addValueSetListener(getEntities().getProperty(entityId, propertyId), listener);
   }
 
@@ -636,7 +636,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public void addValueListener(final String propertyId, final EventInfoListener<ValueChange<Property, ?>> listener) {
+  public void addValueListener(final String propertyId, final EventInfoListener<ValueChange<Property, Object>> listener) {
     addValueListener(getEntities().getProperty(entityId, propertyId), listener);
   }
 

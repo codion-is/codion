@@ -51,7 +51,7 @@ public class DefaultValueMapTest {
 
     final ValueMap<TestAttribute, Integer> valueMap = new DefaultValueMap<>();
 
-    final EventInfoListener<ValueChange<TestAttribute, ?>> valueListener = info -> {
+    final EventInfoListener<ValueChange<TestAttribute, Integer>> valueListener = info -> {
       Assert.assertEquals(attr1, info.getKey());
       info.toString();
       info.getOldValue();

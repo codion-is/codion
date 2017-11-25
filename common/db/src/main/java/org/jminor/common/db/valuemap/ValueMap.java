@@ -162,7 +162,7 @@ public interface ValueMap<K extends Attribute, V> extends ValueProvider<K, V>, V
    * @return an EventObserver notified when a value changes.
    * @see ValueChange
    */
-  EventObserver<ValueChange<K, ?>> getValueObserver();
+  EventObserver<ValueChange<K, V>> getValueObserver();
 
   /**
    * Adds a listener notified each time a value changes
@@ -170,7 +170,7 @@ public interface ValueMap<K extends Attribute, V> extends ValueProvider<K, V>, V
    * @param valueListener the listener
    * @see ValueChange
    */
-  void addValueListener(final EventInfoListener<ValueChange<K, ?>> valueListener);
+  void addValueListener(final EventInfoListener<ValueChange<K, V>> valueListener);
 
   /**
    * Removes the given value listener if it has been registered with this value map.

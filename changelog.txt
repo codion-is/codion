@@ -4719,3 +4719,4 @@
   EntityTableColumn, redundant connectionProvider field removed
   PoolMonitor, PoolMonitorPanel, unused methods removed
   Entities.getEntity() renamed to entity()
+  Removed generic wildcard parameter from ValueMap, ValueMapEditModel and descendants

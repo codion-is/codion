@@ -46,7 +46,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
   /**
    * Fired when a value changes, null until initialized by a call to getValueChangedEvent().
    */
-  private Event<ValueChange<K, ?>> valueChangedEvent;
+  private Event<ValueChange<K, V>> valueChangedEvent;
 
   private static final int MAGIC_NUMBER = 23;
 
@@ -313,7 +313,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueListener(final EventInfoListener<ValueChange<K, ?>> valueListener) {
+  public final void addValueListener(final EventInfoListener<ValueChange<K, V>> valueListener) {
     getValueObserver().addInfoListener(valueListener);
   }
 
@@ -336,7 +336,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver<ValueChange<K, ?>> getValueObserver() {
+  public final EventObserver<ValueChange<K, V>> getValueObserver() {
     return getValueChangedEvent().getObserver();
   }
 
@@ -414,7 +414,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
     }
   }
 
-  private Event<ValueChange<K, ?>> getValueChangedEvent() {
+  private Event<ValueChange<K, V>> getValueChangedEvent() {
     if (valueChangedEvent == null) {
       valueChangedEvent = Events.event();
       handleValueChangedEventInitialized();

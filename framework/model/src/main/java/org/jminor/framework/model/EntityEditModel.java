@@ -433,7 +433,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param propertyId the ID of the property for which to retrieve the event
    * @return an EventObserver notified when the value of the given property changes
    */
-  EventObserver<ValueChange<Property, ?>> getValueObserver(final String propertyId);
+  EventObserver<ValueChange<Property, Object>> getValueObserver(final String propertyId);
 
   /**
    * Adds a listener notified each time the value associated with the given property is set via
@@ -441,7 +441,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param propertyId the ID of the property for which to monitor value changes
    * @param listener a listener notified each time the value of the given property is set via this model
    */
-  void addValueSetListener(final String propertyId, final EventInfoListener<ValueChange<Property, ?>> listener);
+  void addValueSetListener(final String propertyId, final EventInfoListener<ValueChange<Property, Object>> listener);
 
   /**
    * @param propertyId the propertyId
@@ -454,7 +454,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param propertyId the ID of the property for which to monitor value changes
    * @param listener a listener notified each time the value of the property identified by {@code propertyId} changes
    */
-  void addValueListener(final String propertyId, final EventInfoListener<ValueChange<Property, ?>> listener);
+  void addValueListener(final String propertyId, final EventInfoListener<ValueChange<Property, Object>> listener);
 
   /**
    * @param propertyId the ID of the property for which to remove the listener

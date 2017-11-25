@@ -49,12 +49,12 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
   /**
    * Holds events signaling value changes made via the ui
    */
-  private final Map<K, Event<ValueChange<K, ?>>> valueSetEventMap = new HashMap<>();
+  private final Map<K, Event<ValueChange<K, V>>> valueSetEventMap = new HashMap<>();
 
   /**
    * Holds events signaling value changes made via the model or ui
    */
-  private final Map<K, Event<ValueChange<K, ?>>> valueChangeEventMap = new HashMap<>();
+  private final Map<K, Event<ValueChange<K, V>>> valueChangeEventMap = new HashMap<>();
 
   /**
    * @param valueMap the ValueMap to edit
@@ -77,7 +77,7 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
   public final void setValue(final K key, final V value) {
     Objects.requireNonNull(key, KEY);
     final boolean initialization = !valueMap.containsKey(key);
-    final Object oldValue = valueMap.get(key);
+    final V oldValue = valueMap.get(key);
     valueMap.put(key, value);
     if (!Objects.equals(value, oldValue)) {
       notifyValueChange(key, ValueChanges.valueChange(key, value, oldValue, initialization));
@@ -167,19 +167,19 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver<ValueChange<K, ?>> getValueObserver() {
+  public final EventObserver<ValueChange<K, V>> getValueObserver() {
     return valueMap.getValueObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver<ValueChange<K, ?>> getValueObserver(final K key) {
+  public final EventObserver<ValueChange<K, V>> getValueObserver(final K key) {
     return getValueChangeEvent(Objects.requireNonNull(key, KEY)).getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueSetListener(final K key, final EventInfoListener<ValueChange<K, ?>> listener) {
+  public final void addValueSetListener(final K key, final EventInfoListener<ValueChange<K, V>> listener) {
     getValueSetEvent(key).addInfoListener(listener);
   }
 
@@ -193,7 +193,7 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueListener(final K key, final EventInfoListener<ValueChange<K, ?>> listener) {
+  public final void addValueListener(final K key, final EventInfoListener<ValueChange<K, V>> listener) {
     getValueObserver(key).addInfoListener(listener);
   }
 
@@ -217,21 +217,21 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
    * @param key the key
    * @param event the event describing the value change
    */
-  private void notifyValueChange(final K key, final ValueChange<K, ?> event) {
+  private void notifyValueChange(final K key, final ValueChange<K, V> event) {
     getValueSetEvent(key).fire(event);
   }
 
-  private Event<ValueChange<K, ?>> getValueSetEvent(final K key) {
+  private Event<ValueChange<K, V>> getValueSetEvent(final K key) {
     if (!valueSetEventMap.containsKey(key)) {
-      valueSetEventMap.put(key, Events.<ValueChange<K, ?>>event());
+      valueSetEventMap.put(key, Events.<ValueChange<K, V>>event());
     }
 
     return valueSetEventMap.get(key);
   }
 
-  private Event<ValueChange<K, ?>> getValueChangeEvent(final K key) {
+  private Event<ValueChange<K, V>> getValueChangeEvent(final K key) {
     if (!valueChangeEventMap.containsKey(key)) {
-      valueChangeEventMap.put(key, Events.<ValueChange<K, ?>>event());
+      valueChangeEventMap.put(key, Events.<ValueChange<K, V>>event());
     }
 
     return valueChangeEventMap.get(key);
@@ -240,7 +240,7 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
   private void bindEvents() {
     valueMap.addValueListener(valueChange -> {
       validState.setActive(validator.isValid(valueMap));
-      final Event<ValueChange<K, ?>> valueChangeEvent = valueChangeEventMap.get(valueChange.getKey());
+      final Event<ValueChange<K, V>> valueChangeEvent = valueChangeEventMap.get(valueChange.getKey());
       if (valueChangeEvent != null) {
         valueChangeEvent.fire(valueChange);
       }
