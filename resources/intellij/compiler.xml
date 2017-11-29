@@ -16,14 +16,15 @@
       <file url="file://$PROJECT_DIR$/framework/model-unittests/src/main/java/module-info.java" />
       <file url="file://$PROJECT_DIR$/framework/server/src/main/java/module-info.java" />
       <file url="file://$PROJECT_DIR$/framework/servlet/src/main/java/module-info.java" />
-      <file url="file://$PROJECT_DIR$/framework/plugins/hikari-pool/src/main/java/module-info.java" />
-      <file url="file://$PROJECT_DIR$/framework/plugins/imagepanel/src/main/java/module-info.java" />
-      <file url="file://$PROJECT_DIR$/framework/plugins/jasperreports/src/main/java/module-info.java" />
-      <file url="file://$PROJECT_DIR$/framework/plugins/json/src/main/java/module-info.java" />
-      <file url="file://$PROJECT_DIR$/framework/plugins/log4j-proxy/src/main/java/module-info.java" />
-      <file url="file://$PROJECT_DIR$/framework/plugins/logback-proxy/src/main/java/module-info.java" />
-      <file url="file://$PROJECT_DIR$/framework/plugins/nextreports/src/main/java/module-info.java" />
-      <file url="file://$PROJECT_DIR$/framework/plugins/tomcat-pool/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/javafx/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/plugins/hikari-pool/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/plugins/imagepanel/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/plugins/jasperreports/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/plugins/json/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/plugins/log4j-proxy/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/plugins/logback-proxy/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/plugins/nextreports/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/plugins/tomcat-pool/src/main/java/module-info.java" />
       <file url="file://$PROJECT_DIR$/swing/common-model/src/main/java/module-info.java" />
       <file url="file://$PROJECT_DIR$/swing/common-ui/src/main/java/module-info.java" />
       <file url="file://$PROJECT_DIR$/swing/common-tools/src/main/java/module-info.java" />
@@ -31,6 +32,7 @@
       <file url="file://$PROJECT_DIR$/swing/framework-server-monitor/src/main/java/module-info.java" />
       <file url="file://$PROJECT_DIR$/swing/framework-model/src/main/java/module-info.java" />
       <file url="file://$PROJECT_DIR$/swing/framework-ui/src/main/java/module-info.java" />
+      <file url="file://$PROJECT_DIR$/swing/framework-ui-test/src/main/java/module-info.java" />
       <file url="file://$PROJECT_DIR$/swing/framework-tools/src/main/java/module-info.java" />
       <file url="file://$PROJECT_DIR$/swing/framework-tools-ui/src/main/java/module-info.java" />
     </excludeFromCompile>

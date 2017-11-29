@@ -4724,3 +4724,4 @@
   AbstractRemoteEntityConnection.disconnect() returns if already disconnected
   Databases.closeSilently() no longer varargs
   .idea directory removed
+  module-info.java files added and fixed
