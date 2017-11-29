@@ -4723,3 +4723,4 @@
   Farewell sweet Ant, remaining build files removed
   AbstractRemoteEntityConnection.disconnect() returns if already disconnected
   Databases.closeSilently() no longer varargs
+  .idea directory removed
