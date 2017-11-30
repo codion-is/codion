@@ -4,7 +4,6 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.netflix.nebula:gradle-aggregate-javadocs-plugin:2.2.+'
         classpath 'de.gliderpilot.gradle.jnlp:gradle-jnlp-plugin:+'
     }
 }
@@ -12,11 +11,6 @@ buildscript {
 plugins {
     id "org.sonarqube" version "2.6"
 }
-
-apply plugin: 'idea'
-apply plugin: 'nebula-aggregate-javadocs'
-
-apply from: 'idea.gradle'
 
 /** Creates a key- and truststore pair used when running server unit tests and demos with remote connection */
 task createServerKeystore {
@@ -222,4 +216,15 @@ subprojects {
             }
         }
     }
+}
+
+def sourceProjects = subprojects.findAll { it.plugins.hasPlugin('java') && !it.name.contains("demo")}
+
+task combinedJavadoc(type: Javadoc) {
+    group 'documentation'
+    title "JMinor Framework API $version"
+    options.links 'http://docs.oracle.com/javase/8/docs/api/'
+    destinationDir = file("${buildDir}/docs/javadoc")
+    source sourceProjects.collect { it.sourceSets.main.allJava }
+    classpath = files(sourceProjects.collect { it.sourceSets.main.compileClasspath })
 }

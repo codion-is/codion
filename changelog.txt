@@ -4726,3 +4726,4 @@
   .idea directory removed
   module-info.java files added and fixed
   Version info moved from build.gradle to gradle.properties as frameworkVersion
+  Idea and aggregate javadoc plugins removed from gradle build, combinedJavadoc task added
