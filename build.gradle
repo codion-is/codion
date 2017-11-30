@@ -22,18 +22,19 @@ apply from: 'idea.gradle'
 task createServerKeystore {
     doLast {
         def rootDir = project.rootDir.toString() + '/resources/security/'
+        def keyToolExecutable = System.getProperty('java.home') + '/bin/keytool'
         def keystore = rootDir + 'JMinorServerKeystore'
         def certificate = rootDir + 'JMinorServer.cer'
         def truststore = rootDir + 'JMinorClientTruststore'
-        if (!new File(rootDir + 'JMinorServerKeystore').exists()) {
+        if (!new File(keystore).exists()) {
             ant.genkey(alias: 'JMinorServer', keyalg: 'RSA', keystore: keystore,
                     storepass: 'crappypass', dname: 'CN=Dummy, OU=dummy, O=dummy.org, C=DU')
             exec {
-                executable = System.getProperty('java.home') + '/bin/keytool'
+                executable = keyToolExecutable
                 args = ['-exportcert', '-keystore', keystore, '-alias', 'JMinorServer', '-rfc', '-file', certificate]
             }
             exec {
-                executable = System.getProperty('java.home') + '/bin/keytool'
+                executable = keyToolExecutable
                 args = ['-import', '-alias', 'JMinorServer', '-storepass', 'crappypass', '-file', certificate,
                         '-keystore', truststore, '-noprompt']
             }
