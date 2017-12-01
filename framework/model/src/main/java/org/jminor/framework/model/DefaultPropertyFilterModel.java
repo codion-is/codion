@@ -31,7 +31,7 @@ public class DefaultPropertyFilterModel extends DefaultColumnConditionModel<Prop
 
     final Property property = getColumnIdentifier();
     final Object value = entity.get(property);
-    if (property instanceof Property.ForeignKeyProperty) {
+    if (value instanceof Entity) {
       return value.toString();
     }
     else {

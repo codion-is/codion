@@ -4727,3 +4727,4 @@
   module-info.java files added and fixed
   Version info moved from build.gradle to gradle.properties as frameworkVersion
   Idea and aggregate javadoc plugins removed from gradle build, combinedJavadoc task added
+  DefaultPropertyFilterModel.getComparable() bug fixed, did not handle denormalized properties based on Entity instances
