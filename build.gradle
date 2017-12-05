@@ -56,7 +56,7 @@ subprojects {
         jcalendarVersion = '1.4'
         jcommonVersion = '1.0.23'
         jfreechartVersion = '1.0.19'
-        jettyVersion = '9.4.6.v20170531'
+        jettyVersion = '9.4.8.v20171121'
         httpclientVersion = '4.5'
         httpcoreVersion = '4.4.1'
         commonsloggingVersion = '1.1.1'
