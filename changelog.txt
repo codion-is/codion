@@ -4729,3 +4729,4 @@
   Idea and aggregate javadoc plugins removed from gradle build, combinedJavadoc task added
   DefaultPropertyFilterModel.getComparable() bug fixed, did not handle denormalized properties based on Entity instances
   Jetty dependency upgraded to 9.4.8.v20171121
+  populateWiki task added to gradle build
