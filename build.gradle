@@ -218,15 +218,21 @@ subprojects {
     }
 }
 
-def sourceProjects = subprojects.findAll { it.plugins.hasPlugin('java') && !it.name.contains("demo")}
+def nonDemoProjects = subprojects.findAll { it.plugins.hasPlugin('java') && !it.name.contains("demo")}
+
+apply plugin: 'project-report'
+
+htmlDependencyReport {
+    projects = nonDemoProjects
+}
 
 task combinedJavadoc(type: Javadoc) {
     group 'documentation'
     title "JMinor Framework API $version"
     options.links 'http://docs.oracle.com/javase/8/docs/api/'
     destinationDir = file("${buildDir}/docs/javadoc")
-    source sourceProjects.collect { it.sourceSets.main.allJava }
-    classpath = files(sourceProjects.collect { it.sourceSets.main.compileClasspath })
+    source nonDemoProjects.collect { it.sourceSets.main.allJava }
+    classpath = files(nonDemoProjects.collect { it.sourceSets.main.compileClasspath })
 }
 
 task populateWiki(dependsOn: combinedJavadoc) {
