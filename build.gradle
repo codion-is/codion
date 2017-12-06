@@ -39,8 +39,8 @@ subprojects {
     targetCompatibility = 1.8
 
     ext {
-        slf4jApiVersion = '1.7.7'
-        logbackVersion = '1.1.3'
+        slf4jApiVersion = '1.7.25'
+        logbackVersion = '1.2.3'
         h2Version = '1.4.192'
         jsonVersion = '20090211'
         jcalendarVersion = '1.4'
@@ -208,12 +208,12 @@ subprojects {
     }
 }
 
-def nonDemoProjects = subprojects.findAll { it.plugins.hasPlugin('java') && !it.name.contains("demo")}
+def frameworkModules = subprojects.findAll { it.plugins.hasPlugin('java') && !it.name.contains("demo") }
 
 apply plugin: 'project-report'
 
 htmlDependencyReport {
-    projects = nonDemoProjects
+    projects = frameworkModules
 }
 
 task combinedJavadoc(type: Javadoc) {
@@ -221,11 +221,11 @@ task combinedJavadoc(type: Javadoc) {
     title "JMinor Framework API $version"
     options.links 'http://docs.oracle.com/javase/8/docs/api/'
     destinationDir = file("${buildDir}/docs/javadoc")
-    source nonDemoProjects.collect { it.sourceSets.main.allJava }
-    classpath = files(nonDemoProjects.collect { it.sourceSets.main.compileClasspath })
+    source frameworkModules.collect { it.sourceSets.main.allJava }
+    classpath = files(frameworkModules.collect { it.sourceSets.main.compileClasspath })
 }
 
-task populateWiki(dependsOn: combinedJavadoc) {
+task populateWiki(dependsOn: [combinedJavadoc, htmlDependencyReport]) {
     group 'documentation'
     doLast {
         ant.delete(dir: "${wikiMediaPath}/src")
@@ -236,6 +236,9 @@ task populateWiki(dependsOn: combinedJavadoc) {
         }
         ant.copy(todir: "${wikiMediaPath}/docs/api") {
             fileset(dir: "${buildDir}/docs/javadoc")
+        }
+        ant.copy(todir: "${wikiMediaPath}/docs/api/dependencies") {
+            fileset(dir: "${buildDir}/reports/project/dependencies")
         }
         ant.copy(todir: "${wikiMediaPath}/src") {
             fileset(dir: 'common/core/build/classes/java/main', includes: 'org/jminor/common/version.txt')

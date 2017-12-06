@@ -4731,3 +4731,5 @@
   Jetty dependency upgraded to 9.4.8.v20171121
   populateWiki task added to gradle build
   Gradle build compile and testCompile replaced with implementation and testImplementation for internal modules, dependencies fixed accordingly
+  Dependency report added to wiki
+  Logback and slf4j dependencies upgraded to 1.2.3 and 1.7.25 respectively
