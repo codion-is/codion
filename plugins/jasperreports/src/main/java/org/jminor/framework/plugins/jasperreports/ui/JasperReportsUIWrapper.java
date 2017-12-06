@@ -7,7 +7,7 @@ import org.jminor.common.db.reports.ReportResult;
 import org.jminor.swing.common.ui.reports.ReportUIWrapper;
 
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.view.JRViewer;
+import net.sf.jasperreports.swing.JRViewer;
 
 import javax.swing.JComponent;
 import java.util.Objects;

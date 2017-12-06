@@ -17,11 +17,11 @@ dependencies {
         transitive = false
     }
 
-    runtime 'commons-logging:commons-logging:1.1.1'
+    runtime 'commons-logging:commons-logging:1.2'
     runtime 'commons-digester:commons-digester:2.1'
-    runtime 'commons-collections:commons-collections:3.2.1'
-    runtime 'commons-beanutils:commons-beanutils:1.9.0'
-    runtime 'org.eclipse.jdt.core.compiler:ecj:4.3.1'
+    runtime 'commons-collections:commons-collections:3.2.2'
+    runtime 'commons-beanutils:commons-beanutils:1.9.3'
+    runtime 'org.eclipse.jdt.core.compiler:ecj:4.6.1'
 
     testRuntime "com.h2database:h2:${h2Version}"
 }

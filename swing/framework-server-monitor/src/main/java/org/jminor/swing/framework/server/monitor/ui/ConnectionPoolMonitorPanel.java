@@ -111,7 +111,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     checkOutTimePanel.setBorder(BorderFactory.createEtchedBorder());
 
     final DeviationRenderer devRenderer = new DeviationRenderer();
-    devRenderer.setBaseShapesVisible(false);
+    devRenderer.setDefaultShapesVisible(false);
     checkOutTimeChart.getXYPlot().setRenderer(devRenderer);
 
     inPoolChart.getXYPlot().setDataset(model.getInPoolDataset());

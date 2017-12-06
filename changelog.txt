@@ -4734,3 +4734,4 @@
   Dependency report added to wiki
   Logback and slf4j dependencies upgraded to 1.2.3 and 1.7.25 respectively
   Gradle build compile and testCompile replaced with implementation and testImplementation for external modules, dependencies fixed accordingly
+  A few external dependency upgrades

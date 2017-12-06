@@ -376,7 +376,7 @@ public final class LoadTestPanel extends JPanel {
     scenarioDurationChartPanel.setBorder(BorderFactory.createEtchedBorder());
 
     final DeviationRenderer renderer = new DeviationRenderer();
-    renderer.setBaseShapesVisible(false);
+    renderer.setDefaultShapesVisible(false);
     scenarioDurationChart.getXYPlot().setRenderer(renderer);
 
     final JPanel basePanel = new JPanel(UiUtil.createBorderLayout());
