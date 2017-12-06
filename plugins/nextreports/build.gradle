@@ -8,7 +8,7 @@ dependencies {
     testImplementation project(':org.jminor.framework.db.local')
     testImplementation project(':org.jminor.swing.framework.model')
 
-    compile ('ro.nextreports:nextreports-engine:9.2') {
+    implementation ('ro.nextreports:nextreports-engine:9.2') {
         transitive = false
     }
 

@@ -13,7 +13,7 @@ dependencies {
     runtime project(':org.jminor.framework.db.remote')
     runtime project(':org.jminor.framework.db.http')
 
-    compile "org.json:json:${jsonVersion}"
+    implementation "org.json:json:${jsonVersion}"
 
     testRuntime "com.h2database:h2:${h2Version}"
 }

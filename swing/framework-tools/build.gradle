@@ -14,5 +14,7 @@ dependencies {
     testRuntime project(':org.jminor.framework.db.local')
     testRuntime project(':org.jminor.framework.db.remote')
 
+    implementation "org.jfree:jfreechart:${jfreechartVersion}"
+
     testRuntime "com.h2database:h2:${h2Version}"
 }

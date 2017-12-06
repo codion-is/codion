@@ -8,7 +8,7 @@ dependencies {
     implementation project(':org.jminor.framework.db.local')
     implementation project(':org.jminor.framework.db.remote')
 
-    compile "org.json:json:${jsonVersion}"
+    implementation "org.json:json:${jsonVersion}"
 
     testRuntime "com.h2database:h2:${h2Version}"
 }

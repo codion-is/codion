@@ -4,5 +4,5 @@ dependencies {
 
     implementation project(':org.jminor.framework.db.core')
 
-    compile "junit:junit:${junitVersion}"
+    implementation "junit:junit:${junitVersion}"
 }

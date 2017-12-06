@@ -26,6 +26,8 @@ dependencies {
 
     testImplementation project(':org.jminor.framework.db.test')
 
+    implementation "org.jfree:jfreechart:${jfreechartVersion}"
+
     compile ('net.sf.jasperreports:jasperreports:6.0.0') {
         transitive = false
     }

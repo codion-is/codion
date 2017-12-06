@@ -7,7 +7,7 @@ dependencies {
 
     testImplementation project(':org.jminor.framework.model.unittests')
 
-    compile "org.json:json:${jsonVersion}"
+    implementation "org.json:json:${jsonVersion}"
 
     testRuntime "com.h2database:h2:${h2Version}"
 }

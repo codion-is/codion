@@ -15,9 +15,9 @@ dependencies {
     testRuntime project(':org.jminor.framework.db.local')
     testRuntime project(':org.jminor.framework.model.unittests')
 
-    compile "org.json:json:${jsonVersion}"
-    compile "org.jfree:jcommon:${jcommonVersion}"
-    compile "org.jfree:jfreechart:${jfreechartVersion}"
+    implementation "org.json:json:${jsonVersion}"
+    implementation "org.jfree:jcommon:${jcommonVersion}"
+    implementation "org.jfree:jfreechart:${jfreechartVersion}"
 
     testRuntime "com.h2database:h2:${h2Version}"
 

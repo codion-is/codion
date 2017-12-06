@@ -59,8 +59,8 @@ subprojects {
     }
 
     dependencies {
-        compile "org.slf4j:slf4j-api:${slf4jApiVersion}"
-        testCompile "junit:junit:${junitVersion}"
+        implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+        testImplementation "junit:junit:${junitVersion}"
     }
 
     sourceSets {
@@ -237,7 +237,7 @@ task populateWiki(dependsOn: [combinedJavadoc, htmlDependencyReport]) {
         ant.copy(todir: "${wikiMediaPath}/docs/api") {
             fileset(dir: "${buildDir}/docs/javadoc")
         }
-        ant.copy(todir: "${wikiMediaPath}/docs/api/dependencies") {
+        ant.copy(todir: "${wikiMediaPath}/docs/dependencies") {
             fileset(dir: "${buildDir}/reports/project/dependencies")
         }
         ant.copy(todir: "${wikiMediaPath}/src") {

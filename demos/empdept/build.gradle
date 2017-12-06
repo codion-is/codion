@@ -29,9 +29,9 @@ dependencies {
 
     implementation project(':org.jminor.javafx.framework')
 
-    compile 'javax.ws.rs:jsr311-api:1.1.1'
-    compile "org.jfree:jcommon:${jcommonVersion}"
-    compile "org.jfree:jfreechart:${jfreechartVersion}"
+    implementation 'javax.ws.rs:jsr311-api:1.1.1'
+    implementation "org.jfree:jcommon:${jcommonVersion}"
+    implementation "org.jfree:jfreechart:${jfreechartVersion}"
 
     runtime project(':org.jminor.plugin.logback.proxy')
 

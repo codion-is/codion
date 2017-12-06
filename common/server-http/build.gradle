@@ -2,15 +2,15 @@ dependencies {
     implementation project(':org.jminor.common.core')
     implementation project(':org.jminor.common.server')
 
-    compile "org.eclipse.jetty:jetty-server:${jettyVersion}"
-    compile "org.eclipse.jetty:jetty-servlet:${jettyVersion}"
-    compile "org.eclipse.jetty:jetty-util:${jettyVersion}"
+    implementation "org.eclipse.jetty:jetty-server:${jettyVersion}"
+    implementation "org.eclipse.jetty:jetty-servlet:${jettyVersion}"
+    implementation "org.eclipse.jetty:jetty-util:${jettyVersion}"
 
     runtime "org.eclipse.jetty:jetty-http:${jettyVersion}"
     runtime "org.eclipse.jetty:jetty-io:${jettyVersion}"
     runtime "org.eclipse.jetty:jetty-security:${jettyVersion}"
 
-    testCompile "org.apache.httpcomponents:httpclient:${httpclientVersion}"
-    testCompile "org.apache.httpcomponents:httpcore:${httpcoreVersion}"
-    testCompile "commons-logging:commons-logging:${commonsloggingVersion}"
+    testImplementation "org.apache.httpcomponents:httpclient:${httpclientVersion}"
+    testImplementation "org.apache.httpcomponents:httpcore:${httpcoreVersion}"
+    testImplementation "commons-logging:commons-logging:${commonsloggingVersion}"
 }

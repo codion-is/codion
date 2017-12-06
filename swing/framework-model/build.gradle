@@ -12,7 +12,8 @@ dependencies {
     testImplementation project(':org.jminor.framework.model.unittests')
     testImplementation project(':org.jminor.swing.common.ui')
 
-    runtime "org.json:json:${jsonVersion}"
+    implementation "org.json:json:${jsonVersion}"
+
     runtime "com.toedter:jcalendar:${jcalendarVersion}"
 
     testRuntime "com.h2database:h2:${h2Version}"

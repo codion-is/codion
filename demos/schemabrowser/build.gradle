@@ -23,6 +23,8 @@ dependencies {
     testImplementation project(':org.jminor.framework.db.test')
     testImplementation project(':org.jminor.swing.framework.ui.test')
 
+    implementation "org.jfree:jfreechart:${jfreechartVersion}"
+
     runtime "com.h2database:h2:${h2Version}"
 }
 
