@@ -1,13 +1,3 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'de.gliderpilot.gradle.jnlp:gradle-jnlp-plugin:+'
-    }
-}
-
 plugins {
     id "org.sonarqube" version "2.6"
 }
