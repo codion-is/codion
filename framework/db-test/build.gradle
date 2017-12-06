@@ -1,8 +1,8 @@
 dependencies {
-    compile project(':org.jminor.common.core')
-    compile project(':org.jminor.common.db')
+    implementation project(':org.jminor.common.core')
+    implementation project(':org.jminor.common.db')
 
-    compile project(':org.jminor.framework.db.core')
+    implementation project(':org.jminor.framework.db.core')
 
     compile "junit:junit:${junitVersion}"
 }

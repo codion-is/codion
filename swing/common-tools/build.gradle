@@ -1,6 +1,7 @@
 dependencies {
-    compile project(':org.jminor.common.core')
-    compile project(':org.jminor.common.model')
+    implementation project(':org.jminor.common.core')
+    implementation project(':org.jminor.common.db')
+    implementation project(':org.jminor.common.model')
 
     compile "org.jfree:jcommon:${jcommonVersion}"
     compile "org.jfree:jfreechart:${jfreechartVersion}"

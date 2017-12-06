@@ -1,14 +1,16 @@
 dependencies {
-    compile project(':org.jminor.common.core')
-    compile project(':org.jminor.common.model')
+    implementation project(':org.jminor.common.core')
+    implementation project(':org.jminor.common.db')
+    implementation project(':org.jminor.common.model')
 
-    compile project(':org.jminor.framework.db.core')
-    compile project(':org.jminor.framework.model')
+    implementation project(':org.jminor.framework.db.core')
+    implementation project(':org.jminor.framework.model')
 
-    compile project(':org.jminor.swing.common.model')
+    implementation project(':org.jminor.swing.common.model')
 
-    testCompile project(':org.jminor.framework.model.unittests')
-    testCompile project(':org.jminor.swing.common.ui')
+    testImplementation project(':org.jminor.framework.db.local')
+    testImplementation project(':org.jminor.framework.model.unittests')
+    testImplementation project(':org.jminor.swing.common.ui')
 
     runtime "org.json:json:${jsonVersion}"
     runtime "com.toedter:jcalendar:${jcalendarVersion}"

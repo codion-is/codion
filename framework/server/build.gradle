@@ -7,13 +7,13 @@ configurations {
 }
 
 dependencies {
-    compile project(':org.jminor.common.core')
-    compile project(':org.jminor.common.db')
-    compile project(':org.jminor.common.server')
+    implementation project(':org.jminor.common.core')
+    implementation project(':org.jminor.common.db')
+    implementation project(':org.jminor.common.server')
 
-    compile project(':org.jminor.framework.db.core')
-    compile project(':org.jminor.framework.db.local')
-    compile project(':org.jminor.framework.db.remote')
+    implementation project(':org.jminor.framework.db.core')
+    implementation project(':org.jminor.framework.db.local')
+    implementation project(':org.jminor.framework.db.remote')
 
     testRuntime "com.h2database:h2:${h2Version}"
 

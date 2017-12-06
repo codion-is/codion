@@ -1,18 +1,18 @@
 apply plugin: 'application'
 
 dependencies {
-    compile project(':org.jminor.common.core')
-    compile project(':org.jminor.common.db')
-    compile project(':org.jminor.common.model')
-    compile project(':org.jminor.common.server')
+    implementation project(':org.jminor.common.core')
+    implementation project(':org.jminor.common.db')
+    implementation project(':org.jminor.common.model')
+    implementation project(':org.jminor.common.server')
 
-    compile project(':org.jminor.framework.server')
-    compile project(':org.jminor.swing.common.model')
-    compile project(':org.jminor.swing.common.ui')
+    implementation project(':org.jminor.framework.server')
+    implementation project(':org.jminor.swing.common.model')
+    implementation project(':org.jminor.swing.common.ui')
 
-    testRuntime project(':org.jminor.framework.db.core')
+    testImplementation project(':org.jminor.framework.db.core')
+    testImplementation project(':org.jminor.framework.db.remote')
     testRuntime project(':org.jminor.framework.db.local')
-    testRuntime project(':org.jminor.framework.db.remote')
     testRuntime project(':org.jminor.framework.model.unittests')
 
     compile "org.json:json:${jsonVersion}"

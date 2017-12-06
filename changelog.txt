@@ -4730,3 +4730,4 @@
   DefaultPropertyFilterModel.getComparable() bug fixed, did not handle denormalized properties based on Entity instances
   Jetty dependency upgraded to 9.4.8.v20171121
   populateWiki task added to gradle build
+  Gradle build compile and testCompile replaced with implementation and testImplementation for internal modules, dependencies fixed accordingly

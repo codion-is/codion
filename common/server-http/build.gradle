@@ -1,6 +1,6 @@
 dependencies {
-    compile project(':org.jminor.common.core')
-    compile project(':org.jminor.common.server')
+    implementation project(':org.jminor.common.core')
+    implementation project(':org.jminor.common.server')
 
     compile "org.eclipse.jetty:jetty-server:${jettyVersion}"
     compile "org.eclipse.jetty:jetty-servlet:${jettyVersion}"

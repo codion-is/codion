@@ -1,16 +1,17 @@
 dependencies {
-    compile project(':org.jminor.common.core')
-    compile project(':org.jminor.common.db')
+    implementation project(':org.jminor.common.core')
+    implementation project(':org.jminor.common.db')
 
-    compile project(':org.jminor.framework.db.core')
+    implementation project(':org.jminor.framework.db.core')
 
     compile "org.apache.httpcomponents:httpclient:${httpclientVersion}"
     compile "org.apache.httpcomponents:httpcore:${httpcoreVersion}"
     compile "commons-logging:commons-logging:${commonsloggingVersion}"
 
-    testCompile project(':org.jminor.common.server.http')
-    testCompile project(':org.jminor.framework.server')
-    testCompile project(':org.jminor.framework.servlet')
+    testImplementation project(':org.jminor.common.server')
+    testImplementation project(':org.jminor.common.server.http')
+    testImplementation project(':org.jminor.framework.server')
+    testImplementation project(':org.jminor.framework.servlet')
 
     testRuntime "com.h2database:h2:${h2Version}"
 }

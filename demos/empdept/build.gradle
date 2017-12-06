@@ -1,19 +1,33 @@
 apply from: '../demos.gradle'
 
 dependencies {
-    compile project(':org.jminor.framework.server')
-    compile project(':org.jminor.framework.servlet')
-    compile project(':org.jminor.framework.db.http')
-    compile project(':org.jminor.framework.db.test')
+    implementation project(':org.jminor.common.core')
+    implementation project(':org.jminor.common.db')
+    implementation project(':org.jminor.common.model')
+    implementation project(':org.jminor.common.server')
 
-    compile project(':org.jminor.plugin.jasperreports')
-    compile project(':org.jminor.plugin.json')
+    implementation project(':org.jminor.framework.db.core')
+    implementation project(':org.jminor.framework.db.http')
+    implementation project(':org.jminor.framework.db.test')
+    implementation project(':org.jminor.framework.model')
+    implementation project(':org.jminor.framework.server')
+    implementation project(':org.jminor.framework.servlet')
 
-    compile project(':org.jminor.swing.common.tools.ui')
-    compile project(':org.jminor.swing.framework.ui')
-    compile project(':org.jminor.swing.framework.tools')
-    testCompile project(':org.jminor.swing.framework.ui.test')
-    compile project(':org.jminor.javafx.framework')
+    implementation project(':org.jminor.plugin.jasperreports')
+    implementation project(':org.jminor.plugin.json')
+
+    implementation project(':org.jminor.swing.common.model')
+    implementation project(':org.jminor.swing.common.ui')
+    implementation project(':org.jminor.swing.common.ui')
+    implementation project(':org.jminor.swing.common.tools')
+    implementation project(':org.jminor.swing.common.tools.ui')
+    implementation project(':org.jminor.swing.framework.model')
+    implementation project(':org.jminor.swing.framework.ui')
+    implementation project(':org.jminor.swing.framework.tools')
+
+    testImplementation project(':org.jminor.swing.framework.ui.test')
+
+    implementation project(':org.jminor.javafx.framework')
 
     compile 'javax.ws.rs:jsr311-api:1.1.1'
     compile "org.jfree:jcommon:${jcommonVersion}"

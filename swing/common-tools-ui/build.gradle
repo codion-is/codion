@@ -1,10 +1,12 @@
 dependencies {
-    compile project(':org.jminor.common.core')
+    implementation project(':org.jminor.common.core')
+    implementation project(':org.jminor.common.model')
 
-    compile project(':org.jminor.framework.db.core')
-    compile project(':org.jminor.swing.common.model')
-    compile project(':org.jminor.swing.common.tools')
-    compile project(':org.jminor.swing.common.ui')
+    implementation project(':org.jminor.framework.db.core')
+
+    implementation project(':org.jminor.swing.common.model')
+    implementation project(':org.jminor.swing.common.tools')
+    implementation project(':org.jminor.swing.common.ui')
 
     testRuntime "com.h2database:h2:${h2Version}"
 }

@@ -1,15 +1,27 @@
 apply from: '../demos.gradle'
 
 dependencies {
-    compile project(':org.jminor.swing.common.tools.ui')
-    compile project(':org.jminor.swing.framework.ui')
-    compile project(':org.jminor.swing.framework.tools')
+    implementation project(':org.jminor.common.core')
+    implementation project(':org.jminor.common.db')
+    implementation project(':org.jminor.common.model')
+
+    implementation project(':org.jminor.framework.db.core')
+    implementation project(':org.jminor.framework.db.remote')
+    implementation project(':org.jminor.framework.model')
+
+    implementation project(':org.jminor.swing.common.model')
+    implementation project(':org.jminor.swing.common.ui')
+    implementation project(':org.jminor.swing.common.tools')
+    implementation project(':org.jminor.swing.common.tools.ui')
+    implementation project(':org.jminor.swing.framework.model')
+    implementation project(':org.jminor.swing.framework.ui')
+    implementation project(':org.jminor.swing.framework.tools')
 
     runtime project(':org.jminor.framework.db.http')
     runtime project(':org.jminor.plugin.logback.proxy')
 
-    testCompile project(':org.jminor.framework.db.test')
-    testCompile project(':org.jminor.swing.framework.ui.test')
+    testImplementation project(':org.jminor.framework.db.test')
+    testImplementation project(':org.jminor.swing.framework.ui.test')
 
     runtime "com.h2database:h2:${h2Version}"
 }

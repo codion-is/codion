@@ -1,5 +1,5 @@
 dependencies {
-    compile project(':org.jminor.common.core')
+    implementation project(':org.jminor.common.core')
 
     testRuntime "com.h2database:h2:${h2Version}"
 }

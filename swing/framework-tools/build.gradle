@@ -1,10 +1,16 @@
 dependencies {
-    compile project(':org.jminor.framework.model')
+    implementation project(':org.jminor.common.core')
+    implementation project(':org.jminor.common.db')
+    implementation project(':org.jminor.common.model')
 
-    compile project(':org.jminor.swing.common.model')
-    compile project(':org.jminor.swing.common.tools')
+    implementation project(':org.jminor.framework.db.core')
+    implementation project(':org.jminor.framework.model')
 
-    testCompile project(':org.jminor.framework.server')
+    implementation project(':org.jminor.swing.common.model')
+    implementation project(':org.jminor.swing.common.tools')
+
+    testImplementation project(':org.jminor.common.server')
+    testImplementation project(':org.jminor.framework.server')
     testRuntime project(':org.jminor.framework.db.local')
     testRuntime project(':org.jminor.framework.db.remote')
 

@@ -1,10 +1,19 @@
 apply from: '../demos.gradle'
 
 dependencies {
-    compile project(':org.jminor.swing.framework.ui')
+    implementation project(':org.jminor.common.core')
+    implementation project(':org.jminor.common.db')
+    implementation project(':org.jminor.common.model')
 
-    testCompile project(':org.jminor.framework.db.test')
-    testCompile project(':org.jminor.swing.framework.ui.test')
+    implementation project(':org.jminor.framework.db.core')
+    implementation project(':org.jminor.framework.model')
+
+    implementation project(':org.jminor.swing.common.ui')
+    implementation project(':org.jminor.swing.framework.model')
+    implementation project(':org.jminor.swing.framework.ui')
+
+    testImplementation project(':org.jminor.framework.db.test')
+    testImplementation project(':org.jminor.swing.framework.ui.test')
 
     runtime project(':org.jminor.framework.db.http')
     runtime project(':org.jminor.plugin.logback.proxy')
