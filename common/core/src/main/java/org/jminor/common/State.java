@@ -4,7 +4,7 @@
 package org.jminor.common;
 
 /**
- * A class encapsulating a simple boolean state.
+ * A class encapsulating a boolean state.
  */
 public interface State extends StateObserver {
 

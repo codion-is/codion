@@ -4,7 +4,7 @@
 package org.jminor.common;
 
 /**
- * A synchronous event class.
+ * A event class.
  * Listeners are notified in the order they were added.
  * <pre>
  * Event event = Events.event();

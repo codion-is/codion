@@ -4,7 +4,7 @@
 package org.jminor.common.db;
 
 /**
- * Specifies a simple attribute.
+ * Specifies a attribute.
  */
 public interface Attribute {
 
