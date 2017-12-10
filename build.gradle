@@ -70,6 +70,11 @@ subprojects {
         }
     }
 
+    //clean intellij output dir as well
+    clean.doLast {
+        file('out').deleteDir()
+    }
+
 //    compileJava {
 //        inputs.property("moduleName", moduleName)
 //        doFirst {
