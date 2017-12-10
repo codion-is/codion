@@ -22,10 +22,10 @@ dependencies {
 
     runtime project(':org.jminor.framework.db.http')
     runtime project(':org.jminor.plugin.logback.proxy')
-    runtime project(':org.jminor.plugin.jasperreports')
 
     testImplementation project(':org.jminor.framework.db.test')
 
+    implementation "org.jfree:jcommon:${jcommonVersion}"
     implementation "org.jfree:jfreechart:${jfreechartVersion}"
 
     compile ('net.sf.jasperreports:jasperreports:6.0.0') {
@@ -45,22 +45,24 @@ test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
 }
 
-task compileJasper(dependsOn: 'compileJava') {
-    def jasperSourceDir = file('src/main/reports')
-    def jasperTargetDir = file('build/classes/reports')
-    ant {
-        taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.runtime.asPath)
-        jasperTargetDir.mkdirs()
-        jrc(srcdir: jasperSourceDir, destdir: jasperTargetDir) {
-            classpath(path: sourceSets.main.output.classesDirs)
-            include(name: '**/*.jrxml')
+task buildReports(dependsOn: 'compileJava') {
+    group 'build'
+    doLast {
+        def jasperSourceDir = file('src/main/reports')
+        def jasperTargetDir = file('build/classes/reports')
+        ant {
+            taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.runtime.asPath)
+            jasperTargetDir.mkdirs()
+            jrc(srcdir: jasperSourceDir, destdir: jasperTargetDir) {
+                classpath(path: sourceSets.main.output.classesDirs)
+                include(name: '**/*.jrxml')
+            }
         }
     }
 }
-compileTestJava {
-    doLast {
-        compileJasper
-    }
+
+compileJava.doLast {
+    buildReports.execute()
 }
 
 //jnlp {

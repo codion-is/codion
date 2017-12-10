@@ -13,9 +13,6 @@ dependencies {
     implementation project(':org.jminor.framework.server')
     implementation project(':org.jminor.framework.servlet')
 
-    implementation project(':org.jminor.plugin.jasperreports')
-    implementation project(':org.jminor.plugin.json')
-
     implementation project(':org.jminor.swing.common.model')
     implementation project(':org.jminor.swing.common.ui')
     implementation project(':org.jminor.swing.common.ui')
@@ -25,9 +22,12 @@ dependencies {
     implementation project(':org.jminor.swing.framework.ui')
     implementation project(':org.jminor.swing.framework.tools')
 
-    testImplementation project(':org.jminor.swing.framework.ui.test')
-
     implementation project(':org.jminor.javafx.framework')
+
+    implementation project(':org.jminor.plugin.jasperreports')
+    implementation project(':org.jminor.plugin.json')
+
+    testImplementation project(':org.jminor.swing.framework.ui.test')
 
     implementation 'javax.ws.rs:jsr311-api:1.1.1'
     implementation "org.jfree:jcommon:${jcommonVersion}"
@@ -52,22 +52,24 @@ test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
 }
 
-task compileJasper(dependsOn: 'compileJava') {
-    def jasperSourceDir = file('src/main/reports')
-    def jasperTargetDir = file('build/classes/reports')
-    ant {
-        taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.runtime.asPath)
-        jasperTargetDir.mkdirs()
-        jrc(srcdir: jasperSourceDir, destdir: jasperTargetDir) {
-            classpath(path: sourceSets.main.output.classesDirs)
-            include(name: '**/*.jrxml')
+task buildReports(dependsOn: 'compileJava') {
+    group 'build'
+    doLast {
+        def jasperSourceDir = file('src/main/reports')
+        def jasperTargetDir = file('build/classes/reports')
+        ant {
+            taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.runtime.asPath)
+            jasperTargetDir.mkdirs()
+            jrc(srcdir: jasperSourceDir, destdir: jasperTargetDir) {
+                classpath(path: sourceSets.main.output.classesDirs)
+                include(name: '**/*.jrxml')
+            }
         }
     }
 }
-compileTestJava {
-    doLast {
-        compileJasper
-    }
+
+compileJava.doLast {
+    buildReports.execute()
 }
 
 startScripts {
