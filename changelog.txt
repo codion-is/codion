@@ -4736,3 +4736,4 @@
   Gradle build compile and testCompile replaced with implementation and testImplementation for external modules, dependencies fixed accordingly
   A few external dependency upgrades
   ValidationDocumentFilter added
+  Gradle build refactoring, java9 stuff removed for now

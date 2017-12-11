@@ -4,6 +4,11 @@ sonarqube {
     skipProject = true
 }
 
+dependencies {
+    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+    testImplementation "junit:junit:${junitVersion}"
+}
+
 configurations {
     /** A configuration with a single jar file containing the domain model (and server classes) */
     domain

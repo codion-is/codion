@@ -1,6 +1,7 @@
 plugins {
     id "org.sonarqube" version "2.6"
 }
+
 /** Creates a key- and truststore pair used when running server unit tests and demos with remote connection */
 task createServerKeystore {
     doLast {
@@ -31,12 +32,6 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'jacoco'
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-
     ext {
         slf4jApiVersion = '1.7.25'
         logbackVersion = '1.2.3'
@@ -50,87 +45,30 @@ subprojects {
         httpcoreVersion = '4.4.1'
         commonsloggingVersion = '1.2'
         junitVersion = '4.12'
-//        moduleName = project.name
     }
 
     repositories {
         jcenter()
     }
 
-    dependencies {
-        implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
-        testImplementation "junit:junit:${junitVersion}"
+    if (project.name.contains("demos")) {
+        apply plugin: 'java'
     }
-
-    sourceSets {
-        main {
-            java {
-                exclude 'module-info.java'
-            }
-        }
-    }
-
-    //clean intellij output dir as well
-    clean.doLast {
-        file('out').deleteDir()
-    }
-
-//    compileJava {
-//        inputs.property("moduleName", moduleName)
-//        doFirst {
-//            options.compilerArgs = [
-//                    '--module-path', classpath.asPath,
-//            ]
-//            classpath = files()
-//        }
-//    }
-
-//    compileTestJava {
-//        inputs.property("moduleName", moduleName)
-//        doFirst {
-//            options.compilerArgs = [
-//                    '--module-path', classpath.asPath,
-//                    '--add-modules', 'junit',
-//                    '--add-reads', "$moduleName=junit",
-//                    '--patch-module', "$moduleName=" + files(sourceSets.test.java.srcDirs).asPath,
-//            ]
-//            classpath = files()
-//        }
-//    }
-
-//    javadoc {
-//        doFirst {
-//            options.addStringOption('-module-path', classpath.asPath)
-//        }
-//    }
-
-    test {
-//        inputs.property("moduleName", moduleName)
-//        doFirst {
-//            jvmArgs = [
-//                    '--module-path', classpath.asPath,
-//                    '--add-modules', 'ALL-MODULE-PATH',
-//                    '--add-reads', "$moduleName=junit",
-//                    '--patch-module', "$moduleName=" + files(sourceSets.test.java.outputDir).asPath,
-//            ]
-//            classpath = files()
-//        }
-        systemProperty "jminor.db.type", "h2"
-        systemProperty "jminor.db.host", "h2db"
-        systemProperty "jminor.db.embedded", "true"
-        systemProperty "jminor.db.embeddedInMemory", "true"
-        systemProperty "jminor.db.initScript", "src/test/sql/create_h2_db.sql"
-        systemProperty "jminor.unittest.username", "scott"
-        systemProperty "jminor.unittest.password", "tiger"
-    }.dependsOn createServerKeystore
-
-    def artifactName = project.name.replace("org.", "").replace(".", "-")
-    jar {
-        baseName = artifactName
-    }
-
-    if (!project.name.contains("demos")) {
+    else {
+        apply plugin: 'java-library'
         apply plugin: 'maven-publish'
+
+        dependencies {
+            implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+            testImplementation "junit:junit:${junitVersion}"
+        }
+
+        sourceSets.main.java.exclude('module-info.java')
+
+        def artifactName = project.name.replace("org.", "").replace(".", "-")
+        jar {
+            baseName = artifactName
+        }
 
         jar {
             manifest {
@@ -210,6 +148,26 @@ subprojects {
             }
         }
     }
+
+    apply plugin: 'jacoco'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    //clean intellij output dir as well
+    clean.doLast {
+        file('out').deleteDir()
+    }
+
+    test {
+        systemProperty "jminor.db.type", "h2"
+        systemProperty "jminor.db.host", "h2db"
+        systemProperty "jminor.db.embedded", "true"
+        systemProperty "jminor.db.embeddedInMemory", "true"
+        systemProperty "jminor.db.initScript", "src/test/sql/create_h2_db.sql"
+        systemProperty "jminor.unittest.username", "scott"
+        systemProperty "jminor.unittest.password", "tiger"
+    }.dependsOn createServerKeystore
 }
 
 def frameworkModules = subprojects.findAll { it.plugins.hasPlugin('java') && !it.name.contains("demo") }
