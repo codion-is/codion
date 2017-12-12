@@ -5,6 +5,4 @@ dependencies {
     api "org.eclipse.jetty:jetty-server:${jettyVersion}"
 
     testImplementation "org.apache.httpcomponents:httpclient:${httpclientVersion}"
-    testImplementation "org.apache.httpcomponents:httpcore:${httpcoreVersion}"
-    testImplementation "commons-logging:commons-logging:${commonsloggingVersion}"
 }

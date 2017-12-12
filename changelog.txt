@@ -4738,3 +4738,4 @@
   ValidationDocumentFilter added
   Gradle build refactoring, java9 stuff removed for now
   Gradle 'api' dependency introduced to common modules, common-server-http jetty dependencies reduced to minimum
+  Gradle 'api' dependency introduced to framework modules, dependencies cleaned up

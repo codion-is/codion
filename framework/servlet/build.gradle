@@ -1,8 +1,8 @@
 dependencies {
     implementation project(':org.jminor.common.core')
     implementation project(':org.jminor.common.db')
-    implementation project(':org.jminor.common.server')
-    implementation project(':org.jminor.common.server.http')
+    api project(':org.jminor.common.server')
+    api project(':org.jminor.common.server.http')
 
     implementation project(':org.jminor.framework.db.core')
     implementation project(':org.jminor.framework.db.remote')
@@ -15,8 +15,6 @@ dependencies {
     testImplementation project(':org.jminor.framework.server')
 
     testImplementation "org.apache.httpcomponents:httpclient:${httpclientVersion}"
-    testImplementation "org.apache.httpcomponents:httpcore:${httpcoreVersion}"
-    testRuntime "commons-logging:commons-logging:${commonsloggingVersion}"
 
     testRuntime "com.h2database:h2:${h2Version}"
 }

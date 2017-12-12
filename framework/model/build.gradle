@@ -1,14 +1,15 @@
 dependencies {
-    implementation project(':org.jminor.common.core')
-    implementation project(':org.jminor.common.db')
-    implementation project(':org.jminor.common.model')
-    implementation project(':org.jminor.common.server')
+    api project(':org.jminor.common.core')
+    api project(':org.jminor.common.db')
+    api project(':org.jminor.common.model')
 
-    implementation project(':org.jminor.framework.db.core')
-    implementation project(':org.jminor.framework.db.local')
-    implementation project(':org.jminor.framework.db.remote')
+    api project(':org.jminor.framework.db.core')
+    runtimeOnly project(':org.jminor.framework.db.local')
+    runtimeOnly project(':org.jminor.framework.db.remote')
 
-    implementation "org.json:json:${jsonVersion}"
+    testImplementation project(':org.jminor.framework.db.local')
+
+    runtimeOnly "org.json:json:${jsonVersion}"
 
     testRuntime "com.h2database:h2:${h2Version}"
 }
