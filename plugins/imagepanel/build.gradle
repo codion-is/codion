@@ -1,12 +1,3 @@
 dependencies {
-    implementation project(':org.jminor.common.core')
-    implementation project(':org.jminor.common.db')
-    implementation project(':org.jminor.common.model')
-
-    implementation project(':org.jminor.framework.db.core')
-
-    implementation project(':org.jminor.swing.common.model')
-    implementation project(':org.jminor.swing.common.ui')
-
-    implementation project(':org.jminor.swing.framework.ui')
+    api project(':org.jminor.swing.framework.ui')
 }

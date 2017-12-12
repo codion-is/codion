@@ -1,12 +1,12 @@
 dependencies {
-    implementation project(':org.jminor.common.core')
-    implementation project(':org.jminor.common.db')
-    implementation project(':org.jminor.common.model')
+    api project(':org.jminor.common.core')
+    api project(':org.jminor.common.db')
+    api project(':org.jminor.common.model')
 
     implementation project(':org.jminor.framework.db.core')
-    implementation project(':org.jminor.swing.common.model')
+    api project(':org.jminor.swing.common.model')
 
-    runtime "com.toedter:jcalendar:${jcalendarVersion}"
+    runtimeOnly "com.toedter:jcalendar:${jcalendarVersion}"
 
     testRuntime "com.h2database:h2:${h2Version}"
 }

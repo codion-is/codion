@@ -7,6 +7,7 @@ dependencies {
     implementation project(':org.jminor.common.server')
 
     implementation project(':org.jminor.framework.db.core')
+    implementation project(':org.jminor.framework.db.local')
     implementation project(':org.jminor.framework.db.http')
     implementation project(':org.jminor.framework.db.test')
     implementation project(':org.jminor.framework.model')

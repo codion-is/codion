@@ -1,6 +1,6 @@
 dependencies {
-    implementation project(':org.jminor.common.core')
-    implementation project(':org.jminor.common.db')
+    api project(':org.jminor.common.core')
+    api project(':org.jminor.common.db')
 
     implementation 'com.zaxxer:HikariCP:2.7.4'
 

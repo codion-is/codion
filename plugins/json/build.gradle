@@ -1,13 +1,9 @@
 dependencies {
-    implementation project(':org.jminor.common.core')
-    implementation project(':org.jminor.common.db')
-    implementation project(':org.jminor.common.model')
+    api project(':org.jminor.common.core')
 
-    implementation project(':org.jminor.framework.db.core')
+    api project(':org.jminor.framework.db.core')
 
-    testImplementation project(':org.jminor.framework.model.unittests')
-
-    implementation "org.json:json:${jsonVersion}"
+    api "org.json:json:${jsonVersion}"
 
     testRuntime "com.h2database:h2:${h2Version}"
 }

@@ -1,17 +1,17 @@
 dependencies {
-    implementation project(':org.jminor.common.core')
-    implementation project(':org.jminor.common.db')
-    implementation project(':org.jminor.common.model')
+    api project(':org.jminor.common.core')
+    api project(':org.jminor.common.db')
+    api project(':org.jminor.common.model')
 
-    implementation project(':org.jminor.framework.db.core')
-    implementation project(':org.jminor.framework.model')
+    api project(':org.jminor.framework.db.core')
+    api project(':org.jminor.framework.model')
 
     testImplementation project(':org.jminor.framework.db.local')
     testImplementation project(':org.jminor.framework.model.unittests')
 
-    runtime project(':org.jminor.framework.db.local')
-    runtime project(':org.jminor.framework.db.remote')
-    runtime project(':org.jminor.framework.db.http')
+    runtimeOnly project(':org.jminor.framework.db.local')
+    runtimeOnly project(':org.jminor.framework.db.remote')
+    runtimeOnly project(':org.jminor.framework.db.http')
 
     implementation "org.json:json:${jsonVersion}"
 

@@ -1,10 +1,9 @@
 dependencies {
-    implementation project(':org.jminor.common.core')
-    implementation project(':org.jminor.common.db')
-    implementation project(':org.jminor.common.model')
+    api project(':org.jminor.common.core')
+    api project(':org.jminor.common.db')
+    api project(':org.jminor.common.model')
 
-    implementation "org.jfree:jcommon:${jcommonVersion}"
-    implementation "org.jfree:jfreechart:${jfreechartVersion}"
+    api "org.jfree:jfreechart:${jfreechartVersion}"
 
     testRuntime "com.h2database:h2:${h2Version}"
 }
