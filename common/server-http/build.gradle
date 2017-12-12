@@ -1,14 +1,8 @@
 dependencies {
-    implementation project(':org.jminor.common.core')
-    implementation project(':org.jminor.common.server')
+    api project(':org.jminor.common.core')
+    api project(':org.jminor.common.server')
 
-    implementation "org.eclipse.jetty:jetty-server:${jettyVersion}"
-    implementation "org.eclipse.jetty:jetty-servlet:${jettyVersion}"
-    implementation "org.eclipse.jetty:jetty-util:${jettyVersion}"
-
-    runtime "org.eclipse.jetty:jetty-http:${jettyVersion}"
-    runtime "org.eclipse.jetty:jetty-io:${jettyVersion}"
-    runtime "org.eclipse.jetty:jetty-security:${jettyVersion}"
+    api "org.eclipse.jetty:jetty-server:${jettyVersion}"
 
     testImplementation "org.apache.httpcomponents:httpclient:${httpclientVersion}"
     testImplementation "org.apache.httpcomponents:httpcore:${httpcoreVersion}"
