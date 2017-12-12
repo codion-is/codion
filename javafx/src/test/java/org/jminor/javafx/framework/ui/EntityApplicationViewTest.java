@@ -48,8 +48,7 @@ public final class EntityApplicationViewTest {
 
       @Override
       protected FXEntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
-        return new FXEntityApplicationModel(CONNECTION_PROVIDER) {
-        };
+        return new FXEntityApplicationModel(CONNECTION_PROVIDER);
       }
     };
     applicationView.initializeApplicationModel(CONNECTION_PROVIDER);
