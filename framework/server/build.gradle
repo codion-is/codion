@@ -93,7 +93,7 @@ applicationDefaultJvmArgs = [
         "-Djminor.configurationFile=../config/h2_embedded.config"
 ]
 
-task runServer(type: JavaExec, dependsOn: rootProject.createServerKeystore) {
+task runServer(type: JavaExec, dependsOn: createServerKeystore) {
     group = 'run'
     classpath = configurations.serverRuntime
     main = 'org.jminor.framework.server.DefaultEntityConnectionServer'

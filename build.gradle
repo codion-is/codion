@@ -2,29 +2,19 @@ plugins {
     id "org.sonarqube" version "2.6"
 }
 
-/** Creates a key- and truststore pair used when running server unit tests and demos with remote connection */
-task createServerKeystore {
-    doLast {
-        def rootDir = project.rootDir.toString() + '/resources/security/'
-        def keyToolExecutable = System.getProperty('java.home') + '/bin/keytool'
-        def keystore = rootDir + 'JMinorServerKeystore'
-        def certificate = rootDir + 'JMinorServer.cer'
-        def truststore = rootDir + 'JMinorClientTruststore'
-        if (!new File(keystore).exists()) {
-            ant.genkey(alias: 'JMinorServer', keyalg: 'RSA', keystore: keystore,
-                    storepass: 'crappypass', dname: 'CN=Dummy, OU=dummy, O=dummy.org, C=DU')
-            exec {
-                executable = keyToolExecutable
-                args = ['-exportcert', '-keystore', keystore, '-alias', 'JMinorServer', '-rfc', '-file', certificate]
-            }
-            exec {
-                executable = keyToolExecutable
-                args = ['-import', '-alias', 'JMinorServer', '-storepass', 'crappypass', '-file', certificate,
-                        '-keystore', truststore, '-noprompt']
-            }
-            ant.delete(file: certificate)
-        }
-    }
+ext {
+    slf4jApiVersion = '1.7.25'
+    logbackVersion = '1.2.3'
+    h2Version = '1.4.196'
+    jsonVersion = '20090211'
+    jcalendarVersion = '1.4'
+    jcommonVersion = '1.0.24'
+    jfreechartVersion = '1.5.0'
+    jettyVersion = '9.4.8.v20171121'
+    httpclientVersion = '4.5'
+    httpcoreVersion = '4.4.1'
+    commonsloggingVersion = '1.2'
+    junitVersion = '4.12'
 }
 
 allprojects {
@@ -32,31 +22,17 @@ allprojects {
 }
 
 subprojects {
-    ext {
-        slf4jApiVersion = '1.7.25'
-        logbackVersion = '1.2.3'
-        h2Version = '1.4.196'
-        jsonVersion = '20090211'
-        jcalendarVersion = '1.4'
-        jcommonVersion = '1.0.24'
-        jfreechartVersion = '1.5.0'
-        jettyVersion = '9.4.8.v20171121'
-        httpclientVersion = '4.5'
-        httpcoreVersion = '4.4.1'
-        commonsloggingVersion = '1.2'
-        junitVersion = '4.12'
-    }
-
     repositories {
         jcenter()
     }
 
-    if (project.name.contains("demos")) {
-        apply plugin: 'java'
-    }
-    else {
+    if (!project.name.contains("demos")) {
         apply plugin: 'java-library'
+        apply plugin: 'jacoco'
         apply plugin: 'maven-publish'
+
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
 
         dependencies {
             implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
@@ -153,27 +129,47 @@ subprojects {
                 property "sonar.exclusions", "**/*module-info.java,**/*TestDomain.java"
             }
         }
+
+        //clean intellij output dir as well
+        clean.doLast {
+            file('out').deleteDir()
+        }
+
+        /** Creates a key- and truststore pair used when running server unit tests and demos with remote connection */
+        task createServerKeystore {
+            doLast {
+                def rootDir = project.rootDir.toString() + '/resources/security/'
+                def keystore = rootDir + 'JMinorServerKeystore'
+                if (!new File(keystore).exists()) {
+                    def certificate = rootDir + 'JMinorServer.cer'
+                    def keyToolExecutable = System.getProperty('java.home') + '/bin/keytool'
+                    ant.genkey(alias: 'JMinorServer', keyalg: 'RSA', keystore: keystore,
+                            storepass: 'crappypass', dname: 'CN=Dummy, OU=dummy, O=dummy.org, C=DU')
+                    exec {
+                        executable = keyToolExecutable
+                        args = ['-exportcert', '-keystore', keystore, '-alias', 'JMinorServer', '-rfc', '-file', certificate]
+                    }
+                    def truststore = rootDir + 'JMinorClientTruststore'
+                    exec {
+                        executable = keyToolExecutable
+                        args = ['-import', '-alias', 'JMinorServer', '-storepass', 'crappypass', '-file', certificate,
+                                '-keystore', truststore, '-noprompt']
+                    }
+                    ant.delete(file: certificate)
+                }
+            }
+        }
+
+        test {
+            systemProperty "jminor.db.type", "h2"
+            systemProperty "jminor.db.host", "h2db"
+            systemProperty "jminor.db.embedded", "true"
+            systemProperty "jminor.db.embeddedInMemory", "true"
+            systemProperty "jminor.db.initScript", "src/test/sql/create_h2_db.sql"
+            systemProperty "jminor.unittest.username", "scott"
+            systemProperty "jminor.unittest.password", "tiger"
+        }.dependsOn createServerKeystore
     }
-
-    apply plugin: 'jacoco'
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-
-    //clean intellij output dir as well
-    clean.doLast {
-        file('out').deleteDir()
-    }
-
-    test {
-        systemProperty "jminor.db.type", "h2"
-        systemProperty "jminor.db.host", "h2db"
-        systemProperty "jminor.db.embedded", "true"
-        systemProperty "jminor.db.embeddedInMemory", "true"
-        systemProperty "jminor.db.initScript", "src/test/sql/create_h2_db.sql"
-        systemProperty "jminor.unittest.username", "scott"
-        systemProperty "jminor.unittest.password", "tiger"
-    }.dependsOn createServerKeystore
 }
 
 def frameworkModules = subprojects.findAll { it.plugins.hasPlugin('java') && !it.name.contains("demo") }

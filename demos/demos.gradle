@@ -1,4 +1,13 @@
 apply plugin: 'application'
+apply plugin: 'jacoco'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+//clean intellij output dir as well
+clean.doLast {
+    file('out').deleteDir()
+}
 
 sonarqube {
     skipProject = true
@@ -25,6 +34,16 @@ task jarDomain(type: Jar, dependsOn: classes) {
 
 artifacts {
     domain jarDomain
+}
+
+test {
+    systemProperty "jminor.db.type", "h2"
+    systemProperty "jminor.db.host", "h2db"
+    systemProperty "jminor.db.embedded", "true"
+    systemProperty "jminor.db.embeddedInMemory", "true"
+    systemProperty "jminor.db.initScript", "src/test/sql/create_h2_db.sql"
+    systemProperty "jminor.unittest.username", "scott"
+    systemProperty "jminor.unittest.password", "tiger"
 }
 
 //jnlp {
