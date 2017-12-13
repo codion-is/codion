@@ -63,7 +63,13 @@ subprojects {
             testImplementation "junit:junit:${junitVersion}"
         }
 
-        sourceSets.main.java.exclude('module-info.java')
+        sourceSets {
+            main {
+                java {
+                    exclude 'module-info.java'
+                }
+            }
+        }
 
         def artifactName = project.name.replace("org.", "").replace(".", "-")
         jar {
