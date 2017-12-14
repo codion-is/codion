@@ -130,35 +130,36 @@ subprojects {
             }
         }
 
-        //clean intellij output dir as well
-        clean.doLast {
-            file('out').deleteDir()
+        clean {
+            //clean intellij output dir as well
+            doLast {
+                file('out').deleteDir()
+            }
         }
 
         /** Creates a key- and truststore pair used when running server unit tests and demos with remote connection */
+        def keystoreRootDir = project.rootDir.toString() + '/resources/security/'
+        def keystore = keystoreRootDir + 'JMinorServerKeystore'
         task createServerKeystore {
             doLast {
-                def rootDir = project.rootDir.toString() + '/resources/security/'
-                def keystore = rootDir + 'JMinorServerKeystore'
-                if (!new File(keystore).exists()) {
-                    def certificate = rootDir + 'JMinorServer.cer'
-                    def keyToolExecutable = System.getProperty('java.home') + '/bin/keytool'
-                    ant.genkey(alias: 'JMinorServer', keyalg: 'RSA', keystore: keystore,
-                            storepass: 'crappypass', dname: 'CN=Dummy, OU=dummy, O=dummy.org, C=DU')
-                    exec {
-                        executable = keyToolExecutable
-                        args = ['-exportcert', '-keystore', keystore, '-alias', 'JMinorServer', '-rfc', '-file', certificate]
-                    }
-                    def truststore = rootDir + 'JMinorClientTruststore'
-                    exec {
-                        executable = keyToolExecutable
-                        args = ['-import', '-alias', 'JMinorServer', '-storepass', 'crappypass', '-file', certificate,
-                                '-keystore', truststore, '-noprompt']
-                    }
-                    ant.delete(file: certificate)
+                def certificate = keystoreRootDir + 'JMinorServer.cer'
+                def keyToolExecutable = System.getProperty('java.home') + '/bin/keytool'
+                ant.genkey(alias: 'JMinorServer', keyalg: 'RSA', keystore: keystore,
+                        storepass: 'crappypass', dname: 'CN=Dummy, OU=dummy, O=dummy.org, C=DU')
+                exec {
+                    executable = keyToolExecutable
+                    args = ['-exportcert', '-keystore', keystore, '-alias', 'JMinorServer', '-rfc', '-file', certificate]
                 }
+                def truststore = keystoreRootDir + 'JMinorClientTruststore'
+                exec {
+                    executable = keyToolExecutable
+                    args = ['-import', '-alias', 'JMinorServer', '-storepass', 'crappypass', '-file', certificate,
+                            '-keystore', truststore, '-noprompt']
+                }
+                ant.delete(file: certificate)
             }
         }
+        createServerKeystore.onlyIf { !new File(keystore).exists() }
 
         test {
             systemProperty "jminor.db.type", "h2"

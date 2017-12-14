@@ -41,7 +41,4 @@ task buildReports(dependsOn: 'compileJava') {
         }
     }
 }
-
-compileJava.doLast {
-    buildReports.execute()
-}
+classes.dependsOn buildReports

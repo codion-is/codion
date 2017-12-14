@@ -68,10 +68,7 @@ task buildReports(dependsOn: 'compileJava') {
         }
     }
 }
-
-compileJava.doLast {
-    buildReports.execute()
-}
+classes.dependsOn buildReports
 
 startScripts {
     mainClassName = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'

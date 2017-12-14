@@ -1,10 +1,9 @@
 task writeVersion {
-    doFirst {
-        def file = new File("${projectDir}/build/classes/java/main/org/jminor/common")
-        file.mkdirs()
-        file = new File("${projectDir}/build/classes/java/main/org/jminor/common/version.txt")
-        file.createNewFile()
-        file.text = project.version + " " + new Date().format("yyyy.MM.dd HH:mm")
+    doLast {
+        def versionFile = new File("${projectDir}/build/classes/java/main/org/jminor/common/version.txt")
+        versionFile.getParentFile().mkdirs()
+        versionFile.createNewFile()
+        versionFile.text = project.version + " " + new Date().format("yyyy.MM.dd HH:mm")
     }
 }
 

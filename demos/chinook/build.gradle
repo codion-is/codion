@@ -61,10 +61,7 @@ task buildReports(dependsOn: 'compileJava') {
         }
     }
 }
-
-compileJava.doLast {
-    buildReports.execute()
-}
+classes.dependsOn buildReports
 
 //jnlp {
 //    mainClassName = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
