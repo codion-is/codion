@@ -56,7 +56,7 @@ startScripts {
 }
 
 applicationDistribution.from(configurations.serverRuntime.files) {
-    duplicatesStrategy= DuplicatesStrategy.EXCLUDE
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     into("lib")
 }
 applicationDistribution.from(files(
