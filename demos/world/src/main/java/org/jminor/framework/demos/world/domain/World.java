@@ -9,7 +9,7 @@ import org.jminor.framework.domain.Properties;
 
 import java.sql.Types;
 
-public final class World extends Entities{
+public final class World extends Entities {
 
   public World() {
     cityCountry();
