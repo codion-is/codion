@@ -4741,3 +4741,4 @@
   Gradle 'api' dependency introduced to framework modules, dependencies cleaned up
   Gradle 'api' dependency introduced to javafx, swing and plugin modules, dependencies cleaned up
   Gradle build refactoring, demo project stuff removed from root build file
+  EntityService now handles forwarded requests

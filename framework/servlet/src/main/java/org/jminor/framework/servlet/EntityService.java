@@ -52,6 +52,7 @@ public final class EntityService extends Application {
   public static final String CLIENT_TYPE_ID = "clientTypeId";
   public static final String CLIENT_ID = "clientId";
   public static final String BASIC_PREFIX = "basic ";
+  public static final String X_FORWARDED_FOR = "X-Forwarded-For";
   public static final int BASIC_PREFIX_LENGTH = BASIC_PREFIX.length();
 
   private static Server<RemoteEntityConnection, Remote> server;
@@ -409,7 +410,7 @@ public final class EntityService extends Application {
     try {
       final Map<String, Object> parameters = new HashMap<>(2);
       parameters.put(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, domainId);
-      parameters.put(Server.CLIENT_HOST_KEY, request.getRemoteHost());
+      parameters.put(Server.CLIENT_HOST_KEY, getRemoteHost(request));
 
       return server.connect(Clients.connectionRequest(user, clientId, clientTypeId, parameters));
     }
@@ -424,6 +425,15 @@ public final class EntityService extends Application {
 
   static void setServer(final Server server) {
     EntityService.server = server;
+  }
+
+  private static String getRemoteHost(final HttpServletRequest request) {
+    final String forwardHeader = request.getHeader(X_FORWARDED_FOR);
+    if (forwardHeader == null){
+      return request.getRemoteAddr();
+    }
+
+    return forwardHeader.split(",")[0];
   }
 
   private static Response getExceptionResponse(final Exception exeption) {
