@@ -4744,3 +4744,4 @@
   EntityService now handles forwarded requests
   Version bug fixed, could not handle non-snapshot versions
   Version 0.11.0 released
+0.11.1
