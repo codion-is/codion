@@ -4,6 +4,12 @@ task writeVersion {
         versionFile.getParentFile().mkdirs()
         versionFile.createNewFile()
         versionFile.text = project.version + " " + new Date().format("yyyy.MM.dd HH:mm")
+
+        //lets do this for intellij as well
+        versionFile = new File("${projectDir}/out/production/classes/org/jminor/common/version.txt")
+        versionFile.getParentFile().mkdirs()
+        versionFile.createNewFile()
+        versionFile.text = project.version + " " + new Date().format("yyyy.MM.dd HH:mm")
     }
 }
 

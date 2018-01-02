@@ -15,7 +15,13 @@ public final class VersionTest {
 
   @Test
   public void parse() {
-    Version version = Version.parse("2.12.4");
+    Version version = Version.parse("2.12.4 2018.01.02 15:27");
+    assertEquals(version.getMajor(), 2);
+    assertEquals(version.getMinor(), 12);
+    assertEquals(version.getPatch(), 4);
+    assertEquals("2018.01.02 15:27", version.getMetadata());
+
+    version = Version.parse("2.12.4");
     assertEquals(version.getMajor(), 2);
     assertEquals(version.getMinor(), 12);
     assertEquals(version.getPatch(), 4);

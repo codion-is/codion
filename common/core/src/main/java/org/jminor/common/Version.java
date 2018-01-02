@@ -32,7 +32,7 @@ public final class Version implements Comparable<Version>, Serializable {
 
   static {
     try (final BufferedReader input = new BufferedReader(new InputStreamReader(
-            Objects.requireNonNull(Util.class.getResourceAsStream(VERSION_FILE),
+            Objects.requireNonNull(Version.class.getResourceAsStream(VERSION_FILE),
                     "Version file is missing (org.jminor.common.version.txt"),
             Charset.defaultCharset()))) {
       VERSION = parse(input.readLine());
@@ -186,11 +186,28 @@ public final class Version implements Comparable<Version>, Serializable {
     if (versionString == null || versionString.isEmpty()) {
       throw new IllegalArgumentException("Invalid version string: " + versionString);
     }
-    final String[] metadataSplit = versionString.trim().split("-");
-    final String[] versionSplit = metadataSplit[0].split("\\.");
+    final String version;
+    final String metadata;
+    final int dashIndex = versionString.indexOf('-');
+    if (dashIndex > 0) {
+      version = versionString.substring(0, dashIndex);
+      metadata = versionString.substring(dashIndex + 1, versionString.length());
+    }
+    else {
+      final int spaceIndex = versionString.indexOf(' ');
+      if (spaceIndex > 0) {
+        version = versionString.substring(0, spaceIndex);
+        metadata = versionString.substring(spaceIndex + 1, versionString.length());
+      }
+      else {
+        version = versionString;
+        metadata = null;
+      }
+    }
+    final String[] versionSplit = version.split("\\.");
 
     return new Version(getIntValue(versionSplit, MAJOR_INDEX), getIntValue(versionSplit, MINOR_INDEX),
-            getIntValue(versionSplit, PATCH_INDEX), metadataSplit.length > 1 ? metadataSplit[1] : null);
+            getIntValue(versionSplit, PATCH_INDEX), metadata);
   }
 
   private static int getIntValue(final String[] splits, final int index) {
