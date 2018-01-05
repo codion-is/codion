@@ -42,7 +42,7 @@ import static org.junit.Assert.*;
 /**
  * A class for unit testing domain entities.
  */
-public abstract class EntityTestUnit {
+public class EntityTestUnit {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
@@ -55,25 +55,29 @@ public abstract class EntityTestUnit {
   private static final Random RANDOM = new Random();
   private static final String ENTITY_PARAM = "entity";
 
-  private final Entities entities;
-  private final EntityConditions conditions;
+  private final String domainClass;
   private final Map<String, Entity> referencedEntities = new HashMap<>();
 
   private EntityConnection connection;
+  private Entities entities;
+  private EntityConditions conditions;
 
   /**
    * Instantiates a new EntityTestUnit.
-   * @param entities the domain model entities
+   * @param domainClass the name of the domain model class
    */
-  public EntityTestUnit(final Entities entities) {
-    this.entities = entities;
-    this.conditions = new EntityConditions(entities);
+  public EntityTestUnit(final String domainClass) {
+    this.domainClass = domainClass;
   }
 
   /**
    * @return the domain entities
    */
   public final Entities getEntities() {
+    if (entities == null) {
+      entities = connection.getEntities();
+    }
+
     return entities;
   }
 
@@ -81,6 +85,10 @@ public abstract class EntityTestUnit {
    * @return the domain conditions
    */
   public final EntityConditions getConditions() {
+    if (conditions == null) {
+      conditions = new EntityConditions(getEntities());
+    }
+
     return conditions;
   }
 
@@ -114,13 +122,13 @@ public abstract class EntityTestUnit {
     try {
       initializeReferencedEntities(entityId, new HashSet<>());
       Entity testEntity = null;
-      if (!entities.isReadOnly(entityId)) {
+      if (!getEntities().isReadOnly(entityId)) {
         testEntity = testInsert(Objects.requireNonNull(initializeTestEntity(entityId), "test entity"));
         assertNotNull(testEntity.toString());
         testUpdate(testEntity);
       }
       testSelect(entityId, testEntity);
-      if (!entities.isReadOnly(entityId)) {
+      if (!getEntities().isReadOnly(entityId)) {
         testDelete(testEntity);
       }
     }
@@ -175,18 +183,18 @@ public abstract class EntityTestUnit {
   /**
    * Override to provide specific setup for this test
    */
-  protected void doSetUp() {}
+  protected void doSetUp() {/*For overriding*/}
 
   /**
    * Override to provide specific tear down for this test
    */
-  protected void doTearDown() {}
+  protected void doTearDown() {/*For overriding*/}
 
   /**
    * @return the EntityConnectionProvider instance this test case should use
    */
   protected EntityConnectionProvider initializeConnectionProvider() {
-    return EntityConnectionProviders.connectionProvider(entities, getTestUser(), getClass().getName());
+    return EntityConnectionProviders.connectionProvider(domainClass, getTestUser(), getClass().getName());
   }
 
   /**
@@ -240,7 +248,7 @@ public abstract class EntityTestUnit {
    * @return the entity instance to use for testing the entity type
    */
   protected Entity initializeTestEntity(final String entityId) {
-    return createRandomEntity(entities, entityId, referencedEntities);
+    return createRandomEntity(getEntities(), entityId, referencedEntities);
   }
 
   /**
@@ -249,7 +257,7 @@ public abstract class EntityTestUnit {
    * @return a entity of the given type
    */
   protected Entity initializeReferenceEntity(final String entityId) {
-    return createRandomEntity(entities, entityId, referencedEntities);
+    return createRandomEntity(getEntities(), entityId, referencedEntities);
   }
 
   /**
@@ -257,7 +265,7 @@ public abstract class EntityTestUnit {
    * @param testEntity the entity to modify
    */
   protected void modifyEntity(final Entity testEntity) {
-    randomize(entities, testEntity, false, referencedEntities);
+    randomize(getEntities(), testEntity, false, referencedEntities);
   }
 
   /**
@@ -270,9 +278,9 @@ public abstract class EntityTestUnit {
   @SuppressWarnings({"UnusedDeclaration"})
   private void initializeReferencedEntities(final String entityId, final Collection<String> visited) throws DatabaseException {
     visited.add(entityId);
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = new ArrayList<>(entities.getForeignKeyProperties(entityId));
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = new ArrayList<>(getEntities().getForeignKeyProperties(entityId));
     foreignKeyProperties.sort((o1, o2) -> o1.getForeignEntityId().equals(entityId) ? 1 : 0);
-    for (final Property.ForeignKeyProperty foreignKeyProperty : entities.getForeignKeyProperties(entityId)) {
+    for (final Property.ForeignKeyProperty foreignKeyProperty : getEntities().getForeignKeyProperties(entityId)) {
       final String foreignEntityId = foreignKeyProperty.getForeignEntityId();
       if (!visited.contains(foreignEntityId)) {
         initializeReferencedEntities(foreignEntityId, visited);
@@ -314,7 +322,7 @@ public abstract class EntityTestUnit {
               testEntity.equals(tmp));
     }
     else {
-      connection.selectMany(conditions.selectCondition(entityId, SELECT_FETCH_COUNT));
+      connection.selectMany(getConditions().selectCondition(entityId, SELECT_FETCH_COUNT));
     }
   }
 
@@ -334,7 +342,7 @@ public abstract class EntityTestUnit {
     final Entity tmp = connection.selectSingle(testEntity.getOriginalKey());
     assertEquals("Keys of entity and its updated counterpart should be equal",
             testEntity.getKey(), tmp.getKey());
-    for (final Property.ColumnProperty property : entities.getColumnProperties(testEntity.getEntityId())) {
+    for (final Property.ColumnProperty property : getEntities().getColumnProperties(testEntity.getEntityId())) {
       if (!property.isReadOnly() && property.isUpdatable()) {
         final Object beforeUpdate = testEntity.get(property);
         final Object afterUpdate = tmp.get(property);

@@ -587,7 +587,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /**
    * Queries for the data used to populate this EntityTableModel when it is refreshed,
-   * using the order by clause returned by {@link #getOrderByClause()}
+   * using the order by clause returned by {@link #getOrderBy()}
    * @return entities selected from the database according the the query condition.
    * @see EntityTableConditionModel#getCondition()
    */
@@ -598,7 +598,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
     try {
       return connectionProvider.getConnection().selectMany(entityConditions.selectCondition(entityId,
-              getConditionModel().getCondition(), getOrderByClause(), fetchCount));
+              getConditionModel().getCondition(), fetchCount).setOrderBy(getOrderBy()));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -634,10 +634,10 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * The order by clause to use when selecting the data for this model,
    * by default the order by clause defined for the underlying entity
    * @return the order by clause
-   * @see Entities#getOrderByClause(String)
+   * @see Entities#getOrderBy(String)
    */
-  protected String getOrderByClause() {
-    return getEntities().getOrderByClause(entityId);
+  protected Entity.OrderBy getOrderBy() {
+    return getEntities().getOrderBy(entityId);
   }
 
   @SuppressWarnings({"UnusedDeclaration"})

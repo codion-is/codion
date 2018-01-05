@@ -32,7 +32,7 @@ public final class SchemaBrowser extends Entities {
   void defineSchema() {
     define(T_SCHEMA, bundle.getString("t_schema"),
             Properties.primaryKeyProperty(SCHEMA_NAME, Types.VARCHAR, "Name"))
-            .setOrderByClause(SCHEMA_NAME)
+            .setOrderBy(orderBy().ascending(SCHEMA_NAME))
             .setReadOnly(true)
             .setStringProvider(new Entities.StringProvider(SCHEMA_NAME))
             .setCaption("Schemas");
@@ -48,7 +48,7 @@ public final class SchemaBrowser extends Entities {
             Properties.foreignKeyProperty(TABLE_SCHEMA_FK, "Schema", T_SCHEMA,
                     Properties.primaryKeyProperty(TABLE_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0)),
             Properties.primaryKeyProperty(TABLE_NAME, Types.VARCHAR, "Name").setPrimaryKeyIndex(1))
-            .setOrderByClause(TABLE_SCHEMA + ", " + TABLE_NAME)
+            .setOrderBy(orderBy().ascending(TABLE_SCHEMA, TABLE_NAME))
             .setReadOnly(true)
             .setStringProvider(new Entities.StringProvider(TABLE_SCHEMA_FK).addText(".").addValue(TABLE_NAME))
             .setCaption("Tables");
@@ -69,7 +69,7 @@ public final class SchemaBrowser extends Entities {
                             Properties.columnProperty(COLUMN_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1)}),
             Properties.primaryKeyProperty(COLUMN_NAME, Types.VARCHAR, "Column name").setPrimaryKeyIndex(2),
             Properties.columnProperty(COLUMN_DATA_TYPE, Types.VARCHAR, "Data type"))
-            .setOrderByClause(COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME)
+            .setOrderBy(orderBy().ascending(COLUMN_SCHEMA, COLUMN_TABLE_NAME, COLUMN_NAME))
             .setReadOnly(true)
             .setStringProvider(new Entities.StringProvider(COLUMN_TABLE_FK).addText(".").addValue(COLUMN_NAME))
             .setCaption("Columns");
@@ -90,7 +90,7 @@ public final class SchemaBrowser extends Entities {
                             Properties.columnProperty(CONSTRAINT_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1)}),
             Properties.primaryKeyProperty(CONSTRAINT_NAME, Types.VARCHAR, "Constraint name").setPrimaryKeyIndex(2),
             Properties.columnProperty(CONSTRAINT_TYPE, Types.VARCHAR, "Type"))
-            .setOrderByClause(CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME)
+            .setOrderBy(orderBy().ascending(CONSTRAINT_SCHEMA, CONSTRAINT_TABLE_NAME, CONSTRAINT_NAME))
             .setReadOnly(true)
             .setStringProvider(new Entities.StringProvider(CONSTRAINT_TABLE_FK).addText(".").addValue(CONSTRAINT_NAME))
             .setCaption("Constraints");
@@ -113,7 +113,7 @@ public final class SchemaBrowser extends Entities {
                             Properties.columnProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Types.VARCHAR).setPrimaryKeyIndex(2)}),
             Properties.columnProperty(COLUMN_CONSTRAINT_COLUMN_NAME, Types.VARCHAR, "Column name"),
             Properties.columnProperty(COLUMN_CONSTRAINT_POSITION, Types.INTEGER, "Position"))
-            .setOrderByClause(COLUMN_CONSTRAINT_SCHEMA + ", " + COLUMN_CONSTRAINT_TABLE_NAME + ", " + COLUMN_CONSTRAINT_CONSTRAINT_NAME)
+            .setOrderBy(orderBy().ascending(COLUMN_CONSTRAINT_SCHEMA, COLUMN_CONSTRAINT_TABLE_NAME, COLUMN_CONSTRAINT_CONSTRAINT_NAME))
             .setReadOnly(true)
             .setCaption("Column constraints");
   }

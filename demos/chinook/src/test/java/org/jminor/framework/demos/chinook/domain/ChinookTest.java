@@ -5,7 +5,6 @@ package org.jminor.framework.demos.chinook.domain;
 
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.testing.EntityTestUnit;
 
 import org.junit.Test;
@@ -14,14 +13,12 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public class ChinookTest extends EntityTestUnit {
 
-  private static final Entities ENTITIES = new Chinook();
-
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
   public ChinookTest() {
-    super(ENTITIES);
+    super(ChinookDomain.class.getName());
   }
 
   @Test

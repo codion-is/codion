@@ -12,7 +12,6 @@ import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.http.HttpServer;
 import org.jminor.framework.db.condition.EntityConditions;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.servlet.EntityServletServer;
@@ -40,12 +39,11 @@ public final class HttpEntityConnectionTest {
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
-  private static final Entities ENTITIES = new TestDomain();
-  private static final EntityConditions CONDITIONS = new EntityConditions(ENTITIES);
   private static DefaultEntityConnectionServer server;
 
-  private final HttpEntityConnection connection = new HttpEntityConnection(ENTITIES, HttpEntityConnectionProvider.HTTP_SERVER_HOST_NAME.get(),
+  private final HttpEntityConnection connection = new HttpEntityConnection("TestDomain", HttpEntityConnectionProvider.HTTP_SERVER_HOST_NAME.get(),
           HttpEntityConnectionProvider.HTTP_SERVER_PORT.get(), UNIT_TEST_USER, "HttpEntityConnectionTest", UUID.randomUUID());
+  private final EntityConditions conditions = new EntityConditions(connection.getEntities());
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -77,7 +75,7 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void insert() throws IOException, DatabaseException {
-    final Entity entity = ENTITIES.entity(TestDomain.T_DEPARTMENT);
+    final Entity entity = connection.getEntities().entity(TestDomain.T_DEPARTMENT);
     entity.put(TestDomain.DEPARTMENT_ID, 33);
     entity.put(TestDomain.DEPARTMENT_NAME, "name");
     entity.put(TestDomain.DEPARTMENT_LOCATION, "loc");
@@ -89,7 +87,7 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void selectByKey() throws IOException, DatabaseException {
-    final Entity.Key key = ENTITIES.key(TestDomain.T_DEPARTMENT);
+    final Entity.Key key = connection.getEntities().key(TestDomain.T_DEPARTMENT);
     key.put(TestDomain.DEPARTMENT_ID, 10);
     final List<Entity> depts = connection.selectMany(Collections.singletonList(key));
     assertEquals(1, depts.size());
@@ -130,12 +128,12 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void selectRowCount() throws IOException, DatabaseException {
-    assertEquals(4, connection.selectRowCount(CONDITIONS.condition(TestDomain.T_DEPARTMENT)));
+    assertEquals(4, connection.selectRowCount(conditions.condition(TestDomain.T_DEPARTMENT)));
   }
 
   @Test
   public void selectValues() throws IOException, DatabaseException {
-    final List<Object> values = connection.selectValues(TestDomain.DEPARTMENT_NAME, CONDITIONS.condition(TestDomain.T_DEPARTMENT));
+    final List<Object> values = connection.selectValues(TestDomain.DEPARTMENT_NAME, conditions.condition(TestDomain.T_DEPARTMENT));
     assertEquals(4, values.size());
   }
 
@@ -162,7 +160,7 @@ public final class HttpEntityConnectionTest {
   public void deleteDepartmentWithEmployees() throws IOException, DatabaseException {
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "SALES");
-    connection.delete(CONDITIONS.condition(department.getKey()));
+    connection.delete(conditions.condition(department.getKey()));
   }
 
   @Test(expected = IllegalStateException.class)

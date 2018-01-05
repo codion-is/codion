@@ -75,7 +75,7 @@ public final class EmpDept extends Entities {
             Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, getString(DEPARTMENT_LOCATION))
                     .setPreferredColumnWidth(150).setMaxLength(13))
             .setSmallDataset(true)
-            .setOrderByClause(DEPARTMENT_NAME)
+            .setOrderBy(orderBy().ascending(DEPARTMENT_NAME))
             .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
             .setCaption(getString(DEPARTMENT));
   }
@@ -102,7 +102,7 @@ public final class EmpDept extends Entities {
                     getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     getString(DEPARTMENT_LOCATION)).setPreferredColumnWidth(100))
             .setKeyGenerator(incrementKeyGenerator(T_EMPLOYEE, EMPLOYEE_ID))
-            .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME)
+            .setOrderBy(orderBy().ascending(EMPLOYEE_DEPARTMENT, EMPLOYEE_NAME))
             .setStringProvider(new Entities.StringProvider(EMPLOYEE_NAME))
             .setCaption(getString(EMPLOYEE))
             .setBackgroundColorProvider((entity, property) -> {

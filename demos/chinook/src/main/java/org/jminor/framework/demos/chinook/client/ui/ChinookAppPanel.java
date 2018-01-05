@@ -42,11 +42,6 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPanel.ChinookApplicationModel> {
 
-  @Override
-  protected Entities initializeEntities() {
-    return new Chinook();
-  }
-
   /* ARTIST
     *   ALBUM
     *     TRACK
@@ -155,7 +150,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPane
     Locale.setDefault(new Locale("en", "EN"));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
-    new ChinookAppPanel().startApplication("Chinook", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.chinook.domain.ChinookDomain");
+    new ChinookAppPanel().startApplication("ChinookDomain", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
   }
 
   public static final class ChinookApplicationModel extends SwingEntityApplicationModel {

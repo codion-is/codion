@@ -14,16 +14,12 @@ import org.jminor.framework.domain.Property;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * A class for creating query conditions.
@@ -83,57 +79,20 @@ public final class EntityConditions {
    * @return a select condition based on the given value
    */
   public EntitySelectCondition selectCondition(final String entityId, final String propertyId,
-                                               final Condition.Type conditionType, final int fetchCount,
-                                               final Object value) {
-    return selectCondition(entityId, propertyId, conditionType, null, fetchCount, value);
-  }
-
-  /**
-   * @param entityId the entity ID
-   * @param propertyId the property ID
-   * @param conditionType the search type
-   * @param orderByClause the order by clause, without the 'order by' keywords
-   * @param fetchCount the maximum number of entities to fetch
-   * @param value the condition value, can be a Collection of values
-   * @return a select condition based on the given value
-   */
-  public EntitySelectCondition selectCondition(final String entityId, final String propertyId,
-                                               final Condition.Type conditionType, final String orderByClause,
-                                               final int fetchCount, final Object value) {
+                                               final Condition.Type conditionType, final int fetchCount, final Object value) {
     return new DefaultEntitySelectCondition(entities, entityId, propertyCondition(entityId, propertyId, conditionType, value),
-            fetchCount).setOrderByClause(orderByClause);
-  }
-
-  /**
-   * @param entityId the entity ID
-   * @param orderByClause the order by clause, without the 'order by' keywords
-   * @return a select condition including all entities of the given type
-   */
-  public EntitySelectCondition selectCondition(final String entityId, final String orderByClause) {
-    return new DefaultEntitySelectCondition(entities, entityId, null).setOrderByClause(orderByClause);
+            fetchCount);
   }
 
   /**
    * @param entityId the entity ID
    * @param propertyCondition the column condition
-   * @param orderByClause the order by clause, without the 'order by' keywords
-   * @return a select condition based on the given column condition
-   */
-  public EntitySelectCondition selectCondition(final String entityId, final Condition<Property.ColumnProperty> propertyCondition,
-                                               final String orderByClause) {
-    return selectCondition(entityId, propertyCondition, orderByClause, -1);
-  }
-
-  /**
-   * @param entityId the entity ID
-   * @param propertyCondition the column condition
-   * @param orderByClause the order by clause, without the 'order by' keywords
    * @param fetchCount the maximum number of entities to fetch
    * @return a select condition based on the given column condition
    */
   public EntitySelectCondition selectCondition(final String entityId, final Condition<Property.ColumnProperty> propertyCondition,
-                                               final String orderByClause, final int fetchCount) {
-    return new DefaultEntitySelectCondition(entities, entityId, propertyCondition, fetchCount).setOrderByClause(orderByClause);
+                                               final int fetchCount) {
+    return new DefaultEntitySelectCondition(entities, entityId, propertyCondition, fetchCount);
   }
 
   /**
@@ -521,8 +480,7 @@ public final class EntityConditions {
     private EntityCondition condition;
     private HashMap<String, Integer> foreignKeyFetchDepthLimits;
 
-    private OrderBy orderBy;
-    private String orderByClause;
+    private Entity.OrderBy orderBy;
     private int fetchCount;
     private boolean forUpdate;
     private int limit;
@@ -594,24 +552,12 @@ public final class EntityConditions {
 
     @Override
     public String getOrderByClause() {
-      return orderBy != null ? orderBy.getOrderByClause() : orderByClause;
+      return orderBy != null ? orderBy.getOrderByClause(condition.getEntityId()) : null;
     }
 
     @Override
-    public EntitySelectCondition setOrderByClause(final String orderByClause) {
-      this.orderByClause = orderByClause;
-      return this;
-    }
-
-    @Override
-    public EntitySelectCondition orderByAscending(final String propertyId) {
-      getOrderBy().add(propertyId, OrderBy.SortOrder.ASCENDING);
-      return this;
-    }
-
-    @Override
-    public EntitySelectCondition orderByDescending(final String propertyId) {
-      getOrderBy().add(propertyId, OrderBy.SortOrder.DESCENDING);
+    public EntitySelectCondition setOrderBy(final Entity.OrderBy orderBy) {
+      this.orderBy = orderBy;
       return this;
     }
 
@@ -676,18 +622,9 @@ public final class EntityConditions {
       return this;
     }
 
-    private OrderBy getOrderBy() {
-      if (orderBy == null) {
-        orderBy = new OrderBy(entities, getEntityId());
-      }
-
-      return orderBy;
-    }
-
     private void writeObject(final ObjectOutputStream stream) throws IOException {
       stream.writeObject(entities.getDomainId());
       stream.writeObject(orderBy);
-      stream.writeObject(orderByClause);
       stream.writeInt(fetchCount);
       stream.writeBoolean(forUpdate);
       stream.writeObject(foreignKeyFetchDepthLimits);
@@ -698,8 +635,7 @@ public final class EntityConditions {
 
     private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
       final String domainId = (String) stream.readObject();
-      orderBy = (OrderBy) stream.readObject();
-      orderByClause = (String) stream.readObject();
+      orderBy = (Entity.OrderBy) stream.readObject();
       fetchCount = stream.readInt();
       forUpdate = stream.readBoolean();
       foreignKeyFetchDepthLimits = (HashMap<String, Integer>) stream.readObject();
@@ -919,69 +855,6 @@ public final class EntityConditions {
       for (int i = 0; i < valueCount; i++) {
         values.add(stream.readObject());
       }
-    }
-  }
-
-  private static final class OrderBy implements Serializable {
-
-    private static final long serialVersionUID = 1;
-
-    private enum SortOrder {
-      ASCENDING, DESCENDING
-    }
-
-    private Entities entities;
-    private String domainId;
-    private String entityId;
-    private LinkedHashMap<String, SortOrder> propertySortOrder = new LinkedHashMap<>();
-
-    private OrderBy(final Entities entities, final String entityId) {
-      Objects.requireNonNull(entities, "entities");
-      Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
-      this.entities = entities;
-      this.domainId = entities.getDomainId();
-      this.entityId = entityId;
-    }
-
-    private OrderBy add(final String propertyId, final SortOrder order) {
-      Objects.requireNonNull(propertyId, "propertyId");
-      if (propertySortOrder.containsKey(propertyId)) {
-        throw new IllegalArgumentException("Order by already contains the given property: " + propertyId);
-      }
-      propertySortOrder.put(propertyId, order);
-      return this;
-    }
-
-    private String getOrderByClause() {
-      final StringBuilder builder = new StringBuilder();
-      final Set<Map.Entry<String, SortOrder>> entries = propertySortOrder.entrySet();
-      int counter = 0;
-      for (final Map.Entry<String, SortOrder> entry : entries) {
-        final Property.ColumnProperty property = entities.getColumnProperty(entityId, entry.getKey());
-        builder.append(property.getColumnName());
-        if (entry.getValue().equals(SortOrder.DESCENDING)) {
-          builder.append(" desc");
-        }
-        if (counter++ < entries.size() - 1) {
-          builder.append(", ");
-        }
-      }
-
-      return builder.toString();
-    }
-
-    private void writeObject(final ObjectOutputStream stream) throws IOException {
-      stream.writeObject(domainId);
-      stream.writeObject(entityId);
-      stream.writeObject(propertySortOrder);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
-      domainId = (String) stream.readObject();
-      entityId = (String) stream.readObject();
-      propertySortOrder = (LinkedHashMap<String, SortOrder>) stream.readObject();
-      entities = Entities.getDomainEntities(domainId);
     }
   }
 }

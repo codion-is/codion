@@ -23,12 +23,12 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpStatus;
+import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -72,31 +72,42 @@ final class HttpEntityConnection implements EntityConnection {
           .setConnectTimeout(2000)
           .build();
 
-  private final Entities domain;
-  private final EntityConditions conditions;
+  private final String domainId;
   private final User user;
   private final String baseurl;
-  private final HttpClientConnectionManager connectionManager = new BasicHttpClientConnectionManager();
+  private final BasicHttpClientConnectionManager connectionManager = new BasicHttpClientConnectionManager();
   private final CloseableHttpClient httpClient;
+
+  private Entities entities;
+  private EntityConditions conditions;
 
   private boolean closed;
 
   /**
    * Instantiates a new {@link HttpEntityConnection} instance
-   * @param domain the domain entities
+   * @param domain the entities entities
    * @param serverHostName the http server host name
    * @param serverPort the http server port
    * @param user the user
    * @param clientTypeId the client type id
    * @param clientId the client id
    */
-  HttpEntityConnection(final Entities domain, final String serverHostName, final int serverPort,
+  HttpEntityConnection(final String domainId, final String serverHostName, final int serverPort,
                        final User user, final String clientTypeId, final UUID clientId) {
-    this.domain = Objects.requireNonNull(domain, "domain");
-    this.conditions = new EntityConditions(domain);
+    this.domainId = Objects.requireNonNull(domainId, DOMAIN_ID);
     this.user = Objects.requireNonNull(user, "user");
     this.baseurl =  Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + "/entities/";
     this.httpClient = createHttpClient(clientTypeId, clientId);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entities getEntities() {
+    if (entities == null) {
+      entities = initializeEntities();
+    }
+
+    return entities;
   }
 
   /** {@inheritDoc} */
@@ -262,7 +273,7 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public void delete(final List<Entity.Key> keys) throws DatabaseException {
-    delete(conditions.condition(Objects.requireNonNull(keys)));
+    delete(getConditions().condition(Objects.requireNonNull(keys)));
   }
 
   /** {@inheritDoc} */
@@ -302,33 +313,33 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
-    return selectSingle(conditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, value));
+    return selectSingle(getConditions().selectCondition(entityId, propertyId, Condition.Type.LIKE, value));
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final Entity.Key key) throws DatabaseException {
-    return selectSingle(conditions.selectCondition(key));
+    return selectSingle(getConditions().selectCondition(key));
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException {
-    final List<Entity> entities = selectMany(condition);
-    if (Util.nullOrEmpty(entities)) {
+    final List<Entity> selected = selectMany(condition);
+    if (Util.nullOrEmpty(selected)) {
       throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
     }
-    if (entities.size() > 1) {
+    if (selected.size() > 1) {
       throw new DatabaseException(FrameworkMessages.get(FrameworkMessages.MANY_RECORDS_FOUND));
     }
 
-    return entities.get(0);
+    return selected.get(0);
   }
 
   /** {@inheritDoc} */
   @Override
   public List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
-    return selectMany(conditions.selectCondition(keys));
+    return selectMany(getConditions().selectCondition(keys));
   }
 
   /** {@inheritDoc} */
@@ -351,7 +362,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public List<Entity> selectMany(final String entityId, final String propertyId, final Object... values)
           throws DatabaseException {
-    return selectMany(conditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, Arrays.asList(values)));
+    return selectMany(getConditions().selectCondition(entityId, propertyId, Condition.Type.LIKE, Arrays.asList(values)));
   }
 
   /** {@inheritDoc} */
@@ -421,6 +432,27 @@ final class HttpEntityConnection implements EntityConnection {
     throw new UnsupportedOperationException();
   }
 
+  private EntityConditions getConditions() {
+    if (conditions == null) {
+      conditions = new EntityConditions(getEntities());
+    }
+
+    return conditions;
+  }
+
+  private Entities initializeEntities() {
+    try {
+      return handleResponse(execute(createHttpPost("getEntities")));
+    }
+    catch (final RuntimeException e) {
+      throw e;
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
+  }
+
   private List executeOperation(final String path, final String operationIdParam, final String operationId,
                                 final Object... arguments) throws Exception {
     return handleResponse(execute(createHttpPost(createURIBuilder(path)
@@ -430,14 +462,20 @@ final class HttpEntityConnection implements EntityConnection {
 
   private CloseableHttpResponse execute(final HttpUriRequest operation) throws IOException {
     synchronized (httpClient) {
-      return httpClient.execute(operation);
+      try {
+        return httpClient.execute(operation);
+      }
+      catch (final NoHttpResponseException e) {
+        LOG.debug(e.getMessage(), e);
+        //retry once, todo fix server side if possible
+        return httpClient.execute(operation);
+      }
     }
   }
 
   private CloseableHttpClient createHttpClient(final String clientTypeId, final UUID clientId) {
     final String authorizationHeader = BASIC + Base64.getEncoder().encodeToString((
             user.getUsername() + ":" + user.getPassword()).getBytes());
-    final String domainId = domain.getDomainId();
     final String clientIdString = clientId.toString();
 
     return HttpClientBuilder.create()

@@ -6,7 +6,6 @@ package org.jminor.framework.demos.empdept.javafx;
 import org.jminor.common.User;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.model.EntityModel;
 import org.jminor.javafx.framework.model.FXEntityEditModel;
 import org.jminor.javafx.framework.model.FXEntityListModel;
@@ -18,11 +17,6 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
 
   public EmpDeptFX() {
     super("EmpDeptFX");
-  }
-
-  @Override
-  protected Entities initializeEntities() {
-    return new EmpDept();
   }
 
   @Override
@@ -57,6 +51,7 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
   }
 
   public static void main(final String[] args) {
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.empdept.domain.EmpDept");
     launch(args);
   }
 }

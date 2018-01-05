@@ -9,7 +9,6 @@ import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.valuemap.DefaultValueMap;
@@ -19,18 +18,15 @@ import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.framework.i18n.FrameworkMessages;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.text.Collator;
 import java.text.Format;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,7 +43,9 @@ import java.util.Set;
 /**
  * A {@link Entity} repository specifying the {@link Entity.Definition}s for a given domain.
  */
-public class Entities {
+public class Entities implements Serializable {
+
+  private static final long serialVersionUID = 1;
 
   /**
    * Specifies whether or not to allow entities to be re-defined, that is,
@@ -73,8 +71,9 @@ public class Entities {
 
   private final String domainId;
   private final Map<String, Entity.Definition> entityDefinitions = new LinkedHashMap<>();
-  private final Map<String, List<Property.ForeignKeyProperty>> foreignKeyReferenceMap = new HashMap<>();
-  private final Map<String, DatabaseConnection.Operation> databaseOperations = new HashMap<>();
+
+  private final transient Map<String, List<Property.ForeignKeyProperty>> foreignKeyReferenceMap = new HashMap<>();
+  private final transient Map<String, DatabaseConnection.Operation> databaseOperations = new HashMap<>();
 
   /**
    * Instantiates a Entities instance
@@ -88,6 +87,15 @@ public class Entities {
    */
   public Entities(final String domainId) {
     this.domainId = Objects.requireNonNull(domainId, "domainId");
+  }
+
+  /**
+   * A copy constructor
+   * @param entities the entities to copy
+   */
+  public Entities(final Entities entities) {
+    this.domainId = entities.domainId;
+    this.entityDefinitions.putAll(entities.entityDefinitions);
   }
 
   /**
@@ -222,44 +230,6 @@ public class Entities {
   }
 
   /**
-   * Instantiates a primary key generator which fetches the current maximum primary key value and increments
-   * it by one prior to insert.
-   * @param tableName the table name
-   * @param columnName the primary key column name
-   * @return a incrementing primary key generator
-   */
-  public final Entity.KeyGenerator incrementKeyGenerator(final String tableName, final String columnName) {
-    return new IncrementKeyGenerator(tableName, columnName);
-  }
-
-  /**
-   * Instantiates a primary key generator which fetches primary key values from a sequence prior to insert
-   * @param sequenceName the sequence name
-   * @return a sequence based primary key generator
-   */
-  public final Entity.KeyGenerator sequenceKeyGenerator(final String sequenceName) {
-    return new SequenceKeyGenerator(sequenceName);
-  }
-
-  /**
-   * Instantiates a primary key generator which fetches primary key values using the given query prior to insert
-   * @param query the query
-   * @return a query based primary key generator
-   */
-  public final Entity.KeyGenerator queriedKeyGenerator(final String query) {
-    return queriedKeyGenerator(query);
-  }
-
-  /**
-   * Instantiates a primary key generator which fetches automatically incremented primary key values after insert
-   * @param valueSource the value source, whether a sequence or a table name
-   * @return a auto-increment based primary key generator
-   */
-  public final Entity.KeyGenerator automaticKeyGenerator(final String valueSource) {
-    return new AutomaticKeyGenerator(valueSource);
-  }
-
-  /**
    * @param entityId the entity ID
    * @return a String array containing the IDs of the properties used as default search properties
    * for entities identified by {@code entityId}
@@ -338,10 +308,10 @@ public class Entities {
 
   /**
    * @param entityId the entity ID
-   * @return a comma separated list of columns to use in the order by clause
+   * @return the default order by for this entity
    */
-  public final String getOrderByClause(final String entityId) {
-    return getDefinition(entityId).getOrderByClause();
+  public final Entity.OrderBy getOrderBy(final String entityId) {
+    return getDefinition(entityId).getOrderBy();
   }
 
   /**
@@ -943,12 +913,57 @@ public class Entities {
   }
 
   /**
+   * @return a new OrderBy instance
+   */
+  public final Entity.OrderBy orderBy() {
+    return new DefaultOrderBy(this);
+  }
+
+  /**
    * Registers this instance for lookup via {@link Entities#getDomainEntities(String)}
    * @return this Entities instance
    * @see #getDomainId()
    */
   public final Entities registerDomain() {
     return setDomainEntities(domainId, this);
+  }
+
+  /**
+   * Instantiates a primary key generator which fetches the current maximum primary key value and increments
+   * it by one prior to insert.
+   * @param tableName the table name
+   * @param columnName the primary key column name
+   * @return a incrementing primary key generator
+   */
+  public static final Entity.KeyGenerator incrementKeyGenerator(final String tableName, final String columnName) {
+    return new IncrementKeyGenerator(tableName, columnName);
+  }
+
+  /**
+   * Instantiates a primary key generator which fetches primary key values from a sequence prior to insert
+   * @param sequenceName the sequence name
+   * @return a sequence based primary key generator
+   */
+  public static final Entity.KeyGenerator sequenceKeyGenerator(final String sequenceName) {
+    return new SequenceKeyGenerator(sequenceName);
+  }
+
+  /**
+   * Instantiates a primary key generator which fetches primary key values using the given query prior to insert
+   * @param query the query
+   * @return a query based primary key generator
+   */
+  public static final Entity.KeyGenerator queriedKeyGenerator(final String query) {
+    return queriedKeyGenerator(query);
+  }
+
+  /**
+   * Instantiates a primary key generator which fetches automatically incremented primary key values after insert
+   * @param valueSource the value source, whether a sequence or a table name
+   * @return a auto-increment based primary key generator
+   */
+  public static final Entity.KeyGenerator automaticKeyGenerator(final String valueSource) {
+    return new AutomaticKeyGenerator(valueSource);
   }
 
   /**
@@ -1153,35 +1168,6 @@ public class Entities {
     return keyMap;
   }
 
-  private static Entity findAndRemove(final Entity.Key primaryKey, final ListIterator<Entity> iterator) {
-    while (iterator.hasNext()) {
-      final Entity current = iterator.next();
-      if (current.getKey().equals(primaryKey)) {
-        iterator.remove();
-
-        return current;
-      }
-    }
-
-    return null;
-  }
-
-  private static <T> Collection<T> collectValues(final Collection<T> collection, final String propertyId,
-                                                 final Collection<Entity> entities, final boolean includeNullValues) {
-    Objects.requireNonNull(collection);
-    Objects.requireNonNull(propertyId);
-    if (!Util.nullOrEmpty(entities)) {
-      for (final Entity entity : entities) {
-        final Object value = entity.get(propertyId);
-        if (value != null || includeNullValues) {
-          collection.add((T) value);
-        }
-      }
-    }
-
-    return collection;
-  }
-
   /**
    * Creates a two dimensional array containing the values of the given properties for the given entities in string format.
    * @param properties the properties
@@ -1302,6 +1288,35 @@ public class Entities {
     }
   }
 
+  private static Entity findAndRemove(final Entity.Key primaryKey, final ListIterator<Entity> iterator) {
+    while (iterator.hasNext()) {
+      final Entity current = iterator.next();
+      if (current.getKey().equals(primaryKey)) {
+        iterator.remove();
+
+        return current;
+      }
+    }
+
+    return null;
+  }
+
+  private static <T> Collection<T> collectValues(final Collection<T> collection, final String propertyId,
+                                                 final Collection<Entity> entities, final boolean includeNullValues) {
+    Objects.requireNonNull(collection);
+    Objects.requireNonNull(propertyId);
+    if (!Util.nullOrEmpty(entities)) {
+      for (final Entity entity : entities) {
+        final Object value = entity.get(propertyId);
+        if (value != null || includeNullValues) {
+          collection.add((T) value);
+        }
+      }
+    }
+
+    return collection;
+  }
+
   private static void validateAndAddProperty(final Property property, final String domainId, final String entityId,
                                              final Map<String, Property> propertyMap) {
     checkIfUniquePropertyId(property, entityId, propertyMap);
@@ -1344,145 +1359,6 @@ public class Entities {
     }
 
     return entities;
-  }
-
-  /**
-   * Processes {@link Entity.Table}, {@link Property.Column}
-   * and {@link org.jminor.common.db.Databases.Operation} annotations found in the given class
-   * @param domainClass the domain class to process
-   */
-  public void processAnnotations(final Class<? extends Entities> domainClass) {
-    final Map<Field, Annotation> tableAnnotations = new HashMap<>();
-    final Map<Field, Annotation> columnAnnotations = new HashMap<>();
-    final Map<Field, Annotation> operationAnnotations = new HashMap<>();
-    final List<Field> staticStringFields = getStaticStringFields(domainClass);
-    for (final Field field : staticStringFields) {
-      final Annotation tableAnnotation = field.getAnnotation(Entity.Table.class);
-      final Annotation columnAnnotation = field.getAnnotation(Property.Column.class);
-      final Annotation operationAnnotation = field.getAnnotation(Databases.Operation.class);
-      if (tableAnnotation != null) {
-        tableAnnotations.put(field, tableAnnotation);
-      }
-      if (columnAnnotation != null) {
-        columnAnnotations.put(field, columnAnnotation);
-      }
-      if (operationAnnotation != null) {
-        operationAnnotations.put(field, operationAnnotation);
-      }
-    }
-    processFieldAnnotations(tableAnnotations, columnAnnotations, operationAnnotations);
-  }
-
-  private void processFieldAnnotations(final Map<Field, Annotation> tableAnnotations,
-                                       final Map<Field, Annotation> columnAnnotations,
-                                       final Map<Field, Annotation> operationAnnotations) {
-    try {
-      for (final Map.Entry<Field, Annotation> entityAnnotation : tableAnnotations.entrySet()) {
-        final String entityId = (String) entityAnnotation.getKey().get(null);
-        final Collection<Map.Entry<Field, Property.Column>> entityPropertyAnnotations =
-                getPropertyAnnotations(entityId, columnAnnotations);
-        addTableAndColumnDefinitions(entityId, (Entity.Table) entityAnnotation.getValue(), entityPropertyAnnotations);
-      }
-      for (final Map.Entry<Field, Annotation> operationAnnotation : operationAnnotations.entrySet()) {
-        final String operationId = (String) operationAnnotation.getKey().get(null);
-        addDatabaseOperation(operationId, (Databases.Operation) operationAnnotation.getValue());
-      }
-    }
-    catch (final IllegalAccessException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static Collection<Map.Entry<Field, Property.Column>> getPropertyAnnotations(
-          final String entityId, final Map<Field, Annotation> propertyAnnotations) {
-    final Collection<Map.Entry<Field, Property.Column>> ret = new ArrayList<>();
-    for (final Map.Entry<Field, Annotation> entry : propertyAnnotations.entrySet()) {
-      final Property.Column propertyColumn = (Property.Column) entry.getValue();
-      if (entityId.equals(propertyColumn.entityId())) {
-        ret.add(new AbstractMap.SimpleEntry<>(entry.getKey(), (Property.Column) entry.getValue()));
-      }
-    }
-
-    return ret;
-  }
-
-  private void addTableAndColumnDefinitions(final String entityId, final Entity.Table entityTable,
-                                            final Collection<Map.Entry<Field, Property.Column>> entityColumnAnnotations) {
-    final Entity.Definition definition = getDefinition(entityId);
-    setTableConfiguration(entityTable, definition);
-    setKeyGenerator(definition, entityTable);
-    try {
-      final LinkedHashMap<String, Collection<Property.ColumnProperty>> columnProperties =
-              Util.map(definition.getColumnProperties(), Property::getPropertyId);
-      for (final Map.Entry<Field, Property.Column> propertyColumn : entityColumnAnnotations) {
-        final String propertyId = (String) propertyColumn.getKey().get(null);
-        final Property.ColumnProperty property = columnProperties.get(propertyId).iterator().next();
-        property.setColumnName(propertyColumn.getValue().columnName());
-      }
-    }
-    catch (final IllegalAccessException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static void setTableConfiguration(final Entity.Table entityTable, final Entity.Definition definition) {
-    if (!Util.nullOrEmpty(entityTable.tableName())) {
-      definition.setTableName(entityTable.tableName());
-    }
-    if (!Util.nullOrEmpty(entityTable.selectTableName())) {
-      definition.setSelectTableName(entityTable.selectTableName());
-    }
-    if (!Util.nullOrEmpty(entityTable.selectQuery())) {
-      definition.setSelectQuery(entityTable.selectQuery(), entityTable.selectQueryContainsWhereClause());
-    }
-    if (!Util.nullOrEmpty(entityTable.orderByClause())) {
-      definition.setOrderByClause(entityTable.orderByClause());
-    }
-    if (!Util.nullOrEmpty(entityTable.havingClause())) {
-      definition.setHavingClause(entityTable.havingClause());
-    }
-  }
-
-  private void setKeyGenerator(final Entity.Definition definition, final Entity.Table entityTable) {
-    switch (entityTable.keyGenerator()) {
-      case AUTOMATIC:
-        definition.setKeyGenerator(automaticKeyGenerator(entityTable.keyGeneratorSource()));
-        break;
-      case SEQUENCE:
-        definition.setKeyGenerator(sequenceKeyGenerator(entityTable.keyGeneratorSource()));
-        break;
-      case QUERY:
-        definition.setKeyGenerator(queriedKeyGenerator(entityTable.keyGeneratorSource()));
-        break;
-      case INCREMENT:
-        definition.setKeyGenerator(incrementKeyGenerator(entityTable.keyGeneratorSource(),
-                entityTable.keyGeneratorIncrementColumnName()));
-        break;
-      default:
-        break;
-    }
-  }
-
-  private void addDatabaseOperation(final String operationId, final Databases.Operation operation)
-          throws IllegalAccessException {
-    try {
-      final Constructor constructor = Class.forName(operation.className()).getConstructor(String.class);
-      addOperation((DatabaseConnection.Operation) constructor.newInstance(operationId));
-    }
-    catch (final NoSuchMethodException | ClassNotFoundException | InstantiationException | InvocationTargetException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static List<Field> getStaticStringFields(final Class domainClass) {
-    final List<Field> staticFields = new ArrayList<>();
-    for (final Field field : domainClass.getDeclaredFields()) {
-      if (Modifier.isStatic(field.getModifiers()) || field.getType().equals(String.class)) {
-        staticFields.add(field);
-      }
-    }
-
-    return staticFields;
   }
 
   private static Map<String, List<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
@@ -2144,6 +2020,71 @@ public class Entities {
     @Override
     protected String getQuery(final Database database) {
       return database.getAutoIncrementQuery(valueSource);
+    }
+  }
+
+  private static final class DefaultOrderBy implements Entity.OrderBy {
+
+    private static final long serialVersionUID = 1;
+
+    private Entities entities;
+    private HashMap<String, SortOrder> propertySortOrder = new LinkedHashMap<>();
+
+    public DefaultOrderBy(final Entities entities) {
+      this.entities = entities;
+    }
+
+    @Override
+    public Entity.OrderBy ascending(final String... propertyIds) {
+      put(SortOrder.ASCENDING, propertyIds);
+      return this;
+    }
+
+    @Override
+    public Entity.OrderBy descending(final String... propertyIds) {
+      put(SortOrder.DESCENDING, propertyIds);
+      return this;
+    }
+
+    @Override
+    public String getOrderByClause(final String entityId) {
+      final StringBuilder builder = new StringBuilder();
+      final Set<Map.Entry<String, SortOrder>> entries = propertySortOrder.entrySet();
+      int counter = 0;
+      for (final Map.Entry<String, SortOrder> entry : entries) {
+        final Property.ColumnProperty property = entities.getColumnProperty(entityId, entry.getKey());
+        builder.append(property.getColumnName());
+        if (entry.getValue().equals(SortOrder.DESCENDING)) {
+          builder.append(" desc");
+        }
+        if (counter++ < entries.size() - 1) {
+          builder.append(", ");
+        }
+      }
+
+      return builder.toString();
+    }
+
+    private void put(final SortOrder sortOrder, final String... propertyIds) {
+      Objects.requireNonNull(propertyIds, "propertyIds");
+      for (final String propertyId : propertyIds) {
+        if (propertySortOrder.containsKey(propertyId)) {
+          throw new IllegalArgumentException("Order by already contains property: " + propertyId);
+        }
+        propertySortOrder.put(propertyId, sortOrder);
+      }
+    }
+
+    private void writeObject(final ObjectOutputStream stream) throws IOException {
+      stream.writeObject(entities.getDomainId());
+      stream.writeObject(propertySortOrder);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
+      final String domainId = (String) stream.readObject();
+      propertySortOrder = (HashMap<String, SortOrder>) stream.readObject();
+      entities = Entities.getDomainEntities(domainId);
     }
   }
 }

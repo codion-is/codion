@@ -5,7 +5,6 @@ package org.jminor.framework.db.local;
 
 import org.jminor.common.User;
 import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.domain.Entities;
 
 import org.junit.Test;
 
@@ -18,14 +17,12 @@ import static org.junit.Assert.assertNotNull;
  */
 public class EntityConnectionProvidersTest {
 
-  private static final Entities ENTITIES = new TestDomain();
-
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
   @Test
   public void test() {
-    assertNotNull(EntityConnectionProviders.connectionProvider(ENTITIES, UNIT_TEST_USER, "test"));
+    assertNotNull(EntityConnectionProviders.connectionProvider(TestDomain.class.getName(), UNIT_TEST_USER, "test"));
   }
 }

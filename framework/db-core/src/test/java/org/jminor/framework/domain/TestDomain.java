@@ -19,7 +19,6 @@ public final class TestDomain extends Entities {
     detail();
     department();
     employee();
-    processAnnotations(TestDomain.class);
     registerDomain();
   }
 
@@ -66,6 +65,7 @@ public final class TestDomain extends Entities {
             .setStringProvider(new Entities.StringProvider(MASTER_NAME));
   }
 
+  public static final String T_DETAIL = "domain.detail_entity";
   public static final String DETAIL_ID = "id";
   public static final String DETAIL_INT = "int";
   public static final String DETAIL_DOUBLE = "double";
@@ -82,9 +82,6 @@ public final class TestDomain extends Entities {
   public static final String DETAIL_INT_DERIVED = "int_derived";
 
   public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
-
-  @Entity.Table(orderByClause = DETAIL_STRING, selectTableName = DETAIL_SELECT_TABLE_NAME)
-  public static final String T_DETAIL = "domain.detail_entity";
 
   private static final List<Item> ITEMS = Arrays.asList(new Item(0, "0"), new Item(1, "1"),
           new Item(2, "2"), new Item(3, "3"));
@@ -118,6 +115,8 @@ public final class TestDomain extends Entities {
 
               return intValue * 10;
             }, DETAIL_INT))
+            .setOrderBy(orderBy().ascending(DETAIL_STRING))
+            .setSelectTableName(DETAIL_SELECT_TABLE_NAME)
             .setSmallDataset(true)
             .setStringProvider(new Entities.StringProvider(DETAIL_STRING));
   }
@@ -126,11 +125,10 @@ public final class TestDomain extends Entities {
   public static final String DEPARTMENT_NAME = "dname";
   public static final String DEPARTMENT_LOCATION = "loc";
 
-  @Entity.Table(tableName = "scott.dept")
   public static final String T_DEPARTMENT = "domain.scott.dept";
 
   void department() {
-    define(T_DEPARTMENT,
+    define(T_DEPARTMENT, "scott.dept",
             Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
                     .setUpdatable(true).setNullable(false),
             Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
@@ -139,14 +137,13 @@ public final class TestDomain extends Entities {
                     .setPreferredColumnWidth(150).setMaxLength(13))
             .setSmallDataset(true)
             .setSearchPropertyIds(DEPARTMENT_NAME)
-            .setOrderByClause(DEPARTMENT_NAME)
+            .setOrderBy(orderBy().ascending(DEPARTMENT_NAME))
             .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
             .setCaption("Department");
   }
 
-  @Property.Column(entityId = "domain.scott.emp", columnName = "empno")
+  public static final String T_EMP = "domain.scott.emp";
   public static final String EMP_ID = "emp_id";
-  @Property.Column(entityId = "domain.scott.emp", columnName = "ename")
   public static final String EMP_NAME = "emp_name";
   public static final String EMP_JOB = "job";
   public static final String EMP_MGR = "mgr";
@@ -158,17 +155,12 @@ public final class TestDomain extends Entities {
   public static final String EMP_MGR_FK = "mgr_fk";
   public static final String EMP_DEPARTMENT_LOCATION = "location";
   public static final String EMP_NAME_DEPARTMENT = "name_department";
-  @Entity.Table(orderByClause = EMP_DEPARTMENT + ", ename",
-          keyGenerator = Entity.KeyGenerator.Type.INCREMENT,
-          keyGeneratorSource = "scott.emp",
-          keyGeneratorIncrementColumnName = "empno")
-  public static final String T_EMP = "domain.scott.emp";
 
   void employee() {
     define(T_EMP, "scott.emp",
-            Properties.primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
+            Properties.primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID).setColumnName("empno"),
             Properties.columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
-                    .setMaxLength(10).setNullable(false),
+                    .setColumnName("ename").setMaxLength(10).setNullable(false),
             Properties.foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
                     Properties.columnProperty(EMP_DEPARTMENT))
                     .setNullable(false),
@@ -194,6 +186,8 @@ public final class TestDomain extends Entities {
 
               return name + " - " + department.getString(DEPARTMENT_NAME);
             }, EMP_NAME, EMP_DEPARTMENT_FK))
+            .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
+            .setOrderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
             .setStringProvider(new Entities.StringProvider(EMP_NAME))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
             .setCaption("Employee")

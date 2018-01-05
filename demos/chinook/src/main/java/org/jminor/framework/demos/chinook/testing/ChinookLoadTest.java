@@ -32,8 +32,6 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.ChinookApplicationModel> {
 
-  private static final Entities ENTITIES = new Chinook().registerDomain();
-
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
@@ -220,7 +218,8 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
   @Override
   protected ChinookAppPanel.ChinookApplicationModel initializeApplication() throws CancelException {
     final ChinookAppPanel.ChinookApplicationModel applicationModel = new ChinookAppPanel.ChinookApplicationModel(
-            EntityConnectionProviders.connectionProvider(ENTITIES, getUser(), ChinookLoadTest.class.getSimpleName()));
+            EntityConnectionProviders.connectionProvider("org.jminor.framework.demos.chinook.domain.ChinookDomain",
+                    getUser(), ChinookLoadTest.class.getSimpleName()));
     /* ARTIST
     *   ALBUM
     *     TRACK

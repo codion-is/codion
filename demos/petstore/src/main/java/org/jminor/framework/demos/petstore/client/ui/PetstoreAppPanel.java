@@ -26,11 +26,6 @@ import java.util.Locale;
 public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppPanel.PetstoreApplicationModel> {
 
   @Override
-  protected Entities initializeEntities() {
-    return new Petstore();
-  }
-
-  @Override
   protected void setupEntityPanelProviders() {
    /* CATEGORY
     *   PRODUCT
@@ -72,6 +67,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppPa
   public static void main(final String[] args) {
     Locale.setDefault(new Locale("en"));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.petstore.domain.Petstore");
     new PetstoreAppPanel().startApplication("The Pet Store", null, false, UiUtil.getScreenSizeRatio(0.8), new User("scott", "tiger"));
   }
 

@@ -3,6 +3,9 @@
  */
 package org.jminor.common;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -10,11 +13,14 @@ import java.util.Objects;
  * A class encapsulating an item and caption.
  * @param <T> the type of the actual item
  */
-public final class Item<T> implements Comparable<Item> {
+public final class Item<T> implements Comparable<Item>, Serializable {
 
-  private final Comparator<String> collator = TextUtil.getSpaceAwareCollator();
+  private static final long serialVersionUID = 1;
+
   private final T item;
   private final String caption;
+
+  private transient Comparator<String> collator = TextUtil.getSpaceAwareCollator();
 
   /**
    * Instantiates a new Item, with the caption as item.toString(),
@@ -78,5 +84,10 @@ public final class Item<T> implements Comparable<Item> {
   @Override
   public int compareTo(final Item o) {
     return collator.compare(caption, o.caption);
+  }
+
+  private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
+    stream.defaultReadObject();
+    collator = TextUtil.getSpaceAwareCollator();
   }
 }

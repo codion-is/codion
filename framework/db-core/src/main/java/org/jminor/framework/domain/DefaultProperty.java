@@ -31,9 +31,11 @@ import java.util.Objects;
  */
 class DefaultProperty implements Property {
 
+  private static final long serialVersionUID = 1;
+
   private static final ValueConverter<Object, Object> DEFAULT_VALUE_CONVERTER = new DefaultValueConverter();
   private static final ValueConverter<java.util.Date, java.sql.Date> DATE_VALUE_CONVERTER = new DateValueConverter();
-  private static final ValueProvider DEFAULT_VALUE_PROVIDER = () -> null;
+  private static final ValueProvider DEFAULT_VALUE_PROVIDER = new DefaultValueProvider();
 
   /**
    * The domain id
@@ -573,18 +575,19 @@ class DefaultProperty implements Property {
   static class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
 
     private final int columnType;
-    private final ValueFetcher<Object> valueFetcher;
-    private final ResultPacker<Object> resultPacker;
-    private String columnName;
-    private ValueConverter<Object, Object> valueConverter;
-    private int selectIndex = -1;
     private int primaryKeyIndex = -1;
     private boolean columnHasDefaultValue = false;
     private boolean updatable = true;
     private boolean searchable = true;
-    private boolean groupingColumn = false;
-    private boolean aggregateColumn = false;
     private ForeignKeyProperty foreignKeyProperty = null;
+
+    private final transient ValueFetcher<Object> valueFetcher;
+    private final transient ResultPacker<Object> resultPacker;
+    private transient String columnName;
+    private transient ValueConverter<Object, Object> valueConverter;
+    private transient int selectIndex = -1;
+    private transient boolean groupingColumn = false;
+    private transient boolean aggregateColumn = false;
 
     DefaultColumnProperty(final String propertyId, final int type, final String caption) {
       this(propertyId, type, caption, type);
@@ -1112,7 +1115,7 @@ class DefaultProperty implements Property {
 
   static final class DefaultSubqueryProperty extends DefaultColumnProperty implements SubqueryProperty {
 
-    private final String subquery;
+    private final transient String subquery;
 
     /**
      * @param propertyId the property ID, since SubqueryProperties do not map to underlying table columns,
@@ -1216,6 +1219,16 @@ class DefaultProperty implements Property {
       }
 
       return falseValue;
+    }
+  }
+
+  private static final class DefaultValueProvider implements ValueProvider {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public Object getValue() {
+      return null;
     }
   }
 

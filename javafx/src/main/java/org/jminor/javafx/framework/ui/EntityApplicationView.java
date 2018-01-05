@@ -7,7 +7,6 @@ import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityApplicationModel;
 
@@ -125,8 +124,7 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
     try {
       this.mainStage = stage;
       final User user = getApplicationUser();
-      final Entities domainEntities = initializeEntities().registerDomain();
-      final EntityConnectionProvider connectionProvider = initializeConnectionProvider(domainEntities, user, getApplicationIdentifier());
+      final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
       connectionProvider.getConnection();//throws exception if the server is not reachable or credentials are incorrect
       this.model = initializeApplicationModel(connectionProvider);
       stage.setTitle(applicationTitle);
@@ -146,13 +144,12 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
 
   /**
    * Initializes the connection provider to use in this application
-   * @param entities the domain model entities
    * @param user the user on which to base the connection
    * @param clientTypeId a String identifying the client type
    * @return a {@link EntityConnectionProvider} based on the given user and client type
    */
-  protected EntityConnectionProvider initializeConnectionProvider(final Entities entities, final User user, final String clientTypeId) {
-    return EntityConnectionProviders.connectionProvider(entities, user, clientTypeId);
+  protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeId) {
+    return EntityConnectionProviders.connectionProvider(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.get(), user, clientTypeId);
   }
 
   /**
@@ -170,11 +167,6 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
   protected String getApplicationIdentifier() {
     return getClass().getName();
   }
-
-  /**
-   * @return the domain Entities instance
-   */
-  protected abstract Entities initializeEntities();
 
   /**
    * @return the main menu for this application

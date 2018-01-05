@@ -101,6 +101,14 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   /** {@inheritDoc} */
   @Override
+  public Entities getEntities() throws RemoteException {
+    synchronized (connectionProxy) {
+      return new Entities(connectionProxy.getEntities());
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public int selectRowCount(final EntityCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.selectRowCount(condition);

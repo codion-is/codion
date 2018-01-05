@@ -48,7 +48,7 @@ public class LocalEntityConnectionProviderTest {
   public void entityConnectionProviders() {
     final String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
-    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider(ENTITIES, UNIT_TEST_USER, "test");
+    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider(TestDomain.class.getName(), UNIT_TEST_USER, "test");
     assertEquals("LocalEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
     assertEquals(EntityConnection.Type.LOCAL, connectionProvider.getConnectionType());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);

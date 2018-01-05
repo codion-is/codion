@@ -458,7 +458,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       final EntityConnectionProvider connectionProvider = getConnectionProvider();
       return connectionProvider.getConnection().selectMany(
               connectionProvider.getConditions().selectCondition(getEntityId(),
-                      conditionModel.getCondition(), getOrderByClause(), fetchCount));
+                      conditionModel.getCondition(), fetchCount).setOrderBy(getOrderBy()));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -469,10 +469,10 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * The order by clause to use when selecting the data for this model,
    * by default the order by clause defined for the underlying entity
    * @return the order by clause
-   * @see Entities#getOrderByClause(String)
+   * @see Entities#getOrderBy(String)
    */
-  protected String getOrderByClause() {
-    return getEntities().getOrderByClause(getEntityId());
+  protected Entity.OrderBy getOrderBy() {
+    return getEntities().getOrderBy(getEntityId());
   }
 
   /**

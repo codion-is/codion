@@ -7,7 +7,6 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
@@ -25,13 +24,11 @@ import static org.junit.Assert.*;
 
 public class EntityApplicationPanelTest {
 
-  private static final Entities ENTITIES = new TestDomain();
-
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, new User(
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new TestDomain(), new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
 
@@ -43,11 +40,6 @@ public class EntityApplicationPanelTest {
   @Test
   public void getDependencyTreeModel() {
     final EntityApplicationPanel panel = new EntityApplicationPanel() {
-      @Override
-      protected Entities initializeEntities() {
-        return new TestDomain();
-      }
-
       @Override
       protected SwingEntityApplicationModel initializeApplicationModel(
               final EntityConnectionProvider connectionProvider) {
@@ -68,13 +60,10 @@ public class EntityApplicationPanelTest {
 
   @Test
   public void test() throws Exception {
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(TestDomain.class.getName());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
     EntityApplicationModel.SAVE_DEFAULT_USERNAME.set(false);
     final EntityApplicationPanel<SwingEntityApplicationModel> panel = new EntityApplicationPanel<SwingEntityApplicationModel>() {
-      @Override
-      protected Entities initializeEntities() {
-        return new TestDomain();
-      }
       @Override
       protected List<EntityPanel> initializeEntityPanels(final SwingEntityApplicationModel applicationModel) {
         return Collections.singletonList(new EntityPanel(applicationModel.getEntityModel(TestDomain.T_EMP)));

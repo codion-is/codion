@@ -10,6 +10,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -135,8 +137,7 @@ public final class TextUtil {
    * using the default Collator, taking spaces into account.
    */
   public static <T> Comparator<T> getSpaceAwareCollator() {
-    final Collator collator = Collator.getInstance();
-    return (o1, o2) -> collateSansSpaces(collator, o1.toString(), o2.toString());
+    return new ComparatorSansSpace<>();
   }
 
   /**
@@ -350,5 +351,21 @@ public final class TextUtil {
     }
 
     return values;
+  }
+
+  private static final class ComparatorSansSpace<T> implements Comparator<T>, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    private transient Collator collator = Collator.getInstance();
+
+    @Override
+    public int compare(final T o1, final T o2) {
+      return collateSansSpaces(collator, o1.toString(), o2.toString());
+    }
+
+    private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+      this.collator = Collator.getInstance();
+    }
   }
 }

@@ -34,10 +34,6 @@ public final class EntityApplicationViewTest {
   public void constructor() {
     final EntityApplicationView<FXEntityApplicationModel> applicationView = new EntityApplicationView<FXEntityApplicationModel>("EntityApplicationViewTest") {
       @Override
-      protected Entities initializeEntities() {
-        return new TestDomain();
-      }
-      @Override
       protected void initializeEntityViews() {
         final FXEntityEditModel editModel = new FXEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
         final FXEntityListModel listModel = new FXEntityListModel(TestDomain.T_EMP, CONNECTION_PROVIDER);

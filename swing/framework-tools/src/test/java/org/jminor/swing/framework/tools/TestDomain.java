@@ -54,8 +54,6 @@ public final class TestDomain extends Entities {
             .setSmallDataset(true);
   }
 
-  public static final String SCOTT_DOMAIN_ID = "domain.scott.domain";
-
   public static final String DEPARTMENT_ID = "deptno";
   public static final String DEPARTMENT_NAME = "dname";
   public static final String DEPARTMENT_LOCATION = "loc";
@@ -72,7 +70,6 @@ public final class TestDomain extends Entities {
                     .setPreferredColumnWidth(150).setMaxLength(13))
             .setSmallDataset(true)
             .setSearchPropertyIds(DEPARTMENT_NAME)
-            .setOrderByClause(DEPARTMENT_NAME)
             .setStringProvider(new StringProvider(DEPARTMENT_NAME))
             .setCaption("Department");
   }
@@ -114,7 +111,6 @@ public final class TestDomain extends Entities {
             .setStringProvider(new StringProvider(EMP_NAME))
             .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
-            .setOrderByClause(EMP_DEPARTMENT + ", ename")
             .setCaption("Employee")
             .setBackgroundColorProvider((entity, property) -> {
               if (property.is(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {

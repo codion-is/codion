@@ -76,7 +76,8 @@ public class EntityConditionsTest {
     final Condition<Property.ColumnProperty> critOne = entityConditions.propertyCondition(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_LOCATION, Condition.Type.LIKE, "New York");
 
-    condition = entityConditions.selectCondition(TestDomain.T_DEPARTMENT, critOne, TestDomain.DEPARTMENT_NAME);
+    condition = entityConditions.selectCondition(TestDomain.T_DEPARTMENT, critOne).setOrderBy(
+            entities.orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertEquals(-1, condition.getFetchCount());
 
     condition = entityConditions.selectCondition(TestDomain.T_DEPARTMENT, 10);
@@ -219,7 +220,8 @@ public class EntityConditionsTest {
   @Test
   public void simpleCondition() {
     final EntitySelectCondition condition = entityConditions.selectCondition(TestDomain.T_DEPARTMENT,
-            Conditions.stringCondition("department name is not null"), TestDomain.DEPARTMENT_NAME, -1);
+            Conditions.stringCondition("department name is not null"), -1)
+            .setOrderBy(entities.orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertTrue(condition.getValues().isEmpty());
     assertTrue(condition.getColumns().isEmpty());
     assertEquals(condition.getOrderByClause(), TestDomain.DEPARTMENT_NAME);
@@ -239,7 +241,7 @@ public class EntityConditionsTest {
   @Test
   public void selectConditionOrderBy() {
     final EntitySelectCondition condition = entityConditions.selectCondition(TestDomain.T_EMP)
-            .orderByAscending(TestDomain.EMP_DEPARTMENT).orderByDescending(TestDomain.EMP_ID);
+            .setOrderBy(entities.orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_ID));
     assertEquals("deptno, empno desc", condition.getOrderByClause());
   }
 
@@ -251,7 +253,7 @@ public class EntityConditionsTest {
   @Test(expected = IllegalArgumentException.class)
   public void selectConditionOrderBySamePropertyId() {
     entityConditions.selectCondition(TestDomain.T_EMP)
-            .orderByAscending(TestDomain.EMP_DEPARTMENT).orderByDescending(TestDomain.EMP_DEPARTMENT);
+            .setOrderBy(entities.orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_DEPARTMENT));
   }
 
   private void assertKeyCondition(final EntityCondition condition) {

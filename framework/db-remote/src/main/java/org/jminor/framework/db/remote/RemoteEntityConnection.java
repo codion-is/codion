@@ -13,6 +13,7 @@ import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 
 import java.rmi.Remote;
@@ -25,6 +26,12 @@ import java.util.Map;
  * A remote EntityConnection.
  */
 public interface RemoteEntityConnection extends Remote {
+
+  /**
+   * @return the underlying domain entities
+   * @throws RemoteException in case of an exception
+   */
+  Entities getEntities() throws RemoteException;
 
   /**
    * @param methodLogger the method logger

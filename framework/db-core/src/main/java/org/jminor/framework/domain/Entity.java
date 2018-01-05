@@ -13,10 +13,6 @@ import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 
 import java.io.Serializable;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.Format;
@@ -442,7 +438,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   /**
    * Provides background colors for entities.
    */
-  interface BackgroundColorProvider {
+  interface BackgroundColorProvider extends Serializable {
 
     /**
      * @param entity the entity
@@ -455,7 +451,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   /**
    * Responsible for providing validation for entities.
    */
-  interface Validator extends ValueMap.Validator<Property, Entity> {
+  interface Validator extends ValueMap.Validator<Property, Entity>, Serializable {
 
     /**
      * @return the ID of the entity this validator validates
@@ -492,7 +488,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   /**
    * Describes an object responsible for providing String representations of entity instances
    */
-  interface ToString {
+  interface ToString extends Serializable {
     /**
      * Returns a string representation of the given entity
      * @param entity the entity
@@ -502,9 +498,42 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   }
 
   /**
+   * Specifies a order by clause
+   */
+  interface OrderBy extends Serializable {
+
+    /**
+     * The order by sort order
+     */
+    enum SortOrder {
+      ASCENDING, DESCENDING
+    }
+
+    /**
+     * Adds an 'ascending' order by for the given properties
+     * @param propertyIds the property ids
+     * @return this OrderBy instance
+     */
+    OrderBy ascending(final String... propertyIds);
+
+    /**
+     * Adds a 'descending' order by for the given properties
+     * @param propertyIds the property ids
+     * @return this OrderBy instance
+     */
+    OrderBy descending(final String... propertyIds);
+
+    /**
+     * @param entityId the entityId
+     * @return a order by clause, without the 'order by' keywords
+     */
+    String getOrderByClause(final String entityId);
+  }
+
+  /**
    * Specifies a entity definition.
    */
-  interface Definition {
+  interface Definition extends Serializable {
 
     /**
      * Specifies that it should not be possible to define foreign keys referencing entities that have
@@ -629,25 +658,16 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     KeyGenerator.Type getKeyGeneratorType();
 
     /**
-     * Sets the type of primary key generator
-     * @param keyGeneratorType the type of the primary key generator
+     * Sets the order by clause for this entity type.
+     * @param orderBy the order by clause
      * @return this {@link Entity.Definition} instance
      */
-    Definition setKeyGeneratorType(final KeyGenerator.Type keyGeneratorType);
+    Definition setOrderBy(final OrderBy orderBy);
 
     /**
-     * @return the order by clause to use when querying entities of this type,
-     * without the "order by" keywords
+     * @return the default order by clause to use when querying entities of this type
      */
-    String getOrderByClause();
-
-    /**
-     * Sets the order by clause for this entity type, this clause should not
-     * include the "order by" keywords.
-     * @param orderByClause the order by clause
-     * @return this {@link Entity.Definition} instance
-     */
-    Definition setOrderByClause(final String orderByClause);
+    OrderBy getOrderBy();
 
     /**
      * @return the group by clause to use when querying entities of this type,
@@ -852,58 +872,5 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return the background color to use for this entity and property, null if none is specified
      */
     Object getBackgroundColor(final Entity entity, final Property property);
-  }
-
-  /**
-   * Annotation for entityId domain model fields, containing database related information about the entity
-   */
-  @Target(ElementType.FIELD)
-  @Retention(RetentionPolicy.RUNTIME)
-  @interface Table {
-
-    /**
-     * @return the underlying table name
-     */
-    String tableName() default "";
-
-    /**
-     * @return the table or view to use when selecting entites
-     */
-    String selectTableName() default "";
-
-    /**
-     * @return the query to use when selecting entities
-     */
-    String selectQuery() default "";
-
-    /**
-     * @return true if the the select query contains a where clause
-     */
-    boolean selectQueryContainsWhereClause() default false;
-
-    /**
-     * @return the order by clause to use by default
-     */
-    String orderByClause() default "";
-
-    /**
-     * @return the having clause to use
-     */
-    String havingClause() default "";
-
-    /**
-     * @return the key generator type
-     */
-    Entity.KeyGenerator.Type keyGenerator() default KeyGenerator.Type.NONE;
-
-    /**
-     * @return the id source for the key generator
-     */
-    String keyGeneratorSource() default "";
-
-    /**
-     * @return the column to use in case of the auto increment key generator
-     */
-    String keyGeneratorIncrementColumnName() default "";
   }
 }

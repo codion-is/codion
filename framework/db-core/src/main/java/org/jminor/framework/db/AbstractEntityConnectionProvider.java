@@ -30,36 +30,29 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private final TaskScheduler validityCheckScheduler = new TaskScheduler(this::checkValidity,
           VALIDITY_CHECK_INTERVAL_SECONDS, 0, TimeUnit.SECONDS);
 
-  private final Entities entities;
-  private final EntityConditions entityConditions;
-
   /**
    * The user used by this connection provider when connecting to the database server
    */
   private User user;
   private EntityConnection entityConnection;
+  private Entities entities;
+  private EntityConditions entityConditions;
 
   /**
    * Instantiates a new AbstractEntityConnectionProvider.
-   * @param entities the domain model entities
    * @param user the user to base the connection provider on
    */
-  public AbstractEntityConnectionProvider(final Entities entities, final User user) {
-    this(entities, user, false);
+  public AbstractEntityConnectionProvider(final User user) {
+    this(user, false);
   }
 
   /**
    * Instantiates a new AbstractEntityConnectionProvider.
-   * @param entities the domain model entities
    * @param user the user to base the connection provider on
    * @param scheduleValidityCheck if true then a connection validity check is run every 10 seconds
    */
-  public AbstractEntityConnectionProvider(final Entities entities, final User user, final boolean scheduleValidityCheck) {
-    Objects.requireNonNull(entities, "entities");
-    Objects.requireNonNull(user, "user");
-    this.entities = entities;
-    this.entityConditions = new EntityConditions(entities);
-    this.user = user;
+  public AbstractEntityConnectionProvider(final User user, final boolean scheduleValidityCheck) {
+    this.user = Objects.requireNonNull(user, "user");
     this.scheduleValidityCheck = scheduleValidityCheck;
     if (this.scheduleValidityCheck) {
       this.validityCheckScheduler.start();
@@ -68,13 +61,21 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   /** {@inheritDoc} */
   @Override
-  public Entities getEntities() {
+  public final Entities getEntities() {
+    if (entities == null) {
+      entities = initializeEntities();
+    }
+
     return entities;
   }
 
   /** {@inheritDoc} */
   @Override
-  public EntityConditions getConditions() {
+  public final EntityConditions getConditions() {
+    if (entityConditions == null) {
+      entityConditions = new EntityConditions(getEntities());
+    }
+
     return entityConditions;
   }
 
@@ -142,6 +143,12 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
       return false;
     }
   }
+
+  /**
+   * Initializes the domain model entities, either by instantiating locally or retreiving from a remote server
+   * @return the domain model
+   */
+  protected abstract Entities initializeEntities();
 
   /**
    * @return an established connection

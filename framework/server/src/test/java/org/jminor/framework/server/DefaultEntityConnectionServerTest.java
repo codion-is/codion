@@ -36,15 +36,13 @@ import static org.junit.Assert.*;
 
 public class DefaultEntityConnectionServerTest {
 
-  private static final Entities ENTITIES = new TestDomain();
-
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
   private static final User ADMIN_USER = new User("scott", "tiger");
   private static final Map<String, Object> CONNECTION_PARAMS =
-          Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, ENTITIES.getDomainId());
+          Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, "TestDomain");
   private static Server<RemoteEntityConnection, EntityConnectionServerAdmin> server;
   private static EntityConnectionServerAdmin admin;
 
@@ -146,9 +144,9 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(1, users.size());
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
-    final EntityConditions entityConditions = new EntityConditions(ENTITIES);
+    final EntityConditions entityConditions = new EntityConditions(remoteConnectionTwo.getEntities());
     final EntitySelectCondition selectCondition = entityConditions.selectCondition(TestDomain.T_EMP)
-            .orderByAscending(TestDomain.EMP_NAME);
+            .setOrderBy(remoteConnectionTwo.getEntities().orderBy().ascending(TestDomain.EMP_NAME));
     remoteConnectionTwo.selectMany(selectCondition);
 
     admin.getDatabaseStatistics();
@@ -156,7 +154,7 @@ public class DefaultEntityConnectionServerTest {
     final ClientLog log = admin.getClientLog(connectionRequestTwo.getClientId());
 
     final MethodLogger.Entry entry = log.getEntries().get(0);
-    assertEquals("selectMany", entry.getMethod());
+    assertEquals("getEntities", entry.getMethod());
     assertTrue(entry.getDuration() >= 0);
 
     admin.removeConnections(true);
@@ -215,7 +213,7 @@ public class DefaultEntityConnectionServerTest {
 
   @Test
   public void remoteEntityConnectionProvider() throws Exception {
-    final RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider(ENTITIES,
+    final RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider("TestDomain",
             UNIT_TEST_USER, UUID.randomUUID(), "TestClient");
 
     assertEquals(EntityConnection.Type.REMOTE, provider.getConnectionType());

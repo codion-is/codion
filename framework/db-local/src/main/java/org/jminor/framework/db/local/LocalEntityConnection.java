@@ -137,7 +137,9 @@ public final class LocalEntityConnection implements EntityConnection {
     }
   }
 
-  public Entities getDomain() {
+  /** {@inheritDoc} */
+  @Override
+  public Entities getEntities() {
     return domain;
   }
 

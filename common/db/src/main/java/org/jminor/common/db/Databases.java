@@ -8,10 +8,6 @@ import org.jminor.common.TextUtil;
 import org.jminor.common.User;
 
 import java.io.Serializable;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -361,18 +357,5 @@ public final class Databases {
     public long getTimestamp() {
       return timestamp;
     }
-  }
-
-  /**
-   * Annotation for a database operation id, specifying the operation class name
-   */
-  @Target(ElementType.FIELD)
-  @Retention(RetentionPolicy.RUNTIME)
-  public @interface Operation {
-
-    /**
-     * @return the operation class name
-     */
-    String className();
   }
 }

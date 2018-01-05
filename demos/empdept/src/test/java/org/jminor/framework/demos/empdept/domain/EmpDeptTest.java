@@ -5,7 +5,6 @@ package org.jminor.framework.demos.empdept.domain;
 
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.testing.EntityTestUnit;
 
 import org.junit.Test;
@@ -15,14 +14,12 @@ import static org.jminor.framework.demos.empdept.domain.EmpDept.T_EMPLOYEE;
 
 public class EmpDeptTest extends EntityTestUnit {
 
-  private static final Entities ENTITIES = new EmpDept();
-
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
   public EmpDeptTest() {
-    super(ENTITIES);
+    super(EmpDept.class.getName());
   }
 
   @Test

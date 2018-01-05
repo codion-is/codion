@@ -5,12 +5,14 @@ package org.jminor.common;
 
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static org.junit.Assert.assertEquals;
 
 public class ItemTest {
 
   @Test
-  public void test() {
+  public void test() throws IOException, ClassNotFoundException {
     final Item<String> item = new Item<>("hello", "world");
     assertEquals("hello", item.getItem());
     assertEquals("world", item.getCaption());
@@ -26,5 +28,9 @@ public class ItemTest {
     assertEquals("hello", thirdItem.getCaption());
 
     assertEquals(0, new Item<String>(null).hashCode());
+
+    //just make sure its ok post serialization
+    final Item<String> deser = Util.deserialize(Util.serialize(item));
+    deser.compareTo(item);
   }
 }

@@ -22,6 +22,8 @@ import java.util.Set;
  */
 final class DefaultEntityDefinition implements Entity.Definition {
 
+  private static final long serialVersionUID = 1;
+
   private static final Entity.KeyGenerator DEFAULT_KEY_GENERATOR = new Entities.DefaultKeyGenerator();
 
   /**
@@ -47,18 +49,18 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /**
    * The ResultPacker responsible for packing entities of this type
    */
-  private final ResultPacker<Entity> resultPacker;
+  private final transient ResultPacker<Entity> resultPacker;
 
   /**
    * The name of the underlying table
    */
-  private String tableName;
+  private transient String tableName;
 
   /**
    * The table (view, query) from which to select the entity
    * Used if it differs from the one used for inserts/updates
    */
-  private String selectTableName;
+  private transient String selectTableName;
 
   /**
    * The caption to use for the entity type
@@ -68,22 +70,22 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /**
    * Holds the order by clause
    */
-  private String orderByClause;
+  private Entity.OrderBy orderBy;
 
   /**
    * Holds the group by clause
    */
-  private String groupByClause;
+  private transient String groupByClause;
 
   /**
    * Holds the having clause
    */
-  private String havingClause;
+  private transient String havingClause;
 
   /**
    * The primary key value generator
    */
-  private Entity.KeyGenerator keyGenerator = DEFAULT_KEY_GENERATOR;
+  private transient Entity.KeyGenerator keyGenerator = DEFAULT_KEY_GENERATOR;
 
   /**
    * The key generator type
@@ -131,12 +133,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /**
    * A custom sql query used when selecting entities of this type
    */
-  private String selectQuery;
+  private transient String selectQuery;
 
   /**
    * Specifies whether or not the select query, if any, contains a where clause
    */
-  private boolean selectQueryContainsWhereClause = false;
+  private transient boolean selectQueryContainsWhereClause = false;
 
   /**
    * The IDs of the properties to use when performing a string based lookup on this entity
@@ -153,7 +155,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private final List<Property> visibleProperties;
   private final List<Property.ColumnProperty> columnProperties;
   private final Map<String, List<Property.DenormalizedProperty>> denormalizedProperties;
-  private final String selectColumnsString;
+  private final transient String selectColumnsString;
   private final boolean hasDenormalizedProperties;
 
   /**
@@ -305,24 +307,19 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.Definition setKeyGeneratorType(final Entity.KeyGenerator.Type keyGeneratorType) {
-    Objects.requireNonNull(keyGeneratorType, "keyGeneratorType");
-    this.keyGeneratorType = keyGeneratorType;
+  public Entity.Definition setOrderBy(final Entity.OrderBy orderBy) {
+    Objects.requireNonNull(orderBy, "orderBy");
+    if (this.orderBy != null) {
+      throw new IllegalStateException("Order by has already been set: " + this.orderBy);
+    }
+    this.orderBy = orderBy;
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public String getOrderByClause() {
-    return orderByClause;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Entity.Definition setOrderByClause(final String orderByClause) {
-    Objects.requireNonNull(orderByClause, "orderByClause");
-    this.orderByClause = orderByClause;
-    return this;
+  public Entity.OrderBy getOrderBy() {
+    return orderBy;
   }
 
   /** {@inheritDoc} */

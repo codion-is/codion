@@ -170,18 +170,18 @@ public final class Servers {
     final Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);
     for (final String serverName : registry.list()) {
       if (serverName.startsWith(serverNamePrefix)) {
-        checkAndAddServer(serverName, requestedServerPort, registry, servers);
+        addIfReachable(serverName, requestedServerPort, registry, servers);
       }
     }
 
     return servers;
   }
 
-  private static <T extends Remote, A extends Remote> void checkAndAddServer(final String serverName, final int requestedServerPort,
-                                                                             final Registry registry, final List<Server<T, A>> servers) {
+  private static <T extends Remote, A extends Remote> void addIfReachable(final String serverName, final int requestedServerPort,
+                                                                          final Registry registry, final List<Server<T, A>> servers) {
     LOG.info("Found server \"{}\"", serverName);
     try {
-      final Server<T, A> server = checkServer((Server<T, A>) registry.lookup(serverName), requestedServerPort);
+      final Server<T, A> server = getIfReachable((Server<T, A>) registry.lookup(serverName), requestedServerPort);
       if (server != null) {
         LOG.info("Adding server \"{}\"", serverName);
         servers.add(server);
@@ -192,8 +192,8 @@ public final class Servers {
     }
   }
 
-  private static <T extends Remote, A extends Remote> Server<T, A> checkServer(final Server<T, A> server,
-                                                                               final int requestedServerPort) throws RemoteException {
+  private static <T extends Remote, A extends Remote> Server<T, A> getIfReachable(final Server<T, A> server,
+                                                                                  final int requestedServerPort) throws RemoteException {
     final Server.ServerInfo serverInfo = server.getServerInfo();
     if (requestedServerPort != -1 && serverInfo.getServerPort() != requestedServerPort) {
       LOG.error("Server \"{}\" is serving on port {}, requested port was {}",

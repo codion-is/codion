@@ -23,7 +23,8 @@ public class DefaultEntityDefinitionTest {
     final Entity.Definition definition = entities.define("entityId", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR))
-            .setSelectQuery("select * from dual", false).setOrderByClause("order by name")
+            .setSelectQuery("select * from dual", false)
+            .setOrderBy(entities.orderBy().descending("name"))
             .setReadOnly(true).setSelectTableName("selectTableName").setGroupByClause("name")
             .setStringProvider(stringProvider).setComparator(comparator);
     assertEquals("entityId", definition.toString());
@@ -32,7 +33,7 @@ public class DefaultEntityDefinitionTest {
     assertNotNull(definition.getKeyGenerator());
     assertEquals("select * from dual", definition.getSelectQuery());
     assertEquals(false, definition.isSmallDataset());
-    assertEquals("order by name", definition.getOrderByClause());
+    assertEquals("name desc", definition.getOrderBy().getOrderByClause("entityId"));
     assertEquals(true, definition.isReadOnly());
     assertEquals("selectTableName", definition.getSelectTableName());
     assertEquals("id, name", definition.getSelectColumnsString());

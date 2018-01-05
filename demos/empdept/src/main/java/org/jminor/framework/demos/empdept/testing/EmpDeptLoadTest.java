@@ -8,7 +8,6 @@ import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.testing.EntityTestUnit;
 import org.jminor.framework.model.EntityApplicationModel;
@@ -26,8 +25,6 @@ import java.util.Random;
 
 public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
-  private static final Entities ENTITIES = new EmpDept().registerDomain();
-
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
@@ -40,7 +37,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
     final EntityApplicationModel applicationModel = new EmpDeptAppPanel.EmpDeptApplicationModel(
-            EntityConnectionProviders.connectionProvider(ENTITIES, getUser(), EmpDeptLoadTest.class.getSimpleName()));
+            EntityConnectionProviders.connectionProvider(EmpDept.class.getName(), getUser(), EmpDeptLoadTest.class.getSimpleName()));
     final EntityModel deptModel = new SwingEntityModel(EmpDept.T_DEPARTMENT, applicationModel.getConnectionProvider());
     deptModel.addDetailModel(new SwingEntityModel(EmpDept.T_EMPLOYEE, applicationModel.getConnectionProvider()));
     applicationModel.addEntityModel(deptModel);
@@ -81,12 +78,12 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
           try {
             selectRandomRow(employeeModel.getTableModel());
             Entity selected = employeeModel.getTableModel().getSelectionModel().getSelectedItem();
-            EntityTestUnit.randomize(ENTITIES, selected, false, null);
+            EntityTestUnit.randomize(application.getEntities(), selected, false, null);
             employeeModel.getEditModel().setEntity(selected);
             employeeModel.getEditModel().update();
             selectRandomRow(employeeModel.getTableModel());
             selected = employeeModel.getTableModel().getSelectionModel().getSelectedItem();
-            EntityTestUnit.randomize(ENTITIES, selected, false, null);
+            EntityTestUnit.randomize(application.getEntities(), selected, false, null);
             employeeModel.getEditModel().setEntity(selected);
             employeeModel.getEditModel().update();
           }
@@ -119,7 +116,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
         final SwingEntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
         final Map<String, Entity> references = new HashMap<>();
         references.put(EmpDept.T_DEPARTMENT, departmentModel.getTableModel().getSelectionModel().getSelectedItem());
-        employeeModel.getEditModel().setEntity(EntityTestUnit.createRandomEntity(ENTITIES, EmpDept.T_EMPLOYEE, references));
+        employeeModel.getEditModel().setEntity(EntityTestUnit.createRandomEntity(application.getEntities(), EmpDept.T_EMPLOYEE, references));
         employeeModel.getEditModel().insert();
       }
       catch (final Exception e) {
@@ -137,7 +134,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     protected void performScenario(final EmpDeptAppPanel.EmpDeptApplicationModel application) throws ScenarioException {
       try {
         final SwingEntityModel departmentModel = application.getEntityModel(EmpDept.T_DEPARTMENT);
-        departmentModel.getEditModel().setEntity(EntityTestUnit.createRandomEntity(ENTITIES, EmpDept.T_DEPARTMENT, null));
+        departmentModel.getEditModel().setEntity(EntityTestUnit.createRandomEntity(application.getEntities(), EmpDept.T_DEPARTMENT, null));
         departmentModel.getEditModel().insert();
       }
       catch (final Exception e) {

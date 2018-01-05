@@ -39,6 +39,11 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   public static final Value<Boolean> SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT = Configuration.booleanValue("jminor.db.shutdownEmbeddedOnDisconnect", false);
 
   /**
+   * The underlying domain entities
+   */
+  private final Entities domain;
+
+  /**
    * The underlying database implementation
    */
   private final Database database;
@@ -73,9 +78,9 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    */
   public LocalEntityConnectionProvider(final Entities entities, final User user, final Database database,
                                        final boolean scheduleValidityCheck) {
-    super(entities, user, scheduleValidityCheck);
-    Objects.requireNonNull(database, "database");
-    this.database = database;
+    super(user, scheduleValidityCheck);
+    this.domain = Objects.requireNonNull(entities, "entities");
+    this.database = Objects.requireNonNull(database, "database");
     this.connectionProperties.put(Database.USER_PROPERTY, user.getUsername());
     this.connectionProperties.put(Database.PASSWORD_PROPERTY, user.getPassword());
   }
@@ -103,6 +108,12 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   @Override
   public String getServerHostName() {
     return database.getHost();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  protected Entities initializeEntities() {
+    return domain;
   }
 
   /** {@inheritDoc} */

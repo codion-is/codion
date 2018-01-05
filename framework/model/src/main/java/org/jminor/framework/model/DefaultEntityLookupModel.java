@@ -315,8 +315,8 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     }
 
     return entityConditions.selectCondition(entityId, additionalConditionProvider == null ? baseCondition :
-                    Conditions.conditionSet(Conjunction.AND, additionalConditionProvider.getCondition(), baseCondition),
-            connectionProvider.getEntities().getOrderByClause(entityId));
+                    Conditions.conditionSet(Conjunction.AND, additionalConditionProvider.getCondition(), baseCondition))
+            .setOrderBy(connectionProvider.getEntities().getOrderBy(entityId));
   }
 
   private void initializeDefaultSettings() {

@@ -5,7 +5,6 @@ package org.jminor.framework.demos.world.domain;
 
 import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.testing.EntityTestUnit;
 
@@ -13,14 +12,12 @@ import org.junit.Test;
 
 public final class WorldTest extends EntityTestUnit {
 
-  private static final Entities ENTITIES = new World();
-
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger"));
 
   public WorldTest() {
-    super(ENTITIES);
+    super(World.class.getName());
   }
 
   @Test

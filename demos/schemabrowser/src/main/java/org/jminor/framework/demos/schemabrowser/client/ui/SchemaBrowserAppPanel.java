@@ -19,11 +19,6 @@ import javax.swing.JTable;
 public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
   @Override
-  protected Entities initializeEntities() {
-    return new SchemaBrowser();
-  }
-
-  @Override
   protected void setupEntityPanelProviders() {
     final Entities entities = getModel().getEntities();
     final EntityPanelProvider columnConstraintProvider = new EntityPanelProvider(SchemaBrowser.T_COLUMN_CONSTRAINT,
@@ -56,6 +51,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
   public static void main(final String[] args) {
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     EntityTablePanel.TABLE_CONDITION_PANEL_VISIBLE.set(true);
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser");
     new SchemaBrowserAppPanel().startApplication("Schema Browser", null, false, UiUtil.getScreenSizeRatio(0.5), new User("scott", "tiger"));
   }
 

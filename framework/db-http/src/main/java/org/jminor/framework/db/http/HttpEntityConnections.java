@@ -5,7 +5,6 @@ package org.jminor.framework.db.http;
 
 import org.jminor.common.User;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.domain.Entities;
 
 import java.util.UUID;
 
@@ -18,7 +17,7 @@ public final class HttpEntityConnections {
 
   /**
    * Instantiates a new http based {@link EntityConnection} instance
-   * @param domain the domain entities
+   * @param domainId the id of the domain entities
    * @param serverHostName the http server host name
    * @param serverPort the http server port
    * @param user the user
@@ -26,8 +25,8 @@ public final class HttpEntityConnections {
    * @param clientId the client id
    * @return a http based EntityConnection
    */
-  public static EntityConnection createConnection(final Entities domain, final String serverHostName, final int serverPort,
+  public static EntityConnection createConnection(final String domainId, final String serverHostName, final int serverPort,
                                                   final User user, final String clientTypeId, final UUID clientId) {
-    return new HttpEntityConnection(domain, serverHostName, serverPort, user, clientTypeId, clientId);
+    return new HttpEntityConnection(domainId, serverHostName, serverPort, user, clientTypeId, clientId);
   }
 }

@@ -119,7 +119,7 @@ public final class TestDomain extends Entities {
               return intValue * 10;
             }, DETAIL_INT))
             .setSelectTableName(DETAIL_SELECT_TABLE_NAME)
-            .setOrderByClause(DETAIL_STRING)
+            .setOrderBy(orderBy().ascending(DETAIL_STRING))
             .setSmallDataset(true)
             .setStringProvider(new Entities.StringProvider(DETAIL_STRING));
   }
@@ -134,7 +134,7 @@ public final class TestDomain extends Entities {
                     .setPreferredColumnWidth(150).setMaxLength(13))
             .setSmallDataset(true)
             .setSearchPropertyIds(DEPARTMENT_NAME)
-            .setOrderByClause(DEPARTMENT_NAME)
+            .setOrderBy(orderBy().ascending(DEPARTMENT_NAME))
             .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
             .setCaption("Department");
   }
@@ -163,7 +163,7 @@ public final class TestDomain extends Entities {
             .setStringProvider(new Entities.StringProvider(EMP_NAME))
             .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
-            .setOrderByClause(EMP_DEPARTMENT + ", ename")
+            .setOrderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
             .setCaption("Employee")
             .setBackgroundColorProvider((entity, property) -> {
               if (property.is(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {

@@ -3,6 +3,8 @@
  */
 package org.jminor.framework.db.condition;
 
+import org.jminor.framework.domain.Entity;
+
 /**
  * A class encapsulating select query parameters.
  */
@@ -14,26 +16,11 @@ public interface EntitySelectCondition extends EntityCondition {
   String getOrderByClause();
 
   /**
-   * @param orderByClause the order by clause
+   * Sets the OrderBy for this condition
+   * @param orderBy the OrderBy to use when applying this condition
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setOrderByClause(final String orderByClause);
-
-  /**
-   * Adds the given property to the underlying order by clause, as ascending
-   * Overrides {@link #setOrderByClause(String)}.
-   * @param propertyId the propertyId
-   * @return this EntitySelectCondition instance
-   */
-  EntitySelectCondition orderByAscending(final String propertyId);
-
-  /**
-   * Adds the given property to the underlying order by clause, as descending.
-   * Overrides {@link #setOrderByClause(String)}.
-   * @param propertyId the propertyId
-   * @return this EntitySelectCondition instance
-   */
-  EntitySelectCondition orderByDescending(final String propertyId);
+  EntitySelectCondition setOrderBy(final Entity.OrderBy orderBy);
 
   /**
    * @return the limit to use for the given condition

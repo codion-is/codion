@@ -44,7 +44,7 @@ public final class Petstore extends Entities {
             Properties.columnProperty(ADDRESS_LATITUDE, Types.DOUBLE, "Latitude").setNullable(false).setMaximumFractionDigits(2),
             Properties.columnProperty(ADDRESS_LONGITUDE, Types.DOUBLE, "Longitude").setNullable(false).setMaximumFractionDigits(2))
             .setKeyGenerator(incrementKeyGenerator("petstore.address", ADDRESS_ID))
-            .setOrderByClause(ADDRESS_CITY + ", " + ADDRESS_STREET_1 + ", " + ADDRESS_STREET_2)
+            .setOrderBy(orderBy().ascending(ADDRESS_CITY, ADDRESS_STREET_1, ADDRESS_STREET_2))
             .setStringProvider(new Entities.StringProvider(ADDRESS_STREET_1).addText(" ")
             .addValue(ADDRESS_STREET_2).addText(", ").addValue(ADDRESS_CITY).addText(" ")
             .addValue(ADDRESS_ZIP).addText(", ").addValue(ADDRESS_STATE))
@@ -64,7 +64,7 @@ public final class Petstore extends Entities {
             Properties.columnProperty(CATEGORY_DESCRIPTION, Types.VARCHAR, "Description").setMaxLength(255).setNullable(false),
             Properties.columnProperty(CATEGORY_IMAGE_URL, Types.VARCHAR, "Image URL").setHidden(true))
             .setKeyGenerator(incrementKeyGenerator("petstore.category", CATEGORY_ID))
-            .setOrderByClause(CATEGORY_NAME)
+            .setOrderBy(orderBy().ascending(CATEGORY_NAME))
             .setStringProvider(new Entities.StringProvider(CATEGORY_NAME))
             .setCaption("Categories");
   }
@@ -86,7 +86,7 @@ public final class Petstore extends Entities {
             Properties.columnProperty(PRODUCT_DESCRIPTION, Types.VARCHAR, "Description").setMaxLength(255).setNullable(false),
             Properties.columnProperty(PRODUCT_IMAGE_URL, Types.VARCHAR, "Image URL").setMaxLength(55).setHidden(true))
             .setKeyGenerator(incrementKeyGenerator("petstore.product", PRODUCT_ID))
-            .setOrderByClause(PRODUCT_NAME)
+            .setOrderBy(orderBy().ascending(PRODUCT_NAME))
             .setStringProvider(new Entities.StringProvider(PRODUCT_CATEGORY_FK)
             .addText(" - ").addValue(PRODUCT_NAME))
             .setCaption("Products");
@@ -105,7 +105,7 @@ public final class Petstore extends Entities {
             Properties.columnProperty(SELLER_CONTACT_INFO_LAST_NAME, Types.VARCHAR, "Last name").setMaxLength(24).setNullable(false),
             Properties.columnProperty(SELLER_CONTACT_INFO_EMAIL, Types.VARCHAR, "Email").setMaxLength(24).setNullable(false))
             .setKeyGenerator(incrementKeyGenerator("petstore.sellercontactinfo", SELLER_CONTACT_INFO_ID))
-            .setOrderByClause(SELLER_CONTACT_INFO_LAST_NAME + ", "+ SELLER_CONTACT_INFO_FIRST_NAME)
+            .setOrderBy(orderBy().ascending(SELLER_CONTACT_INFO_LAST_NAME, SELLER_CONTACT_INFO_FIRST_NAME))
             .setStringProvider(new Entities.StringProvider(SELLER_CONTACT_INFO_LAST_NAME)
             .addText(", ").addValue(SELLER_CONTACT_INFO_FIRST_NAME))
             .setCaption("Seller info");
@@ -142,7 +142,7 @@ public final class Petstore extends Entities {
                     Properties.columnProperty(ITEM_ADDRESS_ID)).setNullable(false),
             Properties.booleanProperty(ITEM_DISABLED, Types.INTEGER, "Disabled", 1, 0).setDefaultValue(false))
             .setKeyGenerator(incrementKeyGenerator("petstore.item", ITEM_ID))
-            .setOrderByClause(ITEM_NAME)
+            .setOrderBy(orderBy().ascending(ITEM_NAME))
             .setStringProvider(new Entities.StringProvider(ITEM_PRODUCT_FK).addText(" - ").addValue(ITEM_NAME))
             .setCaption("Items");
   }
@@ -159,7 +159,7 @@ public final class Petstore extends Entities {
             Properties.subqueryProperty(TAG_REFCOUNT, Types.INTEGER, "Reference count",
                     "select count(*) from petstore.tag_item  where tagid = tag.tagid"))
             .setKeyGenerator(incrementKeyGenerator("petstore.tag", TAG_ID))
-            .setOrderByClause(TAG_TAG)
+            .setOrderBy(orderBy().ascending(TAG_TAG))
             .setSelectTableName("petstore.tag tag")
             .setStringProvider(new Entities.StringProvider(TAG_TAG))
             .setCaption("Tags");

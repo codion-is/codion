@@ -51,6 +51,7 @@ dependencies {
 
 test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
+    systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.empdept.domain.EmpDept"
 }
 
 task buildReports(dependsOn: 'compileJava') {

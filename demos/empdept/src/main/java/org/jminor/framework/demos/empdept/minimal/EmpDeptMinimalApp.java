@@ -191,11 +191,6 @@ public class EmpDeptMinimalApp {
   private static final class EmpDeptApplicationPanel extends EntityApplicationPanel<EmpDeptApplicationModel> {
 
     @Override
-    protected Entities initializeEntities() {
-      return new Domain();
-    }
-
-    @Override
     protected void setupEntityPanelProviders() {
       //now, let's assemble our application
       final EntityPanelProvider departmentProvider = new EntityPanelProvider("scott.dept",
@@ -226,6 +221,7 @@ public class EmpDeptMinimalApp {
     //Let's set the locale, otherwise the application would be in icelandic
     Locale.setDefault(new Locale("en", "EN"));
     //the remote connection settings
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.empdept.domain.EmpDept");
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
     Server.SERVER_HOST_NAME.set("jminor.no-ip.org");
     //we're using Secure Sockets Layer so we need to specify a truststore

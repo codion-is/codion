@@ -37,11 +37,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppPanel.Wo
   }
 
   @Override
-  protected Entities initializeEntities() {
-    return new World();
-  }
-
-  @Override
   protected WorldAppModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
     return new WorldAppModel(connectionProvider);
   }
@@ -50,6 +45,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppPanel.Wo
     Locale.setDefault(new Locale("en", "EN"));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.world.domain.World");
     new WorldAppPanel().startApplication("World", null, false, UiUtil.getScreenSizeRatio(0.8), new User("scott", "tiger"));
   }
 

@@ -735,14 +735,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * Initializes the entity db provider
-   * @param entities the domain model entities
    * @param user the user
    * @param clientTypeId a string specifying the client type
    * @return an initialized EntityConnectionProvider
    * @throws CancelException in case the initialization is cancelled
    */
-  protected EntityConnectionProvider initializeConnectionProvider(final Entities entities, final User user, final String clientTypeId) {
-    return EntityConnectionProviders.connectionProvider(entities, user, clientTypeId, getClientVersion());
+  protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeId) {
+    return EntityConnectionProviders.connectionProvider(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.get(),
+            user, clientTypeId, getClientVersion());
   }
 
   /**
@@ -1116,11 +1116,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected abstract M initializeApplicationModel(final EntityConnectionProvider connectionProvider);
 
   /**
-   * @return the domain Entities instance
-   */
-  protected abstract Entities initializeEntities();
-
-  /**
    * Returns the user, either via a login dialog or via override, called during startup
    * @param frameCaption the application frame caption
    * @param defaultUser the default user
@@ -1201,8 +1196,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
       EntityConnectionProvider connectionProvider = null;
       try {
-        final Entities domainEntities = initializeEntities().registerDomain();
-        connectionProvider = initializeConnectionProvider(domainEntities, user, getApplicationIdentifier());
+        connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
         connectionProvider.getConnection();//throws exception if the server is not reachable
         final long initializationStarted = System.currentTimeMillis();
         initialize(initializeApplicationModel(connectionProvider));

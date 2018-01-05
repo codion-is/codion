@@ -11,10 +11,7 @@ import org.jminor.common.db.Attribute;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.Format;
@@ -25,7 +22,7 @@ import java.util.Map;
 /**
  * Specifies a Property.
  */
-public interface Property extends Attribute {
+public interface Property extends Attribute, Serializable {
 
   int DEFAULT_MAXIMUM_FRACTION_DIGITS = 10;
   int DEFAULT_FOREIGN_KEY_FETCH_DEPTH = 1;
@@ -654,7 +651,7 @@ public interface Property extends Attribute {
     /**
      * Responsible for providing values derived from other values
      */
-    interface Provider {
+    interface Provider extends Serializable {
 
       /**
        * @param linkedValues the linked values, mapped to their respective propertyIds
@@ -706,28 +703,10 @@ public interface Property extends Attribute {
   /**
    * Provides a single value
    */
-  interface ValueProvider {
+  interface ValueProvider extends Serializable {
     /**
      * @return the provided value
      */
     Object getValue();
-  }
-
-  /**
-   * Annotation for the underlying column name for properties
-   */
-  @Target(ElementType.FIELD)
-  @Retention(RetentionPolicy.RUNTIME)
-  @interface Column {
-
-    /**
-     * @return the entityId of the entity this column belongs to
-     */
-    String entityId();
-
-    /**
-     * @return the name of the underlying column
-     */
-    String columnName();
   }
 }

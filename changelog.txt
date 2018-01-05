@@ -4745,3 +4745,7 @@
   Version bug fixed, could not handle non-snapshot versions
   Version 0.11.0 released
 0.11.1
+  Entities domain model now provided by the EntityConnection and EntityConnectionProvider, relevant classes now implement Serializable with non-client related fields transient
+  EntityConnectionProvider.CLIENT_DOMAIN_CLASS string configuration value added, for domain model loading
+  Annotation based domain modelling scrapped
+  Entity.OrderBy added, string based order by clauses outlawed

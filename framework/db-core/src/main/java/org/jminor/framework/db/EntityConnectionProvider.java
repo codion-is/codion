@@ -34,6 +34,13 @@ public interface EntityConnectionProvider {
   String CONNECTION_TYPE_HTTP = "http";
 
   /**
+   * Specifies the name of the domain model class required for a client connection.<br>
+   * Value type: String<br>
+   * Default value: null
+   */
+  Value<String> CLIENT_DOMAIN_CLASS = Configuration.stringValue("jminor.client.domainClass", null);
+
+  /**
    * Specifies whether the client should connect locally, remotely or via http,
    * accepted values: local, remote, http<br>
    * Value type: String<br>

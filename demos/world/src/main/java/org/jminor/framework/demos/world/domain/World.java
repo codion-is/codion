@@ -84,7 +84,7 @@ public final class World extends Entities {
             Properties.columnProperty(COUNTRY_CODE2, Types.VARCHAR, "Code2")
                     .setNullable(false)
                     .setMaxLength(2))
-            .setOrderByClause(COUNTRY_NAME)
+            .setOrderBy(orderBy().ascending(COUNTRY_NAME))
             .setSearchPropertyIds(COUNTRY_NAME)
             .setStringProvider(new Entities.StringProvider(COUNTRY_NAME))
             .setCaption("Country");
@@ -104,7 +104,7 @@ public final class World extends Entities {
             Properties.columnProperty(CITY_POPULATION, Types.INTEGER, "Population")
                     .setNullable(false))
             .setKeyGenerator(sequenceKeyGenerator("world.city_seq"))
-            .setOrderByClause(CITY_NAME)
+            .setOrderBy(orderBy().ascending(CITY_NAME))
             .setSearchPropertyIds(CITY_NAME)
             .setStringProvider(new Entities.StringProvider(CITY_NAME))
             .setCaption("City");
@@ -134,7 +134,7 @@ public final class World extends Entities {
                     .setNullable(false)
                     .setMaximumFractionDigits(1)
                     .setMin(0).setMax(100))
-            .setOrderByClause(COUNTRYLANGUAGE_LANGUAGE + ", " + COUNTRYLANGUAGE_PERCENTAGE + " desc")
+            .setOrderBy(orderBy().ascending(COUNTRYLANGUAGE_LANGUAGE).descending(COUNTRYLANGUAGE_PERCENTAGE))
             .setCaption("Language");
   }
 }

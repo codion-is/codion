@@ -14,6 +14,7 @@ import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 
 import java.util.Collection;
@@ -64,6 +65,11 @@ public interface EntityConnection {
   enum Type {
     LOCAL, REMOTE, HTTP
   }
+
+  /**
+   * @return the underlying domain entities
+   */
+  Entities getEntities();
 
   /**
    * @param methodLogger the MethodLogger to use
