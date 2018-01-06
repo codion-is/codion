@@ -4753,3 +4753,4 @@
   EntitySelectCondition.getOrderByClause() replaced with getOrderBy(), LocalEntityConnection now handles creating the actual order by clause
   Entity.getKeyGeneratorType() and getProperties() added
   Entities.Validator no longer keeps a domain model reference
+  EntityService, error handling improved

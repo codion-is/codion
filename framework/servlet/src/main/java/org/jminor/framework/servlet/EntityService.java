@@ -23,7 +23,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -33,6 +32,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -68,8 +68,9 @@ public final class EntityService extends Application {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("getEntities")
   public Response getEntities(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
-    final RemoteEntityConnection connection = authenticate(request, headers);
     try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
+
       return Response.ok(Util.serialize(connection.getEntities())).build();
     }
     catch (final Exception e) {
@@ -89,8 +90,8 @@ public final class EntityService extends Application {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("disconnect")
   public Response disconnect(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
-    final RemoteEntityConnection connection = authenticate(request, headers);
     try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
       request.getSession().invalidate();
       connection.disconnect();
 
@@ -113,8 +114,9 @@ public final class EntityService extends Application {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("isTransactionOpen")
   public Response isTransactionOpen(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
-    final RemoteEntityConnection connection = authenticate(request, headers);
     try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
+
       return Response.ok(Util.serialize(connection.isTransactionOpen())).build();
     }
     catch (final Exception e) {
@@ -134,8 +136,8 @@ public final class EntityService extends Application {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("beginTransaction")
   public Response beginTransaction(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
-    final RemoteEntityConnection connection = authenticate(request, headers);
     try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
       connection.beginTransaction();
 
       return Response.ok().build();
@@ -157,8 +159,8 @@ public final class EntityService extends Application {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("commitTransaction")
   public Response commitTransaction(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
-    final RemoteEntityConnection connection = authenticate(request, headers);
     try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
       connection.commitTransaction();
 
       return Response.ok().build();
@@ -180,8 +182,8 @@ public final class EntityService extends Application {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("rollbackTransaction")
   public Response rollbackTransaction(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
-    final RemoteEntityConnection connection = authenticate(request, headers);
     try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
       connection.rollbackTransaction();
 
       return Response.ok().build();
@@ -205,8 +207,8 @@ public final class EntityService extends Application {
   @Path("procedure")
   public Response procedure(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
                             @QueryParam("procedureId") final String procedureId) {
-    final RemoteEntityConnection connection = authenticate(request, headers);
     try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
       connection.executeProcedure(procedureId, EntityService.<List>deserialize(request).toArray());
 
       return Response.ok().build();
@@ -230,8 +232,9 @@ public final class EntityService extends Application {
   @Path("function")
   public Response function(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
                            @QueryParam("functionId") final String functionId) {
-    final RemoteEntityConnection connection = authenticate(request, headers);
     try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
+
       return Response.ok(Util.serialize(
               connection.executeFunction(functionId,
                       EntityService.<List>deserialize(request).toArray()))).build();
@@ -253,8 +256,9 @@ public final class EntityService extends Application {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("report")
   public Response report(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
-    final RemoteEntityConnection connection = authenticate(request, headers);
     try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
+
       return Response.ok(Util.serialize(connection.fillReport(deserialize(request)))).build();
     }
     catch (final Exception e) {
@@ -274,8 +278,9 @@ public final class EntityService extends Application {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("dependencies")
   public Response dependencies(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
-    final RemoteEntityConnection connection = authenticate(request, headers);
     try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
+
       return Response.ok(Util.serialize(
               connection.selectDependentEntities(deserialize(request)))).build();
     }
@@ -296,8 +301,9 @@ public final class EntityService extends Application {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("count")
   public Response count(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
-    final RemoteEntityConnection connection = authenticate(request, headers);
     try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
+
       return Response.ok(Util.serialize(connection.selectRowCount(deserialize(request)))).build();
     }
     catch (final Exception e) {
@@ -319,8 +325,9 @@ public final class EntityService extends Application {
   @Path("values")
   public Response values(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
                          @QueryParam("propertyId") final String propertyId) {
-    final RemoteEntityConnection connection = authenticate(request, headers);
     try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
+
       return Response.ok(Util.serialize(
               connection.selectValues(propertyId, deserialize(request)))).build();
     }
@@ -341,8 +348,8 @@ public final class EntityService extends Application {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("select")
   public Response select(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
-    final RemoteEntityConnection connection = authenticate(request, headers);
     try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
       final EntitySelectCondition selectCondition = deserialize(request);
 
       return Response.ok(Util.serialize(connection.selectMany(selectCondition))).build();
@@ -364,8 +371,9 @@ public final class EntityService extends Application {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("insert")
   public Response insert(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
-    final RemoteEntityConnection connection = authenticate(request, headers);
     try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
+
       return Response.ok(Util.serialize(connection.insert(deserialize(request)))).build();
     }
     catch (final Exception e) {
@@ -385,8 +393,9 @@ public final class EntityService extends Application {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("update")
   public Response update(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
-    final RemoteEntityConnection connection = authenticate(request, headers);
     try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
+
       return Response.ok(Util.serialize(connection.update(deserialize(request)))).build();
     }
     catch (final Exception e) {
@@ -405,8 +414,8 @@ public final class EntityService extends Application {
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Path("delete")
   public Response delete(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
-    final RemoteEntityConnection connection = authenticate(request, headers);
     try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
       final EntityCondition entityCondition = deserialize(request);
       connection.delete(entityCondition);
 
@@ -418,7 +427,8 @@ public final class EntityService extends Application {
     }
   }
 
-  private static RemoteEntityConnection authenticate(final HttpServletRequest request, final HttpHeaders headers) {
+  private static RemoteEntityConnection authenticate(final HttpServletRequest request, final HttpHeaders headers)
+          throws RemoteException, ServerException {
     if (server == null) {
       throw new IllegalStateException("EntityConnectionServer has not been set for EntityService");
     }
@@ -428,20 +438,11 @@ public final class EntityService extends Application {
     final String clientTypeId = getClientTypeId(headerValues);
     final UUID clientId = getClientId(headerValues, request.getSession());
     final User user = getUser(headerValues);
-    try {
-      final Map<String, Object> parameters = new HashMap<>(2);
-      parameters.put(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, domainId);
-      parameters.put(Server.CLIENT_HOST_KEY, getRemoteHost(request));
+    final Map<String, Object> parameters = new HashMap<>(2);
+    parameters.put(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, domainId);
+    parameters.put(Server.CLIENT_HOST_KEY, getRemoteHost(request));
 
-      return server.connect(Clients.connectionRequest(user, clientId, clientTypeId, parameters));
-    }
-    catch (final ServerException.AuthenticationException ae) {
-      throw new WebApplicationException(ae, Response.Status.UNAUTHORIZED);
-    }
-    catch (final Exception e) {
-      LOG.error("Error during authentication", e);
-      throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
-    }
+    return server.connect(Clients.connectionRequest(user, clientId, clientTypeId, parameters));
   }
 
   static void setServer(final Server server) {
@@ -459,6 +460,10 @@ public final class EntityService extends Application {
 
   private static Response getExceptionResponse(final Exception exeption) {
     try {
+      if (exeption instanceof ServerException.AuthenticationException) {
+        return Response.status(Response.Status.UNAUTHORIZED).entity(Util.serialize(exeption)).build();
+      }
+
       return Response.serverError().entity(Util.serialize(exeption)).build();
     }
     catch (final IOException e) {
@@ -467,21 +472,22 @@ public final class EntityService extends Application {
     }
   }
 
-  private static String getDomainId(final MultivaluedMap<String, String> headers) {
+  private static String getDomainId(final MultivaluedMap<String, String> headers) throws ServerException.AuthenticationException {
     final List<String> domainIdHeaders = headers.get(DOMAIN_ID);
     checkHeaderParameter(domainIdHeaders, DOMAIN_ID);
 
     return domainIdHeaders.get(0);
   }
 
-  private static String getClientTypeId(final MultivaluedMap<String, String> headers) {
+  private static String getClientTypeId(final MultivaluedMap<String, String> headers) throws ServerException.AuthenticationException {
     final List<String> clientTypeIdHeaders = headers.get(CLIENT_TYPE_ID);
     checkHeaderParameter(clientTypeIdHeaders, CLIENT_TYPE_ID);
 
     return clientTypeIdHeaders.get(0);
   }
 
-  private static UUID getClientId(final MultivaluedMap<String, String> headers, final HttpSession session) {
+  private static UUID getClientId(final MultivaluedMap<String, String> headers, final HttpSession session)
+          throws ServerException.AuthenticationException {
     final List<String> clientIdHeaders = headers.get(CLIENT_ID);
     checkHeaderParameter(clientIdHeaders, CLIENT_ID);
     final UUID clientId = UUID.fromString(clientIdHeaders.get(0));
@@ -491,37 +497,35 @@ public final class EntityService extends Application {
     else {
       final UUID sessionClientId = (UUID) session.getAttribute(CLIENT_ID);
       if (sessionClientId == null || !sessionClientId.equals(clientId)) {
-        throw new WebApplicationException(CLIENT_ID + " invalid", Response.Status.UNAUTHORIZED);
+        throw new ServerException.AuthenticationException("Invalid client id");
       }
     }
 
     return clientId;
   }
 
-  private static User getUser(final MultivaluedMap<String, String> headers) {
+  private static User getUser(final MultivaluedMap<String, String> headers) throws ServerException.AuthenticationException {
     final List<String> basic = headers.get(AUTHORIZATION);
     if (Util.nullOrEmpty(basic)) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+      throw new ServerException.AuthenticationException("Authorization information missing");
     }
 
     final String basicAuth = basic.get(0);
-    if (basicAuth.length() > BASIC_PREFIX_LENGTH &&
-            BASIC_PREFIX.equalsIgnoreCase(basicAuth.substring(0, BASIC_PREFIX_LENGTH + 1))) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    if (basicAuth.length() > BASIC_PREFIX_LENGTH && BASIC_PREFIX.equalsIgnoreCase(basicAuth.substring(0, BASIC_PREFIX_LENGTH))) {
+      return User.parseUser(new String(Base64.getDecoder().decode(basicAuth.substring(BASIC_PREFIX_LENGTH, basicAuth.length()))));
     }
 
-    final byte[] decodedBytes = Base64.getDecoder().decode(basicAuth.substring(BASIC_PREFIX_LENGTH, basicAuth.length()));
-
-    return User.parseUser(new String(decodedBytes));
+    throw new ServerException.AuthenticationException("Invalid authorization format");
   }
 
   private static <T> T deserialize(final HttpServletRequest request) throws IOException, ClassNotFoundException {
     return (T) new ObjectInputStream(request.getInputStream()).readObject();
   }
 
-  private static void checkHeaderParameter(final List<String> headers, final String headerParameter) {
+  private static void checkHeaderParameter(final List<String> headers, final String headerParameter)
+          throws ServerException.AuthenticationException {
     if (Util.nullOrEmpty(headers)) {
-      throw new WebApplicationException(headerParameter + " header parameter is missing", Response.Status.UNAUTHORIZED);
+      throw new ServerException.AuthenticationException(headerParameter + " header parameter is missing");
     }
   }
 }
