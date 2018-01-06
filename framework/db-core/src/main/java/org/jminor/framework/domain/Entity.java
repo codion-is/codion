@@ -43,12 +43,22 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   Key getOriginalKey();
 
   /**
+   * @return the type of key generator used for generating primary key values for entities of this type
+   */
+  KeyGenerator.Type getKeyGeneratorType();
+
+  /**
    * Retrieves the property identified by propertyId from the entity repository
    * @param propertyId the ID of the property to retrieve
    * @return the property identified by propertyId
    * @throws IllegalArgumentException in case the property does not exist in this entity
    */
   Property getProperty(final String propertyId);
+
+  /**
+   * @return the properties comprising this entity
+   */
+  List<Property> getProperties();
 
   /**
    * @param propertyId the ID of the property for which to retrieve the value
@@ -454,11 +464,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   interface Validator extends ValueMap.Validator<Property, Entity>, Serializable {
 
     /**
-     * @return the ID of the entity this validator validates
-     */
-    String getEntityId();
-
-    /**
      * Validates the given Entity objects.
      * @param entities the entities to validate
      * @throws ValidationException in case the validation fails
@@ -524,10 +529,9 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     OrderBy descending(final String... propertyIds);
 
     /**
-     * @param entityId the entityId
-     * @return a order by clause, without the 'order by' keywords
+     * @return a map containing the sort order mapped to their respective propertyIds
      */
-    String getOrderByClause(final String entityId);
+    Map<String, SortOrder> getSortOrder();
   }
 
   /**

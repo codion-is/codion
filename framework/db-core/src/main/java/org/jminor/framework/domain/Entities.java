@@ -18,9 +18,6 @@ import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -223,7 +220,7 @@ public class Entities implements Serializable {
             tableName, propertyMap, resultPacker,
             derivedProperties, primaryKeyProperties, foreignKeyProperties, transientProperties, visibleProperties,
             columnProperties, denormalizedProperties, selectColumnsString, groupByClause);
-    entityDefinition.setValidator(new Validator(this, entityId));
+    entityDefinition.setValidator(new Validator());
     entityDefinitions.put(entityId, entityDefinition);
 
     return entityDefinition;
@@ -916,7 +913,7 @@ public class Entities implements Serializable {
    * @return a new OrderBy instance
    */
   public final Entity.OrderBy orderBy() {
-    return new DefaultOrderBy(this);
+    return new DefaultOrderBy();
   }
 
   /**
@@ -1707,35 +1704,23 @@ public class Entities implements Serializable {
    */
   public static class Validator extends DefaultValueMap.DefaultValidator<Property, Entity> implements Entity.Validator {
 
-    private final Entities entities;
-    private final String entityId;
+    private static final long serialVersionUID = 1;
+
     private final boolean performNullValidation;
 
     /**
      * Instantiates a new {@link Entity.Validator}
-     * @param entities the domain model entities
-     * @param entityId the ID of the entities to validate
      */
-    public Validator(final Entities entities, final String entityId) {
-      this(entities, entityId, true);
+    public Validator() {
+      this(true);
     }
 
     /**
      * Instantiates a new {@link Entity.Validator}
-     * @param entities the domain model entities
-     * @param entityId the ID of the entities to validate
      * @param performNullValidation if true then automatic null validation is performed
      */
-    public Validator(final Entities entities, final String entityId, final boolean performNullValidation) {
-      this.entities = Objects.requireNonNull(entities, ENTITIES_PARAM);
-      this.entityId = Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
+    public Validator(final boolean performNullValidation) {
       this.performNullValidation = performNullValidation;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final String getEntityId() {
-      return entityId;
     }
 
     /**
@@ -1770,7 +1755,7 @@ public class Entities implements Serializable {
     @Override
     public void validate(final Entity entity) throws ValidationException {
       Objects.requireNonNull(entity, ENTITY_PARAM);
-      for (final Property property : entities.getProperties(entityId)) {
+      for (final Property property : entity.getProperties()) {
         if (!property.isReadOnly()) {
           validate(entity, property);
         }
@@ -1818,7 +1803,7 @@ public class Entities implements Serializable {
         if ((entity.getKey().isNull() || entity.getOriginalKey().isNull()) && !(property instanceof Property.ForeignKeyProperty)) {
           //a new entity being inserted, allow null for columns with default values and auto generated primary key values
           final boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
-          final boolean primaryKeyPropertyWithoutAutoGenerate = isPrimaryKeyPropertyWithoutAutoGenerate(entityId, property);
+          final boolean primaryKeyPropertyWithoutAutoGenerate = isPrimaryKeyPropertyWithoutAutoGenerate(entity, property);
           if (nonKeyColumnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
             throw new NullValidationException(property.getPropertyId(),
                     FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
@@ -1831,9 +1816,9 @@ public class Entities implements Serializable {
       }
     }
 
-    private boolean isPrimaryKeyPropertyWithoutAutoGenerate(final String entityId, final Property property) {
+    private boolean isPrimaryKeyPropertyWithoutAutoGenerate(final Entity entity, final Property property) {
       return (property instanceof Property.ColumnProperty
-              && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) && entities.getKeyGeneratorType(entityId).isManual();
+              && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) && entity.getKeyGeneratorType().isManual();
     }
 
     /**
@@ -2027,12 +2012,7 @@ public class Entities implements Serializable {
 
     private static final long serialVersionUID = 1;
 
-    private Entities entities;
-    private HashMap<String, SortOrder> propertySortOrder = new LinkedHashMap<>();
-
-    public DefaultOrderBy(final Entities entities) {
-      this.entities = entities;
-    }
+    private final HashMap<String, SortOrder> propertySortOrder = new LinkedHashMap<>();
 
     @Override
     public Entity.OrderBy ascending(final String... propertyIds) {
@@ -2047,22 +2027,8 @@ public class Entities implements Serializable {
     }
 
     @Override
-    public String getOrderByClause(final String entityId) {
-      final StringBuilder builder = new StringBuilder();
-      final Set<Map.Entry<String, SortOrder>> entries = propertySortOrder.entrySet();
-      int counter = 0;
-      for (final Map.Entry<String, SortOrder> entry : entries) {
-        final Property.ColumnProperty property = entities.getColumnProperty(entityId, entry.getKey());
-        builder.append(property.getColumnName());
-        if (entry.getValue().equals(SortOrder.DESCENDING)) {
-          builder.append(" desc");
-        }
-        if (counter++ < entries.size() - 1) {
-          builder.append(", ");
-        }
-      }
-
-      return builder.toString();
+    public Map<String, SortOrder> getSortOrder() {
+      return propertySortOrder;
     }
 
     private void put(final SortOrder sortOrder, final String... propertyIds) {
@@ -2073,18 +2039,6 @@ public class Entities implements Serializable {
         }
         propertySortOrder.put(propertyId, sortOrder);
       }
-    }
-
-    private void writeObject(final ObjectOutputStream stream) throws IOException {
-      stream.writeObject(entities.getDomainId());
-      stream.writeObject(propertySortOrder);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
-      final String domainId = (String) stream.readObject();
-      propertySortOrder = (HashMap<String, SortOrder>) stream.readObject();
-      entities = Entities.getDomainEntities(domainId);
     }
   }
 }

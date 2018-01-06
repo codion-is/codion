@@ -224,7 +224,8 @@ public class EntityConditionsTest {
             .setOrderBy(entities.orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertTrue(condition.getValues().isEmpty());
     assertTrue(condition.getColumns().isEmpty());
-    assertEquals(condition.getOrderByClause(), TestDomain.DEPARTMENT_NAME);
+    assertTrue(condition.getOrderby().getSortOrder().get(TestDomain.DEPARTMENT_NAME).equals(Entity.OrderBy
+            .SortOrder.ASCENDING));
   }
 
   @Test
@@ -242,7 +243,10 @@ public class EntityConditionsTest {
   public void selectConditionOrderBy() {
     final EntitySelectCondition condition = entityConditions.selectCondition(TestDomain.T_EMP)
             .setOrderBy(entities.orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_ID));
-    assertEquals("deptno, empno desc", condition.getOrderByClause());
+    assertTrue(condition.getOrderby().getSortOrder().get(TestDomain.EMP_DEPARTMENT).equals(Entity.OrderBy
+            .SortOrder.ASCENDING));
+    assertTrue(condition.getOrderby().getSortOrder().get(TestDomain.EMP_ID).equals(Entity.OrderBy
+            .SortOrder.DESCENDING));
   }
 
   @Test(expected = IllegalArgumentException.class)

@@ -110,7 +110,7 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
             'jminor.server.admin.user': 'scott:tiger',
             'jminor.server.pooling.poolProviderClass': 'org.jminor.framework.plugins.hikari.pool.HikariConnectionPoolProvider',
             'jminor.server.auxiliaryServerClassNames': 'org.jminor.framework.servlet.EntityServletServer',
-            'jminor.server.domain.classes': 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.Chinook,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
+            'jminor.server.domain.classes': 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.ChinookDomain,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
             'javax.net.ssl.keyStore': '../../resources/security/JMinorServerKeystore',
             'java.security.policy': '../../resources/security/all_permissions.policy',
             'javax.net.ssl.keyStorePassword': 'crappypass',

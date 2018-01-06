@@ -103,7 +103,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   @Override
   public Entities getEntities() throws RemoteException {
     synchronized (connectionProxy) {
-      return new Entities(connectionProxy.getEntities());
+      return connectionProxy.getEntities();
     }
   }
 

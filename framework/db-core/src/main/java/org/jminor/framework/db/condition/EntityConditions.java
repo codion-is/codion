@@ -551,14 +551,14 @@ public final class EntityConditions {
     }
 
     @Override
-    public String getOrderByClause() {
-      return orderBy != null ? orderBy.getOrderByClause(condition.getEntityId()) : null;
-    }
-
-    @Override
     public EntitySelectCondition setOrderBy(final Entity.OrderBy orderBy) {
       this.orderBy = orderBy;
       return this;
+    }
+
+    @Override
+    public Entity.OrderBy getOrderby() {
+      return orderBy;
     }
 
     @Override

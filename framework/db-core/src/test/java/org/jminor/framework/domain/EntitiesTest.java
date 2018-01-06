@@ -311,7 +311,7 @@ public class EntitiesTest {
     emp.put(TestDomain.EMP_HIREDATE, new Date());
     emp.put(TestDomain.EMP_SALARY, 1200.0);
 
-    final Entities.Validator validator = new Entities.Validator(entities, TestDomain.T_EMP);
+    final Entities.Validator validator = new Entities.Validator();
     try {
       validator.validate(emp);
       fail();

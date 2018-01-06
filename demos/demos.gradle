@@ -24,6 +24,10 @@ configurations {
 }
 
 def artifactName = project.name.replace("org.", "").replace(".", "-")
+jar {
+    baseName = artifactName
+}
+
 task jarDomain(type: Jar, dependsOn: classes) {
     group 'build'
     baseName = artifactName + '-domain'

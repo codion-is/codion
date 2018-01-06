@@ -4749,3 +4749,7 @@
   EntityConnectionProvider.CLIENT_DOMAIN_CLASS string configuration value added, for domain model loading
   Annotation based domain modelling scrapped
   Entity.OrderBy added, string based order by clauses outlawed
+  OrderBy.getSortOrder() added
+  EntitySelectCondition.getOrderByClause() replaced with getOrderBy(), LocalEntityConnection now handles creating the actual order by clause
+  Entity.getKeyGeneratorType() and getProperties() added
+  Entities.Validator no longer keeps a domain model reference

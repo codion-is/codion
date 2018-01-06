@@ -140,7 +140,7 @@ public final class LocalEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entities getEntities() {
-    return domain;
+    return new Entities(domain);
   }
 
   /** {@inheritDoc} */
@@ -1113,7 +1113,7 @@ public final class LocalEntityConnection implements EntityConnection {
     }
     if (condition instanceof EntitySelectCondition) {
       final EntitySelectCondition selectCondition = (EntitySelectCondition) condition;
-      final String orderByClause = selectCondition.getOrderByClause();
+      final String orderByClause = getOrderByClause(selectCondition);
       if (orderByClause != null) {
         queryBuilder.append(" order by ").append(orderByClause);
       }
@@ -1126,6 +1126,29 @@ public final class LocalEntityConnection implements EntityConnection {
         }
       }
     }
+  }
+
+  private String getOrderByClause(final EntitySelectCondition selectCondition) {
+    final Entity.OrderBy orderBy = selectCondition.getOrderby();
+    if (orderBy == null) {
+      return null;
+    }
+
+    final StringBuilder builder = new StringBuilder();
+    final java.util.Set<Map.Entry<String, Entity.OrderBy.SortOrder>> entries = orderBy.getSortOrder().entrySet();
+    int counter = 0;
+    for (final Map.Entry<String, Entity.OrderBy.SortOrder> entry : entries) {
+      final Property.ColumnProperty property = domain.getColumnProperty(selectCondition.getEntityId(), entry.getKey());
+      builder.append(property.getColumnName());
+      if (entry.getValue().equals(Entity.OrderBy.SortOrder.DESCENDING)) {
+        builder.append(" desc");
+      }
+      if (counter++ < entries.size() - 1) {
+        builder.append(", ");
+      }
+    }
+
+    return builder.toString();
   }
 
   /**

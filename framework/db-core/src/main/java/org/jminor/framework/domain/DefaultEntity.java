@@ -141,6 +141,18 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return property;
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public List<Property> getProperties() {
+    return definition.getProperties();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public KeyGenerator.Type getKeyGeneratorType() {
+    return definition.getKeyGeneratorType();
+  }
+
   /**
    * Returns true if one or more writable properties have been modified, read only and non-updatable properties
    * are excluded unless they are transient.
