@@ -9,7 +9,6 @@ import org.jminor.common.Version;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.server.Clients;
 import org.jminor.common.server.Server;
-import org.jminor.common.server.ServerException;
 import org.jminor.common.server.Servers;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
@@ -137,7 +136,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   @Override
   protected Entities initializeEntities() {
     try {
-      return createRemoteConnection().getEntities().registerDomain();
+      return getConnection().getEntities().registerDomain();
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
@@ -149,7 +148,9 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      return Util.initializeProxy(EntityConnection.class, new RemoteEntityConnectionHandler(createRemoteConnection()));
+      return Util.initializeProxy(EntityConnection.class, new RemoteEntityConnectionHandler(
+              getServer().connect(Clients.connectionRequest(getUser(), clientId, clientTypeId, clientVersion,
+                      Collections.singletonMap(REMOTE_CLIENT_DOMAIN_ID, domainId)))));
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
@@ -165,13 +166,6 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     catch (final RemoteException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private RemoteEntityConnection createRemoteConnection() throws RemoteException, ServerException.ServerFullException,
-          ServerException.LoginException, ServerException.ConnectionValidationException, NotBoundException {
-    return getServer().connect(
-            Clients.connectionRequest(getUser(), clientId, clientTypeId, clientVersion,
-                    Collections.singletonMap(REMOTE_CLIENT_DOMAIN_ID, domainId)));
   }
 
   /**

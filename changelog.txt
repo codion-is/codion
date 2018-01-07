@@ -4754,3 +4754,5 @@
   Entity.getKeyGeneratorType() and getProperties() added
   Entities.Validator no longer keeps a domain model reference
   EntityService, error handling improved
+  HttpEntityConnection now initializes Entities and EntityConditions in constructor
+  HttpEntityConnectionProvider and RemoteEntityConnectionProvider.initializeEntities() now uses getConnection()

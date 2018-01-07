@@ -111,7 +111,7 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
   /** {@inheritDoc} */
   @Override
   protected Entities initializeEntities() {
-    return connect().getEntities().registerDomain();
+    return getConnection().getEntities().registerDomain();
   }
 
   /** {@inheritDoc} */

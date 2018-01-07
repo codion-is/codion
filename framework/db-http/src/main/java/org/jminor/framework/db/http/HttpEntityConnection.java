@@ -78,8 +78,8 @@ final class HttpEntityConnection implements EntityConnection {
   private final BasicHttpClientConnectionManager connectionManager = new BasicHttpClientConnectionManager();
   private final CloseableHttpClient httpClient;
 
-  private Entities entities;
-  private EntityConditions conditions;
+  private final Entities entities;
+  private final EntityConditions conditions;
 
   private boolean closed;
 
@@ -98,15 +98,13 @@ final class HttpEntityConnection implements EntityConnection {
     this.user = Objects.requireNonNull(user, "user");
     this.baseurl =  Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + "/entities/";
     this.httpClient = createHttpClient(clientTypeId, clientId);
+    this.entities = initializeEntities();
+    this.conditions = new EntityConditions(this.entities);
   }
 
   /** {@inheritDoc} */
   @Override
   public Entities getEntities() {
-    if (entities == null) {
-      entities = initializeEntities();
-    }
-
     return entities;
   }
 
@@ -273,7 +271,7 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public void delete(final List<Entity.Key> keys) throws DatabaseException {
-    delete(getConditions().condition(Objects.requireNonNull(keys)));
+    delete(conditions.condition(Objects.requireNonNull(keys)));
   }
 
   /** {@inheritDoc} */
@@ -313,13 +311,13 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
-    return selectSingle(getConditions().selectCondition(entityId, propertyId, Condition.Type.LIKE, value));
+    return selectSingle(conditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, value));
   }
 
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final Entity.Key key) throws DatabaseException {
-    return selectSingle(getConditions().selectCondition(key));
+    return selectSingle(conditions.selectCondition(key));
   }
 
   /** {@inheritDoc} */
@@ -339,7 +337,7 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
-    return selectMany(getConditions().selectCondition(keys));
+    return selectMany(conditions.selectCondition(keys));
   }
 
   /** {@inheritDoc} */
@@ -362,7 +360,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public List<Entity> selectMany(final String entityId, final String propertyId, final Object... values)
           throws DatabaseException {
-    return selectMany(getConditions().selectCondition(entityId, propertyId, Condition.Type.LIKE, Arrays.asList(values)));
+    return selectMany(conditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, Arrays.asList(values)));
   }
 
   /** {@inheritDoc} */
@@ -430,14 +428,6 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public DatabaseConnection getDatabaseConnection() {
     throw new UnsupportedOperationException();
-  }
-
-  private EntityConditions getConditions() {
-    if (conditions == null) {
-      conditions = new EntityConditions(getEntities());
-    }
-
-    return conditions;
   }
 
   private Entities initializeEntities() {
