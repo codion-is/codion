@@ -4756,3 +4756,4 @@
   EntityService, error handling improved
   HttpEntityConnection now initializes Entities and EntityConditions in constructor
   HttpEntityConnectionProvider and RemoteEntityConnectionProvider.initializeEntities() now uses getConnection()
+  NumberDocumentFilter now suppresses NullPointerException during setCaret() :(
