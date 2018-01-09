@@ -4758,3 +4758,4 @@
   HttpEntityConnectionProvider and RemoteEntityConnectionProvider.initializeEntities() now uses getConnection()
   NumberDocumentFilter now suppresses NullPointerException during setCaret() :(
   UiUtil now uses separate JFileChooser instances for open and save actions
+  Copyright update mistake fixed

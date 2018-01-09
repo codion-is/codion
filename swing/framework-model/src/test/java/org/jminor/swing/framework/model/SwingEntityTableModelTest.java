@@ -1,5 +1,5 @@
 /*
- * Chinook.Copyright (c) 2004 - 2018, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2018, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.swing.framework.model;
 
