@@ -146,9 +146,10 @@ public final class UiUtil {
   private static final int MAX_SELECT_VALUE_DIALOG_WIDTH = 500;
   private static final Map<RootPaneContainer, Integer> WAIT_CURSOR_REQUESTS = new HashMap<>();
   /**
-   * Caching the file chooser since the constructor is quite slow, especially on Win. with many mapped network drives
+   * Caching the file chooser instances since the constructor is quite slow, especially on Win. with many mapped network drives
    */
-  private static JFileChooser fileChooser;
+  private static JFileChooser fileChooserOpen;
+  private static JFileChooser fileChooserSave;
   /**
    * A text field used by getPreferredTextFieldSize and getPreferredTextFieldHeight
    */
@@ -319,37 +320,37 @@ public final class UiUtil {
   public static synchronized List<File> selectFilesOrDirectories(final JComponent dialogParent, final String startDir,
                                                                  final boolean files, final boolean multiSelection,
                                                                  final String dialogTitle) {
-    if (fileChooser == null) {
+    if (fileChooserOpen == null) {
       try {
         setWaitCursor(true, dialogParent);
-        fileChooser = new JFileChooser(new File(startDir == null ? System.getProperty("user.home") : startDir));
+        fileChooserOpen = new JFileChooser(new File(startDir == null ? System.getProperty("user.home") : startDir));
       }
       finally {
         setWaitCursor(false, dialogParent);
       }
     }
     if (files) {
-      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      fileChooserOpen.setFileSelectionMode(JFileChooser.FILES_ONLY);
     }
     else {
-      fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+      fileChooserOpen.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     }
-    fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
-    fileChooser.setMultiSelectionEnabled(multiSelection);
+    fileChooserOpen.removeChoosableFileFilter(fileChooserOpen.getFileFilter());
+    fileChooserOpen.setMultiSelectionEnabled(multiSelection);
     if (!Util.nullOrEmpty(startDir) && new File(startDir).exists()) {
-      fileChooser.setCurrentDirectory(new File(startDir));
+      fileChooserOpen.setCurrentDirectory(new File(startDir));
     }
     if (dialogTitle != null) {
-      fileChooser.setDialogTitle(dialogTitle);
+      fileChooserOpen.setDialogTitle(dialogTitle);
     }
-    final int option = fileChooser.showOpenDialog(dialogParent);
+    final int option = fileChooserOpen.showOpenDialog(dialogParent);
     if (option == JFileChooser.APPROVE_OPTION) {
       final List<File> selectedFiles;
       if (multiSelection) {
-        selectedFiles = Arrays.asList(fileChooser.getSelectedFiles());
+        selectedFiles = Arrays.asList(fileChooserOpen.getSelectedFiles());
       }
       else {
-        selectedFiles = Collections.singletonList(fileChooser.getSelectedFile());
+        selectedFiles = Collections.singletonList(fileChooserOpen.getSelectedFile());
       }
       if (!selectedFiles.isEmpty()) {
         return selectedFiles;
@@ -382,37 +383,37 @@ public final class UiUtil {
    */
   public static synchronized File selectFileToSave(final JComponent dialogParent, final String startDir,
                                                    final String defaultFileName, final boolean confirmOverwrite) {
-    if (fileChooser == null) {
+    if (fileChooserSave == null) {
       try {
         setWaitCursor(true, dialogParent);
-        fileChooser = new JFileChooser();
+        fileChooserSave = new JFileChooser();
       }
       finally {
         setWaitCursor(false, dialogParent);
       }
     }
-    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
-    fileChooser.setMultiSelectionEnabled(false);
+    fileChooserSave.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    fileChooserSave.removeChoosableFileFilter(fileChooserSave.getFileFilter());
+    fileChooserSave.setMultiSelectionEnabled(false);
     final File startDirectory;
     if (!Util.nullOrEmpty(startDir) && new File(startDir).exists()) {
       startDirectory = new File(startDir);
     }
     else {
-      startDirectory = fileChooser.getCurrentDirectory();
+      startDirectory = fileChooserSave.getCurrentDirectory();
     }
     File selectedFile = new File(startDirectory.getAbsolutePath() + (defaultFileName != null ? File.separator + defaultFileName : ""));
     boolean fileChosen = false;
     while (!fileChosen) {
       if (selectedFile.isDirectory()) {
-        fileChooser.setCurrentDirectory(selectedFile);
+        fileChooserSave.setCurrentDirectory(selectedFile);
       }
       else {
-        fileChooser.setSelectedFile(selectedFile);
+        fileChooserSave.setSelectedFile(selectedFile);
       }
-      int option = fileChooser.showSaveDialog(dialogParent);
+      int option = fileChooserSave.showSaveDialog(dialogParent);
       if (option == JFileChooser.APPROVE_OPTION) {
-        selectedFile = fileChooser.getSelectedFile();
+        selectedFile = fileChooserSave.getSelectedFile();
         if (selectedFile.exists() && confirmOverwrite) {
           option = JOptionPane.showConfirmDialog(dialogParent, Messages.get(Messages.OVERWRITE_FILE),
                   Messages.get(Messages.FILE_EXISTS), JOptionPane.YES_NO_CANCEL_OPTION);
