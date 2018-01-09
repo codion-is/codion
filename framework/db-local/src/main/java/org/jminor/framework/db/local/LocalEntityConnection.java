@@ -1130,7 +1130,7 @@ public final class LocalEntityConnection implements EntityConnection {
 
   private String getOrderByClause(final EntitySelectCondition selectCondition) {
     final Entity.OrderBy orderBy = selectCondition.getOrderby();
-    if (orderBy == null) {
+    if (orderBy == null || orderBy.getSortOrder().isEmpty()) {
       return null;
     }
 
