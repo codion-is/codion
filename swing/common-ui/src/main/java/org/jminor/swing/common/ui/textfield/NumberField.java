@@ -213,7 +213,14 @@ public class NumberField extends JTextField {
       if (formatResult != null) {
         super.replace(filterBypass, 0, document.getLength(), formatResult.formatted, attributeSet);
         if (caret != null) {
-          caret.setDot(offset + string.length() + formatResult.added);
+          try {
+            caret.setDot(offset + string.length() + formatResult.added);
+          }
+          catch (final NullPointerException e) {
+            e.printStackTrace();
+            //Yeah, here's a hack, this error occurs occasionally, within DefaultCaret.setDot(),
+            //probably EDT related, so I'll suppress it until I understand what's going on
+          }
         }
       }
     }
