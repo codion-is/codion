@@ -89,9 +89,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.print.PrinterException;
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
@@ -2011,55 +2009,20 @@ public final class UiUtil {
       ctrDetails = Controls.toggleControl(showDetailsState);
       ctrDetails.setName(Messages.get(Messages.DETAILS));
       ctrDetails.setDescription(Messages.get(Messages.SHOW_DETAILS));
-      ctrPrint = new Control(Messages.get(Messages.PRINT)) {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          try {
-            detailsArea.print();
-          }
-          catch (final PrinterException ex) {
-            throw new RuntimeException(ex);
-          }
-        }
-      };
+      ctrPrint = Controls.control(() -> detailsArea.print(), Messages.get(Messages.PRINT));
       ctrPrint.setDescription(Messages.get(Messages.PRINT_ERROR_REPORT));
       ctrPrint.setMnemonic(Messages.get(Messages.PRINT_ERROR_REPORT_MNEMONIC).charAt(0));
-      ctrClose = new Control(Messages.get(Messages.CLOSE)) {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          dispose();
-        }
-      };
+      ctrClose = Controls.control(this::dispose, Messages.get(Messages.CLOSE));
       ctrClose.setDescription(Messages.get(Messages.CLOSE_DIALOG));
       ctrClose.setMnemonic(Messages.get(Messages.CLOSE_MNEMONIC).charAt(0));
-      ctrSave = new Control(Messages.get(Messages.SAVE)) {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          try {
-            FileUtil.writeFile(detailsArea.getText(), selectFileToSave(detailsArea, null, null));
-          }
-          catch (final CancelException ignored) {/*ignored*/}
-          catch (final IOException ex) {
-            throw new RuntimeException(ex);
-          }
-        }
-      };
+      ctrSave = Controls.control(() -> FileUtil.writeFile(detailsArea.getText(), selectFileToSave(detailsArea, null, null)),
+              Messages.get(Messages.SAVE));
       ctrSave.setDescription(Messages.get(Messages.SAVE_ERROR_LOG));
       ctrSave.setMnemonic(Messages.get(Messages.SAVE_MNEMONIC).charAt(0));
-      ctrCopy = new Control(Messages.get(Messages.COPY)) {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          setClipboard(detailsArea.getText());
-        }
-      };
+      ctrCopy = Controls.control(() -> setClipboard(detailsArea.getText()), Messages.get(Messages.COPY));
       ctrCopy.setDescription(Messages.get(Messages.COPY_TO_CLIPBOARD));
       ctrCopy.setMnemonic(Messages.get(Messages.COPY_MNEMONIC).charAt(0));
-      ctrEmail = new Control(Messages.get(Messages.SEND)) {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          emailErrorReport();
-        }
-      };
+      ctrEmail = Controls.control(this::emailErrorReport, Messages.get(Messages.SEND));
       ctrEmail.setDescription(Messages.get(Messages.SEND_EMAIL));
       ctrEmail.setMnemonic(Messages.get(Messages.SEND_MNEMONIC).charAt(0));
     }

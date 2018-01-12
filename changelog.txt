@@ -4759,3 +4759,4 @@
   NumberDocumentFilter now suppresses NullPointerException during setCaret() :(
   UiUtil now uses separate JFileChooser instances for open and save actions
   Copyright update mistake fixed
+  EntityTablePanel, UiUtil.ExceptionDialog, replaced new Control() with Controls.control()

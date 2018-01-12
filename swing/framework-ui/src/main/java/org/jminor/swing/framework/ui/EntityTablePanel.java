@@ -667,13 +667,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       return null;
     }
 
-    final Control toggleControl = new Control() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        toggleConditionPanel();
-      }
-    };
-    toggleControl.setIcon(Images.loadImage(Images.IMG_FILTER_16));
+    final Control toggleControl = Controls.control(this::toggleConditionPanel, Images.loadImage(Images.IMG_FILTER_16));
     toggleControl.setDescription(FrameworkMessages.get(FrameworkMessages.SHOW_CONDITION_PANEL));
 
     return toggleControl;
@@ -1305,24 +1299,18 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   private Control getCopyCellControl() {
-    return new Control(FrameworkMessages.get(FrameworkMessages.COPY_CELL),
-            getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver()) {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final JTable table = getJTable();
-        final Object value = table.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
-        UiUtil.setClipboard(value == null ? "" : value.toString());
-      }
-    };
+    return Controls.control(this::copySelectedCell, FrameworkMessages.get(FrameworkMessages.COPY_CELL),
+            getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver());
   }
 
   private Control getCopyTableWithHeaderControl() {
-    return new Control(FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER)) {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        copyTableAsDelimitedString();
-      }
-    };
+    return Controls.control(this::copyTableAsDelimitedString, FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER));
+  }
+
+  private void copySelectedCell() {
+    final JTable table = getJTable();
+    final Object value = table.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
+    UiUtil.setClipboard(value == null ? "" : value.toString());
   }
 
   private void copyTableAsDelimitedString() {
@@ -1458,8 +1446,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   private void showDependenciesDialog(final Map<String, Collection<Entity>> dependencies,
-                                             final EntityConnectionProvider connectionProvider,
-                                             final JComponent dialogParent) {
+                                      final EntityConnectionProvider connectionProvider,
+                                      final JComponent dialogParent) {
     JPanel dependenciesPanel;
     try {
       UiUtil.setWaitCursor(true, dialogParent);
