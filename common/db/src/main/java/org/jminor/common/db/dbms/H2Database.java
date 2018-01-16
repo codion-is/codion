@@ -36,7 +36,6 @@ public final class H2Database extends AbstractDatabase {
   static final String SEQUENCE_VALUE_QUERY = "select next value for ";
   static final String SYSADMIN_USERNAME = "sa";
   static final String RUN_TOOL_CLASS_NAME = "org.h2.tools.RunScript";
-  static final boolean EMBEDDED_IN_MEMORY = Database.DATABASE_EMBEDDED_IN_MEMORY.get();
   static final String URL_PREFIX_SERVER = "jdbc:h2:";
   static final String URL_PREFIX_MEM = "jdbc:h2:mem:";
   static final String URL_PREFIX_FILE = "jdbc:h2:file:";
@@ -45,7 +44,7 @@ public final class H2Database extends AbstractDatabase {
   private String urlAppend = "";
 
   /**
-   * Instantiates a new H2Database.
+   * Instantiates a new embedded H2Database, using {@link Database#DATABASE_HOST} for database name.
    */
   public H2Database() {
     this(Database.DATABASE_HOST.get());
@@ -56,7 +55,7 @@ public final class H2Database extends AbstractDatabase {
    * @param databaseName the path to the database files
    */
   public H2Database(final String databaseName) {
-    this(databaseName, EMBEDDED_IN_MEMORY);
+    this(databaseName, Database.DATABASE_EMBEDDED_IN_MEMORY.get());
   }
 
   /**

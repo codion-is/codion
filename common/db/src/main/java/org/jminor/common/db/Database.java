@@ -21,7 +21,7 @@ public interface Database {
    * The available database types
    */
   enum Type {
-    DERBY, H2, HSQL, MYSQL, ORACLE, POSTGRESQL, SQLSERVER, OTHER
+    DERBY, H2, HSQL, MYSQL, ORACLE, POSTGRESQL, SQLSERVER, SQLITE, OTHER
   }
 
   /**
@@ -33,6 +33,7 @@ public interface Database {
    * @see Type#ORACLE
    * @see Type#POSTGRESQL
    * @see Type#SQLSERVER
+   * @see Type#SQLITE
    */
   Value<String> DATABASE_TYPE = Configuration.stringValue("jminor.db.type", null);
 
@@ -291,6 +292,8 @@ public interface Database {
         return "org.jminor.common.db.dbms.H2Database";
       case HSQL:
         return "org.jminor.common.db.dbms.HSQLDatabase";
+      case SQLITE:
+        return "org.jminor.common.db.dbms.SQLiteDatabase";
       case OTHER:
         throw new IllegalArgumentException("Database type OTHER does not have an implementation");
       default:
