@@ -1106,6 +1106,15 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     return new ControlSet(Messages.get(Messages.COPY), getCopyCellControl(), getCopyTableWithHeaderControl());
   }
 
+  protected final Control getCopyCellControl() {
+    return Controls.control(this::copySelectedCell, FrameworkMessages.get(FrameworkMessages.COPY_CELL),
+            getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver());
+  }
+
+  protected final Control getCopyTableWithHeaderControl() {
+    return Controls.control(this::copyTableAsDelimitedString, FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER));
+  }
+
   /**
    * Override to exclude properties from the update selected menu.
    * @param property the property
@@ -1296,15 +1305,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     setControl(MOVE_SELECTION_UP, getMoveSelectionDownControl());
     setControl(MOVE_SELECTION_DOWN, getMoveSelectionUpControl());
     setControl(COPY_TABLE_DATA, getCopyControlSet());
-  }
-
-  private Control getCopyCellControl() {
-    return Controls.control(this::copySelectedCell, FrameworkMessages.get(FrameworkMessages.COPY_CELL),
-            getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver());
-  }
-
-  private Control getCopyTableWithHeaderControl() {
-    return Controls.control(this::copyTableAsDelimitedString, FrameworkMessages.get(FrameworkMessages.COPY_TABLE_WITH_HEADER));
   }
 
   private void copySelectedCell() {

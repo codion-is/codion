@@ -4761,3 +4761,4 @@
   Copyright update mistake fixed
   EntityTablePanel, UiUtil.ExceptionDialog, replaced new Control() with Controls.control()
   SQLiteDatabase added, very preliminary
+  EntityTablePanel.getCopyCellControl() and getCopyTableWithHeaderControl() now protected instead of private
