@@ -465,7 +465,7 @@ final class HttpEntityConnection implements EntityConnection {
 
   private CloseableHttpClient createHttpClient(final String clientTypeId, final UUID clientId) {
     final String authorizationHeader = BASIC + Base64.getEncoder().encodeToString((
-            user.getUsername() + ":" + user.getPassword()).getBytes());
+            user.getUsername() + ":" + String.valueOf(user.getPassword())).getBytes());
     final String clientIdString = clientId.toString();
 
     return HttpClientBuilder.create()

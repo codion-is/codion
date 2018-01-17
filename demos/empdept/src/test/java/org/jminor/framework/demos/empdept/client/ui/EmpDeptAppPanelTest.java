@@ -12,7 +12,7 @@ public class EmpDeptAppPanelTest extends EntityApplicationPanelTestUnit {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   public EmpDeptAppPanelTest() {
     super(EmpDeptAppPanel.class, UNIT_TEST_USER);

@@ -21,7 +21,7 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppPanel
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   public PetstoreLoadTest() {
     super(UNIT_TEST_USER, Collections.singletonList(new AbstractUsageScenario<PetstoreAppPanel.PetstoreApplicationModel>("selectRecords") {

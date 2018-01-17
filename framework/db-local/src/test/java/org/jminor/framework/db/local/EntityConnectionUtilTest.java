@@ -31,7 +31,7 @@ public class EntityConnectionUtilTest {
   private static final Entities ENTITIES = new TestDomain();
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray()), Databases.getInstance());
   private static final EntityConditions ENTITY_CONDITIONS = CONNECTION_PROVIDER.getConditions();
 
   private static EntityConnection DESTINATION_CONNECTION;
@@ -40,7 +40,7 @@ public class EntityConnectionUtilTest {
   public static void setUp() {
     try {
       final H2Database destinationDatabase = new H2Database("TempDB", "src/test/sql/create_h2_db.sql");
-      DESTINATION_CONNECTION = LocalEntityConnections.createConnection(ENTITIES, destinationDatabase, new User("sa", ""));
+      DESTINATION_CONNECTION = LocalEntityConnections.createConnection(ENTITIES, destinationDatabase, new User("sa", null));
       DESTINATION_CONNECTION.getDatabaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk");
       DESTINATION_CONNECTION.delete(ENTITY_CONDITIONS.condition(TestDomain.T_EMP));
       DESTINATION_CONNECTION.delete(ENTITY_CONDITIONS.condition(TestDomain.T_DEPARTMENT));

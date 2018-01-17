@@ -17,6 +17,7 @@ import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -292,11 +293,17 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
    */
   protected abstract void doDisconnect(final T connection) throws RemoteException;
 
-  protected final void validateUserCredentials(final User userToCheck, final User requiredUser) throws ServerException.AuthenticationException {
+  /**
+   * Validates the given user credentials
+   * @param userToCheck the credentials to check
+   * @param requiredUser the required credentials
+   * @throws ServerException.AuthenticationException in case either User instance is null or if the username or password does not match
+   */
+  protected static final void validateUserCredentials(final User userToCheck, final User requiredUser) throws ServerException.AuthenticationException {
     if (userToCheck == null || requiredUser == null
             || !Objects.equals(userToCheck.getUsername(), requiredUser.getUsername())
-            || !Objects.equals(userToCheck.getPassword(), requiredUser.getPassword())) {
-      throw ServerException.authenticationException("Authentication failed");
+            || !Arrays.equals(userToCheck.getPassword(), requiredUser.getPassword())) {
+      throw ServerException.authenticationException("Wrong username or password");
     }
   }
 

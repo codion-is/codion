@@ -47,7 +47,7 @@ public final class LoginPanel extends JPanel {
    * @return a User object based on the values found in this LoginPanel
    */
   public User getUser() {
-    return new User(usernameField.getText(), new String(passwordField.getPassword()));
+    return new User(usernameField.getText(), passwordField.getPassword());
   }
 
   /**
@@ -103,7 +103,7 @@ public final class LoginPanel extends JPanel {
     usernameField.setText(defaultUser == null ? "" : defaultUser.getUsername());
     usernameField.setColumns(DEFAULT_FIELD_COLUMNS);
     UiUtil.selectAllOnFocusGained(usernameField);
-    passwordField.setText(defaultUser == null ? "" : defaultUser.getPassword());
+    passwordField.setText(defaultUser == null ? "" : String.valueOf(defaultUser.getPassword()));
     passwordField.setColumns(DEFAULT_FIELD_COLUMNS);
     UiUtil.selectAllOnFocusGained(passwordField);
 

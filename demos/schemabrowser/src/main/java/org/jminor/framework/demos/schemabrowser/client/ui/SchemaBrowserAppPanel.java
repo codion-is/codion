@@ -52,7 +52,8 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     EntityTablePanel.TABLE_CONDITION_PANEL_VISIBLE.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser");
-    new SchemaBrowserAppPanel().startApplication("Schema Browser", null, false, UiUtil.getScreenSizeRatio(0.5), new User("scott", "tiger"));
+    new SchemaBrowserAppPanel().startApplication("Schema Browser", null, false,
+            UiUtil.getScreenSizeRatio(0.5), new User("scott", "tiger".toCharArray()));
   }
 
   public static final class SchemaBrowserApplicationModel extends SwingEntityApplicationModel {

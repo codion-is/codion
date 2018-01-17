@@ -233,6 +233,6 @@ public class EmpDeptMinimalApp {
 
     //and then we start the application
     mainPanel.startApplication("EmpDept Minimal", null, false,
-            new Dimension(800, 600), new User("scott", "tiger"));
+            new Dimension(800, 600), new User("scott", "tiger".toCharArray()));
   }
 }

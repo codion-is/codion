@@ -22,7 +22,7 @@ public class RemoteEntityConnectionProviderTest {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   @Test
   public void entityConnectionProviders() {

@@ -30,7 +30,7 @@ public class ObservableEntityListTest {
 
   protected static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, UNIT_TEST_USER, Databases.getInstance());
 

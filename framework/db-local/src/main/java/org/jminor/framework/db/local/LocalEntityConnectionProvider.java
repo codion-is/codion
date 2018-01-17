@@ -82,7 +82,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     this.domain = Objects.requireNonNull(entities, "entities");
     this.database = Objects.requireNonNull(database, "database");
     this.connectionProperties.put(Database.USER_PROPERTY, user.getUsername());
-    this.connectionProperties.put(Database.PASSWORD_PROPERTY, user.getPassword());
+    this.connectionProperties.put(Database.PASSWORD_PROPERTY, String.valueOf(user.getPassword()));
   }
 
   /** {@inheritDoc} */

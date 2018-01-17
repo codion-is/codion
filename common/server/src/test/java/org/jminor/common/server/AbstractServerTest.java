@@ -19,7 +19,7 @@ public class AbstractServerTest {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   @Test
   public void testConnectionCount() throws RemoteException, ServerException {
@@ -179,7 +179,7 @@ public class AbstractServerTest {
     final UUID connectionId = UUID.randomUUID();
     final ConnectionRequest connectionRequest = Clients.connectionRequest(UNIT_TEST_USER, connectionId, clientTypeId);
     final ConnectionRequest connectionRequest2 = Clients.connectionRequest(
-            new User(UNIT_TEST_USER.getUsername(), "test"), connectionId, clientTypeId);
+            new User(UNIT_TEST_USER.getUsername(), "test".toCharArray()), connectionId, clientTypeId);
 
     final ServerTest serverTest = server.connect(connectionRequest);
 

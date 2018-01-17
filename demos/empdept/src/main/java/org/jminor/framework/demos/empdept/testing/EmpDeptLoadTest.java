@@ -27,7 +27,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   public EmpDeptLoadTest() {
     super(UNIT_TEST_USER, Arrays.asList(new InsertDepartment(), new InsertEmployee(), new LoginLogout(),

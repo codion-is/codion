@@ -15,7 +15,7 @@ public class EmployeeEditPanelTest extends EntityEditPanelTestUnit {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   public EmployeeEditPanelTest() {
     super(EmpDept.class.getName(), EmployeeEditPanel.class, EmpDept.T_EMPLOYEE, UNIT_TEST_USER);

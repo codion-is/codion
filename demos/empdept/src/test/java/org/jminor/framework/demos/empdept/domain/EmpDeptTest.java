@@ -16,7 +16,7 @@ public class EmpDeptTest extends EntityTestUnit {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   public EmpDeptTest() {
     super(EmpDept.class.getName());

@@ -104,7 +104,7 @@ public class DatabasesTest {
   @Test
   public void validateWithQuery() throws DatabaseException, SQLException {
     final Database testDatabase = new TestDatabase();
-    final Connection connection = testDatabase.createConnection(new User("scott", "tiger"));
+    final Connection connection = testDatabase.createConnection(new User("scott", "tiger".toCharArray()));
     assertTrue(Databases.isValid(connection, testDatabase, 2));
     connection.close();
     assertFalse(Databases.isValid(connection, testDatabase, 2));

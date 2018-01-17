@@ -17,7 +17,7 @@ public class LoadTestPanelTest {
 
   @Test
   public void test() {
-    final LoadTestModel model = new TestLoadTestModel(new User("test", "hello"), 50, 2, 2, 1000);
+    final LoadTestModel model = new TestLoadTestModel(new User("test", "hello".toCharArray()), 50, 2, 2, 1000);
     final LoadTestPanel panel = new LoadTestPanel(model);
     assertEquals(model, panel.getModel());
     model.exit();

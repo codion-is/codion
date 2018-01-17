@@ -13,7 +13,7 @@ public class DepartmentEditPanelTest extends EntityEditPanelTestUnit {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   public DepartmentEditPanelTest() {
     super(EmpDept.class.getName(), DepartmentEditPanel.class, EmpDept.T_DEPARTMENT, UNIT_TEST_USER);

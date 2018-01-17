@@ -64,7 +64,7 @@ public class ChinookFXAppView extends EntityApplicationView<ChinookFXAppModel> {
 
   @Override
   protected User getDefaultUser() {
-    return new User("scott", "tiger");
+    return new User("scott", "tiger".toCharArray());
   }
 
   public static void main(final String[] args) {

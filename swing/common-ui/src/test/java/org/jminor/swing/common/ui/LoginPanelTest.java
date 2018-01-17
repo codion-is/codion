@@ -14,7 +14,7 @@ public class LoginPanelTest {
 
   @Test
   public void test() {
-    final User user = new User("user", "pass");
+    final User user = new User("user", "pass".toCharArray());
     final LoginPanel panel = new LoginPanel(user);
     assertEquals(user, panel.getUser());
     assertNotNull(panel.getPasswordField());

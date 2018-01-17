@@ -148,7 +148,7 @@ public abstract class AbstractDatabase implements Database {
     }
     final Properties connectionProperties = new Properties();
     connectionProperties.put(USER_PROPERTY, user.getUsername());
-    connectionProperties.put(PASSWORD_PROPERTY, user.getPassword());
+    connectionProperties.put(PASSWORD_PROPERTY, String.valueOf(user.getPassword()));
     DriverManager.setLoginTimeout(getLoginTimeout());
     try {
       return DriverManager.getConnection(getURL(connectionProperties), addConnectionProperties(connectionProperties));

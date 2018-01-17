@@ -9,13 +9,14 @@ import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.ServerException;
 import org.jminor.common.server.Servers;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public final class TestLoginProxy implements LoginProxy {
 
   private final Map<String, String> users = new HashMap<>();
-  private final User databaseUser = new User("scott", "tiger");
+  private final User databaseUser = new User("scott", "tiger".toCharArray());
 
   public TestLoginProxy() {
     users.put("scott", "tiger");
@@ -45,7 +46,7 @@ public final class TestLoginProxy implements LoginProxy {
 
   private void authenticateUser(final User user) throws ServerException.AuthenticationException {
     final String password = users.get(user.getUsername());
-    if (password == null || !password.equals(user.getPassword())) {
+    if (password == null || !Arrays.equals(password.toCharArray(), user.getPassword())) {
       throw ServerException.authenticationException("Wrong username or password");
     }
   }

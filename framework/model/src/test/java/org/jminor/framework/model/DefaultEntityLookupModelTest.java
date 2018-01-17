@@ -32,7 +32,7 @@ public final class DefaultEntityLookupModelTest {
   private static final Entities ENTITIES = new TestDomain();
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray()), Databases.getInstance());
   private static final EntityConditions ENTITY_CONDITIONS = CONNECTION_PROVIDER.getConditions();
 
   private EntityLookupModel lookupModel;

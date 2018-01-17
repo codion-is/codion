@@ -45,6 +45,7 @@ import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -654,8 +655,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @throws AuthenticationException in case the password does not match the one in the connection pool user
    */
   private static void checkConnectionPoolCredentials(final User connectionPoolUser, final User user) throws AuthenticationException {
-    if (!connectionPoolUser.getPassword().equals(user.getPassword())) {
-      throw new AuthenticationException("Wrong username or password for connection pool");
+    if (!Arrays.equals(connectionPoolUser.getPassword(), user.getPassword())) {
+      throw new AuthenticationException("Wrong username or password");
     }
   }
 

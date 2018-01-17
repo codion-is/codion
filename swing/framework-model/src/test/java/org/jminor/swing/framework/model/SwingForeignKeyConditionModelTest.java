@@ -29,7 +29,7 @@ public class SwingForeignKeyConditionModelTest {
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray()), Databases.getInstance());
 
   private final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_EMP,
           CONNECTION_PROVIDER, new DefaultPropertyFilterModelProvider(),

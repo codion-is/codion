@@ -28,7 +28,7 @@ public class EntityLookupProviderTest {
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger")), Databases.getInstance());
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray()), Databases.getInstance());
 
   @Test
   public void test() throws Exception {

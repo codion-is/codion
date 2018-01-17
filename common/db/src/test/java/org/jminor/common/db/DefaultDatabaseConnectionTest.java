@@ -22,7 +22,7 @@ public class DefaultDatabaseConnectionTest {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   private final Database DATABASE = Databases.getInstance();
   private DefaultDatabaseConnection dbConnection;
@@ -58,12 +58,12 @@ public class DefaultDatabaseConnectionTest {
 
   @Test(expected = DatabaseException.class)
   public void wrongUsername() throws Exception {
-    new DefaultDatabaseConnection(DATABASE, new User("foo", "bar"));
+    new DefaultDatabaseConnection(DATABASE, new User("foo", "bar".toCharArray()));
   }
 
   @Test(expected = DatabaseException.class)
   public void wrongPassword() throws Exception {
-    new DefaultDatabaseConnection(DATABASE, new User(UNIT_TEST_USER.getUsername(), "xxxxx"));
+    new DefaultDatabaseConnection(DATABASE, new User(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray()));
   }
 
   @Test

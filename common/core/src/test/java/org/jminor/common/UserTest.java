@@ -16,25 +16,29 @@ public class UserTest {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   @Test
   public void test() {
-    final User user = new User("scott", "tiger");
+    final User user = new User("scott", "tiger".toCharArray());
     assertEquals("scott", user.getUsername());
-    assertEquals("tiger", user.getPassword());
-    user.setPassword("mess");
-    assertEquals("mess", user.getPassword());
+    assertEquals("tiger", String.valueOf(user.getPassword()));
+    user.setPassword("mess".toCharArray());
+    assertEquals("mess", String.valueOf(user.getPassword()));
     assertEquals("User: scott", user.toString());
     assertEquals("scott".hashCode(), user.hashCode());
     assertEquals(new User("scott", null), user);
+    user.setPassword("test".toCharArray());
+    assertEquals("test", String.valueOf(user.getPassword()));
+    user.clearPassword();
+    assertEquals("", String.valueOf(user.getPassword()));
   }
 
   @Test
   public void parseUser() {
     final User user = User.parseUser("scott:tiger");
     assertEquals("scott", user.getUsername());
-    assertEquals("tiger", user.getPassword());
+    assertEquals("tiger", String.valueOf(user.getPassword()));
   }
 
   @Test(expected = IllegalArgumentException.class)

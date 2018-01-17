@@ -68,7 +68,8 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppPa
     Locale.setDefault(new Locale("en"));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.petstore.domain.Petstore");
-    new PetstoreAppPanel().startApplication("The Pet Store", null, false, UiUtil.getScreenSizeRatio(0.8), new User("scott", "tiger"));
+    new PetstoreAppPanel().startApplication("The Pet Store", null, false,
+            UiUtil.getScreenSizeRatio(0.8), new User("scott", "tiger".toCharArray()));
   }
 
   public static final class PetstoreApplicationModel extends SwingEntityApplicationModel {

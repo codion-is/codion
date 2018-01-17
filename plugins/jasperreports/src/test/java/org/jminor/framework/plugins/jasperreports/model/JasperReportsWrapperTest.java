@@ -28,7 +28,7 @@ public class JasperReportsWrapperTest {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   private static final String REPORT_PATH = "build/classes/reports/test/empdept_employees.jasper";
 

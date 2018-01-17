@@ -43,17 +43,17 @@ public class DefaultRemoteEntityConnectionTest {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   @Test(expected = DatabaseException.class)
   public void wrongUsername() throws Exception {
-    final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(new User("foo", "bar"), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
+    final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(new User("foo", "bar".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
     new DefaultRemoteEntityConnection(ENTITIES, Databases.getInstance(), client, 1234, true);
   }
 
   @Test(expected = DatabaseException.class)
   public void wrongPassword() throws Exception {
-    final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(new User(UNIT_TEST_USER.getUsername(), "xxxxx"), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
+    final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(new User(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
     new DefaultRemoteEntityConnection(ENTITIES, Databases.getInstance(), client, 1235, true);
   }
 

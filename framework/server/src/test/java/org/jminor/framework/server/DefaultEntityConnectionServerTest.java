@@ -38,9 +38,9 @@ public class DefaultEntityConnectionServerTest {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
-  private static final User ADMIN_USER = new User("scott", "tiger");
+  private static final User ADMIN_USER = new User("scott", "tiger".toCharArray());
   private static final Map<String, Object> CONNECTION_PARAMS =
           Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, "TestDomain");
   private static Server<RemoteEntityConnection, EntityConnectionServerAdmin> server;
@@ -64,13 +64,13 @@ public class DefaultEntityConnectionServerTest {
 
   @Test(expected = ServerException.AuthenticationException.class)
   public void testWrongPassword() throws Exception {
-    server.connect(Clients.connectionRequest(new User(UNIT_TEST_USER.getUsername(), "foobar"),
+    server.connect(Clients.connectionRequest(new User(UNIT_TEST_USER.getUsername(), "foobar".toCharArray()),
             UUID.randomUUID(), getClass().getSimpleName(), CONNECTION_PARAMS));
   }
 
   @Test(expected = ServerException.AuthenticationException.class)
   public void getServerAdminEmptyPassword() throws Exception {
-    server.getServerAdmin(new User("test", ""));
+    server.getServerAdmin(new User("test", "".toCharArray()));
   }
 
   @Test(expected = ServerException.AuthenticationException.class)
@@ -80,17 +80,17 @@ public class DefaultEntityConnectionServerTest {
 
   @Test(expected = ServerException.AuthenticationException.class)
   public void getServerAdminWrongPassword() throws Exception {
-    server.getServerAdmin(new User("test", "test"));
+    server.getServerAdmin(new User("test", "test".toCharArray()));
   }
 
   @Test(expected = ServerException.AuthenticationException.class)
   public void getServerAdminEmptyUsername() throws Exception {
-    server.getServerAdmin(new User("", "test"));
+    server.getServerAdmin(new User("", "test".toCharArray()));
   }
 
   @Test(expected = ServerException.AuthenticationException.class)
   public void getServerAdminWrongUsername() throws Exception {
-    server.getServerAdmin(new User("test", "test"));
+    server.getServerAdmin(new User("test", "test".toCharArray()));
   }
 
   @Test
@@ -187,11 +187,11 @@ public class DefaultEntityConnectionServerTest {
     admin.setConnectionLimit(3);
     assertEquals(3, admin.getConnectionLimit());
     final String testClientTypeId = "TestLoginProxy";
-    final ConnectionRequest connectionRequestJohn = Clients.connectionRequest(new User("john", "hello"),
+    final ConnectionRequest connectionRequestJohn = Clients.connectionRequest(new User("john", "hello".toCharArray()),
             UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
-    final ConnectionRequest connectionRequestHelen = Clients.connectionRequest(new User("helen", "juno"),
+    final ConnectionRequest connectionRequestHelen = Clients.connectionRequest(new User("helen", "juno".toCharArray()),
             UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
-    final ConnectionRequest connectionRequestInvalid = Clients.connectionRequest(new User("foo", "bar"),
+    final ConnectionRequest connectionRequestInvalid = Clients.connectionRequest(new User("foo", "bar".toCharArray()),
             UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
     server.connect(connectionRequestJohn);
     server.connect(connectionRequestHelen);
@@ -287,7 +287,8 @@ public class DefaultEntityConnectionServerTest {
     Server.SERVER_ADMIN_PORT.set(2223);
     Server.SERVER_ADMIN_USER.set("scott:tiger");
     Server.SERVER_CONNECTION_SSL_ENABLED.set(true);
-    DefaultEntityConnectionServer.SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.set(UNIT_TEST_USER.getUsername() + ":" + UNIT_TEST_USER.getPassword());
+    DefaultEntityConnectionServer.SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS.set(UNIT_TEST_USER.getUsername()
+            + ":" + String.valueOf(UNIT_TEST_USER.getPassword()));
     DefaultEntityConnectionServer.SERVER_CLIENT_CONNECTION_TIMEOUT.set("ClientTypeID:10000");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set("org.jminor.framework.server.TestDomain");
     DefaultEntityConnectionServer.SERVER_LOGIN_PROXY_CLASSES.set("org.jminor.framework.server.TestLoginProxy");

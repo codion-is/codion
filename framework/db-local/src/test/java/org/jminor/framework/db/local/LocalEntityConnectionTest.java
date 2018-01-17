@@ -51,7 +51,7 @@ public class LocalEntityConnectionTest {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   private static final String JOINED_QUERY_ENTITY_ID = "joinedQueryEntityID";
   private static final String GROUP_BY_QUERY_ENTITY_ID = "groupByQueryEntityID";

@@ -46,7 +46,7 @@ public class EntityTestUnit {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   private static final int MININUM_RANDOM_NUMBER = -10000000;
   private static final int MAXIMUM_RANDOM_NUMBER = 10000000;

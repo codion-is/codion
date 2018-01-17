@@ -51,10 +51,10 @@ public class EntityServletServerTest {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
-  private static final User ADMIN_USER = new User("scott", "tiger");
+  private static final User ADMIN_USER = new User("scott", "tiger".toCharArray());
   private static final String BASIC = "Basic ";
   private static final String HTTP = "http";
   private static String HOSTNAME;
@@ -96,7 +96,7 @@ public class EntityServletServerTest {
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityService.CLIENT_ID, clientId.toString());
               request.setHeader(EntityService.AUTHORIZATION,
-                      BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
+                      BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + String.valueOf(user.getPassword())).getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             })
             .build();
@@ -144,7 +144,7 @@ public class EntityServletServerTest {
               request.setHeader(EntityService.DOMAIN_ID, domainId);
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityService.AUTHORIZATION,
-                      BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
+                      BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + String.valueOf(user.getPassword())).getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             })
             .build();
@@ -161,12 +161,12 @@ public class EntityServletServerTest {
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(new BasicHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              final User user = new User("who", "areu");
+              final User user = new User("who", "areu".toCharArray());
               request.setHeader(EntityService.DOMAIN_ID, domainId);
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityService.CLIENT_ID, clientIdValue.get().toString());
               request.setHeader(EntityService.AUTHORIZATION,
-                      BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword()).getBytes()));
+                      BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + String.valueOf(user.getPassword())).getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             })
             .build();
@@ -186,7 +186,7 @@ public class EntityServletServerTest {
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityService.CLIENT_ID, clientIdValue.get().toString());
               request.setHeader(EntityService.AUTHORIZATION,
-                      BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + user.getPassword())
+                      BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + String.valueOf(user.getPassword()))
                               .getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             })

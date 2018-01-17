@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -17,17 +18,17 @@ public final class User implements Serializable {
   private static final long serialVersionUID = 1;
 
   private String username;
-  private String password;
+  private char[] password;
 
   /**
    * Instantiates a new User.
    * @param username the username
    * @param password the password
    */
-  public User(final String username, final String password) {
+  public User(final String username, final char[] password) {
     Objects.requireNonNull(username, "username");
     this.username = username;
-    this.password = password;
+    setPassword(password);
   }
 
   /**
@@ -40,15 +41,23 @@ public final class User implements Serializable {
   /**
    * @param password the password
    */
-  public void setPassword(final String password) {
-    this.password = password;
+  public void setPassword(final char[] password) {
+    this.password = password == null ? new char[0] : password;
   }
 
   /**
    * @return the password
    */
-  public String getPassword() {
+  public char[] getPassword() {
     return password;
+  }
+
+  /**
+   * Clears the password
+   */
+  public void clearPassword() {
+    Arrays.fill(password, (char) 0);
+    setPassword(null);
   }
 
   /** {@inheritDoc} */
@@ -84,7 +93,7 @@ public final class User implements Serializable {
       throw new IllegalArgumentException("Both username and password are required");
     }
 
-    return new User(split[0], split[1]);
+    return new User(split[0], split[1].toCharArray());
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
@@ -94,6 +103,6 @@ public final class User implements Serializable {
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     this.username = (String) stream.readObject();
-    this.password = (String) stream.readObject();
+    this.password = (char[]) stream.readObject();
   }
 }

@@ -174,9 +174,9 @@ public final class LoadTestPanel extends JPanel {
     final User user = loadTestModel.getUser();
     final JTextField txtUsername = new JTextField(user.getUsername());
     txtUsername.setColumns(LARGE_TEXT_FIELD_COLUMNS);
-    final JTextField txtPassword = new JPasswordField(user.getPassword());
+    final JPasswordField txtPassword = new JPasswordField(String.valueOf(user.getPassword()));
     txtPassword.setColumns(LARGE_TEXT_FIELD_COLUMNS);
-    final ActionListener userInfoListener = e -> loadTestModel.setUser(new User(txtUsername.getText(), txtPassword.getText()));
+    final ActionListener userInfoListener = e -> loadTestModel.setUser(new User(txtUsername.getText(), txtPassword.getPassword()));
     txtUsername.addActionListener(userInfoListener);
     txtPassword.addActionListener(userInfoListener);
     final FlexibleGridLayout layout = UiUtil.createFlexibleGridLayout(2, 2, true, false);

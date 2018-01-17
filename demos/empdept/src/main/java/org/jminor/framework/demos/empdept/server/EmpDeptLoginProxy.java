@@ -15,7 +15,7 @@ import java.util.Map;
 public final class EmpDeptLoginProxy implements LoginProxy {
 
   private final Map<String, String> users = new HashMap<>();
-  private final User databaseUser = new User("scott", "tiger");
+  private final User databaseUser = new User("scott", "tiger".toCharArray());
 
   public EmpDeptLoginProxy() {
     users.put("scott", "tiger");

@@ -738,7 +738,7 @@ public final class FXUiUtil {
     final TextField username = new TextField(defaultUser == null ? "" : defaultUser.getUsername());
     username.setPromptText(Messages.get(Messages.USERNAME));
     final PasswordField password = new PasswordField();
-    password.setText(defaultUser == null || defaultUser.getPassword() == null ? "" : defaultUser.getPassword());
+    password.setText(defaultUser == null || defaultUser.getPassword() == null ? "" : String.valueOf(defaultUser.getPassword()));
     password.setPromptText(Messages.get(Messages.PASSWORD));
 
     grid.add(new Label(Messages.get(Messages.USERNAME)), 0, 0);
@@ -763,7 +763,7 @@ public final class FXUiUtil {
 
     dialog.setResultConverter(dialogButton -> {
       if (dialogButton == loginButtonType) {
-        return new User(username.getText(), password.getText());
+        return new User(username.getText(), password.getText().toCharArray());
       }
 
       return null;

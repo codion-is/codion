@@ -158,7 +158,7 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
   protected User getDefaultUser() {
     final String defaultUserName = EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name");
 
-    return new User(defaultUserName, "");
+    return new User(defaultUserName, null);
   }
 
   /**

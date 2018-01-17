@@ -15,7 +15,7 @@ public class PetstoreTest extends EntityTestUnit {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger"));
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   public PetstoreTest() {
     super(Petstore.class.getName());
