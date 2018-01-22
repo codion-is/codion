@@ -910,19 +910,19 @@ public class Entities implements Serializable {
   }
 
   /**
-   * @return a new OrderBy instance
-   */
-  public final Entity.OrderBy orderBy() {
-    return new DefaultOrderBy();
-  }
-
-  /**
    * Registers this instance for lookup via {@link Entities#getDomainEntities(String)}
    * @return this Entities instance
    * @see #getDomainId()
    */
   public final Entities registerDomain() {
     return setDomainEntities(domainId, this);
+  }
+
+  /**
+   * @return a new OrderBy instance
+   */
+  public static final Entity.OrderBy orderBy() {
+    return new DefaultOrderBy();
   }
 
   /**

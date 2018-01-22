@@ -24,7 +24,7 @@ public class DefaultEntityDefinitionTest {
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR))
             .setSelectQuery("select * from dual", false)
-            .setOrderBy(entities.orderBy().descending("name"))
+            .setOrderBy(Entities.orderBy().descending("name"))
             .setReadOnly(true).setSelectTableName("selectTableName").setGroupByClause("name")
             .setStringProvider(stringProvider).setComparator(comparator);
     assertEquals("entityId", definition.toString());

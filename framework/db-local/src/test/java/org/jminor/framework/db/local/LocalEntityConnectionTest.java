@@ -184,7 +184,7 @@ public class LocalEntityConnectionTest {
   @Test
   public void selectManyLimitOffset() throws Exception {
     final EntitySelectCondition condition = ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP)
-            .setOrderBy(ENTITIES.orderBy().ascending(TestDomain.EMP_NAME)).setLimit(2);
+            .setOrderBy(Entities.orderBy().ascending(TestDomain.EMP_NAME)).setLimit(2);
     List<Entity> result = connection.selectMany(condition);
     assertEquals(2, result.size());
     condition.setLimit(3);

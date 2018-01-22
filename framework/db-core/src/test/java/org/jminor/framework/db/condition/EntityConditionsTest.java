@@ -7,6 +7,7 @@ import org.jminor.common.Conjunction;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.condition.Conditions;
 import org.jminor.framework.db.TestDomain;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
@@ -77,7 +78,7 @@ public class EntityConditionsTest {
             TestDomain.DEPARTMENT_LOCATION, Condition.Type.LIKE, "New York");
 
     condition = entityConditions.selectCondition(TestDomain.T_DEPARTMENT, critOne).setOrderBy(
-            entities.orderBy().ascending(TestDomain.DEPARTMENT_NAME));
+            Entities.orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertEquals(-1, condition.getFetchCount());
 
     condition = entityConditions.selectCondition(TestDomain.T_DEPARTMENT, 10);
@@ -221,7 +222,7 @@ public class EntityConditionsTest {
   public void simpleCondition() {
     final EntitySelectCondition condition = entityConditions.selectCondition(TestDomain.T_DEPARTMENT,
             Conditions.stringCondition("department name is not null"), -1)
-            .setOrderBy(entities.orderBy().ascending(TestDomain.DEPARTMENT_NAME));
+            .setOrderBy(Entities.orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertTrue(condition.getValues().isEmpty());
     assertTrue(condition.getColumns().isEmpty());
     assertTrue(condition.getOrderby().getSortOrder().get(TestDomain.DEPARTMENT_NAME).equals(Entity.OrderBy
@@ -242,7 +243,7 @@ public class EntityConditionsTest {
   @Test
   public void selectConditionOrderBy() {
     final EntitySelectCondition condition = entityConditions.selectCondition(TestDomain.T_EMP)
-            .setOrderBy(entities.orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_ID));
+            .setOrderBy(Entities.orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_ID));
     assertTrue(condition.getOrderby().getSortOrder().get(TestDomain.EMP_DEPARTMENT).equals(Entity.OrderBy
             .SortOrder.ASCENDING));
     assertTrue(condition.getOrderby().getSortOrder().get(TestDomain.EMP_ID).equals(Entity.OrderBy
@@ -257,7 +258,7 @@ public class EntityConditionsTest {
   @Test(expected = IllegalArgumentException.class)
   public void selectConditionOrderBySamePropertyId() {
     entityConditions.selectCondition(TestDomain.T_EMP)
-            .setOrderBy(entities.orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_DEPARTMENT));
+            .setOrderBy(Entities.orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_DEPARTMENT));
   }
 
   private void assertKeyCondition(final EntityCondition condition) {

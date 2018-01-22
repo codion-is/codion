@@ -146,7 +146,7 @@ public class DefaultEntityConnectionServerTest {
 
     final EntityConditions entityConditions = new EntityConditions(remoteConnectionTwo.getEntities());
     final EntitySelectCondition selectCondition = entityConditions.selectCondition(TestDomain.T_EMP)
-            .setOrderBy(remoteConnectionTwo.getEntities().orderBy().ascending(TestDomain.EMP_NAME));
+            .setOrderBy(Entities.orderBy().ascending(TestDomain.EMP_NAME));
     remoteConnectionTwo.selectMany(selectCondition);
 
     admin.getDatabaseStatistics();

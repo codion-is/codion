@@ -4764,3 +4764,4 @@
   EntityTablePanel.getCopyCellControl() and getCopyTableWithHeaderControl() now protected instead of private
   User.password is now a character array instead of String
   User.readObject() is now backwards compatible, as in, can read User instances from previous versions
+  Entities.orderBy() now static
