@@ -4765,3 +4765,4 @@
   User.password is now a character array instead of String
   User.readObject() is now backwards compatible, as in, can read User instances from previous versions
   Entities.orderBy() now static
+  H2Database bug fixed, did not guard against a null initScript value

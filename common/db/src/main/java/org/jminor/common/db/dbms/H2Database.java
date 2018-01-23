@@ -84,7 +84,7 @@ public final class H2Database extends AbstractDatabase {
   /**
    * Instantiates a new embedded H2Database instance, in memory, initialized with the given script, if any
    * @param databaseName the database name
-   * @param initScript the script to use for initializing the database
+   * @param initScript a script to use for initializing the database, null if not required
    * @throws RuntimeException in case of an error during initialization
    */
   public H2Database(final String databaseName, final String initScript) {
@@ -94,14 +94,14 @@ public final class H2Database extends AbstractDatabase {
   /**
    * Instantiates a new embedded H2Database instance, initialized with the given script, if any
    * @param databaseName the database name
-   * @param initScript the script to use for initializing the database
+   * @param initScript a script to use for initializing the database, null if not required
    * @param embeddedInMemory if true then the resulting database is in memory
    * @throws RuntimeException in case of an error during initialization
    */
   public H2Database(final String databaseName, final String initScript, final boolean embeddedInMemory) {
     super(Type.H2, DRIVER_CLASS_NAME, Objects.requireNonNull(databaseName, "databaseName"),
             null, null, true);
-    initializeDatabase(databaseName, Collections.singletonList(initScript), embeddedInMemory);
+    initializeDatabase(databaseName, initScript == null ? null : Collections.singletonList(initScript), embeddedInMemory);
     this.embeddedInMemory = embeddedInMemory;
 
   }
