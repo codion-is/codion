@@ -147,14 +147,17 @@ public final class EntityTableConditionPanel extends JPanel {
   }
 
   /**
-   * @param listener a listener notified when a condition panel receives focus
+   * @param listener a listener notified when a condition panel receives focus, note this does not apply
+   * for custom search panels
    */
   public void addFocusGainedListener(final EventInfoListener<Property> listener) {
-    ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().forEach((column, panel) -> {
-      if (panel instanceof ColumnConditionPanel) {
-        ((ColumnConditionPanel) panel).addFocusGainedListener(listener);
-      }
-    });
+    if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
+      ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().forEach((column, panel) -> {
+        if (panel instanceof ColumnConditionPanel) {
+          ((ColumnConditionPanel) panel).addFocusGainedListener(listener);
+        }
+      });
+    }
   }
 
   /**

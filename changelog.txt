@@ -4766,3 +4766,4 @@
   User.readObject() is now backwards compatible, as in, can read User instances from previous versions
   Entities.orderBy() now static
   H2Database bug fixed, did not guard against a null initScript value
+  EntityTableConditionPanel bug fixed, addFocusGainedListener() assumed advancedSearchPanel was a AbstractTableColumnSyncPanel instance
