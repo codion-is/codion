@@ -209,7 +209,8 @@ public final class ChinookDomain extends Entities {
             .setSearchPropertyIds(TRACK_NAME)
             .setCaption("Tracks");
   }
-  public static final String INVOICE_TOTAL_SUBQUERY = "select sum(unitprice * quantity) from chinook.invoiceline where invoiceid = invoice.invoiceid";
+
+  private static final String INVOICE_TOTAL_SUBQUERY = "select sum(unitprice * quantity) from chinook.invoiceline where invoiceid = invoice.invoiceid";
 
   void invoice() {
     define(T_INVOICE, "chinook.invoice",
