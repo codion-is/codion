@@ -791,8 +791,8 @@ public final class LocalEntityConnection implements EntityConnection {
         if (current == null) {
           throw new RecordModifiedException(entity, null);
         }
-        final Property modified = domain.getModifiedProperty(entity, current);
-        if (modified != null) {
+        final Collection<Property.ColumnProperty> modified = domain.getModifiedColumnProperties(entity, current);
+        if (!modified.isEmpty()) {
           throw new RecordModifiedException(entity, current);
         }
       }
