@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 
 public class EntityBeanMapperTest {
 
-  private static final Entities entities = new TestDomain();
+  private static final Entities DOMAIN = new TestDomain();
 
   @Test
   public void toBeans() throws InvocationTargetException, NoSuchMethodException,
@@ -25,7 +25,7 @@ public class EntityBeanMapperTest {
     final String deptName = "Department";
     final String deptLocation = "Location";
 
-    final Entity department = entities.entity(TestDomain.T_DEPARTMENT);
+    final Entity department = DOMAIN.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, deptNo);
     department.put(TestDomain.DEPARTMENT_NAME, deptName);
     department.put(TestDomain.DEPARTMENT_LOCATION, deptLocation);
@@ -44,7 +44,7 @@ public class EntityBeanMapperTest {
     final String name = "John Doe";
     final Double salary = 1234.5;
 
-    final Entity employee = entities.entity(TestDomain.T_EMP);
+    final Entity employee = DOMAIN.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_ID, id);
     employee.put(TestDomain.EMP_COMMISSION, commission);
     employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
@@ -137,54 +137,54 @@ public class EntityBeanMapperTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void getBeanClassUndefinedEntity() {
-    final EntityBeanMapper beanMapper = new EntityBeanMapper(entities);
+    final EntityBeanMapper beanMapper = new EntityBeanMapper(DOMAIN);
     beanMapper.getBeanClass("entityId");
   }
 
   @Test(expected = NullPointerException.class)
   public void setEntityIDNullBeanClass() {
-    final EntityBeanMapper beanMapper = new EntityBeanMapper(entities);
+    final EntityBeanMapper beanMapper = new EntityBeanMapper(DOMAIN);
     beanMapper.setEntityId(null, "entityId");
   }
 
   @Test(expected = NullPointerException.class)
   public void setEntityIDNullEntityId() {
-    final EntityBeanMapper beanMapper = new EntityBeanMapper(entities);
+    final EntityBeanMapper beanMapper = new EntityBeanMapper(DOMAIN);
     beanMapper.setEntityId(EmployeeBean.class, null);
   }
 
   @Test(expected = NullPointerException.class)
   public void getEntityIDNullBeanClass() {
-    final EntityBeanMapper beanMapper = new EntityBeanMapper(entities);
+    final EntityBeanMapper beanMapper = new EntityBeanMapper(DOMAIN);
     beanMapper.getEntityId(null);
   }
 
   @Test(expected = NullPointerException.class)
   public void getBeanClassNullEntityId() {
-    final EntityBeanMapper beanMapper = new EntityBeanMapper(entities);
+    final EntityBeanMapper beanMapper = new EntityBeanMapper(DOMAIN);
     beanMapper.getBeanClass(null);
   }
 
   @Test(expected = NullPointerException.class)
   public void setPropertyNullBeanClass() throws NoSuchMethodException {
-    final EntityBeanMapper beanMapper = new EntityBeanMapper(entities);
+    final EntityBeanMapper beanMapper = new EntityBeanMapper(DOMAIN);
     beanMapper.setProperty(null, "", "");
   }
 
   @Test(expected = NullPointerException.class)
   public void setPropertyNullPropertyId() throws NoSuchMethodException {
-    final EntityBeanMapper beanMapper = new EntityBeanMapper(entities);
+    final EntityBeanMapper beanMapper = new EntityBeanMapper(DOMAIN);
     beanMapper.setProperty(EmployeeBean.class, null, "");
   }
 
   @Test(expected = NullPointerException.class)
   public void setPropertyNullPropertyName() throws NoSuchMethodException {
-    final EntityBeanMapper beanMapper = new EntityBeanMapper(entities);
+    final EntityBeanMapper beanMapper = new EntityBeanMapper(DOMAIN);
     beanMapper.setProperty(EmployeeBean.class, "", null);
   }
 
   private EntityBeanMapper createEmpDeptBeanMapper() throws NoSuchMethodException {
-    final EntityBeanMapper beanMap = new EntityBeanMapper(entities);
+    final EntityBeanMapper beanMap = new EntityBeanMapper(DOMAIN);
     beanMap.setEntityId(DepartmentBean.class, TestDomain.T_DEPARTMENT);
     beanMap.setProperty(DepartmentBean.class, TestDomain.DEPARTMENT_ID, "deptNo");
     beanMap.setProperty(DepartmentBean.class, TestDomain.DEPARTMENT_NAME, "name");

@@ -23,12 +23,12 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppPanel.Wo
 
   @Override
   protected void setupEntityPanelProviders() {
-    final Entities entities = getModel().getEntities();
-    final EntityPanelProvider countryPanelProvider = new EntityPanelProvider(World.T_COUNTRY, entities.getCaption(World.T_COUNTRY));
+    final Entities domain = getModel().getDomain();
+    final EntityPanelProvider countryPanelProvider = new EntityPanelProvider(World.T_COUNTRY, domain.getCaption(World.T_COUNTRY));
     countryPanelProvider.setEditPanelClass(CountryEditPanel.class);
-    final EntityPanelProvider cityPanelProvider = new EntityPanelProvider(World.T_CITY, entities.getCaption(World.T_CITY));
+    final EntityPanelProvider cityPanelProvider = new EntityPanelProvider(World.T_CITY, domain.getCaption(World.T_CITY));
     cityPanelProvider.setEditPanelClass(CityEditPanel.class);
-    final EntityPanelProvider countryLanguagePanelProvider = new EntityPanelProvider(World.T_COUNTRYLANGUAGE, entities.getCaption(World.T_COUNTRYLANGUAGE));
+    final EntityPanelProvider countryLanguagePanelProvider = new EntityPanelProvider(World.T_COUNTRYLANGUAGE, domain.getCaption(World.T_COUNTRYLANGUAGE));
     countryLanguagePanelProvider.setEditPanelClass(CountryLanguageEditPanel.class);
     countryPanelProvider.addDetailPanelProvider(cityPanelProvider);
     countryPanelProvider.addDetailPanelProvider(countryLanguagePanelProvider);

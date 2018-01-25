@@ -162,7 +162,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   /**
    * @return the underlying domain model Entities
    */
-  Entities getEntities();
+  Entities getDomain();
 
   /**
    * @return true if this model is read only,

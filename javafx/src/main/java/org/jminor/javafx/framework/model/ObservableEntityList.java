@@ -64,7 +64,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     this.entityId = entityId;
     this.connectionProvider = connectionProvider;
     this.filteredList = new FilteredList<>(this);
-    this.sortedList = new SortedList<>(filteredList, connectionProvider.getEntities().getComparator(entityId));
+    this.sortedList = new SortedList<>(filteredList, connectionProvider.getDomain().getComparator(entityId));
     this.entityConditions = connectionProvider.getConditions();
   }
 
@@ -288,7 +288,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   protected List<Entity> performQuery() {
     try {
       return connectionProvider.getConnection().selectMany(entityConditions.selectCondition(entityId, selectCondition)
-              .setOrderBy(connectionProvider.getEntities().getOrderBy(entityId)));
+              .setOrderBy(connectionProvider.getDomain().getOrderBy(entityId)));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);

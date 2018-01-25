@@ -136,7 +136,7 @@ public class DefaultEntityTableConditionModelTest {
     conditionModel.setAdditionalFilterCondition(entity -> !Objects.equals(entity.get(TestDomain.EMP_ID), 1));
     assertNotNull(conditionModel.getAdditionalFilterCondition());
 
-    final Entity emp = CONNECTION_PROVIDER.getEntities().entity(TestDomain.T_EMP);
+    final Entity emp = CONNECTION_PROVIDER.getDomain().entity(TestDomain.T_EMP);
     emp.put(TestDomain.EMP_ID, 1);
     assertFalse(conditionModel.include(emp));
 

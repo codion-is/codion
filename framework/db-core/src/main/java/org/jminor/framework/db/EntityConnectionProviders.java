@@ -120,11 +120,11 @@ public final class EntityConnectionProviders {
   private static EntityConnectionProvider createLocalConnectionProvider(final String domainClass, final User user)
           throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
           InvocationTargetException, InstantiationException {
-    final Entities entities = (Entities) Class.forName(domainClass).getConstructor().newInstance();
+    final Entities domain = (Entities) Class.forName(domainClass).getConstructor().newInstance();
 
     return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.LOCAL_CONNECTION_PROVIDER.get()).getConstructor(
             Entities.class, User.class)
-            .newInstance(entities, user);
+            .newInstance(domain, user);
   }
 
   private static String getDomainId(final String domainClass) {

@@ -69,7 +69,7 @@ public interface EntityConnection {
   /**
    * @return the underlying domain entities
    */
-  Entities getEntities();
+  Entities getDomain();
 
   /**
    * @param methodLogger the MethodLogger to use

@@ -67,8 +67,8 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
 
   /** {@inheritDoc} */
   @Override
-  public Entities getEntities() {
-    return connectionProvider.getEntities();
+  public Entities getDomain() {
+    return connectionProvider.getDomain();
   }
 
   /** {@inheritDoc} */

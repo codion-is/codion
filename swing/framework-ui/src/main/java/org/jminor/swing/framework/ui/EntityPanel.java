@@ -293,7 +293,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param entityModel the EntityModel
    */
   public EntityPanel(final SwingEntityModel entityModel) {
-    this(entityModel, entityModel.getEditModel().getEntities().getCaption(
+    this(entityModel, entityModel.getEditModel().getDomain().getCaption(
             Objects.requireNonNull(entityModel, "entityModel").getEntityId()));
   }
 
@@ -312,7 +312,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param editPanel the edit panel
    */
   public EntityPanel(final SwingEntityModel entityModel, final EntityEditPanel editPanel) {
-    this(entityModel, entityModel.getEditModel().getEntities().getCaption(entityModel.getEntityId()), editPanel);
+    this(entityModel, entityModel.getEditModel().getDomain().getCaption(entityModel.getEntityId()), editPanel);
   }
 
   /**
@@ -321,7 +321,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(final SwingEntityModel entityModel, final EntityTablePanel tablePanel) {
-    this(entityModel, entityModel.getEditModel().getEntities().getCaption(entityModel.getEntityId()), tablePanel);
+    this(entityModel, entityModel.getEditModel().getDomain().getCaption(entityModel.getEntityId()), tablePanel);
   }
 
   /**
@@ -351,7 +351,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(final SwingEntityModel entityModel, final EntityEditPanel editPanel, final EntityTablePanel tablePanel) {
-    this(entityModel, entityModel.getEditModel().getEntities().getCaption(entityModel.getEntityId()), editPanel, tablePanel);
+    this(entityModel, entityModel.getEditModel().getDomain().getCaption(entityModel.getEntityId()), editPanel, tablePanel);
   }
 
   /**
@@ -365,7 +365,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
                      final EntityTablePanel tablePanel) {
     Objects.requireNonNull(entityModel, "entityModel");
     this.entityModel = entityModel;
-    this.caption = caption == null ? entityModel.getEditModel().getEntities().getCaption(entityModel.getEntityId()) : caption;
+    this.caption = caption == null ? entityModel.getEditModel().getDomain().getCaption(entityModel.getEntityId()) : caption;
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
   }

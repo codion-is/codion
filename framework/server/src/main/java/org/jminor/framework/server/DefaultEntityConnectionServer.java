@@ -298,7 +298,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     if (domainId == null) {
       throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID + "' parameter not specified");
     }
-    final Entities domainModel = Entities.getDomainEntities(domainId);
+    final Entities domainModel = Entities.getDomain(domainId);
     if (connectionPool != null) {
       return new DefaultRemoteEntityConnection(domainModel, connectionPool, remoteClient, port, clientLoggingEnabled,
               clientSocketFactory, serverSocketFactory);
@@ -397,9 +397,9 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    */
   Map<String, String> getEntityDefinitions() {
     final Map<String, String> definitions = new HashMap<>();
-    for (final Entities entities : Entities.getAllDomains()) {
-      for (final String entityId : entities.getDefinedEntities()) {
-        definitions.put(entityId, entities.getTableName(entityId));
+    for (final Entities domain : Entities.getAllDomains()) {
+      for (final String entityId : domain.getDefinedEntities()) {
+        definitions.put(entityId, domain.getTableName(entityId));
       }
     }
 
@@ -675,8 +675,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
         for (final String className : domainModelClassNames) {
           final String message = "Server loading and registering domain model class '" + className + FROM_CLASSPATH;
           LOG.info(message);
-          final Entities entities = (Entities) Class.forName(className).getDeclaredConstructor().newInstance();
-          entities.registerDomain();
+          final Entities domain = (Entities) Class.forName(className).getDeclaredConstructor().newInstance();
+          domain.registerDomain();
         }
       }
     }

@@ -64,7 +64,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     @Override
     protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final EntityConditions conditions = new EntityConditions(client.getEntities());
+        final EntityConditions conditions = new EntityConditions(client.getDomain());
         final List<Entity> departments = client.getConnection().selectMany(conditions.selectCondition(EmpDept.T_DEPARTMENT));
         final Entity entity = departments.get(new Random().nextInt(departments.size()));
         entity.put(EmpDept.DEPARTMENT_LOCATION, TextUtil.createRandomString(10, 13));
@@ -104,7 +104,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     @Override
     protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final EntityConditions conditions = new EntityConditions(client.getEntities());
+        final EntityConditions conditions = new EntityConditions(client.getDomain());
         final List<Entity> departments = client.getConnection().selectMany(conditions.selectCondition(EmpDept.T_DEPARTMENT));
 
         client.getConnection().selectMany(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT,
@@ -127,7 +127,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
       try {
         final int deptNo = new Random().nextInt(5000);
-        final Entity department = client.getEntities().entity(EmpDept.T_DEPARTMENT);
+        final Entity department = client.getDomain().entity(EmpDept.T_DEPARTMENT);
         department.put(EmpDept.DEPARTMENT_ID, deptNo);
         department.put(EmpDept.DEPARTMENT_NAME, TextUtil.createRandomString(4, 8));
         department.put(EmpDept.DEPARTMENT_LOCATION, TextUtil.createRandomString(5, 10));
@@ -152,10 +152,10 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     @Override
     protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final EntityConditions conditions = new EntityConditions(client.getEntities());
+        final EntityConditions conditions = new EntityConditions(client.getDomain());
         final List<Entity> departments = client.getConnection().selectMany(conditions.selectCondition(EmpDept.T_DEPARTMENT));
         final Entity department = departments.get(random.nextInt(departments.size()));
-        final Entity employee = client.getEntities().entity(EmpDept.T_EMPLOYEE);
+        final Entity employee = client.getDomain().entity(EmpDept.T_EMPLOYEE);
         employee.put(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
         employee.put(EmpDept.EMPLOYEE_NAME, TextUtil.createRandomString(5, 10));
         employee.put(EmpDept.EMPLOYEE_JOB, EmpDept.JOB_VALUES.get(random.nextInt(EmpDept.JOB_VALUES.size())).getItem());

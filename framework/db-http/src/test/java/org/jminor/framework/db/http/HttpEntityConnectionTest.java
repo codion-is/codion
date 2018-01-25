@@ -43,7 +43,7 @@ public final class HttpEntityConnectionTest {
 
   private final HttpEntityConnection connection = new HttpEntityConnection("TestDomain", HttpEntityConnectionProvider.HTTP_SERVER_HOST_NAME.get(),
           HttpEntityConnectionProvider.HTTP_SERVER_PORT.get(), UNIT_TEST_USER, "HttpEntityConnectionTest", UUID.randomUUID());
-  private final EntityConditions conditions = new EntityConditions(connection.getEntities());
+  private final EntityConditions conditions = new EntityConditions(connection.getDomain());
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -75,7 +75,7 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void insert() throws IOException, DatabaseException {
-    final Entity entity = connection.getEntities().entity(TestDomain.T_DEPARTMENT);
+    final Entity entity = connection.getDomain().entity(TestDomain.T_DEPARTMENT);
     entity.put(TestDomain.DEPARTMENT_ID, 33);
     entity.put(TestDomain.DEPARTMENT_NAME, "name");
     entity.put(TestDomain.DEPARTMENT_LOCATION, "loc");
@@ -87,7 +87,7 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void selectByKey() throws IOException, DatabaseException {
-    final Entity.Key key = connection.getEntities().key(TestDomain.T_DEPARTMENT);
+    final Entity.Key key = connection.getDomain().key(TestDomain.T_DEPARTMENT);
     key.put(TestDomain.DEPARTMENT_ID, 10);
     final List<Entity> depts = connection.selectMany(Collections.singletonList(key));
     assertEquals(1, depts.size());

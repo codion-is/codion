@@ -31,7 +31,7 @@ public interface RemoteEntityConnection extends Remote {
    * @return the underlying domain entities
    * @throws RemoteException in case of an exception
    */
-  Entities getEntities() throws RemoteException;
+  Entities getDomain() throws RemoteException;
 
   /**
    * @param methodLogger the method logger

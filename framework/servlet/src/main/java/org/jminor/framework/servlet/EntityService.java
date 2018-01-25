@@ -66,12 +66,12 @@ public final class EntityService extends Application {
   @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  @Path("getEntities")
-  public Response getEntities(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  @Path("getDomain")
+  public Response getDomain(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Util.serialize(connection.getEntities())).build();
+      return Response.ok(Util.serialize(connection.getDomain())).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);

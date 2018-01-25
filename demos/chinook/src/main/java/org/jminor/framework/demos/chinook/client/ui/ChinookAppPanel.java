@@ -53,23 +53,23 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPane
     */
   @Override
   protected void setupEntityPanelProviders() {
-    final Entities entities = getModel().getEntities();
-    final EntityPanelProvider trackProvider = new EntityPanelProvider(T_TRACK, entities.getCaption(T_TRACK));
+    final Entities domain = getModel().getDomain();
+    final EntityPanelProvider trackProvider = new EntityPanelProvider(T_TRACK, domain.getCaption(T_TRACK));
     trackProvider.setEditPanelClass(TrackEditPanel.class);
 
-    final EntityPanelProvider customerProvider = new EntityPanelProvider(T_CUSTOMER, entities.getCaption(T_CUSTOMER));
+    final EntityPanelProvider customerProvider = new EntityPanelProvider(T_CUSTOMER, domain.getCaption(T_CUSTOMER));
     customerProvider.setEditPanelClass(CustomerEditPanel.class);
     customerProvider.setTablePanelClass(CustomerTablePanel.class);
 
-    final EntityPanelProvider genreProvider = new EntityPanelProvider(T_GENRE, entities.getCaption(T_GENRE));
+    final EntityPanelProvider genreProvider = new EntityPanelProvider(T_GENRE, domain.getCaption(T_GENRE));
     genreProvider.setEditPanelClass(GenreEditPanel.class);
     genreProvider.addDetailPanelProvider(trackProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
 
-    final EntityPanelProvider mediaTypeProvider = new EntityPanelProvider(T_MEDIATYPE, entities.getCaption(T_MEDIATYPE));
+    final EntityPanelProvider mediaTypeProvider = new EntityPanelProvider(T_MEDIATYPE, domain.getCaption(T_MEDIATYPE));
     mediaTypeProvider.setEditPanelClass(MediaTypeEditPanel.class);
     mediaTypeProvider.addDetailPanelProvider(trackProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
 
-    final EntityPanelProvider employeeProvider = new EntityPanelProvider(T_EMPLOYEE, entities.getCaption(T_EMPLOYEE));
+    final EntityPanelProvider employeeProvider = new EntityPanelProvider(T_EMPLOYEE, domain.getCaption(T_EMPLOYEE));
     employeeProvider.setEditPanelClass(EmployeeEditPanel.class);
     employeeProvider.addDetailPanelProvider(customerProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
 
@@ -114,7 +114,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPane
     invoiceLineTablePanel.getJTable().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     invoiceLineTablePanel.setPreferredSize(new Dimension(360, 40));
     invoiceLineTablePanel.getTableModel().getColumnModel().setColumnVisible(
-            getModel().getEntities().getProperty(T_INVOICELINE, INVOICELINE_INVOICEID_FK), false);
+            getModel().getDomain().getProperty(T_INVOICELINE, INVOICELINE_INVOICEID_FK), false);
     invoiceLinePanel.setIncludeControlPanel(false);
     ((InvoiceLineEditPanel) invoiceLinePanel.getEditPanel()).setTableSearchFeld(invoiceLinePanel.getTablePanel().getSearchField());
     invoiceLinePanel.initializePanel();

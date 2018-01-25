@@ -64,7 +64,7 @@ public class Entities implements Serializable {
   private static final String ENTITIES_PARAM = "entities";
   private static final String PROPERTY_ID_PARAM = "propertyId";
 
-  private static final Map<String, Entities> DOMAIN_ENTITIES = new HashMap<>();
+  private static final Map<String, Entities> REGISTERED_DOMAINS = new HashMap<>();
 
   private final String domainId;
   private final Map<String, Entity.Definition> entityDefinitions = new LinkedHashMap<>();
@@ -88,11 +88,11 @@ public class Entities implements Serializable {
 
   /**
    * A copy constructor
-   * @param entities the entities to copy
+   * @param domain the domain to copy
    */
-  public Entities(final Entities entities) {
-    this.domainId = entities.domainId;
-    this.entityDefinitions.putAll(entities.entityDefinitions);
+  public Entities(final Entities domain) {
+    this.domainId = domain.domainId;
+    this.entityDefinitions.putAll(domain.entityDefinitions);
   }
 
   /**
@@ -915,12 +915,12 @@ public class Entities implements Serializable {
   }
 
   /**
-   * Registers this instance for lookup via {@link Entities#getDomainEntities(String)}
+   * Registers this instance for lookup via {@link Entities#getDomain(String)}
    * @return this Entities instance
    * @see #getDomainId()
    */
   public final Entities registerDomain() {
-    return setDomainEntities(domainId, this);
+    return registerDomain(domainId, this);
   }
 
   /**
@@ -1216,24 +1216,24 @@ public class Entities implements Serializable {
 
   /**
    * @param domainId the ID of the domain for which to retrieve the entity definitions
-   * @return the Entities instance registered for the given domainId
+   * @return the domain instance registered for the given domainId
    * @throws IllegalArgumentException in case the domain has not been registered
    * @see #registerDomain()
    */
-  public static Entities getDomainEntities(final String domainId) {
-    final Entities entities = DOMAIN_ENTITIES.get(domainId);
-    if (entities == null) {
+  public static Entities getDomain(final String domainId) {
+    final Entities domain = REGISTERED_DOMAINS.get(domainId);
+    if (domain == null) {
       throw new IllegalArgumentException("Domain '" + domainId + "' has not been registered");
     }
 
-    return entities;
+    return domain;
   }
 
   /**
    * @return all domains that have been registered via {@link #registerDomain()}
    */
   public static Collection<Entities> getAllDomains() {
-    return Collections.unmodifiableCollection(DOMAIN_ENTITIES.values());
+    return Collections.unmodifiableCollection(REGISTERED_DOMAINS.values());
   }
 
   /**
@@ -1355,12 +1355,12 @@ public class Entities implements Serializable {
     throw new IllegalArgumentException("Entity is missing a primary key: " + entityId);
   }
 
-  private Entities setDomainEntities(final String domainId, final Entities entities) {
-    synchronized (DOMAIN_ENTITIES) {
-      DOMAIN_ENTITIES.put(domainId, entities);
+  private Entities registerDomain(final String domainId, final Entities domain) {
+    synchronized (REGISTERED_DOMAINS) {
+      REGISTERED_DOMAINS.put(domainId, domain);
     }
 
-    return entities;
+    return domain;
   }
 
   private static Map<String, List<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
@@ -1846,7 +1846,7 @@ public class Entities implements Serializable {
    */
   private static final class EntityResultPacker implements ResultPacker<Entity> {
 
-    private final Entities entities;
+    private final Entities domain;
     private final String entityId;
     private final List<Property.ColumnProperty> properties;
     private final List<Property.TransientProperty> transientProperties;
@@ -1857,9 +1857,9 @@ public class Entities implements Serializable {
      * Instantiates a new EntityResultPacker.
      * @param entityId the ID of the entities this packer packs
      */
-    private EntityResultPacker(final Entities entities, final String entityId, final List<Property.ColumnProperty> columnProperties,
+    private EntityResultPacker(final Entities domain, final String entityId, final List<Property.ColumnProperty> columnProperties,
                                final List<Property.TransientProperty> transientProperties, final int propertyCount) {
-      this.entities = entities;
+      this.domain = domain;
       this.entityId = entityId;
       this.properties = columnProperties;
       this.transientProperties = transientProperties;
@@ -1888,7 +1888,7 @@ public class Entities implements Serializable {
         }
       }
 
-      return new DefaultEntity(entities, entityId, values);
+      return new DefaultEntity(domain, entityId, values);
     }
   }
 

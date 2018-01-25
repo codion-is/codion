@@ -78,7 +78,7 @@ final class HttpEntityConnection implements EntityConnection {
   private final BasicHttpClientConnectionManager connectionManager = new BasicHttpClientConnectionManager();
   private final CloseableHttpClient httpClient;
 
-  private final Entities entities;
+  private final Entities domain;
   private final EntityConditions conditions;
 
   private boolean closed;
@@ -98,14 +98,14 @@ final class HttpEntityConnection implements EntityConnection {
     this.user = Objects.requireNonNull(user, "user");
     this.baseurl =  Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + "/entities/";
     this.httpClient = createHttpClient(clientTypeId, clientId);
-    this.entities = initializeEntities();
-    this.conditions = new EntityConditions(this.entities);
+    this.domain = initializeDomain();
+    this.conditions = new EntityConditions(this.domain);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Entities getEntities() {
-    return entities;
+  public Entities getDomain() {
+    return domain;
   }
 
   /** {@inheritDoc} */
@@ -430,9 +430,9 @@ final class HttpEntityConnection implements EntityConnection {
     throw new UnsupportedOperationException();
   }
 
-  private Entities initializeEntities() {
+  private Entities initializeDomain() {
     try {
-      return handleResponse(execute(createHttpPost("getEntities")));
+      return handleResponse(execute(createHttpPost("getDomain")));
     }
     catch (final RuntimeException e) {
       throw e;

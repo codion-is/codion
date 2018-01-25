@@ -126,7 +126,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   public DefaultEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider) {
-    this(entityId, connectionProvider, connectionProvider.getEntities().getValidator(entityId));
+    this(entityId, connectionProvider, connectionProvider.getDomain().getValidator(entityId));
   }
 
   /**
@@ -136,19 +136,19 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    * @param validator the validator to use
    */
   public DefaultEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider, final Entity.Validator validator) {
-    super(connectionProvider.getEntities().entity(entityId), validator);
+    super(connectionProvider.getDomain().entity(entityId), validator);
     Objects.requireNonNull(entityId, "entityId");
     Objects.requireNonNull(connectionProvider, "connectionProvider");
     this.entityId = entityId;
     this.connectionProvider = connectionProvider;
-    this.readOnly = connectionProvider.getEntities().isReadOnly(entityId);
+    this.readOnly = connectionProvider.getDomain().isReadOnly(entityId);
     bindEventsInternal();
   }
 
   /** {@inheritDoc} */
   @Override
-  public Entities getEntities() {
-    return connectionProvider.getEntities();
+  public Entities getDomain() {
+    return connectionProvider.getDomain();
   }
 
   /** {@inheritDoc} */
@@ -244,7 +244,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public EventObserver<ValueChange<Property, Object>> getValueObserver(final String propertyId) {
-    return getValueObserver(getEntities().getProperty(entityId, propertyId));
+    return getValueObserver(getDomain().getProperty(entityId, propertyId));
   }
 
   /** {@inheritDoc} */
@@ -320,7 +320,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = getEntities()
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = getDomain()
             .getForeignKeyProperties(this.entityId, foreignKeyEntityId);
     for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
       final Entity currentForeignKeyValue = getForeignKeyValue(foreignKeyProperty.getPropertyId());
@@ -355,7 +355,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final Entity getForeignKeyValue(final String foreignKeyPropertyId) {
-    return (Entity) getValue(getEntities().getForeignKeyProperty(entityId, foreignKeyPropertyId));
+    return (Entity) getValue(getDomain().getForeignKeyProperty(entityId, foreignKeyPropertyId));
   }
 
   /** {@inheritDoc} */
@@ -381,7 +381,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   public final void setForeignKeyValues(final List<Entity> values) {
     final Map<String, Collection<Entity>> mapped = Entities.mapToEntityId(values);
     for (final Map.Entry<String, Collection<Entity>> entry : mapped.entrySet()) {
-      for (final Property.ForeignKeyProperty foreignKeyProperty : getEntities()
+      for (final Property.ForeignKeyProperty foreignKeyProperty : getDomain()
               .getForeignKeyProperties(entityId, entry.getKey())) {
         //todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?
         setValue(foreignKeyProperty, entry.getValue().iterator().next());
@@ -392,31 +392,31 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public Object getValue(final String propertyId) {
-    return getValue(getEntities().getProperty(entityId, propertyId));
+    return getValue(getDomain().getProperty(entityId, propertyId));
   }
 
   /** {@inheritDoc} */
   @Override
   public void setValue(final String propertyId, final Object value) {
-    setValue(getEntities().getProperty(entityId, propertyId), value);
+    setValue(getDomain().getProperty(entityId, propertyId), value);
   }
 
   /** {@inheritDoc} */
   @Override
   public Object removeValue(final String propertyId) {
-    return removeValue(getEntities().getProperty(entityId, propertyId));
+    return removeValue(getDomain().getProperty(entityId, propertyId));
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isValueNull(final String propertyId) {
-    return isValueNull(getEntities().getProperty(entityId, propertyId));
+    return isValueNull(getDomain().getProperty(entityId, propertyId));
   }
 
   /** {@inheritDoc} */
   @Override
   public final List<Entity> insert() throws DatabaseException, ValidationException {
-    final boolean includePrimaryKeyValues = !getEntities().isPrimaryKeyAutoGenerated(entityId);
+    final boolean includePrimaryKeyValues = !getDomain().isPrimaryKeyAutoGenerated(entityId);
     final Entity toInsert = getEntityCopy(includePrimaryKeyValues);
     toInsert.saveAll();
     final List<Entity> insertedEntities = insertEntities(Collections.singletonList(toInsert));
@@ -549,13 +549,13 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final boolean containsLookupModel(final String foreignKeyPropertyId) {
-    return entityLookupModels.containsKey(getEntities().getForeignKeyProperty(entityId, foreignKeyPropertyId));
+    return entityLookupModels.containsKey(getDomain().getForeignKeyProperty(entityId, foreignKeyPropertyId));
   }
 
   /** {@inheritDoc} */
   @Override
   public EntityLookupModel createForeignKeyLookupModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    final Collection<Property.ColumnProperty> searchProperties = getEntities()
+    final Collection<Property.ColumnProperty> searchProperties = getDomain()
             .getSearchProperties(foreignKeyProperty.getForeignEntityId());
     if (searchProperties.isEmpty()) {
       throw new IllegalStateException("No search properties defined for entity: " + foreignKeyProperty.getForeignEntityId());
@@ -571,7 +571,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   @Override
   public final EntityLookupModel getForeignKeyLookupModel(final String foreignKeyPropertyId) {
     Objects.requireNonNull(foreignKeyPropertyId, FOREIGN_KEY_PROPERTY_ID);
-    return getForeignKeyLookupModel(getEntities().getForeignKeyProperty(entityId, foreignKeyPropertyId));
+    return getForeignKeyLookupModel(getDomain().getForeignKeyProperty(entityId, foreignKeyPropertyId));
   }
 
   /** {@inheritDoc} */
@@ -585,7 +585,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final Entity getDefaultEntity() {
-    return getEntities().entity(entityId, defaultValueProvider);
+    return getDomain().entity(entityId, defaultValueProvider);
   }
 
   /** {@inheritDoc} */
@@ -598,12 +598,12 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   @Override
   public final boolean containsUnsavedData() {
     if (isEntityNew()) {
-      for (final Property.ColumnProperty property : connectionProvider.getEntities().getColumnProperties(entityId)) {
+      for (final Property.ColumnProperty property : getDomain().getColumnProperties(entityId)) {
         if (!property.isForeignKeyProperty() && valueModified(property)) {
           return true;
         }
       }
-      for (final Property.ForeignKeyProperty property : getEntities().getForeignKeyProperties(entityId)) {
+      for (final Property.ForeignKeyProperty property : getDomain().getForeignKeyProperties(entityId)) {
         if (valueModified(property)) {
           return true;
         }
@@ -619,25 +619,25 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public void removeValueSetListener(final String propertyId, final EventInfoListener listener) {
-    removeValueSetListener(getEntities().getProperty(entityId, propertyId), listener);
+    removeValueSetListener(getDomain().getProperty(entityId, propertyId), listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public void addValueSetListener(final String propertyId, final EventInfoListener<ValueChange<Property, Object>> listener) {
-    addValueSetListener(getEntities().getProperty(entityId, propertyId), listener);
+    addValueSetListener(getDomain().getProperty(entityId, propertyId), listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public void removeValueListener(final String propertyId, final EventInfoListener listener) {
-    removeValueListener(getEntities().getProperty(entityId, propertyId), listener);
+    removeValueListener(getDomain().getProperty(entityId, propertyId), listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public void addValueListener(final String propertyId, final EventInfoListener<ValueChange<Property, Object>> listener) {
-    addValueListener(getEntities().getProperty(entityId, propertyId), listener);
+    addValueListener(getDomain().getProperty(entityId, propertyId), listener);
   }
 
   /** {@inheritDoc} */

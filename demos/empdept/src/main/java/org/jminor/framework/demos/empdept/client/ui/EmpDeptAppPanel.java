@@ -35,7 +35,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   protected void setupEntityPanelProviders() {
     final EmployeeModelProvider employeeModelProvider = new EmployeeModelProvider();
     final EmployeePanelProvider employeePanelProvider = new EmployeePanelProvider(employeeModelProvider,
-            getModel().getEntities().getCaption(EmpDept.T_EMPLOYEE));
+            getModel().getDomain().getCaption(EmpDept.T_EMPLOYEE));
     employeePanelProvider.setEditPanelClass(EmployeeEditPanel.class);
 
     final SwingEntityModelProvider departmentModelProvider = new SwingEntityModelProvider(EmpDept.T_DEPARTMENT) {
@@ -46,7 +46,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     };
     departmentModelProvider.addDetailModelProvider(employeeModelProvider);
     final EntityPanelProvider departmentPanelProvider = new EntityPanelProvider(departmentModelProvider,
-            getModel().getEntities().getCaption(EmpDept.T_DEPARTMENT));
+            getModel().getDomain().getCaption(EmpDept.T_DEPARTMENT));
     departmentPanelProvider.setEditPanelClass(DepartmentEditPanel.class);
     departmentPanelProvider.setTablePanelClass(DepartmentTablePanel.class);
     departmentPanelProvider.addDetailPanelProvider(employeePanelProvider);
@@ -57,7 +57,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   public void importJSON() throws Exception {
     final File file = UiUtil.selectFile(this, null);
     UiUtil.displayInDialog(this, EntityTablePanel.createStaticEntityTablePanel(
-            new EntityJSONParser(getModel().getEntities()).deserializeEntities(
+            new EntityJSONParser(getModel().getDomain()).deserializeEntities(
                     TextUtil.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider()), "Import");
   }
 

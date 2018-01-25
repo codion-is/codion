@@ -139,7 +139,7 @@ public final class LocalEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public Entities getEntities() {
+  public Entities getDomain() {
     return new Entities(domain);
   }
 
@@ -1286,10 +1286,10 @@ public final class LocalEntityConnection implements EntityConnection {
    */
   static final class EntityArgumentStringProvider extends MethodLogger.DefaultArgumentStringProvider {
 
-    private final Entities entities;
+    private final Entities domain;
 
-    EntityArgumentStringProvider(final Entities entities) {
-      this.entities = entities;
+    EntityArgumentStringProvider(final Entities domain) {
+      this.domain = domain;
     }
 
     @Override
@@ -1339,7 +1339,7 @@ public final class LocalEntityConnection implements EntityConnection {
     private String getEntityParameterString(final Entity entity) {
       final StringBuilder builder = new StringBuilder();
       builder.append(entity.getEntityId()).append(" {");
-      final List<Property.ColumnProperty> columnProperties = entities.getColumnProperties(entity.getEntityId(), true,
+      final List<Property.ColumnProperty> columnProperties = domain.getColumnProperties(entity.getEntityId(), true,
               true, true);
       for (int i = 0; i < columnProperties.size(); i++) {
         final Property.ColumnProperty property = columnProperties.get(i);

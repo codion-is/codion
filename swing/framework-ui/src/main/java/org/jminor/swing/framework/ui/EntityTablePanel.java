@@ -459,7 +459,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
-    getEntityTableModel().getConnectionProvider().getEntities().getUpdatableProperties(
+    getEntityTableModel().getConnectionProvider().getDomain().getUpdatableProperties(
             getEntityTableModel().getEntityId()).forEach(property -> {
       if (includeUpdateSelectedProperty(property)) {
         final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
@@ -631,7 +631,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public final void exportSelected() {
     try {
       final List<Entity> selected = getEntityTableModel().getSelectionModel().getSelectedItems();
-      FileUtil.writeFile(getEntityTableModel().getConnectionProvider().getEntities().getEntitySerializer()
+      FileUtil.writeFile(getEntityTableModel().getConnectionProvider().getDomain().getEntitySerializer()
               .serialize(selected), UiUtil.selectFileToSave(this, null, null));
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
     }
@@ -1199,7 +1199,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   protected final InputProvider createEntityInputProvider(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final Entity currentValue,
                                                           final EntityEditModel editModel) {
-    if (getEntityTableModel().getConnectionProvider().getEntities().isSmallDataset(foreignKeyProperty.getForeignEntityId())) {
+    if (getEntityTableModel().getConnectionProvider().getDomain().isSmallDataset(foreignKeyProperty.getForeignEntityId())) {
       return new EntityComboProvider(((SwingEntityEditModel) editModel).createForeignKeyComboBoxModel(foreignKeyProperty), currentValue);
     }
     else {
@@ -1292,7 +1292,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     setControl(CLEAR, getClearControl());
     setControl(REFRESH, getRefreshControl());
     setControl(SELECT_COLUMNS, getSelectColumnsControl());
-    if (getEntityTableModel().getConnectionProvider().getEntities().entitySerializerAvailable()) {
+    if (getEntityTableModel().getConnectionProvider().getDomain().entitySerializerAvailable()) {
       setControl(EXPORT_JSON, getExportControl());
     }
     setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
@@ -1474,7 +1474,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     for (final Map.Entry<String, Collection<Entity>> entry : dependencies.entrySet()) {
       final Collection<Entity> dependantEntities = entry.getValue();
       if (!dependantEntities.isEmpty()) {
-        tabPane.addTab(connectionProvider.getEntities().getCaption(entry.getKey()), createStaticEntityTablePanel(dependantEntities, connectionProvider));
+        tabPane.addTab(connectionProvider.getDomain().getCaption(entry.getKey()), createStaticEntityTablePanel(dependantEntities, connectionProvider));
       }
     }
     panel.add(tabPane, BorderLayout.CENTER);

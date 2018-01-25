@@ -82,7 +82,7 @@ public interface EntityConnectionProvider {
   /**
    * @return the underlying domain entities
    */
-  Entities getEntities();
+  Entities getDomain();
 
   /**
    * @return a EntityConditions instance based on the domain entities

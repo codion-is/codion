@@ -19,7 +19,7 @@ public class FXConditionModelProvider extends DefaultPropertyConditionModelProvi
   @Override
   public PropertyConditionModel<Property.ForeignKeyProperty> initializeForeignKeyConditionModel(
           final Property.ForeignKeyProperty foreignKeyProperty, final EntityConnectionProvider connectionProvider) {
-    if (connectionProvider.getEntities().isSmallDataset(foreignKeyProperty.getForeignEntityId())) {
+    if (connectionProvider.getDomain().isSmallDataset(foreignKeyProperty.getForeignEntityId())) {
       //todo comboBoxModel.setNullValue(Entities.createToStringEntity(property.getForeignEntityId(), ""));
       return new FXForeignKeyConditionListModel(connectionProvider.getConditions(), foreignKeyProperty,
               new ObservableEntityList(foreignKeyProperty.getForeignEntityId(), connectionProvider));

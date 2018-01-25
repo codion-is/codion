@@ -144,7 +144,7 @@ public class DefaultEntityConnectionServerTest {
     assertEquals(1, users.size());
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
-    final EntityConditions entityConditions = new EntityConditions(remoteConnectionTwo.getEntities());
+    final EntityConditions entityConditions = new EntityConditions(remoteConnectionTwo.getDomain());
     final EntitySelectCondition selectCondition = entityConditions.selectCondition(TestDomain.T_EMP)
             .setOrderBy(Entities.orderBy().ascending(TestDomain.EMP_NAME));
     remoteConnectionTwo.selectMany(selectCondition);
@@ -154,7 +154,7 @@ public class DefaultEntityConnectionServerTest {
     final ClientLog log = admin.getClientLog(connectionRequestTwo.getClientId());
 
     final MethodLogger.Entry entry = log.getEntries().get(0);
-    assertEquals("getEntities", entry.getMethod());
+    assertEquals("getDomain", entry.getMethod());
     assertTrue(entry.getDuration() >= 0);
 
     admin.removeConnections(true);

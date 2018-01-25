@@ -51,7 +51,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   /**
    * @return the underlying domain entities
    */
-  Entities getEntities();
+  Entities getDomain();
 
   /**
    * Returns the {@link EntityEditModel} associated with this table model

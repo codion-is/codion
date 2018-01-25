@@ -32,13 +32,13 @@ public final class EntityConditions {
   private static final String ENTITY_ID_PARAM = "entityId";
   private static final String CONDITION_TYPE_PARAM = "conditionType";
 
-  private final Entities entities;
+  private final Entities domain;
 
   /**
-   * @param entities the domain entities
+   * @param domain the domain entities
    */
-  public EntityConditions(final Entities entities) {
-    this.entities = Objects.requireNonNull(entities, "entities");
+  public EntityConditions(final Entities domain) {
+    this.domain = Objects.requireNonNull(domain, "domain");
   }
 
   /**
@@ -55,7 +55,7 @@ public final class EntityConditions {
    */
   public EntitySelectCondition selectCondition(final List<Entity.Key> keys) {
     checkKeysParameter(keys);
-    return new DefaultEntitySelectCondition(entities, keys.get(0).getEntityId(), createKeyCondition(keys));
+    return new DefaultEntitySelectCondition(domain, keys.get(0).getEntityId(), createKeyCondition(keys));
   }
 
   /**
@@ -80,7 +80,7 @@ public final class EntityConditions {
    */
   public EntitySelectCondition selectCondition(final String entityId, final String propertyId,
                                                final Condition.Type conditionType, final int fetchCount, final Object value) {
-    return new DefaultEntitySelectCondition(entities, entityId, propertyCondition(entityId, propertyId, conditionType, value),
+    return new DefaultEntitySelectCondition(domain, entityId, propertyCondition(entityId, propertyId, conditionType, value),
             fetchCount);
   }
 
@@ -92,7 +92,7 @@ public final class EntityConditions {
    */
   public EntitySelectCondition selectCondition(final String entityId, final Condition<Property.ColumnProperty> propertyCondition,
                                                final int fetchCount) {
-    return new DefaultEntitySelectCondition(entities, entityId, propertyCondition, fetchCount);
+    return new DefaultEntitySelectCondition(domain, entityId, propertyCondition, fetchCount);
   }
 
   /**
@@ -100,7 +100,7 @@ public final class EntityConditions {
    * @return a select condition encompassing all entities of the given type
    */
   public EntitySelectCondition selectCondition(final String entityId) {
-    return new DefaultEntitySelectCondition(entities, entityId);
+    return new DefaultEntitySelectCondition(domain, entityId);
   }
 
   /**
@@ -109,7 +109,7 @@ public final class EntityConditions {
    * @return a select condition encompassing all entities of the given type
    */
   public EntitySelectCondition selectCondition(final String entityId, final int fetchCount) {
-    return new DefaultEntitySelectCondition(entities, entityId, null, fetchCount);
+    return new DefaultEntitySelectCondition(domain, entityId, null, fetchCount);
   }
 
   /**
@@ -118,7 +118,7 @@ public final class EntityConditions {
    * @return a select condition based on the given column condition
    */
   public EntitySelectCondition selectCondition(final String entityId, final Condition<Property.ColumnProperty> propertyCondition) {
-    return new DefaultEntitySelectCondition(entities, entityId, propertyCondition);
+    return new DefaultEntitySelectCondition(domain, entityId, propertyCondition);
   }
 
   /**
@@ -194,7 +194,7 @@ public final class EntityConditions {
     Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
     Objects.requireNonNull(propertyId, "propertyId");
     Objects.requireNonNull(conditionType, CONDITION_TYPE_PARAM);
-    final Property property = entities.getProperty(entityId, propertyId);
+    final Property property = domain.getProperty(entityId, propertyId);
     if (property instanceof Property.ForeignKeyProperty) {
       if (value instanceof Collection) {
         return foreignKeyCondition((Property.ForeignKeyProperty) property, conditionType, (Collection) value);
@@ -266,7 +266,7 @@ public final class EntityConditions {
    */
   public Condition<Property.ColumnProperty> foreignKeyCondition(final String entityId, final String fkPropertyId,
                                                                 final Condition.Type conditionType, final Collection values) {
-    return foreignKeyCondition(entities.getForeignKeyProperty(entityId, fkPropertyId), conditionType, values);
+    return foreignKeyCondition(domain.getForeignKeyProperty(entityId, fkPropertyId), conditionType, values);
   }
 
   /**
@@ -304,7 +304,7 @@ public final class EntityConditions {
     final List<Entity.Key> keys = getEntityKeys(values);
     if (foreignKeyProperty.isCompositeKey()) {
       return createCompositeKeyCondition(foreignKeyProperty.getProperties(),
-              entities.getForeignProperties(foreignKeyProperty), conditionType, keys);
+              domain.getForeignProperties(foreignKeyProperty), conditionType, keys);
     }
 
     if (keys.size() == 1) {
@@ -475,7 +475,7 @@ public final class EntityConditions {
 
     private static final long serialVersionUID = 1;
 
-    private Entities entities;
+    private Entities domain;
 
     private EntityCondition condition;
     private HashMap<String, Integer> foreignKeyFetchDepthLimits;
@@ -488,34 +488,37 @@ public final class EntityConditions {
 
     /**
      * Instantiates a new {@link DefaultEntitySelectCondition}, which includes all the underlying entities
+     * @param domain the domain model
      * @param entityId the ID of the entity to select
      */
-    private DefaultEntitySelectCondition(final Entities entities, final String entityId) {
-      this(entities, entityId, null);
+    private DefaultEntitySelectCondition(final Entities domain, final String entityId) {
+      this(domain, entityId, null);
     }
 
     /**
      * Instantiates a new {@link DefaultEntitySelectCondition}
+     * @param domain the domain model
      * @param entityId the ID of the entity to select
      * @param condition the Condition object
      * @see PropertyCondition
      * @see EntityKeyCondition
      */
-    private DefaultEntitySelectCondition(final Entities entities, final String entityId, final Condition<Property.ColumnProperty> condition) {
-      this(entities, entityId, condition, -1);
+    private DefaultEntitySelectCondition(final Entities domain, final String entityId, final Condition<Property.ColumnProperty> condition) {
+      this(domain, entityId, condition, -1);
     }
 
     /**
      * Instantiates a new {@link DefaultEntitySelectCondition}
+     * @param domain the domain model
      * @param entityId the ID of the entity to select
      * @param condition the Condition object
      * @param fetchCount the maximum number of records to fetch from the result
      * @see PropertyCondition
      * @see EntityKeyCondition
      */
-    private DefaultEntitySelectCondition(final Entities entities, final String entityId,
+    private DefaultEntitySelectCondition(final Entities domain, final String entityId,
                                          final Condition<Property.ColumnProperty> condition, final int fetchCount) {
-      this.entities = Objects.requireNonNull(entities);
+      this.domain = Objects.requireNonNull(domain);
       this.condition = new DefaultEntityCondition(entityId, condition);
       this.fetchCount = fetchCount;
     }
@@ -598,12 +601,12 @@ public final class EntityConditions {
         return foreignKeyFetchDepthLimits.get(foreignKeyPropertyId);
       }
 
-      return entities.getForeignKeyProperty(getEntityId(), foreignKeyPropertyId).getFetchDepth();
+      return domain.getForeignKeyProperty(getEntityId(), foreignKeyPropertyId).getFetchDepth();
     }
 
     @Override
     public EntitySelectCondition setForeignKeyFetchDepthLimit(final int fetchDepthLimit) {
-      final List<Property.ForeignKeyProperty > properties = entities.getForeignKeyProperties(getEntityId());
+      final List<Property.ForeignKeyProperty > properties = domain.getForeignKeyProperties(getEntityId());
       for (int i = 0; i < properties.size(); i++) {
         setForeignKeyFetchDepthLimit(properties.get(i).getPropertyId(), fetchDepthLimit);
       }
@@ -623,7 +626,7 @@ public final class EntityConditions {
     }
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
-      stream.writeObject(entities.getDomainId());
+      stream.writeObject(domain.getDomainId());
       stream.writeObject(orderBy);
       stream.writeInt(fetchCount);
       stream.writeBoolean(forUpdate);
@@ -642,7 +645,7 @@ public final class EntityConditions {
       condition = (EntityCondition) stream.readObject();
       limit = stream.readInt();
       offset = stream.readInt();
-      entities = Entities.getDomainEntities(domainId);
+      domain = Entities.getDomain(domainId);
     }
   }
 
@@ -846,7 +849,7 @@ public final class EntityConditions {
       final String domainId = (String) stream.readObject();
       final String entityId = (String) stream.readObject();
       final String propertyId = (String) stream.readObject();
-      property = Entities.getDomainEntities(domainId).getColumnProperty(entityId, propertyId);
+      property = Entities.getDomain(domainId).getColumnProperty(entityId, propertyId);
       conditionType = (Type) stream.readObject();
       isNullCondition = stream.readBoolean();
       caseSensitive = stream.readBoolean();

@@ -79,7 +79,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + conditionModel.getEntityId()
               + ", tableModel: " + entityId);
     }
-    if (connectionProvider.getEntities().getVisibleProperties(entityId).isEmpty()) {
+    if (connectionProvider.getDomain().getVisibleProperties(entityId).isEmpty()) {
       throw new IllegalStateException("No visible properties defined for entity: " + entityId);
     }
     this.conditionModel = conditionModel;
@@ -88,8 +88,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public Entities getEntities() {
-    return getConnectionProvider().getEntities();
+  public Entities getDomain() {
+    return getConnectionProvider().getDomain();
   }
 
   /** {@inheritDoc} */
@@ -177,7 +177,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = getEntities().getForeignKeyProperties(getEntityId(), foreignKeyEntityId);
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = getDomain().getForeignKeyProperties(getEntityId(), foreignKeyEntityId);
     for (final Entity entity : getAllItems()) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
@@ -472,7 +472,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * @see Entities#getOrderBy(String)
    */
   protected Entity.OrderBy getOrderBy() {
-    return getEntities().getOrderBy(getEntityId());
+    return getDomain().getOrderBy(getEntityId());
   }
 
   /**

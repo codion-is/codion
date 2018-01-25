@@ -52,34 +52,34 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
-   * @param entities the domain model entities
+   * @param domain the domain model entities
    * @param user the user
    */
-  public LocalEntityConnectionProvider(final Entities entities, final User user) {
-    this(entities, user, Databases.getInstance());
+  public LocalEntityConnectionProvider(final Entities domain, final User user) {
+    this(domain, user, Databases.getInstance());
   }
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
-   * @param entities the domain model entities
+   * @param domain the domain model entities
    * @param user the user
    * @param database the Database implementation
    */
-  public LocalEntityConnectionProvider(final Entities entities, final User user, final Database database) {
-    this(entities, user, database, EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get());
+  public LocalEntityConnectionProvider(final Entities domain, final User user, final Database database) {
+    this(domain, user, database, EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get());
   }
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
-   * @param entities the domain model entities
+   * @param domain the domain model entities
    * @param user the user
    * @param database the Database implementation
    * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
    */
-  public LocalEntityConnectionProvider(final Entities entities, final User user, final Database database,
+  public LocalEntityConnectionProvider(final Entities domain, final User user, final Database database,
                                        final boolean scheduleValidityCheck) {
     super(user, scheduleValidityCheck);
-    this.domain = Objects.requireNonNull(entities, "entities");
+    this.domain = Objects.requireNonNull(domain, "domain");
     this.database = Objects.requireNonNull(database, "database");
     this.connectionProperties.put(Database.USER_PROPERTY, user.getUsername());
     this.connectionProperties.put(Database.PASSWORD_PROPERTY, String.valueOf(user.getPassword()));
@@ -112,7 +112,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   /** {@inheritDoc} */
   @Override
-  protected Entities initializeEntities() {
+  protected Entities initializeDomain() {
     return domain;
   }
 
@@ -121,8 +121,8 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      return Util.initializeProxy(EntityConnection.class, new LocalConnectionHandler(getEntities(),
-              LocalEntityConnections.createConnection(getEntities(), database, getUser())));
+      return Util.initializeProxy(EntityConnection.class, new LocalConnectionHandler(getDomain(),
+              LocalEntityConnections.createConnection(getDomain(), database, getUser())));
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
@@ -142,9 +142,9 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     private final EntityConnection connection;
     private final MethodLogger methodLogger;
 
-    private LocalConnectionHandler(final Entities entities, final EntityConnection connection) {
+    private LocalConnectionHandler(final Entities domain, final EntityConnection connection) {
       this.connection = connection;
-      this.methodLogger = LocalEntityConnections.createLogger(entities);
+      this.methodLogger = LocalEntityConnections.createLogger(domain);
       this.connection.setMethodLogger(methodLogger);
       this.methodLogger.setEnabled(true);
     }

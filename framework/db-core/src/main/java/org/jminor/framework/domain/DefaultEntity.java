@@ -44,7 +44,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /**
    * The domain entities
    */
-  private Entities entities;
+  private Entities domain;
 
   /**
    * Keep a reference to this frequently referenced object
@@ -60,8 +60,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * Instantiates a new DefaultEntity
    * @param definition the definition of the entity type
    */
-  DefaultEntity(final Entities entities, final String entityId) {
-    this(entities, entityId, null, null);
+  DefaultEntity(final Entities domain, final String entityId) {
+    this(domain, entityId, null, null);
   }
 
   /**
@@ -69,8 +69,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @param definition the definition of the entity type
    * @param key the primary key
    */
-  DefaultEntity(final Entities entities, final String entityId, final Key key) {
-    this(entities, entityId, null, null);
+  DefaultEntity(final Entities domain, final String entityId, final Key key) {
+    this(domain, entityId, null, null);
     final List<Property.ColumnProperty> properties = key.getProperties();
     for (int i = 0; i < properties.size(); i++) {
       final Property.ColumnProperty property = properties.get(i);
@@ -84,8 +84,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @param definition the definition of the entity type
    * @param values the initial values
    */
-  DefaultEntity(final Entities entities, final String entityId, final Map<Property, Object> values) {
-    this(entities, entityId, values, null);
+  DefaultEntity(final Entities domain, final String entityId, final Map<Property, Object> values) {
+    this(domain, entityId, values, null);
   }
 
   /**
@@ -94,11 +94,11 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @param values the initial values
    * @param originalValues the original values, may be null
    */
-  DefaultEntity(final Entities entities, final String entityId, final Map<Property, Object> values,
+  DefaultEntity(final Entities domain, final String entityId, final Map<Property, Object> values,
                 final Map<Property, Object> originalValues) {
     super(values, originalValues);
-    this.entities = Objects.requireNonNull(entities, "entities");
-    this.definition = entities.getDefinition(entityId);
+    this.domain = Objects.requireNonNull(domain, "domain");
+    this.definition = domain.getDefinition(entityId);
   }
 
   /** {@inheritDoc} */
@@ -274,7 +274,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     if (value == null) {//possibly not loaded
       final Entity.Key referencedKey = getReferencedKey(foreignKeyProperty);
       if (referencedKey != null) {
-        return new DefaultEntity(entities, referencedKey.getEntityId(), referencedKey);
+        return new DefaultEntity(domain, referencedKey.getEntityId(), referencedKey);
       }
     }
 
@@ -284,7 +284,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /** {@inheritDoc} */
   @Override
   public boolean isLoaded(final String foreignKeyPropertyId) {
-    return super.get(entities.getForeignKeyProperty(getEntityId(), foreignKeyPropertyId)) != null;
+    return super.get(domain.getForeignKeyProperty(getEntityId(), foreignKeyPropertyId)) != null;
   }
 
   /** {@inheritDoc} */
@@ -483,7 +483,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    */
   @Override
   public Entity newInstance() {
-    return new DefaultEntity(entities, definition.getEntityId());
+    return new DefaultEntity(domain, definition.getEntityId());
   }
 
   /** {@inheritDoc} */
@@ -526,7 +526,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     if (properties.size() == 1) {
       return isValueNull(properties.get(0));
     }
-    final List<Property.ColumnProperty> foreignProperties = entities.getForeignProperties(foreignKeyProperty);
+    final List<Property.ColumnProperty> foreignProperties = domain.getForeignProperties(foreignKeyProperty);
     for (int i = 0; i < properties.size(); i++) {
       if (!foreignProperties.get(i).isNullable() && isValueNull(properties.get(i))) {
         return true;
@@ -598,7 +598,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
     referencedKeyCache = null;
     final List<Property.ColumnProperty> properties = foreignKeyProperty.getProperties();
-    final List<Property.ColumnProperty> foreignProperties = entities.getForeignProperties(foreignKeyProperty);
+    final List<Property.ColumnProperty> foreignProperties = domain.getForeignProperties(foreignKeyProperty);
     if (properties.size() > 1) {
       setCompositeForeignKeyValues(referencedEntity, properties, foreignProperties);
     }
@@ -649,7 +649,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   private Key initializeReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty) {
     final List<Property.ColumnProperty> properties = foreignKeyProperty.getProperties();
     if (foreignKeyProperty.isCompositeKey()) {
-      final List<Property.ColumnProperty> foreignProperties = entities.getForeignProperties(foreignKeyProperty);
+      final List<Property.ColumnProperty> foreignProperties = domain.getForeignProperties(foreignKeyProperty);
       final Map<Property.ColumnProperty, Object> values = new HashMap<>(properties.size());
       for (int i = 0; i < properties.size(); i++) {
         final Property.ColumnProperty foreignProperty = foreignProperties.get(i);
@@ -662,7 +662,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
         }
       }
 
-      return new DefaultKey(entities, entities.getDefinition(foreignKeyProperty.getForeignEntityId()), values);
+      return new DefaultKey(domain, domain.getDefinition(foreignKeyProperty.getForeignEntityId()), values);
     }
     else {
       final Object value = super.get(properties.get(0));
@@ -670,7 +670,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
         return null;
       }
 
-      return new DefaultKey(entities, entities.getDefinition(foreignKeyProperty.getForeignEntityId()), value);
+      return new DefaultKey(domain, domain.getDefinition(foreignKeyProperty.getForeignEntityId()), value);
     }
   }
 
@@ -703,10 +703,10 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
         values.put(property, originalValues ? getOriginal(property) : super.get(property));
       }
 
-      return new DefaultKey(entities, definition, values);
+      return new DefaultKey(domain, definition, values);
     }
     else {
-      return new DefaultKey(entities, definition, originalValues ? getOriginal(primaryKeyProperties.get(0)) : super.get(primaryKeyProperties.get(0)));
+      return new DefaultKey(domain, definition, originalValues ? getOriginal(primaryKeyProperties.get(0)) : super.get(primaryKeyProperties.get(0)));
     }
   }
 
@@ -776,8 +776,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     final String domainId = (String) stream.readObject();
     final String entityId = (String) stream.readObject();
     final boolean isModified = stream.readBoolean();
-    entities = Entities.getDomainEntities(domainId);
-    definition = entities.getDefinition(entityId);
+    domain = Entities.getDomain(domainId);
+    definition = domain.getDefinition(entityId);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityId);
     }
@@ -851,7 +851,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     /**
      * The domain entities
      */
-    private Entities entities;
+    private Entities domain;
 
     /**
      * true if this key consists of a single integer value
@@ -884,8 +884,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
      * @param value the value
      * @throws IllegalArgumentException in case this key is a composite key
      */
-    DefaultKey(final Entities entities, final Definition definition, final Object value) {
-      this(entities, definition, createSingleValueMap(definition.getPrimaryKeyProperties().get(0), value));
+    DefaultKey(final Entities domain, final Definition definition, final Object value) {
+      this(domain, definition, createSingleValueMap(definition.getPrimaryKeyProperties().get(0), value));
       if (compositeKey) {
         throw new IllegalArgumentException(definition.getEntityId() + " has a composite primary key");
       }
@@ -895,9 +895,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
      * Instantiates a new Key for the given entity type
      * @param definition the entity definition
      */
-    DefaultKey(final Entities entities, final Definition definition, final Map<Property.ColumnProperty, Object> values) {
+    DefaultKey(final Entities domain, final Definition definition, final Map<Property.ColumnProperty, Object> values) {
       super(values, null);
-      this.entities = entities;
+      this.domain = domain;
       this.definition = definition;
       final List<Property.ColumnProperty> properties = definition.getPrimaryKeyProperties();
       this.compositeKey = properties.size() > 1;
@@ -926,7 +926,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
     @Override
     public Object put(final String propertyId, final Object value) {
-      return put(entities.getColumnProperty(getEntityId(), propertyId), value);
+      return put(domain.getColumnProperty(getEntityId(), propertyId), value);
     }
 
     @Override
@@ -938,7 +938,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
     @Override
     public Object get(final String propertyId) {
-      return super.get(entities.getColumnProperty(getEntityId(), propertyId));
+      return super.get(domain.getColumnProperty(getEntityId(), propertyId));
     }
 
     @Override
@@ -958,7 +958,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
     @Override
     public ValueMap<Property.ColumnProperty, Object> newInstance() {
-      return new DefaultKey(entities, definition, (Map) null);
+      return new DefaultKey(domain, definition, (Map) null);
     }
 
     @Override
@@ -1026,7 +1026,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
     @Override
     public boolean isValueNull(final String propertyId) {
-      return super.isValueNull(entities.getColumnProperty(getEntityId(), propertyId));
+      return super.isValueNull(domain.getColumnProperty(getEntityId(), propertyId));
     }
 
     @Override
@@ -1116,8 +1116,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
       final String domainId = (String) stream.readObject();
       final String entityId = (String) stream.readObject();
-      entities = Entities.getDomainEntities(domainId);
-      definition = entities.getDefinition(entityId);
+      domain = Entities.getDomain(domainId);
+      definition = domain.getDefinition(entityId);
       if (definition == null) {
         throw new IllegalArgumentException("Undefined entity: " + entityId);
       }

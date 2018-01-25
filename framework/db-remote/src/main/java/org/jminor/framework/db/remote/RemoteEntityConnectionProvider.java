@@ -134,9 +134,9 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
 
   /** {@inheritDoc} */
   @Override
-  protected Entities initializeEntities() {
+  protected Entities initializeDomain() {
     try {
-      return getConnection().getEntities().registerDomain();
+      return getConnection().getDomain().registerDomain();
     }
     catch (final Exception e) {
       throw new RuntimeException(e);

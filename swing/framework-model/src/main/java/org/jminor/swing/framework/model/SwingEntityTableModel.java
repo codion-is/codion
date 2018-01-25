@@ -130,7 +130,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @param connectionProvider the db provider
    */
   public SwingEntityTableModel(final String entityId, final EntityConnectionProvider connectionProvider) {
-    this(entityId, connectionProvider, new DefaultEntityTableSortModel(connectionProvider.getEntities(), entityId),
+    this(entityId, connectionProvider, new DefaultEntityTableSortModel(connectionProvider.getDomain(), entityId),
             new DefaultEntityTableConditionModel(entityId, connectionProvider,
                     new DefaultPropertyFilterModelProvider(), new SwingPropertyConditionModelProvider()));
   }
@@ -161,8 +161,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public Entities getEntities() {
-    return connectionProvider.getEntities();
+  public Entities getDomain() {
+    return connectionProvider.getDomain();
   }
 
   /** {@inheritDoc} */
@@ -319,7 +319,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final int getPropertyColumnIndex(final String propertyId) {
-    return getColumnModel().getColumnIndex(getEntities().getProperty(getEntityId(), propertyId));
+    return getColumnModel().getColumnIndex(getDomain().getProperty(getEntityId(), propertyId));
   }
 
   /** {@inheritDoc} */
@@ -345,7 +345,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @see TableSortModel#setSortingDirective(Object, SortingDirective, boolean)
    */
   public void setSortingDirective(final String propertyId, final SortingDirective directive, final boolean addColumnToSort) {
-    getSortModel().setSortingDirective(getEntities().getProperty(getEntityId(), propertyId), directive, addColumnToSort);
+    getSortModel().setSortingDirective(getDomain().getProperty(getEntityId(), propertyId), directive, addColumnToSort);
   }
 
   /** {@inheritDoc} */
@@ -412,7 +412,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final void replaceForeignKeyValues(final String foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = getEntities().getForeignKeyProperties(this.entityId, foreignKeyEntityId);
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = getDomain().getForeignKeyProperties(this.entityId, foreignKeyEntityId);
     boolean changed = false;
     for (final Entity entity : getAllItems()) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
@@ -511,7 +511,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final ColumnSummaryModel getColumnSummaryModel(final String propertyId) {
-    return getColumnSummaryModel(getEntities().getProperty(entityId, propertyId));
+    return getColumnSummaryModel(getDomain().getProperty(entityId, propertyId));
   }
 
   /** {@inheritDoc} */
@@ -523,7 +523,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public void setColumns(final String... propertyIds) {
-    final List<Property> properties = getEntities().getProperties(getEntityId(), propertyIds);
+    final List<Property> properties = getDomain().getProperties(getEntityId(), propertyIds);
     getColumnModel().setColumns(properties.toArray(new Property[properties.size()]));
   }
 
@@ -637,7 +637,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @see Entities#getOrderBy(String)
    */
   protected Entity.OrderBy getOrderBy() {
-    return getEntities().getOrderBy(entityId);
+    return getDomain().getOrderBy(entityId);
   }
 
   @SuppressWarnings({"UnusedDeclaration"})
@@ -810,16 +810,16 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    */
   public static class DefaultEntityTableSortModel extends AbstractTableSortModel<Entity, Property> {
 
-    private final Entities entities;
+    private final Entities domain;
 
     /**
      * Instantiates a new DefaultEntityTableSortModel
-     * @param entities the underlying entities
+     * @param domain the underlying entities
      * @param entityId the entity ID
      */
-    public DefaultEntityTableSortModel(final Entities entities, final String entityId) {
-      super(initializeColumns(entities, entityId));
-      this.entities = entities;
+    public DefaultEntityTableSortModel(final Entities domain, final String entityId) {
+      super(initializeColumns(domain, entityId));
+      this.domain = domain;
     }
 
     /** {@inheritDoc} */
@@ -832,7 +832,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     @Override
     protected Comparator initializeColumnComparator(final Property property) {
       if (property instanceof Property.ForeignKeyProperty) {
-        return entities.getComparator(((Property.ForeignKeyProperty) property).getForeignEntityId());
+        return domain.getComparator(((Property.ForeignKeyProperty) property).getForeignEntityId());
       }
 
       return super.initializeColumnComparator(property);
@@ -844,9 +844,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       return (Comparable) entity.get(property);
     }
 
-    private static List<TableColumn> initializeColumns(final Entities entities, final String entityId) {
+    private static List<TableColumn> initializeColumns(final Entities domain, final String entityId) {
       int modelIndex = 0;
-      final List<Property> visibleProperties = entities.getVisibleProperties(entityId);
+      final List<Property> visibleProperties = domain.getVisibleProperties(entityId);
       if (visibleProperties.isEmpty()) {
         throw new IllegalStateException("No visible properties defined for entity: " + entityId);
       }

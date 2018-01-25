@@ -261,7 +261,7 @@ public class EntitiesTest {
 
   @Test
   public void getDomainEntityIds() {
-    final Entities domain = Entities.getDomainEntities(new TestDomain().getDomainId());
+    final Entities domain = Entities.getDomain(new TestDomain().getDomainId());
     assertNotNull(domain.getDefinition(TestDomain.T_DEPARTMENT));
     assertNotNull(domain.getDefinition(TestDomain.T_EMP));
   }

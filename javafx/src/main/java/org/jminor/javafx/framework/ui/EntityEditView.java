@@ -115,7 +115,7 @@ public abstract class EntityEditView extends BorderPane {
    * Displays a dialog for choosing a input component to receive focus
    */
   public void selectInputControl() {
-    final List<Property> properties = getEditModel().getEntities().getSortedProperties(editModel.getEntityId(), controls.keySet());
+    final List<Property> properties = getEditModel().getDomain().getSortedProperties(editModel.getEntityId(), controls.keySet());
     properties.removeIf(property -> {
       final Control control = controls.get(property.getPropertyId());
 
@@ -166,7 +166,7 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyId) {
     checkControl(foreignKeyPropertyId);
-    return FXUiUtil.createLookupField(getEditModel().getEntities().getForeignKeyProperty(editModel.getEntityId(), foreignKeyPropertyId), editModel);
+    return FXUiUtil.createLookupField(getEditModel().getDomain().getForeignKeyProperty(editModel.getEntityId(), foreignKeyPropertyId), editModel);
   }
 
   /**
@@ -176,7 +176,7 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final ComboBox<Entity> createForeignKeyComboBox(final String foreignKeyPropertyId) {
     checkControl(foreignKeyPropertyId);
-    final ComboBox<Entity> box = FXUiUtil.createForeignKeyComboBox(getEditModel().getEntities().getForeignKeyProperty(
+    final ComboBox<Entity> box = FXUiUtil.createForeignKeyComboBox(getEditModel().getDomain().getForeignKeyProperty(
             editModel.getEntityId(), foreignKeyPropertyId), editModel);
 
     controls.put(foreignKeyPropertyId, box);
@@ -192,7 +192,7 @@ public abstract class EntityEditView extends BorderPane {
   protected final ComboBox<Item> createValueListComboBox(final String propertyId) {
     checkControl(propertyId);
     final ComboBox<Item> box = FXUiUtil.createValueListComboBox((Property.ValueListProperty)
-            getEditModel().getEntities().getProperty(editModel.getEntityId(), propertyId), editModel);
+            getEditModel().getDomain().getProperty(editModel.getEntityId(), propertyId), editModel);
 
     controls.put(propertyId, box);
 
@@ -206,20 +206,20 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final TextField createTextField(final String propertyId) {
     checkControl(propertyId);
-    final Property property = getEditModel().getEntities().getProperty(editModel.getEntityId(), propertyId);
+    final Property property = getEditModel().getDomain().getProperty(editModel.getEntityId(), propertyId);
     final TextField textField;
     switch (property.getType()) {
       case Types.INTEGER:
-        textField = FXUiUtil.createIntegerField(getEditModel().getEntities().getProperty(editModel.getEntityId(), propertyId), editModel);
+        textField = FXUiUtil.createIntegerField(getEditModel().getDomain().getProperty(editModel.getEntityId(), propertyId), editModel);
         break;
       case Types.BIGINT:
-        textField = FXUiUtil.createLongField(getEditModel().getEntities().getProperty(editModel.getEntityId(), propertyId), editModel);
+        textField = FXUiUtil.createLongField(getEditModel().getDomain().getProperty(editModel.getEntityId(), propertyId), editModel);
         break;
       case Types.DOUBLE:
-        textField = FXUiUtil.createDoubleField(getEditModel().getEntities().getProperty(editModel.getEntityId(), propertyId), editModel);
+        textField = FXUiUtil.createDoubleField(getEditModel().getDomain().getProperty(editModel.getEntityId(), propertyId), editModel);
         break;
       case Types.VARCHAR:
-        textField = FXUiUtil.createTextField(getEditModel().getEntities().getProperty(editModel.getEntityId(), propertyId), editModel);
+        textField = FXUiUtil.createTextField(getEditModel().getDomain().getProperty(editModel.getEntityId(), propertyId), editModel);
         break;
       default:
         throw new IllegalArgumentException("Text field type for property: " + propertyId + " is not defined");
@@ -237,7 +237,7 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final DatePicker createDatePicker(final String propertyId) {
     checkControl(propertyId);
-    final DatePicker picker = FXUiUtil.createDatePicker(getEditModel().getEntities().getProperty(editModel.getEntityId(), propertyId), editModel);
+    final DatePicker picker = FXUiUtil.createDatePicker(getEditModel().getDomain().getProperty(editModel.getEntityId(), propertyId), editModel);
     controls.put(propertyId, picker);
 
     return picker;
@@ -249,7 +249,7 @@ public abstract class EntityEditView extends BorderPane {
    * @return a {@link Label} for the given property
    */
   protected final Label createLabel(final String propertyId) {
-    return new Label(getEditModel().getEntities().getProperty(getEditModel().getEntityId(), propertyId).getCaption());
+    return new Label(getEditModel().getDomain().getProperty(getEditModel().getEntityId(), propertyId).getCaption());
   }
 
   protected final BorderPane createPropertyPanel(final String propertyId) {

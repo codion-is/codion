@@ -43,7 +43,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
   private final DateFormat jsonDateFormat = DateFormats.getDateFormat(JSON_DATE_FORMAT);
   private final DateFormat jsonTimestampFormat = DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT);
 
-  private final Entities entities;
+  private final Entities domain;
 
   private boolean includeForeignKeyValues = false;
   private boolean includeNullValues = true;
@@ -51,10 +51,10 @@ public final class EntityJSONParser implements Serializer<Entity> {
   private int indentation = -1;
 
   /**
-   * @param entities the underlying domain entities
+   * @param domain the underlying domain entities
    */
-  public EntityJSONParser(final Entities entities) {
-    this.entities = entities;
+  public EntityJSONParser(final Entities domain) {
+    this.domain = domain;
   }
 
   /**
@@ -304,15 +304,15 @@ public final class EntityJSONParser implements Serializer<Entity> {
   public Entity.Key parseKey(final JSONObject keyObject)
           throws JSONException, ParseException {
     final String entityId = keyObject.getString(ENTITY_ID);
-    if (!entities.isDefined(entityId)) {
+    if (!domain.isDefined(entityId)) {
       throw new IllegalArgumentException("Undefined entity found in JSON string: '" + entityId + "'");
     }
 
-    final Entity.Key key = entities.key(entityId);
+    final Entity.Key key = domain.key(entityId);
     final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
     for (int j = 0; j < propertyValues.names().length(); j++) {
       final String propertyId = propertyValues.names().get(j).toString();
-      key.put(propertyId, parseValue(entities.getProperty(entityId, propertyId), propertyValues));
+      key.put(propertyId, parseValue(domain.getProperty(entityId, propertyId), propertyValues));
     }
 
     return key;
@@ -391,7 +391,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
 
   private JSONObject serializeValues(final Entity.Key key) throws JSONException {
     final JSONObject propertyValues = new JSONObject();
-    for (final Property.ColumnProperty property : entities.getPrimaryKeyProperties(key.getEntityId())) {
+    for (final Property.ColumnProperty property : domain.getPrimaryKeyProperties(key.getEntityId())) {
       propertyValues.put(property.getPropertyId(), serializeValue(key.get(property), property));
     }
 
@@ -400,7 +400,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
 
   private JSONObject serializeOriginalValues(final Entity entity) throws JSONException {
     final JSONObject originalValues = new JSONObject();
-    for (final Property property : entities.getProperties(entity.getEntityId())) {
+    for (final Property property : domain.getProperties(entity.getEntityId())) {
       if (entity.isModified(property.getPropertyId()) && (!(property instanceof Property.ForeignKeyProperty) || includeForeignKeyValues)) {
         originalValues.put(property.getPropertyId(),
                 serializeValue(entity.getOriginal(property.getPropertyId()), property));
@@ -438,15 +438,15 @@ public final class EntityJSONParser implements Serializer<Entity> {
   private Entity parseEntity(final JSONObject entityObject) throws JSONException, ParseException {
     final Map<Property, Object> propertyValueMap = new HashMap<>();
     final String entityId = entityObject.getString(ENTITY_ID);
-    if (!entities.isDefined(entityId)) {
+    if (!domain.isDefined(entityId)) {
       throw new IllegalArgumentException("Undefined entity found in JSON string: '" + entityId + "'");
     }
 
     final JSONObject propertyValues = entityObject.getJSONObject(VALUES);
     for (int j = 0; j < propertyValues.names().length(); j++) {
       final String propertyId = propertyValues.names().get(j).toString();
-      propertyValueMap.put(entities.getProperty(entityId, propertyId),
-              parseValue(entities.getProperty(entityId, propertyId), propertyValues));
+      propertyValueMap.put(domain.getProperty(entityId, propertyId),
+              parseValue(domain.getProperty(entityId, propertyId), propertyValues));
     }
     Map<Property, Object> originalValueMap = null;
     if (!entityObject.isNull(ORIGINAL_VALUES)) {
@@ -454,11 +454,11 @@ public final class EntityJSONParser implements Serializer<Entity> {
       final JSONObject originalValues = entityObject.getJSONObject(ORIGINAL_VALUES);
       for (int j = 0; j < originalValues.names().length(); j++) {
         final String propertyId = originalValues.names().get(j).toString();
-        originalValueMap.put(entities.getProperty(entityId, propertyId),
-                parseValue(entities.getProperty(entityId, propertyId), originalValues));
+        originalValueMap.put(domain.getProperty(entityId, propertyId),
+                parseValue(domain.getProperty(entityId, propertyId), originalValues));
       }
     }
 
-    return entities.entity(entityId, propertyValueMap, originalValueMap);
+    return domain.entity(entityId, propertyValueMap, originalValueMap);
   }
 }

@@ -24,16 +24,16 @@ public class EntityBeanMapper {
   private static final String PROPERTY_ID_PARAM = "propertyId";
   private static final String PROPERTY_NAME_PARAM = "propertyName";
 
-  private final Entities entities;
+  private final Entities domain;
 
   private final Map<Class, String> entityIdMap = new HashMap<>();
   private final Map<Class, Map<String, GetterSetter>> propertyMap = new HashMap<>();
 
   /**
-   * @param entities the domain entities
+   * @param domain the domain entities
    */
-  public EntityBeanMapper(final Entities entities) {
-    this.entities = entities;
+  public EntityBeanMapper(final Entities domain) {
+    this.domain = domain;
   }
 
   /**
@@ -84,7 +84,7 @@ public class EntityBeanMapper {
     Objects.requireNonNull(propertyId, PROPERTY_ID_PARAM);
     Objects.requireNonNull(propertyName, PROPERTY_NAME_PARAM);
     final Map<String, GetterSetter> beanPropertyMap = propertyMap.computeIfAbsent(beanClass, k -> new HashMap<>());
-    final Property property = entities.getProperty(getEntityId(beanClass), propertyId);
+    final Property property = domain.getProperty(getEntityId(beanClass), propertyId);
     final Method getter = Util.getGetMethod(property.getTypeClass(), propertyName, beanClass);
     final Method setter = Util.getSetMethod(property.getTypeClass(), propertyName, beanClass);
     beanPropertyMap.put(propertyId, new GetterSetter(getter, setter));
@@ -99,10 +99,10 @@ public class EntityBeanMapper {
    */
   public Entity toEntity(final Object bean) throws InvocationTargetException, IllegalAccessException {
     Objects.requireNonNull(bean, "bean");
-    final Entity entity = entities.entity(getEntityId(bean.getClass()));
+    final Entity entity = domain.entity(getEntityId(bean.getClass()));
     final Map<String, GetterSetter> beanPropertyMap = propertyMap.get(bean.getClass());
     for (final Map.Entry<String, GetterSetter> propertyEntry : beanPropertyMap.entrySet()) {
-      final Property property = entities.getProperty(entity.getEntityId(), propertyEntry.getKey());
+      final Property property = domain.getProperty(entity.getEntityId(), propertyEntry.getKey());
       entity.put(property, propertyEntry.getValue().getter.invoke(bean));
     }
 
@@ -144,7 +144,7 @@ public class EntityBeanMapper {
     final Object bean = beanClass.getConstructor().newInstance();
     final Map<String, GetterSetter> beanPropertyMap = propertyMap.get(beanClass);
     for (final Map.Entry<String, GetterSetter> propertyEntry : beanPropertyMap.entrySet()) {
-      final Property property = entities.getProperty(entity.getEntityId(), propertyEntry.getKey());
+      final Property property = domain.getProperty(entity.getEntityId(), propertyEntry.getKey());
       propertyEntry.getValue().setter.invoke(bean, entity.get(property));
     }
 

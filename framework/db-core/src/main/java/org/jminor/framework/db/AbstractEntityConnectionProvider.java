@@ -35,7 +35,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
    */
   private User user;
   private EntityConnection entityConnection;
-  private Entities entities;
+  private Entities domain;
   private EntityConditions entityConditions;
 
   /**
@@ -61,19 +61,19 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   /** {@inheritDoc} */
   @Override
-  public final Entities getEntities() {
-    if (entities == null) {
-      entities = initializeEntities();
+  public final Entities getDomain() {
+    if (domain == null) {
+      domain = initializeDomain();
     }
 
-    return entities;
+    return domain;
   }
 
   /** {@inheritDoc} */
   @Override
   public final EntityConditions getConditions() {
     if (entityConditions == null) {
-      entityConditions = new EntityConditions(getEntities());
+      entityConditions = new EntityConditions(getDomain());
     }
 
     return entityConditions;
@@ -148,7 +148,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
    * Initializes the domain model entities, either by instantiating locally or retreiving from a remote server
    * @return the domain model
    */
-  protected abstract Entities initializeEntities();
+  protected abstract Entities initializeDomain();
 
   /**
    * @return an established connection

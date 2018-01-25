@@ -101,7 +101,7 @@ public class EmpDeptMinimalApp {
             final Property.ForeignKeyProperty foreignKeyProperty) {
       final EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
       if (foreignKeyProperty.is("mgr_fk")) {
-        comboBoxModel.setSelectConditionProvider(() -> new EntityConditions(getEntities()).propertyCondition(
+        comboBoxModel.setSelectConditionProvider(() -> new EntityConditions(getDomain()).propertyCondition(
             "scott.emp", "job", Condition.Type.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
         comboBoxModel.refresh();
       }
@@ -194,12 +194,12 @@ public class EmpDeptMinimalApp {
     protected void setupEntityPanelProviders() {
       //now, let's assemble our application
       final EntityPanelProvider departmentProvider = new EntityPanelProvider("scott.dept",
-              getModel().getEntities().getCaption("scott.dept"))
+              getModel().getDomain().getCaption("scott.dept"))
               .setEditPanelClass(DepartmentEditPanel.class);
       final SwingEntityModelProvider employeeModelProvider = new SwingEntityModelProvider("scott.emp")
               .setEditModelClass(EmployeeEditModel.class);
       final EntityPanelProvider employeeProvider = new EntityPanelProvider(employeeModelProvider,
-              getModel().getEntities().getCaption("scott.emp"))
+              getModel().getDomain().getCaption("scott.emp"))
               .setEditPanelClass(EmployeeEditPanel.class);
       departmentProvider.addDetailPanelProvider(employeeProvider);
 

@@ -58,12 +58,12 @@ public final class WorldTest extends EntityTestUnit {
   protected Entity initializeReferenceEntity(final String entityId) {
     switch (entityId) {
       case World.T_COUNTRY:
-        final Entity iceland = getEntities().entity(World.T_COUNTRY);
+        final Entity iceland = getDomain().entity(World.T_COUNTRY);
         iceland.put(World.COUNTRY_CODE, "ISL");
 
         return iceland;
       case World.T_CITY:
-        final Entity reykjavik = getEntities().entity(World.T_CITY);
+        final Entity reykjavik = getDomain().entity(World.T_CITY);
         reykjavik.put(World.CITY_ID, 1449);
 
         return reykjavik;

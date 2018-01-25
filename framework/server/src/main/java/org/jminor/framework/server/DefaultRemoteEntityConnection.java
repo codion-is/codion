@@ -39,10 +39,10 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  DefaultRemoteEntityConnection(final Entities entities, final Database database, final RemoteClient remoteClient, final int port,
+  DefaultRemoteEntityConnection(final Entities domain, final Database database, final RemoteClient remoteClient, final int port,
                                 final boolean loggingEnabled)
           throws DatabaseException, RemoteException {
-    this(entities, database, remoteClient, port, loggingEnabled, null, null);
+    this(domain, database, remoteClient, port, loggingEnabled, null, null);
   }
 
   /**
@@ -57,11 +57,11 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  DefaultRemoteEntityConnection(final Entities entities, final Database database, final RemoteClient remoteClient,
+  DefaultRemoteEntityConnection(final Entities domain, final Database database, final RemoteClient remoteClient,
                                 final int port, final boolean loggingEnabled, final RMIClientSocketFactory clientSocketFactory,
                                 final RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
-    super(entities,null, database, remoteClient, port, loggingEnabled, clientSocketFactory, serverSocketFactory);
+    super(domain,null, database, remoteClient, port, loggingEnabled, clientSocketFactory, serverSocketFactory);
   }
 
   /**
@@ -74,10 +74,10 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  DefaultRemoteEntityConnection(final Entities entities, final ConnectionPool connectionPool, final RemoteClient remoteClient,
+  DefaultRemoteEntityConnection(final Entities domain, final ConnectionPool connectionPool, final RemoteClient remoteClient,
                                 final int port, final boolean loggingEnabled)
           throws DatabaseException, RemoteException {
-    this(entities, connectionPool, remoteClient, port, loggingEnabled, null, null);
+    this(domain, connectionPool, remoteClient, port, loggingEnabled, null, null);
   }
 
   /**
@@ -92,18 +92,18 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  DefaultRemoteEntityConnection(final Entities entities, final ConnectionPool connectionPool, final RemoteClient remoteClient,
+  DefaultRemoteEntityConnection(final Entities domain, final ConnectionPool connectionPool, final RemoteClient remoteClient,
                                 final int port, final boolean loggingEnabled, final RMIClientSocketFactory clientSocketFactory,
                                 final RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
-    super(entities, connectionPool, connectionPool.getDatabase(), remoteClient, port, loggingEnabled, clientSocketFactory, serverSocketFactory);
+    super(domain, connectionPool, connectionPool.getDatabase(), remoteClient, port, loggingEnabled, clientSocketFactory, serverSocketFactory);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Entities getEntities() throws RemoteException {
+  public Entities getDomain() throws RemoteException {
     synchronized (connectionProxy) {
-      return connectionProxy.getEntities();
+      return connectionProxy.getDomain();
     }
   }
 

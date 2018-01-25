@@ -48,7 +48,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   /**
    * The domain entities
    */
-  private final Entities entities;
+  private final Entities domain;
 
   /**
    * The conditions instance
@@ -101,9 +101,9 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     Objects.requireNonNull(connectionProvider, "connectionProvider");
     this.entityId = entityId;
     this.connectionProvider = connectionProvider;
-    this.entities = connectionProvider.getEntities();
+    this.domain = connectionProvider.getDomain();
     this.entityConditions = connectionProvider.getConditions();
-    setStaticData(this.entities.isStaticData(entityId));
+    setStaticData(this.domain.isStaticData(entityId));
     final FilterCondition<Entity> superCondition = super.getFilterCondition();
     setFilterCondition(item -> superCondition.include(item) && foreignKeyFilterCondition.include(item));
   }
@@ -236,10 +236,10 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   /** {@inheritDoc} */
   @Override
   public final EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyId) {
-    final Property.ForeignKeyProperty foreignKeyProperty = entities.getForeignKeyProperty(entityId, foreignKeyPropertyId);
+    final Property.ForeignKeyProperty foreignKeyProperty = domain.getForeignKeyProperty(entityId, foreignKeyPropertyId);
     final EntityComboBoxModel foreignKeyModel =
             new SwingEntityComboBoxModel(foreignKeyProperty.getForeignEntityId(), connectionProvider);
-    foreignKeyModel.setNullValue(entities.createToStringEntity(foreignKeyProperty.getForeignEntityId(), "-"));
+    foreignKeyModel.setNullValue(domain.createToStringEntity(foreignKeyProperty.getForeignEntityId(), "-"));
     foreignKeyModel.refresh();
     linkForeignKeyComboBoxModel(foreignKeyPropertyId, foreignKeyModel);
 
@@ -249,7 +249,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   /** {@inheritDoc} */
   @Override
   public final void linkForeignKeyComboBoxModel(final String foreignKeyPropertyId, final EntityComboBoxModel foreignKeyModel) {
-    final Property.ForeignKeyProperty foreignKeyProperty = entities.getForeignKeyProperty(getEntityId(), foreignKeyPropertyId);
+    final Property.ForeignKeyProperty foreignKeyProperty = domain.getForeignKeyProperty(getEntityId(), foreignKeyPropertyId);
     if (!foreignKeyProperty.getForeignEntityId().equals(foreignKeyModel.getEntityId())) {
       throw new IllegalArgumentException("Foreign key ComboBoxModel is of type: " + foreignKeyModel.getEntityId()
               + ", should be: " + foreignKeyProperty.getForeignEntityId());

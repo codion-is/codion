@@ -128,7 +128,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void initializeColumns() {
-    for (final Property property : getListModel().getEntities().getVisibleProperties(listModel.getEntityId())) {
+    for (final Property property : getListModel().getDomain().getVisibleProperties(listModel.getEntityId())) {
       getColumns().add(new EntityTableColumn(listModel, property, getCellValueFactory(property)));
     }
     listModel.setColumns(getColumns());
@@ -217,7 +217,7 @@ public class EntityTableView extends TableView<Entity> {
   private Menu createUpdateSelectedItem() {
     final Menu updateSelected = new Menu(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED));
     FXUiUtil.link(updateSelected.disableProperty(), listModel.getSelectionEmptyObserver());
-    getListModel().getEntities().getUpdatableProperties(listModel.getEntityId()).stream().filter(
+    getListModel().getDomain().getUpdatableProperties(listModel.getEntityId()).stream().filter(
             this::includeUpdateSelectedProperty).forEach(property -> {
       final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
       final MenuItem updateProperty = new MenuItem(caption);

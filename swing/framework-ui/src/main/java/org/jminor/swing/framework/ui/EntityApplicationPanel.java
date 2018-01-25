@@ -549,10 +549,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public TreeModel getDependencyTreeModel() {
     final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
-    final Entities entities = applicationModel.getEntities();
-    for (final String entityId : entities.getDefinedEntities()) {
-      if (entities.getForeignKeyProperties(entityId).isEmpty() || referencesOnlySelf(entityId)) {
-        root.add(new EntityDependencyTreeNode(entities.getDomainId(), entityId, entities));
+    final Entities domain = applicationModel.getDomain();
+    for (final String entityId : domain.getDefinedEntities()) {
+      if (domain.getForeignKeyProperties(entityId).isEmpty() || referencesOnlySelf(entityId)) {
+        root.add(new EntityDependencyTreeNode(domain.getDomainId(), entityId, domain));
       }
     }
 
@@ -560,7 +560,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private boolean referencesOnlySelf(final String entityId) {
-    for (final Property.ForeignKeyProperty fkProperty : applicationModel.getEntities().getForeignKeyProperties(entityId)) {
+    for (final Property.ForeignKeyProperty fkProperty : applicationModel.getDomain().getForeignKeyProperties(entityId)) {
       if (!fkProperty.getForeignEntityId().equals(entityId)) {
         return false;
       }
@@ -795,7 +795,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     for (final EntityPanelProvider panelProvider : supportPanelProviders) {
       String caption = panelProvider.getCaption();
       if (caption == null) {
-        caption = applicationModel.getEntities().getCaption(panelProvider.getEntityId());
+        caption = applicationModel.getDomain().getCaption(panelProvider.getEntityId());
       }
       controlSet.add(new Control(caption) {
         @Override
@@ -841,7 +841,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
       String caption = panelProvider.getCaption();
       if (caption == null) {
-        caption = applicationModel.getEntities().getCaption(panelProvider.getEntityId());
+        caption = applicationModel.getDomain().getCaption(panelProvider.getEntityId());
       }
       dialog = new JDialog(getParentWindow(), caption);
       dialog.addWindowListener(new WindowAdapter() {
@@ -1320,13 +1320,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private static final class EntityDependencyTreeNode extends DefaultMutableTreeNode {
 
-    private final Entities entities;
+    private final Entities domain;
     private final String domainId;
 
-    private EntityDependencyTreeNode(final String domainId, final String entityId, final Entities entities) {
+    private EntityDependencyTreeNode(final String domainId, final String entityId, final Entities domain) {
       super(entityId);
       this.domainId = domainId;
-      this.entities = entities;
+      this.domain = domain;
       Objects.requireNonNull(entityId, "entityId");
     }
 
@@ -1348,10 +1348,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     private List<EntityDependencyTreeNode> initializeChildren() {
       final List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
-      for (final String entityId : entities.getDefinedEntities()) {
-        for (final Property.ForeignKeyProperty fkProperty : entities.getForeignKeyProperties(entityId)) {
+      for (final String entityId : domain.getDefinedEntities()) {
+        for (final Property.ForeignKeyProperty fkProperty : domain.getForeignKeyProperties(entityId)) {
           if (fkProperty.getForeignEntityId().equals(getEntityId()) && !foreignKeyCycle(fkProperty.getForeignEntityId())) {
-            childrenList.add(new EntityDependencyTreeNode(domainId, entityId, entities));
+            childrenList.add(new EntityDependencyTreeNode(domainId, entityId, domain));
           }
         }
       }

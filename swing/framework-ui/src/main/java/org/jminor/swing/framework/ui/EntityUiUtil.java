@@ -768,7 +768,7 @@ public final class EntityUiUtil {
    */
   public static SteppedComboBox createPropertyComboBox(final String propertyId, final EntityEditModel editModel,
                                                        final StateObserver enabledState) {
-    return createPropertyComboBox(editModel.getEntities().getColumnProperty(editModel.getEntityId(), propertyId),
+    return createPropertyComboBox(editModel.getDomain().getColumnProperty(editModel.getEntityId(), propertyId),
             editModel, enabledState);
   }
 
@@ -972,10 +972,10 @@ public final class EntityUiUtil {
    */
   private static void populateEntityMenu(final JComponent rootMenu, final Entity entity,
                                          final EntityConnectionProvider connectionProvider) {
-    final Entities entities = connectionProvider.getEntities();
-    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entities.getPrimaryKeyProperties(entity.getEntityId())));
-    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(entities.getForeignKeyProperties(entity.getEntityId())));
-    populateValueMenu(rootMenu, entity, new ArrayList<>(entities.getProperties(entity.getEntityId(), true)), entities);
+    final Entities domain = connectionProvider.getDomain();
+    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(domain.getPrimaryKeyProperties(entity.getEntityId())));
+    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(domain.getForeignKeyProperties(entity.getEntityId())));
+    populateValueMenu(rootMenu, entity, new ArrayList<>(domain.getProperties(entity.getEntityId(), true)), domain);
   }
 
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.ColumnProperty> primaryKeyProperties) {
@@ -998,7 +998,7 @@ public final class EntityUiUtil {
                                              final List<Property.ForeignKeyProperty> fkProperties) {
     try {
       TextUtil.collate(fkProperties);
-      final Entity.Validator validator = connectionProvider.getEntities().getValidator(entity.getEntityId());
+      final Entity.Validator validator = connectionProvider.getDomain().getValidator(entity.getEntityId());
       for (final Property.ForeignKeyProperty property : fkProperties) {
         final boolean fkValueNull = entity.isForeignKeyNull(property);
         final boolean isLoaded = entity.isLoaded(property.getPropertyId());
@@ -1051,10 +1051,10 @@ public final class EntityUiUtil {
   }
 
   private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties,
-                                        final Entities entities) {
+                                        final Entities domain) {
     TextUtil.collate(properties);
     final int maxValueLength = 20;
-    final Entity.Validator validator = entities.getValidator(entity.getEntityId());
+    final Entity.Validator validator = domain.getValidator(entity.getEntityId());
     for (final Property property : properties) {
       final boolean valid = isValid(validator, entity, property);
       final boolean modified = entity.isModified(property);

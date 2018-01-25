@@ -14,13 +14,13 @@ import static org.junit.Assert.*;
 
 public class DefaultEntityDefinitionTest {
 
-  private final Entities entities = new Entities();
+  private final Entities domain = new Entities();
 
   @Test
   public void test() {
     final Entities.StringProvider stringProvider = new Entities.StringProvider("name");
     final Comparator<Entity> comparator = (o1, o2) -> 0;
-    final Entity.Definition definition = entities.define("entityId", "tableName",
+    final Entity.Definition definition = domain.define("entityId", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR))
             .setSelectQuery("select * from dual", false)
@@ -44,10 +44,10 @@ public class DefaultEntityDefinitionTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void foreignKeyPropertyCountMismatch() {
-    entities.define("test.composite_key_master",
+    domain.define("test.composite_key_master",
             Properties.columnProperty("first").setPrimaryKeyIndex(0),
             Properties.columnProperty("second").setPrimaryKeyIndex(1));
-    entities.define("test.composite_reference",
+    domain.define("test.composite_reference",
             Properties.foreignKeyProperty("reference_fk", null, "test.composite_key_master",
                     Properties.columnProperty("reference")
                             .setPrimaryKeyIndex(0)));
@@ -55,7 +55,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void duplicatePropertyIds() {
-    entities.define("entityId", "tableName",
+    domain.define("entityId", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR),
             Properties.columnProperty("id"));
@@ -63,7 +63,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void duplicateForeignKeyPropertyIds() {
-    entities.define("entityId", "tableName",
+    domain.define("entityId", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR),
             Properties.foreignKeyProperty("fkProperty", null, "entityId",
@@ -72,7 +72,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void setSearchPropertyIds() {
-    final Entity.Definition definition = entities.define("entityId", "tableName",
+    final Entity.Definition definition = domain.define("entityId", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR));
     definition.setSearchPropertyIds("id");
@@ -80,7 +80,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void derivedProperty() {
-    final Entity.Definition definition = entities.define("entityId", "tableName",
+    final Entity.Definition definition = domain.define("entityId", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR),
             Properties.columnProperty("info", Types.VARCHAR),
@@ -96,7 +96,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void testGroupingProperties() {
-    final Entity.Definition definition = entities.define("entityId",
+    final Entity.Definition definition = domain.define("entityId",
             Properties.primaryKeyProperty("p0").setAggregateColumn(true),
             Properties.columnProperty("p1").setGroupingColumn(true),
             Properties.columnProperty("p2").setGroupingColumn(true));
@@ -105,7 +105,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test(expected = IllegalStateException.class)
   public void testSetGroupByClauseWithGroupingProperties() {
-    final Entity.Definition definition = entities.define("entityId",
+    final Entity.Definition definition = domain.define("entityId",
             Properties.primaryKeyProperty("p0").setAggregateColumn(true),
             Properties.columnProperty("p1").setGroupingColumn(true),
             Properties.columnProperty("p2").setGroupingColumn(true));
@@ -115,7 +115,7 @@ public class DefaultEntityDefinitionTest {
   @Test
   public void testSetHavingClause() {
     final String havingClause = "p1 > 1";
-    final Entity.Definition definition = entities.define("entityId",
+    final Entity.Definition definition = domain.define("entityId",
             Properties.primaryKeyProperty("p0")).setHavingClause(havingClause);
     assertEquals(havingClause, definition.getHavingClause());
   }
@@ -123,21 +123,21 @@ public class DefaultEntityDefinitionTest {
   @Test(expected = IllegalStateException.class)
   public void testSetHavingClauseAlreadySet() {
     final String havingClause = "p1 > 1";
-    final Entity.Definition definition = entities.define("entityId",
+    final Entity.Definition definition = domain.define("entityId",
             Properties.primaryKeyProperty("p0")).setHavingClause(havingClause);
     definition.setHavingClause(havingClause);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testNoPrimaryKey() {
-    entities.define("entityId", "tableName",
+    domain.define("entityId", "tableName",
             Properties.columnProperty("propertyId", Types.INTEGER));
   }
 
   @Test
   public void testForeignPrimaryKey() {
     Entity.Definition.STRICT_FOREIGN_KEYS.set(false);
-    entities.define("entityId", "tableName",
+    domain.define("entityId", "tableName",
             Properties.foreignKeyProperty("fkPropertyID", "caption", "parent",
                     Properties.primaryKeyProperty("propertyId")));
     Entity.Definition.STRICT_FOREIGN_KEYS.set(true);
@@ -145,7 +145,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPropertyIDConflict() {
-    entities.define("entityId",
+    domain.define("entityId",
             Properties.primaryKeyProperty("pk"),
             Properties.columnProperty("col"),
             Properties.columnProperty("col"));
@@ -153,7 +153,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPropertyIDConflictInForeignKey() {
-    entities.define("entityId",
+    domain.define("entityId",
             Properties.primaryKeyProperty("pk"),
             Properties.columnProperty("col"),
             Properties.foreignKeyProperty("fk", "cap", "par",
@@ -162,7 +162,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void testLinkedProperties() {
-    final Entity.Definition def = entities.define("entityId",
+    final Entity.Definition def = domain.define("entityId",
             Properties.primaryKeyProperty("pk"),
             Properties.columnProperty("1"),
             Properties.columnProperty("2"),
@@ -173,9 +173,9 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void getBackgroundColor() {
-    final Entity.Definition def = entities.define("entity", "tableName",
+    final Entity.Definition def = domain.define("entity", "tableName",
             Properties.primaryKeyProperty("propertyId"));
-    final Entity entity = entities.entity("entity");
+    final Entity entity = domain.entity("entity");
     assertNull(def.getBackgroundColor(entity, entity.getKey().getFirstProperty()));
     def.setBackgroundColorProvider((entity1, property) -> Color.BLUE);
     assertEquals(Color.BLUE, def.getBackgroundColor(entity, entity.getKey().getFirstProperty()));
@@ -183,9 +183,9 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void setToStringProvider() {
-    final Entity.Definition def = entities.define("entityToString", "tableName",
+    final Entity.Definition def = domain.define("entityToString", "tableName",
             Properties.primaryKeyProperty("propertyId"));
-    final Entity entity = entities.entity("entityToString");
+    final Entity entity = domain.entity("entityToString");
     entity.put("propertyId", 1);
     assertEquals("entityToString: propertyId:1", entity.toString());
     def.setStringProvider(valueMap -> "test");

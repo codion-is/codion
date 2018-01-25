@@ -319,7 +319,7 @@ public final class ChinookDomain extends Entities {
     public void execute(final LocalEntityConnection entityConnection, final Object... arguments) throws DatabaseException {
       try {
         entityConnection.beginTransaction();
-        final EntitySelectCondition selectCondition = new EntityConditions(entityConnection.getEntities()).selectCondition(Chinook.T_INVOICE);
+        final EntitySelectCondition selectCondition = new EntityConditions(entityConnection.getDomain()).selectCondition(Chinook.T_INVOICE);
         selectCondition.setForUpdate(true);
         selectCondition.setForeignKeyFetchDepthLimit(0);
         final List<Entity> invoices = entityConnection.selectMany(selectCondition);
