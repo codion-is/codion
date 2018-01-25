@@ -797,7 +797,7 @@ public class Entities implements Serializable {
   /**
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
-   * @return all {@link ColumnProperty}s which value is missing or the original value differs from the one in the comparison
+   * @return all {@link Property.ColumnProperty}s which value is missing or the original value differs from the one in the comparison
    * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}
    */
   public final Collection<Property.ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison) {
