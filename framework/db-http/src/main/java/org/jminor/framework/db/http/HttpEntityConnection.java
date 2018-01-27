@@ -21,15 +21,24 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
 
+import org.apache.http.HttpHost;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpStatus;
 import org.apache.http.NoHttpResponseException;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.AuthCache;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicAuthCache;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
@@ -40,7 +49,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -61,11 +69,10 @@ final class HttpEntityConnection implements EntityConnection {
   private static final String DOMAIN_ID = "domainId";
   private static final String CLIENT_TYPE_ID = "clientTypeId";
   private static final String CLIENT_ID = "clientId";
-  private static final String AUTHORIZATION = "Authorization";
   private static final String CONTENT_TYPE = "Content-Type";
   private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
-  private static final String BASIC = "Basic ";
   private static final String HTTP = "http";
+  private static final String HTTPS = "https";
 
   private static final RequestConfig REQUEST_CONFIG = RequestConfig.custom()
           .setSocketTimeout(2000)
@@ -74,9 +81,12 @@ final class HttpEntityConnection implements EntityConnection {
 
   private final String domainId;
   private final User user;
+  private final boolean https;
   private final String baseurl;
   private final BasicHttpClientConnectionManager connectionManager = new BasicHttpClientConnectionManager();
   private final CloseableHttpClient httpClient;
+  private final HttpHost targetHost;
+  private final HttpClientContext httpContext;
 
   private final Entities domain;
   private final EntityConditions conditions;
@@ -93,11 +103,14 @@ final class HttpEntityConnection implements EntityConnection {
    * @param clientId the client id
    */
   HttpEntityConnection(final String domainId, final String serverHostName, final int serverPort,
-                       final User user, final String clientTypeId, final UUID clientId) {
+                       final boolean https, final User user, final String clientTypeId, final UUID clientId) {
     this.domainId = Objects.requireNonNull(domainId, DOMAIN_ID);
     this.user = Objects.requireNonNull(user, "user");
+    this.https = https;
     this.baseurl =  Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + "/entities/";
     this.httpClient = createHttpClient(clientTypeId, clientId);
+    this.targetHost = new HttpHost(serverHostName, serverPort, https ? HTTPS : HTTP);
+    this.httpContext = createHttpContext(user);
     this.domain = initializeDomain();
     this.conditions = new EntityConditions(this.domain);
   }
@@ -453,19 +466,17 @@ final class HttpEntityConnection implements EntityConnection {
   private CloseableHttpResponse execute(final HttpUriRequest operation) throws IOException {
     synchronized (httpClient) {
       try {
-        return httpClient.execute(operation);
+        return httpClient.execute(targetHost, operation, httpContext);
       }
       catch (final NoHttpResponseException e) {
         LOG.debug(e.getMessage(), e);
         //retry once, todo fix server side if possible
-        return httpClient.execute(operation);
+        return httpClient.execute(targetHost, operation, httpContext);
       }
     }
   }
 
   private CloseableHttpClient createHttpClient(final String clientTypeId, final UUID clientId) {
-    final String authorizationHeader = BASIC + Base64.getEncoder().encodeToString((
-            user.getUsername() + ":" + String.valueOf(user.getPassword())).getBytes());
     final String clientIdString = clientId.toString();
 
     return HttpClientBuilder.create()
@@ -475,10 +486,25 @@ final class HttpEntityConnection implements EntityConnection {
               request.setHeader(DOMAIN_ID, domainId);
               request.setHeader(CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(CLIENT_ID, clientIdString);
-              request.setHeader(AUTHORIZATION, authorizationHeader);
               request.setHeader(CONTENT_TYPE, APPLICATION_OCTET_STREAM);
             })
             .build();
+  }
+
+  private HttpClientContext createHttpContext(final User user) {
+    final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+    credentialsProvider.setCredentials(
+            new AuthScope(targetHost.getHostName(), targetHost.getPort()),
+            new UsernamePasswordCredentials(user.getUsername(), String.valueOf(user.getPassword())));
+
+    final AuthCache authCache = new BasicAuthCache();
+    authCache.put(targetHost, new BasicScheme());
+
+    final HttpClientContext context = HttpClientContext.create();
+    context.setCredentialsProvider(credentialsProvider);
+    context.setAuthCache(authCache);
+
+    return context;
   }
 
   private HttpPost createHttpPost(final String path) throws URISyntaxException, IOException {
@@ -499,7 +525,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   private URIBuilder createURIBuilder(final String path) {
-    return new URIBuilder().setScheme(HTTP).setHost(baseurl).setPath(path);
+    return new URIBuilder().setScheme(https ? HTTPS : HTTP).setHost(baseurl).setPath(path);
   }
 
   private static <T> T handleResponse(final CloseableHttpResponse closeableHttpResponse) throws Exception {

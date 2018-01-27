@@ -45,8 +45,11 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
 
   @Override
   protected EntityConnectionProvider initializeApplication() throws CancelException {
-    return new HttpEntityConnectionProvider(EmpDept.class.getName(), HttpEntityConnectionProvider.HTTP_SERVER_HOST_NAME.get(),
-            HttpEntityConnectionProvider.HTTP_SERVER_PORT.get(), UNIT_TEST_USER, "EmpDeptServletLoadTest", UUID.randomUUID());
+    return new HttpEntityConnectionProvider(EmpDept.class.getName(),
+            HttpEntityConnectionProvider.HTTP_SERVER_HOST_NAME.get(),
+            HttpEntityConnectionProvider.HTTP_SERVER_PORT.get(),
+            HttpEntityConnectionProvider.HTTP_SERVER_SECURE.get(),
+            UNIT_TEST_USER, "EmpDeptServletLoadTest", UUID.randomUUID());
   }
 
   public static void main(final String[] args) throws Exception {

@@ -94,9 +94,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   /** {@inheritDoc} */
   @Override
   public final synchronized void setUser(final User user) {
-    if (Objects.equals(user, this.user)) {
-      return;
-    }
     disconnect();
     this.user = user;
   }

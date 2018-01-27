@@ -41,8 +41,11 @@ public final class HttpEntityConnectionTest {
 
   private static DefaultEntityConnectionServer server;
 
-  private final HttpEntityConnection connection = new HttpEntityConnection("TestDomain", HttpEntityConnectionProvider.HTTP_SERVER_HOST_NAME.get(),
-          HttpEntityConnectionProvider.HTTP_SERVER_PORT.get(), UNIT_TEST_USER, "HttpEntityConnectionTest", UUID.randomUUID());
+  private final HttpEntityConnection connection = new HttpEntityConnection("TestDomain",
+          HttpEntityConnectionProvider.HTTP_SERVER_HOST_NAME.get(),
+          HttpEntityConnectionProvider.HTTP_SERVER_PORT.get(),
+          HttpEntityConnectionProvider.HTTP_SERVER_SECURE.get(),
+          UNIT_TEST_USER, "HttpEntityConnectionTest", UUID.randomUUID());
   private final EntityConditions conditions = new EntityConditions(connection.getDomain());
 
   @BeforeClass

@@ -4769,3 +4769,6 @@
   EntityTableConditionPanel bug fixed, addFocusGainedListener() assumed advancedSearchPanel was a AbstractTableColumnSyncPanel instance
   Entities.getModifiedProperty() renamed to getModifiedColumnProperties(), now returns a collection containing all modified column properties
   Entities instances renamed to domain throughout
+  AbstractEntityConnectionProvider.setUser() no longer returns if the usernames match, since the password could have changed
+  HttpEntityConnection, now uses BasicAuthCache for basic authentication instead of manually adding header
+  HttpEntityConnection, https option added

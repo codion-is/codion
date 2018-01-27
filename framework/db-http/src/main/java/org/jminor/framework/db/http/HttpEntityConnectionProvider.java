@@ -38,9 +38,17 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    */
   public static final Value<Integer> HTTP_SERVER_PORT = Configuration.integerValue("jminor.client.http.port", 8080);
 
+  /**
+   * Specifies whether https should be used.<br>
+   * Value types: Boolean<br>
+   * Default value: false
+   */
+  public static final Value<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("jminor.client.https", false);
+
   private final String serverHostName;
   private final String domainId;
   private final Integer serverPort;
+  private final Boolean https;
   private final String clientTypeId;
   private final UUID clientId;
 
@@ -55,7 +63,7 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    */
   public HttpEntityConnectionProvider(final String domainId, final User user, final String clientTypeId,
                                       final UUID clientId) {
-    this(domainId, HTTP_SERVER_HOST_NAME.get(), HTTP_SERVER_PORT.get(), user, clientTypeId, clientId);
+    this(domainId, HTTP_SERVER_HOST_NAME.get(), HTTP_SERVER_PORT.get(), HTTP_SERVER_SECURE.get(), user, clientTypeId, clientId);
   }
 
   /**
@@ -63,16 +71,19 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    * @param domainId the id of the domain model
    * @param serverHostName the server host name
    * @param serverPort the server port
+   * @param https true if https should be used
    * @param user the user to use when initializing connections
    * @param clientTypeId the client type id
    * @param clientId a UUID identifying the client
    */
   public HttpEntityConnectionProvider(final String domainId, final String serverHostName, final Integer serverPort,
-                                      final User user, final String clientTypeId, final UUID clientId) {
+                                      final Boolean https, final User user, final String clientTypeId,
+                                      final UUID clientId) {
     super(user, false);
     this.domainId = domainId;
     this.serverHostName = Objects.requireNonNull(serverHostName, "serverHostName");
     this.serverPort = Objects.requireNonNull(serverPort, "serverPort");
+    this.https = Objects.requireNonNull(https, "https");
     this.clientTypeId = Objects.requireNonNull(clientTypeId, "clientTypeId");
     this.clientId = Objects.requireNonNull(clientId, "clientId");
   }
@@ -119,8 +130,8 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      return HttpEntityConnections.createConnection(domainId, serverHostName, serverPort, getUser(),
-              clientTypeId, clientId);
+      return HttpEntityConnections.createConnection(domainId, serverHostName, serverPort, https,
+              getUser(), clientTypeId, clientId);
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
