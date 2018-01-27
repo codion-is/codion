@@ -18,12 +18,21 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
+import org.apache.http.HttpHost;
 import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.AuthCache;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicAuthCache;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
@@ -36,7 +45,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.rmi.registry.Registry;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -55,9 +63,9 @@ public class EntityServletServerTest {
 
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
   private static final User ADMIN_USER = new User("scott", "tiger".toCharArray());
-  private static final String BASIC = "Basic ";
   private static final String HTTP = "http";
   private static String HOSTNAME;
+  private static HttpHost TARGET_HOST;
   private static String SERVER_BASEURL;
 
   private static DefaultEntityConnectionServer server;
@@ -67,6 +75,7 @@ public class EntityServletServerTest {
   public static void setUp() throws Exception {
     configure();
     HOSTNAME = Server.SERVER_HOST_NAME.get();
+    TARGET_HOST = new HttpHost(HOSTNAME, WEB_SERVER_PORT_NUMBER, HTTP);
     SERVER_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities/";
     server = DefaultEntityConnectionServer.startServer();
     admin = server.getServerAdmin(ADMIN_USER);
@@ -91,12 +100,9 @@ public class EntityServletServerTest {
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(new BasicHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              final User user = UNIT_TEST_USER;
               request.setHeader(EntityService.DOMAIN_ID, domainId);
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityService.CLIENT_ID, clientId.toString());
-              request.setHeader(EntityService.AUTHORIZATION,
-                      BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + String.valueOf(user.getPassword())).getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             })
             .build();
@@ -105,7 +111,8 @@ public class EntityServletServerTest {
     uriBuilder.setPath("isTransactionOpen");
 
     final HttpPost httpPost = new HttpPost(uriBuilder.build());
-    final CloseableHttpResponse response = client.execute(httpPost);
+    final HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
+    final CloseableHttpResponse response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     final Boolean result = deserializeResponse(response);
     assertFalse(result);
@@ -128,7 +135,7 @@ public class EntityServletServerTest {
     URIBuilder uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
     uriBuilder.addParameter("domainId", ENTITIES.getDomainId());
-    CloseableHttpResponse response = client.execute(new HttpPost(uriBuilder.build()));
+    CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(uriBuilder.build()));
     assertEquals(401, response.getStatusLine().getStatusCode());
     response.close();
     client.close();
@@ -140,17 +147,15 @@ public class EntityServletServerTest {
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(new BasicHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              final User user = UNIT_TEST_USER;
               request.setHeader(EntityService.DOMAIN_ID, domainId);
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
-              request.setHeader(EntityService.AUTHORIZATION,
-                      BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + String.valueOf(user.getPassword())).getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             })
             .build();
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
-    response = client.execute(new HttpPost(uriBuilder.build()));
+    HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
+    response = client.execute(TARGET_HOST, new HttpPost(uriBuilder.build()), context);
     assertEquals(401, response.getStatusLine().getStatusCode());
     response.close();
     client.close();
@@ -161,18 +166,16 @@ public class EntityServletServerTest {
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(new BasicHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              final User user = new User("who", "areu".toCharArray());
               request.setHeader(EntityService.DOMAIN_ID, domainId);
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityService.CLIENT_ID, clientIdValue.get().toString());
-              request.setHeader(EntityService.AUTHORIZATION,
-                      BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + String.valueOf(user.getPassword())).getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             })
             .build();
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
-    response = client.execute(new HttpPost(uriBuilder.build()));
+    context = createHttpContext(new User("who", "areu".toCharArray()), TARGET_HOST);
+    response = client.execute(TARGET_HOST, new HttpPost(uriBuilder.build()), context);
     assertEquals(401, response.getStatusLine().getStatusCode());
     response.close();
     client.close();
@@ -181,13 +184,9 @@ public class EntityServletServerTest {
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(new BasicHttpClientConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              final User user = UNIT_TEST_USER;
               request.setHeader(EntityService.DOMAIN_ID, domainId);
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityService.CLIENT_ID, clientIdValue.get().toString());
-              request.setHeader(EntityService.AUTHORIZATION,
-                      BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + String.valueOf(user.getPassword()))
-                              .getBytes()));
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             })
             .build();
@@ -197,7 +196,8 @@ public class EntityServletServerTest {
     uriBuilder.setPath("select");
     HttpPost httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT))));
-    response = client.execute(httpPost);
+    context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
+    response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     List<Entity> queryEntities = deserializeResponse(response);
     assertEquals(4, queryEntities.size());
@@ -214,7 +214,7 @@ public class EntityServletServerTest {
     uriBuilder.setPath("insert");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.singletonList(department))));
-    response = client.execute(httpPost);
+    response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     final List<Entity.Key> queryKeys = deserializeResponse(response);
     assertEquals(1, queryKeys.size());
@@ -226,7 +226,7 @@ public class EntityServletServerTest {
     uriBuilder.setPath("delete");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(department.getKey()))));
-    response = client.execute(httpPost);
+    response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
 
@@ -235,7 +235,7 @@ public class EntityServletServerTest {
     uriBuilder.setPath("insert");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.singletonList(department))));
-    response = client.execute(httpPost);
+    response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     final List<Entity.Key> keys = deserializeResponse(response);
     assertEquals(1, keys.size());
@@ -250,7 +250,7 @@ public class EntityServletServerTest {
     uriBuilder.setPath("update");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.singletonList(department))));
-    response = client.execute(httpPost);
+    response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryEntities = deserializeResponse(response);
     assertEquals(1, queryEntities.size());
@@ -263,7 +263,7 @@ public class EntityServletServerTest {
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
                     TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "New name"))));
-    response = client.execute(httpPost);
+    response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryEntities = deserializeResponse(response);
     assertEquals(1, queryEntities.size());
@@ -274,7 +274,7 @@ public class EntityServletServerTest {
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(department.getKey()))));
-    response = client.execute(httpPost);
+    response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryEntities = deserializeResponse(response);
     assertEquals(1, queryEntities.size());
@@ -286,7 +286,7 @@ public class EntityServletServerTest {
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
                     TestDomain.DEPARTMENT_ID, Condition.Type.LIKE, -42))));
-    response = client.execute(httpPost);
+    response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
 
@@ -295,7 +295,7 @@ public class EntityServletServerTest {
             .addParameter("functionId", TestDomain.FUNCTION_ID);
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.emptyList())));
-    response = client.execute(httpPost);
+    response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
 
@@ -304,7 +304,7 @@ public class EntityServletServerTest {
             .addParameter("procedureId", TestDomain.PROCEDURE_ID);
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.emptyList())));
-    response = client.execute(httpPost);
+    response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
 
@@ -320,7 +320,7 @@ public class EntityServletServerTest {
             .addParameter("procedureId", TestDomain.PROCEDURE_ID);
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.emptyList())));
-    response = client.execute(httpPost);
+    response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(401, response.getStatusLine().getStatusCode());
     response.close();
 
@@ -328,7 +328,7 @@ public class EntityServletServerTest {
 
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("disconnect");
-    response = client.execute(new HttpPost(uriBuilder.build()));
+    response = client.execute(TARGET_HOST, new HttpPost(uriBuilder.build()), context);
     response.close();
 
     client.close();
@@ -349,6 +349,22 @@ public class EntityServletServerTest {
     response.getEntity().writeTo(outputStream);
 
     return Util.deserialize(outputStream.toByteArray());
+  }
+
+  private static HttpClientContext createHttpContext(final User user, final HttpHost targetHost) {
+    final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+    credentialsProvider.setCredentials(
+            new AuthScope(targetHost.getHostName(), targetHost.getPort()),
+            new UsernamePasswordCredentials(user.getUsername(), String.valueOf(user.getPassword())));
+
+    final AuthCache authCache = new BasicAuthCache();
+    authCache.put(targetHost, new BasicScheme());
+
+    final HttpClientContext context = HttpClientContext.create();
+    context.setCredentialsProvider(credentialsProvider);
+    context.setAuthCache(authCache);
+
+    return context;
   }
 
   private static void configure() {

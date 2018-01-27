@@ -4772,3 +4772,5 @@
   AbstractEntityConnectionProvider.setUser() no longer returns if the usernames match, since the password could have changed
   HttpEntityConnection, now uses BasicAuthCache for basic authentication instead of manually adding header
   HttpEntityConnection, https option added
+  HttpServer, https option added
+  EntityServletServerTest now uses BasicAuthCache for basic authentication

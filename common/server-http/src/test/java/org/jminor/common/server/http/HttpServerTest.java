@@ -17,7 +17,7 @@ public class HttpServerTest {
   private static final int FILE_SERVER_PORT_NUMBER = 8089;
 
   private final HttpServer httpServer = new HttpServer(null,
-          System.getProperty("user.dir"), FILE_SERVER_PORT_NUMBER);
+          System.getProperty("user.dir"), FILE_SERVER_PORT_NUMBER, false);
 
   @Before
   public void setUp() throws Exception {

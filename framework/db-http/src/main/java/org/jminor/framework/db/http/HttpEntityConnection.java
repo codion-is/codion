@@ -110,7 +110,7 @@ final class HttpEntityConnection implements EntityConnection {
     this.baseurl =  Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + "/entities/";
     this.httpClient = createHttpClient(clientTypeId, clientId);
     this.targetHost = new HttpHost(serverHostName, serverPort, https ? HTTPS : HTTP);
-    this.httpContext = createHttpContext(user);
+    this.httpContext = createHttpContext(user, targetHost);
     this.domain = initializeDomain();
     this.conditions = new EntityConditions(this.domain);
   }
@@ -491,22 +491,6 @@ final class HttpEntityConnection implements EntityConnection {
             .build();
   }
 
-  private HttpClientContext createHttpContext(final User user) {
-    final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-    credentialsProvider.setCredentials(
-            new AuthScope(targetHost.getHostName(), targetHost.getPort()),
-            new UsernamePasswordCredentials(user.getUsername(), String.valueOf(user.getPassword())));
-
-    final AuthCache authCache = new BasicAuthCache();
-    authCache.put(targetHost, new BasicScheme());
-
-    final HttpClientContext context = HttpClientContext.create();
-    context.setCredentialsProvider(credentialsProvider);
-    context.setAuthCache(authCache);
-
-    return context;
-  }
-
   private HttpPost createHttpPost(final String path) throws URISyntaxException, IOException {
     return createHttpPost(path, null);
   }
@@ -538,5 +522,21 @@ final class HttpEntityConnection implements EntityConnection {
 
       return Util.deserialize(outputStream.toByteArray());
     }
+  }
+
+  private static HttpClientContext createHttpContext(final User user, final HttpHost targetHost) {
+    final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+    credentialsProvider.setCredentials(
+            new AuthScope(targetHost.getHostName(), targetHost.getPort()),
+            new UsernamePasswordCredentials(user.getUsername(), String.valueOf(user.getPassword())));
+
+    final AuthCache authCache = new BasicAuthCache();
+    authCache.put(targetHost, new BasicScheme());
+
+    final HttpClientContext context = HttpClientContext.create();
+    context.setCredentialsProvider(credentialsProvider);
+    context.setAuthCache(authCache);
+
+    return context;
   }
 }

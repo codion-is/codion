@@ -8,11 +8,20 @@ import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.server.Server;
 
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
 
 /**
  * A simple Jetty based http file server
@@ -29,6 +38,17 @@ public class HttpServer extends org.eclipse.jetty.server.Server implements Serve
   public static final Value<Integer> HTTP_SERVER_PORT = Configuration.integerValue("jminor.server.http.port", 8080);
 
   /**
+   * Specifies whether https should be used.<br>
+   * Value types: Boolean<br>
+   * Default value: false
+   */
+  public static final Value<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("jminor.server.http.https", false);
+
+  public static final Value<String> SSL_KEYSTORE_PATH = Configuration.stringValue("jminor.server.http.sslKeystore", null);
+
+  public static final Value<String> SSL_KEYSTORE_PASSWORD = Configuration.stringValue("jminor.server.http.sslKeystorePassword", null);
+
+  /**
    * Specifies the document root for file serving<br>.
    * Value type: String<br>
    * Default value: null
@@ -37,13 +57,14 @@ public class HttpServer extends org.eclipse.jetty.server.Server implements Serve
 
   private final Server connectionServer;
   private final HandlerList handlers;
+  private final int port;
 
   /**
    * Instantiates a new HttpServer on the given port.
    * @param connectionServer the Server serving the connection requests
    */
   public HttpServer(final Server connectionServer) {
-    this(connectionServer, DOCUMENT_ROOT.get(), HTTP_SERVER_PORT.get());
+    this(connectionServer, DOCUMENT_ROOT.get(), HTTP_SERVER_PORT.get(), HTTP_SERVER_SECURE.get());
   }
 
   /**
@@ -51,9 +72,15 @@ public class HttpServer extends org.eclipse.jetty.server.Server implements Serve
    * @param connectionServer the Server serving the connection requests
    * @param documentRoot the document root, null to disable file serving
    * @param port the port on which to serve
+   * @param useHttps true if https should be used
    */
-  public HttpServer(final Server connectionServer, final String documentRoot, final Integer port) {
-    super(port);
+  public HttpServer(final Server connectionServer, final String documentRoot, final Integer port,
+                    final Boolean useHttps) {
+    super(Objects.requireNonNull(port, "port"));
+    this.port = port;
+    if (Objects.requireNonNull(useHttps, "useHttps")) {
+      setupSecureConnector();
+    }
     LOG.info(getClass().getSimpleName() + " created on port: " + port);
     this.connectionServer = connectionServer;
     this.handlers = new HandlerList();
@@ -95,5 +122,31 @@ public class HttpServer extends org.eclipse.jetty.server.Server implements Serve
    */
   protected final Server getConnectionServer() {
     return connectionServer;
+  }
+
+  private void setupSecureConnector() {
+    final HttpConfiguration httpConfiguration = new HttpConfiguration();
+    httpConfiguration.setSecureScheme("https");
+    httpConfiguration.setSecurePort(port);
+
+    final HttpConfiguration httpsConfig = new HttpConfiguration(httpConfiguration);
+    httpsConfig.addCustomizer(new SecureRequestCustomizer());
+
+    final String keystore = SSL_KEYSTORE_PATH.get();
+    Objects.requireNonNull(keystore, SSL_KEYSTORE_PATH.toString());
+
+    final String keystorePassword = SSL_KEYSTORE_PASSWORD.get();
+    Objects.requireNonNull(keystorePassword, SSL_KEYSTORE_PASSWORD.toString());
+
+    final SslContextFactory sslContextFactory = new SslContextFactory(keystore);
+    sslContextFactory.setKeyStorePassword(keystorePassword);
+
+    final ServerConnector httpsConnector = new ServerConnector(this,
+            new SslConnectionFactory(sslContextFactory, "http/1.1"),
+            new HttpConnectionFactory(httpsConfig));
+    httpsConnector.setPort(port);
+    httpsConnector.setIdleTimeout(50000);
+
+    setConnectors(new Connector[]{httpsConnector});
   }
 }
