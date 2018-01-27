@@ -4775,3 +4775,5 @@
   HttpServer, https option added
   EntityServletServerTest now uses BasicAuthCache for basic authentication
   EntityServletServerTest and HttpEntityConnectionTest now use https without host verification
+  Configuration.value() removed, doubleValue() and longValue() added
+  Configuration.ConfigurationValue now abstract, public, subclasses refactored

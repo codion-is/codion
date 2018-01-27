@@ -41,9 +41,9 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
   /**
    * Specifies whether https should be used.<br>
    * Value types: Boolean<br>
-   * Default value: false
+   * Default value: true
    */
-  public static final Value<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("jminor.client.https", false);
+  public static final Value<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("jminor.client.http.https", true);
 
   private final String serverHostName;
   private final String domainId;

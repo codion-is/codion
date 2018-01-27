@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -46,16 +47,6 @@ public final class Configuration {
   private Configuration() {}
 
   /**
-   * Creates a Object configuration value
-   * @param key the configuration key
-   * @param defaultValue the default value, if any
-   * @return the configuration value
-   */
-  public static Value<Object> value(final String key, final Object defaultValue) {
-    return new ConfigurationValue<>(key, defaultValue);
-  }
-
-  /**
    * Creates a boolean configuration value
    * @param key the configuration key
    * @param defaultValue the default value, if any
@@ -73,6 +64,26 @@ public final class Configuration {
    */
   public static Value<Integer> integerValue(final String key, final Integer defaultValue) {
     return new IntegerValue(key, defaultValue);
+  }
+
+  /**
+   * Creates a long configuration value
+   * @param key the configuration key
+   * @param defaultValue the default value, if any
+   * @return the configuration value
+   */
+  public static Value<Long> longValue(final String key, final Long defaultValue) {
+    return new LongValue(key, defaultValue);
+  }
+
+  /**
+   * Creates a double configuration value
+   * @param key the configuration key
+   * @param defaultValue the default value, if any
+   * @return the configuration value
+   */
+  public static Value<Double> doubleValue(final String key, final Double defaultValue) {
+    return new DoubleValue(key, defaultValue);
   }
 
   /**
@@ -157,7 +168,7 @@ public final class Configuration {
    * A Value for configuration, setting the value also sets the System property
    * @param <T> the value type
    */
-  private static class ConfigurationValue<T> implements Value<T> {
+  public static abstract class ConfigurationValue<T> implements Value<T> {
 
     private final Event<T> changeEvent = Events.event();
     private final String key;
@@ -170,8 +181,9 @@ public final class Configuration {
      * @param defaultValue the default value
      */
     private ConfigurationValue(final String key, final T defaultValue) {
-      this.key = key;
-      this.value = parseFromSystemProperties(defaultValue);
+      this.key = Objects.requireNonNull(key, "key");
+      final String stringValue = System.getProperty(key);
+      this.value = stringValue == null ? defaultValue : parse(stringValue);
     }
 
     @Override
@@ -201,18 +213,12 @@ public final class Configuration {
       return key;
     }
 
-    protected final String getKey() {
-      return key;
-    }
-
     /**
-     * Parses the configuration value from system properties, returning the default value if none is specified
-     * @param defaultValue the default value
-     * @return the system properties value or the default value if none is specified
+     * Parses the configuration value from the given non-null string
+     * @param value the string value, not null
+     * @return the parsed value
      */
-    protected T parseFromSystemProperties(final T defaultValue) {
-      throw new UnsupportedOperationException("Parsing system property is not supported for " + key);
-    }
+    protected abstract T parse(final String value);
   }
 
   private static final class StringValue extends ConfigurationValue<String> {
@@ -222,10 +228,8 @@ public final class Configuration {
     }
 
     @Override
-    protected String parseFromSystemProperties(final String defaultValue) {
-      final String value = System.getProperty(getKey());
-
-      return value == null ? defaultValue : value;
+    protected String parse(final String value) {
+      return value;
     }
   }
 
@@ -236,30 +240,44 @@ public final class Configuration {
     }
 
     @Override
-    protected Boolean parseFromSystemProperties(final Boolean defaultValue) {
-      final String value = System.getProperty(getKey());
-      if (value == null) {
-        return defaultValue;
-      }
-
+    protected Boolean parse(final String value) {
       return value.equalsIgnoreCase(Boolean.TRUE.toString());
     }
   }
 
-  private static class IntegerValue extends ConfigurationValue<Integer> {
+  private static final class IntegerValue extends ConfigurationValue<Integer> {
 
     private IntegerValue(final String key, final Integer defaultValue) {
       super(key, defaultValue);
     }
 
     @Override
-    protected Integer parseFromSystemProperties(final Integer defaultValue) {
-      final String value = System.getProperty(getKey());
-      if (value == null) {
-        return defaultValue;
-      }
-
+    protected Integer parse(final String value) {
       return Integer.parseInt(value);
+    }
+  }
+
+  private static final class DoubleValue extends ConfigurationValue<Double> {
+
+    private DoubleValue(final String key, final Double defaultValue) {
+      super(key, defaultValue);
+    }
+
+    @Override
+    protected Double parse(final String value) {
+      return Double.parseDouble(value);
+    }
+  }
+
+  private static final class LongValue extends ConfigurationValue<Long> {
+
+    private LongValue(final String key, final Long defaultValue) {
+      super(key, defaultValue);
+    }
+
+    @Override
+    protected Long parse(final String value) {
+      return Long.parseLong(value);
     }
   }
 }

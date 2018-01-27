@@ -54,9 +54,26 @@ public class ConfigurationTest {
     assertEquals(value, Configuration.integerValue(key, defaultValue).get());
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void valueUnsupportedParseFromSystemSettings() {
-    Configuration.value("configuration.test.value", null);
+  @Test
+  public void longValue() {
+    final String key = "configuration.test.long";
+    final Long value = System.currentTimeMillis();
+    final Long defaultValue = 42424242424242L;
+    assertEquals(defaultValue, Configuration.longValue(key, defaultValue).get());
+    assertNull(Configuration.longValue(key, null).get());
+    System.setProperty(key, value.toString());
+    assertEquals(value, Configuration.longValue(key, defaultValue).get());
+  }
+
+  @Test
+  public void doubleValue() {
+    final String key = "configuration.test.double";
+    final Double value = 1.1;
+    final Double defaultValue = 42.2;
+    assertEquals(defaultValue, Configuration.doubleValue(key, defaultValue).get());
+    assertNull(Configuration.doubleValue(key, null).get());
+    System.setProperty(key, value.toString());
+    assertEquals(value, Configuration.doubleValue(key, defaultValue).get());
   }
 
   @Test

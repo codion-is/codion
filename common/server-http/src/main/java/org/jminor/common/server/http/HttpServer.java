@@ -40,9 +40,9 @@ public class HttpServer extends org.eclipse.jetty.server.Server implements Serve
   /**
    * Specifies whether https should be used.<br>
    * Value types: Boolean<br>
-   * Default value: false
+   * Default value: true
    */
-  public static final Value<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("jminor.server.http.https", false);
+  public static final Value<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("jminor.server.http.https", true);
 
   public static final Value<String> SSL_KEYSTORE_PATH = Configuration.stringValue("jminor.server.http.sslKeystore", null);
 
