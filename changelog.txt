@@ -4774,3 +4774,4 @@
   HttpEntityConnection, https option added
   HttpServer, https option added
   EntityServletServerTest now uses BasicAuthCache for basic authentication
+  EntityServletServerTest and HttpEntityConnectionTest now use https without host verification

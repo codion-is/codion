@@ -16,13 +16,20 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.servlet.EntityServletServer;
 
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.registry.Registry;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,7 +52,9 @@ public final class HttpEntityConnectionTest {
           HttpEntityConnectionProvider.HTTP_SERVER_HOST_NAME.get(),
           HttpEntityConnectionProvider.HTTP_SERVER_PORT.get(),
           HttpEntityConnectionProvider.HTTP_SERVER_SECURE.get(),
-          UNIT_TEST_USER, "HttpEntityConnectionTest", UUID.randomUUID());
+          UNIT_TEST_USER, "HttpEntityConnectionTest", UUID.randomUUID(),
+          createConnectionManager());
+
   private final EntityConditions conditions = new EntityConditions(connection.getDomain());
 
   @BeforeClass
@@ -182,6 +191,11 @@ public final class HttpEntityConnectionTest {
     System.setProperty("java.security.policy", "resources/security/all_permissions.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityServletServer.class.getName());
+    HttpServer.SSL_KEYSTORE_PATH.set("../../resources/security/JMinorServerKeystore");
+    Server.TRUSTSTORE.set("../../resources/security/JMinorClientTruststore");
+    HttpServer.SSL_KEYSTORE_PASSWORD.set("crappypass");
+    HttpServer.HTTP_SERVER_SECURE.set(true);
+    HttpEntityConnectionProvider.HTTP_SERVER_SECURE.set(true);
   }
 
   private static void deconfigure() {
@@ -195,6 +209,11 @@ public final class HttpEntityConnectionTest {
     System.clearProperty("java.security.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(null);
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(null);
+    HttpServer.SSL_KEYSTORE_PATH.set(null);
+    Server.TRUSTSTORE.set(null);
+    HttpServer.SSL_KEYSTORE_PASSWORD.set(null);
+    HttpServer.HTTP_SERVER_SECURE.set(false);
+    HttpEntityConnectionProvider.HTTP_SERVER_SECURE.set(false);
   }
 
   private static class TestReportWrapper implements ReportWrapper, Serializable {
@@ -221,5 +240,19 @@ public final class HttpEntityConnectionTest {
     public Object getResult() {
       return "ReportResult";
     }
+  }
+
+  private static BasicHttpClientConnectionManager createConnectionManager() {
+    try {
+      final SSLContext sslContext = SSLContext.getDefault();
+
+      return new BasicHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().register("https",
+              new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
+              .build());
+    }
+    catch (final NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    }
+
   }
 }

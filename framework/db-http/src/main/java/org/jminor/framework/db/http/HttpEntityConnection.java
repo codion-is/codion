@@ -35,13 +35,13 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +83,7 @@ final class HttpEntityConnection implements EntityConnection {
   private final User user;
   private final boolean https;
   private final String baseurl;
-  private final BasicHttpClientConnectionManager connectionManager = new BasicHttpClientConnectionManager();
+  private final HttpClientConnectionManager connectionManager;
   private final CloseableHttpClient httpClient;
   private final HttpHost targetHost;
   private final HttpClientContext httpContext;
@@ -103,11 +103,13 @@ final class HttpEntityConnection implements EntityConnection {
    * @param clientId the client id
    */
   HttpEntityConnection(final String domainId, final String serverHostName, final int serverPort,
-                       final boolean https, final User user, final String clientTypeId, final UUID clientId) {
+                       final boolean https, final User user, final String clientTypeId, final UUID clientId,
+                       final HttpClientConnectionManager connectionManager) {
     this.domainId = Objects.requireNonNull(domainId, DOMAIN_ID);
     this.user = Objects.requireNonNull(user, "user");
     this.https = https;
     this.baseurl =  Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + "/entities/";
+    this.connectionManager = Objects.requireNonNull(connectionManager, "connectionManager");
     this.httpClient = createHttpClient(clientTypeId, clientId);
     this.targetHost = new HttpHost(serverHostName, serverPort, https ? HTTPS : HTTP);
     this.httpContext = createHttpContext(user, targetHost);

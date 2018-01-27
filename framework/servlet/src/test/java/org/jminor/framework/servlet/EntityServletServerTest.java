@@ -29,6 +29,10 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
@@ -40,11 +44,13 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import javax.net.ssl.SSLContext;
 import javax.ws.rs.core.MediaType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.rmi.registry.Registry;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -63,7 +69,7 @@ public class EntityServletServerTest {
 
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
   private static final User ADMIN_USER = new User("scott", "tiger".toCharArray());
-  private static final String HTTP = "http";
+  private static final String HTTPS = "https";
   private static String HOSTNAME;
   private static HttpHost TARGET_HOST;
   private static String SERVER_BASEURL;
@@ -75,7 +81,7 @@ public class EntityServletServerTest {
   public static void setUp() throws Exception {
     configure();
     HOSTNAME = Server.SERVER_HOST_NAME.get();
-    TARGET_HOST = new HttpHost(HOSTNAME, WEB_SERVER_PORT_NUMBER, HTTP);
+    TARGET_HOST = new HttpHost(HOSTNAME, WEB_SERVER_PORT_NUMBER, HTTPS);
     SERVER_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities/";
     server = DefaultEntityConnectionServer.startServer();
     admin = server.getServerAdmin(ADMIN_USER);
@@ -98,7 +104,7 @@ public class EntityServletServerTest {
     final UUID clientId = UUID.randomUUID();
     final CloseableHttpClient client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
-            .setConnectionManager(new BasicHttpClientConnectionManager())
+            .setConnectionManager(createConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               request.setHeader(EntityService.DOMAIN_ID, domainId);
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
@@ -128,7 +134,7 @@ public class EntityServletServerTest {
             .build();
     CloseableHttpClient client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
-            .setConnectionManager(new BasicHttpClientConnectionManager())
+            .setConnectionManager(createConnectionManager())
             .build();
 
     //test with missing authentication info
@@ -145,7 +151,7 @@ public class EntityServletServerTest {
     //test with missing clientId header
     client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
-            .setConnectionManager(new BasicHttpClientConnectionManager())
+            .setConnectionManager(createConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               request.setHeader(EntityService.DOMAIN_ID, domainId);
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
@@ -164,7 +170,7 @@ public class EntityServletServerTest {
     //test with unknown user authentication
     client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
-            .setConnectionManager(new BasicHttpClientConnectionManager())
+            .setConnectionManager(createConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               request.setHeader(EntityService.DOMAIN_ID, domainId);
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
@@ -182,7 +188,7 @@ public class EntityServletServerTest {
 
     client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
-            .setConnectionManager(new BasicHttpClientConnectionManager())
+            .setConnectionManager(createConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
               request.setHeader(EntityService.DOMAIN_ID, domainId);
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
@@ -262,7 +268,7 @@ public class EntityServletServerTest {
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
-                    TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "New name"))));
+            TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "New name"))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryEntities = deserializeResponse(response);
@@ -285,7 +291,7 @@ public class EntityServletServerTest {
     uriBuilder.setPath("delete");
     httpPost = new HttpPost(uriBuilder.build());
     httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
-                    TestDomain.DEPARTMENT_ID, Condition.Type.LIKE, -42))));
+            TestDomain.DEPARTMENT_ID, Condition.Type.LIKE, -42))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
@@ -339,7 +345,7 @@ public class EntityServletServerTest {
 
   private static URIBuilder createURIBuilder() {
     final URIBuilder builder = new URIBuilder();
-    builder.setScheme(HTTP).setHost(SERVER_BASEURL);
+    builder.setScheme(HTTPS).setHost(SERVER_BASEURL);
 
     return builder;
   }
@@ -367,6 +373,20 @@ public class EntityServletServerTest {
     return context;
   }
 
+  private static BasicHttpClientConnectionManager createConnectionManager() {
+    try {
+      final SSLContext sslContext = SSLContext.getDefault();
+
+      return new BasicHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().register(HTTPS,
+              new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
+              .build());
+    }
+    catch (final NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    }
+
+  }
+
   private static void configure() {
     Server.REGISTRY_PORT.set(2221);
     Server.SERVER_CONNECTION_SSL_ENABLED.set(false);
@@ -375,10 +395,14 @@ public class EntityServletServerTest {
     Server.SERVER_ADMIN_USER.set("scott:tiger");
     Server.SERVER_HOST_NAME.set("localhost");
     Server.RMI_SERVER_HOSTNAME.set("localhost");
-    System.setProperty("java.security.policy", "resources/security/all_permissions.policy");
+    System.setProperty("java.security.policy", "../../resources/security/all_permissions.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityServletServer.class.getName());
     HttpServer.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
+    HttpServer.SSL_KEYSTORE_PATH.set("../../resources/security/JMinorServerKeystore");
+    Server.TRUSTSTORE.set("../../resources/security/JMinorClientTruststore");
+    HttpServer.SSL_KEYSTORE_PASSWORD.set("crappypass");
+    HttpServer.HTTP_SERVER_SECURE.set(true);
   }
 
   private static void deconfigure() {
@@ -393,5 +417,9 @@ public class EntityServletServerTest {
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(null);
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(null);
     HttpServer.HTTP_SERVER_PORT.set(null);
+    HttpServer.SSL_KEYSTORE_PATH.set(null);
+    Server.TRUSTSTORE.set(null);
+    HttpServer.SSL_KEYSTORE_PASSWORD.set(null);
+    HttpServer.HTTP_SERVER_SECURE.set(false);
   }
 }
