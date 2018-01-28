@@ -11,6 +11,8 @@ import org.jminor.common.Version;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.UUID;
 
 /**
@@ -217,6 +219,16 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
      * @return the time of server startup
      */
     long getStartTime();
+
+    /**
+     * @return the server locale
+     */
+    Locale getLocale();
+
+    /**
+     * @return the server TimeZone
+     */
+    TimeZone getTimeZone();
   }
 
   /**

@@ -20,8 +20,10 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TimeZone;
 import java.util.UUID;
 
 /**
@@ -379,6 +381,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     private final String serverName;
     private final int serverPort;
     private final long serverStartupTime;
+    private final Locale locale = Locale.getDefault();
+    private final TimeZone timeZone = TimeZone.getDefault();
     private final Version serverVersion = Version.getVersion();
 
     private DefaultServerInfo(final UUID serverId, final String serverName, final int serverPort, final long serverStartupTime) {
@@ -411,6 +415,16 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     @Override
     public long getStartTime() {
       return serverStartupTime;
+    }
+
+    @Override
+    public Locale getLocale() {
+      return locale;
+    }
+
+    @Override
+    public TimeZone getTimeZone() {
+      return timeZone;
     }
   }
 

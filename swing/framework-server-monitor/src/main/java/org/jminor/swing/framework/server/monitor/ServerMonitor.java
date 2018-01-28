@@ -280,6 +280,10 @@ public final class ServerMonitor {
     contents.append(serverInfo.getServerVersion()).append("\n");
     contents.append("Database URL:").append("\n");
     contents.append(server.getDatabaseURL()).append("\n").append("\n");
+    contents.append("Server locale: ").append("\n");
+    contents.append(serverInfo.getLocale()).append("\n");
+    contents.append("Server time zone: ").append("\n");
+    contents.append(serverInfo.getTimeZone()).append("\n");
     contents.append("System properties:").append("\n");
     contents.append(server.getSystemProperties());
 

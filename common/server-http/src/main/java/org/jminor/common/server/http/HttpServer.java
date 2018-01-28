@@ -39,14 +39,25 @@ public class HttpServer extends org.eclipse.jetty.server.Server implements Serve
 
   /**
    * Specifies whether https should be used.<br>
-   * Value types: Boolean<br>
+   * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("jminor.server.http.https", true);
+  public static final Value<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("jminor.server.http.secure", true);
 
-  public static final Value<String> SSL_KEYSTORE_PATH = Configuration.stringValue("jminor.server.http.sslKeystore", null);
+  /**
+   * Specifies the keystore to use for securing http connections.<br>
+   * Value type: String<br>
+   * Default value: null
+   */
+  public static final Value<String> HTTP_SERVER_KEYSTORE_PATH = Configuration.stringValue("jminor.server.http.keyStore", null);
 
-  public static final Value<String> SSL_KEYSTORE_PASSWORD = Configuration.stringValue("jminor.server.http.sslKeystorePassword", null);
+
+  /**
+   * Specifies the password for the keystore used for securing http connections.<br>
+   * Value type: String<br>
+   * Default value: null
+   */
+  public static final Value<String> HTTP_SERVER_KEYSTORE_PASSWORD = Configuration.stringValue("jminor.server.http.keyStorePassword", null);
 
   /**
    * Specifies the document root for file serving<br>.
@@ -132,11 +143,11 @@ public class HttpServer extends org.eclipse.jetty.server.Server implements Serve
     final HttpConfiguration httpsConfig = new HttpConfiguration(httpConfiguration);
     httpsConfig.addCustomizer(new SecureRequestCustomizer());
 
-    final String keystore = SSL_KEYSTORE_PATH.get();
-    Objects.requireNonNull(keystore, SSL_KEYSTORE_PATH.toString());
+    final String keystore = HTTP_SERVER_KEYSTORE_PATH.get();
+    Objects.requireNonNull(keystore, HTTP_SERVER_KEYSTORE_PATH.toString());
 
-    final String keystorePassword = SSL_KEYSTORE_PASSWORD.get();
-    Objects.requireNonNull(keystorePassword, SSL_KEYSTORE_PASSWORD.toString());
+    final String keystorePassword = HTTP_SERVER_KEYSTORE_PASSWORD.get();
+    Objects.requireNonNull(keystorePassword, HTTP_SERVER_KEYSTORE_PASSWORD.toString());
 
     final SslContextFactory sslContextFactory = new SslContextFactory(keystore);
     sslContextFactory.setKeyStorePassword(keystorePassword);

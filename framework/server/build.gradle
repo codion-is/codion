@@ -108,6 +108,7 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
             'jminor.server.port': '2222',
             'jminor.server.admin.port': '2223',
             'jminor.server.admin.user': 'scott:tiger',
+            'jminor.server.http.secure': 'false',
             'jminor.server.pooling.poolProviderClass': 'org.jminor.framework.plugins.hikari.pool.HikariConnectionPoolProvider',
             'jminor.server.auxiliaryServerClassNames': 'org.jminor.framework.servlet.EntityServletServer',
             'jminor.server.domain.classes': 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.ChinookDomain,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',

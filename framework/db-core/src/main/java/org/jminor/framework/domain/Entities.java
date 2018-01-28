@@ -1356,9 +1356,7 @@ public class Entities implements Serializable {
   }
 
   private Entities registerDomain(final String domainId, final Entities domain) {
-    synchronized (REGISTERED_DOMAINS) {
-      REGISTERED_DOMAINS.put(domainId, domain);
-    }
+    REGISTERED_DOMAINS.put(domainId, domain);
 
     return domain;
   }

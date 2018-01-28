@@ -4777,3 +4777,4 @@
   EntityServletServerTest and HttpEntityConnectionTest now use https without host verification
   Configuration.value() removed, doubleValue() and longValue() added
   Configuration.ConfigurationValue now abstract, public, subclasses refactored
+  Server.ServerInfo.getLocale() and getTimeZone() added
