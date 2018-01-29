@@ -690,13 +690,10 @@ public final class EntityConditions {
     private PropertyCondition(final Property.ColumnProperty property, final Type conditionType, final Object value) {
       Objects.requireNonNull(property, "property");
       Objects.requireNonNull(conditionType, CONDITION_TYPE_PARAM);
-      this.values = initializeValues(value);
-      if (values.isEmpty()) {
-        throw new IllegalArgumentException("No values specified for PropertyCondition: " + property);
-      }
       this.property = property;
       this.conditionType = conditionType;
       this.isNullCondition = value == null;
+      this.values = initializeValues(value, property);
     }
 
     @Override
@@ -787,15 +784,25 @@ public final class EntityConditions {
       }
     }
 
-    private static List initializeValues(final Object value) {
+    private static List initializeValues(final Object value, final Property.ColumnProperty property) {
+      final List values;
       if (value instanceof List) {
-        return (List) value;
+        values = (List) value;
       }
       else if (value instanceof Collection) {
-        return new ArrayList((Collection) value);
+        values = new ArrayList((Collection) value);
+      }
+      else {
+        values = Collections.singletonList(value);
+      }
+      if (values.isEmpty()) {
+        throw new IllegalArgumentException("No values specified for PropertyCondition: " + property);
+      }
+      for (int i = 0; i < values.size(); i++) {
+        property.validateType(values.get(i));
       }
 
-      return Collections.singletonList(value);
+      return values;
     }
 
     private static String getInList(final String columnIdentifier, final String value, final int valueCount, final boolean not) {

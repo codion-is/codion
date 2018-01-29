@@ -4778,3 +4778,4 @@
   Configuration.value() removed, doubleValue() and longValue() added
   Configuration.ConfigurationValue now abstract, public, subclasses refactored
   Server.ServerInfo.getLocale() and getTimeZone() added
+  EntityConditions.PropertyCondition now validates the types of the condition values according to the underlying property

@@ -261,6 +261,11 @@ public class EntityConditionsTest {
             .setOrderBy(Entities.orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_DEPARTMENT));
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void selectConditionInvalidType() {
+    entityConditions.selectCondition(TestDomain.T_EMP, TestDomain.EMP_COMMISSION, Condition.Type.LIKE, "test");
+  }
+
   private void assertKeyCondition(final EntityCondition condition) {
     assertEquals(TestDomain.T_DEPARTMENT, condition.getEntityId());
     assertEquals("deptno = ?", condition.getWhereClause());
