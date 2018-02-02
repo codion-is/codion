@@ -29,21 +29,21 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    * Value type: String<br>
    * Default value: localhost
    */
-  public static final Value<String> HTTP_SERVER_HOST_NAME = Configuration.stringValue("jminor.client.http.hostname", "localhost");
+  public static final Value<String> HTTP_CLIENT_HOST_NAME = Configuration.stringValue("jminor.client.http.hostname", "localhost");
 
   /**
    * The port which the http client should use.<br>
    * Value type: Integer<br>
    * Default value: 8080
    */
-  public static final Value<Integer> HTTP_SERVER_PORT = Configuration.integerValue("jminor.client.http.port", 8080);
+  public static final Value<Integer> HTTP_CLIENT_PORT = Configuration.integerValue("jminor.client.http.port", 8080);
 
   /**
    * Specifies whether https should be used.<br>
    * Value types: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("jminor.client.http.https", true);
+  public static final Value<Boolean> HTTP_CLIENT_SECURE = Configuration.booleanValue("jminor.client.http.secure", true);
 
   private final String serverHostName;
   private final String domainId;
@@ -58,12 +58,12 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    * @param user the user to use when initializing connections
    * @param clientTypeId the client type id
    * @param clientId a UUID identifying the client
-   * @see HttpEntityConnectionProvider#HTTP_SERVER_HOST_NAME
-   * @see HttpEntityConnectionProvider#HTTP_SERVER_PORT
+   * @see HttpEntityConnectionProvider#HTTP_CLIENT_HOST_NAME
+   * @see HttpEntityConnectionProvider#HTTP_CLIENT_PORT
    */
   public HttpEntityConnectionProvider(final String domainId, final User user, final String clientTypeId,
                                       final UUID clientId) {
-    this(domainId, HTTP_SERVER_HOST_NAME.get(), HTTP_SERVER_PORT.get(), HTTP_SERVER_SECURE.get(), user, clientTypeId, clientId);
+    this(domainId, HTTP_CLIENT_HOST_NAME.get(), HTTP_CLIENT_PORT.get(), HTTP_CLIENT_SECURE.get(), user, clientTypeId, clientId);
   }
 
   /**

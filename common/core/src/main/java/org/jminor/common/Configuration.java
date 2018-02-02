@@ -184,6 +184,7 @@ public final class Configuration {
       this.key = Objects.requireNonNull(key, "key");
       final String stringValue = System.getProperty(key);
       this.value = stringValue == null ? defaultValue : parse(stringValue);
+      LOG.debug(key + ": " + stringValue + " [default: " + defaultValue +"]");
     }
 
     @Override

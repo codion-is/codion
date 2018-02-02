@@ -126,6 +126,7 @@ runClientHttp {
     main = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
     systemProperties = [
             'jminor.client.connectionType': 'http',
+            'jminor.client.http.secure': 'false',
             'jminor.server.hostname': 'localhost',
             'jminor.report.path': '../../demos/empdept/build/classes/reports',
             'logback.configurationFile': 'src/main/resources/logback.xml'
@@ -148,6 +149,7 @@ runLoadTestHttp {
     main = 'org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
     systemProperties = [
             'jminor.client.connectionType': 'http',
+            'jminor.client.http.secure': 'false',
             'jminor.server.hostname': 'localhost',
             'jminor.report.path': '../../demos/empdept/build/classes/reports',
             'logback.configurationFile': 'src/main/resources/logback.xml'

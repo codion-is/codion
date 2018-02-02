@@ -108,6 +108,7 @@ runClientHttp {
     main = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
     systemProperties = [
             'jminor.client.connectionType': 'http',
+            'jminor.client.http.secure': 'false',
             'jminor.client.http.hostname': 'localhost',
             'jminor.report.path': '../../demos/chinook/build/classes/reports',
             'logback.configurationFile': 'src/main/resources/logback.xml'
@@ -130,6 +131,7 @@ runLoadTestHttp {
     main = 'org.jminor.framework.demos.chinook.testing.ChinookLoadTest'
     systemProperties = [
             'jminor.client.connectionType': 'http',
+            'jminor.client.http.secure': 'false',
             'jminor.client.http.hostname': 'localhost',
             'jminor.report.path': '../../demos/chinook/build/classes/reports',
             'logback.configurationFile': 'src/main/resources/logback.xml'

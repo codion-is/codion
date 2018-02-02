@@ -49,9 +49,9 @@ public final class HttpEntityConnectionTest {
   private static DefaultEntityConnectionServer server;
 
   private final HttpEntityConnection connection = new HttpEntityConnection("TestDomain",
-          HttpEntityConnectionProvider.HTTP_SERVER_HOST_NAME.get(),
-          HttpEntityConnectionProvider.HTTP_SERVER_PORT.get(),
-          HttpEntityConnectionProvider.HTTP_SERVER_SECURE.get(),
+          HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME.get(),
+          HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get(),
+          HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get(),
           UNIT_TEST_USER, "HttpEntityConnectionTest", UUID.randomUUID(),
           createConnectionManager());
 
@@ -187,7 +187,7 @@ public final class HttpEntityConnectionTest {
     Server.SERVER_ADMIN_PORT.set(2223);
     Server.SERVER_HOST_NAME.set("localhost");
     HttpServer.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
-    HttpEntityConnectionProvider.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
+    HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(WEB_SERVER_PORT_NUMBER);
     System.setProperty("java.security.policy", "resources/security/all_permissions.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityServletServer.class.getName());
@@ -195,7 +195,7 @@ public final class HttpEntityConnectionTest {
     Server.TRUSTSTORE.set("../../resources/security/JMinorClientTruststore");
     HttpServer.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpServer.HTTP_SERVER_SECURE.set(true);
-    HttpEntityConnectionProvider.HTTP_SERVER_SECURE.set(true);
+    HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(true);
   }
 
   private static void deconfigure() {
@@ -205,7 +205,7 @@ public final class HttpEntityConnectionTest {
     Server.SERVER_ADMIN_PORT.set(null);
     Server.SERVER_HOST_NAME.set(null);
     HttpServer.HTTP_SERVER_PORT.set(null);
-    HttpEntityConnectionProvider.HTTP_SERVER_PORT.set(null);
+    HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(null);
     System.clearProperty("java.security.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(null);
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(null);
@@ -213,7 +213,7 @@ public final class HttpEntityConnectionTest {
     Server.TRUSTSTORE.set(null);
     HttpServer.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
     HttpServer.HTTP_SERVER_SECURE.set(false);
-    HttpEntityConnectionProvider.HTTP_SERVER_SECURE.set(false);
+    HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(false);
   }
 
   private static class TestReportWrapper implements ReportWrapper, Serializable {

@@ -4779,3 +4779,5 @@
   Configuration.ConfigurationValue now abstract, public, subclasses refactored
   Server.ServerInfo.getLocale() and getTimeZone() added
   EntityConditions.PropertyCondition now validates the types of the condition values according to the underlying property
+  Demo run configurations fixed so they don't use https
+  Configuration, configuration value logging added
