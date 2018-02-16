@@ -4781,3 +4781,7 @@
   EntityConditions.PropertyCondition now validates the types of the condition values according to the underlying property
   Demo run configurations fixed so they don't use https
   Configuration, configuration value logging added
+  NavigableImagePanel.Coords renamed to Coordinates and made public along with isInImage() and panelToImageCoords(), getImageHeight() and getImageWidth() added
+  NavigableImagePanel dependency on EntityTablePanel removed
+  NavibaleImagePanel.imageMarkPoints() added along with overridable drawMark()
+  EntityTablePanel.getViewImageControl() added, viewImage() added for overriding, not implemented yet
