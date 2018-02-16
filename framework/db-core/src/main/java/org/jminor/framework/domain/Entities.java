@@ -728,14 +728,6 @@ public class Entities implements Serializable {
   }
 
   /**
-   * @param foreignKeyProperty the foreign key property
-   * @return the primary key properties of the referenced entity type
-   */
-  public final List<Property.ColumnProperty> getForeignProperties(final Property.ForeignKeyProperty foreignKeyProperty) {
-    return getPrimaryKeyProperties(foreignKeyProperty.getForeignEntityId());
-  }
-
-  /**
    * @param entityId the entity ID
    * @return a list containing all updatable properties associated with the given entity ID
    */

@@ -37,14 +37,14 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private final String entityId;
 
   /**
-   * The properties
+   * The properties mapped to their respective ids
    */
-  private final Map<String, Property> properties;
+  private final Map<String, Property> propertyMap;
 
   /**
    * A list view of the properties
    */
-  private final List<Property> propertyList;
+  private final List<Property> properties;
 
   /**
    * The ResultPacker responsible for packing entities of this type
@@ -174,7 +174,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * @throws IllegalArgumentException if no primary key property is specified
    */
   DefaultEntityDefinition(final String domainId, final String entityId, final String tableName,
-                          final Map<String, Property> properties,
+                          final Map<String, Property> propertyMap,
                           final ResultPacker<Entity> resultPacker,
                           final Map<String, Set<Property.DerivedProperty>> derivedProperties,
                           final List<Property.ColumnProperty> primaryKeyProperties,
@@ -190,7 +190,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.entityId = entityId;
     this.caption = entityId;
     this.tableName = tableName;
-    this.properties = properties;
+    this.propertyMap = propertyMap;
     this.derivedProperties = derivedProperties;
     this.primaryKeyProperties = primaryKeyProperties;
     this.foreignKeyProperties = foreignKeyProperties;
@@ -200,7 +200,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.denormalizedProperties = denormalizedProperties;
     this.selectColumnsString = selectColumnsString;
     this.hasDenormalizedProperties = !this.denormalizedProperties.isEmpty();
-    this.propertyList = Collections.unmodifiableList(new ArrayList(this.properties.values()));
+    this.properties = Collections.unmodifiableList(new ArrayList(this.propertyMap.values()));
     this.groupByClause = groupByClause;
     this.resultPacker = resultPacker;
   }
@@ -433,12 +433,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
   public Entity.Definition setSearchPropertyIds(final String... searchPropertyIds) {
     Objects.requireNonNull(searchPropertyIds, "searchPropertyIds");
     for (final String propertyId : searchPropertyIds) {
-      final Property property = properties.get(propertyId);
+      final Property property = propertyMap.get(propertyId);
       if (property == null) {
         throw new IllegalArgumentException("Property with ID '" + propertyId + "' not found in entity '" + getEntityId() + "'");
       }
-      if (!properties.get(propertyId).isString()) {
-        throw new IllegalArgumentException("Entity search property must be of type String: " + properties.get(propertyId));
+      if (!propertyMap.get(propertyId).isString()) {
+        throw new IllegalArgumentException("Entity search property must be of type String: " + propertyMap.get(propertyId));
       }
     }
 
@@ -449,13 +449,13 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Map<String, Property> getPropertyMap() {
-    return properties;
+    return propertyMap;
   }
 
   /** {@inheritDoc} */
   @Override
   public List<Property> getProperties() {
-    return propertyList;
+    return properties;
   }
 
   /** {@inheritDoc} */

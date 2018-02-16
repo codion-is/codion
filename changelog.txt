@@ -4787,3 +4787,4 @@
   EntityTablePanel.getViewImageControl() added, viewImage() added for overriding, not implemented yet
   Entity.KeyGenerator, primaryKeyProperty parameter removed from beforeInsert() and afterInsert()
   Entities.getModifiedColumnProperties() and getModifiedExceptionMessage() now static
+  Entities.getForeignProperties() removed

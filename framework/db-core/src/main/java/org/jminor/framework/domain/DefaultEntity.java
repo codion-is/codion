@@ -526,7 +526,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     if (properties.size() == 1) {
       return isValueNull(properties.get(0));
     }
-    final List<Property.ColumnProperty> foreignProperties = domain.getForeignProperties(foreignKeyProperty);
+    final List<Property.ColumnProperty> foreignProperties = domain.getPrimaryKeyProperties(foreignKeyProperty.getForeignEntityId());
     for (int i = 0; i < properties.size(); i++) {
       if (!foreignProperties.get(i).isNullable() && isValueNull(properties.get(i))) {
         return true;
@@ -598,7 +598,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
     referencedKeyCache = null;
     final List<Property.ColumnProperty> properties = foreignKeyProperty.getProperties();
-    final List<Property.ColumnProperty> foreignProperties = domain.getForeignProperties(foreignKeyProperty);
+    final List<Property.ColumnProperty> foreignProperties = domain.getPrimaryKeyProperties(foreignKeyProperty.getForeignEntityId());
     if (properties.size() > 1) {
       setCompositeForeignKeyValues(referencedEntity, properties, foreignProperties);
     }
@@ -649,7 +649,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   private Key initializeReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty) {
     final List<Property.ColumnProperty> properties = foreignKeyProperty.getProperties();
     if (foreignKeyProperty.isCompositeKey()) {
-      final List<Property.ColumnProperty> foreignProperties = domain.getForeignProperties(foreignKeyProperty);
+      final List<Property.ColumnProperty> foreignProperties = domain.getPrimaryKeyProperties(foreignKeyProperty.getForeignEntityId());
       final Map<Property.ColumnProperty, Object> values = new HashMap<>(properties.size());
       for (int i = 0; i < properties.size(); i++) {
         final Property.ColumnProperty foreignProperty = foreignProperties.get(i);

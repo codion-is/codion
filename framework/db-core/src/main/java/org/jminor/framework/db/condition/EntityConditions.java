@@ -304,7 +304,7 @@ public final class EntityConditions {
     final List<Entity.Key> keys = getEntityKeys(values);
     if (foreignKeyProperty.isCompositeKey()) {
       return createCompositeKeyCondition(foreignKeyProperty.getProperties(),
-              domain.getForeignProperties(foreignKeyProperty), conditionType, keys);
+              domain.getPrimaryKeyProperties(foreignKeyProperty.getForeignEntityId()), conditionType, keys);
     }
 
     if (keys.size() == 1) {
