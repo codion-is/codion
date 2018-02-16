@@ -4786,3 +4786,4 @@
   NavibaleImagePanel.imageMarkPoints() added along with overridable drawMark()
   EntityTablePanel.getViewImageControl() added, viewImage() added for overriding, not implemented yet
   Entity.KeyGenerator, primaryKeyProperty parameter removed from beforeInsert() and afterInsert()
+  Entities.getModifiedColumnProperties() and getModifiedExceptionMessage() now static

@@ -316,7 +316,7 @@ public final class LocalEntityConnection implements EntityConnection {
       }
       catch (final RecordModifiedException e) {
         rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
-        LOG.debug(domain.getModifiedExceptionMessage(e), e);
+        LOG.debug(Entities.getModifiedExceptionMessage(e), e);
         throw e;
       }
       catch (final UpdateException e) {
@@ -790,7 +790,7 @@ public final class LocalEntityConnection implements EntityConnection {
         if (current == null) {
           throw new RecordModifiedException(entity, null);
         }
-        final Collection<Property.ColumnProperty> modified = domain.getModifiedColumnProperties(entity, current);
+        final Collection<Property.ColumnProperty> modified = Entities.getModifiedColumnProperties(entity, current);
         if (!modified.isEmpty()) {
           throw new RecordModifiedException(entity, current);
         }

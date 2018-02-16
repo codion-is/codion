@@ -795,44 +795,6 @@ public class Entities implements Serializable {
   }
 
   /**
-   * @param entity the entity instance to check
-   * @param comparison the entity instance to compare with
-   * @return all {@link Property.ColumnProperty}s which value is missing or the original value differs from the one in the comparison
-   * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}
-   */
-  public final Collection<Property.ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison) {
-    final List<Property.ColumnProperty> properties = new ArrayList<>();
-    for (final Property property : comparison.keySet()) {
-      //BLOB property values are not loaded, so we can't compare those
-      if (property instanceof Property.ColumnProperty && !property.isType(Types.BLOB)
-              && isValueMissingOrModified(entity, comparison, property.getPropertyId())) {
-        properties.add((Property.ColumnProperty) property);
-      }
-    }
-
-    return properties;
-  }
-
-  /**
-   * @param exception the record modified exception
-   * @return a human-readable String describing the modification
-   */
-  public final String getModifiedExceptionMessage(final RecordModifiedException exception) {
-    final Entity entity = (Entity) exception.getRow();
-    final Entity modified = (Entity) exception.getModifiedRow();
-    if (modified == null) {//record has been deleted
-      return entity + " " + FrameworkMessages.get(FrameworkMessages.HAS_BEEN_DELETED);
-    }
-    final Collection<Property.ColumnProperty> modifiedProperties = getModifiedColumnProperties(entity, modified);
-    final StringBuilder builder = new StringBuilder(entity.getEntityId());
-    for (final Property.ColumnProperty property : modifiedProperties) {
-      builder.append("\n").append(property).append(": ").append(entity.getOriginal(property)).append(" -> ").append(modified.get(property));
-    }
-
-    return builder.toString();
-  }
-
-  /**
    * @return a Serializer, if one is available on the classpath
    */
   @SuppressWarnings({"unchecked"})
@@ -1000,6 +962,44 @@ public class Entities implements Serializable {
     }
 
     return modifiedEntities;
+  }
+
+  /**
+   * @param entity the entity instance to check
+   * @param comparison the entity instance to compare with
+   * @return all {@link Property.ColumnProperty}s which value is missing or the original value differs from the one in the comparison
+   * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}
+   */
+  public static final Collection<Property.ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison) {
+    final List<Property.ColumnProperty> properties = new ArrayList<>();
+    for (final Property property : comparison.keySet()) {
+      //BLOB property values are not loaded, so we can't compare those
+      if (property instanceof Property.ColumnProperty && !property.isType(Types.BLOB)
+              && isValueMissingOrModified(entity, comparison, property.getPropertyId())) {
+        properties.add((Property.ColumnProperty) property);
+      }
+    }
+
+    return properties;
+  }
+
+  /**
+   * @param exception the record modified exception
+   * @return a human-readable String describing the modification
+   */
+  public static final String getModifiedExceptionMessage(final RecordModifiedException exception) {
+    final Entity entity = (Entity) exception.getRow();
+    final Entity modified = (Entity) exception.getModifiedRow();
+    if (modified == null) {//record has been deleted
+      return entity + " " + FrameworkMessages.get(FrameworkMessages.HAS_BEEN_DELETED);
+    }
+    final Collection<Property.ColumnProperty> modifiedProperties = getModifiedColumnProperties(entity, modified);
+    final StringBuilder builder = new StringBuilder(entity.getEntityId());
+    for (final Property.ColumnProperty property : modifiedProperties) {
+      builder.append("\n").append(property).append(": ").append(entity.getOriginal(property)).append(" -> ").append(modified.get(property));
+    }
+
+    return builder.toString();
   }
 
   /**

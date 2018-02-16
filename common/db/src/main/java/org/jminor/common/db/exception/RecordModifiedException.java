@@ -26,7 +26,7 @@ public final class RecordModifiedException extends UpdateException {
   }
 
   /**
-   * @return the row bing updated
+   * @return the row being updated
    */
   public Object getRow() {
     return row;
