@@ -221,18 +221,17 @@ public final class LocalEntityConnection implements EntityConnection {
         for (int i = 0; i < entities.size(); i++) {
           final Entity entity = entities.get(i);
           final String entityId = entity.getEntityId();
-          final Property.ColumnProperty firstPrimaryKeyProperty = domain.getPrimaryKeyProperties(entityId).get(0);
           final Entity.KeyGenerator keyGenerator = domain.getKeyGenerator(entityId);
+          keyGenerator.beforeInsert(entity, connection);
+
           final List<Property.ColumnProperty> insertColumnProperties = domain.getColumnProperties(entityId,
                   !keyGenerator.getType().isAutoIncrement(), false, true);
-          keyGenerator.beforeInsert(entity, firstPrimaryKeyProperty, connection);
-
           populateStatementPropertiesAndValues(true, entity, insertColumnProperties, statementProperties, statementValues);
 
           insertSQL = createInsertSQL(entityId, statementProperties);
           statement = prepareStatement(insertSQL);
           executePreparedUpdate(statement, insertSQL, statementProperties, statementValues);
-          keyGenerator.afterInsert(entity, firstPrimaryKeyProperty, connection);
+          keyGenerator.afterInsert(entity, connection);
 
           insertedKeys.add(entity.getKey());
 

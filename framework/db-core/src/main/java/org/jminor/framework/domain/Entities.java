@@ -937,7 +937,7 @@ public class Entities implements Serializable {
    * @param columnName the primary key column name
    * @return a incrementing primary key generator
    */
-  public static final Entity.KeyGenerator incrementKeyGenerator(final String tableName, final String columnName) {
+  public final Entity.KeyGenerator incrementKeyGenerator(final String tableName, final String columnName) {
     return new IncrementKeyGenerator(tableName, columnName);
   }
 
@@ -946,7 +946,7 @@ public class Entities implements Serializable {
    * @param sequenceName the sequence name
    * @return a sequence based primary key generator
    */
-  public static final Entity.KeyGenerator sequenceKeyGenerator(final String sequenceName) {
+  public final Entity.KeyGenerator sequenceKeyGenerator(final String sequenceName) {
     return new SequenceKeyGenerator(sequenceName);
   }
 
@@ -955,8 +955,13 @@ public class Entities implements Serializable {
    * @param query the query
    * @return a query based primary key generator
    */
-  public static final Entity.KeyGenerator queriedKeyGenerator(final String query) {
-    return queriedKeyGenerator(query);
+  public final Entity.KeyGenerator queriedKeyGenerator(final String query) {
+    return new QueriedKeyGenerator() {
+      @Override
+      protected String getQuery(final Database database) {
+        return query;
+      }
+    };
   }
 
   /**
@@ -964,7 +969,7 @@ public class Entities implements Serializable {
    * @param valueSource the value source, whether a sequence or a table name
    * @return a auto-increment based primary key generator
    */
-  public static final Entity.KeyGenerator automaticKeyGenerator(final String valueSource) {
+  public final Entity.KeyGenerator automaticKeyGenerator(final String valueSource) {
     return new AutomaticKeyGenerator(valueSource);
   }
 
@@ -1898,19 +1903,21 @@ public class Entities implements Serializable {
     }
 
     @Override
-    public void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
-                             final DatabaseConnection connection) throws SQLException {/*Provided for subclasses*/}
+    public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {/*Provided for subclasses*/}
 
     @Override
-    public void afterInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
-                            final DatabaseConnection connection) throws SQLException {/*Provided for subclasses*/}
+    public void afterInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {/*Provided for subclasses*/}
   }
 
-  abstract static class QueriedKeyGenerator extends DefaultKeyGenerator {
+  abstract class QueriedKeyGenerator extends DefaultKeyGenerator {
 
     @Override
     public Type getType() {
       return Type.QUERY;
+    }
+
+    protected final Property.ColumnProperty getPrimaryKeyProperty(final String entityId) {
+      return getPrimaryKeyProperties(entityId).get(0);
     }
 
     protected final void queryAndSet(final Entity entity, final Property.ColumnProperty keyProperty,
@@ -1932,7 +1939,7 @@ public class Entities implements Serializable {
     protected abstract String getQuery(final Database database);
   }
 
-  static final class IncrementKeyGenerator extends QueriedKeyGenerator {
+  final class IncrementKeyGenerator extends QueriedKeyGenerator {
 
     private final String query;
 
@@ -1946,8 +1953,8 @@ public class Entities implements Serializable {
     }
 
     @Override
-    public void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
-                             final DatabaseConnection connection) throws SQLException {
+    public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
+      final Property.ColumnProperty primaryKeyProperty = getPrimaryKeyProperty(entity.getEntityId());
       if (entity.isValueNull(primaryKeyProperty)) {
         queryAndSet(entity, primaryKeyProperty, connection);
       }
@@ -1959,7 +1966,7 @@ public class Entities implements Serializable {
     }
   }
 
-  static final class SequenceKeyGenerator extends QueriedKeyGenerator {
+  final class SequenceKeyGenerator extends QueriedKeyGenerator {
 
     private final String sequenceName;
 
@@ -1973,8 +1980,8 @@ public class Entities implements Serializable {
     }
 
     @Override
-    public void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
-                             final DatabaseConnection connection) throws SQLException {
+    public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
+      final Property.ColumnProperty primaryKeyProperty = getPrimaryKeyProperty(entity.getEntityId());
       if (entity.isValueNull(primaryKeyProperty)) {
         queryAndSet(entity, primaryKeyProperty, connection);
       }
@@ -1986,7 +1993,7 @@ public class Entities implements Serializable {
     }
   }
 
-  static final class AutomaticKeyGenerator extends QueriedKeyGenerator {
+  final class AutomaticKeyGenerator extends QueriedKeyGenerator {
 
     private final String valueSource;
 
@@ -2000,9 +2007,8 @@ public class Entities implements Serializable {
     }
 
     @Override
-    public void afterInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
-                            final DatabaseConnection connection) throws SQLException {
-      queryAndSet(entity, primaryKeyProperty, connection);
+    public void afterInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
+      queryAndSet(entity, getPrimaryKeyProperty(entity.getEntityId()), connection);
     }
 
     @Override
