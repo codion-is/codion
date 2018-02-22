@@ -333,7 +333,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isCellEditable(final int rowIndex, final int columnIndex) {
+  public boolean isCellEditable(final int rowIndex, final int columnIndex) {
     return false;
   }
 
@@ -350,7 +350,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public final void setValueAt(final Object value, final int rowIndex, final int columnIndex) {
+  public void setValueAt(final Object value, final int rowIndex, final int columnIndex) {
     throw new UnsupportedOperationException("setValueAt is not supported");
   }
 

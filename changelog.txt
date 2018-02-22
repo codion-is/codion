@@ -4788,3 +4788,5 @@
   Entity.KeyGenerator, primaryKeyProperty parameter removed from beforeInsert() and afterInsert()
   Entities.getModifiedColumnProperties() and getModifiedExceptionMessage() now static
   Entities.getForeignProperties() removed
+  SwingEntityTableModel.isCellEditable() and setValueAt() no longer final
+  EntityTablePanel now calls getJTable().getTableHeader().setReorderingAllowed() in constructor instead of initializeTable()

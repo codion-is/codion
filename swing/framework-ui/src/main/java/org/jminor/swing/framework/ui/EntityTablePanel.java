@@ -238,6 +238,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
             new PropertyFilterPanel(tableModel.getConditionModel().getPropertyFilterModel(
                     ((Property) column.getIdentifier()).getPropertyId()), true, true));
     getJTable().setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
+    getJTable().getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
     this.conditionPanel = conditionPanel;
     if (conditionPanel != null) {
       this.conditionScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -1472,7 +1473,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       return label;
     });
     header.setFocusable(false);
-    header.setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
     if (includePopupMenu) {
       setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControlSets));
     }
