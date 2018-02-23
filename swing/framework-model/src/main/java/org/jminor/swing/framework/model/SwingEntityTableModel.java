@@ -322,19 +322,43 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     return getColumnModel().getColumnIndex(getDomain().getProperty(getEntityId(), propertyId));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Returns true if the cell at <code>rowIndex</code> and <code>modelColumnIndex</code>
+   * is editable.  Otherwise, <code>setValueAt</code> on the cell will not change the value of that cell.
+   * @param rowIndex the row whose value to be queried
+   * @param modelColumnIndex the column whose value to be queried
+   * @return true if the cell is editable
+   * @see #setValueAt
+   */
   @Override
-  public final Object getValueAt(final int rowIndex, final int columnIndex) {
-    final Property property = getColumnModel().getColumnIdentifier(columnIndex);
+  public boolean isCellEditable(final int rowIndex, final int modelColumnIndex) {
+    return false;
+  }
+
+  /**
+   * Returns the value for the cell at <code>modelColumnIndex</code> and <code>rowIndex</code>.   *
+   * @param rowIndex the row whose value is to be queried
+   * @param modelColumnIndex the column whose value is to be queried
+   * @return the value Object at the specified cell
+   */
+  @Override
+  public final Object getValueAt(final int rowIndex, final int modelColumnIndex) {
+    final Property property = getColumnModel().getColumnIdentifier(modelColumnIndex);
     final Entity entity = getItemAt(rowIndex);
 
     return getValue(entity, property);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Sets the value in the cell at <code>columnIndex</code> and
+   * <code>rowIndex</code> to <code>aValue</code>.
+   * @param value the new value
+   * @param rowIndex the row whose value is to be changed
+   * @param modelColumnIndex the model index of the column to be changed
+   */
   @Override
-  public boolean isCellEditable(final int rowIndex, final int columnIndex) {
-    return false;
+  public void setValueAt(final Object value, final int rowIndex, final int modelColumnIndex) {
+    throw new UnsupportedOperationException("setValueAt is not supported");
   }
 
   /**
@@ -346,12 +370,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    */
   public void setSortingDirective(final String propertyId, final SortingDirective directive, final boolean addColumnToSort) {
     getSortModel().setSortingDirective(getDomain().getProperty(getEntityId(), propertyId), directive, addColumnToSort);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void setValueAt(final Object value, final int rowIndex, final int columnIndex) {
-    throw new UnsupportedOperationException("setValueAt is not supported");
   }
 
   /** {@inheritDoc} */

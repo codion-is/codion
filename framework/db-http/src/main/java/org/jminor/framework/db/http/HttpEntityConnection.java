@@ -81,7 +81,7 @@ final class HttpEntityConnection implements EntityConnection {
 
   private final String domainId;
   private final User user;
-  private final boolean https;
+  private final boolean httpsEnabled;
   private final String baseurl;
   private final HttpClientConnectionManager connectionManager;
   private final CloseableHttpClient httpClient;
@@ -98,20 +98,21 @@ final class HttpEntityConnection implements EntityConnection {
    * @param domain the entities entities
    * @param serverHostName the http server host name
    * @param serverPort the http server port
+   * @param httpsEnabled if true then https is used
    * @param user the user
    * @param clientTypeId the client type id
    * @param clientId the client id
    */
   HttpEntityConnection(final String domainId, final String serverHostName, final int serverPort,
-                       final boolean https, final User user, final String clientTypeId, final UUID clientId,
+                       final boolean httpsEnabled, final User user, final String clientTypeId, final UUID clientId,
                        final HttpClientConnectionManager connectionManager) {
     this.domainId = Objects.requireNonNull(domainId, DOMAIN_ID);
     this.user = Objects.requireNonNull(user, "user");
-    this.https = https;
+    this.httpsEnabled = httpsEnabled;
     this.baseurl =  Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + "/entities/";
     this.connectionManager = Objects.requireNonNull(connectionManager, "connectionManager");
     this.httpClient = createHttpClient(clientTypeId, clientId);
-    this.targetHost = new HttpHost(serverHostName, serverPort, https ? HTTPS : HTTP);
+    this.targetHost = new HttpHost(serverHostName, serverPort, httpsEnabled ? HTTPS : HTTP);
     this.httpContext = createHttpContext(user, targetHost);
     this.domain = initializeDomain();
     this.conditions = new EntityConditions(this.domain);
@@ -484,7 +485,7 @@ final class HttpEntityConnection implements EntityConnection {
     return HttpClientBuilder.create()
             .setDefaultRequestConfig(REQUEST_CONFIG)
             .setConnectionManager(connectionManager)
-            .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
+            .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> {
               request.setHeader(DOMAIN_ID, domainId);
               request.setHeader(CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(CLIENT_ID, clientIdString);
@@ -511,7 +512,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   private URIBuilder createURIBuilder(final String path) {
-    return new URIBuilder().setScheme(https ? HTTPS : HTTP).setHost(baseurl).setPath(path);
+    return new URIBuilder().setScheme(httpsEnabled ? HTTPS : HTTP).setHost(baseurl).setPath(path);
   }
 
   private static <T> T handleResponse(final CloseableHttpResponse closeableHttpResponse) throws Exception {

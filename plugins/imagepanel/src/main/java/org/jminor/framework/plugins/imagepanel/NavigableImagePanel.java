@@ -870,9 +870,7 @@ public class NavigableImagePanel extends JPanel {
 
     //draw marks
     if (!imageMarkPoints.isEmpty()) {
-      imageMarkPoints.forEach(imageMarkPoint -> {
-        drawMark((Graphics2D) g, imageToPanelCoords(imageMarkPoint), scale);
-      });
+      imageMarkPoints.forEach(imageMarkPoint -> drawMark((Graphics2D) g, imageToPanelCoords(imageMarkPoint), scale));
     }
   }
 

@@ -168,7 +168,7 @@ public final class Configuration {
    * A Value for configuration, setting the value also sets the System property
    * @param <T> the value type
    */
-  public static abstract class ConfigurationValue<T> implements Value<T> {
+  public abstract static class ConfigurationValue<T> implements Value<T> {
 
     private final Event<T> changeEvent = Events.event();
     private final String key;
