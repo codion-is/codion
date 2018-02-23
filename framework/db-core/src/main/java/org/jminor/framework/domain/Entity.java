@@ -808,6 +808,11 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     List<Property.ColumnProperty> getPrimaryKeyProperties();
 
     /**
+     * @return a map containing the primary key properties mapped to their respective propertyIds
+     */
+    Map<String, Property.ColumnProperty> getPrimaryKeyPropertyMap();
+
+    /**
      * Retrieves the column list to use when constructing a select query for this entity type
      * @return the query column list, i.e. "col1, col2, col3,..."
      */

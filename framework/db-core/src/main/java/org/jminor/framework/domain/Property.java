@@ -654,10 +654,10 @@ public interface Property extends Attribute, Serializable {
     interface Provider extends Serializable {
 
       /**
-       * @param linkedValues the linked values, mapped to their respective propertyIds
+       * @param sourceValues the source values, mapped to their respective propertyIds
        * @return the derived value
        */
-      Object getValue(final Map<String, Object> linkedValues);
+      Object getValue(final Map<String, Object> sourceValues);
     }
   }
 

@@ -117,7 +117,7 @@ public class Entities implements Serializable {
    * @return a new {@link Entity} instance
    */
   public final Entity entity(final Entity.Key key) {
-    return new DefaultEntity(this, key.getEntityId(), Objects.requireNonNull(key, "key"));
+    return new DefaultEntity(this, key);
   }
 
   /**
@@ -170,7 +170,7 @@ public class Entities implements Serializable {
    * @return a new {@link Entity.Key} instance
    */
   public final Entity.Key key(final String entityId) {
-    return new DefaultEntity.DefaultKey(this, getDefinition(entityId), null);
+    return new DefaultEntity.DefaultKey(getDefinition(entityId), null);
   }
 
   /**

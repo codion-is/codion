@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -150,6 +151,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
    */
   private final Map<String, Set<Property.DerivedProperty>> derivedProperties;
   private final List<Property.ColumnProperty> primaryKeyProperties;
+  private final Map<String, Property.ColumnProperty> primaryKeyPropertyMap;
   private final List<Property.ForeignKeyProperty> foreignKeyProperties;
   private final List<Property.TransientProperty> transientProperties;
   private final List<Property> visibleProperties;
@@ -193,6 +195,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.propertyMap = propertyMap;
     this.derivedProperties = derivedProperties;
     this.primaryKeyProperties = primaryKeyProperties;
+    this.primaryKeyPropertyMap = initializePrimaryKeyPropertyMap();
     this.foreignKeyProperties = foreignKeyProperties;
     this.transientProperties = transientProperties;
     this.visibleProperties = visibleProperties;
@@ -486,6 +489,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return primaryKeyProperties;
   }
 
+  @Override
+  public Map<String, Property.ColumnProperty> getPrimaryKeyPropertyMap() {
+    return primaryKeyPropertyMap;
+  }
+
   /** {@inheritDoc} */
   @Override
   public String getSelectColumnsString() {
@@ -588,5 +596,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     return backgroundColorProvider.getBackgroundColor(entity, property);
+  }
+
+  private Map<String, Property.ColumnProperty> initializePrimaryKeyPropertyMap() {
+    final Map<String, Property.ColumnProperty> map = new HashMap<>(this.primaryKeyProperties.size());
+    this.primaryKeyProperties.forEach(property -> map.put(property.getPropertyId(), property));
+
+    return Collections.unmodifiableMap(map);
   }
 }

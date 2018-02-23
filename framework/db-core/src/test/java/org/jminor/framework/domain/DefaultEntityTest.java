@@ -177,7 +177,7 @@ public class DefaultEntityTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void compositeKeySingleValueConstructor() {
-    new DefaultEntity.DefaultKey(ENTITIES, ENTITIES.getDefinition(TestDomain.T_COMPOSITE_MASTER), 1);
+    new DefaultEntity.DefaultKey(ENTITIES.getDefinition(TestDomain.T_COMPOSITE_MASTER), 1);
   }
 
   @Test(expected = IllegalArgumentException.class)

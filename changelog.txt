@@ -4791,3 +4791,5 @@
   SwingEntityTableModel.isCellEditable() and setValueAt() no longer final
   EntityTablePanel now calls getJTable().getTableHeader().setReorderingAllowed() in constructor instead of initializeTable()
   Some minor changes
+  Entity.Definition.getPrimaryKeyPropertyMap() added
+  DefaultEntity.DefaultKey.domain field removed
