@@ -351,10 +351,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final List<R> getAllItems() {
-    final List<R> entities = new ArrayList<>(visibleItems);
-    entities.addAll(filteredItems);
+    final List<R> items = new ArrayList<>(visibleItems);
+    items.addAll(filteredItems);
 
-    return entities;
+    return items;
   }
 
   /** {@inheritDoc} */
