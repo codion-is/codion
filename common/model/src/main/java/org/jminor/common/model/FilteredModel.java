@@ -34,16 +34,14 @@ public interface FilteredModel<T> {
   void filterContents();
 
   /**
-   * Returns the filter condition defined by this model, this returns
-   * a "accept all" condition if no condition is defined.
+   * Returns the filter condition defined by this model, null if no filter condition has been set.
    * @return the filter condition
-   * @see FilterCondition.AcceptAllCondition
    */
   FilterCondition<T> getFilterCondition();
 
   /**
    * Sets the filter condition and filters the model
-   * @param filterCondition the FilterCondition to use
+   * @param filterCondition the FilterCondition to use, null if no filtering should be performed
    */
   void setFilterCondition(final FilterCondition<T> filterCondition);
 

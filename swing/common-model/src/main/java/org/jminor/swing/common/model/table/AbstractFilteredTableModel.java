@@ -360,10 +360,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final void removeItem(final R item) {
-    final int index = visibleItems.indexOf(item);
-    if (index >= 0) {
-      visibleItems.remove(index);
-      fireTableRowsDeleted(index, index);
+    final int visibleItemIndex = visibleItems.indexOf(item);
+    if (visibleItemIndex >= 0) {
+      visibleItems.remove(visibleItemIndex);
+      fireTableRowsDeleted(visibleItemIndex, visibleItemIndex);
     }
     else {
       final int filteredIndex = filteredItems.indexOf(item);
@@ -376,12 +376,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final void removeItems(final Collection<R> items) {
-    boolean removed = false;
+    boolean visibleItemRemoved = false;
     for (final R item : items) {
       final int index = visibleItems.indexOf(item);
       if (index >= 0) {
         visibleItems.remove(index);
-        removed = true;
+        visibleItemRemoved = true;
       }
       else {
         final int filteredIndex = filteredItems.indexOf(item);
@@ -390,7 +390,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         }
       }
     }
-    if (removed) {
+    if (visibleItemRemoved) {
       fireTableDataChanged();
     }
   }
@@ -511,7 +511,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   protected final void addItems(final List<R> items, final boolean atFront) {
     int index = 0;
     for (final R item : items) {
-      if (filterCondition.include(item)) {
+      if (filterCondition == null || filterCondition.include(item)) {
         if (atFront) {
           visibleItems.add(index++, item);
         }
@@ -538,7 +538,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   protected final void addItems(final List<R> items, final int index) {
     int counter = 0;
     for (final R item : items) {
-      if (filterCondition.include(item)) {
+      if (filterCondition == null || filterCondition.include(item)) {
         visibleItems.add(index + counter++, item);
       }
       else {

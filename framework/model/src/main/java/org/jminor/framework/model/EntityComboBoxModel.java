@@ -5,6 +5,7 @@ package org.jminor.framework.model;
 
 import org.jminor.common.EventListener;
 import org.jminor.common.db.condition.Condition;
+import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entity;
@@ -22,6 +23,22 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
    * @return the entity with the given key if found in the model, null otherwise
    */
   Entity getEntity(final Entity.Key primaryKey);
+
+  /**
+   * Use this method to retrieve the default foreign key filter condition model if you
+   * want to add a custom {@link FilterCondition} to this model via {@link #setFilterCondition(FilterCondition)}.
+   * <pre>
+   *   FilterCondition fkCondition = model.getForeignKeyFilterCondition();
+   *   model.setFilterCondition(new FilterCondition() {
+   *     public boolean include(Entity item) {
+   *       return fkCondition.include(item) &amp;&amp; ...;
+   *     }
+   *   });
+   * </pre>
+   * @return the {@link FilterCondition} based on the foreign key filter entities
+   * @see #setForeignKeyFilterEntities(String, Collection)
+   */
+  FilterCondition<Entity> getForeignKeyFilterCondition();
 
   /**
    * @param foreignKeyPropertyId the ID of the foreign key property

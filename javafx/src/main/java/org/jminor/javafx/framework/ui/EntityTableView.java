@@ -7,7 +7,6 @@ import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.FilterCondition;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -309,7 +308,7 @@ public class EntityTableView extends TableView<Entity> {
     listModel.getSortedList().comparatorProperty().bind(comparatorProperty());
     filterText.textProperty().addListener((observable, oldValue, newValue) -> {
       if (Util.nullOrEmpty(newValue)) {
-        listModel.setFilterCondition(new FilterCondition.AcceptAllCondition());
+        listModel.setFilterCondition(null);
       }
       else {
         listModel.setFilterCondition(item -> {

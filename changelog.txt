@@ -4793,3 +4793,6 @@
   Some minor changes
   Entity.Definition.getPrimaryKeyPropertyMap() added
   DefaultEntity.DefaultKey.domain field removed
+  AbstractFilteredTableModel bug fixed, now guards against a null filterCondition
+  FilteredModel implementations improved and made somewhat consistent
+  FilteredTablePanel, EntityTablePanel, added constructor with JTable parameter

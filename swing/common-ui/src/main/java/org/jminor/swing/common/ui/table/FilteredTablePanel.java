@@ -165,14 +165,29 @@ public class FilteredTablePanel<R, C> extends JPanel {
   /**
    * Instantiates a new FilteredTablePanel.
    * @param tableModel the table model
-   * @param conditionPanelProvider the column condition panel provider
-   * the column filter models found in the table model
+   * @param conditionPanelProvider the column condition panel provider the column filter models found in the table model
    */
   public FilteredTablePanel(final FilteredTableModel<R, C> tableModel, final ColumnConditionPanelProvider<C> conditionPanelProvider) {
-    Objects.requireNonNull(tableModel, "tableModel");
-    this.tableModel = tableModel;
+    this(new JTable(Objects.requireNonNull(tableModel, "tableModel"), tableModel.getColumnModel(),
+                    (ListSelectionModel) tableModel.getSelectionModel()), conditionPanelProvider);
+  }
+
+  /**
+   * Instantiates a new FilteredTablePanel. Note that the JTable must have been instantiated with a {@link FilteredTableModel}.
+   * <pre>
+   *   FilteredTableModel tableModel = ...;
+   *   JTable table = new JTable(tableModel, tableModel.getColumnModel(), (ListSelectionModel) tableModel.getSelectionModel());
+   * </pre>
+   * @param table the table to use
+   * @param conditionPanelProvider the column condition panel provider the column filter models found in the table model
+   * @see FilteredTableModel#getColumnModel()
+   * @see FilteredTableModel#getSelectionModel()
+   */
+  public FilteredTablePanel(final JTable table, final ColumnConditionPanelProvider<C> conditionPanelProvider) {
+    Objects.requireNonNull(table, "table");
+    this.table = table;
+    this.tableModel = (FilteredTableModel<R, C>) table.getModel();
     this.conditionPanelProvider = conditionPanelProvider;
-    this.table = initializeJTable();
     this.tableScrollPane = new JScrollPane(table);
     this.horizontalTableScrollBar = tableScrollPane.getHorizontalScrollBar();
     this.searchField = initializeSearchField();
@@ -416,10 +431,6 @@ public class FilteredTablePanel<R, C> extends JPanel {
    */
   final void findNextValue(final boolean addToSelection, final boolean forward, final String searchText) {
     performSearch(addToSelection, lastSearchResultCoordinate.y + (forward ? 1 : -1), forward, searchText);
-  }
-
-  private JTable initializeJTable() {
-    return new JTable(tableModel, tableModel.getColumnModel(), (ListSelectionModel) tableModel.getSelectionModel());
   }
 
   private JTextField initializeSearchField() {

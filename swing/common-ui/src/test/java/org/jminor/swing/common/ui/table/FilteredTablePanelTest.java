@@ -7,9 +7,11 @@ import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.AbstractTableSortModel;
+import org.jminor.swing.common.model.table.FilteredTableModel;
 
 import org.junit.Test;
 
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.TableColumn;
 import java.awt.AWTException;
@@ -35,7 +37,12 @@ public class FilteredTablePanelTest {
 
   @Test(expected = NullPointerException.class)
   public void constructorNullTableModel() {
-    new FilteredTablePanel<String, Integer>(null, null);
+    new FilteredTablePanel<String, Integer>((FilteredTableModel) null, null);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void constructorNullTable() {
+    new FilteredTablePanel<String, Integer>((JTable) null, null);
   }
 
   @Test

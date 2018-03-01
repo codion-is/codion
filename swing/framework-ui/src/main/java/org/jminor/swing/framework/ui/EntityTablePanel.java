@@ -234,11 +234,26 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @param conditionPanel the condition panel
    */
   public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityTableConditionPanel conditionPanel) {
-    super((FilteredTableModel<Entity, Property>) tableModel, column ->
-            new PropertyFilterPanel(tableModel.getConditionModel().getPropertyFilterModel(
+    this(new JTable(tableModel, tableModel.getColumnModel(), (ListSelectionModel) tableModel.getSelectionModel()), conditionPanel);
+  }
+
+  /**
+   * Initializes a new EntityTablePanel instance. Note that the JTable must have been instantiated with a {@link SwingEntityTableModel}.
+   * <pre>
+   *   SwingEntityTableModel tableModel = ...;
+   *   JTable table = new JTable(tableModel, tableModel.getColumnModel(), (ListSelectionModel) tableModel.getSelectionModel());
+   * </pre>
+   * @param table the JTable to use
+   * @param conditionPanel the condition panel
+   * @see SwingEntityTableModel#getColumnModel()
+   * @see SwingEntityTableModel#getSelectionModel()
+   */
+  public EntityTablePanel(final JTable table, final EntityTableConditionPanel conditionPanel) {
+    super(table, column ->
+            new PropertyFilterPanel(((SwingEntityTableModel) table.getModel()).getConditionModel().getPropertyFilterModel(
                     ((Property) column.getIdentifier()).getPropertyId()), true, true));
-    getJTable().setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
-    getJTable().getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
+    table.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
+    table.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
     this.conditionPanel = conditionPanel;
     if (conditionPanel != null) {
       this.conditionScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
