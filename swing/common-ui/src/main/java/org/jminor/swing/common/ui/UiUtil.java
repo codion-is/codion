@@ -51,8 +51,10 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
+import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.plaf.FontUIResource;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
@@ -1453,6 +1455,28 @@ public final class UiUtil {
    */
   public static void setClipboard(final String string) {
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(string), null);
+  }
+
+  /**
+   * @param multiplier the font size multiplier
+   */
+  public static void setFontSize(final float multiplier) {
+    final UIDefaults defaults = UIManager.getDefaults();
+    final Enumeration enumeration = defaults.keys();
+    while (enumeration.hasMoreElements()) {
+      final Object key = enumeration.nextElement();
+      final Object defaultValue = defaults.get(key);
+      if (defaultValue instanceof Font) {
+        final Font font = (Font) defaultValue;
+        final int newSize = Math.round(font.getSize() * multiplier);
+        if (defaultValue instanceof FontUIResource) {
+          defaults.put(key, new FontUIResource(font.getName(), font.getStyle(), newSize));
+        }
+        else {
+          defaults.put(key, new Font(font.getName(), font.getStyle(), newSize));
+        }
+      }
+    }
   }
 
   /**

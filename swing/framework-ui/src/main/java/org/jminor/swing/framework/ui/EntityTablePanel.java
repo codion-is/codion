@@ -165,6 +165,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private static final int STATUS_MESSAGE_FONT_SIZE = 12;
   private static final int POPUP_LOCATION_X_OFFSET = 42;
   private static final int POPUP_LOCATION_EMPTY_SELECTION = 100;
+  private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
   private static final String TRIPLEDOT = "...";
 
   private final Event tableDoubleClickedEvent = Events.event();
@@ -254,6 +255,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
                     ((Property) column.getIdentifier()).getPropertyId()), true, true));
     table.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     table.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
+    table.setRowHeight(table.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
     this.conditionPanel = conditionPanel;
     if (conditionPanel != null) {
       this.conditionScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

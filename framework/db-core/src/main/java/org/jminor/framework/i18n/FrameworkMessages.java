@@ -123,6 +123,8 @@ public final class FrameworkMessages {
 
   public static final String SELECT_LOOK_AND_FEEL = "select_look_and_feel";
   public static final String LOOK_AND_FEEL_SELECTED_MESSAGE = "look_and_feel_selected_message";
+  public static final String SELECT_FONT_SIZE = "select_font_size";
+  public static final String FONT_SIZE_SELECTED_MESSAGE = "font_size_selected_message";
 
   private FrameworkMessages() {}
 

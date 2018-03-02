@@ -121,11 +121,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public static final Value<Integer> TAB_PLACEMENT = Configuration.integerValue("jminor.swing.tabPlacement", JTabbedPane.TOP);
 
   private static final String LOOK_AND_FEEL_PROPERTY = "org.jminor.swing.framework.ui.LookAndFeel";
+  private static final String FONT_SIZE_PROPERTY = "org.jminor.swing.framework.ui.FontSize";
   private static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
   private static final Dimension MINIMUM_HELP_WINDOW_SIZE = new Dimension(600, 750);
   private static final double HELP_DIALOG_SCREEN_SIZE_RATIO = 0.1;
 
   private final String applicationLookAndFeelProperty;
+  private final String applicationFontSizeProperty;
 
   private final List<EntityPanelProvider> entityPanelProviders = new ArrayList<>();
   private final List<EntityPanelProvider> supportPanelProviders = new ArrayList<>();
@@ -150,6 +152,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public EntityApplicationPanel() {
     this.applicationLookAndFeelProperty = LOOK_AND_FEEL_PROPERTY + "#" + getClass().getSimpleName();
+    this.applicationFontSizeProperty = FONT_SIZE_PROPERTY + "#" + getClass().getSimpleName();
     setUncaughtExceptionHandler();
   }
 
@@ -321,6 +324,23 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (option == JOptionPane.OK_OPTION) {
       PreferencesUtil.putUserPreference(applicationLookAndFeelProperty, (String) lookAndFeelComboBox.getSelectedItem());
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.LOOK_AND_FEEL_SELECTED_MESSAGE));
+    }
+  }
+
+  public final void selectFontSize() {
+    final JComboBox<Integer> sizeComboBox = new JComboBox<>();
+    for (int i = 100; i <= 200; i += 5) {
+      sizeComboBox.addItem(i);
+    }
+    sizeComboBox.setSelectedItem(getDefaultFontSize());
+
+    final int option = JOptionPane.showOptionDialog(this, sizeComboBox,
+            FrameworkMessages.get(FrameworkMessages.SELECT_FONT_SIZE), JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE, null, null, null);
+    if (option == JOptionPane.OK_OPTION) {
+      final Integer selectedSize = (Integer) sizeComboBox.getSelectedItem();
+      PreferencesUtil.putUserPreference(applicationFontSizeProperty, selectedSize.toString());
+      JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.FONT_SIZE_SELECTED_MESSAGE));
     }
   }
 
@@ -663,6 +683,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES)));
     controlSet.add(Controls.control(this::selectLookAndFeel,
             FrameworkMessages.get(FrameworkMessages.SELECT_LOOK_AND_FEEL)));
+    controlSet.add(Controls.control(this::selectFontSize,
+            FrameworkMessages.get(FrameworkMessages.SELECT_FONT_SIZE)));
     controlSet.addSeparator();
     final Control ctrAlwaysOnTop = Controls.toggleControl(this,
             "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), alwaysOnTopChangedEvent);
@@ -977,6 +999,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
+   * @return the default font size multiplier
+   * @see #selectFontSize()
+   */
+  protected Integer getDefaultFontSize() {
+    return Integer.parseInt(PreferencesUtil.getUserPreference(applicationFontSizeProperty, "100"));
+  }
+
+  /**
    * Initializes a panel to display in the NORTH position of this application panel.
    * override to provide a north panel.
    * @return a panel for the NORTH position
@@ -1187,6 +1217,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     LOG.debug("{} application starting", frameCaption);
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
     UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
+    final Integer fontSize = getDefaultFontSize();
+    if (!fontSize.equals(100)) {
+      UiUtil.setFontSize(fontSize/100f);
+    }
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) : Images.loadImage("jminor_logo32.gif");
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     while (true) {
