@@ -183,7 +183,7 @@ public final class Configuration {
 
     /**
      * Parses the given string value and returns a type T, it is assumed the string is not null
-     * @param string the string to parse
+     * @param value the string to parse
      * @return a value of type T parsed from the given string
      */
     T parse(final String value);
