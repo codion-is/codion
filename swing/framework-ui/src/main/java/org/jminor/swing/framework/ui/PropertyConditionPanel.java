@@ -78,9 +78,6 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
       }
       final JComponent field = initializeField();
       bindField(field, isUpperBound);
-      if (field instanceof JTextField) { //enter button toggles the filter on/off
-        ((JTextField) field).addActionListener(new EnableAction(model));
-      }
 
       return field;
     }

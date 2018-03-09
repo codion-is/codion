@@ -29,14 +29,16 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Value type: Boolean<br>
    * Default value: false
    */
-  Value<Boolean> FILTER_ON_MASTER_INSERT = Configuration.booleanValue("jminor.client.filterOnMasterInsert", false);
+  Value<Boolean> FILTER_ON_MASTER_INSERT = Configuration.booleanValue(
+          "org.jminor.framework.model.EntityModel.filterOnMasterInsert", false);
 
   /**
    * Specifies whether or not the client should save and apply user preferences<br>
    * Value type: Boolean<br>
    * Default value: true if required JSON library is found on classpath, false otherwise
    */
-  Value<Boolean> USE_CLIENT_PREFERENCES = Configuration.booleanValue("jminor.client.useClientPreferences", Util.onClasspath("org.json.JSONObject"));
+  Value<Boolean> USE_CLIENT_PREFERENCES = Configuration.booleanValue(
+          "org.jminor.framework.model.EntityModel.useClientPreferences", Util.onClasspath("org.json.JSONObject"));
 
   /**
    * @return the {@link EntityEditModel} instance used by this {@link EntityModel}

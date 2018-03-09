@@ -7,6 +7,8 @@ import org.jminor.common.User;
 import org.jminor.common.Version;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.chinook.beans.ui.AlbumEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.ArtistEditPanel;
@@ -150,6 +152,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPane
     Locale.setDefault(new Locale("en", "EN"));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
+    DefaultColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
+    DefaultColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.chinook.domain.ChinookDomain");
     new ChinookAppPanel().startApplication("ChinookDomain", null, false,
             UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger".toCharArray()));

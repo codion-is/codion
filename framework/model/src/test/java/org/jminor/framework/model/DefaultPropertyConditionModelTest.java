@@ -4,6 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.db.condition.Condition;
+import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
@@ -44,7 +45,7 @@ public class DefaultPropertyConditionModelTest {
     assertEquals("(" + property.getPropertyId() + " >= ? and " + property.getPropertyId() + " <= ?)", model.getCondition().getWhereClause());
 
     model.setConditionType(Condition.Type.LIKE);
-    model.setAutomaticWildcard(true);
+    model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
     values = model.getCondition().getValues();
     assertTrue(values.contains("%upper%"));
     assertEquals(property.getPropertyId() + " like ?", model.getCondition().getWhereClause());

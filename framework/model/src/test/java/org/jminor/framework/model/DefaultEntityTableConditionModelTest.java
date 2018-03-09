@@ -114,11 +114,10 @@ public class DefaultEntityTableConditionModelTest {
   public void testSimpleSearchString() {
     final String value = "test";
     final String wildcard = Property.WILDCARD_CHARACTER.get();
-    final String wildcardValue = wildcard + "test" + wildcard;
     conditionModel.setSimpleConditionString(value);
     for (final PropertyConditionModel model : conditionModel.getPropertyConditionModels()) {
       if (model.getType() == Types.VARCHAR) {
-        assertEquals(wildcardValue, model.getUpperBound());
+        assertEquals(wildcard + value + wildcard, model.getUpperBound());
         assertTrue(model.isEnabled());
       }
     }

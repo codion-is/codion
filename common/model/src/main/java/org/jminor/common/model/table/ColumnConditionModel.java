@@ -20,6 +20,28 @@ import java.text.Format;
 public interface ColumnConditionModel<K> {
 
   /**
+   * The possible automatic wildcard types
+   */
+  enum AutomaticWildcard {
+    /**
+     * No wildcard
+     */
+    NONE,
+    /**
+     * Wildard added at front
+     */
+    PREFIX,
+    /**
+     * Wildcard added at end
+     */
+    POSTFIX,
+    /**
+     * Wildcard added at front and at end
+     */
+    PREFIX_AND_POSTFIX
+  }
+
+  /**
    * @return the column identifier
    */
   K getColumnIdentifier();
@@ -46,14 +68,17 @@ public interface ColumnConditionModel<K> {
   boolean include(final Object object);
 
   /**
-   * @param value true if wildcard should automatically be added to strings
+   * Sets the automatic wildcard type.
+   * Note that this is only applicable to string based condition models and only used for
+   * condition types {@link Condition.Type#LIKE} and {@link Condition.Type#NOT_LIKE}
+   * @param automaticWildcard the automatic wildcard type to use
    */
-  void setAutomaticWildcard(final boolean value);
+  void setAutomaticWildcard(final AutomaticWildcard automaticWildcard);
 
   /**
-   * @return true if wildcard is automatically be added to strings
+   * @return the automatic wildcard type being used by this model
    */
-  boolean isAutomaticWildcard();
+  AutomaticWildcard getAutomaticWildcard();
 
   /**
    * @param comparable the value to check

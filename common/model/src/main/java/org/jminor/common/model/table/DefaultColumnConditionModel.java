@@ -3,6 +3,7 @@
  */
 package org.jminor.common.model.table;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
@@ -29,6 +30,17 @@ import java.util.regex.Pattern;
  */
 public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
+  /**
+   * Specifies whether wildcards are automatically to string conditions<br>
+   * Value type: {@link AutomaticWildcard}<br>
+   * Default value: {@link AutomaticWildcard#NONE}
+   */
+  public static final Value<AutomaticWildcard> AUTOMATIC_WILDCARD = Configuration.value(
+          "org.jminor.common.model.table.DefaultColumnConditionModel.automaticWildard",
+          AutomaticWildcard.NONE, value -> AutomaticWildcard.valueOf(value));
+  public static final Value<Boolean> CASE_SENSITIVE = Configuration.booleanValue(
+          "org.jminor.common.model.table.DefaultColumnConditionModel.caseSensitive",true);
+
   private final Value upperBoundValue = Values.value();
   private final Value lowerBoundValue = Values.value();
   private final Value<Condition.Type> conditionTypeValue = Values.value(Condition.Type.LIKE);
@@ -44,8 +56,8 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   private final Format format;
 
   private boolean autoEnable = true;
-  private boolean automaticWildcard = false;
-  private boolean caseSensitive = true;
+  private AutomaticWildcard automaticWildcard;
+  private boolean caseSensitive;
   private String wildcard;
 
   /**
@@ -67,10 +79,40 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
    */
   public DefaultColumnConditionModel(final K columnIdentifier, final int type, final String wildcard,
                                      final Format format) {
+    this(columnIdentifier, type, wildcard, format, AUTOMATIC_WILDCARD.get());
+  }
+
+  /**
+   * Instantiates a DefaultColumnConditionModel.
+   * @param columnIdentifier the column identifier
+   * @param type the column data type
+   * @param wildcard the string to use as wildcard
+   * @param format the format to use when presenting the values, dates for example
+   * @param automaticWildcard the automatic wildcard type to use
+   */
+  public DefaultColumnConditionModel(final K columnIdentifier, final int type, final String wildcard,
+                                     final Format format, final AutomaticWildcard automaticWildcard) {
+    this(columnIdentifier, type, wildcard, format, automaticWildcard, CASE_SENSITIVE.get());
+  }
+
+  /**
+   * Instantiates a DefaultColumnConditionModel.
+   * @param columnIdentifier the column identifier
+   * @param type the column data type
+   * @param wildcard the string to use as wildcard
+   * @param format the format to use when presenting the values, dates for example
+   * @param automaticWildcard the automatic wildcard type to use
+   * @param caseSensitive true if string based conditions should be case sensitive
+   */
+  public DefaultColumnConditionModel(final K columnIdentifier, final int type, final String wildcard,
+                                     final Format format, final AutomaticWildcard automaticWildcard,
+                                     final boolean caseSensitive) {
     this.columnIdentifier = Objects.requireNonNull(columnIdentifier, "columnIdentifier");
     this.type = type;
     this.wildcard = wildcard;
     this.format = format;
+    this.automaticWildcard = automaticWildcard;
+    this.caseSensitive = caseSensitive;
     bindEvents();
   }
 
@@ -142,12 +184,8 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
       if (upperBound == null || (upperBound instanceof String && ((String) upperBound).length() == 0)) {
         return null;
       }
-      if (automaticWildcard) {
-        return wildcard + upperBound + wildcard;
-      }
-      else {
-        return upperBound;
-      }
+
+      return addWildcard((String) upperBound);
     }
     else {
       return upperBound;
@@ -169,12 +207,8 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
       if (lowerBound == null || (lowerBound instanceof String && ((String) lowerBound).length() == 0)) {
         return null;
       }
-      if (automaticWildcard) {
-        return wildcard + lowerBound + wildcard;
-      }
-      else {
-        return lowerBound;
-      }
+
+      return addWildcard((String) lowerBound);
     }
     else {
       return lowerBound;
@@ -243,13 +277,13 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
   /** {@inheritDoc} */
   @Override
-  public final void setAutomaticWildcard(final boolean value) {
-    automaticWildcard = value;
+  public final void setAutomaticWildcard(final AutomaticWildcard automaticWildcard) {
+    this.automaticWildcard = Objects.requireNonNull(automaticWildcard);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isAutomaticWildcard() {
+  public final AutomaticWildcard getAutomaticWildcard() {
     return automaticWildcard;
   }
 
@@ -535,6 +569,24 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
     final int upperCompareResult = comparable.compareTo(getUpperBound());
 
     return lowerCompareResult <= 0 || upperCompareResult >= 0;
+  }
+
+  private String addWildcard(final String value) {
+    //only use wildcard for LIKE and NOT_LIKE
+    if (conditionTypeValue.get().equals(Condition.Type.LIKE) || conditionTypeValue.get().equals(Condition.Type.NOT_LIKE)) {
+      switch (automaticWildcard) {
+        case PREFIX_AND_POSTFIX:
+          return wildcard + value + wildcard;
+        case PREFIX:
+          return wildcard + value;
+        case POSTFIX:
+          return value + wildcard;
+        default:
+          return value;
+      }
+    }
+
+    return value;
   }
 
   private void bindEvents() {

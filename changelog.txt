@@ -4799,3 +4799,9 @@
   UiUtil.setFontSize() added
   EntityApplicationPanel.selectFontSize() added, now sets the font size on application start
   EntityTablePanel now sets the row height according to font size
+  ColumnConditionPanel, PropertyConditionPanel, Enter key no longer toggles enabled state
+  EntityTableConditionPanel, Enter key now triggers table model refresh
+  ColumnConditionModel.AutomaticWildcard enum added
+  ColumnConditionModel.set/getAutomaticWildcard() now based on the the above enum, applicable only to string based LIKE or NOT_LIKE conditions
+  Configuration.ConfigurationValue refactored
+  Some configuration value keys now package based

@@ -360,13 +360,12 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   }
 
   private void setConditionString(final String searchString) {
-    final String wildcard = Property.WILDCARD_CHARACTER.get();
-    final String searchTextWithWildcards = wildcard + searchString + wildcard;
     final Collection<Property.ColumnProperty> searchProperties = connectionProvider.getDomain().getSearchProperties(entityId);
     for (final Property.ColumnProperty searchProperty : searchProperties) {
       final PropertyConditionModel conditionModel = getPropertyConditionModel(searchProperty.getPropertyId());
       conditionModel.setCaseSensitive(false);
-      conditionModel.setUpperBound(searchTextWithWildcards);
+      conditionModel.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
+      conditionModel.setUpperBound(searchString);
       conditionModel.setConditionType(Condition.Type.LIKE);
       conditionModel.setEnabled(true);
     }

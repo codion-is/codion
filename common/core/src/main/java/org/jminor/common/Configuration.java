@@ -53,7 +53,7 @@ public final class Configuration {
    * @return the configuration value
    */
   public static Value<Boolean> booleanValue(final String key, final Boolean defaultValue) {
-    return new BooleanValue(key, defaultValue);
+    return value(key, defaultValue, value -> value.equalsIgnoreCase(Boolean.TRUE.toString()));
   }
 
   /**
@@ -63,7 +63,7 @@ public final class Configuration {
    * @return the configuration value
    */
   public static Value<Integer> integerValue(final String key, final Integer defaultValue) {
-    return new IntegerValue(key, defaultValue);
+    return value(key, defaultValue, value -> Integer.parseInt(value));
   }
 
   /**
@@ -73,7 +73,7 @@ public final class Configuration {
    * @return the configuration value
    */
   public static Value<Long> longValue(final String key, final Long defaultValue) {
-    return new LongValue(key, defaultValue);
+    return value(key, defaultValue, value -> Long.parseLong(value));
   }
 
   /**
@@ -83,7 +83,7 @@ public final class Configuration {
    * @return the configuration value
    */
   public static Value<Double> doubleValue(final String key, final Double defaultValue) {
-    return new DoubleValue(key, defaultValue);
+    return value(key, defaultValue, value -> Double.parseDouble(value));
   }
 
   /**
@@ -93,7 +93,19 @@ public final class Configuration {
    * @return the configuration value
    */
   public static Value<String> stringValue(final String key, final String defaultValue) {
-    return new StringValue(key, defaultValue);
+    return value(key, defaultValue, value -> value);
+  }
+
+  /**
+   * Creates a configuration value
+   * @param key the configuration key
+   * @param defaultValue the default value
+   * @param parser the parser used to parse a string representation of the value
+   * @param <T> the value type
+   * @return the configuration value
+   */
+  public static <T> Value<T> value(final String key, final T defaultValue, final ValueParser<T> parser) {
+    return new ConfigurationValue<T>(key, defaultValue, parser);
   }
 
   /**
@@ -165,10 +177,23 @@ public final class Configuration {
   }
 
   /**
+   * Parses a configuration value from a non-null string
+   */
+  public interface ValueParser<T> {
+
+    /**
+     * Parses the given string value and returns a type T, it is assumed the string is not null
+     * @param string the string to parse
+     * @return a value of type T parsed from the given string
+     */
+    T parse(final String value);
+  }
+
+  /**
    * A Value for configuration, setting the value also sets the System property
    * @param <T> the value type
    */
-  public abstract static class ConfigurationValue<T> implements Value<T> {
+  public static class ConfigurationValue<T> implements Value<T> {
 
     private final Event<T> changeEvent = Events.event();
     private final String key;
@@ -180,10 +205,10 @@ public final class Configuration {
      * @param key the configuration key
      * @param defaultValue the default value
      */
-    private ConfigurationValue(final String key, final T defaultValue) {
+    private ConfigurationValue(final String key, final T defaultValue, final ValueParser<T> parser) {
       this.key = Objects.requireNonNull(key, "key");
       final String stringValue = System.getProperty(key);
-      this.value = stringValue == null ? defaultValue : parse(stringValue);
+      this.value = stringValue == null ? defaultValue : parser.parse(stringValue);
       LOG.debug(key + ": " + stringValue + " [default: " + defaultValue +"]");
     }
 
@@ -212,73 +237,6 @@ public final class Configuration {
     @Override
     public final String toString() {
       return key;
-    }
-
-    /**
-     * Parses the configuration value from the given non-null string
-     * @param value the string value, not null
-     * @return the parsed value
-     */
-    protected abstract T parse(final String value);
-  }
-
-  private static final class StringValue extends ConfigurationValue<String> {
-
-    private StringValue(final String key, final String defaultValue) {
-      super(key, defaultValue);
-    }
-
-    @Override
-    protected String parse(final String value) {
-      return value;
-    }
-  }
-
-  private static final class BooleanValue extends ConfigurationValue<Boolean> {
-
-    private BooleanValue(final String key, final Boolean defaultValue) {
-      super(key, defaultValue);
-    }
-
-    @Override
-    protected Boolean parse(final String value) {
-      return value.equalsIgnoreCase(Boolean.TRUE.toString());
-    }
-  }
-
-  private static final class IntegerValue extends ConfigurationValue<Integer> {
-
-    private IntegerValue(final String key, final Integer defaultValue) {
-      super(key, defaultValue);
-    }
-
-    @Override
-    protected Integer parse(final String value) {
-      return Integer.parseInt(value);
-    }
-  }
-
-  private static final class DoubleValue extends ConfigurationValue<Double> {
-
-    private DoubleValue(final String key, final Double defaultValue) {
-      super(key, defaultValue);
-    }
-
-    @Override
-    protected Double parse(final String value) {
-      return Double.parseDouble(value);
-    }
-  }
-
-  private static final class LongValue extends ConfigurationValue<Long> {
-
-    private LongValue(final String key, final Long defaultValue) {
-      super(key, defaultValue);
-    }
-
-    @Override
-    protected Long parse(final String value) {
-      return Long.parseLong(value);
     }
   }
 }

@@ -77,14 +77,16 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Default value: true
    * @see org.jminor.swing.framework.ui.EntityEditPanel#ALL_PANELS_ACTIVE
    */
-  public static final Value<Boolean> USE_FOCUS_ACTIVATION = Configuration.booleanValue("jminor.client.useFocusActivation", true);
+  public static final Value<Boolean> USE_FOCUS_ACTIVATION = Configuration.booleanValue(
+          "org.jminor.swing.framework.ui.EntityPanel.useFocusActivation", true);
 
   /**
    * Indicates whether keyboard navigation will be enabled<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> USE_KEYBOARD_NAVIGATION = Configuration.booleanValue("jminor.client.useKeyboardNavigation", true);
+  public static final Value<Boolean> USE_KEYBOARD_NAVIGATION = Configuration.booleanValue(
+          "org.jminor.swing.framework.ui.EntityPanel.useKeyboardNavigation", true);
 
   /**
    * Indicates whether dialogs opened by child panels in the application should be centered
@@ -93,54 +95,56 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final Value<Boolean> CENTER_APPLICATION_DIALOGS = Configuration.booleanValue("jminor.client.centerApplicationDialogs", false);
+  public static final Value<Boolean> CENTER_APPLICATION_DIALOGS = Configuration.booleanValue(
+          "org.jminor.swing.framework.ui.EntityPanel.centerApplicationDialogs", false);
 
   /**
    * Indicates whether entity edit panel dialogs should be closed on escape<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> DISPOSE_EDIT_DIALOG_ON_ESCAPE = Configuration.booleanValue("jminor.client.disposeEditDialogOnEscape", true);
+  public static final Value<Boolean> DISPOSE_EDIT_DIALOG_ON_ESCAPE = Configuration.booleanValue(
+          "org.jminor.swing.framework.ui.EntityPanel.disposeEditDialogOnEscape", true);
 
   /**
    * Specifies whether or not a control for toggling the edit panel is available to the user<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> SHOW_TOGGLE_EDIT_PANEL_CONTROL = Configuration.booleanValue("jminor.client.showToggleEditPanelControl", true);
-
-  /**
-   * if true and an edit panel is available the actions to toggle it is included
-   */
-  private boolean showToggleEditPanelControl = SHOW_TOGGLE_EDIT_PANEL_CONTROL.get();
+  public static final Value<Boolean> SHOW_TOGGLE_EDIT_PANEL_CONTROL = Configuration.booleanValue(
+          "org.jminor.swing.framework.ui.EntityPanel.showToggleEditPanelControl", true);
 
   /**
    * Specifies whether or not actions to hide detail panels or show them in a dialog are available to the user<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> SHOW_DETAIL_PANEL_CONTROLS = Configuration.booleanValue("jminor.client.showDetailPanelControls", true);
+  public static final Value<Boolean> SHOW_DETAIL_PANEL_CONTROLS = Configuration.booleanValue(
+          "org.jminor.swing.framework.ui.EntityPanel.showDetailPanelControls", true);
 
   /**
    * Specifies the default size of the divider for detail panel split panes.<br>
    * Value type: Integer<br>
    * Default value: 18<br>
    */
-  public static final Value<Integer> SPLIT_PANE_DIVIDER_SIZE = Configuration.integerValue("jminor.swing.splitPaneDividerSize", DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
+  public static final Value<Integer> SPLIT_PANE_DIVIDER_SIZE = Configuration.integerValue(
+          "org.jminor.swing.framework.ui.EntityPanel.splitPaneDividerSize", DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
 
   /**
    * Indicates whether entity panels containing detail panels should by default be laid out in a compact manner<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> COMPACT_ENTITY_PANEL_LAYOUT = Configuration.booleanValue("jminor.swing.compactEntityPanelLayout", true);
+  public static final Value<Boolean> COMPACT_ENTITY_PANEL_LAYOUT = Configuration.booleanValue(
+          "org.jminor.swing.framework.ui.EntityPanel.compactEntityPanelLayout", true);
 
   /**
    * Specifies whether the action buttons (Save, update, delete, clear, refresh) should be on a toolbar<br>
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final Value<Boolean> TOOLBAR_BUTTONS = Configuration.booleanValue("jminor.swing.toolbarButtons", false);
+  public static final Value<Boolean> TOOLBAR_BUTTONS = Configuration.booleanValue(
+          "org.jminor.swing.framework.ui.EntityPanel.toolbarButtons", false);
 
   /**
    * The possible states of a detail panel.
@@ -264,10 +268,16 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * if true and detail panels are available then the detail panel tab pane should be included
    */
   private boolean includeDetailPanelTabPane = true;
+
   /**
    * if true and detail panels are available the controls to hide and show detail panels are included
    */
   private boolean showDetailPanelControls = SHOW_DETAIL_PANEL_CONTROLS.get();
+
+  /**
+   * if true and an edit panel is available the actions to toggle it is included
+   */
+  private boolean showToggleEditPanelControl = SHOW_TOGGLE_EDIT_PANEL_CONTROL.get();
 
   /**
    * if true then the ESC key disposes the edit dialog

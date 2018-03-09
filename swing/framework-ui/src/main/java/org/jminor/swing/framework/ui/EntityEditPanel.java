@@ -83,7 +83,8 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> TRANSFER_FOCUS_ON_ENTER = Configuration.booleanValue("jminor.client.transferFocusOnEnter", true);
+  public static final Value<Boolean> TRANSFER_FOCUS_ON_ENTER = Configuration.booleanValue(
+          "org.jminor.swing.framework.ui.EntityEditPanel.transferFocusOnEnter", true);
 
   /**
    * Indicates whether all entity panels should be enabled and receiving input by default<br>
@@ -91,14 +92,16 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * Default value: false
    * @see EntityPanel#USE_FOCUS_ACTIVATION
    */
-  public static final Value<Boolean> ALL_PANELS_ACTIVE = Configuration.booleanValue("jminor.client.allPanelsActive", false);
+  public static final Value<Boolean> ALL_PANELS_ACTIVE = Configuration.booleanValue(
+          "org.jminor.swing.framework.ui.EntityEditPanel.allPanelsActive", false);
 
   /**
    * Specifies whether edit panels should include a SAVE button (insert or update, depending on selection) or just a INSERT button<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> USE_SAVE_CONTROL = Configuration.booleanValue("jminor.client.useSaveControl", true);
+  public static final Value<Boolean> USE_SAVE_CONTROL = Configuration.booleanValue(
+          "org.jminor.swing.framework.ui.EntityEditPanel.useSaveControl", true);
 
   /**
    * The standard controls available to the EditPanel

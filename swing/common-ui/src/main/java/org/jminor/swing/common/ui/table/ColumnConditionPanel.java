@@ -369,10 +369,6 @@ public class ColumnConditionPanel<K> extends JPanel {
         createTextProperty(field, isUpperBound);
       }
 
-      if (field instanceof JTextField) {//enter button toggles the filter on/off
-        ((JTextField) field).addActionListener(e -> columnConditionModel.setEnabled(!columnConditionModel.isEnabled()));
-      }
-
       return field;
     }
 

@@ -128,21 +128,24 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> ALLOW_COLUMN_REORDERING = Configuration.booleanValue("jminor.client.allowColumnReordering", true);
+  public static final Value<Boolean> ALLOW_COLUMN_REORDERING = Configuration.booleanValue(
+          "org.jminor.swing.framework.ui.EntityTablePanel.allowColumnReordering", true);
 
   /**
    * Specifies whether the table condition panels should be visible or not by default<br>
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final Value<Boolean> TABLE_CONDITION_PANEL_VISIBLE = Configuration.booleanValue("jminor.swing.tableConditionPanelVisible", false);
+  public static final Value<Boolean> TABLE_CONDITION_PANEL_VISIBLE = Configuration.booleanValue(
+          "org.jminor.swing.framework.ui.EntityTablePanel.tableConditionPanelVisible", false);
 
   /**
    * Specifies the default table column resize mode for tables in the application<br>
    * Value type: Integer (JTable.AUTO_RESIZE_*)<br>
    * Default value: JTable.AUTO_RESIZE_OFF
    */
-  public static final Value<Integer> TABLE_AUTO_RESIZE_MODE = Configuration.integerValue("jminor.swing.tableAutoResizeMode", JTable.AUTO_RESIZE_OFF);
+  public static final Value<Integer> TABLE_AUTO_RESIZE_MODE = Configuration.integerValue(
+          "org.jminor.swing.framework.ui.EntityTablePanel.tableAutoResizeMode", JTable.AUTO_RESIZE_OFF);
 
   public static final String PRINT_TABLE = "printTable";
   public static final String DELETE_SELECTED = "deleteSelected";

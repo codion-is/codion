@@ -26,10 +26,12 @@ import org.jminor.swing.common.ui.table.ColumnConditionPanel;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +76,7 @@ public final class EntityTableConditionPanel extends JPanel {
     this.simpleConditionPanel = simpleConditionPanel;
     setLayout(new BorderLayout());
     layoutPanel(true);
+    UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Controls.control(tableModel::refresh));
   }
 
   /**
@@ -135,12 +138,15 @@ public final class EntityTableConditionPanel extends JPanel {
           conditionProperties.add((Property) column.getIdentifier());
         }
       });
-      Entities.sort(conditionProperties);
-      final Property property = UiUtil.selectValue(this, conditionProperties, Messages.get(Messages.SELECT_INPUT_FIELD));
-      if (property != null) {
-        final ColumnConditionPanel conditionPanel = getConditionPanel(property.getPropertyId());
-        if (conditionPanel != null) {
-          conditionPanel.requestInputFocus();
+      if (!conditionProperties.isEmpty()) {
+        Entities.sort(conditionProperties);
+        final Property property = conditionProperties.size() == 1 ? conditionProperties.get(0) :
+                UiUtil.selectValue(this, conditionProperties, Messages.get(Messages.SELECT_INPUT_FIELD));
+        if (property != null) {
+          final ColumnConditionPanel conditionPanel = getConditionPanel(property.getPropertyId());
+          if (conditionPanel != null) {
+            conditionPanel.requestInputFocus();
+          }
         }
       }
     }
@@ -182,10 +188,10 @@ public final class EntityTableConditionPanel extends JPanel {
 
   /**
    * Sets the search text in case simple search is enabled
-   * @param txt the search text
+   * @param searchText the search text
    */
-  public void setSearchText(final String txt) {
-    getConditionModel().setSimpleConditionString(txt);
+  public void setSearchText(final String searchText) {
+    getConditionModel().setSimpleConditionString(searchText);
   }
 
   /**

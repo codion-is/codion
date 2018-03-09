@@ -51,10 +51,10 @@ public class DefaultColumnConditionModelTest {
     assertEquals(1, lowerBoundCounter.get());
     assertEquals("hello", model.getLowerBound());
 
-    model.setAutomaticWildcard(true);
+    model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
     assertEquals("%hello%", model.getUpperBound());
     assertEquals("%hello%", model.getLowerBound());
-    model.setAutomaticWildcard(false);
+    model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.NONE);
 
     model.setLikeValue("test");
     assertEquals(2, upperBoundCounter.get());
@@ -120,8 +120,8 @@ public class DefaultColumnConditionModelTest {
     model.setWildcard("#");
     assertEquals("#", model.getWildcard());
 
-    model.setAutomaticWildcard(true);
-    assertTrue(model.isAutomaticWildcard());
+    model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
+    assertEquals(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX, model.getAutomaticWildcard());
 
     model.addEnabledListener(enabledListener);
     model.setEnabled(false);

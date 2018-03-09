@@ -24,13 +24,13 @@ import java.util.Collection;
 public interface EntityTableConditionModel extends FilterCondition<Entity>, Refreshable {
 
   /**
-   * @return the ID of the entity this table searcher is based on
+   * @return the id of the entity this table condition model is based on
    */
   String getEntityId();
 
   /**
    * Sets the search condition values of the condition model associated with the property identified by {@code propertyId}
-   * @param propertyId the ID of the property
+   * @param propertyId the id of the property
    * @param values the search condition values
    * @return true if the search state changed as a result of this method call, false otherwise
    */
@@ -85,7 +85,7 @@ public interface EntityTableConditionModel extends FilterCondition<Entity>, Refr
 
   /**
    * Enables/disables the search for the given property
-   * @param propertyId the ID of the property for which to enable/disable the search
+   * @param propertyId the id of the property for which to enable/disable the search
    * @param enabled if true the search is enabled, otherwise it is disabled
    */
   void setEnabled(final String propertyId, final boolean enabled);
@@ -170,8 +170,12 @@ public interface EntityTableConditionModel extends FilterCondition<Entity>, Refr
   String getSimpleConditionString();
 
   /**
+   * Note that calling this method may (and probably will) change the automatic prefix and case sensetivity settings of
+   * the underlying {@link ColumnConditionModel}s
    * @param simpleSearchText the text to use next time a simple search is performed
    * @see #performSimpleSearch()
+   * @see ColumnConditionModel#setCaseSensitive(boolean)
+   * @see ColumnConditionModel#setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard)
    */
   void setSimpleConditionString(final String simpleSearchText);
 
