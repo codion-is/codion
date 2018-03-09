@@ -8,6 +8,7 @@ import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
+import org.jminor.common.Item;
 import org.jminor.common.TextUtil;
 import org.jminor.common.User;
 import org.jminor.common.Util;
@@ -23,6 +24,7 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityApplicationModel;
+import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.DialogExceptionHandler;
 import org.jminor.swing.common.ui.LoginPanel;
@@ -39,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -46,6 +49,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -65,7 +69,9 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -328,18 +334,35 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   public final void selectFontSize() {
-    final JComboBox<Integer> sizeComboBox = new JComboBox<>();
+    final List<Item<Integer>> values = new ArrayList<>(21);
     for (int i = 100; i <= 200; i += 5) {
-      sizeComboBox.addItem(i);
+      values.add(new Item<Integer>(i, i + "%"));
     }
-    sizeComboBox.setSelectedItem(getDefaultFontSize());
+    final ItemComboBoxModel<Integer> comboBoxModel = new ItemComboBoxModel<>(values);
+    final Integer defaultFontSize = getDefaultFontSize();
+    comboBoxModel.setSelectedItem(defaultFontSize);
 
-    final int option = JOptionPane.showOptionDialog(this, sizeComboBox,
+    final JComboBox comboBox = new JComboBox(comboBoxModel);
+    comboBox.setRenderer(new DefaultListCellRenderer() {
+      @Override
+      public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
+                                                    final boolean isSelected, final boolean cellHasFocus) {
+        final Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        if (index >= 0) {
+          final Font font = (Font) component.getFont();
+          final int newSize = Math.round(font.getSize() * (values.get(index).getItem() / (float) defaultFontSize.doubleValue()));
+          component.setFont(new Font(font.getName(), font.getStyle(), newSize));
+        }
+
+        return component;
+      }
+    });
+
+    final int option = JOptionPane.showOptionDialog(this, comboBox,
             FrameworkMessages.get(FrameworkMessages.SELECT_FONT_SIZE), JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE, null, null, null);
     if (option == JOptionPane.OK_OPTION) {
-      final Integer selectedSize = (Integer) sizeComboBox.getSelectedItem();
-      PreferencesUtil.putUserPreference(applicationFontSizeProperty, selectedSize.toString());
+      PreferencesUtil.putUserPreference(applicationFontSizeProperty, comboBoxModel.getSelectedItem().getItem().toString());
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.FONT_SIZE_SELECTED_MESSAGE));
     }
   }

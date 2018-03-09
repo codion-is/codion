@@ -96,6 +96,7 @@ runClientLocal {
 }
 
 task runClientLocalFX(type: JavaExec) {
+    group 'run'
     main = 'org.jminor.framework.demos.empdept.javafx.EmpDeptFX'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [

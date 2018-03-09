@@ -4805,3 +4805,4 @@
   ColumnConditionModel.set/getAutomaticWildcard() now based on the the above enum, applicable only to string based LIKE or NOT_LIKE conditions
   Configuration.ConfigurationValue refactored
   Some configuration value keys now package based
+  EntityApplicationPanel.selectFontSize() improved, now shows the font size in the combobox
