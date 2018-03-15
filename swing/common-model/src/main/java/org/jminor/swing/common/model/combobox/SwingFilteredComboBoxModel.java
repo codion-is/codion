@@ -4,7 +4,7 @@
 package org.jminor.swing.common.model.combobox;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.TextUtil;
@@ -385,14 +385,14 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
 
   /** {@inheritDoc} */
   @Override
-  public final void addSelectionListener(final EventInfoListener<T> listener) {
-    selectionChangedEvent.addInfoListener(listener);
+  public final void addSelectionListener(final EventDataListener<T> listener) {
+    selectionChangedEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSelectionListener(final EventInfoListener listener) {
-    selectionChangedEvent.removeInfoListener(listener);
+  public final void removeSelectionListener(final EventDataListener listener) {
+    selectionChangedEvent.removeDataListener(listener);
   }
 
   /**

@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.valuemap;
 
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.db.Attribute;
 import org.jminor.common.db.valuemap.DefaultValueMap;
 import org.jminor.common.db.valuemap.ValueChange;
@@ -24,9 +24,9 @@ public class DefaultValueMapEditModelTest {
     final AtomicInteger valueChangeCounter = new AtomicInteger();
     final AtomicInteger valueSetCounter = new AtomicInteger();
 
-    final EventInfoListener<ValueChange<TestAttribute, ?>> anyValueChangeListener = info -> anyValueChangeCounter.incrementAndGet();
-    final EventInfoListener<ValueChange<TestAttribute, ?>> valueChangeListener = info -> valueChangeCounter.incrementAndGet();
-    final EventInfoListener<ValueChange<TestAttribute, ?>> valueSetListener = info -> valueSetCounter.incrementAndGet();
+    final EventDataListener<ValueChange<TestAttribute, ?>> anyValueChangeListener = data -> anyValueChangeCounter.incrementAndGet();
+    final EventDataListener<ValueChange<TestAttribute, ?>> valueChangeListener = data -> valueChangeCounter.incrementAndGet();
+    final EventDataListener<ValueChange<TestAttribute, ?>> valueSetListener = data -> valueSetCounter.incrementAndGet();
 
     final TestAttribute testAttribute = new TestAttribute();
 
@@ -39,7 +39,7 @@ public class DefaultValueMapEditModelTest {
 
     assertNotNull(model.getValidator());
 
-    model.getValueObserver().addInfoListener(anyValueChangeListener);
+    model.getValueObserver().addDataListener(anyValueChangeListener);
     model.addValueListener(testAttribute, valueChangeListener);
     model.addValueSetListener(testAttribute, valueSetListener);
 

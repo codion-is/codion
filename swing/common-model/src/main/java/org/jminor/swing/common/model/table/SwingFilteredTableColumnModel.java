@@ -4,7 +4,7 @@
 package org.jminor.swing.common.model.table;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.Events;
 import org.jminor.common.model.table.ColumnConditionModel;
 
@@ -182,26 +182,26 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
 
   /** {@inheritDoc} */
   @Override
-  public final void addColumnHiddenListener(final EventInfoListener<C> listener) {
-    columnHiddenEvent.addInfoListener(listener);
+  public final void addColumnHiddenListener(final EventDataListener<C> listener) {
+    columnHiddenEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeColumnHiddenListener(final EventInfoListener<C> listener) {
-    columnHiddenEvent.removeInfoListener(listener);
+  public final void removeColumnHiddenListener(final EventDataListener<C> listener) {
+    columnHiddenEvent.removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addColumnShownListener(final EventInfoListener<C> listener) {
-    columnShownEvent.addInfoListener(listener);
+  public final void addColumnShownListener(final EventDataListener<C> listener) {
+    columnShownEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeColumnShownListener(final EventInfoListener<C> listener) {
-    columnShownEvent.removeInfoListener(listener);
+  public final void removeColumnShownListener(final EventDataListener<C> listener) {
+    columnShownEvent.removeDataListener(listener);
   }
 
   /**

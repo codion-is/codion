@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db.valuemap;
 
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.db.Attribute;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
@@ -51,12 +51,12 @@ public class DefaultValueMapTest {
 
     final ValueMap<TestAttribute, Integer> valueMap = new DefaultValueMap<>();
 
-    final EventInfoListener<ValueChange<TestAttribute, Integer>> valueListener = info -> {
-      Assert.assertEquals(attr1, info.getKey());
-      info.toString();
-      info.getOldValue();
-      info.getNewValue();
-      info.isInitialization();
+    final EventDataListener<ValueChange<TestAttribute, Integer>> valueListener = data -> {
+      Assert.assertEquals(attr1, data.getKey());
+      data.toString();
+      data.getOldValue();
+      data.getNewValue();
+      data.isInitialization();
     };
     valueMap.addValueListener(valueListener);
 

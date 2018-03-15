@@ -5,7 +5,7 @@ package org.jminor.common.model.table;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
@@ -395,14 +395,14 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
   /** {@inheritDoc} */
   @Override
-  public final void addConditionTypeListener(final EventInfoListener<Condition.Type> listener) {
-    conditionTypeValue.getObserver().addInfoListener(listener);
+  public final void addConditionTypeListener(final EventDataListener<Condition.Type> listener) {
+    conditionTypeValue.getObserver().addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeConditionTypeListener(final EventInfoListener listener) {
-    conditionTypeValue.getObserver().removeInfoListener(listener);
+  public final void removeConditionTypeListener(final EventDataListener listener) {
+    conditionTypeValue.getObserver().removeDataListener(listener);
   }
 
   /** {@inheritDoc} */

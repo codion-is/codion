@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.Events;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.domain.Entities;
@@ -156,7 +156,7 @@ public final class EntityTableConditionPanel extends JPanel {
    * @param listener a listener notified when a condition panel receives focus, note this does not apply
    * for custom search panels
    */
-  public void addFocusGainedListener(final EventInfoListener<Property> listener) {
+  public void addFocusGainedListener(final EventDataListener<Property> listener) {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
       ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().forEach((column, panel) -> {
         if (panel instanceof ColumnConditionPanel) {
@@ -229,15 +229,15 @@ public final class EntityTableConditionPanel extends JPanel {
   /**
    * @param listener a listener notified each time the advanced search state changes
    */
-  public void addAdvancedListener(final EventInfoListener<Boolean> listener) {
-    advancedChangedEvent.addInfoListener(listener);
+  public void addAdvancedListener(final EventDataListener<Boolean> listener) {
+    advancedChangedEvent.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeAdvancedListener(final EventInfoListener listener) {
-    advancedChangedEvent.removeInfoListener(listener);
+  public void removeAdvancedListener(final EventDataListener listener) {
+    advancedChangedEvent.removeDataListener(listener);
   }
 
   private static JPanel initializeSimpleConditionPanel(final EntityTableConditionModel conditionModel) {

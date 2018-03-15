@@ -19,7 +19,7 @@ package org.jminor.common;
  * </pre>
  * @param <T> the type of info propagated with this event
  */
-public interface Event<T> extends EventListener, EventInfoListener<T>, EventObserver<T> {
+public interface Event<T> extends EventListener, EventDataListener<T>, EventObserver<T> {
 
   /**
    * Notifies all listeners that this event has occurred

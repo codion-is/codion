@@ -5,7 +5,7 @@ package org.jminor.swing.common.ui.table;
 
 import org.jminor.common.DateUtil;
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
@@ -326,8 +326,8 @@ public class ColumnConditionPanel<K> extends JPanel {
   /**
    * @param listener listener notified when a this condition panels input fields receive focus
    */
-  public final void addFocusGainedListener(final EventInfoListener<K> listener) {
-    focusGainedEvent.addInfoListener(listener);
+  public final void addFocusGainedListener(final EventDataListener<K> listener) {
+    focusGainedEvent.addDataListener(listener);
   }
 
   /**

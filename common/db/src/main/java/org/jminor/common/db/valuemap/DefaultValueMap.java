@@ -4,7 +4,7 @@
 package org.jminor.common.db.valuemap;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
@@ -313,15 +313,15 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueListener(final EventInfoListener<ValueChange<K, V>> valueListener) {
-    getValueObserver().addInfoListener(valueListener);
+  public final void addValueListener(final EventDataListener<ValueChange<K, V>> valueListener) {
+    getValueObserver().addDataListener(valueListener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeValueListener(final EventInfoListener valueListener) {
+  public final void removeValueListener(final EventDataListener valueListener) {
     if (valueChangedEvent != null) {
-      valueChangedEvent.removeInfoListener(valueListener);
+      valueChangedEvent.removeDataListener(valueListener);
     }
   }
 
@@ -329,7 +329,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
   @Override
   public final StateObserver getModifiedObserver() {
     final State state = States.state(isModified());
-    getValueObserver().addInfoListener(info -> state.setActive(isModified()));
+    getValueObserver().addDataListener(data -> state.setActive(isModified()));
 
     return state.getObserver();
   }

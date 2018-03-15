@@ -4,7 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
@@ -618,110 +618,110 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public void removeValueSetListener(final String propertyId, final EventInfoListener listener) {
+  public void removeValueSetListener(final String propertyId, final EventDataListener listener) {
     removeValueSetListener(getDomain().getProperty(entityId, propertyId), listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void addValueSetListener(final String propertyId, final EventInfoListener<ValueChange<Property, Object>> listener) {
+  public void addValueSetListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener) {
     addValueSetListener(getDomain().getProperty(entityId, propertyId), listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void removeValueListener(final String propertyId, final EventInfoListener listener) {
+  public void removeValueListener(final String propertyId, final EventDataListener listener) {
     removeValueListener(getDomain().getProperty(entityId, propertyId), listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void addValueListener(final String propertyId, final EventInfoListener<ValueChange<Property, Object>> listener) {
+  public void addValueListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener) {
     addValueListener(getDomain().getProperty(entityId, propertyId), listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeEntitySetListener(final EventInfoListener listener) {
-    entitySetEvent.removeInfoListener(listener);
+  public final void removeEntitySetListener(final EventDataListener listener) {
+    entitySetEvent.removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addEntitySetListener(final EventInfoListener<Entity> listener) {
-    entitySetEvent.addInfoListener(listener);
+  public final void addEntitySetListener(final EventDataListener<Entity> listener) {
+    entitySetEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeBeforeInsertListener(final EventInfoListener listener) {
-    beforeInsertEvent.removeInfoListener(listener);
+  public final void removeBeforeInsertListener(final EventDataListener listener) {
+    beforeInsertEvent.removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addBeforeInsertListener(final EventInfoListener<InsertEvent> listener) {
-    beforeInsertEvent.addInfoListener(listener);
+  public final void addBeforeInsertListener(final EventDataListener<InsertEvent> listener) {
+    beforeInsertEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeAfterInsertListener(final EventInfoListener listener) {
-    afterInsertEvent.removeInfoListener(listener);
+  public final void removeAfterInsertListener(final EventDataListener listener) {
+    afterInsertEvent.removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addAfterInsertListener(final EventInfoListener<InsertEvent> listener) {
-    afterInsertEvent.addInfoListener(listener);
+  public final void addAfterInsertListener(final EventDataListener<InsertEvent> listener) {
+    afterInsertEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeBeforeUpdateListener(final EventInfoListener listener) {
-    beforeUpdateEvent.removeInfoListener(listener);
+  public final void removeBeforeUpdateListener(final EventDataListener listener) {
+    beforeUpdateEvent.removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addBeforeUpdateListener(final EventInfoListener<UpdateEvent> listener) {
-    beforeUpdateEvent.addInfoListener(listener);
+  public final void addBeforeUpdateListener(final EventDataListener<UpdateEvent> listener) {
+    beforeUpdateEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeAfterUpdateListener(final EventInfoListener listener) {
-    afterUpdateEvent.removeInfoListener(listener);
+  public final void removeAfterUpdateListener(final EventDataListener listener) {
+    afterUpdateEvent.removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addAfterUpdateListener(final EventInfoListener<UpdateEvent> listener) {
-    afterUpdateEvent.addInfoListener(listener);
+  public final void addAfterUpdateListener(final EventDataListener<UpdateEvent> listener) {
+    afterUpdateEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addBeforeDeleteListener(final EventInfoListener<DeleteEvent> listener) {
-    beforeDeleteEvent.addInfoListener(listener);
+  public final void addBeforeDeleteListener(final EventDataListener<DeleteEvent> listener) {
+    beforeDeleteEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeBeforeDeleteListener(final EventInfoListener listener) {
-    beforeDeleteEvent.removeInfoListener(listener);
+  public final void removeBeforeDeleteListener(final EventDataListener listener) {
+    beforeDeleteEvent.removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeAfterDeleteListener(final EventInfoListener listener) {
-    afterDeleteEvent.removeInfoListener(listener);
+  public final void removeAfterDeleteListener(final EventDataListener listener) {
+    afterDeleteEvent.removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addAfterDeleteListener(final EventInfoListener<DeleteEvent> listener) {
-    afterDeleteEvent.addInfoListener(listener);
+  public final void addAfterDeleteListener(final EventDataListener<DeleteEvent> listener) {
+    afterDeleteEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -762,14 +762,14 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public void addConfirmSetEntityObserver(final EventInfoListener<State> listener) {
-    confirmSetEntityEvent.addInfoListener(listener);
+  public void addConfirmSetEntityObserver(final EventDataListener<State> listener) {
+    confirmSetEntityEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void removeConfirmSetEntityObserver(final EventInfoListener listener) {
-    confirmSetEntityEvent.removeInfoListener(listener);
+  public void removeConfirmSetEntityObserver(final EventDataListener listener) {
+    confirmSetEntityEvent.removeDataListener(listener);
   }
 
   /**
@@ -828,7 +828,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /**
    * Notifies that a insert is about to be performed
    * @param insertEvent the event describing the insert
-   * @see #addBeforeInsertListener(EventInfoListener)
+   * @see #addBeforeInsertListener(EventDataListener)
    */
   protected final void fireBeforeInsertEvent(final InsertEvent insertEvent) {
     beforeInsertEvent.fire(insertEvent);
@@ -837,7 +837,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /**
    * Notifies that a insert has been performed
    * @param insertEvent the event describing the insert
-   * @see #addAfterInsertListener(EventInfoListener)
+   * @see #addAfterInsertListener(EventDataListener)
    */
   protected final void fireAfterInsertEvent(final InsertEvent insertEvent) {
     afterInsertEvent.fire(insertEvent);
@@ -846,7 +846,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /**
    * Notifies that an update is about to be performed
    * @param updateEvent the event describing the update
-   * @see #addBeforeUpdateListener(EventInfoListener)
+   * @see #addBeforeUpdateListener(EventDataListener)
    */
   protected final void fireBeforeUpdateEvent(final UpdateEvent updateEvent) {
     beforeUpdateEvent.fire(updateEvent);
@@ -855,7 +855,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /**
    * Notifies that an update has been performed
    * @param updateEvent the event describing the update
-   * @see #addAfterUpdateListener(EventInfoListener)
+   * @see #addAfterUpdateListener(EventDataListener)
    */
   protected final void fireAfterUpdateEvent(final UpdateEvent updateEvent) {
     afterUpdateEvent.fire(updateEvent);
@@ -864,7 +864,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /**
    * Notifies that a delete is about to be performed
    * @param deleteEvent the event describing the delete
-   * @see #addBeforeDeleteListener(EventInfoListener)
+   * @see #addBeforeDeleteListener(EventDataListener)
    */
   protected final void fireBeforeDeleteEvent(final DeleteEvent deleteEvent) {
     beforeDeleteEvent.fire(deleteEvent);
@@ -873,7 +873,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /**
    * Notifies that a delete has been performed
    * @param deleteEvent the event describing the delete
-   * @see #addAfterDeleteListener(EventInfoListener)
+   * @see #addAfterDeleteListener(EventDataListener)
    */
   protected final void fireAfterDeleteEvent(final DeleteEvent deleteEvent) {
     afterDeleteEvent.fire(deleteEvent);

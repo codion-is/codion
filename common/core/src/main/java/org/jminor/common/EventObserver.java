@@ -31,11 +31,11 @@ public interface EventObserver<T> {
    * @param listener the listener to add
    * @throws NullPointerException in case listener is null
    */
-  void addInfoListener(final EventInfoListener<T> listener);
+  void addDataListener(final EventDataListener<T> listener);
 
   /**
    * Removes {@code listener} from this EventObserver
    * @param listener the listener to remove
    */
-  void removeInfoListener(final EventInfoListener listener);
+  void removeDataListener(final EventDataListener listener);
 }

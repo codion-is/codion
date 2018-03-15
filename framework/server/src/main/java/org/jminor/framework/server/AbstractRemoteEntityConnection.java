@@ -5,7 +5,7 @@ package org.jminor.framework.server;
 
 import org.jminor.common.DaemonThreadFactory;
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.Events;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
@@ -186,12 +186,12 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     return RemoteEntityConnectionHandler.ACTIVE_CONNECTIONS.contains(this);
   }
 
-  final void addDisconnectListener(final EventInfoListener<AbstractRemoteEntityConnection> listener) {
-    disconnectedEvent.addInfoListener(listener);
+  final void addDisconnectListener(final EventDataListener<AbstractRemoteEntityConnection> listener) {
+    disconnectedEvent.addDataListener(listener);
   }
 
-  final void removeDisconnectListener(final EventInfoListener listener) {
-    disconnectedEvent.removeInfoListener(listener);
+  final void removeDisconnectListener(final EventDataListener listener) {
+    disconnectedEvent.removeDataListener(listener);
   }
 
   /**

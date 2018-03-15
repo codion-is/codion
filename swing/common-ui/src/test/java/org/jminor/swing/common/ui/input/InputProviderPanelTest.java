@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.input;
 
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ public class InputProviderPanelTest {
     assertEquals("hello", panel.getValue());
     assertFalse(panel.isInputAccepted());
     final AtomicInteger eventCounter = new AtomicInteger();
-    final EventInfoListener<Integer> listener = info -> eventCounter.incrementAndGet();
+    final EventDataListener<Integer> listener = data -> eventCounter.incrementAndGet();
     panel.addButtonClickListener(listener);
     panel.getOkButton().doClick();
     assertTrue(panel.isInputAccepted());

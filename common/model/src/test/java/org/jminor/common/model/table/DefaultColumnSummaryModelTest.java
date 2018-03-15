@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 
 import org.junit.Test;
@@ -92,7 +92,7 @@ public class DefaultColumnSummaryModelTest {
     assertEquals(ColumnSummary.SUM, testIntModel.getSummary());
     assertTrue(testIntModel.getAvailableSummaries().size() > 0);
     final EventListener listener = () -> {};
-    final EventInfoListener<ColumnSummaryModel.Summary> summaryListener = info -> {};
+    final EventDataListener<ColumnSummaryModel.Summary> summaryListener = data -> {};
     testIntModel.addSummaryValueListener(listener);
     testIntModel.addSummaryListener(summaryListener);
     testIntModel.removeSummaryValueListener(listener);

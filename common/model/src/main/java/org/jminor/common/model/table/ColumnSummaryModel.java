@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 
 import java.util.Collection;
@@ -75,12 +75,12 @@ public interface ColumnSummaryModel {
   /**
    * @param listener a listener to be notified each time the summary type changes
    */
-  void addSummaryListener(final EventInfoListener<Summary> listener);
+  void addSummaryListener(final EventDataListener<Summary> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSummaryListener(final EventInfoListener<Summary> listener);
+  void removeSummaryListener(final EventDataListener<Summary> listener);
 
   /**
    * Provides the values used when creating the summary value.

@@ -5,7 +5,7 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.Item;
@@ -562,8 +562,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @param listener a listener notified each time the always on top status changes
    */
-  public final void addAlwaysOnTopListener(final EventInfoListener<Boolean> listener) {
-    alwaysOnTopChangedEvent.addInfoListener(listener);
+  public final void addAlwaysOnTopListener(final EventDataListener<Boolean> listener) {
+    alwaysOnTopChangedEvent.addDataListener(listener);
   }
 
   /**
@@ -1230,7 +1230,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private void bindEventsInternal() {
-    applicationModel.getConnectionProvider().getConnectedObserver().addInfoListener(active ->
+    applicationModel.getConnectionProvider().getConnectedObserver().addDataListener(active ->
             setParentWindowTitle(active ? frameTitle : frameTitle + " - " + Messages.get(Messages.NOT_CONNECTED)));
   }
 

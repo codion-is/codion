@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.StateObserver;
@@ -209,12 +209,12 @@ public interface ColumnConditionModel<K> {
   /**
    * @param listener a listener to be notified each time the condition type changes
    */
-  void addConditionTypeListener(final EventInfoListener<Condition.Type> listener);
+  void addConditionTypeListener(final EventDataListener<Condition.Type> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeConditionTypeListener(final EventInfoListener listener);
+  void removeConditionTypeListener(final EventDataListener listener);
 
   /**
    * @param listener a listener to be notified each time the lower bound changes

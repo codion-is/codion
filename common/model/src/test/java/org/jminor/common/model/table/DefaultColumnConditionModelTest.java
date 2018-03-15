@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.db.condition.Condition;
 
@@ -27,7 +27,7 @@ public class DefaultColumnConditionModelTest {
   final EventListener upperBoundListener = upperBoundCounter::incrementAndGet;
   final EventListener lowerBoundListener = lowerBoundCounter::incrementAndGet;
   final EventListener conditionStateListener = conditionStateCounter::incrementAndGet;
-  final EventInfoListener<Condition.Type> conditionTypeListener = info -> conditionTypeCounter.incrementAndGet();
+  final EventDataListener<Condition.Type> conditionTypeListener = data -> conditionTypeCounter.incrementAndGet();
   final EventListener enabledListener = enabledCounter::incrementAndGet;
   final EventListener clearListener = clearCounter::incrementAndGet;
 

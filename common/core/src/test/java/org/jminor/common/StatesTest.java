@@ -200,7 +200,7 @@ public class StatesTest {
     final State three = States.state();
 
     final State aggregateAnd = States.aggregateState(Conjunction.AND, one, two, three);
-    aggregateAnd.addInfoListener(newValue -> assertEquals(aggregateAnd.isActive(), newValue));
+    aggregateAnd.addDataListener(newValue -> assertEquals(aggregateAnd.isActive(), newValue));
     one.setActive(true);
     two.setActive(true);
     three.setActive(true);
@@ -209,7 +209,7 @@ public class StatesTest {
     three.setActive(false);
 
     final State aggregateOr = States.aggregateState(Conjunction.OR, one, two, three);
-    aggregateOr.addInfoListener(newValue -> assertEquals(aggregateOr.isActive(), newValue));
+    aggregateOr.addDataListener(newValue -> assertEquals(aggregateOr.isActive(), newValue));
     one.setActive(true);
     one.setActive(false);
     two.setActive(true);

@@ -28,19 +28,19 @@ public final class Events {
 
   /**
    * @param listener the info listener
-   * @return a listener causing the given info listener to be fired with null info on each occurrence
+   * @return a {@link EventListener} causing the given {@link EventDataListener} to be fired with null info on each occurrence
    */
-  public static EventListener listener(final EventInfoListener<?> listener) {
+  public static EventListener listener(final EventDataListener<?> listener) {
     return () -> listener.eventOccurred(null);
   }
 
   /**
    * @param <T> the type of info propagated to listeners on event firing
    * @param listener the listener
-   * @return a info listener causing the given listener to be fired on each occurrence
+   * @return a {@link EventDataListener} causing the given {@link EventListener} to be fired on each occurrence
    */
-  public static <T> EventInfoListener<T> infoListener(final EventListener listener) {
-    return info -> listener.eventOccurred();
+  public static <T> EventDataListener<T> dataListener(final EventListener listener) {
+    return data -> listener.eventOccurred();
   }
 
   private static final class DefaultEvent<T> implements Event<T> {
@@ -59,7 +59,7 @@ public final class Events {
         for (final EventListener listener : observer.getEventListeners()) {
           listener.eventOccurred();
         }
-        for (final EventInfoListener<T> infoListener : observer.getEventInfoListeners()) {
+        for (final EventDataListener<T> infoListener : observer.getEventInfoListeners()) {
           infoListener.eventOccurred(info);
         }
       }
@@ -71,8 +71,8 @@ public final class Events {
     }
 
     @Override
-    public void eventOccurred(final T info) {
-      fire(info);
+    public void eventOccurred(final T data) {
+      fire(data);
     }
 
     @Override
@@ -97,13 +97,13 @@ public final class Events {
     }
 
     @Override
-    public void addInfoListener(final EventInfoListener<T> listener) {
-      getObserver().addInfoListener(listener);
+    public void addDataListener(final EventDataListener<T> listener) {
+      getObserver().addDataListener(listener);
     }
 
     @Override
-    public void removeInfoListener(final EventInfoListener listener) {
-      getObserver().removeInfoListener(listener);
+    public void removeDataListener(final EventDataListener listener) {
+      getObserver().removeDataListener(listener);
     }
   }
 
@@ -111,17 +111,17 @@ public final class Events {
 
     private final Object lock = new Object();
     private Collection<EventListener> listeners;
-    private Collection<EventInfoListener<T>> infoListeners;
+    private Collection<EventDataListener<T>> infoListeners;
 
     @Override
-    public void addInfoListener(final EventInfoListener<T> listener) {
+    public void addDataListener(final EventDataListener<T> listener) {
       synchronized (lock) {
         getInfoListeners().add(Objects.requireNonNull(listener, "listener"));
       }
     }
 
     @Override
-    public void removeInfoListener(final EventInfoListener listener) {
+    public void removeDataListener(final EventDataListener listener) {
       synchronized (lock) {
         getInfoListeners().remove(listener);
       }
@@ -151,7 +151,7 @@ public final class Events {
       }
     }
 
-    private Collection<EventInfoListener<T>> getEventInfoListeners() {
+    private Collection<EventDataListener<T>> getEventInfoListeners() {
       synchronized (lock) {
         if (infoListeners == null) {
           return Collections.emptyList();
@@ -175,7 +175,7 @@ public final class Events {
       return listeners;
     }
 
-    private Collection<EventInfoListener<T>> getInfoListeners() {
+    private Collection<EventDataListener<T>> getInfoListeners() {
       if (infoListeners == null) {
         infoListeners = new LinkedHashSet<>(1);
       }

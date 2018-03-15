@@ -51,7 +51,7 @@ public class Control extends AbstractAction {
   public Control(final String name, final StateObserver enabledObserver, final Icon icon) {
     super(name);
     this.enabledObserver = enabledObserver == null ? States.state(true) : enabledObserver;
-    this.enabledObserver.addInfoListener(enabled -> firePropertyChange("enabled", !enabled, enabled));
+    this.enabledObserver.addDataListener(enabled -> firePropertyChange("enabled", !enabled, enabled));
     setIcon(icon);
   }
 

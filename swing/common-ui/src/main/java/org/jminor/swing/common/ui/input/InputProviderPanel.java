@@ -4,7 +4,7 @@
 package org.jminor.swing.common.ui.input;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.i18n.Messages;
@@ -97,15 +97,15 @@ public final class InputProviderPanel<T, K extends JComponent> extends JPanel im
    * the event info is either {@link JOptionPane#CANCEL_OPTION}
    * or {@link JOptionPane#OK_OPTION} depending on the button clicked
    */
-  public void addButtonClickListener(final EventInfoListener<Integer> listener) {
-    buttonClickedEvent.addInfoListener(listener);
+  public void addButtonClickListener(final EventDataListener<Integer> listener) {
+    buttonClickedEvent.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeButtonClickListener(final EventInfoListener listener) {
-    buttonClickedEvent.removeInfoListener(listener);
+  public void removeButtonClickListener(final EventDataListener listener) {
+    buttonClickedEvent.removeDataListener(listener);
   }
 
   private void initUI(final String caption) {

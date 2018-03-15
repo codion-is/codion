@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.combobox;
 
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
@@ -22,12 +22,12 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
   /**
    * @param listener a listener notified each time the selection changes
    */
-  void addSelectionListener(final EventInfoListener<T> listener);
+  void addSelectionListener(final EventDataListener<T> listener);
 
   /**
    * @param listener a selection listener to remove
    */
-  void removeSelectionListener(final EventInfoListener listener);
+  void removeSelectionListener(final EventDataListener listener);
 
   /**
    * Resets the contents of this model using the values found in {@code contents},

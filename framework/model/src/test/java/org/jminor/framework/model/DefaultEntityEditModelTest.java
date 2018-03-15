@@ -4,7 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.DateUtil;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
@@ -145,7 +145,7 @@ public final class DefaultEntityEditModelTest {
     assertTrue(employeeEditModel.getAllowUpdateObserver().isActive());
     assertTrue(employeeEditModel.getAllowDeleteObserver().isActive());
 
-    final EventInfoListener infoListener = info -> {};
+    final EventDataListener infoListener = data -> {};
     employeeEditModel.addAfterDeleteListener(infoListener);
     employeeEditModel.addAfterInsertListener(infoListener);
     employeeEditModel.addAfterUpdateListener(infoListener);
@@ -325,8 +325,8 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER"));
       employeeEditModel.setValue(TestDomain.EMP_NAME, "BJORN");
       final List<Entity> toUpdate = Collections.singletonList(employeeEditModel.getEntityCopy());
-      final EventInfoListener<EntityEditModel.UpdateEvent> listener = info ->
-              assertEquals(toUpdate, new ArrayList<>(info.getUpdatedEntities().values()));
+      final EventDataListener<EntityEditModel.UpdateEvent> listener = data ->
+              assertEquals(toUpdate, new ArrayList<>(data.getUpdatedEntities().values()));
       employeeEditModel.addAfterUpdateListener(listener);
       employeeEditModel.setUpdateAllowed(false);
       assertFalse(employeeEditModel.isUpdateAllowed());
@@ -407,8 +407,8 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setWarnAboutUnsavedData(true);
     employeeEditModel.setValuePersistent(TestDomain.EMP_DEPARTMENT_FK, false);
 
-    final EventInfoListener<State> alwaysConfirmListener = info -> info.setActive(true);
-    final EventInfoListener<State> alwaysDenyListener = info -> info.setActive(false);
+    final EventDataListener<State> alwaysConfirmListener = data -> data.setActive(true);
+    final EventDataListener<State> alwaysDenyListener = data -> data.setActive(false);
 
     employeeEditModel.addConfirmSetEntityObserver(alwaysConfirmListener);
     final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");

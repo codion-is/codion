@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.worker;
 
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.model.CancelException;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.control.ControlSet;
@@ -88,7 +88,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    * @param successListener a listener notified after a successful run
    * @return this {@link ProgressWorker} instance
    */
-  public final ProgressWorker<T> addOnSuccessListener(final EventInfoListener<T> successListener) {
+  public final ProgressWorker<T> addOnSuccessListener(final EventDataListener<T> successListener) {
     Objects.requireNonNull(successListener);
     addPropertyChangeListener(changeEvent -> {
       if (changeEvent.getPropertyName().equals(STATE_PROPERTY) && changeEvent.getNewValue().equals(StateValue.DONE)) {

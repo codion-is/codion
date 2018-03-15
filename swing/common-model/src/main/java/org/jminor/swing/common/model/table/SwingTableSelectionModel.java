@@ -4,7 +4,7 @@
 package org.jminor.swing.common.model.table;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.State;
@@ -308,14 +308,14 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
 
   /** {@inheritDoc} */
   @Override
-  public void addSelectedIndexListener(final EventInfoListener<Integer> listener) {
-    selectedIndexChangedEvent.addInfoListener(listener);
+  public void addSelectedIndexListener(final EventDataListener<Integer> listener) {
+    selectedIndexChangedEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void removeSelectedIndexListener(final EventInfoListener listener) {
-    selectedIndexChangedEvent.removeInfoListener(listener);
+  public void removeSelectedIndexListener(final EventDataListener listener) {
+    selectedIndexChangedEvent.removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -332,26 +332,26 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
 
   /** {@inheritDoc} */
   @Override
-  public void addSelectedItemListener(final EventInfoListener<R> listener) {
-    selectedItemChangedEvent.addInfoListener(listener);
+  public void addSelectedItemListener(final EventDataListener<R> listener) {
+    selectedItemChangedEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void removeSelectedItemListener(final EventInfoListener listener) {
-    selectedItemChangedEvent.removeInfoListener(listener);
+  public void removeSelectedItemListener(final EventDataListener listener) {
+    selectedItemChangedEvent.removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void addSelectedItemsListener(final EventInfoListener<List<R>> listener) {
-    selectedItemsChangedEvent.addInfoListener(listener);
+  public void addSelectedItemsListener(final EventDataListener<List<R>> listener) {
+    selectedItemsChangedEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public void removeSelectedItemsListener(final EventInfoListener listener) {
-    selectedItemsChangedEvent.removeInfoListener(listener);
+  public void removeSelectedItemsListener(final EventDataListener listener) {
+    selectedItemsChangedEvent.removeDataListener(listener);
   }
 
   /** {@inheritDoc} */

@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.server.monitor;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.Events;
 import org.jminor.common.User;
 import org.jminor.common.server.Server;
@@ -95,15 +95,15 @@ public final class HostMonitor {
   /**
    * @param listener a listener notified when a server is added to this monitor
    */
-  public void addServerAddedListener(final EventInfoListener<ServerMonitor> listener) {
-    serverAddedEvent.addInfoListener(listener);
+  public void addServerAddedListener(final EventDataListener<ServerMonitor> listener) {
+    serverAddedEvent.addDataListener(listener);
   }
 
   /**
    * @param listener a listener notified when a server is removed from this monitor
    */
-  public void addServerRemovedListener(final EventInfoListener<ServerMonitor> listener) {
-    serverRemovedEvent.addInfoListener(listener);
+  public void addServerRemovedListener(final EventDataListener<ServerMonitor> listener) {
+    serverRemovedEvent.addDataListener(listener);
   }
 
   private void addServer(final ServerMonitor serverMonitor) {

@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.model.table;
 
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.model.FilterCondition;
@@ -447,12 +447,12 @@ public final class AbstractFilteredTableModelTest {
   public void selection() {
     final AtomicInteger events = new AtomicInteger();
     final EventListener listener = events::incrementAndGet;
-    final EventInfoListener infoListener = Events.infoListener(listener);
+    final EventDataListener dataListener = Events.dataListener(listener);
     final SwingTableSelectionModel<String> selectionModel = (SwingTableSelectionModel<String>) tableModel.getSelectionModel();
-    selectionModel.addSelectedIndexListener(infoListener);
+    selectionModel.addSelectedIndexListener(dataListener);
     selectionModel.addSelectionChangedListener(listener);
-    selectionModel.addSelectedItemListener(infoListener);
-    selectionModel.addSelectedItemsListener(infoListener);
+    selectionModel.addSelectedItemListener(dataListener);
+    selectionModel.addSelectedItemsListener(dataListener);
 
     assertFalse(selectionModel.getSingleSelectionObserver().isActive());
     assertTrue(selectionModel.getSelectionEmptyObserver().isActive());
@@ -568,10 +568,10 @@ public final class AbstractFilteredTableModelTest {
     assertNull(selectionModel.getSelectedItem());
 
     selectionModel.clearSelection();
-    selectionModel.removeSelectedIndexListener(infoListener);
+    selectionModel.removeSelectedIndexListener(dataListener);
     selectionModel.removeSelectionChangedListener(listener);
-    selectionModel.removeSelectedItemListener(infoListener);
-    selectionModel.removeSelectedItemsListener(infoListener);
+    selectionModel.removeSelectedItemListener(dataListener);
+    selectionModel.removeSelectedItemsListener(dataListener);
   }
 
   @Test

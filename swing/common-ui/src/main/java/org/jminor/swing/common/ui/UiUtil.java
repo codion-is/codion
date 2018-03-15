@@ -5,7 +5,7 @@ package org.jminor.swing.common.ui;
 
 import org.jminor.common.DateUtil;
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.ExceptionHandler;
@@ -1111,11 +1111,11 @@ public final class UiUtil {
    * @param closeObserver the dialog will be closed when this observer notifies
    * @param confirmCloseListener this listener, if specified, will be queried for confirmation before
    * the dialog is closed, using the State info object to signal confirmation, the dialog
-   * will only be closed if that state is active after a call to {@link EventInfoListener#eventOccurred(Object)}
+   * will only be closed if that state is active after a call to {@link EventDataListener#eventOccurred(Object)}
    * @return the dialog
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
-                                        final EventObserver closeObserver, final EventInfoListener<State> confirmCloseListener) {
+                                        final EventObserver closeObserver, final EventDataListener<State> confirmCloseListener) {
     return displayInDialog(owner, component, title, true, closeObserver, confirmCloseListener);
   }
 
@@ -1127,12 +1127,12 @@ public final class UiUtil {
    * @param closeObserver the dialog will be closed when this observer notifies
    * @param confirmCloseListener this listener, if specified, will be queried for confirmation before
    * the dialog is closed, using the State info object to signal confirmation, the dialog
-   * will only be closed if that state is active after a call to {@link EventInfoListener#eventOccurred(Object)}
+   * will only be closed if that state is active after a call to {@link EventDataListener#eventOccurred(Object)}
    * @return the dialog
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
                                         final boolean modal, final EventObserver closeObserver,
-                                        final EventInfoListener<State> confirmCloseListener) {
+                                        final EventDataListener<State> confirmCloseListener) {
     final JDialog dialog = new JDialog(getParentWindow(owner), title);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     dialog.addWindowListener(new WindowAdapter() {
@@ -1155,7 +1155,7 @@ public final class UiUtil {
     return dialog;
   }
 
-  private static void closeIfConfirmed(final EventInfoListener<State> confirmCloseListener, final JDialog dialog) {
+  private static void closeIfConfirmed(final EventDataListener<State> confirmCloseListener, final JDialog dialog) {
     if (confirmCloseListener == null) {
       dialog.dispose();
     }
@@ -2067,7 +2067,7 @@ public final class UiUtil {
 
     private void bindEvents() {
       setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-      showDetailsState.addInfoListener(this::initializeDetailView);
+      showDetailsState.addDataListener(this::initializeDetailView);
     }
 
     private void initializeDetailView(final boolean show) {

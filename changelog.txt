@@ -4806,3 +4806,4 @@
   Configuration.ConfigurationValue refactored
   Some configuration value keys now package based
   EntityApplicationPanel.selectFontSize() improved, now shows the font size in the combobox
+  EventInfoListener renamed to EventDataListener

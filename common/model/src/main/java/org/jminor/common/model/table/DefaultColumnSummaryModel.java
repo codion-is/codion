@@ -4,7 +4,7 @@
 package org.jminor.common.model.table;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 
@@ -104,13 +104,13 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addSummaryListener(final EventInfoListener<Summary> listener) {
-    summaryChangedEvent.addInfoListener(listener);
+  public final void addSummaryListener(final EventDataListener<Summary> listener) {
+    summaryChangedEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSummaryListener(final EventInfoListener listener) {
-    summaryChangedEvent.removeInfoListener(listener);
+  public final void removeSummaryListener(final EventDataListener listener) {
+    summaryChangedEvent.removeDataListener(listener);
   }
 }

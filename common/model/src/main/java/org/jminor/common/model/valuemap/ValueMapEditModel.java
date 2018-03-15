@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.valuemap;
 
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.StateObserver;
 import org.jminor.common.db.Attribute;
@@ -33,26 +33,26 @@ public interface ValueMapEditModel<K extends Attribute, V> {
    * @param key the key for which to monitor value changes
    * @param listener a listener notified each time the value of {@code key} is set via this model
    */
-  void addValueSetListener(final K key, final EventInfoListener<ValueChange<K, V>> listener);
+  void addValueSetListener(final K key, final EventDataListener<ValueChange<K, V>> listener);
 
   /**
    * @param key the key
    * @param listener the listener to remove
    */
-  void removeValueSetListener(final K key, final EventInfoListener listener);
+  void removeValueSetListener(final K key, final EventDataListener listener);
 
   /**
    * Adds a listener notified each time the value associated with the given key changes
    * @param key the key for which to monitor value changes
    * @param listener a listener notified each time the value of {@code key} changes
    */
-  void addValueListener(final K key, final EventInfoListener<ValueChange<K, V>> listener);
+  void addValueListener(final K key, final EventDataListener<ValueChange<K, V>> listener);
 
   /**
    * @param key the key
    * @param listener the listener to remove
    */
-  void removeValueListener(final K key, final EventInfoListener listener);
+  void removeValueListener(final K key, final EventDataListener listener);
 
   /**
    * @return an EventObserver notified each time a value changes

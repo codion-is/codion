@@ -588,7 +588,7 @@ public final class FXUiUtil {
     Objects.requireNonNull(property);
     Objects.requireNonNull(stateObserver);
     property.setValue(stateObserver.isActive());
-    stateObserver.addInfoListener(property::setValue);
+    stateObserver.addDataListener(property::setValue);
   }
 
   /**

@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.StateObserver;
 
@@ -44,32 +44,32 @@ public interface SelectionModel<R> {
   /**
    * @param listener a listener to be notified each time the selected index changes
    */
-  void addSelectedIndexListener(final EventInfoListener<Integer> listener);
+  void addSelectedIndexListener(final EventDataListener<Integer> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedIndexListener(final EventInfoListener listener);
+  void removeSelectedIndexListener(final EventDataListener listener);
 
   /**
    * @param listener a listener to be notified each time the selected item changes
    */
-  void addSelectedItemListener(final EventInfoListener<R> listener);
+  void addSelectedItemListener(final EventDataListener<R> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedItemListener(final EventInfoListener listener);
+  void removeSelectedItemListener(final EventDataListener listener);
 
   /**
    * @param listener a listener to be notified each time the selected items change
    */
-  void addSelectedItemsListener(final EventInfoListener<List<R>> listener);
+  void addSelectedItemsListener(final EventDataListener<List<R>> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedItemsListener(final EventInfoListener listener);
+  void removeSelectedItemsListener(final EventDataListener listener);
 
   /**
    * Moves all selected indexes down one index, wraps around.

@@ -4,7 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.State;
@@ -314,8 +314,8 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @return a list containing the inserted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws ValidationException in case validation fails
-   * @see #addBeforeInsertListener(EventInfoListener)
-   * @see #addAfterInsertListener(EventInfoListener)
+   * @see #addBeforeInsertListener(EventDataListener)
+   * @see #addAfterInsertListener(EventDataListener)
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
   List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException;
@@ -338,8 +338,8 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
-   * @see #addBeforeUpdateListener(EventInfoListener)
-   * @see #addAfterUpdateListener(EventInfoListener)
+   * @see #addBeforeUpdateListener(EventDataListener)
+   * @see #addAfterUpdateListener(EventDataListener)
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
   List<Entity> update(final List<Entity> entities) throws DatabaseException, ValidationException;
@@ -348,8 +348,8 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * Deletes the active entity
    * @return the deleted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
-   * @see #addBeforeDeleteListener(EventInfoListener)
-   * @see #addAfterDeleteListener(EventInfoListener)
+   * @see #addBeforeDeleteListener(EventDataListener)
+   * @see #addAfterDeleteListener(EventDataListener)
    */
   List<Entity> delete() throws DatabaseException;
 
@@ -358,8 +358,8 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param entities the entities to delete
    * @return the deleted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
-   * @see #addBeforeDeleteListener(EventInfoListener)
-   * @see #addAfterDeleteListener(EventInfoListener)
+   * @see #addBeforeDeleteListener(EventDataListener)
+   * @see #addAfterDeleteListener(EventDataListener)
    */
   List<Entity> delete(final List<Entity> entities) throws DatabaseException;
 
@@ -441,96 +441,96 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param propertyId the ID of the property for which to monitor value changes
    * @param listener a listener notified each time the value of the given property is set via this model
    */
-  void addValueSetListener(final String propertyId, final EventInfoListener<ValueChange<Property, Object>> listener);
+  void addValueSetListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener);
 
   /**
    * @param propertyId the propertyId
    * @param listener the listener to remove
    */
-  void removeValueSetListener(final String propertyId, final EventInfoListener listener);
+  void removeValueSetListener(final String propertyId, final EventDataListener listener);
 
   /**
    * Adds a listener notified each time the value associated with the given key changes
    * @param propertyId the ID of the property for which to monitor value changes
    * @param listener a listener notified each time the value of the property identified by {@code propertyId} changes
    */
-  void addValueListener(final String propertyId, final EventInfoListener<ValueChange<Property, Object>> listener);
+  void addValueListener(final String propertyId, final EventDataListener<ValueChange<Property, Object>> listener);
 
   /**
    * @param propertyId the ID of the property for which to remove the listener
    * @param listener the listener to remove
    */
-  void removeValueListener(final String propertyId, final EventInfoListener listener);
+  void removeValueListener(final String propertyId, final EventDataListener listener);
 
   /**
    * @param listener a listener notified each time the entity is set
    */
-  void addEntitySetListener(final EventInfoListener<Entity> listener);
+  void addEntitySetListener(final EventDataListener<Entity> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeEntitySetListener(final EventInfoListener listener);
+  void removeEntitySetListener(final EventDataListener listener);
 
   /**
    * @param listener a listener to be notified before an insert is performed
    */
-  void addBeforeInsertListener(final EventInfoListener<InsertEvent> listener);
+  void addBeforeInsertListener(final EventDataListener<InsertEvent> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeBeforeInsertListener(final EventInfoListener listener);
+  void removeBeforeInsertListener(final EventDataListener listener);
 
   /**
    * @param listener a listener to be notified each time a insert has been performed
    */
-  void addAfterInsertListener(final EventInfoListener<InsertEvent> listener);
+  void addAfterInsertListener(final EventDataListener<InsertEvent> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeAfterInsertListener(final EventInfoListener listener);
+  void removeAfterInsertListener(final EventDataListener listener);
 
   /**
    * @param listener a listener to be notified before an update is performed
    */
-  void addBeforeUpdateListener(final EventInfoListener<UpdateEvent> listener);
+  void addBeforeUpdateListener(final EventDataListener<UpdateEvent> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeBeforeUpdateListener(final EventInfoListener listener);
+  void removeBeforeUpdateListener(final EventDataListener listener);
 
   /**
    * @param listener a listener to be notified each time an update has been performed
    */
-  void addAfterUpdateListener(final EventInfoListener<UpdateEvent> listener);
+  void addAfterUpdateListener(final EventDataListener<UpdateEvent> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeAfterUpdateListener(final EventInfoListener listener);
+  void removeAfterUpdateListener(final EventDataListener listener);
 
   /**
    * @param listener a listener to be notified before a delete is performed
    */
-  void addBeforeDeleteListener(final EventInfoListener<DeleteEvent> listener);
+  void addBeforeDeleteListener(final EventDataListener<DeleteEvent> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeBeforeDeleteListener(final EventInfoListener listener);
+  void removeBeforeDeleteListener(final EventDataListener listener);
 
   /**
    * @param listener a listener to be notified each time a delete has been performed
    */
-  void addAfterDeleteListener(final EventInfoListener<DeleteEvent> listener);
+  void addAfterDeleteListener(final EventDataListener<DeleteEvent> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeAfterDeleteListener(final EventInfoListener listener);
+  void removeAfterDeleteListener(final EventDataListener listener);
 
   /**
    * @param listener a listener to be notified before a refresh is performed
@@ -566,12 +566,12 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   /**
    * @param listener a listener notified each time the active entity is about to be set
    */
-  void addConfirmSetEntityObserver(final EventInfoListener<State> listener);
+  void addConfirmSetEntityObserver(final EventDataListener<State> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeConfirmSetEntityObserver(final EventInfoListener listener);
+  void removeConfirmSetEntityObserver(final EventDataListener listener);
 
   /**
    * An event describing a insert action.

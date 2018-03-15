@@ -5,7 +5,7 @@ package org.jminor.framework.model;
 
 import org.jminor.common.Conjunction;
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
@@ -282,8 +282,8 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addSelectedEntitiesListener(final EventInfoListener<Collection<Entity>> listener) {
-    selectedEntitiesChangedEvent.addInfoListener(listener);
+  public final void addSelectedEntitiesListener(final EventDataListener<Collection<Entity>> listener) {
+    selectedEntitiesChangedEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */

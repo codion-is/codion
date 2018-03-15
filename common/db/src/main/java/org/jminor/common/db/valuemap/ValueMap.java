@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db.valuemap;
 
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.StateObserver;
@@ -170,13 +170,13 @@ public interface ValueMap<K extends Attribute, V> extends ValueProvider<K, V>, V
    * @param valueListener the listener
    * @see ValueChange
    */
-  void addValueListener(final EventInfoListener<ValueChange<K, V>> valueListener);
+  void addValueListener(final EventDataListener<ValueChange<K, V>> valueListener);
 
   /**
    * Removes the given value listener if it has been registered with this value map.
    * @param valueListener the listener to remove
    */
-  void removeValueListener(final EventInfoListener valueListener);
+  void removeValueListener(final EventDataListener valueListener);
 
   /**
    * A validator for ValueMaps

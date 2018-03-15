@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.StateObserver;
 import org.jminor.common.Value;
 import org.jminor.common.db.condition.Condition;
@@ -123,7 +123,7 @@ public interface EntityLookupModel extends EntityDataProvider {
   /**
    * @param listener a listener to be notified each time the selected entities are changed
    */
-  void addSelectedEntitiesListener(final EventInfoListener<Collection<Entity>> listener);
+  void addSelectedEntitiesListener(final EventDataListener<Collection<Entity>> listener);
 
   /**
    * @return a StateObserver indicating whether or not the search string represents the selected entities

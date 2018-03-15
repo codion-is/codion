@@ -5,7 +5,7 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.Conjunction;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
@@ -798,7 +798,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   public static Action createEditPanelAction(final JComponent component, final EntityPanelProvider panelProvider,
                                              final EntityConnectionProvider connectionProvider,
-                                             final EventInfoListener<List<Entity>> insertListener) {
+                                             final EventDataListener<List<Entity>> insertListener) {
     return new InsertEntityAction(component, panelProvider, connectionProvider, insertListener);
   }
 
@@ -2131,7 +2131,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     private final JComponent component;
     private final EntityPanelProvider panelProvider;
     private final EntityConnectionProvider connectionProvider;
-    private final EventInfoListener<List<Entity>> listener;
+    private final EventDataListener<List<Entity>> listener;
     private final List<Entity> lastInsertedEntities = new ArrayList<>();
 
     private InsertEntityAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
@@ -2148,7 +2148,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     }
 
     private InsertEntityAction(final JComponent component, final EntityPanelProvider panelProvider,
-                               final EntityConnectionProvider connectionProvider, final EventInfoListener<List<Entity>> listener) {
+                               final EntityConnectionProvider connectionProvider, final EventDataListener<List<Entity>> listener) {
       super("", Images.loadImage(Images.IMG_ADD_16));
       this.component = component;
       this.panelProvider = panelProvider;

@@ -119,13 +119,13 @@ public final class States {
     }
 
     @Override
-    public void addInfoListener(final EventInfoListener<Boolean> listener) {
-      getObserver().addInfoListener(listener);
+    public void addDataListener(final EventDataListener<Boolean> listener) {
+      getObserver().addDataListener(listener);
     }
 
     @Override
-    public void removeInfoListener(final EventInfoListener listener) {
-      getObserver().removeInfoListener(listener);
+    public void removeDataListener(final EventDataListener listener) {
+      getObserver().removeDataListener(listener);
     }
 
     @Override
@@ -190,7 +190,7 @@ public final class States {
         final boolean wasActive = isActive();
         final AggregateStateListener listener = findListener(state);
         if (listener != null) {
-          state.removeInfoListener(listener);
+          state.removeDataListener(listener);
           stateListeners.remove(listener);
           ((DefaultStateObserver) getObserver()).notifyObservers(wasActive, isActive());
         }
@@ -236,12 +236,12 @@ public final class States {
       return null;
     }
 
-    private final class AggregateStateListener implements EventInfoListener<Boolean> {
+    private final class AggregateStateListener implements EventDataListener<Boolean> {
       private final StateObserver state;
 
       private AggregateStateListener(final StateObserver state) {
         this.state = state;
-        this.state.addInfoListener(this);
+        this.state.addDataListener(this);
       }
 
       @Override
@@ -315,13 +315,13 @@ public final class States {
     }
 
     @Override
-    public void addInfoListener(final EventInfoListener<Boolean> listener) {
-      getChangeObserver().addInfoListener(listener);
+    public void addDataListener(final EventDataListener<Boolean> listener) {
+      getChangeObserver().addDataListener(listener);
     }
 
     @Override
-    public void removeInfoListener(final EventInfoListener listener) {
-      getChangeObserver().removeInfoListener(listener);
+    public void removeDataListener(final EventDataListener listener) {
+      getChangeObserver().removeDataListener(listener);
     }
 
     private void notifyObservers(final boolean previousValue, final boolean newValue) {

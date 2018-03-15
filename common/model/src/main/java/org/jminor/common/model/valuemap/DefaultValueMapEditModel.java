@@ -4,7 +4,7 @@
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.Event;
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.State;
@@ -179,29 +179,29 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueSetListener(final K key, final EventInfoListener<ValueChange<K, V>> listener) {
-    getValueSetEvent(key).addInfoListener(listener);
+  public final void addValueSetListener(final K key, final EventDataListener<ValueChange<K, V>> listener) {
+    getValueSetEvent(key).addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeValueSetListener(final K key, final EventInfoListener listener) {
+  public final void removeValueSetListener(final K key, final EventDataListener listener) {
     if (valueSetEventMap.containsKey(key)) {
-      valueSetEventMap.get(key).removeInfoListener(listener);
+      valueSetEventMap.get(key).removeDataListener(listener);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueListener(final K key, final EventInfoListener<ValueChange<K, V>> listener) {
-    getValueObserver(key).addInfoListener(listener);
+  public final void addValueListener(final K key, final EventDataListener<ValueChange<K, V>> listener) {
+    getValueObserver(key).addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeValueListener(final K key, final EventInfoListener listener) {
+  public final void removeValueListener(final K key, final EventDataListener listener) {
     if (valueChangeEventMap.containsKey(key)) {
-      valueChangeEventMap.get(key).removeInfoListener(listener);
+      valueChangeEventMap.get(key).removeDataListener(listener);
     }
   }
 

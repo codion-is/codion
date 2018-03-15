@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.model.table;
 
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.model.table.ColumnConditionModel;
 
 import javax.swing.table.TableColumn;
@@ -80,20 +80,20 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
   /**
    * @param listener a listener to be notified each time a column is hidden
    */
-  void addColumnHiddenListener(final EventInfoListener<C> listener);
+  void addColumnHiddenListener(final EventDataListener<C> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeColumnHiddenListener(final EventInfoListener<C> listener);
+  void removeColumnHiddenListener(final EventDataListener<C> listener);
 
   /**
    * @param listener a listener to be notified each time a column is shown
    */
-  void addColumnShownListener(final EventInfoListener<C> listener);
+  void addColumnShownListener(final EventDataListener<C> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeColumnShownListener(final EventInfoListener<C> listener);
+  void removeColumnShownListener(final EventDataListener<C> listener);
 }

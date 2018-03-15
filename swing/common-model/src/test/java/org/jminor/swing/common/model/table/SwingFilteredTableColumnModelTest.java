@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.model.table;
 
-import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
 
@@ -25,8 +25,8 @@ public class SwingFilteredTableColumnModelTest {
     final FilteredTableColumnModel<Integer> testModel = createTestModel();
     final Collection<Object> hidden = new ArrayList<>();
     final Collection<Object> shown = new ArrayList<>();
-    final EventInfoListener<Integer> hideListener = hidden::add;
-    final EventInfoListener<Integer> showListener = shown::add;
+    final EventDataListener<Integer> hideListener = hidden::add;
+    final EventDataListener<Integer> showListener = shown::add;
     testModel.addColumnHiddenListener(hideListener);
     testModel.addColumnShownListener(showListener);
 
