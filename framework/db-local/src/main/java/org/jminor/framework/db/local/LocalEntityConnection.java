@@ -1229,8 +1229,8 @@ public final class LocalEntityConnection implements EntityConnection {
   }
 
   /**
-   * @param inserting if true then only properties with non-null values are added,
-   * otherwise update is assumed and all properties with modified values are added.
+   * @param inserting if true then all properties available in {@code entity} are added,
+   * otherwise update is assumed and only properties with modified values are added.
    * @param entity the Entity instance
    * @param columnProperties the column properties the entity type is based on
    * @param properties afterwards this collection will contain the properties on which to base the statement
@@ -1243,17 +1243,16 @@ public final class LocalEntityConnection implements EntityConnection {
                                                            final Collection<Object> values) throws SQLException {
     for (int i = 0; i < columnProperties.size(); i++) {
       final Property.ColumnProperty property = columnProperties.get(i);
-      final Object value = entity.get(property);
-      final boolean insertingAndNonNull = inserting && value != null;
-      final boolean updatingAndModified = !inserting && entity.isModified(property);
-      if (insertingAndNonNull || updatingAndModified) {
-        properties.add(property);
-        values.add(value);
+      if (entity.containsKey(property)) {
+        if (inserting || entity.isModified(property)) {
+          properties.add(property);
+          values.add(entity.get(property));
+        }
       }
     }
     if (properties.isEmpty()) {
       if (inserting) {
-        throw new SQLException("Unable to insert entity " + entity.getEntityId() + ", only null values found");
+        throw new SQLException("Unable to insert entity " + entity.getEntityId() + ", no properties to insert");
       }
       else {
         throw new SQLException("Unable to update entity " + entity.getEntityId() + ", no modified values found");

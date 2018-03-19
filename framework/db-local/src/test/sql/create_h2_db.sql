@@ -14,7 +14,7 @@ CREATE TABLE scott.emp (
   mgr INT,
   hiredate DATE,
   sal DECIMAL(7, 2) NOT NULL,
-  comm DECIMAL(7, 2),
+  comm DECIMAL(7, 2) DEFAULT 200,
   deptno INT NOT NULL,
   constraint emp_pk primary key (empno),
   constraint emp_dept_fk foreign key (deptno) references scott.dept(deptno),

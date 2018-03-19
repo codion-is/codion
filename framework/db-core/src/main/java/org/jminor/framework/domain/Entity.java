@@ -403,14 +403,15 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
       }
 
       /**
-       * @return true if the underlying database handles the key generation
+       * @return true if the underlying database handles the key generation, f.ex. with
+       * a autoIncrement column or a database trigger
        */
       public boolean isAutoIncrement() {
         return autoIncrement;
       }
 
       /**
-       * @return true if the key value needs to be set manually before insert
+       * @return true if the key value needs to be included in the Entity before insert
        */
       public boolean isManual() {
         return manual;

@@ -334,7 +334,43 @@ public class LocalEntityConnectionTest {
   }
 
   @Test
-  public void insert() throws DatabaseException {
+  public void insertWithNullValues() throws DatabaseException {
+    final Entity sales = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    final String name = "Nobody";
+    final double salary = 1500;
+    final double defaultCommission = 200;
+
+    Entity emp = ENTITIES.entity(TestDomain.T_EMP);
+    emp.put(TestDomain.EMP_DEPARTMENT_FK, sales);
+    emp.put(TestDomain.EMP_NAME, name);
+    emp.put(TestDomain.EMP_SALARY, salary);
+
+    emp = connection.selectSingle(connection.insert(Collections.singletonList(emp)).get(0));
+    assertEquals(sales, emp.get(TestDomain.EMP_DEPARTMENT_FK));
+    assertEquals(name, emp.get(TestDomain.EMP_NAME));
+    assertEquals(salary, emp.get(TestDomain.EMP_SALARY));
+    assertEquals(defaultCommission, emp.get(TestDomain.EMP_COMMISSION));
+    connection.delete(Collections.singletonList(emp.getKey()));
+
+    emp.put(TestDomain.EMP_COMMISSION, null);//default value should not kick in
+    emp = connection.selectSingle(connection.insert(Collections.singletonList(emp)).get(0));
+    assertEquals(sales, emp.get(TestDomain.EMP_DEPARTMENT_FK));
+    assertEquals(name, emp.get(TestDomain.EMP_NAME));
+    assertEquals(salary, emp.get(TestDomain.EMP_SALARY));
+    assertNull(emp.get(TestDomain.EMP_COMMISSION));
+    connection.delete(Collections.singletonList(emp.getKey()));
+
+    emp.remove(TestDomain.EMP_COMMISSION);//default value should kick in
+    emp = connection.selectSingle(connection.insert(Collections.singletonList(emp)).get(0));
+    assertEquals(sales, emp.get(TestDomain.EMP_DEPARTMENT_FK));
+    assertEquals(name, emp.get(TestDomain.EMP_NAME));
+    assertEquals(salary, emp.get(TestDomain.EMP_SALARY));
+    assertEquals(defaultCommission, emp.get(TestDomain.EMP_COMMISSION));
+    connection.delete(Collections.singletonList(emp.getKey()));
+  }
+
+  @Test
+  public void insertEmptyList() throws DatabaseException {
     final List<Entity.Key> pks = connection.insert(new ArrayList<>());
     assertTrue(pks.isEmpty());
   }

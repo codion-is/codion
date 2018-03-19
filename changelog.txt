@@ -4807,3 +4807,4 @@
   Some configuration value keys now package based
   EntityApplicationPanel.selectFontSize() improved, now shows the font size in the combobox
   EventInfoListener renamed to EventDataListener
+  LocalEntityConnection.populateStatementPropertiesAndValues() bug fixed, did not include properties with null values when inserting
