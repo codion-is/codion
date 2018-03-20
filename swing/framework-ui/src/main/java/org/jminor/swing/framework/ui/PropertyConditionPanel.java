@@ -20,12 +20,10 @@ import org.jminor.swing.common.ui.textfield.DoubleField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 
-import javax.swing.AbstractAction;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
-import java.awt.event.ActionEvent;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 
@@ -137,21 +135,6 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
       MaximumMatch.enable(box);
 
       return box;
-    }
-  }
-
-  private static final class EnableAction extends AbstractAction {
-
-    private final ColumnConditionModel model;
-
-    private EnableAction(final ColumnConditionModel model) {
-      super("PropertyConditionPanel.EnableAction");
-      this.model = model;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      model.setEnabled(!model.isEnabled());
     }
   }
 }

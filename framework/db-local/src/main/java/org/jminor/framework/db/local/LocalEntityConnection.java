@@ -1243,11 +1243,9 @@ public final class LocalEntityConnection implements EntityConnection {
                                                            final Collection<Object> values) throws SQLException {
     for (int i = 0; i < columnProperties.size(); i++) {
       final Property.ColumnProperty property = columnProperties.get(i);
-      if (entity.containsKey(property)) {
-        if (inserting || entity.isModified(property)) {
-          properties.add(property);
-          values.add(entity.get(property));
-        }
+      if (entity.containsKey(property) && (inserting || entity.isModified(property))) {
+        properties.add(property);
+        values.add(entity.get(property));
       }
     }
     if (properties.isEmpty()) {

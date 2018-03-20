@@ -63,7 +63,7 @@ public final class Configuration {
    * @return the configuration value
    */
   public static Value<Integer> integerValue(final String key, final Integer defaultValue) {
-    return value(key, defaultValue, value -> Integer.parseInt(value));
+    return value(key, defaultValue, Integer::parseInt);
   }
 
   /**
@@ -73,7 +73,7 @@ public final class Configuration {
    * @return the configuration value
    */
   public static Value<Long> longValue(final String key, final Long defaultValue) {
-    return value(key, defaultValue, value -> Long.parseLong(value));
+    return value(key, defaultValue, Long::parseLong);
   }
 
   /**
@@ -83,7 +83,7 @@ public final class Configuration {
    * @return the configuration value
    */
   public static Value<Double> doubleValue(final String key, final Double defaultValue) {
-    return value(key, defaultValue, value -> Double.parseDouble(value));
+    return value(key, defaultValue, Double::parseDouble);
   }
 
   /**
@@ -105,7 +105,7 @@ public final class Configuration {
    * @return the configuration value
    */
   public static <T> Value<T> value(final String key, final T defaultValue, final ValueParser<T> parser) {
-    return new ConfigurationValue<T>(key, defaultValue, parser);
+    return new ConfigurationValue<>(key, defaultValue, parser);
   }
 
   /**
@@ -178,6 +178,7 @@ public final class Configuration {
 
   /**
    * Parses a configuration value from a non-null string
+   * @param <T> the value type
    */
   public interface ValueParser<T> {
 

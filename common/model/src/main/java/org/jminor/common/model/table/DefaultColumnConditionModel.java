@@ -37,7 +37,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
    */
   public static final Value<AutomaticWildcard> AUTOMATIC_WILDCARD = Configuration.value(
           "org.jminor.common.model.table.DefaultColumnConditionModel.automaticWildard",
-          AutomaticWildcard.NONE, value -> AutomaticWildcard.valueOf(value));
+          AutomaticWildcard.NONE, AutomaticWildcard::valueOf);
   public static final Value<Boolean> CASE_SENSITIVE = Configuration.booleanValue(
           "org.jminor.common.model.table.DefaultColumnConditionModel.caseSensitive",true);
 

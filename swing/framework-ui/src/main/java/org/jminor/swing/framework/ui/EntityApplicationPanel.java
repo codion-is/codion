@@ -333,6 +333,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
   }
 
+  /**
+   * Display a dialog for selecting the application font size
+   */
   public final void selectFontSize() {
     final List<Item<Integer>> values = new ArrayList<>(21);
     for (int i = 100; i <= 200; i += 5) {
@@ -349,7 +352,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
                                                     final boolean isSelected, final boolean cellHasFocus) {
         final Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         if (index >= 0) {
-          final Font font = (Font) component.getFont();
+          final Font font = component.getFont();
           final int newSize = Math.round(font.getSize() * (values.get(index).getItem() / (float) defaultFontSize.doubleValue()));
           component.setFont(new Font(font.getName(), font.getStyle(), newSize));
         }
