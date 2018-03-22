@@ -26,6 +26,7 @@ import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 
+import javax.swing.SwingUtilities;
 import java.io.File;
 import java.nio.charset.Charset;
 
@@ -78,8 +79,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.empdept.domain.EmpDept");
-    new EmpDeptAppPanel().startApplication("Emp-Dept", null, false,
-            UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger".toCharArray()));
+    SwingUtilities.invokeLater(() -> new EmpDeptAppPanel().startApplication("Emp-Dept", null, false,
+            UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger".toCharArray())));
   }
 
   public static final class EmpDeptApplicationModel extends SwingEntityApplicationModel {

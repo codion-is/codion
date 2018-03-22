@@ -35,6 +35,7 @@ import org.jminor.swing.framework.ui.EntityPanelProvider;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
@@ -155,8 +156,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPane
     DefaultColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
     DefaultColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.chinook.domain.ChinookDomain");
-    new ChinookAppPanel().startApplication("ChinookDomain", null, false,
-            UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger".toCharArray()));
+    SwingUtilities.invokeLater(() -> new ChinookAppPanel().startApplication("ChinookDomain", null, false,
+          UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger".toCharArray())));
   }
 
   public static final class ChinookApplicationModel extends SwingEntityApplicationModel {
