@@ -963,7 +963,7 @@ public final class LocalEntityConnection implements EntityConnection {
   private void packResult(final List<Entity> result, final ResultIterator<Entity> iterator) throws SQLException {
     SQLException packingException = null;
     try {
-      logAccess("packResult", new Object[0]);
+      logAccess("packResult", null);
       while (iterator.hasNext()) {
         result.add(iterator.next());
       }
@@ -973,8 +973,7 @@ public final class LocalEntityConnection implements EntityConnection {
       throw e;
     }
     finally {
-      final String message = result != null ? "row count: " + result.size() : "";
-      logExit("packResult", packingException, message);
+      logExit("packResult", packingException, "row count: " + result.size());
     }
   }
 
