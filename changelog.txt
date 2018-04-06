@@ -4811,3 +4811,4 @@
   Fixed a few code smells
   Demo Swing applications started on the EDT
 0.11.2
+  UiValues.doubleValue(SpinnerNumberModel) added

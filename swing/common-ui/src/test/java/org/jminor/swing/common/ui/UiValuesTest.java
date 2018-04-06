@@ -112,6 +112,21 @@ public class UiValuesTest {
   }
 
   @Test
+  public void doubleSpinnerUiValue() {
+    final SpinnerNumberModel model = new SpinnerNumberModel(0d, 0d, 130d, 1d);
+    final Value<Double> value = UiValues.doubleValue(model);
+
+    assertEquals(Double.valueOf(0d), value.get());
+    model.setValue(122.2);
+    assertEquals(Double.valueOf(122.2), value.get());
+    model.setValue(0d);
+    assertEquals(Double.valueOf(0), value.get());
+
+    value.set(42.4);
+    assertEquals(42.4, model.getValue());
+  }
+
+  @Test
   public void integerTextUiValue() {
     final IntegerField txt = new IntegerField();
     final Value<Integer> value = UiValues.integerValue(txt, false, true);

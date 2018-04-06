@@ -77,7 +77,15 @@ public final class UiValues {
    * @return a Value bound to the given component
    */
   public static Value<Integer> integerValue(final SpinnerNumberModel spinnerModel) {
-    return new IntSpinnerUIValue(spinnerModel);
+    return new SpinnerUIValue(spinnerModel);
+  }
+
+  /**
+   * @param spinnerModel the spinner model
+   * @return a Value bound to the given component
+   */
+  public static Value<Double> doubleValue(final SpinnerNumberModel spinnerModel) {
+    return new SpinnerUIValue(spinnerModel);
   }
 
   /**
@@ -470,21 +478,21 @@ public final class UiValues {
     }
   }
 
-  private static final class IntSpinnerUIValue extends UIValue<Integer> {
+  private static final class SpinnerUIValue<T extends Number> extends UIValue<T> {
     private final SpinnerNumberModel spinnerModel;
 
-    private IntSpinnerUIValue(final SpinnerNumberModel spinnerModel) {
+    private SpinnerUIValue(final SpinnerNumberModel spinnerModel) {
       this.spinnerModel = spinnerModel;
       this.spinnerModel.addChangeListener(e -> fireChangeEvent());
     }
 
     @Override
-    public Integer get() {
-      return (Integer) spinnerModel.getValue();
+    public T get() {
+      return (T) spinnerModel.getValue();
     }
 
     @Override
-    protected void setInternal(final Integer value) {
+    protected void setInternal(final T value) {
       spinnerModel.setValue(value);
     }
   }
