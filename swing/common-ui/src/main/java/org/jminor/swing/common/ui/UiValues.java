@@ -19,6 +19,7 @@ import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.textfield.NumberField;
 
+import javax.swing.BoundedRangeModel;
 import javax.swing.ButtonModel;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -74,10 +75,18 @@ public final class UiValues {
 
   /**
    * @param spinnerModel the spinner model
-   * @return a Value bound to the given component
+   * @return a Value bound to the given model
    */
   public static Value<Integer> integerValue(final SpinnerNumberModel spinnerModel) {
     return new SpinnerUIValue(spinnerModel);
+  }
+
+  /**
+   * @param boundedRangeModel the bounded range model
+   * @return a Value bound to the given model
+   */
+  public static Value<Integer> integerValue(final BoundedRangeModel boundedRangeModel) {
+    return new BoundedRangeUIValue(boundedRangeModel);
   }
 
   /**
@@ -494,6 +503,25 @@ public final class UiValues {
     @Override
     protected void setInternal(final T value) {
       spinnerModel.setValue(value);
+    }
+  }
+
+  private static final class BoundedRangeUIValue extends UIValue<Integer> {
+    private final BoundedRangeModel rangeModel;
+
+    public BoundedRangeUIValue(final BoundedRangeModel rangeModel) {
+      this.rangeModel = rangeModel;
+      this.rangeModel.addChangeListener(e -> fireChangeEvent());
+    }
+
+    @Override
+    public Integer get() {
+      return rangeModel.getValue();
+    }
+
+    @Override
+    protected void setInternal(final Integer value) {
+      rangeModel.setValue(value == null ? 0 : value);
     }
   }
 }

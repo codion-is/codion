@@ -4812,3 +4812,4 @@
   Demo Swing applications started on the EDT
 0.11.2
   UiValues.doubleValue(SpinnerNumberModel) added
+  UiValues.integerValue(BoundedRangeModel) added

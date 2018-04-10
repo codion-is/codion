@@ -13,7 +13,9 @@ import org.jminor.swing.common.ui.textfield.LongField;
 
 import org.junit.Test;
 
+import javax.swing.BoundedRangeModel;
 import javax.swing.ButtonModel;
+import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultButtonModel;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -99,6 +101,21 @@ public class UiValuesTest {
   @Test
   public void integerSpinnerUiValue() {
     final SpinnerNumberModel model = new SpinnerNumberModel();
+    final Value<Integer> value = UiValues.integerValue(model);
+
+    assertEquals(Integer.valueOf(0), value.get());
+    model.setValue(122);
+    assertEquals(Integer.valueOf(122), value.get());
+    model.setValue(0);
+    assertEquals(Integer.valueOf(0), value.get());
+
+    value.set(42);
+    assertEquals(42, model.getValue());
+  }
+
+  @Test
+  public void integerBoundedRangeModelUiValue() {
+    final BoundedRangeModel model = new DefaultBoundedRangeModel(0, 0, 0, 150);
     final Value<Integer> value = UiValues.integerValue(model);
 
     assertEquals(Integer.valueOf(0), value.get());
