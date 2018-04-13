@@ -4813,3 +4813,5 @@
 0.11.2
   UiValues.doubleValue(SpinnerNumberModel) added
   UiValues.integerValue(BoundedRangeModel) added
+  NavigableImagePanel.getImage() added
+  JasperReportsWrapper now loads the report on construction

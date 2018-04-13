@@ -42,32 +42,50 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
    */
   public static final Value<Boolean> CACHE_REPORTS = Configuration.booleanValue("jminor.report.cacheReports", true);
 
-  private final String reportPath;
+  private final JasperReport report;
   private final Map<String, Object> reportParameters;
   private static final Map<String, JasperReport> REPORT_CACHE = Collections.synchronizedMap(new HashMap<>());
 
   /**
    * @param reportPath the report path
+   * @throws ReportException in case of an exception while loading the report
    */
-  public JasperReportsWrapper(final String reportPath) {
+  public JasperReportsWrapper(final String reportPath) throws ReportException {
     this(reportPath, new HashMap<>());
   }
 
   /**
    * @param reportPath the report path
    * @param reportParameters the report parameters
+   * @throws ReportException in case of an exception while loading the report
    */
-  public JasperReportsWrapper(final String reportPath, final Map<String, Object> reportParameters) {
+  public JasperReportsWrapper(final String reportPath, final Map<String, Object> reportParameters) throws ReportException {
     Objects.requireNonNull(reportPath, "reportPath");
     Objects.requireNonNull(reportParameters, "reportParameters");
-    this.reportPath = reportPath;
+    try {
+      this.report = loadJasperReport(reportPath);
+      this.reportParameters = reportParameters;
+    }
+    catch (final JRException | MalformedURLException e) {
+      throw new ReportException(e);
+    }
+  }
+
+  /**
+   * @param report the report
+   * @param reportParameters the report parameters
+   */
+  public JasperReportsWrapper(final JasperReport report, final Map<String, Object> reportParameters) {
+    Objects.requireNonNull(report, "report");
+    Objects.requireNonNull(reportParameters, "reportParameters");
+    this.report = report;
     this.reportParameters = reportParameters;
   }
 
   /** {@inheritDoc} */
   @Override
   public String getReportName() {
-    return reportPath;
+    return report.getName();
   }
 
   /** {@inheritDoc} */
@@ -75,10 +93,9 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
   public ReportResult<JasperPrint> fillReport(final Connection connection) throws ReportException {
     Objects.requireNonNull(connection, "connection");
     try {
-      final JasperReport report = loadJasperReport(reportPath);
       return new JasperReportsResult(JasperFillManager.fillReport(report, reportParameters, connection));
     }
-    catch (final JRException | MalformedURLException e) {
+    catch (final JRException e) {
       throw new ReportException(e);
     }
   }
@@ -88,10 +105,9 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
   public ReportResult<JasperPrint> fillReport(final ReportDataWrapper<JRDataSource> dataWrapper) throws ReportException {
     Objects.requireNonNull(dataWrapper, "dataWrapper");
     try {
-      final JasperReport report = loadJasperReport(reportPath);
       return new JasperReportsResult(JasperFillManager.fillReport(report, reportParameters, dataWrapper.getDataSource()));
     }
-    catch (final JRException | MalformedURLException e) {
+    catch (final JRException e) {
       throw new ReportException(e);
     }
   }
@@ -99,7 +115,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
   /** {@inheritDoc} */
   @Override
   public String toString() {
-    final StringBuilder builder = new StringBuilder(reportPath);
+    final StringBuilder builder = new StringBuilder(report.getName());
     if (reportParameters != null && reportParameters.size() > 0) {
       builder.append(", parameters: ").append(reportParameters.toString());
     }

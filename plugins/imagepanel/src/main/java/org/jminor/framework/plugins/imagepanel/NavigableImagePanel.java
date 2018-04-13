@@ -538,6 +538,13 @@ public class NavigableImagePanel extends JPanel {
     repaint();
   }
 
+  /**
+   * @return the image being displayed, null if none
+   */
+  public final BufferedImage getImage() {
+    return image;
+  }
+
   public final void resetView() {
     scale = 0.0;
     repaint();
