@@ -4815,3 +4815,4 @@
   UiValues.integerValue(BoundedRangeModel) added
   NavigableImagePanel.getImage() added
   JasperReportsWrapper now loads the report on construction
+  EntityTablePanel.createEntityTablePanel() added and used for the dependencies panel, allowing update of dependent entities

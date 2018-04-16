@@ -786,20 +786,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       throw new IllegalArgumentException("Cannot create a static EntityTablePanel without the entities");
     }
 
-    return createStaticEntityTablePanel(entities, connectionProvider, entities.iterator().next().getEntityId());
-  }
-
-  /**
-   * Creates a static read-only entity table panel showing the given entities.
-   * @param entities the entities to show in the panel
-   * @param connectionProvider the EntityConnectionProvider, in case the returned panel should require one
-   * @param entityId the entityId
-   * @return a static EntityTablePanel showing the given entities
-   */
-  public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities,
-                                                              final EntityConnectionProvider connectionProvider,
-                                                              final String entityId) {
-    final SwingEntityTableModel tableModel = new SwingEntityTableModel(entityId, connectionProvider) {
+    final SwingEntityTableModel tableModel = new SwingEntityTableModel(entities.iterator().next().getEntityId(), connectionProvider) {
       @Override
       protected List<Entity> performQuery() {
         return new ArrayList<>(entities);
@@ -807,8 +794,60 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     };
     tableModel.setQueryConfigurationAllowed(false);
     tableModel.refresh();
-    final EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-    tablePanel.setIncludePopupMenu(false);
+
+    return createEntityTablePanel(tableModel);
+  }
+
+  /**
+   * Creates a static entity table panel showing the given entities, note that this table panel will
+   * provide a popup menu for updating the selected entities unless the underlying entities are read-only.
+   * @param entities the entities to show in the panel
+   * @param connectionProvider the EntityConnectionProvider, in case the returned panel should require one
+   * @return a static EntityTablePanel showing the given entities
+   */
+  public static EntityTablePanel createEntityTablePanel(final Collection<Entity> entities,
+                                                        final EntityConnectionProvider connectionProvider) {
+    if (Util.nullOrEmpty(entities)) {
+      throw new IllegalArgumentException("Cannot create a static EntityTablePanel without the entities");
+    }
+
+    final String entityId = entities.iterator().next().getEntityId();
+    final SwingEntityEditModel editModel = new SwingEntityEditModel(entityId, connectionProvider);
+    final SwingEntityTableModel tableModel = new SwingEntityTableModel(entityId, connectionProvider) {
+      @Override
+      protected List<Entity> performQuery() {
+        return new ArrayList<>(entities);
+      }
+    };
+    tableModel.setEditModel(editModel);
+    tableModel.setQueryConfigurationAllowed(false);
+    tableModel.refresh();
+
+    return createEntityTablePanel(tableModel);
+  }
+
+  /**
+   * Creates a entity table panel based on the given table model.
+   * If the table model is not read only, a popup menu for updating the selected entities is provided,
+   * otherwise not popup menu is available.
+   * @param tableModel the table model
+   * @return a entity table panel based on the given model
+   */
+  public static EntityTablePanel createEntityTablePanel(final SwingEntityTableModel tableModel) {
+    final EntityTablePanel tablePanel = new EntityTablePanel(tableModel) {
+      @Override
+      protected ControlSet getPopupControls(final List<ControlSet> additionalPopupControlSets) {
+        if (tableModel.isReadOnly()) {
+          return null;
+        }
+
+        final ControlSet popupControls = new ControlSet();
+        popupControls.add(getUpdateSelectedControlSet());
+
+        return popupControls;
+      }
+    };
+    tablePanel.setIncludePopupMenu(!tableModel.isReadOnly());
     tablePanel.setIncludeSouthPanel(false);
     tablePanel.initializePanel();
 
@@ -1533,7 +1572,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     for (final Map.Entry<String, Collection<Entity>> entry : dependencies.entrySet()) {
       final Collection<Entity> dependantEntities = entry.getValue();
       if (!dependantEntities.isEmpty()) {
-        tabPane.addTab(connectionProvider.getDomain().getCaption(entry.getKey()), createStaticEntityTablePanel(dependantEntities, connectionProvider));
+        tabPane.addTab(connectionProvider.getDomain().getCaption(entry.getKey()), createEntityTablePanel(dependantEntities, connectionProvider));
       }
     }
     panel.add(tabPane, BorderLayout.CENTER);
