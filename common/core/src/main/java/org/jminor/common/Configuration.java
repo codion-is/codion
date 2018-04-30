@@ -210,11 +210,12 @@ public final class Configuration {
       this.key = Objects.requireNonNull(key, "key");
       final String stringValue = System.getProperty(key);
       this.value = stringValue == null ? defaultValue : parser.parse(stringValue);
-      LOG.debug(key + ": " + stringValue + " [default: " + defaultValue +"]");
+      LOG.debug("ConfigurationValue.init() '" + key + "': " + stringValue + " [default: " + defaultValue +"]");
     }
 
     @Override
     public final void set(final T value) {
+      LOG.debug("ConfigurationValue.set() '" + key + "': " + value);
       this.value = value;
       if (value == null) {
         System.clearProperty(key);

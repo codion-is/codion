@@ -1439,7 +1439,7 @@ public final class UiUtil {
         SwingUtilities.getWindowAncestor(component).addWindowFocusListener(new WindowAdapter() {
           @Override
           public void windowGainedFocus(final WindowEvent evt) {
-            component.requestFocusInWindow();
+            component.requestFocus();
             if (onFocusAction != null) {
               onFocusAction.actionPerformed(new ActionEvent(component, 0, "onFocusAction"));
             }
@@ -1584,7 +1584,7 @@ public final class UiUtil {
    * Runs the given task while displaying a simple indeterminate progress bar.
    * @param dialogParent the dialog parent
    * @param progressBarTitle the progress bar title
-   * @param task the task to runSw
+   * @param task the task to run
    * @param onSuccess executed on the EDT after a successful run
    * @param onException the exception handler
    */
@@ -1598,7 +1598,7 @@ public final class UiUtil {
    * Runs the given task while displaying a simple indeterminate progress bar.
    * @param dialogParent the dialog parent
    * @param progressBarTitle the progress bar title
-   * @param task the task to runSw
+   * @param task the task to run
    * @param onSuccess executed on the EDT after a successful run
    * @param onException the exception handler
    * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog
@@ -1613,7 +1613,7 @@ public final class UiUtil {
    * Runs the given task while displaying a simple indeterminate progress bar.
    * @param dialogParent the dialog parent
    * @param progressBarTitle the progress bar title
-   * @param task the task to runSw
+   * @param task the task to run
    * @param onSuccess executed on the EDT after a successful run
    * @param onException the exception handler
    * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog

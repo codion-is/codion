@@ -72,10 +72,12 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -84,6 +86,7 @@ import java.awt.event.MouseListener;
 import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.sql.Types;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -863,7 +866,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a Collection containing the selected entities
    * @throws CancelException in case the user cancels the operation
    */
-  public static Collection<Entity> selectEntities(final SwingEntityTableModel lookupModel, final JComponent dialogOwner,
+  public static Collection<Entity> selectEntities(final SwingEntityTableModel lookupModel, final Container dialogOwner,
                                                   final boolean singleSelection, final String dialogTitle) {
     return selectEntities(lookupModel, dialogOwner, singleSelection, dialogTitle, null);
   }
@@ -878,12 +881,12 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a Collection containing the selected entities
    * @throws CancelException in case the user cancels the operation
    */
-  public static Collection<Entity> selectEntities(final SwingEntityTableModel lookupModel, final JComponent dialogOwner,
+  public static Collection<Entity> selectEntities(final SwingEntityTableModel lookupModel, final Container dialogOwner,
                                                   final boolean singleSelection, final String dialogTitle,
                                                   final Dimension preferredSize) {
     Objects.requireNonNull(lookupModel, "lookupModel");
     final Collection<Entity> selected = new ArrayList<>();
-    final JDialog dialog = new JDialog(UiUtil.getParentWindow(dialogOwner), dialogTitle);
+    final JDialog dialog = new JDialog(dialogOwner instanceof Window ? (Window) dialogOwner : UiUtil.getParentWindow(dialogOwner), dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final Control okControl = Controls.control(() -> {
       selected.addAll(lookupModel.getSelectionModel().getSelectedItems());
@@ -1245,11 +1248,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       case Types.BOOLEAN:
         return new BooleanInputProvider((Boolean) currentValue);
       case Types.DATE:
-        return new DateInputProvider((Date) currentValue, Property.getDefaultDateFormat());
+        return new DateInputProvider((Date) currentValue, (SimpleDateFormat) property.getFormat());
       case Types.TIMESTAMP:
-        return new DateInputProvider((Date) currentValue, Property.getDefaultTimestampFormat());
+        return new DateInputProvider((Date) currentValue, (SimpleDateFormat) property.getFormat());
       case Types.TIME:
-        return new DateInputProvider((Date) currentValue, Property.getDefaultTimeFormat());
+        return new DateInputProvider((Date) currentValue, (SimpleDateFormat) property.getFormat());
       case Types.DOUBLE:
         return new DoubleInputProvider((Double) currentValue);
       case Types.INTEGER:

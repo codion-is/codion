@@ -299,7 +299,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    */
   private EntitySelectCondition getEntitySelectCondition() {
     if (lookupProperties.isEmpty()) {
-      throw new IllegalStateException("No lookup properties provided for lookup model: " + entityId);
+      throw new IllegalStateException("No search properties provided for lookup model: " + entityId);
     }
     final Condition.Set<Property.ColumnProperty> baseCondition = Conditions.conditionSet(Conjunction.OR);
     final String[] lookupTexts = multipleSelectionAllowedValue.get() ? searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
@@ -356,7 +356,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
         throw new IllegalArgumentException("Property '" + property + "' is not part of entity " + entityId);
       }
       if (!property.isString()) {
-        throw new IllegalArgumentException("Property '" + property + "' is not a String property");
+        throw new IllegalArgumentException("Property '" + property + "' is not a String based property");
       }
     }
   }

@@ -20,6 +20,7 @@ import org.jminor.common.db.condition.Condition;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.Format;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -184,6 +185,9 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
       if (upperBound == null || (upperBound instanceof String && ((String) upperBound).length() == 0)) {
         return null;
       }
+      if (upperBound instanceof Collection) {
+        return upperBound;
+      }
 
       return addWildcard((String) upperBound);
     }
@@ -206,6 +210,9 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
     if (type == Types.VARCHAR) {
       if (lowerBound == null || (lowerBound instanceof String && ((String) lowerBound).length() == 0)) {
         return null;
+      }
+      if (lowerBound instanceof Collection) {
+        return lowerBound;
       }
 
       return addWildcard((String) lowerBound);

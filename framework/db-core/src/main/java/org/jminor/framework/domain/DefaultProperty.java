@@ -17,9 +17,9 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.text.DateFormat;
 import java.text.Format;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -451,10 +451,10 @@ class DefaultProperty implements Property {
   public final Property setFormat(final Format format) {
     Objects.requireNonNull(format, "format");
     if (isNumerical() && !(format instanceof NumberFormat)) {
-      throw new IllegalArgumentException("NumberFormat expected for numerical property: " + propertyId);
+      throw new IllegalArgumentException("NumberFormat required for numerical property: " + propertyId);
     }
-    if (isDateOrTime() && !(format instanceof DateFormat)) {
-      throw new IllegalArgumentException("DateFormat expected for time based property: " + propertyId);
+    if (isDateOrTime() && !(format instanceof SimpleDateFormat)) {
+      throw new IllegalArgumentException("SimpleDateFormat required for time based property: " + propertyId);
     }
     this.format = format;
     return this;

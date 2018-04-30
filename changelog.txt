@@ -4816,3 +4816,7 @@
   NavigableImagePanel.getImage() added
   JasperReportsWrapper now loads the report on construction
   EntityTablePanel.createEntityTablePanel() added and used for the dependencies panel, allowing update of dependent entities
+  EntityTablePanel.selectEntities() dialogOwner parameter is now a Container
+  DefaultColumnConditionModel.getUpperBound() and getLowerBound() no longer try to add wildcards to multiple string values
+  ConfigurationValue, improved logging
+  EntityTablePanel.getInputProvider() improved, now uses property.getFormat() instead of Property.getDefaultDateFormat() for time based properties

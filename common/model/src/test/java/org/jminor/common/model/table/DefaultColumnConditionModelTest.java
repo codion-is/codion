@@ -11,6 +11,8 @@ import org.junit.Test;
 
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -209,5 +211,15 @@ public class DefaultColumnConditionModelTest {
     assertTrue(conditionModel.include(5));
     assertTrue(conditionModel.include(6));
     assertTrue(conditionModel.include(7));
+  }
+
+  @Test
+  public void multiConditionString() {
+    final DefaultColumnConditionModel<String> conditionModel = new DefaultColumnConditionModel<>("test", Types.VARCHAR, "%");
+
+    final Collection<String> strings = Arrays.asList("abc", "def");
+    conditionModel.setUpperBound(strings);
+
+    assertEquals(strings, conditionModel.getUpperBound());
   }
 }

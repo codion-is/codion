@@ -59,9 +59,9 @@ import java.util.Set;
  * Entities domain = new Domain();
  * EntityConditions conditions = new EntityConditions(domain);
  * Database database = new H2Database("pathToDb");
- * User user = new User("scott", "tiger");
+ * User user = new User("scott", "tiger".toCharArray());
  *
- * EntityConnection connection = new LocalEntityConnection(domain, database, user, true, true, 2);
+ * EntityConnection connection = LocalEntityConnections.createConnection(domain, database, user);
  *
  * List&lt;Entity&gt; entities = connection.selectMany(conditions.selectCondition(Domain.ENTITY_ID));
  *
@@ -981,8 +981,8 @@ public final class LocalEntityConnection implements EntityConnection {
     try {
       connection.commit();
     }
-    catch (final SQLException ignored) {
-      LOG.error("Exception while performing a quiet commit", ignored);
+    catch (final SQLException e) {
+      LOG.error("Exception while performing a quiet commit", e);
     }
   }
 
@@ -990,8 +990,8 @@ public final class LocalEntityConnection implements EntityConnection {
     try {
       connection.rollback();
     }
-    catch (final SQLException ignored) {
-      LOG.error("Exception while performing a quiet rollback", ignored);
+    catch (final SQLException e) {
+      LOG.error("Exception while performing a quiet rollback", e);
     }
   }
 
