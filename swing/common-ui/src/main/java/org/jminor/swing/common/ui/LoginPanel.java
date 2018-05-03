@@ -8,9 +8,10 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.swing.common.ui.control.Controls;
 
-import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -18,6 +19,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Window;
 
 /**
  * A JPanel for retrieving login information.
@@ -40,7 +42,7 @@ public final class LoginPanel extends JPanel {
    * @param defaultUser the default user
    */
   public LoginPanel(final User defaultUser) {
-    initUI(defaultUser);
+    initializeUI(defaultUser);
   }
 
   /**
@@ -82,14 +84,19 @@ public final class LoginPanel extends JPanel {
    * @return a User object based on the values found in this LoginPanel
    * @throws CancelException in case the user cancels
    */
-  public User showLoginPanel(final JComponent parent, final String title, final Icon icon) {
+  public User showLoginPanel(final JComponent parent, final String title, final ImageIcon icon) {
     final JOptionPane pane = new JOptionPane(this, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, icon);
-    final JDialog dialog = pane.createDialog(parent, title == null ? Messages.get(Messages.LOGIN) : title);
+    final Window parentWindow = UiUtil.getParentWindow(parent);
+    final JFrame dummyFrame = parentWindow == null ? createDummyFrame(title, icon) : null;
+    final JDialog dialog = pane.createDialog(dummyFrame == null ? parent : dummyFrame, title == null ? Messages.get(Messages.LOGIN) : title);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     dialog.pack();
     UiUtil.centerWindow(dialog);
     dialog.setResizable(false);
     dialog.setVisible(true);
+    if (dummyFrame != null) {
+      dummyFrame.dispose();
+    }
 
     if (pane.getValue() != null && pane.getValue().equals(0)) {
       return getUser();
@@ -99,7 +106,7 @@ public final class LoginPanel extends JPanel {
     }
   }
 
-  private void initUI(final User defaultUser) {
+  private void initializeUI(final User defaultUser) {
     usernameField.setText(defaultUser == null ? "" : defaultUser.getUsername());
     usernameField.setColumns(DEFAULT_FIELD_COLUMNS);
     UiUtil.selectAllOnFocusGained(usernameField);
@@ -123,5 +130,17 @@ public final class LoginPanel extends JPanel {
     else {
       UiUtil.addInitialFocusHack(passwordField, Controls.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
     }
+  }
+
+  private static JFrame createDummyFrame(final String title, final ImageIcon icon) {
+    final JFrame frame = new JFrame(title);
+    frame.setUndecorated(true);
+    frame.setVisible(true);
+    frame.setLocationRelativeTo(null);
+    if (icon != null) {
+      frame.setIconImage(icon.getImage());
+    }
+
+    return frame;
   }
 }
