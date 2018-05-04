@@ -59,27 +59,24 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
     addUpperBoundListener(() -> {
       try {
         setUpdatingModel(true);
-        final Object upper = getUpperBound();
-        if (upper instanceof Collection && !((Collection) upper).isEmpty()) {
-          entityComboBoxModel.setSelectedItem((Entity) ((Collection) upper).iterator().next());
-        }
-        else {
-          entityComboBoxModel.setSelectedItem((Entity) upper);
-        }
+        setUpperAsSelected();
       }
       finally {
         setUpdatingModel(false);
       }
     });
 
-    entityComboBoxModel.addRefreshListener(() -> {
-      final Object upper = getUpperBound();
-      if (upper instanceof Collection && !((Collection) upper).isEmpty()) {
-        entityComboBoxModel.setSelectedItem((Entity) ((Collection) upper).iterator().next());
-      }
-      else {
-        entityComboBoxModel.setSelectedItem((Entity) upper);
-      }
-    });
+    entityComboBoxModel.addRefreshListener(this::setUpperAsSelected);
+  }
+
+  private void setUpperAsSelected() {
+    final Object upper = getUpperBound();
+    if (upper instanceof Collection) {
+      final Collection upperCollection = (Collection) upper;
+      entityComboBoxModel.setSelectedItem((Entity) (upperCollection.isEmpty() ? null : upperCollection.iterator().next()));
+    }
+    else {
+      entityComboBoxModel.setSelectedItem((Entity) upper);
+    }
   }
 }
