@@ -11,11 +11,9 @@ import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Value;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -547,14 +545,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   @Override
   public final void handleException(final Throwable throwable, final Window dialogParent) {
     LOG.error(throwable.getMessage(), throwable);
-    if (throwable instanceof RecordModifiedException) {
-      UiUtil.showExceptionDialog(dialogParent, Messages.get(Messages.EXCEPTION),
-              Messages.get(Messages.RECORD_MODIFIED_EXCEPTION) + ", "
-                      + Entities.getModifiedExceptionMessage((RecordModifiedException) throwable), throwable);
-    }
-    else {
-      DefaultDialogExceptionHandler.getInstance().handleException(throwable, dialogParent);
-    }
+    DefaultDialogExceptionHandler.getInstance().handleException(throwable, dialogParent);
   }
 
   /**

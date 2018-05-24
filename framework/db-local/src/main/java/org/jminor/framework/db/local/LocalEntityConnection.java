@@ -22,6 +22,7 @@ import org.jminor.common.db.exception.UpdateException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
+import org.jminor.common.i18n.Messages;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntityConditions;
@@ -316,7 +317,7 @@ public final class LocalEntityConnection implements EntityConnection {
       }
       catch (final RecordModifiedException e) {
         rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
-        LOG.debug(Entities.getModifiedExceptionMessage(e), e);
+        LOG.debug(e.getMessage(), e);
         throw e;
       }
       catch (final UpdateException e) {
@@ -788,11 +789,12 @@ public final class LocalEntityConnection implements EntityConnection {
       for (final Entity entity : entry.getValue()) {
         final Entity current = mappedEntities.get(entity.getOriginalKey());
         if (current == null) {
-          throw new RecordModifiedException(entity, null);
+          throw new RecordModifiedException(entity, null, Messages.get(Messages.RECORD_MODIFIED_EXCEPTION)
+                  + ", " + entity.getOriginalCopy() + " " + FrameworkMessages.get(FrameworkMessages.HAS_BEEN_DELETED));
         }
         final Collection<Property.ColumnProperty> modified = Entities.getModifiedColumnProperties(entity, current);
         if (!modified.isEmpty()) {
-          throw new RecordModifiedException(entity, current);
+          throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modified));
         }
       }
     }
@@ -1255,6 +1257,16 @@ public final class LocalEntityConnection implements EntityConnection {
         throw new SQLException("Unable to update entity " + entity.getEntityId() + ", no modified values found");
       }
     }
+  }
+
+  private static String createModifiedExceptionMessage(final Entity entity, final Entity modified,
+                                                       final Collection<Property.ColumnProperty> modifiedProperties) {
+    final StringBuilder builder = new StringBuilder(Messages.get(Messages.RECORD_MODIFIED_EXCEPTION)).append(", ").append(entity.getEntityId());
+    for (final Property.ColumnProperty property : modifiedProperties) {
+      builder.append(" \n").append(property).append(": ").append(entity.getOriginal(property)).append(" -> ").append(modified.get(property));
+    }
+
+    return builder.toString();
   }
 
   private void checkReadOnly(final List<Entity> entities) throws DatabaseException {

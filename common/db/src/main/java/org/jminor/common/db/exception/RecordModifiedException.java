@@ -3,14 +3,11 @@
  */
 package org.jminor.common.db.exception;
 
-import org.jminor.common.i18n.Messages;
-
 /**
  * An exception indicating that the row in question has been modified or deleted since it was loaded.
  */
 public final class RecordModifiedException extends UpdateException {
 
-  private static final String MESSAGE = Messages.get(Messages.RECORD_MODIFIED_EXCEPTION);
   private final Object row;
   private final Object modifiedRow;
 
@@ -18,9 +15,10 @@ public final class RecordModifiedException extends UpdateException {
    * Instantiates a new RecordModifiedException
    * @param row the row being updated
    * @param modifiedRow the current (modified) version of the row, null if it has been deleted
+   * @param message a message describing the modification
    */
-  public RecordModifiedException(final Object row, final Object modifiedRow) {
-    super(MESSAGE);
+  public RecordModifiedException(final Object row, final Object modifiedRow, final String message) {
+    super(message);
     this.row = row;
     this.modifiedRow = modifiedRow;
   }

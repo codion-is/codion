@@ -4822,3 +4822,4 @@
   EntityTablePanel.getInputProvider() improved, now uses property.getFormat() instead of Property.getDefaultDateFormat() for time based properties
   LoginPanel now uses a dummy frame so the dialog appears on the taskbar
   SwingForeignKeyConditionModel bug fixed, did not handle empty collection as upper bound
+  LocalEntityConnection now throws a RecordModifiedException with a proper message describing the modification

@@ -10,7 +10,6 @@ import org.jminor.common.Value;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.ResultPacker;
-import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.valuemap.DefaultValueMap;
 import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
@@ -973,25 +972,6 @@ public class Entities implements Serializable {
     }
 
     return properties;
-  }
-
-  /**
-   * @param exception the record modified exception
-   * @return a human-readable String describing the modification
-   */
-  public static final String getModifiedExceptionMessage(final RecordModifiedException exception) {
-    final Entity entity = (Entity) exception.getRow();
-    final Entity modified = (Entity) exception.getModifiedRow();
-    if (modified == null) {//record has been deleted
-      return entity + " " + FrameworkMessages.get(FrameworkMessages.HAS_BEEN_DELETED);
-    }
-    final Collection<Property.ColumnProperty> modifiedProperties = getModifiedColumnProperties(entity, modified);
-    final StringBuilder builder = new StringBuilder(entity.getEntityId());
-    for (final Property.ColumnProperty property : modifiedProperties) {
-      builder.append("\n").append(property).append(": ").append(entity.getOriginal(property)).append(" -> ").append(modified.get(property));
-    }
-
-    return builder.toString();
   }
 
   /**
