@@ -267,7 +267,20 @@ public final class TextUtil {
    */
   public static String getTextFileContents(final String filename, final Charset charset) throws IOException {
     Objects.requireNonNull(filename, "filename");
-    try (final FileInputStream inputStream = new FileInputStream(new File(filename))) {
+
+    return getTextFileContents(new File(filename), charset);
+  }
+
+  /**
+   * Fetch the entire contents of a textfile, and return it in a String
+   * @param file the file
+   * @param charset the charset to use
+   * @return the file contents as a String
+   * @throws IOException in case of an exception
+   */
+  public static String getTextFileContents(final File file, final Charset charset) throws IOException {
+    Objects.requireNonNull(file, "file");
+    try (final FileInputStream inputStream = new FileInputStream(file)) {
       return getTextFileContents(inputStream, charset);
     }
   }

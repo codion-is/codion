@@ -33,15 +33,15 @@ public class EntityConditionsTest {
             entityConditions.propertyCondition(Properties.columnProperty("intProperty", Types.INTEGER), Condition.Type.LIKE, 666)
     );
     final EntityCondition condition = entityConditions.condition("entityId", set1);
-    assertEquals("(stringProperty like ? and intProperty = ?)", condition.getWhereClause());
+    assertEquals("(stringProperty = ? and intProperty = ?)", condition.getWhereClause());
     assertEquals(set1, condition.getCondition());
     final Condition.Set<Property.ColumnProperty> set2 = Conditions.conditionSet(
             Conjunction.AND,
             entityConditions.propertyCondition(Properties.columnProperty("doubleProperty", Types.DOUBLE), Condition.Type.LIKE, 666.666),
-            entityConditions.propertyCondition(Properties.columnProperty("stringProperty2", Types.VARCHAR), Condition.Type.LIKE, false, "value2")
+            entityConditions.propertyCondition(Properties.columnProperty("stringProperty2", Types.VARCHAR), Condition.Type.LIKE, false, "valu%e2")
     );
     final Condition.Set<Property.ColumnProperty> set3 = Conditions.conditionSet(Conjunction.OR, set1, set2);
-    assertEquals("((stringProperty like ? and intProperty = ?) or (doubleProperty = ? and upper(stringProperty2) like upper(?)))",
+    assertEquals("((stringProperty = ? and intProperty = ?) or (doubleProperty = ? and upper(stringProperty2) like upper(?)))",
             entityConditions.condition("entityId", set3).getWhereClause());
   }
 
@@ -89,7 +89,7 @@ public class EntityConditionsTest {
   public void propertyCondition() {
     final Condition<Property.ColumnProperty> critOne = entityConditions.propertyCondition(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_LOCATION, Condition.Type.LIKE, true, "New York");
-    assertEquals("loc like ?", critOne.getWhereClause());
+    assertEquals("loc = ?", critOne.getWhereClause());
     assertNotNull(critOne);
   }
 
@@ -278,7 +278,7 @@ public class EntityConditionsTest {
 
   private void assertCondition(final EntityCondition condition) {
     assertEquals(TestDomain.T_DEPARTMENT, condition.getEntityId());
-    assertEquals("dname not like ?", condition.getWhereClause());
+    assertEquals("dname <> ?", condition.getWhereClause());
     assertEquals(1, condition.getValues().size());
     assertEquals(1, condition.getColumns().size());
     assertEquals("DEPT", condition.getValues().get(0));

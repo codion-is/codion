@@ -38,7 +38,7 @@ public class PropertyConditionTest {
     //string, =
     String value = "value";
     testCrit = entityConditions.propertyCondition(property, Condition.Type.LIKE, value);
-    assertEquals("Condition should fit", "colName like ?", testCrit.getWhereClause());
+    assertEquals("Condition should fit", "colName = ?", testCrit.getWhereClause());
 
     //string, like
     value = "val%ue";
@@ -48,7 +48,7 @@ public class PropertyConditionTest {
     //string, <>
     value = "value";
     testCrit = entityConditions.propertyCondition(property, Condition.Type.NOT_LIKE, value);
-    assertEquals("Condition should fit", "colName not like ?", testCrit.getWhereClause());
+    assertEquals("Condition should fit", "colName <> ?", testCrit.getWhereClause());
 
     //string, not like
     value = "val%ue";
@@ -88,7 +88,7 @@ public class PropertyConditionTest {
     //string, =
     value = "value";
     testCrit = entityConditions.propertyCondition(property, Condition.Type.LIKE, false, value);
-    assertEquals("Condition should fit", "upper(colName) like upper(?)", testCrit.getWhereClause());
+    assertEquals("Condition should fit", "upper(colName) = upper(?)", testCrit.getWhereClause());
 
     //string, like
     value = "val%ue";
@@ -98,7 +98,7 @@ public class PropertyConditionTest {
     //string, <>
     value = "value";
     testCrit = entityConditions.propertyCondition(property, Condition.Type.NOT_LIKE, false, value);
-    assertEquals("Condition should fit", "upper(colName) not like upper(?)", testCrit.getWhereClause());
+    assertEquals("Condition should fit", "upper(colName) <> upper(?)", testCrit.getWhereClause());
 
     //string, not like
     value = "val%ue";
@@ -269,7 +269,7 @@ public class PropertyConditionTest {
   public void conditionSet() {
     final Property.ColumnProperty property1 = Properties.columnProperty("colName1", Types.VARCHAR);
     final Property.ColumnProperty property2 = Properties.columnProperty("colName2", Types.INTEGER);
-    final Condition<Property.ColumnProperty> condition1 = entityConditions.propertyCondition(property1, Condition.Type.LIKE, "value");
+    final Condition<Property.ColumnProperty> condition1 = entityConditions.propertyCondition(property1, Condition.Type.LIKE, "val%ue");
     final Condition<Property.ColumnProperty> condition2 = entityConditions.propertyCondition(property2, Condition.Type.LESS_THAN, 10);
     final Condition.Set<Property.ColumnProperty> set = Conditions.conditionSet(Conjunction.OR, condition1, condition2);
     assertEquals("Set condition should fit", "(colName1 like ? or colName2 <= ?)", set.getWhereClause());

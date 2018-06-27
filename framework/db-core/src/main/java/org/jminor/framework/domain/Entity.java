@@ -14,6 +14,7 @@ import org.jminor.common.db.valuemap.exception.ValidationException;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.Format;
 import java.util.Collection;
@@ -432,9 +433,10 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * key values and populates the entitys primary key
      * @param entity the entity to prepare
      * @param connection the connection to use
+     * @param statement the insert statement
      * @throws SQLException in case of an exception
      */
-    void afterInsert(final Entity entity, final DatabaseConnection connection) throws SQLException;
+    void afterInsert(final Entity entity, final DatabaseConnection connection, final Statement statement) throws SQLException;
 
     /**
      * @return the key generator type

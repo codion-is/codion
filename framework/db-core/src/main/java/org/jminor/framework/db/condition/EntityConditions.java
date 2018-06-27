@@ -771,16 +771,16 @@ public final class EntityConditions {
       return property.isString() && !caseSensitive ? "upper(?)" : "?";
     }
 
-    private String getLikeCondition(final String columnIdentifier, final String value, final boolean notLike) {
+    private String getLikeCondition(final String columnIdentifier, final String valuePlaceholder, final boolean notLike) {
       if (getValueCount() > 1) {
-        return getInList(columnIdentifier, value, getValueCount(), notLike);
+        return getInList(columnIdentifier, valuePlaceholder, getValueCount(), notLike);
       }
 
-      if (property.isString()) {
-        return columnIdentifier + (notLike ? " not like " : " like ") + value;
+      if (property.isString() && containsWildcards((String) values.get(0))) {
+        return columnIdentifier + (notLike ? " not like " : " like ") + valuePlaceholder;
       }
       else {
-        return columnIdentifier + (notLike ? " <> " : " = ") + value;
+        return columnIdentifier + (notLike ? " <> " : " = ") + valuePlaceholder;
       }
     }
 
@@ -805,11 +805,11 @@ public final class EntityConditions {
       return values;
     }
 
-    private static String getInList(final String columnIdentifier, final String value, final int valueCount, final boolean not) {
+    private static String getInList(final String columnIdentifier, final String valuePlaceholder, final int valueCount, final boolean not) {
       final StringBuilder stringBuilder = new StringBuilder("(").append(columnIdentifier).append(not ? NOT_IN_PREFIX : IN_PREFIX);
       int cnt = 1;
       for (int i = 0; i < valueCount; i++) {
-        stringBuilder.append(value);
+        stringBuilder.append(valuePlaceholder);
         if (cnt++ == IN_CLAUSE_LIMIT && i < valueCount - 1) {
           stringBuilder.append(not ? ") and " : ") or ").append(columnIdentifier).append(not ? NOT_IN_PREFIX : IN_PREFIX);
           cnt = 1;
@@ -837,6 +837,10 @@ public final class EntityConditions {
       }
 
       return columnName;
+    }
+
+    private static boolean containsWildcards(final String value) {
+      return value.contains("%") || value.contains("_");
     }
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {

@@ -926,7 +926,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
     @Override
     public Object put(final String propertyId, final Object value) {
-      return put(definition.getPrimaryKeyPropertyMap().get(propertyId), value);
+      return put(getPrimaryKeyProperty(propertyId), value);
     }
 
     @Override
@@ -938,7 +938,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
     @Override
     public Object get(final String propertyId) {
-      return super.get(definition.getPrimaryKeyPropertyMap().get(propertyId));
+      return super.get(getPrimaryKeyProperty(propertyId));
     }
 
     @Override
@@ -1046,6 +1046,15 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     protected void handleClear() {
       cachedHashCode = null;
       hashCodeDirty = false;
+    }
+
+    private Property.ColumnProperty getPrimaryKeyProperty(final String propertyId) {
+      final Property.ColumnProperty property = definition.getPrimaryKeyPropertyMap().get(propertyId);
+      if (property == null) {
+        throw new IllegalArgumentException("Primary key property " + propertyId + " not found in entity: " + definition.getEntityId());
+      }
+
+      return property;
     }
 
     private void setHashCode(final Integer value) {

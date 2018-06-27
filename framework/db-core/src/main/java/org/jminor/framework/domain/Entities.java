@@ -20,6 +20,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.text.Collator;
 import java.text.Format;
@@ -1878,7 +1879,7 @@ public class Entities implements Serializable {
     public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {/*Provided for subclasses*/}
 
     @Override
-    public void afterInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {/*Provided for subclasses*/}
+    public void afterInsert(final Entity entity, final DatabaseConnection connection, final Statement statement) throws SQLException {/*Provided for subclasses*/}
   }
 
   abstract class QueriedKeyGenerator extends DefaultKeyGenerator {
@@ -1979,7 +1980,7 @@ public class Entities implements Serializable {
     }
 
     @Override
-    public void afterInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
+    public void afterInsert(final Entity entity, final DatabaseConnection connection, final Statement statement) throws SQLException {
       queryAndSet(entity, getPrimaryKeyProperty(entity.getEntityId()), connection);
     }
 

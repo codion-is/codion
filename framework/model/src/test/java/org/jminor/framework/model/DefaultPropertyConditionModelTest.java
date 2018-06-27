@@ -27,10 +27,15 @@ public class DefaultPropertyConditionModelTest {
     assertEquals(property, model.getColumnIdentifier());
     model.setConditionType(Condition.Type.LIKE);
     assertFalse(model.isLowerBoundRequired());
-    model.setUpperBound("upper");
+    model.setUpperBound("upper%");
     assertEquals(property.getPropertyId() + " like ?", model.getCondition().getWhereClause());
+    model.setUpperBound("upper");
+    assertEquals(property.getPropertyId() + " = ?", model.getCondition().getWhereClause());
     model.setConditionType(Condition.Type.NOT_LIKE);
+    model.setUpperBound("upper%");
     assertEquals(property.getPropertyId() + " not like ?", model.getCondition().getWhereClause());
+    model.setUpperBound("upper");
+    assertEquals(property.getPropertyId() + " <> ?", model.getCondition().getWhereClause());
     model.setConditionType(Condition.Type.GREATER_THAN);
     assertEquals(property.getPropertyId() + " >= ?", model.getCondition().getWhereClause());
     model.setConditionType(Condition.Type.LESS_THAN);

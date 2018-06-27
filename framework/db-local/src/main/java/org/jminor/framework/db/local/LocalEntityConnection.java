@@ -232,7 +232,7 @@ public final class LocalEntityConnection implements EntityConnection {
           insertSQL = createInsertSQL(entityId, statementProperties);
           statement = prepareStatement(insertSQL);
           executePreparedUpdate(statement, insertSQL, statementProperties, statementValues);
-          keyGenerator.afterInsert(entity, connection);
+          keyGenerator.afterInsert(entity, connection, statement);
 
           insertedKeys.add(entity.getKey());
 

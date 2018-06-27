@@ -4823,3 +4823,8 @@
   LoginPanel now uses a dummy frame so the dialog appears on the taskbar
   SwingForeignKeyConditionModel bug fixed, did not handle empty collection as upper bound
   LocalEntityConnection now throws a RecordModifiedException with a proper message describing the modification
+  EntityApplicationPanel.getUser() improved, can now use a text file in user.dir containing the authentication token
+  TextUtil.getTextFileContents() overloaded with File parameter
+  EntityConditions.PropertyCondition now uses =/<> signs for String based LIKE/NOT_LIKE conditions when the value doesn't contain a wildcard
+  DefaultEntity.DefaultKey.get(propertyId) and put(propertyId) now throw an exception if the key does not contain the property
+  KeyGenerator.afterInsert(), statement parameter added

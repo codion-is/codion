@@ -77,8 +77,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1331,19 +1334,54 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * Looks up user credentials via {@link org.jminor.common.server.CredentialServer} using an authentication token
-   * found in the program arguments list. Useful for single sign on application launch.
+   * found in the program arguments list or in an authentication file. Useful for single sign on application launch.
    * <pre>javaws -open [authenticationToken] http://jminor.org/demo/demo.jnlp</pre>
    * @param args the program arguments
-   * @return the User credentials associated with the authenticationToken from the arguments array, null if
-   * no authentication token is found, the user credentials have expired or if no authentication server is running
+   * @return the User credentials associated with the authentication token, null if no authentication token is found,
+   * the user credentials have expired or if no authentication server is running
    */
   protected static User getUser(final String[] args) {
     try {
-      return args != null && args.length > 1 ? Clients.getUserCredentials(UUID.fromString(args[1])) : null;
+      final UUID autenticationToken = getAuthenticationToken(args);
+
+      return autenticationToken == null ? null : Clients.getUserCredentials(autenticationToken);
     }
     catch (final IllegalArgumentException e) {
+      LOG.debug("Invalid UUID authentication token");
       return null;
     }
+  }
+
+  private static UUID getAuthenticationToken(final String[] args) {
+    LOG.debug("getAuthenticationToken() args: " + Arrays.toString(args));
+    if (args != null && args.length > 1 && args[0].equals("-open")) {//assume web start with program argument
+      return args != null && args.length > 1 ? UUID.fromString(args[1]) : null;
+    }
+    else if (args == null || args.length == 0) {//assume authentication.txt in user.dir
+      final File authenticationTokenFile = new File(System.getProperty("user.dir")
+              + System.getProperty("file.separator") + "authentication.txt");
+      if (authenticationTokenFile.exists()) {
+        LOG.debug("Authentication file found: " + authenticationTokenFile);
+        authenticationTokenFile.deleteOnExit();
+        try {
+          return UUID.fromString(TextUtil.getTextFileContents(authenticationTokenFile, Charset.defaultCharset()));
+        }
+        catch (final IOException e) {
+          LOG.debug("Exception while trying to read authentication file", e);
+          return null;
+        }
+        finally {
+          if (!authenticationTokenFile.delete()) {
+            LOG.debug("Unable to delete authentication file");
+          }
+        }
+      }
+      else {
+        LOG.debug("Authentication file not found: " + authenticationTokenFile);
+      }
+    }
+
+    return null;
   }
 
   private static DefaultTreeModel createApplicationTree(final Collection<? extends MasterDetailPanel> entityPanels) {

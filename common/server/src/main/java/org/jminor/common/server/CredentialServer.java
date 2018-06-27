@@ -96,7 +96,7 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
       }
     }
     catch (final ServerNotActiveException e) {
-      //not able to get request host
+      LOG.debug("Request denied, unable to get request host", e);
       return null;
     }
   }

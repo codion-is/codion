@@ -554,6 +554,18 @@ public class DefaultEntityTest {
     assertEquals(1.1234567896, detail.get(TestDomain.DETAIL_DOUBLE));//default 10 fraction digits
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void keyInvalidPropertyGet() {
+    final Entity.Key empKey1 = ENTITIES.key(TestDomain.T_EMP);
+    empKey1.get(TestDomain.EMP_NAME);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void keyInvalidPropertyPut() {
+    final Entity.Key empKey1 = ENTITIES.key(TestDomain.T_EMP);
+    empKey1.put(TestDomain.EMP_NAME, "test");
+  }
+
   @Test
   public void keyGetCopy() {
     final Entity.Key empKey1 = ENTITIES.key(TestDomain.T_EMP);
@@ -640,8 +652,8 @@ public class DefaultEntityTest {
   }
 
   private Entity getDetailEntity(final long id, final Integer intValue, final Double doubleValue,
-                                        final String stringValue, final Date dateValue, final Timestamp timestampValue,
-                                        final Boolean booleanValue, final Entity entityValue) {
+                                 final String stringValue, final Date dateValue, final Timestamp timestampValue,
+                                 final Boolean booleanValue, final Entity entityValue) {
     final Entity entity = ENTITIES.entity(TestDomain.T_DETAIL);
     entity.put(TestDomain.DETAIL_ID, id);
     entity.put(TestDomain.DETAIL_INT, intValue);

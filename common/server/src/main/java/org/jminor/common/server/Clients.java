@@ -6,6 +6,9 @@ package org.jminor.common.server;
 import org.jminor.common.User;
 import org.jminor.common.Version;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -19,6 +22,8 @@ import java.util.UUID;
  * Utility methods for remote clients
  */
 public final class Clients {
+
+  private static final Logger LOG = LoggerFactory.getLogger(Clients.class);
 
   private Clients() {}
 
@@ -70,10 +75,12 @@ public final class Clients {
   public static User getUserCredentials(final UUID authenticationToken) {
     try {
       final Remote credentialService = Servers.getRegistry(Registry.REGISTRY_PORT).lookup(CredentialService.class.getSimpleName());
+      LOG.debug("CredentialService found: " + credentialService);
 
       return ((CredentialService) credentialService).getUser(authenticationToken);
     }
-    catch (NotBoundException | RemoteException e) {
+    catch (final NotBoundException | RemoteException e) {
+      LOG.debug("No CredentialService found", e);
       //no credential server available or not reachable
       return null;
     }
