@@ -245,7 +245,7 @@ public class Entities implements Serializable {
    */
   public final Collection<Property.ColumnProperty> getSearchProperties(final String entityId) {
     final Collection<String> searchPropertyIds = getSearchPropertyIds(entityId);
-    return getSearchProperties(entityId, searchPropertyIds.toArray(new String[searchPropertyIds.size()]));
+    return getSearchProperties(entityId, searchPropertyIds.toArray(new String[0]));
   }
 
   /**
@@ -518,7 +518,7 @@ public class Entities implements Serializable {
    */
   public final List<Property> getProperties(final String entityId, final Collection<String> propertyIds) {
     Objects.requireNonNull(propertyIds, PROPERTY_ID_PARAM);
-    return getProperties(entityId, propertyIds.toArray(new String[propertyIds.size()]));
+    return getProperties(entityId, propertyIds.toArray(new String[0]));
   }
 
   /**
@@ -1162,7 +1162,7 @@ public class Entities implements Serializable {
         line.add(entities.get(i).getAsString(property));
       }
 
-      data[i] = line.toArray(new String[line.size()]);
+      data[i] = line.toArray(new String[0]);
     }
 
     return data;
@@ -1451,7 +1451,7 @@ public class Entities implements Serializable {
     final List<String> columnNames = new ArrayList<>();
     columnProperties.forEach(columnProperty -> columnNames.add(columnProperty.getPropertyId()));
 
-    return columnNames.toArray(new String[columnNames.size()]);
+    return columnNames.toArray(new String[0]);
   }
 
   private static String initializeSelectColumnsString(final List<Property.ColumnProperty> columnProperties) {

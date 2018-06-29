@@ -148,7 +148,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void selectEntities(final List<Entity> entities) {
-    final JList<Entity> list = new JList<>(entities.toArray(new Entity[entities.size()]));
+    final JList<Entity> list = new JList<>(entities.toArray(new Entity[0]));
     final Window owner = UiUtil.getParentWindow(this);
     final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
     final Control okControl = Controls.control(() -> {

@@ -263,7 +263,7 @@ public class EntityView extends BorderPane implements ViewTreeNode {
   }
 
   private void navigateUp() {
-    if (parentView != null && parentView instanceof EntityView) {
+    if (parentView instanceof EntityView) {
       ((EntityView) parentView).activateView();
     }
   }

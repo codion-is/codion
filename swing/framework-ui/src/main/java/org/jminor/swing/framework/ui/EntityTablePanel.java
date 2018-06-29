@@ -590,7 +590,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         UiUtil.setWaitCursor(true, this);
         getEntityTableModel().update(selectedEntities);
       }
-      catch (ValidationException | CancelException | DatabaseException e) {
+      catch (final ValidationException | CancelException | DatabaseException e) {
         handleException(e);
       }
       finally {
@@ -638,7 +638,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         UiUtil.setWaitCursor(true, this);
         getEntityTableModel().deleteSelected();
       }
-      catch (DatabaseException | CancelException e) {
+      catch (final DatabaseException | CancelException e) {
         handleException(e);
       }
       finally {
@@ -659,7 +659,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
               .serialize(selected), UiUtil.selectFileToSave(this, null, null));
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
     }
-    catch (IOException | CancelException | Serializer.SerializeException e) {
+    catch (final IOException | CancelException | Serializer.SerializeException e) {
       handleException(e);
     }
   }
@@ -741,12 +741,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   public final Control getViewImageControl(final String imagePathPropertyId) {
     Objects.requireNonNull(imagePathPropertyId, "imagePathPropertyId");
-    return Controls.control(new Control.Command() {
-      @Override
-      public void perform() throws Exception {
-        viewImageForSelected(imagePathPropertyId);
-      }
-    }, "View image", getTableModel().getSelectionModel().getSingleSelectionObserver());
+    return Controls.control(() -> viewImageForSelected(imagePathPropertyId), "View image",
+            getTableModel().getSelectionModel().getSingleSelectionObserver());
   }
 
   /**

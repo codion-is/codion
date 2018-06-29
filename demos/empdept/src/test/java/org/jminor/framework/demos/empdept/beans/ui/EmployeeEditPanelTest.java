@@ -6,7 +6,7 @@ package org.jminor.framework.demos.empdept.beans.ui;
 import org.jminor.common.User;
 import org.jminor.framework.demos.empdept.beans.EmployeeEditModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.model.EntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.testing.EntityEditPanelTestUnit;
 
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class EmployeeEditPanelTest extends EntityEditPanelTestUnit {
   }
 
   @Override
-  protected EntityEditModel createEditModel() {
+  protected SwingEntityEditModel createEditModel() {
     return new EmployeeEditModel(getConnectionProvider());
   }
 }

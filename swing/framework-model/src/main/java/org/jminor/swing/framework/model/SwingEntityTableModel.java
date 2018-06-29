@@ -542,7 +542,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public void setColumns(final String... propertyIds) {
     final List<Property> properties = getDomain().getProperties(getEntityId(), propertyIds);
-    getColumnModel().setColumns(properties.toArray(new Property[properties.size()]));
+    getColumnModel().setColumns(properties.toArray(new Property[0]));
   }
 
   /** {@inheritDoc} */
@@ -570,7 +570,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       headerValues.add(property.getCaption());
     }
 
-    final String[][] header = {headerValues.toArray(new String[headerValues.size()])};
+    final String[][] header = {headerValues.toArray(new String[0])};
 
     return TextUtil.getDelimitedString(header, Entities.getStringValueArray(properties,
             getSelectionModel().isSelectionEmpty() ? getVisibleItems() : getSelectionModel().getSelectedItems()),

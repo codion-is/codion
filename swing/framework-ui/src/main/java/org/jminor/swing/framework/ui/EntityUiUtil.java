@@ -1068,7 +1068,7 @@ public final class EntityUiUtil {
         final boolean longValue = value != null && value.length() > maxValueLength;
         final StringBuilder builder = new StringBuilder(prefix).append(property).append(": ");
         if (longValue) {
-          builder.append(value.substring(0, maxValueLength)).append("...");
+          builder.append(value, 0, maxValueLength).append("...");
         }
         else {
           builder.append(value);
@@ -1084,7 +1084,7 @@ public final class EntityUiUtil {
         }
         if (longValue) {
           if (value.length() > MAXIMUM_VALUE_LENGTH) {
-            toolTipBuilder.append(value.substring(0, MAXIMUM_VALUE_LENGTH));
+            toolTipBuilder.append(value, 0, MAXIMUM_VALUE_LENGTH);
           }
           else {
             toolTipBuilder.append(value);

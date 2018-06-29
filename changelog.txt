@@ -4828,3 +4828,4 @@
   EntityConditions.PropertyCondition now uses =/<> signs for String based LIKE/NOT_LIKE conditions when the value doesn't contain a wildcard
   DefaultEntity.DefaultKey.get(propertyId) and put(propertyId) now throw an exception if the key does not contain the property
   KeyGenerator.afterInsert(), statement parameter added
+  IntelliJ inspections fixed

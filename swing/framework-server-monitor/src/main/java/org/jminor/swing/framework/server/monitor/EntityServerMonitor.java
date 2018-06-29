@@ -13,7 +13,6 @@ import org.jminor.common.server.Server;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -50,7 +49,7 @@ public final class EntityServerMonitor {
     if (Util.nullOrEmpty(hostNames)) {
       throw new IllegalArgumentException("No server host names specified for server monitor");
     }
-    for (final String hostname : Arrays.asList(hostNames.split(","))) {
+    for (final String hostname : hostNames.split(",")) {
       addHost(hostname, registryPort);
     }
   }

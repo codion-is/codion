@@ -230,12 +230,8 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   /** {@inheritDoc} */
   @Override
   public final void removeItem(final T item) {
-    if (visibleItems.contains(item)) {
-      visibleItems.remove(item);
-    }
-    if (filteredItems.contains(item)) {
-      filteredItems.remove(item);
-    }
+    visibleItems.remove(item);
+    filteredItems.remove(item);
 
     fireContentsChanged();
   }
