@@ -11,9 +11,9 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Entities;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LocalEntityConnectionProviderTest {
 
@@ -39,7 +39,7 @@ public class LocalEntityConnectionProviderTest {
     final EntityConnection secondConnection = provider.getConnection();
     assertEquals(EntityConnection.Type.LOCAL, secondConnection.getType());
     assertNotNull(secondConnection);
-    assertFalse(firstConnection == secondConnection);
+    assertNotSame(firstConnection, secondConnection);
     assertTrue(secondConnection.isConnected());
     provider.disconnect();
   }

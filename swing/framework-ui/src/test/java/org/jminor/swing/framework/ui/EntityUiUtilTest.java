@@ -15,7 +15,7 @@ import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.checkbox.TristateCheckBox;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
@@ -23,7 +23,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import java.awt.Dimension;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityUiUtilTest {
 
@@ -41,19 +41,19 @@ public final class EntityUiUtilTest {
     assertEquals(ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING).getCaption(), lbl.getText());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void createTristateCheckBoxNonNullableBooleanProperty() {
-    EntityUiUtil.createTristateCheckBox(ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_BOOLEAN), editModel, null, true);
+    assertThrows(IllegalArgumentException.class, () -> EntityUiUtil.createTristateCheckBox(ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_BOOLEAN), editModel, null, true));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void createTristateCheckBoxNonBooleanProperty() {
-    EntityUiUtil.createTristateCheckBox(ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_TIMESTAMP), editModel, null, true);
+    assertThrows(IllegalArgumentException.class, () -> EntityUiUtil.createTristateCheckBox(ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_TIMESTAMP), editModel, null, true));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void createCheckBoxNonBooleanProperty() {
-    EntityUiUtil.createCheckBox(ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_TIMESTAMP), editModel);
+    assertThrows(IllegalArgumentException.class, () -> EntityUiUtil.createCheckBox(ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_TIMESTAMP), editModel));
   }
 
   @Test

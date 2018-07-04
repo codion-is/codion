@@ -13,7 +13,7 @@ import org.jminor.common.db.dbms.PostgreSQLDatabase;
 import org.jminor.common.db.dbms.SQLServerDatabase;
 import org.jminor.common.db.exception.DatabaseException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -21,8 +21,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DatabasesTest {
 

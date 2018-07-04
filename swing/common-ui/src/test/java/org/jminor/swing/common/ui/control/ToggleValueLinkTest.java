@@ -7,12 +7,12 @@ import org.jminor.common.Event;
 import org.jminor.common.Events;
 import org.jminor.swing.common.ui.ValueLinks;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.JCheckBox;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ToggleValueLinkTest {
 
@@ -23,11 +23,11 @@ public class ToggleValueLinkTest {
   public void test() throws Exception {
     final JCheckBox checkBox = new JCheckBox();
     ValueLinks.toggleValueLink(checkBox.getModel(), this, "booleanValue", evtBooleanValueChanged);
-    assertFalse("Boolean value should be false on initialization", checkBox.isSelected());
+    assertFalse(checkBox.isSelected());
     setBooleanValue(true);
-    assertTrue("Boolean value should be true", checkBox.isSelected());
+    assertTrue(checkBox.isSelected());
     checkBox.doClick();
-    assertFalse("Boolean value should be false", booleanValue);
+    assertFalse(booleanValue);
   }
 
   public boolean isBooleanValue() {

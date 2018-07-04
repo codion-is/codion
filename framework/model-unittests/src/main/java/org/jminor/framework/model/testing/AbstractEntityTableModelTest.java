@@ -14,7 +14,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableModel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * A base class for testing {@link EntityTableModel} subclasses.
@@ -87,18 +87,18 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertEquals(tableModel.getAllItems().get(5), iterator.next());
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void updateNoEditModel() throws ValidationException, DatabaseException {
+  @Test
+  public void updateNoEditModel() {
     final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
-    tableModel.update(new ArrayList<>());
+    assertThrows(IllegalStateException.class, () -> tableModel.update(new ArrayList<>()));
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void deleteSelectedNoEditModel() throws DatabaseException {
+  @Test
+  public void deleteSelectedNoEditModel() {
     final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.refresh();
     tableModel.getSelectionModel().setSelectedIndex(0);
-    tableModel.deleteSelected();
+    assertThrows(IllegalStateException.class, tableModel::deleteSelected);
   }
 
   @Test
@@ -175,22 +175,22 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertNull(tableModel.getEntityByKey(pk2));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void setEditModelNullValue() {
     final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
-    tableModel.setEditModel(null);
+    assertThrows(NullPointerException.class, () -> tableModel.setEditModel(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setEditModelWrongEntityId() {
     final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
-    tableModel.setEditModel(createDepartmentEditModel());
+    assertThrows(IllegalArgumentException.class, () -> tableModel.setEditModel(createDepartmentEditModel()));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void setEditModelAlreadySet() {
     assertTrue(testModel.hasEditModel());
-    testModel.setEditModel(createDetailEditModel());
+    assertThrows(IllegalStateException.class, () -> testModel.setEditModel(createDetailEditModel()));
   }
 
   @Test
@@ -203,10 +203,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertEquals(editModel, tableModel.getEditModel());
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void getEditModelNoEditModelSet() {
     final TableModel tableModel = createDetailTableModel();
-    tableModel.getEditModel();
+    assertThrows(IllegalStateException.class, tableModel::getEditModel);
   }
 
   @Test
@@ -236,35 +236,35 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertEquals(TestDomain.T_DETAIL, testModel.getEntityId());
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void deleteNotAllowed() throws DatabaseException {
+  @Test
+  public void deleteNotAllowed() {
     testModel.getEditModel().setDeleteAllowed(false);
     assertFalse(testModel.isDeleteAllowed());
     testModel.refresh();
-    testModel.getSelectionModel().setSelectedIndex(0);
-    testModel.deleteSelected();
+    testModel.getSelectionModel().setSelectedIndexes(Collections.singletonList(0));
+    assertThrows(IllegalStateException.class, testModel::deleteSelected);
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void updateNotAllowed() throws DatabaseException, ValidationException {
+  @Test
+  public void updateNotAllowed() {
     testModel.getEditModel().setUpdateAllowed(false);
     assertFalse(testModel.isUpdateAllowed());
     testModel.refresh();
-    testModel.getSelectionModel().setSelectedIndex(0);
+    testModel.getSelectionModel().setSelectedIndexes(Collections.singletonList(0));
     final Entity entity = testModel.getSelectionModel().getSelectedItem();
     entity.put(TestDomain.DETAIL_STRING, "hello");
-    testModel.update(Collections.singletonList(entity));
+    assertThrows(IllegalStateException.class, () -> testModel.update(Collections.singletonList(entity)));
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void batchUpdateNotAllowed() throws DatabaseException, ValidationException {
+  @Test
+  public void batchUpdateNotAllowed() {
     testModel.setBatchUpdateAllowed(false);
     assertFalse(testModel.isBatchUpdateAllowed());
     testModel.refresh();
     testModel.getSelectionModel().setSelectedIndexes(Arrays.asList(0, 1));
     final List<Entity> entities = testModel.getSelectionModel().getSelectedItems();
     Entities.put(TestDomain.DETAIL_STRING, "hello", entities);
-    testModel.update(entities);
+    assertThrows(IllegalStateException.class, () -> testModel.update(entities));
   }
 
   @Test
@@ -314,9 +314,9 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertEquals(3, entities.size());
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void noVisibleColumns() {
-    createMasterTableModel();
+    assertThrows(IllegalStateException.class, this::createMasterTableModel);
   }
 
   @Test

@@ -9,7 +9,7 @@ import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.AbstractTableSortModel;
 import org.jminor.swing.common.model.table.FilteredTableModel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FilteredTablePanelTest {
 
@@ -35,14 +35,14 @@ public class FilteredTablePanelTest {
     assertNotNull(panel.getSearchField());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullTableModel() {
-    new FilteredTablePanel<String, Integer>((FilteredTableModel) null, null);
+    assertThrows(NullPointerException.class, () -> new FilteredTablePanel<String, Integer>((FilteredTableModel) null, null));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullTable() {
-    new FilteredTablePanel<String, Integer>((JTable) null, null);
+    assertThrows(Exception.class, () -> new FilteredTablePanel<String, Integer>((JTable) null, null));
   }
 
   @Test

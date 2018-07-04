@@ -9,7 +9,7 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.testing.EntityEditPanelTestUnit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EmployeeEditPanelTest extends EntityEditPanelTestUnit {
 

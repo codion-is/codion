@@ -3,15 +3,15 @@
  */
 package org.jminor.common.db.dbms;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PostgreSQLDatabaseTest {
 
-  @Test (expected = NullPointerException.class)
+  @Test
   public void getSequenceQueryNullSequence() {
-    new PostgreSQLDatabase("host", 1234, "sid").getSequenceQuery(null);
+    assertThrows(NullPointerException.class, () -> new PostgreSQLDatabase("host", 1234, "sid").getSequenceQuery(null));
   }
   
   @Test
@@ -50,9 +50,8 @@ public class PostgreSQLDatabaseTest {
     assertEquals(PostgreSQLDatabase.CHECK_QUERY, db.getCheckConnectionQuery());
   }
 
-  @Test(expected = RuntimeException.class)
-  public void test() {
-    final PostgreSQLDatabase db = new PostgreSQLDatabase(null, null, null);
-    db.getURL(null);
+  @Test
+  public void constructorNullHost() {
+    assertThrows(NullPointerException.class, () -> new PostgreSQLDatabase(null, null, null));
   }
 }

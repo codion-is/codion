@@ -3,16 +3,17 @@
  */
 package org.jminor.framework.model;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EntityApplicationModelTest {
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getReportPathNotSpecified() {
     EntityApplicationModel.REPORT_PATH.set(null);
-    EntityApplicationModel.getReportPath();
+    assertThrows(IllegalArgumentException.class, EntityApplicationModel::getReportPath);
   }
 
   @Test

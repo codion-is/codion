@@ -4,5 +4,5 @@ dependencies {
 
     api project(':org.jminor.framework.db.core')
 
-    api "junit:junit:${junitVersion}"
+    api "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
 }

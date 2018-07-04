@@ -7,7 +7,7 @@ import org.jminor.common.User;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.swing.framework.ui.testing.EntityEditPanelTestUnit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DepartmentEditPanelTest extends EntityEditPanelTestUnit {
 

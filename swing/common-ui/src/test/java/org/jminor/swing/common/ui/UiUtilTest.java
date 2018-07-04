@@ -8,7 +8,7 @@ import org.jminor.common.States;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -18,7 +18,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UiUtilTest {
 

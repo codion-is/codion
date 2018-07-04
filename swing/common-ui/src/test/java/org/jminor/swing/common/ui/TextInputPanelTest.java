@@ -3,12 +3,11 @@
  */
 package org.jminor.swing.common.ui;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.JTextField;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TextInputPanelTest {
 
@@ -26,16 +25,16 @@ public class TextInputPanelTest {
     assertEquals("just", txtField.getText());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullTextComponent() {
-    new TextInputPanel(null, "");
+    assertThrows(NullPointerException.class, () -> new TextInputPanel(null, ""));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setTextExceedMaxLength() {
     final JTextField txtField = new JTextField();
     final TextInputPanel panel = new TextInputPanel(txtField, "title");
     panel.setMaxLength(5);
-    panel.setText("123456");
+    assertThrows(IllegalArgumentException.class, () -> panel.setText("123456"));
   }
 }

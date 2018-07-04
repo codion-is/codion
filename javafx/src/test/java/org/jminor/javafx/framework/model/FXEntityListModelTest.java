@@ -9,6 +9,7 @@ import org.jminor.framework.model.testing.TestDomain;
 import org.jminor.javafx.framework.ui.EntityTableView;
 
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.control.ListView;
 
 import java.util.List;
 
@@ -27,6 +28,8 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
       }
     };
     listModel.setEditModel(new FXEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER));
+    final ListView<Entity> listView = new ListView<>(listModel);
+    listModel.setSelectionModel(listView.getSelectionModel());
 
     return listModel;
   }

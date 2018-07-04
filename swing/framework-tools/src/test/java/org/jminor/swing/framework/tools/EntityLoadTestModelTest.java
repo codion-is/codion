@@ -14,14 +14,14 @@ import org.jminor.framework.model.DefaultEntityApplicationModel;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.rmi.registry.LocateRegistry;
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityLoadTestModelTest {
 
@@ -35,7 +35,7 @@ public class EntityLoadTestModelTest {
   private static Server<?, EntityConnectionServerAdmin> server;
   private static EntityConnectionServerAdmin admin;
 
-  @BeforeClass
+  @BeforeAll
   public static synchronized void setUp() throws Exception {
     configure();
     final Database database = Databases.getInstance();
@@ -48,7 +48,7 @@ public class EntityLoadTestModelTest {
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
   }
 
-  @AfterClass
+  @AfterAll
   public static synchronized void tearDown() throws Exception {
     admin.shutdown();
     server = null;
@@ -74,14 +74,14 @@ public class EntityLoadTestModelTest {
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setLoginDelayFactorNegative() {
-    new TestLoadTestModel().setLoginDelayFactor(-1);
+    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel().setLoginDelayFactor(-1));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setUpdateIntervalNegative() {
-    new TestLoadTestModel().setUpdateInterval(-1);
+    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel().setUpdateInterval(-1));
   }
 
   @Test
@@ -110,12 +110,12 @@ public class EntityLoadTestModelTest {
 
     Thread.sleep(1500);
 
-    assertEquals("Two clients expected, if this fails try increasing the Thread.sleep() value above",
-            2, loadTest.getApplicationCount());
+    assertEquals(2, loadTest.getApplicationCount(),
+            "Two clients expected, if this fails try increasing the Thread.sleep() value above");
     assertTrue(loadTest.getUsageScenario("1").getTotalRunCount() > 0);
     assertTrue(loadTest.getUsageScenario("1").getSuccessfulRunCount() > 0);
-    assertTrue(loadTest.getUsageScenario("1").getUnsuccessfulRunCount() == 0);
-    assertTrue(loadTest.getUsageScenario("2").getTotalRunCount() == 0);
+    assertEquals(0, loadTest.getUsageScenario("1").getUnsuccessfulRunCount());
+    assertEquals(0, loadTest.getUsageScenario("2").getTotalRunCount());
 
     loadTest.setPaused(true);
     assertTrue(loadTest.isPaused());

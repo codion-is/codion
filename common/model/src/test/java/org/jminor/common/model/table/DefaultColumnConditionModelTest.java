@@ -7,7 +7,7 @@ import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.db.condition.Condition;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
 import java.sql.Types;
@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultColumnConditionModelTest {
   final AtomicInteger upperBoundCounter = new AtomicInteger();
@@ -138,32 +138,32 @@ public class DefaultColumnConditionModelTest {
     assertTrue(model.getLockedObserver().isActive());
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void setUpperBoundLocked() {
     final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", Types.VARCHAR, "%");
     model.setLocked(true);
-    model.setUpperBound("test");
+    assertThrows(IllegalStateException.class, () -> model.setUpperBound("test"));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void setLowerBoundLocked() {
     final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", Types.VARCHAR, "%");
     model.setLocked(true);
-    model.setLowerBound("test");
+    assertThrows(IllegalStateException.class, () -> model.setLowerBound("test"));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void setEnabledLocked() {
     final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", Types.VARCHAR, "%");
     model.setLocked(true);
-    model.setEnabled(true);
+    assertThrows(IllegalStateException.class, () -> model.setEnabled(true));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void setConditionTypeLocked() {
     final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", Types.VARCHAR, "%");
     model.setLocked(true);
-    model.setConditionType(Condition.Type.NOT_LIKE);
+    assertThrows(IllegalStateException.class, () -> model.setConditionType(Condition.Type.NOT_LIKE));
   }
 
   @Test

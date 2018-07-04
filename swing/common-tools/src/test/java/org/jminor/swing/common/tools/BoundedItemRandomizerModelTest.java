@@ -3,12 +3,12 @@
  */
 package org.jminor.swing.common.tools;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * User: Björn Darri
@@ -20,38 +20,38 @@ public class BoundedItemRandomizerModelTest {
   private final String two = "two";
   private final String three = "three";
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructWithoutObjects() {
-    new BoundedItemRandomizerModel<>(10, Collections.<String>emptyList());
+    assertThrows(IllegalArgumentException.class, () -> new BoundedItemRandomizerModel<>(10, Collections.<String>emptyList()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructWithoutParemeters() {
-    new BoundedItemRandomizerModel<>(Collections.emptyList());
+    assertThrows(IllegalArgumentException.class, () -> new BoundedItemRandomizerModel<>(Collections.emptyList()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructNegativeWeight() {
-    new BoundedItemRandomizerModel<>(-10, Collections.<String>emptyList());
+    assertThrows(IllegalArgumentException.class, () -> new BoundedItemRandomizerModel<>(-10, Collections.<String>emptyList()));
   }
 
   @Test
   public void construct() {
     final BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, Arrays.asList(one, two, three));
-    assertTrue(model.getItemCount() == 3);
-    assertTrue(model.getWeightBounds() == 10);
+    assertEquals(3, model.getItemCount());
+    assertEquals(10, model.getWeightBounds());
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void setWeight() {
     final BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, Arrays.asList(one, two, three));
-    model.setWeight(one, 10);
+    assertThrows(UnsupportedOperationException.class, () -> model.setWeight(one, 10));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void addItem() {
     final BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, Arrays.asList(one, two, three));
-    model.addItem("four");
+    assertThrows(UnsupportedOperationException.class, () -> model.addItem("four"));
   }
 
   @Test

@@ -3,14 +3,14 @@
  */
 package org.jminor.framework.domain;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.awt.Color;
 import java.sql.Types;
 import java.util.Collection;
 import java.util.Comparator;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityDefinitionTest {
 
@@ -32,9 +32,9 @@ public class DefaultEntityDefinitionTest {
     assertEquals("tableName", definition.getTableName());
     assertNotNull(definition.getKeyGenerator());
     assertEquals("select * from dual", definition.getSelectQuery());
-    assertEquals(false, definition.isSmallDataset());
+    assertFalse(definition.isSmallDataset());
     assertEquals(Entity.OrderBy.SortOrder.DESCENDING, definition.getOrderBy().getSortOrder().get("name"));
-    assertEquals(true, definition.isReadOnly());
+    assertTrue(definition.isReadOnly());
     assertEquals("selectTableName", definition.getSelectTableName());
     assertEquals("id, name", definition.getSelectColumnsString());
     assertEquals("name", definition.getGroupByClause());
@@ -42,40 +42,40 @@ public class DefaultEntityDefinitionTest {
     assertEquals(comparator, definition.getComparator());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void foreignKeyPropertyCountMismatch() {
     domain.define("test.composite_key_master",
             Properties.columnProperty("first").setPrimaryKeyIndex(0),
             Properties.columnProperty("second").setPrimaryKeyIndex(1));
-    domain.define("test.composite_reference",
+    assertThrows(IllegalArgumentException.class, () -> domain.define("test.composite_reference",
             Properties.foreignKeyProperty("reference_fk", null, "test.composite_key_master",
                     Properties.columnProperty("reference")
-                            .setPrimaryKeyIndex(0)));
+                            .setPrimaryKeyIndex(0))));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void duplicatePropertyIds() {
-    domain.define("entityId", "tableName",
+    assertThrows(IllegalArgumentException.class, () -> domain.define("entityId", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR),
-            Properties.columnProperty("id"));
+            Properties.columnProperty("id")));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void duplicateForeignKeyPropertyIds() {
-    domain.define("entityId", "tableName",
+    assertThrows(IllegalArgumentException.class, () -> domain.define("entityId", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR),
             Properties.foreignKeyProperty("fkProperty", null, "entityId",
-                    Properties.columnProperty("id")));
+                    Properties.columnProperty("id"))));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setSearchPropertyIds() {
     final Entity.Definition definition = domain.define("entityId", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR));
-    definition.setSearchPropertyIds("id");
+    assertThrows(IllegalArgumentException.class, () -> definition.setSearchPropertyIds("id"));
   }
 
   @Test
@@ -103,13 +103,13 @@ public class DefaultEntityDefinitionTest {
     assertEquals("p1, p2", definition.getGroupByClause());
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testSetGroupByClauseWithGroupingProperties() {
     final Entity.Definition definition = domain.define("entityId",
             Properties.primaryKeyProperty("p0").setAggregateColumn(true),
             Properties.columnProperty("p1").setGroupingColumn(true),
             Properties.columnProperty("p2").setGroupingColumn(true));
-    definition.setGroupByClause("p1, p2");
+    assertThrows(IllegalStateException.class, () -> definition.setGroupByClause("p1, p2"));
   }
 
   @Test
@@ -120,18 +120,18 @@ public class DefaultEntityDefinitionTest {
     assertEquals(havingClause, definition.getHavingClause());
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testSetHavingClauseAlreadySet() {
     final String havingClause = "p1 > 1";
     final Entity.Definition definition = domain.define("entityId",
             Properties.primaryKeyProperty("p0")).setHavingClause(havingClause);
-    definition.setHavingClause(havingClause);
+    assertThrows(IllegalStateException.class, () -> definition.setHavingClause(havingClause));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNoPrimaryKey() {
-    domain.define("entityId", "tableName",
-            Properties.columnProperty("propertyId", Types.INTEGER));
+    assertThrows(IllegalArgumentException.class, () -> domain.define("entityId", "tableName",
+            Properties.columnProperty("propertyId", Types.INTEGER)));
   }
 
   @Test
@@ -143,21 +143,21 @@ public class DefaultEntityDefinitionTest {
     Entity.Definition.STRICT_FOREIGN_KEYS.set(true);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testPropertyIDConflict() {
-    domain.define("entityId",
+    assertThrows(IllegalArgumentException.class, () -> domain.define("entityId",
             Properties.primaryKeyProperty("pk"),
             Properties.columnProperty("col"),
-            Properties.columnProperty("col"));
+            Properties.columnProperty("col")));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testPropertyIDConflictInForeignKey() {
-    domain.define("entityId",
+    assertThrows(IllegalArgumentException.class, () -> domain.define("entityId",
             Properties.primaryKeyProperty("pk"),
             Properties.columnProperty("col"),
             Properties.foreignKeyProperty("fk", "cap", "par",
-                    Properties.columnProperty("col")));
+                    Properties.columnProperty("col"))));
   }
 
   @Test

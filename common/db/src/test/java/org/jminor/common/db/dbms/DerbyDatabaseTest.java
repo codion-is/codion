@@ -5,17 +5,17 @@ package org.jminor.common.db.dbms;
 
 import org.jminor.common.db.Database;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DerbyDatabaseTest {
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void getSequenceQuery() {
-    new DerbyDatabase("host", 1234, "sid").getSequenceQuery("seq");
+    assertThrows(UnsupportedOperationException.class, () -> new DerbyDatabase("host", 1234, "sid").getSequenceQuery("seq"));
   }
 
   @Test
@@ -59,9 +59,8 @@ public class DerbyDatabaseTest {
     assertEquals("jdbc:derby:dbname;user=scott;password=tiger", db.getURL(props));
   }
 
-  @Test(expected = RuntimeException.class)
-  public void getURLMissingProperties() {
-    final Database db = new DerbyDatabase(null, null, null);
-    db.getURL(null);
+  @Test
+  public void constructorNullHost() {
+    assertThrows(NullPointerException.class, () -> new DerbyDatabase(null, null, null));
   }
 }

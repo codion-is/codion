@@ -15,7 +15,7 @@ sonarqube {
 
 dependencies {
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
-    testImplementation "junit:junit:${junitVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
 }
 
 configurations {

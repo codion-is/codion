@@ -8,10 +8,10 @@ import org.jminor.common.Events;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.textfield.DoubleField;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class DoubleValueLinkTest {
 
@@ -25,13 +25,13 @@ public class DoubleValueLinkTest {
     final DoubleField txtDouble = new DoubleField();
     txtDouble.setSeparators('.', ',');
     ValueLinks.doubleValueLink(txtDouble, this, "doubleValue", evtDoubleValueChanged, false, true);
-    assertNull("Double value should be null on initialization", txtDouble.getDouble());
+    assertNull(txtDouble.getDouble());
     setDoubleValue(2.2);
-    assertEquals("Double value should be 2.2", Double.valueOf(2.2), txtDouble.getDouble());
+    assertEquals(Double.valueOf(2.2), txtDouble.getDouble());
     txtDouble.setText("42.2");
-    assertEquals("Double value should be 42.2", Double.valueOf(42.2), doubleValue);
+    assertEquals(Double.valueOf(42.2), doubleValue);
     txtDouble.setText("");
-    assertNull("Double value should be null", doubleValue);
+    assertNull(doubleValue);
   }
 
   @Test
@@ -39,13 +39,13 @@ public class DoubleValueLinkTest {
     final DoubleField txtDouble = new DoubleField();
     txtDouble.setSeparators('.', ',');
     ValueLinks.doubleValueLink(txtDouble, this, "doublePrimitiveValue", evtDoublePrimitiveValueValueChanged, true, true);
-    assertEquals("Double value should be 0 on initialization", (Double) 0.0, txtDouble.getDouble());
+    assertEquals((Double) 0.0, txtDouble.getDouble());
     setDoublePrimitiveValue(2.2);
-    assertEquals("Double value should be 2.2", Double.valueOf(2.2), txtDouble.getDouble());
+    assertEquals(Double.valueOf(2.2), txtDouble.getDouble());
     txtDouble.setText("42.2");
-    assertEquals("Double value should be 42.2", 42.2, 0, doublePrimitiveValue);
+    assertEquals(42.2, doublePrimitiveValue);
     txtDouble.setText("");
-    assertEquals("Double value should be 0", 0.0, 0, doublePrimitiveValue);
+    assertEquals(0.0, doublePrimitiveValue);
   }
 
   public Double getDoubleValue() {

@@ -5,14 +5,14 @@ package org.jminor.common.server;
 
 import org.jminor.common.User;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public final class CredentialServerTest {
 
@@ -20,15 +20,16 @@ public final class CredentialServerTest {
   public void test() throws AlreadyBoundException, RemoteException, InterruptedException {
     System.setProperty("java.rmi.server.hostname", CredentialServer.LOCALHOST);
     final User scott = new User("scott", "tiger".toCharArray());
-    final CredentialServer server = new CredentialServer(54321, 100, 20);
+    final CredentialServer server = new CredentialServer(54321, 200, 20);
 
     final UUID token = UUID.randomUUID();
     server.addAuthenticationToken(token, scott);
-    assertEquals(scott, Clients.getUserCredentials(token));
+    final User userCredentials = Clients.getUserCredentials(token);
+    assertEquals(scott, userCredentials);
     assertNull(Clients.getUserCredentials(token));
 
     server.addAuthenticationToken(token, scott);
-    Thread.sleep(200);
+    Thread.sleep(300);
     //token expired and cleaned up
     assertNull(Clients.getUserCredentials(token));
     server.exit();

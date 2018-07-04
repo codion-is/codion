@@ -10,11 +10,11 @@ import org.jminor.framework.db.TestDomain;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Types;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EntityConditionTest {
 

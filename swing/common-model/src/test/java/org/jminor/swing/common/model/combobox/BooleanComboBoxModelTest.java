@@ -5,10 +5,10 @@ package org.jminor.swing.common.model.combobox;
 
 import org.jminor.common.Item;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class BooleanComboBoxModelTest {
 
@@ -17,10 +17,10 @@ public class BooleanComboBoxModelTest {
     final BooleanComboBoxModel model = new BooleanComboBoxModel();
 
     model.setSelectedItem(false);
-    assertEquals("BooleanComboBoxModel should accept false", false, ((Item) model.getSelectedItem()).getItem());
+    assertEquals(false, ((Item) model.getSelectedItem()).getItem());
     model.setSelectedItem(true);
-    assertEquals("BooleanComboBoxModel should accept true", true, ((Item) model.getSelectedItem()).getItem());
+    assertEquals(true, ((Item) model.getSelectedItem()).getItem());
     model.setSelectedItem(null);
-    assertNull("BooleanComboBoxModel should accept null", ((Item) model.getSelectedItem()).getItem());
+    assertNull(((Item) model.getSelectedItem()).getItem());
   }
 }

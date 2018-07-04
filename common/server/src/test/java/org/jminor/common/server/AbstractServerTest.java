@@ -5,7 +5,7 @@ package org.jminor.common.server;
 
 import org.jminor.common.User;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AbstractServerTest {
 
@@ -46,7 +46,7 @@ public class AbstractServerTest {
     assertEquals(0, server.getConnectionCount());
   }
 
-  @Test(expected = ServerException.ServerFullException.class)
+  @Test
   public void testConnectionLimitReached() throws RemoteException, ServerException {
     final TestServer server = new TestServer(1234, "remoteServerTestServer");
     final String clientTypeId = "clientTypeId";
@@ -55,7 +55,7 @@ public class AbstractServerTest {
     server.setConnectionLimit(1);
     assertEquals(1, server.getConnectionLimit());
     server.connect(connectionRequest);
-    server.connect(connectionRequest2);
+    assertThrows(ServerException.ServerFullException.class, () -> server.connect(connectionRequest2));
   }
 
   @Test
@@ -66,7 +66,7 @@ public class AbstractServerTest {
     final ServerTest connection = server.connect(connectionRequest);
     assertNotNull(connection);
     final ServerTest connection2 = server.connect(connectionRequest);
-    assertTrue(connection == connection2);
+    assertSame(connection, connection2);
     final Map<RemoteClient, ServerTest> connections = server.getConnections();
     assertEquals(1, connections.size());
     assertEquals(connection, connections.get(connectionRequest));
@@ -76,13 +76,9 @@ public class AbstractServerTest {
     server.disconnect(null);
     assertFalse(server.containsConnection(connectionRequest.getClientId()));
     final ServerTest connection3 = server.connect(connectionRequest);
-    assertFalse(connection == connection3);
+    assertNotSame(connection, connection3);
     assertNotNull(server.getServerInfo());
-    try {
-      server.connect(null);
-      fail("Should not be able to connect with null parameters");
-    }
-    catch (final NullPointerException ignored) {/*ignored*/}
+    assertThrows(NullPointerException.class, () -> server.connect(null));
   }
 
   @Test
@@ -158,12 +154,7 @@ public class AbstractServerTest {
     assertNotNull(connection);
 
     server.disconnect(connectionRequest.getClientId());
-
-    try {
-      server.connect(connectionRequest);
-      fail("Connection validator should have prevented a second connection");
-    }
-    catch (final ServerException.ConnectionValidationException e) {}
+    assertThrows(ServerException.ConnectionValidationException.class, () -> server.connect(connectionRequest));
 
     server.setConnectionValidator(connectionRequest.getClientTypeId(), null);
     connection = server.connect(connectionRequest);
@@ -171,7 +162,7 @@ public class AbstractServerTest {
     assertEquals(connectionRequest.getClientId(), connection.getRemoteClient().getClientId());
   }
 
-  @Test(expected = ServerException.AuthenticationException.class)
+  @Test
   public void connectionTheftWrongPassword() throws RemoteException, ServerException {
     final TestServer server = new TestServer(1234, "remoteServerTestServer");
     final String clientTypeId = "clientTypeId";
@@ -184,10 +175,10 @@ public class AbstractServerTest {
     final ServerTest serverTest = server.connect(connectionRequest);
 
     //try to steal the connection using the same connectionId, but incorrect user credentials
-    server.connect(connectionRequest2);
+    assertThrows(ServerException.AuthenticationException.class, () -> server.connect(connectionRequest2));
   }
 
-  @Test(expected = ServerException.AuthenticationException.class)
+  @Test
   public void connectionTheftWrongUsername() throws RemoteException, ServerException {
     final TestServer server = new TestServer(1234, "remoteServerTestServer");
     final String clientTypeId = "clientTypeId";
@@ -200,10 +191,10 @@ public class AbstractServerTest {
     final ServerTest serverTest = server.connect(connectionRequest);
 
     //try to steal the connection using the same connectionId, but incorrect user credentials
-    server.connect(connectionRequest2);
+    assertThrows(ServerException.AuthenticationException.class, () -> server.connect(connectionRequest2));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void setLoginProxyAgain() throws RemoteException {
     final TestServer server = new TestServer(1234, "remoteServerTestServer");
     try {
@@ -222,14 +213,14 @@ public class AbstractServerTest {
         public void close() {}
       };
       server.setLoginProxy("testClientType", proxy);
-      server.setLoginProxy("testClientType", proxy);
+      assertThrows(IllegalStateException.class, () -> server.setLoginProxy("testClientType", proxy));
     }
     finally {
       server.shutdown();
     }
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void setClientValidatorAgain() throws RemoteException {
     final TestServer server = new TestServer(1234, "remoteServerTestServer");
     try {
@@ -240,7 +231,7 @@ public class AbstractServerTest {
         public void validate(final ConnectionRequest connectionRequest) throws ServerException.ConnectionValidationException {}
       };
       server.setConnectionValidator("testClientType", validator);
-      server.setConnectionValidator("testClientType", validator);
+      assertThrows(IllegalStateException.class,() -> server.setConnectionValidator("testClientType", validator));
     }
     finally {
       server.shutdown();

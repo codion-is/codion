@@ -21,9 +21,9 @@ import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class HttpEntityConnectionTest {
 
@@ -57,13 +57,13 @@ public final class HttpEntityConnectionTest {
 
   private final EntityConditions conditions = new EntityConditions(connection.getDomain());
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() throws Exception {
     configure();
     server = DefaultEntityConnectionServer.startServer();
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() throws Exception {
     server.shutdown();
     deconfigure();
@@ -168,16 +168,16 @@ public final class HttpEntityConnectionTest {
     assertFalse(connection.isConnected());
   }
 
-  @Test(expected = DatabaseException.class)
+  @Test
   public void deleteDepartmentWithEmployees() throws IOException, DatabaseException {
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "SALES");
-    connection.delete(conditions.condition(department.getKey()));
+    assertThrows(DatabaseException.class, () -> connection.delete(conditions.condition(department.getKey())));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void rollbackWithNoOpenTransaction() {
-    connection.rollbackTransaction();
+    assertThrows(IllegalStateException.class, connection::rollbackTransaction);
   }
 
   private static void configure() {

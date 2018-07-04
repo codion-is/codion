@@ -6,9 +6,10 @@ package org.jminor.swing.common.tools.ui;
 import org.jminor.swing.common.tools.ItemRandomizer;
 import org.jminor.swing.common.tools.ItemRandomizerModel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ItemRandomizerPanelTest {
 
@@ -19,8 +20,8 @@ public class ItemRandomizerPanelTest {
     assertEquals(model, panel.getModel());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullModel() {
-    new ItemRandomizerPanel<String>(null);
+    assertThrows(NullPointerException.class, () -> new ItemRandomizerPanel<String>(null));
   }
 }

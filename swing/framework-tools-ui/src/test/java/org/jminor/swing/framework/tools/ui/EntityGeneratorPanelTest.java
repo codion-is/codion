@@ -7,7 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.swing.framework.tools.EntityGeneratorModel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EntityGeneratorPanelTest {
 

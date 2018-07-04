@@ -11,8 +11,8 @@ import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityApplicationPanelTest {
 
@@ -31,7 +31,7 @@ public class EntityApplicationPanelTest {
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new TestDomain(),
           UNIT_TEST_USER, Databases.getInstance());
 
-  @After
+  @AfterEach
   public void tearDown() {
     Thread.setDefaultUncaughtExceptionHandler(null);
   }

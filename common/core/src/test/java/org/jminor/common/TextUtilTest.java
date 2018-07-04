@@ -3,7 +3,8 @@
  */
 package org.jminor.common;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -13,7 +14,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class TextUtilTest {
 
@@ -32,9 +33,9 @@ public final class TextUtilTest {
     assertEquals(one, strings.get(2));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void createRandomStringMinLengthExceedsMaxLength() {
-    TextUtil.createRandomString(3, 2);
+    Assertions.assertThrows(IllegalArgumentException.class, () -> TextUtil.createRandomString(3, 2));
   }
 
   @Test
@@ -59,26 +60,26 @@ public final class TextUtilTest {
 
   @Test
   public void getDouble() throws Exception {
-    assertEquals("getDouble should work with comma", Double.valueOf(4.22), TextUtil.getDouble("4,22"));
-    assertEquals("getDouble should work with period", Double.valueOf(4.22), TextUtil.getDouble("4.22"));
-    assertEquals("getDouble should work with single minus sign", Double.valueOf(-1), TextUtil.getDouble("-"));
-    assertNull("getDouble should work with an empty string", TextUtil.getDouble(""));
+    assertEquals(Double.valueOf(4.22), TextUtil.getDouble("4,22"), "getDouble should work with comma");
+    assertEquals(Double.valueOf(4.22), TextUtil.getDouble("4.22"), "getDouble should work with period");
+    assertEquals(Double.valueOf(-1), TextUtil.getDouble("-"), "getDouble should work with single minus sign");
+    assertNull(TextUtil.getDouble(""), "getDouble should work with an empty string");
   }
 
   @Test
   public void getInt() throws Exception {
-    assertEquals("getInt should work with a digit string", Integer.valueOf(4), TextUtil.getInt("4"));
-    assertEquals("getInt should work with single minus sign", Integer.valueOf(-1), TextUtil.getInt("-"));
-    assertNull("getInt should work with an empty string", TextUtil.getInt(""));
-    assertNull("getInt should work with a null value", TextUtil.getInt(null));
+    assertEquals(Integer.valueOf(4), TextUtil.getInt("4"), "getInt should work with a digit string");
+    assertEquals(Integer.valueOf(-1), TextUtil.getInt("-"), "getInt should work with single minus sign");
+    assertNull(TextUtil.getInt(""), "getInt should work with an empty string");
+    assertNull(TextUtil.getInt(null), "getInt should work with a null value");
   }
 
   @Test
   public void getLong() throws Exception {
-    assertEquals("getLong should work with a digit string", Long.valueOf(4), TextUtil.getLong("4"));
-    assertEquals("getLong should work with single minus sign", Long.valueOf(-1), TextUtil.getLong("-"));
-    assertNull("getLong should work with an empty string", TextUtil.getLong(""));
-    assertNull("getLong should work with a null value", TextUtil.getLong(null));
+    assertEquals(Long.valueOf(4), TextUtil.getLong("4"), "getLong should work with a digit string");
+    assertEquals(Long.valueOf(-1), TextUtil.getLong("-"), "getLong should work with single minus sign");
+    assertNull(TextUtil.getLong(""), "getLong should work with an empty string");
+    assertNull(TextUtil.getLong(null), "getLong should work with a null value");
   }
 
   @Test
@@ -126,9 +127,9 @@ public final class TextUtilTest {
   public void getArrayContentsAsString() throws Exception {
     assertEquals("", TextUtil.getArrayContentsAsString(null, true));
     String res = TextUtil.getArrayContentsAsString(new Object[] {1, 2,new Object[] {3, 4}}, false);
-    assertEquals("Integer array as string should work", "1, 2, 3, 4", res);
+    assertEquals("1, 2, 3, 4", res, "Integer array as string should work");
     res = TextUtil.getArrayContentsAsString(new Object[] {1, 2,new Object[] {3, 4}}, true);
-    assertEquals("Integer array as string should work", "1\n2\n3\n4\n", res);
+    assertEquals("1\n2\n3\n4\n", res, "Integer array as string should work");
   }
 
   @Test
@@ -139,6 +140,6 @@ public final class TextUtilTest {
     list.add(3);
     list.add(4);
     final String res = TextUtil.getCollectionContentsAsString(list, false);
-    assertEquals("Integer list as string should work", "1, 2, 3, 4", res);
+    assertEquals("1, 2, 3, 4", res, "Integer list as string should work");
   }
 }

@@ -6,9 +6,9 @@ package org.jminor.framework.db.local;
 import org.jminor.common.User;
 import org.jminor.framework.db.EntityConnectionProviders;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * User: Björn Darri

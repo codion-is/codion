@@ -3,7 +3,7 @@
  */
 package org.jminor.common;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,7 +13,7 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MethodLoggerTest {
 
@@ -171,21 +171,21 @@ public class MethodLoggerTest {
     assertFalse(subSubEntry2.containsSubLog());
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void exitBeforeAccess() {
     final MethodLogger logger = new MethodLogger(10, false);
     logger.setEnabled(true);
     logger.logAccess("method");
     logger.logExit("method");
-    logger.logExit("method");
+    assertThrows(IllegalStateException.class, () -> logger.logExit("method"));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void wrongMethodName() {
     final MethodLogger logger = new MethodLogger(10, false);
     logger.setEnabled(true);
     logger.logAccess("method");
-    logger.logExit("anotherMethod");
+    assertThrows(IllegalStateException.class, () -> logger.logExit("anotherMethod"));
   }
 
   @Test

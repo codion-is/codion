@@ -7,7 +7,7 @@ import org.jminor.common.EventDataListener;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.table.TableColumn;
 import java.sql.Types;
@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SwingFilteredTableColumnModelTest {
 
@@ -48,20 +48,20 @@ public class SwingFilteredTableColumnModelTest {
     assertFalse(testModel.containsColumn(1));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getTableColumnNotFound() {
     final FilteredTableColumnModel<Integer> testModel = createTestModel();
-    testModel.getTableColumn(42);
+    assertThrows(IllegalArgumentException.class, () -> testModel.getTableColumn(42));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructorNullColumns() {
-    new SwingFilteredTableColumnModel<>(null, new ArrayList<>());
+    assertThrows(IllegalArgumentException.class, () -> new SwingFilteredTableColumnModel<>(null, new ArrayList<>()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructorNoColumns() {
-    new SwingFilteredTableColumnModel<>(new ArrayList<>(), new ArrayList<>());
+    assertThrows(IllegalArgumentException.class, () -> new SwingFilteredTableColumnModel<>(new ArrayList<>(), new ArrayList<>()));
   }
 
   @Test

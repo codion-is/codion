@@ -9,13 +9,12 @@ import org.jminor.common.db.Attribute;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * User: Björn Darri
@@ -29,7 +28,7 @@ public class DefaultValueMapTest {
     final TestAttribute attr1 = new TestAttribute();
     final TestAttribute attr2 = new TestAttribute();
     final DefaultValueMap<TestAttribute, Object> map = new DefaultValueMap<>();
-    assertFalse(map.equals(attr1));
+    assertNotEquals(map, attr1);
     assertEquals(0, map.size());
     assertFalse(map.containsKey(attr1));
     map.put(attr1, null);
@@ -52,7 +51,7 @@ public class DefaultValueMapTest {
     final ValueMap<TestAttribute, Integer> valueMap = new DefaultValueMap<>();
 
     final EventDataListener<ValueChange<TestAttribute, Integer>> valueListener = data -> {
-      Assert.assertEquals(attr1, data.getKey());
+      assertEquals(attr1, data.getKey());
       data.toString();
       data.getOldValue();
       data.getNewValue();
@@ -68,35 +67,35 @@ public class DefaultValueMapTest {
 
     valueMap.put(attr1, 1);
     assertTrue(valueMap.containsKey(attr1));
-    Assert.assertEquals(Integer.valueOf(1), valueMap.get(attr1));
-    Assert.assertEquals(Integer.valueOf(1), valueMap.getOriginal(attr1));
+    assertEquals(Integer.valueOf(1), valueMap.get(attr1));
+    assertEquals(Integer.valueOf(1), valueMap.getOriginal(attr1));
     assertFalse(valueMap.isValueNull(attr1));
     assertFalse(valueMap.isModified());
     assertFalse(valueMap.isModified(attr1));
 
     valueMap.put(attr1, 1);
     assertTrue(valueMap.containsKey(attr1));
-    Assert.assertEquals(Integer.valueOf(1), valueMap.get(attr1));
+    assertEquals(Integer.valueOf(1), valueMap.get(attr1));
     assertFalse(valueMap.isModified());
     assertFalse(valueMap.isModified(attr1));
 
     valueMap.put(attr1, 2);
     assertTrue(valueMap.containsKey(attr1));
-    Assert.assertEquals(Integer.valueOf(2), valueMap.get(attr1));
-    Assert.assertEquals(Integer.valueOf(1), valueMap.getOriginal(attr1));
+    assertEquals(Integer.valueOf(2), valueMap.get(attr1));
+    assertEquals(Integer.valueOf(1), valueMap.getOriginal(attr1));
     assertTrue(valueMap.isModified());
     assertTrue(valueMap.isModified(attr1));
     assertFalse(valueMap.originalKeySet().isEmpty());
 
     valueMap.put(attr1, 3);
     assertTrue(valueMap.containsKey(attr1));
-    Assert.assertEquals(Integer.valueOf(3), valueMap.get(attr1));
-    Assert.assertEquals(Integer.valueOf(1), valueMap.getOriginal(attr1));
+    assertEquals(Integer.valueOf(3), valueMap.get(attr1));
+    assertEquals(Integer.valueOf(1), valueMap.getOriginal(attr1));
     assertTrue(valueMap.isModified());
     assertTrue(valueMap.isModified(attr1));
 
     valueMap.revertAll();
-    Assert.assertEquals(Integer.valueOf(1), valueMap.get(attr1));
+    assertEquals(Integer.valueOf(1), valueMap.get(attr1));
     assertFalse(valueMap.isModified());
     assertFalse(valueMap.isModified(attr1));
 
@@ -117,8 +116,8 @@ public class DefaultValueMapTest {
     valueMap.put(attr1, 1);
     assertTrue(valueMap.isModified());
     assertTrue(valueMap.isModified(attr1));
-    Assert.assertEquals(Integer.valueOf(0), valueMap.getOriginal(attr1));
-    Assert.assertEquals(Integer.valueOf(0), valueMap.getOriginalCopy().get(attr1));
+    assertEquals(Integer.valueOf(0), valueMap.getOriginal(attr1));
+    assertEquals(Integer.valueOf(0), valueMap.getOriginalCopy().get(attr1));
     valueMap.saveAll();
     assertFalse(valueMap.isModified());
     assertFalse(valueMap.isModified(attr1));
@@ -143,17 +142,17 @@ public class DefaultValueMapTest {
 
     dest.setAs(source);
 
-    Assert.assertEquals("1", dest.get(one));
-    Assert.assertEquals("3", dest.get(two));
-    Assert.assertEquals("2", dest.getOriginal(two));
+    assertEquals("1", dest.get(one));
+    assertEquals("3", dest.get(two));
+    assertEquals("2", dest.getOriginal(two));
 
-    assertTrue(dest.equals(source));
+    assertEquals(dest, source);
 
     dest.setAs(dest);
 
-    Assert.assertEquals("1", dest.get(one));
-    Assert.assertEquals("3", dest.get(two));
-    Assert.assertEquals("2", dest.getOriginal(two));
+    assertEquals("1", dest.get(one));
+    assertEquals("3", dest.get(two));
+    assertEquals("2", dest.getOriginal(two));
 
     dest.setAs(null);
     assertFalse(dest.containsKey(one));
@@ -175,32 +174,32 @@ public class DefaultValueMapTest {
     mapOne.put(one, 1);
     mapOne.put(two, 2);
 
-    assertFalse(mapOne.equals(mapTwo));
-    assertFalse(mapTwo.equals(mapOne));
+    assertNotEquals(mapOne, mapTwo);
+    assertNotEquals(mapTwo, mapOne);
 
-    assertFalse(mapOne.equals(new HashMap()));
+    assertNotEquals(mapOne, new HashMap());
 
     mapTwo.put(one, 1);
 
-    assertFalse(mapOne.equals(mapTwo));
-    assertFalse(mapTwo.equals(mapOne));
+    assertNotEquals(mapOne, mapTwo);
+    assertNotEquals(mapTwo, mapOne);
 
     mapTwo.put(two, 2);
 
-    assertTrue(mapOne.equals(mapTwo));
-    assertTrue(mapTwo.equals(mapOne));
+    assertEquals(mapOne, mapTwo);
+    assertEquals(mapTwo, mapOne);
 
     mapTwo.put(one, 2);
 
-    assertFalse(mapOne.equals(mapTwo));
-    assertFalse(mapTwo.equals(mapOne));
+    assertNotEquals(mapOne, mapTwo);
+    assertNotEquals(mapTwo, mapOne);
 
     mapTwo.put(one, 1);
     mapTwo.remove(two);
     mapTwo.put(three, 3);
 
-    assertFalse(mapOne.equals(mapTwo));
-    assertFalse(mapTwo.equals(mapOne));
+    assertNotEquals(mapOne, mapTwo);
+    assertNotEquals(mapTwo, mapOne);
   }
 
   @Test
@@ -250,7 +249,7 @@ public class DefaultValueMapTest {
     assertEquals(27, map.hashCode());
   }
 
-  @Test(expected = NullValidationException.class)
+  @Test
   public void nullValidation() throws ValidationException {
     final TestAttribute testAttribute = new TestAttribute();
     final ValueMap.Validator<TestAttribute, ValueMap<TestAttribute, Integer>> validator =
@@ -262,11 +261,11 @@ public class DefaultValueMapTest {
             };
     final ValueMap<TestAttribute, Integer> map = new DefaultValueMap<>();
     map.put(testAttribute, null);
-    validator.validate(map);
+    assertThrows(NullValidationException.class, () -> validator.validate(map));
     map.put(testAttribute, 1);
     validator.validate(map);
     map.put(testAttribute, null);
-    validator.validate(map);
+    assertThrows(NullValidationException.class, () -> validator.validate(map));
   }
 
   @Test
@@ -289,7 +288,7 @@ public class DefaultValueMapTest {
     assertFalse(validator.isValid(map));
   }
 
-  @Test(expected = ValidationException.class)
+  @Test
   public void validate() throws ValidationException {
     final TestAttribute testAttribute = new TestAttribute();
     final DefaultValueMap.DefaultValidator<TestAttribute, ValueMap<TestAttribute, Integer>> validator =
@@ -303,7 +302,7 @@ public class DefaultValueMapTest {
     final ValueMap<TestAttribute, Integer> map = new DefaultValueMap<>();
     map.put(testAttribute, 1);
 
-    validator.validate(map);
+    assertThrows(ValidationException.class, () -> validator.validate(map));
   }
 
   @Test

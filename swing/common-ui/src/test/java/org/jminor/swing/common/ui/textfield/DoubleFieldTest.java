@@ -3,13 +3,14 @@
  */
 package org.jminor.swing.common.ui.textfield;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.text.BadLocationException;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DoubleFieldTest {
 
@@ -168,14 +169,14 @@ public class DoubleFieldTest {
     assertEquals(9, txt.getCaretPosition());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setMaximumFractionDigitsToZero() {
-    new DoubleField().setMaximumFractionDigits(0);
+    assertThrows(IllegalArgumentException.class, () -> new DoubleField().setMaximumFractionDigits(0));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setSeparatorsSameCharacter() {
-    new DoubleField().setSeparators('.', '.');
+    assertThrows(IllegalArgumentException.class, () -> new DoubleField().setSeparators('.', '.'));
   }
 
   @Test

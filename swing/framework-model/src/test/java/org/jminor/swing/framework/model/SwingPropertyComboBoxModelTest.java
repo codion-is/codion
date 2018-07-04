@@ -14,9 +14,10 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.testing.TestDomain;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class SwingPropertyComboBoxModelTest {
 
@@ -38,7 +39,7 @@ public final class SwingPropertyComboBoxModelTest {
 
   @Test
   public void test() {
-    assertTrue(comboBoxModel.getSize() == 0);
+    assertEquals(0, comboBoxModel.getSize());
     refreshEvent.fire();
     assertTrue(comboBoxModel.getSize() > 0);
   }

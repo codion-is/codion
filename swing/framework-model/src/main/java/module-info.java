@@ -1,7 +1,8 @@
 module org.jminor.swing.framework.model {
   requires java.desktop;
-  requires slf4j.api;
   requires java.sql;
+  requires slf4j.api;
+  requires json;
   requires org.jminor.framework.db.core;
   requires org.jminor.framework.model;
   requires org.jminor.common.model;

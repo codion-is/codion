@@ -8,7 +8,7 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 
 import org.json.JSONException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityJSONParserTest {
 

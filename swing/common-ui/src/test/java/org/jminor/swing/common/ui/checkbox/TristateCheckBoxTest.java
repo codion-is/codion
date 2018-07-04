@@ -5,9 +5,9 @@ package org.jminor.swing.common.ui.checkbox;
 
 import org.jminor.swing.common.model.checkbox.TristateState;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TristateCheckBoxTest {
 

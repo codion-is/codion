@@ -6,7 +6,7 @@ package org.jminor.framework.demos.world.client.ui;
 import org.jminor.common.User;
 import org.jminor.swing.framework.ui.testing.EntityApplicationPanelTestUnit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class WorldAppPanelTest extends EntityApplicationPanelTestUnit {
 

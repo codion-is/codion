@@ -6,7 +6,7 @@ package org.jminor.common.db.condition;
 import org.jminor.common.Conjunction;
 import org.jminor.common.db.Column;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -18,7 +18,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class ConditionsTest {
 
@@ -29,25 +30,25 @@ public final class ConditionsTest {
 
   @Test
   public void andSet() {
-    assertEquals("AND condition set should be working", "(condition and condition)", AND_SET.getWhereClause());
+    assertEquals("(condition and condition)", AND_SET.getWhereClause(), "AND condition set should be working");
     assertEquals(2, AND_SET.getConditionCount());
   }
 
   @Test
   public void orSet() {
-    assertEquals("OR condition set should be working", "(condition or condition)", OR_SET.getWhereClause());
+    assertEquals("(condition or condition)", OR_SET.getWhereClause(), "OR condition set should be working");
     assertEquals(2, OR_SET.getValues().size());
     assertEquals(2, OR_SET.getColumns().size());
   }
 
   @Test
   public void andOrAndSet() {
-    assertEquals("AND OR AND condition set should be working", "((condition and condition) and (condition or condition))", AND_OR_AND_SET.getWhereClause());
+    assertEquals("((condition and condition) and (condition or condition))", AND_OR_AND_SET.getWhereClause(), "AND OR AND condition set should be working");
   }
 
   @Test
   public void andOrOrSet() {
-    assertEquals("AND OR OR condition set should be working", "((condition and condition) or (condition or condition))", AND_OR_OR_SET.getWhereClause());
+    assertEquals("((condition and condition) or (condition or condition))", AND_OR_OR_SET.getWhereClause(), "AND OR OR condition set should be working");
   }
 
   @Test
@@ -82,19 +83,19 @@ public final class ConditionsTest {
     assertEquals(1, condition.getValues().size());
   }
 
-  @Test (expected = NullPointerException.class)
+  @Test
   public void stringConditionNullConditionString() {
-    Conditions.stringCondition(null);
+    assertThrows(NullPointerException.class, () -> Conditions.stringCondition(null));
   }
 
-  @Test (expected = NullPointerException.class)
+  @Test
   public void stringConditionNullValues() {
-    Conditions.stringCondition("some is null", null, Collections.<TestColumn>emptyList());
+    assertThrows(NullPointerException.class, () -> Conditions.stringCondition("some is null", null, Collections.<TestColumn>emptyList()));
   }
 
-  @Test (expected = NullPointerException.class)
+  @Test
   public void stringConditionNullKeys() {
-    Conditions.stringCondition("some is null", Collections.emptyList(), null);
+    assertThrows(NullPointerException.class, () -> Conditions.stringCondition("some is null", Collections.emptyList(), null));
   }
 
   @Test

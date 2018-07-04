@@ -27,10 +27,10 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LocalEntityConnectionTest {
 
@@ -65,7 +65,7 @@ public class LocalEntityConnectionTest {
   private static final TestDomain ENTITIES = new TestDomain();
   private static final EntityConditions ENTITY_CONDITIONS = new EntityConditions(ENTITIES);
 
-  @BeforeClass
+  @BeforeAll
   public static void beforeClass() {
     ENTITIES.define(JOINED_QUERY_ENTITY_ID,
             Properties.primaryKeyProperty("e.empno"),
@@ -84,12 +84,12 @@ public class LocalEntityConnectionTest {
             Properties.columnProperty(DATA, Types.BLOB));
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws ClassNotFoundException, DatabaseException {
     connection = initializeConnection();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     connection.disconnect();
   }
@@ -127,15 +127,15 @@ public class LocalEntityConnectionTest {
     }
   }
 
-  @Test(expected = DatabaseException.class)
+  @Test
   public void deleteByKeyWithForeignKeys() throws DatabaseException {
     final Entity accounting = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
-    connection.delete(Collections.singletonList(accounting.getKey()));
+    assertThrows(DatabaseException.class, () -> connection.delete(Collections.singletonList(accounting.getKey())));
   }
 
-  @Test(expected = DatabaseException.class)
+  @Test
   public void deleteByConditionWithForeignKeys() throws DatabaseException {
-    connection.delete(ENTITY_CONDITIONS.condition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "ACCOUNTING"));
+    assertThrows(DatabaseException.class, () -> connection.delete(ENTITY_CONDITIONS.condition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "ACCOUNTING")));
   }
 
   @Test
@@ -238,10 +238,10 @@ public class LocalEntityConnectionTest {
     assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
   }
 
-  @Test(expected = DatabaseException.class)
+  @Test
   public void selectManyInvalidColumn() throws Exception {
-    connection.selectMany(ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
-            Conditions.<Property.ColumnProperty>stringCondition("no_column is null")));
+    assertThrows(DatabaseException.class, () -> connection.selectMany(ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
+            Conditions.<Property.ColumnProperty>stringCondition("no_column is null"))));
   }
 
   @Test
@@ -299,34 +299,34 @@ public class LocalEntityConnectionTest {
     connection.executeProcedure(proc.getId());
   }
 
-  @Test(expected = RecordNotFoundException.class)
+  @Test
   public void selectSingleNotFound() throws Exception {
-    connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "NO_NAME");
+    assertThrows(RecordNotFoundException.class, () -> connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "NO_NAME"));
   }
 
-  @Test(expected = DatabaseException.class)
+  @Test
   public void selectSingleManyFound() throws Exception {
-    connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_JOB, "MANAGER");
+    assertThrows(DatabaseException.class, () -> connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_JOB, "MANAGER"));
   }
 
-  @Test(expected = DatabaseException.class)
+  @Test
   public void insertOnlyNullValues() throws DatabaseException {
     try {
       connection.beginTransaction();
       final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
-      connection.insert(Collections.singletonList(department));
+      assertThrows(DatabaseException.class, () -> connection.insert(Collections.singletonList(department)));
     }
     finally {
       connection.rollbackTransaction();
     }
   }
 
-  @Test(expected = DatabaseException.class)
+  @Test
   public void updateNoModifiedValues() throws DatabaseException {
     try {
       connection.beginTransaction();
       final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID, 10);
-      connection.update(Collections.singletonList(department));
+      assertThrows(DatabaseException.class, () -> connection.update(Collections.singletonList(department)));
     }
     finally {
       connection.rollbackTransaction();
@@ -394,7 +394,7 @@ public class LocalEntityConnectionTest {
     }
   }
 
-  @Test(expected = UpdateException.class)
+  @Test
   public void updateNonExisting() throws DatabaseException {
     //otherwise the optimistic locking triggers an error
     connection.setOptimisticLocking(false);
@@ -402,8 +402,7 @@ public class LocalEntityConnectionTest {
     employee.put(TestDomain.EMP_ID, -888);//non existing
     employee.saveAll();
     employee.put(TestDomain.EMP_NAME, "New name");
-    connection.update(Collections.singletonList(employee));
-    fail("Update of non-existing record should throw exception");
+    assertThrows(UpdateException.class, () -> connection.update(Collections.singletonList(employee)));
   }
 
   @Test
@@ -412,9 +411,9 @@ public class LocalEntityConnectionTest {
     assertTrue(updated.isEmpty());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void selectValuesNonColumnProperty() throws Exception {
-    connection.selectValues(TestDomain.EMP_DEPARTMENT_LOCATION, ENTITY_CONDITIONS.condition(TestDomain.T_EMP));
+    assertThrows(IllegalArgumentException.class, () -> connection.selectValues(TestDomain.EMP_DEPARTMENT_LOCATION, ENTITY_CONDITIONS.condition(TestDomain.T_EMP)));
   }
 
   @Test
@@ -560,33 +559,35 @@ public class LocalEntityConnectionTest {
     }
   }
 
-  @Test (expected = IllegalArgumentException.class)
+  @Test
   public void testConstructorInvalidConnection() throws Exception {
-    Connection connection = null;
-    try {
-      final Database db = Databases.getInstance();
-      connection = db.createConnection(UNIT_TEST_USER);
-      connection.close();
-      new LocalEntityConnection(ENTITIES, db, connection, true, true, 1);
-    }
-    finally {
-      if (connection != null) {
-        try {
-          connection.close();
-        }
-        catch (final Exception ignored) {/*ignored*/}
+    assertThrows(IllegalArgumentException.class, () -> {
+      Connection connection = null;
+      try {
+        final Database db = Databases.getInstance();
+        connection = db.createConnection(UNIT_TEST_USER);
+        connection.close();
+        new LocalEntityConnection(ENTITIES, db, connection, true, true, 1);
       }
-    }
+      finally {
+        if (connection != null) {
+          try {
+            connection.close();
+          }
+          catch (final Exception ignored) {/*ignored*/}
+        }
+      }
+    });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void writeBlobIncorrectType() throws DatabaseException {
-    connection.writeBlob(ENTITIES.key(TestDomain.T_DEPARTMENT), TestDomain.DEPARTMENT_NAME, new byte[0]);
+    assertThrows(IllegalArgumentException.class, () -> connection.writeBlob(ENTITIES.key(TestDomain.T_DEPARTMENT), TestDomain.DEPARTMENT_NAME, new byte[0]));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void readBlobIncorrectType() throws DatabaseException {
-    connection.readBlob(ENTITIES.key(TestDomain.T_DEPARTMENT), TestDomain.DEPARTMENT_NAME);
+    assertThrows(IllegalArgumentException.class, () -> connection.readBlob(ENTITIES.key(TestDomain.T_DEPARTMENT), TestDomain.DEPARTMENT_NAME));
   }
 
   @Test

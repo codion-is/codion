@@ -9,7 +9,7 @@ import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Types;
 import java.text.DateFormat;
@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EntitiesTest {
 
@@ -83,10 +83,10 @@ public class EntitiesTest {
     assertEquals(0, noProperties.size());
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void getEntitySerializerUnconfigured() {
     entities.ENTITY_SERIALIZER_CLASS.set(null);
-    entities.getEntitySerializer();
+    assertThrows(RuntimeException.class, entities::getEntitySerializer);
   }
 
   @Test
@@ -177,20 +177,20 @@ public class EntitiesTest {
     assertEquals(43, key.hashCode());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void keyWithSameIndex() {
-    entities.define("keyWithSameIndex",
+    assertThrows(IllegalArgumentException.class, () -> entities.define("keyWithSameIndex",
             Properties.primaryKeyProperty("1").setPrimaryKeyIndex(0),
             Properties.primaryKeyProperty("2").setPrimaryKeyIndex(1),
-            Properties.primaryKeyProperty("3").setPrimaryKeyIndex(1));
+            Properties.primaryKeyProperty("3").setPrimaryKeyIndex(1)));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void keyWithSameIndex2() {
-    entities.define("keyWithSameIndex2",
+    assertThrows(IllegalArgumentException.class, () -> entities.define("keyWithSameIndex2",
             Properties.primaryKeyProperty("1"),
             Properties.primaryKeyProperty("2"),
-            Properties.primaryKeyProperty("3"));
+            Properties.primaryKeyProperty("3")));
   }
 
   @Test
@@ -225,9 +225,9 @@ public class EntitiesTest {
     assertTrue(visibleProperties.containsAll(allProperties));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getPropertyInvalid() {
-    entities.getProperty(TestDomain.T_MASTER, "unknown property");
+    assertThrows(IllegalArgumentException.class, () -> entities.getProperty(TestDomain.T_MASTER, "unknown property"));
   }
 
   @Test
@@ -254,9 +254,9 @@ public class EntitiesTest {
     assertNotNull(entities.getForeignKeyProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getForeignKeyPropertyInvalid() {
-    entities.getForeignKeyProperty(TestDomain.T_DETAIL, "bla bla");
+    assertThrows(IllegalArgumentException.class, () -> entities.getForeignKeyProperty(TestDomain.T_DETAIL, "bla bla"));
   }
 
   @Test
@@ -291,11 +291,11 @@ public class EntitiesTest {
     assertNotNull(entities.getStringProvider(TestDomain.T_DEPARTMENT));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void redefine() {
     final String entityId = "entityId";
     entities.define(entityId, Properties.primaryKeyProperty("propertyId"));
-    entities.define(entityId, Properties.primaryKeyProperty("propertyId"));
+    assertThrows(IllegalArgumentException.class, () -> entities.define(entityId, Properties.primaryKeyProperty("propertyId")));
   }
 
   @Test
@@ -406,12 +406,12 @@ public class EntitiesTest {
     assertEquals(" (department: , location: , hiredate: )", employeeToString.toString(employee));
   }
 
-  @Test (expected = IllegalArgumentException.class)
+  @Test
   public void foreignKeyReferencingUndefinedEntity() {
-    entities.define("test.entity",
+    assertThrows(IllegalArgumentException.class, () -> entities.define("test.entity",
             Properties.primaryKeyProperty("id"),
             Properties.foreignKeyProperty("fk_id_fk", "caption", "test.referenced_entity",
-                    Properties.columnProperty("fk_id")));
+                    Properties.columnProperty("fk_id"))));
   }
 
   @Test
@@ -424,12 +424,12 @@ public class EntitiesTest {
     Entity.Definition.STRICT_FOREIGN_KEYS.set(true);
   }
 
-  @Test (expected = IllegalArgumentException.class)
+  @Test
   public void setSearchPropertyIdsInvalidProperty() {
-    entities.define("spids",
+    assertThrows(IllegalArgumentException.class, () -> entities.define("spids",
             Properties.primaryKeyProperty("1"),
             Properties.columnProperty("test"))
-            .setSearchPropertyIds("invalid");
+            .setSearchPropertyIds("invalid"));
   }
 
   @Test
@@ -461,23 +461,23 @@ public class EntitiesTest {
     assertEquals(havingClause, entities.getHavingClause("entityId3"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void validateTypeEntity() {
     final Entity entity = entities.entity(TestDomain.T_DETAIL);
     final Entity entity1 = entities.entity(TestDomain.T_DETAIL);
-    entity.put(TestDomain.DETAIL_MASTER_FK, entity1);
+    assertThrows(IllegalArgumentException.class, () -> entity.put(TestDomain.DETAIL_MASTER_FK, entity1));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setValueDerived() {
     final Entity entity = entities.entity(TestDomain.T_DETAIL);
-    entity.put(TestDomain.DETAIL_INT_DERIVED, 10);
+    assertThrows(IllegalArgumentException.class, () -> entity.put(TestDomain.DETAIL_INT_DERIVED, 10));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setValueValueList() {
     final Entity entity = entities.entity(TestDomain.T_DETAIL);
-    entity.put(TestDomain.DETAIL_INT_VALUE_LIST, -10);
+    assertThrows(IllegalArgumentException.class, () -> entity.put(TestDomain.DETAIL_INT_VALUE_LIST, -10));
   }
 
   @Test
@@ -582,9 +582,9 @@ public class EntitiesTest {
     dept2.put(TestDomain.DEPARTMENT_NAME, "name2");
 
     final List<Entity> copies = Entities.copyEntities(Arrays.asList(dept1, dept2));
-    assertFalse(copies.get(0) == dept1);
+    assertNotSame(copies.get(0), dept1);
     assertTrue(copies.get(0).valuesEqual(dept1));
-    assertFalse(copies.get(1) == dept2);
+    assertNotSame(copies.get(1), dept2);
     assertTrue(copies.get(1).valuesEqual(dept2));
   }
 
@@ -683,23 +683,23 @@ public class EntitiesTest {
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void addOperationExisting() {
     final DatabaseConnection.Operation operation = new AbstractProcedure<DatabaseConnection>("operationId", "test") {
       @Override
       public void execute(final DatabaseConnection databaseConnection, final Object... arguments) {}
     };
     entities.addOperation(operation);
-    entities.addOperation(operation);
+    assertThrows(IllegalArgumentException.class, () -> entities.addOperation(operation));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getFunctionNonExisting() {
-    entities.getFunction("nonexistingfunctionid");
+    assertThrows(IllegalArgumentException.class, () -> entities.getFunction("nonexistingfunctionid"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getProcedureNonExisting() {
-    entities.getProcedure("nonexistingprocedureid");
+    assertThrows(IllegalArgumentException.class, () -> entities.getProcedure("nonexistingprocedureid"));
   }
 }

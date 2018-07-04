@@ -9,9 +9,9 @@ import org.jminor.common.State;
 import org.jminor.common.States;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class ControlsTest {
 
@@ -48,9 +48,9 @@ public final class ControlsTest {
     assertTrue(control.getButtonModel().isSelected());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void toggleControlInvalidValue() {
-    Controls.toggleControl(this, "invalid", "test", valueChangeEvent.getObserver());
+    assertThrows(IllegalArgumentException.class, () -> Controls.toggleControl(this, "invalid", "test", valueChangeEvent.getObserver()));
   }
 
   @Test

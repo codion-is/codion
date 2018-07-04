@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TimeUtilTest {
 

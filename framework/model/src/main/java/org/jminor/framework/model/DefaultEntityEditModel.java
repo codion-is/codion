@@ -458,10 +458,10 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
       return Collections.emptyList();
     }
     if (readOnly) {
-      throw new UnsupportedOperationException("This is a read-only model, updating is not allowed!");
+      throw new IllegalStateException("This is a read-only model, updating is not allowed!");
     }
     if (!isUpdateAllowed()) {
-      throw new UnsupportedOperationException("This model does not allow updating!");
+      throw new IllegalStateException("This model does not allow updating!");
     }
 
     LOG.debug("{} - update {}", this, TextUtil.getCollectionContentsAsString(entities, false));
@@ -499,10 +499,10 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
       return Collections.emptyList();
     }
     if (readOnly) {
-      throw new UnsupportedOperationException("This is a read-only model, deleting is not allowed!");
+      throw new IllegalStateException("This is a read-only model, deleting is not allowed!");
     }
     if (!isDeleteAllowed()) {
-      throw new UnsupportedOperationException("This model does not allow deleting!");
+      throw new IllegalStateException("This model does not allow deleting!");
     }
 
     LOG.debug("{} - delete {}", this, TextUtil.getCollectionContentsAsString(entities, false));
@@ -881,10 +881,10 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   private List<Entity> insertEntities(final List<Entity> entities) throws DatabaseException, ValidationException {
     if (readOnly) {
-      throw new UnsupportedOperationException("This is a read-only model, inserting is not allowed!");
+      throw new IllegalStateException("This is a read-only model, inserting is not allowed!");
     }
     if (!isInsertAllowed()) {
-      throw new UnsupportedOperationException("This model does not allow inserting!");
+      throw new IllegalStateException("This model does not allow inserting!");
     }
 
     LOG.debug("{} - insert {}", this, TextUtil.getCollectionContentsAsString(entities, false));

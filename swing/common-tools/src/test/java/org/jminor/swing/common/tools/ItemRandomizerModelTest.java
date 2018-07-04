@@ -5,11 +5,11 @@ package org.jminor.swing.common.tools;
 
 import org.jminor.common.EventListener;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ItemRandomizerModelTest {
 

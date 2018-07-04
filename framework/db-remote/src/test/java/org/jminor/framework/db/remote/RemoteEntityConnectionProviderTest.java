@@ -9,9 +9,9 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Entities;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * User: Bjorn Darri

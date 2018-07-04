@@ -12,13 +12,13 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityConditionsTest {
 
@@ -213,9 +213,9 @@ public class EntityConditionsTest {
     assertEquals("deptno = ?", condition.getWhereClause());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void selectConditionKeyNoKeys() {
-    entityConditions.selectCondition(Collections.emptyList());
+    assertThrows(IllegalArgumentException.class,() -> entityConditions.selectCondition(Collections.emptyList()));
   }
 
   @Test
@@ -225,8 +225,8 @@ public class EntityConditionsTest {
             .setOrderBy(Entities.orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertTrue(condition.getValues().isEmpty());
     assertTrue(condition.getColumns().isEmpty());
-    assertTrue(condition.getOrderby().getSortOrder().get(TestDomain.DEPARTMENT_NAME).equals(Entity.OrderBy
-            .SortOrder.ASCENDING));
+    assertEquals(condition.getOrderby().getSortOrder().get(TestDomain.DEPARTMENT_NAME), Entity.OrderBy
+            .SortOrder.ASCENDING);
   }
 
   @Test
@@ -244,26 +244,26 @@ public class EntityConditionsTest {
   public void selectConditionOrderBy() {
     final EntitySelectCondition condition = entityConditions.selectCondition(TestDomain.T_EMP)
             .setOrderBy(Entities.orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_ID));
-    assertTrue(condition.getOrderby().getSortOrder().get(TestDomain.EMP_DEPARTMENT).equals(Entity.OrderBy
-            .SortOrder.ASCENDING));
-    assertTrue(condition.getOrderby().getSortOrder().get(TestDomain.EMP_ID).equals(Entity.OrderBy
-            .SortOrder.DESCENDING));
+    assertEquals(condition.getOrderby().getSortOrder().get(TestDomain.EMP_DEPARTMENT), Entity.OrderBy
+            .SortOrder.ASCENDING);
+    assertEquals(condition.getOrderby().getSortOrder().get(TestDomain.EMP_ID), Entity.OrderBy
+            .SortOrder.DESCENDING);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void propertyConditionWithNonColumnProperty() {
-    entityConditions.propertyCondition(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_LOCATION, Condition.Type.LIKE, null);
+    assertThrows(IllegalArgumentException.class, () -> entityConditions.propertyCondition(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_LOCATION, Condition.Type.LIKE, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void selectConditionOrderBySamePropertyId() {
-    entityConditions.selectCondition(TestDomain.T_EMP)
-            .setOrderBy(Entities.orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_DEPARTMENT));
+    assertThrows(IllegalArgumentException.class, () -> entityConditions.selectCondition(TestDomain.T_EMP)
+            .setOrderBy(Entities.orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_DEPARTMENT)));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void selectConditionInvalidType() {
-    entityConditions.selectCondition(TestDomain.T_EMP, TestDomain.EMP_COMMISSION, Condition.Type.LIKE, "test");
+    assertThrows(IllegalArgumentException.class, () -> entityConditions.selectCondition(TestDomain.T_EMP, TestDomain.EMP_COMMISSION, Condition.Type.LIKE, "test"));
   }
 
   private void assertKeyCondition(final EntityCondition condition) {

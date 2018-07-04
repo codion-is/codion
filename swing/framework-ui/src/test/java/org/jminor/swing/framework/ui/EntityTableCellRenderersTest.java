@@ -10,7 +10,9 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EntityTableCellRenderersTest {
 
@@ -39,11 +41,11 @@ public class EntityTableCellRenderersTest {
     renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, true, true, 0, 7);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void entityMismatch() {
     final EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER));
     tablePanel.getEntityTableModel().refresh();
-    EntityTableCellRenderers.getTableCellRenderer(tablePanel.getEntityTableModel(),
-            ENTITIES.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME));
+    assertThrows(IllegalArgumentException.class, () -> EntityTableCellRenderers.getTableCellRenderer(tablePanel.getEntityTableModel(),
+            ENTITIES.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
   }
 }

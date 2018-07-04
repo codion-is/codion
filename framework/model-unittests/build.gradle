@@ -7,5 +7,5 @@ dependencies {
     implementation project(':org.jminor.framework.db.local')
     api project(':org.jminor.framework.model')
 
-    implementation "junit:junit:${junitVersion}"
+    api "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
 }

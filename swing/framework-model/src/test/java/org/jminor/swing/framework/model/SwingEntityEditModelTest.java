@@ -13,10 +13,10 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.testing.TestDomain;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SwingEntityEditModelTest {
 
@@ -30,7 +30,7 @@ public class SwingEntityEditModelTest {
   private Property.ColumnProperty jobProperty;
   private Property.ForeignKeyProperty deptProperty;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     jobProperty = ENTITIES.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
     deptProperty = ENTITIES.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
@@ -76,8 +76,8 @@ public class SwingEntityEditModelTest {
     assertEquals(deptProperty.getForeignEntityId(), model.getEntityId());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getForeignKeyComboBoxModelNonFKProperty() {
-    employeeEditModel.getForeignKeyComboBoxModel(jobProperty.getPropertyId());
+    assertThrows(IllegalArgumentException.class, () -> employeeEditModel.getForeignKeyComboBoxModel(jobProperty.getPropertyId()));
   }
 }

@@ -16,13 +16,13 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.testing.TestDomain;
 
 import javafx.scene.control.ListView;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ObservableEntityListTest {
 
@@ -88,7 +88,7 @@ public class ObservableEntityListTest {
       list.setSelectionModel(listView.getSelectionModel());
       fail();
     }
-    catch (final IllegalStateException e) {}
+    catch (final IllegalStateException ignored) {}
     list.refresh();
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_NAME, "SALES");

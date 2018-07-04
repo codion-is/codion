@@ -3,14 +3,14 @@
  */
 package org.jminor.common.server.http;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.net.URL;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HttpServerTest {
 
@@ -19,12 +19,12 @@ public class HttpServerTest {
   private final HttpServer httpServer = new HttpServer(null,
           System.getProperty("user.dir"), FILE_SERVER_PORT_NUMBER, false);
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     httpServer.startServer();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     httpServer.stopServer();
   }

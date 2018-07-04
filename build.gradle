@@ -1,5 +1,5 @@
 plugins {
-    id "org.sonarqube" version "2.6"
+    id "org.sonarqube" version "2.6.2"
 }
 
 ext {
@@ -14,7 +14,7 @@ ext {
     httpclientVersion = '4.5'
     httpcoreVersion = '4.4.1'
     commonsloggingVersion = '1.2'
-    junitVersion = '4.12'
+    junitVersion = '5.2.0'
 }
 
 allprojects {
@@ -36,7 +36,8 @@ subprojects {
 
         dependencies {
             implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
-            testImplementation "junit:junit:${junitVersion}"
+            testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+            testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
         }
 
         sourceSets {
@@ -162,6 +163,7 @@ subprojects {
         createServerKeystore.onlyIf { !new File(keystore).exists() }
 
         test {
+            useJUnitPlatform()
             systemProperty "jminor.db.type", "h2"
             systemProperty "jminor.db.host", "h2db"
             systemProperty "jminor.db.embedded", "true"

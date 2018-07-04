@@ -17,11 +17,11 @@ import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityTableConditionModel;
 import org.jminor.framework.model.testing.TestDomain;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SwingForeignKeyConditionModelTest {
 
@@ -41,8 +41,8 @@ public class SwingForeignKeyConditionModelTest {
     assertTrue(((SwingForeignKeyConditionModel) conditionModel.getPropertyConditionModel(TestDomain.EMP_DEPARTMENT_FK))
             .getEntityComboBoxModel().getSize() > 1);
     conditionModel.clear();
-    assertTrue(((SwingForeignKeyConditionModel) conditionModel.getPropertyConditionModel(TestDomain.EMP_DEPARTMENT_FK))
-            .getEntityComboBoxModel().getSize() == 0);
+    assertEquals(0, ((SwingForeignKeyConditionModel) conditionModel.getPropertyConditionModel(TestDomain.EMP_DEPARTMENT_FK))
+            .getEntityComboBoxModel().getSize());
   }
 
   @Test

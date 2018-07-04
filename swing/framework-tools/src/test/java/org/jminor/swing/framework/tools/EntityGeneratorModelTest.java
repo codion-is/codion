@@ -8,13 +8,13 @@ import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.swing.common.model.table.SortingDirective;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EntityGeneratorModelTest {
 
@@ -120,14 +120,14 @@ public class EntityGeneratorModelTest {
 
   private EntityGeneratorModel model;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     model = new EntityGeneratorModel(UNIT_TEST_USER, "PETSTORE");
     model.getTableModel().getSortModel().setSortingDirective(EntityGeneratorModel.SCHEMA_COLUMN_ID, SortingDirective.ASCENDING, false);
     model.getTableModel().getSortModel().setSortingDirective(EntityGeneratorModel.TABLE_COLUMN_ID, SortingDirective.ASCENDING, true);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     model.exit();
   }

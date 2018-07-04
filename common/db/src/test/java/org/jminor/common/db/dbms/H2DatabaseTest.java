@@ -5,18 +5,17 @@ package org.jminor.common.db.dbms;
 
 import org.jminor.common.db.Database;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class H2DatabaseTest {
 
-  @Test (expected = NullPointerException.class)
+  @Test
   public void getSequenceSQLNullSequence() {
-    new H2Database("host", 1234, "sid").getSequenceQuery(null);
+    assertThrows(NullPointerException.class, () -> new H2Database("host", 1234, "sid").getSequenceQuery(null));
   }
 
   @Test
@@ -47,9 +46,8 @@ public class H2DatabaseTest {
     assertEquals(H2Database.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceQuery(idSource));
   }
 
-  @Test(expected = RuntimeException.class)
-  public void getURLMissingProperties() {
-    final H2Database db = new H2Database(null, null, null);
-    db.getURL(null);
+  @Test
+  public void constructorNullHost() {
+    assertThrows(NullPointerException.class, () -> new H2Database(null, null, null));
   }
 }

@@ -10,11 +10,11 @@ import org.jminor.common.db.valuemap.ValueChange;
 import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultValueMapEditModelTest {
 
@@ -49,14 +49,14 @@ public class DefaultValueMapEditModelTest {
     assertTrue(model.isValid());
     assertTrue(model.isValid(testAttribute));
     assertTrue(model.getValidObserver().isActive());
-    assertTrue(valueSetCounter.get() == 1);
-    assertTrue(valueChangeCounter.get() == 1);
-    assertTrue(anyValueChangeCounter.get() == 1);
+    assertEquals(1, valueSetCounter.get());
+    assertEquals(1, valueChangeCounter.get());
+    assertEquals(1, anyValueChangeCounter.get());
 
     model.setValue(testAttribute, 1);
-    assertTrue(valueSetCounter.get() == 1);
-    assertTrue(valueChangeCounter.get() == 1);
-    assertTrue(anyValueChangeCounter.get() == 1);
+    assertEquals(1, valueSetCounter.get());
+    assertEquals(1, valueChangeCounter.get());
+    assertEquals(1, anyValueChangeCounter.get());
 
     assertFalse(model.isNullable(testAttribute));
     assertTrue(!model.isValueNull(testAttribute));
@@ -65,28 +65,20 @@ public class DefaultValueMapEditModelTest {
     model.setValue(testAttribute, null);
     assertFalse(model.isValid());
     assertFalse(model.isValid(testAttribute));
-    try {
-      model.validate();
-      fail();
-    }
-    catch (final ValidationException e) {}
-    try {
-      model.validate(testAttribute);
-      fail();
-    }
-    catch (final ValidationException e) {}
+    assertThrows(ValidationException.class, model::validate);
+    assertThrows(ValidationException.class, () -> model.validate(testAttribute));
 
-    assertTrue(valueSetCounter.get() == 2);
-    assertTrue(valueChangeCounter.get() == 2);
-    assertTrue(anyValueChangeCounter.get() == 2);
+    assertEquals(2, valueSetCounter.get());
+    assertEquals(2, valueChangeCounter.get());
+    assertEquals(2, anyValueChangeCounter.get());
     assertTrue(model.isValueNull(testAttribute));
 
     final TestAttribute nameAttribute = new TestAttribute();
 
     model.setValue(nameAttribute, "Name");
-    assertTrue(valueSetCounter.get() == 2);
-    assertTrue(valueChangeCounter.get() == 2);
-    assertTrue(anyValueChangeCounter.get() == 3);
+    assertEquals(2, valueSetCounter.get());
+    assertEquals(2, valueChangeCounter.get());
+    assertEquals(3, anyValueChangeCounter.get());
 
     assertNotNull(model.getValue(nameAttribute));
     assertNotNull(model.removeValue(nameAttribute));

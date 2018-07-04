@@ -22,7 +22,7 @@ import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityModel;
 import org.jminor.framework.model.EntityTableModel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * A base class for testing {@link EntityModel} subclasses.
@@ -87,9 +87,9 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     //todo
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getDetailModelNotFound() {
-    departmentModel.getDetailModel("undefined");
+    assertThrows(IllegalArgumentException.class, () -> departmentModel.getDetailModel("undefined"));
   }
 
   @Test
@@ -102,31 +102,31 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     assertTrue(employeeModel.getTableModel().getRowCount() > 0);
 
     departmentModel.clearDetailModels();
-    assertTrue(employeeModel.getTableModel().getRowCount() == 0);
+    assertEquals(0, employeeModel.getTableModel().getRowCount());
 
     departmentModel.clear();
-    assertTrue(departmentModel.getTableModel().getRowCount() == 0);
+    assertEquals(0, departmentModel.getTableModel().getRowCount());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullEditModelNullTableModel() {
-    new DefaultEntityModel((DefaultEntityEditModel) null, null);
+    assertThrows(NullPointerException.class, () -> new DefaultEntityModel((DefaultEntityEditModel) null, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructorTableModelEntityIDMismatch() {
     final EditModel editModel = createDepartmentEditModel();
     final TableModel tableModel = createEmployeeTableModel();
-    new DefaultEntityModel(editModel, tableModel);
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntityModel(editModel, tableModel));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructorTableModelEditModelMismatch() {
     final DefaultEntityEditModel editModel = createDepartmentEditModel();
     final DefaultEntityEditModel editModel2 = createDepartmentEditModel();
     final EntityTableModel tableModel = createDepartmentTableModel();
     tableModel.setEditModel(editModel);
-    new DefaultEntityModel(editModel2, tableModel);
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntityModel(editModel2, tableModel));
   }
 
   @Test
@@ -161,11 +161,11 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   @Test
   public void detailModel() throws Exception {
     departmentModel.getDetailModel(TestDomain.T_EMP);
-    assertTrue("DepartmentModel should contain Employee detail", departmentModel.containsDetailModel(TestDomain.T_EMP));
-    assertEquals("Only one detail model should be in DepartmentModel", 1, departmentModel.getDetailModels().size());
-    assertTrue(departmentModel.getLinkedDetailModels().size() == 1);
-    assertTrue("Employee model should be the linked detail model in DepartmentModel",
-            departmentModel.getLinkedDetailModels().contains(departmentModel.getDetailModel(TestDomain.T_EMP)));
+    assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP), "DepartmentModel should contain Employee detail");
+    assertEquals(1, departmentModel.getDetailModels().size(), "Only one detail model should be in DepartmentModel");
+    assertEquals(1, departmentModel.getLinkedDetailModels().size());
+    assertTrue(departmentModel.getLinkedDetailModels().contains(departmentModel.getDetailModel(TestDomain.T_EMP)),
+            "Employee model should be the linked detail model in DepartmentModel");
     assertNotNull(departmentModel.getDetailModel(TestDomain.T_EMP));
     departmentModel.refresh();
     departmentModel.refreshDetailModels();
@@ -175,34 +175,34 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
     final List<Entity> salesEmployees = connection.selectMany(new EntityConditions(ENTITIES).selectCondition(TestDomain.T_EMP,
             TestDomain.EMP_DEPARTMENT_FK, Condition.Type.LIKE, department));
-    assertTrue("Number of employees for department should not be 0", !salesEmployees.isEmpty());
+    assertTrue(!salesEmployees.isEmpty(), "Number of employees for department should not be 0");
     departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
     final List<Entity> employeesFromDetailModel =
             departmentModel.getDetailModel(TestDomain.T_EMP).getTableModel().getAllItems();
-    assertTrue("Filtered list should contain all employees for department", containsAll(salesEmployees, employeesFromDetailModel));
+    assertTrue(containsAll(salesEmployees, employeesFromDetailModel), "Filtered list should contain all employees for department");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void addSameDetailModelTwice() {
     final DefaultEntityModel model = createDepartmentModelWithoutDetailModel();
     final DefaultEntityModel employeeModel = createEmployeeModel();
-    model.addDetailModels(employeeModel, employeeModel);
+    assertThrows(IllegalArgumentException.class, () -> model.addDetailModels(employeeModel, employeeModel));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void addDetailModelDetailModelAlreadyHasMasterModel() {
     final DefaultEntityModel model = createDepartmentModelWithoutDetailModel();
     final DefaultEntityModel employeeModel = createEmployeeModel();
     employeeModel.setMasterModel(model);
-    model.addDetailModel(employeeModel);
+    assertThrows(IllegalArgumentException.class, () -> model.addDetailModel(employeeModel));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void setMasterModel() {
     final DefaultEntityModel model = createDepartmentModelWithoutDetailModel();
     final DefaultEntityModel employeeModel = createEmployeeModel();
     employeeModel.setMasterModel(model);
-    employeeModel.setMasterModel(departmentModel);
+    assertThrows(IllegalStateException.class, () -> employeeModel.setMasterModel(departmentModel));
   }
 
   @Test

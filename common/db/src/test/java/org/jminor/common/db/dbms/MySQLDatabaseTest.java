@@ -3,15 +3,15 @@
  */
 package org.jminor.common.db.dbms;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MySQLDatabaseTest {
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void getSequenceQuery() {
-    new MySQLDatabase("host", 1234, "sid").getSequenceQuery("seq");
+    assertThrows(UnsupportedOperationException.class, () -> new MySQLDatabase("host", 1234, "sid").getSequenceQuery("seq"));
   }
   
   @Test
@@ -38,9 +38,8 @@ public class MySQLDatabaseTest {
     assertEquals("jdbc:mysql://host:1234/sid", db.getURL(null));
   }
   
-  @Test(expected = RuntimeException.class)
-  public void getURLMissingProperties() {
-    final MySQLDatabase db = new MySQLDatabase(null, null, null);
-    db.getURL(null);
+  @Test
+  public void constructorNullHost() {
+    assertThrows(NullPointerException.class, () -> new MySQLDatabase(null, null, null));
   }
 }

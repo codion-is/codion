@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.common.ui.control;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -15,7 +15,7 @@ import javax.swing.JToolBar;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ControlProviderTest {
 
@@ -39,7 +39,7 @@ public class ControlProviderTest {
     this.selectedValue = selectedValue;
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     set = new ControlSet("hello");
     set.add(new Control("one"));

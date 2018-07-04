@@ -18,14 +18,14 @@ import org.jminor.framework.model.testing.AbstractEntityModelTest;
 import org.jminor.framework.model.testing.TestDomain;
 import org.jminor.swing.common.ui.ValueLinks;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class SwingEntityModelTest
         extends AbstractEntityModelTest<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
@@ -139,9 +139,9 @@ public final class SwingEntityModelTest
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getDetailModelNonExisting() {
-    departmentModel.getDetailModel(EmpModel.class);
+    assertThrows(IllegalArgumentException.class, () -> departmentModel.getDetailModel(EmpModel.class));
   }
 
   @Test
@@ -183,14 +183,14 @@ public final class SwingEntityModelTest
     assertEquals(editModel, new SwingEntityModel(tableModel).getEditModel());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullEntityId() {
-    new SwingEntityModel(null, CONNECTION_PROVIDER);
+    assertThrows(NullPointerException.class, () -> new SwingEntityModel(null, CONNECTION_PROVIDER));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullConnectionProvider() {
-    new SwingEntityModel(TestDomain.T_EMP, null);
+    assertThrows(NullPointerException.class, () -> new SwingEntityModel(TestDomain.T_EMP, null));
   }
 
   public static class EmpModel extends SwingEntityModel {

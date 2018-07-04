@@ -14,9 +14,9 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultEntityLookupModelTest {
 
@@ -38,36 +38,36 @@ public final class DefaultEntityLookupModelTest {
   private EntityLookupModel lookupModel;
   private Collection<Property.ColumnProperty> lookupProperties;
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullEntityId() {
-    new DefaultEntityLookupModel(null, CONNECTION_PROVIDER, new ArrayList<>());
+    assertThrows(NullPointerException.class, () -> new DefaultEntityLookupModel(null, CONNECTION_PROVIDER, new ArrayList<>()));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullConnectionProvider() {
-    new DefaultEntityLookupModel(TestDomain.T_EMP, null, new ArrayList<>());
+    assertThrows(NullPointerException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, null, new ArrayList<>()));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullLookupProperties() {
-    new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, null);
+    assertThrows(NullPointerException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, null));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void lookupWithNoLookupProperties() {
-    new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, Collections.emptyList()).performQuery();
+    assertThrows(IllegalStateException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, Collections.emptyList()).performQuery());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructorNonStringLookupProperty() {
-    new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
-            Collections.singletonList(ENTITIES.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_COMMISSION)));
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
+            Collections.singletonList(ENTITIES.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_COMMISSION))));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructorIncorrectEntityLookupProperty() {
-    new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
-            Collections.singletonList(ENTITIES.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
+            Collections.singletonList(ENTITIES.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME))));
   }
 
   @Test
@@ -79,11 +79,11 @@ public final class DefaultEntityLookupModelTest {
     assertNotNull(lookupModel.getWildcard());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setSelectedEntitiesMultipleNotAllowed() {
     lookupModel.getMultipleSelectionAllowedValue().set(false);
     final Collection<Entity> entities = Arrays.asList(ENTITIES.entity(TestDomain.T_EMP), ENTITIES.entity(TestDomain.T_EMP));
-    lookupModel.setSelectedEntities(entities);
+    assertThrows(IllegalArgumentException.class, () -> lookupModel.setSelectedEntities(entities));
   }
 
   @Test
@@ -107,29 +107,28 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.setSearchString("joh");
     assertFalse(lookupModel.searchStringRepresentsSelected());
     List<Entity> result = lookupModel.performQuery();
-    assertTrue("Result should not be empty", result.size() > 0);
-    assertTrue("Result should contain John", contains(result, "John"));
-    assertTrue("Result should contain johnson", contains(result, "johnson"));
-    assertFalse("Result should not contain Andy", contains(result, "Andy"));
-    assertFalse("Result should not contain Andrew", contains(result, "Andrew"));
-    assertEquals("Search string should not have changed", lookupModel.getSearchString(), "joh");
+    assertTrue(result.size() > 0);
+    assertTrue(contains(result, "John"));
+    assertTrue(contains(result, "johnson"));
+    assertFalse(contains(result, "Andy"));
+    assertFalse(contains(result, "Andrew"));
+    assertEquals(lookupModel.getSearchString(), "joh");
     lookupModel.setSelectedEntities(result);
-    assertEquals("Search string should have been updated",//this test fails due to the toString cache, strange?
-            "John" + lookupModel.getMultipleItemSeparatorValue().get() + "johnson", lookupModel.getSearchString());
+    assertEquals("John" + lookupModel.getMultipleItemSeparatorValue().get() + "johnson", lookupModel.getSearchString());
 
     lookupModel.setSearchString("jo");
     result = lookupModel.performQuery();
-    assertTrue("Result should contain John", contains(result, "John"));
-    assertTrue("Result should contain johnson", contains(result, "johnson"));
-    assertFalse("Result should not contain Andy", contains(result, "Andy"));
-    assertFalse("Result should not contain Andrew", contains(result, "Andrew"));
+    assertTrue(contains(result, "John"));
+    assertTrue(contains(result, "johnson"));
+    assertFalse(contains(result, "Andy"));
+    assertFalse(contains(result, "Andrew"));
 
     lookupModel.setSearchString("le");
     result = lookupModel.performQuery();
-    assertTrue("Result should contain John", contains(result, "John"));
-    assertFalse("Result should not contain johnson", contains(result, "johnson"));
-    assertTrue("Result should contain Andy", contains(result, "Andy"));
-    assertFalse("Result should not contain Andrew", contains(result, "Andrew"));
+    assertTrue(contains(result, "John"));
+    assertFalse(contains(result, "johnson"));
+    assertTrue(contains(result, "Andy"));
+    assertFalse(contains(result, "Andrew"));
 
     final Property.ColumnProperty employeeNameProperty = ENTITIES.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME);
     final Property.ColumnProperty employeeJobProperty = ENTITIES.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
@@ -138,42 +137,42 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPrefixValue().set(false);
     lookupModel.setSearchString("jo,cl");
     result = lookupModel.performQuery();
-    assertTrue("Result should contain John", contains(result, "John"));
-    assertTrue("Result should contain johnson", contains(result, "johnson"));
-    assertTrue("Result should contain Andy", contains(result, "Andy"));
-    assertFalse("Result should not contain andrew", contains(result, "Andrew"));
+    assertTrue(contains(result, "John"));
+    assertTrue(contains(result, "johnson"));
+    assertTrue(contains(result, "Andy"));
+    assertFalse(contains(result, "Andrew"));
 
     lookupModel.setSearchString("Joh");
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getCaseSensitiveValue().set(true);
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getCaseSensitiveValue().set(true);
     result = lookupModel.performQuery();
-    assertEquals("Result count should be 1", 1, result.size());
-    assertTrue("Result should contain John", contains(result, "John"));
-    assertFalse("Result should not contain johnson", contains(result, "johnson"));
+    assertEquals(1, result.size());
+    assertTrue(contains(result, "John"));
+    assertFalse(contains(result, "johnson"));
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPrefixValue().set(false);
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPrefixValue().set(false);
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getCaseSensitiveValue().set(false);
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getCaseSensitiveValue().set(false);
     result = lookupModel.performQuery();
-    assertTrue("Result should contain John", contains(result, "John"));
-    assertTrue("Result should contain johnson", contains(result, "johnson"));
-    assertFalse("Result should not contain Andy", contains(result, "Andy"));
-    assertFalse("Result should not contain Andrew", contains(result, "Andrew"));
+    assertTrue(contains(result, "John"));
+    assertTrue(contains(result, "johnson"));
+    assertFalse(contains(result, "Andy"));
+    assertFalse(contains(result, "Andrew"));
 
     lookupModel.getMultipleItemSeparatorValue().set(";");
     lookupModel.setSearchString("andy ; Andrew ");//spaces should be trimmed away
     result = lookupModel.performQuery();
-    assertEquals("Result count should be 2", 2, result.size());
-    assertTrue("Result should contain Andy", contains(result, "Andy"));
-    assertTrue("Result should contain Andrew", contains(result, "Andrew"));
+    assertEquals(2, result.size());
+    assertTrue(contains(result, "Andy"));
+    assertTrue(contains(result, "Andrew"));
 
     lookupModel.setSearchString("andy;Andrew");
     result = lookupModel.performQuery();
-    assertEquals("Result count should be 2", 2, result.size());
-    assertTrue("Result should contain Andy", contains(result, "Andy"));
-    assertTrue("Result should contain Andrew", contains(result, "Andrew"));
+    assertEquals(2, result.size());
+    assertTrue(contains(result, "Andy"));
+    assertTrue(contains(result, "Andrew"));
     lookupModel.setSelectedEntities(result);
-    assertTrue("Search string should represent the selected items", lookupModel.searchStringRepresentsSelected());
+    assertTrue(lookupModel.searchStringRepresentsSelected());
 
     lookupModel.setSearchString("and; rew");
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPrefixValue().set(true);
@@ -181,9 +180,9 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPostfixValue().set(false);
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPostfixValue().set(false);
     result = lookupModel.performQuery();
-    assertEquals("Result count should be 1", 1, result.size());
-    assertFalse("Result should not contain Andy", contains(result, "Andy"));
-    assertTrue("Result should contain Andrew", contains(result, "Andrew"));
+    assertEquals(1, result.size());
+    assertFalse(contains(result, "Andy"));
+    assertTrue(contains(result, "Andrew"));
 
     lookupModel.setSearchString("Joh");
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getCaseSensitiveValue().set(true);
@@ -194,8 +193,8 @@ public final class DefaultEntityLookupModelTest {
             ENTITY_CONDITIONS.propertyCondition(ENTITIES.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB),
                     Condition.Type.NOT_LIKE, "MANAGER"));
     result = lookupModel.performQuery();
-    assertTrue("Result should contain john", contains(result, "John"));
-    assertFalse("Result should not contain johnson", contains(result, "johnson"));
+    assertTrue(contains(result, "John"));
+    assertFalse(contains(result, "johnson"));
   }
 
   @Test
@@ -204,15 +203,15 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.setWildcard("%");
     lookupModel.setSearchString("johnson");
     List<Entity> result = lookupModel.performQuery();
-    assertTrue("A single result should be returned", result.size() == 1);
+    assertEquals(1, result.size());
     lookupModel.setSelectedEntities(result);
     lookupModel.setAdditionalConditionProvider(() -> Conditions.<Property.ColumnProperty>stringCondition("1 = 2"));
     assertEquals(1, lookupModel.getSelectedEntities().size());
     result = lookupModel.performQuery();
-    assertTrue("No result should be returned", result.isEmpty());
+    assertTrue(result.isEmpty());
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     lookupProperties = Arrays.asList(ENTITIES.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME),
                     ENTITIES.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB));
@@ -222,7 +221,7 @@ public final class DefaultEntityLookupModelTest {
     setupData();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     CONNECTION_PROVIDER.getConnection().rollbackTransaction();
   }

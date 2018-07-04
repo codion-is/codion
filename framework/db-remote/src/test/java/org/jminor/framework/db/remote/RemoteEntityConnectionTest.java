@@ -5,13 +5,13 @@ package org.jminor.framework.db.remote;
 
 import org.jminor.framework.db.EntityConnection;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class RemoteEntityConnectionTest {
 

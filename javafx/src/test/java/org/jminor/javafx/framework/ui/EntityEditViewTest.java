@@ -13,7 +13,7 @@ import org.jminor.javafx.framework.model.FXEntityEditModel;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public final class EntityEditViewTest {
 

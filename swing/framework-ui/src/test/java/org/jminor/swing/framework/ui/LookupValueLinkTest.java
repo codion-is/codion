@@ -14,10 +14,9 @@ import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LookupValueLinkTest {
 
@@ -37,7 +36,7 @@ public class LookupValueLinkTest {
   public void test() throws Exception {
     final Property.ForeignKeyProperty fkProperty = ENTITIES.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
     final EntityLookupModel lookupModel = EntityUiUtil.createForeignKeyLookupField(fkProperty, model).getModel();
-    assertTrue(lookupModel.getSelectedEntities().size() == 0);
+    assertEquals(0, lookupModel.getSelectedEntities().size());
     Entity department = model.getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
     model.setValue(TestDomain.EMP_DEPARTMENT_FK, department);
     assertEquals(lookupModel.getSelectedEntities().size(), 1);

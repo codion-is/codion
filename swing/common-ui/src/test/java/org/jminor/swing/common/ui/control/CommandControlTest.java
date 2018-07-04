@@ -7,11 +7,11 @@ import org.jminor.common.State;
 import org.jminor.common.States;
 import org.jminor.common.model.CancelException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.JButton;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class CommandControlTest {
 
@@ -38,23 +38,23 @@ public final class CommandControlTest {
     final State stEnabled = States.state();
     final Control control = Controls.control(this::method, "test", stEnabled);
     final JButton btn = ControlProvider.createButton(control);
-    assertFalse("Button should be disabled", btn.isEnabled());
+    assertFalse(btn.isEnabled());
     stEnabled.setActive(true);
-    assertTrue("Button should be enabled", btn.isEnabled());
+    assertTrue(btn.isEnabled());
     btn.doClick();
-    assertEquals("Button click should have resulted in a method call", 1, callCount);
+    assertEquals(1, callCount);
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void exceptionOnExecute() {
     final Control control = Controls.control(this::errorMethod, "test", null);
-    control.actionPerformed(null);
+    assertThrows(RuntimeException.class, () -> control.actionPerformed(null));
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void runtimeExceptionOnExecute() {
     final Control control = Controls.control(this::runtimeErrorMethod,"test", null);
-    control.actionPerformed(null);
+    assertThrows(RuntimeException.class, () -> control.actionPerformed(null));
   }
 
   @Test

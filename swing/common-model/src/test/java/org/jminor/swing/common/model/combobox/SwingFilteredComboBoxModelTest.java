@@ -6,9 +6,9 @@ package org.jminor.swing.common.model.combobox;
 import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -18,7 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SwingFilteredComboBoxModelTest {
 
@@ -57,11 +57,11 @@ public class SwingFilteredComboBoxModelTest {
 
   @Test
   public void testSorting() {
-    assertEquals(ANNA + " should be at index 1, got " + testModel.getElementAt(1), ANNA, testModel.getElementAt(1));
-    assertEquals(BJORN + " should be at index 2, got " + testModel.getElementAt(2), BJORN, testModel.getElementAt(2));
-    assertEquals(KALLI + " should be at index 3, got " + testModel.getElementAt(3), KALLI, testModel.getElementAt(3));
-    assertEquals(SIGGI + " should be at index 4, got " + testModel.getElementAt(4), SIGGI, testModel.getElementAt(4));
-    assertEquals(TOMAS + " should be at index 5, got " + testModel.getElementAt(5), TOMAS, testModel.getElementAt(5));
+    assertEquals(ANNA, testModel.getElementAt(1));
+    assertEquals(BJORN, testModel.getElementAt(2));
+    assertEquals(KALLI, testModel.getElementAt(3));
+    assertEquals(SIGGI, testModel.getElementAt(4));
+    assertEquals(TOMAS, testModel.getElementAt(5));
 
     final Comparator<String> comparator = testModel.getSortComparator();
     testModel.setSortComparator(null);
@@ -74,22 +74,22 @@ public class SwingFilteredComboBoxModelTest {
     names.add(BJORN);
     testModel.setContents(names);
 
-    assertEquals(ANNA + " should be at index 1, got " + testModel.getElementAt(1), ANNA, testModel.getElementAt(1));
-    assertEquals(KALLI + " should be at index 2, got " + testModel.getElementAt(2), KALLI, testModel.getElementAt(2));
-    assertEquals(SIGGI + " should be at index 3, got " + testModel.getElementAt(3), SIGGI, testModel.getElementAt(3));
-    assertEquals(TOMAS + " should be at index 4, got " + testModel.getElementAt(4), TOMAS, testModel.getElementAt(4));
-    assertEquals(BJORN + " should be at index 5, got " + testModel.getElementAt(5), BJORN, testModel.getElementAt(5));
+    assertEquals(ANNA, testModel.getElementAt(1));
+    assertEquals(KALLI, testModel.getElementAt(2));
+    assertEquals(SIGGI, testModel.getElementAt(3));
+    assertEquals(TOMAS, testModel.getElementAt(4));
+    assertEquals(BJORN, testModel.getElementAt(5));
 
     testModel.setSortComparator(comparator);
     names.remove(SIGGI);
     testModel.setContents(names);
     testModel.addItem(SIGGI);
 
-    assertEquals(ANNA + " should be at index 1, got " + testModel.getElementAt(1), ANNA, testModel.getElementAt(1));
-    assertEquals(BJORN + " should be at index 2, got " + testModel.getElementAt(2), BJORN, testModel.getElementAt(2));
-    assertEquals(KALLI + " should be at index 3, got " + testModel.getElementAt(3), KALLI, testModel.getElementAt(3));
-    assertEquals(SIGGI + " should be at index 4, got " + testModel.getElementAt(4), SIGGI, testModel.getElementAt(4));
-    assertEquals(TOMAS + " should be at index 5, got " + testModel.getElementAt(5), TOMAS, testModel.getElementAt(5));
+    assertEquals(ANNA, testModel.getElementAt(1));
+    assertEquals(BJORN, testModel.getElementAt(2));
+    assertEquals(KALLI, testModel.getElementAt(3));
+    assertEquals(SIGGI, testModel.getElementAt(4));
+    assertEquals(TOMAS, testModel.getElementAt(5));
 
     testModel.setSortComparator((o1, o2) -> {
       if (o1 == null) {
@@ -102,11 +102,11 @@ public class SwingFilteredComboBoxModelTest {
     });
     assertNotNull(testModel.getSortComparator());
 
-    assertEquals(TOMAS + " should be at index 1, got " + testModel.getElementAt(1), TOMAS, testModel.getElementAt(1));
-    assertEquals(SIGGI + " should be at index 2, got " + testModel.getElementAt(2), SIGGI, testModel.getElementAt(2));
-    assertEquals(KALLI + " should be at index 3, got " + testModel.getElementAt(3), KALLI, testModel.getElementAt(3));
-    assertEquals(BJORN + " should be at index 4, got " + testModel.getElementAt(4), BJORN, testModel.getElementAt(4));
-    assertEquals(ANNA + " should be at index 5, got " + testModel.getElementAt(5), ANNA, testModel.getElementAt(5));
+    assertEquals(TOMAS, testModel.getElementAt(1));
+    assertEquals(SIGGI, testModel.getElementAt(2));
+    assertEquals(KALLI, testModel.getElementAt(3));
+    assertEquals(BJORN, testModel.getElementAt(4));
+    assertEquals(ANNA, testModel.getElementAt(5));
   }
 
   @Test
@@ -164,17 +164,17 @@ public class SwingFilteredComboBoxModelTest {
 
     testModel.setFilterCondition(item -> false);
     assertEquals(1, filteringEndedCounter.get());
-    assertEquals("The model should only include the null value item", 1, testModel.getSize());
+    assertEquals(1, testModel.getSize());
     testModel.setFilterCondition(item -> true);
     assertEquals(2, filteringEndedCounter.get());
-    assertEquals("The model should be full", 6, testModel.getSize());
+    assertEquals(6, testModel.getSize());
     testModel.setFilterCondition(item -> !item.equals(ANNA));
-    assertEquals("The model should contain 5 items", 5, testModel.getSize());
-    assertTrue("The model should not contain '" + ANNA + "'", !testModel.isVisible(ANNA));
+    assertEquals(5, testModel.getSize());
+    assertTrue(!testModel.isVisible(ANNA));
     assertTrue(testModel.isFiltered(ANNA));
     testModel.setFilterCondition(item -> item.equals(ANNA));
-    assertEquals("The model should only contain 2 items", 2, testModel.getSize());
-    assertTrue("The model should only contain '" + ANNA + "'", testModel.isVisible(ANNA));
+    assertEquals(2, testModel.getSize());
+    assertTrue(testModel.isVisible(ANNA));
 
     assertEquals(4, testModel.getFilteredItems().size());
     assertEquals(1, testModel.getVisibleItems().size());
@@ -198,11 +198,11 @@ public class SwingFilteredComboBoxModelTest {
     testModel.setFilterCondition(item -> !item.equals(BJORN));
     testModel.removeItem(BJORN);
     testModel.setFilterCondition(null);
-    assertFalse(BJORN + " should no longer be in the model", testModel.isVisible(BJORN));
+    assertFalse(testModel.isVisible(BJORN));
 
     //remove visible item
     testModel.removeItem(KALLI);
-    assertFalse(KALLI + " should no longer be in the model", testModel.isVisible(KALLI));
+    assertFalse(testModel.isVisible(KALLI));
   }
 
   @Test
@@ -211,14 +211,14 @@ public class SwingFilteredComboBoxModelTest {
     //add filtered item
     testModel.setFilterCondition(item -> !item.equals(BJORN));
     testModel.addItem(BJORN);
-    assertFalse(BJORN + " should be filtered", testModel.isVisible(BJORN));
+    assertFalse(testModel.isVisible(BJORN));
 
     //add visible item
     testModel.addItem(KALLI);
-    assertTrue(KALLI + " should not be filtered", testModel.isVisible(KALLI));
+    assertTrue(testModel.isVisible(KALLI));
 
     testModel.setFilterCondition(null);
-    assertTrue(BJORN + " should not be filtered", testModel.isVisible(BJORN));
+    assertTrue(testModel.isVisible(BJORN));
   }
 
   @Test
@@ -226,7 +226,7 @@ public class SwingFilteredComboBoxModelTest {
     assertTrue(testModel.isVisible(null));
     testModel.refresh();
     assertEquals(5, testModel.getVisibleItems().size());
-    assertTrue(testModel.getNullValue().equals(NULL));
+    assertEquals(testModel.getNullValue(), NULL);
     testModel.setSelectedItem(null);
     assertEquals(testModel.getSelectedItem(), NULL);
     assertTrue(testModel.isNullValueSelected());
@@ -272,7 +272,7 @@ public class SwingFilteredComboBoxModelTest {
     assertEquals("22", model.getSelectedValue().data);
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     testModel = new SwingFilteredComboBoxModel<>();
     testModel.setNullValue(NULL);
@@ -285,7 +285,7 @@ public class SwingFilteredComboBoxModelTest {
     testModel.setContents(names);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     testModel = null;
   }

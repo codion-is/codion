@@ -3,12 +3,14 @@
  */
 package org.jminor.common.model;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CancelExceptionTest {
 
-  @Test(expected = CancelException.class)
+  @Test
   public void test() throws CancelException {
-    throw new CancelException();
+    assertThrows(CancelException.class, () -> {throw new CancelException();});
   }
 }

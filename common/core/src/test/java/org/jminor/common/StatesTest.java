@@ -3,11 +3,11 @@
  */
 package org.jminor.common;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class StatesTest {
 
@@ -52,34 +52,34 @@ public class StatesTest {
     reversed.addListener(reversedListener);
     reversedReversed.addListener(reversedReversedListener);
     assertTrue(state.isActive() != reversed.isActive());
-    assertTrue(state.isActive() == reversedReversed.isActive());
+    assertEquals(state.isActive(), reversedReversed.isActive());
     state.setActive(true);
     assertEquals(1, stateCounter.get());
     assertEquals(1, reversedStateCounter.get());
     assertEquals(1, reversedReversedStateCounter.get());
     assertTrue(state.isActive() != reversed.isActive());
-    assertTrue(state.isActive() == reversedReversed.isActive());
+    assertEquals(state.isActive(), reversedReversed.isActive());
     state.setActive(false);
     assertEquals(2, stateCounter.get());
     assertEquals(2, reversedStateCounter.get());
     assertEquals(2, reversedReversedStateCounter.get());
     assertTrue(state.isActive() != reversed.isActive());
-    assertTrue(state.isActive() == reversedReversed.isActive());
+    assertEquals(state.isActive(), reversedReversed.isActive());
   }
 
   @Test
   public void test() {
     final State state = States.state();
-    assertFalse("State should be inactive when initialized", state.isActive());
+    assertFalse(state.isActive(), "State should be inactive when initialized");
     state.setActive(true);
-    assertTrue("State should be active after activation", state.isActive());
+    assertTrue(state.isActive(), "State should be active after activation");
     assertEquals("active", state.toString());
-    assertFalse("Reversed state should be inactive after activation", state.getReversedObserver().isActive());
+    assertFalse(state.getReversedObserver().isActive(), "Reversed state should be inactive after activation");
     state.setActive(true);
     state.setActive(false);
-    assertFalse("State should be inactive after deactivation", state.isActive());
+    assertFalse(state.isActive(), "State should be inactive after deactivation");
     assertEquals("inactive", state.toString());
-    assertTrue("Reversed state should be active after deactivation", state.getReversedObserver().isActive());
+    assertTrue(state.getReversedObserver().isActive(), "Reversed state should be active after deactivation");
   }
 
   @Test
@@ -103,10 +103,10 @@ public class StatesTest {
     assertFalse(stateThree.isActive());
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void aggregateStateSetActive() {
     final State.AggregateState orState = States.aggregateState(Conjunction.OR);
-    orState.setActive(true);
+    assertThrows(UnsupportedOperationException.class, () -> orState.setActive(true));
   }
 
   @Test
@@ -123,28 +123,28 @@ public class StatesTest {
     assertEquals(Conjunction.AND, andState.getConjunction());
     assertEquals("Aggregate and inactive, inactive, inactive, inactive", andState.toString());
 
-    assertFalse("Or state should be inactive", orState.isActive());
-    assertFalse("And state should be inactive", andState.isActive());
+    assertFalse(orState.isActive(), "Or state should be inactive");
+    assertFalse(andState.isActive(), "And state should be inactive");
 
     stateOne.setActive(true);
 
-    assertTrue("Or state should be active when one component state is active", orState.isActive());
-    assertFalse("And state should be inactive when only one component state is active", andState.isActive());
+    assertTrue(orState.isActive(), "Or state should be active when one component state is active");
+    assertFalse(andState.isActive(), "And state should be inactive when only one component state is active");
 
     stateTwo.setActive(true);
 
-    assertTrue("Or state should be active when two component states are active", orState.isActive());
-    assertFalse("And state should be inactive when only two of three component states is active", andState.isActive());
+    assertTrue(orState.isActive(), "Or state should be active when two component states are active");
+    assertFalse(andState.isActive(), "And state should be inactive when only two of three component states is active");
 
     stateThree.setActive(true);
 
-    assertTrue("Or state should be active when all component states are active", orState.isActive());
-    assertTrue("And state should be active when all component states are active", andState.isActive());
+    assertTrue(orState.isActive(), "Or state should be active when all component states are active");
+    assertTrue(andState.isActive(), "And state should be active when all component states are active");
 
     stateOne.setActive(false);
 
-    assertTrue("Or state should be active when two component states are active", orState.isActive());
-    assertFalse("And state should be inactive when only two of three component states is active", andState.isActive());
+    assertTrue(orState.isActive(), "Or state should be active when two component states are active");
+    assertFalse(andState.isActive(), "And state should be inactive when only two of three component states is active");
 
     andState.removeState(stateOne);
     assertTrue(andState.isActive());
@@ -159,38 +159,38 @@ public class StatesTest {
     andState = States.aggregateState(Conjunction.AND, stateOne, stateTwo, stateThree);
     assertEquals("Aggregate and inactive, inactive, inactive, inactive", andState.toString());
 
-    assertFalse("Or state should be inactive", orState.isActive());
-    assertFalse("And state should be inactive", andState.isActive());
+    assertFalse(orState.isActive(), "Or state should be inactive");
+    assertFalse(andState.isActive(), "And state should be inactive");
 
     stateOne.setActive(true);
 
-    assertTrue("Or state should be active when one component state is active", orState.isActive());
-    assertFalse("And state should be inactive when only one component state is active", andState.isActive());
+    assertTrue(orState.isActive(), "Or state should be active when one component state is active");
+    assertFalse(andState.isActive(), "And state should be inactive when only one component state is active");
 
     stateTwo.setActive(true);
 
-    assertTrue("Or state should be active when two component states are active", orState.isActive());
-    assertFalse("And state should be inactive when only two of three component states is active", andState.isActive());
+    assertTrue(orState.isActive(), "Or state should be active when two component states are active");
+    assertFalse(andState.isActive(), "And state should be inactive when only two of three component states is active");
 
     stateThree.setActive(true);
 
-    assertTrue("Or state should be active when all component states are active", orState.isActive());
-    assertTrue("And state should be active when all component states are active", andState.isActive());
+    assertTrue(orState.isActive(), "Or state should be active when all component states are active");
+    assertTrue(andState.isActive(), "And state should be active when all component states are active");
 
     stateOne.setActive(false);
 
-    assertTrue("Or state should be active when two component states are active", orState.isActive());
-    assertFalse("And state should be inactive when only two of three component states is active", andState.isActive());
+    assertTrue(orState.isActive(), "Or state should be active when two component states are active");
+    assertFalse(andState.isActive(), "And state should be inactive when only two of three component states is active");
 
     andState.removeState(stateOne);
     assertTrue(andState.isActive());
 
     stateTwo.setActive(false);
-    assertTrue("Or state should be active when one component state is active", orState.isActive());
+    assertTrue(orState.isActive(), "Or state should be active when one component state is active");
     stateThree.setActive(false);
-    assertFalse("Or state should be inactive when no component state is active", orState.isActive());
+    assertFalse(orState.isActive(), "Or state should be inactive when no component state is active");
     stateTwo.setActive(true);
-    assertTrue("Or state should be active when one component state is active", orState.isActive());
+    assertTrue(orState.isActive(), "Or state should be active when one component state is active");
   }
 
   @Test

@@ -10,10 +10,10 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.model.testing.TestDomain;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class SwingEntityModelProviderTest {
 

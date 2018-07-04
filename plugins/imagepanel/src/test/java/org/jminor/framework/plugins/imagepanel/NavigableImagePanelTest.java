@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.plugins.imagepanel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class NavigableImagePanelTest {
 

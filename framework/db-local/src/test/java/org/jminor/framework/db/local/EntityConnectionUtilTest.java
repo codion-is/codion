@@ -15,16 +15,17 @@ import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EntityConnectionUtilTest {
 
@@ -36,7 +37,7 @@ public class EntityConnectionUtilTest {
 
   private static EntityConnection DESTINATION_CONNECTION;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() {
     try {
       final H2Database destinationDatabase = new H2Database("TempDB", "src/test/sql/create_h2_db.sql");
@@ -50,7 +51,7 @@ public class EntityConnectionUtilTest {
     }
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     DESTINATION_CONNECTION.disconnect();
   }
@@ -85,8 +86,8 @@ public class EntityConnectionUtilTest {
     DESTINATION_CONNECTION.delete(ENTITY_CONDITIONS.condition(TestDomain.T_DEPARTMENT));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void batchInsertNegativeBatchSize() throws DatabaseException {
-    EntityConnectionUtil.batchInsert(null, null, null, -6, null);
+    assertThrows(IllegalArgumentException.class, () -> EntityConnectionUtil.batchInsert(null, null, null, -6, null));
   }
 }

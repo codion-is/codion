@@ -7,11 +7,11 @@ import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Types;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ColumnConditionPanelTest {
 
@@ -33,8 +33,8 @@ public class ColumnConditionPanelTest {
     assertFalse(panel.isAdvancedConditionEnabled());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullConditionModel() {
-    new ColumnConditionPanel<String>(null, true, true, (Condition.Type) null);
+    assertThrows(NullPointerException.class, () -> new ColumnConditionPanel<String>(null, true, true, (Condition.Type) null));
   }
 }

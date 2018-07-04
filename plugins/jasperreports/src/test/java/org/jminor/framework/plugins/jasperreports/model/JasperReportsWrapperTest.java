@@ -15,12 +15,13 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JasperPrint;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.HashMap;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JasperReportsWrapperTest {
 
@@ -69,11 +70,11 @@ public class JasperReportsWrapperTest {
     wrapper.fillReport(dataWrapper);
   }
 
-  @Test(expected = ReportException.class)
+  @Test
   public void fillJdbcReportInvalidReport() throws Exception {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(ENTITIES, UNIT_TEST_USER,
             new H2Database("JasperReportsWrapperTest.fillJdbcReportInvalidReport", System.getProperty("jminor.db.initScript")));
-    EntityReportUtil.fillReport(new JasperReportsWrapper("build/classes/reports/test/non_existing.jasper",
-            new HashMap<>()), connectionProvider).getResult();
+    assertThrows(ReportException.class, () -> EntityReportUtil.fillReport(new JasperReportsWrapper("build/classes/reports/test/non_existing.jasper",
+            new HashMap<>()), connectionProvider).getResult());
   }
 }

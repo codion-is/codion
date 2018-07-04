@@ -3,13 +3,14 @@
  */
 package org.jminor.common;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class VersionTest {
 
@@ -39,14 +40,14 @@ public final class VersionTest {
     assertEquals("RC", version.getMetadata());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void parseIllegalNull() {
-    Version.parse(null);
+    assertThrows(IllegalArgumentException.class, () -> Version.parse(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void parseIllegalEmpty() {
-    Version.parse("");
+    assertThrows(IllegalArgumentException.class, () -> Version.parse(""));
   }
 
   @Test
@@ -95,18 +96,18 @@ public final class VersionTest {
     assertEquals("2.1.5", version1.toString());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructorIllegalMajor() {
-    new Version(-1, 0, 0);
+    assertThrows(IllegalArgumentException.class, () -> new Version(-1, 0, 0));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructorIllegalMinor() {
-    new Version(0, -1, 0);
+    assertThrows(IllegalArgumentException.class, () -> new Version(0, -1, 0));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructorIllegalPatch() {
-    new Version(0, 0, -1);
+    assertThrows(IllegalArgumentException.class, () -> new Version(0, 0, -1));
   }
 }

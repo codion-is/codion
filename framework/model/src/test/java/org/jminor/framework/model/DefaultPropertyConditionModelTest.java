@@ -9,11 +9,11 @@ import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultPropertyConditionModelTest {
 

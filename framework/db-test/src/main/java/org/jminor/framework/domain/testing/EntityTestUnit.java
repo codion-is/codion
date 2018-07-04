@@ -20,8 +20,8 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.sql.Timestamp;
 import java.sql.Types;
@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * A class for unit testing domain entities.
@@ -95,7 +95,7 @@ public class EntityTestUnit {
   /**
    * Sets up the database connection
    */
-  @Before
+  @BeforeEach
   public final void setUp() {
     connection = initializeConnectionProvider().getConnection();
     doSetUp();
@@ -104,7 +104,7 @@ public class EntityTestUnit {
   /**
    * Tears down the database connection
    */
-  @After
+  @AfterEach
   public final void tearDown() {
     if (connection != null) {
       connection.disconnect();
@@ -318,8 +318,7 @@ public class EntityTestUnit {
   private void testSelect(final String entityId, final Entity testEntity) throws DatabaseException {
     if (testEntity != null) {
       final Entity tmp = connection.selectSingle(testEntity.getKey());
-      assertTrue("Entity of type " + testEntity.getEntityId() + " failed equals comparison",
-              testEntity.equals(tmp));
+      assertEquals(testEntity, tmp, "Entity of type " + testEntity.getEntityId() + " failed equals comparison");
     }
     else {
       connection.selectMany(getConditions().selectCondition(entityId, SELECT_FETCH_COUNT));
@@ -340,16 +339,14 @@ public class EntityTestUnit {
     connection.update(Collections.singletonList(testEntity));
 
     final Entity tmp = connection.selectSingle(testEntity.getOriginalKey());
-    assertEquals("Keys of entity and its updated counterpart should be equal",
-            testEntity.getKey(), tmp.getKey());
+    assertEquals(testEntity.getKey(), tmp.getKey());
     for (final Property.ColumnProperty property : getDomain().getColumnProperties(testEntity.getEntityId())) {
       if (!property.isReadOnly() && property.isUpdatable()) {
         final Object beforeUpdate = testEntity.get(property);
         final Object afterUpdate = tmp.get(property);
-        assertTrue("Values of property " + property + " should be equal after update ["
+        assertEquals(beforeUpdate, afterUpdate, "Values of property " + property + " should be equal after update ["
                 + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
-                + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]",
-                Objects.equals(beforeUpdate, afterUpdate));
+                + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]");
       }
     }
   }
@@ -369,7 +366,7 @@ public class EntityTestUnit {
     catch (final DatabaseException e) {
       caught = true;
     }
-    assertTrue("Entity of type " + testEntity.getEntityId() + " failed delete test", caught);
+    assertTrue(caught, "Entity of type " + testEntity.getEntityId() + " failed delete test");
   }
 
   /**

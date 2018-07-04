@@ -7,11 +7,12 @@ import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.swing.common.tools.LoadTestModel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class LoadTestPanelTest {
 
@@ -23,9 +24,9 @@ public class LoadTestPanelTest {
     model.exit();
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullModel() {
-    new LoadTestPanel(null);
+    assertThrows(NullPointerException.class, () -> new LoadTestPanel(null));
   }
 
   private static final class TestLoadTestModel extends LoadTestModel {

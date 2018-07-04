@@ -7,9 +7,9 @@ import org.jminor.common.User;
 import org.jminor.common.db.dbms.H2Database;
 import org.jminor.common.db.pool.ConnectionPool;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TomcatConnectionPoolProviderTest {
 

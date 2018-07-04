@@ -6,9 +6,9 @@ package org.jminor.swing.common.ui.control;
 import org.jminor.common.State;
 import org.jminor.common.States;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ControlTest {
 
@@ -41,9 +41,9 @@ public class ControlTest {
     assertFalse(control.isEnabled());
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void setEnabledViaMethod() {
     final Control test = new Control();
-    test.setEnabled(true);
+    assertThrows(UnsupportedOperationException.class, () -> test.setEnabled(true));
   }
 }

@@ -14,13 +14,13 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Types;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityTableConditionModelTest {
 
@@ -48,12 +48,12 @@ public class DefaultEntityTableConditionModelTest {
     assertTrue(conditionModel.isEnabled());
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void noSearchPropertiesDefined() {
     final DefaultEntityTableConditionModel model = new DefaultEntityTableConditionModel(TestDomain.T_DETAIL,
             CONNECTION_PROVIDER, new DefaultPropertyFilterModelProvider(), new DefaultPropertyConditionModelProvider());
     //no search properties defined for master entity
-    ((DefaultForeignKeyConditionModel) model.getPropertyConditionModel(TestDomain.DETAIL_MASTER_FK)).getEntityLookupModel().performQuery();
+    assertThrows(IllegalStateException.class, () -> ((DefaultForeignKeyConditionModel) model.getPropertyConditionModel(TestDomain.DETAIL_MASTER_FK)).getEntityLookupModel().performQuery());
   }
 
   @Test
@@ -66,9 +66,9 @@ public class DefaultEntityTableConditionModelTest {
     assertNotNull(conditionModel.getPropertyConditionModel(TestDomain.EMP_COMMISSION));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getPropertyConditionModelNonExisting() {
-    assertNull(conditionModel.getPropertyConditionModel("bla bla"));
+    assertThrows(IllegalArgumentException.class, () -> assertNull(conditionModel.getPropertyConditionModel("bla bla")));
   }
 
   @Test

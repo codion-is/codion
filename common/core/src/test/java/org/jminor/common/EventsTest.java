@@ -3,11 +3,11 @@
  */
 package org.jminor.common;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EventsTest {
 
@@ -18,12 +18,12 @@ public class EventsTest {
     final EventListener listener = counter::incrementAndGet;
     event.addListener(listener);
     event.fire();
-    assertTrue("EventListener should have been notified on .fire()", counter.get() == 1);
+    assertEquals(1, counter.get(), "EventListener should have been notified on .fire()");
     event.eventOccurred();
-    assertTrue("EventListener should have been notified on .eventOccurred", counter.get() == 2);
+    assertEquals(2, counter.get(), "EventListener should have been notified on .eventOccurred");
     event.removeListener(listener);
     event.fire();
-    assertTrue("Removed EventListener should not have been notified", counter.get() == 2);
+    assertEquals(2, counter.get(), "Removed EventListener should not have been notified");
     Events.listener(Events.dataListener(listener));
   }
 }

@@ -22,15 +22,15 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultEntityEditModelTest {
 
@@ -44,16 +44,16 @@ public final class DefaultEntityEditModelTest {
   private Property.ColumnProperty jobProperty;
   private Property.ForeignKeyProperty deptProperty;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     jobProperty = ENTITIES.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
     deptProperty = ENTITIES.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
     employeeEditModel = new TestEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getForeignKeyLookupModelNonFKProperty() {
-    employeeEditModel.getForeignKeyLookupModel(jobProperty.getPropertyId());
+    assertThrows(IllegalArgumentException.class, () -> employeeEditModel.getForeignKeyLookupModel(jobProperty.getPropertyId()));
   }
 
   @Test
@@ -102,14 +102,14 @@ public final class DefaultEntityEditModelTest {
     assertTrue(copyWithoutPrimaryKeyValue.isKeyNull());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructorNullEntityId() {
-    new TestEntityEditModel(null, CONNECTION_PROVIDER);
+    assertThrows(IllegalArgumentException.class, () -> new TestEntityEditModel(null, CONNECTION_PROVIDER));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullConnectionProvider() {
-    new TestEntityEditModel(TestDomain.T_EMP, null);
+    assertThrows(NullPointerException.class, () -> new TestEntityEditModel(TestDomain.T_EMP, null));
   }
 
   @Test
@@ -171,16 +171,16 @@ public final class DefaultEntityEditModelTest {
     assertFalse(primaryKeyNullState.isActive());
     assertFalse(entityNewState.isActive());
 
-    assertTrue("Active entity is not equal to the entity just set", employeeEditModel.getEntityCopy().valuesEqual(employee));
-    assertFalse("Active entity is new after an entity is set", employeeEditModel.isEntityNew());
+    assertTrue(employeeEditModel.getEntityCopy().valuesEqual(employee), "Active entity is not equal to the entity just set");
+    assertFalse(employeeEditModel.isEntityNew(), "Active entity is new after an entity is set");
     assertFalse(employeeEditModel.getModifiedObserver().isActive());
     employeeEditModel.setEntity(null);
-    assertTrue("Active entity is new after entity is set to null", employeeEditModel.isEntityNew());
+    assertTrue(employeeEditModel.isEntityNew(), "Active entity is new after entity is set to null");
     assertFalse(employeeEditModel.getModifiedObserver().isActive());
-    assertTrue("Active entity primary key is not null after entity is set to null", employeeEditModel.getEntityCopy().isKeyNull());
+    assertTrue(employeeEditModel.getEntityCopy().isKeyNull(), "Active entity primary key is not null after entity is set to null");
 
     employeeEditModel.setEntity(employee);
-    assertTrue("Active entity primary key is null after entity is set", !employeeEditModel.getEntityCopy().isKeyNull());
+    assertTrue(!employeeEditModel.getEntityCopy().isKeyNull(), "Active entity primary key is null after entity is set");
 
     final Integer originalEmployeeId = (Integer) employeeEditModel.getValue(TestDomain.EMP_ID);
     employeeEditModel.setValue(TestDomain.EMP_ID, null);
@@ -203,9 +203,9 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setValue(TestDomain.EMP_HIREDATE, hiredate);
     employeeEditModel.setValue(TestDomain.EMP_NAME, name);
 
-    assertEquals("Commission does not fit", employeeEditModel.getValue(TestDomain.EMP_COMMISSION), commission);
-    assertEquals("Hiredate does not fit", employeeEditModel.getValue(TestDomain.EMP_HIREDATE), hiredate);
-    assertEquals("Name does not fit", employeeEditModel.getValue(TestDomain.EMP_NAME), name);
+    assertEquals(employeeEditModel.getValue(TestDomain.EMP_COMMISSION), commission, "Commission does not fit");
+    assertEquals(employeeEditModel.getValue(TestDomain.EMP_HIREDATE), hiredate, "Hiredate does not fit");
+    assertEquals(employeeEditModel.getValue(TestDomain.EMP_NAME), name, "Name does not fit");
 
     employeeEditModel.setValue(TestDomain.EMP_COMMISSION, originalCommission);
     assertTrue(employeeEditModel.isModified());
@@ -229,12 +229,12 @@ public final class DefaultEntityEditModelTest {
       assertEquals(TestDomain.EMP_COMMISSION, e.getKey());
       assertEquals(50d, e.getValue());
       final Property property = ENTITIES.getProperty(TestDomain.T_EMP, (String) e.getKey());
-      assertEquals("Validation message should fit", "'" + property + "' " +
+      assertEquals("'" + property + "' " +
               FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin(), e.getMessage());
     }
 
     employeeEditModel.setEntity(null);
-    assertTrue("Active entity is not null after model is cleared", employeeEditModel.getEntityCopy().isKeyNull());
+    assertTrue(employeeEditModel.getEntityCopy().isKeyNull(), "Active entity is not null after model is cleared");
 
     employeeEditModel.removeAfterDeleteListener(infoListener);
     employeeEditModel.removeAfterInsertListener(infoListener);
@@ -247,22 +247,22 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.removeAfterRefreshListener(listener);
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void insertReadOnly() throws CancelException, ValidationException, DatabaseException {
     employeeEditModel.setReadOnly(true);
-    employeeEditModel.insert();
+    assertThrows(IllegalStateException.class, () -> employeeEditModel.insert());
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void updateReadOnly() throws CancelException, ValidationException, DatabaseException {
     employeeEditModel.setReadOnly(true);
-    employeeEditModel.update();
+    assertThrows(IllegalStateException.class, () -> employeeEditModel.update());
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void deleteReadOnly() throws CancelException, DatabaseException {
     employeeEditModel.setReadOnly(true);
-    employeeEditModel.delete();
+    assertThrows(IllegalStateException.class, () -> employeeEditModel.delete());
   }
 
   @Test
@@ -289,11 +289,7 @@ public final class DefaultEntityEditModelTest {
               assertEquals(department, info.getInsertedEntities().get(0).get(TestDomain.EMP_DEPARTMENT_FK)));
       employeeEditModel.setInsertAllowed(false);
       assertFalse(employeeEditModel.isInsertAllowed());
-      try {
-        employeeEditModel.insert();
-        fail("Should not be able to insert");
-      }
-      catch (final UnsupportedOperationException ignored) {/*ignored*/}
+      assertThrows(IllegalStateException.class, () -> employeeEditModel.insert());
       employeeEditModel.setInsertAllowed(true);
       assertTrue(employeeEditModel.isInsertAllowed());
 
@@ -330,11 +326,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.addAfterUpdateListener(listener);
       employeeEditModel.setUpdateAllowed(false);
       assertFalse(employeeEditModel.isUpdateAllowed());
-      try {
-        employeeEditModel.update();
-        fail("Should not be able to update");
-      }
-      catch (final UnsupportedOperationException ignored) {/*ignored*/}
+      assertThrows(IllegalStateException.class, () -> employeeEditModel.update());
       employeeEditModel.setUpdateAllowed(true);
       assertTrue(employeeEditModel.isUpdateAllowed());
 
@@ -357,11 +349,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.addAfterDeleteListener(info -> assertEquals(toDelete, info.getDeletedEntities()));
       employeeEditModel.setDeleteAllowed(false);
       assertFalse(employeeEditModel.isDeleteAllowed());
-      try {
-        employeeEditModel.delete();
-        fail("Should not be able to delete");
-      }
-      catch (final UnsupportedOperationException ignored) {/*ignored*/}
+      assertThrows(IllegalStateException.class, () -> employeeEditModel.delete());
       employeeEditModel.setDeleteAllowed(true);
       assertTrue(employeeEditModel.isDeleteAllowed());
 

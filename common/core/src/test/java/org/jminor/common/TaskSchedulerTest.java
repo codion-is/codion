@@ -3,45 +3,45 @@
  */
 package org.jminor.common;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TaskSchedulerTest {
 
   private final Runnable runnable = () -> {};
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructorNegativeInterval() {
-    new TaskScheduler(runnable, -1, TimeUnit.SECONDS);
+    assertThrows(IllegalArgumentException.class, () -> new TaskScheduler(runnable, -1, TimeUnit.SECONDS));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructorNegativeInitialDelay() {
-    new TaskScheduler(runnable, 1, -1, TimeUnit.SECONDS);
+    assertThrows(IllegalArgumentException.class, () -> new TaskScheduler(runnable, 1, -1, TimeUnit.SECONDS));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullTask() {
-    new TaskScheduler(null, 1, 1, TimeUnit.SECONDS);
+    assertThrows(NullPointerException.class, () -> new TaskScheduler(null, 1, 1, TimeUnit.SECONDS));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullTimUnit() {
-    new TaskScheduler(runnable, 1, 1, null);
+    assertThrows(NullPointerException.class, () -> new TaskScheduler(runnable, 1, 1, null));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullThreadFactory() {
-    new TaskScheduler(runnable, 1, 1, TimeUnit.SECONDS, null);
+    assertThrows(NullPointerException.class, () -> new TaskScheduler(runnable, 1, 1, TimeUnit.SECONDS, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setIntervalNegative() {
-    new TaskScheduler(runnable, 1, TimeUnit.SECONDS).setInterval(-1);
+    assertThrows(IllegalArgumentException.class, () -> new TaskScheduler(runnable, 1, TimeUnit.SECONDS).setInterval(-1));
   }
 
   @Test

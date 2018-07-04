@@ -8,12 +8,12 @@ import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseConnectionsTest;
 import org.jminor.common.db.exception.DatabaseException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultConnectionPoolTest {
 
@@ -21,37 +21,37 @@ public class DefaultConnectionPoolTest {
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setMaximumPoolSizeLessThanMinSize() throws ClassNotFoundException, DatabaseException {
     final ConnectionPool pool = new DefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
-    pool.setMaximumPoolSize(3);
+    assertThrows(IllegalArgumentException.class, () -> pool.setMaximumPoolSize(3));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setMaximumPoolSizeInvalidNumber() throws ClassNotFoundException, DatabaseException {
     final ConnectionPool pool = new DefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
-    pool.setMaximumPoolSize(-1);
+    assertThrows(IllegalArgumentException.class, () -> pool.setMaximumPoolSize(-1));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setMinimumPoolSizeLargerThanMaxSize() throws ClassNotFoundException, DatabaseException {
     final ConnectionPool pool = new DefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
-    pool.setMinimumPoolSize(10);
+    assertThrows(IllegalArgumentException.class, () -> pool.setMinimumPoolSize(10));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setMinimumPoolSizeInvalidNumber() throws ClassNotFoundException, DatabaseException {
     final ConnectionPool pool = new DefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
-    pool.setMinimumPoolSize(-1);
+    assertThrows(IllegalArgumentException.class, () -> pool.setMinimumPoolSize(-1));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void returnConnectionOpenTransaction() throws DatabaseException {
     final DefaultConnectionPool pool = new DefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
     final DatabaseConnection connection = pool.getDatabaseConnection();
     try {
       connection.beginTransaction();
-      pool.returnConnection(connection);
+      assertThrows(IllegalStateException.class, () -> pool.returnConnection(connection));
     }
     finally {
       connection.rollbackTransaction();
@@ -59,32 +59,34 @@ public class DefaultConnectionPoolTest {
     }
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void getConnectionClosedPool() throws DatabaseException {
     final ConnectionPool pool = new DefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
     try {
       pool.close();
-      pool.getConnection();
+      assertThrows(IllegalStateException.class, pool::getConnection);
     }
     finally {
       pool.close();
     }
   }
 
-  @Test(expected = ConnectionPoolException.NoConnectionAvailable.class)
+  @Test
   public void noConnectionAvailable() throws DatabaseException {
     final DefaultConnectionPool pool = new DefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
     pool.setMaximumCheckOutTime(50);
     pool.setNewConnectionThreshold(40);
-    pool.getConnection();
-    pool.getConnection();
-    pool.getConnection();
-    pool.getConnection();
-    pool.getConnection();
-    pool.getConnection();
-    pool.getConnection();
-    pool.getConnection();
-    pool.getConnection();
+    assertThrows(ConnectionPoolException.NoConnectionAvailable.class, () -> {
+      pool.getConnection();
+      pool.getConnection();
+      pool.getConnection();
+      pool.getConnection();
+      pool.getConnection();
+      pool.getConnection();
+      pool.getConnection();
+      pool.getConnection();
+      pool.getConnection();
+    });
   }
 
   @Test
@@ -196,7 +198,7 @@ public class DefaultConnectionPoolTest {
       final ConnectionPoolState state = states.get(0);
       assertTrue(state.getSize() != -1);
       assertTrue(state.getInUse() != -1);
-      assertTrue(state.getWaiting() == 0);//not implemented
+      assertEquals(0, state.getWaiting());//not implemented
 
       pool.resetStatistics();
       statistics = pool.getStatistics(startDate.getTime());

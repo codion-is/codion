@@ -17,7 +17,7 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.testing.TestDomain;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class SwingEntityComboBoxModelTest {
 
@@ -42,14 +42,14 @@ public final class SwingEntityComboBoxModelTest {
     comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullEntityId() {
-    new SwingEntityComboBoxModel(null, CONNECTION_PROVIDER);
+    assertThrows(NullPointerException.class, () -> new SwingEntityComboBoxModel(null, CONNECTION_PROVIDER));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullConnectionProvider() {
-    new SwingEntityComboBoxModel(TestDomain.T_EMP, null);
+    assertThrows(NullPointerException.class, () -> new SwingEntityComboBoxModel(TestDomain.T_EMP, null));
   }
 
   @Test
@@ -123,9 +123,9 @@ public final class SwingEntityComboBoxModelTest {
     assertEquals(clark, comboBoxModel.getSelectedValue());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void setSelectedEntityByPrimaryKeyNullValue() {
-    comboBoxModel.setSelectedEntityByKey(null);
+    assertThrows(NullPointerException.class, () -> comboBoxModel.setSelectedEntityByKey(null));
   }
 
   @Test
@@ -136,7 +136,7 @@ public final class SwingEntityComboBoxModelTest {
     assertEquals(TestDomain.T_EMP, comboBoxModel.getEntityId());
     comboBoxModel.setStaticData(false);
     comboBoxModel.toString();
-    assertTrue(comboBoxModel.getSize() == 0);
+    assertEquals(0, comboBoxModel.getSize());
     assertNull(comboBoxModel.getSelectedItem());
     comboBoxModel.refresh();
     assertTrue(comboBoxModel.getSize() > 0);
@@ -147,7 +147,7 @@ public final class SwingEntityComboBoxModelTest {
     assertEquals(clark, comboBoxModel.getSelectedValue());
 
     comboBoxModel.clear();
-    assertTrue(comboBoxModel.getSize() == 0);
+    assertEquals(0, comboBoxModel.getSize());
 
     comboBoxModel.setSelectConditionProvider(() -> Conditions.<Property.ColumnProperty>stringCondition(" ename = 'CLARK'"));
     comboBoxModel.setForeignKeyFilterEntities(TestDomain.EMP_DEPARTMENT_FK, null);
@@ -188,7 +188,7 @@ public final class SwingEntityComboBoxModelTest {
       final Entity item = itemIterator.next();
       final Entity refreshedItem = refreshedIterator.next();
       assertEquals(item, refreshedItem);
-      assertFalse(item == refreshedItem);
+      assertNotSame(item, refreshedItem);
     }
 
     comboBoxModel.clear();
@@ -207,7 +207,7 @@ public final class SwingEntityComboBoxModelTest {
       final Entity item = itemIterator.next();
       final Entity refreshedItem = refreshedIterator.next();
       assertEquals(item, refreshedItem);
-      assertTrue(item == refreshedItem);
+      assertSame(item, refreshedItem);
     }
   }
 

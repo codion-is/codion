@@ -8,7 +8,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.testing.EntityTestUnit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public final class WorldTest extends EntityTestUnit {
 

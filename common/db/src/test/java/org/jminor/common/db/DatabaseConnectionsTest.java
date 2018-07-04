@@ -6,13 +6,12 @@ package org.jminor.common.db;
 import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DatabaseConnectionsTest {
 
@@ -58,16 +57,18 @@ public class DatabaseConnectionsTest {
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void createConnectionWithClosedConnection() throws DatabaseException, SQLException {
-    Connection connection = null;
-    try {
-      connection = DATABASE.createConnection(UNIT_TEST_USER);
-      connection.close();
-      DatabaseConnections.createConnection(DATABASE, connection);
-    }
-    finally {
-      Databases.closeSilently(connection);
-    }
+    assertThrows(IllegalArgumentException.class, () -> {
+      Connection connection = null;
+      try {
+        connection = DATABASE.createConnection(UNIT_TEST_USER);
+        connection.close();
+        DatabaseConnections.createConnection(DATABASE, connection);
+      }
+      finally {
+        Databases.closeSilently(connection);
+      }
+    });
   }
 }

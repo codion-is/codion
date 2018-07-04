@@ -6,12 +6,12 @@ package org.jminor.swing.common.tools;
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LoadTestModelTest {
 
@@ -34,66 +34,66 @@ public class LoadTestModelTest {
     protected void performScenario(final Object application) throws LoadTest.ScenarioException {}
   };
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructorNegativeThinkTime() {
-    new TestLoadTestModel(UNIT_TEST_USER, -100, 2, 5, 1000);
+    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel(UNIT_TEST_USER, -100, 2, 5, 1000));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructorNegativeLoginDelayFactor() {
-    new TestLoadTestModel(UNIT_TEST_USER, 100, -2, 5, 1000);
+    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel(UNIT_TEST_USER, 100, -2, 5, 1000));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructorNegativeApplicationBatchSize() {
-    new TestLoadTestModel(UNIT_TEST_USER, 100, 2, -5, 1000);
+    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel(UNIT_TEST_USER, 100, 2, -5, 1000));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructorNegativeWarningTime() {
-    new TestLoadTestModel(UNIT_TEST_USER, 100, 2, 5, -1000);
+    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel(UNIT_TEST_USER, 100, 2, 5, -1000));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setApplicationBatchSizeNegative() {
     final LoadTestModel model = new TestLoadTestModel(new User("test", "hello".toCharArray()), 50, 2, 2, 1000);
-    model.setApplicationBatchSize(-5);
+    assertThrows(IllegalArgumentException.class, () -> model.setApplicationBatchSize(-5));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setUpdateIntervalNegative() {
     final LoadTestModel model = new TestLoadTestModel(new User("test", "hello".toCharArray()), 50, 2, 2, 1000);
-    model.setUpdateInterval(-1);
+    assertThrows(IllegalArgumentException.class, () -> model.setUpdateInterval(-1));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setLoginDelayFactorNegative() {
     final LoadTestModel model = new TestLoadTestModel(new User("test", "hello".toCharArray()), 50, 2, 2, 1000);
-    model.setLoginDelayFactor(-1);
+    assertThrows(IllegalArgumentException.class, () -> model.setLoginDelayFactor(-1));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setWarningTimeNegative() {
     final LoadTestModel model = new TestLoadTestModel(new User("test", "hello".toCharArray()), 50, 2, 2, 1000);
-    model.setWarningTime(-1);
+    assertThrows(IllegalArgumentException.class, () -> model.setWarningTime(-1));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setMinimumThinkTimeNegative() {
     final LoadTestModel model = new TestLoadTestModel(new User("test", "hello".toCharArray()), 50, 2, 2, 1000);
-    model.setMinimumThinkTime(-1);
+    assertThrows(IllegalArgumentException.class, () -> model.setMinimumThinkTime(-1));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void setMaximumThinkTimeNegative() {
     final LoadTestModel model = new TestLoadTestModel(new User("test", "hello".toCharArray()), 50, 2, 2, 1000);
-    model.setMaximumThinkTime(-1);
+    assertThrows(IllegalArgumentException.class, () -> model.setMaximumThinkTime(-1));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getUnknownUsageScenario() {
     final LoadTestModel model = new TestLoadTestModel(new User("test", "hello".toCharArray()), 50, 2, 2, 1000);
-    model.getUsageScenario("bla");
+    assertThrows(IllegalArgumentException.class, () -> model.getUsageScenario("bla"));
   }
 
   @Test
@@ -150,11 +150,11 @@ public class LoadTestModelTest {
     assertTrue(SCENARIO.getUnsuccessfulRunCount() > 0);
     assertTrue(SCENARIO.getExceptions().size() > 0);
     SCENARIO.clearExceptions();
-    assertTrue(SCENARIO.getExceptions().size() == 0);
+    assertEquals(0, SCENARIO.getExceptions().size());
     assertEquals(SCENARIO.getSuccessfulRunCount() + SCENARIO.getUnsuccessfulRunCount(), SCENARIO.getTotalRunCount());
     SCENARIO.resetRunCount();
-    assertTrue(SCENARIO.getSuccessfulRunCount() == 0);
-    assertTrue(SCENARIO.getUnsuccessfulRunCount() == 0);
+    assertEquals(0, SCENARIO.getSuccessfulRunCount());
+    assertEquals(0, SCENARIO.getUnsuccessfulRunCount());
     model.resetChartData();
     model.removeApplicationBatch();
     assertEquals(0, model.getApplicationCount());

@@ -6,14 +6,14 @@ package org.jminor.swing.common.ui;
 import org.jminor.common.State;
 import org.jminor.common.States;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.JFormattedTextField;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DateInputPanelTest {
 
@@ -56,14 +56,14 @@ public class DateInputPanelTest {
     assertNotNull(panel.getDate());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullInputField() {
-    new DateInputPanel(null, new SimpleDateFormat("dd.MM.yyyy"), true, null);
+    assertThrows(NullPointerException.class, () -> new DateInputPanel(null, new SimpleDateFormat("dd.MM.yyyy"), true, null));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullDateFormat() {
-    new DateInputPanel(new JFormattedTextField(), null, true, null);
+    assertThrows(NullPointerException.class, () -> new DateInputPanel(new JFormattedTextField(), null, true, null));
   }
 
   @Test

@@ -11,7 +11,7 @@ import org.jminor.swing.common.ui.textfield.DoubleField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.ButtonModel;
@@ -27,7 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UiValuesTest {
 

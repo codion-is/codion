@@ -10,18 +10,18 @@ import org.jminor.swing.framework.server.monitor.EntityServerMonitor;
 import org.jminor.swing.framework.server.monitor.EntityServerMonitorTest;
 import org.jminor.swing.framework.server.monitor.ServerMonitor;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class EntityServerMonitorPanelTest {
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() throws Exception {
     EntityServerMonitorTest.setUp();
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() throws Exception {
     EntityServerMonitorTest.tearDown();
   }

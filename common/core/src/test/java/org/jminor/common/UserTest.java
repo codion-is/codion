@@ -3,9 +3,10 @@
  */
 package org.jminor.common;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * User: Björn Darri
@@ -37,18 +38,18 @@ public class UserTest {
     assertEquals("tiger", String.valueOf(user.getPassword()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void parseUserNoUsername() {
-    User.parseUser(":tiger");
+    assertThrows(IllegalArgumentException.class, () -> User.parseUser(":tiger"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void parseUserNoPassword() {
-    User.parseUser("scott:");
+    assertThrows(IllegalArgumentException.class, () -> User.parseUser("scott:"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void parseUserNoUserInfo() {
-    User.parseUser("");
+    assertThrows(IllegalArgumentException.class, () -> User.parseUser(""));
   }
 }

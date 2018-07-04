@@ -3,7 +3,7 @@
  */
 package org.jminor.common;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -13,7 +13,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DateUtilTest {
 
@@ -24,20 +24,20 @@ public class DateUtilTest {
 
   @Test
   public void isDateValid() throws Exception {
-    assertTrue("isDateValid should work", DateUtil.isDateValid("03-10-1975", SHORT_DASH));
-    assertFalse("isDateValid should work with an invalid date", DateUtil.isDateValid("033-102-975", SHORT_DASH));
+    assertTrue(DateUtil.isDateValid("03-10-1975", SHORT_DASH), "isDateValid should work");
+    assertFalse(DateUtil.isDateValid("033-102-975", SHORT_DASH), "isDateValid should work with an invalid date");
 
-    assertTrue("isDateValid should work with an empty string", DateUtil.isDateValid("", true, SHORT_DASH));
-    assertFalse("isDateValid should not work with an empty string", DateUtil.isDateValid("", false, SHORT_DASH));
+    assertTrue(DateUtil.isDateValid("", true, SHORT_DASH), "isDateValid should work with an empty string");
+    assertFalse(DateUtil.isDateValid("", false, SHORT_DASH), "isDateValid should not work with an empty string");
 
-    assertTrue("isDateValid should work with long date", DateUtil.isDateValid("03-10-1975 10:45", false, TIMESTAMP));
+    assertTrue(DateUtil.isDateValid("03-10-1975 10:45", false, TIMESTAMP), "isDateValid should work with long date");
 
-    assertTrue("isDateValid should work with a date format specified", DateUtil.isDateValid("03.10.1975", false, SHORT_DOT));
+    assertTrue(DateUtil.isDateValid("03.10.1975", false, SHORT_DOT), "isDateValid should work with a date format specified");
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void floorFieldsNullCalendar() {
-    DateUtil.floorFields(null, Collections.emptyList());
+    assertThrows(NullPointerException.class, () -> DateUtil.floorFields(null, Collections.emptyList()));
   }
 
   @Test
@@ -85,14 +85,14 @@ public class DateUtilTest {
     DateUtil.floorFields(calendar, null);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void isDateValidMissingDateFormat() {
-    DateUtil.isDateValid("03-10-1975", false);
+    assertThrows(IllegalArgumentException.class, () -> DateUtil.isDateValid("03-10-1975", false));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void isDateValidNullDateFormat() {
-    DateUtil.isDateValid("03-10-1975", false, (DateFormat[]) null);
+    assertThrows(IllegalArgumentException.class, () -> DateUtil.isDateValid("03-10-1975", false, (DateFormat[]) null));
   }
 
   @Test
@@ -109,9 +109,9 @@ public class DateUtilTest {
     assertEquals(32, DateUtil.numberOfDaysInRange(start, end));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void numberOfDaysInRangeToAfterFrom() {
-    assertEquals(1, DateUtil.numberOfDaysInRange(DateUtil.getDate(2011, Calendar.FEBRUARY, 1), DateUtil.getDate(2011, Calendar.JANUARY, 1)));
+    assertThrows(IllegalArgumentException.class, () -> DateUtil.numberOfDaysInRange(DateUtil.getDate(2011, Calendar.FEBRUARY, 1), DateUtil.getDate(2011, Calendar.JANUARY, 1)));
   }
 
   @Test

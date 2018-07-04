@@ -3,7 +3,7 @@
  */
 package org.jminor.common;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class UtilTest {
 
@@ -69,28 +69,28 @@ public final class UtilTest {
     assertEquals("setIntValue", setMethod.getName());
   }
 
-  @Test(expected = NoSuchMethodException.class)
+  @Test
   public void getGetMethodInvalidMethod() throws NoSuchMethodException {
     final Bean bean = new Bean();
-    Util.getGetMethod(boolean.class, "invalidValue", bean);
+    assertThrows(NoSuchMethodException.class, () -> Util.getGetMethod(boolean.class, "invalidValue", bean));
   }
 
-  @Test(expected = NoSuchMethodException.class)
+  @Test
   public void getSetMethodInvalidMethod() throws NoSuchMethodException {
     final Bean bean = new Bean();
-    Util.getSetMethod(boolean.class, "invalidValue", bean);
+    assertThrows(NoSuchMethodException.class, () -> Util.getSetMethod(boolean.class, "invalidValue", bean));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getSetMethodNoProperty() throws NoSuchMethodException {
     final Bean bean = new Bean();
-    Util.getSetMethod(boolean.class, "", bean);
+    assertThrows(IllegalArgumentException.class, () -> Util.getSetMethod(boolean.class, "", bean));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getGetMethodNoProperty() throws NoSuchMethodException {
     final Bean bean = new Bean();
-    Util.getGetMethod(boolean.class, "", bean);
+    assertThrows(IllegalArgumentException.class, () -> Util.getGetMethod(boolean.class, "", bean));
   }
 
   @Test

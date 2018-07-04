@@ -7,7 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.domain.testing.EntityTestUnit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 

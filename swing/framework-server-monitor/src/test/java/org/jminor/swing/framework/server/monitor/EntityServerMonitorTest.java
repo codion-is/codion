@@ -13,14 +13,14 @@ import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.rmi.registry.LocateRegistry;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityServerMonitorTest {
 
@@ -32,7 +32,7 @@ public class EntityServerMonitorTest {
   private static Server<?, EntityConnectionServerAdmin> server;
   private static EntityConnectionServerAdmin admin;
 
-  @BeforeClass
+  @BeforeAll
   public static synchronized void setUp() throws Exception {
     configure();
     final Database database = Databases.getInstance();
@@ -44,7 +44,7 @@ public class EntityServerMonitorTest {
     admin = server.getServerAdmin(ADMIN_USER);
   }
 
-  @AfterClass
+  @AfterAll
   public static synchronized void tearDown() throws Exception {
     admin.shutdown();
     server = null;

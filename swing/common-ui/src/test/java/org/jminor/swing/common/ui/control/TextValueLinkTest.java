@@ -7,11 +7,11 @@ import org.jminor.common.Event;
 import org.jminor.common.Events;
 import org.jminor.swing.common.ui.ValueLinks;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.JTextField;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TextValueLinkTest {
 
@@ -23,14 +23,14 @@ public class TextValueLinkTest {
     stringValue = null;
     final JTextField txtString = new JTextField();
     ValueLinks.textValueLink(txtString, this, "stringValue", evtStringValueChanged);
-    assertNull("String value should be null", stringValue);
-    assertEquals("String value should be empty on initialization", "", txtString.getText());
+    assertNull(stringValue);
+    assertEquals("", txtString.getText());
     setStringValue("hello");
-    assertEquals("String value should be 'hello'", "hello", txtString.getText());
+    assertEquals("hello", txtString.getText());
     txtString.setText("42");
-    assertEquals("String value should be 42", "42", stringValue);
+    assertEquals("42", stringValue);
     txtString.setText("");
-    assertNull("String value should be null", stringValue);
+    assertNull(stringValue);
 
     final JTextField txtString2 = new JTextField();
     stringValue = "test";
@@ -46,12 +46,12 @@ public class TextValueLinkTest {
     ValueLinks.textValueLink(txtString, this, "stringValue", evtStringValueChanged);
     assertEquals("name", txtString.getText());
     txtString.setText("darri");
-    assertFalse("String value should not be empty", getStringValue().isEmpty());
-    assertEquals("String value should be 'darri", "darri", getStringValue());
+    assertFalse(getStringValue().isEmpty());
+    assertEquals("darri", getStringValue());
     txtString.setText("");
-    assertTrue("String value should be null", getStringValue() == null);
+    assertNull(getStringValue());
     setStringValue("Björn");
-    assertEquals("Text field should contain value", "Björn", txtString.getText());
+    assertEquals("Björn", txtString.getText());
   }
 
   public String getStringValue() {

@@ -1354,7 +1354,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private static UUID getAuthenticationToken(final String[] args) {
     LOG.debug("getAuthenticationToken() args: " + Arrays.toString(args));
-    if (args != null && args.length > 1 && args[0].equals("-open")) {//assume web start with program argument
+    if (args != null && args.length > 1 && "-open".equals(args[0])) {//assume web start with program argument
       return args != null && args.length > 1 ? UUID.fromString(args[1]) : null;
     }
     else if (args == null || args.length == 0) {//assume authentication.txt in user.dir

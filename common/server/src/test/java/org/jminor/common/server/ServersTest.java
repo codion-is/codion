@@ -5,17 +5,16 @@ package org.jminor.common.server;
 
 import org.jminor.common.User;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ServersTest {
 
@@ -23,7 +22,7 @@ public class ServersTest {
 
   private AbstractServer server;
 
-  @Before
+  @BeforeEach
   public void setUp() throws RemoteException {
     Servers.initializeRegistry(Registry.REGISTRY_PORT);
     server = new AbstractServer(12345, SERVER_NAME) {
@@ -39,7 +38,7 @@ public class ServersTest {
     Servers.getRegistry(Registry.REGISTRY_PORT).rebind(SERVER_NAME, server);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws RemoteException, NotBoundException {
     server.shutdown();
     Servers.getRegistry(Registry.REGISTRY_PORT).unbind(SERVER_NAME);
@@ -56,8 +55,8 @@ public class ServersTest {
     }
   }
 
-  @Test(expected = NotBoundException.class)
+  @Test
   public void getServerWrongPort() throws RemoteException, NotBoundException {
-    Servers.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, 42);
+    assertThrows(NotBoundException.class,() -> Servers.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, 42));
   }
 }

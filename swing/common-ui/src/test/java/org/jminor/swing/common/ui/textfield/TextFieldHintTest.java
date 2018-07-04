@@ -3,32 +3,33 @@
  */
 package org.jminor.swing.common.ui.textfield;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.JTextField;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TextFieldHintTest {
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void enableNullTextField() {
-    TextFieldHint.enable(null, "test");
+    assertThrows(NullPointerException.class, () -> TextFieldHint.enable(null, "test"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void enableNullHintString() {
-    TextFieldHint.enable(new JTextField(), null);
+    assertThrows(IllegalArgumentException.class, () -> TextFieldHint.enable(new JTextField(), null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void enableEmptyHintString() {
-    TextFieldHint.enable(new JTextField(), "");
+    assertThrows(IllegalArgumentException.class, () -> TextFieldHint.enable(new JTextField(), ""));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void enableNullForegroundColor() {
-    TextFieldHint.enable(new JTextField(), "test", null);
+    assertThrows(NullPointerException.class, () -> TextFieldHint.enable(new JTextField(), "test", null));
   }
 
   @Test

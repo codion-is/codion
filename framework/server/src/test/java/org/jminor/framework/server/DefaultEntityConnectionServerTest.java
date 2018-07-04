@@ -21,9 +21,9 @@ import org.jminor.framework.db.remote.RemoteEntityConnection;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityConnectionServerTest {
 
@@ -46,7 +46,7 @@ public class DefaultEntityConnectionServerTest {
   private static Server<RemoteEntityConnection, EntityConnectionServerAdmin> server;
   private static EntityConnectionServerAdmin admin;
 
-  @BeforeClass
+  @BeforeAll
   public static synchronized void setUp() throws Exception {
     configure();
     final Database database = Databases.getInstance();
@@ -56,41 +56,41 @@ public class DefaultEntityConnectionServerTest {
     admin = server.getServerAdmin(ADMIN_USER);
   }
 
-  @AfterClass
+  @AfterAll
   public static synchronized void tearDown() throws Exception {
     admin.shutdown();
     server = null;
   }
 
-  @Test(expected = ServerException.AuthenticationException.class)
+  @Test
   public void testWrongPassword() throws Exception {
-    server.connect(Clients.connectionRequest(new User(UNIT_TEST_USER.getUsername(), "foobar".toCharArray()),
-            UUID.randomUUID(), getClass().getSimpleName(), CONNECTION_PARAMS));
+    assertThrows(ServerException.AuthenticationException.class, () -> server.connect(Clients.connectionRequest(new User(UNIT_TEST_USER.getUsername(), "foobar".toCharArray()),
+            UUID.randomUUID(), getClass().getSimpleName(), CONNECTION_PARAMS)));
   }
 
-  @Test(expected = ServerException.AuthenticationException.class)
+  @Test
   public void getServerAdminEmptyPassword() throws Exception {
-    server.getServerAdmin(new User("test", "".toCharArray()));
+    assertThrows(ServerException.AuthenticationException.class, () -> server.getServerAdmin(new User("test", "".toCharArray())));
   }
 
-  @Test(expected = ServerException.AuthenticationException.class)
+  @Test
   public void getServerAdminNullPassword() throws Exception {
-    server.getServerAdmin(new User("test", null));
+    assertThrows(ServerException.AuthenticationException.class, () -> server.getServerAdmin(new User("test", null)));
   }
 
-  @Test(expected = ServerException.AuthenticationException.class)
+  @Test
   public void getServerAdminWrongPassword() throws Exception {
-    server.getServerAdmin(new User("test", "test".toCharArray()));
+    assertThrows(ServerException.AuthenticationException.class, () -> server.getServerAdmin(new User("test", "test".toCharArray())));
   }
 
-  @Test(expected = ServerException.AuthenticationException.class)
+  @Test
   public void getServerAdminEmptyUsername() throws Exception {
-    server.getServerAdmin(new User("", "test".toCharArray()));
+    assertThrows(ServerException.AuthenticationException.class, () -> server.getServerAdmin(new User("", "test".toCharArray())));
   }
 
-  @Test(expected = ServerException.AuthenticationException.class)
+  @Test
   public void getServerAdminWrongUsername() throws Exception {
-    server.getServerAdmin(new User("test", "test".toCharArray()));
+    assertThrows(ServerException.AuthenticationException.class, () -> server.getServerAdmin(new User("test", "test".toCharArray())));
   }
 
   @Test
@@ -112,14 +112,14 @@ public class DefaultEntityConnectionServerTest {
       server.connect(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID"));
       fail();
     }
-    catch (final ServerException.LoginException e) {}
+    catch (final ServerException.LoginException ignored) {}
 
     try {
       server.connect(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID",
               Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, new EmptyDomain().getDomainId())));
       fail();
     }
-    catch (final ServerException.LoginException e) {}
+    catch (final ServerException.LoginException ignored) {}
 
     final ConnectionRequest connectionRequestTwo = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
             "ClientTypeID", CONNECTION_PARAMS);
@@ -228,7 +228,7 @@ public class DefaultEntityConnectionServerTest {
 
     final EntityConnection db2 = provider.getConnection();
     assertNotNull(db2);
-    assertFalse(db == db2);
+    assertNotSame(db, db2);
     assertTrue(db2.isConnected());
     provider.disconnect();
 
@@ -248,9 +248,9 @@ public class DefaultEntityConnectionServerTest {
     db3.disconnect();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getClientLogNotConnected() throws RemoteException {
-    admin.getClientLog(UUID.randomUUID());
+    assertThrows(IllegalArgumentException.class, () -> admin.getClientLog(UUID.randomUUID()));
   }
 
   @Test

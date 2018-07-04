@@ -8,10 +8,10 @@ import org.jminor.common.Events;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class IntegerValueLinkTest {
 
@@ -24,26 +24,26 @@ public class IntegerValueLinkTest {
   public void testInteger() throws Exception {
     final IntegerField txtInt = new IntegerField();
     ValueLinks.integerValueLink(txtInt, this, "integerValue", evtIntegerValueChanged, false, true);
-    assertNull("Integer value should be null on initialization", txtInt.getInteger());
+    assertNull(txtInt.getInteger());
     setIntegerValue(2);
-    assertEquals("Integer value should be 2", 2, txtInt.getInteger().intValue());
+    assertEquals(2, txtInt.getInteger().intValue());
     txtInt.setText("42");
-    assertEquals("Integer value should be 42", 42, integerValue.intValue());
+    assertEquals(42, integerValue.intValue());
     txtInt.setText("");
-    assertNull("Integer value should be null", integerValue);
+    assertNull(integerValue);
   }
 
   @Test
   public void testInt() throws Exception {
     final IntegerField txtInt = new IntegerField();
     ValueLinks.integerValueLink(txtInt, this, "intValue", evtIntValueChanged, true, true);
-    assertEquals("Int value should be 0 on initialization", (Integer) 0, txtInt.getInteger());
+    assertEquals((Integer) 0, txtInt.getInteger());
     setIntValue(2);
-    assertEquals("Int value should be 2", 2, txtInt.getInteger().intValue());
+    assertEquals(2, txtInt.getInteger().intValue());
     txtInt.setText("42");
-    assertEquals("Int value should be 42", 42, intValue);
+    assertEquals(42, intValue);
     txtInt.setText("");
-    assertEquals("Int value should be 0", 0, intValue);
+    assertEquals(0, intValue);
   }
 
   public Integer getIntegerValue() {

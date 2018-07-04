@@ -6,13 +6,13 @@ package org.jminor.swing.common.ui.table;
 import org.jminor.swing.common.model.table.FilteredTableColumnModel;
 import org.jminor.swing.common.model.table.SwingFilteredTableColumnModel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.JPanel;
 import javax.swing.table.TableColumn;
 import java.util.Arrays;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AbstractTableColumnSyncPanelTest {
 

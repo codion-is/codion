@@ -5,10 +5,10 @@ package org.jminor.swing.common.ui.input;
 
 import org.jminor.swing.common.ui.textfield.DoubleField;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class DoubleInputProviderTest {
 

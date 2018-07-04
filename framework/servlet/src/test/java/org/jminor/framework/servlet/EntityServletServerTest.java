@@ -40,9 +40,9 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import javax.net.ssl.SSLContext;
 import javax.ws.rs.core.MediaType;
@@ -56,7 +56,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityServletServerTest {
 
@@ -77,7 +77,7 @@ public class EntityServletServerTest {
   private static DefaultEntityConnectionServer server;
   private static EntityConnectionServerAdmin admin;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() throws Exception {
     configure();
     HOSTNAME = Server.SERVER_HOST_NAME.get();
@@ -87,7 +87,7 @@ public class EntityServletServerTest {
     admin = server.getServerAdmin(ADMIN_USER);
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() throws Exception {
     server.shutdown();
     deconfigure();

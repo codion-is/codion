@@ -7,12 +7,12 @@ import org.jminor.common.Event;
 import org.jminor.common.Events;
 import org.jminor.swing.common.ui.ValueLinks;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.JComboBox;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class SelectedItemValueLinkTest {
 
@@ -23,11 +23,11 @@ public class SelectedItemValueLinkTest {
   public void test() throws Exception {
     final JComboBox box = new JComboBox(new String[] {"b", "d", "s"});
     ValueLinks.selectedItemValueLink(box, this, "selectedItem", String.class, evtSelectedItemChanged);
-    assertNull("selected item should be null", selectedItem);
+    assertNull(selectedItem);
     setSelectedItem("s");
-    assertEquals("selected item should be 's'", "s", box.getSelectedItem());
+    assertEquals("s", box.getSelectedItem());
     box.setSelectedItem("d");
-    assertEquals("selected item should be 'd'", "d", selectedItem);
+    assertEquals("d", selectedItem);
   }
 
   public String getSelectedItem() {

@@ -12,15 +12,15 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.swing.framework.model.reporting.EntityReportUtil;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import ro.nextreports.engine.ReportRunner;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class NextReportsWrapperTest {
 

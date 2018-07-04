@@ -3,12 +3,12 @@
  */
 package org.jminor.common;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ValuesTest {
 
@@ -134,29 +134,29 @@ public class ValuesTest {
     assertFalse(stateValue.get());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void beanValueNoGetter() {
-    Values.beanValue(this, "nonexistent", Integer.class, integerValueChange.getObserver());
+    assertThrows(IllegalArgumentException.class, () -> Values.beanValue(this, "nonexistent", Integer.class, integerValueChange.getObserver()));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void beanValueNoOwner() {
-    Values.beanValue(null, "integerValue", Integer.class, integerValueChange.getObserver());
+    assertThrows(NullPointerException.class, () -> Values.beanValue(null, "integerValue", Integer.class, integerValueChange.getObserver()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void beanValueNoPropertyName() {
-    Values.beanValue(this, null, Integer.class, integerValueChange.getObserver());
+    assertThrows(IllegalArgumentException.class, () -> Values.beanValue(this, null, Integer.class, integerValueChange.getObserver()));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void beanValueNoValueClass() {
-    Values.beanValue(this, "integerValue", null, integerValueChange.getObserver());
+    assertThrows(NullPointerException.class, () -> Values.beanValue(this, "integerValue", null, integerValueChange.getObserver()));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void setReadOnly() {
     final Value<Integer> modelValue = Values.beanValue(this, "intValue", Integer.class, integerValueChange.getObserver());
-    modelValue.set(42);
+    assertThrows(IllegalStateException.class, () -> modelValue.set(42));
   }
 }

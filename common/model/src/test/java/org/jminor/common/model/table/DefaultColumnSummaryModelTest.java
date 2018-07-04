@@ -6,15 +6,14 @@ package org.jminor.common.model.table;
 import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.text.Format;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultColumnSummaryModelTest {
 
@@ -159,9 +158,9 @@ public class DefaultColumnSummaryModelTest {
     assertEquals(numberFormat.format(1.1) + "/" + numberFormat.format(5.5), testDoubleModel.getSummaryText());
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void locked() {
     testDoubleModel.setLocked(true);
-    testDoubleModel.setSummary(ColumnSummary.MINIMUM_MAXIMUM);
+    assertThrows(IllegalStateException.class, () -> testDoubleModel.setSummary(ColumnSummary.MINIMUM_MAXIMUM));
   }
 }

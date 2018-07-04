@@ -16,9 +16,9 @@ import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityModel;
 import org.jminor.framework.model.EntityTableModel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * A base class for testing {@link EntityApplicationModel} subclasses.
@@ -54,21 +54,21 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     model.login(UNIT_TEST_USER);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullConnectionProvider() {
-    new DefaultEntityApplicationModel(null) {};
+    assertThrows(NullPointerException.class, () -> new DefaultEntityApplicationModel(null));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void loginNullUser() {
     final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER);
-    model.login(null);
+    assertThrows(NullPointerException.class, () -> model.login(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getEntityModelByEntityIDNotFound() {
     final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER);
-    model.getEntityModel(TestDomain.T_DEPARTMENT);
+    assertThrows(IllegalArgumentException.class, () -> model.getEntityModel(TestDomain.T_DEPARTMENT));
   }
 
   @Test
@@ -79,10 +79,10 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     assertEquals(departmentModel, model.getEntityModel(TestDomain.T_DEPARTMENT));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getEntityModelByClassNotFound() {
     final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER);
-    model.getEntityModel(EntityModel.class);
+    assertThrows(IllegalArgumentException.class, () -> model.getEntityModel(EntityModel.class));
   }
 
   @Test

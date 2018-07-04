@@ -11,7 +11,7 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EntityConditionPanelTest {
 

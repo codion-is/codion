@@ -11,7 +11,7 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.javafx.framework.model.FXEntityListModel;
 
 import javafx.embed.swing.JFXPanel;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public final class EntityTableViewTest {
 

@@ -13,7 +13,7 @@ import org.jminor.common.server.ServerException;
 import org.jminor.common.server.Servers;
 import org.jminor.framework.domain.Entity;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
@@ -21,7 +21,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class EmployeeServerTest {
 

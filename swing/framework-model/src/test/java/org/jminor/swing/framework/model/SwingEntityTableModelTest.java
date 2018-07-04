@@ -20,7 +20,7 @@ import org.jminor.framework.model.testing.AbstractEntityTableModelTest;
 import org.jminor.framework.model.testing.TestDomain;
 import org.jminor.swing.common.model.table.SortingDirective;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.table.TableColumn;
 import java.sql.Timestamp;
@@ -29,7 +29,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class SwingEntityTableModelTest extends AbstractEntityTableModelTest<SwingEntityEditModel, SwingEntityTableModel> {
 
@@ -93,17 +93,17 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     return new SwingEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void nonMatchingConditionModelEntityId() {
     final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER,
             new DefaultPropertyFilterModelProvider(), new DefaultPropertyConditionModelProvider());
-    new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
-            new SwingEntityTableModel.DefaultEntityTableSortModel(ENTITIES, TestDomain.T_EMP), conditionModel);
+    assertThrows(IllegalArgumentException.class, () -> new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
+            new SwingEntityTableModel.DefaultEntityTableSortModel(ENTITIES, TestDomain.T_EMP), conditionModel));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void nullConditionModel() {
-    new SwingEntityTableModel(TestDomain.T_EMP, null);
+    assertThrows(NullPointerException.class, () -> new SwingEntityTableModel(TestDomain.T_EMP, null));
   }
 
   @Test
@@ -143,9 +143,9 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals("e", testModel.getValueAt(4, 2));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void setValueAt() {
-    testModel.setValueAt("hello", 0, 0);
+    assertThrows(UnsupportedOperationException.class, () -> testModel.setValueAt("hello", 0, 0));
   }
 
   @Test
@@ -229,8 +229,8 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
     final SwingEntityTableModel model = createTestTableModel();
     assertFalse(model.getColumnModel().isColumnVisible(ENTITIES.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING)));
-    assertTrue(model.getPropertyColumnIndex(TestDomain.DETAIL_DOUBLE) == 0);
-    assertTrue(model.getPropertyColumnIndex(TestDomain.DETAIL_INT) == 1);
+    assertEquals(0, model.getPropertyColumnIndex(TestDomain.DETAIL_DOUBLE));
+    assertEquals(1, model.getPropertyColumnIndex(TestDomain.DETAIL_INT));
     column = model.getColumnModel().getColumn(3);
     assertEquals(150, column.getPreferredWidth());
     column = model.getColumnModel().getColumn(5);

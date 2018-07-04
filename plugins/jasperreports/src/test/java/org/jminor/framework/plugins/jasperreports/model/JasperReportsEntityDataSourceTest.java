@@ -9,21 +9,20 @@ import org.jminor.framework.domain.Entity;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRPropertiesHolder;
 import net.sf.jasperreports.engine.JRPropertiesMap;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JasperReportsEntityDataSourceTest {
 
   private static final Entities ENTITIES = new TestDomain();
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorNullIterator() {
-    new JasperReportsEntityDataSource(null);
+    assertThrows(NullPointerException.class, () -> new JasperReportsEntityDataSource(null));
   }
 
   @Test

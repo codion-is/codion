@@ -3,14 +3,14 @@
  */
 package org.jminor.framework.domain;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityBeanMapperTest {
 
@@ -122,65 +122,65 @@ public class EntityBeanMapperTest {
     assertTrue(empty.isEmpty());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testNullEntity() throws NoSuchMethodException, IllegalAccessException, InstantiationException,
           InvocationTargetException {
     final EntityBeanMapper beanMapper = createEmpDeptBeanMapper();
-    assertNull(beanMapper.toBean(null));
+    assertThrows(NullPointerException.class, () -> beanMapper.toBean(null));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testNullBean() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
     final EntityBeanMapper beanMapper = createEmpDeptBeanMapper();
-    assertNull(beanMapper.toEntity(null));
+    assertThrows(NullPointerException.class, () -> beanMapper.toEntity(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getBeanClassUndefinedEntity() {
     final EntityBeanMapper beanMapper = new EntityBeanMapper(DOMAIN);
-    beanMapper.getBeanClass("entityId");
+    assertThrows(IllegalArgumentException.class, () -> beanMapper.getBeanClass("entityId"));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void setEntityIDNullBeanClass() {
     final EntityBeanMapper beanMapper = new EntityBeanMapper(DOMAIN);
-    beanMapper.setEntityId(null, "entityId");
+    assertThrows(NullPointerException.class, () -> beanMapper.setEntityId(null, "entityId"));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void setEntityIDNullEntityId() {
     final EntityBeanMapper beanMapper = new EntityBeanMapper(DOMAIN);
-    beanMapper.setEntityId(EmployeeBean.class, null);
+    assertThrows(NullPointerException.class, () -> beanMapper.setEntityId(EmployeeBean.class, null));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void getEntityIDNullBeanClass() {
     final EntityBeanMapper beanMapper = new EntityBeanMapper(DOMAIN);
-    beanMapper.getEntityId(null);
+    assertThrows(NullPointerException.class, () -> beanMapper.getEntityId(null));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void getBeanClassNullEntityId() {
     final EntityBeanMapper beanMapper = new EntityBeanMapper(DOMAIN);
-    beanMapper.getBeanClass(null);
+    assertThrows(NullPointerException.class, () -> beanMapper.getBeanClass(null));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void setPropertyNullBeanClass() throws NoSuchMethodException {
     final EntityBeanMapper beanMapper = new EntityBeanMapper(DOMAIN);
-    beanMapper.setProperty(null, "", "");
+    assertThrows(NullPointerException.class, () -> beanMapper.setProperty(null, "", ""));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void setPropertyNullPropertyId() throws NoSuchMethodException {
     final EntityBeanMapper beanMapper = new EntityBeanMapper(DOMAIN);
-    beanMapper.setProperty(EmployeeBean.class, null, "");
+    assertThrows(NullPointerException.class, () -> beanMapper.setProperty(EmployeeBean.class, null, ""));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void setPropertyNullPropertyName() throws NoSuchMethodException {
     final EntityBeanMapper beanMapper = new EntityBeanMapper(DOMAIN);
-    beanMapper.setProperty(EmployeeBean.class, "", null);
+    assertThrows(NullPointerException.class, () -> beanMapper.setProperty(EmployeeBean.class, "", null));
   }
 
   private EntityBeanMapper createEmpDeptBeanMapper() throws NoSuchMethodException {
