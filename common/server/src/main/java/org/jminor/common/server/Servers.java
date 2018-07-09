@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -247,8 +248,8 @@ public final class Servers {
      * @param databaseUser the user to use when connecting to the underlying database
      */
     private DefaultRemoteClient(final ConnectionRequest connectionRequest, final User databaseUser) {
-      this.connectionRequest = connectionRequest;
-      this.databaseUser = databaseUser;
+      this.connectionRequest = Objects.requireNonNull(connectionRequest, "connectionRequest");
+      this.databaseUser = Objects.requireNonNull(databaseUser, "databaseUser");
     }
 
     @Override
