@@ -5,7 +5,6 @@ package org.jminor.framework.domain;
 
 import org.junit.jupiter.api.Test;
 
-import java.awt.Color;
 import java.sql.Types;
 import java.util.Collection;
 import java.util.Comparator;
@@ -177,8 +176,9 @@ public class DefaultEntityDefinitionTest {
             Properties.primaryKeyProperty("propertyId"));
     final Entity entity = domain.entity("entity");
     assertNull(def.getBackgroundColor(entity, entity.getKey().getFirstProperty()));
-    def.setBackgroundColorProvider((entity1, property) -> Color.BLUE);
-    assertEquals(Color.BLUE, def.getBackgroundColor(entity, entity.getKey().getFirstProperty()));
+    final String colorBlue = "blue";
+    def.setBackgroundColorProvider((entity1, property) -> colorBlue);
+    assertEquals(colorBlue, def.getBackgroundColor(entity, entity.getKey().getFirstProperty()));
   }
 
   @Test

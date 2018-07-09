@@ -8,7 +8,6 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
-import java.awt.Color;
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
@@ -176,13 +175,6 @@ public final class TestDomain extends Entities {
             .setOrderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
             .setStringProvider(new Entities.StringProvider(EMP_NAME))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
-            .setCaption("Employee")
-            .setBackgroundColorProvider((entity, property) -> {
-              if (property.is(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {
-                return Color.CYAN;
-              }
-
-              return null;
-            });
+            .setCaption("Employee");
   }
 }
