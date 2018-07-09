@@ -2,7 +2,7 @@ dependencies {
     api project(':org.jminor.common.core')
     api project(':org.jminor.common.db')
 
-    implementation 'com.zaxxer:HikariCP:2.7.4'
+    implementation 'com.zaxxer:HikariCP:3.2.0'
 
     testRuntime "com.h2database:h2:${h2Version}"
 }

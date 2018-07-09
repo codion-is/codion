@@ -1,21 +1,27 @@
 plugins {
     id "org.sonarqube" version "2.6.2"
+    id "com.github.ben-manes.versions" version "0.20.0"
 }
 
 ext {
     slf4jApiVersion = '1.7.25'
     logbackVersion = '1.2.3'
-    h2Version = '1.4.196'
-    jsonVersion = '20090211'
+    h2Version = '1.4.197'
+    jsonVersion = '20180130'
     jcalendarVersion = '1.4'
     jcommonVersion = '1.0.24'
     jfreechartVersion = '1.5.0'
-    jettyVersion = '9.4.8.v20171121'
-    httpclientVersion = '4.5'
-    httpcoreVersion = '4.4.1'
-    commonsloggingVersion = '1.2'
+    jettyVersion = '9.4.11.v20180605'
+    httpclientVersion = '4.5.6'
     junitVersion = '5.2.0'
     jacocoVersion = '0.8.1'
+    //jasperreports
+    jasperreportsVersion = '6.6.0'
+    commonsloggingVersion = '1.2'
+    commonsdigesterVersion = '2.1'
+    commonscollectionsVersion ='3.2.2'
+    commonsbeanutilsVersion = '1.9.3'
+    jdtcorecompilerVersion = '4.6.1'
 }
 
 allprojects {

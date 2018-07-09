@@ -109,7 +109,7 @@ final class HttpEntityConnection implements EntityConnection {
     this.domainId = Objects.requireNonNull(domainId, DOMAIN_ID);
     this.user = Objects.requireNonNull(user, "user");
     this.httpsEnabled = httpsEnabled;
-    this.baseurl =  Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + "/entities/";
+    this.baseurl =  Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + "/entities";
     this.connectionManager = Objects.requireNonNull(connectionManager, "connectionManager");
     this.httpClient = createHttpClient(clientTypeId, clientId);
     this.targetHost = new HttpHost(serverHostName, serverPort, httpsEnabled ? HTTPS : HTTP);

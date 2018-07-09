@@ -9,7 +9,7 @@ dependencies {
 
     implementation "org.eclipse.jetty:jetty-servlet:${jettyVersion}"
 
-    implementation 'org.glassfish.jersey.bundles:jaxrs-ri:2.22'
+    implementation 'org.glassfish.jersey.bundles:jaxrs-ri:2.27'
 
     testImplementation project(':org.jminor.framework.db.local')
     testImplementation project(':org.jminor.framework.server')

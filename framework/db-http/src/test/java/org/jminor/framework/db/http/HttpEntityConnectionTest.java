@@ -253,6 +253,5 @@ public final class HttpEntityConnectionTest {
     catch (final NoSuchAlgorithmException e) {
       throw new RuntimeException(e);
     }
-
   }
 }

@@ -4830,3 +4830,4 @@
   KeyGenerator.afterInsert(), statement parameter added
   IntelliJ inspections fixed
   Upgraded to JUnit 5
+  Third party dependencies upgraded

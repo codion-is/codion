@@ -9,6 +9,7 @@ import org.jminor.framework.domain.Entity;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRPropertiesHolder;
 import net.sf.jasperreports.engine.JRPropertiesMap;
+import net.sf.jasperreports.engine.JRPropertyExpression;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -61,6 +62,9 @@ public class JasperReportsEntityDataSourceTest {
     @Override
     public JRPropertiesHolder getParentProperties() {return null;}
     @SuppressWarnings({"CloneDoesntDeclareCloneNotSupportedException", "CloneDoesntCallSuperClone"})
-    @Override public Object clone() {return null;}
+    @Override
+    public Object clone() {return null;}
+    @Override
+    public JRPropertyExpression[] getPropertyExpressions() {return new JRPropertyExpression[0];}
   }
 }

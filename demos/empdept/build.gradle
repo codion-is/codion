@@ -36,15 +36,15 @@ dependencies {
 
     runtime project(':org.jminor.plugin.logback.proxy')
 
-    compile ('net.sf.jasperreports:jasperreports:6.0.0') {
+    compile ("net.sf.jasperreports:jasperreports:${jasperreportsVersion}") {
         transitive = false
     }
 
-    runtime 'commons-logging:commons-logging:1.1.1'
-    runtime 'commons-digester:commons-digester:2.1'
-    runtime 'commons-collections:commons-collections:3.2.1'
-    runtime 'commons-beanutils:commons-beanutils:1.9.0'
-    runtime 'org.eclipse.jdt.core.compiler:ecj:4.3.1'
+    runtime "commons-logging:commons-logging:${commonsloggingVersion}"
+    runtime "commons-digester:commons-digester:${commonsdigesterVersion}"
+    runtime "commons-collections:commons-collections:${commonscollectionsVersion}"
+    runtime "commons-beanutils:commons-beanutils:${commonsbeanutilsVersion}"
+    runtime "org.eclipse.jdt.core.compiler:ecj:${jdtcorecompilerVersion}"
 
     runtime "com.h2database:h2:${h2Version}"
 }
