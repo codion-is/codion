@@ -4831,3 +4831,4 @@
   IntelliJ inspections fixed
   Upgraded to JUnit 5
   Third party dependencies upgraded
+  SteppedComboBox bug fixed, requestFocus() overridden, if not then detail panels (as opposed to the root parent panel) with a editable combobox as the initialFocusComponent get the initial focus on application startup

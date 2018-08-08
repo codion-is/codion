@@ -45,6 +45,16 @@ public class SteppedComboBox<V> extends JComboBox<V> {
     return new Dimension(Math.max(size.width, popupWidth <= 0 ? displaySize.width : popupWidth), size.height);
   }
 
+  @Override
+  public final void requestFocus() {
+    if (isEditable) {
+      getEditor().getEditorComponent().requestFocus();
+    }
+    else {
+      super.requestFocus();
+    }
+  }
+
   private void initUI() {
     setUI(new SteppedComboBoxUI());
   }

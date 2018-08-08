@@ -12,7 +12,6 @@ public interface EventObserver<T> {
   /**
    * Adds {@code listener} to this EventObserver, adding the same listener
    * a second time has no effect.
-   * Adding a listener does not prevent it from being garbage collected.
    * @param listener the listener to add
    * @throws NullPointerException in case listener is null
    */
@@ -27,7 +26,6 @@ public interface EventObserver<T> {
   /**
    * Adds {@code listener} to this EventObserver, adding the same listener
    * a second time has no effect.
-   * Adding a listener does not prevent it from being garbage collected.
    * @param listener the listener to add
    * @throws NullPointerException in case listener is null
    */

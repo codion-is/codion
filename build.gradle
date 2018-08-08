@@ -55,6 +55,11 @@ subprojects {
             }
         }
 
+        javadoc {
+            //to prevent jpms based errors on Java >= 9
+            failOnError = false
+        }
+
         def artifactName = project.name.replace("org.", "").replace(".", "-")
         jar {
             baseName = artifactName

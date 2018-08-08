@@ -1584,9 +1584,8 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-      final MasterDetailPanel activePanelParent = panel.masterPanel;
-      if (activePanelParent != null) {
-        ((EntityPanel) activePanelParent).resizePanel(direction, RESIZE_AMOUNT);
+      if (panel.masterPanel != null) {
+        panel.masterPanel.resizePanel(direction, RESIZE_AMOUNT);
       }
     }
   }
