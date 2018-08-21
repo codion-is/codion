@@ -77,9 +77,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1334,8 +1332,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * Looks up user credentials via {@link org.jminor.common.server.CredentialServer} using an authentication token
-   * found in the program arguments list or in an authentication file. Useful for single sign on application launch.
+   * found in the program arguments list. Useful for single sign on application launch.
    * <pre>javaws -open [authenticationToken] http://jminor.org/demo/demo.jnlp</pre>
+   * <pre>java -jar application/getdown-1.7.1.jar application app_id -open [authenticationToken]</pre>
    * @param args the program arguments
    * @return the User credentials associated with the authentication token, null if no authentication token is found,
    * the user credentials have expired or if no authentication server is running
@@ -1354,31 +1353,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private static UUID getAuthenticationToken(final String[] args) {
     LOG.debug("getAuthenticationToken() args: " + Arrays.toString(args));
-    if (args != null && args.length > 1 && "-open".equals(args[0])) {//assume web start with program argument
+    if (args != null && args.length > 1 && "-open".equals(args[0])) {
       return args != null && args.length > 1 ? UUID.fromString(args[1]) : null;
-    }
-    else if (args == null || args.length == 0) {//assume authentication.txt in user.dir
-      final File authenticationTokenFile = new File(System.getProperty("user.dir")
-              + System.getProperty("file.separator") + "authentication.txt");
-      if (authenticationTokenFile.exists()) {
-        LOG.debug("Authentication file found: " + authenticationTokenFile);
-        authenticationTokenFile.deleteOnExit();
-        try {
-          return UUID.fromString(TextUtil.getTextFileContents(authenticationTokenFile, Charset.defaultCharset()));
-        }
-        catch (final IOException e) {
-          LOG.debug("Exception while trying to read authentication file", e);
-          return null;
-        }
-        finally {
-          if (!authenticationTokenFile.delete()) {
-            LOG.debug("Unable to delete authentication file");
-          }
-        }
-      }
-      else {
-        LOG.debug("Authentication file not found: " + authenticationTokenFile);
-      }
     }
 
     return null;
@@ -1410,7 +1386,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static String getUsername(final String username) {
     final String usernamePrefix = EntityApplicationModel.USERNAME_PREFIX.get();
     if (!Util.nullOrEmpty(usernamePrefix) && username.toUpperCase().startsWith(usernamePrefix.toUpperCase())) {
-      return username.substring(usernamePrefix.length(), username.length());
+      return username.substring(usernamePrefix.length());
     }
 
     return username;
