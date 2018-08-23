@@ -79,14 +79,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * A central application panel class.
@@ -1323,31 +1321,20 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Looks up user credentials via {@link org.jminor.common.server.CredentialServer} using an authentication token
    * found in the program arguments list. Useful for single sign on application launch.
-   * <pre>javaws -open [authenticationToken] http://jminor.org/demo/demo.jnlp</pre>
-   * <pre>java -jar application/getdown-1.7.1.jar application app_id -open [authenticationToken]</pre>
+   * <pre>javaws -open authenticationToken:123-123-123 http://jminor.org/demo/demo.jnlp</pre>
+   * <pre>java -jar application/getdown-1.7.1.jar app_dir app_id authenticationToken:123-123-123</pre>
    * @param args the program arguments
    * @return the User credentials associated with the authentication token, null if no authentication token is found,
    * the user credentials have expired or if no authentication server is running
    */
   protected static User getUser(final String[] args) {
     try {
-      final UUID autenticationToken = getAuthenticationToken(args);
-
-      return autenticationToken == null ? null : Clients.getUserCredentials(autenticationToken);
+      return Clients.getUserCredentials(args);
     }
     catch (final IllegalArgumentException e) {
       LOG.debug("Invalid UUID authentication token");
       return null;
     }
-  }
-
-  private static UUID getAuthenticationToken(final String[] args) {
-    LOG.debug("getAuthenticationToken() args: " + Arrays.toString(args));
-    if (args != null && args.length > 1 && "-open".equals(args[0])) {
-      return args != null && args.length > 1 ? UUID.fromString(args[1]) : null;
-    }
-
-    return null;
   }
 
   private static DefaultTreeModel createApplicationTree(final Collection<? extends MasterDetailPanel> entityPanels) {

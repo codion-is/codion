@@ -13,6 +13,7 @@ import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
@@ -24,6 +25,9 @@ import java.util.UUID;
 public final class Clients {
 
   private static final Logger LOG = LoggerFactory.getLogger(Clients.class);
+
+  public static final String AUTHENTICATION_TOKEN_PREFIX = "authenticationToken";
+  public static final String AUTHENTICATION_TOKEN_DELIMITER = ":";
 
   private Clients() {}
 
@@ -67,6 +71,19 @@ public final class Clients {
 
   /**
    * Performs a authentication lookup on localhost via a {@link CredentialServer}.
+   * @param programArguments the arguments list in which to search for the autentication token [authenticationToke:123-123-123]
+   * @return the User credentials associated with the {@code authenticationToken}, null if no token was found in the
+   * arguments list, if the user credentials have expired or if no authentication server is running
+   * @see CredentialServer
+   */
+  public static User getUserCredentials(final String[] programArguments) {
+    final UUID token = getAuthenticationToken(programArguments);
+
+    return token == null ? null : getUserCredentials(token);
+  }
+
+  /**
+   * Performs a authentication lookup on localhost via a {@link CredentialServer}.
    * @param authenticationToken the authentication token
    * @return the User credentials associated with the {@code authenticationToken}, null if the user credentials
    * have expired or if no authentication server is running
@@ -77,13 +94,37 @@ public final class Clients {
       final Remote credentialService = Servers.getRegistry(Registry.REGISTRY_PORT).lookup(CredentialService.class.getSimpleName());
       LOG.debug("CredentialService found: " + credentialService);
 
-      return ((CredentialService) credentialService).getUser(authenticationToken);
+      return ((CredentialService) credentialService).getUser(Objects.requireNonNull(authenticationToken, "authenticationToken"));
     }
     catch (final NotBoundException | RemoteException e) {
       LOG.debug("No CredentialService found", e);
       //no credential server available or not reachable
       return null;
     }
+  }
+
+  private static UUID getAuthenticationToken(final String[] args) {
+    LOG.debug("getAuthenticationToken() args: " + Arrays.toString(args));
+    if (args == null) {
+      return null;
+    }
+
+    final UUID token = Arrays.stream(args).filter(Clients::isAuthenticationToken).findFirst()
+            .map(Clients::getAuthenticationToken).orElse(null);
+    //keep old WebStart method for backwards compatibility
+    if (token == null && args.length > 1 && "-open".equals(args[0])) {
+      return UUID.fromString(args[1]);
+    }
+
+    return token;
+  }
+
+  private static boolean isAuthenticationToken(final String argument) {
+    return argument.startsWith(AUTHENTICATION_TOKEN_PREFIX + AUTHENTICATION_TOKEN_DELIMITER);
+  }
+
+  private static UUID getAuthenticationToken(final String argument) {
+    return UUID.fromString(argument.split(AUTHENTICATION_TOKEN_DELIMITER)[1]);
   }
 
   private static final class DefaultConnectionRequest implements ConnectionRequest {

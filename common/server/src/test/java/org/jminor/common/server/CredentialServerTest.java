@@ -22,11 +22,19 @@ public final class CredentialServerTest {
     final User scott = new User("scott", "tiger".toCharArray());
     final CredentialServer server = new CredentialServer(54321, 200, 20);
 
-    final UUID token = UUID.randomUUID();
+    UUID token = UUID.randomUUID();
     server.addAuthenticationToken(token, scott);
-    final User userCredentials = Clients.getUserCredentials(token);
+    User userCredentials = Clients.getUserCredentials(token);
     assertEquals(scott, userCredentials);
     assertNull(Clients.getUserCredentials(token));
+
+    token = UUID.randomUUID();
+    server.addAuthenticationToken(token, scott);
+    userCredentials = Clients.getUserCredentials(new String[] {"bla", Clients.AUTHENTICATION_TOKEN_PREFIX + ":" + token.toString(), "bla"});
+    assertEquals(scott, userCredentials);
+    assertNull(Clients.getUserCredentials(token));
+
+    assertNull(Clients.getUserCredentials(new String[] {"bla", "bla"}));
 
     server.addAuthenticationToken(token, scott);
     Thread.sleep(300);
