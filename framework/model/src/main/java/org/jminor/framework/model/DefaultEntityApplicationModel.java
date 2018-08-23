@@ -91,25 +91,13 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
   /** {@inheritDoc} */
   @Override
   public final boolean containsEntityModel(final Class<? extends M> modelClass) {
-    for (final M entityModel : entityModels) {
-      if (entityModel.getClass().equals(modelClass)) {
-        return true;
-      }
-    }
-
-    return false;
+    return entityModels.stream().anyMatch(entityModel -> entityModel.getClass().equals(modelClass));
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean containsEntityModel(final String entityId) {
-    for (final M entityModel : entityModels) {
-      if (entityModel.getEntityId().equals(entityId)) {
-        return true;
-      }
-    }
-
-    return false;
+    return entityModels.stream().anyMatch(entityModel -> entityModel.getEntityId().equals(entityId));
   }
 
   /** {@inheritDoc} */

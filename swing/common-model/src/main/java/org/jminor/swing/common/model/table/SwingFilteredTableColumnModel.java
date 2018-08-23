@@ -152,13 +152,8 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
   @Override
   public boolean containsColumn(final C identifier) {
     Objects.requireNonNull(identifier, "identifier");
-    for (final TableColumn column : columns) {
-      if (identifier.equals(column.getIdentifier())) {
-        return true;
-      }
-    }
 
-    return false;
+    return columns.stream().anyMatch(column -> identifier.equals(column.getIdentifier()));
   }
 
   /** {@inheritDoc} */

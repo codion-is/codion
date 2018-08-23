@@ -18,9 +18,11 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * A HostMonitor
@@ -117,13 +119,7 @@ public final class HostMonitor {
   }
 
   private boolean containsServerMonitor(final UUID serverId) {
-    for (final ServerMonitor serverMonitor : serverMonitors) {
-      if (serverMonitor.getServerInfo().getServerId().equals(serverId)) {
-        return true;
-      }
-    }
-
-    return false;
+    return serverMonitors.stream().anyMatch(serverMonitor -> serverMonitor.getServerInfo().getServerId().equals(serverId));
   }
 
   private void removeUnreachableServers() {
@@ -159,15 +155,10 @@ public final class HostMonitor {
   }
 
   private static Collection<String> getEntityServers(final Registry registry) throws RemoteException {
-    final List<String> serverNames = new ArrayList<>();
+    final List<String> serverNames;
     final String[] boundNames = registry.list();
     final String serverNamePrefix = Server.SERVER_NAME_PREFIX.get();
-    for (final String name : boundNames) {
-      if (name.startsWith(serverNamePrefix)) {
-        serverNames.add(name);
-      }
-    }
 
-    return serverNames;
+    return Arrays.stream(boundNames).filter(name -> name.startsWith(serverNamePrefix)).collect(Collectors.toList());
   }
 }

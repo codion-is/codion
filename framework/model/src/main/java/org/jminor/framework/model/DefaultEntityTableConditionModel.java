@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * A default EntityTableConditionModel implementation
@@ -176,13 +177,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   /** {@inheritDoc} */
   @Override
   public final boolean isEnabled() {
-    for (final PropertyConditionModel conditionModel : propertyConditionModels.values()) {
-      if (conditionModel.isEnabled()) {
-        return true;
-      }
-    }
-
-    return false;
+    return propertyConditionModels.values().stream().anyMatch(ColumnConditionModel::isEnabled);
   }
 
   /** {@inheritDoc} */
@@ -375,12 +370,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
    * @return a String representing the current state of the condition models
    */
   private String getConditionModelState() {
-    final StringBuilder stringBuilder = new StringBuilder();
-    for (final PropertyConditionModel model : getPropertyConditionModels()) {
-      stringBuilder.append(model.toString());
-    }
-
-    return stringBuilder.toString();
+    return getPropertyConditionModels().stream().map(PropertyConditionModel::toString).collect(Collectors.joining());
   }
 
   private void initializeFilterModels(final String entityId, final PropertyFilterModelProvider filterModelProvider) {

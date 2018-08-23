@@ -236,13 +236,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the first entity panel found based on the given entity type, null if none is found
    */
   public final EntityPanel getEntityPanel(final String entityId) {
-    for (final EntityPanel entityPanel : entityPanels) {
-      if (entityPanel.getModel().getEntityId().equals(entityId)) {
-        return entityPanel;
-      }
-    }
-
-    return null;
+    return entityPanels.stream().filter(entityPanel ->
+            entityPanel.getModel().getEntityId().equals(entityId)).findFirst().orElse(null);
   }
 
   /**
@@ -607,13 +602,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private boolean referencesOnlySelf(final String entityId) {
-    for (final Property.ForeignKeyProperty fkProperty : applicationModel.getDomain().getForeignKeyProperties(entityId)) {
-      if (!fkProperty.getForeignEntityId().equals(entityId)) {
-        return false;
-      }
-    }
-
-    return true;
+    return applicationModel.getDomain().getForeignKeyProperties(entityId).stream()
+            .allMatch(fkProperty -> fkProperty.getForeignEntityId().equals(entityId));
   }
 
   /**

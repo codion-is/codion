@@ -227,13 +227,7 @@ public final class States {
     }
 
     private AggregateStateListener findListener(final StateObserver state) {
-      for (final AggregateStateListener listener : stateListeners) {
-        if (listener.getState().equals(state)) {
-          return listener;
-        }
-      }
-
-      return null;
+      return stateListeners.stream().filter(listener -> listener.getState().equals(state)).findFirst().orElse(null);
     }
 
     private final class AggregateStateListener implements EventDataListener<Boolean> {

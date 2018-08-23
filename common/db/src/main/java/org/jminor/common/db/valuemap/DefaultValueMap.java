@@ -128,26 +128,13 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
       return false;
     }
 
-    for (final K key : otherMap.keySet()) {
-      if (!containsKey(key) || !Objects.equals(otherMap.get(key), get(key))) {
-        return false;
-      }
-    }
-
-    return true;
+    return otherMap.keySet().stream().noneMatch(key -> !containsKey(key) || !Objects.equals(otherMap.get(key), get(key)));
   }
 
   /** {@inheritDoc} */
   @Override
   public int hashCode() {
-    int hash = MAGIC_NUMBER;
-    for (final Object value : values()) {
-      if (value != null) {
-        hash = hash + value.hashCode();
-      }
-    }
-
-    return hash;
+    return MAGIC_NUMBER + values().stream().filter(Objects::nonNull).mapToInt(Object::hashCode).sum();
   }
 
   /** {@inheritDoc} */

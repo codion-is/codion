@@ -191,13 +191,13 @@ public final class Version implements Comparable<Version>, Serializable {
     final int dashIndex = versionString.indexOf('-');
     if (dashIndex > 0) {
       version = versionString.substring(0, dashIndex);
-      metadata = versionString.substring(dashIndex + 1, versionString.length());
+      metadata = versionString.substring(dashIndex + 1);
     }
     else {
       final int spaceIndex = versionString.indexOf(' ');
       if (spaceIndex > 0) {
         version = versionString.substring(0, spaceIndex);
-        metadata = versionString.substring(spaceIndex + 1, versionString.length());
+        metadata = versionString.substring(spaceIndex + 1);
       }
       else {
         version = versionString;

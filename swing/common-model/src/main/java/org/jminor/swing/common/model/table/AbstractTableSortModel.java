@@ -9,13 +9,13 @@ import org.jminor.common.Events;
 import org.jminor.common.TextUtil;
 
 import javax.swing.table.TableColumn;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * A default TableSortModel implementation
@@ -113,13 +113,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   /** {@inheritDoc} */
   @Override
   public final boolean isSortingEnabled() {
-    for (final SortingState state : sortingStates.values()) {
-      if (!state.equals(EMPTY_SORTING_STATE)) {
-        return true;
-      }
-    }
-
-    return false;
+    return sortingStates.values().stream().anyMatch(state -> !state.equals(EMPTY_SORTING_STATE));
   }
 
   /** {@inheritDoc} */
@@ -220,20 +214,12 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     }
 
     private List<Map.Entry<C, SortingState>> getSortingStatesOrderedByPriority() {
-      final List<Map.Entry<C, SortingState>> entries = new ArrayList<>();
-      for (final Map.Entry<C, SortingState> entry : sortingStates.entrySet()) {
-        if (!EMPTY_SORTING_STATE.equals(entry.getValue())) {
-          entries.add(entry);
-        }
-      }
-      entries.sort((o1, o2) -> {
+      return sortingStates.entrySet().stream().filter(entry -> !EMPTY_SORTING_STATE.equals(entry.getValue())).sorted((o1, o2) -> {
         final Integer priorityOne = o1.getValue().getPriority();
         final Integer priorityTwo = o2.getValue().getPriority();
 
         return priorityOne.compareTo(priorityTwo);
-      });
-
-      return entries;
+      }).collect(Collectors.toList());
     }
   }
 

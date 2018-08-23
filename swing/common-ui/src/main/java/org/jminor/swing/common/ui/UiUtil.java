@@ -1378,13 +1378,9 @@ public final class UiUtil {
   public static boolean isFileDataFlavor(final TransferHandler.TransferSupport transferSupport) {
     try {
       final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-      for (final DataFlavor flavor : transferSupport.getDataFlavors()) {
-        if (flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor)) {
-          return true;
-        }
-      }
 
-      return false;
+      return Arrays.stream(transferSupport.getDataFlavors())
+              .anyMatch(flavor -> flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor));
     }
     catch (final ClassNotFoundException e) {
       throw new RuntimeException(e);

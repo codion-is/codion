@@ -629,13 +629,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
     @Override
     public boolean include(final R item) {
-      for (final ColumnConditionModel columnFilter : columnFilters) {
-        if (!columnFilter.include(item)) {
-          return false;
-        }
-      }
-
-      return true;
+      return columnFilters.stream().allMatch(columnFilter -> columnFilter.include(item));
     }
   }
 

@@ -512,7 +512,7 @@ public final class EntityService extends Application {
 
     final String basicAuth = basic.get(0);
     if (basicAuth.length() > BASIC_PREFIX_LENGTH && BASIC_PREFIX.equalsIgnoreCase(basicAuth.substring(0, BASIC_PREFIX_LENGTH))) {
-      return User.parseUser(new String(Base64.getDecoder().decode(basicAuth.substring(BASIC_PREFIX_LENGTH, basicAuth.length()))));
+      return User.parseUser(new String(Base64.getDecoder().decode(basicAuth.substring(BASIC_PREFIX_LENGTH))));
     }
 
     throw new ServerException.AuthenticationException("Invalid authorization format");

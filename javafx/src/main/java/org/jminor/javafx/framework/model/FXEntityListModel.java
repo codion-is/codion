@@ -377,14 +377,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final Entity getEntityByKey(final Entity.Key primaryKey) {
-    for (final Entity entity : getFilteredList()) {
-      if (entity.getKey().equals(primaryKey)) {
-        return entity;
-      }
-    }
-
-    return null;
-
+    return getFilteredList().stream().filter(entity -> entity.getKey().equals(primaryKey)).findFirst().orElse(null);
   }
 
   /** {@inheritDoc} */

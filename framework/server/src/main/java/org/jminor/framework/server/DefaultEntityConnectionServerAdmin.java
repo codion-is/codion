@@ -12,6 +12,7 @@ import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.server.ClientLog;
+import org.jminor.common.server.ConnectionRequest;
 import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.Server;
 
@@ -33,16 +34,14 @@ import java.lang.management.ThreadMXBean;
 import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Implements the EntityConnectionServerAdmin interface, providing admin access to a EntityConnectionServer instance.
@@ -166,12 +165,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   /** {@inheritDoc} */
   @Override
   public Collection<String> getClientTypes() {
-    final Set<String> clientTypes = new HashSet<>();
-    for (final RemoteClient client : getClients()) {
-      clientTypes.add(client.getClientTypeId());
-    }
-
-    return clientTypes;
+    return getClients().stream().map(ConnectionRequest::getClientTypeId).collect(Collectors.toSet());
   }
 
   /** {@inheritDoc} */
@@ -254,12 +248,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   /** {@inheritDoc} */
   @Override
   public List<User> getConnectionPools() {
-    final List<User> poolUsers = new ArrayList<>();
-    for (final ConnectionPool pool : ConnectionPools.getConnectionPools()) {
-      poolUsers.add(pool.getUser());
-    }
-
-    return poolUsers;
+    return ConnectionPools.getConnectionPools().stream().map(ConnectionPool::getUser).collect(Collectors.toList());
   }
 
   /** {@inheritDoc} */

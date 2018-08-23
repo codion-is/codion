@@ -179,7 +179,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
     final List<Entity> employeesFromDetailModel =
             departmentModel.getDetailModel(TestDomain.T_EMP).getTableModel().getAllItems();
-    assertTrue(containsAll(salesEmployees, employeesFromDetailModel), "Filtered list should contain all employees for department");
+    assertTrue(salesEmployees.containsAll(employeesFromDetailModel), "Filtered list should contain all employees for department");
   }
 
   @Test
@@ -271,14 +271,4 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
    * @see TestDomain#T_EMP
    */
   protected abstract Model createEmployeeModel();
-
-  private static boolean containsAll(final List<Entity> employees, final List<Entity> employeesFromModel) {
-    for (final Entity entity : employeesFromModel) {
-      if (!employees.contains(entity)) {
-        return false;
-      }
-    }
-
-    return true;
-  }
 }

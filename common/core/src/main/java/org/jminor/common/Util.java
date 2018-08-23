@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * Misc. utilities.
@@ -76,13 +78,8 @@ public class Util {
     if (objects == null) {
       return false;
     }
-    for (final Object object : objects) {
-      if (object == null) {
-        return false;
-      }
-    }
 
-    return true;
+    return Arrays.stream(objects).noneMatch(Objects::isNull);
   }
 
   /**
@@ -142,13 +139,8 @@ public class Util {
     if (maps == null) {
       return true;
     }
-    for (final Map map : maps) {
-      if (nullOrEmpty(map)) {
-        return true;
-      }
-    }
 
-    return false;
+    return Arrays.stream(maps).anyMatch(Util::nullOrEmpty);
   }
 
   /**
@@ -167,13 +159,8 @@ public class Util {
     if (collections == null) {
       return true;
     }
-    for (final Collection collection : collections) {
-      if (nullOrEmpty(collection)) {
-        return true;
-      }
-    }
 
-    return false;
+    return Arrays.stream(collections).anyMatch(Util::nullOrEmpty);
   }
 
   /**
@@ -242,18 +229,14 @@ public class Util {
     }
     final Properties props = System.getProperties();
     final Enumeration propNames = props.propertyNames();
-    final List<String> orderedPropertyNames = new ArrayList<>(props.size());
+    final List<String> propertyNames = new ArrayList<>(props.size());
     while (propNames.hasMoreElements()) {
-      orderedPropertyNames.add((String) propNames.nextElement());
+      propertyNames.add((String) propNames.nextElement());
     }
 
-    Collections.sort(orderedPropertyNames);
-    final StringBuilder propsString = new StringBuilder();
-    for (final String key : orderedPropertyNames) {
-      propsString.append(key).append(": ").append(props.getProperty(key)).append("\n");
-    }
+    Collections.sort(propertyNames);
 
-    return propsString.toString();
+    return propertyNames.stream().map(key -> key + ": " + props.getProperty(key)).collect(Collectors.joining("\n"));
   }
 
   /**
@@ -412,8 +395,7 @@ public class Util {
       }
       catch (final NoSuchMethodException ignored) {/*ignored*/}
       try {
-        return ownerClass.getMethod(propertyName.substring(0, 1).toLowerCase()
-                + propertyName.substring(1, propertyName.length()));
+        return ownerClass.getMethod(propertyName.substring(0, 1).toLowerCase() + propertyName.substring(1));
       }
       catch (final NoSuchMethodException ignored) {/*ignored*/}
     }

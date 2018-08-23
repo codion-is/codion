@@ -11,6 +11,7 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.valuemap.DefaultValueMap;
+import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
@@ -25,6 +26,7 @@ import java.sql.Types;
 import java.text.Collator;
 import java.text.Format;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -36,6 +38,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A {@link Entity} repository specifying the {@link Entity.Definition}s for a given domain.
@@ -257,12 +260,7 @@ public class Entities implements Serializable {
    */
   public final Collection<Property.ColumnProperty> getSearchProperties(final String entityId, final String... searchPropertyIds) {
     if (searchPropertyIds != null && searchPropertyIds.length > 0) {
-      final List<Property.ColumnProperty> searchProperties = new ArrayList<>();
-      for (final String propertyId : searchPropertyIds) {
-        searchProperties.add(getColumnProperty(entityId, propertyId));
-      }
-
-      return searchProperties;
+      return Arrays.stream(searchPropertyIds).map(propertyId -> getColumnProperty(entityId, propertyId)).collect(Collectors.toList());
     }
 
     return Collections.emptyList();
@@ -470,12 +468,7 @@ public class Entities implements Serializable {
       return Collections.emptyList();
     }
 
-    final List<Property.ColumnProperty> columnProperties = new ArrayList<>();
-    for (final String propertyId : propertyIds) {
-      columnProperties.add(getColumnProperty(entityId, propertyId));
-    }
-
-    return columnProperties;
+    return propertyIds.stream().map(propertyId -> getColumnProperty(entityId, propertyId)).collect(Collectors.toList());
   }
 
   /**
@@ -530,12 +523,8 @@ public class Entities implements Serializable {
   public final List<Property> getProperties(final String entityId, final String... propertyIds) {
     Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
     Objects.requireNonNull(propertyIds, PROPERTY_ID_PARAM);
-    final List<Property> properties = new ArrayList<>();
-    for (final String propertyId : propertyIds) {
-      properties.add(getProperty(entityId, propertyId));
-    }
 
-    return properties;
+    return Arrays.stream(propertyIds).map(propertyId -> getProperty(entityId, propertyId)).collect(Collectors.toList());
   }
 
   /**
@@ -631,14 +620,8 @@ public class Entities implements Serializable {
    * @return a List containing the properties, an empty list is returned in case no properties fit the condition
    */
   public final List<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityId, final String foreignEntityId) {
-    final List<Property.ForeignKeyProperty> properties = new ArrayList<>();
-    for (final Property.ForeignKeyProperty foreignKeyProperty : getForeignKeyProperties(entityId)) {
-      if (foreignKeyProperty.getForeignEntityId().equals(foreignEntityId)) {
-        properties.add(foreignKeyProperty);
-      }
-    }
-
-    return properties;
+    return getForeignKeyProperties(entityId).stream().filter(foreignKeyProperty ->
+            foreignKeyProperty.getForeignEntityId().equals(foreignEntityId)).collect(Collectors.toList());
   }
 
   /**
@@ -755,17 +738,9 @@ public class Entities implements Serializable {
     if (Util.nullOrEmpty(entities)) {
       return false;
     }
-    for (final Entity entity : entities) {
-      if (entity != null) {
-        for (final Property.ColumnProperty property : getPrimaryKeyProperties(entity.getEntityId())) {
-          if (entity.isModified(property)) {
-            return true;
-          }
-        }
-      }
-    }
 
-    return false;
+    return entities.stream().anyMatch(entity ->
+            getPrimaryKeyProperties(entity.getEntityId()).stream().anyMatch(entity::isModified));
   }
 
   /**
@@ -946,14 +921,8 @@ public class Entities implements Serializable {
    */
   public static List<Entity> getModifiedEntities(final Collection<Entity> entities) {
     Objects.requireNonNull(entities, ENTITIES_PARAM);
-    final List<Entity> modifiedEntities = new ArrayList<>();
-    for (final Entity entity : entities) {
-      if (entity.isModified()) {
-        modifiedEntities.add(entity);
-      }
-    }
 
-    return modifiedEntities;
+    return entities.stream().filter(ValueMap::isModified).collect(Collectors.toList());
   }
 
   /**
@@ -963,16 +932,11 @@ public class Entities implements Serializable {
    * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}
    */
   public static final Collection<Property.ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison) {
-    final List<Property.ColumnProperty> properties = new ArrayList<>();
-    for (final Property property : comparison.keySet()) {
-      //BLOB property values are not loaded, so we can't compare those
-      if (property instanceof Property.ColumnProperty && !property.isType(Types.BLOB)
-              && isValueMissingOrModified(entity, comparison, property.getPropertyId())) {
-        properties.add((Property.ColumnProperty) property);
-      }
-    }
-
-    return properties;
+    //BLOB property values are not loaded, so we can't compare those
+    return comparison.keySet().stream().filter(property ->
+            property instanceof Property.ColumnProperty && !property.isType(Types.BLOB)
+                    && isValueMissingOrModified(entity, comparison, property.getPropertyId()))
+            .map(property -> (Property.ColumnProperty) property).collect(Collectors.toList());
   }
 
   /**
@@ -990,12 +954,8 @@ public class Entities implements Serializable {
    */
   public static List<Entity.Key> getKeys(final Collection<Entity> entities, final boolean originalValue) {
     Objects.requireNonNull(entities, ENTITIES_PARAM);
-    final List<Entity.Key> keys = new ArrayList<>(entities.size());
-    for (final Entity entity : entities) {
-      keys.add(originalValue ? entity.getOriginalKey() : entity.getKey());
-    }
 
-    return keys;
+    return entities.stream().map(entity -> originalValue ? entity.getOriginalKey() : entity.getKey()).collect(Collectors.toList());
   }
 
   /**
@@ -1174,12 +1134,8 @@ public class Entities implements Serializable {
    */
   public static List<Entity> copyEntities(final List<Entity> entities) {
     Objects.requireNonNull(entities, ENTITIES_PARAM);
-    final List<Entity> copies = new ArrayList<>(entities.size());
-    for (final Entity entity : entities) {
-      copies.add((Entity) entity.getCopy());
-    }
 
-    return copies;
+    return entities.stream().map(entity -> (Entity) entity.getCopy()).collect(Collectors.toList());
   }
 
   /**
@@ -1354,40 +1310,25 @@ public class Entities implements Serializable {
   }
 
   private static List<Property.ColumnProperty> getPrimaryKeyProperties(final Collection<Property> properties) {
-    final List<Property.ColumnProperty> primaryKeyProperties = new ArrayList<>(properties.size());
-    for (final Property property : properties) {
-      if (property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) {
-        primaryKeyProperties.add((Property.ColumnProperty) property);
-      }
-    }
-    primaryKeyProperties.sort((pk1, pk2) -> {
-      final Integer index1 = pk1.getPrimaryKeyIndex();
-      final Integer index2 = pk2.getPrimaryKeyIndex();
+    return properties.stream().filter(property -> property instanceof Property.ColumnProperty
+            && ((Property.ColumnProperty) property).isPrimaryKeyProperty()).map(property -> (Property.ColumnProperty) property)
+            .sorted((pk1, pk2) -> {
+              final Integer index1 = pk1.getPrimaryKeyIndex();
+              final Integer index2 = pk2.getPrimaryKeyIndex();
 
-      return index1.compareTo(index2);
-    });
-
-    return primaryKeyProperties;
+              return index1.compareTo(index2);
+            }).collect(Collectors.toList());
   }
 
   private static List<Property.ForeignKeyProperty> getForeignKeyProperties(final Collection<Property> properties) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = new ArrayList<>(properties.size());
-    for (final Property property : properties) {
-      if (property instanceof Property.ForeignKeyProperty) {
-        foreignKeyProperties.add((Property.ForeignKeyProperty) property);
-      }
-    }
-
-    return foreignKeyProperties;
+    return properties.stream().filter(property -> property instanceof Property.ForeignKeyProperty)
+            .map(property -> (Property.ForeignKeyProperty) property).collect(Collectors.toList());
   }
 
   private static List<Property.ColumnProperty> getColumnProperties(final Collection<Property> properties) {
-    final List<Property.ColumnProperty> columnProperties = new ArrayList<>(properties.size());
-    for (final Property property : properties) {
-      if (property instanceof Property.ColumnProperty) {
-        columnProperties.add((Property.ColumnProperty) property);
-      }
-    }
+    final List<Property.ColumnProperty> columnProperties = properties.stream()
+            .filter(property -> property instanceof Property.ColumnProperty)
+            .map(property -> (Property.ColumnProperty) property).collect(Collectors.toList());
 
     final String[] selectColumnNames = initializeSelectColumnNames(columnProperties);
     for (int idx = 0; idx < selectColumnNames.length; idx++) {
@@ -1398,25 +1339,13 @@ public class Entities implements Serializable {
   }
 
   private static List<Property.TransientProperty> getTransientProperties(final Collection<Property> properties) {
-    final List<Property.TransientProperty> transientProperties = new ArrayList<>(properties.size());
-    for (final Property property : properties) {
-      if (property instanceof Property.TransientProperty) {
-        transientProperties.add((Property.TransientProperty) property);
-      }
-    }
-
-    return transientProperties;
+    return properties.stream().filter(property -> property instanceof Property.TransientProperty)
+            .map(property -> (Property.TransientProperty) property)
+            .collect(Collectors.toList());
   }
 
   private static List<Property> getVisibleProperties(final Collection<Property> properties) {
-    final List<Property> visibleProperties = new ArrayList<>(properties.size());
-    for (final Property property : properties) {
-      if (!property.isHidden()) {
-        visibleProperties.add(property);
-      }
-    }
-
-    return visibleProperties;
+    return properties.stream().filter(property ->  !property.isHidden()).collect(Collectors.toList());
   }
 
   private static Map<String, Set<Property.DerivedProperty>> initializeDerivedProperties(final Collection<Property> properties) {
@@ -1480,12 +1409,8 @@ public class Entities implements Serializable {
    * null if no grouping properties are defined
    */
   private static String initializeGroupByClause(final Collection<Property.ColumnProperty> columnProperties) {
-    final List<Property> groupingProperties = new ArrayList<>(columnProperties.size());
-    for (final Property.ColumnProperty property : columnProperties) {
-      if (property.isGroupingColumn()) {
-        groupingProperties.add(property);
-      }
-    }
+    final List<Property> groupingProperties = columnProperties.stream()
+            .filter(Property.ColumnProperty::isGroupingColumn).collect(Collectors.toList());
     if (groupingProperties.isEmpty()) {
       return null;
     }
@@ -1545,12 +1470,8 @@ public class Entities implements Serializable {
     @Override
     public String toString(final Entity entity) {
       Objects.requireNonNull(entity, ENTITY_PARAM);
-      final StringBuilder builder = new StringBuilder();
-      for (final ValueProvider valueProvider : valueProviders) {
-        builder.append(valueProvider.toString(entity));
-      }
 
-      return builder.toString();
+      return valueProviders.stream().map(valueProvider -> valueProvider.toString(entity)).collect(Collectors.joining());
     }
 
     /**

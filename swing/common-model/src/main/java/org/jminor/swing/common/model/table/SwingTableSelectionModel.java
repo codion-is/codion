@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A default table selection model implementation
@@ -173,12 +174,9 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   @Override
   public List<R> getSelectedItems() {
     final Collection<Integer> selectedModelIndexes = getSelectedIndexes();
-    final List<R> selectedItems = new ArrayList<>(selectedModelIndexes.size());
-    for (final int modelIndex : selectedModelIndexes) {
-      selectedItems.add(tableModelProxy.getItemAt(modelIndex));
-    }
 
-    return selectedItems;
+    return selectedModelIndexes.stream().mapToInt(modelIndex ->
+            modelIndex).mapToObj(tableModelProxy::getItemAt).collect(Collectors.toList());
   }
 
   /** {@inheritDoc} */
@@ -205,14 +203,8 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   /** {@inheritDoc} */
   @Override
   public void addSelectedItems(final Collection<R> items) {
-    final List<Integer> indexes = new ArrayList<>();
-    for (final R item : items) {
-      final int index = tableModelProxy.indexOf(item);
-      if (index >= 0) {
-        indexes.add(index);
-      }
-    }
-    addSelectedIndexes(indexes);
+    addSelectedIndexes(items.stream().mapToInt(tableModelProxy::indexOf)
+            .filter(index -> index >= 0).boxed().collect(Collectors.toList()));
   }
 
   @Override
@@ -259,12 +251,8 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
         setSelectionInterval(lastIndex, lastIndex);
       }
       else {
-        final Collection<Integer> selected = getSelectedIndexes();
-        final List<Integer> indexesToSelect = new ArrayList<>(selected.size());
-        for (final Integer index : selected) {
-          indexesToSelect.add(index == 0 ? lastIndex : index - 1);
-        }
-        setSelectedIndexes(indexesToSelect);
+        setSelectedIndexes(getSelectedIndexes().stream()
+                .map(index -> index == 0 ? lastIndex : index - 1).collect(Collectors.toList()));
       }
     }
   }
@@ -277,12 +265,8 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
         setSelectionInterval(0, 0);
       }
       else {
-        final Collection<Integer> selected = getSelectedIndexes();
-        final List<Integer> indexesToSelect = new ArrayList<>(selected.size());
-        for (final Integer index : selected) {
-          indexesToSelect.add(index == tableModelProxy.getRowCount() - 1 ? 0 : index + 1);
-        }
-        setSelectedIndexes(indexesToSelect);
+        setSelectedIndexes(getSelectedIndexes().stream()
+                .map(index -> index == tableModelProxy.getRowCount() - 1 ? 0 : index + 1).collect(Collectors.toList()));
       }
     }
   }

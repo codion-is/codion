@@ -153,13 +153,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   /** {@inheritDoc} */
   @Override
   public final Entity getEntity(final Entity.Key primaryKey) {
-    for (final Entity entity : getAllItems()) {
-      if (entity != null && entity.getKey().equals(primaryKey)) {
-        return entity;
-      }
-    }
-
-    return null;
+    return getAllItems().stream().filter(entity -> entity != null && entity.getKey().equals(primaryKey)).findFirst().orElse(null);
   }
 
   /** {@inheritDoc} */
@@ -301,14 +295,10 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
       return (Entity) item;
     }
     final String itemToString = item.toString();
-    for (final Entity visibleItem : getVisibleItems()) {
-      if (visibleItem != null && itemToString.equals(visibleItem.toString())) {
-        return visibleItem;
-      }
-    }
 
     //item not found, select null value
-    return null;
+    return getVisibleItems().stream().filter(visibleItem ->
+            visibleItem != null && itemToString.equals(visibleItem.toString())).findFirst().orElse(null);
   }
 
   /** {@inheritDoc} */
@@ -345,8 +335,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private int getIndexOfKey(final Entity.Key primaryKey) {
     final int size = getSize();
     for (int index = 0; index < size; index++) {
-      final Object item = getElementAt(index);
-      if (item != null && ((Entity) item).getKey().equals(primaryKey)) {
+      final Entity item = getElementAt(index);
+      if (item != null && item.getKey().equals(primaryKey)) {
         return index;
       }
     }
@@ -356,8 +346,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private int getFilteredIndexOfKey(final Entity.Key primaryKey) {
     final List<Entity> filteredItems = getFilteredItems();
     for (int index = 0; index < filteredItems.size(); index++) {
-      final Object item = filteredItems.get(index);
-      if (((Entity) item).getKey().equals(primaryKey)) {
+      final Entity item = filteredItems.get(index);
+      if (item.getKey().equals(primaryKey)) {
         return index;
       }
     }

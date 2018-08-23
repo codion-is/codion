@@ -129,7 +129,7 @@ public final class EntityConnectionProviders {
 
   private static String getDomainId(final String domainClass) {
     if (domainClass.contains(".")) {
-      return domainClass.substring(domainClass.lastIndexOf('.') + 1, domainClass.length());
+      return domainClass.substring(domainClass.lastIndexOf('.') + 1);
     }
 
     return domainClass;

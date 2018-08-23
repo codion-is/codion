@@ -202,25 +202,13 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /** {@inheritDoc} */
   @Override
   public final boolean containsDetailModel(final Class<? extends M> modelClass) {
-    for (final M detailModel : detailModels) {
-      if (detailModel.getClass().equals(modelClass)) {
-        return true;
-      }
-    }
-
-    return false;
+    return detailModels.stream().anyMatch(detailModel -> detailModel.getClass().equals(modelClass));
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean containsDetailModel(final String entityId) {
-    for (final M detailModel : detailModels) {
-      if (detailModel.getEntityId().equals(entityId)) {
-        return true;
-      }
-    }
-
-    return false;
+    return detailModels.stream().anyMatch(detailModel -> detailModel.getEntityId().equals(entityId));
   }
 
   /** {@inheritDoc} */

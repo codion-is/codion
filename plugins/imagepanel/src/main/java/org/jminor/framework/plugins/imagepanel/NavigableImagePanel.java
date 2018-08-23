@@ -377,7 +377,7 @@ public class NavigableImagePanel extends JPanel {
 
     final int lastDotIndex = imagePath.lastIndexOf('.');
     if (lastDotIndex != -1) {//if the type is specified check it
-      final String type = imagePath.substring(lastDotIndex + 1, imagePath.length()).toLowerCase();
+      final String type = imagePath.substring(lastDotIndex + 1).toLowerCase();
       if (!acceptedFileTypes.contains(type)) {
         throw new IllegalArgumentException(Messages.get(Messages.UNKNOWN_FILE_TYPE) + ": " + type);
       }

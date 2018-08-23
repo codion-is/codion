@@ -415,15 +415,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   public boolean valuesEqual(final Entity entity) {
     Objects.requireNonNull(entity, "entity");
-    final List<Property> propertyList = definition.getProperties();
-    for (int i = 0; i < propertyList.size(); i++) {
-      final Property property = propertyList.get(i);
-      if (property instanceof Property.ColumnProperty && !Objects.equals(get(property), entity.get(property))) {
-        return false;
-      }
-    }
 
-    return true;
+    return definition.getColumnProperties().stream().allMatch(property -> Objects.equals(get(property), entity.get(property)));
   }
 
   /**

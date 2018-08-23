@@ -4833,3 +4833,4 @@
   Third party dependencies upgraded
   SteppedComboBox bug fixed, requestFocus() overridden, if not then detail panels (as opposed to the root parent panel) with a editable combobox as the initialFocusComponent get the initial focus on application startup
   EntityApplicationPanel.getUser() changes from above reverted, found a way to launch Getdown application with the required arguments for authentication
+  Foreach replaced with streams

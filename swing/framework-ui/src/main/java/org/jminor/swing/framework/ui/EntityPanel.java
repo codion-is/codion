@@ -50,6 +50,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
@@ -570,14 +571,9 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    */
   public final Collection<EntityPanel> getLinkedDetailPanels() {
     final Collection<SwingEntityModel> linkedDetailModels = entityModel.getLinkedDetailModels();
-    final Collection<EntityPanel> linkedDetailPanels = new ArrayList<>(linkedDetailModels.size());
-    for (final EntityPanel detailPanel : detailEntityPanels) {
-      if (linkedDetailModels.contains(detailPanel.entityModel)) {
-        linkedDetailPanels.add(detailPanel);
-      }
-    }
 
-    return linkedDetailPanels;
+    return detailEntityPanels.stream().filter(detailPanel ->
+            linkedDetailModels.contains(detailPanel.entityModel)).collect(Collectors.toList());
   }
 
   /**
@@ -602,13 +598,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @return true if a detail panel for the given entityId is found
    */
   public final boolean containsDetailPanel(final String entityId) {
-    for (final EntityPanel detailPanel : detailEntityPanels) {
-      if (detailPanel.entityModel.getEntityId().equals(entityId)) {
-        return true;
-      }
-    }
-
-    return false;
+    return detailEntityPanels.stream().anyMatch(detailPanel -> detailPanel.entityModel.getEntityId().equals(entityId));
   }
 
   /** {@inheritDoc} */

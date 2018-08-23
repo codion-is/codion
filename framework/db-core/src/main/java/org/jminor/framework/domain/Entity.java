@@ -240,7 +240,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
 
   /**
    * @param entity the entity to compare to
-   * @return true if all property values are equal
+   * @return true if all column property values (Property.ColumnProperty) are equal
    */
   boolean valuesEqual(final Entity entity);
 

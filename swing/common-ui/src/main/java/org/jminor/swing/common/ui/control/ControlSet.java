@@ -11,6 +11,7 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A set of Actions/Controls, includes separators.
@@ -126,14 +127,8 @@ public final class ControlSet extends Control {
    * @return a list containing all ControlSets this ControlSet contains
    */
   public List<ControlSet> getControlSets() {
-    final List<ControlSet> controlSets = new ArrayList<>();
-    for (final Action control : actions) {
-      if (control instanceof ControlSet) {
-        controlSets.add((ControlSet) control);
-      }
-    }
-
-    return controlSets;
+    return actions.stream().filter(control -> control instanceof ControlSet)
+            .map(control -> (ControlSet) control).collect(Collectors.toList());
   }
 
   /**

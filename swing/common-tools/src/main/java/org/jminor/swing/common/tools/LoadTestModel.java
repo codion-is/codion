@@ -29,6 +29,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * A default LoadTest implementation.
@@ -214,12 +215,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   /** {@inheritDoc} */
   @Override
   public final Collection<String> getUsageScenarios() {
-    final Collection<String> ret = new ArrayList<>();
-    for (final UsageScenario scenario : usageScenarios) {
-      ret.add(scenario.getName());
-    }
-
-    return ret;
+    return usageScenarios.stream().map(UsageScenario::getName).collect(Collectors.toList());
   }
 
   /** {@inheritDoc} */

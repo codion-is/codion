@@ -240,7 +240,7 @@ public class NumberField extends JTextField {
             formattedNumber += decimalSeparator;
           }
           final int decimalSeparatorIndex = string.indexOf(decimalSeparator);
-          if (decimalSeparatorIndex >= 0 && string.substring(decimalSeparatorIndex, string.length()).endsWith("0")) {
+          if (decimalSeparatorIndex >= 0 && string.substring(decimalSeparatorIndex).endsWith("0")) {
             formattedNumber += (formattedNumber.contains(decimalSeparator) ? "" : decimalSeparator) +
                     getTrailingDecimalZeros(string, decimalSeparatorIndex);
           }

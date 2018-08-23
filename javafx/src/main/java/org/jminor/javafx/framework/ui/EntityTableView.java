@@ -311,18 +311,8 @@ public class EntityTableView extends TableView<Entity> {
         listModel.setFilterCondition(null);
       }
       else {
-        listModel.setFilterCondition(item -> {
-          boolean found = false;
-          for (final TableColumn<Entity, ?> column : getColumns()) {
-            final Object value = column.getCellObservableValue(item).getValue();
-            if (value != null && value.toString().toLowerCase().contains(newValue.toLowerCase())) {
-              found = true;
-              break;
-            }
-          }
-
-          return found;
-        });
+        listModel.setFilterCondition(item -> getColumns().stream().map(column -> column.getCellObservableValue(item).getValue())
+                .anyMatch(value -> value != null && value.toString().toLowerCase().contains(newValue.toLowerCase())));
       }
     });
     setOnKeyReleased(this::onKeyRelease);

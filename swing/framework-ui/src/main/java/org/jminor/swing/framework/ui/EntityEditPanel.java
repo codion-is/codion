@@ -335,13 +335,8 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * associated with a propertyId
    */
   public final String getComponentPropertyId(final JComponent component) {
-    for (final Map.Entry<String, JComponent> entry : components.entrySet()) {
-      if (entry.getValue().equals(component)) {
-        return entry.getKey();
-      }
-    }
-
-    return null;
+    return components.entrySet().stream().filter(entry -> entry.getValue().equals(component))
+            .findFirst().map(Map.Entry::getKey).orElse(null);
   }
 
   /**

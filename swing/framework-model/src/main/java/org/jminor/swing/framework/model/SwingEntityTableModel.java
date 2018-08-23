@@ -44,6 +44,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * A TableModel implementation for displaying and working with entities.
@@ -381,13 +382,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final Entity getEntityByKey(final Entity.Key primaryKey) {
-    for (final Entity entity : getVisibleItems()) {
-      if (entity.getKey().equals(primaryKey)) {
-        return entity;
-      }
-    }
-
-    return null;
+    return getVisibleItems().stream().filter(entity -> entity.getKey().equals(primaryKey)).findFirst().orElse(null);
   }
 
   /** {@inheritDoc} */
@@ -470,17 +465,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys) {
-    final List<Entity> entities = new ArrayList<>();
-    for (final Entity entity : getAllItems()) {
-      for (final Entity.Key key : keys) {
-        if (entity.getKey().equals(key)) {
-          entities.add(entity);
-          break;
-        }
-      }
-    }
-
-    return entities;
+    return getAllItems().stream().filter(entity -> keys.stream()
+            .anyMatch(key -> entity.getKey().equals(key))).collect(Collectors.toList());
   }
 
   /** {@inheritDoc} */

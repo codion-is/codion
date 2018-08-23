@@ -20,6 +20,7 @@ import org.jminor.common.db.pool.ConnectionPoolProvider;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.server.AbstractServer;
 import org.jminor.common.server.ClientLog;
+import org.jminor.common.server.ConnectionRequest;
 import org.jminor.common.server.ConnectionValidator;
 import org.jminor.common.server.LoginProxy;
 import org.jminor.common.server.RemoteClient;
@@ -48,16 +49,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * A remote server class, responsible for handling requests for AbstractRemoteEntityConnections.
@@ -346,12 +346,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @return info on all connected users
    */
   Collection<User> getUsers() {
-    final Set<User> users = new HashSet<>();
-    for (final RemoteClient remoteClient : getConnections().keySet()) {
-      users.add(remoteClient.getUser());
-    }
-
-    return users;
+    return getConnections().keySet().stream().map(ConnectionRequest::getUser).collect(Collectors.toSet());
   }
 
   /**
@@ -366,14 +361,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @return all clients connected with the given user
    */
   Collection<RemoteClient> getClients(final User user) {
-    final Collection<RemoteClient> clients = new ArrayList<>();
-    for (final RemoteClient remoteClient : getConnections().keySet()) {
-      if (user == null || remoteClient.getUser().equals(user)) {
-        clients.add(remoteClient);
-      }
-    }
-
-    return clients;
+    return getConnections().keySet().stream().filter(remoteClient ->
+            user == null || remoteClient.getUser().equals(user)).collect(Collectors.toList());
   }
 
   /**
@@ -381,15 +370,10 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * @return all clients of the given type
    */
   Collection<RemoteClient> getClients(final String clientTypeId) {
-    final Collection<RemoteClient> clients = new ArrayList<>();
     //using the remoteClient from the connection since it contains the correct database user
-    for (final AbstractRemoteEntityConnection connection : getConnections().values()) {
-      if (connection.getRemoteClient().getClientTypeId().equals(clientTypeId)) {
-        clients.add(connection.getRemoteClient());
-      }
-    }
-
-    return clients;
+    return getConnections().values().stream()
+            .filter(connection -> connection.getRemoteClient().getClientTypeId().equals(clientTypeId))
+            .map(AbstractRemoteEntityConnection::getRemoteClient).collect(Collectors.toList());
   }
 
   /**
@@ -620,12 +604,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   }
 
   protected static Collection<User> getPoolUsers(final Collection<String> poolUsers) {
-    final Collection<User> users = new ArrayList<>();
-    for (final String usernamePassword : poolUsers) {
-      users.add(User.parseUser(usernamePassword));
-    }
-
-    return users;
+    return poolUsers.stream().map(User::parseUser).collect(Collectors.toList());
   }
 
   protected static Map<String, Integer> getClientTimeoutValues() {

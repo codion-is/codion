@@ -324,7 +324,7 @@ public final class EntityGeneratorModel {
   private static String getCaption(final Column column) {
     final String columnName = column.getColumnName().toLowerCase().replaceAll("_", " ");
 
-    return columnName.substring(0, 1).toUpperCase() + columnName.substring(1, columnName.length());
+    return columnName.substring(0, 1).toUpperCase() + columnName.substring(1);
   }
 
   private static String getEntityDefinition(final Table table) {
@@ -626,23 +626,14 @@ public final class EntityGeneratorModel {
     }
 
     private int getPrimaryKeyColumnIndex(final String columnName) {
-      for (final PrimaryKeyColumn primaryKeyColumn : table.primaryKeyColumns) {
-        if (columnName.equals(primaryKeyColumn.getColumnName())) {
-          return primaryKeyColumn.getKeySeq();
-        }
-      }
-
-      return -1;
+      return table.primaryKeyColumns.stream().filter(primaryKeyColumn ->
+              columnName.equals(primaryKeyColumn.getColumnName())).findFirst().map(PrimaryKeyColumn::getKeySeq).orElse(-1);
     }
 
     private ForeignKeyColumn getForeignKeyColumn(final String tableName, final String columnName) {
-      for (final ForeignKeyColumn foreignKeyColumn : table.foreignKeys) {
-        if (foreignKeyColumn.getFkTableName().equals(tableName) && foreignKeyColumn.getFkColumnName().equals(columnName)) {
-          return foreignKeyColumn;
-        }
-      }
-
-      return null;
+      return table.foreignKeys.stream().filter(foreignKeyColumn ->
+              foreignKeyColumn.getFkTableName().equals(tableName)
+                      && foreignKeyColumn.getFkColumnName().equals(columnName)).findFirst().orElse(null);
     }
 
     private static String translateType(final int sqlType, final int decimalDigits) {
