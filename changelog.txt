@@ -4836,3 +4836,4 @@
   Foreach replaced with streams
   Clients.getUserCredentials() overridden with String[] args parameter, getAuthenticationToken(String[] args) added
   EntityApplicationPanel.getUser() improved using the above
+  AbstractEntityConnectionProvider.initializeDomain() removed, domain initialized in doConnect()

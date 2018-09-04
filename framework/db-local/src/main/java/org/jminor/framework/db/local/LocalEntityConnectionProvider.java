@@ -112,17 +112,11 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   /** {@inheritDoc} */
   @Override
-  protected Entities initializeDomain() {
-    return domain;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      return Util.initializeProxy(EntityConnection.class, new LocalConnectionHandler(getDomain(),
-              LocalEntityConnections.createConnection(getDomain(), database, getUser())));
+      return Util.initializeProxy(EntityConnection.class, new LocalConnectionHandler(domain,
+              LocalEntityConnections.createConnection(domain, database, getUser())));
     }
     catch (final Exception e) {
       throw new RuntimeException(e);

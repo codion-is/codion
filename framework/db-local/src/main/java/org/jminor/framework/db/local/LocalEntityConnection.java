@@ -92,6 +92,7 @@ public final class LocalEntityConnection implements EntityConnection {
 
   /**
    * Constructs a new LocalEntityConnection instance
+   * @param domain the domain model
    * @param database the Database instance
    * @param user the user used for connecting to the database
    * @param optimisticLocking if true then optimistic locking is used during updates
@@ -102,7 +103,7 @@ public final class LocalEntityConnection implements EntityConnection {
    */
   LocalEntityConnection(final Entities domain, final Database database, final User user, final boolean optimisticLocking,
                         final boolean limitForeignKeyFetchDepth, final int validityCheckTimeout) throws DatabaseException {
-    this.domain = domain;
+    this.domain = Objects.requireNonNull(domain, "domain");
     this.connection = DatabaseConnections.createConnection(database, user, validityCheckTimeout);
     this.entityConditions = new EntityConditions(domain);
     this.optimisticLocking = optimisticLocking;
@@ -111,6 +112,7 @@ public final class LocalEntityConnection implements EntityConnection {
 
   /**
    * Constructs a new LocalEntityConnection instance
+   * @param domain the domain model
    * @param database the Database instance
    * @param connection the Connection object to base this EntityConnection on, it is assumed to be in a valid state
    * @param optimisticLocking if true then optimistic locking is used during updates
@@ -122,7 +124,7 @@ public final class LocalEntityConnection implements EntityConnection {
    */
   LocalEntityConnection(final Entities domain, final Database database, final Connection connection, final boolean optimisticLocking,
                         final boolean limitForeignKeyFetchDepth, final int validityCheckTimeout) throws DatabaseException {
-    this.domain = domain;
+    this.domain = Objects.requireNonNull(domain, "domain");
     this.connection = DatabaseConnections.createConnection(database, connection, validityCheckTimeout);
     this.entityConditions = new EntityConditions(domain);
     this.optimisticLocking = optimisticLocking;

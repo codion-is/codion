@@ -63,7 +63,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   @Override
   public final Entities getDomain() {
     if (domain == null) {
-      domain = initializeDomain();
+      doConnect();
     }
 
     return domain;
@@ -142,12 +142,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   /**
-   * Initializes the domain model entities, either by instantiating locally or retreiving from a remote server
-   * @return the domain model
-   */
-  protected abstract Entities initializeDomain();
-
-  /**
    * @return an established connection
    */
   protected abstract EntityConnection connect();
@@ -175,6 +169,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   private void doConnect() {
     entityConnection = connect();
+    domain = entityConnection.getDomain().registerDomain();
     if (scheduleValidityCheck) {
       validityCheckScheduler.start();
     }

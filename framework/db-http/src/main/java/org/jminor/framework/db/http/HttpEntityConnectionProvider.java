@@ -9,7 +9,6 @@ import org.jminor.common.Value;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.domain.Entities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,12 +116,6 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    */
   public UUID getClientId() {
     return clientId;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  protected Entities initializeDomain() {
-    return getConnection().getDomain().registerDomain();
   }
 
   /** {@inheritDoc} */

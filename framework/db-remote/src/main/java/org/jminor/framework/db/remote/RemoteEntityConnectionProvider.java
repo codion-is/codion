@@ -12,7 +12,6 @@ import org.jminor.common.server.Server;
 import org.jminor.common.server.Servers;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.domain.Entities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,17 +129,6 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    */
   public Server.ServerInfo getServerInfo() {
     return serverInfo;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  protected Entities initializeDomain() {
-    try {
-      return getConnection().getDomain().registerDomain();
-    }
-    catch (final Exception e) {
-      throw new RuntimeException(e);
-    }
   }
 
   /** {@inheritDoc} */
