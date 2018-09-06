@@ -30,6 +30,7 @@ import org.jminor.swing.common.ui.worker.ProgressWorker;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -114,7 +115,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringTokenizer;
-import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -1287,7 +1287,22 @@ public final class UiUtil {
    * @param <T> the type of values being selected
    */
   public static <T> T selectValue(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle) {
-    final List<T> selected = selectValues(dialogOwner, values, dialogTitle, true);
+    return selectValue(dialogOwner, values, dialogTitle, null);
+  }
+
+  /**
+   * Displays a dialog for selecting one of a collection of values
+   * @param dialogOwner the dialog owner
+   * @param values the values to choose from
+   * @param dialogTitle the dialog title
+   * @param defaultSelection the item selected by default
+   * @return the selected value, null if none was selected
+   * @param <T> the type of values being selected
+   */
+  public static <T> T selectValue(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle,
+                                  final T defaultSelection) {
+    final List<T> selected = selectValues(dialogOwner, values, dialogTitle, true,
+            defaultSelection == null ? Collections.emptyList() : Collections.singletonList(defaultSelection));
     if (selected.isEmpty()) {
       return null;
     }
@@ -1304,7 +1319,21 @@ public final class UiUtil {
    * @param <T> the type of values being selected
    */
   public static <T> List<T> selectValues(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle) {
-    return selectValues(dialogOwner, values, dialogTitle, false);
+    return selectValues(dialogOwner, values, dialogTitle, false, Collections.emptyList());
+  }
+
+  /**
+   * Displays a dialog for selecting from of a collection of values
+   * @param dialogOwner the dialog owner
+   * @param values the values to choose from
+   * @param dialogTitle the dialog title
+   * @param defaultSelection the items selected by default
+   * @return the selected values, en empty Collection if none was selected
+   * @param <T> the type of values being selected
+   */
+  public static <T> List<T> selectValues(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle,
+                                         final Collection<T> defaultSelection) {
+    return selectValues(dialogOwner, values, dialogTitle, false, defaultSelection);
   }
 
   /**
@@ -1759,11 +1788,19 @@ public final class UiUtil {
    * @param values the values to choose from
    * @param dialogTitle the dialog title
    * @param singleSelection if true then the selection is restricted to a single value
+   * @param defaultSelection the items selected by default
    * @return the selected values, en empty Collection if none was selected
    */
   private static <T> List<T> selectValues(final JComponent dialogOwner, final Collection<T> values,
-                                          final String dialogTitle, final boolean singleSelection) {
-    final JList<T> list = new JList<>(new Vector<>(values));
+                                          final String dialogTitle, final boolean singleSelection,
+                                          final Collection<T> defaultSelection) {
+    final DefaultListModel<T> listModel = new DefaultListModel<>();
+    values.forEach(listModel::addElement);
+    final JList<T> list = new JList<>(listModel);
+    defaultSelection.forEach(item -> {
+      final int index = listModel.indexOf(item);
+      list.getSelectionModel().addSelectionInterval(index, index);
+    });
     final Window owner = getParentWindow(dialogOwner);
     final JDialog dialog = new JDialog(owner, dialogTitle);
     final Action okAction = new DisposeWindowAction(dialog);
