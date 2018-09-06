@@ -8,6 +8,7 @@ import org.jminor.common.Version;
 import org.jminor.framework.domain.Entities;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -71,6 +72,7 @@ public final class EntityConnectionProviders {
    */
   public static EntityConnectionProvider connectionProvider(final String domainClass, final User user, final String clientTypeId,
                                                             final UUID clientId, final Version clientVersion) {
+    Objects.requireNonNull(domainClass, "domainClass");
     try {
       final String clientConnectionType = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
       switch (clientConnectionType) {

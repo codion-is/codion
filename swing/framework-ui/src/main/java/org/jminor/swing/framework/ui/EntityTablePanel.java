@@ -986,7 +986,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return the south panel, or null if no south panel should be used
    */
   protected JPanel initializeSouthPanel() {
-    initializeStatusMessageLabel();
     final JPanel centerPanel = new JPanel(UiUtil.createBorderLayout());
     final JTextField searchField = getSearchField();
     final JPanel searchFieldPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
