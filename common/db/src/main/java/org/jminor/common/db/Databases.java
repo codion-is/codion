@@ -170,9 +170,7 @@ public final class Databases {
   private static boolean validateWithQuery(final Connection connection, final Database database,
                                            final int timeoutInSeconds) throws SQLException {
     ResultSet rs = null;
-    Statement statement = null;
-    try {
-      statement = connection.createStatement();
+    try (final Statement statement = connection.createStatement()) {
       if (timeoutInSeconds > 0) {
         try {
           statement.setQueryTimeout(timeoutInSeconds);
@@ -185,7 +183,6 @@ public final class Databases {
     }
     finally {
       closeSilently(rs);
-      closeSilently(statement);
     }
   }
 

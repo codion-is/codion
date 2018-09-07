@@ -168,9 +168,8 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * Serializes the given Entity.Key instances into a JSON string array
    * @param keys the keys
    * @return a JSON string representation of the given entity keys
-   * @throws JSONException in case of an exception
    */
-  public String serializeKeys(final Collection<Entity.Key> keys) throws JSONException {
+  public String serializeKeys(final Collection<Entity.Key> keys) {
     if (Util.nullOrEmpty(keys)) {
       return "";
     }
@@ -187,9 +186,8 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * Serializes the given entity
    * @param entity the Entity to serialize
    * @return the entity as a serialized string
-   * @throws JSONException in case of an exception
    */
-  public String serializeEntity(final Entity entity) throws JSONException {
+  public String serializeEntity(final Entity entity) {
     return toJSONObject(entity).toString();
   }
 
@@ -197,9 +195,8 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * Serializes the given key
    * @param key the key
    * @return a JSON serialized representation of the key
-   * @throws JSONException in case of an exception
    */
-  public String serializeKey(final Entity.Key key) throws JSONException {
+  public String serializeKey(final Entity.Key key) {
     return toJSONObject(key).toString();
   }
 
@@ -208,9 +205,8 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * @param value the value
    * @param property the property
    * @return the value as a string
-   * @throws JSONException in case of an exception
    */
-  public Object serializeValue(final Object value, final Property property) throws JSONException {
+  public Object serializeValue(final Object value, final Property property) {
     if (value == null) {
       return JSONObject.NULL;
     }
@@ -234,9 +230,8 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * @param jsonString the JSON string to parse
    * @return a List containing the Entity instances represented by the given JSON string
    * @throws ParseException in case of an exception
-   * @throws JSONException in case of an exception
    */
-  public List<Entity> deserializeEntities(final String jsonString) throws JSONException, ParseException {
+  public List<Entity> deserializeEntities(final String jsonString) throws ParseException {
     if (Util.nullOrEmpty(jsonString)) {
       return Collections.emptyList();
     }
@@ -255,9 +250,8 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * @param jsonString the JSON string to parse
    * @return a List containing the Entity.Key instances represented by the given JSON string
    * @throws ParseException in case of an exception
-   * @throws JSONException in case of an exception
    */
-  public List<Entity.Key> deserializeKeys(final String jsonString) throws JSONException, ParseException {
+  public List<Entity.Key> deserializeKeys(final String jsonString) throws ParseException {
     if (Util.nullOrEmpty(jsonString)) {
       return Collections.emptyList();
     }
@@ -276,9 +270,8 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * @param entityObject the JSON object string representing the entity
    * @return the Entity represented by the given JSON object
    * @throws ParseException in case of an exception
-   * @throws JSONException in case of an exception
    */
-  public Entity parseEntity(final String entityObject) throws JSONException, ParseException {
+  public Entity parseEntity(final String entityObject) throws ParseException {
     return parseEntity(new JSONObject(entityObject));
   }
 
@@ -287,9 +280,8 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * @param keyObject the JSON object string representing the entity
    * @return the Entity.Key represented by the given JSON object
    * @throws ParseException in case of an exception
-   * @throws JSONException in case of an exception
    */
-  public Entity.Key parseKey(final String keyObject) throws JSONException, ParseException {
+  public Entity.Key parseKey(final String keyObject) throws ParseException {
     return parseKey(new JSONObject(keyObject));
   }
 
@@ -299,10 +291,8 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * @return the Entity.Key represented by the given JSON object
    * @throws IllegalArgumentException in case of an undefined entity
    * @throws ParseException in case of an exception
-   * @throws JSONException in case of an exception
    */
-  public Entity.Key parseKey(final JSONObject keyObject)
-          throws JSONException, ParseException {
+  public Entity.Key parseKey(final JSONObject keyObject) throws ParseException {
     final String entityId = keyObject.getString(ENTITY_ID);
     if (!domain.isDefined(entityId)) {
       throw new IllegalArgumentException("Undefined entity found in JSON string: '" + entityId + "'");
@@ -323,11 +313,9 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * @param property the property
    * @param propertyValues the JSONObject containing the value
    * @return the value for the given property
-   * @throws JSONException in case of an exception
    * @throws ParseException in case of an exception
    */
-  public Object parseValue(final Property property, final JSONObject propertyValues)
-          throws JSONException, ParseException {
+  public Object parseValue(final Property property, final JSONObject propertyValues) throws ParseException {
     if (propertyValues.isNull(property.getPropertyId())) {
       return null;
     }
@@ -359,7 +347,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     return propertyValues.getString(property.getPropertyId());
   }
 
-  private JSONObject toJSONObject(final Entity entity) throws JSONException {
+  private JSONObject toJSONObject(final Entity entity) {
     final JSONObject jsonEntity = new JSONObject();
     jsonEntity.put(ENTITY_ID, entity.getEntityId());
     jsonEntity.put(VALUES, serializeValues(entity));
@@ -370,7 +358,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     return jsonEntity;
   }
 
-  private JSONObject toJSONObject(final Entity.Key key) throws JSONException {
+  private JSONObject toJSONObject(final Entity.Key key) {
     final JSONObject jsonKey = new JSONObject();
     jsonKey.put(ENTITY_ID, key.getEntityId());
     jsonKey.put(VALUES, serializeValues(key));
@@ -378,7 +366,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     return jsonKey;
   }
 
-  private JSONObject serializeValues(final Entity entity) throws JSONException {
+  private JSONObject serializeValues(final Entity entity) {
     final JSONObject propertyValues = new JSONObject();
     for (final Property property : entity.keySet()) {
       if (include(property, entity)) {
@@ -389,7 +377,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     return propertyValues;
   }
 
-  private JSONObject serializeValues(final Entity.Key key) throws JSONException {
+  private JSONObject serializeValues(final Entity.Key key) {
     final JSONObject propertyValues = new JSONObject();
     for (final Property.ColumnProperty property : domain.getPrimaryKeyProperties(key.getEntityId())) {
       propertyValues.put(property.getPropertyId(), serializeValue(key.get(property), property));
@@ -398,7 +386,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     return propertyValues;
   }
 
-  private JSONObject serializeOriginalValues(final Entity entity) throws JSONException {
+  private JSONObject serializeOriginalValues(final Entity entity) {
     final JSONObject originalValues = new JSONObject();
     for (final Property property : domain.getProperties(entity.getEntityId())) {
       if (entity.isModified(property.getPropertyId()) && (!(property instanceof Property.ForeignKeyProperty) || includeForeignKeyValues)) {
@@ -433,9 +421,8 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * @return the Entity represented by the given JSON object
    * @throws IllegalArgumentException in case of an undefined entity
    * @throws ParseException in case of an exception
-   * @throws JSONException in case of an exception
    */
-  private Entity parseEntity(final JSONObject entityObject) throws JSONException, ParseException {
+  private Entity parseEntity(final JSONObject entityObject) throws ParseException {
     final Map<Property, Object> propertyValueMap = new HashMap<>();
     final String entityId = entityObject.getString(ENTITY_ID);
     if (!domain.isDefined(entityId)) {

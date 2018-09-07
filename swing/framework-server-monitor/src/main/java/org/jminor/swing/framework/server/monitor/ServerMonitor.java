@@ -29,6 +29,7 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +86,7 @@ public final class ServerMonitor {
 
   private final XYSeries threadCountSeries = new XYSeries("Threads");
   private final XYSeries daemonThreadCountSeries = new XYSeries("Daemon Threads");
-  private final Map<Thread.State, XYSeries> threadStateSeries = new HashMap<>();
+  private final Map<Thread.State, XYSeries> threadStateSeries = new EnumMap<Thread.State, XYSeries>(Thread.State.class);
   private final XYSeriesCollection threadCountCollection = new XYSeriesCollection();
 
   private final XYSeries systemLoadSeries = new XYSeries("System Load");

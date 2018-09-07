@@ -1174,7 +1174,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   protected final Control getConditionPanelControl() {
-    return Controls.toggleControl(this, "conditionPanelVisible",
+    return Controls.toggleControl(this, CONDITION_PANEL_VISIBLE,
             FrameworkMessages.get(FrameworkMessages.SHOW), conditionPanelVisibilityChangedEvent);
   }
 

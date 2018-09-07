@@ -94,7 +94,7 @@ public final class Clients {
       final Remote credentialService = Servers.getRegistry(Registry.REGISTRY_PORT).lookup(CredentialService.class.getSimpleName());
       LOG.debug("CredentialService found: " + credentialService);
 
-      return ((CredentialService) credentialService).getUser(Objects.requireNonNull(authenticationToken, "authenticationToken"));
+      return ((CredentialService) credentialService).getUser(Objects.requireNonNull(authenticationToken, AUTHENTICATION_TOKEN_PREFIX));
     }
     catch (final NotBoundException | RemoteException e) {
       LOG.debug("No CredentialService found", e);

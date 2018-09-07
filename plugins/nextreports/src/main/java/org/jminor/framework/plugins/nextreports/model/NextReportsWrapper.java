@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.plugins.nextreports.model;
 
-import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.reports.ReportDataWrapper;
 import org.jminor.common.db.reports.ReportException;
@@ -55,10 +54,7 @@ public final class NextReportsWrapper implements ReportWrapper<NextReportsResult
   @Override
   public ReportResult<NextReportsResult> fillReport(final Connection connection) throws ReportException {
     File file = null;
-    OutputStream output = null;
-    try {
-      file = File.createTempFile("NextReportsWrapper", null, null);
-      output = new FileOutputStream(file);
+    try (final OutputStream output = new FileOutputStream(file = File.createTempFile("NextReportsWrapper", null, null))) {
       FluentReportRunner.report(loadReport(reportPath))
               .connectTo(connection)
               .withQueryTimeout(60)
@@ -75,7 +71,6 @@ public final class NextReportsWrapper implements ReportWrapper<NextReportsResult
       throw new ReportException(e);
     }
     finally {
-      Util.closeSilently(output);
       if (file != null) {
         file.delete();
       }

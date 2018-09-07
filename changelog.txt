@@ -4838,3 +4838,4 @@
   EntityApplicationPanel.getUser() improved using the above
   AbstractEntityConnectionProvider.initializeDomain() removed, domain initialized in doConnect()
   UiUtil.selectValue() and selectValues() overloaded with defaultSelection parameter
+  SonarQube run
