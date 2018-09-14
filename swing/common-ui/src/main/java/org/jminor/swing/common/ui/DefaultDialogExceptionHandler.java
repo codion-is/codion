@@ -100,7 +100,7 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
 
   private static String getMessageTitle(final Throwable e) {
     if (e instanceof FileNotFoundException) {
-      return Messages.get(Messages.UNABLE_TO_OPEN_FILE);
+      return Messages.get(Messages.FILE_NOT_FOUND);
     }
 
     return Messages.get(Messages.EXCEPTION);

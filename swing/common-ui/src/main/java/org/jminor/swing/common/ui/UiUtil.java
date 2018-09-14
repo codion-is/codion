@@ -114,6 +114,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 
@@ -126,6 +127,8 @@ public final class UiUtil {
     //otherwise a hierachy of tabbed panes looks crappy
     UIManager.put("TabbedPane.contentBorderInsets", new Insets(2,0,0,0));
   }
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(UiUtil.class.getName(), Locale.getDefault());
 
   /**
    * A wait cursor
@@ -255,7 +258,7 @@ public final class UiUtil {
    * @throws CancelException in case the user cancels
    */
   public static File selectDirectory(final JComponent dialogParent, final String startDir) {
-    return selectDirectory(dialogParent, startDir, Messages.get(Messages.SELECT_DIRECTORY));
+    return selectDirectory(dialogParent, startDir, MESSAGES.getString("select_directory"));
   }
 
   /**
@@ -278,7 +281,7 @@ public final class UiUtil {
    * @throws CancelException in case the user cancels
    */
   public static File selectFile(final JComponent dialogParent, final String startDir) {
-    return selectFile(dialogParent, startDir, Messages.get(Messages.SELECT_FILE));
+    return selectFile(dialogParent, startDir, MESSAGES.getString("select_file"));
   }
 
   /**
@@ -415,8 +418,8 @@ public final class UiUtil {
       if (option == JFileChooser.APPROVE_OPTION) {
         selectedFile = fileChooserSave.getSelectedFile();
         if (selectedFile.exists() && confirmOverwrite) {
-          option = JOptionPane.showConfirmDialog(dialogParent, Messages.get(Messages.OVERWRITE_FILE),
-                  Messages.get(Messages.FILE_EXISTS), JOptionPane.YES_NO_CANCEL_OPTION);
+          option = JOptionPane.showConfirmDialog(dialogParent, MESSAGES.getString("overwrite_file"),
+                  MESSAGES.getString("file_exists"), JOptionPane.YES_NO_CANCEL_OPTION);
           if (option == JOptionPane.YES_OPTION) {
             fileChosen = true;
           }
@@ -1275,7 +1278,7 @@ public final class UiUtil {
    * @param <T> the type of values being selected
    */
   public static <T> T selectValue(final JComponent dialogOwner, final Collection<T> values) {
-    return selectValue(dialogOwner, values, Messages.get(Messages.SELECT_VALUE));
+    return selectValue(dialogOwner, values, MESSAGES.getString("select_value"));
   }
 
   /**
@@ -2064,24 +2067,24 @@ public final class UiUtil {
 
     private void setupControls() {
       ctrDetails = Controls.toggleControl(showDetailsState);
-      ctrDetails.setName(Messages.get(Messages.DETAILS));
-      ctrDetails.setDescription(Messages.get(Messages.SHOW_DETAILS));
+      ctrDetails.setName(MESSAGES.getString("details"));
+      ctrDetails.setDescription(MESSAGES.getString("show_details"));
       ctrPrint = Controls.control(() -> detailsArea.print(), Messages.get(Messages.PRINT));
-      ctrPrint.setDescription(Messages.get(Messages.PRINT_ERROR_REPORT));
-      ctrPrint.setMnemonic(Messages.get(Messages.PRINT_ERROR_REPORT_MNEMONIC).charAt(0));
+      ctrPrint.setDescription(MESSAGES.getString("print_error_report"));
+      ctrPrint.setMnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0));
       ctrClose = Controls.control(this::dispose, Messages.get(Messages.CLOSE));
-      ctrClose.setDescription(Messages.get(Messages.CLOSE_DIALOG));
-      ctrClose.setMnemonic(Messages.get(Messages.CLOSE_MNEMONIC).charAt(0));
+      ctrClose.setDescription(MESSAGES.getString("close_dialog"));
+      ctrClose.setMnemonic(MESSAGES.getString("close_mnemonic").charAt(0));
       ctrSave = Controls.control(() -> FileUtil.writeFile(detailsArea.getText(), selectFileToSave(detailsArea, null, null)),
-              Messages.get(Messages.SAVE));
-      ctrSave.setDescription(Messages.get(Messages.SAVE_ERROR_LOG));
-      ctrSave.setMnemonic(Messages.get(Messages.SAVE_MNEMONIC).charAt(0));
+              MESSAGES.getString("save"));
+      ctrSave.setDescription(MESSAGES.getString("save_error_log"));
+      ctrSave.setMnemonic(MESSAGES.getString("save_mnemonic").charAt(0));
       ctrCopy = Controls.control(() -> setClipboard(detailsArea.getText()), Messages.get(Messages.COPY));
-      ctrCopy.setDescription(Messages.get(Messages.COPY_TO_CLIPBOARD));
-      ctrCopy.setMnemonic(Messages.get(Messages.COPY_MNEMONIC).charAt(0));
-      ctrEmail = Controls.control(this::emailErrorReport, Messages.get(Messages.SEND));
-      ctrEmail.setDescription(Messages.get(Messages.SEND_EMAIL));
-      ctrEmail.setMnemonic(Messages.get(Messages.SEND_MNEMONIC).charAt(0));
+      ctrCopy.setDescription(MESSAGES.getString("copy_to_clipboard"));
+      ctrCopy.setMnemonic(MESSAGES.getString("copy_mnemonic").charAt(0));
+      ctrEmail = Controls.control(this::emailErrorReport, MESSAGES.getString("send"));
+      ctrEmail.setDescription(MESSAGES.getString("send_email"));
+      ctrEmail.setMnemonic(MESSAGES.getString("send_mnemonic").charAt(0));
     }
 
     private void initializeUI() {
@@ -2131,8 +2134,7 @@ public final class UiUtil {
               Messages.get(Messages.EXCEPTION) + ": ", SwingConstants.LEFT);
       exceptionField = new JTextField();
       exceptionField.setEnabled(false);
-      final JLabel messageLabel = new JLabel(
-              Messages.get(Messages.MESSAGE) + ": ", SwingConstants.LEFT);
+      final JLabel messageLabel = new JLabel(MESSAGES.getString("message") + ": ", SwingConstants.LEFT);
       setPreferredWidth(messageLabel, MESSAGE_LABEL_WIDTH);
       messageArea = new JTextArea();
       messageArea.setEnabled(false);
@@ -2247,7 +2249,7 @@ public final class UiUtil {
      * Uses "mailto" to create an email containing the current error report to a specified recipient
      */
     private void emailErrorReport() {
-      final String address = JOptionPane.showInputDialog(Messages.get(Messages.INPUT_EMAIL_ADDRESS));
+      final String address = JOptionPane.showInputDialog(MESSAGES.getString("input_email_address"));
       if (Util.nullOrEmpty(address)) {
         return;
       }
@@ -2272,7 +2274,7 @@ public final class UiUtil {
 
     private static String translateExceptionClass(final Class<? extends Throwable> exceptionClass) {
       if (exceptionClass.equals(DatabaseException.class)) {
-        return Messages.get(Messages.DATABASE_EXCEPTION);
+        return MESSAGES.getString("database_exception");
       }
 
       return exceptionClass.getSimpleName();

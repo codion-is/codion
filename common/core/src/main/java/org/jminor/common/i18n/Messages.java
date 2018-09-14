@@ -16,85 +16,21 @@ public final class Messages {
   public static final String CANCEL = "cancel";
   public static final String CANCEL_MNEMONIC = "cancel_mnemonic";
   public static final String CLOSE = "close";
-  public static final String CLOSE_MNEMONIC = "close_mnemonic";
-  public static final String DETAILS = "details";
   public static final String PRINT = "print";
-  public static final String SAVE = "save";
-  public static final String SAVE_MNEMONIC = "save_mnemonic";
   public static final String EXCEPTION = "exception";
-  public static final String MESSAGE = "message";
-  public static final String SHOW_DETAILS = "show_details";
-  public static final String PRINT_ERROR_REPORT = "print_error_report";
-  public static final String PRINT_ERROR_REPORT_MNEMONIC = "print_error_report_mnemonic";
-  public static final String CLOSE_DIALOG = "close_dialog";
-  public static final String SAVE_ERROR_LOG = "save_error_log";
   public static final String YES = "yes";
   public static final String NO = "no";
   public static final String OK = "ok";
   public static final String OK_MNEMONIC = "ok_mnemonic";
   public static final String COPY = "copy";
-  public static final String COPY_MNEMONIC = "copy_mnemonic";
-  public static final String COPY_TO_CLIPBOARD = "copy_to_clipboard";
-  public static final String SEND = "send";
-  public static final String SEND_MNEMONIC = "send_mnemonic";
-  public static final String SEND_EMAIL = "send_email";
-  public static final String INPUT_EMAIL_ADDRESS = "input_email_address";
-  public static final String FILE_EXISTS = "file_exists";
-  public static final String FILE_NOT_FOUND = "file_not_found";
-  public static final String OVERWRITE_FILE = "overwrite_file";
   public static final String LOGIN = "login";
   public static final String USERNAME = "username";
   public static final String PASSWORD = "password";
-  public static final String UNIQUE_KEY_ERROR = "unique_key_error";
-  public static final String CHILD_RECORD_ERROR = "child_record_error";
-  public static final String NULL_VALUE_ERROR = "null_value_error";
-  public static final String INTEGRITY_CONSTRAINT_ERROR = "integrity_constraint_error";
-  public static final String CHECK_CONSTRAINT_ERROR = "check_constraint_error";
-  public static final String MISSING_PRIVILEGES_ERROR = "missing_privileges_error";
-  public static final String LOGIN_CREDENTIALS_ERROR = "login_credentials_error";
-  public static final String TABLE_NOT_FOUND_ERROR = "table_not_found_error";
-  public static final String USER_UNABLE_TO_CONNECT_ERROR = "user_cannot_connect";
-  public static final String VALUE_TOO_LARGE_FOR_COLUMN_ERROR = "value_too_large_for_column_error";
-  public static final String VIEW_HAS_ERRORS_ERROR = "view_has_errors_error";
-  public static final String DATABASE_EXCEPTION = "database_exception";
-  public static final String VALUE_MISSING = "value_missing";
-  public static final String SELECT_DATE = "select_date";
-  public static final String UNABLE_TO_OPEN_FILE = "unable_to_open_file";
-  public static final String RECORD_MODIFIED_EXCEPTION = "record_modified_exception";
-  public static final String SELECT_FILE = "select_file";
-  public static final String SELECT_DIRECTORY = "select_directory";
-  public static final String SELECT_VALUE = "select_value";
+  public static final String FILE_NOT_FOUND = "file_not_found";
   public static final String SELECT_INPUT_FIELD = "select_input_field";
-  public static final String SELECT_COLUMNS = "select_columns";
-  public static final String SHOW_ALL_COLUMNS = "show_all_columns";
   public static final String SEARCH_FIELD_HINT = "search_field_hint";
-  public static final String UNKNOWN_FILE_TYPE = "unknown_file_type";
-  public static final String REGULAR_EXPRESSION_SEARCH = "regular_expression_search";
   public static final String SETTINGS = "settings";
-  public static final String NO_CONNECTION_AVAILABLE = "no_connection_available";
   public static final String NOT_CONNECTED = "not_connected";
-  public static final String SERVER_FULL = "server_full";
-  public static final String SELECT_ALL = "select_all";
-  public static final String SELECT_NONE = "select_none";
-  public static final String TOGGLE_SUMMARY_TIP = "toggle_summary_tip";
-  public static final String FROM = "from";
-  public static final String TO = "to";
-
-  public static final String LIKE = "like";
-  public static final String NOT_LIKE = "not_like";
-  public static final String LESS_THAN = "less_than";
-  public static final String GREATER_THAN = "greater_than";
-  public static final String WITHIN_RANGE = "within_range";
-  public static final String OUTSIDE_RANGE = "outside_range";
-
-  public static final String NONE = "none";
-  public static final String SUM = "sum";
-  public static final String AVERAGE = "average";
-  public static final String MINIMUM = "minimum";
-  public static final String MAXIMUM = "maximum";
-  public static final String MINIMUM_AND_MAXIMUM = "minimum_and_maximum";
-
-  private Messages() {}
 
   /**
    * Retrieves the locale string associated with the given key

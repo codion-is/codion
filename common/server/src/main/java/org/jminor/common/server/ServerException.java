@@ -3,12 +3,15 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.i18n.Messages;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * An exception originating from a remote server
  */
 public class ServerException extends Exception {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ServerException.class.getName(), Locale.getDefault());
 
   private ServerException(final String message) {
     super(message);
@@ -73,7 +76,7 @@ public class ServerException extends Exception {
      * @param message the exception message
      */
     private ServerFullException() {
-      super(Messages.get(Messages.SERVER_FULL));
+      super(MESSAGES.getString("server_full"));
     }
   }
 

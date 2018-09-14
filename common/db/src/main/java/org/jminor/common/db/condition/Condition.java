@@ -4,10 +4,11 @@
 package org.jminor.common.db.condition;
 
 import org.jminor.common.db.Column;
-import org.jminor.common.i18n.Messages;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * A generic interface for objects serving as where conditions in database queries
@@ -71,22 +72,24 @@ public interface Condition<T extends Column> extends Serializable {
    */
   enum Type {
 
-    LIKE("  = ", Messages.get(Messages.LIKE), Values.MANY),
-    NOT_LIKE("  \u2260 ", Messages.get(Messages.NOT_LIKE), Values.MANY),
+    LIKE("  = ", "like", Values.MANY),
+    NOT_LIKE("  \u2260 ", "not_like", Values.MANY),
     /** Less than or equals*/
-    LESS_THAN("  \u2264 ", Messages.get(Messages.LESS_THAN), Values.ONE),
+    LESS_THAN("  \u2264 ", "less_than", Values.ONE),
     /** Greater than or equals*/
-    GREATER_THAN("  \u2265 ", Messages.get(Messages.GREATER_THAN), Values.ONE),
-    WITHIN_RANGE("\u2265 \u2264", Messages.get(Messages.WITHIN_RANGE), Values.TWO),
-    OUTSIDE_RANGE("\u2264 \u2265", Messages.get(Messages.OUTSIDE_RANGE), Values.TWO);
+    GREATER_THAN("  \u2265 ", "greater_than", Values.ONE),
+    WITHIN_RANGE("\u2265 \u2264", "within_range", Values.TWO),
+    OUTSIDE_RANGE("\u2264 \u2265", "outside_range", Values.TWO);
+
+    private final ResourceBundle messages = ResourceBundle.getBundle(Condition.class.getName(), Locale.getDefault());
 
     private final String caption;
     private final String description;
     private final Values values;
 
-    Type(final String caption, final String description, final Values values) {
+    Type(final String caption, final String descriptionKey, final Values values) {
       this.caption = caption;
-      this.description = description;
+      this.description = messages.getString(descriptionKey);
       this.values = values;
     }
 

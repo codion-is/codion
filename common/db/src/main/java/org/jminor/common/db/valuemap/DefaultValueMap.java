@@ -15,14 +15,15 @@ import org.jminor.common.Util;
 import org.jminor.common.db.Attribute;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
-import org.jminor.common.i18n.Messages;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
@@ -32,6 +33,8 @@ import java.util.Set;
  * @param <V> the value type
  */
 public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultValueMap.class.getName(), Locale.getDefault());
 
   /**
    * Holds the values contained in this value map.
@@ -451,7 +454,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
     public void validate(final V valueMap, final K key) throws ValidationException {
       Objects.requireNonNull(valueMap, "valueMap");
       if (valueMap.isValueNull(key) && !isNullable(valueMap, key)) {
-        throw new NullValidationException(key, Messages.get(Messages.VALUE_MISSING) + ": " + key);
+        throw new NullValidationException(key, MESSAGES.getString("value_missing") + ": " + key);
       }
     }
 

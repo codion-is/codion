@@ -5,7 +5,6 @@ package org.jminor.swing.common.ui;
 
 import org.jminor.common.StateObserver;
 import org.jminor.common.Util;
-import org.jminor.common.i18n.Messages;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 
@@ -20,12 +19,16 @@ import java.awt.event.FocusEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 /**
  * A panel for displaying a formatted text field and a button activating a calendar for date input.
  */
 public final class DateInputPanel extends JPanel {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DateInputPanel.class.getName(), Locale.getDefault());
 
   private final JFormattedTextField inputField;
   private final SimpleDateFormat dateFormat;
@@ -63,7 +66,7 @@ public final class DateInputPanel extends JPanel {
           currentValue = getDate();
         }
         catch (final ParseException ignored) {/*ignored*/}
-        final Date newValue = UiUtil.getDateFromUser(currentValue, Messages.get(Messages.SELECT_DATE), inputField);
+        final Date newValue = UiUtil.getDateFromUser(currentValue, MESSAGES.getString("select_date"), inputField);
         if (newValue != null) {
           inputField.setText(dateFormat.format(newValue));
         }
@@ -138,9 +141,9 @@ public final class DateInputPanel extends JPanel {
       fromInputPanel.getButton().setFocusable(false);
       toInputPanel.getButton().setFocusable(false);
       setLayout(new GridLayout(4, 1, 5, 5));
-      add(new JLabel(Messages.get(Messages.FROM)));
+      add(new JLabel(MESSAGES.getString("from")));
       add(fromInputPanel);
-      add(new JLabel(Messages.get(Messages.TO)));
+      add(new JLabel(MESSAGES.getString("to")));
       add(toInputPanel);
     }
 

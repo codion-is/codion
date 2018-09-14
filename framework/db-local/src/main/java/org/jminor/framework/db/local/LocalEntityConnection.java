@@ -22,7 +22,6 @@ import org.jminor.common.db.exception.UpdateException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
-import org.jminor.common.i18n.Messages;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntityConditions;
@@ -50,8 +49,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
@@ -70,6 +71,9 @@ import java.util.Set;
  * </pre>
  */
 public final class LocalEntityConnection implements EntityConnection {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(LocalEntityConnection.class.getName(), Locale.getDefault());
+  private static final String RECORD_MODIFIED_EXCEPTION = "record_modified_exception";
 
   private static final Logger LOG = LoggerFactory.getLogger(LocalEntityConnection.class);
   private static final String CONDITION_PARAM_NAME = "condition";
@@ -791,7 +795,7 @@ public final class LocalEntityConnection implements EntityConnection {
       for (final Entity entity : entry.getValue()) {
         final Entity current = mappedEntities.get(entity.getOriginalKey());
         if (current == null) {
-          throw new RecordModifiedException(entity, null, Messages.get(Messages.RECORD_MODIFIED_EXCEPTION)
+          throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED_EXCEPTION)
                   + ", " + entity.getOriginalCopy() + " " + FrameworkMessages.get(FrameworkMessages.HAS_BEEN_DELETED));
         }
         final Collection<Property.ColumnProperty> modified = Entities.getModifiedColumnProperties(entity, current);
@@ -1263,7 +1267,7 @@ public final class LocalEntityConnection implements EntityConnection {
 
   private static String createModifiedExceptionMessage(final Entity entity, final Entity modified,
                                                        final Collection<Property.ColumnProperty> modifiedProperties) {
-    final StringBuilder builder = new StringBuilder(Messages.get(Messages.RECORD_MODIFIED_EXCEPTION)).append(", ").append(entity.getEntityId());
+    final StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED_EXCEPTION)).append(", ").append(entity.getEntityId());
     for (final Property.ColumnProperty property : modifiedProperties) {
       builder.append(" \n").append(property).append(": ").append(entity.getOriginal(property)).append(" -> ").append(modified.get(property));
     }

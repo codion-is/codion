@@ -35,7 +35,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 /**
  * {@code NavigableImagePanel} is a lightweight container displaying
@@ -118,6 +120,8 @@ import java.util.Objects;
  * http://today.java.net/pub/a/today/2007/03/27/navigable-image-panel.html
  */
 public class NavigableImagePanel extends JPanel {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(NavigableImagePanel.class.getName(), Locale.getDefault());
 
   /**
    * <p>Identifies a change to the zoom level.</p>
@@ -379,7 +383,7 @@ public class NavigableImagePanel extends JPanel {
     if (lastDotIndex != -1) {//if the type is specified check it
       final String type = imagePath.substring(lastDotIndex + 1).toLowerCase();
       if (!acceptedFileTypes.contains(type)) {
-        throw new IllegalArgumentException(Messages.get(Messages.UNKNOWN_FILE_TYPE) + ": " + type);
+        throw new IllegalArgumentException(MESSAGES.getString("unknown_file_type") + ": " + type);
       }
     }
     final NavigableImagePanel imagePanel;

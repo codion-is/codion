@@ -58,8 +58,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 /**
  * A UI component based on a FilteredTableModel.
@@ -70,6 +72,9 @@ import java.util.Objects;
  * @see FilteredTableModel
  */
 public class FilteredTablePanel<R, C> extends JPanel {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(FilteredTablePanel.class.getName(), Locale.getDefault());
+  private static final String SELECT_COLUMNS = "select_columns";
 
   public static final char FILTER_INDICATOR = '*';
 
@@ -333,8 +338,8 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * @return a control for showing the column selection dialog
    */
   public final Control getSelectColumnsControl() {
-    return Controls.control(this::selectTableColumns, Messages.get(Messages.SELECT_COLUMNS) + "...",
-            null, Messages.get(Messages.SELECT_COLUMNS));
+    return Controls.control(this::selectTableColumns, MESSAGES.getString(SELECT_COLUMNS) + "...",
+            null, MESSAGES.getString(SELECT_COLUMNS));
   }
 
   /**
@@ -345,7 +350,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
     final Control toggleControl = Controls.toggleControl(this, "summaryPanelVisible", null,
             summaryPanelVisibleChangedEvent);
     toggleControl.setIcon(Images.loadImage("Sum16.gif"));
-    toggleControl.setDescription(Messages.get(Messages.TOGGLE_SUMMARY_TIP));
+    toggleControl.setDescription(MESSAGES.getString("toggle_summary_tip"));
 
     return toggleControl;
   }
@@ -396,8 +401,8 @@ public class FilteredTablePanel<R, C> extends JPanel {
     });
     final List<JCheckBox> checkBoxes = new ArrayList<>();
     final int result = JOptionPane.showOptionDialog(this, initializeSelectColumnsPanel(allColumns, checkBoxes),
-            Messages.get(Messages.SELECT_COLUMNS), JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-            new String[] {Messages.get(Messages.SHOW_ALL_COLUMNS), Messages.get(Messages.CANCEL), Messages.get(Messages.OK)}, Messages.get(Messages.OK));
+            MESSAGES.getString(SELECT_COLUMNS), JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+            new String[] {MESSAGES.getString("show_all_columns"), Messages.get(Messages.CANCEL), Messages.get(Messages.OK)}, Messages.get(Messages.OK));
     if (result != 1) {
       if (result == 0) {
         setSelected(checkBoxes, true);
@@ -493,7 +498,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
   }
 
   private JPopupMenu initializeSearchFieldPopupMenu() {
-    final JCheckBox boxRegexp = new JCheckBox(Messages.get(Messages.REGULAR_EXPRESSION_SEARCH), tableModel.isRegularExpressionSearch());
+    final JCheckBox boxRegexp = new JCheckBox(MESSAGES.getString("regular_expression_search"), tableModel.isRegularExpressionSearch());
     final JPanel panel = new JPanel(UiUtil.createGridLayout(1, 1));
     panel.add(boxRegexp);
 
@@ -517,8 +522,8 @@ public class FilteredTablePanel<R, C> extends JPanel {
       togglePanel.add(chkColumn);
     });
     final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-    southPanel.add(new JButton(Controls.control(() -> setSelected(checkBoxes, true), Messages.get(Messages.SELECT_ALL))));
-    southPanel.add(new JButton(Controls.control(() -> setSelected(checkBoxes, false), Messages.get(Messages.SELECT_NONE))));
+    southPanel.add(new JButton(Controls.control(() -> setSelected(checkBoxes, true), MESSAGES.getString("select_all"))));
+    southPanel.add(new JButton(Controls.control(() -> setSelected(checkBoxes, false), MESSAGES.getString("select_none"))));
 
     final JPanel base = new JPanel(UiUtil.createBorderLayout());
     base.add(new JScrollPane(togglePanel), BorderLayout.CENTER);

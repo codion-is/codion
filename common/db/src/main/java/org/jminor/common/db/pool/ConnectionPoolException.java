@@ -4,12 +4,16 @@
 package org.jminor.common.db.pool;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.i18n.Messages;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * An exception originating from a ConnectionPool
  */
 public class ConnectionPoolException extends DatabaseException {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ConnectionPoolException.class.getName(), Locale.getDefault());
 
   ConnectionPoolException(final String reason) {
     super(reason);
@@ -20,7 +24,7 @@ public class ConnectionPoolException extends DatabaseException {
    */
   public static final class NoConnectionAvailable extends ConnectionPoolException {
 
-    private static final String MESSAGE = Messages.get(Messages.NO_CONNECTION_AVAILABLE);
+    private static final String MESSAGE = MESSAGES.getString("no_connection_available");
 
     /**
      * Instantiates a new NoConnectionAvailable exception

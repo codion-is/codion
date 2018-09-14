@@ -3,9 +3,9 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.i18n.Messages;
-
 import java.util.Collection;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * The summary types available to the default summary model
@@ -14,7 +14,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
   NONE {
     @Override
     public String toString() {
-      return Messages.get(Messages.NONE);
+      return MESSAGES.getString("none");
     }
 
     @Override
@@ -24,7 +24,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
   }, SUM {
     @Override
     public String toString() {
-      return Messages.get(Messages.SUM);
+      return MESSAGES.getString("sum");
     }
 
     @Override
@@ -53,7 +53,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
   }, AVERAGE {
     @Override
     public String toString() {
-      return Messages.get(Messages.AVERAGE);
+      return MESSAGES.getString("average");
     }
 
     @Override
@@ -86,7 +86,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
   }, MINIMUM {
     @Override
     public String toString() {
-      return Messages.get(Messages.MINIMUM);
+      return MESSAGES.getString("minimum");
     }
 
     @Override
@@ -114,7 +114,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
   }, MAXIMUM {
     @Override
     public String toString() {
-      return Messages.get(Messages.MAXIMUM);
+      return MESSAGES.getString("maximum");
     }
 
     @Override
@@ -143,7 +143,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
   }, MINIMUM_MAXIMUM {
     @Override
     public String toString() {
-      return Messages.get(Messages.MINIMUM_AND_MAXIMUM);
+      return MESSAGES.getString("minimum_and_maximum");
     }
 
     @Override
@@ -174,6 +174,8 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
       return addSubsetIndicator(txt, valueProvider);
     }
   };
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnSummary.class.getName(), Locale.getDefault());
 
   protected String addSubsetIndicator(final String txt, final ColumnSummaryModel.ColumnValueProvider valueProvider) {
     if (valueProvider.isUseValueSubset()) {
