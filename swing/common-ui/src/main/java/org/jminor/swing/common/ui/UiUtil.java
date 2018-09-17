@@ -124,7 +124,7 @@ import java.util.concurrent.TimeUnit;
 public final class UiUtil {
 
   static {
-    //otherwise a hierachy of tabbed panes looks crappy
+    //otherwise a hierarchy of tabbed panes looks crappy
     UIManager.put("TabbedPane.contentBorderInsets", new Insets(2,0,0,0));
   }
 
