@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.common.Conjunction;
 import org.jminor.common.Event;
 import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
@@ -73,6 +74,8 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   private final State allowInsertState = States.state(true);
   private final State allowUpdateState = States.state(true);
   private final State allowDeleteState = States.state(true);
+  private final State readOnlyState = States.aggregateState(Conjunction.AND,
+          allowInsertState.getReversedObserver(), allowUpdateState.getReversedObserver(), allowDeleteState.getReversedObserver());
 
   /**
    * The ID of the entity this edit model is based on
@@ -83,6 +86,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    * The {@link EntityConnectionProvider} instance to use
    */
   private final EntityConnectionProvider connectionProvider;
+
   /**
    * Holds the EntityLookupModels used by this {@link EntityEditModel}
    */
@@ -111,11 +115,6 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   private final ValueProvider<Property, Object> defaultValueProvider = this::getDefaultValue;
 
   /**
-   * Holds the read only status of this edit model
-   */
-  private boolean readOnly;
-
-  /**
    * Specifies whether this edit model should warn about unsaved data
    */
   private boolean warnAboutUnsavedData = WARN_ABOUT_UNSAVED_DATA.get();
@@ -137,11 +136,9 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    */
   public DefaultEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider, final Entity.Validator validator) {
     super(connectionProvider.getDomain().entity(entityId), validator);
-    Objects.requireNonNull(entityId, "entityId");
-    Objects.requireNonNull(connectionProvider, "connectionProvider");
     this.entityId = entityId;
-    this.connectionProvider = connectionProvider;
-    this.readOnly = connectionProvider.getDomain().isReadOnly(entityId);
+    this.connectionProvider = Objects.requireNonNull(connectionProvider, "connectionProvider");
+    setReadOnly(connectionProvider.getDomain().isReadOnly(entityId));
     bindEventsInternal();
   }
 
@@ -176,13 +173,15 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final boolean isReadOnly() {
-    return readOnly;
+    return readOnlyState.isActive();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EntityEditModel setReadOnly(final boolean readOnly) {
-    this.readOnly = readOnly;
+    allowInsertState.setActive(!readOnly);
+    allowUpdateState.setActive(!readOnly);
+    allowDeleteState.setActive(!readOnly);
     return this;
   }
 
@@ -457,9 +456,6 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     if (entities.isEmpty()) {
       return Collections.emptyList();
     }
-    if (readOnly) {
-      throw new IllegalStateException("This is a read-only model, updating is not allowed!");
-    }
     if (!isUpdateAllowed()) {
       throw new IllegalStateException("This model does not allow updating!");
     }
@@ -497,9 +493,6 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     Objects.requireNonNull(entities, ENTITIES);
     if (entities.isEmpty()) {
       return Collections.emptyList();
-    }
-    if (readOnly) {
-      throw new IllegalStateException("This is a read-only model, deleting is not allowed!");
     }
     if (!isDeleteAllowed()) {
       throw new IllegalStateException("This model does not allow deleting!");
@@ -611,9 +604,8 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
       return false;
     }
-    else {
-      return !getEntity().originalKeySet().isEmpty();
-    }
+
+    return !getEntity().originalKeySet().isEmpty();
   }
 
   /** {@inheritDoc} */
@@ -880,9 +872,6 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   }
 
   private List<Entity> insertEntities(final List<Entity> entities) throws DatabaseException, ValidationException {
-    if (readOnly) {
-      throw new IllegalStateException("This is a read-only model, inserting is not allowed!");
-    }
     if (!isInsertAllowed()) {
       throw new IllegalStateException("This model does not allow inserting!");
     }
@@ -919,7 +908,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     afterDeleteEvent.addListener(entitiesChangedEvent);
     afterInsertEvent.addListener(entitiesChangedEvent);
     afterUpdateEvent.addListener(entitiesChangedEvent);
-    getEntity().addValueListener(info -> {
+    getEntity().addValueListener(valueChange -> {
       primaryKeyNullState.setActive(getEntity().isKeyNull());
       entityNewState.setActive(isEntityNew());
     });

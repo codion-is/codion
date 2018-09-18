@@ -104,7 +104,7 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void constructorNullEntityId() {
-    assertThrows(IllegalArgumentException.class, () -> new TestEntityEditModel(null, CONNECTION_PROVIDER));
+    assertThrows(NullPointerException.class, () -> new TestEntityEditModel(null, CONNECTION_PROVIDER));
   }
 
   @Test
@@ -141,6 +141,29 @@ public final class DefaultEntityEditModelTest {
 
     employeeEditModel.setReadOnly(false);
     assertFalse(employeeEditModel.isReadOnly());
+    assertTrue(employeeEditModel.getAllowInsertObserver().isActive());
+    assertTrue(employeeEditModel.getAllowUpdateObserver().isActive());
+    assertTrue(employeeEditModel.getAllowDeleteObserver().isActive());
+
+    employeeEditModel.setReadOnly(true);
+    assertTrue(employeeEditModel.isReadOnly());
+    assertFalse(employeeEditModel.getAllowInsertObserver().isActive());
+    assertFalse(employeeEditModel.getAllowUpdateObserver().isActive());
+    assertFalse(employeeEditModel.getAllowDeleteObserver().isActive());
+
+    employeeEditModel.setDeleteAllowed(true);
+    assertFalse(employeeEditModel.isReadOnly());
+
+    employeeEditModel.setDeleteAllowed(false);
+    assertTrue(employeeEditModel.isReadOnly());
+
+    employeeEditModel.setUpdateAllowed(true);
+    assertFalse(employeeEditModel.isReadOnly());
+
+    employeeEditModel.setUpdateAllowed(false);
+    assertTrue(employeeEditModel.isReadOnly());
+
+    employeeEditModel.setReadOnly(false);
     assertTrue(employeeEditModel.getAllowInsertObserver().isActive());
     assertTrue(employeeEditModel.getAllowUpdateObserver().isActive());
     assertTrue(employeeEditModel.getAllowDeleteObserver().isActive());

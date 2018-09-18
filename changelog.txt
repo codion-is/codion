@@ -4841,3 +4841,4 @@
   SonarQube run
 0.11.3
   Messages refactored into multiple class specific resource bundles
+  EntityEditModel read only status linked to allowInsert, allowUpdate and allowDelete, related refactoring of DefaultEntityEditModel

@@ -165,14 +165,20 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   Entities getDomain();
 
   /**
-   * @return true if this model is read only,
-   * by default this returns the isReadOnly value of the underlying entity
+   * @return true if this model is read only, that is if insert, update and delete are not allowed
+   * @see #isInsertAllowed()
+   * @see #isUpdateAllowed()
+   * @see #isDeleteAllowed()
    */
   boolean isReadOnly();
 
   /**
+   * Makes this model read-only by disallowing insert, update and delete
    * @param readOnly the read only status
    * @return this edit model instance
+   * @see #setInsertAllowed(boolean)
+   * @see #setUpdateAllowed(boolean)
+   * @see #setDeleteAllowed(boolean)
    */
   EntityEditModel setReadOnly(final boolean readOnly);
 

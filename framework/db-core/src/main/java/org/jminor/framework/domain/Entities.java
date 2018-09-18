@@ -1181,7 +1181,7 @@ public class Entities implements Serializable {
   }
 
   Entity.Definition getDefinition(final String entityId) {
-    final Entity.Definition definition = entityDefinitions.get(entityId);
+    final Entity.Definition definition = entityDefinitions.get(Objects.requireNonNull(entityId, "entityId"));
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityId);
     }

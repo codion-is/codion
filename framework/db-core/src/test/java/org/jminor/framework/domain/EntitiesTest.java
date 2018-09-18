@@ -175,6 +175,8 @@ public class EntitiesTest {
     key.put(propertyId2, 42);
     assertFalse(key.isNull());
     assertEquals(43, key.hashCode());
+
+    assertThrows(NullPointerException.class, () -> entities.key((String) null));
   }
 
   @Test
@@ -202,6 +204,8 @@ public class EntitiesTest {
     assertEquals(TestDomain.T_MASTER, master.getEntityId());
     assertTrue(master.containsKey(TestDomain.MASTER_ID));
     assertEquals(10L, master.get(TestDomain.MASTER_ID));
+
+    assertThrows(NullPointerException.class, () -> entities.entity((String) null));
   }
 
   @Test
