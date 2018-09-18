@@ -9,7 +9,6 @@ import org.jminor.common.db.Databases;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
-import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
@@ -83,7 +82,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   }
 
   @Test
-  public void testDetailModels() throws CancelException, DatabaseException, ValidationException {
+  public void testDetailModels() throws DatabaseException, ValidationException {
     //todo
   }
 

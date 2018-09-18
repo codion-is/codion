@@ -155,7 +155,6 @@ public final class HostMonitor {
   }
 
   private static Collection<String> getEntityServers(final Registry registry) throws RemoteException {
-    final List<String> serverNames;
     final String[] boundNames = registry.list();
     final String serverNamePrefix = Server.SERVER_NAME_PREFIX.get();
 

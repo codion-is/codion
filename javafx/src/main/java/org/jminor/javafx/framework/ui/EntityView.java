@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * A Pane joining a {@link EntityEditView} and a {@link EntityTableView}.
  */
-public class EntityView extends BorderPane implements ViewTreeNode {
+public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
 
   private final SplitPane splitPane = new SplitPane();
 
@@ -46,7 +46,7 @@ public class EntityView extends BorderPane implements ViewTreeNode {
   private final EntityTableView tableView;
   private final List<EntityView> detailViews = new ArrayList<>();
 
-  private ViewTreeNode parentView;
+  private ViewTreeNode<EntityView> parentView;
 
   private final TabPane detailViewTabPane = new TabPane();
 
@@ -122,32 +122,31 @@ public class EntityView extends BorderPane implements ViewTreeNode {
    * Sets the parent view of this {@link EntityView}
    * @param parentView the parent view
    */
-  public final void setParentView(final ViewTreeNode parentView) {
+  public final void setParentView(final ViewTreeNode<EntityView> parentView) {
     this.parentView = parentView;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final ViewTreeNode getParentView() {
+  public final ViewTreeNode<EntityView> getParentView() {
     return parentView;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final ViewTreeNode getPreviousSiblingView() {
+  public final EntityView getPreviousSiblingView() {
     if (getParentView() == null) {
       return null;
     }
 
-    final List<? extends ViewTreeNode> siblings = getParentView().getChildViews();
+    final List<EntityView> siblings = getParentView().getChildViews();
     if (siblings.contains(this)) {
       final int index = siblings.indexOf(this);
       if (index == 0) {
         return siblings.get(siblings.size() - 1);
       }
-      else {
-        return siblings.get(index - 1);
-      }
+
+      return siblings.get(index - 1);
     }
 
     return null;
@@ -155,19 +154,18 @@ public class EntityView extends BorderPane implements ViewTreeNode {
 
   /** {@inheritDoc} */
   @Override
-  public final ViewTreeNode getNextSiblingView() {
+  public final EntityView getNextSiblingView() {
     if (getParentView() == null) {//no parent, no siblings
       return null;
     }
-    final List<? extends ViewTreeNode> siblings = getParentView().getChildViews();
+    final List<EntityView> siblings = getParentView().getChildViews();
     if (siblings.contains(this)) {
       final int index = siblings.indexOf(this);
       if (index == siblings.size() - 1) {
         return siblings.get(0);
       }
-      else {
-        return siblings.get(index + 1);
-      }
+
+      return siblings.get(index + 1);
     }
 
     return null;
@@ -175,7 +173,7 @@ public class EntityView extends BorderPane implements ViewTreeNode {
 
   /** {@inheritDoc} */
   @Override
-  public final List<? extends ViewTreeNode> getChildViews() {
+  public final List<EntityView> getChildViews() {
     return detailViews;
   }
 
@@ -249,14 +247,14 @@ public class EntityView extends BorderPane implements ViewTreeNode {
   }
 
   private void navigateLeft() {
-    final EntityView leftSibling = (EntityView) getPreviousSiblingView();
+    final EntityView leftSibling = getPreviousSiblingView();
     if (leftSibling != null) {
       leftSibling.activateView();
     }
   }
 
   private void navigateRight() {
-    final EntityView rightSibling = (EntityView) getNextSiblingView();
+    final EntityView rightSibling = getNextSiblingView();
     if (rightSibling != null) {
       rightSibling.activateView();
     }

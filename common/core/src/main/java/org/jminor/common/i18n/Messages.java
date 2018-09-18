@@ -13,6 +13,8 @@ public final class Messages {
 
   private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(Messages.class.getName(), Locale.getDefault());
 
+  private Messages() {}
+
   public static final String CANCEL = "cancel";
   public static final String CANCEL_MNEMONIC = "cancel_mnemonic";
   public static final String CLOSE = "close";

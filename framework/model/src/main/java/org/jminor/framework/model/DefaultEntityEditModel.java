@@ -53,11 +53,9 @@ import java.util.Objects;
  */
 public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Property, Object> implements EntityEditModel {
 
-  protected static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditModel.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditModel.class);
 
-  private static final String FOREIGN_KEY_PROPERTY_ID = "foreignKeyPropertyId";
   private static final String ENTITIES = "entities";
-  private static final String FOREIGN_KEY_PROPERTY = "foreignKeyProperty";
 
   private final Event<InsertEvent> beforeInsertEvent = Events.event();
   private final Event<InsertEvent> afterInsertEvent = Events.event();
@@ -563,16 +561,15 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final EntityLookupModel getForeignKeyLookupModel(final String foreignKeyPropertyId) {
-    Objects.requireNonNull(foreignKeyPropertyId, FOREIGN_KEY_PROPERTY_ID);
+    Objects.requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
     return getForeignKeyLookupModel(getDomain().getForeignKeyProperty(entityId, foreignKeyPropertyId));
   }
 
   /** {@inheritDoc} */
   @Override
   public final EntityLookupModel getForeignKeyLookupModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Objects.requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY);
-
-    return entityLookupModels.computeIfAbsent(foreignKeyProperty, k -> createForeignKeyLookupModel(foreignKeyProperty));
+    Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
+    return entityLookupModels.computeIfAbsent(foreignKeyProperty, fk -> createForeignKeyLookupModel(foreignKeyProperty));
   }
 
   /** {@inheritDoc} */
@@ -775,7 +772,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    * Inserts the given entities into the database
    * @param entities the entities to insert
    * @return a list containing the primary keys of the inserted entities
-   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
+   * @throws DatabaseException in case of a database exception
    */
   protected List<Entity.Key> doInsert(final List<Entity> entities) throws DatabaseException {
     return connectionProvider.getConnection().insert(entities);
@@ -785,7 +782,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    * Updates the given entities in the database
    * @param entities the entities to update
    * @return a list containing the updated entities
-   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
+   * @throws DatabaseException in case of a database exception
    */
   protected List<Entity> doUpdate(final List<Entity> entities) throws DatabaseException {
     return connectionProvider.getConnection().update(entities);
@@ -795,7 +792,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    * Deletes the given entities from the database
    * @param entities the entities to delete
    * @return a list containing the deleted entities
-   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
+   * @throws DatabaseException in case of a database exception
    */
   protected List<Entity> doDelete(final List<Entity> entities) throws DatabaseException {
     connectionProvider.getConnection().delete(Entities.getKeys(entities));

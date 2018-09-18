@@ -483,14 +483,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException if the exit is cancelled
    */
   public final void exit() {
-    if (getModel().isWarnAboutUnsavedData() && getModel().containsUnsavedData() &&
-            JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING),
-                    FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
-                    JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
-      throw new CancelException();
-    }
-    else if (CONFIRM_EXIT.get() && JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
-            FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+    if (cancelExit()) {
       throw new CancelException();
     }
 
@@ -1316,6 +1309,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     else if (parentWindow instanceof JDialog) {
       ((JDialog) parentWindow).setTitle(title);
     }
+  }
+
+  private boolean cancelExit() {
+    return getModel().isWarnAboutUnsavedData() && getModel().containsUnsavedData() &&
+            JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING),
+                    FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
+                    JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION ||
+            CONFIRM_EXIT.get() && JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
+                    FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION;
   }
 
   /**

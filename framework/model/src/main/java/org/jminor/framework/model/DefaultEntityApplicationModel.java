@@ -191,10 +191,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
   private static boolean containsUnsavedData(final Collection<? extends EntityModel> models) {
     for (final EntityModel model : models) {
       final EntityEditModel editModel = model.getEditModel();
-      if (editModel.containsUnsavedData()) {
-        return true;
-      }
-      else if (containsUnsavedData(model.getDetailModels())) {
+      if (editModel.containsUnsavedData() || containsUnsavedData(model.getDetailModels())) {
         return true;
       }
     }

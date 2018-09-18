@@ -30,7 +30,7 @@ import java.util.List;
  * A root application View.
  * @param <M> the type of {@link EntityApplicationModel} used by this application view
  */
-public abstract class EntityApplicationView<M extends EntityApplicationModel> extends Application implements ViewTreeNode {
+public abstract class EntityApplicationView<M extends EntityApplicationModel> extends Application implements ViewTreeNode<EntityView> {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationView.class);
 
@@ -86,7 +86,7 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
    * @return null, since {@link EntityApplicationView} does not have a parent view
    */
   @Override
-  public final ViewTreeNode getParentView() {
+  public final ViewTreeNode<EntityView> getParentView() {
     return null;
   }
 
@@ -94,7 +94,7 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
    * @return null, since {@link EntityApplicationView} does not have a previous sibling view
    */
   @Override
-  public final ViewTreeNode getPreviousSiblingView() {
+  public final EntityView getPreviousSiblingView() {
     return null;
   }
 
@@ -102,7 +102,7 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
    * @return null, since {@link EntityApplicationView} does not have a next sibling view
    */
   @Override
-  public final ViewTreeNode getNextSiblingView() {
+  public final EntityView getNextSiblingView() {
     return null;
   }
 
@@ -111,7 +111,7 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
    * @see #addEntityView(EntityView)
    */
   @Override
-  public final List<? extends ViewTreeNode> getChildViews() {
+  public final List<EntityView> getChildViews() {
     return entityViews;
   }
 

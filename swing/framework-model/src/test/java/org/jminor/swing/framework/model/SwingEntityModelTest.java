@@ -7,7 +7,6 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
-import org.jminor.common.model.CancelException;
 import org.jminor.common.model.valuemap.EditModelValues;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
@@ -93,7 +92,7 @@ public final class SwingEntityModelTest
   }
 
   @Test
-  public void testDetailModels() throws CancelException, DatabaseException, ValidationException {
+  public void testDetailModels() throws DatabaseException, ValidationException {
     assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));
     assertFalse(departmentModel.containsDetailModel("undefined"));
     assertFalse(departmentModel.containsDetailModel(EmpModel.class));

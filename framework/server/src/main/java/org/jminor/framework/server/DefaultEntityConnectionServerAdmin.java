@@ -105,7 +105,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   @Override
   public ThreadStatistics getThreadStatistics() throws RemoteException {
     final ThreadMXBean bean = ManagementFactory.getThreadMXBean();
-    final Map<Thread.State, Integer> threadStateMap = new EnumMap<Thread.State, Integer>(Thread.State.class);
+    final Map<Thread.State, Integer> threadStateMap = new EnumMap<>(Thread.State.class);
     for (final Long threadId : bean.getAllThreadIds()) {
       threadStateMap.compute(bean.getThreadInfo(threadId).getThreadState(), (threadState, value) -> value == null ? 1 : value + 1);
     }

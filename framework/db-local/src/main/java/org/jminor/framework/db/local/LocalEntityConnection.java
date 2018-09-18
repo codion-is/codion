@@ -644,7 +644,6 @@ public final class LocalEntityConnection implements EntityConnection {
     Databases.QUERY_COUNTER.count(sql);
     synchronized (connection) {
       SQLException exception = null;
-      ByteArrayInputStream inputStream = null;
       PreparedStatement statement = null;
       try {
         logAccess("writeBlob", new Object[]{sql});
@@ -655,8 +654,7 @@ public final class LocalEntityConnection implements EntityConnection {
 
         statement = prepareStatement(sql);
         setParameterValues(statement, values, properties);
-        inputStream = new ByteArrayInputStream(blobData);
-        statement.setBinaryStream(1, inputStream);
+        statement.setBinaryStream(1, new ByteArrayInputStream(blobData));//no need to close ByteArrayInputStream
         statement.executeUpdate();
         commitIfTransactionIsNotOpen();
       }
@@ -667,7 +665,6 @@ public final class LocalEntityConnection implements EntityConnection {
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
-        Util.closeSilently(inputStream);
         Databases.closeSilently(statement);
         final MethodLogger.Entry logEntry = logExit("writeBlob", exception, null);
         if (LOG.isDebugEnabled()) {
