@@ -33,7 +33,8 @@ public class FileUtilTest {
     file.deleteOnExit();
 
     FileUtil.writeDelimitedFile(headers, data, "-", file);
-    final String fileContents = "h1-h2-h3\none-two-three\n1-2-3";
+    final String newline = System.getProperty("line.separator");
+    final String fileContents = "h1-h2-h3" + newline + "one-two-three" + newline + "1-2-3";
     assertEquals(fileContents, TextUtil.getTextFileContents(file.toString(), Charset.forName("UTF-8")));
 
     file.delete();
