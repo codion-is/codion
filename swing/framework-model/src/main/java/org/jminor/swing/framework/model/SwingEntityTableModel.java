@@ -14,7 +14,6 @@ import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.DefaultEntityTableConditionModel;
 import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
 import org.jminor.framework.model.EntityEditModel;
@@ -42,8 +41,10 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 /**
@@ -67,6 +68,8 @@ import java.util.stream.Collectors;
  */
 public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Property>
         implements EntityTableModel<SwingEntityEditModel>, FilteredTableModel<Entity, Property> {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SwingEntityTableModel.class.getName(), Locale.getDefault());
 
   private static final Logger LOG = LoggerFactory.getLogger(SwingEntityTableModel.class);
 
@@ -397,8 +400,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     final int filteredItemCount = getFilteredItemCount();
 
     return Integer.toString(getRowCount()) + " (" + Integer.toString(getSelectionModel().getSelectionCount()) + " " +
-            FrameworkMessages.get(FrameworkMessages.SELECTED) + (filteredItemCount > 0 ? ", " +
-            filteredItemCount + " " + FrameworkMessages.get(FrameworkMessages.HIDDEN) + ")" : ")");
+            MESSAGES.getString("selected") + (filteredItemCount > 0 ? ", " +
+            filteredItemCount + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 
   /** {@inheritDoc} */

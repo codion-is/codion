@@ -20,7 +20,6 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -252,8 +251,8 @@ public final class DefaultEntityEditModelTest {
       assertEquals(TestDomain.EMP_COMMISSION, e.getKey());
       assertEquals(50d, e.getValue());
       final Property property = ENTITIES.getProperty(TestDomain.T_EMP, (String) e.getKey());
-      assertEquals("'" + property + "' " +
-              FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin(), e.getMessage());
+      assertTrue(e.getMessage().contains(property.toString()));
+      assertTrue(e.getMessage().contains(property.getMin().toString()));
     }
 
     employeeEditModel.setEntity(null);

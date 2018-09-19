@@ -3,7 +3,6 @@ dependencies {
     api project(':org.jminor.common.db')
     api project(':org.jminor.common.model')
 
-    implementation project(':org.jminor.framework.db.core')
     api project(':org.jminor.swing.common.model')
 
     runtimeOnly "com.toedter:jcalendar:${jcalendarVersion}"

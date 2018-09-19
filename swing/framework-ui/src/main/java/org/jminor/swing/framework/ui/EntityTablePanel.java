@@ -94,8 +94,10 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 /**
  * The EntityTablePanel is a UI class based on the EntityTableModel class.
@@ -125,6 +127,10 @@ import java.util.Objects;
  * @see EntityTableModel
  */
 public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName(), Locale.getDefault());
+
+  private static final String MSG_CONFIGURE_QUERY = "configure_query";
 
   /**
    * Specifies whether or not columns can be rearranged in tables<br>
@@ -364,13 +370,13 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     try {
       UiUtil.setWaitCursor(true, this);
       panel = new EntityConditionPanel(getEntityTableModel());
-      refreshControl = Controls.control(getEntityTableModel()::refresh, FrameworkMessages.get(FrameworkMessages.APPLY), null,
-              null, FrameworkMessages.get(FrameworkMessages.APPLY_MNEMONIC).charAt(0));
+      refreshControl = Controls.control(getEntityTableModel()::refresh, MESSAGES.getString("apply"), null,
+              null, MESSAGES.getString("apply_mnemonic").charAt(0));
     }
     finally {
       UiUtil.setWaitCursor(false, this);
     }
-    UiUtil.displayInDialog(this, panel, FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY), refreshControl);
+    UiUtil.displayInDialog(this, panel, MESSAGES.getString(MSG_CONFIGURE_QUERY), refreshControl);
   }
 
   /**
@@ -499,8 +505,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   public final Control getConfigureQueryControl() {
     return Controls.control(this::configureQuery,
-            FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY) + TRIPLEDOT, null,
-            FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY), 0,
+            MESSAGES.getString(MSG_CONFIGURE_QUERY) + TRIPLEDOT, null,
+            MESSAGES.getString(MSG_CONFIGURE_QUERY), 0,
             null, Images.loadImage(Images.IMG_PREFERENCES_16));
   }
 
@@ -535,9 +541,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   public final Control getExportControl() {
     return Controls.control(this::exportSelected,
-            FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED) + TRIPLEDOT,
+            MESSAGES.getString("export_selected") + TRIPLEDOT,
             getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver(),
-            FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_TIP), 0, null,
+            MESSAGES.getString("export_selected_tip"), 0, null,
             Images.loadImage(Images.IMG_SAVE_16));
   }
 
@@ -545,7 +551,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a control for printing the table
    */
   public final Control getPrintTableControl() {
-    final String printCaption = FrameworkMessages.get(FrameworkMessages.PRINT_TABLE);
+    final String printCaption = MESSAGES.getString("print_table");
     return Controls.control(this::printTable, printCaption, null,
             printCaption, printCaption.charAt(0), null, Images.loadImage("Print16.gif"));
   }
@@ -616,8 +622,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this);
       }
       else {
-        JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NONE_FOUND),
-                FrameworkMessages.get(FrameworkMessages.NO_DEPENDENT_RECORDS), JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, MESSAGES.getString("none_found"),
+                MESSAGES.getString("no_dependent_records"), JOptionPane.INFORMATION_MESSAGE);
       }
     }
     catch (final DatabaseException e) {
@@ -657,7 +663,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       final List<Entity> selected = getEntityTableModel().getSelectionModel().getSelectedItems();
       FileUtil.writeFile(getEntityTableModel().getConnectionProvider().getDomain().getEntitySerializer()
               .serialize(selected), UiUtil.selectFileToSave(this, null, null));
-      JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
+      JOptionPane.showMessageDialog(this, MESSAGES.getString("export_selected_done"));
     }
     catch (final IOException | CancelException | Serializer.SerializeException e) {
       handleException(e);
@@ -692,7 +698,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
 
     final Control toggleControl = Controls.control(this::toggleConditionPanel, Images.loadImage(Images.IMG_FILTER_16));
-    toggleControl.setDescription(FrameworkMessages.get(FrameworkMessages.SHOW_CONDITION_PANEL));
+    toggleControl.setDescription(MESSAGES.getString("show_condition_panel"));
 
     return toggleControl;
   }
@@ -704,7 +710,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final Control clearSelection = Controls.control(getEntityTableModel().getSelectionModel()::clearSelection, null,
             getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver(), null, -1, null,
             Images.loadImage("ClearSelection16.gif"));
-    clearSelection.setDescription(FrameworkMessages.get(FrameworkMessages.CLEAR_SELECTION_TIP));
+    clearSelection.setDescription(MESSAGES.getString("clear_selection_tip"));
 
     return clearSelection;
   }
@@ -715,7 +721,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public final Control getMoveSelectionDownControl() {
     final Control selectionDown = Controls.control(getEntityTableModel().getSelectionModel()::moveSelectionDown,
             Images.loadImage(Images.IMG_DOWN_16));
-    selectionDown.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_DOWN_TIP));
+    selectionDown.setDescription(MESSAGES.getString("selection_down_tip"));
 
     return selectionDown;
   }
@@ -726,7 +732,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public final Control getMoveSelectionUpControl() {
     final Control selectionUp = Controls.control(getEntityTableModel().getSelectionModel()::moveSelectionUp,
             Images.loadImage(Images.IMG_UP_16));
-    selectionUp.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_UP_TIP));
+    selectionUp.setDescription(MESSAGES.getString("selection_up_tip"));
 
     return selectionUp;
   }
@@ -1553,7 +1559,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       UiUtil.setWaitCursor(false, dialogParent);
     }
     UiUtil.displayInDialog(UiUtil.getParentWindow(dialogParent), dependenciesPanel,
-            FrameworkMessages.get(FrameworkMessages.DEPENDENT_RECORDS_FOUND));
+            MESSAGES.getString("dependent_records_found"));
   }
 
   private static JLabel initializeStatusMessageLabel() {

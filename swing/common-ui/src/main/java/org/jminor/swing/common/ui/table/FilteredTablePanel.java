@@ -506,8 +506,9 @@ public class FilteredTablePanel<R, C> extends JPanel {
             Messages.get(Messages.OK), null, null, Messages.get(Messages.OK_MNEMONIC).charAt(0));
 
     final JPopupMenu popupMenu = new JPopupMenu();
+    final String settingsMessage = MESSAGES.getString("settings");
     popupMenu.add(Controls.control(() ->
-            UiUtil.displayInDialog(FilteredTablePanel.this, panel, Messages.get(Messages.SETTINGS), control), Messages.get(Messages.SETTINGS)));
+            UiUtil.displayInDialog(FilteredTablePanel.this, panel, settingsMessage, control), settingsMessage));
 
     return popupMenu;
   }

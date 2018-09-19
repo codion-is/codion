@@ -47,8 +47,10 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 /**
  * A UI component based on the EntityLookupModel.
@@ -62,6 +64,8 @@ import java.util.Objects;
  * @see EntityLookupModel
  */
 public final class EntityLookupField extends JTextField {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityLookupField.class.getName(), Locale.getDefault());
 
   private static final int BORDER_SIZE = 15;
   private static final int ENABLE_LOOKUP_DELAY = 250;
@@ -150,7 +154,7 @@ public final class EntityLookupField extends JTextField {
   private void selectEntities(final List<Entity> entities) {
     final JList<Entity> list = new JList<>(entities.toArray(new Entity[0]));
     final Window owner = UiUtil.getParentWindow(this);
-    final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
+    final JDialog dialog = new JDialog(owner, MESSAGES.getString("select_entity"));
     final Control okControl = Controls.control(() -> {
       getModel().setSelectedEntities(list.getSelectedValuesList());
       dialog.dispose();
@@ -244,7 +248,7 @@ public final class EntityLookupField extends JTextField {
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(Controls.control(() -> UiUtil.displayInDialog(EntityLookupField.this, settingsPanel,
-            Messages.get(Messages.SETTINGS)), Messages.get(Messages.SETTINGS)));
+            FrameworkMessages.get(FrameworkMessages.SETTINGS)), FrameworkMessages.get(FrameworkMessages.SETTINGS)));
 
     return popupMenu;
   }
@@ -306,7 +310,7 @@ public final class EntityLookupField extends JTextField {
         propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
       }
 
-      final JCheckBox boxAllowMultipleValues = new JCheckBox(FrameworkMessages.get(FrameworkMessages.ENABLE_MULTIPLE_SEARCH_VALUES));
+      final JCheckBox boxAllowMultipleValues = new JCheckBox(MESSAGES.getString("enable_multiple_search_values"));
       ValueLinks.toggleValueLink(boxAllowMultipleValues.getModel(), lookupModel.getMultipleSelectionAllowedValue(), false);
       final SizedDocument document = new SizedDocument();
       document.setMaxLength(1);
@@ -320,7 +324,7 @@ public final class EntityLookupField extends JTextField {
 
       final JPanel pnlValueSeparator = new JPanel(UiUtil.createBorderLayout());
       pnlValueSeparator.add(txtMultipleValueSeparator, BorderLayout.WEST);
-      pnlValueSeparator.add(new JLabel(FrameworkMessages.get(FrameworkMessages.MULTIPLE_SEARCH_VALUE_SEPARATOR)), BorderLayout.CENTER);
+      pnlValueSeparator.add(new JLabel(MESSAGES.getString("multiple_search_value_separator")), BorderLayout.CENTER);
 
       generalSettingsPanel.add(pnlValueSeparator);
 
@@ -332,11 +336,11 @@ public final class EntityLookupField extends JTextField {
 
     private JPanel initializePropertyPanel(final EntityLookupModel.LookupSettings settings) {
       final JPanel panel = new JPanel(UiUtil.createGridLayout(3, 1));
-      final JCheckBox boxCaseSensitive = new JCheckBox(FrameworkMessages.get(FrameworkMessages.CASE_SENSITIVE));
+      final JCheckBox boxCaseSensitive = new JCheckBox(MESSAGES.getString("case_sensitive"));
       ValueLinks.toggleValueLink(boxCaseSensitive.getModel(), settings.getCaseSensitiveValue(), false);
-      final JCheckBox boxPrefixWildcard = new JCheckBox(FrameworkMessages.get(FrameworkMessages.PREFIX_WILDCARD));
+      final JCheckBox boxPrefixWildcard = new JCheckBox(MESSAGES.getString("prefix_wildcard"));
       ValueLinks.toggleValueLink(boxPrefixWildcard.getModel(), settings.getWildcardPrefixValue(), false);
-      final JCheckBox boxPostfixWildcard = new JCheckBox(FrameworkMessages.get(FrameworkMessages.POSTFIX_WILDCARD));
+      final JCheckBox boxPostfixWildcard = new JCheckBox(MESSAGES.getString("postfix_wildcard"));
       ValueLinks.toggleValueLink(boxPostfixWildcard.getModel(), settings.getWildcardPostfixValue(), false);
 
       panel.add(boxCaseSensitive);

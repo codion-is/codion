@@ -34,12 +34,16 @@ import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * A UI component based on the EntityTableConditionModel
  * @see EntityTableConditionModel
  */
 public final class EntityTableConditionPanel extends JPanel {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTableConditionPanel.class.getName(), Locale.getDefault());
 
   private final Event<Boolean> advancedChangedEvent = Events.event();
 
@@ -247,7 +251,7 @@ public final class EntityTableConditionPanel extends JPanel {
     simpleSearchTextField.addActionListener(simpleSearchControl);
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());
     ValueLinks.textValueLink(simpleSearchTextField, conditionModel, "simpleConditionString", conditionModel.getSimpleConditionStringObserver());
-    panel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.CONDITION)));
+    panel.setBorder(BorderFactory.createTitledBorder(MESSAGES.getString("condition")));
     panel.add(simpleSearchTextField, BorderLayout.CENTER);
     panel.add(simpleSearchButton, BorderLayout.EAST);
 

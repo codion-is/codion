@@ -4,22 +4,25 @@
 package org.jminor.swing.common.ui;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.UIManager;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Handles i18n for Swing components
  */
 public final class SwingMessages {
 
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SwingMessages.class.getName(), Locale.getDefault());
+
   static {
     UIManager.put("OptionPane.yesButtonText", Messages.get(Messages.YES));
     UIManager.put("OptionPane.noButtonText", Messages.get(Messages.NO));
     UIManager.put("OptionPane.cancelButtonText", Messages.get(Messages.CANCEL));
     UIManager.put("OptionPane.okButtonText", Messages.get(Messages.OK));
-    UIManager.put("OptionPane.inputDialogTitle", FrameworkMessages.get(FrameworkMessages.OPTION_PANE_INPUT_DIALOG_TITLE));
-    UIManager.put("OptionPane.messageDialogTitle", FrameworkMessages.get(FrameworkMessages.OPTION_PANE_MESSAGE_DIALOG_TITLE));
+    UIManager.put("OptionPane.inputDialogTitle", MESSAGES.getString("OptionPane.inputDialogTitle"));
+    UIManager.put("OptionPane.messageDialogTitle", MESSAGES.getString("OptionPane.messageDialogTitle"));
   }
 
   private SwingMessages() {}

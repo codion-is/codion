@@ -16,7 +16,6 @@ import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
-import org.jminor.framework.i18n.FrameworkMessages;
 
 import java.io.Serializable;
 import java.sql.ResultSet;
@@ -35,8 +34,10 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,10 @@ import java.util.stream.Collectors;
 public class Entities implements Serializable {
 
   private static final long serialVersionUID = 1;
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(Entities.class.getName(), Locale.getDefault());
+
+  private static final String MSG_PROPERTY_VALUE_IS_REQUIRED = "property_value_is_required";
 
   /**
    * Specifies whether or not to allow entities to be re-defined, that is,
@@ -1688,11 +1693,11 @@ public class Entities implements Serializable {
       final Number value = (Number) entity.get(property);
       if (value.doubleValue() < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin())) {
         throw new RangeValidationException(property.getPropertyId(), value, "'" + property + "' " +
-                FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin());
+                MESSAGES.getString("property_value_too_small") + " " + property.getMin());
       }
       if (value.doubleValue() > (property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax())) {
         throw new RangeValidationException(property.getPropertyId(), value, "'" + property + "' " +
-                FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_LARGE) + " " + property.getMax());
+                MESSAGES.getString("property_value_too_large") + " " + property.getMax());
       }
     }
 
@@ -1707,13 +1712,11 @@ public class Entities implements Serializable {
           final boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
           final boolean primaryKeyPropertyWithoutAutoGenerate = isPrimaryKeyPropertyWithoutAutoGenerate(entity, property);
           if (nonKeyColumnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
-            throw new NullValidationException(property.getPropertyId(),
-                    FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
+            throw new NullValidationException(property.getPropertyId(), MESSAGES.getString(MSG_PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
           }
         }
         else {
-          throw new NullValidationException(property.getPropertyId(),
-                  FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
+          throw new NullValidationException(property.getPropertyId(), MESSAGES.getString(MSG_PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
         }
       }
     }

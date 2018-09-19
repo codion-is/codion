@@ -4844,3 +4844,4 @@
   EntityEditModel read only status linked to allowInsert, allowUpdate and allowDelete, related refactoring of DefaultEntityEditModel
   DefaultEntityEditModel, unnecessary string constants removed
   Sonar run
+  FrameworkMessages refactored into multiple class specific resource bundles

@@ -19,7 +19,6 @@ import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequestInterceptor;
@@ -52,14 +51,18 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.UUID;
 
 /**
  * A Http based {@link EntityConnection} implementation based on EntityService
  */
 final class HttpEntityConnection implements EntityConnection {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(HttpEntityConnection.class.getName(), Locale.getDefault());
 
   private static final Logger LOG = LoggerFactory.getLogger(HttpEntityConnection.class);
 
@@ -341,10 +344,10 @@ final class HttpEntityConnection implements EntityConnection {
   public Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException {
     final List<Entity> selected = selectMany(condition);
     if (Util.nullOrEmpty(selected)) {
-      throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
+      throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
     }
     if (selected.size() > 1) {
-      throw new DatabaseException(FrameworkMessages.get(FrameworkMessages.MANY_RECORDS_FOUND));
+      throw new DatabaseException(MESSAGES.getString("many_records_found"));
     }
 
     return selected.get(0);

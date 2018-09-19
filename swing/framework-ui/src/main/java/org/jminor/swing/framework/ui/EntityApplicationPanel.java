@@ -83,8 +83,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 /**
  * A central application panel class.
@@ -92,6 +94,12 @@ import java.util.Objects;
  */
 public abstract class EntityApplicationPanel<M extends SwingEntityApplicationModel>
         extends JPanel implements DialogExceptionHandler, MasterDetailPanel {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityApplicationPanel.class.getName(), Locale.getDefault());
+
+  private static final String MSG_SELECT_LOOK_AND_FEEL = "select_look_and_feel";
+  private static final String MSG_HELP = "help";
+  private static final String MSG_ABOUT = "about";
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
@@ -299,7 +307,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Displays in a dialog a tree describing the application layout
    */
   public final void viewApplicationTree() {
-    UiUtil.displayInDialog(this, initializeApplicationTree(), FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), false);
+    UiUtil.displayInDialog(this, initializeApplicationTree(), MESSAGES.getString("view_application_tree"), false);
   }
 
   /**
@@ -319,11 +327,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     lookAndFeelComboBox.setSelectedItem(UIManager.getLookAndFeel().getClass().getName());
 
     final int option = JOptionPane.showOptionDialog(this, lookAndFeelComboBox,
-            FrameworkMessages.get(FrameworkMessages.SELECT_LOOK_AND_FEEL), JOptionPane.OK_CANCEL_OPTION,
+            MESSAGES.getString(MSG_SELECT_LOOK_AND_FEEL), JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE, null, null, null);
     if (option == JOptionPane.OK_OPTION) {
       PreferencesUtil.putUserPreference(applicationLookAndFeelProperty, (String) lookAndFeelComboBox.getSelectedItem());
-      JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.LOOK_AND_FEEL_SELECTED_MESSAGE));
+      JOptionPane.showMessageDialog(this, MESSAGES.getString("look_and_feel_selected_message"));
     }
   }
 
@@ -356,11 +364,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     });
 
     final int option = JOptionPane.showOptionDialog(this, comboBox,
-            FrameworkMessages.get(FrameworkMessages.SELECT_FONT_SIZE), JOptionPane.OK_CANCEL_OPTION,
+            MESSAGES.getString("select_font_size"), JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE, null, null, null);
     if (option == JOptionPane.OK_OPTION) {
       PreferencesUtil.putUserPreference(applicationFontSizeProperty, comboBoxModel.getSelectedItem().getItem().toString());
-      JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.FONT_SIZE_SELECTED_MESSAGE));
+      JOptionPane.showMessageDialog(this, MESSAGES.getString("font_size_selected_message"));
     }
   }
 
@@ -524,7 +532,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final JOptionPane pane = new JOptionPane(getHelpPanel(), JOptionPane.PLAIN_MESSAGE,
             JOptionPane.DEFAULT_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
     final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
-            FrameworkMessages.get(FrameworkMessages.HELP));
+            MESSAGES.getString(MSG_HELP));
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     UiUtil.resizeWindow(dialog, HELP_DIALOG_SCREEN_SIZE_RATIO, MINIMUM_HELP_WINDOW_SIZE);
     dialog.setLocationRelativeTo(this);
@@ -541,7 +549,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final JOptionPane pane = new JOptionPane(getAboutPanel(), JOptionPane.PLAIN_MESSAGE,
             JOptionPane.DEFAULT_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
     final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
-            FrameworkMessages.get(FrameworkMessages.ABOUT));
+            MESSAGES.getString(MSG_ABOUT));
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     dialog.pack();
     dialog.setLocationRelativeTo(this);
@@ -657,7 +665,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     ctrSetLoggingLevel.setDescription(FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL_DESC));
     ctrSetLoggingLevel.setIcon(setLoggingIcon);
 
-    final ControlSet controlSet = new ControlSet(Messages.get(Messages.SETTINGS));
+    final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SETTINGS));
 
     controlSet.add(ctrSetLoggingLevel);
 
@@ -668,8 +676,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the ControlSet specifying the items in the 'Tools' menu
    */
   protected ControlSet getToolsControlSet() {
-    final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.TOOLS),
-            FrameworkMessages.get(FrameworkMessages.TOOLS_MNEMONIC).charAt(0));
+    final ControlSet controlSet = new ControlSet(MESSAGES.getString("tools"),
+            MESSAGES.getString("tools_mnemonic").charAt(0));
     controlSet.add(getSettingsControlSet());
 
     return controlSet;
@@ -686,13 +694,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     controlSet.add(ctrRefreshAll);
     controlSet.addSeparator();
     controlSet.add(Controls.control(this::viewApplicationTree,
-            FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE)));
+            MESSAGES.getString("view_application_tree")));
     controlSet.add(Controls.control(this::viewDependencyTree,
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES)));
     controlSet.add(Controls.control(this::selectLookAndFeel,
-            FrameworkMessages.get(FrameworkMessages.SELECT_LOOK_AND_FEEL)));
+            MESSAGES.getString(MSG_SELECT_LOOK_AND_FEEL)));
     controlSet.add(Controls.control(this::selectFontSize,
-            FrameworkMessages.get(FrameworkMessages.SELECT_FONT_SIZE)));
+            MESSAGES.getString("select_font_size")));
     controlSet.addSeparator();
     final Control ctrAlwaysOnTop = Controls.toggleControl(this,
             "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), alwaysOnTopChangedEvent);
@@ -705,14 +713,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the ControlSet specifying the items in the 'Help' menu
    */
   protected ControlSet getHelpControlSet() {
-    final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.HELP),
-            FrameworkMessages.get(FrameworkMessages.HELP_MNEMONIC).charAt(0));
+    final ControlSet controlSet = new ControlSet(MESSAGES.getString(MSG_HELP),
+            MESSAGES.getString("help_mnemonic").charAt(0));
     final Control ctrHelp = Controls.control(this::showHelp,
-            FrameworkMessages.get(FrameworkMessages.HELP) + "...", null, null);
+            MESSAGES.getString(MSG_HELP) + "...", null, null);
     controlSet.add(ctrHelp);
     controlSet.addSeparator();
     final Control ctrAbout = Controls.control(this::showAbout,
-            FrameworkMessages.get(FrameworkMessages.ABOUT) + "...", null, null);
+            MESSAGES.getString(MSG_ABOUT) + "...", null, null);
     controlSet.add(ctrAbout);
 
     return controlSet;
@@ -1273,8 +1281,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
     handleException(e, null);
     if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null,
-            FrameworkMessages.get(FrameworkMessages.RETRY),
-            FrameworkMessages.get(FrameworkMessages.RETRY_TITLE),
+            MESSAGES.getString("retry"), MESSAGES.getString("retry_title"),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
       if (startupDialog != null) {
         startupDialog.dispose();
@@ -1312,12 +1319,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private boolean cancelExit() {
-    return getModel().isWarnAboutUnsavedData() && getModel().containsUnsavedData() &&
+    final boolean cancelForUnsavedData = getModel().isWarnAboutUnsavedData() && getModel().containsUnsavedData() &&
             JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING),
                     FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
-                    JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION ||
-            CONFIRM_EXIT.get() && JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
-                    FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION;
+                    JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION;
+    final boolean exitNotConfirmed = CONFIRM_EXIT.get() && JOptionPane.showConfirmDialog(this,
+            FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT), FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE),
+            JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION;
+
+    return cancelForUnsavedData || exitNotConfirmed;
   }
 
   /**

@@ -5,7 +5,6 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.Value;
-import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.MasterDetailPanel;
 import org.jminor.swing.common.ui.UiUtil;
@@ -49,7 +48,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 /**
@@ -67,6 +68,10 @@ import java.util.stream.Collectors;
  * </pre>
  */
 public class EntityPanel extends JPanel implements MasterDetailPanel {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanel.class.getName(), Locale.getDefault());
+
+  private static final String MSG_DETAIL_TABLES = "detail_tables";
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityPanel.class);
 
@@ -709,7 +714,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    */
   public final Control getToggleEditPanelControl() {
     final Control toggle = Controls.control(this::toggleEditPanelState, Images.loadImage("Form16.gif"));
-    toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_EDIT_TIP));
+    toggle.setDescription(MESSAGES.getString("toggle_edit"));
 
     return toggle;
   }
@@ -719,7 +724,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    */
   public final Control getToggleDetailPanelControl() {
     final Control toggle = Controls.control(this::toggleDetailPanelState, Images.loadImage(Images.IMG_HISTORY_16));
-    toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_DETAIL_TIP));
+    toggle.setDescription(MESSAGES.getString("toggle_detail"));
 
     return toggle;
   }
@@ -1382,7 +1387,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       return null;
     }
 
-    final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES));
+    final ControlSet controlSet = new ControlSet(MESSAGES.getString(MSG_DETAIL_TABLES));
     for (final EntityPanel detailPanel : detailEntityPanels) {
       controlSet.add(new Control(detailPanel.getCaption()) {
         @Override
@@ -1454,7 +1459,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     final Point location = new Point(parentLocation.x + (parentSize.width - size.width),
             parentLocation.y + (parentSize.height - size.height) - DETAIL_DIALOG_OFFSET);
     detailPanelDialog = UiUtil.displayInDialog(EntityPanel.this, detailPanelTabbedPane,
-            caption + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false,
+            caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES), false,
             Controls.control(() -> setDetailPanelState(PanelState.HIDDEN)));
     detailPanelDialog.setSize(size);
     detailPanelDialog.setLocation(location);

@@ -29,7 +29,6 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.i18n.FrameworkMessages;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -418,10 +417,10 @@ public final class LocalEntityConnection implements EntityConnection {
   public Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException {
     final List<Entity> entities = selectMany(condition);
     if (entities.isEmpty()) {
-      throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
+      throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
     }
     if (entities.size() > 1) {
-      throw new DatabaseException(FrameworkMessages.get(FrameworkMessages.MANY_RECORDS_FOUND));
+      throw new DatabaseException(MESSAGES.getString("many_records_found"));
     }
 
     return entities.get(0);
@@ -793,7 +792,7 @@ public final class LocalEntityConnection implements EntityConnection {
         final Entity current = mappedEntities.get(entity.getOriginalKey());
         if (current == null) {
           throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED_EXCEPTION)
-                  + ", " + entity.getOriginalCopy() + " " + FrameworkMessages.get(FrameworkMessages.HAS_BEEN_DELETED));
+                  + ", " + entity.getOriginalCopy() + " " + MESSAGES.getString("has_been_deleted"));
         }
         final Collection<Property.ColumnProperty> modified = Entities.getModifiedColumnProperties(entity, current);
         if (!modified.isEmpty()) {

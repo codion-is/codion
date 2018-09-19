@@ -5,7 +5,6 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.EventListener;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityTableConditionModel;
 import org.jminor.framework.model.EntityTableModel;
 import org.jminor.framework.model.ForeignKeyConditionModel;
@@ -35,12 +34,16 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * A panel for configuring the PropertyConditionModels for a given EntityTableModel.
  */
 public final class EntityConditionPanel extends JPanel {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityConditionPanel.class.getName(), Locale.getDefault());
 
   private static final int DEFAULT_WIDTH = 200;
   private static final int DEFAULT_HEIGHT = 40;
@@ -61,7 +64,7 @@ public final class EntityConditionPanel extends JPanel {
     final JScrollPane scroller = new JScrollPane(propertyList);
 
     final JPanel propertyBase = new JPanel(new BorderLayout());
-    propertyBase.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.LIMIT_QUERY)));
+    propertyBase.setBorder(BorderFactory.createTitledBorder(MESSAGES.getString("limit_query")));
 
     propertyBase.add(scroller, BorderLayout.NORTH);
     propertyBase.add(editPanel, BorderLayout.CENTER);
@@ -74,9 +77,9 @@ public final class EntityConditionPanel extends JPanel {
 
   private JPanel initializeConfigurationPanel(final EntityTableModel tableModel) {
     final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    panel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.FILTER_SETTINGS)));
+    panel.setBorder(BorderFactory.createTitledBorder(MESSAGES.getString("filter_settings")));
     panel.add(ControlProvider.createCheckBox(Controls.toggleControl(tableModel,
-            "queryConditionRequired", FrameworkMessages.get(FrameworkMessages.REQUIRE_QUERY_CONDITION))));
+            "queryConditionRequired", MESSAGES.getString("require_query_condition"))));
 
     return panel;
   }
