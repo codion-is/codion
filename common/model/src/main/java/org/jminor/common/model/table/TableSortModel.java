@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2018, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.model.table;
+package org.jminor.common.model.table;
 
 import org.jminor.common.EventListener;
 
-import javax.swing.table.TableColumn;
 import java.util.List;
 
 /**
  * Handles the column sorting states for table models
  * @param <R> the type representing a row in the table model
  * @param <C> the type representing the column identifiers in the table model
+ * @param <T> the type representing table columns
  */
-public interface TableSortModel<R, C> {
+public interface TableSortModel<R, C, T> {
 
   /**
    * Sorts the given list according to the sort configuration
@@ -53,7 +53,7 @@ public interface TableSortModel<R, C> {
   /**
    * @return a list containing all the columns this sort model is based on
    */
-  List<TableColumn> getColumns();
+  List<T> getColumns();
 
   /**
    * Returns the class of the column with the given identifier

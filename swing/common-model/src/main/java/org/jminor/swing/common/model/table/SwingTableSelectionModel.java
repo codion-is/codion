@@ -11,10 +11,10 @@ import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.model.table.SelectionModel;
+import org.jminor.common.model.table.TableModelProxy;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.TableModelEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -57,11 +57,8 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
    */
   public SwingTableSelectionModel(final TableModelProxy<R> tableModelProxy) {
     this.tableModelProxy = tableModelProxy;
-    this.tableModelProxy.addTableModelListener(e -> {
-      if (e.getType() == TableModelEvent.DELETE) {
-        SwingTableSelectionModel.super.removeIndexInterval(e.getFirstRow(), e.getLastRow());
-      }
-    });
+    this.tableModelProxy.addRowsDeletedListener(interval ->
+            SwingTableSelectionModel.super.removeIndexInterval(interval.get(0), interval.get(1)));
   }
 
   /** {@inheritDoc} */

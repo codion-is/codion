@@ -4,7 +4,8 @@
 package org.jminor.swing.common.ui.table;
 
 import org.jminor.common.model.table.ColumnSummaryModel;
-import org.jminor.swing.common.model.table.FilteredTableModel;
+import org.jminor.common.model.table.FilteredTableModel;
+import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 
 import javax.swing.JPanel;
 import javax.swing.table.TableColumn;
@@ -20,7 +21,7 @@ public final class FilteredTableSummaryPanel extends AbstractTableColumnSyncPane
    * Instantiates a new EntityTableSummaryPanel
    * @param tableModel the table model
    */
-  public FilteredTableSummaryPanel(final FilteredTableModel tableModel) {
+  public FilteredTableSummaryPanel(final AbstractFilteredTableModel tableModel) {
     super(tableModel.getColumnModel());
     this.tableModel = tableModel;
     resetPanel();

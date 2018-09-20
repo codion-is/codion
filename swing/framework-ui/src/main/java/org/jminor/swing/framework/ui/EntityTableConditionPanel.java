@@ -11,10 +11,8 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityTableConditionModel;
-import org.jminor.framework.model.EntityTableModel;
 import org.jminor.framework.model.ForeignKeyConditionModel;
 import org.jminor.framework.model.PropertyConditionModel;
-import org.jminor.swing.common.model.table.FilteredTableModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Control;
@@ -23,6 +21,7 @@ import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.table.AbstractTableColumnSyncPanel;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
+import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -58,7 +57,7 @@ public final class EntityTableConditionPanel extends JPanel {
    * an {@link AbstractTableColumnSyncPanel} containing {@link PropertyConditionPanel}s
    * @param tableModel the table model
    */
-  public EntityTableConditionPanel(final EntityTableModel tableModel) {
+  public EntityTableConditionPanel(final SwingEntityTableModel tableModel) {
     this(tableModel, initializeAdvancedConditionPanel(tableModel, UiUtil.getPreferredScrollBarWidth()),
             initializeSimpleConditionPanel(tableModel.getConditionModel()));
   }
@@ -69,13 +68,13 @@ public final class EntityTableConditionPanel extends JPanel {
    * @param advancedConditionPanel the panel to show in case of advanced condition
    * @param simpleConditionPanel the panel to show in case of simple condition
    */
-  public EntityTableConditionPanel(final EntityTableModel tableModel, final JPanel advancedConditionPanel,
+  public EntityTableConditionPanel(final SwingEntityTableModel tableModel, final JPanel advancedConditionPanel,
                                    final JPanel simpleConditionPanel) {
     if (advancedConditionPanel == null && simpleConditionPanel == null) {
       throw new IllegalArgumentException("An advanced and/or a simple condition panel is required");
     }
     this.conditionModel = tableModel.getConditionModel();
-    this.columns = ((FilteredTableModel) tableModel).getColumnModel().getAllColumns();
+    this.columns = tableModel.getColumnModel().getAllColumns();
     this.advancedConditionPanel = advancedConditionPanel;
     this.simpleConditionPanel = simpleConditionPanel;
     setLayout(new BorderLayout());
@@ -258,8 +257,9 @@ public final class EntityTableConditionPanel extends JPanel {
     return panel;
   }
 
-  private static AbstractTableColumnSyncPanel initializeAdvancedConditionPanel(final EntityTableModel tableModel, final int verticalFillerWidth) {
-    final AbstractTableColumnSyncPanel panel = new AbstractTableColumnSyncPanel(((FilteredTableModel) tableModel).getColumnModel()) {
+  private static AbstractTableColumnSyncPanel initializeAdvancedConditionPanel(final SwingEntityTableModel tableModel,
+                                                                               final int verticalFillerWidth) {
+    final AbstractTableColumnSyncPanel panel = new AbstractTableColumnSyncPanel(tableModel.getColumnModel()) {
       @Override
       protected JPanel initializeColumnPanel(final TableColumn column) {
         final Property property = (Property) column.getIdentifier();

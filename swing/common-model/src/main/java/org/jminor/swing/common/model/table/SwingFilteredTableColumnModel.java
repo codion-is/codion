@@ -7,6 +7,7 @@ import org.jminor.common.Event;
 import org.jminor.common.EventDataListener;
 import org.jminor.common.Events;
 import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.common.model.table.FilteredTableColumnModel;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
@@ -14,6 +15,7 @@ import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,7 +29,7 @@ import java.util.Objects;
  * A TableColumnModel handling hidden columns
  * @param <C> the type of column identifier
  */
-public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel implements FilteredTableColumnModel<C> {
+public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel implements FilteredTableColumnModel<C, TableColumn>, TableColumnModel {
 
   private final Event<C> columnHiddenEvent = Events.event();
   private final Event<C> columnShownEvent = Events.event();

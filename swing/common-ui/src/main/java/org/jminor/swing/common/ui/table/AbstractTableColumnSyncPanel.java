@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.table;
 
-import org.jminor.swing.common.model.table.FilteredTableColumnModel;
+import org.jminor.swing.common.model.table.SwingFilteredTableColumnModel;
 
 import javax.swing.Box;
 import javax.swing.JPanel;
@@ -36,7 +36,7 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
    * Instantiates a new AbstractTableColumnSyncPanel.
    * @param columnModel the column model
    */
-  public AbstractTableColumnSyncPanel(final FilteredTableColumnModel columnModel) {
+  public AbstractTableColumnSyncPanel(final SwingFilteredTableColumnModel columnModel) {
     setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
     this.columnModel = columnModel;
     this.columns = columnModel.getAllColumns();

@@ -1,25 +1,22 @@
 /*
  * Copyright (c) 2004 - 2018, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.model.table;
+package org.jminor.common.model.table;
 
 import org.jminor.common.EventListener;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
-import org.jminor.common.model.table.ColumnSummaryModel;
-import org.jminor.common.model.table.SelectionModel;
 
-import javax.swing.table.TableModel;
-import java.awt.Point;
 import java.util.Collection;
 
 /**
  * Specifies a table model supporting selection as well as filtering
  * @param <R> the type representing the rows in this table model
  * @param <C> type type used to identify columns in this table model, Integer for simple indexed identification for example
+ * @param <T> the type representing table columns
  */
-public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModelProxy<R>, TableModel, Refreshable {
+public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, TableModelProxy<R>, Refreshable {
 
   /**
    * @param listener a listener to be notified each time a refresh is about to start
@@ -94,7 +91,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModelPr
   /**
    * @return the TableColumnModel used by this TableModel
    */
-  FilteredTableColumnModel<C> getColumnModel();
+  FilteredTableColumnModel<C, T> getColumnModel();
 
   /**
    * @param columnIdentifier the column identifier
@@ -110,7 +107,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModelPr
   Collection getValues(final C columnIdentifier, final boolean selectedOnly);
 
   /**
-   * Returns a Point denoting the row (point.y) and column index (point.x) of the first value to fulfill
+   * Returns a RowColumn denoting the row and column index of the first value to fulfill
    * the given search condition.
    * @param fromIndex the row index to start searching at, if this is larger than the size of
    * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
@@ -120,10 +117,10 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModelPr
    * @see #isRegularExpressionSearch()
    * @see FilterCondition#include(Object)
    */
-  Point findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText);
+  RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText);
 
   /**
-   * Returns a Point denoting the row (point.y) and column index (point.x) of the first value to fulfill
+   * Returns a RowColumn denoting the row and column index of the first value to fulfill
    * the given search condition.
    * @param fromIndex the row index to start searching at, if this is larger than the size of
    * the table model or less than 0 the search starts from either 0 or rowCount - 1 depending on search direction.
@@ -132,7 +129,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModelPr
    * @return the search result coordinate, null if nothing was found
    * @see FilterCondition#include(Object)
    */
-  Point findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCondition<Object> condition);
+  RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCondition<Object> condition);
 
   /**
    * @return true if regular expressions should be used when searching this table model
@@ -159,5 +156,15 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModelPr
   /**
    * @return the sorting model
    */
-  TableSortModel<R, C> getSortModel();
+  TableSortModel<R, C, T> getSortModel();
+
+  /**
+   * Factory method for {@link RowColumn} instances.
+   * @param row the row index
+   * @param column the column index
+   * @return the RowColumn
+   */
+  static RowColumn rowColumn(final int row, final int column) {
+    return new DefaultRowColumn(row, column);
+  }
 }

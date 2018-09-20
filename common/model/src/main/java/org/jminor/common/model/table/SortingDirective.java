@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2018, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.model.table;
+package org.jminor.common.model.table;
 
 /**
  * Specifies sorting directives.

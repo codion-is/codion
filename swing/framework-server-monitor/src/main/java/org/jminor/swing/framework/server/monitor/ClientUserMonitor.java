@@ -14,7 +14,6 @@ import org.jminor.common.server.RemoteClient;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.AbstractTableSortModel;
-import org.jminor.swing.common.model.table.FilteredTableModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +54,7 @@ public final class ClientUserMonitor {
   private final Event<Integer> connectionTimeoutChangedEvent = Events.event();
   private final DefaultListModel<ClientMonitor> clientTypeListModel = new DefaultListModel<>();
   private final DefaultListModel<ClientMonitor> userListModel = new DefaultListModel<>();
-  private final FilteredTableModel<UserInfo, Integer> userHistoryTableModel = new UserHistoryTableModel();
+  private final AbstractFilteredTableModel<UserInfo, Integer> userHistoryTableModel = new UserHistoryTableModel();
 
   private final TaskScheduler updateScheduler = new TaskScheduler(() -> {
     try {
@@ -100,7 +99,7 @@ public final class ClientUserMonitor {
   /**
    * @return a TableModel for displaying the user connection history
    */
-  public FilteredTableModel getUserHistoryTableModel() {
+  public AbstractFilteredTableModel getUserHistoryTableModel() {
     return userHistoryTableModel;
   }
 

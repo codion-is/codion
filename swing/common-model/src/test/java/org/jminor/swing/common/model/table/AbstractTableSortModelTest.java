@@ -3,6 +3,8 @@
  */
 package org.jminor.swing.common.model.table;
 
+import org.jminor.common.model.table.SortingDirective;
+
 import org.junit.jupiter.api.Test;
 
 import javax.swing.table.TableColumn;

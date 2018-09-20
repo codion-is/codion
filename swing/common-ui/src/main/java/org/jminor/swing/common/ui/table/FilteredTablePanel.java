@@ -9,9 +9,11 @@ import org.jminor.common.Events;
 import org.jminor.common.TextUtil;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.common.model.table.FilteredTableModel;
+import org.jminor.common.model.table.RowColumn;
+import org.jminor.common.model.table.SortingDirective;
 import org.jminor.swing.common.model.DocumentAdapter;
-import org.jminor.swing.common.model.table.FilteredTableModel;
-import org.jminor.swing.common.model.table.SortingDirective;
+import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
@@ -79,7 +81,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
   public static final char FILTER_INDICATOR = '*';
 
   private static final int SORT_ICON_SIZE = 5;
-  private static final Point NULL_POINT = new Point(-1, -1);
+  private static final RowColumn NULL_COORDINATE = FilteredTableModel.rowColumn(-1, -1);
   private static final int SELECT_COLUMNS_GRID_ROWS = 15;
   private static final int SEARCH_FIELD_COLUMNS = 8;
 
@@ -91,7 +93,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
   /**
    * The table model
    */
-  private final FilteredTableModel<R, C> tableModel;
+  private final AbstractFilteredTableModel<R, C> tableModel;
 
   /**
    * Provides filter panels
@@ -141,7 +143,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
   /**
    * The coordinate of the last search result
    */
-  private Point lastSearchResultCoordinate = NULL_POINT;
+  private RowColumn lastSearchResultCoordinate = NULL_COORDINATE;
 
   /**
    * The text field used for entering the search condition
@@ -162,7 +164,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * Instantiates a new FilteredTablePanel.
    * @param tableModel the table model
    */
-  public FilteredTablePanel(final FilteredTableModel<R, C> tableModel) {
+  public FilteredTablePanel(final AbstractFilteredTableModel<R, C> tableModel) {
     this(tableModel, column -> new ColumnConditionPanel<>(tableModel.getColumnModel().getColumnFilterModel(
             (C) column.getIdentifier()), true, true));
   }
@@ -172,15 +174,16 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * @param tableModel the table model
    * @param conditionPanelProvider the column condition panel provider the column filter models found in the table model
    */
-  public FilteredTablePanel(final FilteredTableModel<R, C> tableModel, final ColumnConditionPanelProvider<C> conditionPanelProvider) {
+  public FilteredTablePanel(final AbstractFilteredTableModel<R, C> tableModel,
+                            final ColumnConditionPanelProvider<C> conditionPanelProvider) {
     this(new JTable(Objects.requireNonNull(tableModel, "tableModel"), tableModel.getColumnModel(),
                     (ListSelectionModel) tableModel.getSelectionModel()), conditionPanelProvider);
   }
 
   /**
-   * Instantiates a new FilteredTablePanel. Note that the JTable must have been instantiated with a {@link FilteredTableModel}.
+   * Instantiates a new FilteredTablePanel. Note that the JTable must have been instantiated with a {@link AbstractFilteredTableModel}.
    * <pre>
-   *   FilteredTableModel tableModel = ...;
+   *   AbstractFilteredTableModel tableModel = ...;
    *   JTable table = new JTable(tableModel, tableModel.getColumnModel(), (ListSelectionModel) tableModel.getSelectionModel());
    * </pre>
    * @param table the table to use
@@ -191,7 +194,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
   public FilteredTablePanel(final JTable table, final ColumnConditionPanelProvider<C> conditionPanelProvider) {
     Objects.requireNonNull(table, "table");
     this.table = table;
-    this.tableModel = (FilteredTableModel<R, C>) table.getModel();
+    this.tableModel = (AbstractFilteredTableModel<R, C>) table.getModel();
     this.conditionPanelProvider = conditionPanelProvider;
     this.tableScrollPane = new JScrollPane(table);
     this.horizontalTableScrollBar = tableScrollPane.getHorizontalScrollBar();
@@ -231,7 +234,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
   /**
    * @return the TableModel used by this TablePanel
    */
-  public final FilteredTableModel<R, C> getTableModel() {
+  public final AbstractFilteredTableModel<R, C> getTableModel() {
     return tableModel;
   }
 
@@ -435,7 +438,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * @param searchText the text to search for
    */
   final void findNextValue(final boolean addToSelection, final boolean forward, final String searchText) {
-    performSearch(addToSelection, lastSearchResultCoordinate.y + (forward ? 1 : -1), forward, searchText);
+    performSearch(addToSelection, lastSearchResultCoordinate.getRow() + (forward ? 1 : -1), forward, searchText);
   }
 
   private JTextField initializeSearchField() {
@@ -446,7 +449,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
     txtSearch.getDocument().addDocumentListener(new DocumentAdapter() {
       @Override
       public void contentsChanged(final DocumentEvent e) {
-        performSearch(false, lastSearchResultCoordinate.y == -1 ? 0 : lastSearchResultCoordinate.y, true, txtSearch.getText());
+        performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 : lastSearchResultCoordinate.getRow(), true, txtSearch.getText());
       }
     });
     txtSearch.addKeyListener(new KeyAdapter() {
@@ -475,25 +478,25 @@ public class FilteredTablePanel<R, C> extends JPanel {
 
   private void performSearch(final boolean addToSelection, final int fromIndex, final boolean forward, final String searchText) {
     if (searchText.length() != 0) {
-      final Point coordinate = tableModel.findNextItemCoordinate(fromIndex, forward, searchText);
+      final RowColumn coordinate = tableModel.findNextItemCoordinate(fromIndex, forward, searchText);
       if (coordinate != null) {
         lastSearchResultCoordinate = coordinate;
         if (addToSelection) {
-          tableModel.getSelectionModel().addSelectedIndex(coordinate.y);
+          tableModel.getSelectionModel().addSelectedIndex(coordinate.getRow());
         }
         else {
-          tableModel.getSelectionModel().setSelectedIndex(coordinate.y);
-          table.setColumnSelectionInterval(coordinate.x, coordinate.x);
+          tableModel.getSelectionModel().setSelectedIndex(coordinate.getRow());
+          table.setColumnSelectionInterval(coordinate.getColumn(), coordinate.getColumn());
         }
-        scrollToCoordinate(coordinate.y, coordinate.x, false, false);
+        scrollToCoordinate(coordinate.getRow(), coordinate.getColumn(), false, false);
       }
       else {
         tableModel.getSelectionModel().clearSelection();
-        lastSearchResultCoordinate = NULL_POINT;
+        lastSearchResultCoordinate = NULL_COORDINATE;
       }
     }
     else {
-      lastSearchResultCoordinate = NULL_POINT;
+      lastSearchResultCoordinate = NULL_COORDINATE;
     }
   }
 

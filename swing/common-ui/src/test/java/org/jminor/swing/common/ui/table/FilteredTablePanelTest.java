@@ -7,7 +7,6 @@ import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.AbstractTableSortModel;
-import org.jminor.swing.common.model.table.FilteredTableModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +36,7 @@ public class FilteredTablePanelTest {
 
   @Test
   public void constructorNullTableModel() {
-    assertThrows(NullPointerException.class, () -> new FilteredTablePanel<String, Integer>((FilteredTableModel) null, null));
+    assertThrows(NullPointerException.class, () -> new FilteredTablePanel<String, Integer>((AbstractFilteredTableModel) null, null));
   }
 
   @Test

@@ -9,6 +9,9 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnSummaryModel;
+import org.jminor.common.model.table.FilteredTableModel;
+import org.jminor.common.model.table.SortingDirective;
+import org.jminor.common.model.table.TableSortModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
@@ -22,10 +25,7 @@ import org.jminor.framework.model.EntityTableConditionModel;
 import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.AbstractTableSortModel;
-import org.jminor.swing.common.model.table.FilteredTableColumnModel;
-import org.jminor.swing.common.model.table.FilteredTableModel;
-import org.jminor.swing.common.model.table.SortingDirective;
-import org.jminor.swing.common.model.table.TableSortModel;
+import org.jminor.swing.common.model.table.SwingFilteredTableColumnModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +67,7 @@ import java.util.stream.Collectors;
  * </pre>
  */
 public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Property>
-        implements EntityTableModel<SwingEntityEditModel>, FilteredTableModel<Entity, Property> {
+        implements EntityTableModel<SwingEntityEditModel>, FilteredTableModel<Entity, Property, TableColumn> {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SwingEntityTableModel.class.getName(), Locale.getDefault());
 
@@ -149,7 +149,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @throws IllegalArgumentException if {@code conditionModel} entityId does not match the one supplied as parameter
    */
   public SwingEntityTableModel(final String entityId, final EntityConnectionProvider connectionProvider,
-                               final TableSortModel<Entity, Property> sortModel, final EntityTableConditionModel conditionModel) {
+                               final TableSortModel<Entity, Property, TableColumn> sortModel,
+                               final EntityTableConditionModel conditionModel) {
     super(sortModel, Objects.requireNonNull(conditionModel, "conditionModel").getPropertyFilterModels());
     if (!conditionModel.getEntityId().equals(entityId)) {
       throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + conditionModel.getEntityId()
@@ -790,7 +791,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   private void applyColumnPreferences(final org.json.JSONObject preferences) {
-    final FilteredTableColumnModel<Property> columnModel = getColumnModel();
+    final SwingFilteredTableColumnModel<Property> columnModel = getColumnModel();
     for (final TableColumn column : Collections.list(columnModel.getColumns())) {
       final Property property = (Property) column.getIdentifier();
       if (columnModel.containsColumn(property)) {

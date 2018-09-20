@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.common.ui.table;
 
-import org.jminor.swing.common.model.table.FilteredTableColumnModel;
 import org.jminor.swing.common.model.table.SwingFilteredTableColumnModel;
 
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class AbstractTableColumnSyncPanelTest {
 
   private final TableColumnSyncPanelImpl panel;
-  private final FilteredTableColumnModel columnModel;
+  private final SwingFilteredTableColumnModel columnModel;
 
   public AbstractTableColumnSyncPanelTest() {
     columnModel = new SwingFilteredTableColumnModel(Arrays.asList(new TableColumn(0, 20), new TableColumn(2, 20)), null);
@@ -34,7 +33,7 @@ public class AbstractTableColumnSyncPanelTest {
 
   private static class TableColumnSyncPanelImpl extends AbstractTableColumnSyncPanel {
 
-    private TableColumnSyncPanelImpl(final FilteredTableColumnModel columnModel) {
+    private TableColumnSyncPanelImpl(final SwingFilteredTableColumnModel columnModel) {
       super(columnModel);
     }
 

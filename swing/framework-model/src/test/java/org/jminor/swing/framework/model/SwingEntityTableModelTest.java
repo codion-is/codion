@@ -7,6 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnConditionModel;
+import org.jminor.common.model.table.SortingDirective;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
@@ -18,13 +19,11 @@ import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
 import org.jminor.framework.model.EntityTableConditionModel;
 import org.jminor.framework.model.testing.AbstractEntityTableModelTest;
 import org.jminor.framework.model.testing.TestDomain;
-import org.jminor.swing.common.model.table.SortingDirective;
 
 import org.junit.jupiter.api.Test;
 
 import javax.swing.table.TableColumn;
 import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -112,6 +111,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     final ColumnConditionModel<Property> filterModel = testModel.getConditionModel().getPropertyFilterModel(TestDomain.DETAIL_STRING);
     filterModel.setLikeValue("a");
     testModel.filterContents();
+    assertEquals(4, testModel.getFilteredItems().size());
   }
 
   @Test
@@ -153,20 +153,6 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     final Property masterFKProperty = ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK);
     final Comparator comparator = ((SwingEntityTableModel.DefaultEntityTableSortModel) testModel.getSortModel()).initializeColumnComparator(masterFKProperty);
     assertEquals(comparator, ENTITIES.getComparator(TestDomain.T_MASTER));
-  }
-
-  @Test
-  public void getValues() {
-    testModel.refresh();
-    final Property property = ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING);
-    final Collection values = testModel.getValues(property, false);
-    assertEquals(5, values.size());
-    assertTrue(values.contains("a"));
-    assertTrue(values.contains("b"));
-    assertTrue(values.contains("c"));
-    assertTrue(values.contains("d"));
-    assertTrue(values.contains("e"));
-    assertFalse(values.contains("zz"));
   }
 
   @Test

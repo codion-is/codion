@@ -9,12 +9,14 @@ import org.jminor.common.Events;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
+import org.jminor.common.model.table.FilteredTableModel;
+import org.jminor.common.model.table.RowColumn;
+import org.jminor.common.model.table.SortingDirective;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.table.TableColumn;
-import java.awt.Point;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -260,65 +262,65 @@ public final class AbstractFilteredTableModelTest {
     };
 
     testModel.refresh();
-    Point point = testModel.findNextItemCoordinate(0, true, "b");
-    assertEquals(new Point(1, 1), point);
-    point = testModel.findNextItemCoordinate(point.y, true, "e");
-    assertEquals(new Point(1, 4), point);
-    point = testModel.findNextItemCoordinate(point.y, false, "c");
-    assertEquals(new Point(1, 2), point);
+    RowColumn point = testModel.findNextItemCoordinate(0, true, "b");
+    assertEquals(FilteredTableModel.rowColumn(1, 1), point);
+    point = testModel.findNextItemCoordinate(point.getRow(), true, "e");
+    assertEquals(FilteredTableModel.rowColumn(4, 1), point);
+    point = testModel.findNextItemCoordinate(point.getRow(), false, "c");
+    assertEquals(FilteredTableModel.rowColumn(2, 1), point);
     point = testModel.findNextItemCoordinate(0, true, "x");
     assertNull(point);
 
     testModel.getSortModel().setSortingDirective(1, SortingDirective.DESCENDING, false);
 
     point = testModel.findNextItemCoordinate(0, true, "b");
-    assertEquals(new Point(1, 3), point);
-    point = testModel.findNextItemCoordinate(point.y, false, "e");
-    assertEquals(new Point(1, 0), point);
+    assertEquals(FilteredTableModel.rowColumn(3, 1), point);
+    point = testModel.findNextItemCoordinate(point.getRow(), false, "e");
+    assertEquals(FilteredTableModel.rowColumn(0, 1), point);
 
     testModel.setRegularExpressionSearch(true);
     assertTrue(testModel.isRegularExpressionSearch());
     point = testModel.findNextItemCoordinate(0, true, "(?i)B");
-    assertEquals(new Point(1, 3), point);
+    assertEquals(FilteredTableModel.rowColumn(3, 1), point);
 
     FilterCondition<Object> condition = item -> item.equals("b") || item.equals("e");
 
     point = testModel.findNextItemCoordinate(4, false, condition);
-    assertEquals(new Point(1, 3), point);
-    point = testModel.findNextItemCoordinate(point.y - 1, false, condition);
-    assertEquals(new Point(1, 0), point);
+    assertEquals(FilteredTableModel.rowColumn(3, 1), point);
+    point = testModel.findNextItemCoordinate(point.getRow() - 1, false, condition);
+    assertEquals(FilteredTableModel.rowColumn(0, 1), point);
 
     testModel.getSortModel().setSortingDirective(1, SortingDirective.ASCENDING, false);
     testModel.getColumnModel().moveColumn(1, 0);
 
     testModel.refresh();
     point = testModel.findNextItemCoordinate(0, true, "b");
-    assertEquals(new Point(0, 1), point);
-    point = testModel.findNextItemCoordinate(point.y, true, "e");
-    assertEquals(new Point(0, 4), point);
-    point = testModel.findNextItemCoordinate(point.y, false, "c");
-    assertEquals(new Point(0, 2), point);
+    assertEquals(FilteredTableModel.rowColumn(1, 0), point);
+    point = testModel.findNextItemCoordinate(point.getRow(), true, "e");
+    assertEquals(FilteredTableModel.rowColumn(4, 0), point);
+    point = testModel.findNextItemCoordinate(point.getRow(), false, "c");
+    assertEquals(FilteredTableModel.rowColumn(2, 0), point);
     point = testModel.findNextItemCoordinate(0, true, "x");
     assertNull(point);
 
     testModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
 
     point = testModel.findNextItemCoordinate(0, true, "b");
-    assertEquals(new Point(0, 3), point);
-    point = testModel.findNextItemCoordinate(point.y, false, "e");
-    assertEquals(new Point(0, 0), point);
+    assertEquals(FilteredTableModel.rowColumn(3, 0), point);
+    point = testModel.findNextItemCoordinate(point.getRow(), false, "e");
+    assertEquals(FilteredTableModel.rowColumn(0, 0), point);
 
     testModel.setRegularExpressionSearch(true);
     assertTrue(testModel.isRegularExpressionSearch());
     point = testModel.findNextItemCoordinate(0, true, "(?i)B");
-    assertEquals(new Point(0, 3), point);
+    assertEquals(FilteredTableModel.rowColumn(3, 0), point);
 
     condition = item -> item.equals("b") || item.equals("e");
 
     point = testModel.findNextItemCoordinate(4, false, condition);
-    assertEquals(new Point(0, 3), point);
-    point = testModel.findNextItemCoordinate(point.y - 1, false, condition);
-    assertEquals(new Point(0, 0), point);
+    assertEquals(FilteredTableModel.rowColumn(3, 0), point);
+    point = testModel.findNextItemCoordinate(point.getRow() - 1, false, condition);
+    assertEquals(FilteredTableModel.rowColumn(0, 0), point);
   }
 
   @Test
@@ -692,6 +694,36 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(rowCount, tableModel.getRowCount());
 
     tableModel.removeFilteringListener(listener);
+  }
+
+  @Test
+  public void getValues() {
+    tableModel.refresh();
+    tableModel.getSelectionModel().setSelectedIndexes(Arrays.asList(0, 2));
+    Collection values = tableModel.getValues(0, true);
+    assertEquals(2, values.size());
+    assertTrue(values.contains("a"));
+    assertTrue(values.contains("c"));
+
+    values = tableModel.getValues(0, false);
+    assertEquals(5, values.size());
+    assertTrue(values.contains("a"));
+    assertTrue(values.contains("b"));
+    assertTrue(values.contains("c"));
+    assertTrue(values.contains("d"));
+    assertTrue(values.contains("e"));
+    assertFalse(values.contains("zz"));
+  }
+
+  @Test
+  public void columnModel() {
+    final TableColumn column = tableModel.getColumnModel().getTableColumn(0);
+    assertEquals(0, column.getIdentifier());
+  }
+
+  @Test
+  public void getColumnClass() {
+    assertEquals(String.class, tableModel.getColumnClass(0));
   }
 
   private static boolean tableModelContainsAll(final String[] strings, final boolean includeFiltered,

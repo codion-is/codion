@@ -22,7 +22,7 @@ public class SwingFilteredTableColumnModelTest {
 
   @Test
   public void testModel() {
-    final FilteredTableColumnModel<Integer> testModel = createTestModel();
+    final SwingFilteredTableColumnModel testModel = createTestModel();
     final Collection<Object> hidden = new ArrayList<>();
     final Collection<Object> shown = new ArrayList<>();
     final EventDataListener<Integer> hideListener = hidden::add;
@@ -50,7 +50,7 @@ public class SwingFilteredTableColumnModelTest {
 
   @Test
   public void getTableColumnNotFound() {
-    final FilteredTableColumnModel<Integer> testModel = createTestModel();
+    final SwingFilteredTableColumnModel testModel = createTestModel();
     assertThrows(IllegalArgumentException.class, () -> testModel.getTableColumn(42));
   }
 
@@ -114,7 +114,7 @@ public class SwingFilteredTableColumnModelTest {
     assertEquals(3, columnModel.getColumnIndex(0));
   }
 
-  private FilteredTableColumnModel<Integer> createTestModel() {
+  private SwingFilteredTableColumnModel createTestModel() {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
     final ColumnConditionModel<Integer> filterModel = new DefaultColumnConditionModel<>(0, Types.VARCHAR, "%");

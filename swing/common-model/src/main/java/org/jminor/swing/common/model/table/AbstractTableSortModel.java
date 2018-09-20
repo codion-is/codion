@@ -7,6 +7,8 @@ import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.TextUtil;
+import org.jminor.common.model.table.SortingDirective;
+import org.jminor.common.model.table.TableSortModel;
 
 import javax.swing.table.TableColumn;
 import java.util.Collections;
@@ -22,7 +24,7 @@ import java.util.stream.Collectors;
  * @param <R> the type representing a row in the table model
  * @param <C> the type representing the column identifier in the table model
  */
-public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, C> {
+public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, C, TableColumn> {
 
   private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = Comparable::compareTo;
   private static final Comparator LEXICAL_COMPARATOR = TextUtil.getSpaceAwareCollator();

@@ -1,31 +1,29 @@
 /*
  * Copyright (c) 2004 - 2018, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.model.table;
+package org.jminor.common.model.table;
 
 import org.jminor.common.EventDataListener;
-import org.jminor.common.model.table.ColumnConditionModel;
 
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import java.util.Collection;
 import java.util.List;
 
 /**
  * A TableColumnModel handling hidden columns
  * @param <C> the type of column identifier
+ * @param <T> the type representing table columns
  */
-public interface FilteredTableColumnModel<C> extends TableColumnModel {
+public interface FilteredTableColumnModel<C, T> {
 
   /**
    * @return all columns in this model, both hidden and visible
    */
-  List<TableColumn> getAllColumns();
+  List<T> getAllColumns();
 
   /**
    * @return an unmodifiable view of hidden table columns
    */
-  Collection<TableColumn> getHiddenColumns();
+  Collection<T> getHiddenColumns();
 
   /**
    * @param columnIdentifier the key for which to query if its column is visible
@@ -52,7 +50,7 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
    * @return the TableColumn with the given identifier
    * @throws IllegalArgumentException in case this table model does not contain a column with the given identifier
    */
-  TableColumn getTableColumn(final C identifier);
+  T getTableColumn(final C identifier);
 
   /**
    * @param identifier the column identifier

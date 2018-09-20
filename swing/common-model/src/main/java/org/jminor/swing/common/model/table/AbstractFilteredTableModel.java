@@ -4,20 +4,26 @@
 package org.jminor.swing.common.model.table;
 
 import org.jminor.common.Event;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.DefaultColumnSummaryModel;
+import org.jminor.common.model.table.FilteredTableModel;
+import org.jminor.common.model.table.RowColumn;
 import org.jminor.common.model.table.SelectionModel;
+import org.jminor.common.model.table.TableSortModel;
 
 import javax.swing.ListSelectionModel;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
-import java.awt.Point;
+import javax.swing.table.TableModel;
 import java.text.Format;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -41,7 +47,7 @@ import java.util.regex.Pattern;
  * @param <R> the type representing the rows in this table model
  * @param <C> type type used to identify columns in this table model, Integer for simple indexed identification for example
  */
-public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C> {
+public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C, TableColumn>, TableModel {
 
   private final Event filteringDoneEvent = Events.event();
   private final Event sortingStartedEvent = Events.event();
@@ -50,6 +56,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private final Event refreshDoneEvent = Events.event();
   private final Event tableDataChangedEvent = Events.event();
   private final Event tableModelClearedEvent = Events.event();
+  private final Event<List<Integer>> rowsDeletedEvent = Events.event();
 
   /**
    * Holds visible items
@@ -69,12 +76,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * The TableColumnModel
    */
-  private final FilteredTableColumnModel<C> columnModel;
+  private final SwingFilteredTableColumnModel<C> columnModel;
 
   /**
    * The sort model
    */
-  private final TableSortModel<R, C> sortModel;
+  private final TableSortModel<R, C, TableColumn> sortModel;
 
   /**
    * Maps PropertySummaryModels to their respective properties
@@ -97,9 +104,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @param columnFilterModels the column filter models
    * @throws NullPointerException in case {@code columnModel} is null
    */
-  public AbstractFilteredTableModel(final TableSortModel<R, C> sortModel, final Collection<? extends ColumnConditionModel<C>> columnFilterModels) {
-    Objects.requireNonNull(sortModel, "sortModel");
-    this.sortModel = sortModel;
+  public AbstractFilteredTableModel(final TableSortModel<R, C, TableColumn> sortModel,
+                                    final Collection<? extends ColumnConditionModel<C>> columnFilterModels) {
+    this.sortModel = Objects.requireNonNull(sortModel, "sortModel");
     this.columnModel = new SwingFilteredTableColumnModel<>(sortModel.getColumns(), columnFilterModels);
     this.selectionModel = new SwingTableSelectionModel<>(this);
     this.filterCondition = new DefaultFilterCondition<>(this.columnModel.getColumnFilterModels());
@@ -167,16 +174,16 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final Point findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText) {
+  public final RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText) {
     return findNextItemCoordinate(fromIndex, forward, getSearchCondition(searchText));
   }
 
   /** {@inheritDoc} */
   @Override
-  public final Point findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCondition<Object> condition) {
+  public final RowColumn findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCondition<Object> condition) {
     if (forward) {
       for (int row = fromIndex >= getVisibleItemCount() ? 0 : fromIndex; row < getVisibleItemCount(); row++) {
-        final Point point = findColumnValue(columnModel.getColumns(), row, condition);
+        final RowColumn point = findColumnValue(columnModel.getColumns(), row, condition);
         if (point != null) {
           return point;
         }
@@ -184,7 +191,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
     else {
       for (int row = fromIndex < 0 ? getVisibleItemCount() - 1 : fromIndex; row >= 0; row--) {
-        final Point point = findColumnValue(columnModel.getColumns(), row, condition);
+        final RowColumn point = findColumnValue(columnModel.getColumns(), row, condition);
         if (point != null) {
           return point;
         }
@@ -231,7 +238,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final TableSortModel<R, C> getSortModel() {
+  public final TableSortModel<R, C, TableColumn> getSortModel() {
     return sortModel;
   }
 
@@ -413,7 +420,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final FilteredTableColumnModel<C> getColumnModel() {
+  public void addRowsDeletedListener(final EventDataListener<List<Integer>> listener) {
+    rowsDeletedEvent.addDataListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final SwingFilteredTableColumnModel<C> getColumnModel() {
     return columnModel;
   }
 
@@ -582,15 +595,20 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       conditionModel.addConditionStateListener(this::filterContents);
     }
     sortModel.addSortingStateChangedListener(this::sortContents);
+    addTableModelListener(e -> {
+      if (e.getType() == TableModelEvent.DELETE) {
+        rowsDeletedEvent.eventOccurred(Arrays.asList(e.getFirstRow(), e.getLastRow()));
+      }
+    });
   }
 
-  private Point findColumnValue(final Enumeration<TableColumn> visibleColumns, final int row, final FilterCondition<Object> condition) {
-    int index = 0;
+  private RowColumn findColumnValue(final Enumeration<TableColumn> visibleColumns, final int row, final FilterCondition<Object> condition) {
+    int column = 0;
     while (visibleColumns.hasMoreElements()) {
       if (condition.include(getSearchValueAt(row, visibleColumns.nextElement()))) {
-        return new Point(index, row);
+        return FilteredTableModel.rowColumn(row, column);
       }
-      index++;
+      column++;
     }
 
     return null;

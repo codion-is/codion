@@ -1,9 +1,11 @@
 /*
  * Copyright (c) 2004 - 2018, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.model.table;
+package org.jminor.common.model.table;
 
-import javax.swing.event.TableModelListener;
+import org.jminor.common.EventDataListener;
+
+import java.util.List;
 
 /**
  * A proxy for connecting to a table model
@@ -33,8 +35,8 @@ public interface TableModelProxy<R> {
   boolean allowSelectionChange();
 
   /**
-   * Adds a listener to the list that's notified each time a change to the data model occurs.
-   * @param listener the listener
+   * Adds a listener that is notified each time rows are deleted from the data model.
+   * @param listener the listener, the data list contains the fromIndex and toIndex as items at index 0 and 1
    */
-  void addTableModelListener(TableModelListener listener);
+  void addRowsDeletedListener(final EventDataListener<List<Integer>> listener);
 }

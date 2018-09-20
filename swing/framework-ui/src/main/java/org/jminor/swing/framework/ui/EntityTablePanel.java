@@ -25,7 +25,6 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableModel;
-import org.jminor.swing.common.model.table.FilteredTableModel;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
@@ -1524,13 +1523,13 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     header.setDefaultRenderer((table, value, isSelected, hasFocus, row, column) -> {
       final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
               hasFocus, row, column);
-      final EntityTableModel tableModel1 = getEntityTableModel();
-      final TableColumn tableColumn = ((FilteredTableModel) tableModel1).getColumnModel().getColumn(column);
+      final SwingEntityTableModel tableModel = getEntityTableModel();
+      final TableColumn tableColumn = tableModel.getColumnModel().getColumn(column);
       final TableCellRenderer renderer = tableColumn.getCellRenderer();
       final Property property = (Property) tableColumn.getIdentifier();
       final boolean indicateSearch = renderer instanceof EntityTableCellRenderer
               && ((EntityTableCellRenderer) renderer).isIndicateCondition()
-              && tableModel1.getConditionModel().isEnabled(property.getPropertyId());
+              && tableModel.getConditionModel().isEnabled(property.getPropertyId());
       label.setFont(indicateSearch ? searchFont : defaultFont);
 
       return label;
