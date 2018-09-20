@@ -122,6 +122,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     if (isConnectionValid()) {
       disconnect(entityConnection);
       entityConnection = null;
+      connectedState.setActive(false);
     }
   }
 
@@ -170,6 +171,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private void doConnect() {
     entityConnection = connect();
     domain = entityConnection.getDomain().registerDomain();
+    connectedState.setActive(true);
     if (scheduleValidityCheck) {
       validityCheckScheduler.start();
     }

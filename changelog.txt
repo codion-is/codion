@@ -4845,3 +4845,5 @@
   DefaultEntityEditModel, unnecessary string constants removed
   Sonar run
   FrameworkMessages refactored into multiple class specific resource bundles
+  AbstractEntityConnectionProvider now sets the connectedState on connect and disconnect
+  AbstractEntityConnectionProviderTest added
