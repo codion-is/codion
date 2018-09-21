@@ -1,3 +1,5 @@
+apply plugin: 'application'
+
 dependencies {
     implementation project(':org.jminor.common.core')
     implementation project(':org.jminor.common.db')
@@ -12,4 +14,39 @@ dependencies {
     testRuntime project(':org.jminor.framework.server')
 
     testRuntime "com.h2database:h2:${h2Version}"
+}
+
+distributions {
+    main {
+        baseName = "jminor.entity.generator"
+    }
+}
+
+applicationName = 'entity_generator'
+
+mainClassName = 'org.jminor.swing.framework.tools.ui.EntityGeneratorPanel'
+
+applicationDefaultJvmArgs = [
+        '-Djminor.configurationFile=../config/entity_generator.config',
+        '-Dlogback.configurationFile=../config/logback.xml'
+]
+
+applicationDistribution.into('config') {
+    from(files('src/main/config/entity_generator.config'))
+    from(files('src/main/config/create_schema.sql'))
+    from(files('src/main/config/logback.xml'))
+}
+
+task runEntityGenerator(type: JavaExec) {
+    group 'run'
+    main = mainClassName
+    classpath = sourceSets.test.runtimeClasspath
+    systemProperties = [
+            'jminor.db.type': 'h2',
+            'jminor.db.host': 'h2db',
+            'jminor.db.embedded': 'true',
+            'jminor.db.embeddedInMemory': 'true',
+            'jminor.db.initScript': 'src/main/config/create_schema.sql',
+            'logback.configurationFile': 'src/main/config/logback.xml'
+    ]
 }
