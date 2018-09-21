@@ -7,7 +7,7 @@ dependencies {
     api project(':org.jminor.framework.model')
 
     testImplementation project(':org.jminor.framework.db.local')
-    testImplementation project(':org.jminor.framework.model.unittests')
+    testImplementation project(path: ':org.jminor.framework.model', configuration: 'testArtifact')
 
     runtimeOnly project(':org.jminor.framework.db.local')
     runtimeOnly project(':org.jminor.framework.db.remote')

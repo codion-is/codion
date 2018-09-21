@@ -4,8 +4,8 @@
 package org.jminor.javafx.framework.model;
 
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.model.testing.AbstractEntityApplicationModelTest;
-import org.jminor.framework.model.testing.TestDomain;
+import org.jminor.framework.model.AbstractEntityApplicationModelTest;
+import org.jminor.framework.model.TestDomain;
 import org.jminor.javafx.framework.ui.EntityTableView;
 
 import javafx.embed.swing.JFXPanel;

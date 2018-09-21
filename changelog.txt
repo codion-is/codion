@@ -4848,3 +4848,4 @@
   AbstractEntityConnectionProvider now sets the connectedState on connect and disconnect
   AbstractEntityConnectionProviderTest added
   All interfaces in package org.jminor.swing.common.model.table moved to org.jminor.common.model.table, related classes refactored
+  Module org.jminor.framework.model-unittests removed, classes moved to test source path of module org.jminor.framework.model

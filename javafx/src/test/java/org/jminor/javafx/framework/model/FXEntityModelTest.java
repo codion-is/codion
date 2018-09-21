@@ -3,8 +3,8 @@
  */
 package org.jminor.javafx.framework.model;
 
-import org.jminor.framework.model.testing.AbstractEntityModelTest;
-import org.jminor.framework.model.testing.TestDomain;
+import org.jminor.framework.model.AbstractEntityModelTest;
+import org.jminor.framework.model.TestDomain;
 import org.jminor.javafx.framework.ui.EntityTableView;
 
 import javafx.embed.swing.JFXPanel;

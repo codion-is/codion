@@ -8,7 +8,7 @@ import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
-import org.jminor.framework.model.testing.TestDomain;
+import org.jminor.framework.model.TestDomain;
 
 import org.junit.jupiter.api.Test;
 

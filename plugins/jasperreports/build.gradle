@@ -9,7 +9,6 @@ dependencies {
     implementation project(':org.jminor.swing.common.ui')
 
     testImplementation project(':org.jminor.framework.db.local')
-    testImplementation project(':org.jminor.framework.model.unittests')
 
     testImplementation project(':org.jminor.swing.framework.model')
 

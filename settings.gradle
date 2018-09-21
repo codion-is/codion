@@ -33,9 +33,6 @@ project(':org.jminor.framework.db.test').projectDir = file('framework/db-test')
 include 'org.jminor.framework.model'
 project(':org.jminor.framework.model').projectDir = file('framework/model')
 
-include 'org.jminor.framework.model.unittests'
-project(':org.jminor.framework.model.unittests').projectDir = file('framework/model-unittests')
-
 include 'org.jminor.framework.server'
 project(':org.jminor.framework.server').projectDir = file('framework/server')
 

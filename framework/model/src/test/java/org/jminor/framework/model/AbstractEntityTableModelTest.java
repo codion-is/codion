@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2018, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model.testing;
+package org.jminor.framework.model;
 
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
@@ -11,8 +11,6 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.model.EntityEditModel;
-import org.jminor.framework.model.EntityTableModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -324,12 +322,11 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final TableModel deptModel = createDepartmentTableModel();
     deptModel.setColumns(TestDomain.DEPARTMENT_ID, TestDomain.DEPARTMENT_NAME, TestDomain.DEPARTMENT_LOCATION);
     deptModel.refresh();
-    final String newline = System.getProperty("line.separator");
     final String expected =
-            "deptno\tdname\tloc" + newline +
-            "10\tACCOUNTING\tNEW YORK" + newline +
-            "40\tOPERATIONS\tBOSTON" + newline +
-            "20\tRESEARCH\tDALLAS" + newline +
+            "deptno\tdname\tloc\n" +
+            "10\tACCOUNTING\tNEW YORK\n" +
+            "40\tOPERATIONS\tBOSTON\n" +
+            "20\tRESEARCH\tDALLAS\n" +
             "30\tSALES\tCHICAGO";
     assertEquals(expected, deptModel.getTableDataAsDelimitedString('\t'));
   }

@@ -13,3 +13,15 @@ dependencies {
 
     testRuntime "com.h2database:h2:${h2Version}"
 }
+
+//so that implementation modules (swing/fx) can depend on this modules unit tests
+task testJar(type: Jar) {
+    classifier 'test'
+    from sourceSets.test.output
+}
+configurations {
+    testArtifact.extendsFrom testRuntime
+}
+artifacts {
+    testArtifact testJar
+}

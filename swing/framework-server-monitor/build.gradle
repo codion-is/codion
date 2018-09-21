@@ -13,7 +13,6 @@ dependencies {
     testImplementation project(':org.jminor.framework.db.core')
     testImplementation project(':org.jminor.framework.db.remote')
     testRuntime project(':org.jminor.framework.db.local')
-    testRuntime project(':org.jminor.framework.model.unittests')
 
     implementation "org.json:json:${jsonVersion}"
     implementation "org.jfree:jcommon:${jcommonVersion}"
