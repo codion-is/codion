@@ -296,8 +296,8 @@ public class DefaultEntityConnectionServerTest {
     DefaultEntityConnectionServer.SERVER_CLIENT_LOGGING_ENABLED.set(true);
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(TestWebServer.class.getName());
     Server.RMI_SERVER_HOSTNAME.set("localhost");
-    Server.TRUSTSTORE.set("../../resources/security/JMinorClientTruststore");
-    Server.KEYSTORE.set("../../resources/security/JMinorServerKeystore");
+    Server.TRUSTSTORE.set("src/main/security/JMinorClientTruststore");
+    Server.KEYSTORE.set("src/main/security/JMinorServerKeystore");
     Server.KEYSTORE_PASSWORD.set("crappypass");
   }
 

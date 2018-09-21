@@ -96,7 +96,6 @@ task clientRemoteScript(type: CreateStartScripts) {
             '-Djminor.server.hostname=localhost',
             '-Djminor.report.path=../reports',
             '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
-            '-Djava.security.policy=../config/jminor_client.policy',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -124,7 +123,6 @@ task loadTestRemoteScript(type: CreateStartScripts) {
             '-Djminor.server.hostname=localhost',
             '-Djminor.report.path=../reports',
             '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
-            '-Djava.security.policy=../config/jminor_client.policy',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -146,7 +144,7 @@ task loadTestHttpScript(type: CreateStartScripts) {
 applicationDistribution.into('config') {
     from(files('src/main/sql/create_schema.sql'))
     from(files('src/main/resources/logback.xml'))
-    from(files('../../resources/security/JMinorClientTruststore'))
+    from(files('../../framework/server/src/main/security/JMinorClientTruststore'))
 }
 
 applicationDistribution.into('reports') {
@@ -182,9 +180,8 @@ task runClientRemote(type: JavaExec) {
     systemProperties = [
             'jminor.client.connectionType': 'remote',
             'jminor.server.hostname': 'localhost',
-            'javax.net.ssl.trustStore': '../../resources/security/JMinorClientTruststore',
-            'java.security.policy': '../../resources/security/jminor_client.policy',
-            'logback.configurationFile': 'src/main/resources/logback.xml'
+            'javax.net.ssl.trustStore': '../../framework/server/src/main/security/JMinorClientTruststore',
+            'logback.configurationFile': 'src/main/config/logback.xml'
     ]
 }
 
@@ -195,7 +192,7 @@ task runClientHttp(type: JavaExec) {
             'jminor.client.connectionType': 'http',
             'jminor.client.http.secure': 'false',
             'jminor.client.http.hostname': 'localhost',
-            'logback.configurationFile': 'src/main/resources/logback.xml'
+            'logback.configurationFile': 'src/main/config/logback.xml'
     ]
 }
 
@@ -205,9 +202,8 @@ task runLoadTestRemote(type: JavaExec) {
     systemProperties = [
             'jminor.client.connectionType': 'remote',
             'jminor.server.hostname': 'localhost',
-            'javax.net.ssl.trustStore': '../../resources/security/JMinorClientTruststore',
-            'java.security.policy': '../../resources/security/jminor_client.policy',
-            'logback.configurationFile': 'src/main/resources/logback.xml'
+            'javax.net.ssl.trustStore': '../../framework/server/src/main/security/JMinorClientTruststore',
+            'logback.configurationFile': 'src/main/config/logback.xml'
     ]
 }
 
@@ -218,6 +214,6 @@ task runLoadTestHttp(type: JavaExec) {
             'jminor.client.connectionType': 'http',
             'jminor.client.http.secure': 'false',
             'jminor.client.http.hostname': 'localhost',
-            'logback.configurationFile': 'src/main/resources/logback.xml'
+            'logback.configurationFile': 'src/main/config/logback.xml'
     ]
 }

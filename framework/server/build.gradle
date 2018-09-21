@@ -60,14 +60,13 @@ applicationDistribution.from(configurations.serverRuntime.files) {
     into("lib")
 }
 applicationDistribution.from(files(
-        '../../resources/security/JMinorServerKeystore',
-        '../../resources/security/JMinorClientTruststore',
-        '../../resources/security/jminor_server.policy',
-        '../../resources/security/all_permissions.policy',
-        '../../resources/security/notsoserial-whitelist.txt')) {
+        'src/main/security/JMinorServerKeystore',
+        'src/main/security/JMinorClientTruststore',
+        'src/main/security/all_permissions.policy',
+        'src/main/security/notsoserial-whitelist.txt')) {
     into("config")
 }
-applicationDistribution.from(fileTree(dir: '../../resources/server/config', include: '**/*')) {
+applicationDistribution.from(fileTree(dir: 'src/main/config', include: '**/*')) {
     into("config")
 }
 applicationDistribution.from(files('../../demos/empdept/src/main/sql/create_schema.sql')) {
@@ -112,10 +111,10 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
             'jminor.server.pooling.poolProviderClass': 'org.jminor.framework.plugins.hikari.pool.HikariConnectionPoolProvider',
             'jminor.server.auxiliaryServerClassNames': 'org.jminor.framework.servlet.EntityServletServer',
             'jminor.server.domain.classes': 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.ChinookDomain,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
-            'javax.net.ssl.keyStore': '../../resources/security/JMinorServerKeystore',
-            'java.security.policy': '../../resources/security/all_permissions.policy',
+            'javax.net.ssl.keyStore': 'src/main/security/JMinorServerKeystore',
+            'java.security.policy': 'src/main/security/all_permissions.policy',
             'javax.net.ssl.keyStorePassword': 'crappypass',
             'java.rmi.server.hostname': 'localhost',
-            'logback.configurationFile': '../../resources/server/config/logback.xml'
+            'logback.configurationFile': 'src/main/config/logback.xml'
     ]
 }

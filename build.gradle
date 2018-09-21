@@ -151,7 +151,7 @@ subprojects {
         }
 
         /** Creates a key- and truststore pair used when running server unit tests and demos with remote connection */
-        def keystoreRootDir = project.rootDir.toString() + '/resources/security/'
+        def keystoreRootDir = project.rootDir.toString() + '/framework/server/src/main/security/'
         def keystore = keystoreRootDir + 'JMinorServerKeystore'
         task createServerKeystore {
             doLast {

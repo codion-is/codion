@@ -1,0 +1,1 @@
+java -Djminor.configurationFile=server_monitor.config -Djava.security.policy=config/all_permissions.policy -cp config;lib/* org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel

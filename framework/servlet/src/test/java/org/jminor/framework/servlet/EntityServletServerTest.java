@@ -395,12 +395,12 @@ public class EntityServletServerTest {
     Server.SERVER_ADMIN_USER.set("scott:tiger");
     Server.SERVER_HOST_NAME.set("localhost");
     Server.RMI_SERVER_HOSTNAME.set("localhost");
-    System.setProperty("java.security.policy", "../../resources/security/all_permissions.policy");
+    System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityServletServer.class.getName());
     HttpServer.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
-    HttpServer.HTTP_SERVER_KEYSTORE_PATH.set("../../resources/security/JMinorServerKeystore");
-    Server.TRUSTSTORE.set("../../resources/security/JMinorClientTruststore");
+    HttpServer.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/JMinorServerKeystore");
+    Server.TRUSTSTORE.set("../../framework/server/src/main/security/JMinorClientTruststore");
     HttpServer.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpServer.HTTP_SERVER_SECURE.set(true);
   }

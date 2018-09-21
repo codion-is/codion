@@ -117,8 +117,7 @@ runClientRemote {
             'jminor.client.connectionType': 'remote',
             'jminor.server.hostname': 'localhost',
             'jminor.report.path': '../../demos/empdept/build/classes/reports',
-            'javax.net.ssl.trustStore': '../../resources/security/JMinorClientTruststore',
-            'java.security.policy': '../../resources/security/jminor_client.policy',
+            'javax.net.ssl.trustStore': '../../framework/server/src/main/security/JMinorClientTruststore',
             'logback.configurationFile': 'src/main/resources/logback.xml'
     ]
 }
@@ -140,8 +139,7 @@ runLoadTestRemote {
             'jminor.client.connectionType': 'remote',
             'jminor.server.hostname': 'localhost',
             'jminor.report.path': '../../demos/empdept/build/classes/reports',
-            'javax.net.ssl.trustStore': '../../resources/security/JMinorClientTruststore',
-            'java.security.policy': '../../resources/security/jminor_client.policy',
+            'javax.net.ssl.trustStore': '../../framework/server/src/main/security/JMinorClientTruststore',
             'logback.configurationFile': 'src/main/resources/logback.xml'
     ]
 }

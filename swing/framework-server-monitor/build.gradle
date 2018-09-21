@@ -26,16 +26,16 @@ dependencies {
 mainClassName = 'org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel'
 
 applicationDistribution.from(files(
-        '../../resources/security/JMinorClientTruststore',
-        '../../resources/security/jminor_server_monitor.policy',
-        'resources/config/logback.xml',
-        'resources/config/server_monitor.config')) {
+        '../../framework/server/src/main/security/JMinorClientTruststore',
+        '../../framework/server/src/main/security/all_permissions.policy',
+        'src/config/logback.xml',
+        'src/config/server_monitor.config')) {
     into("config")
 }
 
 applicationDefaultJvmArgs = [
         "-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore",
-        "-Djava.security.policy=../config/jminor_server_monitor.policy",
+        "-Djava.security.policy=../config/all_permissions.policy",
         "-Djminor.configurationFile=../config/server_monitor.config"
 ]
 
@@ -46,8 +46,7 @@ task runServerMonitor(type: JavaExec) {
     systemProperties = [
             'jminor.server.hostname': 'localhost',
             'jminor.server.admin.user': 'scott:tiger',
-            'javax.net.ssl.trustStore': '../../resources/security/JMinorClientTruststore',
-            'java.security.policy': '../../resources/security/jminor_server_monitor.policy',
-            'logback.configurationFile': 'resources/config/logback.xml'
+            'javax.net.ssl.trustStore': '../../framework/server/src/main/security/JMinorClientTruststore',
+            'logback.configurationFile': 'src/config/logback.xml'
     ]
 }
