@@ -15,15 +15,22 @@ dependencies {
 }
 
 //base unit test classes that implementation modules (swing/fx) can depend on
-task testJar(type: Jar, dependsOn: testClasses) {
+task jarTests(type: Jar, dependsOn: testClasses) {
     baseName = project.name.replace("org.", "").replace(".", "-")
     classifier 'tests'
     from sourceSets.test.output
-    include('org/jminor/framework/model/Abstract**', 'org/jminor/framework/model/TestDomain**') 
+    include('org/jminor/framework/model/Abstract**', 'org/jminor/framework/model/TestDomain**')
 }
 configurations {
     testArtifact.extendsFrom testRuntime
 }
 artifacts {
-    testArtifact testJar
+    testArtifact jarTests
+}
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jarTests
+        }
+    }
 }
