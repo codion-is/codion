@@ -28,8 +28,8 @@ mainClassName = 'org.jminor.swing.framework.server.monitor.ui.EntityServerMonito
 applicationDistribution.from(files(
         '../../framework/server/src/main/security/JMinorClientTruststore',
         '../../framework/server/src/main/security/all_permissions.policy',
-        'src/config/logback.xml',
-        'src/config/server_monitor.config')) {
+        'src/main/config/logback.xml',
+        'src/main/config/server_monitor.config')) {
     into("config")
 }
 
