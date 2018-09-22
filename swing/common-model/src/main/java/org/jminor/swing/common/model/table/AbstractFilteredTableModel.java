@@ -20,7 +20,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +46,7 @@ import java.util.regex.Pattern;
  * @param <R> the type representing the rows in this table model
  * @param <C> type type used to identify columns in this table model, Integer for simple indexed identification for example
  */
-public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C, TableColumn>, TableModel {
+public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C, TableColumn> {
 
   private final Event filteringDoneEvent = Events.event();
   private final Event sortingStartedEvent = Events.event();

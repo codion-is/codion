@@ -8,6 +8,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.util.Arrays;
 
 /**
  * Grid Layout which allows components of different sizes.
@@ -206,14 +207,9 @@ public final class FlexibleGridLayout extends GridLayout {
 
       arrangeFixedSizes(columnWidths, rowHeights);
 
-      int newWidth = 0;
-      for (int j = 0; j < numberOfColumns; j++) {
-        newWidth += columnWidths[j];
-      }
-      int newHeight = 0;
-      for (int i = 0; i < numberOfRows; i++) {
-        newHeight += rowHeights[i];
-      }
+      final int newWidth = Arrays.stream(columnWidths).sum();
+      final int newHeight = Arrays.stream(rowHeights).sum();
+
       return new Dimension(insets.left + insets.right + newWidth + (numberOfColumns-1)*getHgap(),
               insets.top + insets.bottom + newHeight + (numberOfRows-1)*getVgap());
     }

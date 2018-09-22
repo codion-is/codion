@@ -14,19 +14,18 @@ import org.jminor.common.model.table.SelectionModel;
 import org.jminor.common.model.table.TableModelProxy;
 
 import javax.swing.DefaultListSelectionModel;
-import javax.swing.ListSelectionModel;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * A default table selection model implementation
  * @param <R> the type of rows
  */
-public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel implements SelectionModel<R>, ListSelectionModel {
+public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel implements SelectionModel<R> {
 
   private final Event selectionChangedEvent = Events.event();
   private final Event<Integer> selectedIndexChangedEvent = Events.event();
@@ -82,18 +81,8 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
       return 0;
     }
 
-    int counter = 0;
-    final int min = getMinSelectionIndex();
-    final int max = getMaxSelectionIndex();
-    if (min >= 0 && max >= 0) {
-      for (int i = min; i <= max; i++) {
-        if (isSelectedIndex(i)) {
-          counter++;
-        }
-      }
-    }
-
-    return counter;
+    return (int) IntStream.rangeClosed(getMinSelectionIndex(), getMaxSelectionIndex())
+            .filter(this::isSelectedIndex).count();
   }
 
   /** {@inheritDoc} */
@@ -104,7 +93,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     }
     checkIndexes(indexes);
     final Iterator<Integer> iterator = indexes.iterator();
-    /* hold on to the first index and add last in order to avoid firing evtSelectionChanged
+    /* hold on to the first index and add last in order to avoid firing selectionChanged
      * for each index being added, see fireValueChanged(int, int, boolean) */
     final int firstIndex = iterator.next();
     try {
@@ -131,16 +120,8 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   /** {@inheritDoc} */
   @Override
   public List<Integer> getSelectedIndexes() {
-    final List<Integer> indexes = new ArrayList<>();
-    final int min = getMinSelectionIndex();
-    final int max = getMaxSelectionIndex();
-    for (int i = min; i <= max; i++) {
-      if (isSelectedIndex(i)) {
-        indexes.add(i);
-      }
-    }
-
-    return indexes;
+    return IntStream.rangeClosed(getMinSelectionIndex(), getMaxSelectionIndex())
+            .filter(this::isSelectedIndex).boxed().collect(Collectors.toList());
   }
 
   /** {@inheritDoc} */
@@ -162,9 +143,8 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     if (index >= 0 && index < tableModelProxy.getRowCount()) {
       return tableModelProxy.getItemAt(index);
     }
-    else {
-      return null;
-    }
+
+    return null;
   }
 
   /** {@inheritDoc} */

@@ -160,9 +160,8 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
       if (property instanceof Property.ForeignKeyProperty) {
         return entity.getForeignKey((Property.ForeignKeyProperty) property);
       }
-      else {
-        return entity.get(property);
-      }
+
+      return entity.get(property);
     }
 
     return property.getDefaultValue();
