@@ -1,5 +1,5 @@
 dependencies {
-    api project(':org.jminor.common.core')
+    api project(':jminor-common-core')
 
     implementation 'org.apache.logging.log4j:log4j-api:2.11.0'
     implementation 'org.apache.logging.log4j:log4j-core:2.11.0'

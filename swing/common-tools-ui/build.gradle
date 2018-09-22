@@ -1,9 +1,9 @@
 dependencies {
-    api project(':org.jminor.common.core')
-    api project(':org.jminor.common.model')
+    api project(':jminor-common-core')
+    api project(':jminor-common-model')
 
-    api project(':org.jminor.swing.common.tools')
-    implementation project(':org.jminor.swing.common.ui')
+    api project(':jminor-swing-common-tools')
+    implementation project(':jminor-swing-common-ui')
 
     implementation "org.jfree:jfreechart:${jfreechartVersion}"
 

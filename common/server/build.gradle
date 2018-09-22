@@ -1,5 +1,5 @@
 dependencies {
-    api project(':org.jminor.common.core')
+    api project(':jminor-common-core')
 
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }

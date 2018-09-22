@@ -60,11 +60,6 @@ subprojects {
             failOnError = false
         }
 
-        def artifactName = project.name.replace("org.", "").replace(".", "-")
-        jar {
-            baseName = artifactName
-        }
-
         jar {
             manifest {
                 attributes(
@@ -85,14 +80,12 @@ subprojects {
 
         task jarSources(type: Jar, dependsOn: classes) {
             group 'build'
-            baseName = artifactName
             classifier = 'sources'
             from sourceSets.main.allSource
         }
 
         task jarJavadoc(type: Jar, dependsOn: javadoc) {
             group 'build'
-            baseName = artifactName
             classifier = 'javadoc'
             from javadoc.destinationDir
         }
@@ -106,8 +99,6 @@ subprojects {
             publications {
                 mavenJava(MavenPublication) {
                     groupId 'org.jminor'
-                    artifactId artifactName
-
                     from components.java
                     artifact jarSources
                     artifact jarJavadoc
@@ -134,7 +125,7 @@ subprojects {
             System.setProperty("sonar.login", "${sonarLogin}")
             System.setProperty("sonar.password", "${sonarPassword}")
             properties {
-                property "sonar.projectName", project.name
+                property "sonar.projectName", "org." + project.name.replace('.', '-')
                 property "sonar.projectKey", "org.jminor:jminor"
                 property "sonar.projectVersion", version
                 property "sonar.java.source", "1.8"

@@ -1,13 +1,13 @@
 dependencies {
-    api project(':org.jminor.common.core')
-    api project(':org.jminor.common.db')
-    api project(':org.jminor.common.model')
+    api project(':jminor-common-core')
+    api project(':jminor-common-db')
+    api project(':jminor-common-model')
 
-    api project(':org.jminor.framework.db.core')
-    runtimeOnly project(':org.jminor.framework.db.local')
-    runtimeOnly project(':org.jminor.framework.db.remote')
+    api project(':jminor-framework-db-core')
+    runtimeOnly project(':jminor-framework-db-local')
+    runtimeOnly project(':jminor-framework-db-remote')
 
-    testImplementation project(':org.jminor.framework.db.local')
+    testImplementation project(':jminor-framework-db-local')
 
     runtimeOnly "org.json:json:${jsonVersion}"
 
@@ -16,7 +16,6 @@ dependencies {
 
 //base unit test classes that implementation modules (swing/fx) can depend on
 task jarTests(type: Jar, dependsOn: testClasses) {
-    baseName = project.name.replace("org.", "").replace(".", "-")
     classifier 'tests'
     from sourceSets.test.output
     include('org/jminor/framework/model/Abstract**', 'org/jminor/framework/model/TestDomain**')

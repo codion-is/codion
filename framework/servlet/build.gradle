@@ -1,18 +1,18 @@
 dependencies {
-    implementation project(':org.jminor.common.core')
-    implementation project(':org.jminor.common.db')
-    api project(':org.jminor.common.server')
-    api project(':org.jminor.common.server.http')
+    implementation project(':jminor-common-core')
+    implementation project(':jminor-common-db')
+    api project(':jminor-common-server')
+    api project(':jminor-common-server-http')
 
-    implementation project(':org.jminor.framework.db.core')
-    implementation project(':org.jminor.framework.db.remote')
+    implementation project(':jminor-framework-db-core')
+    implementation project(':jminor-framework-db-remote')
 
     implementation "org.eclipse.jetty:jetty-servlet:${jettyVersion}"
 
     implementation 'org.glassfish.jersey.bundles:jaxrs-ri:2.27'
 
-    testImplementation project(':org.jminor.framework.db.local')
-    testImplementation project(':org.jminor.framework.server')
+    testImplementation project(':jminor-framework-db-local')
+    testImplementation project(':jminor-framework-server')
 
     testImplementation "org.apache.httpcomponents:httpclient:${httpclientVersion}"
 

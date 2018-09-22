@@ -1,9 +1,9 @@
 dependencies {
-    api project(':org.jminor.common.core')
-    api project(':org.jminor.common.db')
-    implementation project(':org.jminor.common.server')
+    api project(':jminor-common-core')
+    api project(':jminor-common-db')
+    implementation project(':jminor-common-server')
 
-    api project(':org.jminor.framework.db.core')
+    api project(':jminor-framework-db-core')
 
     testRuntime "com.h2database:h2:${h2Version}"
 }

@@ -23,14 +23,9 @@ configurations {
     domain
 }
 
-def artifactName = project.name.replace("org.", "").replace(".", "-")
-jar {
-    baseName = artifactName
-}
-
 task jarDomain(type: Jar, dependsOn: classes) {
     group 'build'
-    baseName = artifactName + '-domain'
+    baseName = baseName + '-domain'
     from sourceSets.main.output
     include '**/domain/**/*'
     include '**/server/**/*'
@@ -71,10 +66,8 @@ test {
 //    signJarParams = [keystore: "${jarSignKeystore}", alias: "${jarSignAlias}", storepass: "${jarSignStorepass}"]
 //}
 
-startScripts.applicationName = artifactName
-
 startScripts {
-    applicationName = artifactName + '-local'
+    applicationName = project.name + '-local'
     defaultJvmOpts = [
             '-Djminor.client.connectionType=local',
             '-Djminor.db.type=h2',
@@ -88,7 +81,7 @@ startScripts {
 }
 
 task clientRemoteScript(type: CreateStartScripts) {
-    applicationName = artifactName + '-remote'
+    applicationName = project.name + '-remote'
     classpath = startScripts.classpath
     outputDir = startScripts.outputDir
     defaultJvmOpts = [
@@ -101,7 +94,7 @@ task clientRemoteScript(type: CreateStartScripts) {
 }
 
 task clientHttpScript(type: CreateStartScripts) {
-    applicationName = artifactName + '-http'
+    applicationName = project.name + '-http'
     classpath = startScripts.classpath
     outputDir = startScripts.outputDir
     defaultJvmOpts = [
@@ -114,7 +107,7 @@ task clientHttpScript(type: CreateStartScripts) {
 }
 
 task loadTestRemoteScript(type: CreateStartScripts) {
-    applicationName = artifactName + '-loadtest-remote'
+    applicationName = project.name + '-loadtest-remote'
     mainClassName = 'org.jminor.framework.demos.DummyLoadTest'
     classpath = startScripts.classpath
     outputDir = startScripts.outputDir
@@ -128,7 +121,7 @@ task loadTestRemoteScript(type: CreateStartScripts) {
 }
 
 task loadTestHttpScript(type: CreateStartScripts) {
-    applicationName = artifactName + '-loadtest-http'
+    applicationName = project.name + '-loadtest-http'
     mainClassName = 'org.jminor.framework.demos.DummyLoadTest'
     classpath = startScripts.classpath
     outputDir = startScripts.outputDir

@@ -1,7 +1,7 @@
 dependencies {
-    api project(':org.jminor.common.core')
-    api project(':org.jminor.common.db')
-    api project(':org.jminor.common.model')
+    api project(':jminor-common-core')
+    api project(':jminor-common-db')
+    api project(':jminor-common-model')
 
     api "org.jfree:jfreechart:${jfreechartVersion}"
 

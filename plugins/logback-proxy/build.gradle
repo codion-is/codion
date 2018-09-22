@@ -1,5 +1,5 @@
 dependencies {
-    api project(':org.jminor.common.core')
+    api project(':jminor-common-core')
 
     implementation "ch.qos.logback:logback-classic:${logbackVersion}"
     implementation "ch.qos.logback:logback-core:${logbackVersion}"

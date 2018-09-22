@@ -1,15 +1,15 @@
 dependencies {
-    api project(':org.jminor.common.core')
-    api project(':org.jminor.common.db')
+    api project(':jminor-common-core')
+    api project(':jminor-common-db')
 
-    api project(':org.jminor.framework.db.core')
+    api project(':jminor-framework-db-core')
 
     implementation "org.apache.httpcomponents:httpclient:${httpclientVersion}"
 
-    testImplementation project(':org.jminor.common.server')
-    testImplementation project(':org.jminor.common.server.http')
-    testImplementation project(':org.jminor.framework.server')
-    testImplementation project(':org.jminor.framework.servlet')
+    testImplementation project(':jminor-common-server')
+    testImplementation project(':jminor-common-server-http')
+    testImplementation project(':jminor-framework-server')
+    testImplementation project(':jminor-framework-servlet')
 
     testRuntime "com.h2database:h2:${h2Version}"
 }

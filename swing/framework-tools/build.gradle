@@ -1,18 +1,18 @@
 dependencies {
-    implementation project(':org.jminor.common.core')
-    implementation project(':org.jminor.common.db')
-    implementation project(':org.jminor.common.model')
+    implementation project(':jminor-common-core')
+    implementation project(':jminor-common-db')
+    implementation project(':jminor-common-model')
 
-    implementation project(':org.jminor.framework.db.core')
-    api project(':org.jminor.framework.model')
+    implementation project(':jminor-framework-db-core')
+    api project(':jminor-framework-model')
 
-    api project(':org.jminor.swing.common.model')
-    implementation project(':org.jminor.swing.common.tools')
+    api project(':jminor-swing-common-model')
+    implementation project(':jminor-swing-common-tools')
 
-    testImplementation project(':org.jminor.common.server')
-    testImplementation project(':org.jminor.framework.server')
-    testRuntime project(':org.jminor.framework.db.local')
-    testRuntime project(':org.jminor.framework.db.remote')
+    testImplementation project(':jminor-common-server')
+    testImplementation project(':jminor-framework-server')
+    testRuntime project(':jminor-framework-db-local')
+    testRuntime project(':jminor-framework-db-remote')
 
     implementation "org.jfree:jfreechart:${jfreechartVersion}"
 

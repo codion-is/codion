@@ -1,40 +1,40 @@
 apply from: '../demos.gradle'
 
 dependencies {
-    implementation project(':org.jminor.common.core')
-    implementation project(':org.jminor.common.db')
-    implementation project(':org.jminor.common.model')
-    implementation project(':org.jminor.common.server')
+    implementation project(':jminor-common-core')
+    implementation project(':jminor-common-db')
+    implementation project(':jminor-common-model')
+    implementation project(':jminor-common-server')
 
-    implementation project(':org.jminor.framework.db.core')
-    implementation project(':org.jminor.framework.db.local')
-    implementation project(':org.jminor.framework.db.http')
-    implementation project(':org.jminor.framework.db.test')
-    implementation project(':org.jminor.framework.model')
-    implementation project(':org.jminor.framework.server')
-    implementation project(':org.jminor.framework.servlet')
+    implementation project(':jminor-framework-db-core')
+    implementation project(':jminor-framework-db-local')
+    implementation project(':jminor-framework-db-http')
+    implementation project(':jminor-framework-db-test')
+    implementation project(':jminor-framework-model')
+    implementation project(':jminor-framework-server')
+    implementation project(':jminor-framework-servlet')
 
-    implementation project(':org.jminor.swing.common.model')
-    implementation project(':org.jminor.swing.common.ui')
-    implementation project(':org.jminor.swing.common.ui')
-    implementation project(':org.jminor.swing.common.tools')
-    implementation project(':org.jminor.swing.common.tools.ui')
-    implementation project(':org.jminor.swing.framework.model')
-    implementation project(':org.jminor.swing.framework.ui')
-    implementation project(':org.jminor.swing.framework.tools')
+    implementation project(':jminor-swing-common-model')
+    implementation project(':jminor-swing-common-ui')
+    implementation project(':jminor-swing-common-ui')
+    implementation project(':jminor-swing-common-tools')
+    implementation project(':jminor-swing-common-tools-ui')
+    implementation project(':jminor-swing-framework-model')
+    implementation project(':jminor-swing-framework-ui')
+    implementation project(':jminor-swing-framework-tools')
 
-    implementation project(':org.jminor.javafx.framework')
+    implementation project(':jminor-javafx-framework')
 
-    implementation project(':org.jminor.plugin.jasperreports')
-    implementation project(':org.jminor.plugin.json')
+    implementation project(':jminor-plugin-jasperreports')
+    implementation project(':jminor-plugin-json')
 
-    testImplementation project(':org.jminor.swing.framework.ui.test')
+    testImplementation project(':jminor-swing-framework-ui-test')
 
     implementation 'javax.ws.rs:jsr311-api:1.1.1'
     implementation "org.jfree:jcommon:${jcommonVersion}"
     implementation "org.jfree:jfreechart:${jfreechartVersion}"
 
-    runtime project(':org.jminor.plugin.logback.proxy')
+    runtime project(':jminor-plugin-logback-proxy')
 
     compile ("net.sf.jasperreports:jasperreports:${jasperreportsVersion}") {
         transitive = false

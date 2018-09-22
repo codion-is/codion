@@ -1,17 +1,17 @@
 apply plugin: 'application'
 
 dependencies {
-    implementation project(':org.jminor.common.core')
-    implementation project(':org.jminor.common.db')
-    implementation project(':org.jminor.common.model')
+    implementation project(':jminor-common-core')
+    implementation project(':jminor-common-db')
+    implementation project(':jminor-common-model')
 
-    implementation project(':org.jminor.swing.common.model')
-    implementation project(':org.jminor.swing.common.ui')
-    api project(':org.jminor.swing.framework.tools')
+    implementation project(':jminor-swing-common-model')
+    implementation project(':jminor-swing-common-ui')
+    api project(':jminor-swing-framework-tools')
 
-    testRuntime project(':org.jminor.framework.db.local')
-    testRuntime project(':org.jminor.framework.db.remote')
-    testRuntime project(':org.jminor.framework.server')
+    testRuntime project(':jminor-framework-db-local')
+    testRuntime project(':jminor-framework-db-remote')
+    testRuntime project(':jminor-framework-server')
 
     testRuntime "com.h2database:h2:${h2Version}"
 }

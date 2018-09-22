@@ -1,8 +1,8 @@
 dependencies {
-    api project(':org.jminor.common.core')
-    api project(':org.jminor.common.db')
+    api project(':jminor-common-core')
+    api project(':jminor-common-db')
 
-    api project(':org.jminor.framework.db.core')
+    api project(':jminor-framework-db-core')
 
     api "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
 }

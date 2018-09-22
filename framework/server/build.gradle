@@ -7,28 +7,28 @@ configurations {
 }
 
 dependencies {
-    api project(':org.jminor.common.core')
-    api project(':org.jminor.common.db')
-    api project(':org.jminor.common.server')
+    api project(':jminor-common-core')
+    api project(':jminor-common-db')
+    api project(':jminor-common-server')
 
-    api project(':org.jminor.framework.db.core')
-    api project(':org.jminor.framework.db.remote')
-    implementation project(':org.jminor.framework.db.local')
+    api project(':jminor-framework-db-core')
+    api project(':jminor-framework-db-remote')
+    implementation project(':jminor-framework-db-local')
 
     testRuntime "com.h2database:h2:${h2Version}"
 
-    serverRuntime project(':org.jminor.common.server.http')
-    serverRuntime project(':org.jminor.framework.server')
-    serverRuntime project(':org.jminor.framework.servlet')
-    serverRuntime project(':org.jminor.plugin.jasperreports')
-    serverRuntime project(':org.jminor.plugin.hikari.pool')
-    serverRuntime project(':org.jminor.plugin.logback.proxy')
+    serverRuntime project(':jminor-common-server-http')
+    serverRuntime project(':jminor-framework-server')
+    serverRuntime project(':jminor-framework-servlet')
+    serverRuntime project(':jminor-plugin-jasperreports')
+    serverRuntime project(':jminor-plugin-hikari-pool')
+    serverRuntime project(':jminor-plugin-logback-proxy')
 
-    serverRuntime project(path: ':org.jminor.framework.demos.empdept', configuration: 'domain')
-    serverRuntime project(path: ':org.jminor.framework.demos.chinook', configuration: 'domain')
-    serverRuntime project(path: ':org.jminor.framework.demos.petstore', configuration: 'domain')
-    serverRuntime project(path: ':org.jminor.framework.demos.schemabrowser', configuration: 'domain')
-    serverRuntime project(path: ':org.jminor.framework.demos.world', configuration: 'domain')
+    serverRuntime project(path: ':jminor-demos-empdept', configuration: 'domain')
+    serverRuntime project(path: ':jminor-demos-chinook', configuration: 'domain')
+    serverRuntime project(path: ':jminor-demos-petstore', configuration: 'domain')
+    serverRuntime project(path: ':jminor-demos-schemabrowser', configuration: 'domain')
+    serverRuntime project(path: ':jminor-demos-world', configuration: 'domain')
 
     serverRuntime "com.h2database:h2:${h2Version}"
 }
@@ -36,19 +36,19 @@ dependencies {
 mainClassName = 'org.jminor.framework.server.DefaultEntityConnectionServer'
 
 distTar {
-    dependsOn(':org.jminor.framework.demos.empdept:jarDomain')
-    dependsOn(':org.jminor.framework.demos.chinook:jarDomain')
-    dependsOn(':org.jminor.framework.demos.petstore:jarDomain')
-    dependsOn(':org.jminor.framework.demos.schemabrowser:jarDomain')
-    dependsOn(':org.jminor.framework.demos.world:jarDomain')
+    dependsOn(':jminor-demos-empdept:jarDomain')
+    dependsOn(':jminor-demos-chinook:jarDomain')
+    dependsOn(':jminor-demos-petstore:jarDomain')
+    dependsOn(':jminor-demos-schemabrowser:jarDomain')
+    dependsOn(':jminor-demos-world:jarDomain')
 }
 
 distZip {
-    dependsOn(':org.jminor.framework.demos.empdept:jarDomain')
-    dependsOn(':org.jminor.framework.demos.chinook:jarDomain')
-    dependsOn(':org.jminor.framework.demos.petstore:jarDomain')
-    dependsOn(':org.jminor.framework.demos.schemabrowser:jarDomain')
-    dependsOn(':org.jminor.framework.demos.world:jarDomain')
+    dependsOn(':jminor-demos-empdept:jarDomain')
+    dependsOn(':jminor-demos-chinook:jarDomain')
+    dependsOn(':jminor-demos-petstore:jarDomain')
+    dependsOn(':jminor-demos-schemabrowser:jarDomain')
+    dependsOn(':jminor-demos-world:jarDomain')
 }
 
 startScripts {

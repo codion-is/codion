@@ -1,16 +1,16 @@
 dependencies {
-    implementation project(':org.jminor.common.core')
-    implementation project(':org.jminor.common.db')
-    implementation project(':org.jminor.common.model')
+    implementation project(':jminor-common-core')
+    implementation project(':jminor-common-db')
+    implementation project(':jminor-common-model')
 
-    implementation project(':org.jminor.framework.db.core')
+    implementation project(':jminor-framework-db-core')
 
-    implementation project(':org.jminor.swing.common.model')
-    implementation project(':org.jminor.swing.common.ui')
+    implementation project(':jminor-swing-common-model')
+    implementation project(':jminor-swing-common-ui')
 
-    testImplementation project(':org.jminor.framework.db.local')
+    testImplementation project(':jminor-framework-db-local')
 
-    testImplementation project(':org.jminor.swing.framework.model')
+    testImplementation project(':jminor-swing-framework-model')
 
     compile ("net.sf.jasperreports:jasperreports:${jasperreportsVersion}") {
         transitive = false

@@ -1,112 +1,112 @@
 rootProject.name = 'org.jminor'
 
-include 'org.jminor.common.core'
-project(':org.jminor.common.core').projectDir = file('common/core')
+include 'jminor-common-core'
+project(':jminor-common-core').projectDir = file('common/core')
 
-include 'org.jminor.common.db'
-project(':org.jminor.common.db').projectDir = file('common/db')
+include 'jminor-common-db'
+project(':jminor-common-db').projectDir = file('common/db')
 
-include 'org.jminor.common.model'
-project(':org.jminor.common.model').projectDir = file('common/model')
+include 'jminor-common-model'
+project(':jminor-common-model').projectDir = file('common/model')
 
-include 'org.jminor.common.server'
-project(':org.jminor.common.server').projectDir = file('common/server')
+include 'jminor-common-server'
+project(':jminor-common-server').projectDir = file('common/server')
 
-include 'org.jminor.common.server.http'
-project(':org.jminor.common.server.http').projectDir = file('common/server-http')
+include 'jminor-common-server-http'
+project(':jminor-common-server-http').projectDir = file('common/server-http')
 
-include 'org.jminor.framework.db.core'
-project(':org.jminor.framework.db.core').projectDir = file('framework/db-core')
+include 'jminor-framework-db-core'
+project(':jminor-framework-db-core').projectDir = file('framework/db-core')
 
-include 'org.jminor.framework.db.local'
-project(':org.jminor.framework.db.local').projectDir = file('framework/db-local')
+include 'jminor-framework-db-local'
+project(':jminor-framework-db-local').projectDir = file('framework/db-local')
 
-include 'org.jminor.framework.db.remote'
-project(':org.jminor.framework.db.remote').projectDir = file('framework/db-remote')
+include 'jminor-framework-db-remote'
+project(':jminor-framework-db-remote').projectDir = file('framework/db-remote')
 
-include 'org.jminor.framework.db.http'
-project(':org.jminor.framework.db.http').projectDir = file('framework/db-http')
+include 'jminor-framework-db-http'
+project(':jminor-framework-db-http').projectDir = file('framework/db-http')
 
-include 'org.jminor.framework.db.test'
-project(':org.jminor.framework.db.test').projectDir = file('framework/db-test')
+include 'jminor-framework-db-test'
+project(':jminor-framework-db-test').projectDir = file('framework/db-test')
 
-include 'org.jminor.framework.model'
-project(':org.jminor.framework.model').projectDir = file('framework/model')
+include 'jminor-framework-model'
+project(':jminor-framework-model').projectDir = file('framework/model')
 
-include 'org.jminor.framework.server'
-project(':org.jminor.framework.server').projectDir = file('framework/server')
+include 'jminor-framework-server'
+project(':jminor-framework-server').projectDir = file('framework/server')
 
-include 'org.jminor.framework.servlet'
-project(':org.jminor.framework.servlet').projectDir = file('framework/servlet')
+include 'jminor-framework-servlet'
+project(':jminor-framework-servlet').projectDir = file('framework/servlet')
 
-include 'org.jminor.javafx.framework'
-project(':org.jminor.javafx.framework').projectDir = file('javafx')
+include 'jminor-javafx-framework'
+project(':jminor-javafx-framework').projectDir = file('javafx')
 
-include 'org.jminor.swing.common.model'
-project(':org.jminor.swing.common.model').projectDir = file('swing/common-model')
+include 'jminor-swing-common-model'
+project(':jminor-swing-common-model').projectDir = file('swing/common-model')
 
-include 'org.jminor.swing.common.ui'
-project(':org.jminor.swing.common.ui').projectDir = file('swing/common-ui')
+include 'jminor-swing-common-ui'
+project(':jminor-swing-common-ui').projectDir = file('swing/common-ui')
 
-include 'org.jminor.swing.common.tools'
-project(':org.jminor.swing.common.tools').projectDir = file('swing/common-tools')
+include 'jminor-swing-common-tools'
+project(':jminor-swing-common-tools').projectDir = file('swing/common-tools')
 
-include 'org.jminor.swing.common.tools.ui'
-project(':org.jminor.swing.common.tools.ui').projectDir = file('swing/common-tools-ui')
+include 'jminor-swing-common-tools-ui'
+project(':jminor-swing-common-tools-ui').projectDir = file('swing/common-tools-ui')
 
-include 'org.jminor.swing.framework.model'
-project(':org.jminor.swing.framework.model').projectDir = file('swing/framework-model')
+include 'jminor-swing-framework-model'
+project(':jminor-swing-framework-model').projectDir = file('swing/framework-model')
 
-include 'org.jminor.swing.framework.tools'
-project(':org.jminor.swing.framework.tools').projectDir = file('swing/framework-tools')
+include 'jminor-swing-framework-tools'
+project(':jminor-swing-framework-tools').projectDir = file('swing/framework-tools')
 
-include 'org.jminor.swing.framework.ui'
-project(':org.jminor.swing.framework.ui').projectDir = file('swing/framework-ui')
+include 'jminor-swing-framework-ui'
+project(':jminor-swing-framework-ui').projectDir = file('swing/framework-ui')
 
-include 'org.jminor.swing.framework.tools.ui'
-project(':org.jminor.swing.framework.tools.ui').projectDir = file('swing/framework-tools-ui')
+include 'jminor-swing-framework-tools-ui'
+project(':jminor-swing-framework-tools-ui').projectDir = file('swing/framework-tools-ui')
 
-include 'org.jminor.swing.framework.ui.test'
-project(':org.jminor.swing.framework.ui.test').projectDir = file('swing/framework-ui-test')
+include 'jminor-swing-framework-ui-test'
+project(':jminor-swing-framework-ui-test').projectDir = file('swing/framework-ui-test')
 
-include 'org.jminor.swing.framework.server.monitor'
-project(':org.jminor.swing.framework.server.monitor').projectDir = file('swing/framework-server-monitor')
+include 'jminor-swing-framework-server-monitor'
+project(':jminor-swing-framework-server-monitor').projectDir = file('swing/framework-server-monitor')
 
-include 'org.jminor.plugin.hikari.pool'
-project(':org.jminor.plugin.hikari.pool').projectDir = file('plugins/hikari-pool')
+include 'jminor-plugin-hikari-pool'
+project(':jminor-plugin-hikari-pool').projectDir = file('plugins/hikari-pool')
 
-include 'org.jminor.plugin.imagepanel'
-project(':org.jminor.plugin.imagepanel').projectDir = file('plugins/imagepanel')
+include 'jminor-plugin-imagepanel'
+project(':jminor-plugin-imagepanel').projectDir = file('plugins/imagepanel')
 
-include 'org.jminor.plugin.jasperreports'
-project(':org.jminor.plugin.jasperreports').projectDir = file('plugins/jasperreports')
+include 'jminor-plugin-jasperreports'
+project(':jminor-plugin-jasperreports').projectDir = file('plugins/jasperreports')
 
-include 'org.jminor.plugin.json'
-project(':org.jminor.plugin.json').projectDir = file('plugins/json')
+include 'jminor-plugin-json'
+project(':jminor-plugin-json').projectDir = file('plugins/json')
 
-include 'org.jminor.plugin.log4j.proxy'
-project(':org.jminor.plugin.log4j.proxy').projectDir = file('plugins/log4j-proxy')
+include 'jminor-plugin-log4j-proxy'
+project(':jminor-plugin-log4j-proxy').projectDir = file('plugins/log4j-proxy')
 
-include 'org.jminor.plugin.logback.proxy'
-project(':org.jminor.plugin.logback.proxy').projectDir = file('plugins/logback-proxy')
+include 'jminor-plugin-logback-proxy'
+project(':jminor-plugin-logback-proxy').projectDir = file('plugins/logback-proxy')
 
-include 'org.jminor.plugin.nextreports'
-project(':org.jminor.plugin.nextreports').projectDir = file('plugins/nextreports')
+include 'jminor-plugin-nextreports'
+project(':jminor-plugin-nextreports').projectDir = file('plugins/nextreports')
 
-include 'org.jminor.plugin.tomcat.pool'
-project(':org.jminor.plugin.tomcat.pool').projectDir = file('plugins/tomcat-pool')
+include 'jminor-plugin-tomcat-pool'
+project(':jminor-plugin-tomcat-pool').projectDir = file('plugins/tomcat-pool')
 
-include 'org.jminor.framework.demos.chinook'
-project(':org.jminor.framework.demos.chinook').projectDir = file('demos/chinook')
+include 'jminor-demos-chinook'
+project(':jminor-demos-chinook').projectDir = file('demos/chinook')
 
-include 'org.jminor.framework.demos.empdept'
-project(':org.jminor.framework.demos.empdept').projectDir = file('demos/empdept')
+include 'jminor-demos-empdept'
+project(':jminor-demos-empdept').projectDir = file('demos/empdept')
 
-include 'org.jminor.framework.demos.petstore'
-project(':org.jminor.framework.demos.petstore').projectDir = file('demos/petstore')
+include 'jminor-demos-petstore'
+project(':jminor-demos-petstore').projectDir = file('demos/petstore')
 
-include 'org.jminor.framework.demos.schemabrowser'
-project(':org.jminor.framework.demos.schemabrowser').projectDir = file('demos/schemabrowser')
+include 'jminor-demos-schemabrowser'
+project(':jminor-demos-schemabrowser').projectDir = file('demos/schemabrowser')
 
-include 'org.jminor.framework.demos.world'
-project(':org.jminor.framework.demos.world').projectDir = file('demos/world')
+include 'jminor-demos-world'
+project(':jminor-demos-world').projectDir = file('demos/world')

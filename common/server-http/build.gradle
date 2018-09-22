@@ -1,6 +1,6 @@
 dependencies {
-    api project(':org.jminor.common.core')
-    api project(':org.jminor.common.server')
+    api project(':jminor-common-core')
+    api project(':jminor-common-server')
 
     api "org.eclipse.jetty:jetty-server:${jettyVersion}"
 

@@ -1,18 +1,18 @@
 apply plugin: 'application'
 
 dependencies {
-    implementation project(':org.jminor.common.core')
-    implementation project(':org.jminor.common.db')
-    implementation project(':org.jminor.common.model')
-    implementation project(':org.jminor.common.server')
+    implementation project(':jminor-common-core')
+    implementation project(':jminor-common-db')
+    implementation project(':jminor-common-model')
+    implementation project(':jminor-common-server')
 
-    implementation project(':org.jminor.framework.server')
-    implementation project(':org.jminor.swing.common.model')
-    implementation project(':org.jminor.swing.common.ui')
+    implementation project(':jminor-framework-server')
+    implementation project(':jminor-swing-common-model')
+    implementation project(':jminor-swing-common-ui')
 
-    testImplementation project(':org.jminor.framework.db.core')
-    testImplementation project(':org.jminor.framework.db.remote')
-    testRuntime project(':org.jminor.framework.db.local')
+    testImplementation project(':jminor-framework-db-core')
+    testImplementation project(':jminor-framework-db-remote')
+    testRuntime project(':jminor-framework-db-local')
 
     implementation "org.json:json:${jsonVersion}"
     implementation "org.jfree:jcommon:${jcommonVersion}"
@@ -20,7 +20,7 @@ dependencies {
 
     testRuntime "com.h2database:h2:${h2Version}"
 
-    runtime project(':org.jminor.plugin.logback.proxy')
+    runtime project(':jminor-plugin-logback-proxy')
 }
 
 mainClassName = 'org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel'
