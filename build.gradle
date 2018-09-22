@@ -13,7 +13,7 @@ ext {
     jfreechartVersion = '1.5.0'
     jettyVersion = '9.4.11.v20180605'
     httpclientVersion = '4.5.6'
-    junitVersion = '5.2.0'
+    junitVersion = '5.3.1'
     jacocoVersion = '0.8.1'
     //jasperreports
     jasperreportsVersion = '6.6.0'
@@ -125,7 +125,7 @@ subprojects {
             System.setProperty("sonar.login", "${sonarLogin}")
             System.setProperty("sonar.password", "${sonarPassword}")
             properties {
-                property "sonar.projectName", "org." + project.name.replace('.', '-')
+                property "sonar.projectName", "org." + project.name.replace('-', '.')
                 property "sonar.projectKey", "org.jminor:jminor"
                 property "sonar.projectVersion", version
                 property "sonar.java.source", "1.8"
