@@ -1176,6 +1176,31 @@ public class Entities implements Serializable {
   }
 
   /**
+   * Finds entities according to the values of values
+   * @param entities the entities to search
+   * @param values the property values to use as condition mapped to their respective propertyIds
+   * @return the entities having the exact same property values as in the given value map
+   */
+  public static List<Entity> getEntitiesByValue(final Collection<Entity> entities, final Map<String, Object> values) {
+    final List<Entity> result = new ArrayList<>();
+    for (final Entity entity : Objects.requireNonNull(entities, "entities")) {
+      boolean equal = true;
+      for (final Map.Entry<String, Object> entries : values.entrySet()) {
+        final String propertyId = entries.getKey();
+        if (!entity.get(propertyId).equals(entries.getValue())) {
+          equal = false;
+          break;
+        }
+      }
+      if (equal) {
+        result.add(entity);
+      }
+    }
+
+    return result;
+  }
+
+  /**
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
    * @param propertyId the property to check

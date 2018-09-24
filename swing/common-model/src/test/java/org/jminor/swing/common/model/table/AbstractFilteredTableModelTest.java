@@ -9,7 +9,6 @@ import org.jminor.common.Events;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
-import org.jminor.common.model.table.FilteredTableModel;
 import org.jminor.common.model.table.RowColumn;
 import org.jminor.common.model.table.SortingDirective;
 
@@ -222,7 +221,8 @@ public final class AbstractFilteredTableModelTest {
     final TableColumn columnValue = new TableColumn(1);
     columnValue.setIdentifier(1);
 
-    final Row[] items = new Row[] {new Row(0, "a"), new Row(1, "b"), new Row(2, "c"), new Row(3, "d"), new Row(4, "e")};
+    final List<Row> items = Arrays.asList(new Row(0, "a"), new Row(1, "b"),
+            new Row(2, "c"), new Row(3, "d"), new Row(4, "e"));
 
     final AbstractFilteredTableModel<Row, Integer> testModel = new AbstractFilteredTableModel<Row, Integer>(
             new AbstractTableSortModel<Row, Integer>(Arrays.asList(columnId, columnValue)) {
@@ -247,7 +247,7 @@ public final class AbstractFilteredTableModelTest {
       @Override
       protected void doRefresh() {
         clear();
-        addItems(Arrays.asList(items), false);
+        addItems(items, false);
       }
 
       @Override
@@ -263,64 +263,64 @@ public final class AbstractFilteredTableModelTest {
 
     testModel.refresh();
     RowColumn point = testModel.findNextItemCoordinate(0, true, "b");
-    assertEquals(FilteredTableModel.rowColumn(1, 1), point);
+    assertEquals(RowColumn.rowColumn(1, 1), point);
     point = testModel.findNextItemCoordinate(point.getRow(), true, "e");
-    assertEquals(FilteredTableModel.rowColumn(4, 1), point);
+    assertEquals(RowColumn.rowColumn(4, 1), point);
     point = testModel.findNextItemCoordinate(point.getRow(), false, "c");
-    assertEquals(FilteredTableModel.rowColumn(2, 1), point);
+    assertEquals(RowColumn.rowColumn(2, 1), point);
     point = testModel.findNextItemCoordinate(0, true, "x");
     assertNull(point);
 
     testModel.getSortModel().setSortingDirective(1, SortingDirective.DESCENDING, false);
 
     point = testModel.findNextItemCoordinate(0, true, "b");
-    assertEquals(FilteredTableModel.rowColumn(3, 1), point);
+    assertEquals(RowColumn.rowColumn(3, 1), point);
     point = testModel.findNextItemCoordinate(point.getRow(), false, "e");
-    assertEquals(FilteredTableModel.rowColumn(0, 1), point);
+    assertEquals(RowColumn.rowColumn(0, 1), point);
 
     testModel.setRegularExpressionSearch(true);
     assertTrue(testModel.isRegularExpressionSearch());
     point = testModel.findNextItemCoordinate(0, true, "(?i)B");
-    assertEquals(FilteredTableModel.rowColumn(3, 1), point);
+    assertEquals(RowColumn.rowColumn(3, 1), point);
 
     FilterCondition<Object> condition = item -> item.equals("b") || item.equals("e");
 
     point = testModel.findNextItemCoordinate(4, false, condition);
-    assertEquals(FilteredTableModel.rowColumn(3, 1), point);
+    assertEquals(RowColumn.rowColumn(3, 1), point);
     point = testModel.findNextItemCoordinate(point.getRow() - 1, false, condition);
-    assertEquals(FilteredTableModel.rowColumn(0, 1), point);
+    assertEquals(RowColumn.rowColumn(0, 1), point);
 
     testModel.getSortModel().setSortingDirective(1, SortingDirective.ASCENDING, false);
     testModel.getColumnModel().moveColumn(1, 0);
 
     testModel.refresh();
     point = testModel.findNextItemCoordinate(0, true, "b");
-    assertEquals(FilteredTableModel.rowColumn(1, 0), point);
+    assertEquals(RowColumn.rowColumn(1, 0), point);
     point = testModel.findNextItemCoordinate(point.getRow(), true, "e");
-    assertEquals(FilteredTableModel.rowColumn(4, 0), point);
+    assertEquals(RowColumn.rowColumn(4, 0), point);
     point = testModel.findNextItemCoordinate(point.getRow(), false, "c");
-    assertEquals(FilteredTableModel.rowColumn(2, 0), point);
+    assertEquals(RowColumn.rowColumn(2, 0), point);
     point = testModel.findNextItemCoordinate(0, true, "x");
     assertNull(point);
 
     testModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
 
     point = testModel.findNextItemCoordinate(0, true, "b");
-    assertEquals(FilteredTableModel.rowColumn(3, 0), point);
+    assertEquals(RowColumn.rowColumn(3, 0), point);
     point = testModel.findNextItemCoordinate(point.getRow(), false, "e");
-    assertEquals(FilteredTableModel.rowColumn(0, 0), point);
+    assertEquals(RowColumn.rowColumn(0, 0), point);
 
     testModel.setRegularExpressionSearch(true);
     assertTrue(testModel.isRegularExpressionSearch());
     point = testModel.findNextItemCoordinate(0, true, "(?i)B");
-    assertEquals(FilteredTableModel.rowColumn(3, 0), point);
+    assertEquals(RowColumn.rowColumn(3, 0), point);
 
     condition = item -> item.equals("b") || item.equals("e");
 
     point = testModel.findNextItemCoordinate(4, false, condition);
-    assertEquals(FilteredTableModel.rowColumn(3, 0), point);
+    assertEquals(RowColumn.rowColumn(3, 0), point);
     point = testModel.findNextItemCoordinate(point.getRow() - 1, false, condition);
-    assertEquals(FilteredTableModel.rowColumn(0, 0), point);
+    assertEquals(RowColumn.rowColumn(0, 0), point);
   }
 
   @Test

@@ -4852,3 +4852,5 @@
   Resources folder contents split among relevant modules
   Gradle modules renamed to reflect artifact name
   IntelliJ Java code formatting
+  EntityTableModel.getEntitiesByPropertyValue() removed, Entities.getEntitiesByValue() added as replacement
+  FilteredTableModel.rowColumn() moved to RowColumn

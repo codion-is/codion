@@ -18,10 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -281,16 +279,6 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertNotNull(testModel.getEditModel());
     assertFalse(testModel.isReadOnly());
     testModel.refresh();
-  }
-
-  @Test
-  public void getEntitiesByPropertyValue() {
-    testModel.refresh();
-    final Map<String, Object> propValues = new HashMap<>();
-    propValues.put(TestDomain.DETAIL_STRING, "b");
-    assertEquals(1, testModel.getEntitiesByPropertyValue(propValues).size());
-    propValues.put(TestDomain.DETAIL_STRING, "zz");
-    assertTrue(testModel.getEntitiesByPropertyValue(propValues).isEmpty());
   }
 
   @Test

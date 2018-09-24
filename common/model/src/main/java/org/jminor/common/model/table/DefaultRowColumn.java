@@ -25,9 +25,13 @@ final class DefaultRowColumn implements RowColumn {
 
   @Override
   public boolean equals(final Object obj) {
-    return obj instanceof RowColumn &&
-            ((RowColumn) obj).getRow() == getRow() &&
-            ((RowColumn) obj).getColumn() == getColumn();
+    if (obj == this) {
+      return true;
+    }
+
+    return obj instanceof DefaultRowColumn &&
+            ((DefaultRowColumn) obj).getRow() == getRow() &&
+            ((DefaultRowColumn) obj).getColumn() == getColumn();
   }
 
   @Override

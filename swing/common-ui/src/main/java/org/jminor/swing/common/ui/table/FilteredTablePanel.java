@@ -81,7 +81,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
   public static final char FILTER_INDICATOR = '*';
 
   private static final int SORT_ICON_SIZE = 5;
-  private static final RowColumn NULL_COORDINATE = FilteredTableModel.rowColumn(-1, -1);
+  private static final RowColumn NULL_COORDINATE = RowColumn.rowColumn(-1, -1);
   private static final int SELECT_COLUMNS_GRID_ROWS = 15;
   private static final int SEARCH_FIELD_COLUMNS = 8;
 

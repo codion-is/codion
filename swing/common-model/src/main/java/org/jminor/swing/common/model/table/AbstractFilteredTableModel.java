@@ -605,7 +605,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     int column = 0;
     while (visibleColumns.hasMoreElements()) {
       if (condition.include(getSearchValueAt(row, visibleColumns.nextElement()))) {
-        return FilteredTableModel.rowColumn(row, column);
+        return RowColumn.rowColumn(row, column);
       }
       column++;
     }

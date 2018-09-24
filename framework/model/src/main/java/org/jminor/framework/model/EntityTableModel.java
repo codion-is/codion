@@ -17,7 +17,6 @@ import org.jminor.framework.domain.Property;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Specifies a table model containing {@link Entity} objects
@@ -272,14 +271,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
    * @param keys the primary keys of the entities to select
    */
   void setSelectedByKey(final Collection<Entity.Key> keys);
-
-  /**
-   * Finds entities according to the values of propertyValues
-   * @param values the property values to use as condition mapped
-   * to their respective propertyIds
-   * @return the entities having the exact same property values as in properties
-   */
-  Collection<Entity> getEntitiesByPropertyValue(final Map<String, Object> values);
 
   /**
    * Returns an Iterator which iterates through the selected entities

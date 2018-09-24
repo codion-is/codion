@@ -157,14 +157,4 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, TableMode
    * @return the sorting model
    */
   TableSortModel<R, C, T> getSortModel();
-
-  /**
-   * Factory method for {@link RowColumn} instances.
-   * @param row the row index
-   * @param column the column index
-   * @return the RowColumn
-   */
-  static RowColumn rowColumn(final int row, final int column) {
-    return new DefaultRowColumn(row, column);
-  }
 }

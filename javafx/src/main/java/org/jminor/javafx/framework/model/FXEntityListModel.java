@@ -355,27 +355,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public final Collection<Entity> getEntitiesByPropertyValue(final Map<String, Object> values) {
-    final List<Entity> entities = new ArrayList<>();
-    for (final Entity entity : getAllItems()) {
-      boolean equal = true;
-      for (final Map.Entry<String, Object> entries : values.entrySet()) {
-        final String propertyId = entries.getKey();
-        if (!entity.get(propertyId).equals(entries.getValue())) {
-          equal = false;
-          break;
-        }
-      }
-      if (equal) {
-        entities.add(entity);
-      }
-    }
-
-    return entities;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final Entity getEntityByKey(final Entity.Key primaryKey) {
     return getFilteredList().stream().filter(entity -> entity.getKey().equals(primaryKey)).findFirst().orElse(null);
   }
