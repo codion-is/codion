@@ -158,6 +158,6 @@ public class HttpServer extends org.eclipse.jetty.server.Server implements Serve
     httpsConnector.setPort(port);
     httpsConnector.setIdleTimeout(50000);
 
-    setConnectors(new Connector[]{httpsConnector});
+    setConnectors(new Connector[] {httpsConnector});
   }
 }

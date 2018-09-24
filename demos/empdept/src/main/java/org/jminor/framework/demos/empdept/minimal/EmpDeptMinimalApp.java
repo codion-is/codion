@@ -37,7 +37,7 @@ public class EmpDeptMinimalApp {
    */
   private static final class Domain extends Entities {
 
-    public Domain(){
+    public Domain() {
       /*
        * We start by defining the entity based on the SCOTT.DEPT table
        */
@@ -103,7 +103,7 @@ public class EmpDeptMinimalApp {
       final EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
       if (foreignKeyProperty.is("mgr_fk")) {
         comboBoxModel.setSelectConditionProvider(() -> new EntityConditions(getDomain()).propertyCondition(
-            "scott.emp", "job", Condition.Type.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
+                "scott.emp", "job", Condition.Type.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
         comboBoxModel.refresh();
       }
 

@@ -65,7 +65,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
           double sum = 0;
           int count = 0;
           for (final Object obj : values) {
-            sum += (Integer)obj;
+            sum += (Integer) obj;
             count++;
           }
           txt = valueProvider.format(sum / count);
@@ -74,7 +74,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
           double sum = 0;
           int count = 0;
           for (final Object obj : values) {
-            sum += (Double)obj;
+            sum += (Double) obj;
             count++;
           }
           txt = valueProvider.format(sum / count);

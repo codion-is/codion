@@ -133,7 +133,7 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
    * Value type: Integer<br>
    * Default value: 120000ms (2 minutes)
    */
-  Value<Integer> SERVER_CONNECTION_TIMEOUT = Configuration.integerValue("jminor.server.connectionTimeout",  DEFAULT_SERVER_CONNECTION_TIMEOUT);
+  Value<Integer> SERVER_CONNECTION_TIMEOUT = Configuration.integerValue("jminor.server.connectionTimeout", DEFAULT_SERVER_CONNECTION_TIMEOUT);
 
   /**
    * A comma separated list of auxiliary servers to run alongside this Server<br>

@@ -978,7 +978,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param pixelAmount the resize amount
    */
   public final void resizePanel(final Direction direction, final int pixelAmount) {
-    switch(direction) {
+    switch (direction) {
       case UP:
         setEditPanelState(PanelState.HIDDEN);
         break;
@@ -1540,7 +1540,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     @Override
     public void actionPerformed(final ActionEvent e) {
       final MasterDetailPanel panel;
-      switch(direction) {
+      switch (direction) {
         case LEFT:
           panel = entityPanel.getPreviousPanel();
           break;

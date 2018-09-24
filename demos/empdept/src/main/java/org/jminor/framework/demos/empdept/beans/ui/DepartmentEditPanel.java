@@ -38,7 +38,7 @@ public class DepartmentEditPanel extends EntityEditPanel {
       }
     });
 
-    setLayout(new GridLayout(3,1,5,5));
+    setLayout(new GridLayout(3, 1, 5, 5));
 
     addPropertyPanel(EmpDept.DEPARTMENT_ID);
     addPropertyPanel(EmpDept.DEPARTMENT_NAME);

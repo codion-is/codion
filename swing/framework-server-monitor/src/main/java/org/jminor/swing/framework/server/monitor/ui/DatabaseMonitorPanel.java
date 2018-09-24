@@ -34,7 +34,7 @@ public final class DatabaseMonitorPanel extends JPanel {
   private final DatabaseMonitor model;
 
   private final JFreeChart queriesPerSecondChart = ChartFactory.createXYStepChart(null,
-        null, null, null, PlotOrientation.VERTICAL, true, true, false);
+          null, null, null, PlotOrientation.VERTICAL, true, true, false);
 
   private final ChartPanel queriesPerSecondChartPanel = new ChartPanel(queriesPerSecondChart);
 

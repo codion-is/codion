@@ -167,8 +167,8 @@ public class LoadTestModelTest {
 
   public static final class TestLoadTestModel extends LoadTestModel {
 
-    public TestLoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor, final int applicationBatchSize,
-                      final int warningTime) {
+    public TestLoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor,
+                             final int applicationBatchSize, final int warningTime) {
       super(user, Arrays.asList(SCENARIO, SCENARIO_II), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
     }
 

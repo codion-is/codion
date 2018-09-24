@@ -231,7 +231,7 @@ public class AbstractServerTest {
         public void validate(final ConnectionRequest connectionRequest) throws ServerException.ConnectionValidationException {}
       };
       server.setConnectionValidator("testClientType", validator);
-      assertThrows(IllegalStateException.class,() -> server.setConnectionValidator("testClientType", validator));
+      assertThrows(IllegalStateException.class, () -> server.setConnectionValidator("testClientType", validator));
     }
     finally {
       server.shutdown();
@@ -247,7 +247,7 @@ public class AbstractServerTest {
     }
 
     @Override
-    public RemoteClient getRemoteClient() throws RemoteException{
+    public RemoteClient getRemoteClient() throws RemoteException {
       return remoteClient;
     }
   }

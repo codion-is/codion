@@ -53,7 +53,7 @@ public final class CommandControlTest {
 
   @Test
   public void runtimeExceptionOnExecute() {
-    final Control control = Controls.control(this::runtimeErrorMethod,"test", null);
+    final Control control = Controls.control(this::runtimeErrorMethod, "test", null);
     assertThrows(RuntimeException.class, () -> control.actionPerformed(null));
   }
 

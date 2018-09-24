@@ -7,7 +7,7 @@ import org.jminor.swing.common.ui.textfield.DoubleField;
 
 /**
  * A InputProvider implementation for double values.
-*/
+ */
 public final class DoubleInputProvider extends AbstractInputProvider<Double, DoubleField> {
 
   /**

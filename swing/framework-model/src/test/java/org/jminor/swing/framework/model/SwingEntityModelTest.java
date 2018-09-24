@@ -82,7 +82,7 @@ public final class SwingEntityModelTest
     final SwingEntityEditModel employeeEditModel = (SwingEntityEditModel) employeeModel.getEditModel();
     final SwingEntityTableModel employeeTableModel = employeeModel.getTableModel();
     ValueLinks.selectedItemValueLink(new JComboBox<>((ComboBoxModel<Entity>)
-            employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)),
+                    employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)),
             EditModelValues.<Entity>value(employeeEditModel, ENTITIES.getProperty(TestDomain.T_EMP, TestDomain.EMP_MGR_FK)));
     employeeTableModel.refresh();
     for (final Entity employee : employeeTableModel.getAllItems()) {

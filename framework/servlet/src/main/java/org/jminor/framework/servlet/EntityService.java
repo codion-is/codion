@@ -451,7 +451,7 @@ public final class EntityService extends Application {
 
   private static String getRemoteHost(final HttpServletRequest request) {
     final String forwardHeader = request.getHeader(X_FORWARDED_FOR);
-    if (forwardHeader == null){
+    if (forwardHeader == null) {
       return request.getRemoteAddr();
     }
 

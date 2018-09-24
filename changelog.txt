@@ -4851,3 +4851,4 @@
   Module org.jminor.framework.model-unittests removed, classes moved to test source path of module org.jminor.framework.model
   Resources folder contents split among relevant modules
   Gradle modules renamed to reflect artifact name
+  IntelliJ Java code formatting

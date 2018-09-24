@@ -177,7 +177,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
   public FilteredTablePanel(final AbstractFilteredTableModel<R, C> tableModel,
                             final ColumnConditionPanelProvider<C> conditionPanelProvider) {
     this(new JTable(Objects.requireNonNull(tableModel, "tableModel"), tableModel.getColumnModel(),
-                    (ListSelectionModel) tableModel.getSelectionModel()), conditionPanelProvider);
+            (ListSelectionModel) tableModel.getSelectionModel()), conditionPanelProvider);
   }
 
   /**
@@ -726,7 +726,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
     public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
       final Color color = c == null ? Color.GRAY : c.getBackground();
       // In a compound sort, make each successive triangle 20% smaller than the previous one.
-      final int dx = (int)(size/PRIORITY_SIZE_CONST * Math.pow(PRIORITY_SIZE_RATIO, priority));
+      final int dx = (int) (size / PRIORITY_SIZE_CONST * Math.pow(PRIORITY_SIZE_RATIO, priority));
       final int dy = descending ? dx : -dx;
       // Align icon (roughly) with font baseline.
       final int theY = y + SORT_ICON_SIZE * size / ALIGNMENT_CONSTANT + (descending ? -dy : 0);
@@ -770,7 +770,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
   /**
    * Resizes the selected table column by 10 pixels.
    */
-  private static final class ResizeSelectedColumnAction extends  AbstractAction {
+  private static final class ResizeSelectedColumnAction extends AbstractAction {
 
     private static final int RESIZE_AMOUNT = 10;
     private final JTable table;
@@ -797,7 +797,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
   /**
    * Moves the selected table column by one either left or right, with wrap around
    */
-  private static final class MoveSelectedColumnAction extends  AbstractAction {
+  private static final class MoveSelectedColumnAction extends AbstractAction {
 
     private final JTable table;
     private final boolean left;

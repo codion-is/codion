@@ -4,8 +4,8 @@
 package org.jminor.common.db.pool;
 
 /**
-* An interface encapsulating the state of a connection pool at a given time.
-*/
+ * An interface encapsulating the state of a connection pool at a given time.
+ */
 public interface ConnectionPoolState {
 
   /**

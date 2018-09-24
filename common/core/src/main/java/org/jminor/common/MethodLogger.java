@@ -211,7 +211,7 @@ public final class MethodLogger {
       final StringBuilder stringBuilder = new StringBuilder(arguments.length * CHAR_PER_ARGUMENT);
       for (int i = 0; i < arguments.length; i++) {
         stringBuilder.append(toString(arguments[i]));
-        if (i < arguments.length-1) {
+        if (i < arguments.length - 1) {
           stringBuilder.append(", ");
         }
       }

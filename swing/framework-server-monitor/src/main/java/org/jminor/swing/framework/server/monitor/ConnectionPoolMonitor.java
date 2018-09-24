@@ -331,7 +331,7 @@ public final class ConnectionPoolMonitor {
     final List<ConnectionPoolState> poolStates = new ArrayList<>(stats.size());
     poolStates.sort(new StateComparator());
     long time = -1;
-    for (int i = stats.size()-1; i >= 0; i--) {
+    for (int i = stats.size() - 1; i >= 0; i--) {
       final ConnectionPoolState state = stats.get(i);
       if (state.getTimestamp() != time) {
         poolStates.add(state);

@@ -39,7 +39,7 @@ public class Control extends AbstractAction {
    * @param enabledObserver the state observer dictating the enable state of this control
    */
   public Control(final String name, final StateObserver enabledObserver) {
-    this(name, enabledObserver,  null);
+    this(name, enabledObserver, null);
   }
 
   /**

@@ -606,7 +606,7 @@ public final class EntityConditions {
 
     @Override
     public EntitySelectCondition setForeignKeyFetchDepthLimit(final int fetchDepthLimit) {
-      final List<Property.ForeignKeyProperty > properties = domain.getForeignKeyProperties(getEntityId());
+      final List<Property.ForeignKeyProperty> properties = domain.getForeignKeyProperties(getEntityId());
       for (int i = 0; i < properties.size(); i++) {
         setForeignKeyFetchDepthLimit(properties.get(i).getPropertyId(), fetchDepthLimit);
       }
@@ -749,7 +749,7 @@ public final class EntityConditions {
       final String valuePlaceholder = getValuePlaceholder();
       final String value2Placeholder = getValueCount() == 2 ? getValuePlaceholder() : null;
 
-      switch(conditionType) {
+      switch (conditionType) {
         case LIKE:
           return getLikeCondition(columnIdentifier, valuePlaceholder, false);
         case NOT_LIKE:
@@ -759,7 +759,7 @@ public final class EntityConditions {
         case GREATER_THAN:
           return columnIdentifier + " >= " + valuePlaceholder;
         case WITHIN_RANGE:
-          return "(" + columnIdentifier + " >= " + valuePlaceholder + " and " + columnIdentifier +  " <= " + value2Placeholder + ")";
+          return "(" + columnIdentifier + " >= " + valuePlaceholder + " and " + columnIdentifier + " <= " + value2Placeholder + ")";
         case OUTSIDE_RANGE:
           return "(" + columnIdentifier + " <= " + valuePlaceholder + " or " + columnIdentifier + " >= " + value2Placeholder + ")";
         default:

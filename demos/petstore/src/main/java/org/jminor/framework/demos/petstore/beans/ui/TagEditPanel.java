@@ -19,7 +19,7 @@ public class TagEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setLayout(new FlexibleGridLayout(1,1,5,5));
+    setLayout(new FlexibleGridLayout(1, 1, 5, 5));
     final JTextField txt = createTextField(TAG_TAG);
     setInitialFocusComponent(txt);
     txt.setColumns(16);

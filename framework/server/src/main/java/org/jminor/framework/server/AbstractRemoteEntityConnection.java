@@ -85,7 +85,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
                                            final RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
     super(port, clientSocketFactory, serverSocketFactory);
-    this.connectionHandler = new RemoteEntityConnectionHandler(domain,this, remoteClient,
+    this.connectionHandler = new RemoteEntityConnectionHandler(domain, this, remoteClient,
             connectionPool, database, loggingEnabled);
     this.connectionProxy = Util.initializeProxy(EntityConnection.class, connectionHandler);
   }
@@ -290,7 +290,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       this.database = database;
       this.methodLogger = LocalEntityConnections.createLogger(domain);
       this.methodLogger.setEnabled(loggingEnabled);
-      this.logIdentifier = remoteClient.getUser().getUsername().toLowerCase() +"@" + remoteClient.getClientTypeId();
+      this.logIdentifier = remoteClient.getUser().getUsername().toLowerCase() + "@" + remoteClient.getClientTypeId();
       try {
         if (connectionPool == null) {
           localEntityConnection = LocalEntityConnections.createConnection(domain, this.database, this.remoteClient.getDatabaseUser());
@@ -354,7 +354,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       DatabaseException exception = null;
       try {
         if (methodLogger.isEnabled()) {
-          methodLogger.logAccess(GET_CONNECTION, new Object[]{remoteClient.getDatabaseUser(), remoteClient.getUser()});
+          methodLogger.logAccess(GET_CONNECTION, new Object[] {remoteClient.getDatabaseUser(), remoteClient.getUser()});
         }
         if (connectionPool != null) {
           return getPooledEntityConnection();
@@ -407,7 +407,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       }
       try {
         if (methodLogger.isEnabled()) {
-          methodLogger.logAccess(RETURN_CONNECTION, new Object[]{remoteClient.getDatabaseUser(), remoteClient.getUser()});
+          methodLogger.logAccess(RETURN_CONNECTION, new Object[] {remoteClient.getDatabaseUser(), remoteClient.getUser()});
         }
         poolEntityConnection.setMethodLogger(null);
         returnConnectionToPool();

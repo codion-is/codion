@@ -34,13 +34,13 @@ public class H2DatabaseTest {
   }
 
   @Test
-  public void getAutoIncrementQuery()  {
+  public void getAutoIncrementQuery() {
     final H2Database db = new H2Database("host", 1234, "sid");
     assertEquals(H2Database.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
 
   @Test
-  public void getSequenceQuery()  {
+  public void getSequenceQuery() {
     final H2Database db = new H2Database("host", 1234, "sid");
     final String idSource = "seq";
     assertEquals(H2Database.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceQuery(idSource));

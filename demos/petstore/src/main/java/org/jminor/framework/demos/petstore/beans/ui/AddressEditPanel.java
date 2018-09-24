@@ -20,7 +20,7 @@ public class AddressEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setLayout(new FlexibleGridLayout(4,2,5,5));
+    setLayout(new FlexibleGridLayout(4, 2, 5, 5));
     JTextField txt = createTextField(ADDRESS_CITY);
     setInitialFocusComponent(txt);
     txt.setColumns(12);

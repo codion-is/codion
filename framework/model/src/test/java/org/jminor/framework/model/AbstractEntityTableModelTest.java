@@ -322,8 +322,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final TableModel deptModel = createDepartmentTableModel();
     deptModel.setColumns(TestDomain.DEPARTMENT_ID, TestDomain.DEPARTMENT_NAME, TestDomain.DEPARTMENT_LOCATION);
     deptModel.refresh();
-    final String expected =
-            "deptno\tdname\tloc\n" +
+    final String expected = "deptno\tdname\tloc\n" +
             "10\tACCOUNTING\tNEW YORK\n" +
             "40\tOPERATIONS\tBOSTON\n" +
             "20\tRESEARCH\tDALLAS\n" +
@@ -363,11 +362,11 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   private static List<Entity> initTestEntities() {
     final List<Entity> testEntities = new ArrayList<>(5);
-    final String[] stringValues = new String[]{"a", "b", "c", "d", "e"};
+    final String[] stringValues = new String[] {"a", "b", "c", "d", "e"};
     for (int i = 0; i < 5; i++) {
       final Entity entity = ENTITIES.entity(TestDomain.T_DETAIL);
-      entity.put(TestDomain.DETAIL_ID, (long) i+1);
-      entity.put(TestDomain.DETAIL_INT, i+1);
+      entity.put(TestDomain.DETAIL_ID, (long) i + 1);
+      entity.put(TestDomain.DETAIL_INT, i + 1);
       entity.put(TestDomain.DETAIL_STRING, stringValues[i]);
       testEntities.add(entity);
     }

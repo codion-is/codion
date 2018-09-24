@@ -45,7 +45,7 @@ public class ItemRandomizerModelTest {
     assertEquals(1, model.getWeight(three));
     assertEquals(5, weightChangeCounter.get());
 
-    assertEquals(Double.valueOf(1/3d), Double.valueOf(model.getWeightRatio(one)));
+    assertEquals(Double.valueOf(1 / 3d), Double.valueOf(model.getWeightRatio(one)));
 
     model.incrementWeight(three);
     assertEquals(2, model.getWeight(three));
@@ -57,19 +57,19 @@ public class ItemRandomizerModelTest {
     assertEquals(4, model.getWeight(three));
     assertEquals(8, weightChangeCounter.get());
 
-    assertEquals(Double.valueOf(4/6d), Double.valueOf(model.getWeightRatio(three)));
+    assertEquals(Double.valueOf(4 / 6d), Double.valueOf(model.getWeightRatio(three)));
 
     model.incrementWeight(one);
     assertEquals(2, model.getWeight(one));
 
-    assertEquals(Double.valueOf(2/7d), Double.valueOf(model.getWeightRatio(one)));
+    assertEquals(Double.valueOf(2 / 7d), Double.valueOf(model.getWeightRatio(one)));
 
     model.incrementWeight(two);
     assertEquals(2, model.getWeight(two));
 
-    assertEquals(Double.valueOf(2/8d), Double.valueOf(model.getWeightRatio(one)));
-    assertEquals(Double.valueOf(2/8d), Double.valueOf(model.getWeightRatio(two)));
-    assertEquals(Double.valueOf(4/8d), Double.valueOf(model.getWeightRatio(three)));
+    assertEquals(Double.valueOf(2 / 8d), Double.valueOf(model.getWeightRatio(one)));
+    assertEquals(Double.valueOf(2 / 8d), Double.valueOf(model.getWeightRatio(two)));
+    assertEquals(Double.valueOf(4 / 8d), Double.valueOf(model.getWeightRatio(three)));
 
     model.decrementWeight(one);
     assertEquals(1, model.getWeight(one));

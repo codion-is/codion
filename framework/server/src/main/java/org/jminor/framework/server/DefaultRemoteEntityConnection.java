@@ -61,7 +61,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
                                 final int port, final boolean loggingEnabled, final RMIClientSocketFactory clientSocketFactory,
                                 final RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
-    super(domain,null, database, remoteClient, port, loggingEnabled, clientSocketFactory, serverSocketFactory);
+    super(domain, null, database, remoteClient, port, loggingEnabled, clientSocketFactory, serverSocketFactory);
   }
 
   /**

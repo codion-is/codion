@@ -90,7 +90,7 @@ public class MethodLoggerTest {
   public void twoLevelLogging() {
     final MethodLogger logger = new MethodLogger(10, false);
     logger.setEnabled(true);
-    logger.logAccess("method", new Object[]{"param1", "param2"});
+    logger.logAccess("method", new Object[] {"param1", "param2"});
     logger.logAccess("subMethod");
     logger.logExit("subMethod");
     logger.logAccess("subMethod2");

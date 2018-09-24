@@ -425,7 +425,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public Map<String,String> getEntityDefinitions() {
+  public Map<String, String> getEntityDefinitions() {
     return server.getEntityDefinitions();
   }
 

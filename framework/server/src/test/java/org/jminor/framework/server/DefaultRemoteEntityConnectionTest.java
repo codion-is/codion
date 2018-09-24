@@ -178,7 +178,8 @@ public class DefaultRemoteEntityConnectionTest {
       if (registry != null) {
         try {
           registry.unbind(serviceName);
-        } catch (final Exception ignored) {/*ignored*/}
+        }
+        catch (final Exception ignored) {/*ignored*/}
       }
       try {
         if (adapter != null) {

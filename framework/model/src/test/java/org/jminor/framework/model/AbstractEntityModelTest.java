@@ -126,7 +126,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   @Test
   public void clearEditModelClearTableSelection() {
     departmentModel.refresh();
-    departmentModel.getTableModel().getSelectionModel().setSelectedIndexes(Arrays.asList(1,2,3));
+    departmentModel.getTableModel().getSelectionModel().setSelectedIndexes(Arrays.asList(1, 2, 3));
     assertFalse(departmentModel.getTableModel().getSelectionModel().isSelectionEmpty());
     assertFalse(departmentModel.getEditModel().isEntityNew());
     departmentModel.getEditModel().setEntity(null);

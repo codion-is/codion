@@ -27,12 +27,12 @@ public final class LogbackProxy implements LoggerProxy {
   @Override
   public void setLogLevel(final Object logLevel) {
     if (!(logLevel instanceof Level)) {
-      throw new IllegalArgumentException("logLevel should be of type "  + Level.class.getName());
+      throw new IllegalArgumentException("logLevel should be of type " + Level.class.getName());
     }
     ((Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel((Level) logLevel);
   }
 
-    /** {@inheritDoc} */
+  /** {@inheritDoc} */
   @Override
   public List getLogLevels() {
     return Arrays.asList(Level.OFF, Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR);

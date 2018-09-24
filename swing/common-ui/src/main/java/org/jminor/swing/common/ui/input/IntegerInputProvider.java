@@ -7,7 +7,7 @@ import org.jminor.swing.common.ui.textfield.IntegerField;
 
 /**
  * A InputProvider implementation for int values.
-*/
+ */
 public final class IntegerInputProvider extends AbstractInputProvider<Integer, IntegerField> {
 
   /**

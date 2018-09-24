@@ -34,7 +34,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     txtName.setColumns(8);
     boxManager.setPreferredSize(UiUtil.getPreferredTextFieldSize());
 
-    setLayout(new FlexibleGridLayout(3,3,5,5,true,false));
+    setLayout(new FlexibleGridLayout(3, 3, 5, 5, true, false));
 
     addPropertyPanel(EmpDept.EMPLOYEE_NAME);
     addPropertyPanel(EmpDept.EMPLOYEE_JOB);

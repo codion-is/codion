@@ -127,7 +127,7 @@ public final class PropertyValues {
   public static Object parseStrict(final Format format, final String value) throws ParseException {
     final ParsePosition pos = new ParsePosition(0);
     final Object result = format.parseObject(value, pos);
-    if(pos.getIndex() < value.length()) {
+    if (pos.getIndex() < value.length()) {
       throw new ParseException("Failed to parse '" + value + "'", pos.getIndex());
     }
 

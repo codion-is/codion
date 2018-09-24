@@ -1108,7 +1108,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         try {
           exit();
         }
-        catch(final CancelException ignored) {/*ignored*/}
+        catch (final CancelException ignored) {/*ignored*/}
       }
     });
     frame.getContentPane().setLayout(new BorderLayout());
@@ -1235,7 +1235,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
     final Integer fontSize = getDefaultFontSize();
     if (!fontSize.equals(100)) {
-      UiUtil.setFontSize(fontSize/100f);
+      UiUtil.setFontSize(fontSize / 100f);
     }
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) : Images.loadImage("jminor_logo32.gif");
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;

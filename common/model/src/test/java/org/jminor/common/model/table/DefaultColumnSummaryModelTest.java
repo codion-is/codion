@@ -36,7 +36,7 @@ public class DefaultColumnSummaryModelTest {
     }
     @Override
     public Collection getValues() {
-      return Arrays.asList(1,2,3,4,5);
+      return Arrays.asList(1, 2, 3, 4, 5);
     }
     @Override
     public boolean isValueSubset() {

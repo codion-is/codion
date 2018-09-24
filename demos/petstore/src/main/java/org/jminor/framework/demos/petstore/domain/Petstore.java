@@ -46,8 +46,8 @@ public final class Petstore extends Entities {
             .setKeyGenerator(incrementKeyGenerator("petstore.address", ADDRESS_ID))
             .setOrderBy(orderBy().ascending(ADDRESS_CITY, ADDRESS_STREET_1, ADDRESS_STREET_2))
             .setStringProvider(new Entities.StringProvider(ADDRESS_STREET_1).addText(" ")
-            .addValue(ADDRESS_STREET_2).addText(", ").addValue(ADDRESS_CITY).addText(" ")
-            .addValue(ADDRESS_ZIP).addText(", ").addValue(ADDRESS_STATE))
+                    .addValue(ADDRESS_STREET_2).addText(", ").addValue(ADDRESS_CITY).addText(" ")
+                    .addValue(ADDRESS_ZIP).addText(", ").addValue(ADDRESS_STATE))
             .setCaption("Addresses");
   }
 
@@ -88,7 +88,7 @@ public final class Petstore extends Entities {
             .setKeyGenerator(incrementKeyGenerator("petstore.product", PRODUCT_ID))
             .setOrderBy(orderBy().ascending(PRODUCT_NAME))
             .setStringProvider(new Entities.StringProvider(PRODUCT_CATEGORY_FK)
-            .addText(" - ").addValue(PRODUCT_NAME))
+                    .addText(" - ").addValue(PRODUCT_NAME))
             .setCaption("Products");
   }
 
@@ -107,7 +107,7 @@ public final class Petstore extends Entities {
             .setKeyGenerator(incrementKeyGenerator("petstore.sellercontactinfo", SELLER_CONTACT_INFO_ID))
             .setOrderBy(orderBy().ascending(SELLER_CONTACT_INFO_LAST_NAME, SELLER_CONTACT_INFO_FIRST_NAME))
             .setStringProvider(new Entities.StringProvider(SELLER_CONTACT_INFO_LAST_NAME)
-            .addText(", ").addValue(SELLER_CONTACT_INFO_FIRST_NAME))
+                    .addText(", ").addValue(SELLER_CONTACT_INFO_FIRST_NAME))
             .setCaption("Seller info");
   }
 

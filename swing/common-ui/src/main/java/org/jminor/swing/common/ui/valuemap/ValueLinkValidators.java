@@ -39,7 +39,7 @@ public final class ValueLinkValidators {
    * @param <K> the type of the edit model value keys
    */
   public static <K extends Attribute> void addFormattedValidator(final K key, final JTextComponent textComponent,
-                                               final ValueMapEditModel<K, Object> editModel) {
+                                                                 final ValueMapEditModel<K, Object> editModel) {
     addFormattedValidator(key, textComponent, editModel, Color.LIGHT_GRAY, textComponent.getToolTipText());
   }
 
@@ -53,8 +53,8 @@ public final class ValueLinkValidators {
    * @param <K> the type of the edit model value keys
    */
   public static <K extends Attribute> void addValidator(final K key, final JTextComponent textComponent,
-                                      final ValueMapEditModel<K, ?> editModel, final Color invalidBackgroundColor,
-                                      final String defaultToolTip) {
+                                                        final ValueMapEditModel<K, ?> editModel, final Color invalidBackgroundColor,
+                                                        final String defaultToolTip) {
     new TextValidator<>(key, textComponent, editModel, invalidBackgroundColor, defaultToolTip).validate();
   }
 
@@ -68,8 +68,8 @@ public final class ValueLinkValidators {
    * @param <K> the type of the edit model value keys
    */
   public static <K extends Attribute> void addFormattedValidator(final K key, final JTextComponent textComponent,
-                                               final ValueMapEditModel<K, ?> editModel, final Color invalidBackgroundColor,
-                                               final String defaultToolTip) {
+                                                                 final ValueMapEditModel<K, ?> editModel, final Color invalidBackgroundColor,
+                                                                 final String defaultToolTip) {
     new FormattedTextValidator<>(key, textComponent, editModel, invalidBackgroundColor, defaultToolTip).validate();
   }
 
@@ -219,7 +219,7 @@ public final class ValueLinkValidators {
           tooltip = validationMessage;
         }
         else {
-          tooltip = validationMessage + ": "  + defaultToolTip;
+          tooltip = validationMessage + ": " + defaultToolTip;
         }
       }
 

@@ -85,10 +85,10 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     txtRequested.setText(format.format(statistics.getRequests()));
     double prc = (double) statistics.getDelayedRequests() / (double) statistics.getRequests() * HUNDRED;
     txtDelayed.setText(format.format(statistics.getDelayedRequests())
-            + (prc > 0 ? " (" + format.format(prc)+"%)" : ""));
+            + (prc > 0 ? " (" + format.format(prc) + "%)" : ""));
     prc = (double) statistics.getFailedRequests() / (double) statistics.getRequests() * HUNDRED;
     txtFailed.setText(format.format(statistics.getFailedRequests())
-            + (prc > 0 ? " (" + format.format(prc)+"%)" : ""));
+            + (prc > 0 ? " (" + format.format(prc) + "%)" : ""));
     if (model.datasetContainsData()) {
       inPoolFineGrainedChart.getXYPlot().setDataset(model.getFineGrainedInPoolDataset());
     }
@@ -229,7 +229,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     btnReset.setMaximumSize(UiUtil.getPreferredTextFieldSize());
     configBase.add(btnReset, BorderLayout.EAST);
 
-    final JPanel chartBase = new JPanel(new GridLayout(2,2));
+    final JPanel chartBase = new JPanel(new GridLayout(2, 2));
     chartBase.add(requestsPerSecondChartPanel);
     chartBase.add(inPoolChartPanel);
     chartBase.add(checkOutTimePanel);

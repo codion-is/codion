@@ -78,7 +78,7 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
    * Instantiates a new EntityPanelProvider
    * @param modelProvider the EntityModelProvider to base this panel provider on
    */
-  public EntityPanelProvider (final SwingEntityModelProvider modelProvider) {
+  public EntityPanelProvider(final SwingEntityModelProvider modelProvider) {
     this(modelProvider, null);
   }
 
@@ -87,7 +87,7 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
    * @param modelProvider the EntityModelProvider to base this panel provider on
    * @param caption the panel caption to use
    */
-  public EntityPanelProvider (final SwingEntityModelProvider modelProvider, final String caption) {
+  public EntityPanelProvider(final SwingEntityModelProvider modelProvider, final String caption) {
     Objects.requireNonNull(modelProvider, "modelProvider");
     this.modelProvider = modelProvider;
     this.caption = caption;

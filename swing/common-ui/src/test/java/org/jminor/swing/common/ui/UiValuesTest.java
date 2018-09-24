@@ -82,7 +82,7 @@ public class UiValuesTest {
   public void timestampUiValue() throws ParseException {
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.TIMESTAMP);
     final JFormattedTextField txt = UiUtil.createFormattedField(DateUtil.getDateMask(format));//dd-MM-yyyy HH:mm
-    final Value<Date> value = UiValues.dateValue (txt, format, Types.TIMESTAMP, true);
+    final Value<Date> value = UiValues.dateValue(txt, format, Types.TIMESTAMP, true);
 
     assertNull(value.get());
     final String dateString = "03-10-1975 22:45";

@@ -102,7 +102,7 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
     final Iterator<T> itemIterator = items.iterator();
     int i = 0;
     while (itemIterator.hasNext()) {
-      super.addItem(itemIterator.next(), i++ < items.size() - 1 ?  amountEach : amountEach + rest);
+      super.addItem(itemIterator.next(), i++ < items.size() - 1 ? amountEach : amountEach + rest);
     }
   }
 

@@ -604,7 +604,7 @@ public final class LocalEntityConnection implements EntityConnection {
     ReportException exception = null;
     synchronized (connection) {
       try {
-        logAccess("fillReport", new Object[]{reportWrapper.getReportName()});
+        logAccess("fillReport", new Object[] {reportWrapper.getReportName()});
         final ReportResult result = reportWrapper.fillReport(connection.getConnection());
         if (!isTransactionOpen()) {
           commitQuietly();
@@ -645,7 +645,7 @@ public final class LocalEntityConnection implements EntityConnection {
       SQLException exception = null;
       PreparedStatement statement = null;
       try {
-        logAccess("writeBlob", new Object[]{sql});
+        logAccess("writeBlob", new Object[] {sql});
         values.add(null);//the blob value, set explicitly later
         values.addAll(condition.getValues());
         properties.add(property);
@@ -690,7 +690,7 @@ public final class LocalEntityConnection implements EntityConnection {
     Databases.QUERY_COUNTER.count(sql);
     synchronized (connection) {
       try {
-        logAccess("readBlob", new Object[]{sql});
+        logAccess("readBlob", new Object[] {sql});
         statement = prepareStatement(sql);
         setParameterValues(statement, condition.getValues(), condition.getColumns());
 
@@ -849,7 +849,7 @@ public final class LocalEntityConnection implements EntityConnection {
       final int conditionFetchDepthLimit = condition.getForeignKeyFetchDepthLimit(foreignKeyProperty.getPropertyId());
       if (!limitForeignKeyFetchDepth || currentForeignKeyFetchDepth < conditionFetchDepthLimit) {
         try {
-          logAccess("setForeignKeys", new Object[]{foreignKeyProperty});
+          logAccess("setForeignKeys", new Object[] {foreignKeyProperty});
           final List<Entity.Key> referencedKeys = getReferencedKeys(entities, foreignKeyProperty);
           if (referencedKeys.isEmpty()) {
             for (int j = 0; j < entities.size(); j++) {
@@ -915,7 +915,7 @@ public final class LocalEntityConnection implements EntityConnection {
     SQLException exception = null;
     Databases.QUERY_COUNTER.count(sqlStatement);
     try {
-      logAccess("executePreparedUpdate", new Object[]{sqlStatement, values});
+      logAccess("executePreparedUpdate", new Object[] {sqlStatement, values});
       setParameterValues(statement, values, properties);
       return statement.executeUpdate();
     }
@@ -937,7 +937,7 @@ public final class LocalEntityConnection implements EntityConnection {
     Databases.QUERY_COUNTER.count(sqlStatement);
     final List<?> values = condition.getValues();
     try {
-      logAccess("executePreparedSelect", values == null ? new Object[]{sqlStatement} : new Object[]{sqlStatement, values});
+      logAccess("executePreparedSelect", values == null ? new Object[] {sqlStatement} : new Object[] {sqlStatement, values});
       setParameterValues(statement, values, condition.getColumns());
 
       return statement.executeQuery();

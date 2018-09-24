@@ -52,21 +52,21 @@ public class JasperReportsWrapperTest {
   public void fillDataSourceReport() throws ReportException {
     final JasperReportsWrapper wrapper = new JasperReportsWrapper(REPORT_PATH);
     final JasperReportsDataWrapper dataWrapper = new JasperReportsDataWrapper(new JRDataSource() {
-          boolean done = false;
-          @Override
-          public boolean next() throws JRException {
-            if (done) {
-              return false;
-            }
+      boolean done = false;
+      @Override
+      public boolean next() throws JRException {
+        if (done) {
+          return false;
+        }
 
-            return done = true;
-          }
+        return done = true;
+      }
 
-          @Override
-          public Object getFieldValue(final JRField jrField) throws JRException {
-            return null;
-          }
-        });
+      @Override
+      public Object getFieldValue(final JRField jrField) throws JRException {
+        return null;
+      }
+    });
     wrapper.fillReport(dataWrapper);
   }
 

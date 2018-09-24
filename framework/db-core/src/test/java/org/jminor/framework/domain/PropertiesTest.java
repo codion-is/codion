@@ -105,7 +105,7 @@ public final class PropertiesTest {
   public void foreignKeyPropertyNullable() {
     final Property.ColumnProperty columnProperty = columnProperty("propertyId");
     final Property.ColumnProperty columnProperty2 = columnProperty("propertyId2");
-    final Property.ForeignKeyProperty foreignKeyProperty= foreignKeyProperty("fkPropertyID", "fk", "referenceEntityID",
+    final Property.ForeignKeyProperty foreignKeyProperty = foreignKeyProperty("fkPropertyID", "fk", "referenceEntityID",
             new Property.ColumnProperty[] {columnProperty, columnProperty2});
     foreignKeyProperty.setNullable(false);
     assertFalse(columnProperty.isNullable());

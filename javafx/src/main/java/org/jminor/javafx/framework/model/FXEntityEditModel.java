@@ -96,7 +96,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
       for (final Property.ForeignKeyProperty foreignKeyProperty : getDomain().getForeignKeyProperties(getEntityId(), entry.getKey())) {
         final FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
         if (listModel != null) {
-           listModel.addAll(entry.getValue());
+          listModel.addAll(entry.getValue());
         }
       }
     }

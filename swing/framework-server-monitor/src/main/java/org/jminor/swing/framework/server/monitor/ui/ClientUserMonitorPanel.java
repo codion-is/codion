@@ -146,7 +146,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private JComponent initializeMaintenanceIntervalComponent() throws RemoteException {
-    cmbMaintenance = new JComboBox<>(new Integer[] {1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,120,180,340,6000,10000});
+    cmbMaintenance = new JComboBox<>(new Integer[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 120, 180, 340, 6000, 10000});
     cmbMaintenance.setSelectedItem(model.getMaintenanceInterval());
     cmbMaintenance.addItemListener(e -> {
       try {

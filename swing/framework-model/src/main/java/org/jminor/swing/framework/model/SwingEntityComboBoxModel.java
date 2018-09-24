@@ -132,7 +132,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
       forceRefresh = true;
       refresh();
     }
-    finally  {
+    finally {
       forceRefresh = false;
     }
   }

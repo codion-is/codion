@@ -56,7 +56,7 @@ public final class TextUtil {
       return null;
     }
     if ("-".equals(noGrouping)) {
-      return  -1;
+      return -1;
     }
 
     return Integer.parseInt(noGrouping);
@@ -96,7 +96,7 @@ public final class TextUtil {
       return null;
     }
     if ("-".equals(noGrouping)) {
-      return  -1L;
+      return -1L;
     }
 
     return Long.parseLong(noGrouping);
@@ -114,7 +114,7 @@ public final class TextUtil {
     }
     final StringBuilder sb = new StringBuilder();
     final int length = minLength == maxLength ? minLength : RANDOM.nextInt(maxLength - minLength) + minLength;
-    for( int i = 0; i < length; i++ ) {
+    for (int i = 0; i < length; i++) {
       sb.append(ALPHA_NUMERIC.charAt(RANDOM.nextInt(ALPHA_NUMERIC.length())));
     }
 

@@ -842,13 +842,13 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected String[] getConfirmationMessages(final ConfirmType type) {
     switch (type) {
       case DELETE:
-        return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_ENTITY),
+        return new String[] {FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_ENTITY),
                 FrameworkMessages.get(FrameworkMessages.DELETE)};
       case INSERT:
-        return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_INSERT),
+        return new String[] {FrameworkMessages.get(FrameworkMessages.CONFIRM_INSERT),
                 FrameworkMessages.get(FrameworkMessages.INSERT)};
       case UPDATE:
-        return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_UPDATE),
+        return new String[] {FrameworkMessages.get(FrameworkMessages.CONFIRM_UPDATE),
                 FrameworkMessages.get(FrameworkMessages.UPDATE)};
       default:
         throw new IllegalArgumentException("Unknown confirmation type constant: " + type);
@@ -1584,7 +1584,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return JComboBox for the given property
    */
   protected final JComboBox createBooleanComboBox(final String propertyId, final StateObserver enabledState) {
-    return createBooleanComboBox(editModel.getDomain().getProperty(editModel.getEntityId(), propertyId),enabledState);
+    return createBooleanComboBox(editModel.getDomain().getProperty(editModel.getEntityId(), propertyId), enabledState);
   }
 
   /**

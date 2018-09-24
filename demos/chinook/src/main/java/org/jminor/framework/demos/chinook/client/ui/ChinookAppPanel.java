@@ -46,14 +46,14 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPanel.ChinookApplicationModel> {
 
   /* ARTIST
-    *   ALBUM
-    *     TRACK
-    * PLAYLIST
-    *   PLAYLISTTRACK
-    * CUSTOMER
-    *   INVOICE
-    *     INVOICELINE
-    */
+   *   ALBUM
+   *     TRACK
+   * PLAYLIST
+   *   PLAYLISTTRACK
+   * CUSTOMER
+   *   INVOICE
+   *     INVOICELINE
+   */
   @Override
   protected void setupEntityPanelProviders() {
     final Entities domain = getModel().getDomain();
@@ -158,7 +158,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPane
     DefaultColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.chinook.domain.ChinookDomain");
     SwingUtilities.invokeLater(() -> new ChinookAppPanel().startApplication("ChinookDomain", null, false,
-          UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger".toCharArray())));
+            UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger".toCharArray())));
   }
 
   public static final class ChinookApplicationModel extends SwingEntityApplicationModel {

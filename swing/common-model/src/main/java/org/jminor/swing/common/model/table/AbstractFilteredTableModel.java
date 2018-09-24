@@ -324,7 +324,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       visibleItems.addAll(filteredItems);
       filteredItems.clear();
       if (filterCondition != null) {
-        for (final ListIterator<R> iterator = visibleItems.listIterator(); iterator.hasNext();) {
+        for (final ListIterator<R> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
           final R item = iterator.next();
           if (!filterCondition.include(item)) {
             filteredItems.add(item);

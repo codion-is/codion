@@ -214,7 +214,7 @@ public final class DefaultEntityLookupModelTest {
   @BeforeEach
   public void setUp() throws Exception {
     lookupProperties = Arrays.asList(ENTITIES.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME),
-                    ENTITIES.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB));
+            ENTITIES.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB));
     lookupModel = new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, lookupProperties);
 
     CONNECTION_PROVIDER.getConnection().beginTransaction();

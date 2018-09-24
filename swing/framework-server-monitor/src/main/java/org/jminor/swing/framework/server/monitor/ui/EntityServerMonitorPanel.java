@@ -99,7 +99,7 @@ public final class EntityServerMonitorPanel extends JPanel {
         throw new IllegalStateException("No JDK home directory has been specified");
       }
     }
-    new ProcessBuilder(jdkDir + File.separator + "bin"  + File.separator + "jconsole").start();
+    new ProcessBuilder(jdkDir + File.separator + "bin" + File.separator + "jconsole").start();
   }
 
   public void setJDKDir() {

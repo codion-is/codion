@@ -557,7 +557,7 @@ public final class EntityUiUtil {
   public static DateInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
                                                     final boolean readOnly, final boolean includeButton,
                                                     final StateObserver enabledState) {
-    Objects.requireNonNull(property,PROPERTY_PARAM_NAME);
+    Objects.requireNonNull(property, PROPERTY_PARAM_NAME);
     if (!property.isDateOrTime()) {
       throw new IllegalArgumentException("Property " + property + " is not a date or time property");
     }

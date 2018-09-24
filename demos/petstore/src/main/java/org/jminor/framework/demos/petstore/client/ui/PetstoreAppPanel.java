@@ -28,11 +28,11 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppPa
 
   @Override
   protected void setupEntityPanelProviders() {
-   /* CATEGORY
-    *   PRODUCT
-    *     ITEM
-    *       ITEMTAG
-    */
+    /* CATEGORY
+     *   PRODUCT
+     *     ITEM
+     *       ITEMTAG
+     */
     final Entities domain = getModel().getDomain();
     final EntityPanelProvider tagItemProvider = new EntityPanelProvider(Petstore.T_TAG_ITEM,
             domain.getCaption(Petstore.T_TAG_ITEM)).setEditPanelClass(TagItemEditPanel.class);

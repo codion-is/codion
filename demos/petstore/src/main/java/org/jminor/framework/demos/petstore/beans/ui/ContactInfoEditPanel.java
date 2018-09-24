@@ -19,7 +19,7 @@ public class ContactInfoEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setLayout(new FlexibleGridLayout(3,1,5,5));
+    setLayout(new FlexibleGridLayout(3, 1, 5, 5));
     final JTextField txt = createTextField(SELLER_CONTACT_INFO_LAST_NAME);
     setInitialFocusComponent(txt);
     txt.setColumns(10);

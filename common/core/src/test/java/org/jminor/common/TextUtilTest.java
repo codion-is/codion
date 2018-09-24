@@ -85,8 +85,8 @@ public final class TextUtilTest {
   @Test
   public void getDelimitedString() {
     final String result = "test\ttest2" + Util.LINE_SEPARATOR + "data1\tdata2" + Util.LINE_SEPARATOR + "data3\tdata4";
-    assertEquals(result, TextUtil.getDelimitedString(new String[][]{new String[]{"test", "test2"}},
-            new String[][]{new String[]{"data1", "data2"}, new String[]{"data3", "data4"}}, "\t"));
+    assertEquals(result, TextUtil.getDelimitedString(new String[][] {new String[] {"test", "test2"}},
+            new String[][] {new String[] {"data1", "data2"}, new String[] {"data3", "data4"}}, "\t"));
   }
 
   @Test
@@ -126,9 +126,9 @@ public final class TextUtilTest {
   @Test
   public void getArrayContentsAsString() throws Exception {
     assertEquals("", TextUtil.getArrayContentsAsString(null, true));
-    String res = TextUtil.getArrayContentsAsString(new Object[] {1, 2,new Object[] {3, 4}}, false);
+    String res = TextUtil.getArrayContentsAsString(new Object[] {1, 2, new Object[] {3, 4}}, false);
     assertEquals("1, 2, 3, 4", res, "Integer array as string should work");
-    res = TextUtil.getArrayContentsAsString(new Object[] {1, 2,new Object[] {3, 4}}, true);
+    res = TextUtil.getArrayContentsAsString(new Object[] {1, 2, new Object[] {3, 4}}, true);
     assertEquals("1\n2\n3\n4\n", res, "Integer array as string should work");
   }
 

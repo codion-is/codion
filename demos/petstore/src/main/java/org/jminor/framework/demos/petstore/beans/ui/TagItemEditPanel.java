@@ -25,7 +25,7 @@ public class TagItemEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setLayout(new FlexibleGridLayout(2,1,5,5));
+    setLayout(new FlexibleGridLayout(2, 1, 5, 5));
     EntityComboBox box = createForeignKeyComboBox(TAG_ITEM_ITEM_FK);
     setInitialFocusComponent(box);
     box.setPopupWidth(240);

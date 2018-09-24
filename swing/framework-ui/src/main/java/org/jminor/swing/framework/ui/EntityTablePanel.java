@@ -492,7 +492,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
             getEntityTableModel().getEntityId()).forEach(property -> {
       if (includeUpdateSelectedProperty(property)) {
         final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
-        controlSet.add(Controls.control(() -> updateSelectedEntities(property),caption, enabled));
+        controlSet.add(Controls.control(() -> updateSelectedEntities(property), caption, enabled));
       }
     });
 
@@ -924,7 +924,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       }
     }, FrameworkMessages.get(FrameworkMessages.SEARCH));
 
-    final JButton btnOk  = new JButton(okControl);
+    final JButton btnOk = new JButton(okControl);
     final JButton btnCancel = new JButton(cancelControl);
     final JButton btnSearch = new JButton(searchControl);
     final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
@@ -1222,7 +1222,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return Strings to display in the confirm delete dialog, index 0 = message, index 1 = title
    */
   protected String[] getConfirmDeleteMessages() {
-    return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED),
+    return new String[] {FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED),
             FrameworkMessages.get(FrameworkMessages.DELETE)};
   }
 
@@ -1562,7 +1562,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   private static JLabel initializeStatusMessageLabel() {
-    final JLabel label  = new JLabel("", JLabel.CENTER);
+    final JLabel label = new JLabel("", JLabel.CENTER);
     label.setFont(new Font(label.getFont().getName(), Font.PLAIN, STATUS_MESSAGE_FONT_SIZE));
 
     return label;

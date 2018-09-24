@@ -122,7 +122,7 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
       visibleItems.addAll(filteredItems);
       filteredItems.clear();
       if (filterCondition != null) {
-        for (final ListIterator<T> iterator = visibleItems.listIterator(); iterator.hasNext();) {
+        for (final ListIterator<T> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
           final T item = iterator.next();
           if (item != null && !filterCondition.include(item)) {
             filteredItems.add(item);

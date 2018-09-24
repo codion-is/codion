@@ -215,7 +215,7 @@ public class EntityConditionsTest {
 
   @Test
   public void selectConditionKeyNoKeys() {
-    assertThrows(IllegalArgumentException.class,() -> entityConditions.selectCondition(Collections.emptyList()));
+    assertThrows(IllegalArgumentException.class, () -> entityConditions.selectCondition(Collections.emptyList()));
   }
 
   @Test

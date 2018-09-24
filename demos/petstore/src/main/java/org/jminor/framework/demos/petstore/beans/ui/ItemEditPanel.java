@@ -24,7 +24,7 @@ public class ItemEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setLayout(new FlexibleGridLayout(3,3,5,5));
+    setLayout(new FlexibleGridLayout(3, 3, 5, 5));
     EntityComboBox box = createForeignKeyComboBox(ITEM_PRODUCT_FK);
     setInitialFocusComponent(box);
     addPropertyPanel(ITEM_PRODUCT_FK);

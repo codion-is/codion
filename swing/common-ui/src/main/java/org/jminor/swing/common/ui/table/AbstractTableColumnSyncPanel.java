@@ -37,7 +37,7 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
    * @param columnModel the column model
    */
   public AbstractTableColumnSyncPanel(final SwingFilteredTableColumnModel columnModel) {
-    setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
+    setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
     this.columnModel = columnModel;
     this.columns = columnModel.getAllColumns();
     this.columnModel.addColumnModelListener(new SyncColumnModelListener());

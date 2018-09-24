@@ -147,7 +147,7 @@ public final class ClientInstanceMonitor {
 
   private String getEntryString(final MethodLogger.Entry entry) {
     return new StringBuilder(entry.getMethod()).append(" [")
-                .append(MICROSECOND_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(entry.getDuration())))
-                .append(" μs").append("]").append(": ").append(entry.getAccessMessage()).toString();
+            .append(MICROSECOND_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(entry.getDuration())))
+            .append(" μs").append("]").append(": ").append(entry.getAccessMessage()).toString();
   }
 }

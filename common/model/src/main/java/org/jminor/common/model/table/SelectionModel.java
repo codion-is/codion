@@ -130,6 +130,7 @@ public interface SelectionModel<R> {
    * @return the number of selected indexes in the underlying selection model.
    */
   int getSelectionCount();
+
   /**
    * Selects the given items
    * @param items the items to select

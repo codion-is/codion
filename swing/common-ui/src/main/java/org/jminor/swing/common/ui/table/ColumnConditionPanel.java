@@ -413,7 +413,7 @@ public class ColumnConditionPanel<K> extends JPanel {
         case Types.TIMESTAMP:
         case Types.DATE:
           ValueLinks.dateValueLink((JFormattedTextField) component, modelValue, false,
-                (SimpleDateFormat) columnConditionModel.getFormat(), columnConditionModel.getType(), true);
+                  (SimpleDateFormat) columnConditionModel.getFormat(), columnConditionModel.getType(), true);
           break;
         default:
           ValueLinks.textValueLink((JTextField) component, modelValue, null, true, false);

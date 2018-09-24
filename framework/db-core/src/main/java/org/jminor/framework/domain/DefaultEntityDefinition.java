@@ -181,7 +181,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
                           final Map<String, Set<Property.DerivedProperty>> derivedProperties,
                           final List<Property.ColumnProperty> primaryKeyProperties,
                           final List<Property.ForeignKeyProperty> foreignKeyProperties,
-                          final List<Property .TransientProperty> transientProperties,
+                          final List<Property.TransientProperty> transientProperties,
                           final List<Property> visibleProperties,
                           final List<Property.ColumnProperty> columnProperties,
                           final Map<String, List<Property.DenormalizedProperty>> denormalizedProperties,

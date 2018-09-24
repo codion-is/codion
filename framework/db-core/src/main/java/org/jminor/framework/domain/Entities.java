@@ -1350,7 +1350,7 @@ public class Entities implements Serializable {
   }
 
   private static List<Property> getVisibleProperties(final Collection<Property> properties) {
-    return properties.stream().filter(property ->  !property.isHidden()).collect(Collectors.toList());
+    return properties.stream().filter(property -> !property.isHidden()).collect(Collectors.toList());
   }
 
   private static Map<String, Set<Property.DerivedProperty>> initializeDerivedProperties(final Collection<Property> properties) {

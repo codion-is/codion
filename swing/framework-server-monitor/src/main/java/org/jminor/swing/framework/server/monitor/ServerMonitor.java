@@ -314,8 +314,8 @@ public final class ServerMonitor {
    * @throws RemoteException in case of an exception
    */
   public void refreshDomainList() throws RemoteException {
-    domainListModel.setDataVector(new Object[][]{}, new Object[]{"Entity ID", "Table name"});
-    final Map<String,String> definitions = server.getEntityDefinitions();
+    domainListModel.setDataVector(new Object[][] {}, new Object[] {"Entity ID", "Table name"});
+    final Map<String, String> definitions = server.getEntityDefinitions();
     for (final Map.Entry<String, String> definition : definitions.entrySet()) {
       domainListModel.addRow(new Object[] {definition.getKey(), definition.getValue()});
     }

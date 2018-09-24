@@ -13,25 +13,25 @@ public class SQLServerDatabaseTest {
   public void getSequenceQuery() {
     assertThrows(UnsupportedOperationException.class, () -> new SQLServerDatabase("host", 1234, "sid").getSequenceQuery("seq"));
   }
-  
+
   @Test
   public void supportsIsValid() {
     final SQLServerDatabase db = new SQLServerDatabase("host", 1234, "sid");
     assertTrue(db.supportsIsValid());
   }
-  
+
   @Test
   public void getAuthenticationInfo() {
     final SQLServerDatabase db = new SQLServerDatabase("host", 1234, "sid");
     assertNull(db.getAuthenticationInfo(null));
   }
-  
+
   @Test
   public void getAutoIncrementQuery() {
     final SQLServerDatabase db = new SQLServerDatabase("host", 1234, "sid");
     assertEquals(SQLServerDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
-  
+
   @Test
   public void getURL() {
     final SQLServerDatabase db = new SQLServerDatabase("host", 1234, "sid");

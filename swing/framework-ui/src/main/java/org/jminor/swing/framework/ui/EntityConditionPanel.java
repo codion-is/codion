@@ -126,7 +126,7 @@ public final class EntityConditionPanel extends JPanel {
                                                   final boolean isSelected, final boolean cellHasFocus) {
       final Component cellRenderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
       final PropertyConditionModel selected = (PropertyConditionModel) value;
-      ((JLabel)cellRenderer).setText(selected.getColumnIdentifier().toString());
+      ((JLabel) cellRenderer).setText(selected.getColumnIdentifier().toString());
       cellRenderer.setForeground(selected.isEnabled() ? Color.red : Color.black);
 
       return cellRenderer;

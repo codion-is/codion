@@ -419,8 +419,8 @@ public final class UiValues {
       }
       switch (sqlType) {
         case Types.DATE: return parsedValue;
-        case Types.TIMESTAMP : return new Timestamp(parsedValue.getTime());
-        case Types.TIME : return new Time(parsedValue.getTime());
+        case Types.TIMESTAMP: return new Timestamp(parsedValue.getTime());
+        case Types.TIME: return new Time(parsedValue.getTime());
         default: throw new IllegalStateException("Illegal sql type for DateUIValue: " + sqlType);
       }
     }

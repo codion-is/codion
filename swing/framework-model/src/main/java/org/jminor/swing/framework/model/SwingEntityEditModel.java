@@ -88,7 +88,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * Clears all combobox models
    */
   public final void clearComboBoxModels() {
-    for (final Refreshable  comboBoxModel : comboBoxModels.values()) {
+    for (final Refreshable comboBoxModel : comboBoxModels.values()) {
       comboBoxModel.clear();
     }
   }

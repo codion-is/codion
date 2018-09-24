@@ -39,7 +39,7 @@ public final class FlexibleGridLayout extends GridLayout {
    * @param hgap the horizontal gap
    * @param vgap the vertical gap
    */
-  public FlexibleGridLayout(final int rows, final int cols, final int hgap,final  int vgap) {
+  public FlexibleGridLayout(final int rows, final int cols, final int hgap, final int vgap) {
     this(rows, cols, hgap, vgap, false, false);
   }
 
@@ -210,8 +210,8 @@ public final class FlexibleGridLayout extends GridLayout {
       final int newWidth = Arrays.stream(columnWidths).sum();
       final int newHeight = Arrays.stream(rowHeights).sum();
 
-      return new Dimension(insets.left + insets.right + newWidth + (numberOfColumns-1)*getHgap(),
-              insets.top + insets.bottom + newHeight + (numberOfRows-1)*getVgap());
+      return new Dimension(insets.left + insets.right + newWidth + (numberOfColumns - 1) * getHgap(),
+              insets.top + insets.bottom + newHeight + (numberOfRows - 1) * getVgap());
     }
   }
 }

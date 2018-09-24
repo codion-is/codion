@@ -57,6 +57,6 @@ public class ServersTest {
 
   @Test
   public void getServerWrongPort() throws RemoteException, NotBoundException {
-    assertThrows(NotBoundException.class,() -> Servers.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, 42));
+    assertThrows(NotBoundException.class, () -> Servers.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, 42));
   }
 }

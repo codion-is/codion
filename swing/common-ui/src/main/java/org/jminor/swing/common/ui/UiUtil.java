@@ -125,7 +125,7 @@ public final class UiUtil {
 
   static {
     //otherwise a hierarchy of tabbed panes looks crappy
-    UIManager.put("TabbedPane.contentBorderInsets", new Insets(2,0,0,0));
+    UIManager.put("TabbedPane.contentBorderInsets", new Insets(2, 0, 0, 0));
   }
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(UiUtil.class.getName(), Locale.getDefault());
@@ -1361,7 +1361,7 @@ public final class UiUtil {
         }
       }
     });
-    final JButton btnOk  = new JButton(okAction);
+    final JButton btnOk = new JButton(okAction);
     final JButton btnCancel = new JButton(cancelAction);
     btnOk.setText(Messages.get(Messages.OK));
     btnCancel.setText(Messages.get(Messages.CANCEL));
@@ -1440,7 +1440,7 @@ public final class UiUtil {
       final List<File> files = new ArrayList<>();
       final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
       final String data = (String) support.getTransferable().getTransferData(nixFileDataFlavor);
-      for (final StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens();) {
+      for (final StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens(); ) {
         final String token = st.nextToken().trim();
         if (token.startsWith("#") || token.length() == 0) {// comment line, by RFC 2483
           continue;

@@ -8,7 +8,7 @@ import java.sql.SQLException;
 /**
  * An exception coming from a database-layer.
  */
-public class DatabaseException extends Exception  {
+public class DatabaseException extends Exception {
 
   /**
    * The sql statement being run when this exception occurred, if any

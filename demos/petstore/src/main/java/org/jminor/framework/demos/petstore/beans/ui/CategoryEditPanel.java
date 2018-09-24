@@ -19,7 +19,7 @@ public class CategoryEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setLayout(new FlexibleGridLayout(2,2,5,5));
+    setLayout(new FlexibleGridLayout(2, 2, 5, 5));
     final JTextField txtName = createTextField(CATEGORY_NAME);
     setInitialFocusComponent(txtName);
     txtName.setColumns(10);

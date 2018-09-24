@@ -223,7 +223,7 @@ public final class FXUiUtil {
         return entityValue;
       }
       else if (control instanceof EntityLookupField) {
-        final Value<Collection<Entity>> entityValue = PropertyValues.lookupValue (((EntityLookupField) control).getModel());
+        final Value<Collection<Entity>> entityValue = PropertyValues.lookupValue(((EntityLookupField) control).getModel());
         entityValue.set(defaultValue == null ? Collections.emptyList() : Collections.singletonList((Entity) defaultValue));
         return entityValue;
       }
