@@ -227,11 +227,20 @@ task populateWiki(dependsOn: [combinedJavadoc, htmlDependencyReport]) {
             fileset(dir: 'demos/world/src/main/java')
             fileset(dir: 'demos/world/src/test/java')
         }
-        ant.copy(todir: "${wikiMediaPath}/src/resources") {
-            fileset(dir: 'resources')
+        ant.copy(todir: "${wikiMediaPath}/src/resources/server") {
+            fileset(dir: 'framework/server/src/main/bin')
+        }
+        ant.copy(todir: "${wikiMediaPath}/src/resources/server/config") {
+            fileset(dir: 'framework/server/src/main/config')
+        }
+        ant.copy(todir: "${wikiMediaPath}/src/resources/server/security") {
+            fileset(dir: 'framework/server/src/main/security')
         }
         ant.copy(todir: "${wikiMediaPath}/src/resources/server_monitor") {
-            fileset(dir: 'swing/framework-server-monitor/resources')
+            fileset(dir: 'swing/framework-server-monitor/src/main/bin')
+        }
+        ant.copy(todir: "${wikiMediaPath}/src/resources/server_monitor/config") {
+            fileset(dir: 'swing/framework-server-monitor/src/main/config')
         }
         ant.copy(todir: "${wikiMediaPath}/src/resources/demos/chinook") {
             fileset(dir: 'demos/chinook/src/main/config')
