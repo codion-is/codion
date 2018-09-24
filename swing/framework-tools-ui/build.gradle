@@ -42,11 +42,11 @@ task runEntityGenerator(type: JavaExec) {
     main = mainClassName
     classpath = sourceSets.test.runtimeClasspath
     systemProperties = [
-            'jminor.db.type': 'h2',
-            'jminor.db.host': 'h2db',
-            'jminor.db.embedded': 'true',
+            'jminor.db.type'            : 'h2',
+            'jminor.db.host'            : 'h2db',
+            'jminor.db.embedded'        : 'true',
             'jminor.db.embeddedInMemory': 'true',
-            'jminor.db.initScript': 'src/main/config/create_schema.sql',
-            'logback.configurationFile': 'src/main/config/logback.xml'
+            'jminor.db.initScript'      : 'src/main/config/create_schema.sql',
+            'logback.configurationFile' : 'src/main/config/logback.xml'
     ]
 }

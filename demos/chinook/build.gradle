@@ -31,7 +31,7 @@ dependencies {
 
     runtime project(':jminor-plugin-logback-proxy')
 
-    compile ("net.sf.jasperreports:jasperreports:${jasperreportsVersion}") {
+    compile("net.sf.jasperreports:jasperreports:${jasperreportsVersion}") {
         transitive = false
     }
 
@@ -98,10 +98,10 @@ runClientRemote {
     main = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
     systemProperties = [
             'jminor.client.connectionType': 'remote',
-            'jminor.server.hostname': 'localhost',
-            'jminor.report.path': '../../demos/chinook/build/classes/reports',
-            'javax.net.ssl.trustStore': '../../framework/server/src/main/security/JMinorClientTruststore',
-            'logback.configurationFile': 'src/main/resources/logback.xml'
+            'jminor.server.hostname'      : 'localhost',
+            'jminor.report.path'          : '../../demos/chinook/build/classes/reports',
+            'javax.net.ssl.trustStore'    : '../../framework/server/src/main/security/JMinorClientTruststore',
+            'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }
 
@@ -109,10 +109,10 @@ runClientHttp {
     main = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
     systemProperties = [
             'jminor.client.connectionType': 'http',
-            'jminor.client.http.secure': 'false',
-            'jminor.client.http.hostname': 'localhost',
-            'jminor.report.path': '../../demos/chinook/build/classes/reports',
-            'logback.configurationFile': 'src/main/resources/logback.xml'
+            'jminor.client.http.secure'   : 'false',
+            'jminor.client.http.hostname' : 'localhost',
+            'jminor.report.path'          : '../../demos/chinook/build/classes/reports',
+            'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }
 
@@ -120,10 +120,10 @@ runLoadTestRemote {
     main = 'org.jminor.framework.demos.chinook.testing.ChinookLoadTest'
     systemProperties = [
             'jminor.client.connectionType': 'remote',
-            'jminor.server.hostname': 'localhost',
-            'jminor.report.path': '../../demos/chinook/build/classes/reports',
-            'javax.net.ssl.trustStore': '../../framework/server/src/main/security/JMinorClientTruststore',
-            'logback.configurationFile': 'src/main/resources/logback.xml'
+            'jminor.server.hostname'      : 'localhost',
+            'jminor.report.path'          : '../../demos/chinook/build/classes/reports',
+            'javax.net.ssl.trustStore'    : '../../framework/server/src/main/security/JMinorClientTruststore',
+            'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }
 
@@ -131,9 +131,9 @@ runLoadTestHttp {
     main = 'org.jminor.framework.demos.chinook.testing.ChinookLoadTest'
     systemProperties = [
             'jminor.client.connectionType': 'http',
-            'jminor.client.http.secure': 'false',
-            'jminor.client.http.hostname': 'localhost',
-            'jminor.report.path': '../../demos/chinook/build/classes/reports',
-            'logback.configurationFile': 'src/main/resources/logback.xml'
+            'jminor.client.http.secure'   : 'false',
+            'jminor.client.http.hostname' : 'localhost',
+            'jminor.report.path'          : '../../demos/chinook/build/classes/reports',
+            'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }

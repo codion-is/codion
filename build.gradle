@@ -19,7 +19,7 @@ ext {
     jasperreportsVersion = '6.6.0'
     commonsloggingVersion = '1.2'
     commonsdigesterVersion = '2.1'
-    commonscollectionsVersion ='3.2.2'
+    commonscollectionsVersion = '3.2.2'
     commonsbeanutilsVersion = '1.9.3'
     jdtcorecompilerVersion = '4.6.1'
 }

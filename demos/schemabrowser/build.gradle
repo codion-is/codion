@@ -59,11 +59,11 @@ runClientLocal {
     //overwrite the defaults to leave out initScript
     systemProperties = [
             'jminor.client.connectionType': 'local',
-            'jminor.db.type': 'h2',
-            'jminor.db.host': 'h2db',
-            'jminor.db.embedded': 'true',
-            'jminor.db.embeddedInMemory': 'true',
-            'logback.configurationFile': 'src/main/resources/logback.xml'
+            'jminor.db.type'              : 'h2',
+            'jminor.db.host'              : 'h2db',
+            'jminor.db.embedded'          : 'true',
+            'jminor.db.embeddedInMemory'  : 'true',
+            'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }
 

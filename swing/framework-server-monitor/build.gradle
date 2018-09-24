@@ -44,9 +44,9 @@ task runServerMonitor(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel'
     systemProperties = [
-            'jminor.server.hostname': 'localhost',
-            'jminor.server.admin.user': 'scott:tiger',
-            'javax.net.ssl.trustStore': '../../framework/server/src/main/security/JMinorClientTruststore',
+            'jminor.server.hostname'   : 'localhost',
+            'jminor.server.admin.user' : 'scott:tiger',
+            'javax.net.ssl.trustStore' : '../../framework/server/src/main/security/JMinorClientTruststore',
             'logback.configurationFile': 'src/config/logback.xml'
     ]
 }

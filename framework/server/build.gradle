@@ -98,23 +98,23 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
     main = 'org.jminor.framework.server.DefaultEntityConnectionServer'
 //    jvmArgs '--add-modules', 'java.xml.bind'
     systemProperties = [
-            'jminor.db.type': 'h2',
-            'jminor.db.host': 'h2db',
-            'jminor.db.embedded': 'true',
-            'jminor.db.embeddedInMemory': 'true',
-            'jminor.db.initScript': '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',
-            'jminor.server.pooling.startupPoolUsers': 'scott:tiger',
-            'jminor.server.port': '2222',
-            'jminor.server.admin.port': '2223',
-            'jminor.server.admin.user': 'scott:tiger',
-            'jminor.server.http.secure': 'false',
+            'jminor.db.type'                         : 'h2',
+            'jminor.db.host'                         : 'h2db',
+            'jminor.db.embedded'                     : 'true',
+            'jminor.db.embeddedInMemory'             : 'true',
+            'jminor.db.initScript'                   : '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',
+            'jminor.server.pooling.startupPoolUsers' : 'scott:tiger',
+            'jminor.server.port'                     : '2222',
+            'jminor.server.admin.port'               : '2223',
+            'jminor.server.admin.user'               : 'scott:tiger',
+            'jminor.server.http.secure'              : 'false',
             'jminor.server.pooling.poolProviderClass': 'org.jminor.framework.plugins.hikari.pool.HikariConnectionPoolProvider',
             'jminor.server.auxiliaryServerClassNames': 'org.jminor.framework.servlet.EntityServletServer',
-            'jminor.server.domain.classes': 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.ChinookDomain,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
-            'javax.net.ssl.keyStore': 'src/main/security/JMinorServerKeystore',
-            'java.security.policy': 'src/main/security/all_permissions.policy',
-            'javax.net.ssl.keyStorePassword': 'crappypass',
-            'java.rmi.server.hostname': 'localhost',
-            'logback.configurationFile': 'src/main/config/logback.xml'
+            'jminor.server.domain.classes'           : 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.ChinookDomain,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
+            'javax.net.ssl.keyStore'                 : 'src/main/security/JMinorServerKeystore',
+            'java.security.policy'                   : 'src/main/security/all_permissions.policy',
+            'javax.net.ssl.keyStorePassword'         : 'crappypass',
+            'java.rmi.server.hostname'               : 'localhost',
+            'logback.configurationFile'              : 'src/main/config/logback.xml'
     ]
 }

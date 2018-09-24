@@ -12,7 +12,7 @@ dependencies {
 
     testImplementation project(':jminor-swing-framework-model')
 
-    compile ("net.sf.jasperreports:jasperreports:${jasperreportsVersion}") {
+    compile("net.sf.jasperreports:jasperreports:${jasperreportsVersion}") {
         transitive = false
     }
 
