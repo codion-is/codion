@@ -16,7 +16,6 @@ import java.sql.Types;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -73,7 +72,7 @@ public class DefaultEntityTest {
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
     test.setAs(testEntity);
-    assertTrue(Objects.equals(test, testEntity), "Entities should be equal after .setAs()");
+    assertEquals(test, testEntity, "Entities should be equal after .setAs()");
     assertTrue(test.valuesEqual(testEntity), "Entity property values should be equal after .setAs()");
 
     //assure that no cached foreign key values linger
@@ -265,7 +264,7 @@ public class DefaultEntityTest {
     //test copy()
     final Entity test2 = (Entity) testEntity.getCopy();
     assertNotSame(test2, testEntity, "Entity copy should not be == the original");
-    assertTrue(Objects.equals(test2, testEntity), "Entities should be equal after .getCopy()");
+    assertEquals(test2, testEntity, "Entities should be equal after .getCopy()");
     assertTrue(test2.valuesEqual(testEntity), "Entity property values should be equal after .getCopy()");
     assertNotSame(testEntity.getForeignKey(TestDomain.DETAIL_MASTER_FK), test2.getForeignKey(TestDomain.DETAIL_MASTER_FK), "This should be a deep copy");
 
@@ -278,6 +277,7 @@ public class DefaultEntityTest {
     assertTrue(testEntity.isValueNull(TestDomain.DETAIL_MASTER_ID));
     assertTrue(testEntity.isValueNull(TestDomain.DETAIL_MASTER_NAME));
     assertTrue(testEntity.isValueNull(TestDomain.DETAIL_MASTER_CODE));
+    assertTrue(testEntity.isValueNull(TestDomain.DETAIL_MASTER_CODE_DENORM));
 
     testEntity.put(TestDomain.DETAIL_MASTER_FK, referencedEntityValue);
     assertFalse(testEntity.isValueNull(TestDomain.DETAIL_MASTER_ID));
@@ -286,6 +286,8 @@ public class DefaultEntityTest {
     assertEquals(testEntity.get(TestDomain.DETAIL_MASTER_NAME),
             referencedEntityValue.get(TestDomain.MASTER_NAME));
     assertEquals(testEntity.get(TestDomain.DETAIL_MASTER_CODE),
+            referencedEntityValue.get(TestDomain.MASTER_CODE));
+    assertEquals(testEntity.get(TestDomain.DETAIL_MASTER_CODE_DENORM),
             referencedEntityValue.get(TestDomain.MASTER_CODE));
 
     referencedEntityValue.put(TestDomain.MASTER_CODE, 20);

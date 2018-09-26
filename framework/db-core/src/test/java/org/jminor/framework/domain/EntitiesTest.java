@@ -287,6 +287,20 @@ public class EntitiesTest {
   }
 
   @Test
+  public void hasDenormalizedProperties() {
+    assertFalse(domain.hasDenormalizedProperties(TestDomain.T_DEPARTMENT));
+    assertTrue(domain.hasDenormalizedProperties(TestDomain.T_DETAIL));
+    assertTrue(domain.hasDenormalizedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK));
+  }
+
+  @Test
+  public void getDenormalizedProperties() {
+    final List<Property.DenormalizedProperty> denormalized = domain.getDenormalizedProperties(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK);
+    assertFalse(denormalized.isEmpty());
+    assertEquals(TestDomain.DETAIL_MASTER_CODE_DENORM, denormalized.get(0).getPropertyId());
+  }
+
+  @Test
   public void isSmallDataset() {
     assertTrue(domain.isSmallDataset(TestDomain.T_DETAIL));
   }

@@ -57,6 +57,7 @@ public class SwingForeignKeyConditionModelTest {
     assertTrue(searchEntities.contains(sales));
     comboBoxModel.refresh();
     assertEquals(sales, comboBoxModel.getSelectedValue());
+    assertEquals("deptno = ?", conditionModel.getCondition().getWhereClause());
     searchEntities = conditionModel.getConditionEntities();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));

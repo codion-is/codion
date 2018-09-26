@@ -886,7 +886,7 @@ public class Entities implements Serializable {
 
   /**
    * Instantiates a primary key generator which fetches primary key values using the given query prior to insert
-   * @param query the query
+   * @param query a query for retrieving the primary key value
    * @return a query based primary key generator
    */
   public final Entity.KeyGenerator queriedKeyGenerator(final String query) {
@@ -1183,7 +1183,7 @@ public class Entities implements Serializable {
    */
   public static List<Entity> getEntitiesByValue(final Collection<Entity> entities, final Map<String, Object> values) {
     final List<Entity> result = new ArrayList<>();
-    for (final Entity entity : Objects.requireNonNull(entities, "entities")) {
+    for (final Entity entity : Objects.requireNonNull(entities, ENTITIES_PARAM)) {
       boolean equal = true;
       for (final Map.Entry<String, Object> entries : values.entrySet()) {
         final String propertyId = entries.getKey();

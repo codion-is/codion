@@ -39,9 +39,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
   public final void login(final User user) {
     Objects.requireNonNull(user, "user");
     connectionProvider.setUser(user);
-    for (final M entityModel : entityModels) {
-      entityModel.refresh();
-    }
+    refresh();
     handleLogin();
   }
 

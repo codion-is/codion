@@ -9,7 +9,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnSummaryModel;
-import org.jminor.common.model.table.FilteredTableModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.table.TableSortModel;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -67,7 +66,7 @@ import java.util.stream.Collectors;
  * </pre>
  */
 public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Property>
-        implements EntityTableModel<SwingEntityEditModel>, FilteredTableModel<Entity, Property, TableColumn> {
+        implements EntityTableModel<SwingEntityEditModel> {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SwingEntityTableModel.class.getName(), Locale.getDefault());
 

@@ -39,7 +39,8 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
    * @param property the property
    * @param entityLookupModel a EntityLookupModel
    */
-  public DefaultForeignKeyConditionModel(final EntityConditions entityConditions, final Property.ForeignKeyProperty property, final EntityLookupModel entityLookupModel) {
+  public DefaultForeignKeyConditionModel(final EntityConditions entityConditions, final Property.ForeignKeyProperty property,
+                                         final EntityLookupModel entityLookupModel) {
     super(property, property.getType(), Property.WILDCARD_CHARACTER.get());
     this.entityConditions = entityConditions;
     this.entityLookupModel = entityLookupModel;

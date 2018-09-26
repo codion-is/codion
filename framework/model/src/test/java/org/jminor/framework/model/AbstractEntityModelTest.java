@@ -48,6 +48,9 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void testUpdatePrimaryKey() throws DatabaseException, ValidationException {
+    if (!departmentModel.containsTableModel()) {
+      return;
+    }
     departmentModel.refresh();
     final EntityEditModel deptEditModel = departmentModel.getEditModel();
     final TableModel deptTableModel = departmentModel.getTableModel();
@@ -88,6 +91,9 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void clear() {
+    if (!departmentModel.containsTableModel()) {
+      return;
+    }
     departmentModel.refresh();
     assertTrue(departmentModel.getTableModel().getRowCount() > 0);
 
@@ -109,6 +115,9 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void constructorTableModelEntityIDMismatch() {
+    if (!departmentModel.containsTableModel()) {
+      return;
+    }
     final EditModel editModel = createDepartmentEditModel();
     final TableModel tableModel = createEmployeeTableModel();
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntityModel(editModel, tableModel));
@@ -116,6 +125,9 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void constructorTableModelEditModelMismatch() {
+    if (!departmentModel.containsTableModel()) {
+      return;
+    }
     final DefaultEntityEditModel editModel = createDepartmentEditModel();
     final DefaultEntityEditModel editModel2 = createDepartmentEditModel();
     final EntityTableModel tableModel = createDepartmentTableModel();
@@ -125,6 +137,9 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void clearEditModelClearTableSelection() {
+    if (!departmentModel.containsTableModel()) {
+      return;
+    }
     departmentModel.refresh();
     departmentModel.getTableModel().getSelectionModel().setSelectedIndexes(Arrays.asList(1, 2, 3));
     assertFalse(departmentModel.getTableModel().getSelectionModel().isSelectionEmpty());
@@ -137,8 +152,6 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   public void test() throws Exception {
     assertNull(departmentModel.getMasterModel());
     assertNotNull(departmentModel.getEditModel());
-    assertNotNull(departmentModel.getTableModel());
-    assertTrue(departmentModel.containsTableModel());
 
     final EventListener linkedListener = () -> {};
     final EventListener listener = () -> eventCount++;
@@ -154,15 +167,24 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void detailModel() throws Exception {
-    departmentModel.getDetailModel(TestDomain.T_EMP);
-    assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP), "DepartmentModel should contain Employee detail");
+    departmentModel.getDetailModel((Class<? extends Model>) departmentModel.getDetailModel(TestDomain.T_EMP).getClass());
+    assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));
+    assertTrue(departmentModel.containsDetailModel(departmentModel.getDetailModel(TestDomain.T_EMP)));
+    assertTrue(departmentModel.containsDetailModel((Class<? extends Model>) departmentModel.getDetailModel(TestDomain.T_EMP).getClass()));
     assertEquals(1, departmentModel.getDetailModels().size(), "Only one detail model should be in DepartmentModel");
     assertEquals(1, departmentModel.getLinkedDetailModels().size());
-    assertTrue(departmentModel.getLinkedDetailModels().contains(departmentModel.getDetailModel(TestDomain.T_EMP)),
-            "Employee model should be the linked detail model in DepartmentModel");
+
+    departmentModel.getDetailModel(TestDomain.T_EMP);
+
+    assertTrue(departmentModel.getLinkedDetailModels().contains(departmentModel.getDetailModel(TestDomain.T_EMP)));
     assertNotNull(departmentModel.getDetailModel(TestDomain.T_EMP));
     departmentModel.refresh();
     departmentModel.refreshDetailModels();
+
+    if (!departmentModel.containsTableModel()) {
+      return;
+    }
+
     assertTrue(departmentModel.getDetailModel(TestDomain.T_EMP).getTableModel().getRowCount() > 0);
 
     final EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
@@ -210,6 +232,9 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void filterOnMasterInsert() throws DatabaseException, ValidationException {
+    if (!departmentModel.containsTableModel()) {
+      return;
+    }
     final EntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
     employeeModel.setFilterOnMasterInsert(true);
     assertTrue(employeeModel.isFilterOnMasterInsert());

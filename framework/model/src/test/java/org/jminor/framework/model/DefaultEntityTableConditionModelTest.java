@@ -8,6 +8,8 @@ import org.jminor.common.EventListener;
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.condition.Condition;
+import org.jminor.common.db.condition.Conditions;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
@@ -17,6 +19,7 @@ import org.jminor.framework.domain.Property;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Types;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -46,6 +49,9 @@ public class DefaultEntityTableConditionModelTest {
     assertFalse(conditionModel.isEnabled());
     conditionModel.setEnabled(TestDomain.EMP_DEPARTMENT_FK, true);
     assertTrue(conditionModel.isEnabled());
+
+    conditionModel.clear();
+    conditionModel.refresh();
   }
 
   @Test
@@ -53,7 +59,8 @@ public class DefaultEntityTableConditionModelTest {
     final DefaultEntityTableConditionModel model = new DefaultEntityTableConditionModel(TestDomain.T_DETAIL,
             CONNECTION_PROVIDER, new DefaultPropertyFilterModelProvider(), new DefaultPropertyConditionModelProvider());
     //no search properties defined for master entity
-    assertThrows(IllegalStateException.class, () -> ((DefaultForeignKeyConditionModel) model.getPropertyConditionModel(TestDomain.DETAIL_MASTER_FK)).getEntityLookupModel().performQuery());
+    assertThrows(IllegalStateException.class, () ->
+            ((DefaultForeignKeyConditionModel) model.getPropertyConditionModel(TestDomain.DETAIL_MASTER_FK)).getEntityLookupModel().performQuery());
   }
 
   @Test
@@ -76,8 +83,55 @@ public class DefaultEntityTableConditionModelTest {
     conditionModel.setFilterValue(TestDomain.EMP_COMMISSION, 1400);
     final ColumnConditionModel<Property> propertyConditionModel = conditionModel.getPropertyFilterModel(TestDomain.EMP_COMMISSION);
     assertTrue(propertyConditionModel.isEnabled());
+    assertTrue(conditionModel.isFilterEnabled(TestDomain.EMP_COMMISSION));
     assertEquals(Condition.Type.LIKE, propertyConditionModel.getConditionType());
     assertEquals(1400, propertyConditionModel.getUpperBound());
+  }
+
+  @Test
+  public void setConditionValues() throws DatabaseException {
+    final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
+    assertFalse(conditionModel.isEnabled(TestDomain.EMP_DEPARTMENT_FK));
+    boolean searchStateChanged = conditionModel.setConditionValues(TestDomain.EMP_DEPARTMENT_FK, Arrays.asList(sales, accounting));
+    assertTrue(searchStateChanged);
+    assertTrue(conditionModel.isEnabled(TestDomain.EMP_DEPARTMENT_FK));
+    assertTrue(((ForeignKeyConditionModel) conditionModel.getPropertyConditionModel(TestDomain.EMP_DEPARTMENT_FK)).getConditionEntities().contains(sales));
+    assertTrue(((ForeignKeyConditionModel) conditionModel.getPropertyConditionModel(TestDomain.EMP_DEPARTMENT_FK)).getConditionEntities().contains(accounting));
+    searchStateChanged = conditionModel.setConditionValues(TestDomain.EMP_DEPARTMENT_FK, null);
+    assertTrue(searchStateChanged);
+    assertFalse(conditionModel.isEnabled(TestDomain.EMP_DEPARTMENT_FK));
+  }
+
+  @Test
+  public void clearPropertyConditionModels() throws DatabaseException {
+    final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
+    assertFalse(conditionModel.isEnabled(TestDomain.EMP_DEPARTMENT_FK));
+    conditionModel.setConditionValues(TestDomain.EMP_DEPARTMENT_FK, Arrays.asList(sales, accounting));
+    assertTrue(conditionModel.isEnabled(TestDomain.EMP_DEPARTMENT_FK));
+    conditionModel.clearPropertyConditionModels();
+    assertFalse(conditionModel.isEnabled(TestDomain.EMP_DEPARTMENT_FK));
+  }
+
+  @Test
+  public void getCondition() throws DatabaseException {
+    final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
+    assertFalse(conditionModel.isEnabled(TestDomain.EMP_DEPARTMENT_FK));
+    conditionModel.setConditionValues(TestDomain.EMP_DEPARTMENT_FK, Arrays.asList(sales, accounting));
+    final PropertyConditionModel nameConditionModel = conditionModel.getPropertyConditionModel(TestDomain.EMP_NAME);
+    nameConditionModel.setLikeValue("SCOTT");
+    assertEquals("(ename = ? and (deptno in (?, ?)))", conditionModel.getCondition().getWhereClause());
+
+    conditionModel.setAdditionalConditionProvider(new Condition.Provider<Property.ColumnProperty>() {
+      @Override
+      public Condition<Property.ColumnProperty> getCondition() {
+        return Conditions.stringCondition("1 = 1");
+      }
+    });
+    assertNotNull(conditionModel.getAdditionalConditionProvider());
+    assertEquals("(ename = ? and (deptno in (?, ?)) and 1 = 1)", conditionModel.getCondition().getWhereClause());
   }
 
   @Test

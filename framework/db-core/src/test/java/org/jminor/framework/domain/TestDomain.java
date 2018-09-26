@@ -79,6 +79,7 @@ public final class TestDomain extends Entities {
   public static final String DETAIL_MASTER_CODE = "master_code";
   public static final String DETAIL_INT_VALUE_LIST = "int_value_list";
   public static final String DETAIL_INT_DERIVED = "int_derived";
+  public static final String DETAIL_MASTER_CODE_DENORM = "master_code_denorm";
 
   public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
 
@@ -113,7 +114,10 @@ public final class TestDomain extends Entities {
               }
 
               return intValue * 10;
-            }, DETAIL_INT))
+            }, DETAIL_INT),
+            Properties.denormalizedProperty(DETAIL_MASTER_CODE_DENORM, DETAIL_MASTER_FK,
+                    getProperty(T_MASTER, MASTER_CODE)))
+            .setKeyGenerator(queriedKeyGenerator("select id from dual"))
             .setOrderBy(orderBy().ascending(DETAIL_STRING))
             .setSelectTableName(DETAIL_SELECT_TABLE_NAME)
             .setSmallDataset(true)

@@ -33,18 +33,23 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
   @Test
   public void test() {
     final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER);
-    model.addEntityModels(createDepartmentModel());
-    final EntityModel deptModel = model.getEntityModel(TestDomain.T_DEPARTMENT);
-    assertNotNull(deptModel);
-    deptModel.getDetailModel(TestDomain.T_EMP).getTableModel().setQueryConditionRequired(false);
+    final DefaultEntityModel deptModel = createDepartmentModel();
+    model.addEntityModels(deptModel);
+    assertNotNull(model.getEntityModel(TestDomain.T_DEPARTMENT));
     assertEquals(1, model.getEntityModels().size());
-    assertNotNull(deptModel);
-    assertEquals(UNIT_TEST_USER, model.getUser());
-    model.refresh();
-    assertTrue(deptModel.getTableModel().getRowCount() > 0);
+    model.clear();
     model.logout();
     assertFalse(model.getConnectionProvider().isConnected());
     model.login(UNIT_TEST_USER);
+    assertEquals(UNIT_TEST_USER, model.getUser());
+
+    assertThrows(IllegalArgumentException.class, () -> model.getEntityModel(TestDomain.T_EMP));
+    if (!deptModel.containsTableModel()) {
+      return;
+    }
+    deptModel.getDetailModel(TestDomain.T_EMP).getTableModel().setQueryConditionRequired(false);
+    model.refresh();
+    assertTrue(deptModel.getTableModel().getRowCount() > 0);
   }
 
   @Test
@@ -102,11 +107,15 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   @Test
   public void containsUnsavedData() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER);
     final Model deptModel = createDepartmentModel();
+    if (!deptModel.containsTableModel()) {
+      return;
+    }
+
     final Model empModel = deptModel.getDetailModel(TestDomain.T_EMP);
     deptModel.addLinkedDetailModel(empModel);
 
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(CONNECTION_PROVIDER);
     model.addEntityModel(deptModel);
 
     assertFalse(model.containsUnsavedData());
