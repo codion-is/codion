@@ -4854,4 +4854,4 @@
   IntelliJ Java code formatting
   EntityTableModel.getEntitiesByPropertyValue() removed, Entities.getEntitiesByValue() added as replacement
   FilteredTableModel.rowColumn() moved to RowColumn
-  Some unit test improvements
+  Some unit test improvements, continued
