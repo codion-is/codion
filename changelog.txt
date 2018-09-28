@@ -4856,3 +4856,6 @@
   FilteredTableModel.rowColumn() moved to RowColumn
   Some unit test improvements, continued
   TableSortModel.getSortingDirective() and getSortingPriority() replaced with getSortingState()
+  Util.map() return type changed from Map<T, Collection<V>> to Map<T, List<V>>
+  LocalEntityConnection.selectMany(List<Entity.Key> keys) now handles keys with different entityIds
+  SwingEntityTableModel bug fixed, adding entities on insert now filters out entities of different type

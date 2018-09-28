@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * A JavaFX implementation of {@link EntityTableModel}.
@@ -331,14 +332,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys) {
-    final List<Entity> entities = new ArrayList<>();
-    getAllItems().forEach(entity -> keys.forEach(key -> {
-      if (entity.getKey().equals(key)) {
-        entities.add(entity);
-      }
-    }));
-
-    return entities;
+    return getAllItems().stream().filter(entity -> keys.stream()
+            .anyMatch(key -> entity.getKey().equals(key))).collect(Collectors.toList());
   }
 
   /** {@inheritDoc} */
@@ -476,7 +471,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private void handleInsert(final EntityEditModel.InsertEvent insertEvent) {
     getSelectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
-      addEntities(insertEvent.getInsertedEntities(), insertAction.equals(InsertAction.ADD_TOP));
+      addEntities(insertEvent.getInsertedEntities().stream().filter(entity ->
+              entity.getEntityId().equals(getEntityId())).collect(Collectors.toList()), insertAction.equals(InsertAction.ADD_TOP));
     }
   }
 

@@ -1071,7 +1071,7 @@ public class Entities implements Serializable {
    * @param entities the entities to map by property value
    * @return a Map of entities mapped to property value
    */
-  public static <K> LinkedHashMap<K, Collection<Entity>> mapToValue(final String propertyId, final Collection<Entity> entities) {
+  public static <K> LinkedHashMap<K, List<Entity>> mapToValue(final String propertyId, final Collection<Entity> entities) {
     return Util.map(entities, value -> (K) value.get(propertyId));
   }
 
@@ -1081,7 +1081,7 @@ public class Entities implements Serializable {
    * @param entities the entities to map by entityId
    * @return a Map of entities mapped to entityId
    */
-  public static LinkedHashMap<String, Collection<Entity>> mapToEntityId(final Collection<Entity> entities) {
+  public static LinkedHashMap<String, List<Entity>> mapToEntityId(final Collection<Entity> entities) {
     return Util.map(entities, Entity::getEntityId);
   }
 
@@ -1091,7 +1091,7 @@ public class Entities implements Serializable {
    * @param keys the entity keys to map by entityId
    * @return a Map of entity keys mapped to entityId
    */
-  public static LinkedHashMap<String, Collection<Entity.Key>> mapKeysToEntityID(final Collection<Entity.Key> keys) {
+  public static LinkedHashMap<String, List<Entity.Key>> mapKeysToEntityID(final Collection<Entity.Key> keys) {
     return Util.map(keys, Entity.Key::getEntityId);
   }
 

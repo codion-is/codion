@@ -239,6 +239,17 @@ public class LocalEntityConnectionTest {
   }
 
   @Test
+  public void selectManyByKey() throws DatabaseException {
+    final Entity.Key deptKey = ENTITIES.key(TestDomain.T_DEPARTMENT);
+    deptKey.put(TestDomain.DEPARTMENT_ID, 10);
+    final Entity.Key empKey = ENTITIES.key(TestDomain.T_EMP);
+    empKey.put(TestDomain.EMP_ID, 8);
+
+    final List<Entity> selected = connection.selectMany(Arrays.asList(deptKey, empKey));
+    assertEquals(2, selected.size());
+  }
+
+  @Test
   public void selectManyInvalidColumn() throws Exception {
     assertThrows(DatabaseException.class, () -> connection.selectMany(ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
             Conditions.<Property.ColumnProperty>stringCondition("no_column is null"))));

@@ -98,7 +98,7 @@ public class Util {
    *     return person.getAge();
    *   }
    * };
-   * Map&#60;Integer, Collection&#60;Person&#62;&#62; personsByAge = Util.map(persons, ageKeyProvider);
+   * Map&#60;Integer, List&#60;Person&#62;&#62; personsByAge = Util.map(persons, ageKeyProvider);
    * }
    * @param values the values to map
    * @param keyProvider the object providing keys for values
@@ -106,10 +106,10 @@ public class Util {
    * @param <V> the value type
    * @return a LinkedHashMap with the values mapped to their respective key values, respecting the iteration order of the given collection
    */
-  public static <K, V> LinkedHashMap<K, Collection<V>> map(final Collection<V> values, final MapKeyProvider<K, V> keyProvider) {
+  public static <K, V> LinkedHashMap<K, List<V>> map(final Collection<V> values, final MapKeyProvider<K, V> keyProvider) {
     Objects.requireNonNull(values, "values");
     Objects.requireNonNull(keyProvider, "keyProvider");
-    final LinkedHashMap<K, Collection<V>> map = new LinkedHashMap<>(values.size());
+    final LinkedHashMap<K, List<V>> map = new LinkedHashMap<>(values.size());
     for (final V value : values) {
       map.computeIfAbsent(keyProvider.getKey(value), k -> new ArrayList<>()).add(value);
     }

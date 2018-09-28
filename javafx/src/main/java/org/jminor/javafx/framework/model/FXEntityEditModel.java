@@ -9,7 +9,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.DefaultEntityEditModel;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,8 +90,8 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   @Override
   public void addForeignKeyValues(final List<Entity> values) {
-    final Map<String, Collection<Entity>> mapped = Entities.mapToEntityId(values);
-    for (final Map.Entry<String, Collection<Entity>> entry : mapped.entrySet()) {
+    final Map<String, List<Entity>> mapped = Entities.mapToEntityId(values);
+    for (final Map.Entry<String, List<Entity>> entry : mapped.entrySet()) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : getDomain().getForeignKeyProperties(getEntityId(), entry.getKey())) {
         final FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
         if (listModel != null) {
@@ -108,8 +107,8 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   @Override
   public void removeForeignKeyValues(final List<Entity> values) {
-    final Map<String, Collection<Entity>> mapped = Entities.mapToEntityId(values);
-    for (final Map.Entry<String, Collection<Entity>> entry : mapped.entrySet()) {
+    final Map<String, List<Entity>> mapped = Entities.mapToEntityId(values);
+    for (final Map.Entry<String, List<Entity>> entry : mapped.entrySet()) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : getDomain().getForeignKeyProperties(getEntityId(), entry.getKey())) {
         final FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
         if (listModel != null) {

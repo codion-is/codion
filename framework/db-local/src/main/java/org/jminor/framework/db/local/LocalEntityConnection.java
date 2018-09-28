@@ -273,14 +273,14 @@ public final class LocalEntityConnection implements EntityConnection {
     String updateSQL = null;
     synchronized (connection) {
       try {
-        final Map<String, Collection<Entity>> mappedEntities = Entities.mapToEntityId(entities);
+        final Map<String, List<Entity>> mappedEntities = Entities.mapToEntityId(entities);
         if (optimisticLocking) {
           lockAndCheckForUpdate(mappedEntities);
         }
 
         final List<Property.ColumnProperty> statementProperties = new ArrayList<>();
         final List<Entity> updatedEntities = new ArrayList<>(entities.size());
-        for (final Map.Entry<String, Collection<Entity>> mappedEntitiesMapEntry : mappedEntities.entrySet()) {
+        for (final Map.Entry<String, List<Entity>> mappedEntitiesMapEntry : mappedEntities.entrySet()) {
           final String entityId = mappedEntitiesMapEntry.getKey();
           final Collection<Entity> toUpdate = mappedEntitiesMapEntry.getValue();
           final String tableName = domain.getTableName(entityId);
@@ -373,12 +373,12 @@ public final class LocalEntityConnection implements EntityConnection {
     String deleteSQL = null;
     synchronized (connection) {
       try {
-        final Map<String, Collection<Entity.Key>> mappedKeys = Entities.mapKeysToEntityID(entityKeys);
+        final Map<String, List<Entity.Key>> mappedKeys = Entities.mapKeysToEntityID(entityKeys);
         for (final String entityId : mappedKeys.keySet()) {
           checkReadOnly(entityId);
         }
         final List<Entity.Key> conditionKeys = new ArrayList<>();
-        for (final Map.Entry<String, Collection<Entity.Key>> mappedKeysEntry : mappedKeys.entrySet()) {
+        for (final Map.Entry<String, List<Entity.Key>> mappedKeysEntry : mappedKeys.entrySet()) {
           conditionKeys.addAll(mappedKeysEntry.getValue());
           final EntityCondition condition = entityConditions.condition(conditionKeys);
           deleteSQL = createDeleteSQL(condition);
@@ -433,7 +433,23 @@ public final class LocalEntityConnection implements EntityConnection {
       return new ArrayList<>(0);
     }
 
-    return selectMany(entityConditions.selectCondition(keys));
+    synchronized (connection) {
+      try {
+        final List<Entity> result = new ArrayList<>();
+        for (final Map.Entry<String, List<Entity.Key>> entry : Entities.mapKeysToEntityID(keys).entrySet()) {
+          result.addAll(doSelectMany(entityConditions.selectCondition(entry.getValue()), 0));
+        }
+        if (!isTransactionOpen()) {
+          commitQuietly();
+        }
+
+        return result;
+      }
+      catch (final SQLException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();
+        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+      }
+    }
   }
 
   /** {@inheritDoc} */
@@ -781,8 +797,8 @@ public final class LocalEntityConnection implements EntityConnection {
    * @throws RecordModifiedException in case an entity has been modified, if an entity has been deleted,
    * the {@code modifiedRow} provided by the exception is null
    */
-  private void lockAndCheckForUpdate(final Map<String, Collection<Entity>> entities) throws SQLException, RecordModifiedException {
-    for (final Map.Entry<String, Collection<Entity>> entry : entities.entrySet()) {
+  private void lockAndCheckForUpdate(final Map<String, List<Entity>> entities) throws SQLException, RecordModifiedException {
+    for (final Map.Entry<String, List<Entity>> entry : entities.entrySet()) {
       final List<Entity.Key> originalKeys = Entities.getKeys(entry.getValue(), true);
       final EntitySelectCondition selectForUpdateCondition = entityConditions.selectCondition(originalKeys);
       selectForUpdateCondition.setForUpdate(true);

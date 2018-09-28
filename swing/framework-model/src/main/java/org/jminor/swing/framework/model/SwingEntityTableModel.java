@@ -687,7 +687,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private void handleInsert(final EntityEditModel.InsertEvent insertEvent) {
     getSelectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
-      addEntities(insertEvent.getInsertedEntities(), insertAction.equals(InsertAction.ADD_TOP));
+      addEntities(insertEvent.getInsertedEntities().stream().filter(entity ->
+              entity.getEntityId().equals(getEntityId())).collect(Collectors.toList()), insertAction.equals(InsertAction.ADD_TOP));
     }
   }
 

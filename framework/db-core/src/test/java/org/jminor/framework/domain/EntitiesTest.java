@@ -650,7 +650,7 @@ public class EntitiesTest {
     entityFive.put(TestDomain.DEPARTMENT_ID, 3);
     entityList.add(entityFive);
 
-    final Map<Integer, Collection<Entity>> map = Entities.mapToValue(TestDomain.DEPARTMENT_ID, entityList);
+    final Map<Integer, List<Entity>> map = Entities.mapToValue(TestDomain.DEPARTMENT_ID, entityList);
     final Collection<Entity> ones = map.get(1);
     assertTrue(ones.contains(entityOne));
     assertTrue(ones.contains(entityTwo));
@@ -671,7 +671,7 @@ public class EntitiesTest {
     final Entity four = domain.entity(TestDomain.T_EMP);
 
     final Collection<Entity> entities = Arrays.asList(one, two, three, four);
-    final Map<String, Collection<Entity>> map = Entities.mapToEntityId(entities);
+    final Map<String, List<Entity>> map = Entities.mapToEntityId(entities);
 
     Collection<Entity> mapped = map.get(TestDomain.T_EMP);
     assertTrue(mapped.contains(one));

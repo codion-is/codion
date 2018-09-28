@@ -255,6 +255,30 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     editModel.delete();
   }
 
+  @Test
+  public void insertDifferentTypes() throws DatabaseException, ValidationException {
+    if (!departmentModel.containsTableModel()) {
+      return;
+    }
+    final Entity dept = ENTITIES.entity(TestDomain.T_DEPARTMENT);
+    dept.put(TestDomain.DEPARTMENT_ID, -42);
+    dept.put(TestDomain.DEPARTMENT_NAME, "Name");
+    dept.put(TestDomain.DEPARTMENT_LOCATION, "Loc");
+
+    final Entity emp = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 8);
+    emp.clearKeyValues();
+    emp.put(TestDomain.EMP_NAME, "NewName");
+
+    final EntityModel model = createDepartmentModelWithoutDetailModel();
+    model.getEditModel().insert(Arrays.asList(dept, emp));
+    assertTrue(model.getTableModel().contains(dept, true));
+    assertFalse(model.getTableModel().contains(emp, true));
+
+    model.getEditModel().delete(Arrays.asList(dept, emp));
+
+    assertFalse(model.getTableModel().contains(dept, true));
+  }
+
   /**
    * @return a EntityModel based on the department entity
    * @see TestDomain#T_DEPARTMENT
