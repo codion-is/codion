@@ -808,12 +808,8 @@ public final class LocalEntityConnection implements EntityConnection {
     try {
       selectSQL = getSelectSQL(condition, connection.getDatabase());
       final List<Entity> result = new ArrayList<>();
-      final ResultIterator<Entity> iterator = createIterator(condition);
-      try {
+      try (final ResultIterator<Entity> iterator = createIterator(condition)) {
         packResult(result, iterator);
-      }
-      finally {
-        iterator.close();
       }
       if (!condition.isForUpdate()) {
         setForeignKeys(result, condition, currentForeignKeyFetchDepth);
@@ -1137,7 +1133,7 @@ public final class LocalEntityConnection implements EntityConnection {
     }
 
     final StringBuilder builder = new StringBuilder();
-    final java.util.Set<Map.Entry<String, Entity.OrderBy.SortOrder>> entries = orderBy.getSortOrder().entrySet();
+    final Set<Map.Entry<String, Entity.OrderBy.SortOrder>> entries = orderBy.getSortOrder().entrySet();
     int counter = 0;
     for (final Map.Entry<String, Entity.OrderBy.SortOrder> entry : entries) {
       final Property.ColumnProperty property = domain.getColumnProperty(selectCondition.getEntityId(), entry.getKey());

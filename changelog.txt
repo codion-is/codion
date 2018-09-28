@@ -4855,3 +4855,4 @@
   EntityTableModel.getEntitiesByPropertyValue() removed, Entities.getEntitiesByValue() added as replacement
   FilteredTableModel.rowColumn() moved to RowColumn
   Some unit test improvements, continued
+  TableSortModel.getSortingDirective() and getSortingPriority() replaced with getSortingState()

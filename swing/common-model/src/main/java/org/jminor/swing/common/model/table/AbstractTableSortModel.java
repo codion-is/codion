@@ -79,14 +79,13 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
 
   /** {@inheritDoc} */
   @Override
-  public final int getSortingPriority(final C columnIdentifier) {
-    return getSortingState(columnIdentifier).getPriority();
-  }
+  public final SortingState getSortingState(final C columnIdentifier) {
+    final SortingState state = sortingStates.get(columnIdentifier);
+    if (state == null) {
+      throw new IllegalArgumentException("No sorting state assigned to column identified by : " + columnIdentifier);
+    }
 
-  /** {@inheritDoc} */
-  @Override
-  public final SortingDirective getSortingDirective(final C columnIdentifier) {
-    return getSortingState(columnIdentifier).getDirective();
+    return state;
   }
 
   /** {@inheritDoc} */
@@ -149,15 +148,6 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     }
 
     return LEXICAL_COMPARATOR;
-  }
-
-  private SortingState getSortingState(final C columnIdentifier) {
-    final SortingState state = sortingStates.get(columnIdentifier);
-    if (state == null) {
-      throw new IllegalArgumentException("No sorting state assigned to column identified by : " + columnIdentifier);
-    }
-
-    return state;
   }
 
   @SuppressWarnings({"unchecked"})
@@ -227,12 +217,12 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
 
   private static final class DefaultSortingState implements SortingState {
 
-    private final SortingDirective direction;
+    private final SortingDirective directive;
     private final int priority;
 
-    private DefaultSortingState(final SortingDirective direction, final int priority) {
-      Objects.requireNonNull(direction, "direction");
-      this.direction = direction;
+    private DefaultSortingState(final SortingDirective directive, final int priority) {
+      Objects.requireNonNull(directive, "direction");
+      this.directive = directive;
       this.priority = priority;
     }
 
@@ -243,7 +233,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
 
     @Override
     public SortingDirective getDirective() {
-      return direction;
+      return directive;
     }
   }
 }

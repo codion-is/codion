@@ -186,7 +186,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     tableModel.getSortModel().setSortingDirective(ENTITIES.getProperty(TestDomain.T_EMP, TestDomain.EMP_NAME),
             SortingDirective.ASCENDING, false);
     assertEquals(SortingDirective.ASCENDING, tableModel.getSortModel()
-            .getSortingDirective(ENTITIES.getProperty(TestDomain.T_EMP, TestDomain.EMP_NAME)));
+            .getSortingState(ENTITIES.getProperty(TestDomain.T_EMP, TestDomain.EMP_NAME)).getDirective());
 
     final Entity.Key pk1 = ENTITIES.key(TestDomain.T_EMP);
     pk1.put(TestDomain.EMP_ID, 10);//ADAMS

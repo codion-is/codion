@@ -33,17 +33,9 @@ public interface TableSortModel<R, C, T> {
 
   /**
    * @param columnIdentifier the column identifier
-   * @return the sorting directive assigned to the given column
-   * @throws IllegalArgumentException in case no sorting directive has been set for the given column
+   * @return the {@link SortingState} associated with the given column
    */
-  SortingDirective getSortingDirective(final C columnIdentifier);
-
-  /**
-   * @param columnIdentifier the column identifier
-   * @return the sorting priority for the given column
-   * @throws IllegalArgumentException in case no sorting directive has been set for the given column
-   */
-  int getSortingPriority(final C columnIdentifier);
+  SortingState getSortingState(final C columnIdentifier);
 
   /**
    * @return true if sorting is enabled for one or more columns
@@ -78,7 +70,7 @@ public interface TableSortModel<R, C, T> {
     SortingDirective getDirective();
 
     /**
-     * @return the sorting priority, 0 being the lowest
+     * @return the sorting priority, 0 for first, 1 for second etc.
      */
     int getPriority();
   }

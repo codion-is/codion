@@ -349,13 +349,13 @@ public final class AbstractFilteredTableModelTest {
 
     tableModel.refresh();
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
-    assertEquals(SortingDirective.DESCENDING, tableModel.getSortModel().getSortingDirective(0));
+    assertEquals(SortingDirective.DESCENDING, tableModel.getSortModel().getSortingState(0).getDirective());
     assertEquals("e", tableModel.getItemAt(0));
     assertEquals(1, actionsPerformed.get());
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
-    assertEquals(SortingDirective.ASCENDING, tableModel.getSortModel().getSortingDirective(0));
+    assertEquals(SortingDirective.ASCENDING, tableModel.getSortModel().getSortingState(0).getDirective());
     assertEquals("a", tableModel.getItemAt(0));
-    assertEquals(0, tableModel.getSortModel().getSortingPriority(0));
+    assertEquals(0, tableModel.getSortModel().getSortingState(0).getPriority());
     assertEquals(2, actionsPerformed.get());
 
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
@@ -385,12 +385,12 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void getSortingDirectiveInvalidColumn() {
-    assertThrows(IllegalArgumentException.class, () -> tableModel.getSortModel().getSortingDirective(1));
+    assertThrows(IllegalArgumentException.class, () -> tableModel.getSortModel().getSortingState(1).getDirective());
   }
 
   @Test
   public void getSortingPriorityInvalidColumn() {
-    assertThrows(IllegalArgumentException.class, () -> tableModel.getSortModel().getSortingPriority(1));
+    assertThrows(IllegalArgumentException.class, () -> tableModel.getSortModel().getSortingState(1).getPriority());
   }
 
   @Test
