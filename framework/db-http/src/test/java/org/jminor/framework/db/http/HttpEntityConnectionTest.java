@@ -31,6 +31,7 @@ import java.io.Serializable;
 import java.rmi.registry.Registry;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -106,6 +107,17 @@ public final class HttpEntityConnectionTest {
   }
 
   @Test
+  public void selectByKeyDifferentEntityIds() throws IOException, DatabaseException {
+    final Entity.Key deptKey = connection.getDomain().key(TestDomain.T_DEPARTMENT);
+    deptKey.put(TestDomain.DEPARTMENT_ID, 10);
+    final Entity.Key empKey = connection.getDomain().key(TestDomain.T_EMP);
+    empKey.put(TestDomain.EMP_ID, 8);
+
+    final List<Entity> selected = connection.selectMany(Arrays.asList(deptKey, empKey));
+    assertEquals(2, selected.size());
+  }
+
+  @Test
   public void selectManyByValue() throws IOException, DatabaseException {
     final List<Entity> department = connection.selectMany(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
     assertEquals(1, department.size());
@@ -123,9 +135,33 @@ public final class HttpEntityConnectionTest {
   @Test
   public void deleteByKey() throws IOException, DatabaseException {
     final Entity employee = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "ADAMS");
-    connection.delete(Collections.singletonList(employee.getKey()));
-    final List<Entity> selected = connection.selectMany(Collections.singletonList(employee.getKey()));
-    assertTrue(selected.isEmpty());
+    try {
+      connection.beginTransaction();
+      connection.delete(Collections.singletonList(employee.getKey()));
+      final List<Entity> selected = connection.selectMany(Collections.singletonList(employee.getKey()));
+      assertTrue(selected.isEmpty());
+    }
+    finally {
+      connection.rollbackTransaction();
+    }
+  }
+
+  @Test
+  public void deleteByKeyDifferentEntityIds() throws IOException, DatabaseException {
+    final Entity.Key deptKey = connection.getDomain().key(TestDomain.T_DEPARTMENT);
+    deptKey.put(TestDomain.DEPARTMENT_ID, 40);
+    final Entity.Key empKey = connection.getDomain().key(TestDomain.T_EMP);
+    empKey.put(TestDomain.EMP_ID, 1);
+    try {
+      connection.beginTransaction();
+      assertEquals(2, connection.selectMany(Arrays.asList(deptKey, empKey)).size());
+      connection.delete(Arrays.asList(deptKey, empKey));
+      final List<Entity> selected = connection.selectMany(Arrays.asList(deptKey, empKey));
+      assertTrue(selected.isEmpty());
+    }
+    finally {
+      connection.rollbackTransaction();
+    }
   }
 
   @Test

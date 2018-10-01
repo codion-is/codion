@@ -12,6 +12,7 @@ import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
+import org.jminor.framework.domain.Entity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -235,9 +236,8 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Util.serialize(
-              connection.executeFunction(functionId,
-                      EntityService.<List>deserialize(request).toArray()))).build();
+      return Response.ok(Util.serialize(connection.executeFunction(functionId,
+              EntityService.<List>deserialize(request).toArray()))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -281,8 +281,7 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Util.serialize(
-              connection.selectDependentEntities(deserialize(request)))).build();
+      return Response.ok(Util.serialize(connection.selectDependentEntities(deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -328,8 +327,30 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Util.serialize(
-              connection.selectValues(propertyId, deserialize(request)))).build();
+      return Response.ok(Util.serialize(connection.selectValues(propertyId, deserialize(request)))).build();
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      return getExceptionResponse(e);
+    }
+  }
+
+  /**
+   * Returns the entities for the given keys
+   * @param request the servlet request
+   * @param headers the headers
+   * @return a response
+   */
+  @POST
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("selectByKey")
+  public Response selectByKey(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+    try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
+      final List<Entity.Key> keys = deserialize(request);
+
+      return Response.ok(Util.serialize(connection.selectMany(keys))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -418,6 +439,29 @@ public final class EntityService extends Application {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final EntityCondition entityCondition = deserialize(request);
       connection.delete(entityCondition);
+
+      return Response.ok().build();
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      return getExceptionResponse(e);
+    }
+  }
+
+  /**
+   * Deletes the entities for the given keys
+   * @param request the servlet request
+   * @param headers the headers
+   * @return a response
+   */
+  @POST
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("deleteByKey")
+  public Response deleteByKey(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+    try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
+      final List<Entity.Key> keys = deserialize(request);
+      connection.delete(keys);
 
       return Response.ok().build();
     }

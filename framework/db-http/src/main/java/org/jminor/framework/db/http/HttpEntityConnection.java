@@ -290,7 +290,17 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public void delete(final List<Entity.Key> keys) throws DatabaseException {
-    delete(conditions.condition(Objects.requireNonNull(keys)));
+    Objects.requireNonNull(keys);
+    try {
+      handleResponse(execute(createHttpPost("deleteByKey", keys)));
+    }
+    catch (final DatabaseException e) {
+      throw e;
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
   }
 
   /** {@inheritDoc} */
@@ -356,7 +366,17 @@ final class HttpEntityConnection implements EntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
-    return selectMany(conditions.selectCondition(keys));
+    Objects.requireNonNull(keys, "keys");
+    try {
+      return handleResponse(execute(createHttpPost("selectByKey", keys)));
+    }
+    catch (final DatabaseException e) {
+      throw e;
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
   }
 
   /** {@inheritDoc} */
