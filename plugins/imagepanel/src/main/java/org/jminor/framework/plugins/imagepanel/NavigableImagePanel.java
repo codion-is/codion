@@ -7,7 +7,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -22,7 +21,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
@@ -30,11 +28,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -147,8 +143,6 @@ public class NavigableImagePanel extends JPanel {
   private static final double HIGH_QUALITY_RENDERING_SCALE_THRESHOLD = ONE_POINT_O;
   private static final double DEFAULT_ZOOM_INCREMENT = 0.2;
   private static final Object INTERPOLATION_TYPE = RenderingHints.VALUE_INTERPOLATION_BILINEAR;
-
-  private final List<Coordinates> imageMarkPoints = new ArrayList<>();
 
   private double zoomIncrement = DEFAULT_ZOOM_INCREMENT;
   private double zoomFactor = ONE_POINT_O + zoomIncrement;
@@ -425,12 +419,6 @@ public class NavigableImagePanel extends JPanel {
     return image.getHeight();
   }
 
-  public final void setImageMarkCoordinates(final Collection<Coordinates> markCoordinates) {
-    imageMarkPoints.clear();
-    imageMarkPoints.addAll(markCoordinates);
-    repaint();
-  }
-
   private void addWheelZoomDevice() {
     if (wheelZoomDevice == null) {
       wheelZoomDevice = new WheelZoomDevice();
@@ -549,6 +537,10 @@ public class NavigableImagePanel extends JPanel {
     return image;
   }
 
+  public final double getScale() {
+    return scale;
+  }
+
   public final void resetView() {
     scale = 0.0;
     repaint();
@@ -569,7 +561,7 @@ public class NavigableImagePanel extends JPanel {
   }
 
   //Converts the original image coordinates into this panel's coordinates
-  private Coordinates imageToPanelCoords(final Coordinates p) {
+  public final Coordinates imageToPanelCoords(final Coordinates p) {
     return new Coordinates((p.x * scale) + originX, (p.y * scale) + originY);
   }
 
@@ -844,7 +836,7 @@ public class NavigableImagePanel extends JPanel {
    * @param g the {@code Graphics} context for painting
    */
   @Override
-  protected final void paintComponent(final Graphics g) {
+  protected void paintComponent(final Graphics g) {
     super.paintComponent(g); // Paints the background
 
     if (image == null) {
@@ -878,25 +870,6 @@ public class NavigableImagePanel extends JPanel {
       g.drawImage(navigationImage, 0, 0, getScreenNavImageWidth(), getScreenNavImageHeight(), null);
       drawZoomAreaOutline(g);
     }
-
-    //draw marks
-    if (!imageMarkPoints.isEmpty()) {
-      imageMarkPoints.forEach(imageMarkPoint -> drawMark((Graphics2D) g, imageToPanelCoords(imageMarkPoint), scale));
-    }
-  }
-
-  /**
-   * Draws a red circle with radius 100 * scale and width 2, centered around {@code panelCoordinates}
-   * @param graphics the graphics object
-   * @param panelCoordinates the panel coordinates
-   * @param scale the current image scaling
-   */
-  protected void drawMark(final Graphics2D graphics, final Coordinates panelCoordinates, final double scale) {
-    final int radius = (int) (100 * scale);
-    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    graphics.setStroke(new BasicStroke(2));
-    graphics.setPaint(Color.RED);
-    graphics.draw(new Ellipse2D.Double(panelCoordinates.getX() - radius, panelCoordinates.getY() - radius, 2.0 * radius, 2.0 * radius));
   }
 
   //Paints a white outline over the navigation image indicating

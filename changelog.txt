@@ -4861,3 +4861,5 @@
   SwingEntityTableModel bug fixed, adding entities on insert now filters out entities of different type
   HttpEntityConnection.selectMany(List<Entity.Key> keys) now handles keys with different entityIds
   HttpEntityConnection.delete(List<Entity.Key> keys) now handles keys with different entityIds
+  NavigableImagePanel, imageMarkPoints removed, paintComponent() no longer final
+  EntityEditPanel.InsertEntityAction, buttons enabled state linked to the associated components enabled state
