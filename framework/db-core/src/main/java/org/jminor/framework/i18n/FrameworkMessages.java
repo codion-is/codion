@@ -71,8 +71,6 @@ public final class FrameworkMessages {
   public static final String COPY_CELL = "copy_cell";
   public static final String COPY_TABLE_WITH_HEADER = "copy_table_with_header";
 
-  public static final String FILTER_BY = "filter_by";
-
   public static final String SETTINGS = "settings";
 
   private FrameworkMessages() {}

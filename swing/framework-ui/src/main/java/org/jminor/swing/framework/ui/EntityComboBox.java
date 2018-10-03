@@ -16,12 +16,16 @@ import javax.swing.ComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import java.util.Collection;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * A UI component based on the EntityComboBoxModel.
  * @see EntityComboBoxModel
  */
 public final class EntityComboBox extends SteppedComboBox<Entity> {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityComboBox.class.getName(), Locale.getDefault());
 
   /**
    * Instantiates a new EntityComboBox
@@ -41,7 +45,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
     return Controls.control(() -> {
       final Collection<Entity> current = ((EntityComboBoxModel) getModel()).getForeignKeyFilterEntities(foreignKeyPropertyId);
       final int result = JOptionPane.showOptionDialog(EntityComboBox.this, createForeignKeyFilterComboBox(foreignKeyPropertyId),
-              FrameworkMessages.get(FrameworkMessages.FILTER_BY), JOptionPane.OK_CANCEL_OPTION,
+              MESSAGES.getString("filter_by"), JOptionPane.OK_CANCEL_OPTION,
               JOptionPane.QUESTION_MESSAGE, null, null, null);
       if (result != JOptionPane.OK_OPTION) {
         ((EntityComboBoxModel) getModel()).setForeignKeyFilterEntities(foreignKeyPropertyId, current);
