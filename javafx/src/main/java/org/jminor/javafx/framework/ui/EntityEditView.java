@@ -272,7 +272,7 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private Button createSaveButton() {
-    final Button button = new Button(FrameworkMessages.get(FrameworkMessages.INSERT));
+    final Button button = new Button(FrameworkMessages.get(FrameworkMessages.SAVE));
     button.setOnAction(event -> save());
 
     return button;

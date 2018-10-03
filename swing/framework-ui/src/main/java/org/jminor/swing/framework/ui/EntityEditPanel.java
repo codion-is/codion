@@ -507,13 +507,13 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * is selected and modified or insert otherwise
    */
   public final Control getSaveControl() {
-    final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
+    final String mnemonic = FrameworkMessages.get(FrameworkMessages.SAVE_MNEMONIC);
     final State insertUpdateState = States.aggregateState(Conjunction.OR, editModel.getAllowInsertObserver(),
             States.aggregateState(Conjunction.AND, editModel.getAllowUpdateObserver(),
                     editModel.getModifiedObserver()));
-    return Controls.control(this::save, FrameworkMessages.get(FrameworkMessages.INSERT),
+    return Controls.control(this::save, FrameworkMessages.get(FrameworkMessages.SAVE),
             States.aggregateState(Conjunction.AND, getActiveObserver(), insertUpdateState),
-            FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP) + ALT_PREFIX + mnemonic + ")",
+            FrameworkMessages.get(FrameworkMessages.SAVE_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage(Images.IMG_ADD_16));
   }
 
