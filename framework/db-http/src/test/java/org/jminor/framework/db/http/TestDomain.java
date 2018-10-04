@@ -58,6 +58,7 @@ public final class TestDomain extends Entities {
   public static final String EMP_DEPARTMENT_FK = "dept_fk";
   public static final String EMP_MGR_FK = "mgr_fk";
   public static final String EMP_DEPARTMENT_LOCATION = "location";
+  public static final String EMP_DATA = "data";
   public static final String T_EMP = "scott.emp";
 
   void employee() {
@@ -80,7 +81,8 @@ public final class TestDomain extends Entities {
                     .setNullable(false),
             Properties.denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
                     getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
-                    DEPARTMENT_LOCATION).setPreferredColumnWidth(100))
+                    DEPARTMENT_LOCATION).setPreferredColumnWidth(100),
+            Properties.columnProperty(EMP_DATA, Types.BLOB, "Data"))
             .setStringProvider(new StringProvider(EMP_NAME))
             .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)

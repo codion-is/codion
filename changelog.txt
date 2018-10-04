@@ -4866,3 +4866,6 @@
   FrameworkMessages, insert and save captions split up
   NavigableImagePanel, some javadoc improvements
   Conjunction.toString() removed
+  HttpEntityConnection.readBlob() and writeBlob() implemented and tested
+  LocalEntityConnectionTest, blob tests improved
+  Cleanup of create_h2_db.sql scripts for unit test

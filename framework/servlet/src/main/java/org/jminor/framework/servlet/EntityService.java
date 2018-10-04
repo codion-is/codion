@@ -471,6 +471,53 @@ public final class EntityService extends Application {
     }
   }
 
+  /**
+   * Writes a BLOB value
+   * @param request the servlet request
+   * @param headers the headers
+   * @return a response
+   */
+  @POST
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("writeBlob")
+  public Response writeBlob(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+    try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
+      final List parameters = deserialize(request);
+      connection.writeBlob((Entity.Key) parameters.get(0), (String) parameters.get(1), (byte[]) parameters.get(2));
+
+      return Response.ok().build();
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      return getExceptionResponse(e);
+    }
+  }
+
+  /**
+   * Reads a BLOB value
+   * @param request the servlet request
+   * @param headers the headers
+   * @return a response
+   */
+  @POST
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Path("readBlob")
+  public Response readBlob(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+    try {
+      final RemoteEntityConnection connection = authenticate(request, headers);
+      final List parameters = deserialize(request);
+
+      return Response.ok(Util.serialize(connection.readBlob((Entity.Key) parameters.get(0), (String) parameters.get(1)))).build();
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      return getExceptionResponse(e);
+    }
+  }
+
   private static RemoteEntityConnection authenticate(final HttpServletRequest request, final HttpHeaders headers)
           throws RemoteException, ServerException {
     if (server == null) {

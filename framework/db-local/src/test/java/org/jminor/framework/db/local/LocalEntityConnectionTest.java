@@ -33,8 +33,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,10 +54,6 @@ public class LocalEntityConnectionTest {
   private static final String JOINED_QUERY_ENTITY_ID = "joinedQueryEntityID";
   private static final String GROUP_BY_QUERY_ENTITY_ID = "groupByQueryEntityID";
 
-  private static final String ENTITY_ID = "blob_test";
-  private static final String ID = "id";
-  private static final String DATA = "data";
-
   private LocalEntityConnection connection;
 
   private static final TestDomain ENTITIES = new TestDomain();
@@ -78,10 +72,6 @@ public class LocalEntityConnectionTest {
                     .setGroupingColumn(true))
             .setTableName("scott.emp")
             .setHavingClause("job <> 'PRESIDENT'");
-
-    ENTITIES.define(ENTITY_ID,
-            Properties.primaryKeyProperty(ID),
-            Properties.columnProperty(DATA, Types.BLOB));
   }
 
   @BeforeEach
@@ -602,89 +592,44 @@ public class LocalEntityConnectionTest {
   }
 
   @Test
-  public void readWriteBlob() throws SQLException, DatabaseException {
-    DatabaseConnection databaseConnection = null;
-    Statement statement = null;
-    try {
-      databaseConnection = connection.getDatabaseConnection();
-      statement = databaseConnection.getConnection().createStatement();
-      statement.execute("create table blob_test(id integer, data blob)");
+  public void readWriteBlob() throws DatabaseException {
+    final byte[] bytes = new byte[1024];
+    new Random().nextBytes(bytes);
 
-      final Entity blobRecord = ENTITIES.entity(ENTITY_ID);
-      blobRecord.put(ID, 1);
+    final Entity scott = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 7);
+    connection.writeBlob(scott.getKey(), TestDomain.EMP_DATA, bytes);
+    assertTrue(Arrays.equals(bytes, connection.readBlob(scott.getKey(), TestDomain.EMP_DATA)));
 
-      final Entity.Key blobRecordKey = connection.insert(Collections.singletonList(blobRecord)).get(0);
-
-      final byte one = 1;
-      final byte[] bytes = new byte[1024];
-      Arrays.fill(bytes, one);
-
-      connection.writeBlob(blobRecordKey, DATA, bytes);
-
-      final byte[] fromDb = connection.readBlob(blobRecordKey, DATA);
-      assertEquals(bytes.length, fromDb.length);
-
-      final Entity blobRecordFromDb = connection.selectSingle(blobRecordKey);
-      assertNotNull(blobRecordFromDb);
-      assertNull(blobRecordFromDb.get(DATA));
-    }
-    finally {
-      if (statement != null) {
-        statement.close();
-      }
-      if (databaseConnection != null) {
-        statement = databaseConnection.getConnection().createStatement();
-        statement.execute("drop table blob_test");
-        statement.close();
-      }
-    }
+    final Entity blobRecordFromDb = connection.selectSingle(scott.getKey());
+    assertNotNull(blobRecordFromDb);
+    assertNull(blobRecordFromDb.get(TestDomain.EMP_DATA));
   }
 
   @Test
-  public void readWriteBlobViaEntity() throws SQLException, DatabaseException {
-    DatabaseConnection databaseConnection = null;
-    Statement statement = null;
-    try {
-      databaseConnection = connection.getDatabaseConnection();
-      statement = databaseConnection.getConnection().createStatement();
-      statement.execute("create table blob_test(id integer, data blob)");
+  public void readWriteBlobViaEntity() throws DatabaseException {
+    final byte[] bytes = new byte[1024];
+    new Random().nextBytes(bytes);
 
-      final byte[] bytes = new byte[1024];
-      new Random().nextBytes(bytes);
+    final Entity scott = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 7);
+    scott.put(TestDomain.EMP_DATA, bytes);
+    connection.update(Collections.singletonList(scott));
 
-      final Entity blobRecord = ENTITIES.entity(ENTITY_ID);
-      blobRecord.put(ID, 1);
-      blobRecord.put("data", bytes);
+    byte[] fromDb = connection.readBlob(scott.getKey(), TestDomain.EMP_DATA);
+    assertTrue(Arrays.equals(bytes, fromDb));
 
-      final Entity.Key blobRecordKey = connection.insert(Collections.singletonList(blobRecord)).get(0);
+    final Entity blobRecordFromDb = connection.selectSingle(scott.getKey());
+    assertNotNull(blobRecordFromDb);
+    assertNull(blobRecordFromDb.get(TestDomain.EMP_DATA));
 
-      byte[] fromDb = connection.readBlob(blobRecordKey, DATA);
-      assertTrue(Arrays.equals(bytes, fromDb));
+    final byte[] newBytes = new byte[2048];
+    new Random().nextBytes(newBytes);
 
-      final Entity blobRecordFromDb = connection.selectSingle(blobRecordKey);
-      assertNotNull(blobRecordFromDb);
-      assertNull(blobRecordFromDb.get(DATA));
+    scott.put(TestDomain.EMP_DATA, newBytes);
 
-      final byte[] newBytes = new byte[2048];
-      new Random().nextBytes(newBytes);
+    connection.update(Collections.singletonList(scott)).get(0);
 
-      blobRecord.put("data", newBytes);
-
-      connection.update(Collections.singletonList(blobRecord)).get(0);
-
-      fromDb = connection.readBlob(blobRecordKey, DATA);
-      assertTrue(Arrays.equals(newBytes, fromDb));
-    }
-    finally {
-      if (statement != null) {
-        statement.close();
-      }
-      if (databaseConnection != null) {
-        statement = databaseConnection.getConnection().createStatement();
-        statement.execute("drop table blob_test");
-        statement.close();
-      }
-    }
+    fromDb = connection.readBlob(scott.getKey(), TestDomain.EMP_DATA);
+    assertTrue(Arrays.equals(newBytes, fromDb));
   }
 
   private static LocalEntityConnection initializeConnection() throws DatabaseException {

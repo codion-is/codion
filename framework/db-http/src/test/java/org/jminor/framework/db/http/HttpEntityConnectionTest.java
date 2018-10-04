@@ -36,6 +36,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -196,6 +197,16 @@ public final class HttpEntityConnectionTest {
     assertTrue(connection.isTransactionOpen());
     connection.commitTransaction();
     assertFalse(connection.isTransactionOpen());
+  }
+
+  @Test
+  public void writeReadBlob() throws DatabaseException {
+    final byte[] bytes = new byte[1024];
+    new Random().nextBytes(bytes);
+
+    final Entity scott = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 7);
+    connection.writeBlob(scott.getKey(), TestDomain.EMP_DATA, bytes);
+    assertTrue(Arrays.equals(bytes, connection.readBlob(scott.getKey(), TestDomain.EMP_DATA)));
   }
 
   @Test

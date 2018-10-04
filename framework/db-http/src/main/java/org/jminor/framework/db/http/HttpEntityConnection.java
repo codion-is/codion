@@ -454,13 +454,36 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public void writeBlob(final Entity.Key primaryKey, final String blobPropertyId, final byte[] blobData)
           throws DatabaseException {
-    throw new UnsupportedOperationException();
+    Objects.requireNonNull(primaryKey, "primaryKey");
+    Objects.requireNonNull(blobPropertyId, "blobPropertyId");
+    Objects.requireNonNull(blobData, "blobData");
+    try {
+      handleResponse(execute(createHttpPost("writeBlob", Arrays.asList(primaryKey, blobPropertyId, blobData))));
+    }
+    catch (final DatabaseException e) {
+      throw e;
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyId) throws DatabaseException {
-    throw new UnsupportedOperationException();
+    Objects.requireNonNull(primaryKey, "primaryKey");
+    Objects.requireNonNull(blobPropertyId, "blobPropertyId");
+    try {
+      return handleResponse(execute(createHttpPost("readBlob", Arrays.asList(primaryKey, blobPropertyId))));
+    }
+    catch (final DatabaseException e) {
+      throw e;
+    }
+    catch (final Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
   }
 
   /** {@inheritDoc} */
