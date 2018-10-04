@@ -4864,3 +4864,5 @@
   NavigableImagePanel, imageMarkPoints removed, paintComponent() no longer final
   EntityEditPanel.InsertEntityAction, buttons enabled state linked to the associated components enabled state
   FrameworkMessages, insert and save captions split up
+  NavigableImagePanel, some javadoc improvements
+  Conjunction.toString() removed

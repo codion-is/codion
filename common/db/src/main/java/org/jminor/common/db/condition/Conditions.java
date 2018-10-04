@@ -177,7 +177,7 @@ public final class Conditions {
       for (final Condition condition : conditions) {
         conditionString.append(condition.getWhereClause());
         if (i++ < conditions.size() - 1) {
-          conditionString.append(conjunction.toString());
+          conditionString.append(toString(conjunction));
         }
       }
 
@@ -218,6 +218,14 @@ public final class Conditions {
       conditions = new ArrayList<>(conditionCount);
       for (int i = 0; i < conditionCount; i++) {
         conditions.add((Condition) stream.readObject());
+      }
+    }
+
+    private static String toString(final Conjunction conjunction) {
+      switch (conjunction) {
+        case AND: return " and ";
+        case OR: return " or ";
+        default: throw new IllegalArgumentException("Unknown conjunction: " + conjunction);
       }
     }
   }

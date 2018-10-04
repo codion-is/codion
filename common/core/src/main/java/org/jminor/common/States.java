@@ -59,7 +59,7 @@ public final class States {
 
     private final Object lock = new Object();
     private StateObserver observer;
-    private boolean active = false;
+    private boolean active;
 
     DefaultState() {
       this(false);
@@ -157,7 +157,7 @@ public final class States {
     public String toString() {
       synchronized (lock) {
         final StringBuilder stringBuilder = new StringBuilder("Aggregate");
-        stringBuilder.append(conjunction.toString()).append(super.toString());
+        stringBuilder.append(toString(conjunction)).append(super.toString());
         for (final AggregateStateListener listener : stateListeners) {
           stringBuilder.append(", ").append(listener.getState());
         }
@@ -251,6 +251,14 @@ public final class States {
 
       private StateObserver getState() {
         return state;
+      }
+    }
+
+    private static String toString(final Conjunction conjunction) {
+      switch (conjunction) {
+        case AND: return " and ";
+        case OR: return " or ";
+        default: throw new IllegalArgumentException("Unknown conjunction: " + conjunction);
       }
     }
   }
