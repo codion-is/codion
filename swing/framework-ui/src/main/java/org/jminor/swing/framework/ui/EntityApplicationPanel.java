@@ -435,7 +435,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       System.exit(0);
     }
     catch (final Exception e) {
-      handleException(e, UiUtil.getParentWindow(this));
+      handleException(e);
       System.exit(1);
     }
     return null;
@@ -1215,11 +1215,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Sets the uncaught exception handler, override to add specific uncaught exception handling
+   * Sets the uncaught exception handler
    */
   private void setUncaughtExceptionHandler() {
-    Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-            DefaultDialogExceptionHandler.getInstance().handleException(e, UiUtil.getParentWindow(EntityApplicationPanel.this)));
+    Thread.setDefaultUncaughtExceptionHandler((t, e) -> handleException(e));
   }
 
   private void bindEventsInternal() {
