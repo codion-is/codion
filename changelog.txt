@@ -4868,4 +4868,4 @@
   Conjunction.toString() removed
   HttpEntityConnection.readBlob() and writeBlob() implemented and tested
   LocalEntityConnectionTest, blob tests improved
-  Cleanup of create_h2_db.sql scripts for unit test
+  Cleanup of create_h2_db.sql scripts for unit tests
