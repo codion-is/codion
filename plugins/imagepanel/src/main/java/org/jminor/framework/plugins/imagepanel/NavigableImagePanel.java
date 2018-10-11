@@ -571,7 +571,7 @@ public class NavigableImagePanel extends JPanel {
 
   /**
    * Converts this panel's coordinates into the original image coordinates
-   * @param p the panel point
+   * @param p the panel coordinates
    * @return the image coordinates
    */
   public final Coordinates panelToImageCoords(final Point p) {
