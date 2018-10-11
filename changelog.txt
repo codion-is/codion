@@ -4869,4 +4869,7 @@
   HttpEntityConnection.readBlob() and writeBlob() implemented and tested
   LocalEntityConnectionTest, blob tests improved
   Cleanup of create_h2_db.sql scripts for unit tests
-0.11.4
+0.11.4 [server/client incompatible]
+  Property.hasDefaultValue() added
+  Entities.entity(entityId, valueProvider) renamed to defaultEntity(), now excludes properties which columns have default values
+  NavigableImagePanel.showImage() removed, readImage() added, no dependencies on jminor remaining, module-info fixed

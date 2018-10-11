@@ -144,16 +144,21 @@ public class Entities implements Serializable {
   /**
    * Instantiates a new {@link Entity} of the given type using the values provided by {@code valueProvider}.
    * Values are fetched for {@link Property.ColumnProperty} and its descendants, {@link Property.ForeignKeyProperty}
-   * and {@link Property.TransientProperty} (excluding its descendants)
+   * and {@link Property.TransientProperty} (excluding its descendants).
+   * If a {@link org.jminor.framework.domain.Property.ColumnProperty}s column has a default value the property is
+   * skipped unless it has a default value, which then overrides the columns default value.
    * @param entityId the entity ID
    * @param valueProvider the value provider
    * @return the populated entity
+   * @see org.jminor.framework.domain.Property.ColumnProperty#setColumnHasDefaultValue(boolean)
+   * @see org.jminor.framework.domain.Property.ColumnProperty#setDefaultValue(Object)
    */
-  public final Entity entity(final String entityId, final ValueProvider<Property, Object> valueProvider) {
+  public final Entity defaultEntity(final String entityId, final ValueProvider<Property, Object> valueProvider) {
     final Entity entity = entity(entityId);
     final Collection<Property.ColumnProperty> columnProperties = getColumnProperties(entityId);
     for (final Property.ColumnProperty property : columnProperties) {
-      if (!property.isForeignKeyProperty() && !property.isDenormalized()) {//these are set via their respective parent properties
+      if (!property.isForeignKeyProperty() && !property.isDenormalized()//these are set via their respective parent properties
+              && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
         entity.put(property, valueProvider.get(property));
       }
     }

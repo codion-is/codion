@@ -90,15 +90,18 @@ public final class TestDomain extends Entities {
     define(T_DETAIL,
             Properties.primaryKeyProperty(DETAIL_ID, Types.BIGINT),
             Properties.columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT),
-            Properties.columnProperty(DETAIL_DOUBLE, Types.DOUBLE, DETAIL_DOUBLE),
+            Properties.columnProperty(DETAIL_DOUBLE, Types.DOUBLE, DETAIL_DOUBLE)
+                    .setColumnHasDefaultValue(true),
             Properties.columnProperty(DETAIL_STRING, Types.VARCHAR, "Detail string"),
-            Properties.columnProperty(DETAIL_DATE, Types.DATE, DETAIL_DATE),
+            Properties.columnProperty(DETAIL_DATE, Types.DATE, DETAIL_DATE)
+                    .setColumnHasDefaultValue(true),
             Properties.columnProperty(DETAIL_TIMESTAMP, Types.TIMESTAMP, DETAIL_TIMESTAMP),
             Properties.columnProperty(DETAIL_BOOLEAN, Types.BOOLEAN, DETAIL_BOOLEAN)
                     .setNullable(false)
                     .setDefaultValue(true)
                     .setDescription("A boolean property"),
             Properties.columnProperty(DETAIL_BOOLEAN_NULLABLE, Types.BOOLEAN, DETAIL_BOOLEAN_NULLABLE)
+                    .setColumnHasDefaultValue(true)
                     .setDefaultValue(true),
             Properties.foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK, T_MASTER,
                     Properties.columnProperty(DETAIL_MASTER_ID, Types.BIGINT)),

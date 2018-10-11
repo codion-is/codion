@@ -1,10 +1,6 @@
 package org.jminor.framework.plugins.imagepanel;
 
-import org.jminor.common.i18n.Messages;
-import org.jminor.swing.common.ui.UiUtil;
-
 import javax.imageio.ImageIO;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.awt.Color;
@@ -29,10 +25,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 /**
@@ -134,9 +128,6 @@ public class NavigableImagePanel extends JPanel {
    */
   public static final String IMAGE_CHANGED_PROPERTY = "image";
 
-  private static final Collection<String> IMAGE_FILE_TYPES = Arrays.asList("gif", "tif", "jpg", "jpeg", "png", "bmp");
-
-  private static final double DEFAULT_IMAGE_PANEL_SCREEN_SIZE_RATIO = 0.5;
   private static final double SCREEN_NAV_IMAGE_FACTOR = 0.15; // 15% of panel's width
   private static final double NAV_IMAGE_FACTOR = 0.3; // 30% of panel's width
   private static final double ONE_POINT_O = 1.0;
@@ -352,59 +343,23 @@ public class NavigableImagePanel extends JPanel {
   }
 
   /**
-   * @param imagePath the path to the image to show
-   * @param dialogParent the component to use as dialog parent
-   * @throws IOException in case of an IO exception
+   * Reads an image from the given path
+   * @param imagePath the path, either file or http
+   * @return the loaded image
+   * @throws IOException in case of an exception
    */
-  public static void showImage(final String imagePath, final JComponent dialogParent) throws IOException {
-    showImage(imagePath, dialogParent, IMAGE_FILE_TYPES);
-  }
+  public static BufferedImage readImage(final String imagePath) throws IOException {
+    if (imagePath.toLowerCase().startsWith("http")) {
+      return ImageIO.read(new URL(imagePath));
+    }
+    else {
+      final File imageFile = new File(imagePath);
+      if (!imageFile.exists()) {
+        throw new FileNotFoundException(MESSAGES.getString("file_not_found") + ": " + imagePath);
+      }
 
-  /**
-   * @param imagePath the path to the image to show, if the file has a file type suffix it
-   * is checked against the {@code acceptedFileTypes} collection.
-   * @param dialogParent the component to use as dialog parent
-   * @param acceptedFileTypes a collection of lower case file type suffixes, "gif", "jpeg"...
-   * @throws IOException in case of an IO exception, f.ex. if the image file is not found
-   * @throws IllegalArgumentException in case the file type is not accepted
-   */
-  public static void showImage(final String imagePath, final JComponent dialogParent,
-                               final Collection<String> acceptedFileTypes) throws IOException {
-    Objects.requireNonNull(imagePath, "imagePath");
-    if (imagePath.length() == 0) {
-      return;
+      return ImageIO.read(imageFile);
     }
-
-    final int lastDotIndex = imagePath.lastIndexOf('.');
-    if (lastDotIndex != -1) {//if the type is specified check it
-      final String type = imagePath.substring(lastDotIndex + 1).toLowerCase();
-      if (!acceptedFileTypes.contains(type)) {
-        throw new IllegalArgumentException(MESSAGES.getString("unknown_file_type") + ": " + type);
-      }
-    }
-    final NavigableImagePanel imagePanel;
-    try {
-      UiUtil.setWaitCursor(true, dialogParent);
-      imagePanel = new NavigableImagePanel();
-      final BufferedImage image;
-      if (imagePath.toLowerCase().startsWith("http")) {
-        final URL url = new URL(imagePath);
-        image = ImageIO.read(url);
-      }
-      else {
-        final File imageFile = new File(imagePath);
-        if (!imageFile.exists()) {
-          throw new FileNotFoundException(Messages.get(Messages.FILE_NOT_FOUND) + ": " + imagePath);
-        }
-        image = ImageIO.read(imageFile);
-      }
-      imagePanel.setImage(image);
-    }
-    finally {
-      UiUtil.setWaitCursor(false, dialogParent);
-    }
-    imagePanel.setPreferredSize(UiUtil.getScreenSizeRatio(DEFAULT_IMAGE_PANEL_SCREEN_SIZE_RATIO));
-    UiUtil.displayInDialog(dialogParent, imagePanel, imagePath, false);
   }
 
   /**

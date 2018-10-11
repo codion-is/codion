@@ -6,6 +6,7 @@ package org.jminor.framework.domain;
 import org.jminor.common.DateFormats;
 import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.DatabaseConnection;
+import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 
@@ -745,5 +746,18 @@ public class EntitiesTest {
     assertEquals(2, Entities.getEntitiesByValue(entities, values).size());
     values.put(TestDomain.DETAIL_ID, 3L);
     assertEquals(1, Entities.getEntitiesByValue(entities, values).size());
+  }
+
+  @Test
+  public void defaultEntity() {
+    final Entity detail = domain.defaultEntity(TestDomain.T_DETAIL, new ValueProvider<Property, Object>() {
+      @Override
+      public Object get(final Property key) {
+        return null;
+      }
+    });
+    assertFalse(detail.containsKey(TestDomain.DETAIL_DOUBLE));//columnHasDefaultValue
+    assertFalse(detail.containsKey(TestDomain.DETAIL_DATE));//columnHasDefaultValue
+    assertTrue(detail.containsKey(TestDomain.DETAIL_BOOLEAN_NULLABLE));//columnHasDefaultValue && property.hasDefaultValue
   }
 }

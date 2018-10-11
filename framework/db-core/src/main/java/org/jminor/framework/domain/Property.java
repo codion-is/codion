@@ -220,7 +220,13 @@ public interface Property extends Attribute, Serializable {
   Property setDefaultValueProvider(final ValueProvider provider);
 
   /**
-   * @return the default value for this property, if any
+   * @return true if a default value has been set for this property
+   */
+  boolean hasDefaultValue();
+
+  /**
+   * @return the default value for this property, if no default value has been set null is returned
+   * @see #hasDefaultValue()
    */
   Object getDefaultValue();
 
