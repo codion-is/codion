@@ -4873,3 +4873,4 @@
   Property.hasDefaultValue() added
   Entities.entity(entityId, valueProvider) renamed to defaultEntity(), now excludes properties which columns have default values
   NavigableImagePanel.showImage() removed, readImage() added, no dependencies on jminor remaining, module-info fixed
+  OracleDatabase resource bundle bug fix, value_missing key added (fixed in 0.11.3 tag as well)
