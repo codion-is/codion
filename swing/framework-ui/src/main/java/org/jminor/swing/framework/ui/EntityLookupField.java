@@ -16,6 +16,7 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
+import org.jminor.swing.common.ui.SwingMessages;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.UiValues;
 import org.jminor.swing.common.ui.ValueLinks;
@@ -273,7 +274,7 @@ public final class EntityLookupField extends JTextField {
     messagePanel.add(messageLabel, BorderLayout.CENTER);
     messagePanel.add(btnBase, BorderLayout.SOUTH);
     disableLookup();
-    UiUtil.displayInDialog(this, messagePanel, Messages.get("OptionPane.messageDialogTitle"), closeEvent);
+    UiUtil.displayInDialog(this, messagePanel, SwingMessages.get("OptionPane.messageDialogTitle"), closeEvent);
     enableLookup();
   }
 
