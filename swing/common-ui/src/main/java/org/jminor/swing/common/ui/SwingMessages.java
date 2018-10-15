@@ -31,4 +31,13 @@ public final class SwingMessages {
    * A convenience method for triggering a loading of this class
    */
   public static void init() {/*Just for loading the class*/}
+
+  /**
+   * Retrieves the locale string associated with the given key
+   * @param key the key
+   * @return the string associated with the key
+   */
+  public static String get(final String key) {
+    return MESSAGES.getString(key);
+  }
 }

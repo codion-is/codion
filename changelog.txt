@@ -4870,3 +4870,4 @@
   LocalEntityConnectionTest, blob tests improved
   Cleanup of create_h2_db.sql scripts for unit tests
   OracleDatabase resource bundle bug fix, value_missing key added
+  EntityLookupField bug fixed, now uses SwingMessages for dialog title
