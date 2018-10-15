@@ -4874,4 +4874,6 @@
   Entities.entity(entityId, valueProvider) renamed to defaultEntity(), now excludes properties which columns have default values
   NavigableImagePanel.showImage() removed, readImage() added, no dependencies on jminor remaining, module-info fixed
   OracleDatabase resource bundle bug fix, value_missing key added (fixed in 0.11.3 tag as well)
-  EntityLookupField bug fixed, now uses SwingMessages for dialog title
+  EntityLookupField bug fixed, now uses SwingMessages for dialog title (fixed in 0.11.3 tag as well)
+  UiUtil.prepareScrollPanelDialog() no longer makes dialog visible and no longer sets the ok button as the default button (problematic Enter key behaviour)
+  UiUtil.selectValues() bug fixed, now ensures the default selected value is visible and escape key means cancel

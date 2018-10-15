@@ -164,6 +164,7 @@ public final class EntityLookupField extends JTextField {
     list.setSelectionMode(model.getMultipleSelectionAllowedValue().get() ?
             ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
     UiUtil.prepareScrollPanelDialog(dialog, this, list, okControl, cancelAction);
+    dialog.setVisible(true);
   }
 
   private void linkToModel() {

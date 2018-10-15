@@ -1349,8 +1349,9 @@ public final class UiUtil {
    */
   public static void prepareScrollPanelDialog(final JDialog dialog, final JComponent dialogOwner, final JComponent toScroll,
                                               final Action okAction, final Action cancelAction) {
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelAction);
+    dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, cancelAction);
+    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, okAction);
     toScroll.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
     toScroll.addMouseListener(new MouseAdapter() {
@@ -1377,7 +1378,6 @@ public final class UiUtil {
     buttonPanel.add(btnCancel);
     final JPanel buttonBasePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     buttonBasePanel.add(buttonPanel);
-    dialog.getRootPane().setDefaultButton(btnOk);
     dialog.add(buttonBasePanel, BorderLayout.SOUTH);
     dialog.pack();
     if (dialogOwner != null) {
@@ -1385,7 +1385,6 @@ public final class UiUtil {
     }
     dialog.setModal(true);
     dialog.setResizable(true);
-    dialog.setVisible(true);
   }
 
   /**
@@ -1800,10 +1799,6 @@ public final class UiUtil {
     final DefaultListModel<T> listModel = new DefaultListModel<>();
     values.forEach(listModel::addElement);
     final JList<T> list = new JList<>(listModel);
-    defaultSelection.forEach(item -> {
-      final int index = listModel.indexOf(item);
-      list.getSelectionModel().addSelectionInterval(index, index);
-    });
     final Window owner = getParentWindow(dialogOwner);
     final JDialog dialog = new JDialog(owner, dialogTitle);
     final Action okAction = new DisposeWindowAction(dialog);
@@ -1818,6 +1813,14 @@ public final class UiUtil {
     if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
       dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
     }
+    if (defaultSelection != null) {
+      defaultSelection.forEach(item -> {
+        final int index = listModel.indexOf(item);
+        list.getSelectionModel().addSelectionInterval(index, index);
+        list.ensureIndexIsVisible(index);
+      });
+    }
+    dialog.setVisible(true);
 
     return list.getSelectedValuesList();
   }
