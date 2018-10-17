@@ -4877,3 +4877,4 @@
   EntityLookupField bug fixed, now uses SwingMessages for dialog title (fixed in 0.11.3 tag as well)
   UiUtil.prepareScrollPanelDialog() no longer makes dialog visible and no longer sets the ok button as the default button (problematic Enter key behaviour)
   UiUtil.selectValues() bug fixed, now ensures the default selected value is visible and escape key means cancel
+  EntityApplicationPanel bug fixed, MESSAGES no longer static so that default locale can be set in a main method of a subclass
