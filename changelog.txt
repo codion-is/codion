@@ -4869,7 +4869,7 @@
   HttpEntityConnection.readBlob() and writeBlob() implemented and tested
   LocalEntityConnectionTest, blob tests improved
   Cleanup of create_h2_db.sql scripts for unit tests
-0.11.4 [server/client incompatible]
+0.11.4
   Property.hasDefaultValue() added
   Entities.entity(entityId, valueProvider) renamed to defaultEntity(), now excludes properties which columns have default values
   NavigableImagePanel.showImage() removed, readImage() added, no dependencies on jminor remaining, module-info fixed
@@ -4878,3 +4878,4 @@
   UiUtil.prepareScrollPanelDialog() no longer makes dialog visible and no longer sets the ok button as the default button (problematic Enter key behaviour)
   UiUtil.selectValues() bug fixed, now ensures the default selected value is visible and escape key means cancel
   EntityApplicationPanel bug fixed, MESSAGES no longer static so that default locale can be set in a main method of a subclass
+  DefaultEntityConnectionServer, serialization whitelist implemented with dry run option
