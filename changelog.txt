@@ -4879,3 +4879,6 @@
   UiUtil.selectValues() bug fixed, now ensures the default selected value is visible and escape key means cancel
   EntityApplicationPanel bug fixed, MESSAGES no longer static so that default locale can be set in a main method of a subclass
   DefaultEntityConnectionServer, serialization whitelist implemented with dry run option
+  AbstractServer, shared login proxies added
+  AbstractServer bug fixed, did not disconnect clients on shutdown before closing login proxies, which would then not be notified of the disconnection
+  DefaultEntityConnectionServer no longer disconnects clients in handleShutdown(), see above

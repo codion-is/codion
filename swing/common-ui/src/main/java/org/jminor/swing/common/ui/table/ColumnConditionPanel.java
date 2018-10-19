@@ -11,7 +11,6 @@ import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.Item;
 import org.jminor.common.State;
-import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Value;
 import org.jminor.common.db.condition.Condition;
@@ -561,18 +560,8 @@ public class ColumnConditionPanel<K> extends JPanel {
   }
 
   private void linkComponentsToLockedState() {
-    final StateObserver stUnlocked = conditionModel.getLockedObserver().getReversedObserver();
-    UiUtil.linkToEnabledState(stUnlocked, conditionTypeCombo);
-    UiUtil.linkToEnabledState(stUnlocked, upperBoundField);
-    if (lowerBoundField != null) {
-      UiUtil.linkToEnabledState(stUnlocked, lowerBoundField);
-    }
-    if (toggleAdvancedButton != null) {
-      UiUtil.linkToEnabledState(stUnlocked, toggleAdvancedButton);
-    }
-    if (toggleEnabledButton != null) {
-      UiUtil.linkToEnabledState(stUnlocked, toggleEnabledButton);
-    }
+    UiUtil.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
+            conditionTypeCombo, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
   }
 
   private void initializeConditionDialog(final Container parent) {

@@ -90,40 +90,52 @@ public class AbstractServerTest {
     ServerTest connection = server.connect(connectionRequest);
     assertNotNull(connection);
     assertEquals(connectionRequest.getClientId(), connection.getRemoteClient().getClientId());
-    final AtomicInteger closeIndicator = new AtomicInteger();
-    final LoginProxy loginProxy = new LoginProxy() {
+    final AtomicInteger loginCounter = new AtomicInteger();
+    final AtomicInteger logoutCounter = new AtomicInteger();
+    final AtomicInteger closeCounter = new AtomicInteger();
+    class TestLoginProxy implements LoginProxy {
       @Override
       public String getClientTypeId() {
         return clientTypeId;
       }
       @Override
       public RemoteClient doLogin(final RemoteClient remoteClient) {
+        loginCounter.incrementAndGet();
         return proxyRemoteClient;
       }
       @Override
-      public void doLogout(final RemoteClient remoteClient) {}
+      public void doLogout(final RemoteClient remoteClient) {
+        logoutCounter.incrementAndGet();
+      }
       @Override
       public void close() {
-        closeIndicator.incrementAndGet();
+        closeCounter.incrementAndGet();
       }
-    };
+    }
+    final LoginProxy sharedProxy = new TestLoginProxy();
+    final LoginProxy loginProxy = new TestLoginProxy();
+
+    server.addSharedLoginProxy(sharedProxy);
     server.setLoginProxy(clientTypeId, loginProxy);
     server.disconnect(connectionRequest.getClientId());
 
     connection = server.connect(connectionRequest);
+    assertEquals(2, loginCounter.get());
     assertNotNull(connection);
     assertEquals(proxyRemoteClient, connection.getRemoteClient());
 
     server.disconnect(connectionRequest.getClientId());
+    assertEquals(2, logoutCounter.get());
 
     server.setLoginProxy(connectionRequest.getClientTypeId(), null);
     connection = server.connect(connectionRequest);
+    assertEquals(3, loginCounter.get());
     assertNotNull(connection);
-    assertEquals(connectionRequest.getClientId(), connection.getRemoteClient().getClientId());
+    assertEquals(proxyRemoteClient, connection.getRemoteClient());
 
-    server.setLoginProxy(clientTypeId, loginProxy);
     server.shutdown();
-    assertTrue(closeIndicator.get() > 0);
+    assertEquals(3, logoutCounter.get());
+    assertEquals(2, closeCounter.get());
   }
 
   @Test
@@ -172,7 +184,7 @@ public class AbstractServerTest {
     final ConnectionRequest connectionRequest2 = Clients.connectionRequest(
             new User(UNIT_TEST_USER.getUsername(), "test".toCharArray()), connectionId, clientTypeId);
 
-    final ServerTest serverTest = server.connect(connectionRequest);
+    server.connect(connectionRequest);
 
     //try to steal the connection using the same connectionId, but incorrect user credentials
     assertThrows(ServerException.AuthenticationException.class, () -> server.connect(connectionRequest2));
@@ -188,7 +200,7 @@ public class AbstractServerTest {
     final ConnectionRequest connectionRequest2 = Clients.connectionRequest(
             new User("test", UNIT_TEST_USER.getPassword()), connectionId, clientTypeId);
 
-    final ServerTest serverTest = server.connect(connectionRequest);
+    server.connect(connectionRequest);
 
     //try to steal the connection using the same connectionId, but incorrect user credentials
     assertThrows(ServerException.AuthenticationException.class, () -> server.connect(connectionRequest2));

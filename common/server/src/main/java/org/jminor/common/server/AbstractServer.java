@@ -17,9 +17,12 @@ import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -38,7 +41,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   private final Map<UUID, RemoteClientConnection<T>> connections = Collections.synchronizedMap(new HashMap<>());
   private final Map<String, LoginProxy> loginProxies = Collections.synchronizedMap(new HashMap<>());
-  private final LoginProxy defaultLoginProxy = new DefaultLoginProxy();
+  private final List<LoginProxy> sharedLoginProxies = Collections.synchronizedList(new LinkedList<>());
   private final Map<String, ConnectionValidator> connectionValidators = Collections.synchronizedMap(new HashMap<>());
   private final ConnectionValidator defaultConnectionValidator = new DefaultConnectionValidator();
 
@@ -159,8 +162,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     Objects.requireNonNull(connectionRequest.getClientTypeId(), "clientTypeId");
 
     getConnectionValidator(connectionRequest.getClientTypeId()).validate(connectionRequest);
-    final LoginProxy loginProxy = getLoginProxy(connectionRequest.getClientTypeId());
-    LOG.debug("Connecting client {}, loginProxy {}", connectionRequest, loginProxy);
+    final LoginProxy clientLoginProxy = getLoginProxy(connectionRequest.getClientTypeId());
+    LOG.debug("Connecting client {}, loginProxy {}", connectionRequest, clientLoginProxy);
     synchronized (connections) {
       RemoteClientConnection<T> remoteClientConnection = connections.get(connectionRequest.getClientId());
       if (remoteClientConnection != null) {
@@ -174,9 +177,15 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
       }
 
       LOG.debug("No active connection found for client {}, establishing a new connection", connectionRequest);
-      final RemoteClient remoteClient = Servers.remoteClient(connectionRequest);
+      RemoteClient remoteClient = Servers.remoteClient(connectionRequest);
       setClientHost(remoteClient, (String) connectionRequest.getParameters().get(CLIENT_HOST_KEY));
-      remoteClientConnection = new RemoteClientConnection<>(remoteClient, doConnect(loginProxy.doLogin(remoteClient)));
+      for (final LoginProxy loginProxy : sharedLoginProxies) {
+        remoteClient = loginProxy.doLogin(remoteClient);
+      }
+      if (clientLoginProxy != null) {
+        remoteClient = clientLoginProxy.doLogin(remoteClient);
+      }
+      remoteClientConnection = new RemoteClientConnection<>(remoteClient, doConnect(remoteClient));
       connections.put(remoteClient.getClientId(), remoteClientConnection);
 
       return remoteClientConnection.getConnection();
@@ -197,14 +206,34 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     if (remoteClientConnection != null) {
       doDisconnect(remoteClientConnection.getConnection());
       final RemoteClient remoteClient = remoteClientConnection.getClient();
-      getLoginProxy(remoteClient.getClientTypeId()).doLogout(remoteClient);
+      for (final LoginProxy loginProxy : sharedLoginProxies) {
+        loginProxy.doLogout(remoteClient);
+      }
+      final LoginProxy loginProxy = getLoginProxy(remoteClient.getClientTypeId());
+      if (loginProxy != null) {
+        loginProxy.doLogout(remoteClient);
+      }
       LOG.debug("Client disconnected {}", remoteClient);
     }
   }
 
   /**
+   * Adds a shared LoginProxy, used for all connection requests.
+   * @param loginProxy the login proxy
+   * @throws IllegalStateException in case the given login proxy has already been added for the given client type
+   */
+  public final void addSharedLoginProxy(final LoginProxy loginProxy) {
+    synchronized (sharedLoginProxies) {
+      if (sharedLoginProxies.contains(loginProxy)) {
+        throw new IllegalStateException("Login proxy " + loginProxy + " has already been added");
+      }
+      sharedLoginProxies.add(loginProxy);
+    }
+  }
+
+  /**
    * Sets the LoginProxy for the given client type id, if {@code loginProxy} is null
-   * the login proxy is removed.
+   * the login proxy is closed and removed.
    * @param clientTypeId the client type ID with which to associate the given login proxy
    * @param loginProxy the login proxy
    * @throws IllegalStateException in case the login proxy has already been set for the given client type
@@ -212,7 +241,10 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   public final void setLoginProxy(final String clientTypeId, final LoginProxy loginProxy) {
     synchronized (loginProxies) {
       if (loginProxy == null) {
-        loginProxies.remove(clientTypeId);
+        final LoginProxy currentProxy = loginProxies.remove(clientTypeId);
+        if (currentProxy != null) {
+          currentProxy.close();
+        }
       }
       else {
         if (loginProxies.containsKey(clientTypeId)) {
@@ -266,13 +298,22 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     catch (final NoSuchObjectException e) {
       LOG.error("Exception while unexporting server on shutdown", e);
     }
+    for (final UUID clientId : new ArrayList<>(connections.keySet())) {
+      try {
+        disconnect(clientId);
+      }
+      catch (final RemoteException e) {
+        LOG.debug("Error while disconnecting a client on shutdown: " + clientId, e);
+      }
+    }
+    sharedLoginProxies.forEach(AbstractServer::closeLoginProxy);
     loginProxies.values().forEach(AbstractServer::closeLoginProxy);
 
     handleShutdown();
   }
 
   /**
-   * Called after shutdown has finished
+   * Called after shutdown has finished, for subclasses
    * @throws RemoteException in case of an exception
    */
   protected void handleShutdown() throws RemoteException {/*Provided for subclasses*/}
@@ -315,12 +356,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   private LoginProxy getLoginProxy(final String clientTypeId) {
     synchronized (loginProxies) {
-      final LoginProxy loginProxy = loginProxies.get(clientTypeId);
-      if (loginProxy == null) {
-        return defaultLoginProxy;
-      }
-
-      return loginProxy;
+      return loginProxies.get(clientTypeId);
     }
   }
 
@@ -426,24 +462,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     public TimeZone getTimeZone() {
       return timeZone;
     }
-  }
-
-  private static final class DefaultLoginProxy implements LoginProxy {
-    @Override
-    public String getClientTypeId() {
-      return "defaultClient";
-    }
-
-    @Override
-    public RemoteClient doLogin(final RemoteClient remoteClient) {
-      return remoteClient;
-    }
-
-    @Override
-    public void doLogout(final RemoteClient remoteClient) {/*No logout action required*/}
-
-    @Override
-    public void close() {/*Not required*/}
   }
 
   private static final class DefaultConnectionValidator implements ConnectionValidator {

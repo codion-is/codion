@@ -522,12 +522,11 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   protected final void handleShutdown() throws RemoteException {
     super.handleShutdown();
     connectionMaintenanceScheduler.stop();
-    removeConnections(false);
     ConnectionPools.closeConnectionPools();
     auxiliaryServers.forEach(DefaultEntityConnectionServer::stopAuxiliaryServer);
     if (database.isEmbedded()) {
       database.shutdownEmbedded(null);
-    }//todo does not work when shutdown requires user authentication, jminor.db.shutdownUser hmmm
+    }
     try {
       UnicastRemoteObject.unexportObject(registry, true);
     }
@@ -549,7 +548,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
                 .collect(Collectors.joining(Util.LINE_SEPARATOR)), file);
         LOG.debug("Serialization whitelist written: " + whitelist);
       }
-      catch (final IOException e) {
+      catch (final Exception e) {
         LOG.error("Error while writing serialization filter dry run results", e);
       }
     }

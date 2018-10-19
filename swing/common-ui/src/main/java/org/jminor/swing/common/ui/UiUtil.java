@@ -628,18 +628,21 @@ public final class UiUtil {
    * @param components the components, if null nothing is done
    */
   public static void linkToEnabledState(final StateObserver enabledState, final boolean includeFocusable, final JComponent... components) {
-    if (enabledState != null && components != null) {
+    Objects.requireNonNull(components, "components");
+    if (enabledState != null) {
       for (final JComponent component : components) {
-        component.setEnabled(enabledState.isActive());
-        if (includeFocusable) {
-          component.setFocusable(enabledState.isActive());
-        }
-        enabledState.addListener(() -> {
+        if (component != null) {
           component.setEnabled(enabledState.isActive());
           if (includeFocusable) {
             component.setFocusable(enabledState.isActive());
           }
-        });
+          enabledState.addListener(() -> {
+            component.setEnabled(enabledState.isActive());
+            if (includeFocusable) {
+              component.setFocusable(enabledState.isActive());
+            }
+          });
+        }
       }
     }
   }

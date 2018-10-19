@@ -73,10 +73,7 @@ public final class DateInputPanel extends JPanel {
       }, "...");
       this.button = new JButton(buttonControl);
       this.button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
-      if (enabledState != null) {
-        UiUtil.linkToEnabledState(enabledState, this.inputField);
-        UiUtil.linkToEnabledState(enabledState, this.button);
-      }
+      UiUtil.linkToEnabledState(enabledState, inputField, button);
       add(this.button, BorderLayout.EAST);
     }
   }
