@@ -4882,3 +4882,4 @@
   AbstractServer, shared login proxies added
   AbstractServer bug fixed, did not disconnect clients on shutdown before closing login proxies, which would then not be notified of the disconnection
   DefaultEntityConnectionServer no longer disconnects clients in handleShutdown(), see above
+  DefaultEntityConnectionServer, serialization whitelist no longer crashes Java versions > 8, only enabled on Java 8

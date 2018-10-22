@@ -5,7 +5,6 @@ package org.jminor.framework.server;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.DaemonThreadFactory;
-import org.jminor.common.FileUtil;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.TextUtil;
 import org.jminor.common.User;
@@ -34,15 +33,10 @@ import org.jminor.framework.domain.Entities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.misc.ObjectInputFilter;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -55,18 +49,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * A remote server class, responsible for handling requests for AbstractRemoteEntityConnections.
@@ -153,6 +144,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   protected static final String SHUTDOWN = "shutdown";
   protected static final String RESTART = "restart";
 
+  /** Only Java 8 compatible for now */
+  private static final boolean OBJECT_INPUT_FILTER_ON_CLASSPATH = Util.onClasspath("sun.misc.ObjectInputFilter");
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
   private static final String FROM_CLASSPATH = "' from classpath";
 
@@ -208,7 +201,9 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     super(serverPort, serverName, sslEnabled ? new SslRMIClientSocketFactory() : null,
             sslEnabled ? new SslRMIServerSocketFactory() : null);
     try {
-      configureSerializationWhitelist();
+      if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
+        SerializationWhitelist.configureSerializationWhitelist(SERIALIZATION_FILTER_WHITELIST.get(), SERIALIZATION_FILTER_DRYRUN.get());
+      }
       this.shutdownHook = new Thread(getShutdownHook());
       Runtime.getRuntime().addShutdownHook(this.shutdownHook);
       this.database = Objects.requireNonNull(database, "database");
@@ -532,25 +527,8 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
     catch (final NoSuchObjectException ignored) {/*ignored*/}
     UnicastRemoteObject.unexportObject(serverAdmin, true);
-    final ObjectInputFilter serialFilter = ObjectInputFilter.Config.getSerialFilter();
-    if (serialFilter instanceof SerializationFilterDryRun) {
-      writeDryRunWhitelist((SerializationFilterDryRun) serialFilter);
-    }
-  }
-
-  private void writeDryRunWhitelist(final SerializationFilterDryRun serialFilter) {
-    final String whitelist = SERIALIZATION_FILTER_WHITELIST.get();
-    if (!Util.nullOrEmpty(whitelist)) {
-      try {
-        final File file = new File(whitelist);
-        file.createNewFile();
-        FileUtil.writeFile(serialFilter.deserializedClasses.stream().map(Class::getName).sorted()
-                .collect(Collectors.joining(Util.LINE_SEPARATOR)), file);
-        LOG.debug("Serialization whitelist written: " + whitelist);
-      }
-      catch (final Exception e) {
-        LOG.error("Error while writing serialization filter dry run results", e);
-      }
+    if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
+      SerializationWhitelist.writeSerializationWhitelist(SERIALIZATION_FILTER_WHITELIST.get());
     }
   }
 
@@ -756,15 +734,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     return exception;
   }
 
-  private static void configureSerializationWhitelist() {
-    final String whitelist = SERIALIZATION_FILTER_WHITELIST.get();
-    final Boolean dryRun = SERIALIZATION_FILTER_DRYRUN.get();
-    if (!Util.nullOrEmpty(whitelist)) {
-      ObjectInputFilter.Config.setSerialFilter(dryRun ? new SerializationFilterDryRun() : new SerializationFilter(whitelist));
-      LOG.debug("Serialization filter whitelist set: " + whitelist + " (dry run: " + dryRun + ")");
-    }
-  }
-
   private final class MaintenanceTask implements Runnable {
     @Override
     public void run() {
@@ -776,47 +745,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
       catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
-    }
-  }
-
-  private static final class SerializationFilterDryRun implements ObjectInputFilter {
-
-    private final Set<Class> deserializedClasses = new HashSet<>();
-
-    @Override
-    public Status checkInput(final FilterInfo filterInfo) {
-      final Class clazz = filterInfo.serialClass();
-      if (clazz != null) {
-        deserializedClasses.add(clazz);
-      }
-
-      return Status.ALLOWED;
-    }
-  }
-
-  private static final class SerializationFilter implements ObjectInputFilter {
-
-    private final List<String> allowedClassnames;
-
-    private SerializationFilter(final String whitelist) {
-      try (final Stream<String> stream = Files.lines(Paths.get(whitelist))) {
-        this.allowedClassnames = stream.collect(Collectors.toList());
-      }
-      catch (final IOException e) {
-        LOG.error("Unable to read serialization whitelist: " + whitelist);
-        throw new RuntimeException(e);
-      }
-    }
-
-    @Override
-    public Status checkInput(final FilterInfo filterInfo) {
-      final Class clazz = filterInfo.serialClass();
-      if (clazz != null && !allowedClassnames.contains(clazz.getName())) {
-        LOG.debug("Serialization rejected: " + clazz.getName());
-        return Status.REJECTED;
-      }
-
-      return Status.ALLOWED;
     }
   }
 
