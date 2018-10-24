@@ -7,7 +7,6 @@ import org.jminor.common.FormatUtil;
 import org.jminor.common.Item;
 import org.jminor.common.Util;
 import org.jminor.common.db.Column;
-import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
@@ -1177,19 +1176,11 @@ class DefaultProperty implements Property {
 
   static final class BooleanValueConverter implements ValueConverter<Boolean, Object> {
 
-    //Just for the boolean true/false values
-    private static final Database DATABASE_INSTANCE;
-
-    static {
-      DATABASE_INSTANCE = Database.isDatabaseTypeSpecified() ? Databases.getInstance() : null;
-    }
-
     private final Object trueValue;
     private final Object falseValue;
 
     BooleanValueConverter() {
-      this(DATABASE_INSTANCE == null ? Boolean.TRUE : DATABASE_INSTANCE.getBooleanTrueValue(),
-              DATABASE_INSTANCE == null ? Boolean.FALSE : DATABASE_INSTANCE.getBooleanFalseValue());
+      this(Databases.getInstance().getBooleanTrueValue(), Databases.getInstance().getBooleanFalseValue());
     }
 
     BooleanValueConverter(final Object trueValue, final Object falseValue) {

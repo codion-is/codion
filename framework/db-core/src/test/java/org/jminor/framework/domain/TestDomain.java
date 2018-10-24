@@ -130,6 +130,7 @@ public final class TestDomain extends Entities {
   public static final String DEPARTMENT_ID = "deptno";
   public static final String DEPARTMENT_NAME = "dname";
   public static final String DEPARTMENT_LOCATION = "loc";
+  public static final String DEPARTMENT_ACTIVE = "active";
 
   public static final String T_DEPARTMENT = "domain.scott.dept";
 
@@ -140,7 +141,8 @@ public final class TestDomain extends Entities {
             Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
                     .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
             Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
-                    .setPreferredColumnWidth(150).setMaxLength(13))
+                    .setPreferredColumnWidth(150).setMaxLength(13),
+            Properties.booleanProperty(DEPARTMENT_ACTIVE, Types.INTEGER, null, 1, 0))
             .setSmallDataset(true)
             .setSearchPropertyIds(DEPARTMENT_NAME)
             .setOrderBy(orderBy().ascending(DEPARTMENT_NAME))

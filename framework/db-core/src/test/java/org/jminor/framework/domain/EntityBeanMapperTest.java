@@ -24,17 +24,20 @@ public class EntityBeanMapperTest {
     final Integer deptNo = 13;
     final String deptName = "Department";
     final String deptLocation = "Location";
+    final Boolean deptActive = true;
 
     final Entity department = DOMAIN.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, deptNo);
     department.put(TestDomain.DEPARTMENT_NAME, deptName);
     department.put(TestDomain.DEPARTMENT_LOCATION, deptLocation);
+    department.put(TestDomain.DEPARTMENT_ACTIVE, deptActive);
 
     final List<Object> deptBeans = beanMapper.toBeans(Collections.singletonList(department));
     final DepartmentBean departmentBean = (DepartmentBean) deptBeans.get(0);
     assertEquals(deptNo, departmentBean.getDeptNo());
     assertEquals(deptName, departmentBean.getName());
     assertEquals(deptLocation, departmentBean.getLocation());
+    assertEquals(deptActive, departmentBean.getActive());
 
     final Integer id = 42;
     final Double commission = 42.2;
@@ -77,17 +80,20 @@ public class EntityBeanMapperTest {
     final Integer deptNo = 13;
     final String deptName = "Department";
     final String deptLocation = "Location";
+    final Boolean deptActive = true;
 
     final DepartmentBean departmentBean = new DepartmentBean();
     departmentBean.setDeptNo(deptNo);
     departmentBean.setLocation(deptLocation);
     departmentBean.setName(deptName);
+    departmentBean.setActive(deptActive);
 
     final List<Entity> departments = beanMapper.toEntities(Collections.singletonList(departmentBean));
     final Entity department = departments.get(0);
     assertEquals(deptNo, department.get(TestDomain.DEPARTMENT_ID));
     assertEquals(deptName, department.get(TestDomain.DEPARTMENT_NAME));
     assertEquals(deptLocation, department.get(TestDomain.DEPARTMENT_LOCATION));
+    assertEquals(deptActive, department.get(TestDomain.DEPARTMENT_ACTIVE));
 
     final Integer id = 42;
     final Double commission = 42.2;
@@ -189,6 +195,7 @@ public class EntityBeanMapperTest {
     beanMap.setProperty(DepartmentBean.class, TestDomain.DEPARTMENT_ID, "deptNo");
     beanMap.setProperty(DepartmentBean.class, TestDomain.DEPARTMENT_NAME, "name");
     beanMap.setProperty(DepartmentBean.class, TestDomain.DEPARTMENT_LOCATION, "location");
+    beanMap.setProperty(DepartmentBean.class, TestDomain.DEPARTMENT_ACTIVE, "active");
 
     beanMap.setEntityId(EmployeeBean.class, TestDomain.T_EMP);
     beanMap.setProperty(EmployeeBean.class, TestDomain.EMP_ID, "id");
@@ -207,6 +214,7 @@ public class EntityBeanMapperTest {
     private Integer deptNo;
     private String name;
     private String location;
+    private Boolean active;
 
     public DepartmentBean() {}
 
@@ -232,6 +240,14 @@ public class EntityBeanMapperTest {
 
     public void setName(final String name) {
       this.name = name;
+    }
+
+    public Boolean getActive() {
+      return active;
+    }
+
+    public void setActive(final Boolean active) {
+      this.active = active;
     }
   }
 

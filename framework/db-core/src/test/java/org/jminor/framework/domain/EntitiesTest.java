@@ -228,7 +228,8 @@ public class EntitiesTest {
     assertTrue(visibleProperties.contains(name));
 
     final Collection<Property> allProperties = domain.getProperties(TestDomain.T_DEPARTMENT, true);
-    assertTrue(visibleProperties.containsAll(allProperties));
+    assertTrue(allProperties.containsAll(visibleProperties));
+    assertEquals(allProperties.size(), visibleProperties.size() + 1);
   }
 
   @Test
