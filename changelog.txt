@@ -4885,3 +4885,4 @@
   DefaultEntityConnectionServer, serialization whitelist no longer crashes Java versions > 8, only enabled on Java 8
   DefaultProperty.BooleanValueConverter default constructor now throws exception if database type is not specified
   EntityBeanMapperTest, added boolean property
+  UiUtil.prepareScrollPanelDialog() regression bug fixed, now selection is triggered on Enter keyPressed
