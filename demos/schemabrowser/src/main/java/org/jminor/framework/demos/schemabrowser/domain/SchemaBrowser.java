@@ -5,12 +5,13 @@ package org.jminor.framework.demos.schemabrowser.domain;
 
 import org.jminor.common.db.Database;
 import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
 import java.sql.Types;
 import java.util.Locale;
 import java.util.ResourceBundle;
+
+import static org.jminor.framework.domain.Properties.*;
 
 public final class SchemaBrowser extends Entities {
 
@@ -31,7 +32,7 @@ public final class SchemaBrowser extends Entities {
 
   void defineSchema() {
     define(T_SCHEMA, bundle.getString("t_schema"),
-            Properties.primaryKeyProperty(SCHEMA_NAME, Types.VARCHAR, "Name"))
+            primaryKeyProperty(SCHEMA_NAME, Types.VARCHAR, "Name"))
             .setOrderBy(orderBy().ascending(SCHEMA_NAME))
             .setReadOnly(true)
             .setStringProvider(new Entities.StringProvider(SCHEMA_NAME))
@@ -45,9 +46,9 @@ public final class SchemaBrowser extends Entities {
 
   void defineTable() {
     define(T_TABLE, bundle.getString("t_table"),
-            Properties.foreignKeyProperty(TABLE_SCHEMA_FK, "Schema", T_SCHEMA,
-                    Properties.primaryKeyProperty(TABLE_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0)),
-            Properties.primaryKeyProperty(TABLE_NAME, Types.VARCHAR, "Name").setPrimaryKeyIndex(1))
+            foreignKeyProperty(TABLE_SCHEMA_FK, "Schema", T_SCHEMA,
+                    primaryKeyProperty(TABLE_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0)),
+            primaryKeyProperty(TABLE_NAME, Types.VARCHAR, "Name").setPrimaryKeyIndex(1))
             .setOrderBy(orderBy().ascending(TABLE_SCHEMA, TABLE_NAME))
             .setReadOnly(true)
             .setStringProvider(new Entities.StringProvider(TABLE_SCHEMA_FK).addText(".").addValue(TABLE_NAME))
@@ -63,12 +64,12 @@ public final class SchemaBrowser extends Entities {
 
   void defineColumn() {
     define(T_COLUMN, bundle.getString("t_column"),
-            Properties.foreignKeyProperty(COLUMN_TABLE_FK, "Table", T_TABLE,
+            foreignKeyProperty(COLUMN_TABLE_FK, "Table", T_TABLE,
                     new Property.ColumnProperty[] {
-                            Properties.columnProperty(COLUMN_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
-                            Properties.columnProperty(COLUMN_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1)}),
-            Properties.primaryKeyProperty(COLUMN_NAME, Types.VARCHAR, "Column name").setPrimaryKeyIndex(2),
-            Properties.columnProperty(COLUMN_DATA_TYPE, Types.VARCHAR, "Data type"))
+                            columnProperty(COLUMN_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
+                            columnProperty(COLUMN_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1)}),
+            primaryKeyProperty(COLUMN_NAME, Types.VARCHAR, "Column name").setPrimaryKeyIndex(2),
+            columnProperty(COLUMN_DATA_TYPE, Types.VARCHAR, "Data type"))
             .setOrderBy(orderBy().ascending(COLUMN_SCHEMA, COLUMN_TABLE_NAME, COLUMN_NAME))
             .setReadOnly(true)
             .setStringProvider(new Entities.StringProvider(COLUMN_TABLE_FK).addText(".").addValue(COLUMN_NAME))
@@ -84,12 +85,12 @@ public final class SchemaBrowser extends Entities {
 
   void defineConstraint() {
     define(T_CONSTRAINT, bundle.getString("t_constraint"),
-            Properties.foreignKeyProperty(CONSTRAINT_TABLE_FK, "Table", T_TABLE,
+            foreignKeyProperty(CONSTRAINT_TABLE_FK, "Table", T_TABLE,
                     new Property.ColumnProperty[] {
-                            Properties.columnProperty(CONSTRAINT_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
-                            Properties.columnProperty(CONSTRAINT_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1)}),
-            Properties.primaryKeyProperty(CONSTRAINT_NAME, Types.VARCHAR, "Constraint name").setPrimaryKeyIndex(2),
-            Properties.columnProperty(CONSTRAINT_TYPE, Types.VARCHAR, "Type"))
+                            columnProperty(CONSTRAINT_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
+                            columnProperty(CONSTRAINT_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1)}),
+            primaryKeyProperty(CONSTRAINT_NAME, Types.VARCHAR, "Constraint name").setPrimaryKeyIndex(2),
+            columnProperty(CONSTRAINT_TYPE, Types.VARCHAR, "Type"))
             .setOrderBy(orderBy().ascending(CONSTRAINT_SCHEMA, CONSTRAINT_TABLE_NAME, CONSTRAINT_NAME))
             .setReadOnly(true)
             .setStringProvider(new Entities.StringProvider(CONSTRAINT_TABLE_FK).addText(".").addValue(CONSTRAINT_NAME))
@@ -106,13 +107,13 @@ public final class SchemaBrowser extends Entities {
 
   void defineColumnConstraint() {
     define(T_COLUMN_CONSTRAINT, bundle.getString("t_column_constraint"),
-            Properties.foreignKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_FK, "Constraint", T_CONSTRAINT,
+            foreignKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_FK, "Constraint", T_CONSTRAINT,
                     new Property.ColumnProperty[] {
-                            Properties.columnProperty(COLUMN_CONSTRAINT_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
-                            Properties.columnProperty(COLUMN_CONSTRAINT_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1),
-                            Properties.columnProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Types.VARCHAR).setPrimaryKeyIndex(2)}),
-            Properties.columnProperty(COLUMN_CONSTRAINT_COLUMN_NAME, Types.VARCHAR, "Column name"),
-            Properties.columnProperty(COLUMN_CONSTRAINT_POSITION, Types.INTEGER, "Position"))
+                            columnProperty(COLUMN_CONSTRAINT_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
+                            columnProperty(COLUMN_CONSTRAINT_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1),
+                            columnProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Types.VARCHAR).setPrimaryKeyIndex(2)}),
+            columnProperty(COLUMN_CONSTRAINT_COLUMN_NAME, Types.VARCHAR, "Column name"),
+            columnProperty(COLUMN_CONSTRAINT_POSITION, Types.INTEGER, "Position"))
             .setOrderBy(orderBy().ascending(COLUMN_CONSTRAINT_SCHEMA, COLUMN_CONSTRAINT_TABLE_NAME, COLUMN_CONSTRAINT_CONSTRAINT_NAME))
             .setReadOnly(true)
             .setCaption("Column constraints");

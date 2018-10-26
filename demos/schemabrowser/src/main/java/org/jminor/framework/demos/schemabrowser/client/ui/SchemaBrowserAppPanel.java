@@ -15,7 +15,6 @@ import org.jminor.swing.framework.ui.EntityPanelProvider;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 
 public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
@@ -53,14 +52,13 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     EntityTablePanel.TABLE_CONDITION_PANEL_VISIBLE.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser");
-    SwingUtilities.invokeLater(() -> new SchemaBrowserAppPanel().startApplication("Schema Browser", null, false,
-            UiUtil.getScreenSizeRatio(0.5), new User("scott", "tiger".toCharArray())));
+    new SchemaBrowserAppPanel().startApplication("Schema Browser", null, false,
+            UiUtil.getScreenSizeRatio(0.5), new User("scott", "tiger".toCharArray()));
   }
 
   public static final class SchemaBrowserApplicationModel extends SwingEntityApplicationModel {
     public SchemaBrowserApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
     }
-
   }
 }

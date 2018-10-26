@@ -17,7 +17,6 @@ import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
 
-import javax.swing.SwingUtilities;
 import java.util.Locale;
 
 public final class WorldAppPanel extends EntityApplicationPanel<WorldAppPanel.WorldAppModel> {
@@ -47,7 +46,8 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppPanel.Wo
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.world.domain.World");
-    SwingUtilities.invokeLater(() -> new WorldAppPanel().startApplication("World", null, false, UiUtil.getScreenSizeRatio(0.8), new User("scott", "tiger".toCharArray())));
+    new WorldAppPanel().startApplication("World", null, false, UiUtil.getScreenSizeRatio(0.8),
+            new User("scott", "tiger".toCharArray()));
   }
 
   public static final class WorldAppModel extends SwingEntityApplicationModel {

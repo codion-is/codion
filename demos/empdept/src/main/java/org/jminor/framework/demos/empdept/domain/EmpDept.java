@@ -5,7 +5,6 @@ package org.jminor.framework.demos.empdept.domain;
 
 import org.jminor.common.Item;
 import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.Properties;
 
 import java.awt.Color;
 import java.sql.Types;
@@ -13,6 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+
+import static org.jminor.framework.domain.Properties.*;
 
 /**
  * This class contains the specification for the EmpDept application domain model
@@ -68,11 +69,11 @@ public final class EmpDept extends Entities {
   void department() {
     /*Defining the entity type T_DEPARTMENT*/
     define(T_DEPARTMENT,
-            Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, getString(DEPARTMENT_ID))
+            primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, getString(DEPARTMENT_ID))
                     .setUpdatable(true).setNullable(false),
-            Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, getString(DEPARTMENT_NAME))
+            columnProperty(DEPARTMENT_NAME, Types.VARCHAR, getString(DEPARTMENT_NAME))
                     .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
-            Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, getString(DEPARTMENT_LOCATION))
+            columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, getString(DEPARTMENT_LOCATION))
                     .setPreferredColumnWidth(150).setMaxLength(13))
             .setSmallDataset(true)
             .setOrderBy(orderBy().ascending(DEPARTMENT_NAME))
@@ -83,22 +84,22 @@ public final class EmpDept extends Entities {
   void employee() {
     /*Defining the entity type T_EMPLOYEE*/
     define(T_EMPLOYEE,
-            Properties.primaryKeyProperty(EMPLOYEE_ID, Types.INTEGER, getString(EMPLOYEE_ID)),
-            Properties.columnProperty(EMPLOYEE_NAME, Types.VARCHAR, getString(EMPLOYEE_NAME))
+            primaryKeyProperty(EMPLOYEE_ID, Types.INTEGER, getString(EMPLOYEE_ID)),
+            columnProperty(EMPLOYEE_NAME, Types.VARCHAR, getString(EMPLOYEE_NAME))
                     .setMaxLength(10).setNullable(false),
-            Properties.foreignKeyProperty(EMPLOYEE_DEPARTMENT_FK, getString(EMPLOYEE_DEPARTMENT_FK), T_DEPARTMENT,
-                    Properties.columnProperty(EMPLOYEE_DEPARTMENT))
+            foreignKeyProperty(EMPLOYEE_DEPARTMENT_FK, getString(EMPLOYEE_DEPARTMENT_FK), T_DEPARTMENT,
+                    columnProperty(EMPLOYEE_DEPARTMENT))
                     .setNullable(false),
-            Properties.valueListProperty(EMPLOYEE_JOB, Types.VARCHAR, getString(EMPLOYEE_JOB), JOB_VALUES),
-            Properties.columnProperty(EMPLOYEE_SALARY, Types.DOUBLE, getString(EMPLOYEE_SALARY))
+            valueListProperty(EMPLOYEE_JOB, Types.VARCHAR, getString(EMPLOYEE_JOB), JOB_VALUES),
+            columnProperty(EMPLOYEE_SALARY, Types.DOUBLE, getString(EMPLOYEE_SALARY))
                     .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
-            Properties.columnProperty(EMPLOYEE_COMMISSION, Types.DOUBLE, getString(EMPLOYEE_COMMISSION))
+            columnProperty(EMPLOYEE_COMMISSION, Types.DOUBLE, getString(EMPLOYEE_COMMISSION))
                     .setMin(100).setMax(2000).setMaximumFractionDigits(2),
-            Properties.foreignKeyProperty(EMPLOYEE_MGR_FK, getString(EMPLOYEE_MGR_FK), T_EMPLOYEE,
-                    Properties.columnProperty(EMPLOYEE_MGR)),
-            Properties.columnProperty(EMPLOYEE_HIREDATE, Types.DATE, getString(EMPLOYEE_HIREDATE))
+            foreignKeyProperty(EMPLOYEE_MGR_FK, getString(EMPLOYEE_MGR_FK), T_EMPLOYEE,
+                    columnProperty(EMPLOYEE_MGR)),
+            columnProperty(EMPLOYEE_HIREDATE, Types.DATE, getString(EMPLOYEE_HIREDATE))
                     .setNullable(false),
-            Properties.denormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
+            denormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
                     getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     getString(DEPARTMENT_LOCATION)).setPreferredColumnWidth(100))
             .setKeyGenerator(incrementKeyGenerator(T_EMPLOYEE, EMPLOYEE_ID))

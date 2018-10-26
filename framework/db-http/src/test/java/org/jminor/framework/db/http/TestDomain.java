@@ -11,7 +11,6 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Properties;
 
-import java.awt.Color;
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.Collections;
@@ -87,14 +86,7 @@ public final class TestDomain extends Entities {
             .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
             .setOrderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
-            .setCaption("Employee")
-            .setBackgroundColorProvider((entity, property) -> {
-              if (property.is(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {
-                return Color.CYAN;
-              }
-
-              return null;
-            });
+            .setCaption("Employee");
   }
 
   public static final String FUNCTION_ID = "functionId";

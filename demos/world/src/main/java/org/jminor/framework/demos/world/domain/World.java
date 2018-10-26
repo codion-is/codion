@@ -5,9 +5,11 @@ package org.jminor.framework.demos.world.domain;
 
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Properties;
 
 import java.sql.Types;
+
+import static org.jminor.framework.domain.Properties.columnProperty;
+import static org.jminor.framework.domain.Properties.foreignKeyProperty;
 
 public final class World extends Entities {
 
@@ -47,41 +49,41 @@ public final class World extends Entities {
     Entity.Definition.STRICT_FOREIGN_KEYS.set(false);
 
     define(T_COUNTRY,
-            Properties.columnProperty(COUNTRY_CODE, Types.VARCHAR, "Country code")
+            columnProperty(COUNTRY_CODE, Types.VARCHAR, "Country code")
                     .setPrimaryKeyIndex(0)
                     .setUpdatable(true)
                     .setMaxLength(3),
-            Properties.columnProperty(COUNTRY_NAME, Types.VARCHAR, "Name")
+            columnProperty(COUNTRY_NAME, Types.VARCHAR, "Name")
                     .setNullable(false)
                     .setMaxLength(52),
-            Properties.columnProperty(COUNTRY_CONTINENT, Types.VARCHAR, "Continent")
+            columnProperty(COUNTRY_CONTINENT, Types.VARCHAR, "Continent")
                     .setNullable(false)
                     .setMaxLength(20),
-            Properties.columnProperty(COUNTRY_REGION, Types.VARCHAR, "Region")
+            columnProperty(COUNTRY_REGION, Types.VARCHAR, "Region")
                     .setNullable(false),
-            Properties.columnProperty(COUNTRY_SURFACEAREA, Types.DOUBLE, "Surface area")
+            columnProperty(COUNTRY_SURFACEAREA, Types.DOUBLE, "Surface area")
                     .setNullable(false)
                     .setMaximumFractionDigits(2),
-            Properties.columnProperty(COUNTRY_INDEPYEAR, Types.INTEGER, "Indep. year")
+            columnProperty(COUNTRY_INDEPYEAR, Types.INTEGER, "Indep. year")
                     .setMin(-5000).setMax(5000),
-            Properties.columnProperty(COUNTRY_POPULATION, Types.INTEGER, "Population")
+            columnProperty(COUNTRY_POPULATION, Types.INTEGER, "Population")
                     .setNullable(false),
-            Properties.columnProperty(COUNTRY_LIFEEXPECTANCY, Types.DOUBLE, "Life expectancy")
+            columnProperty(COUNTRY_LIFEEXPECTANCY, Types.DOUBLE, "Life expectancy")
                     .setMaximumFractionDigits(1)
                     .setMin(0).setMax(99),
-            Properties.columnProperty(COUNTRY_GNP, Types.DOUBLE, "GNP")
+            columnProperty(COUNTRY_GNP, Types.DOUBLE, "GNP")
                     .setMaximumFractionDigits(2),
-            Properties.columnProperty(COUNTRY_GNPOLD, Types.DOUBLE, "GNP old")
+            columnProperty(COUNTRY_GNPOLD, Types.DOUBLE, "GNP old")
                     .setMaximumFractionDigits(2),
-            Properties.columnProperty(COUNTRY_LOCALNAME, Types.VARCHAR, "Local name")
+            columnProperty(COUNTRY_LOCALNAME, Types.VARCHAR, "Local name")
                     .setNullable(false)
                     .setMaxLength(45),
-            Properties.columnProperty(COUNTRY_GOVERNMENTFORM, Types.VARCHAR, "Government form")
+            columnProperty(COUNTRY_GOVERNMENTFORM, Types.VARCHAR, "Government form")
                     .setNullable(false),
-            Properties.columnProperty(COUNTRY_HEADOFSTATE, Types.VARCHAR, "Head of state"),
-            Properties.foreignKeyProperty(COUNTRY_CAPITAL_FK, "Capital", T_CITY,
-                    Properties.columnProperty(COUNTRY_CAPITAL)),
-            Properties.columnProperty(COUNTRY_CODE2, Types.VARCHAR, "Code2")
+            columnProperty(COUNTRY_HEADOFSTATE, Types.VARCHAR, "Head of state"),
+            foreignKeyProperty(COUNTRY_CAPITAL_FK, "Capital", T_CITY,
+                    columnProperty(COUNTRY_CAPITAL)),
+            columnProperty(COUNTRY_CODE2, Types.VARCHAR, "Code2")
                     .setNullable(false)
                     .setMaxLength(2))
             .setOrderBy(orderBy().ascending(COUNTRY_NAME))
@@ -90,18 +92,18 @@ public final class World extends Entities {
             .setCaption("Country");
 
     define(T_CITY,
-            Properties.columnProperty(CITY_ID)
+            columnProperty(CITY_ID)
                     .setPrimaryKeyIndex(0),
-            Properties.columnProperty(CITY_NAME, Types.VARCHAR, "Name")
+            columnProperty(CITY_NAME, Types.VARCHAR, "Name")
                     .setNullable(false)
                     .setMaxLength(35),
-            Properties.foreignKeyProperty(CITY_COUNTRYCODE_FK, "Country", T_COUNTRY,
-                    Properties.columnProperty(CITY_COUNTRYCODE, Types.VARCHAR))
+            foreignKeyProperty(CITY_COUNTRYCODE_FK, "Country", T_COUNTRY,
+                    columnProperty(CITY_COUNTRYCODE, Types.VARCHAR))
                     .setNullable(false),
-            Properties.columnProperty(CITY_DISTRICT, Types.VARCHAR, "District")
+            columnProperty(CITY_DISTRICT, Types.VARCHAR, "District")
                     .setNullable(false)
                     .setMaxLength(20),
-            Properties.columnProperty(CITY_POPULATION, Types.INTEGER, "Population")
+            columnProperty(CITY_POPULATION, Types.INTEGER, "Population")
                     .setNullable(false))
             .setKeyGenerator(sequenceKeyGenerator("world.city_seq"))
             .setOrderBy(orderBy().ascending(CITY_NAME))
@@ -119,18 +121,18 @@ public final class World extends Entities {
 
   void countryLanguage() {
     define(T_COUNTRYLANGUAGE,
-            Properties.foreignKeyProperty(COUNTRYLANGUAGE_COUNTRYCODE_FK, "Country", T_COUNTRY,
-                    Properties.columnProperty(COUNTRYLANGUAGE_COUNTRYCODE, Types.VARCHAR)
+            foreignKeyProperty(COUNTRYLANGUAGE_COUNTRYCODE_FK, "Country", T_COUNTRY,
+                    columnProperty(COUNTRYLANGUAGE_COUNTRYCODE, Types.VARCHAR)
                             .setPrimaryKeyIndex(0)
                             .setUpdatable(true))
                     .setNullable(false),
-            Properties.columnProperty(COUNTRYLANGUAGE_LANGUAGE, Types.VARCHAR, "Language")
+            columnProperty(COUNTRYLANGUAGE_LANGUAGE, Types.VARCHAR, "Language")
                     .setPrimaryKeyIndex(1)
                     .setUpdatable(true),
-            Properties.columnProperty(COUNTRYLANGUAGE_ISOFFICIAL, Types.BOOLEAN, "Is official")
+            columnProperty(COUNTRYLANGUAGE_ISOFFICIAL, Types.BOOLEAN, "Is official")
                     .setColumnHasDefaultValue(true)
                     .setNullable(false),
-            Properties.columnProperty(COUNTRYLANGUAGE_PERCENTAGE, Types.DOUBLE, "Percentage")
+            columnProperty(COUNTRYLANGUAGE_PERCENTAGE, Types.DOUBLE, "Percentage")
                     .setNullable(false)
                     .setMaximumFractionDigits(1)
                     .setMin(0).setMax(100))

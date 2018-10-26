@@ -20,7 +20,6 @@ import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
 
-import javax.swing.SwingUtilities;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.sql.Types;
@@ -229,8 +228,8 @@ public class EmpDeptMinimalApp {
     Server.TRUSTSTORE.set("resources/security/JMinorClientTruststore");
     System.setProperty("java.security.policy", "resources/security/jminor_demos.policy");
 
-    //we create an instance of our application panel and start the application on the EDT
-    SwingUtilities.invokeLater(() -> new EmpDeptApplicationPanel().startApplication("EmpDept Minimal", null, false,
-            new Dimension(800, 600), new User("scott", "tiger".toCharArray())));
+    //we create an instance of our application panel and start it
+    new EmpDeptApplicationPanel().startApplication("EmpDept Minimal", null, false,
+            new Dimension(800, 600), new User("scott", "tiger".toCharArray()));
   }
 }

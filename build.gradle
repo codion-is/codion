@@ -193,6 +193,7 @@ htmlDependencyReport {
 task combinedJavadoc(type: Javadoc) {
     group 'documentation'
     title "JMinor Framework API $version"
+    failOnError = false
     options.links 'http://docs.oracle.com/javase/8/docs/api/'
     destinationDir = file("${buildDir}/docs/javadoc")
     source frameworkModules.collect { it.sourceSets.main.allJava }

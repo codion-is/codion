@@ -10,13 +10,13 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnection;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Properties;
 
 import java.sql.Types;
 import java.text.NumberFormat;
 import java.util.List;
 
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
+import static org.jminor.framework.domain.Properties.*;
 
 public final class ChinookDomain extends Entities {
 
@@ -37,8 +37,8 @@ public final class ChinookDomain extends Entities {
 
   void artist() {
     define(T_ARTIST, "chinook.artist",
-            Properties.primaryKeyProperty(ARTIST_ARTISTID, Types.BIGINT),
-            Properties.columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
+            primaryKeyProperty(ARTIST_ARTISTID, Types.BIGINT),
+            columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
                     .setNullable(false)
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
@@ -51,12 +51,12 @@ public final class ChinookDomain extends Entities {
 
   void album() {
     define(T_ALBUM, "chinook.album",
-            Properties.primaryKeyProperty(ALBUM_ALBUMID, Types.BIGINT),
-            Properties.foreignKeyProperty(ALBUM_ARTISTID_FK, "Artist", T_ARTIST,
-                    Properties.columnProperty(ALBUM_ARTISTID, Types.BIGINT))
+            primaryKeyProperty(ALBUM_ALBUMID, Types.BIGINT),
+            foreignKeyProperty(ALBUM_ARTISTID_FK, "Artist", T_ARTIST,
+                    columnProperty(ALBUM_ARTISTID, Types.BIGINT))
                     .setNullable(false)
                     .setPreferredColumnWidth(160),
-            Properties.columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
+            columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
                     .setNullable(false)
                     .setMaxLength(160)
                     .setPreferredColumnWidth(160))
@@ -69,34 +69,34 @@ public final class ChinookDomain extends Entities {
 
   void employee() {
     define(T_EMPLOYEE, "chinook.employee",
-            Properties.primaryKeyProperty(EMPLOYEE_EMPLOYEEID, Types.BIGINT),
-            Properties.columnProperty(EMPLOYEE_LASTNAME, Types.VARCHAR, "Last name")
+            primaryKeyProperty(EMPLOYEE_EMPLOYEEID, Types.BIGINT),
+            columnProperty(EMPLOYEE_LASTNAME, Types.VARCHAR, "Last name")
                     .setNullable(false)
                     .setMaxLength(20),
-            Properties.columnProperty(EMPLOYEE_FIRSTNAME, Types.VARCHAR, "First name")
+            columnProperty(EMPLOYEE_FIRSTNAME, Types.VARCHAR, "First name")
                     .setNullable(false)
                     .setMaxLength(20),
-            Properties.columnProperty(EMPLOYEE_TITLE, Types.VARCHAR, "Title")
+            columnProperty(EMPLOYEE_TITLE, Types.VARCHAR, "Title")
                     .setMaxLength(30),
-            Properties.foreignKeyProperty(EMPLOYEE_REPORTSTO_FK, "Reports to", T_EMPLOYEE,
-                    Properties.columnProperty(EMPLOYEE_REPORTSTO, Types.BIGINT)),
-            Properties.columnProperty(EMPLOYEE_BIRTHDATE, Types.DATE, "Birthdate"),
-            Properties.columnProperty(EMPLOYEE_HIREDATE, Types.DATE, "Hiredate"),
-            Properties.columnProperty(EMPLOYEE_ADDRESS, Types.VARCHAR, "Address")
+            foreignKeyProperty(EMPLOYEE_REPORTSTO_FK, "Reports to", T_EMPLOYEE,
+                    columnProperty(EMPLOYEE_REPORTSTO, Types.BIGINT)),
+            columnProperty(EMPLOYEE_BIRTHDATE, Types.DATE, "Birthdate"),
+            columnProperty(EMPLOYEE_HIREDATE, Types.DATE, "Hiredate"),
+            columnProperty(EMPLOYEE_ADDRESS, Types.VARCHAR, "Address")
                     .setMaxLength(70),
-            Properties.columnProperty(EMPLOYEE_CITY, Types.VARCHAR, "City")
+            columnProperty(EMPLOYEE_CITY, Types.VARCHAR, "City")
                     .setMaxLength(40),
-            Properties.columnProperty(EMPLOYEE_STATE, Types.VARCHAR, "State")
+            columnProperty(EMPLOYEE_STATE, Types.VARCHAR, "State")
                     .setMaxLength(40),
-            Properties.columnProperty(EMPLOYEE_COUNTRY, Types.VARCHAR, "Country")
+            columnProperty(EMPLOYEE_COUNTRY, Types.VARCHAR, "Country")
                     .setMaxLength(40),
-            Properties.columnProperty(EMPLOYEE_POSTALCODE, Types.VARCHAR, "Postal code")
+            columnProperty(EMPLOYEE_POSTALCODE, Types.VARCHAR, "Postal code")
                     .setMaxLength(10),
-            Properties.columnProperty(EMPLOYEE_PHONE, Types.VARCHAR, "Phone")
+            columnProperty(EMPLOYEE_PHONE, Types.VARCHAR, "Phone")
                     .setMaxLength(24),
-            Properties.columnProperty(EMPLOYEE_FAX, Types.VARCHAR, "Fax")
+            columnProperty(EMPLOYEE_FAX, Types.VARCHAR, "Fax")
                     .setMaxLength(24),
-            Properties.columnProperty(EMPLOYEE_EMAIL, Types.VARCHAR, "Email")
+            columnProperty(EMPLOYEE_EMAIL, Types.VARCHAR, "Email")
                     .setMaxLength(60))
             .setKeyGenerator(automaticKeyGenerator("chinook.employee"))
             .setOrderBy(orderBy().ascending(EMPLOYEE_LASTNAME, EMPLOYEE_FIRSTNAME))
@@ -108,34 +108,34 @@ public final class ChinookDomain extends Entities {
 
   void customer() {
     define(T_CUSTOMER, "chinook.customer",
-            Properties.primaryKeyProperty(CUSTOMER_CUSTOMERID, Types.BIGINT),
-            Properties.columnProperty(CUSTOMER_LASTNAME, Types.VARCHAR, "Last name")
+            primaryKeyProperty(CUSTOMER_CUSTOMERID, Types.BIGINT),
+            columnProperty(CUSTOMER_LASTNAME, Types.VARCHAR, "Last name")
                     .setNullable(false)
                     .setMaxLength(20),
-            Properties.columnProperty(CUSTOMER_FIRSTNAME, Types.VARCHAR, "First name")
+            columnProperty(CUSTOMER_FIRSTNAME, Types.VARCHAR, "First name")
                     .setNullable(false)
                     .setMaxLength(40),
-            Properties.columnProperty(CUSTOMER_COMPANY, Types.VARCHAR, "Company")
+            columnProperty(CUSTOMER_COMPANY, Types.VARCHAR, "Company")
                     .setMaxLength(80),
-            Properties.columnProperty(CUSTOMER_ADDRESS, Types.VARCHAR, "Address")
+            columnProperty(CUSTOMER_ADDRESS, Types.VARCHAR, "Address")
                     .setMaxLength(70),
-            Properties.columnProperty(CUSTOMER_CITY, Types.VARCHAR, "City")
+            columnProperty(CUSTOMER_CITY, Types.VARCHAR, "City")
                     .setMaxLength(40),
-            Properties.columnProperty(CUSTOMER_STATE, Types.VARCHAR, "State")
+            columnProperty(CUSTOMER_STATE, Types.VARCHAR, "State")
                     .setMaxLength(40),
-            Properties.columnProperty(CUSTOMER_COUNTRY, Types.VARCHAR, "Country")
+            columnProperty(CUSTOMER_COUNTRY, Types.VARCHAR, "Country")
                     .setMaxLength(40),
-            Properties.columnProperty(CUSTOMER_POSTALCODE, Types.VARCHAR, "Postal code")
+            columnProperty(CUSTOMER_POSTALCODE, Types.VARCHAR, "Postal code")
                     .setMaxLength(10),
-            Properties.columnProperty(CUSTOMER_PHONE, Types.VARCHAR, "Phone")
+            columnProperty(CUSTOMER_PHONE, Types.VARCHAR, "Phone")
                     .setMaxLength(24),
-            Properties.columnProperty(CUSTOMER_FAX, Types.VARCHAR, "Fax")
+            columnProperty(CUSTOMER_FAX, Types.VARCHAR, "Fax")
                     .setMaxLength(24),
-            Properties.columnProperty(CUSTOMER_EMAIL, Types.VARCHAR, "Email")
+            columnProperty(CUSTOMER_EMAIL, Types.VARCHAR, "Email")
                     .setNullable(false)
                     .setMaxLength(60),
-            Properties.foreignKeyProperty(CUSTOMER_SUPPORTREPID_FK, "Support rep", T_EMPLOYEE,
-                    Properties.columnProperty(CUSTOMER_SUPPORTREPID, Types.BIGINT)))
+            foreignKeyProperty(CUSTOMER_SUPPORTREPID_FK, "Support rep", T_EMPLOYEE,
+                    columnProperty(CUSTOMER_SUPPORTREPID, Types.BIGINT)))
             .setKeyGenerator(automaticKeyGenerator("chinook.customer"))
             .setOrderBy(orderBy().ascending(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME))
             .setStringProvider(new Entities.StringProvider(CUSTOMER_LASTNAME)
@@ -146,8 +146,8 @@ public final class ChinookDomain extends Entities {
 
   void genre() {
     define(T_GENRE, "chinook.genre",
-            Properties.primaryKeyProperty(GENRE_GENREID, Types.BIGINT),
-            Properties.columnProperty(GENRE_NAME, Types.VARCHAR, "Name")
+            primaryKeyProperty(GENRE_GENREID, Types.BIGINT),
+            columnProperty(GENRE_NAME, Types.VARCHAR, "Name")
                     .setNullable(false)
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
@@ -161,8 +161,8 @@ public final class ChinookDomain extends Entities {
 
   void mediaType() {
     define(T_MEDIATYPE, "chinook.mediatype",
-            Properties.primaryKeyProperty(MEDIATYPE_MEDIATYPEID, Types.BIGINT),
-            Properties.columnProperty(MEDIATYPE_NAME, Types.VARCHAR, "Name")
+            primaryKeyProperty(MEDIATYPE_MEDIATYPEID, Types.BIGINT),
+            columnProperty(MEDIATYPE_NAME, Types.VARCHAR, "Name")
                     .setNullable(false)
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
@@ -174,34 +174,34 @@ public final class ChinookDomain extends Entities {
 
   void track() {
     define(T_TRACK, "chinook.track",
-            Properties.primaryKeyProperty(TRACK_TRACKID, Types.BIGINT),
-            Properties.denormalizedViewProperty(TRACK_ARTIST_DENORM, TRACK_ALBUMID_FK,
+            primaryKeyProperty(TRACK_TRACKID, Types.BIGINT),
+            denormalizedViewProperty(TRACK_ARTIST_DENORM, TRACK_ALBUMID_FK,
                     getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist")
                     .setPreferredColumnWidth(160),
-            Properties.foreignKeyProperty(TRACK_ALBUMID_FK, "Album", T_ALBUM,
-                    Properties.columnProperty(TRACK_ALBUMID, Types.BIGINT))
+            foreignKeyProperty(TRACK_ALBUMID_FK, "Album", T_ALBUM,
+                    columnProperty(TRACK_ALBUMID, Types.BIGINT))
                     .setFetchDepth(2)
                     .setPreferredColumnWidth(160),
-            Properties.columnProperty(TRACK_NAME, Types.VARCHAR, "Name")
+            columnProperty(TRACK_NAME, Types.VARCHAR, "Name")
                     .setNullable(false)
                     .setMaxLength(200)
                     .setPreferredColumnWidth(160),
-            Properties.foreignKeyProperty(TRACK_GENREID_FK, "Genre", T_GENRE,
-                    Properties.columnProperty(TRACK_GENREID, Types.BIGINT)),
-            Properties.columnProperty(TRACK_COMPOSER, Types.VARCHAR, "Composer")
+            foreignKeyProperty(TRACK_GENREID_FK, "Genre", T_GENRE,
+                    columnProperty(TRACK_GENREID, Types.BIGINT)),
+            columnProperty(TRACK_COMPOSER, Types.VARCHAR, "Composer")
                     .setMaxLength(220)
                     .setPreferredColumnWidth(160),
-            Properties.foreignKeyProperty(TRACK_MEDIATYPEID_FK, "Media type", T_MEDIATYPE,
-                    Properties.columnProperty(TRACK_MEDIATYPEID, Types.BIGINT))
+            foreignKeyProperty(TRACK_MEDIATYPEID_FK, "Media type", T_MEDIATYPE,
+                    columnProperty(TRACK_MEDIATYPEID, Types.BIGINT))
                     .setNullable(false),
-            Properties.columnProperty(TRACK_MILLISECONDS, Types.INTEGER, "Duration (ms)")
+            columnProperty(TRACK_MILLISECONDS, Types.INTEGER, "Duration (ms)")
                     .setNullable(false)
                     .setFormat(NumberFormat.getIntegerInstance()),
-            Properties.derivedProperty(TRACK_MINUTES_SECONDS_DERIVED, Types.VARCHAR, "Duration (min/sec)",
+            derivedProperty(TRACK_MINUTES_SECONDS_DERIVED, Types.VARCHAR, "Duration (min/sec)",
                     TRACK_MIN_SEC_PROVIDER, TRACK_MILLISECONDS),
-            Properties.columnProperty(TRACK_BYTES, Types.INTEGER, "Bytes")
+            columnProperty(TRACK_BYTES, Types.INTEGER, "Bytes")
                     .setFormat(NumberFormat.getIntegerInstance()),
-            Properties.columnProperty(TRACK_UNITPRICE, Types.DOUBLE, "Price")
+            columnProperty(TRACK_UNITPRICE, Types.DOUBLE, "Price")
                     .setNullable(false))
             .setKeyGenerator(automaticKeyGenerator("chinook.track"))
             .setOrderBy(orderBy().ascending(TRACK_NAME))
@@ -214,29 +214,29 @@ public final class ChinookDomain extends Entities {
 
   void invoice() {
     define(T_INVOICE, "chinook.invoice",
-            Properties.primaryKeyProperty(INVOICE_INVOICEID, Types.BIGINT, "Invoice no."),
-            Properties.columnProperty(INVOICE_INVOICEID_AS_STRING, Types.VARCHAR, "Invoice no.")
+            primaryKeyProperty(INVOICE_INVOICEID, Types.BIGINT, "Invoice no."),
+            columnProperty(INVOICE_INVOICEID_AS_STRING, Types.VARCHAR, "Invoice no.")
                     .setReadOnly(true)
                     .setHidden(true),
-            Properties.foreignKeyProperty(INVOICE_CUSTOMERID_FK, "Customer", T_CUSTOMER,
-                    Properties.columnProperty(INVOICE_CUSTOMERID, Types.BIGINT))
+            foreignKeyProperty(INVOICE_CUSTOMERID_FK, "Customer", T_CUSTOMER,
+                    columnProperty(INVOICE_CUSTOMERID, Types.BIGINT))
                     .setNullable(false),
-            Properties.columnProperty(INVOICE_INVOICEDATE, Types.DATE, "Date")
+            columnProperty(INVOICE_INVOICEDATE, Types.DATE, "Date")
                     .setNullable(false),
-            Properties.columnProperty(INVOICE_BILLINGADDRESS, Types.VARCHAR, "Billing address")
+            columnProperty(INVOICE_BILLINGADDRESS, Types.VARCHAR, "Billing address")
                     .setMaxLength(70),
-            Properties.columnProperty(INVOICE_BILLINGCITY, Types.VARCHAR, "Billing city")
+            columnProperty(INVOICE_BILLINGCITY, Types.VARCHAR, "Billing city")
                     .setMaxLength(40),
-            Properties.columnProperty(INVOICE_BILLINGSTATE, Types.VARCHAR, "Billing state")
+            columnProperty(INVOICE_BILLINGSTATE, Types.VARCHAR, "Billing state")
                     .setMaxLength(40),
-            Properties.columnProperty(INVOICE_BILLINGCOUNTRY, Types.VARCHAR, "Billing country")
+            columnProperty(INVOICE_BILLINGCOUNTRY, Types.VARCHAR, "Billing country")
                     .setMaxLength(40),
-            Properties.columnProperty(INVOICE_BILLINGPOSTALCODE, Types.VARCHAR, "Billing postal code")
+            columnProperty(INVOICE_BILLINGPOSTALCODE, Types.VARCHAR, "Billing postal code")
                     .setMaxLength(10),
-            Properties.columnProperty(INVOICE_TOTAL, Types.DOUBLE, "Total")
+            columnProperty(INVOICE_TOTAL, Types.DOUBLE, "Total")
                     .setMaximumFractionDigits(2)
                     .setHidden(true),
-            Properties.subqueryProperty(INVOICE_TOTAL_SUB, Types.DOUBLE, "Calculated total", INVOICE_TOTAL_SUBQUERY)
+            subqueryProperty(INVOICE_TOTAL_SUB, Types.DOUBLE, "Calculated total", INVOICE_TOTAL_SUBQUERY)
                     .setMaximumFractionDigits(2))
             .setKeyGenerator(automaticKeyGenerator("chinook.invoice"))
             .setOrderBy(orderBy().ascending(INVOICE_CUSTOMERID).descending(INVOICE_INVOICEDATE))
@@ -247,21 +247,21 @@ public final class ChinookDomain extends Entities {
 
   void invoiceLine() {
     define(T_INVOICELINE, "chinook.invoiceline",
-            Properties.primaryKeyProperty(INVOICELINE_INVOICELINEID, Types.BIGINT),
-            Properties.foreignKeyProperty(INVOICELINE_INVOICEID_FK, "Invoice", T_INVOICE,
-                    Properties.columnProperty(INVOICELINE_INVOICEID, Types.BIGINT))
+            primaryKeyProperty(INVOICELINE_INVOICELINEID, Types.BIGINT),
+            foreignKeyProperty(INVOICELINE_INVOICEID_FK, "Invoice", T_INVOICE,
+                    columnProperty(INVOICELINE_INVOICEID, Types.BIGINT))
                     .setFetchDepth(0)
                     .setNullable(false),
-            Properties.foreignKeyProperty(INVOICELINE_TRACKID_FK, "Track", T_TRACK,
-                    Properties.columnProperty(INVOICELINE_TRACKID, Types.BIGINT))
+            foreignKeyProperty(INVOICELINE_TRACKID_FK, "Track", T_TRACK,
+                    columnProperty(INVOICELINE_TRACKID, Types.BIGINT))
                     .setNullable(false)
                     .setPreferredColumnWidth(100),
-            Properties.denormalizedProperty(INVOICELINE_UNITPRICE, INVOICELINE_TRACKID_FK,
+            denormalizedProperty(INVOICELINE_UNITPRICE, INVOICELINE_TRACKID_FK,
                     getProperty(T_TRACK, TRACK_UNITPRICE), "Unit price")
                     .setNullable(false),
-            Properties.columnProperty(INVOICELINE_QUANTITY, Types.INTEGER, "Quantity")
+            columnProperty(INVOICELINE_QUANTITY, Types.INTEGER, "Quantity")
                     .setNullable(false),
-            Properties.derivedProperty(INVOICELINE_TOTAL, Types.DOUBLE, "Total", INVOICELINE_TOTAL_PROVIDER,
+            derivedProperty(INVOICELINE_TOTAL, Types.DOUBLE, "Total", INVOICELINE_TOTAL_PROVIDER,
                     INVOICELINE_QUANTITY, INVOICELINE_UNITPRICE))
             .setKeyGenerator(automaticKeyGenerator("chinook.invoiceline"))
             .setCaption("Invoice lines");
@@ -269,8 +269,8 @@ public final class ChinookDomain extends Entities {
 
   void playlist() {
     define(T_PLAYLIST, "chinook.playlist",
-            Properties.primaryKeyProperty(PLAYLIST_PLAYLISTID, Types.BIGINT),
-            Properties.columnProperty(PLAYLIST_NAME, Types.VARCHAR, "Name")
+            primaryKeyProperty(PLAYLIST_PLAYLISTID, Types.BIGINT),
+            columnProperty(PLAYLIST_NAME, Types.VARCHAR, "Name")
                     .setNullable(false)
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
@@ -283,22 +283,22 @@ public final class ChinookDomain extends Entities {
 
   void playlistTrack() {
     define(T_PLAYLISTTRACK, "chinook.playlisttrack",
-            Properties.foreignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
-                    Properties.primaryKeyProperty(PLAYLISTTRACK_PLAYLISTID, Types.BIGINT)
+            foreignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
+                    primaryKeyProperty(PLAYLISTTRACK_PLAYLISTID, Types.BIGINT)
                             .setUpdatable(true))
                     .setNullable(false)
                     .setPreferredColumnWidth(120),
-            Properties.denormalizedViewProperty(PLAYLISTTRACK_ARTIST_DENORM, PLAYLISTTRACK_ALBUM_DENORM,
+            denormalizedViewProperty(PLAYLISTTRACK_ARTIST_DENORM, PLAYLISTTRACK_ALBUM_DENORM,
                     getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist")
                     .setPreferredColumnWidth(160),
-            Properties.foreignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
-                    Properties.primaryKeyProperty(PLAYLISTTRACK_TRACKID, Types.BIGINT)
+            foreignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
+                    primaryKeyProperty(PLAYLISTTRACK_TRACKID, Types.BIGINT)
                             .setPrimaryKeyIndex(1)
                             .setUpdatable(true))
                     .setFetchDepth(3)
                     .setNullable(false)
                     .setPreferredColumnWidth(160),
-            Properties.denormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACKID_FK,
+            denormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACKID_FK,
                     getProperty(T_TRACK, TRACK_ALBUMID_FK), "Album")
                     .setPreferredColumnWidth(160))
             .setStringProvider(new Entities.StringProvider(PLAYLISTTRACK_PLAYLISTID_FK)
