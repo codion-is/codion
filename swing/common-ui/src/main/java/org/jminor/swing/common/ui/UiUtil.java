@@ -847,11 +847,7 @@ public final class UiUtil {
    * @return the preferred height of a JTextField
    */
   public static synchronized int getPreferredTextFieldHeight() {
-    if (textField == null) {
-      textField = new JTextField();
-    }
-
-    return textField.getPreferredSize().height;
+    return getPreferredTextFieldSize().height;
   }
 
   /**
@@ -870,45 +866,48 @@ public final class UiUtil {
   }
 
   /**
-   * Makes {@code textField} convert all lower case input to upper case
-   * @param textField the text field
-   * @return the text field
+   * Makes {@code textComponent} convert all lower case input to upper case
+   * @param textComponent the text component
+   * @param <T> the component type
+   * @return the text component
    */
-  public static JTextComponent makeUpperCase(final JTextComponent textField) {
-    if (textField.getDocument() instanceof SizedDocument) {
-      ((SizedDocument) textField.getDocument()).setDocumentCase(SizedDocument.DocumentCase.UPPERCASE);
+  public static <T extends JTextComponent> T makeUpperCase(final T textComponent) {
+    if (textComponent.getDocument() instanceof SizedDocument) {
+      ((SizedDocument) textComponent.getDocument()).setDocumentCase(SizedDocument.DocumentCase.UPPERCASE);
     }
     else {
-      ((PlainDocument) textField.getDocument()).setDocumentFilter(new CaseDocumentFilter(SizedDocument.DocumentCase.UPPERCASE));
+      ((PlainDocument) textComponent.getDocument()).setDocumentFilter(new CaseDocumentFilter(SizedDocument.DocumentCase.UPPERCASE));
     }
 
-    return textField;
+    return textComponent;
   }
 
   /**
-   * Makes {@code textField} convert all upper case input to lower case
-   * @param textField the text field
-   * @return the text field
+   * Makes {@code textComponent} convert all upper case input to lower case
+   * @param textComponent the text component
+   * @param <T> the component type
+   * @return the text component
    */
-  public static JTextComponent makeLowerCase(final JTextComponent textField) {
-    if (textField.getDocument() instanceof SizedDocument) {
-      ((SizedDocument) textField.getDocument()).setDocumentCase(SizedDocument.DocumentCase.LOWERCASE);
+  public static <T extends JTextComponent> T makeLowerCase(final T textComponent) {
+    if (textComponent.getDocument() instanceof SizedDocument) {
+      ((SizedDocument) textComponent.getDocument()).setDocumentCase(SizedDocument.DocumentCase.LOWERCASE);
     }
     else {
-      ((PlainDocument) textField.getDocument()).setDocumentFilter(new CaseDocumentFilter(SizedDocument.DocumentCase.LOWERCASE));
+      ((PlainDocument) textComponent.getDocument()).setDocumentFilter(new CaseDocumentFilter(SizedDocument.DocumentCase.LOWERCASE));
     }
 
-    return textField;
+    return textComponent;
   }
 
   /**
    * Adds a key event to the component which transfers focus
    * on enter, and backwards if shift is down
    * @param component the component
-   * @see #removeTransferFocusOnEnter(javax.swing.JComponent)
+   * @param <T> the component type
+   * @see #removeTransferFocusOnEnter(JTextComponent)
    * @return the component
    */
-  public static JComponent transferFocusOnEnter(final JComponent component) {
+  public static <T extends JComponent> T transferFocusOnEnter(final T component) {
     addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, false, new TransferFocusAction(component));
     addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, false, new TransferFocusAction(component, true));
 
@@ -918,9 +917,10 @@ public final class UiUtil {
   /**
    * Removes the transfer focus action added via {@link #transferFocusOnEnter(javax.swing.JComponent)}
    * @param component the component
+   * @param <T> the component type
    * @return the component
    */
-  public static JComponent removeTransferFocusOnEnter(final JComponent component) {
+  public static <T extends JTextComponent> T removeTransferFocusOnEnter(final T component) {
     addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, false, null);
     addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, false, null);
 
@@ -931,9 +931,10 @@ public final class UiUtil {
    * Selects all text in the given component when it gains focus and clears
    * the selection when focus is lost
    * @param textComponent the text component
+   * @param <T> the component type
    * @return the component
    */
-  public static JTextComponent selectAllOnFocusGained(final JTextComponent textComponent) {
+  public static <T extends JTextComponent> T selectAllOnFocusGained(final T textComponent) {
     textComponent.addFocusListener(new SelectAllListener(textComponent));
 
     return textComponent;
@@ -942,10 +943,11 @@ public final class UiUtil {
   /**
    * Reverts the functionality added via {@link #selectAllOnFocusGained(JTextComponent)}.
    * @param textComponent the text component
+   * @param <T> the component type
    * @return the text component
    * @see #selectAllOnFocusGained(JTextComponent)
    */
-  public static JTextComponent selectNoneOnFocusGained(final JTextComponent textComponent) {
+  public static <T extends JTextComponent> T selectNoneOnFocusGained(final T textComponent) {
     for (final FocusListener listener : textComponent.getFocusListeners()) {
       if (listener instanceof SelectAllListener) {
         textComponent.removeFocusListener(listener);
@@ -958,9 +960,10 @@ public final class UiUtil {
   /**
    * Sets the caret position to 0 in the given text component when it gains focus
    * @param textComponent the text component
+   * @param <T> the component type
    * @return the component
    */
-  public static JTextComponent moveCaretToStartOnFocusGained(final JTextComponent textComponent) {
+  public static <T extends JTextComponent> T moveCaretToStartOnFocusGained(final T textComponent) {
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
@@ -974,9 +977,10 @@ public final class UiUtil {
   /**
    * Sets the caret position to the right of the last character in the given text component when it gains focus
    * @param textComponent the text component
+   * @param <T> the component type
    * @return the component
    */
-  public static JTextComponent moveCaretToEndOnFocusGained(final JTextComponent textComponent) {
+  public static <T extends JTextComponent> T moveCaretToEndOnFocusGained(final T textComponent) {
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {

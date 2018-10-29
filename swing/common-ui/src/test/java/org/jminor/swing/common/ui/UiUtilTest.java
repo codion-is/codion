@@ -50,8 +50,7 @@ public class UiUtilTest {
 
   @Test
   public void makeUpperCase() {
-    JTextField txt = new JTextField();
-    UiUtil.makeUpperCase(txt);
+    JTextField txt = UiUtil.makeUpperCase(new JTextField());
     txt.setText("hello");
     assertEquals("HELLO", txt.getText());
 
@@ -64,8 +63,7 @@ public class UiUtilTest {
 
   @Test
   public void makeLowerCase() {
-    JTextField txt = new JTextField();
-    UiUtil.makeLowerCase(txt);
+    JTextField txt = UiUtil.makeLowerCase(new JTextField());
     txt.setText("HELLO");
     assertEquals("hello", txt.getText());
 
@@ -88,7 +86,6 @@ public class UiUtilTest {
   @Test
   public void setPreferredWidth() {
     final JTextField txt = new JTextField();
-    final Dimension preferred = txt.getPreferredSize();
     UiUtil.setPreferredWidth(txt, 42);
     assertEquals(new Dimension(42, txt.getPreferredSize().height), txt.getPreferredSize());
   }
@@ -96,7 +93,6 @@ public class UiUtilTest {
   @Test
   public void setPreferredHeight() {
     final JTextField txt = new JTextField();
-    final Dimension preferred = txt.getPreferredSize();
     UiUtil.setPreferredHeight(txt, 42);
     assertEquals(new Dimension(txt.getPreferredSize().width, 42), txt.getPreferredSize());
   }

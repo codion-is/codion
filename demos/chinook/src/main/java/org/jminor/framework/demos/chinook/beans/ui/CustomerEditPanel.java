@@ -31,7 +31,7 @@ public class CustomerEditPanel extends EntityEditPanel {
     txtAddress.setColumns(16);
     final JTextField txtCity = createTextField(CUSTOMER_CITY);
     txtCity.setColumns(16);
-    final JTextField txtState = (JTextField) UiUtil.makeUpperCase(createTextField(CUSTOMER_STATE));
+    final JTextField txtState = UiUtil.makeUpperCase(createTextField(CUSTOMER_STATE));
     txtState.setColumns(16);
     final JTextField txtCountry = createTextField(CUSTOMER_COUNTRY);
     txtCountry.setColumns(16);

@@ -4886,3 +4886,4 @@
   DefaultProperty.BooleanValueConverter default constructor now throws exception if database type is not specified
   EntityBeanMapperTest, added boolean property
   UiUtil.prepareScrollPanelDialog() regression bug fixed, now selection is triggered on Enter keyPressed
+  UiUtil, generics added to a few methods

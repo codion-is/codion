@@ -32,7 +32,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     txtAddress.setColumns(16);
     final JTextField txtCity = createTextField(EMPLOYEE_CITY);
     txtCity.setColumns(16);
-    final JTextField txtState = (JTextField) UiUtil.makeUpperCase(createTextField(EMPLOYEE_STATE));
+    final JTextField txtState = UiUtil.makeUpperCase(createTextField(EMPLOYEE_STATE));
     txtState.setColumns(16);
     final JTextField txtCountry = createTextField(EMPLOYEE_COUNTRY);
     txtCountry.setColumns(16);
