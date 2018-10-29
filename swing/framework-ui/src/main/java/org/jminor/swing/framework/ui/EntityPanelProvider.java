@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.TextUtil;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
@@ -12,19 +11,15 @@ import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
 /**
  * A class providing EntityPanel instances.
- * Note: this class has a natural ordering based on the caption which is inconsistent with equals.
  */
-public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
+public class EntityPanelProvider {
 
   private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
-
-  private final Comparator<String> comparator = TextUtil.getSpaceAwareCollator();
 
   private final String caption;
   private boolean refreshOnInit = true;
@@ -251,15 +246,6 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
    */
   public final Class<? extends EntityTablePanel> getTablePanelClass() {
     return tablePanelClass;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final int compareTo(final EntityPanelProvider panelProvider) {
-    final String thisCompare = caption == null ? modelProvider.getModelClass().getSimpleName() : caption;
-    final String thatCompare = panelProvider.caption == null ? panelProvider.panelClass.getSimpleName() : panelProvider.caption;
-
-    return comparator.compare(thisCompare, thatCompare);
   }
 
   /** {@inheritDoc} */

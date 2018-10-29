@@ -73,7 +73,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -81,6 +80,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -828,21 +828,21 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       return null;
     }
 
-    Collections.sort(supportPanelProviders);
+    final Comparator<String> comparator = TextUtil.getSpaceAwareCollator();
+    final Entities domain = applicationModel.getDomain();
+    supportPanelProviders.sort(new Comparator<EntityPanelProvider>() {
+      @Override
+      public int compare(final EntityPanelProvider ep1, final EntityPanelProvider ep2) {
+        final String thisCompare = ep1.getCaption() == null ? domain.getCaption(ep1.getEntityId()) : ep1.getCaption();
+        final String thatCompare = ep2.getCaption() == null ? domain.getCaption(ep2.getEntityId()) : ep2.getCaption();
+
+        return comparator.compare(thisCompare, thatCompare);
+      }
+    });
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES),
             FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
-    for (final EntityPanelProvider panelProvider : supportPanelProviders) {
-      String caption = panelProvider.getCaption();
-      if (caption == null) {
-        caption = applicationModel.getDomain().getCaption(panelProvider.getEntityId());
-      }
-      controlSet.add(new Control(caption) {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          SwingUtilities.invokeLater(() -> showEntityPanelDialog(panelProvider));
-        }
-      });
-    }
+    supportPanelProviders.forEach(panelProvider -> controlSet.add(Controls.control(() -> showEntityPanelDialog(panelProvider),
+            panelProvider.getCaption() == null ? domain.getCaption(panelProvider.getEntityId()) : panelProvider.getCaption())));
 
     return controlSet;
   }
@@ -861,7 +861,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param modalDialog if true the dialog is made modal
    */
   protected final void showEntityPanelDialog(final EntityPanelProvider panelProvider, final boolean modalDialog) {
-    final JDialog dialog;
     try {
       UiUtil.setWaitCursor(true, this);
       final EntityPanel entityPanel;
@@ -878,11 +877,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
           persistentEntityPanels.put(panelProvider, entityPanel);
         }
       }
-      String caption = panelProvider.getCaption();
-      if (caption == null) {
-        caption = applicationModel.getDomain().getCaption(panelProvider.getEntityId());
-      }
-      dialog = new JDialog(getParentWindow(), caption);
+      final JDialog dialog = new JDialog(getParentWindow(), panelProvider.getCaption() == null ?
+              applicationModel.getDomain().getCaption(panelProvider.getEntityId()) : panelProvider.getCaption());
       dialog.addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosed(final WindowEvent e) {
@@ -900,11 +896,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         dialog.setModal(true);
       }
       dialog.setResizable(true);
+      SwingUtilities.invokeLater(() -> dialog.setVisible(true));
     }
     finally {
       UiUtil.setWaitCursor(false, this);
     }
-    dialog.setVisible(true);
   }
 
   /**

@@ -4887,3 +4887,5 @@
   EntityBeanMapperTest, added boolean property
   UiUtil.prepareScrollPanelDialog() regression bug fixed, now selection is triggered on Enter keyPressed
   UiUtil, generics added to a few methods
+  EntityPanelProvider no longer implements Comparable
+  EntityApplicationPanel now does the (correct) sorting of support panel providers
