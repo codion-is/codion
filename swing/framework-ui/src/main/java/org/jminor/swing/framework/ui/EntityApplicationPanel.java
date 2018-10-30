@@ -830,14 +830,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     final Comparator<String> comparator = TextUtil.getSpaceAwareCollator();
     final Entities domain = applicationModel.getDomain();
-    supportPanelProviders.sort(new Comparator<EntityPanelProvider>() {
-      @Override
-      public int compare(final EntityPanelProvider ep1, final EntityPanelProvider ep2) {
+    supportPanelProviders.sort((ep1, ep2) -> {
         final String thisCompare = ep1.getCaption() == null ? domain.getCaption(ep1.getEntityId()) : ep1.getCaption();
         final String thatCompare = ep2.getCaption() == null ? domain.getCaption(ep2.getEntityId()) : ep2.getCaption();
 
         return comparator.compare(thisCompare, thatCompare);
-      }
     });
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES),
             FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));

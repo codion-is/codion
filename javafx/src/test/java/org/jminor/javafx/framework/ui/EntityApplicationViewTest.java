@@ -13,7 +13,9 @@ import org.jminor.javafx.framework.model.FXEntityEditModel;
 import org.jminor.javafx.framework.model.FXEntityListModel;
 import org.jminor.javafx.framework.model.FXEntityModel;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.testfx.api.FxToolkit;
 
 public final class EntityApplicationViewTest {
 
@@ -24,6 +26,11 @@ public final class EntityApplicationViewTest {
           System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, UNIT_TEST_USER, Databases.getInstance());
+
+  @BeforeAll
+  public static void setUp() throws Exception {
+    FxToolkit.registerPrimaryStage();
+  }
 
   @Test
   public void constructor() {

@@ -15,9 +15,10 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.TestDomain;
 
-import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.ListView;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.testfx.api.FxToolkit;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -25,11 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ObservableEntityListTest {
-
-  static {
-    new JFXPanel();
-  }
+public final class ObservableEntityListTest {
 
   protected static final Entities ENTITIES = new TestDomain();
 
@@ -38,6 +35,11 @@ public class ObservableEntityListTest {
           System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, UNIT_TEST_USER, Databases.getInstance());
+
+  @BeforeAll
+  public static void setUp() throws Exception {
+    FxToolkit.registerPrimaryStage();
+  }
 
   @Test
   public void selectCondition() {

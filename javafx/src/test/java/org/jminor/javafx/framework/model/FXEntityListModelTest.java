@@ -8,15 +8,17 @@ import org.jminor.framework.model.AbstractEntityTableModelTest;
 import org.jminor.framework.model.TestDomain;
 import org.jminor.javafx.framework.ui.EntityTableView;
 
-import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.ListView;
+import org.junit.jupiter.api.BeforeAll;
+import org.testfx.api.FxToolkit;
 
 import java.util.List;
 
 public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FXEntityEditModel, FXEntityListModel> {
 
-  static {
-    new JFXPanel();
+  @BeforeAll
+  public static void setUp() throws Exception {
+    FxToolkit.registerPrimaryStage();
   }
 
   @Override

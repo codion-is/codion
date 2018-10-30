@@ -12,8 +12,9 @@ import org.jminor.javafx.framework.model.FXEntityEditModel;
 import org.jminor.javafx.framework.model.FXEntityListModel;
 import org.jminor.javafx.framework.model.FXEntityModel;
 
-import javafx.embed.swing.JFXPanel;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.testfx.api.FxToolkit;
 
 public final class EntityViewTest {
 
@@ -25,8 +26,9 @@ public final class EntityViewTest {
 
   protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, UNIT_TEST_USER, Databases.getInstance());
 
-  static {
-    new JFXPanel();
+  @BeforeAll
+  public static void setUp() throws Exception {
+    FxToolkit.registerPrimaryStage();
   }
 
   @Test

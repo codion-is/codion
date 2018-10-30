@@ -4889,3 +4889,4 @@
   UiUtil, generics added to a few methods
   EntityPanelProvider no longer implements Comparable
   EntityApplicationPanel now does the (correct) sorting of support panel providers
+  JavaFX module unit tests improved, now use testfx library to initialize the JavaFX environment instead of the new JFXPanel() hack

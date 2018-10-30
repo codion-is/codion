@@ -7,12 +7,14 @@ import org.jminor.framework.model.AbstractEntityModelTest;
 import org.jminor.framework.model.TestDomain;
 import org.jminor.javafx.framework.ui.EntityTableView;
 
-import javafx.embed.swing.JFXPanel;
+import org.junit.jupiter.api.BeforeAll;
+import org.testfx.api.FxToolkit;
 
 public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityModel, FXEntityEditModel, FXEntityListModel> {
 
-  static {
-    new JFXPanel();
+  @BeforeAll
+  public static void setUp() throws Exception {
+    FxToolkit.registerPrimaryStage();
   }
 
   @Override

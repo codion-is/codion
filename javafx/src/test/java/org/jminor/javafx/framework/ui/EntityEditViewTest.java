@@ -10,10 +10,11 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.javafx.framework.model.FXEntityEditModel;
 
-import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.testfx.api.FxToolkit;
 
 public final class EntityEditViewTest {
 
@@ -25,8 +26,9 @@ public final class EntityEditViewTest {
 
   protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, UNIT_TEST_USER, Databases.getInstance());
 
-  static {
-    new JFXPanel();
+  @BeforeAll
+  public static void setUp() throws Exception {
+    FxToolkit.registerPrimaryStage();
   }
 
   @Test
