@@ -19,7 +19,7 @@ public final class Events {
 
   /**
    * Instantiates a new Event.
-   * @param <T> the type of info propagated to listeners on event firing
+   * @param <T> the type of data propagated to listeners on event firing
    * @return a new Event
    */
   public static <T> Event<T> event() {
@@ -27,8 +27,8 @@ public final class Events {
   }
 
   /**
-   * @param listener the info listener
-   * @return a {@link EventListener} causing the given {@link EventDataListener} to be fired with null info on each occurrence
+   * @param listener the data listener
+   * @return a {@link EventListener} causing the given {@link EventDataListener} to be fired with null data on each occurrence
    */
   public static EventListener listener(final EventDataListener<?> listener) {
     return () -> listener.eventOccurred(null);
