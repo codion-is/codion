@@ -564,24 +564,16 @@ public final class EntityService extends Application {
   }
 
   private static String getDomainId(final MultivaluedMap<String, String> headers) throws ServerException.AuthenticationException {
-    final List<String> domainIdHeaders = headers.get(DOMAIN_ID);
-    checkHeaderParameter(domainIdHeaders, DOMAIN_ID);
-
-    return domainIdHeaders.get(0);
+    return checkHeaderParameter(headers.get(DOMAIN_ID), DOMAIN_ID);
   }
 
   private static String getClientTypeId(final MultivaluedMap<String, String> headers) throws ServerException.AuthenticationException {
-    final List<String> clientTypeIdHeaders = headers.get(CLIENT_TYPE_ID);
-    checkHeaderParameter(clientTypeIdHeaders, CLIENT_TYPE_ID);
-
-    return clientTypeIdHeaders.get(0);
+    return checkHeaderParameter(headers.get(CLIENT_TYPE_ID), CLIENT_TYPE_ID);
   }
 
   private static UUID getClientId(final MultivaluedMap<String, String> headers, final HttpSession session)
           throws ServerException.AuthenticationException {
-    final List<String> clientIdHeaders = headers.get(CLIENT_ID);
-    checkHeaderParameter(clientIdHeaders, CLIENT_ID);
-    final UUID clientId = UUID.fromString(clientIdHeaders.get(0));
+    final UUID clientId = UUID.fromString(checkHeaderParameter(headers.get(CLIENT_ID), CLIENT_ID));
     if (session.isNew()) {
       session.setAttribute(CLIENT_ID, clientId);
     }
@@ -613,10 +605,12 @@ public final class EntityService extends Application {
     return (T) new ObjectInputStream(request.getInputStream()).readObject();
   }
 
-  private static void checkHeaderParameter(final List<String> headers, final String headerParameter)
+  private static String checkHeaderParameter(final List<String> headers, final String headerParameter)
           throws ServerException.AuthenticationException {
     if (Util.nullOrEmpty(headers)) {
       throw new ServerException.AuthenticationException(headerParameter + " header parameter is missing");
     }
+
+    return headers.get(0);
   }
 }

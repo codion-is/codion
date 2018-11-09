@@ -19,6 +19,7 @@ java.lang.Long
 java.lang.Number
 java.sql.Date
 java.util.ArrayList
+java.util.Arrays$ArrayList
 java.util.Collections$SingletonList
 java.util.Collections$SingletonMap
 java.util.Date

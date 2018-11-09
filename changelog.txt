@@ -4893,3 +4893,6 @@
   Automatic-Module-Name fixed after gradle module renaming
   Minor changes to RemoteClient.clientHost attribute handling
   H2Database, unit test multiple in-memory databases
+  EntityService, some refactoring
+  Jetty upgraded
+  Serialization whitelist updated

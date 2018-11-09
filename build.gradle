@@ -11,7 +11,7 @@ ext {
     jcalendarVersion = '1.4'
     jcommonVersion = '1.0.24'
     jfreechartVersion = '1.5.0'
-    jettyVersion = '9.4.11.v20180605'
+    jettyVersion = '9.4.12.v20180830'
     httpclientVersion = '4.5.6'
     junitVersion = '5.3.1'
     jacocoVersion = '0.8.1'
