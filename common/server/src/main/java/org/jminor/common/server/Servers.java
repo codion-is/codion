@@ -240,7 +240,8 @@ public final class Servers {
 
     private final ConnectionRequest connectionRequest;
     private final User databaseUser;
-    private String clientHost = "unknown";
+
+    private String clientHost;
 
     /**
      * Instantiates a new RemoteClient
@@ -318,7 +319,7 @@ public final class Servers {
       if (databaseUser != null && !connectionRequest.getUser().equals(databaseUser)) {
         builder.append(" (databaseUser: ").append(databaseUser.toString()).append(")");
       }
-      builder.append("@").append(clientHost).append(" [").append(connectionRequest.getClientTypeId())
+      builder.append("@").append(clientHost == null ? "unknown" : clientHost).append(" [").append(connectionRequest.getClientTypeId())
               .append(connectionRequest.getClientVersion() != null ? "-" + connectionRequest.getClientVersion() : "")
               .append("] - ").append(connectionRequest.getClientId().toString());
 

@@ -187,13 +187,16 @@ public class DefaultEntityConnectionServerTest {
     admin.setConnectionLimit(3);
     assertEquals(3, admin.getConnectionLimit());
     final String testClientTypeId = "TestLoginProxy";
-    final ConnectionRequest connectionRequestJohn = Clients.connectionRequest(new User("john", "hello".toCharArray()),
+    final User john = new User("john", "hello".toCharArray());
+    final ConnectionRequest connectionRequestJohn = Clients.connectionRequest(john,
             UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
     final ConnectionRequest connectionRequestHelen = Clients.connectionRequest(new User("helen", "juno".toCharArray()),
             UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
     final ConnectionRequest connectionRequestInvalid = Clients.connectionRequest(new User("foo", "bar".toCharArray()),
             UUID.randomUUID(), testClientTypeId, CONNECTION_PARAMS);
     server.connect(connectionRequestJohn);
+    final RemoteClient clientJohn = admin.getClients(john).iterator().next();
+    assertNotNull(clientJohn.getClientHost());
     server.connect(connectionRequestHelen);
     try {
       server.connect(connectionRequestInvalid);

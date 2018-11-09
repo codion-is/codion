@@ -103,7 +103,6 @@ public final class H2Database extends AbstractDatabase {
             null, null, true);
     initializeDatabase(databaseName, initScript == null ? null : Collections.singletonList(initScript), embeddedInMemory);
     this.embeddedInMemory = embeddedInMemory;
-
   }
 
   /**

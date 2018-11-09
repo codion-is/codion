@@ -32,7 +32,10 @@ public final class EmpDeptLoginProxy implements LoginProxy {
   public RemoteClient doLogin(final RemoteClient remoteClient) throws ServerException.LoginException {
     authenticateUser(remoteClient.getUser());
 
-    return Servers.remoteClient(remoteClient.getConnectionRequest(), databaseUser);
+    final RemoteClient authenticatedClient = Servers.remoteClient(remoteClient.getConnectionRequest(), databaseUser);
+    authenticatedClient.setClientHost(remoteClient.getClientHost());
+
+    return authenticatedClient;
   }
 
   @Override

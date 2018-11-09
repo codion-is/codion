@@ -3,10 +3,15 @@
  */
 package org.jminor.common.db.dbms;
 
+import org.jminor.common.User;
 import org.jminor.common.db.Database;
+import org.jminor.common.db.exception.DatabaseException;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,5 +54,20 @@ public class H2DatabaseTest {
   @Test
   public void constructorNullHost() {
     assertThrows(NullPointerException.class, () -> new H2Database(null, null, null));
+  }
+
+  @Test
+  public void multipleDatabases() throws DatabaseException, SQLException {
+    final User user = new User("sa", null);
+    final File file1 = new File(H2Database.class.getClassLoader().getResource("org/jminor/common/db/dbms/h2db_test_1.sql").getFile());
+    final File file2 = new File(H2Database.class.getClassLoader().getResource("org/jminor/common/db/dbms/h2db_test_2.sql").getFile());
+    final H2Database db1 = new H2Database("test1", file1.getAbsolutePath(), true);
+    final H2Database db2 = new H2Database("test2", file2.getAbsolutePath(), true);
+    final Connection connection1 = db1.createConnection(user);
+    final Connection connection2 = db2.createConnection(user);
+    connection1.prepareCall("select id from scott.test1").executeQuery();
+    connection2.prepareCall("select id from scott.test2").executeQuery();
+    connection1.close();
+    connection2.close();
   }
 }

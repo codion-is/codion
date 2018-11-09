@@ -29,7 +29,7 @@ public final class ConnectionPoolsTest {
 
   @Test
   public void createDefaultConnectionPool() throws DatabaseException {
-    final ConnectionPool pool = ConnectionPools.createDefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
+    ConnectionPools.createDefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
     assertNotNull(ConnectionPools.getConnectionPool(UNIT_TEST_USER));
     ConnectionPools.closeConnectionPools();
     assertNull(ConnectionPools.getConnectionPool(UNIT_TEST_USER));
