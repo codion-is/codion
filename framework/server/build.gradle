@@ -31,6 +31,10 @@ dependencies {
     serverRuntime project(path: ':jminor-demos-world', configuration: 'domain')
 
     serverRuntime "com.h2database:h2:${h2Version}"
+
+    //for Java >= 9
+    testRuntime "javax.xml.bind:jaxb-api:${jaxbapiVersion}"
+    testRuntime "com.sun.activation:javax.activation:${javaxactivationVersion}"
 }
 
 mainClassName = 'org.jminor.framework.server.DefaultEntityConnectionServer'
@@ -110,7 +114,7 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
             'jminor.server.http.secure'                 : 'false',
             'jminor.server.pooling.poolProviderClass'   : 'org.jminor.framework.plugins.hikari.pool.HikariConnectionPoolProvider',
             'jminor.server.auxiliaryServerClassNames'   : 'org.jminor.framework.servlet.EntityServletServer',
-            'jminor.server.domain.classes'              : 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.ChinookDomain,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
+            'jminor.server.domain.classes'              : 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.impl.ChinookImpl,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
             'jminor.server.serializationFilterWhitelist': 'src/main/security/serialization-whitelist.txt',
             'jminor.server.serializationFilterDryRun'   : 'false',
             'javax.net.ssl.keyStore'                    : 'src/main/security/JMinorServerKeystore',

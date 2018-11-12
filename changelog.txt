@@ -4897,3 +4897,4 @@
   Jetty upgraded
   Serialization whitelist updated
   Chinook demo domain split into api and impl
+  jaxb-api and javax-activation dependencies added to modules using Jetty and openjfx to FX module so project builds and runs with Java 11 as well as 8

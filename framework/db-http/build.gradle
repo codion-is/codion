@@ -12,4 +12,8 @@ dependencies {
     testImplementation project(':jminor-framework-servlet')
 
     testRuntime "com.h2database:h2:${h2Version}"
+    
+    //for Java >= 9
+    testRuntime "javax.xml.bind:jaxb-api:${jaxbapiVersion}"
+    testRuntime "com.sun.activation:javax.activation:${javaxactivationVersion}"
 }
