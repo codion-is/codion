@@ -4896,3 +4896,4 @@
   EntityService, some refactoring
   Jetty upgraded
   Serialization whitelist updated
+  Chinook demo domain split into api and impl

@@ -46,7 +46,7 @@ dependencies {
 
 test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
-    systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.chinook.domain.ChinookDomain"
+    systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.chinook.domain.impl.ChinookImpl"
 }
 
 task buildReports(dependsOn: 'compileJava') {

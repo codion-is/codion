@@ -5,6 +5,7 @@ package org.jminor.framework.demos.chinook.domain;
 
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
 import org.jminor.framework.domain.testing.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ public class ChinookTest extends EntityTestUnit {
           System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   public ChinookTest() {
-    super(ChinookDomain.class.getName());
+    super(ChinookImpl.class.getName());
   }
 
   @Test

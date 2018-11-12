@@ -155,8 +155,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPane
     EntityApplicationPanel.CONFIRM_EXIT.set(true);
     DefaultColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
     DefaultColumnConditionModel.CASE_SENSITIVE.set(false);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.chinook.domain.ChinookDomain");
-    new ChinookAppPanel().startApplication("ChinookDomain", null, false,
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.chinook.domain.impl.ChinookImpl");
+    new ChinookAppPanel().startApplication("Chinook", null, false,
             UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger".toCharArray()));
   }
 

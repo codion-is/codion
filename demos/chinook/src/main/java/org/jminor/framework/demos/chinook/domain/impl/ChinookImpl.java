@@ -1,13 +1,14 @@
 /*
  * Copyright (c) 2004 - 2018, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.domain;
+package org.jminor.framework.demos.chinook.domain.impl;
 
 import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnection;
+import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 
@@ -15,12 +16,11 @@ import java.sql.Types;
 import java.text.NumberFormat;
 import java.util.List;
 
-import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 import static org.jminor.framework.domain.Properties.*;
 
-public final class ChinookDomain extends Entities {
+public final class ChinookImpl extends Entities implements Chinook {
 
-  public ChinookDomain() {
+  public ChinookImpl() {
     artist();
     album();
     employee();

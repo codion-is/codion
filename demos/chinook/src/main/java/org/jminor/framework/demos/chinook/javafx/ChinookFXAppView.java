@@ -68,7 +68,7 @@ public class ChinookFXAppView extends EntityApplicationView<ChinookFXAppModel> {
   }
 
   public static void main(final String[] args) {
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.chinook.domain.ChinookDomain");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.chinook.domain.impl.ChinookImpl");
     launch(args);
   }
 }
