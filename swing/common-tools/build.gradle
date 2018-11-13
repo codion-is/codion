@@ -3,7 +3,7 @@ dependencies {
     api project(':jminor-common-db')
     api project(':jminor-common-model')
 
-    api "org.jfree:jfreechart:${jfreechartVersion}"
+    api "org.jfree:jfreechart:${jfreeChartVersion}"
 
     testRuntime "com.h2database:h2:${h2Version}"
 }

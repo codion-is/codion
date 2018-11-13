@@ -14,11 +14,11 @@ dependencies {
     testImplementation project(':jminor-framework-db-local')
     testImplementation project(':jminor-framework-server')
 
-    testImplementation "org.apache.httpcomponents:httpclient:${httpclientVersion}"
+    testImplementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
 
     testRuntime "com.h2database:h2:${h2Version}"
 
     //for Java >= 9
-    testRuntime "javax.xml.bind:jaxb-api:${jaxbapiVersion}"
-    testRuntime "com.sun.activation:javax.activation:${javaxactivationVersion}"
+    testRuntime "javax.xml.bind:jaxb-api:${jaxbApiVersion}"
+    testRuntime "com.sun.activation:javax.activation:${javaxActivationVersion}"
 }

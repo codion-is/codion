@@ -10,20 +10,20 @@ ext {
     jsonVersion = '20180130'
     jcalendarVersion = '1.4'
     jcommonVersion = '1.0.24'
-    jfreechartVersion = '1.5.0'
+    jfreeChartVersion = '1.5.0'
     jettyVersion = '9.4.12.v20180830'
-    httpclientVersion = '4.5.6'
-    jaxbapiVersion = '2.3.0'
-    javaxactivationVersion = '1.2.0'
+    httpClientVersion = '4.5.6'
+    jaxbApiVersion = '2.3.0'
+    javaxActivationVersion = '1.2.0'
     junitVersion = '5.3.1'
     jacocoVersion = '0.8.2'
     //jasperreports
-    jasperreportsVersion = '6.6.0'
-    commonsloggingVersion = '1.2'
-    commonsdigesterVersion = '2.1'
-    commonscollectionsVersion = '3.2.2'
-    commonsbeanutilsVersion = '1.9.3'
-    jdtcorecompilerVersion = '4.6.1'
+    jasperReportsVersion = '6.6.0'
+    commonsLoggingVersion = '1.2'
+    commonsDigesterVersion = '2.1'
+    commonsCollectionsVersion = '3.2.2'
+    commonsBeanUtilsVersion = '1.9.3'
+    jdtCoreCompilerVersion = '4.6.1'
 }
 
 allprojects {
@@ -40,8 +40,8 @@ subprojects {
         apply plugin: 'jacoco'
         apply plugin: 'maven-publish'
 
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
 
         dependencies {
             implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"

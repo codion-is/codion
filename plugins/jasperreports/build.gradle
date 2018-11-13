@@ -12,15 +12,15 @@ dependencies {
 
     testImplementation project(':jminor-swing-framework-model')
 
-    compile("net.sf.jasperreports:jasperreports:${jasperreportsVersion}") {
+    compile("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
         transitive = false
     }
 
-    runtime "commons-logging:commons-logging:${commonsloggingVersion}"
-    runtime "commons-digester:commons-digester:${commonsdigesterVersion}"
-    runtime "commons-collections:commons-collections:${commonscollectionsVersion}"
-    runtime "commons-beanutils:commons-beanutils:${commonsbeanutilsVersion}"
-    runtime "org.eclipse.jdt.core.compiler:ecj:${jdtcorecompilerVersion}"
+    runtime "commons-logging:commons-logging:${commonsLoggingVersion}"
+    runtime "commons-digester:commons-digester:${commonsDigesterVersion}"
+    runtime "commons-collections:commons-collections:${commonsCollectionsVersion}"
+    runtime "commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}"
+    runtime "org.eclipse.jdt.core.compiler:ecj:${jdtCoreCompilerVersion}"
 
     testRuntime "com.h2database:h2:${h2Version}"
 }

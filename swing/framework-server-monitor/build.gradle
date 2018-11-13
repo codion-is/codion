@@ -16,7 +16,7 @@ dependencies {
 
     implementation "org.json:json:${jsonVersion}"
     implementation "org.jfree:jcommon:${jcommonVersion}"
-    implementation "org.jfree:jfreechart:${jfreechartVersion}"
+    implementation "org.jfree:jfreechart:${jfreeChartVersion}"
 
     testRuntime "com.h2database:h2:${h2Version}"
 

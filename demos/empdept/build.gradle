@@ -32,19 +32,19 @@ dependencies {
 
     implementation 'javax.ws.rs:jsr311-api:1.1.1'
     implementation "org.jfree:jcommon:${jcommonVersion}"
-    implementation "org.jfree:jfreechart:${jfreechartVersion}"
+    implementation "org.jfree:jfreechart:${jfreeChartVersion}"
 
     runtime project(':jminor-plugin-logback-proxy')
 
-    compile("net.sf.jasperreports:jasperreports:${jasperreportsVersion}") {
+    compile("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
         transitive = false
     }
 
-    runtime "commons-logging:commons-logging:${commonsloggingVersion}"
-    runtime "commons-digester:commons-digester:${commonsdigesterVersion}"
-    runtime "commons-collections:commons-collections:${commonscollectionsVersion}"
-    runtime "commons-beanutils:commons-beanutils:${commonsbeanutilsVersion}"
-    runtime "org.eclipse.jdt.core.compiler:ecj:${jdtcorecompilerVersion}"
+    runtime "commons-logging:commons-logging:${commonsLoggingVersion}"
+    runtime "commons-digester:commons-digester:${commonsDigesterVersion}"
+    runtime "commons-collections:commons-collections:${commonsCollectionsVersion}"
+    runtime "commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}"
+    runtime "org.eclipse.jdt.core.compiler:ecj:${jdtCoreCompilerVersion}"
 
     runtime "com.h2database:h2:${h2Version}"
 }

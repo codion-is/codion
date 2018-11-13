@@ -5,7 +5,7 @@ dependencies {
     api project(':jminor-swing-common-tools')
     implementation project(':jminor-swing-common-ui')
 
-    implementation "org.jfree:jfreechart:${jfreechartVersion}"
+    implementation "org.jfree:jfreechart:${jfreeChartVersion}"
 
     testRuntime "com.h2database:h2:${h2Version}"
 }
