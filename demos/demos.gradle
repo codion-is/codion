@@ -1,8 +1,8 @@
 apply plugin: 'application'
 apply plugin: 'jacoco'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 //clean intellij output dir as well
 clean.doLast {
@@ -44,27 +44,6 @@ test {
     systemProperty "jminor.unittest.username", "scott"
     systemProperty "jminor.unittest.password", "tiger"
 }
-
-//jnlp {
-//    signJarAddedManifestEntries = [
-//        'Codebase': 'http://jminor.no-ip.org/demos/chinook',
-//        'Permissions': 'all-permissions',
-//        'Application-Name': artifactName
-//    ]
-//    withXml {
-//        information {
-//            title artifactName
-//            vendor project.group ?: project.name
-//        }
-//        security {
-//            'all-permissions'()
-//        }
-//        resources {
-//            property('name' : 'jminor.client.connectionType', 'value' : 'remote')
-//        }
-//    }
-//    signJarParams = [keystore: "${jarSignKeystore}", alias: "${jarSignAlias}", storepass: "${jarSignStorepass}"]
-//}
 
 startScripts {
     applicationName = project.name + '-local'

@@ -66,10 +66,6 @@ task buildReports(dependsOn: 'compileJava') {
 }
 classes.dependsOn buildReports
 
-//jnlp {
-//    mainClassName = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
-//}
-
 startScripts {
     mainClassName = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
 }
