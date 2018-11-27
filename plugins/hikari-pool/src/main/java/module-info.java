@@ -1,6 +1,6 @@
 module org.jminor.framework.plugins.hikari.pool {
   requires java.sql;
-  requires HikariCP;
+  requires com.zaxxer.hikari;
   requires org.jminor.common.core;
   requires org.jminor.common.db;
 

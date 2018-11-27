@@ -1,5 +1,6 @@
 module org.jminor.framework.plugins.tomcat.pool {
   requires java.sql;
+  requires java.management;
   requires tomcat.jdbc;
   requires org.jminor.common.core;
   requires org.jminor.common.db;

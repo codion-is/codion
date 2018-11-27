@@ -1,6 +1,7 @@
 module org.jminor.swing.framework.server.monitor {
   requires java.desktop;
   requires java.rmi;
+  requires java.sql;
   requires slf4j.api;
   requires jfreechart;
   requires org.jminor.common.core;

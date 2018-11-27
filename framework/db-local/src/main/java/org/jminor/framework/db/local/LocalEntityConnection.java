@@ -951,7 +951,6 @@ public final class LocalEntityConnection implements EntityConnection {
     try {
       logAccess("executePreparedSelect", values == null ? new Object[] {sqlStatement} : new Object[] {sqlStatement, values});
       setParameterValues(statement, values, condition.getColumns());
-
       return statement.executeQuery();
     }
     catch (final SQLException e) {

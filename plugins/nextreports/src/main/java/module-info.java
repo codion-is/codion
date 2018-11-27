@@ -1,5 +1,6 @@
 module org.jminor.framework.plugins.nextreports {
   requires java.sql;
+  requires java.desktop;
   requires nextreports.engine;
   requires org.jminor.common.core;
   requires org.jminor.common.db;
