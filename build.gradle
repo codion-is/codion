@@ -264,7 +264,7 @@ task populateWiki(dependsOn: [combinedJavadoc, htmlDependencyReport]) {
             fileset(dir: 'demos/world/src/main/config')
             fileset(dir: 'demos/world/src/main/sql')
         }
-        ant.chgrp(group: 'www') {
+        ant.chgrp(group: 'www', type: 'both') {
             fileset(dir: "${wikiMediaPath}", includes: '**/*')
         }
         ant.chmod(dir: "${wikiMediaPath}", perm: 'ugo+r', type: 'file', includes: '**/*')
