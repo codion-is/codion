@@ -4,4 +4,5 @@ module org.jminor.swing.common.tools.ui {
   requires org.jminor.common.core;
   requires org.jminor.swing.common.tools;
   requires org.jminor.swing.common.ui;
+  exports org.jminor.swing.common.tools.ui;
 }
