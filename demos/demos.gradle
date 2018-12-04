@@ -4,6 +4,10 @@ apply plugin: 'jacoco'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
+repositories {
+    jcenter()
+}
+
 //clean intellij output dir as well
 clean.doLast {
     file('out').deleteDir()

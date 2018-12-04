@@ -3,6 +3,10 @@ plugins {
     id "com.github.ben-manes.versions" version "0.20.0"
 }
 
+allprojects {
+    version = '0.11.5-SNAPSHOT'
+}
+
 ext {
     slf4jApiVersion = '1.7.25'
     logbackVersion = '1.2.3'
@@ -26,165 +30,163 @@ ext {
     jdtCoreCompilerVersion = '4.6.1'
 }
 
-allprojects {
-    version = "${frameworkVersion}"
+ext {
+    frameworkModules = subprojects.findAll {
+        project -> !project.name.contains("demos")
+    }
 }
 
-subprojects {
+configure(project.frameworkModules) {
+    apply plugin: 'java-library'
+    apply plugin: 'jacoco'
+    apply plugin: 'maven-publish'
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
     repositories {
         jcenter()
     }
 
-    if (!project.name.contains("demos")) {
-        apply plugin: 'java-library'
-        apply plugin: 'jacoco'
-        apply plugin: 'maven-publish'
+    dependencies {
+        implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
+        testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    }
 
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-
-        dependencies {
-            implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
-            testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
-            testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
-        }
-
-        sourceSets {
-            main {
-                java {
-                    exclude 'module-info.java'
-                }
+    sourceSets {
+        main {
+            java {
+                exclude 'module-info.java'
             }
-        }
-
-        javadoc {
-            //to prevent jpms based errors on Java >= 9
-            failOnError = false
-        }
-
-        jar {
-            manifest {
-                attributes(
-                        "Specification-Title": project.name,
-                        "Specification-Version": "${version}",
-                        "Specification-Vendor": "JMinor",
-                        "Implementation-Title": project.name,
-                        "Implementation-Version": "${version}",
-                        "Implementation-Vendor": "JMinor",
-                        "Implementation-Vendor-Id": "org.jminor",
-                        "Implementation-URL": "http://jminor.org",
-                        "Automatic-Module-Name": "org." + project.name.replace('-', '.'),
-                        "Build-Jdk": org.gradle.internal.jvm.Jvm.current(),
-                        "Built-By": System.getProperty("user.name")/*,
-                        "Build-Time": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")*/)
-            }
-        }
-
-        task jarSources(type: Jar, dependsOn: classes) {
-            group 'build'
-            classifier = 'sources'
-            from sourceSets.main.allSource
-        }
-
-        task jarJavadoc(type: Jar, dependsOn: javadoc) {
-            group 'build'
-            classifier = 'javadoc'
-            from javadoc.destinationDir
-        }
-
-        artifacts {
-            archives jarSources
-            archives jarJavadoc
-        }
-
-        publishing {
-            publications {
-                mavenJava(MavenPublication) {
-                    groupId 'org.jminor'
-                    from components.java
-                    artifact jarSources
-                    artifact jarJavadoc
-                }
-            }
-            repositories {
-                maven {
-                    credentials {
-                        username "${artifactoryUsername}"
-                        password "${artifactoryPassword}"
-                    }
-
-                    if (project.version.endsWith('-SNAPSHOT')) {
-                        url "${artifactorySnapshotUrl}"
-                    } else {
-                        url "${artifactoryReleaseUrl}"
-                    }
-                }
-            }
-        }
-
-        sonarqube {
-            System.setProperty("sonar.host.url", "${sonarHostUrl}")
-            System.setProperty("sonar.login", "${sonarLogin}")
-            System.setProperty("sonar.password", "${sonarPassword}")
-            properties {
-                property "sonar.projectName", "org." + project.name.replace('-', '.')
-                property "sonar.projectKey", "org.jminor:jminor"
-                property "sonar.projectVersion", version
-                property "sonar.java.source", "1.8"
-                property "sonar.sourceEncoding", "UTF-8"
-                property "sonar.exclusions", "**/*module-info.java,**/*TestDomain.java"
-            }
-        }
-
-        clean {
-            //clean intellij output dir as well
-            doLast {
-                file('out').deleteDir()
-            }
-        }
-
-        /** Creates a key- and truststore pair used when running server unit tests and demos with remote connection */
-        def keystoreRootDir = project.rootDir.toString() + '/framework/server/src/main/security/'
-        def keystore = keystoreRootDir + 'JMinorServerKeystore'
-        task createServerKeystore {
-            doLast {
-                def certificate = keystoreRootDir + 'JMinorServer.cer'
-                def keyToolExecutable = System.getProperty('java.home') + '/bin/keytool'
-                ant.genkey(alias: 'JMinorServer', keyalg: 'RSA', keystore: keystore,
-                        storepass: 'crappypass', dname: 'CN=Dummy, OU=dummy, O=dummy.org, C=DU')
-                exec {
-                    executable = keyToolExecutable
-                    args = ['-exportcert', '-keystore', keystore, '-alias', 'JMinorServer', '-rfc', '-file', certificate]
-                }
-                def truststore = keystoreRootDir + 'JMinorClientTruststore'
-                exec {
-                    executable = keyToolExecutable
-                    args = ['-import', '-alias', 'JMinorServer', '-storepass', 'crappypass', '-file', certificate,
-                            '-keystore', truststore, '-noprompt']
-                }
-                ant.delete(file: certificate)
-            }
-        }
-        createServerKeystore.onlyIf { !new File(keystore).exists() }
-
-        test {
-            useJUnitPlatform()
-            systemProperty "jminor.db.type", "h2"
-            systemProperty "jminor.db.host", "h2db"
-            systemProperty "jminor.db.embedded", "true"
-            systemProperty "jminor.db.embeddedInMemory", "true"
-            systemProperty "jminor.db.initScript", "src/test/sql/create_h2_db.sql"
-            systemProperty "jminor.unittest.username", "scott"
-            systemProperty "jminor.unittest.password", "tiger"
-        }.dependsOn createServerKeystore
-
-        jacoco {
-            toolVersion = "${jacocoVersion}"
         }
     }
-}
 
-def frameworkModules = subprojects.findAll { it.plugins.hasPlugin('java') && !it.name.contains("demo") }
+    javadoc {
+        //to prevent jpms based errors on Java >= 9
+        failOnError = false
+    }
+
+    jar {
+        manifest {
+            attributes(
+                    "Specification-Title": project.name,
+                    "Specification-Version": "${version}",
+                    "Specification-Vendor": "JMinor",
+                    "Implementation-Title": project.name,
+                    "Implementation-Version": "${version}",
+                    "Implementation-Vendor": "JMinor",
+                    "Implementation-Vendor-Id": "org.jminor",
+                    "Implementation-URL": "http://jminor.org",
+                    "Automatic-Module-Name": "org." + project.name.replace('-', '.'),
+                    "Build-Jdk": org.gradle.internal.jvm.Jvm.current(),
+                    "Built-By": System.getProperty("user.name")/*,
+                        "Build-Time": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")*/)
+        }
+    }
+
+    task jarSources(type: Jar, dependsOn: classes) {
+        group 'build'
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    task jarJavadoc(type: Jar, dependsOn: javadoc) {
+        group 'build'
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    artifacts {
+        archives jarSources
+        archives jarJavadoc
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                groupId 'org.jminor'
+                from components.java
+                artifact jarSources
+                artifact jarJavadoc
+            }
+        }
+        repositories {
+            maven {
+                credentials {
+                    username "${artifactoryUsername}"
+                    password "${artifactoryPassword}"
+                }
+
+                if (project.version.endsWith('-SNAPSHOT')) {
+                    url "${artifactorySnapshotUrl}"
+                } else {
+                    url "${artifactoryReleaseUrl}"
+                }
+            }
+        }
+    }
+
+    sonarqube {
+        System.setProperty("sonar.host.url", "${sonarHostUrl}")
+        System.setProperty("sonar.login", "${sonarLogin}")
+        System.setProperty("sonar.password", "${sonarPassword}")
+        properties {
+            property "sonar.projectName", "org." + project.name.replace('-', '.')
+            property "sonar.projectKey", "org.jminor:jminor"
+            property "sonar.projectVersion", version
+            property "sonar.java.source", "1.8"
+            property "sonar.sourceEncoding", "UTF-8"
+            property "sonar.exclusions", "**/*module-info.java,**/*TestDomain.java"
+        }
+    }
+
+    clean {
+        //clean intellij output dir as well
+        doLast {
+            file('out').deleteDir()
+        }
+    }
+
+    /** Creates a key- and truststore pair used when running server unit tests and demos with remote connection */
+    def keystoreRootDir = project.rootDir.toString() + '/framework/server/src/main/security/'
+    def keystore = keystoreRootDir + 'JMinorServerKeystore'
+    task createServerKeystore {
+        doLast {
+            def certificate = keystoreRootDir + 'JMinorServer.cer'
+            def keyToolExecutable = System.getProperty('java.home') + '/bin/keytool'
+            ant.genkey(alias: 'JMinorServer', keyalg: 'RSA', keystore: keystore,
+                    storepass: 'crappypass', dname: 'CN=Dummy, OU=dummy, O=dummy.org, C=DU')
+            exec {
+                executable = keyToolExecutable
+                args = ['-exportcert', '-keystore', keystore, '-alias', 'JMinorServer', '-rfc', '-file', certificate]
+            }
+            def truststore = keystoreRootDir + 'JMinorClientTruststore'
+            exec {
+                executable = keyToolExecutable
+                args = ['-import', '-alias', 'JMinorServer', '-storepass', 'crappypass', '-file', certificate,
+                        '-keystore', truststore, '-noprompt']
+            }
+            ant.delete(file: certificate)
+        }
+    }
+    createServerKeystore.onlyIf { !new File(keystore).exists() }
+
+    test {
+        useJUnitPlatform()
+        systemProperty "jminor.db.type", "h2"
+        systemProperty "jminor.db.host", "h2db"
+        systemProperty "jminor.db.embedded", "true"
+        systemProperty "jminor.db.embeddedInMemory", "true"
+        systemProperty "jminor.db.initScript", "src/test/sql/create_h2_db.sql"
+        systemProperty "jminor.unittest.username", "scott"
+        systemProperty "jminor.unittest.password", "tiger"
+    }.dependsOn createServerKeystore
+
+    jacoco {
+        toolVersion = "${jacocoVersion}"
+    }
+}
 
 apply plugin: 'project-report'
 
