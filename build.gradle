@@ -15,11 +15,11 @@ ext {
     jcalendarVersion = '1.4'
     jcommonVersion = '1.0.24'
     jfreeChartVersion = '1.5.0'
-    jettyVersion = '9.4.12.v20180830'
+    jettyVersion = '9.4.14.v20181114'
     httpClientVersion = '4.5.6'
     jaxbApiVersion = '2.3.0'
     javaxActivationVersion = '1.2.0'
-    junitVersion = '5.3.1'
+    junitVersion = '5.3.2'
     jacocoVersion = '0.8.2'
     //jasperreports
     jasperReportsVersion = '6.6.0'
