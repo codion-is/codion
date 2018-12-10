@@ -52,11 +52,6 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   private final Map<C, SortingState> sortingStates = new HashMap<>();
 
   /**
-   * The comparator used when comparing row objects
-   */
-  private final Comparator<R> rowComparator = new RowComparator();
-
-  /**
    * Instantiates a new AbstractTableSortModel
    * @param columns the table columns
    */
@@ -68,7 +63,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   /** {@inheritDoc} */
   @Override
   public final void sort(final List<R> items) {
-    items.sort(rowComparator);
+    items.sort(new RowComparator(getSortingStatesOrderedByPriority()));
   }
 
   /** {@inheritDoc} */
@@ -150,6 +145,15 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     return LEXICAL_COMPARATOR;
   }
 
+  private List<Map.Entry<C, SortingState>> getSortingStatesOrderedByPriority() {
+    return sortingStates.entrySet().stream().filter(entry -> !EMPTY_SORTING_STATE.equals(entry.getValue())).sorted((o1, o2) -> {
+      final Integer priorityOne = o1.getValue().getPriority();
+      final Integer priorityTwo = o2.getValue().getPriority();
+
+      return priorityOne.compareTo(priorityTwo);
+    }).collect(Collectors.toList());
+  }
+
   @SuppressWarnings({"unchecked"})
   private void resetSortingStates() {
     for (final TableColumn column : columns) {
@@ -167,10 +171,42 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     return maxPriority + 1;
   }
 
+  private int compareRows(final R rowOne, final R rowTwo, final C columnIdentifier, final SortingDirective directive) {
+    final Comparable valueOne = getComparable(rowOne, columnIdentifier);
+    final Comparable valueTwo = getComparable(rowTwo, columnIdentifier);
+    final int comparison;
+    // Define null less than everything, except null.
+    if (valueOne == null && valueTwo == null) {
+      comparison = 0;
+    }
+    else if (valueOne == null) {
+      comparison = -1;
+    }
+    else if (valueTwo == null) {
+      comparison = 1;
+    }
+    else {
+      comparison = columnComparators.computeIfAbsent(columnIdentifier,
+              k -> initializeColumnComparator(columnIdentifier)).compare(valueOne, valueTwo);
+    }
+    if (comparison != 0) {
+      return directive == SortingDirective.DESCENDING ? -comparison : comparison;
+    }
+
+    return 0;
+  }
+
   private final class RowComparator implements Comparator<R> {
+
+    private final List<Map.Entry<C, SortingState>> sortedSortingStates;
+
+    private RowComparator(final List<Map.Entry<C, SortingState>> sortedSortingStates) {
+      this.sortedSortingStates = sortedSortingStates;
+    }
+
     @Override
     public int compare(final R o1, final R o2) {
-      for (final Map.Entry<C, TableSortModel.SortingState> state : getSortingStatesOrderedByPriority()) {
+      for (final Map.Entry<C, TableSortModel.SortingState> state : sortedSortingStates) {
         final int comparison = compareRows(o1, o2, state.getKey(), state.getValue().getDirective());
         if (comparison != 0) {
           return comparison;
@@ -178,40 +214,6 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
       }
 
       return 0;
-    }
-
-    private int compareRows(final R rowOne, final R rowTwo, final C columnIdentifier, final SortingDirective directive) {
-      final Comparable valueOne = getComparable(rowOne, columnIdentifier);
-      final Comparable valueTwo = getComparable(rowTwo, columnIdentifier);
-      final int comparison;
-      // Define null less than everything, except null.
-      if (valueOne == null && valueTwo == null) {
-        comparison = 0;
-      }
-      else if (valueOne == null) {
-        comparison = -1;
-      }
-      else if (valueTwo == null) {
-        comparison = 1;
-      }
-      else {
-        comparison = columnComparators.computeIfAbsent(columnIdentifier,
-                k -> initializeColumnComparator(columnIdentifier)).compare(valueOne, valueTwo);
-      }
-      if (comparison != 0) {
-        return directive == SortingDirective.DESCENDING ? -comparison : comparison;
-      }
-
-      return 0;
-    }
-
-    private List<Map.Entry<C, SortingState>> getSortingStatesOrderedByPriority() {
-      return sortingStates.entrySet().stream().filter(entry -> !EMPTY_SORTING_STATE.equals(entry.getValue())).sorted((o1, o2) -> {
-        final Integer priorityOne = o1.getValue().getPriority();
-        final Integer priorityTwo = o2.getValue().getPriority();
-
-        return priorityOne.compareTo(priorityTwo);
-      }).collect(Collectors.toList());
     }
   }
 

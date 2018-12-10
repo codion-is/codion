@@ -4901,3 +4901,4 @@
 0.11.5
   build.gradle refactored and improved (openjfx removed from FX module, wouldn't build with java 8, well duh)
   Jetty, tomcat pool and junit upgraded
+  AbstractTableSortModel.sort() refactored, performance improved quite a bit, no longer calls getSortingStatesOrderedByPriority() on each compare
