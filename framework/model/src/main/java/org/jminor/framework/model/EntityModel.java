@@ -4,6 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Configuration;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Util;
 import org.jminor.common.Value;
@@ -225,14 +226,24 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   void removeAfterRefreshListener(final EventListener listener);
 
   /**
-   * @param listener a listener to be notified each time the linked detail models change
+   * @param listener a listener to be notified each time a linked detail model is added
    */
-  void addLinkedDetailModelsListener(final EventListener listener);
+  void addLinkedDetailModelAddedListener(final EventDataListener<M> listener);
 
   /**
-   * @param listener the listener to remove
+   * @param listener a listener to be removed
    */
-  void removeLinkedDetailModelsListener(final EventListener listener);
+  void removeLinkedDetailModelAddedListener(final EventDataListener listener);
+
+    /**
+   * @param listener a listener to be notified each time a linked detail model is removed
+   */
+  void addLinkedDetailModelRemovedListener(final EventDataListener<M> listener);
+
+    /**
+   * @param listener a listener to be removed
+   */
+  void removeLinkedDetailModelRemovedListener(final EventDataListener listener);
 
   /**
    * Saves any user preferences

@@ -4,6 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Event;
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.Util;
@@ -49,7 +50,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   private final Event refreshStartedEvent = Events.event();
   private final Event refreshDoneEvent = Events.event();
-  private final Event linkedDetailModelsChangedEvent = Events.event();
+  private final Event<M> linkedDetailModelAddedEvent = Events.event();
+  private final Event<M> linkedDetailModelRemovedEvent = Events.event();
 
   /**
    * The entity ID
@@ -226,16 +228,22 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /** {@inheritDoc} */
   @Override
   public final void addLinkedDetailModel(final M detailModel) {
-    if (detailModel != null && linkedDetailModels.add(detailModel)) {
-      linkedDetailModelsChangedEvent.fire();
+    if (!detailModels.contains(Objects.requireNonNull(detailModel))) {
+      throw new IllegalStateException("Detail model not found: " + detailModel);
+    }
+    if (linkedDetailModels.add(detailModel)) {
+      linkedDetailModelAddedEvent.fire(detailModel);
     }
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeLinkedDetailModel(final M detailModel) {
-    if (detailModel != null && linkedDetailModels.remove(detailModel)) {
-      linkedDetailModelsChangedEvent.fire();
+    if (!detailModels.contains(Objects.requireNonNull(detailModel))) {
+      throw new IllegalStateException("Detail model not found: " + detailModel);
+    }
+    if (linkedDetailModels.remove(detailModel)) {
+      linkedDetailModelRemovedEvent.fire(detailModel);
     }
   }
 
@@ -383,14 +391,26 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   /** {@inheritDoc} */
   @Override
-  public final void addLinkedDetailModelsListener(final EventListener listener) {
-    linkedDetailModelsChangedEvent.addListener(listener);
+  public void addLinkedDetailModelAddedListener(final EventDataListener<M> listener) {
+    linkedDetailModelAddedEvent.addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeLinkedDetailModelsListener(final EventListener listener) {
-    linkedDetailModelsChangedEvent.removeListener(listener);
+  public void removeLinkedDetailModelAddedListener(final EventDataListener listener) {
+    linkedDetailModelAddedEvent.removeDataListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void addLinkedDetailModelRemovedListener(final EventDataListener<M> listener) {
+    linkedDetailModelRemovedEvent.addDataListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void removeLinkedDetailModelRemovedListener(final EventDataListener listener) {
+    linkedDetailModelRemovedEvent.removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -514,7 +534,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   private void bindEventsInternal() {
     final EventListener initializer = this::initializeDetailModels;
-    linkedDetailModelsChangedEvent.addListener(initializer);
+    linkedDetailModelAddedEvent.addListener(initializer);
+    linkedDetailModelRemovedEvent.addListener(initializer);
     if (containsTableModel()) {
       getTableModel().addSelectionChangedListener(initializer);
     }

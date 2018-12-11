@@ -219,6 +219,9 @@ task populateWiki(dependsOn: [combinedJavadoc, htmlDependencyReport]) {
         ant.copy(todir: "${wikiMediaPath}/docs/dependencies") {
             fileset(dir: "${buildDir}/reports/project/dependencies")
         }
+        ant.copy(todir: "${wikiMediaPath}/docs") {
+            fileset(dir: '.', includes: 'changelog.txt')
+        }
         ant.copy(todir: "${wikiMediaPath}/src") {
             fileset(dir: 'common/core/build/classes/java/main', includes: 'org/jminor/common/version.txt')
             fileset(dir: 'demos/chinook/src/main/java')

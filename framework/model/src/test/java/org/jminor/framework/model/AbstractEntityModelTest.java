@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
@@ -153,16 +154,18 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     assertNull(departmentModel.getMasterModel());
     assertNotNull(departmentModel.getEditModel());
 
-    final EventListener linkedListener = () -> {};
+    final EventDataListener linkedListener = model -> {};
     final EventListener listener = () -> eventCount++;
-    departmentModel.addLinkedDetailModelsListener(linkedListener);
+    departmentModel.addLinkedDetailModelAddedListener(linkedListener);
+    departmentModel.addLinkedDetailModelRemovedListener(linkedListener);
     departmentModel.addBeforeRefreshListener(listener);
     departmentModel.addAfterRefreshListener(listener);
     departmentModel.refresh();
     assertEquals(2, eventCount);
     departmentModel.removeBeforeRefreshListener(listener);
     departmentModel.removeAfterRefreshListener(listener);
-    departmentModel.removeLinkedDetailModelsListener(linkedListener);
+    departmentModel.removeLinkedDetailModelAddedListener(linkedListener);
+    departmentModel.removeLinkedDetailModelRemovedListener(linkedListener);
   }
 
   @Test
@@ -203,6 +206,20 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     final DefaultEntityModel model = createDepartmentModelWithoutDetailModel();
     final DefaultEntityModel employeeModel = createEmployeeModel();
     assertThrows(IllegalArgumentException.class, () -> model.addDetailModels(employeeModel, employeeModel));
+  }
+
+  @Test
+  public void addLinkedDetailModelWithoutAddingFirst() {
+    final DefaultEntityModel model = createDepartmentModelWithoutDetailModel();
+    final DefaultEntityModel employeeModel = createEmployeeModel();
+    assertThrows(IllegalStateException.class, () -> model.addLinkedDetailModel(employeeModel));
+  }
+
+  @Test
+  public void removeLinkedDetailModelWithoutAddingFirst() {
+    final DefaultEntityModel model = createDepartmentModelWithoutDetailModel();
+    final DefaultEntityModel employeeModel = createEmployeeModel();
+    assertThrows(IllegalStateException.class, () -> model.removeLinkedDetailModel(employeeModel));
   }
 
   @Test
