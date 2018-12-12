@@ -4903,3 +4903,4 @@
   Jetty, tomcat pool and junit upgraded
   AbstractTableSortModel.sort() refactored, performance improved quite a bit, no longer calls getSortingStatesOrderedByPriority() on each compare
   EntityModel, add/removeLinkedDetailModelsListener() replaced with add/removeLinkedDetailModelAddedListener() and add/removeLinkedDetailModelRemovedListener()
+  EntityGeneratorModel bug fixed, was still using static verion of Entities.define() method

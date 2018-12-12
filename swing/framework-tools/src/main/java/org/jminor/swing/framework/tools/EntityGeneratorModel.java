@@ -191,7 +191,7 @@ public final class EntityGeneratorModel {
 
   private static void appendEntityDefinition(final StringBuilder builder, final Table table) {
     builder.append("void " + getDefineMethodName(table) + "() {").append(Util.LINE_SEPARATOR);
-    builder.append("  Entities.define(").append(getEntityID(table)).append(",").append(Util.LINE_SEPARATOR);
+    builder.append("  define(").append(getEntityID(table)).append(",").append(Util.LINE_SEPARATOR);
     for (final Column column : table.columns) {
       builder.append("  ").append(getPropertyDefinition(table, column))
               .append(table.columns.indexOf(column) < table.columns.size() - 1 ? "," : "").append(Util.LINE_SEPARATOR);

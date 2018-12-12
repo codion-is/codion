@@ -39,7 +39,7 @@ public class EntityGeneratorModelTest {
     addressBuilder.append("public static final String ADDRESS_LONGITUDE = \"longitude\";").append(Util.LINE_SEPARATOR);
     addressBuilder.append(Util.LINE_SEPARATOR);
     addressBuilder.append("void address() {").append(Util.LINE_SEPARATOR);
-    addressBuilder.append("  Entities.define(T_ADDRESS,").append(Util.LINE_SEPARATOR);
+    addressBuilder.append("  define(T_ADDRESS,").append(Util.LINE_SEPARATOR);
     addressBuilder.append("          Properties.columnProperty(ADDRESS_ADDRESSID)").append(Util.LINE_SEPARATOR);
     addressBuilder.append("                .setPrimaryKeyIndex(0),").append(Util.LINE_SEPARATOR);
     addressBuilder.append("          Properties.columnProperty(ADDRESS_STREET1, Types.VARCHAR, \"Street1\")").append(Util.LINE_SEPARATOR);
@@ -74,7 +74,7 @@ public class EntityGeneratorModelTest {
     tagItemBuilder.append("public static final String TAG_ITEM_ITEMID_FK = \"itemid_fk\";").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append(Util.LINE_SEPARATOR);
     tagItemBuilder.append("void tagItem() {").append(Util.LINE_SEPARATOR);
-    tagItemBuilder.append("  Entities.define(T_TAG_ITEM,").append(Util.LINE_SEPARATOR);
+    tagItemBuilder.append("  define(T_TAG_ITEM,").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append("          Properties.foreignKeyProperty(TAG_ITEM_TAGID_FK, \"Tagid\", T_TAG,").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append("                Properties.columnProperty(TAG_ITEM_TAGID)").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append("                        .setPrimaryKeyIndex(0))").append(Util.LINE_SEPARATOR);
@@ -98,7 +98,7 @@ public class EntityGeneratorModelTest {
     productBuilder.append("public static final String PRODUCT_IMAGEURL = \"imageurl\";").append(Util.LINE_SEPARATOR);
     productBuilder.append(Util.LINE_SEPARATOR);
     productBuilder.append("void product() {").append(Util.LINE_SEPARATOR);
-    productBuilder.append("  Entities.define(T_PRODUCT,").append(Util.LINE_SEPARATOR);
+    productBuilder.append("  define(T_PRODUCT,").append(Util.LINE_SEPARATOR);
     productBuilder.append("          Properties.columnProperty(PRODUCT_PRODUCTID)").append(Util.LINE_SEPARATOR);
     productBuilder.append("                .setPrimaryKeyIndex(0),").append(Util.LINE_SEPARATOR);
     productBuilder.append("          Properties.foreignKeyProperty(PRODUCT_CATEGORYID_FK, \"Categoryid\", T_CATEGORY,").append(Util.LINE_SEPARATOR);
