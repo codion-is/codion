@@ -4898,10 +4898,12 @@
   Serialization whitelist updated
   Chinook demo domain split into api and impl
   jaxb-api and javax-activation dependencies added to modules using Jetty and openjfx to FX module so project builds and runs with Java 11 as well as 8
-0.11.5
+0.11.5 [client/server incompatible with earlier versions due to Entity serialization bug fix]
   build.gradle refactored and improved (openjfx removed from FX module, wouldn't build with java 8, well duh)
   Jetty, tomcat pool and junit upgraded
   AbstractTableSortModel.sort() refactored, performance improved quite a bit, no longer calls getSortingStatesOrderedByPriority() on each compare
   EntityModel, add/removeLinkedDetailModelsListener() replaced with add/removeLinkedDetailModelAddedListener() and add/removeLinkedDetailModelRemovedListener()
   EntityGeneratorModel bug fixed, was still using static verion of Entities.define() method
   EntityEditView bug fixed, insert() and update() validation failures did not trigger focus request for the given control
+  DefaultProperty.hasDefaultValue() bug fixed, did not work with remote connection since the defaultValueProvider was a deserialized instance so defaultValueProvider == DEFAULT_VALUE_PROVIDER did not work, replaced with instanceof operator
+  DefaultEntity.writeObject(), readObject() bug fixed, serialization did not respect missing values, that is, it populated all missing values with null when deserializing

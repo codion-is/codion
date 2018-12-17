@@ -748,12 +748,16 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     for (int i = 0; i < properties.size(); i++) {
       final Property property = properties.get(i);
       if (!(property instanceof Property.DerivedProperty)) {
-        stream.writeObject(super.get(property));
-        if (isModified) {
-          final boolean valueModified = isModified(property);
-          stream.writeBoolean(valueModified);
-          if (valueModified) {
-            stream.writeObject(getOriginal(property));
+        final boolean containsValue = containsKey(property);
+        stream.writeBoolean(containsValue);
+        if (containsValue) {
+          stream.writeObject(super.get(property));
+          if (isModified) {
+            final boolean valueModified = isModified(property);
+            stream.writeBoolean(valueModified);
+            if (valueModified) {
+              stream.writeObject(getOriginal(property));
+            }
           }
         }
       }
@@ -773,11 +777,14 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     for (int i = 0; i < properties.size(); i++) {
       final Property property = properties.get(i);
       if (!(property instanceof Property.DerivedProperty)) {
-        final Object value = stream.readObject();
-        property.validateType(value);
-        super.put(property, value);
-        if (isModified && stream.readBoolean()) {
-          setOriginalValue(property, stream.readObject());
+        final boolean containsValue = stream.readBoolean();
+        if (containsValue) {
+          final Object value = stream.readObject();
+          property.validateType(value);
+          super.put(property, value);
+          if (isModified && stream.readBoolean()) {
+            setOriginalValue(property, stream.readObject());
+          }
         }
       }
     }

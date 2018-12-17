@@ -59,6 +59,15 @@ public class DefaultEntityTest {
     final List<Object> keyFromFile = FileUtil.deserializeFromFile(tmp2);
     assertEquals(1, keyFromFile.size());
     assertEquals(key, keyFromFile.get(0));
+
+    final Entity master = ENTITIES.entity(TestDomain.T_MASTER);
+    master.put(TestDomain.MASTER_ID, 1L);
+    master.put(TestDomain.MASTER_CODE, 11);
+
+    final Entity masterDeserialized = Util.deserialize(Util.serialize(master));
+    assertEquals(master.get(TestDomain.MASTER_ID), masterDeserialized.get(TestDomain.MASTER_ID));
+    assertEquals(master.get(TestDomain.MASTER_CODE), masterDeserialized.get(TestDomain.MASTER_CODE));
+    assertFalse(masterDeserialized.containsKey(TestDomain.MASTER_NAME));
   }
 
   @Test

@@ -335,7 +335,7 @@ class DefaultProperty implements Property {
   /** {@inheritDoc} */
   @Override
   public boolean hasDefaultValue() {
-    return this.defaultValueProvider != DEFAULT_VALUE_PROVIDER;
+    return !(this.defaultValueProvider instanceof DefaultValueProvider);
   }
 
   /** {@inheritDoc} */
