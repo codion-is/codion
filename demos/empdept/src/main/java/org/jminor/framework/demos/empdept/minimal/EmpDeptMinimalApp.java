@@ -225,7 +225,7 @@ public class EmpDeptMinimalApp {
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
     Server.SERVER_HOST_NAME.set("jminor.no-ip.org");
     //we're using Secure Sockets Layer so we need to specify a truststore
-    Server.TRUSTSTORE.set("resources/security/JMinorClientTruststore");
+    Server.TRUSTSTORE.set("resources/security/jminor_truststore.jks");
     System.setProperty("java.security.policy", "resources/security/jminor_demos.policy");
 
     //we create an instance of our application panel and start it

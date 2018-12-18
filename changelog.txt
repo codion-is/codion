@@ -4909,3 +4909,5 @@
   DefaultEntity.writeObject(), readObject() bug fixed, serialization did not respect missing values, that is, it populated all missing values with null when deserializing
 0.11.6
   H2Database, unit test for multiple in-memory databases improved, no longer loads sql files as resources (did not work with gradle + java 11)
+  JMinorServerKeystore and JMinorClientTruststore renamed to jminor_keystore.jks and jminor_truststore.jks respectively, type changed to pkcs12
+  javax.net.ssl.trustStorePassword specified everywhere javax.net.ssl.trustStore is used

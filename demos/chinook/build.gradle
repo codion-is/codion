@@ -93,11 +93,12 @@ runClientLocal {
 runClientRemote {
     main = 'org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
     systemProperties = [
-            'jminor.client.connectionType': 'remote',
-            'jminor.server.hostname'      : 'localhost',
-            'jminor.report.path'          : '../../demos/chinook/build/classes/reports',
-            'javax.net.ssl.trustStore'    : '../../framework/server/src/main/security/JMinorClientTruststore',
-            'logback.configurationFile'   : 'src/main/resources/logback.xml'
+            'jminor.client.connectionType'    : 'remote',
+            'jminor.server.hostname'          : 'localhost',
+            'jminor.report.path'              : '../../demos/chinook/build/classes/reports',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
+            'javax.net.ssl.trustStorePassword': 'crappypass',
+            'logback.configurationFile'       : 'src/main/resources/logback.xml'
     ]
 }
 
@@ -115,11 +116,12 @@ runClientHttp {
 runLoadTestRemote {
     main = 'org.jminor.framework.demos.chinook.testing.ChinookLoadTest'
     systemProperties = [
-            'jminor.client.connectionType': 'remote',
-            'jminor.server.hostname'      : 'localhost',
-            'jminor.report.path'          : '../../demos/chinook/build/classes/reports',
-            'javax.net.ssl.trustStore'    : '../../framework/server/src/main/security/JMinorClientTruststore',
-            'logback.configurationFile'   : 'src/main/resources/logback.xml'
+            'jminor.client.connectionType'    : 'remote',
+            'jminor.server.hostname'          : 'localhost',
+            'jminor.report.path'              : '../../demos/chinook/build/classes/reports',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
+            'javax.net.ssl.trustStorePassword': 'crappypass',
+            'logback.configurationFile'       : 'src/main/resources/logback.xml'
     ]
 }
 

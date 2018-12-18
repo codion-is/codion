@@ -399,8 +399,9 @@ public class EntityServletServerTest {
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityServletServer.class.getName());
     HttpServer.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
-    HttpServer.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/JMinorServerKeystore");
-    Server.TRUSTSTORE.set("../../framework/server/src/main/security/JMinorClientTruststore");
+    HttpServer.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/jminor_keystore.jks");
+    Server.TRUSTSTORE.set("../../framework/server/src/main/security/jminor_truststore.jks");
+    Server.TRUSTSTORE_PASSWORD.set("crappypass");
     HttpServer.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpServer.HTTP_SERVER_SECURE.set(true);
   }
@@ -419,6 +420,7 @@ public class EntityServletServerTest {
     HttpServer.HTTP_SERVER_PORT.set(null);
     HttpServer.HTTP_SERVER_KEYSTORE_PATH.set(null);
     Server.TRUSTSTORE.set(null);
+    Server.TRUSTSTORE_PASSWORD.set(null);
     HttpServer.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
     HttpServer.HTTP_SERVER_SECURE.set(false);
   }

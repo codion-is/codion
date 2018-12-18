@@ -71,7 +71,8 @@ task clientRemoteScript(type: CreateStartScripts) {
             '-Djminor.client.connectionType=remote',
             '-Djminor.server.hostname=localhost',
             '-Djminor.report.path=../reports',
-            '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
+            '-Djavax.net.ssl.trustStore=../config/jminor_truststore.jks',
+            '-Djavax.net.ssl.trustStorePassword=crappypass',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -98,7 +99,8 @@ task loadTestRemoteScript(type: CreateStartScripts) {
             '-Djminor.client.connectionType=remote',
             '-Djminor.server.hostname=localhost',
             '-Djminor.report.path=../reports',
-            '-Djavax.net.ssl.trustStore=../config/JMinorClientTruststore',
+            '-Djavax.net.ssl.trustStore=../config/jminor_truststore.jks',
+            '-Djavax.net.ssl.trustStorePassword=crappypass',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -120,7 +122,7 @@ task loadTestHttpScript(type: CreateStartScripts) {
 applicationDistribution.into('config') {
     from(files('src/main/sql/create_schema.sql'))
     from(files('src/main/resources/logback.xml'))
-    from(files('../../framework/server/src/main/security/JMinorClientTruststore'))
+    from(files('../../framework/server/src/main/security/jminor_truststore.jks'))
 }
 
 applicationDistribution.into('reports') {
@@ -154,10 +156,11 @@ task runClientRemote(type: JavaExec) {
     group 'run'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
-            'jminor.client.connectionType': 'remote',
-            'jminor.server.hostname'      : 'localhost',
-            'javax.net.ssl.trustStore'    : '../../framework/server/src/main/security/JMinorClientTruststore',
-            'logback.configurationFile'   : 'src/main/config/logback.xml'
+            'jminor.client.connectionType'    : 'remote',
+            'jminor.server.hostname'          : 'localhost',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
+            'javax.net.ssl.trustStorePassword': 'crappypass',
+            'logback.configurationFile'       : 'src/main/config/logback.xml'
     ]
 }
 
@@ -176,10 +179,11 @@ task runLoadTestRemote(type: JavaExec) {
     group 'run'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
-            'jminor.client.connectionType': 'remote',
-            'jminor.server.hostname'      : 'localhost',
-            'javax.net.ssl.trustStore'    : '../../framework/server/src/main/security/JMinorClientTruststore',
-            'logback.configurationFile'   : 'src/main/config/logback.xml'
+            'jminor.client.connectionType'    : 'remote',
+            'jminor.server.hostname'          : 'localhost',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
+            'javax.net.ssl.trustStorePassword': 'crappypass',
+            'logback.configurationFile'       : 'src/main/config/logback.xml'
     ]
 }
 

@@ -150,22 +150,22 @@ configure(project.frameworkModules) {
 
     /** Creates a key- and truststore pair used when running server unit tests and demos with remote connection */
     def keystoreRootDir = project.rootDir.toString() + '/framework/server/src/main/security/'
-    def keystore = keystoreRootDir + 'JMinorServerKeystore'
+    def keystore = keystoreRootDir + 'jminor_keystore.jks'
     task createServerKeystore {
         doLast {
-            def certificate = keystoreRootDir + 'JMinorServer.cer'
+            def certificate = keystoreRootDir + 'jminor_server.cer'
             def keyToolExecutable = System.getProperty('java.home') + '/bin/keytool'
             ant.genkey(alias: 'JMinorServer', keyalg: 'RSA', keystore: keystore,
-                    storepass: 'crappypass', dname: 'CN=Dummy, OU=dummy, O=dummy.org, C=DU')
+                    storepass: 'crappypass', dname: 'CN=Dummy, OU=dummy, O=dummy.org, C=DU', storetype: 'pkcs12')
             exec {
                 executable = keyToolExecutable
                 args = ['-exportcert', '-keystore', keystore, '-storepass', 'crappypass', '-alias', 'JMinorServer', '-rfc', '-file', certificate]
             }
-            def truststore = keystoreRootDir + 'JMinorClientTruststore'
+            def truststore = keystoreRootDir + 'jminor_truststore.jks'
             exec {
                 executable = keyToolExecutable
                 args = ['-import', '-alias', 'JMinorServer', '-storepass', 'crappypass', '-file', certificate,
-                        '-keystore', truststore, '-noprompt']
+                        '-keystore', truststore, '-noprompt', '-storetype', 'pkcs12']
             }
             ant.delete(file: certificate)
         }

@@ -34,7 +34,7 @@ dependencies {
 
     //for Java >= 9
     serverRuntime "javax.xml.bind:jaxb-api:${jaxbApiVersion}"
-    serverRuntime "com.sun.activation:javax.activation:${javaxActivationVersion}"    
+    serverRuntime "com.sun.activation:javax.activation:${javaxActivationVersion}"
     testRuntime "javax.xml.bind:jaxb-api:${jaxbApiVersion}"
     testRuntime "com.sun.activation:javax.activation:${javaxActivationVersion}"
 }
@@ -66,8 +66,8 @@ applicationDistribution.from(configurations.serverRuntime.files) {
     into("lib")
 }
 applicationDistribution.from(files(
-        'src/main/security/JMinorServerKeystore',
-        'src/main/security/JMinorClientTruststore',
+        'src/main/security/jminor_keystore.jks',
+        'src/main/security/jminor_truststore.jks',
         'src/main/security/all_permissions.policy',
         'src/main/security/serialization-whitelist.txt')) {
     into("config")
@@ -119,7 +119,7 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
             'jminor.server.domain.classes'              : 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.impl.ChinookImpl,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
             'jminor.server.serializationFilterWhitelist': 'src/main/security/serialization-whitelist.txt',
             'jminor.server.serializationFilterDryRun'   : 'false',
-            'javax.net.ssl.keyStore'                    : 'src/main/security/JMinorServerKeystore',
+            'javax.net.ssl.keyStore'                    : 'src/main/security/jminor_keystore.jks',
             'java.security.policy'                      : 'src/main/security/all_permissions.policy',
             'javax.net.ssl.keyStorePassword'            : 'crappypass',
             'java.rmi.server.hostname'                  : 'localhost',

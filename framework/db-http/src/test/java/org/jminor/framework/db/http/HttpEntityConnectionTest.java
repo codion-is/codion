@@ -238,8 +238,9 @@ public final class HttpEntityConnectionTest {
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
     DefaultEntityConnectionServer.SERVER_DOMAIN_MODEL_CLASSES.set(TestDomain.class.getName());
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(EntityServletServer.class.getName());
-    HttpServer.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/JMinorServerKeystore");
-    Server.TRUSTSTORE.set("../../framework/server/src/main/security/JMinorClientTruststore");
+    HttpServer.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/jminor_keystore.jks");
+    Server.TRUSTSTORE.set("../../framework/server/src/main/security/jminor_truststore.jks");
+    Server.TRUSTSTORE_PASSWORD.set("crappypass");
     HttpServer.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpServer.HTTP_SERVER_SECURE.set(true);
     HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(true);
@@ -258,6 +259,7 @@ public final class HttpEntityConnectionTest {
     Server.AUXILIARY_SERVER_CLASS_NAMES.set(null);
     HttpServer.HTTP_SERVER_KEYSTORE_PATH.set(null);
     Server.TRUSTSTORE.set(null);
+    Server.TRUSTSTORE_PASSWORD.set(null);
     HttpServer.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
     HttpServer.HTTP_SERVER_SECURE.set(false);
     HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(false);

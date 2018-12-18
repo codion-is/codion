@@ -45,6 +45,11 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
   String JAVAX_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
 
   /**
+   * The system property key for specifying a ssl truststore password
+   */
+  String JAVAX_NET_TRUSTSTORE_PASSWORD = "javax.net.ssl.trustStorePassword";
+
+  /**
    * Localhost
    */
   String LOCALHOST = "localhost";
@@ -107,6 +112,13 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
    * Default value: null
    */
   Value<String> TRUSTSTORE = Configuration.stringValue(JAVAX_NET_TRUSTSTORE, null);
+
+  /**
+   * The rmi ssl truststore password to use<br>
+   * Value type: String
+   * Default value: null
+   */
+  Value<String> TRUSTSTORE_PASSWORD = Configuration.stringValue(JAVAX_NET_TRUSTSTORE_PASSWORD, null);
 
   /**
    * The port on which the server should export the remote admin interface<br>
