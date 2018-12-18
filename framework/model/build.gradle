@@ -19,6 +19,22 @@ task jarTests(type: Jar, dependsOn: testClasses) {
     classifier 'tests'
     from sourceSets.test.output
     include('org/jminor/framework/model/Abstract**', 'org/jminor/framework/model/TestDomain**')
+    duplicatesStrategy = 'exclude'
+    manifest {
+        attributes(
+                "Specification-Title": project.name,
+                "Specification-Version": "${version}",
+                "Specification-Vendor": "JMinor",
+                "Implementation-Title": project.name,
+                "Implementation-Version": "${version}",
+                "Implementation-Vendor": "JMinor",
+                "Implementation-Vendor-Id": "org.jminor",
+                "Implementation-URL": "http://jminor.org",
+                "Automatic-Module-Name": moduleName,
+                "Build-Jdk": org.gradle.internal.jvm.Jvm.current(),
+                "Built-By": System.getProperty("user.name")/*,
+                "Build-Time": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")*/)
+    }
 }
 configurations {
     testArtifact.extendsFrom testRuntime

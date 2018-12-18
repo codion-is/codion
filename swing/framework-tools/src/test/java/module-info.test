@@ -1,0 +1,5 @@
+--add-modules
+    java.rmi,org.jminor.common.server,org.jminor.framework.server
+
+--add-reads
+    org.jminor.swing.framework.tools=java.rmi,org.jminor.common.server,org.jminor.framework.server

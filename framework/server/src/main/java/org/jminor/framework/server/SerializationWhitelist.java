@@ -28,13 +28,13 @@ public final class SerializationWhitelist {
 
   static void configureSerializationWhitelist(final String whitelist, final Boolean dryRun) {
     if (!Util.nullOrEmpty(whitelist)) {
-      sun.misc.ObjectInputFilter.Config.setSerialFilter(dryRun ? new SerializationFilterDryRun() : new SerializationFilter(whitelist));
+      java.io.ObjectInputFilter.Config.setSerialFilter(dryRun ? new SerializationFilterDryRun() : new SerializationFilter(whitelist));
       LOG.debug("Serialization filter whitelist set: " + whitelist + " (dry run: " + dryRun + ")");
     }
   }
 
   static void writeSerializationWhitelist(final String whitelist) {
-    final sun.misc.ObjectInputFilter serialFilter = sun.misc.ObjectInputFilter.Config.getSerialFilter();
+    final java.io.ObjectInputFilter serialFilter = java.io.ObjectInputFilter.Config.getSerialFilter();
     if (serialFilter instanceof SerializationFilterDryRun) {
       writeDryRunWhitelist(whitelist, (SerializationFilterDryRun) serialFilter);
     }
@@ -55,7 +55,7 @@ public final class SerializationWhitelist {
     }
   }
 
-  private static final class SerializationFilterDryRun implements sun.misc.ObjectInputFilter {
+  private static final class SerializationFilterDryRun implements java.io.ObjectInputFilter {
 
     private final Set<Class> deserializedClasses = new HashSet<>();
 
@@ -70,7 +70,7 @@ public final class SerializationWhitelist {
     }
   }
 
-  private static final class SerializationFilter implements sun.misc.ObjectInputFilter {
+  private static final class SerializationFilter implements java.io.ObjectInputFilter {
 
     private final List<String> allowedClassnames;
 

@@ -1,0 +1,8 @@
+--add-modules
+    org.jminor.framework.db.local,org.jminor.framework.model,org.jminor.swing.common.ui
+
+--add-reads
+    org.jminor.swing.framework.model=org.jminor.framework.db.local,org.jminor.framework.model,org.jminor.swing.common.ui
+
+--add-reads
+    org.jminor.framework.model=org.jminor.framework.db.local

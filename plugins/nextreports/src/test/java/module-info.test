@@ -1,0 +1,5 @@
+--add-modules
+    org.jminor.framework.db.core,org.jminor.framework.db.local,org.jminor.swing.framework.model
+
+--add-reads
+    org.jminor.framework.plugins.nextreports=org.jminor.framework.db.core,org.jminor.framework.db.local,org.jminor.swing.framework.model

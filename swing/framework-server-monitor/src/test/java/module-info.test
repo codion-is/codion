@@ -1,0 +1,5 @@
+--add-modules
+    org.jminor.framework.db.core,org.jminor.framework.db.remote
+
+--add-reads
+    org.jminor.swing.framework.server.monitor=org.jminor.framework.db.core,org.jminor.framework.db.remote

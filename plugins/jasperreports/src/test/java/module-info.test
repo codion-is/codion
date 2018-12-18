@@ -1,0 +1,5 @@
+--add-modules
+    org.jminor.framework.db.local,org.jminor.swing.framework.model
+
+--add-reads
+    org.jminor.framework.plugins.jasperreports=org.jminor.framework.db.local,org.jminor.swing.framework.model

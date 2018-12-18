@@ -1,0 +1,5 @@
+--add-modules
+    java.sql,java.rmi,org.jminor.common.server,org.jminor.common.server.http,org.jminor.framework.server,org.jminor.framework.servlet
+
+--add-reads
+    org.jminor.framework.db.http=java.sql,java.rmi,org.jminor.common.server,org.jminor.common.server.http,org.jminor.framework.server,org.jminor.framework.servlet

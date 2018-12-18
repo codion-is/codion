@@ -20,9 +20,9 @@ dependencies {
     serverRuntime project(':jminor-common-server-http')
     serverRuntime project(':jminor-framework-server')
     serverRuntime project(':jminor-framework-servlet')
-    serverRuntime project(':jminor-plugin-jasperreports')
-    serverRuntime project(':jminor-plugin-hikari-pool')
-    serverRuntime project(':jminor-plugin-logback-proxy')
+    serverRuntime project(':jminor-framework-plugins-jasperreports')
+    serverRuntime project(':jminor-framework-plugins-hikari-pool')
+    serverRuntime project(':jminor-framework-plugins-logback-proxy')
 
     serverRuntime project(path: ':jminor-demos-empdept', configuration: 'domain')
     serverRuntime project(path: ':jminor-demos-chinook', configuration: 'domain')
@@ -39,7 +39,7 @@ dependencies {
     testRuntime "com.sun.activation:javax.activation:${javaxActivationVersion}"
 }
 
-mainClassName = 'org.jminor.framework.server.DefaultEntityConnectionServer'
+mainClassName = '$moduleName/org.jminor.framework.server.DefaultEntityConnectionServer'
 
 distTar {
     dependsOn(':jminor-demos-empdept:jarDomain')
@@ -102,7 +102,6 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
     group = 'run'
     classpath = configurations.serverRuntime
     main = 'org.jminor.framework.server.DefaultEntityConnectionServer'
-//    jvmArgs '--add-modules', 'java.xml.bind'
     systemProperties = [
             'jminor.db.type'                            : 'h2',
             'jminor.db.host'                            : 'h2db',

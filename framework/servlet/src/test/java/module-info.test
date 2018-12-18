@@ -1,0 +1,5 @@
+--add-modules
+    java.sql,org.jminor.framework.server
+
+--add-reads
+    org.jminor.framework.servlet=java.sql,org.jminor.framework.server

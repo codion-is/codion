@@ -1,0 +1,5 @@
+--add-modules
+    org.jminor.common.core,org.jminor.common.model
+
+--add-reads
+    org.jminor.swing.common.tools.ui=org.jminor.common.core,org.jminor.common.model

@@ -18,7 +18,7 @@ dependencies {
     implementation project(':jminor-swing-framework-tools')
 
     runtime project(':jminor-framework-db-http')
-    runtime project(':jminor-plugin-logback-proxy')
+    runtime project(':jminor-framework-plugins-logback-proxy')
 
     testImplementation project(':jminor-framework-db-test')
     testImplementation project(':jminor-swing-framework-ui-test')

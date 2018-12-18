@@ -18,3 +18,18 @@ dependencies {
 
     testRuntime "com.h2database:h2:${h2Version}"
 }
+
+compileTestJava {
+    doFirst {
+        options.compilerArgs.add('--patch-module')
+        options.compilerArgs.add("org.jminor.framework.model=${projectDir}/../../framework/model/build/libs/jminor-framework-model-${version}-tests.jar")
+    }
+}
+
+test {
+    doFirst {
+        jvmArgs = [ 
+            '--patch-module', "org.jminor.framework.model=${projectDir}/../../framework/model/build/libs/jminor-framework-model-${version}-tests.jar", 
+        ]
+    }
+}

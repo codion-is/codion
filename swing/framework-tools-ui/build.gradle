@@ -24,7 +24,7 @@ distributions {
 
 applicationName = 'entity_generator'
 
-mainClassName = 'org.jminor.swing.framework.tools.ui.EntityGeneratorPanel'
+mainClassName = '$moduleName/org.jminor.swing.framework.tools.ui.EntityGeneratorPanel'
 
 applicationDefaultJvmArgs = [
         '-Djminor.configurationFile=../config/entity_generator.config',
