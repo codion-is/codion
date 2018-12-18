@@ -159,7 +159,7 @@ configure(project.frameworkModules) {
                     storepass: 'crappypass', dname: 'CN=Dummy, OU=dummy, O=dummy.org, C=DU')
             exec {
                 executable = keyToolExecutable
-                args = ['-exportcert', '-keystore', keystore, '-alias', 'JMinorServer', '-rfc', '-file', certificate]
+                args = ['-exportcert', '-keystore', keystore, '-storepass', 'crappypass', '-alias', 'JMinorServer', '-rfc', '-file', certificate]
             }
             def truststore = keystoreRootDir + 'JMinorClientTruststore'
             exec {
