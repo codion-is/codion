@@ -5,7 +5,7 @@ package org.jminor.framework.demos.petstore.testing;
 
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.swing.common.tools.ui.LoadTestPanel;
@@ -15,7 +15,6 @@ import org.jminor.swing.framework.tools.EntityLoadTestModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.util.Collections;
-import java.util.UUID;
 
 public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppPanel.PetstoreApplicationModel> {
 
@@ -40,7 +39,8 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppPanel
   @Override
   protected PetstoreAppPanel.PetstoreApplicationModel initializeApplication() throws CancelException {
     final PetstoreAppPanel.PetstoreApplicationModel applicationModel = new PetstoreAppPanel.PetstoreApplicationModel(
-            new RemoteEntityConnectionProvider(Petstore.class.getName(), getUser(), UUID.randomUUID(), getClass().getSimpleName()));
+            EntityConnectionProviders.connectionProvider(Petstore.class.getName(),
+                    getClass().getSimpleName()).setUser(getUser()));
     final SwingEntityModel categoryModel = applicationModel.getEntityModels().iterator().next();
     categoryModel.addLinkedDetailModel(categoryModel.getDetailModels().iterator().next());
     final SwingEntityModel productModel = categoryModel.getDetailModels().iterator().next();

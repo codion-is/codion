@@ -49,7 +49,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
             HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME.get(),
             HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get(),
             HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get(),
-            UNIT_TEST_USER, "EmpDeptServletLoadTest", UUID.randomUUID());
+            "EmpDeptServletLoadTest", UUID.randomUUID()).setUser(UNIT_TEST_USER);
   }
 
   public static void main(final String[] args) throws Exception {

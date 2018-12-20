@@ -25,7 +25,8 @@ public final class EntityApplicationViewTest {
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
-  protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, UNIT_TEST_USER, Databases.getInstance());
+  protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES,
+          Databases.getInstance()).setUser(UNIT_TEST_USER);
 
   @BeforeAll
   public static void setUp() throws Exception {

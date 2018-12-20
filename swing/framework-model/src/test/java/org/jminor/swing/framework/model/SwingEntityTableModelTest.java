@@ -34,9 +34,10 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   private static final Entities ENTITIES = new TestDomain();
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES, new User(
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES,
+          Databases.getInstance()).setUser(new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray()), Databases.getInstance());
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray()));
 
   @Override
   protected SwingEntityTableModel createTestTableModel() {

@@ -27,9 +27,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityTableConditionModelTest {
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new TestDomain(), new User(
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new TestDomain(),
+          Databases.getInstance()).setUser(new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray()), Databases.getInstance());
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray()));
 
   private final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_EMP,
           CONNECTION_PROVIDER, new DefaultPropertyFilterModelProvider(),

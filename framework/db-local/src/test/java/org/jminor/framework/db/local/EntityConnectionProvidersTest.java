@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.db.local;
 
-import org.jminor.common.User;
 import org.jminor.framework.db.EntityConnectionProviders;
 
 import org.junit.jupiter.api.Test;
@@ -17,12 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 public class EntityConnectionProvidersTest {
 
-  private static final User UNIT_TEST_USER = new User(
-          System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray());
-
   @Test
   public void test() {
-    assertNotNull(EntityConnectionProviders.connectionProvider(TestDomain.class.getName(), UNIT_TEST_USER, "test"));
+    assertNotNull(EntityConnectionProviders.connectionProvider(TestDomain.class.getName(), "test"));
   }
 }

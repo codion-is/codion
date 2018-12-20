@@ -4,7 +4,6 @@
 package org.jminor.framework.db.http;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.User;
 import org.jminor.common.Value;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
@@ -54,15 +53,13 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
   /**
    * Instantiates a new HttpEntityConnectionProvider.
    * @param domainId the id of the domain model
-   * @param user the user to use when initializing connections
    * @param clientTypeId the client type id
    * @param clientId a UUID identifying the client
    * @see HttpEntityConnectionProvider#HTTP_CLIENT_HOST_NAME
    * @see HttpEntityConnectionProvider#HTTP_CLIENT_PORT
    */
-  public HttpEntityConnectionProvider(final String domainId, final User user, final String clientTypeId,
-                                      final UUID clientId) {
-    this(domainId, HTTP_CLIENT_HOST_NAME.get(), HTTP_CLIENT_PORT.get(), HTTP_CLIENT_SECURE.get(), user, clientTypeId, clientId);
+  public HttpEntityConnectionProvider(final String domainId, final String clientTypeId, final UUID clientId) {
+    this(domainId, HTTP_CLIENT_HOST_NAME.get(), HTTP_CLIENT_PORT.get(), HTTP_CLIENT_SECURE.get(), clientTypeId, clientId);
   }
 
   /**
@@ -71,14 +68,12 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    * @param serverHostName the server host name
    * @param serverPort the server port
    * @param https true if https should be used
-   * @param user the user to use when initializing connections
    * @param clientTypeId the client type id
    * @param clientId a UUID identifying the client
    */
   public HttpEntityConnectionProvider(final String domainId, final String serverHostName, final Integer serverPort,
-                                      final Boolean https, final User user, final String clientTypeId,
-                                      final UUID clientId) {
-    super(user, false);
+                                      final Boolean https, final String clientTypeId, final UUID clientId) {
+    super(false);
     this.domainId = domainId;
     this.serverHostName = Objects.requireNonNull(serverHostName, "serverHostName");
     this.serverPort = Objects.requireNonNull(serverPort, "serverPort");
