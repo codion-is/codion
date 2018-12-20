@@ -219,7 +219,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
   protected ChinookAppPanel.ChinookApplicationModel initializeApplication() throws CancelException {
     final ChinookAppPanel.ChinookApplicationModel applicationModel = new ChinookAppPanel.ChinookApplicationModel(
             EntityConnectionProviders.connectionProvider("org.jminor.framework.demos.chinook.domain.impl.ChinookImpl",
-                    getUser(), ChinookLoadTest.class.getSimpleName()));
+                    ChinookLoadTest.class.getSimpleName()).setUser(getUser()));
     /* ARTIST
      *   ALBUM
      *     TRACK

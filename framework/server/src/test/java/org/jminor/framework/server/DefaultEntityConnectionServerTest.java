@@ -216,8 +216,8 @@ public class DefaultEntityConnectionServerTest {
 
   @Test
   public void remoteEntityConnectionProvider() throws Exception {
-    final RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider("TestDomain",
-            UNIT_TEST_USER, UUID.randomUUID(), "TestClient");
+    final RemoteEntityConnectionProvider provider = (RemoteEntityConnectionProvider) new RemoteEntityConnectionProvider("TestDomain",
+            UUID.randomUUID(), "TestClient").setUser(UNIT_TEST_USER);
 
     assertEquals(EntityConnection.Type.REMOTE, provider.getConnectionType());
     assertEquals(EntityConnection.Type.REMOTE, provider.getConnection().getType());

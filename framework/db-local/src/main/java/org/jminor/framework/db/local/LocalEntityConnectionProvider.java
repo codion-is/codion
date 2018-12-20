@@ -5,7 +5,6 @@ package org.jminor.framework.db.local;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.MethodLogger;
-import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.db.Database;
@@ -48,41 +47,34 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    */
   private final Database database;
 
-  private final Properties connectionProperties = new Properties();
-
   /**
    * Instantiates a new LocalEntityConnectionProvider
    * @param domain the domain model entities
-   * @param user the user
    */
-  public LocalEntityConnectionProvider(final Entities domain, final User user) {
-    this(domain, user, Databases.getInstance());
+  public LocalEntityConnectionProvider(final Entities domain) {
+    this(domain, Databases.getInstance());
   }
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
    * @param domain the domain model entities
-   * @param user the user
    * @param database the Database implementation
    */
-  public LocalEntityConnectionProvider(final Entities domain, final User user, final Database database) {
-    this(domain, user, database, EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get());
+  public LocalEntityConnectionProvider(final Entities domain, final Database database) {
+    this(domain, database, EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get());
   }
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
    * @param domain the domain model entities
-   * @param user the user
    * @param database the Database implementation
    * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
    */
-  public LocalEntityConnectionProvider(final Entities domain, final User user, final Database database,
+  public LocalEntityConnectionProvider(final Entities domain, final Database database,
                                        final boolean scheduleValidityCheck) {
-    super(user, scheduleValidityCheck);
+    super(scheduleValidityCheck);
     this.domain = Objects.requireNonNull(domain, "domain");
     this.database = Objects.requireNonNull(database, "database");
-    this.connectionProperties.put(Database.USER_PROPERTY, user.getUsername());
-    this.connectionProperties.put(Database.PASSWORD_PROPERTY, String.valueOf(user.getPassword()));
   }
 
   /** {@inheritDoc} */
@@ -128,6 +120,9 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   protected void disconnect(final EntityConnection connection) {
     connection.disconnect();
     if (database.isEmbedded() && SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT.get()) {
+      final Properties connectionProperties = new Properties();
+      connectionProperties.put(Database.USER_PROPERTY, getUser().getUsername());
+      connectionProperties.put(Database.PASSWORD_PROPERTY, String.valueOf(getUser().getPassword()));
       database.shutdownEmbedded(connectionProperties);
     }
   }

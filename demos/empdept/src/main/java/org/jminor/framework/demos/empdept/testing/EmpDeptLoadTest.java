@@ -37,7 +37,8 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
     final EntityApplicationModel applicationModel = new EmpDeptAppPanel.EmpDeptApplicationModel(
-            EntityConnectionProviders.connectionProvider(EmpDept.class.getName(), getUser(), EmpDeptLoadTest.class.getSimpleName()));
+            EntityConnectionProviders.connectionProvider(EmpDept.class.getName(), EmpDeptLoadTest.class.getSimpleName())
+                    .setUser(getUser()));
     final EntityModel deptModel = new SwingEntityModel(EmpDept.T_DEPARTMENT, applicationModel.getConnectionProvider());
     deptModel.addDetailModel(new SwingEntityModel(EmpDept.T_EMPLOYEE, applicationModel.getConnectionProvider()));
     applicationModel.addEntityModel(deptModel);

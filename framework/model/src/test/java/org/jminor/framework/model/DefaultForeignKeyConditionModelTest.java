@@ -23,9 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DefaultForeignKeyConditionModelTest {
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new TestDomain(), new User(
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new TestDomain(),
+          Databases.getInstance()).setUser(new User(
           System.getProperty("jminor.unittest.username", "scott"),
-          System.getProperty("jminor.unittest.password", "tiger").toCharArray()), Databases.getInstance());
+          System.getProperty("jminor.unittest.password", "tiger").toCharArray()));
 
   @Test
   public void getSearchEntitiesLookupModel() throws DatabaseException {

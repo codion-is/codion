@@ -133,8 +133,9 @@ public interface EntityConnectionProvider {
   /**
    * Sets the user for this connection provider, this invalidates and disconnects the previous connection if any.
    * @param user the user
+   * @return this EntityConnectionProvider instance
    */
-  void setUser(final User user);
+  EntityConnectionProvider setUser(final User user);
 
   /**
    * @return the user used by this connection provider

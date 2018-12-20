@@ -43,7 +43,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
     final SchemaBrowserAppPanel.SchemaBrowserApplicationModel applicationModel =
             new SchemaBrowserAppPanel.SchemaBrowserApplicationModel(
                     EntityConnectionProviders.connectionProvider(SchemaBrowser.class.getName(),
-                            getUser(), getClass().getSimpleName()));
+                            getClass().getSimpleName()).setUser(getUser()));
     final SwingEntityModel schemaModel = applicationModel.getEntityModel(SchemaBrowser.T_SCHEMA);
     final SwingEntityModel dbObjectModel = schemaModel.getDetailModel(SchemaBrowser.T_TABLE);
     schemaModel.addLinkedDetailModel(dbObjectModel);

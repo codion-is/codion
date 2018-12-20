@@ -9,6 +9,7 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.Server;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
@@ -54,8 +55,8 @@ public class EntityServerMonitorTest {
   public void test() throws Exception {
     final UUID clientId = UUID.randomUUID();
     final String clientTypeId = EntityServerMonitorTest.class.getName();
-    final RemoteEntityConnectionProvider connectionProvider = new RemoteEntityConnectionProvider("TestDomain",
-            UNIT_TEST_USER, clientId, clientTypeId);
+    final EntityConnectionProvider connectionProvider = new RemoteEntityConnectionProvider("TestDomain",
+            clientId, clientTypeId).setUser(UNIT_TEST_USER);
     connectionProvider.getConnection();
     final EntityServerMonitor model = new EntityServerMonitor("localhost", Server.REGISTRY_PORT.get());
     model.refresh();

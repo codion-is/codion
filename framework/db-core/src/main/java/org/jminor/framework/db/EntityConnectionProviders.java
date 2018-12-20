@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.User;
 import org.jminor.common.Version;
 import org.jminor.framework.domain.Entities;
 
@@ -21,45 +20,40 @@ public final class EntityConnectionProviders {
   /**
    * Returns a EntityConnectionProvider according to system properties, using a randomly generated clientId
    * @param domainClass the domain model class name
-   * @param user the user for the connection
    * @param clientTypeId the client type id
    * @return a EntityConnectionProvider
    */
-  public static EntityConnectionProvider connectionProvider(final String domainClass, final User user, final String clientTypeId) {
-    return connectionProvider(domainClass, user, clientTypeId, (Version) null);
+  public static EntityConnectionProvider connectionProvider(final String domainClass, final String clientTypeId) {
+    return connectionProvider(domainClass, clientTypeId, (Version) null);
   }
 
   /**
    * Returns a EntityConnectionProvider according to system properties, using a randomly generated clientId
    * @param domainClass the domain model class name
-   * @param user the user for the connection
    * @param clientTypeId the client type id
    * @param clientVersion the client version, if any
    * @return a EntityConnectionProvider
    */
-  public static EntityConnectionProvider connectionProvider(final String domainClass, final User user, final String clientTypeId,
+  public static EntityConnectionProvider connectionProvider(final String domainClass, final String clientTypeId,
                                                             final Version clientVersion) {
-    return connectionProvider(domainClass, user, clientTypeId, UUID.randomUUID(), clientVersion);
+    return connectionProvider(domainClass, clientTypeId, UUID.randomUUID(), clientVersion);
   }
 
   /**
    * Returns a EntityConnectionProvider according to system properties
    * @param domainClass the domain model class name
-   * @param user the user for the connection
    * @param clientTypeId the client type id
    * @param clientId the unique identifier for the client requesting the connection provider
    * @return a EntityConnectionProvider
    */
-  public static EntityConnectionProvider connectionProvider(final String domainClass, final User user, final String clientTypeId,
-                                                            final UUID clientId) {
-    return connectionProvider(domainClass, user, clientTypeId, clientId, null);
+  public static EntityConnectionProvider connectionProvider(final String domainClass, final String clientTypeId, final UUID clientId) {
+    return connectionProvider(domainClass, clientTypeId, clientId, null);
   }
 
   /**
    * Returns a remote or local EntityConnectionProvider according to system properties.
    * Loads classes by name, so these need to available on the classpath
    * @param domainClass the domain model class name
-   * @param user the user for the connection
    * @param clientTypeId the client type id
    * @param clientId a unique client ID
    * @param clientVersion the client version, if any
@@ -70,18 +64,18 @@ public final class EntityConnectionProviders {
    * @see org.jminor.framework.db.EntityConnectionProvider#LOCAL_CONNECTION_PROVIDER
    * @see org.jminor.framework.db.EntityConnectionProvider#HTTP_CONNECTION_PROVIDER
    */
-  public static EntityConnectionProvider connectionProvider(final String domainClass, final User user, final String clientTypeId,
+  public static EntityConnectionProvider connectionProvider(final String domainClass, final String clientTypeId,
                                                             final UUID clientId, final Version clientVersion) {
     Objects.requireNonNull(domainClass, "domainClass");
     try {
       final String clientConnectionType = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
       switch (clientConnectionType) {
         case EntityConnectionProvider.CONNECTION_TYPE_REMOTE:
-          return createRemoteConnectionProvider(domainClass, user, clientTypeId, clientId, clientVersion);
+          return createRemoteConnectionProvider(domainClass, clientTypeId, clientId, clientVersion);
         case EntityConnectionProvider.CONNECTION_TYPE_HTTP:
-          return createHttpConnectionProvider(domainClass, user, clientTypeId, clientId);
+          return createHttpConnectionProvider(domainClass, clientTypeId, clientId);
         case EntityConnectionProvider.CONNECTION_TYPE_LOCAL:
-          return createLocalConnectionProvider(domainClass, user);
+          return createLocalConnectionProvider(domainClass);
         default:
           throw new IllegalArgumentException("Unknown connection type: " + clientConnectionType);
       }
@@ -101,32 +95,37 @@ public final class EntityConnectionProviders {
     }
   }
 
-  private static EntityConnectionProvider createRemoteConnectionProvider(final String domainClass, final User user, final String clientTypeId,
+  private static EntityConnectionProvider createRemoteConnectionProvider(final String domainClass, final String clientTypeId,
                                                                          final UUID clientId, final Version clientVersion)
           throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
           InvocationTargetException, InstantiationException {
-    return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.REMOTE_CONNECTION_PROVIDER.get()).getConstructor(
-            String.class, User.class, UUID.class, String.class, Version.class)
-            .newInstance(getDomainId(domainClass), user, clientId, clientTypeId, clientVersion);
+    final EntityConnectionProvider connectionProvider = (EntityConnectionProvider) Class.forName(
+            EntityConnectionProvider.REMOTE_CONNECTION_PROVIDER.get()).getConstructor(
+            String.class, UUID.class, String.class, Version.class)
+            .newInstance(getDomainId(domainClass), clientId, clientTypeId, clientVersion);
+
+    return connectionProvider;
   }
 
-  private static EntityConnectionProvider createHttpConnectionProvider(final String domainClass, final User user,
-                                                                       final String clientTypeId, final UUID clientId)
+  private static EntityConnectionProvider createHttpConnectionProvider(final String domainClass, final String clientTypeId, final UUID clientId)
           throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
           InvocationTargetException, InstantiationException {
-    return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.HTTP_CONNECTION_PROVIDER.get()).getConstructor(
-            String.class, User.class, String.class, UUID.class)
-            .newInstance(getDomainId(domainClass), user, clientTypeId, clientId);
+    final EntityConnectionProvider connectionProvider = (EntityConnectionProvider) Class.forName(
+            EntityConnectionProvider.HTTP_CONNECTION_PROVIDER.get()).getConstructor(String.class, String.class, UUID.class)
+            .newInstance(getDomainId(domainClass), clientTypeId, clientId);
+
+    return connectionProvider;
   }
 
-  private static EntityConnectionProvider createLocalConnectionProvider(final String domainClass, final User user)
+  private static EntityConnectionProvider createLocalConnectionProvider(final String domainClass)
           throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
           InvocationTargetException, InstantiationException {
     final Entities domain = (Entities) Class.forName(domainClass).getConstructor().newInstance();
 
-    return (EntityConnectionProvider) Class.forName(EntityConnectionProvider.LOCAL_CONNECTION_PROVIDER.get()).getConstructor(
-            Entities.class, User.class)
-            .newInstance(domain, user);
+    final EntityConnectionProvider connectionProvider = (EntityConnectionProvider) Class.forName(
+            EntityConnectionProvider.LOCAL_CONNECTION_PROVIDER.get()).getConstructor(Entities.class).newInstance(domain);
+
+    return connectionProvider;
   }
 
   private static String getDomainId(final String domainClass) {

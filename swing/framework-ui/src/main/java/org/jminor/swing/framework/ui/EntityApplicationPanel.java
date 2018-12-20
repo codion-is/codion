@@ -773,7 +773,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Initializes the entity db provider
+   * Initializes the entity connection provider
    * @param user the user
    * @param clientTypeId a string specifying the client type
    * @return an initialized EntityConnectionProvider
@@ -781,7 +781,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeId) {
     return EntityConnectionProviders.connectionProvider(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.get(),
-            user, clientTypeId, getClientVersion());
+            clientTypeId, getClientVersion()).setUser(user);
   }
 
   /**

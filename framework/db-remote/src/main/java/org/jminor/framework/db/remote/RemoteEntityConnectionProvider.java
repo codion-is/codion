@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.db.remote;
 
-import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.Version;
 import org.jminor.common.i18n.Messages;
@@ -50,41 +49,37 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   /**
    * Instantiates a new RemoteEntityConnectionProvider.
    * @param domainId the domain model id
-   * @param user the user to use when initializing connections
    * @param clientId a UUID identifying the client
    * @param clientTypeId a string identifying the client type
    */
-  public RemoteEntityConnectionProvider(final String domainId, final User user, final UUID clientId,
-                                        final String clientTypeId) {
-    this(domainId, user, clientId, clientTypeId, null);
+  public RemoteEntityConnectionProvider(final String domainId, final UUID clientId, final String clientTypeId) {
+    this(domainId, clientId, clientTypeId, null);
   }
 
   /**
    * Instantiates a new RemoteEntityConnectionProvider.
    * @param domainId the domain model id
-   * @param user the user to use when initializing connections
    * @param clientId a UUID identifying the client
    * @param clientTypeId a string identifying the client type
    * @param clientVersion the client version
    */
-  public RemoteEntityConnectionProvider(final String domainId, final User user, final UUID clientId,
-                                        final String clientTypeId, final Version clientVersion) {
-    this(domainId, Server.SERVER_HOST_NAME.get(), user, clientId, clientTypeId, clientVersion, true);
+  public RemoteEntityConnectionProvider(final String domainId, final UUID clientId, final String clientTypeId,
+                                        final Version clientVersion) {
+    this(domainId, Server.SERVER_HOST_NAME.get(), clientId, clientTypeId, clientVersion, true);
   }
 
   /**
    * Instantiates a new RemoteEntityConnectionProvider.
    * @param domainId the domain model id
    * @param serverHostName the server host name
-   * @param user the user to use when initializing connections
    * @param clientId a UUID identifying the client
    * @param clientTypeId a string identifying the client type
    * @param clientVersion the client version, if any
    * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
    */
-  public RemoteEntityConnectionProvider(final String domainId, final String serverHostName, final User user, final UUID clientId,
+  public RemoteEntityConnectionProvider(final String domainId, final String serverHostName, final UUID clientId,
                                         final String clientTypeId, final Version clientVersion, final boolean scheduleValidityCheck) {
-    super(user, scheduleValidityCheck);
+    super(scheduleValidityCheck);
     this.serverHostName = Objects.requireNonNull(serverHostName, "serverHostName");
     this.domainId = Objects.requireNonNull(domainId, "domainId");
     this.clientId = Objects.requireNonNull(clientId, "clientId");

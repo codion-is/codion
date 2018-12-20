@@ -14,7 +14,6 @@ import org.jminor.framework.domain.Entities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -40,19 +39,16 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   /**
    * Instantiates a new AbstractEntityConnectionProvider.
-   * @param user the user to base the connection provider on
    */
-  public AbstractEntityConnectionProvider(final User user) {
-    this(user, false);
+  public AbstractEntityConnectionProvider() {
+    this(false);
   }
 
   /**
    * Instantiates a new AbstractEntityConnectionProvider.
-   * @param user the user to base the connection provider on
    * @param scheduleValidityCheck if true then a connection validity check is run every 10 seconds
    */
-  public AbstractEntityConnectionProvider(final User user, final boolean scheduleValidityCheck) {
-    this.user = Objects.requireNonNull(user, "user");
+  public AbstractEntityConnectionProvider(final boolean scheduleValidityCheck) {
     this.scheduleValidityCheck = scheduleValidityCheck;
     if (this.scheduleValidityCheck) {
       this.validityCheckScheduler.start();
@@ -93,9 +89,11 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   /** {@inheritDoc} */
   @Override
-  public final synchronized void setUser(final User user) {
+  public final synchronized EntityConnectionProvider setUser(final User user) {
     disconnect();
     this.user = user;
+
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -169,6 +167,9 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   private void doConnect() {
+    if (user == null) {
+      throw new IllegalStateException("User has not been set for this connection provider");
+    }
     entityConnection = connect();
     domain = entityConnection.getDomain().registerDomain();
     connectedState.setActive(true);
