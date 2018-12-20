@@ -21,8 +21,10 @@ dependencies {
 
     implementation project(':jminor-framework-plugins-jasperreports')
 
-    runtime project(':jminor-framework-db-http')
-    runtime project(':jminor-framework-plugins-logback-proxy')
+    runtimeOnly project(':jminor-framework-plugins-logback-proxy')
+
+    runtimeOnly project(':jminor-framework-db-http')
+    runtimeOnly project(':jminor-framework-db-remote')
 
     testImplementation project(':jminor-framework-db-test')
 

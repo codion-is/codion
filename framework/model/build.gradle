@@ -4,8 +4,6 @@ dependencies {
     api project(':jminor-common-model')
 
     api project(':jminor-framework-db-core')
-    runtimeOnly project(':jminor-framework-db-local')
-    runtimeOnly project(':jminor-framework-db-remote')
 
     testImplementation project(':jminor-framework-db-local')
 

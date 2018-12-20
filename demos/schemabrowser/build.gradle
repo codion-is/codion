@@ -6,7 +6,6 @@ dependencies {
     implementation project(':jminor-common-model')
 
     implementation project(':jminor-framework-db-core')
-    implementation project(':jminor-framework-db-remote')
     implementation project(':jminor-framework-model')
 
     implementation project(':jminor-swing-common-model')
@@ -17,15 +16,18 @@ dependencies {
     implementation project(':jminor-swing-framework-ui')
     implementation project(':jminor-swing-framework-tools')
 
-    runtime project(':jminor-framework-db-http')
-    runtime project(':jminor-framework-plugins-logback-proxy')
+    runtimeOnly project(':jminor-framework-plugins-logback-proxy')
+    
+    runtimeOnly project(':jminor-framework-db-local')
+    runtimeOnly project(':jminor-framework-db-remote')
+    runtimeOnly project(':jminor-framework-db-http')
 
     testImplementation project(':jminor-framework-db-test')
     testImplementation project(':jminor-swing-framework-ui-test')
 
     implementation "org.jfree:jfreechart:${jfreeChartVersion}"
 
-    runtime "com.h2database:h2:${h2Version}"
+    runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
 test {
