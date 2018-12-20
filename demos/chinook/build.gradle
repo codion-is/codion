@@ -21,15 +21,15 @@ dependencies {
 
     implementation project(':jminor-plugin-jasperreports')
 
-    runtime project(':jminor-framework-db-http')
-    runtime project(':jminor-plugin-logback-proxy')
+    runtimeOnly project(':jminor-plugin-logback-proxy')
+
+    runtimeOnly project(':jminor-framework-db-http')
+    runtimeOnly project(':jminor-framework-db-remote')
 
     testImplementation project(':jminor-framework-db-test')
 
     implementation "org.jfree:jcommon:${jcommonVersion}"
     implementation "org.jfree:jfreechart:${jfreeChartVersion}"
-
-    runtime project(':jminor-plugin-logback-proxy')
 
     compile("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
         transitive = false

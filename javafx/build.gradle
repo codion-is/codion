@@ -9,10 +9,6 @@ dependencies {
     testImplementation project(':jminor-framework-db-local')
     testImplementation project(path: ':jminor-framework-model', configuration: 'testArtifact')
 
-    runtimeOnly project(':jminor-framework-db-local')
-    runtimeOnly project(':jminor-framework-db-remote')
-    runtimeOnly project(':jminor-framework-db-http')
-
     implementation "org.json:json:${jsonVersion}"
 
     testCompile 'org.testfx:testfx-core:4.0.15-alpha'
