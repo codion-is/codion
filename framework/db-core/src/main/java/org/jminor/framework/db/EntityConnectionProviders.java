@@ -7,7 +7,9 @@ import org.jminor.common.Version;
 import org.jminor.framework.domain.Entities;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.UUID;
 
 /**
@@ -16,6 +18,20 @@ import java.util.UUID;
 public final class EntityConnectionProviders {
 
   private EntityConnectionProviders() {}
+
+  public static EntityConnectionProvider connectionProvider() {
+    final String clientConnectionType = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
+    final ServiceLoader<EntityConnectionProvider> loader = ServiceLoader.load(EntityConnectionProvider.class);
+    final Iterator<EntityConnectionProvider> iterator = loader.iterator();
+    while (iterator.hasNext()) {
+      final EntityConnectionProvider provider = iterator.next();
+      if (clientConnectionType.equalsIgnoreCase(provider.getConnectionType().toString())) {
+        return provider;
+      }
+    }
+
+    throw new IllegalArgumentException("No connection provider of type '" + clientConnectionType + "' available");
+  }
 
   /**
    * Returns a EntityConnectionProvider according to system properties, using a randomly generated clientId

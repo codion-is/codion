@@ -38,11 +38,6 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   public static final Value<Boolean> SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT = Configuration.booleanValue("jminor.db.shutdownEmbeddedOnDisconnect", false);
 
   /**
-   * The underlying domain entities
-   */
-  private final Entities domain;
-
-  /**
    * The underlying database implementation
    */
   private final Database database;
@@ -51,29 +46,26 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * Instantiates a new LocalEntityConnectionProvider
    * @param domain the domain model entities
    */
-  public LocalEntityConnectionProvider(final Entities domain) {
-    this(domain, Databases.getInstance());
+  public LocalEntityConnectionProvider() {
+    this(Databases.getInstance());
   }
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
-   * @param domain the domain model entities
    * @param database the Database implementation
    */
-  public LocalEntityConnectionProvider(final Entities domain, final Database database) {
-    this(domain, database, EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get());
+  public LocalEntityConnectionProvider(final Database database) {
+    this(database, EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get());
   }
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
-   * @param domain the domain model entities
    * @param database the Database implementation
    * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
    */
-  public LocalEntityConnectionProvider(final Entities domain, final Database database,
+  public LocalEntityConnectionProvider(final Database database,
                                        final boolean scheduleValidityCheck) {
     super(scheduleValidityCheck);
-    this.domain = Objects.requireNonNull(domain, "domain");
     this.database = Objects.requireNonNull(database, "database");
   }
 
@@ -102,11 +94,17 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     return database.getHost();
   }
 
+  public static EntityConnectionProvider provider() {
+    return new LocalEntityConnectionProvider();
+  }
+
   /** {@inheritDoc} */
   @Override
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
+      final Entities domain = (Entities) Class.forName(getDomainClassName()).getConstructor().newInstance();
+
       return Util.initializeProxy(EntityConnection.class, new LocalConnectionHandler(domain,
               LocalEntityConnections.createConnection(domain, database, getUser())));
     }
