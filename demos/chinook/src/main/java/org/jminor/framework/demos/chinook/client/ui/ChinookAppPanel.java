@@ -10,7 +10,6 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.chinook.beans.ui.AlbumEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.ArtistEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.CustomerEditPanel;
@@ -128,14 +127,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPane
     panels.add(customerPanel);
 
     return panels;
-  }
-
-  @Override
-  protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeId) {
-    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider();
-    connectionProvider.setUser(user);
-
-    return connectionProvider;
   }
 
   @Override

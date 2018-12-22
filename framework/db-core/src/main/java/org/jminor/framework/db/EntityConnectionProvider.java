@@ -7,11 +7,8 @@ import org.jminor.common.Configuration;
 import org.jminor.common.StateObserver;
 import org.jminor.common.User;
 import org.jminor.common.Value;
-import org.jminor.common.Version;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
-
-import java.util.UUID;
 
 /**
  * Interface for a class responsible for providing EntityConnection objects.
@@ -144,12 +141,4 @@ public interface EntityConnectionProvider {
    * @return the user used by this connection provider
    */
   User getUser();
-
-  EntityConnectionProvider setDomainClassName(final String domainClassName);
-
-  EntityConnectionProvider setClientId(final UUID randomUUID);
-
-  EntityConnectionProvider setClientTypeId(final String clientTypeId);
-
-  EntityConnectionProvider setClientVersion(final Version clientVersion);
 }

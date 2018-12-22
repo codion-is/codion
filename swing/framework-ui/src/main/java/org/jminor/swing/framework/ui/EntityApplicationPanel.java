@@ -87,7 +87,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.UUID;
 
 /**
  * A central application panel class.
@@ -781,14 +780,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case the initialization is cancelled
    */
   protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeId) {
-    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider();
-    connectionProvider.setDomainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.get());
-    connectionProvider.setUser(user);
-    connectionProvider.setClientId(UUID.randomUUID());
-    connectionProvider.setClientTypeId(clientTypeId);
-    connectionProvider.setClientVersion(getClientVersion());
-
-    return connectionProvider;
+    return EntityConnectionProviders.connectionProvider(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.get(),
+            clientTypeId, getClientVersion()).setUser(user);
   }
 
   /**

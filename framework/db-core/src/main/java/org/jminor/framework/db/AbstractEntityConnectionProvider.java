@@ -8,14 +8,12 @@ import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
-import org.jminor.common.Version;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,11 +33,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
    * The user used by this connection provider when connecting to the database server
    */
   private User user;
-  private String domainClassName;
-  private UUID clientId;
-  private Version clientVersion;
-  private String clientTypeId;
-
   private EntityConnection entityConnection;
   private Entities domain;
   private EntityConditions entityConditions;
@@ -96,45 +89,9 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   /** {@inheritDoc} */
   @Override
-  public EntityConnectionProvider setDomainClassName(final String domainClassName) {
-    disconnect();
-    this.domainClassName = domainClassName;
-
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final synchronized EntityConnectionProvider setUser(final User user) {
     disconnect();
     this.user = user;
-
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public EntityConnectionProvider setClientId(final UUID clientId) {
-    disconnect();
-    this.clientId = clientId;
-
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public EntityConnectionProvider setClientTypeId(final String clientTypeId) {
-    disconnect();
-    this.clientTypeId = clientTypeId;
-
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public EntityConnectionProvider setClientVersion(final Version clientVersion) {
-    disconnect();
-    this.clientVersion = clientVersion;
 
     return this;
   }
@@ -183,22 +140,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
   }
 
-  protected String getDomainClassName() {
-    return domainClassName;
-  }
-
-  protected final UUID getClientId() {
-    return clientId;
-  }
-
-  protected final Version getClientVersion() {
-    return clientVersion;
-  }
-
-  protected final String getClientTypeId() {
-    return clientTypeId;
-  }
-
   /**
    * @return an established connection
    */
@@ -209,14 +150,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
    * @param connection the connection to be disconnected
    */
   protected abstract void disconnect(final EntityConnection connection);
-
-  protected static String getDomainId(final String domainClass) {
-    if (domainClass.contains(".")) {
-      return domainClass.substring(domainClass.lastIndexOf('.') + 1);
-    }
-
-    return domainClass;
-  }
 
   private void validateConnection() {
     if (entityConnection == null) {
