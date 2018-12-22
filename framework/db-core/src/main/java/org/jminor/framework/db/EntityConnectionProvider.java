@@ -7,8 +7,11 @@ import org.jminor.common.Configuration;
 import org.jminor.common.StateObserver;
 import org.jminor.common.User;
 import org.jminor.common.Value;
+import org.jminor.common.Version;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;
+
+import java.util.UUID;
 
 /**
  * Interface for a class responsible for providing EntityConnection objects.
@@ -131,7 +134,7 @@ public interface EntityConnectionProvider {
   void disconnect();
 
   /**
-   * Sets the user for this connection provider, this invalidates and disconnects the previous connection if any.
+   * Disconnects the underlying connection if connected.
    * @param user the user
    * @return this EntityConnectionProvider instance
    */
@@ -141,4 +144,51 @@ public interface EntityConnectionProvider {
    * @return the user used by this connection provider
    */
   User getUser();
+
+  /**
+   * Disconnects the underlying connection if connected.
+   * @param domainClassName the name of the class specifying the domain model for this connection provider
+   * @return this EntityConnectionProvider instance
+   */
+  EntityConnectionProvider setDomainClassName(final String domainClassName);
+
+  /**
+   * @return the domain model classname
+   */
+  String getDomainClassName();
+
+  /**
+   * Disconnects the underlying connection if connected.
+   * @param clientId the UUID identifying this client connection
+   * @return this EntityConnectionProvider instance
+   */
+  EntityConnectionProvider setClientId(final UUID clientId);
+
+  /**
+   * @return the UUID identifying this client connection
+   */
+  UUID getClientId();
+
+  /**
+   * Disconnects the underlying connection if connected.
+   * @param clientTypeId a String identifying the client type for this connection provider
+   * @return this EntityConnectionProvider instance
+   */
+  EntityConnectionProvider setClientTypeId(final String clientTypeId);
+
+  /**
+   * @return the String identifying the client type for this connection provider
+   */
+  String getClientTypeId();
+
+  /**
+   * @param clientVersion the client version
+   * @return this EntityConnectionProvider instance
+   */
+  EntityConnectionProvider setClientVersion(final Version clientVersion);
+
+  /**
+   * @return the client version
+   */
+  Version getClientVersion();
 }

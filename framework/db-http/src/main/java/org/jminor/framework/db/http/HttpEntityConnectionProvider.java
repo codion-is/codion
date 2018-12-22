@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * A class responsible for managing a httpConnection entity connection.
@@ -44,42 +43,30 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
   public static final Value<Boolean> HTTP_CLIENT_SECURE = Configuration.booleanValue("jminor.client.http.secure", true);
 
   private final String serverHostName;
-  private final String domainId;
   private final Integer serverPort;
   private final Boolean https;
-  private final String clientTypeId;
-  private final UUID clientId;
 
   /**
    * Instantiates a new HttpEntityConnectionProvider.
-   * @param domainId the id of the domain model
-   * @param clientTypeId the client type id
-   * @param clientId a UUID identifying the client
    * @see HttpEntityConnectionProvider#HTTP_CLIENT_HOST_NAME
    * @see HttpEntityConnectionProvider#HTTP_CLIENT_PORT
    */
-  public HttpEntityConnectionProvider(final String domainId, final String clientTypeId, final UUID clientId) {
-    this(domainId, HTTP_CLIENT_HOST_NAME.get(), HTTP_CLIENT_PORT.get(), HTTP_CLIENT_SECURE.get(), clientTypeId, clientId);
+  public HttpEntityConnectionProvider() {
+    this(HTTP_CLIENT_HOST_NAME.get(), HTTP_CLIENT_PORT.get(), HTTP_CLIENT_SECURE.get());
   }
 
   /**
    * Instantiates a new HttpEntityConnectionProvider.
-   * @param domainId the id of the domain model
    * @param serverHostName the server host name
    * @param serverPort the server port
    * @param https true if https should be used
-   * @param clientTypeId the client type id
-   * @param clientId a UUID identifying the client
    */
-  public HttpEntityConnectionProvider(final String domainId, final String serverHostName, final Integer serverPort,
-                                      final Boolean https, final String clientTypeId, final UUID clientId) {
+  public HttpEntityConnectionProvider(final String serverHostName, final Integer serverPort,
+                                      final Boolean https) {
     super(false);
-    this.domainId = domainId;
     this.serverHostName = Objects.requireNonNull(serverHostName, "serverHostName");
     this.serverPort = Objects.requireNonNull(serverPort, "serverPort");
     this.https = Objects.requireNonNull(https, "https");
-    this.clientTypeId = Objects.requireNonNull(clientTypeId, "clientTypeId");
-    this.clientId = Objects.requireNonNull(clientId, "clientId");
   }
 
   /** {@inheritDoc} */
@@ -106,20 +93,13 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
     return serverHostName;
   }
 
-  /**
-   * @return the client ID
-   */
-  public UUID getClientId() {
-    return clientId;
-  }
-
   /** {@inheritDoc} */
   @Override
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      return HttpEntityConnections.createConnection(domainId, serverHostName, serverPort, https,
-              getUser(), clientTypeId, clientId);
+      return HttpEntityConnections.createConnection(getDomainId(getDomainClassName()), serverHostName,
+              serverPort, https, getUser(), getClientTypeId(), getClientId());
     }
     catch (final Exception e) {
       throw new RuntimeException(e);

@@ -19,7 +19,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.rmi.registry.LocateRegistry;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -53,10 +52,9 @@ public class EntityServerMonitorTest {
 
   @Test
   public void test() throws Exception {
-    final UUID clientId = UUID.randomUUID();
     final String clientTypeId = EntityServerMonitorTest.class.getName();
-    final EntityConnectionProvider connectionProvider = new RemoteEntityConnectionProvider("TestDomain",
-            clientId, clientTypeId).setUser(UNIT_TEST_USER);
+    final EntityConnectionProvider connectionProvider = new RemoteEntityConnectionProvider()
+            .setDomainClassName("TestDomain").setClientTypeId(clientTypeId).setUser(UNIT_TEST_USER);
     connectionProvider.getConnection();
     final EntityServerMonitor model = new EntityServerMonitor("localhost", Server.REGISTRY_PORT.get());
     model.refresh();
@@ -75,7 +73,7 @@ public class EntityServerMonitorTest {
     assertEquals(1, clientMonitor.getClientInstanceListModel().size());
     final ClientInstanceMonitor clientInstanceMonitor = clientMonitor.getClientInstanceListModel().firstElement();
     final RemoteClient remoteClient = clientInstanceMonitor.getRemoteClient();
-    assertEquals(clientId, remoteClient.getClientId());
+    assertEquals(connectionProvider.getClientId(), remoteClient.getClientId());
     assertEquals(UNIT_TEST_USER, remoteClient.getUser());
 
     clientInstanceMonitor.disconnect();//disconnects the client

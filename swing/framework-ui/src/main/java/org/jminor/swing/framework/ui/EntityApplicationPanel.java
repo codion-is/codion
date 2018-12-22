@@ -780,8 +780,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case the initialization is cancelled
    */
   protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeId) {
-    return EntityConnectionProviders.connectionProvider(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.get(),
-            clientTypeId, getClientVersion()).setUser(user);
+    return EntityConnectionProviders.connectionProvider().setDomainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.get())
+            .setClientTypeId(clientTypeId).setClientVersion(getClientVersion()).setUser(user);
   }
 
   /**

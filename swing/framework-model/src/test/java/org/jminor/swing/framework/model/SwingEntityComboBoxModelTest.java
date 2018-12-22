@@ -32,8 +32,8 @@ public final class SwingEntityComboBoxModelTest {
 
   private static final Entities ENTITIES = new TestDomain();
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES,
-          Databases.getInstance()).setUser(new User(
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
+          Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger").toCharArray()));
 

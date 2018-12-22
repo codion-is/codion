@@ -9,7 +9,6 @@ import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.domain.Entities;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,12 +20,11 @@ public class LocalEntityConnectionProviderTest {
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
-  private static final Entities ENTITIES = new TestDomain();
-
   @Test
   public void test() {
     final Database database = Databases.getInstance();
-    final EntityConnectionProvider provider = new LocalEntityConnectionProvider(ENTITIES, database).setUser(UNIT_TEST_USER);
+    final EntityConnectionProvider provider = new LocalEntityConnectionProvider(database).setUser(UNIT_TEST_USER)
+            .setDomainClassName(TestDomain.class.getName());
 
     assertEquals(database.getHost(), provider.getServerHostName());
 
@@ -48,7 +46,8 @@ public class LocalEntityConnectionProviderTest {
   public void entityConnectionProviders() {
     final String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
-    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider(TestDomain.class.getName(), "test");
+    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider()
+            .setDomainClassName(TestDomain.class.getName()).setClientTypeId("test");
     assertEquals("LocalEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
     assertEquals(EntityConnection.Type.LOCAL, connectionProvider.getConnectionType());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);

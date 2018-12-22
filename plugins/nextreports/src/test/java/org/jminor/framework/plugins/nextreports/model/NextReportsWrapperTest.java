@@ -30,8 +30,9 @@ public class NextReportsWrapperTest {
 
   @Test
   public void fillReport() throws ReportException, IOException {
-    final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(new Entities(),
-            new H2Database("h2db", System.getProperty("jminor.db.initScript"))).setUser(UNIT_TEST_USER);
+    final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
+            new H2Database("h2db", System.getProperty("jminor.db.initScript")))
+            .setDomainClassName(Entities.class.getName()).setUser(UNIT_TEST_USER);
     final ReportResult<NextReportsResult> result = EntityReportUtil.fillReport(
             new NextReportsWrapper("src/test/reports/test-report.report",
                     Collections.emptyMap(), ReportRunner.CSV_FORMAT), connectionProvider);

@@ -28,8 +28,8 @@ public class EntityApplicationPanelTest {
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(new TestDomain(),
-          Databases.getInstance()).setUser(UNIT_TEST_USER);
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
+          Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @AfterEach
   public void tearDown() {

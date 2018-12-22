@@ -30,8 +30,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class DefaultEntityLookupModelTest {
 
   private static final Entities ENTITIES = new TestDomain();
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES,
-          Databases.getInstance()).setUser(new User(
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
+          Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger").toCharArray()));
   private static final EntityConditions ENTITY_CONDITIONS = CONNECTION_PROVIDER.getConditions();

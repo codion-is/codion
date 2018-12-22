@@ -69,8 +69,8 @@ public class EntityLoadTestModelTest {
 
     @Override
     protected DefaultEntityApplicationModel initializeApplication() {
-      return new DefaultEntityApplicationModel(EntityConnectionProviders.connectionProvider(TestDomain.class.getName(),
-              EntityLoadTestModelTest.class.getSimpleName()).setUser(getUser()));
+      return new DefaultEntityApplicationModel(EntityConnectionProviders.connectionProvider().setDomainClassName(TestDomain.class.getName())
+              .setClientTypeId(EntityLoadTestModelTest.class.getSimpleName()).setUser(getUser()));
     }
   }
 
