@@ -194,7 +194,8 @@ public class EntityTestUnit {
    * @return the EntityConnectionProvider instance this test case should use
    */
   protected EntityConnectionProvider initializeConnectionProvider() {
-    return EntityConnectionProviders.connectionProvider(domainClass, getClass().getName()).setUser(getTestUser());
+    return EntityConnectionProviders.connectionProvider().setDomainClassName(domainClass)
+            .setClientTypeId(getClass().getName()).setUser(getTestUser());
   }
 
   /**

@@ -4914,3 +4914,4 @@
   jminor-framework-model no longer depends on jminor-framework-db-local and jminor-framework-db-remote, projects must now explicitly add a runtime dependency for these
   EntityConnectionProvider.setUser() now returns the EntityConnectionProvider instance
   AbstractEntityConnectionProvider constructor no longer takes User parameter, setUser() must be called before connection is requested
+  EntityConnectionProvider and subclasses refactored for parameterless instantiation

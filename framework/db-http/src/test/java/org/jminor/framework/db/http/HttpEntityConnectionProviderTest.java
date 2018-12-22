@@ -18,7 +18,8 @@ public class HttpEntityConnectionProviderTest {
     final String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_HTTP);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(8089);
-    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider(TestDomain.class.getName(), "test");
+    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider()
+            .setDomainClassName(TestDomain.class.getName()).setClientTypeId("test");
     assertEquals("HttpEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
     assertEquals(EntityConnection.Type.HTTP, connectionProvider.getConnectionType());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);

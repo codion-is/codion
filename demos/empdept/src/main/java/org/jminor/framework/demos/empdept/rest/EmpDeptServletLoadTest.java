@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnectionProvider> {
 
@@ -45,11 +44,12 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
 
   @Override
   protected EntityConnectionProvider initializeApplication() throws CancelException {
-    return new HttpEntityConnectionProvider(EmpDept.class.getName(),
+    return new HttpEntityConnectionProvider(
             HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME.get(),
             HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get(),
-            HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get(),
-            "EmpDeptServletLoadTest", UUID.randomUUID()).setUser(UNIT_TEST_USER);
+            HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get())
+            .setClientTypeId("EmpDeptServletLoadTest")
+            .setDomainClassName(EmpDept.class.getName()).setUser(UNIT_TEST_USER);
   }
 
   public static void main(final String[] args) throws Exception {

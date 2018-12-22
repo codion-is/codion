@@ -149,7 +149,8 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
    * @return a {@link EntityConnectionProvider} based on the given user and client type
    */
   protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeId) {
-    return EntityConnectionProviders.connectionProvider(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.get(), clientTypeId).setUser(user);
+    return EntityConnectionProviders.connectionProvider().setDomainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.get())
+            .setClientTypeId(clientTypeId).setUser(user);
   }
 
   /**

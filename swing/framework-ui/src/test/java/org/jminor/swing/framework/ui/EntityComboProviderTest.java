@@ -7,7 +7,6 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
@@ -23,10 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class EntityComboProviderTest {
 
-  private static final Entities ENTITIES = new TestDomain();
-
-  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES,
-          Databases.getInstance()).setUser(new User(
+  private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
+          Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger").toCharArray()));
 

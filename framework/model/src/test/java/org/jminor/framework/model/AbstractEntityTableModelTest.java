@@ -36,8 +36,8 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
-  protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES,
-          Databases.getInstance()).setUser(UNIT_TEST_USER);
+  protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
+          Databases.getInstance()).setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
 
   protected final List<Entity> testEntities = initTestEntities();
 

@@ -42,8 +42,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
-  protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(ENTITIES,
-          Databases.getInstance()).setUser(UNIT_TEST_USER);
+  protected static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
+          Databases.getInstance()).setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
 
   protected final Model departmentModel = createDepartmentModel();
   private int eventCount = 0;

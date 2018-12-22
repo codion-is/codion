@@ -28,8 +28,8 @@ public class RemoteEntityConnectionProviderTest {
   public void entityConnectionProviders() {
     final String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
-    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider(
-            Entities.class.getName(), "test").setUser(UNIT_TEST_USER);
+    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider()
+            .setDomainClassName(Entities.class.getName()).setClientTypeId("test").setUser(UNIT_TEST_USER);
     assertEquals("RemoteEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
     assertEquals(EntityConnection.Type.REMOTE, connectionProvider.getConnectionType());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);

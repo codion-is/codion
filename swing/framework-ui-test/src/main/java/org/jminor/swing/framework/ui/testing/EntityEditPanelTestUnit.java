@@ -32,7 +32,8 @@ public abstract class EntityEditPanelTestUnit {
     Objects.requireNonNull(editPanelClass, "editPanelClass");
     Objects.requireNonNull(entityId, "entityId");
     Objects.requireNonNull(user, "user");
-    this.connectionProvider = EntityConnectionProviders.connectionProvider(domainclass, getClass().getName()).setUser(user);
+    this.connectionProvider = EntityConnectionProviders.connectionProvider().setDomainClassName(domainclass)
+            .setClientTypeId(getClass().getName()).setUser(user);
     this.editPanelClass = editPanelClass;
     this.entityId = entityId;
   }
