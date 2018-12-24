@@ -50,7 +50,6 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
 
   /**
    * Instantiates a new RemoteEntityConnectionProvider.
-   * @param serverHostName the server host name
    * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
    */
   public RemoteEntityConnectionProvider(final boolean scheduleValidityCheck) {
