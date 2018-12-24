@@ -22,7 +22,6 @@ import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collections;
-import java.util.Objects;
 
 /**
  * A class responsible for managing a remote entity connection.
@@ -36,16 +35,17 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    */
   public static final String REMOTE_CLIENT_DOMAIN_ID = "jminor.client.domainId";
 
-  private final String serverHostName;
   private Server<RemoteEntityConnection, Remote> server;
   private Server.ServerInfo serverInfo;
   private boolean truststoreResolved = false;
+
+  private String serverHostName;
 
   /**
    * Instantiates a new RemoteEntityConnectionProvider.
    */
   public RemoteEntityConnectionProvider() {
-    this(Server.SERVER_HOST_NAME.get(), true);
+    this(true);
   }
 
   /**
@@ -53,9 +53,8 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @param serverHostName the server host name
    * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
    */
-  public RemoteEntityConnectionProvider(final String serverHostName, final boolean scheduleValidityCheck) {
+  public RemoteEntityConnectionProvider(final boolean scheduleValidityCheck) {
     super(scheduleValidityCheck);
-    this.serverHostName = Objects.requireNonNull(serverHostName, "serverHostName");
   }
 
   /** {@inheritDoc} */
@@ -145,6 +144,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   private void connectToServer() throws RemoteException, NotBoundException {
+    serverHostName = Server.SERVER_HOST_NAME.get();
     Integer serverPort = Server.SERVER_PORT.get();
     if (serverPort == null) {
       serverPort = -1;
