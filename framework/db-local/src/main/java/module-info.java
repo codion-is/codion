@@ -5,4 +5,7 @@ module org.jminor.framework.db.local {
   requires org.jminor.common.db;
   requires org.jminor.framework.db.core;
   exports org.jminor.framework.db.local;
+
+  provides org.jminor.framework.db.EntityConnectionProvider
+          with org.jminor.framework.db.local.LocalEntityConnectionProvider;
 }

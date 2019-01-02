@@ -6,4 +6,7 @@ module org.jminor.framework.db.remote {
   requires org.jminor.common.server;
   requires org.jminor.framework.db.core;
   exports org.jminor.framework.db.remote;
+
+  provides org.jminor.framework.db.EntityConnectionProvider
+          with org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 }

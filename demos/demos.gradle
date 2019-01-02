@@ -1,8 +1,19 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath "org.javamodularity:moduleplugin:1.4.0"
+    }
+}
+
 apply plugin: 'application'
 apply plugin: 'jacoco'
+apply plugin: 'org.javamodularity.moduleplugin'
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 repositories {
     jcenter()

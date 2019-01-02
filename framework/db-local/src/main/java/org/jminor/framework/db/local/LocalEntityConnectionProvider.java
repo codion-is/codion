@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -40,31 +39,21 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   /**
    * The underlying database implementation
    */
-  private final Database database;
+  private Database database;
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
    */
   public LocalEntityConnectionProvider() {
-    this(Databases.getInstance());
+    this(EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get());
   }
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
-   * @param database the Database implementation
-   */
-  public LocalEntityConnectionProvider(final Database database) {
-    this(database, EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get());
-  }
-
-  /**
-   * Instantiates a new LocalEntityConnectionProvider
-   * @param database the Database implementation
    * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
    */
-  public LocalEntityConnectionProvider(final Database database, final boolean scheduleValidityCheck) {
+  public LocalEntityConnectionProvider(final boolean scheduleValidityCheck) {
     super(scheduleValidityCheck);
-    this.database = Objects.requireNonNull(database, "database");
   }
 
   /** {@inheritDoc} */
@@ -95,6 +84,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   /** {@inheritDoc} */
   @Override
   protected EntityConnection connect() {
+    database = Databases.getInstance();
     try {
       LOG.debug("Initializing connection for {}", getUser());
       final Entities domain = (Entities) Class.forName(getDomainClassName()).getConstructor().newInstance();
@@ -117,6 +107,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
       connectionProperties.put(Database.PASSWORD_PROPERTY, String.valueOf(getUser().getPassword()));
       database.shutdownEmbedded(connectionProperties);
     }
+    database = null;
   }
 
   private static final class LocalConnectionHandler implements InvocationHandler {

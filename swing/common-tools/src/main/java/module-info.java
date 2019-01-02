@@ -5,5 +5,6 @@ module org.jminor.swing.common.tools {
   requires jfreechart;
   requires org.jminor.common.core;
   requires org.jminor.common.db;
+  requires org.jminor.common.model;
   exports org.jminor.swing.common.tools;
 }

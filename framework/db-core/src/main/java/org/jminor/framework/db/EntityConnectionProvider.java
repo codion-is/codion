@@ -55,27 +55,6 @@ public interface EntityConnectionProvider {
   Value<String> CLIENT_CONNECTION_TYPE = Configuration.stringValue("jminor.client.connectionType", CONNECTION_TYPE_LOCAL);
 
   /**
-   * Specifies the class providing http db connections<br>
-   * Value type: String (the name of a class implementing org.jminor.framework.db.EntityConnectionProvider)<br>
-   * Default value: org.jminor.framework.plugins.db.http.HttpEntityConnectionProvider
-   */
-  Value<String> HTTP_CONNECTION_PROVIDER = Configuration.stringValue("jminor.client.httpConnectionProvider", "org.jminor.framework.db.http.HttpEntityConnectionProvider");
-
-  /**
-   * Specifies the class providing remote db connections<br>
-   * Value type: String (the name of a class implementing org.jminor.framework.db.EntityConnectionProvider)<br>
-   * Default value: org.jminor.framework.db.remote.RemoteEntityConnectionProvider
-   */
-  Value<String> REMOTE_CONNECTION_PROVIDER = Configuration.stringValue("jminor.client.remoteConnectionProvider", "org.jminor.framework.db.remote.RemoteEntityConnectionProvider");
-
-  /**
-   * Specifies the class providing local db connections<br>
-   * Value type: String (the name of a class implementing org.jminor.framework.db.EntityConnectionProvider)<br>
-   * Default value: org.jminor.framework.db.local.LocalEntityConnectionProvider
-   */
-  Value<String> LOCAL_CONNECTION_PROVIDER = Configuration.stringValue("jminor.client.localConnectionProvider", "org.jminor.framework.db.local.LocalEntityConnectionProvider");
-
-  /**
    * Specifies whether client connections, remote or local, should schedule a periodic validity check of the connection.
    * Value type: Boolean<br>
    * Default value: true
