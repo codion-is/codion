@@ -39,7 +39,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   /**
    * The underlying database implementation
    */
-  private Database database;
+  private final Database database;
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
@@ -50,10 +50,28 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
+   * @param database the Database instance to base this connection provider on
+   */
+  public LocalEntityConnectionProvider(final Database database) {
+    this(database, EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get());
+  }
+
+  /**
+   * Instantiates a new LocalEntityConnectionProvider
    * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
    */
   public LocalEntityConnectionProvider(final boolean scheduleValidityCheck) {
+    this(Databases.getInstance(), scheduleValidityCheck);
+  }
+
+  /**
+   * Instantiates a new LocalEntityConnectionProvider
+   * @param database the Database instance to base this connection provider on
+   * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
+   */
+  public LocalEntityConnectionProvider(final Database database, final boolean scheduleValidityCheck) {
     super(scheduleValidityCheck);
+    this.database = database;
   }
 
   /** {@inheritDoc} */
@@ -84,7 +102,6 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   /** {@inheritDoc} */
   @Override
   protected EntityConnection connect() {
-    database = Databases.getInstance();
     try {
       LOG.debug("Initializing connection for {}", getUser());
       final Entities domain = (Entities) Class.forName(getDomainClassName()).getConstructor().newInstance();
@@ -107,7 +124,6 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
       connectionProperties.put(Database.PASSWORD_PROPERTY, String.valueOf(getUser().getPassword()));
       database.shutdownEmbedded(connectionProperties);
     }
-    database = null;
   }
 
   private static final class LocalConnectionHandler implements InvocationHandler {

@@ -13,10 +13,6 @@ dependencies {
     compile 'org.openjfx:javafx-graphics:11-ea+25:linux'
     compile 'org.openjfx:javafx-controls:11-ea+25:linux'
     compile 'org.openjfx:javafx-swing:11-ea+25:linux'
-    
-    runtimeOnly project(':jminor-framework-db-local')
-    runtimeOnly project(':jminor-framework-db-remote')
-    runtimeOnly project(':jminor-framework-db-http')
 
     implementation "org.json:json:${jsonVersion}"
 
