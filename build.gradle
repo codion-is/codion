@@ -28,9 +28,7 @@ ext {
     commonsCollectionsVersion = '3.2.2'
     commonsBeanUtilsVersion = '1.9.3'
     jdtCoreCompilerVersion = '4.6.1'
-}
-
-ext {
+    
     frameworkModules = subprojects.findAll {
         project -> !project.name.contains("demos")
     }

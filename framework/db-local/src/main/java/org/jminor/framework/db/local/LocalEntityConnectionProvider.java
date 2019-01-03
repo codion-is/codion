@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -51,7 +50,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
-   * @param database the Database implementation
+   * @param database the Database instance to base this connection provider on
    */
   public LocalEntityConnectionProvider(final Database database) {
     this(database, EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get());
@@ -59,12 +58,20 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
-   * @param database the Database implementation
+   * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
+   */
+  public LocalEntityConnectionProvider(final boolean scheduleValidityCheck) {
+    this(Databases.getInstance(), scheduleValidityCheck);
+  }
+
+  /**
+   * Instantiates a new LocalEntityConnectionProvider
+   * @param database the Database instance to base this connection provider on
    * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
    */
   public LocalEntityConnectionProvider(final Database database, final boolean scheduleValidityCheck) {
     super(scheduleValidityCheck);
-    this.database = Objects.requireNonNull(database, "database");
+    this.database = database;
   }
 
   /** {@inheritDoc} */
