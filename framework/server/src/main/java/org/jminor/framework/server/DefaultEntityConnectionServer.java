@@ -12,13 +12,13 @@ import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.Version;
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.AuthenticationException;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
 import org.jminor.common.db.pool.ConnectionPools;
+import org.jminor.common.db.pool.DefaultConnectionPoolProvider;
 import org.jminor.common.server.AbstractServer;
 import org.jminor.common.server.ClientLog;
 import org.jminor.common.server.ConnectionRequest;
@@ -690,16 +690,12 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   private static void initializeConnectionPools(final Database database, final Collection<User> startupPoolUsers)
           throws ClassNotFoundException, DatabaseException {
     if (startupPoolUsers != null) {
-      final String connectionPoolProviderClassName = SERVER_CONNECTION_POOL_PROVIDER_CLASS.get();
-      final Class<? extends ConnectionPoolProvider> providerClass;
+      String connectionPoolProviderClassName = SERVER_CONNECTION_POOL_PROVIDER_CLASS.get();
       if (Util.nullOrEmpty(connectionPoolProviderClassName)) {
-        providerClass = null;
+        connectionPoolProviderClassName = DefaultConnectionPoolProvider.class.getName();
       }
-      else {
-        providerClass = (Class<? extends ConnectionPoolProvider>) Class.forName(connectionPoolProviderClassName);
-      }
-      ConnectionPools.initializeConnectionPools(providerClass, database, startupPoolUsers,
-              DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
+      final ConnectionPoolProvider poolProvider = ConnectionPoolProvider.getConnectionPoolProvider(connectionPoolProviderClassName);
+      ConnectionPools.initializeConnectionPools(poolProvider, database, startupPoolUsers);
     }
   }
 
@@ -853,7 +849,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
         startServer();
         break;
       default:
-        throw new IllegalArgumentException("Unknown argument '" + argument + "'");
+        startServer();
     }
   }
 }

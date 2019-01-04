@@ -1,7 +1,8 @@
 module org.jminor.common.db {
-  requires java.sql;
   requires slf4j.api;
-  requires org.jminor.common.core;
+  requires transitive java.sql;
+  requires transitive org.jminor.common.core;
+
   exports org.jminor.common.db;
   exports org.jminor.common.db.condition;
   exports org.jminor.common.db.exception;
@@ -10,4 +11,9 @@ module org.jminor.common.db {
   exports org.jminor.common.db.pool;
   exports org.jminor.common.db.valuemap;
   exports org.jminor.common.db.valuemap.exception;
+
+  provides org.jminor.common.db.pool.ConnectionPoolProvider
+          with org.jminor.common.db.pool.DefaultConnectionPoolProvider;
+
+  uses org.jminor.common.db.pool.ConnectionPoolProvider;
 }

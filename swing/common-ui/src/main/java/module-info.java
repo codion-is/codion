@@ -1,11 +1,7 @@
 module org.jminor.swing.common.ui {
-  requires java.desktop;
-  requires java.sql;
   requires java.rmi;
-  requires org.jminor.common.core;
-  requires org.jminor.common.db;
-  requires org.jminor.common.model;
-  requires org.jminor.swing.common.model;
+  requires transitive org.jminor.swing.common.model;
+
   exports org.jminor.swing.common.ui;
   exports org.jminor.swing.common.ui.checkbox;
   exports org.jminor.swing.common.ui.combobox;

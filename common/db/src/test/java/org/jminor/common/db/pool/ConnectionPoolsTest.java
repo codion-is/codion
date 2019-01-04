@@ -20,8 +20,8 @@ public final class ConnectionPoolsTest {
 
   @Test
   public void initializeConnectionPools() throws DatabaseException, ClassNotFoundException {
-    ConnectionPools.initializeConnectionPools(null, Databases.getInstance(),
-            Collections.singletonList(UNIT_TEST_USER), 1);
+    ConnectionPools.initializeConnectionPools(new DefaultConnectionPoolProvider(), Databases.getInstance(),
+            Collections.singletonList(UNIT_TEST_USER));
     assertNotNull(ConnectionPools.getConnectionPool(UNIT_TEST_USER));
     ConnectionPools.closeConnectionPools();
     assertNull(ConnectionPools.getConnectionPool(UNIT_TEST_USER));

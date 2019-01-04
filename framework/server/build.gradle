@@ -1,3 +1,5 @@
+import org.javamodularity.moduleplugin.tasks.ModularJavaExec
+
 apply plugin: 'application'
 
 configurations {
@@ -98,10 +100,11 @@ applicationDefaultJvmArgs = [
         "-Djminor.configurationFile=../config/h2_embedded.config"
 ]
 
-task runServer(type: JavaExec, dependsOn: createServerKeystore) {
+task runServer(type: ModularJavaExec, dependsOn: createServerKeystore) {
     group = 'run'
     classpath = configurations.serverRuntime
-    main = 'org.jminor.framework.server.DefaultEntityConnectionServer'
+    main = 'org.jminor.framework.server/org.jminor.framework.server.DefaultEntityConnectionServer'
+    jvmArgs = ["--add-modules", "org.jminor.framework.plugins.hikari.pool,org.jminor.framework.servlet,java.xml.bind"]
     systemProperties = [
             'jminor.db.type'                            : 'h2',
             'jminor.db.host'                            : 'h2db',

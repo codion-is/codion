@@ -1,3 +1,6 @@
+import org.javamodularity.moduleplugin.tasks.ModularCreateStartScripts
+import org.javamodularity.moduleplugin.tasks.ModularJavaExec
+
 apply from: '../demos.gradle'
 
 dependencies {
@@ -35,26 +38,102 @@ test {
     systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.petstore.domain.Petstore"
 }
 
-startScripts {
-    mainClassName = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+task runClientLocal(type: ModularJavaExec) {
+    group 'run'
+    main = 'org.jminor.framework.demos.petstore/org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+    systemProperties = [
+            'jminor.client.connectionType': 'local',
+            'jminor.db.type'              : 'h2',
+            'jminor.db.host'              : 'h2db',
+            'jminor.db.embedded'          : 'true',
+            'jminor.db.embeddedInMemory'  : 'true',
+            'jminor.db.initScript'        : 'src/main/sql/create_schema.sql',
+            'logback.configurationFile'   : 'src/main/resources/logback.xml'
+    ]
 }
 
-clientRemoteScript {
-    mainClassName = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+task runClientRemote(type: ModularJavaExec) {
+    group 'run'
+    main = 'org.jminor.framework.demos.petstore/org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+    systemProperties = [
+            'jminor.client.connectionType'    : 'remote',
+            'jminor.server.hostname'          : 'localhost',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
+            'javax.net.ssl.trustStorePassword': 'crappypass',
+            'logback.configurationFile'       : 'src/main/config/logback.xml'
+    ]
 }
 
-clientHttpScript {
-    mainClassName = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+task runClientHttp(type: ModularJavaExec) {
+    group 'run'
+    main = 'org.jminor.framework.demos.petstore/org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+    systemProperties = [
+            'jminor.client.connectionType': 'http',
+            'jminor.client.http.secure'   : 'false',
+            'jminor.client.http.hostname' : 'localhost',
+            'logback.configurationFile'   : 'src/main/resources/logback.xml'
+    ]
 }
 
-runClientLocal {
-    main = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+task runLoadTestRemote(type: ModularJavaExec) {
+    group 'run'
+    main = 'org.jminor.framework.demos.petstore/org.jminor.framework.demos.petstore.testing.PetstoreLoadTest'
+    systemProperties = [
+            'jminor.client.connectionType'    : 'remote',
+            'jminor.server.hostname'          : 'localhost',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
+            'javax.net.ssl.trustStorePassword': 'crappypass',
+            'logback.configurationFile'       : 'src/main/config/logback.xml'
+    ]
 }
 
-runClientRemote {
-    main = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+task runLoadTestHttp(type: ModularJavaExec) {
+    group 'run'
+    main = 'org.jminor.framework.demos.petstore/org.jminor.framework.demos.petstore.testing.PetstoreLoadTest'
+    systemProperties = [
+            'jminor.client.connectionType': 'http',
+            'jminor.client.http.secure'   : 'false',
+            'jminor.client.http.hostname' : 'localhost',
+            'logback.configurationFile'   : 'src/main/resources/logback.xml'
+    ]
 }
 
-runClientHttp {
-    main = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+task clientLocalScript(type: ModularCreateStartScripts) {
+    runTask = tasks.runClientLocal
+    applicationName = project.name + '-local'
+}
+
+task clientRemoteScript(type: ModularCreateStartScripts) {
+    runTask = tasks.runClientRemote
+    applicationName = project.name + '-remote'
+}
+
+task clientHttpScript(type: ModularCreateStartScripts) {
+    runTask = tasks.runClientHttp
+    applicationName = project.name + '-http'
+}
+
+task loadTestRemoteScript(type: ModularCreateStartScripts) {
+    runTask = tasks.runLoadTestRemote
+    applicationName = project.name + '-loadtest-remote'
+}
+
+task loadTestHttpScript(type: ModularCreateStartScripts) {
+    runTask = tasks.runLoadTestHttp
+    applicationName = project.name + '-loadtest-http'
+}
+
+applicationDistribution.into('config') {
+    from(files('src/main/sql/create_schema.sql'))
+    from(files('src/main/resources/logback.xml'))
+    from(files('../../framework/server/src/main/security/jminor_truststore.jks'))
+}
+
+applicationDistribution.into('bin') {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(clientLocalScript)
+    from(clientRemoteScript)
+    from(clientHttpScript)
+    from(loadTestHttpScript)
+    from(loadTestRemoteScript)
 }

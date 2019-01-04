@@ -6,7 +6,6 @@ package org.jminor.common.db.pool;
 import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnectionProvider;
-import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.exception.DatabaseException;
 
 import java.util.ArrayList;
@@ -30,20 +29,18 @@ public final class ConnectionPools {
 
   /**
    * Initializes connection pools for the given users
-   * @param connectionPoolProviderClass the ConnectionPoolProvider implementation to use, if null then the default internal one is used
+   * @param connectionPoolProvider the ConnectionPoolProvider implementation to use
    * @param database the underlying database
    * @param users the users to initialize connection pools for
-   * @param validityCheckTimeout the number of seconds specified when checking if a connection is valid
    * @throws DatabaseException in case of a database exception
    */
-  public static synchronized void initializeConnectionPools(final Class<? extends ConnectionPoolProvider> connectionPoolProviderClass,
-                                                            final Database database, final Collection<User> users,
-                                                            final int validityCheckTimeout) throws DatabaseException {
+  public static synchronized void initializeConnectionPools(final ConnectionPoolProvider connectionPoolProvider,
+                                                            final Database database, final Collection<User> users) throws DatabaseException {
+    Objects.requireNonNull(connectionPoolProvider, "connectionPoolProvider");
     Objects.requireNonNull(database, "database");
     Objects.requireNonNull(users, "users");
     for (final User user : users) {
-      final ConnectionPoolProvider poolProvider = initializeConnectionPoolProvider(connectionPoolProviderClass, database, user, validityCheckTimeout);
-      CONNECTION_POOLS.put(user, poolProvider.createConnectionPool(user, database));
+      CONNECTION_POOLS.put(user, connectionPoolProvider.createConnectionPool(user, database));
     }
   }
 
@@ -101,29 +98,5 @@ public final class ConnectionPools {
    */
   public static synchronized Collection<ConnectionPool> getConnectionPools() {
     return new ArrayList<>(CONNECTION_POOLS.values());
-  }
-
-  private static ConnectionPoolProvider initializeConnectionPoolProvider(final Class<? extends ConnectionPoolProvider> providerClass,
-                                                                         final Database database, final User user,
-                                                                         final int validityCheckTimeout) {
-    if (providerClass != null) {
-      try {
-        return providerClass.getConstructor().newInstance();
-      }
-      catch (final Exception e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    return createDefaultConnectionPoolProvider(DatabaseConnections.connectionProvider(database, user, validityCheckTimeout));
-  }
-
-  /**
-   * Creates a connection pool based on the the default internal implementation
-   * @param connectionProvider the connection provider
-   * @return a default connection pool provider
-   */
-  private static ConnectionPoolProvider createDefaultConnectionPoolProvider(final DatabaseConnectionProvider connectionProvider) {
-    return (user, database) -> new DefaultConnectionPool(connectionProvider);
   }
 }

@@ -1,8 +1,7 @@
 module org.jminor.swing.common.tools.ui {
-  requires java.desktop;
   requires jfreechart;
-  requires org.jminor.common.core;
-  requires org.jminor.swing.common.tools;
-  requires org.jminor.swing.common.ui;
+  requires transitive org.jminor.swing.common.tools;
+  requires transitive org.jminor.swing.common.ui;
+
   exports org.jminor.swing.common.tools.ui;
 }

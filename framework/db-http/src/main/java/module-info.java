@@ -1,7 +1,7 @@
 module org.jminor.framework.db.http {
   requires slf4j.api;
-  requires org.jminor.common.core;
-  requires org.jminor.common.db;
+  requires org.apache.httpcomponents.httpclient;
+  requires org.apache.httpcomponents.httpcore;
   requires org.jminor.framework.db.core;
 
   exports org.jminor.framework.db.http;

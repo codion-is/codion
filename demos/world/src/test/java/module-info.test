@@ -1,0 +1,5 @@
+--add-modules
+    org.jminor.framework.db.test,org.jminor.swing.framework.ui.test
+
+--add-reads
+    org.jminor.framework.demos.world=org.jminor.framework.db.test,org.jminor.swing.framework.ui.test

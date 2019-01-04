@@ -5,6 +5,7 @@ dependencies {
     implementation project(':jminor-common-db')
     implementation project(':jminor-common-model')
 
+    implementation project(':jminor-swing-common-tools')
     implementation project(':jminor-swing-common-model')
     implementation project(':jminor-swing-common-ui')
     api project(':jminor-swing-framework-tools')

@@ -7,6 +7,8 @@ import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 
+import java.util.ServiceLoader;
+
 /**
  * Provides connection pool implementations
  */
@@ -19,4 +21,15 @@ public interface ConnectionPoolProvider {
    * @throws DatabaseException in case of an exception
    */
   ConnectionPool createConnectionPool(final User user, final Database database) throws DatabaseException;
+
+  static ConnectionPoolProvider getConnectionPoolProvider(final String classname) {
+    final ServiceLoader<ConnectionPoolProvider> loader = ServiceLoader.load(ConnectionPoolProvider.class);
+    for (final ConnectionPoolProvider provider : loader) {
+      if (provider.getClass().getName().equals(classname)) {
+        return provider;
+      }
+    }
+
+    throw new IllegalArgumentException("No connection pool provider of type: " + classname + " available");
+  }
 }

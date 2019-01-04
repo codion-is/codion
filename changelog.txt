@@ -4917,3 +4917,4 @@
   EntityConnectionProvider and subclasses refactored for parameterless instantiation
   RemoteEntityConnectionProvider no longer crashes on parameterless instantiation due to missing configuration parameter
   CONNECTION_VALIDITY_CHECK_TIMEOUT configuration value moved from EntityConnection to DatabaseConnection
+  ConnectionPoolProvider now service based

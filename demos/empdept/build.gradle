@@ -1,3 +1,6 @@
+import org.javamodularity.moduleplugin.tasks.ModularCreateStartScripts
+import org.javamodularity.moduleplugin.tasks.ModularJavaExec
+
 apply from: '../demos.gradle'
 
 dependencies {
@@ -71,34 +74,9 @@ task buildReports(dependsOn: 'compileJava') {
 }
 classes.dependsOn buildReports
 
-startScripts {
-    mainClassName = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
-}
-
-clientRemoteScript {
-    mainClassName = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
-}
-
-clientHttpScript {
-    mainClassName = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
-}
-
-loadTestRemoteScript {
-    mainClassName = 'org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
-}
-
-loadTestHttpScript {
-    mainClassName = 'org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
-}
-
-runClientLocal {
-    main = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
-}
-
-task runClientLocalFX(type: JavaExec) {
+task runClientLocal(type: ModularJavaExec) {
     group 'run'
-    main = 'org.jminor.framework.demos.empdept.javafx.EmpDeptFX'
-    classpath = sourceSets.main.runtimeClasspath
+    main = 'org.jminor.framework.demos.empdept/org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
     systemProperties = [
             'jminor.client.connectionType': 'local',
             'jminor.db.type'              : 'h2',
@@ -111,48 +89,94 @@ task runClientLocalFX(type: JavaExec) {
     ]
 }
 
-runClientRemote {
-    main = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
+task runClientRemote(type: ModularJavaExec) {
+    group 'run'
+    main = 'org.jminor.framework.demos.empdept/org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
     systemProperties = [
             'jminor.client.connectionType'    : 'remote',
             'jminor.server.hostname'          : 'localhost',
-            'jminor.report.path'              : '../../demos/empdept/build/classes/reports',
             'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
-            'logback.configurationFile'       : 'src/main/resources/logback.xml'
+            'logback.configurationFile'       : 'src/main/config/logback.xml'
     ]
 }
 
-runClientHttp {
-    main = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
+task runClientHttp(type: ModularJavaExec) {
+    group 'run'
+    main = 'org.jminor.framework.demos.empdept/org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
     systemProperties = [
             'jminor.client.connectionType': 'http',
             'jminor.client.http.secure'   : 'false',
-            'jminor.server.hostname'      : 'localhost',
-            'jminor.report.path'          : '../../demos/empdept/build/classes/reports',
+            'jminor.client.http.hostname' : 'localhost',
+            'jminor.report.path'          : '../../demos/chinook/build/classes/reports',
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }
 
-runLoadTestRemote {
-    main = 'org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
+task runLoadTestRemote(type: ModularJavaExec) {
+    group 'run'
+    main = 'org.jminor.framework.demos.empdept/org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
     systemProperties = [
             'jminor.client.connectionType'    : 'remote',
             'jminor.server.hostname'          : 'localhost',
-            'jminor.report.path'              : '../../demos/empdept/build/classes/reports',
             'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
-            'logback.configurationFile'       : 'src/main/resources/logback.xml'
+            'logback.configurationFile'       : 'src/main/config/logback.xml'
     ]
 }
 
-runLoadTestHttp {
-    main = 'org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
+task runLoadTestHttp(type: ModularJavaExec) {
+    group 'run'
+    main = 'org.jminor.framework.demos.empdept/org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
     systemProperties = [
             'jminor.client.connectionType': 'http',
             'jminor.client.http.secure'   : 'false',
-            'jminor.server.hostname'      : 'localhost',
-            'jminor.report.path'          : '../../demos/empdept/build/classes/reports',
+            'jminor.client.http.hostname' : 'localhost',
+            'jminor.report.path'          : '../../demos/chinook/build/classes/reports',
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
+}
+
+task clientLocalScript(type: ModularCreateStartScripts) {
+    runTask = tasks.runClientLocal
+    applicationName = project.name + '-local'
+}
+
+task clientRemoteScript(type: ModularCreateStartScripts) {
+    runTask = tasks.runClientRemote
+    applicationName = project.name + '-remote'
+}
+
+task clientHttpScript(type: ModularCreateStartScripts) {
+    runTask = tasks.runClientHttp
+    applicationName = project.name + '-http'
+}
+
+task loadTestRemoteScript(type: ModularCreateStartScripts) {
+    runTask = tasks.runLoadTestRemote
+    applicationName = project.name + '-loadtest-remote'
+}
+
+task loadTestHttpScript(type: ModularCreateStartScripts) {
+    runTask = tasks.runLoadTestHttp
+    applicationName = project.name + '-loadtest-http'
+}
+
+applicationDistribution.into('config') {
+    from(files('src/main/sql/create_schema.sql'))
+    from(files('src/main/resources/logback.xml'))
+    from(files('../../framework/server/src/main/security/jminor_truststore.jks'))
+}
+
+applicationDistribution.into('reports') {
+    from(fileTree(dir: 'build/classes/reports', include: '*.jasper'))
+}
+
+applicationDistribution.into('bin') {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(clientLocalScript)
+    from(clientRemoteScript)
+    from(clientHttpScript)
+    from(loadTestHttpScript)
+    from(loadTestRemoteScript)
 }
