@@ -1,0 +1,5 @@
+--add-modules
+    org.jminor.swing.framework.ui.test
+
+--add-reads
+    org.jminor.framework.demos.empdept=org.jminor.swing.framework.ui.test

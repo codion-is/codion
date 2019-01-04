@@ -6,5 +6,6 @@ module org.jminor.framework.demos.chinook {
   requires org.jminor.javafx.framework;
   requires org.jminor.framework.plugins.jasperreports;
 
-  exports org.jminor.framework.demos.chinook.domain.impl;
+  exports org.jminor.framework.demos.chinook.domain.impl
+          to org.jminor.framework.db.local;
 }
