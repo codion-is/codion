@@ -53,13 +53,6 @@ public interface EntityConnection {
   Value<Boolean> LIMIT_FOREIGN_KEY_FETCH_DEPTH = Configuration.booleanValue("jminor.db.limitForeignKeyFetchDepth", true);
 
   /**
-   * Specifies the timeout (in seconds) to specify when checking if database connections are valid.
-   * Value type: Integer<br>
-   * Default value: 0
-   */
-  Value<Integer> CONNECTION_VALIDITY_CHECK_TIMEOUT = Configuration.integerValue("jminor.db.validityCheckTimeout", 0);
-
-  /**
    * The possible EntityConnection types
    */
   enum Type {

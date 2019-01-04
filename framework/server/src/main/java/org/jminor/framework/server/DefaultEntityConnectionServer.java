@@ -12,6 +12,7 @@ import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.Version;
 import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.AuthenticationException;
 import org.jminor.common.db.exception.DatabaseException;
@@ -27,7 +28,6 @@ import org.jminor.common.server.RemoteClient;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
 import org.jminor.common.server.Servers;
-import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 
@@ -699,7 +699,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
         providerClass = (Class<? extends ConnectionPoolProvider>) Class.forName(connectionPoolProviderClassName);
       }
       ConnectionPools.initializeConnectionPools(providerClass, database, startupPoolUsers,
-              EntityConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
+              DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
     }
   }
 

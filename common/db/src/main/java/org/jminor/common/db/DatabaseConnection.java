@@ -3,8 +3,10 @@
  */
 package org.jminor.common.db;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
+import org.jminor.common.Value;
 import org.jminor.common.db.exception.DatabaseException;
 
 import java.sql.Connection;
@@ -15,6 +17,13 @@ import java.util.List;
  * Specifies a database connection, providing basic transaction control and pooling info
  */
 public interface DatabaseConnection {
+
+  /**
+   * Specifies the timeout (in seconds) to use when checking if database connections are valid.
+   * Value type: Integer<br>
+   * Default value: 0
+   */
+  Value<Integer> CONNECTION_VALIDITY_CHECK_TIMEOUT = Configuration.integerValue("jminor.db.validityCheckTimeout", 0);
 
   /**
    * @return true if the connection has been established and is valid

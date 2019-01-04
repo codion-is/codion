@@ -6,6 +6,7 @@ package org.jminor.framework.db.local;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Entities;
@@ -30,7 +31,7 @@ public final class LocalEntityConnections {
   public static LocalEntityConnection createConnection(final Entities domain, final Database database, final User user)
           throws DatabaseException {
     return new LocalEntityConnection(domain, database, user, EntityConnection.USE_OPTIMISTIC_LOCKING.get(),
-            EntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get(), EntityConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
+            EntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get(), DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
   }
 
   /**
@@ -46,7 +47,7 @@ public final class LocalEntityConnections {
   public static LocalEntityConnection createConnection(final Entities domain, final Database database, final Connection connection)
           throws DatabaseException {
     return new LocalEntityConnection(domain, database, connection, EntityConnection.USE_OPTIMISTIC_LOCKING.get(),
-            EntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get(), EntityConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
+            EntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get(), DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
   }
 
   /**
