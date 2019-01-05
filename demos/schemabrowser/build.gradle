@@ -20,7 +20,7 @@ dependencies {
     implementation project(':jminor-swing-framework-tools')
 
     runtimeOnly project(':jminor-framework-plugins-logback-proxy')
-    
+
     runtimeOnly project(':jminor-framework-db-local')
     runtimeOnly project(':jminor-framework-db-remote')
     runtimeOnly project(':jminor-framework-db-http')
@@ -100,26 +100,60 @@ task runLoadTestHttp(type: ModularJavaExec) {
 task clientLocalScript(type: ModularCreateStartScripts) {
     runTask = tasks.runClientLocal
     applicationName = project.name + '-local'
+    defaultJvmOpts = [
+            '-Djminor.client.connectionType=local',
+            '-Djminor.db.type=h2',
+            '-Djminor.db.host=h2db',
+            '-Djminor.db.embedded=true',
+            '-Djminor.db.embeddedInMemory=true',
+            '-Dlogback.configurationFile=../config/logback.xml'
+    ]
 }
 
 task clientRemoteScript(type: ModularCreateStartScripts) {
     runTask = tasks.runClientRemote
     applicationName = project.name + '-remote'
+    defaultJvmOpts = [
+            '-Djminor.client.connectionType=remote',
+            '-Djminor.server.hostname=localhost',
+            '-Djavax.net.ssl.trustStore=../config/jminor_truststore.jks',
+            '-Djavax.net.ssl.trustStorePassword=crappypass',
+            '-Dlogback.configurationFile=../config/logback.xml'
+    ]
 }
 
 task clientHttpScript(type: ModularCreateStartScripts) {
     runTask = tasks.runClientHttp
     applicationName = project.name + '-http'
+    defaultJvmOpts = [
+            '-Djminor.client.connectionType=http',
+            '-Djminor.client.http.secure=false',
+            '-Djminor.client.http.hostname=localhost',
+            '-Dlogback.configurationFile=../config/logback.xml'
+    ]
 }
 
 task loadTestRemoteScript(type: ModularCreateStartScripts) {
     runTask = tasks.runLoadTestRemote
     applicationName = project.name + '-loadtest-remote'
+    defaultJvmOpts = [
+            '-Djminor.client.connectionType=remote',
+            '-Djminor.server.hostname=localhost',
+            '-Djavax.net.ssl.trustStore=../config/jminor_truststore.jks',
+            '-Djavax.net.ssl.trustStorePassword=crappypass',
+            '-Dlogback.configurationFile=../config/logback.xml'
+    ]
 }
 
 task loadTestHttpScript(type: ModularCreateStartScripts) {
     runTask = tasks.runLoadTestHttp
     applicationName = project.name + '-loadtest-http'
+    defaultJvmOpts = [
+            '-Djminor.client.connectionType=http',
+            '-Djminor.client.http.secure=false',
+            '-Djminor.client.http.hostname=localhost',
+            '-Dlogback.configurationFile=../config/logback.xml'
+    ]
 }
 
 applicationDistribution.into('config') {
