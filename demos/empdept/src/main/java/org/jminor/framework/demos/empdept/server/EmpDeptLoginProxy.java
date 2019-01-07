@@ -48,7 +48,7 @@ public final class EmpDeptLoginProxy implements LoginProxy {
 
   private void authenticateUser(final User user) throws ServerException.LoginException {
     final String password = users.get(user.getUsername());
-    if (password == null || !password.equals(user.getPassword())) {
+    if (password == null || !password.equals(String.valueOf(user.getPassword()))) {
       throw ServerException.loginException("Wrong username or password");
     }
   }
