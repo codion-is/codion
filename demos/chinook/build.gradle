@@ -73,7 +73,7 @@ classes.dependsOn buildReports
 
 task runClientLocal(type: ModularJavaExec) {
     group 'run'
-    main = 'org.jminor.framework.demos.chinook/org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
+    main = "$moduleName/org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel"
     systemProperties = [
             'jminor.client.connectionType': 'local',
             'jminor.db.type'              : 'h2',
@@ -88,7 +88,7 @@ task runClientLocal(type: ModularJavaExec) {
 
 task runClientRemote(type: ModularJavaExec) {
     group 'run'
-    main = 'org.jminor.framework.demos.chinook/org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
+    main = "$moduleName/org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel"
     systemProperties = [
             'jminor.client.connectionType'    : 'remote',
             'jminor.server.hostname'          : 'localhost',
@@ -100,7 +100,7 @@ task runClientRemote(type: ModularJavaExec) {
 
 task runClientHttp(type: ModularJavaExec) {
     group 'run'
-    main = 'org.jminor.framework.demos.chinook/org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel'
+    main = "$moduleName/org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel"
     systemProperties = [
             'jminor.client.connectionType': 'http',
             'jminor.client.http.secure'   : 'false',
@@ -112,7 +112,7 @@ task runClientHttp(type: ModularJavaExec) {
 
 task runLoadTestRemote(type: ModularJavaExec) {
     group 'run'
-    main = 'org.jminor.framework.demos.chinook/org.jminor.framework.demos.chinook.testing.ChinookLoadTest'
+    main = "$moduleName/org.jminor.framework.demos.chinook.testing.ChinookLoadTest"
     systemProperties = [
             'jminor.client.connectionType'    : 'remote',
             'jminor.server.hostname'          : 'localhost',
@@ -124,7 +124,7 @@ task runLoadTestRemote(type: ModularJavaExec) {
 
 task runLoadTestHttp(type: ModularJavaExec) {
     group 'run'
-    main = 'org.jminor.framework.demos.chinook/org.jminor.framework.demos.chinook.testing.ChinookLoadTest'
+    main = "$moduleName/org.jminor.framework.demos.chinook.testing.ChinookLoadTest"
     systemProperties = [
             'jminor.client.connectionType': 'http',
             'jminor.client.http.secure'   : 'false',

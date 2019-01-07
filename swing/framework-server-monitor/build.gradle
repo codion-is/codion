@@ -30,7 +30,7 @@ mainClassName = "$moduleName/org.jminor.swing.framework.server.monitor.ui.Entity
 task runServerMonitor(type: ModularJavaExec) {
     group 'run'
     classpath = sourceSets.main.runtimeClasspath
-    main = 'org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel'
+    main = mainClassName
     jvmArgs = ['--add-modules', 'org.jminor.framework.plugins.logback.proxy']
     systemProperties = [
             'jminor.server.hostname'          : 'localhost',

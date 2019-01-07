@@ -40,7 +40,7 @@ mainClassName = "$moduleName/org.jminor.framework.server.DefaultEntityConnection
 task runServer(type: ModularJavaExec, dependsOn: createServerKeystore) {
     group = 'run'
     classpath = configurations.serverRuntime
-    main = 'org.jminor.framework.server/org.jminor.framework.server.DefaultEntityConnectionServer'
+    main = mainClassName
     jvmArgs = ['--add-modules', 'org.jminor.framework.servlet,org.jminor.framework.plugins.logback.proxy,java.xml.bind']
     systemProperties = [
             'jminor.db.type'                            : 'h2',

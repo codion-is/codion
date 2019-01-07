@@ -34,7 +34,7 @@ test {
 
 task runClientLocal(type: ModularJavaExec) {
     group 'run'
-    main = 'org.jminor.framework.demos.world/org.jminor.framework.demos.world.client.ui.WorldAppPanel'
+    main = "$moduleName/org.jminor.framework.demos.world.client.ui.WorldAppPanel"
     systemProperties = [
             'jminor.client.connectionType': 'local',
             'jminor.db.type'              : 'h2',
@@ -48,7 +48,7 @@ task runClientLocal(type: ModularJavaExec) {
 
 task runClientRemote(type: ModularJavaExec) {
     group 'run'
-    main = 'org.jminor.framework.demos.world/org.jminor.framework.demos.world.client.ui.WorldAppPanel'
+    main = "$moduleName/org.jminor.framework.demos.world.client.ui.WorldAppPanel"
     systemProperties = [
             'jminor.client.connectionType'    : 'remote',
             'jminor.server.hostname'          : 'localhost',
@@ -60,7 +60,7 @@ task runClientRemote(type: ModularJavaExec) {
 
 task runClientHttp(type: ModularJavaExec) {
     group 'run'
-    main = 'org.jminor.framework.demos.world/org.jminor.framework.demos.world.client.ui.WorldAppPanel'
+    main = "$moduleName/org.jminor.framework.demos.world.client.ui.WorldAppPanel"
     systemProperties = [
             'jminor.client.connectionType': 'http',
             'jminor.client.http.secure'   : 'false',
