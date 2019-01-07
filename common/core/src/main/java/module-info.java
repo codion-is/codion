@@ -3,4 +3,6 @@ module org.jminor.common.core {
 
   exports org.jminor.common;
   exports org.jminor.common.i18n;
+
+  uses org.jminor.common.LoggerProxy;
 }
