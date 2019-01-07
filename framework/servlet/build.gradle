@@ -13,15 +13,14 @@ dependencies {
     api 'javax.activation:javax.activation-api:1.2.0'
 
     implementation "org.glassfish.jersey.containers:jersey-container-jetty-servlet:2.27"
-    implementation "org.glassfish.jersey.inject:jersey-hk2:2.27"
+    implementation ("org.glassfish.jersey.inject:jersey-hk2:2.27") {
+        //or version 1 is also included, which messes up the module path
+        exclude module: 'javax.inject'
+    }
 
     testImplementation project(':jminor-framework-db-local')
 
     testImplementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
 
     testRuntime "com.h2database:h2:${h2Version}"
-
-    //for Java >= 9
-    testRuntime "javax.xml.bind:jaxb-api:${jaxbApiVersion}"
-    testRuntime "com.sun.activation:javax.activation:${javaxActivationVersion}"
 }

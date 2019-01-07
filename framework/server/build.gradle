@@ -33,15 +33,38 @@ dependencies {
     serverRuntime project(path: ':jminor-demos-world', configuration: 'domain')
 
     serverRuntime "com.h2database:h2:${h2Version}"
-
-    //for Java >= 9
-    serverRuntime "javax.xml.bind:jaxb-api:${jaxbApiVersion}"
-    serverRuntime "com.sun.activation:javax.activation:${javaxActivationVersion}"
-    testRuntime "javax.xml.bind:jaxb-api:${jaxbApiVersion}"
-    testRuntime "com.sun.activation:javax.activation:${javaxActivationVersion}"
 }
 
-mainClassName = '$moduleName/org.jminor.framework.server.DefaultEntityConnectionServer'
+mainClassName = "$moduleName/org.jminor.framework.server.DefaultEntityConnectionServer"
+
+task runServer(type: ModularJavaExec, dependsOn: createServerKeystore) {
+    group = 'run'
+    classpath = configurations.serverRuntime
+    main = 'org.jminor.framework.server/org.jminor.framework.server.DefaultEntityConnectionServer'
+    jvmArgs = ['--add-modules', 'org.jminor.framework.servlet,org.jminor.framework.plugins.logback.proxy,java.xml.bind']
+    systemProperties = [
+            'jminor.db.type'                            : 'h2',
+            'jminor.db.host'                            : 'h2db',
+            'jminor.db.embedded'                        : 'true',
+            'jminor.db.embeddedInMemory'                : 'true',
+            'jminor.db.initScript'                      : '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',
+            'jminor.server.pooling.startupPoolUsers'    : 'scott:tiger',
+            'jminor.server.port'                        : '2222',
+            'jminor.server.admin.port'                  : '2223',
+            'jminor.server.admin.user'                  : 'scott:tiger',
+            'jminor.server.http.secure'                 : 'false',
+            'jminor.server.pooling.poolProviderClass'   : 'org.jminor.framework.plugins.hikari.pool.HikariConnectionPoolProvider',
+            'jminor.server.auxiliaryServerClassNames'   : 'org.jminor.framework.servlet.EntityServletServer',
+            'jminor.server.domain.classes'              : 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.impl.ChinookImpl,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
+            'jminor.server.serializationFilterWhitelist': 'src/main/security/serialization-whitelist.txt',
+            'jminor.server.serializationFilterDryRun'   : 'false',
+            'javax.net.ssl.keyStore'                    : 'src/main/security/jminor_keystore.jks',
+            'java.security.policy'                      : 'src/main/security/all_permissions.policy',
+            'javax.net.ssl.keyStorePassword'            : 'crappypass',
+            'java.rmi.server.hostname'                  : 'localhost',
+            'logback.configurationFile'                 : 'src/main/config/logback.xml'
+    ]
+}
 
 distTar {
     dependsOn(':jminor-demos-empdept:jarDomain')
@@ -96,35 +119,8 @@ applicationDistribution.from(files('../../demos/chinook/build/classes/reports/cu
     into("reports")
 }
 applicationDefaultJvmArgs = [
-        "-Djava.security.policy=../config/all_permissions.policy",
-        "-Djminor.configurationFile=../config/h2_embedded.config"
+        '--add-modules', 'org.jminor.framework.servlet,org.jminor.framework.plugins.logback.proxy,java.xml.bind',
+        '-Djava.security.policy=../config/all_permissions.policy',
+        '-Dlogback.configurationFile=../config/logback.xml',
+        '-Djminor.configurationFile=../config/h2_embedded.config'
 ]
-
-task runServer(type: ModularJavaExec, dependsOn: createServerKeystore) {
-    group = 'run'
-    classpath = configurations.serverRuntime
-    main = 'org.jminor.framework.server/org.jminor.framework.server.DefaultEntityConnectionServer'
-    jvmArgs = ["--add-modules", "org.jminor.framework.plugins.hikari.pool,org.jminor.framework.servlet,java.xml.bind"]
-    systemProperties = [
-            'jminor.db.type'                            : 'h2',
-            'jminor.db.host'                            : 'h2db',
-            'jminor.db.embedded'                        : 'true',
-            'jminor.db.embeddedInMemory'                : 'true',
-            'jminor.db.initScript'                      : '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',
-            'jminor.server.pooling.startupPoolUsers'    : 'scott:tiger',
-            'jminor.server.port'                        : '2222',
-            'jminor.server.admin.port'                  : '2223',
-            'jminor.server.admin.user'                  : 'scott:tiger',
-            'jminor.server.http.secure'                 : 'false',
-            'jminor.server.pooling.poolProviderClass'   : 'org.jminor.framework.plugins.hikari.pool.HikariConnectionPoolProvider',
-            'jminor.server.auxiliaryServerClassNames'   : 'org.jminor.framework.servlet.EntityServletServer',
-            'jminor.server.domain.classes'              : 'org.jminor.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.impl.ChinookImpl,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
-            'jminor.server.serializationFilterWhitelist': 'src/main/security/serialization-whitelist.txt',
-            'jminor.server.serializationFilterDryRun'   : 'false',
-            'javax.net.ssl.keyStore'                    : 'src/main/security/jminor_keystore.jks',
-            'java.security.policy'                      : 'src/main/security/all_permissions.policy',
-            'javax.net.ssl.keyStorePassword'            : 'crappypass',
-            'java.rmi.server.hostname'                  : 'localhost',
-            'logback.configurationFile'                 : 'src/main/config/logback.xml'
-    ]
-}
