@@ -9,11 +9,11 @@ project(':jminor-common-db').projectDir = file('common/db')
 include 'jminor-common-model'
 project(':jminor-common-model').projectDir = file('common/model')
 
-include 'jminor-common-server'
-project(':jminor-common-server').projectDir = file('common/server')
+include 'jminor-common-remote'
+project(':jminor-common-remote').projectDir = file('common/server')
 
-include 'jminor-common-server-http'
-project(':jminor-common-server-http').projectDir = file('common/server-http')
+include 'jminor-common-remote-http'
+project(':jminor-common-remote-http').projectDir = file('common/server-http')
 
 include 'jminor-framework-db-core'
 project(':jminor-framework-db-core').projectDir = file('framework/db-core')

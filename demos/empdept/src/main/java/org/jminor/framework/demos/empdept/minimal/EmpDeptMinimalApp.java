@@ -6,7 +6,7 @@ package org.jminor.framework.demos.empdept.minimal;
 import org.jminor.common.User;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.server.Server;
+import org.jminor.common.remote.Server;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Entities;

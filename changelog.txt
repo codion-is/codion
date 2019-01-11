@@ -4919,3 +4919,5 @@
   CONNECTION_VALIDITY_CHECK_TIMEOUT configuration value moved from EntityConnection to DatabaseConnection
   ConnectionPoolProvider now service based
   LoggerProxy now service based
+  Package org.jminor.common.server renamed to org.jminor.common.remote
+  Modules common-server and common-server-http renamed to common-remote and common-remote-http respectively

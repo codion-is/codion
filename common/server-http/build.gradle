@@ -1,6 +1,6 @@
 dependencies {
     api project(':jminor-common-core')
-    api project(':jminor-common-server')
+    api project(':jminor-common-remote')
 
     api "org.eclipse.jetty:jetty-server:${jettyVersion}"
 

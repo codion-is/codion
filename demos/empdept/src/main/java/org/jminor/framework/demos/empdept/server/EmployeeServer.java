@@ -7,7 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
-import org.jminor.common.server.RemoteClient;
+import org.jminor.common.remote.RemoteClient;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;

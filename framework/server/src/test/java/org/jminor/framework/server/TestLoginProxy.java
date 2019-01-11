@@ -4,10 +4,10 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.User;
-import org.jminor.common.server.LoginProxy;
-import org.jminor.common.server.RemoteClient;
-import org.jminor.common.server.ServerException;
-import org.jminor.common.server.Servers;
+import org.jminor.common.remote.LoginProxy;
+import org.jminor.common.remote.RemoteClient;
+import org.jminor.common.remote.ServerException;
+import org.jminor.common.remote.Servers;
 
 import java.util.Arrays;
 import java.util.HashMap;

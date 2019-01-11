@@ -5,9 +5,9 @@ package org.jminor.framework.servlet;
 
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.server.Clients;
-import org.jminor.common.server.Server;
-import org.jminor.common.server.ServerException;
+import org.jminor.common.remote.Clients;
+import org.jminor.common.remote.Server;
+import org.jminor.common.remote.ServerException;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;

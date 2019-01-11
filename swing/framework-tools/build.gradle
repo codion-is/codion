@@ -9,7 +9,7 @@ dependencies {
     api project(':jminor-swing-common-model')
     implementation project(':jminor-swing-common-tools')
 
-    testImplementation project(':jminor-common-server')
+    testImplementation project(':jminor-common-remote')
     testImplementation project(':jminor-framework-server')
     testRuntime project(':jminor-framework-db-local')
     testRuntime project(':jminor-framework-db-remote')

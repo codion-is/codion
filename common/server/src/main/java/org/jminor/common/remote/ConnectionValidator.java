@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2018, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.server;
+package org.jminor.common.remote;
 
 /**
  * Responsible for validating connections to a remote server, for example a required client version

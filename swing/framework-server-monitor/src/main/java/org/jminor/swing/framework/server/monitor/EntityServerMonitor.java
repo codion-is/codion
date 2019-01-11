@@ -9,7 +9,7 @@ import org.jminor.common.Events;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.Value;
-import org.jminor.common.server.Server;
+import org.jminor.common.remote.Server;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;

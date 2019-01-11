@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2018, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.server;
+package org.jminor.common.remote;
 
 import org.jminor.common.User;
 import org.jminor.common.Util;

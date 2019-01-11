@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2018, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.server.http;
+package org.jminor.common.remote.http;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.Util;
 import org.jminor.common.Value;
-import org.jminor.common.server.Server;
+import org.jminor.common.remote.Server;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
