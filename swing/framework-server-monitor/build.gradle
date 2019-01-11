@@ -4,7 +4,7 @@ dependencies {
     implementation project(':jminor-common-core')
     implementation project(':jminor-common-db')
     implementation project(':jminor-common-model')
-    implementation project(':jminor-common-server')
+    implementation project(':jminor-common-remote')
 
     implementation project(':jminor-framework-server')
     implementation project(':jminor-swing-common-model')

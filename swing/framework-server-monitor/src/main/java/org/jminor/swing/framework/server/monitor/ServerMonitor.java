@@ -11,8 +11,8 @@ import org.jminor.common.Events;
 import org.jminor.common.LoggerProxy;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
-import org.jminor.common.server.Server;
-import org.jminor.common.server.ServerException;
+import org.jminor.common.remote.Server;
+import org.jminor.common.remote.ServerException;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import org.jfree.data.xy.XYSeries;

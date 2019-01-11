@@ -7,10 +7,10 @@ import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.server.Clients;
-import org.jminor.common.server.Server;
-import org.jminor.common.server.ServerException;
-import org.jminor.common.server.Servers;
+import org.jminor.common.remote.Clients;
+import org.jminor.common.remote.Server;
+import org.jminor.common.remote.ServerException;
+import org.jminor.common.remote.Servers;
 import org.jminor.framework.domain.Entity;
 
 import org.junit.jupiter.api.Test;

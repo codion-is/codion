@@ -17,7 +17,7 @@ import org.jminor.common.Version;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.PreferencesUtil;
-import org.jminor.common.server.Clients;
+import org.jminor.common.remote.Clients;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Entities;
@@ -1324,7 +1324,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Looks up user credentials via {@link org.jminor.common.server.CredentialServer} using an authentication token
+   * Looks up user credentials via {@link org.jminor.common.remote.CredentialServer} using an authentication token
    * found in the program arguments list. Useful for single sign on application launch.
    * <pre>javaws -open authenticationToken:123-123-123 http://jminor.org/demo/demo.jnlp</pre>
    * <pre>java -jar application/getdown-1.7.1.jar app_dir app_id authenticationToken:123-123-123</pre>

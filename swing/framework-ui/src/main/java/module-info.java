@@ -5,7 +5,7 @@ module org.jminor.swing.framework.ui {
   requires org.jminor.common.core;
   requires org.jminor.common.db;
   requires org.jminor.common.model;
-  requires org.jminor.common.server;
+  requires org.jminor.common.remote;
   requires org.jminor.framework.db.core;
   requires org.jminor.framework.model;
   requires org.jminor.swing.framework.model;

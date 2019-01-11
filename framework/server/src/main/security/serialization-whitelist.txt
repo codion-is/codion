@@ -72,7 +72,7 @@ org.jminor.common.User
 org.jminor.common.Version
 org.jminor.common.db.condition.Condition$Type
 org.jminor.common.db.condition.Conditions$DefaultSet
-org.jminor.common.server.Clients$DefaultConnectionRequest
+org.jminor.common.remote.Clients$DefaultConnectionRequest
 org.jminor.framework.db.condition.EntityConditions$DefaultEntityCondition
 org.jminor.framework.db.condition.EntityConditions$DefaultEntitySelectCondition
 org.jminor.framework.db.condition.EntityConditions$PropertyCondition

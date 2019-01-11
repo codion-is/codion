@@ -11,10 +11,10 @@ import org.jminor.common.db.Databases;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.ConnectionPools;
-import org.jminor.common.server.ClientLog;
-import org.jminor.common.server.ConnectionRequest;
-import org.jminor.common.server.RemoteClient;
-import org.jminor.common.server.Server;
+import org.jminor.common.remote.ClientLog;
+import org.jminor.common.remote.ConnectionRequest;
+import org.jminor.common.remote.RemoteClient;
+import org.jminor.common.remote.Server;
 
 import com.sun.management.GarbageCollectionNotificationInfo;
 import org.slf4j.Logger;

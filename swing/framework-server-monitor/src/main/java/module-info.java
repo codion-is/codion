@@ -7,7 +7,7 @@ module org.jminor.swing.framework.server.monitor {
   requires org.jminor.common.core;
   requires org.jminor.common.db;
   requires org.jminor.common.model;
-  requires org.jminor.common.server;
+  requires org.jminor.common.remote;
   requires org.jminor.framework.server;
   requires org.jminor.swing.common.model;
   requires org.jminor.swing.common.ui;

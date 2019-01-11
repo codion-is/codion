@@ -5,8 +5,8 @@ module org.jminor.framework.servlet {
   requires slf4j.api;
   requires org.jminor.common.core;
   requires org.jminor.common.db;
-  requires org.jminor.common.server;
-  requires org.jminor.common.server.http;
+  requires org.jminor.common.remote;
+  requires org.jminor.common.remote.http;
   requires org.jminor.framework.db.core;
   requires org.jminor.framework.db.remote;
 

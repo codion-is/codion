@@ -7,7 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.Version;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
-import org.jminor.common.server.Server;
+import org.jminor.common.remote.Server;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.model.DefaultEntityApplicationModel;

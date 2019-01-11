@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.servlet;
 
-import org.jminor.common.server.http.HttpServer;
+import org.jminor.common.remote.http.HttpServer;
 
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -21,7 +21,7 @@ public final class EntityServletServer extends HttpServer {
    * @see HttpServer#HTTP_SERVER_PORT
    * @see HttpServer#HTTP_SERVER_SECURE
    */
-  public EntityServletServer(final org.jminor.common.server.Server connectionServer) {
+  public EntityServletServer(final org.jminor.common.remote.Server connectionServer) {
     super(connectionServer, HttpServer.DOCUMENT_ROOT.get(), HttpServer.HTTP_SERVER_PORT.get(),
             HttpServer.HTTP_SERVER_SECURE.get());
     EntityService.setServer(connectionServer);

@@ -1,8 +1,8 @@
-module org.jminor.common.server.http {
+module org.jminor.common.remote.http {
   requires slf4j.api;
   requires org.jminor.common.core;
-  requires org.jminor.common.server;
+  requires org.jminor.common.remote;
   requires jetty.server;
 
-  exports org.jminor.common.server.http;
+  exports org.jminor.common.remote.http;
 }

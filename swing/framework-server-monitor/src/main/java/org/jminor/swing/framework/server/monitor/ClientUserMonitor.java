@@ -10,7 +10,7 @@ import org.jminor.common.Events;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
 import org.jminor.common.Version;
-import org.jminor.common.server.RemoteClient;
+import org.jminor.common.remote.RemoteClient;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.AbstractTableSortModel;
