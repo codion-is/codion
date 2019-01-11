@@ -10,10 +10,10 @@ include 'jminor-common-model'
 project(':jminor-common-model').projectDir = file('common/model')
 
 include 'jminor-common-remote'
-project(':jminor-common-remote').projectDir = file('common/server')
+project(':jminor-common-remote').projectDir = file('common/remote')
 
 include 'jminor-common-remote-http'
-project(':jminor-common-remote-http').projectDir = file('common/server-http')
+project(':jminor-common-remote-http').projectDir = file('common/remote-http')
 
 include 'jminor-framework-db-core'
 project(':jminor-framework-db-core').projectDir = file('framework/db-core')
