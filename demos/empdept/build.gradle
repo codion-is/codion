@@ -11,6 +11,7 @@ dependencies {
 
     implementation project(':jminor-framework-db-core')
     implementation project(':jminor-framework-db-local')
+    implementation project(':jminor-framework-db-remote')
     implementation project(':jminor-framework-db-http')
     implementation project(':jminor-framework-db-test')
     implementation project(':jminor-framework-model')

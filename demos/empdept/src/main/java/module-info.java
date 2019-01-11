@@ -1,6 +1,7 @@
 module org.jminor.framework.demos.empdept {
   requires org.jminor.framework.db.http;
   requires org.jminor.framework.db.local;
+  requires org.jminor.framework.db.remote;
   requires org.jminor.framework.db.test;
   requires org.jminor.swing.common.tools.ui;
   requires org.jminor.swing.framework.tools;

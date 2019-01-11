@@ -14,13 +14,11 @@ dependencies {
     api project(':jminor-common-remote')
 
     api project(':jminor-framework-db-core')
-    api project(':jminor-framework-db-remote')
+    implementation project(':jminor-framework-db-remote')
     implementation project(':jminor-framework-db-local')
 
     testRuntime "com.h2database:h2:${h2Version}"
 
-    serverRuntime project(':jminor-common-remote-http')
-    serverRuntime project(':jminor-framework-server')
     serverRuntime project(':jminor-framework-servlet')
     serverRuntime project(':jminor-framework-plugins-jasperreports')
     serverRuntime project(':jminor-framework-plugins-hikari-pool')
@@ -119,7 +117,7 @@ applicationDistribution.from(files('../../demos/chinook/build/classes/reports/cu
     into("reports")
 }
 applicationDefaultJvmArgs = [
-        '--add-modules', 'org.jminor.framework.servlet,org.jminor.framework.plugins.logback.proxy,java.xml.bind',
+        '--add-modules', 'org.jminor.framework.servlet,java.xml.bind',
         '-Djava.security.policy=../config/all_permissions.policy',
         '-Dlogback.configurationFile=../config/logback.xml',
         '-Djminor.configurationFile=../config/h2_embedded.config'
