@@ -97,7 +97,7 @@ public interface LocalEntityConnection extends EntityConnection {
 
   /**
    * @param limitForeignKeyFetchDepth false to override the fetch depth limit provided by condition
-   * @see EntitySelectCondition#setForeignKeyFetchDepthLimit(int)
+   * @see org.jminor.framework.db.condition.EntitySelectCondition#setForeignKeyFetchDepthLimit(int)
    */
   void setLimitForeignKeyFetchDepth(final boolean limitForeignKeyFetchDepth);
 }
