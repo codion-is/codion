@@ -433,8 +433,8 @@ public class LocalEntityConnectionTest {
 
   @Test
   public void selectForUpdateModified() throws Exception {
-    final EntityConnection connection = initializeConnection();
-    final EntityConnection connection2 = initializeConnection();
+    final LocalEntityConnection connection = initializeConnection();
+    final LocalEntityConnection connection2 = initializeConnection();
     final String originalLocation;
     try {
       final EntitySelectCondition condition = ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "SALES");

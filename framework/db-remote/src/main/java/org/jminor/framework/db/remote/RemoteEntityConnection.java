@@ -3,9 +3,7 @@
  */
 package org.jminor.framework.db.remote;
 
-import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
-import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
@@ -32,13 +30,6 @@ public interface RemoteEntityConnection extends Remote {
    * @throws RemoteException in case of an exception
    */
   Entities getDomain() throws RemoteException;
-
-  /**
-   * @param methodLogger the method logger
-   * @throws UnsupportedOperationException always
-   * @throws RemoteException in case of an exception
-   */
-  void setMethodLogger(final MethodLogger methodLogger) throws RemoteException;
 
   /**
    * @return the connection type
@@ -276,12 +267,4 @@ public interface RemoteEntityConnection extends Remote {
    * @throws RemoteException in case of a remote exception
    */
   byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyId) throws RemoteException, DatabaseException;
-
-  /**
-   * Unsupported method
-   * @return never
-   * @throws UnsupportedOperationException always
-   * @throws RemoteException in case of a remote exception
-   */
-  DatabaseConnection getDatabaseConnection() throws RemoteException;
 }

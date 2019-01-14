@@ -127,10 +127,10 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   }
 
   private static final class LocalConnectionHandler implements InvocationHandler {
-    private final EntityConnection connection;
+    private final LocalEntityConnection connection;
     private final MethodLogger methodLogger;
 
-    private LocalConnectionHandler(final Entities domain, final EntityConnection connection) {
+    private LocalConnectionHandler(final Entities domain, final LocalEntityConnection connection) {
       this.connection = connection;
       this.methodLogger = LocalEntityConnections.createLogger(domain);
       this.connection.setMethodLogger(methodLogger);

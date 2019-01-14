@@ -3,10 +3,8 @@
  */
 package org.jminor.framework.db.http;
 
-import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordNotFoundException;
@@ -125,12 +123,6 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public Entities getDomain() {
     return domain;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void setMethodLogger(final MethodLogger methodLogger) {
-    throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
@@ -484,12 +476,6 @@ final class HttpEntityConnection implements EntityConnection {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public DatabaseConnection getDatabaseConnection() {
-    throw new UnsupportedOperationException();
   }
 
   private Entities initializeDomain() {

@@ -11,13 +11,13 @@ import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolException;
 import org.jminor.common.remote.ClientLog;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.db.local.LocalEntityConnection;
 import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.domain.Entities;
 
@@ -102,22 +102,6 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    */
   public final User getUser() {
     return connectionHandler.remoteClient.getUser();
-  }
-
-  /**
-   * @param methodLogger the method logger
-   * @throws UnsupportedOperationException always
-   */
-  public final void setMethodLogger(final MethodLogger methodLogger) {
-    throw new UnsupportedOperationException("setMethodLogger is not supported on remote connections");
-  }
-
-  /**
-   * @return nothing
-   * @throws UnsupportedOperationException always
-   */
-  public final DatabaseConnection getDatabaseConnection() {
-    throw new UnsupportedOperationException("getDatabaseConnection is not supported on remote connections");
   }
 
   /**
@@ -263,12 +247,12 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     /**
      * A local connection used in case no connection pool is provided, managed by getConnection()/returnConnection()
      */
-    private EntityConnection localEntityConnection;
+    private LocalEntityConnection localEntityConnection;
 
     /**
      * A local connection used in case of a connection pool, managed by getConnection()/returnConnection()
      */
-    private EntityConnection poolEntityConnection;
+    private LocalEntityConnection poolEntityConnection;
 
     /**
      * The time this connection was last used
