@@ -4926,3 +4926,4 @@
   LocalEntityConnection.getMethodLogger() added
   LocalEntityConnection renamed to DefaultLocalEntityConnection, preparing for LocalEntityConnection interface
   LocalEntityConnection interface added, DefaultLocalEntityConnection now package private
+  EntityConnectionProvider generified

@@ -25,7 +25,7 @@ import java.util.Properties;
 /**
  * A class responsible for managing a local EntityConnection.
  */
-public final class LocalEntityConnectionProvider extends AbstractEntityConnectionProvider {
+public final class LocalEntityConnectionProvider extends AbstractEntityConnectionProvider<LocalEntityConnection> {
 
   private static final Logger LOG = LoggerFactory.getLogger(LocalEntityConnectionProvider.class);
 
@@ -101,12 +101,12 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   /** {@inheritDoc} */
   @Override
-  protected EntityConnection connect() {
+  protected LocalEntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
       final Entities domain = (Entities) Class.forName(getDomainClassName()).getConstructor().newInstance();
 
-      return Util.initializeProxy(EntityConnection.class, new LocalConnectionHandler(domain,
+      return Util.initializeProxy(LocalEntityConnection.class, new LocalConnectionHandler(domain,
               LocalEntityConnections.createConnection(domain, database, getUser())));
     }
     catch (final Exception e) {

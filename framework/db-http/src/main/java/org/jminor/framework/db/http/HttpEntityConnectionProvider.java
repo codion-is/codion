@@ -17,7 +17,7 @@ import java.util.Objects;
 /**
  * A class responsible for managing a httpConnection entity connection.
  */
-public final class HttpEntityConnectionProvider extends AbstractEntityConnectionProvider {
+public final class HttpEntityConnectionProvider extends AbstractEntityConnectionProvider<HttpEntityConnection> {
 
   private static final Logger LOG = LoggerFactory.getLogger(HttpEntityConnectionProvider.class);
 
@@ -95,7 +95,7 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
 
   /** {@inheritDoc} */
   @Override
-  protected EntityConnection connect() {
+  protected HttpEntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
       return HttpEntityConnections.createConnection(getDomainId(getDomainClassName()), serverHostName,
