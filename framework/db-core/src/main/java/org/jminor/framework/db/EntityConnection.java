@@ -4,10 +4,8 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.Value;
-import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
@@ -63,11 +61,6 @@ public interface EntityConnection {
    * @return the underlying domain entities
    */
   Entities getDomain();
-
-  /**
-   * @param methodLogger the MethodLogger to use
-   */
-  void setMethodLogger(final MethodLogger methodLogger);
 
   /**
    * @return the connection type
@@ -278,9 +271,4 @@ public interface EntityConnection {
    * @throws DatabaseException in case of a db exception
    */
   byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyId) throws DatabaseException;
-
-  /**
-   * @return the underlying connection
-   */
-  DatabaseConnection getDatabaseConnection();
 }

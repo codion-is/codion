@@ -134,12 +134,22 @@ public final class LocalEntityConnection implements EntityConnection {
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
   }
 
-  /** {@inheritDoc} */
-  @Override
+  /**
+   * @param methodLogger the MethodLogger to use
+   */
   public void setMethodLogger(final MethodLogger methodLogger) {
     synchronized (connection) {
       this.methodLogger = methodLogger;
       connection.setMethodLogger(methodLogger);
+    }
+  }
+
+  /**
+   * @return the MethodLogger being used
+   */
+  public MethodLogger getMethodLogger() {
+    synchronized (connection) {
+      return this.methodLogger;
     }
   }
 
@@ -735,8 +745,9 @@ public final class LocalEntityConnection implements EntityConnection {
     }
   }
 
-  /** {@inheritDoc} */
-  @Override
+  /**
+   * @return the underlying connection
+   */
   public DatabaseConnection getDatabaseConnection() {
     return connection;
   }
