@@ -100,7 +100,7 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
 
   /** {@inheritDoc} */
   @Override
-  public String getDomainClassName() {
+  public final String getDomainClassName() {
     if (Util.nullOrEmpty(domainClassName)) {
       throw new IllegalArgumentException("Domain class name has not been specified");
     }
@@ -110,7 +110,7 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
 
   /** {@inheritDoc} */
   @Override
-  public EntityConnectionProvider setDomainClassName(final String domainClassName) {
+  public final EntityConnectionProvider setDomainClassName(final String domainClassName) {
     disconnect();
     this.domainClassName = Objects.requireNonNull(domainClassName);
 
@@ -119,13 +119,13 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
 
   /** {@inheritDoc} */
   @Override
-  public UUID getClientId() {
+  public final UUID getClientId() {
     return clientId;
   }
 
   /** {@inheritDoc} */
   @Override
-  public EntityConnectionProvider setClientId(final UUID randomUUID) {
+  public final EntityConnectionProvider setClientId(final UUID clientId) {
     disconnect();
     this.clientId = Objects.requireNonNull(clientId);
 
@@ -134,7 +134,7 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
 
   /** {@inheritDoc} */
   @Override
-  public String getClientTypeId() {
+  public final String getClientTypeId() {
     if (Util.nullOrEmpty(clientTypeId)) {
       throw new IllegalArgumentException("Client type id has not been specified");
     }
@@ -144,7 +144,7 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
 
   /** {@inheritDoc} */
   @Override
-  public EntityConnectionProvider setClientTypeId(final String clientTypeId) {
+  public final EntityConnectionProvider setClientTypeId(final String clientTypeId) {
     disconnect();
     this.clientTypeId = Objects.requireNonNull(clientTypeId);
 
@@ -152,13 +152,13 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
   }
 
   @Override
-  public Version getClientVersion() {
+  public final Version getClientVersion() {
     return clientVersion;
   }
 
   /** {@inheritDoc} */
   @Override
-  public EntityConnectionProvider setClientVersion(final Version clientVersion) {
+  public final EntityConnectionProvider setClientVersion(final Version clientVersion) {
     disconnect();
     this.clientVersion = clientVersion;
 
@@ -218,7 +218,7 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
    * Disconnects the given connection
    * @param connection the connection to be disconnected
    */
-  protected abstract void disconnect(final EntityConnection connection);
+  protected abstract void disconnect(final T connection);
 
   protected static String getDomainId(final String domainClass) {
     if (domainClass.contains(".")) {
