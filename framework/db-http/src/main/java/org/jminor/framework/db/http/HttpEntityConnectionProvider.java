@@ -108,7 +108,7 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
 
   /** {@inheritDoc} */
   @Override
-  protected void disconnect(final EntityConnection connection) {
+  protected void disconnect(final HttpEntityConnection connection) {
     connection.disconnect();
   }
 }

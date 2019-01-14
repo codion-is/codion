@@ -4927,3 +4927,4 @@
   LocalEntityConnection renamed to DefaultLocalEntityConnection, preparing for LocalEntityConnection interface
   LocalEntityConnection interface added, DefaultLocalEntityConnection now package private
   EntityConnectionProvider generified
+  AbstractEntityConnectionProvider.setClientId() bug fixed, did not use parameter, a few methods made final, disconnect() generified

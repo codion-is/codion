@@ -15,6 +15,7 @@ import java.util.UUID;
 
 /**
  * Interface for a class responsible for providing EntityConnection objects.
+ * @param <T> the type of EntityConnection provided
  */
 public interface EntityConnectionProvider<T extends EntityConnection> {
 

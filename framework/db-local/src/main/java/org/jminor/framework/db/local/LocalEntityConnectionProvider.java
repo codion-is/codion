@@ -116,7 +116,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   /** {@inheritDoc} */
   @Override
-  protected void disconnect(final EntityConnection connection) {
+  protected void disconnect(final LocalEntityConnection connection) {
     connection.disconnect();
     if (database.isEmbedded() && SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT.get()) {
       final Properties connectionProperties = new Properties();
