@@ -7,7 +7,7 @@ import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
-import org.jminor.framework.db.local.LocalEntityConnection;
+import org.jminor.framework.db.local.DefaultLocalEntityConnection;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -310,14 +310,14 @@ public final class ChinookImpl extends Entities implements Chinook {
     addOperation(new UpdateTotalsProcedure(P_UPDATE_TOTALS));
   }
 
-  private static final class UpdateTotalsProcedure extends AbstractProcedure<LocalEntityConnection> {
+  private static final class UpdateTotalsProcedure extends AbstractProcedure<DefaultLocalEntityConnection> {
 
     private UpdateTotalsProcedure(final String id) {
       super(id, "Update invoice totals");
     }
 
     @Override
-    public void execute(final LocalEntityConnection entityConnection, final Object... arguments) throws DatabaseException {
+    public void execute(final DefaultLocalEntityConnection entityConnection, final Object... arguments) throws DatabaseException {
       try {
         entityConnection.beginTransaction();
         final EntitySelectCondition selectCondition = new EntityConditions(entityConnection.getDomain()).selectCondition(Chinook.T_INVOICE);

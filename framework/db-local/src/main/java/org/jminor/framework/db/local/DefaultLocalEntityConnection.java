@@ -69,12 +69,12 @@ import java.util.Set;
  * connection.disconnect();
  * </pre>
  */
-public final class LocalEntityConnection implements EntityConnection {
+public final class DefaultLocalEntityConnection implements EntityConnection {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(LocalEntityConnection.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultLocalEntityConnection.class.getName(), Locale.getDefault());
   private static final String RECORD_MODIFIED_EXCEPTION = "record_modified_exception";
 
-  private static final Logger LOG = LoggerFactory.getLogger(LocalEntityConnection.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnection.class);
   private static final String CONDITION_PARAM_NAME = "condition";
   private static final String WHERE = "where ";
   private static final String WHERE_SPACE_PREFIX = " where ";
@@ -104,8 +104,8 @@ public final class LocalEntityConnection implements EntityConnection {
    * @throws DatabaseException in case there is a problem connecting to the database,
    * such as a wrong username or password being provided
    */
-  LocalEntityConnection(final Entities domain, final Database database, final User user, final boolean optimisticLocking,
-                        final boolean limitForeignKeyFetchDepth, final int validityCheckTimeout) throws DatabaseException {
+  DefaultLocalEntityConnection(final Entities domain, final Database database, final User user, final boolean optimisticLocking,
+                               final boolean limitForeignKeyFetchDepth, final int validityCheckTimeout) throws DatabaseException {
     this.domain = Objects.requireNonNull(domain, "domain");
     this.connection = DatabaseConnections.createConnection(database, user, validityCheckTimeout);
     this.entityConditions = new EntityConditions(domain);
@@ -125,8 +125,8 @@ public final class LocalEntityConnection implements EntityConnection {
    * @throws DatabaseException in case a validation statement is required but could not be created
    * @see org.jminor.common.db.Database#supportsIsValid()
    */
-  LocalEntityConnection(final Entities domain, final Database database, final Connection connection, final boolean optimisticLocking,
-                        final boolean limitForeignKeyFetchDepth, final int validityCheckTimeout) throws DatabaseException {
+  DefaultLocalEntityConnection(final Entities domain, final Database database, final Connection connection, final boolean optimisticLocking,
+                               final boolean limitForeignKeyFetchDepth, final int validityCheckTimeout) throws DatabaseException {
     this.domain = Objects.requireNonNull(domain, "domain");
     this.connection = DatabaseConnections.createConnection(database, connection, validityCheckTimeout);
     this.entityConditions = new EntityConditions(domain);

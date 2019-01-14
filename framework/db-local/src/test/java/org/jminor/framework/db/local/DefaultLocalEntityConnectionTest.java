@@ -45,7 +45,7 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LocalEntityConnectionTest {
+public class DefaultLocalEntityConnectionTest {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
@@ -54,7 +54,7 @@ public class LocalEntityConnectionTest {
   private static final String JOINED_QUERY_ENTITY_ID = "joinedQueryEntityID";
   private static final String GROUP_BY_QUERY_ENTITY_ID = "groupByQueryEntityID";
 
-  private LocalEntityConnection connection;
+  private DefaultLocalEntityConnection connection;
 
   private static final TestDomain ENTITIES = new TestDomain();
   private static final EntityConditions ENTITY_CONDITIONS = new EntityConditions(ENTITIES);
@@ -433,8 +433,8 @@ public class LocalEntityConnectionTest {
 
   @Test
   public void selectForUpdateModified() throws Exception {
-    final LocalEntityConnection connection = initializeConnection();
-    final LocalEntityConnection connection2 = initializeConnection();
+    final DefaultLocalEntityConnection connection = initializeConnection();
+    final DefaultLocalEntityConnection connection2 = initializeConnection();
     final String originalLocation;
     try {
       final EntitySelectCondition condition = ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "SALES");
@@ -471,7 +471,7 @@ public class LocalEntityConnectionTest {
 
   @Test
   public void optimisticLockingDeleted() throws Exception {
-    final LocalEntityConnection connection = initializeConnection();
+    final DefaultLocalEntityConnection connection = initializeConnection();
     final EntityConnection connection2 = initializeConnection();
     connection.setOptimisticLocking(true);
     final Entity allen;
@@ -507,8 +507,8 @@ public class LocalEntityConnectionTest {
 
   @Test
   public void optimisticLockingModified() throws Exception {
-    final LocalEntityConnection baseConnection = initializeConnection();
-    final LocalEntityConnection optimisticConnection = initializeConnection();
+    final DefaultLocalEntityConnection baseConnection = initializeConnection();
+    final DefaultLocalEntityConnection optimisticConnection = initializeConnection();
     optimisticConnection.setOptimisticLocking(true);
     assertTrue(optimisticConnection.isOptimisticLocking());
     String oldLocation = null;
@@ -547,7 +547,7 @@ public class LocalEntityConnectionTest {
     try {
       final Database db = Databases.getInstance();
       connection = db.createConnection(UNIT_TEST_USER);
-      final EntityConnection conn = new LocalEntityConnection(ENTITIES, db, connection, true, true, 1);
+      final EntityConnection conn = new DefaultLocalEntityConnection(ENTITIES, db, connection, true, true, 1);
       assertTrue(conn.isConnected());
     }
     finally {
@@ -568,7 +568,7 @@ public class LocalEntityConnectionTest {
         final Database db = Databases.getInstance();
         connection = db.createConnection(UNIT_TEST_USER);
         connection.close();
-        new LocalEntityConnection(ENTITIES, db, connection, true, true, 1);
+        new DefaultLocalEntityConnection(ENTITIES, db, connection, true, true, 1);
       }
       finally {
         if (connection != null) {
@@ -632,7 +632,7 @@ public class LocalEntityConnectionTest {
     assertTrue(Arrays.equals(newBytes, fromDb));
   }
 
-  private static LocalEntityConnection initializeConnection() throws DatabaseException {
-    return new LocalEntityConnection(ENTITIES, Databases.getInstance(), UNIT_TEST_USER, true, true, 1);
+  private static DefaultLocalEntityConnection initializeConnection() throws DatabaseException {
+    return new DefaultLocalEntityConnection(ENTITIES, Databases.getInstance(), UNIT_TEST_USER, true, true, 1);
   }
 }

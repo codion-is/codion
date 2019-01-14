@@ -36,7 +36,7 @@ public class EntityConnectionUtilTest {
           System.getProperty("jminor.unittest.password", "tiger").toCharArray()));
   private static final EntityConditions ENTITY_CONDITIONS = CONNECTION_PROVIDER.getConditions();
 
-  private static LocalEntityConnection DESTINATION_CONNECTION;
+  private static DefaultLocalEntityConnection DESTINATION_CONNECTION;
 
   @BeforeAll
   public static void setUp() {

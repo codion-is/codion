@@ -4922,3 +4922,4 @@
   Module directories renamed to reflect the above
   EntityConnection.setMethodLogger() and getDatabaseConnection() removed, now only available in LocalEntityConnection
   LocalEntityConnection.getMethodLogger() added
+  LocalEntityConnection renamed to DefaultLocalEntityConnection, preparing for LocalEntityConnection interface
