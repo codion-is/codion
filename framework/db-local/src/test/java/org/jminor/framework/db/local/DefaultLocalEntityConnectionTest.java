@@ -133,7 +133,7 @@ public class DefaultLocalEntityConnectionTest {
     final Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", Arrays.asList(10, 20));
     final ReportResult reportResult = () -> "result";
-    final ReportResult print = connection.fillReport(new ReportWrapper() {
+    connection.fillReport(new ReportWrapper() {
       @Override
       public String getReportName() {
         return "TestName";
@@ -598,7 +598,7 @@ public class DefaultLocalEntityConnectionTest {
 
     final Entity scott = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 7);
     connection.writeBlob(scott.getKey(), TestDomain.EMP_DATA, bytes);
-    assertTrue(Arrays.equals(bytes, connection.readBlob(scott.getKey(), TestDomain.EMP_DATA)));
+    assertArrayEquals(bytes, connection.readBlob(scott.getKey(), TestDomain.EMP_DATA));
 
     final Entity blobRecordFromDb = connection.selectSingle(scott.getKey());
     assertNotNull(blobRecordFromDb);
@@ -615,7 +615,7 @@ public class DefaultLocalEntityConnectionTest {
     connection.update(Collections.singletonList(scott));
 
     byte[] fromDb = connection.readBlob(scott.getKey(), TestDomain.EMP_DATA);
-    assertTrue(Arrays.equals(bytes, fromDb));
+    assertArrayEquals(bytes, fromDb);
 
     final Entity blobRecordFromDb = connection.selectSingle(scott.getKey());
     assertNotNull(blobRecordFromDb);
@@ -629,7 +629,7 @@ public class DefaultLocalEntityConnectionTest {
     connection.update(Collections.singletonList(scott)).get(0);
 
     fromDb = connection.readBlob(scott.getKey(), TestDomain.EMP_DATA);
-    assertTrue(Arrays.equals(newBytes, fromDb));
+    assertArrayEquals(newBytes, fromDb);
   }
 
   private static DefaultLocalEntityConnection initializeConnection() throws DatabaseException {
