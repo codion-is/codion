@@ -28,9 +28,9 @@ public final class HttpEntityConnections {
    * @param clientId the client id
    * @return a http based EntityConnection
    */
-  public static EntityConnection createConnection(final String domainId, final String serverHostName,
-                                                  final int serverPort, final boolean httpsEnabled, final User user,
-                                                  final String clientTypeId, final UUID clientId) {
+  public static HttpEntityConnection createConnection(final String domainId, final String serverHostName,
+                                                      final int serverPort, final boolean httpsEnabled, final User user,
+                                                      final String clientTypeId, final UUID clientId) {
     return new HttpEntityConnection(domainId, serverHostName, serverPort, httpsEnabled, user, clientTypeId, clientId,
             new BasicHttpClientConnectionManager());
   }

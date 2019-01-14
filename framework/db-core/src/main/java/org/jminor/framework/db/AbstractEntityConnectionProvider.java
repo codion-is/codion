@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * An abstract EntityConnectionProvider implementation.
  */
-public abstract class AbstractEntityConnectionProvider implements EntityConnectionProvider {
+public abstract class AbstractEntityConnectionProvider<T extends EntityConnection> implements EntityConnectionProvider<T> {
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
   private static final int VALIDITY_CHECK_INTERVAL_SECONDS = 10;
@@ -42,7 +42,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private Version clientVersion;
   private String clientTypeId;
 
-  private EntityConnection entityConnection;
+  private T entityConnection;
   private Entities domain;
   private EntityConditions entityConditions;
 
@@ -173,7 +173,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   /** {@inheritDoc} */
   @Override
-  public final synchronized EntityConnection getConnection() {
+  public final synchronized T getConnection() {
     if (user == null) {
       throw new IllegalStateException("No user set");
     }
@@ -212,7 +212,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   /**
    * @return an established connection
    */
-  protected abstract EntityConnection connect();
+  protected abstract T connect();
 
   /**
    * Disconnects the given connection

@@ -16,7 +16,7 @@ import java.util.UUID;
 /**
  * Interface for a class responsible for providing EntityConnection objects.
  */
-public interface EntityConnectionProvider {
+public interface EntityConnectionProvider<T extends EntityConnection> {
 
   /**
    * Indicates a local database connection
@@ -97,7 +97,7 @@ public interface EntityConnectionProvider {
    * that is, it must reconnect an invalid connection whether remotely or locally
    * @return a EntityConnection instance
    */
-  EntityConnection getConnection();
+  T getConnection();
 
   /**
    * Returns the Type this connection provider represents

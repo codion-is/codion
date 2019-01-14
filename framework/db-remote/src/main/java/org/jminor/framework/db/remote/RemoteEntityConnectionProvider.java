@@ -26,7 +26,7 @@ import java.util.Collections;
 /**
  * A class responsible for managing a remote entity connection.
  */
-public final class RemoteEntityConnectionProvider extends AbstractEntityConnectionProvider {
+public final class RemoteEntityConnectionProvider extends AbstractEntityConnectionProvider<EntityConnection> {
 
   private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionProvider.class);
 
