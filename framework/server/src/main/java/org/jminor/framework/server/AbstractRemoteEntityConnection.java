@@ -34,9 +34,10 @@ import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -166,7 +167,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    * @return true during a remote method call
    */
   final boolean isActive() {
-    return RemoteEntityConnectionHandler.ACTIVE_CONNECTIONS.contains(this);
+    return RemoteEntityConnectionHandler.ACTIVE_CONNECTIONS.contains(connectionHandler.remoteClient.getClientId());
   }
 
   final void addDisconnectListener(final EventDataListener<AbstractRemoteEntityConnection> listener) {
@@ -199,9 +200,9 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     private static final RequestCounter REQUEST_COUNTER = new RequestCounter();
 
     /**
-     * Contains the active remote connections, that is, those connections that are in the process of serving a request
+     * Contains the clientIds of active remote connections, that is, those connections that are in the process of serving a request
      */
-    private static final List<AbstractRemoteEntityConnection> ACTIVE_CONNECTIONS = Collections.synchronizedList(new ArrayList<>());
+    private static final Set<UUID> ACTIVE_CONNECTIONS = Collections.synchronizedSet(new HashSet<>());
 
     /**
      * The domain model Entities
@@ -297,7 +298,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       Exception exception = null;
       try {
         MDC.put(LOG_IDENTIFIER_PROPERTY, logIdentifier);
-        ACTIVE_CONNECTIONS.add(remoteEntityConnection);
+        ACTIVE_CONNECTIONS.add(remoteEntityConnection.connectionHandler.remoteClient.getClientId());
         REQUEST_COUNTER.incrementRequestsPerSecondCounter();
         if (methodLogger.isEnabled()) {
           methodLogger.logAccess(methodName, args);
@@ -321,7 +322,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
         throw exception;
       }
       finally {
-        ACTIVE_CONNECTIONS.remove(remoteEntityConnection);
+        ACTIVE_CONNECTIONS.remove(remoteEntityConnection.connectionHandler.remoteClient.getClientId());
         returnConnection();
         if (methodLogger.isEnabled()) {
           final MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
