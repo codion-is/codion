@@ -55,23 +55,11 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
- * EntityConnection implementation based on a local JDBC connection.
- * <pre>
- * Entities domain = new Domain();
- * EntityConditions conditions = new EntityConditions(domain);
- * Database database = new H2Database("pathToDb");
- * User user = new User("scott", "tiger".toCharArray());
- *
- * EntityConnection connection = LocalEntityConnections.createConnection(domain, database, user);
- *
- * List&lt;Entity&gt; entities = connection.selectMany(conditions.selectCondition(Domain.ENTITY_ID));
- *
- * connection.disconnect();
- * </pre>
+ * A default LocalEntityConnection implementation
  */
-public final class DefaultLocalEntityConnection implements EntityConnection {
+final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultLocalEntityConnection.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(LocalEntityConnection.class.getName(), Locale.getDefault());
   private static final String RECORD_MODIFIED_EXCEPTION = "record_modified_exception";
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnection.class);
@@ -134,9 +122,8 @@ public final class DefaultLocalEntityConnection implements EntityConnection {
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
   }
 
-  /**
-   * @param methodLogger the MethodLogger to use
-   */
+  /** {@inheritDoc} */
+  @Override
   public void setMethodLogger(final MethodLogger methodLogger) {
     synchronized (connection) {
       this.methodLogger = methodLogger;
@@ -144,9 +131,8 @@ public final class DefaultLocalEntityConnection implements EntityConnection {
     }
   }
 
-  /**
-   * @return the MethodLogger being used
-   */
+  /** {@inheritDoc} */
+  @Override
   public MethodLogger getMethodLogger() {
     synchronized (connection) {
       return this.methodLogger;
@@ -745,21 +731,14 @@ public final class DefaultLocalEntityConnection implements EntityConnection {
     }
   }
 
-  /**
-   * @return the underlying connection
-   */
+  /** {@inheritDoc} */
+  @Override
   public DatabaseConnection getDatabaseConnection() {
     return connection;
   }
 
-  /**
-   * Returns a result set iterator based on the given query condition, this iterator closes all underlying
-   * resources in case of an exception and when it finishes iterating.
-   * Calling {@link ResultIterator#close()} is required if the iterator has not been exhausted and is always recommended.
-   * @param condition the query condition
-   * @return an iterator for the given query condition
-   * @throws DatabaseException in case of an exception
-   */
+  /** {@inheritDoc} */
+  @Override
   public ResultIterator<Entity> iterator(final EntityCondition condition) throws DatabaseException {
     try {
       return createIterator(condition);
@@ -769,31 +748,26 @@ public final class DefaultLocalEntityConnection implements EntityConnection {
     }
   }
 
-  /**
-   * @return true if optimistic locking is enabled
-   */
+  /** {@inheritDoc} */
+  @Override
   public boolean isOptimisticLocking() {
     return optimisticLocking;
   }
 
-  /**
-   * @param optimisticLocking true if optimistic locking should be enabled
-   */
+  /** {@inheritDoc} */
+  @Override
   public void setOptimisticLocking(final boolean optimisticLocking) {
     this.optimisticLocking = optimisticLocking;
   }
 
-  /**
-   * @return true if foreign key fetch depths are being limited
-   */
+  /** {@inheritDoc} */
+  @Override
   public boolean isLimitForeignKeyFetchDepth() {
     return limitForeignKeyFetchDepth;
   }
 
-  /**
-   * @param limitForeignKeyFetchDepth false to override the fetch depth limit provided by condition
-   * @see EntitySelectCondition#setForeignKeyFetchDepthLimit(int)
-   */
+  /** {@inheritDoc} */
+  @Override
   public void setLimitForeignKeyFetchDepth(final boolean limitForeignKeyFetchDepth) {
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
   }

@@ -8,7 +8,6 @@ import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Entities;
 
 import java.sql.Connection;
@@ -28,10 +27,10 @@ public final class LocalEntityConnections {
    * @return a new LocalEntityConnection instance
    * @throws DatabaseException in case there is a problem connecting to the database
    */
-  public static DefaultLocalEntityConnection createConnection(final Entities domain, final Database database, final User user)
+  public static LocalEntityConnection createConnection(final Entities domain, final Database database, final User user)
           throws DatabaseException {
-    return new DefaultLocalEntityConnection(domain, database, user, EntityConnection.USE_OPTIMISTIC_LOCKING.get(),
-            EntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get(), DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
+    return new DefaultLocalEntityConnection(domain, database, user, LocalEntityConnection.USE_OPTIMISTIC_LOCKING.get(),
+            LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get(), DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
   }
 
   /**
@@ -44,10 +43,10 @@ public final class LocalEntityConnections {
    * @throws DatabaseException in case a validation statement is required but could not be created
    * @see org.jminor.common.db.Database#supportsIsValid()
    */
-  public static DefaultLocalEntityConnection createConnection(final Entities domain, final Database database, final Connection connection)
+  public static LocalEntityConnection createConnection(final Entities domain, final Database database, final Connection connection)
           throws DatabaseException {
-    return new DefaultLocalEntityConnection(domain, database, connection, EntityConnection.USE_OPTIMISTIC_LOCKING.get(),
-            EntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get(), DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
+    return new DefaultLocalEntityConnection(domain, database, connection, LocalEntityConnection.USE_OPTIMISTIC_LOCKING.get(),
+            LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get(), DatabaseConnection.CONNECTION_VALIDITY_CHECK_TIMEOUT.get());
   }
 
   /**
@@ -55,7 +54,7 @@ public final class LocalEntityConnections {
    * @return A {@link MethodLogger} implementation tailored for LocalEntityConnections
    */
   public static MethodLogger createLogger(final Entities domain) {
-    return new MethodLogger(EntityConnection.CONNECTION_LOG_SIZE.get(),
+    return new MethodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.get(),
             false, new DefaultLocalEntityConnection.EntityArgumentStringProvider(domain));
   }
 }
