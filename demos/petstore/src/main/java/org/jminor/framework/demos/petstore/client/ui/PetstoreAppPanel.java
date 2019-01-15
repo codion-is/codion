@@ -17,6 +17,7 @@ import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.framework.domain.Entities;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
+import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
@@ -75,7 +76,14 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppPa
   public static final class PetstoreApplicationModel extends SwingEntityApplicationModel {
     public PetstoreApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
+      final SwingEntityModel categoryModel = new SwingEntityModel(Petstore.T_CATEGORY, connectionProvider);
+      final SwingEntityModel productModel = new SwingEntityModel(Petstore.T_PRODUCT, connectionProvider);
+      final SwingEntityModel itemModel = new SwingEntityModel(Petstore.T_ITEM, connectionProvider);
+      final SwingEntityModel tagItemModel = new SwingEntityModel(Petstore.T_TAG_ITEM, connectionProvider);
+      itemModel.addDetailModels(tagItemModel);
+      productModel.addDetailModels(itemModel);
+      categoryModel.addDetailModels(productModel);
+      addEntityModel(categoryModel);
     }
-
   }
 }
