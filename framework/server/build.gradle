@@ -39,7 +39,7 @@ task runServer(type: ModularJavaExec, dependsOn: createServerKeystore) {
     group = 'run'
     classpath = configurations.serverRuntime
     main = mainClassName
-    jvmArgs = ['--add-modules', 'org.jminor.framework.servlet,org.jminor.framework.plugins.logback.proxy,java.xml.bind']
+    jvmArgs = ['-Xmx256m', '--add-modules', 'org.jminor.framework.servlet,org.jminor.framework.plugins.jasperreports,java.xml.bind']
     systemProperties = [
             'jminor.db.type'                            : 'h2',
             'jminor.db.host'                            : 'h2db',
@@ -117,7 +117,7 @@ applicationDistribution.from(files('../../demos/chinook/build/classes/reports/cu
     into("reports")
 }
 applicationDefaultJvmArgs = [
-        '--add-modules', 'org.jminor.framework.servlet,java.xml.bind',
+        '-Xmx256m', '--add-modules', 'org.jminor.framework.servlet,java.xml.bind',
         '-Djava.security.policy=../config/all_permissions.policy',
         '-Dlogback.configurationFile=../config/logback.xml',
         '-Djminor.configurationFile=../config/h2_embedded.config'

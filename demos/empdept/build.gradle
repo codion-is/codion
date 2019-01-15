@@ -95,6 +95,7 @@ task runClientRemote(type: ModularJavaExec) {
     systemProperties = [
             'jminor.client.connectionType'    : 'remote',
             'jminor.server.hostname'          : 'localhost',
+            'jminor.report.path'              : '../../demos/empdept/build/classes/reports',
             'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/main/config/logback.xml'
@@ -108,7 +109,7 @@ task runClientHttp(type: ModularJavaExec) {
             'jminor.client.connectionType': 'http',
             'jminor.client.http.secure'   : 'false',
             'jminor.client.http.hostname' : 'localhost',
-            'jminor.report.path'          : '../../demos/chinook/build/classes/reports',
+            'jminor.report.path'          : '../../demos/empdept/build/classes/reports',
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }
@@ -119,6 +120,7 @@ task runLoadTestRemote(type: ModularJavaExec) {
     systemProperties = [
             'jminor.client.connectionType'    : 'remote',
             'jminor.server.hostname'          : 'localhost',
+            'jminor.report.path'              : '../../demos/empdept/build/classes/reports',
             'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/main/config/logback.xml'
@@ -132,7 +134,7 @@ task runLoadTestHttp(type: ModularJavaExec) {
             'jminor.client.connectionType': 'http',
             'jminor.client.http.secure'   : 'false',
             'jminor.client.http.hostname' : 'localhost',
-            'jminor.report.path'          : '../../demos/chinook/build/classes/reports',
+            'jminor.report.path'          : '../../demos/empdept/build/classes/reports',
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }
