@@ -201,9 +201,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     super(serverPort, serverName, sslEnabled ? new SslRMIClientSocketFactory() : null,
             sslEnabled ? new SslRMIServerSocketFactory() : null);
     try {
-      if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
-        SerializationWhitelist.configureSerializationWhitelist(SERIALIZATION_FILTER_WHITELIST.get(), SERIALIZATION_FILTER_DRYRUN.get());
-      }
+      SerializationWhitelist.configureSerializationWhitelist(SERIALIZATION_FILTER_WHITELIST.get(), SERIALIZATION_FILTER_DRYRUN.get());
       this.shutdownHook = new Thread(getShutdownHook());
       Runtime.getRuntime().addShutdownHook(this.shutdownHook);
       this.database = Objects.requireNonNull(database, "database");
