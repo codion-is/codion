@@ -4927,3 +4927,4 @@
   EntityConnectionProvider generified
   AbstractEntityConnectionProvider.setClientId() bug fixed, did not use parameter, a few methods made final, disconnect() generified
   AbstractRemoteEntityConnection.RemoteEntityConnectionHandler.ACTIVE_CONNECTIONS is now a Set
+  PetstoreApplicationModel constructor now adds all entity models so that the load test works
