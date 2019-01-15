@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -72,11 +71,11 @@ public final class SerializationWhitelist {
 
   private static final class SerializationFilter implements java.io.ObjectInputFilter {
 
-    private final List<String> allowedClassnames;
+    private final Set<String> allowedClassnames;
 
     private SerializationFilter(final String whitelist) {
       try (final Stream<String> stream = Files.lines(Paths.get(whitelist))) {
-        this.allowedClassnames = stream.collect(Collectors.toList());
+        this.allowedClassnames = stream.collect(Collectors.toSet());
       }
       catch (final IOException e) {
         LOG.error("Unable to read serialization whitelist: " + whitelist);
