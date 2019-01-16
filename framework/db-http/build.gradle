@@ -4,16 +4,10 @@ dependencies {
 
     api project(':jminor-framework-db-core')
 
-    implementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
-
     testImplementation project(':jminor-common-remote')
     testImplementation project(':jminor-common-remote-http')
     testImplementation project(':jminor-framework-server')
     testImplementation project(':jminor-framework-servlet')
 
     testRuntime "com.h2database:h2:${h2Version}"
-
-    //for Java >= 9
-    testRuntime "javax.xml.bind:jaxb-api:${jaxbApiVersion}"
-    testRuntime "com.sun.activation:javax.activation:${javaxActivationVersion}"
 }

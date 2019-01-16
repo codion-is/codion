@@ -4933,3 +4933,5 @@
   PetstoreApplicationModel constructor now adds all entity models so that the load test works
   SerializationWhitelist.SerializationFilter.allowedClassnames is now a Set instead of a List
   DefaultProperty.DefaultColumnProperty serialVersionUID added
+  HttpEntityConnection now uses java.net.http instead of apache http client
+  EntityServletServerTest now uses java.net.http instead of apache http client

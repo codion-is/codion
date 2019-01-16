@@ -6,8 +6,6 @@ package org.jminor.framework.db.http;
 import org.jminor.common.User;
 import org.jminor.framework.db.EntityConnection;
 
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
-
 import java.util.UUID;
 
 /**
@@ -31,7 +29,6 @@ public final class HttpEntityConnections {
   public static HttpEntityConnection createConnection(final String domainId, final String serverHostName,
                                                       final int serverPort, final boolean httpsEnabled, final User user,
                                                       final String clientTypeId, final UUID clientId) {
-    return new HttpEntityConnection(domainId, serverHostName, serverPort, httpsEnabled, user, clientTypeId, clientId,
-            new BasicHttpClientConnectionManager());
+    return new HttpEntityConnection(domainId, serverHostName, serverPort, httpsEnabled, user, clientTypeId, clientId);
   }
 }

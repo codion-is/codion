@@ -6,8 +6,6 @@ package org.jminor.framework.servlet;
 import org.jminor.common.Serializer;
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.Value;
-import org.jminor.common.Values;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.Server;
@@ -18,39 +16,20 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.AuthCache;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.impl.client.BasicAuthCache;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import javax.net.ssl.SSLContext;
 import javax.ws.rs.core.MediaType;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.rmi.registry.Registry;
-import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -69,20 +48,29 @@ public class EntityServletServerTest {
 
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
   private static final User ADMIN_USER = new User("scott", "tiger".toCharArray());
-  private static final String HTTPS = "https";
-  private static String HOSTNAME;
-  private static HttpHost TARGET_HOST;
   private static String SERVER_BASEURL;
 
   private static DefaultEntityConnectionServer server;
   private static EntityConnectionServerAdmin admin;
 
+  private static final String AUTHORIZATION_HEADER = "Basic " + Base64.getEncoder().encodeToString(
+          (UNIT_TEST_USER.getUsername() + ":" + String.valueOf(UNIT_TEST_USER.getPassword())).getBytes());
+  private static final String TEST_CLIENT_TYPE_ID = "EntityServletServerTest";
+
+  private static final String[] HEADERS = new String[] {
+          EntityService.DOMAIN_ID, new TestDomain().getDomainId(),
+          EntityService.CLIENT_TYPE_ID, TEST_CLIENT_TYPE_ID,
+          EntityService.CLIENT_ID, UUID.randomUUID().toString(),
+          "Content-Type", MediaType.APPLICATION_OCTET_STREAM,
+          "Authorization", AUTHORIZATION_HEADER
+  };
+
+  private final HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(2)).build();
+
   @BeforeAll
   public static void setUp() throws Exception {
     configure();
-    HOSTNAME = Server.SERVER_HOST_NAME.get();
-    TARGET_HOST = new HttpHost(HOSTNAME, WEB_SERVER_PORT_NUMBER, HTTPS);
-    SERVER_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities";
+    SERVER_BASEURL = "https://" + Server.SERVER_HOST_NAME.get() + ":" + WEB_SERVER_PORT_NUMBER + "/entities";
     server = DefaultEntityConnectionServer.startServer();
     admin = server.getServerAdmin(ADMIN_USER);
   }
@@ -94,120 +82,71 @@ public class EntityServletServerTest {
   }
 
   @Test
-  public void isTransactionOpen() throws URISyntaxException, IOException, ClassNotFoundException {
-    final RequestConfig requestConfig = RequestConfig.custom()
-            .setSocketTimeout(2000)
-            .setConnectTimeout(2000)
-            .build();
-    final String domainId = new TestDomain().getDomainId();
-    final String clientTypeId = "EntityServletServerTest";
-    final UUID clientId = UUID.randomUUID();
-    final CloseableHttpClient client = HttpClientBuilder.create()
-            .setDefaultRequestConfig(requestConfig)
-            .setConnectionManager(createConnectionManager())
-            .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              request.setHeader(EntityService.DOMAIN_ID, domainId);
-              request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
-              request.setHeader(EntityService.CLIENT_ID, clientId.toString());
-              request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
-            })
-            .build();
+  public void isTransactionOpen() throws IOException, InterruptedException, ClassNotFoundException {
+    final HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(SERVER_BASEURL + "/isTransactionOpen"))
+            .headers(HEADERS)
+            .POST(HttpRequest.BodyPublishers.noBody()).build();
 
-    final URIBuilder uriBuilder = createURIBuilder();
-    uriBuilder.setPath("isTransactionOpen");
-
-    final HttpPost httpPost = new HttpPost(uriBuilder.build());
-    final HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-    final CloseableHttpResponse response = client.execute(TARGET_HOST, httpPost, context);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    final Boolean result = deserializeResponse(response);
+    final HttpResponse<byte[]> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+    final Boolean result = Util.deserialize(httpResponse.body());
     assertFalse(result);
-    response.close();
   }
 
   @Test
   public void test() throws URISyntaxException, IOException, InterruptedException,
           Serializer.SerializeException, ClassNotFoundException {
-    final RequestConfig requestConfig = RequestConfig.custom()
-            .setSocketTimeout(2000)
-            .setConnectTimeout(2000)
-            .build();
-    CloseableHttpClient client = HttpClientBuilder.create()
-            .setDefaultRequestConfig(requestConfig)
-            .setConnectionManager(createConnectionManager())
-            .build();
-
     //test with missing authentication info
-    URIBuilder uriBuilder = createURIBuilder();
-    uriBuilder.setPath("select");
-    uriBuilder.addParameter("domainId", ENTITIES.getDomainId());
-    CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(uriBuilder.build()));
-    assertEquals(401, response.getStatusLine().getStatusCode());
-    response.close();
-    client.close();
+    HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(SERVER_BASEURL + "/select"))
+            .headers(new String[] {
+                    EntityService.DOMAIN_ID, new TestDomain().getDomainId(),
+                    EntityService.CLIENT_TYPE_ID, "EntityServletServerTest",
+                    EntityService.CLIENT_ID, UUID.randomUUID().toString(),
+                    "Content-Type", MediaType.APPLICATION_OCTET_STREAM
+            })
+            .POST(HttpRequest.BodyPublishers.noBody()).build();
 
-    final String domainId = new TestDomain().getDomainId();
-    final String clientTypeId = "EntityServletServerTest";
+    HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+    assertEquals(401, response.statusCode());
+
     //test with missing clientId header
-    client = HttpClientBuilder.create()
-            .setDefaultRequestConfig(requestConfig)
-            .setConnectionManager(createConnectionManager())
-            .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              request.setHeader(EntityService.DOMAIN_ID, domainId);
-              request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
-              request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
+    request = HttpRequest.newBuilder()
+            .uri(URI.create(SERVER_BASEURL + "/select"))
+            .headers(new String[] {
+                    EntityService.DOMAIN_ID, new TestDomain().getDomainId(),
+                    EntityService.CLIENT_TYPE_ID, "EntityServletServerTest",
+                    "Content-Type", MediaType.APPLICATION_OCTET_STREAM,
+                    "Authorization", AUTHORIZATION_HEADER
             })
-            .build();
-    uriBuilder = createURIBuilder();
-    uriBuilder.setPath("select");
-    HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-    response = client.execute(TARGET_HOST, new HttpPost(uriBuilder.build()), context);
-    assertEquals(401, response.getStatusLine().getStatusCode());
-    response.close();
-    client.close();
+            .POST(HttpRequest.BodyPublishers.noBody()).build();
+    response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+    assertEquals(401, response.statusCode());
 
-    final Value<UUID> clientIdValue = Values.value(UUID.randomUUID());
     //test with unknown user authentication
-    client = HttpClientBuilder.create()
-            .setDefaultRequestConfig(requestConfig)
-            .setConnectionManager(createConnectionManager())
-            .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              request.setHeader(EntityService.DOMAIN_ID, domainId);
-              request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
-              request.setHeader(EntityService.CLIENT_ID, clientIdValue.get().toString());
-              request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
+    request = HttpRequest.newBuilder()
+            .uri(URI.create(SERVER_BASEURL + "/select"))
+            .headers(new String[] {
+                    EntityService.DOMAIN_ID, new TestDomain().getDomainId(),
+                    EntityService.CLIENT_TYPE_ID, "EntityServletServerTest",
+                    EntityService.CLIENT_ID, UUID.randomUUID().toString(),
+                    "Content-Type", MediaType.APPLICATION_OCTET_STREAM,
+                    "Authorization", "Basic " + Base64.getEncoder().encodeToString("who:areu".getBytes())
             })
-            .build();
-    uriBuilder = createURIBuilder();
-    uriBuilder.setPath("select");
-    context = createHttpContext(new User("who", "areu".toCharArray()), TARGET_HOST);
-    response = client.execute(TARGET_HOST, new HttpPost(uriBuilder.build()), context);
-    assertEquals(401, response.getStatusLine().getStatusCode());
-    response.close();
-    client.close();
+            .POST(HttpRequest.BodyPublishers.noBody()).build();
+    response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+    assertEquals(401, response.statusCode());
 
-    client = HttpClientBuilder.create()
-            .setDefaultRequestConfig(requestConfig)
-            .setConnectionManager(createConnectionManager())
-            .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              request.setHeader(EntityService.DOMAIN_ID, domainId);
-              request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
-              request.setHeader(EntityService.CLIENT_ID, clientIdValue.get().toString());
-              request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
-            })
-            .build();
+    //select all
+    request = HttpRequest.newBuilder()
+            .uri(URI.create(SERVER_BASEURL + "/select"))
+            .headers(HEADERS)
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT)))).build();
 
-    //select all/GET
-    uriBuilder = createURIBuilder();
-    uriBuilder.setPath("select");
-    HttpPost httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT))));
-    context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-    response = client.execute(TARGET_HOST, httpPost, context);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    List<Entity> queryEntities = deserializeResponse(response);
+    response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+    assertEquals(200, response.statusCode());
+    List<Entity> queryEntities = Util.deserialize(response.body());
     assertEquals(4, queryEntities.size());
-    response.close();
 
     final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, null);
@@ -216,178 +155,123 @@ public class EntityServletServerTest {
     department.put(TestDomain.DEPARTMENT_LOCATION, "Location");
 
     //insert
-    uriBuilder = createURIBuilder();
-    uriBuilder.setPath("insert");
-    httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.singletonList(department))));
-    response = client.execute(TARGET_HOST, httpPost, context);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    final List<Entity.Key> queryKeys = deserializeResponse(response);
+    request = HttpRequest.newBuilder()
+            .uri(URI.create(SERVER_BASEURL + "/insert"))
+            .headers(HEADERS)
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Collections.singletonList(department)))).build();
+
+    response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+    assertEquals(200, response.statusCode());
+    List<Entity.Key> queryKeys = Util.deserialize(response.body());
     assertEquals(1, queryKeys.size());
     assertEquals(department.getKey(), queryKeys.get(0));
-    response.close();
 
     //delete
-    uriBuilder = createURIBuilder();
-    uriBuilder.setPath("delete");
-    httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(department.getKey()))));
-    response = client.execute(TARGET_HOST, httpPost, context);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    response.close();
+    request = HttpRequest.newBuilder()
+            .uri(URI.create(SERVER_BASEURL + "/delete"))
+            .headers(HEADERS)
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(CONDITIONS.selectCondition(department.getKey())))).build();
+
+    response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+    assertEquals(200, response.statusCode());
 
     //insert
-    uriBuilder = createURIBuilder();
-    uriBuilder.setPath("insert");
-    httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.singletonList(department))));
-    response = client.execute(TARGET_HOST, httpPost, context);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    final List<Entity.Key> keys = deserializeResponse(response);
-    assertEquals(1, keys.size());
-    assertEquals(department.getKey(), keys.get(0));
-    response.close();
+    request = HttpRequest.newBuilder()
+            .uri(URI.create(SERVER_BASEURL + "/insert"))
+            .headers(HEADERS)
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Collections.singletonList(department)))).build();
+
+    response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+    assertEquals(200, response.statusCode());
+    queryKeys = Util.deserialize(response.body());
+    assertEquals(1, queryKeys.size());
+    assertEquals(department.getKey(), queryKeys.get(0));
 
     //update
     department.saveAll();
     department.put(TestDomain.DEPARTMENT_LOCATION, "New location");
     department.put(TestDomain.DEPARTMENT_NAME, "New name");
-    uriBuilder = createURIBuilder();
-    uriBuilder.setPath("update");
-    httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.singletonList(department))));
-    response = client.execute(TARGET_HOST, httpPost, context);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    queryEntities = deserializeResponse(response);
+
+    request = HttpRequest.newBuilder()
+            .uri(URI.create(SERVER_BASEURL + "/update"))
+            .headers(HEADERS)
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Collections.singletonList(department)))).build();
+
+    response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+    assertEquals(200, response.statusCode());
+    queryEntities = Util.deserialize(response.body());
     assertEquals(1, queryEntities.size());
     assertEquals(department, queryEntities.get(0));
-    response.close();
 
     //select by condition
-    uriBuilder = createURIBuilder();
-    uriBuilder.setPath("select");
-    httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
-            TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "New name"))));
-    response = client.execute(TARGET_HOST, httpPost, context);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    queryEntities = deserializeResponse(response);
+    request = HttpRequest.newBuilder()
+            .uri(URI.create(SERVER_BASEURL + "/select"))
+            .headers(HEADERS)
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
+                    TestDomain.DEPARTMENT_NAME, Condition.Type.LIKE, "New name")))).build();
+
+    response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+    assertEquals(200, response.statusCode());
+    queryEntities = Util.deserialize(response.body());
     assertEquals(1, queryEntities.size());
-    response.close();
 
     //select by condition
-    uriBuilder = createURIBuilder();
-    uriBuilder.setPath("select");
-    httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(department.getKey()))));
-    response = client.execute(TARGET_HOST, httpPost, context);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    queryEntities = deserializeResponse(response);
+    request = HttpRequest.newBuilder()
+            .uri(URI.create(SERVER_BASEURL + "/select"))
+            .headers(HEADERS)
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(CONDITIONS.selectCondition(department.getKey())))).build();
+
+    response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+    assertEquals(200, response.statusCode());
+    queryEntities = Util.deserialize(response.body());
     assertEquals(1, queryEntities.size());
-    response.close();
 
     //delete
-    uriBuilder = createURIBuilder();
-    uriBuilder.setPath("delete");
-    httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
-            TestDomain.DEPARTMENT_ID, Condition.Type.LIKE, -42))));
-    response = client.execute(TARGET_HOST, httpPost, context);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    response.close();
+    request = HttpRequest.newBuilder()
+            .uri(URI.create(SERVER_BASEURL + "/delete"))
+            .headers(HEADERS)
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
+                    TestDomain.DEPARTMENT_ID, Condition.Type.LIKE, -42)))).build();
 
-    uriBuilder = createURIBuilder();
-    uriBuilder.setPath("function")
-            .addParameter("functionId", TestDomain.FUNCTION_ID);
-    httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.emptyList())));
-    response = client.execute(TARGET_HOST, httpPost, context);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    response.close();
+    response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+    assertEquals(200, response.statusCode());
 
-    uriBuilder = createURIBuilder();
-    uriBuilder.setPath("procedure")
-            .addParameter("procedureId", TestDomain.PROCEDURE_ID);
-    httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.emptyList())));
-    response = client.execute(TARGET_HOST, httpPost, context);
-    assertEquals(200, response.getStatusLine().getStatusCode());
-    response.close();
+    //function
+    request = HttpRequest.newBuilder()
+            .uri(URI.create(SERVER_BASEURL + "/function?functionId=" + TestDomain.FUNCTION_ID))
+            .headers(HEADERS)
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Collections.emptyList()))).build();
 
-    Collection<RemoteClient> clients = admin.getClients(clientTypeId);
+    response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+    assertEquals(200, response.statusCode());
+
+    //procedure
+    request = HttpRequest.newBuilder()
+            .uri(URI.create(SERVER_BASEURL + "/procedure?procedureId=" + TestDomain.PROCEDURE_ID))
+            .headers(HEADERS)
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Collections.emptyList()))).build();
+
+    response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+    assertEquals(200, response.statusCode());
+
+    Collection<RemoteClient> clients = admin.getClients(TEST_CLIENT_TYPE_ID);
     assertEquals(1, clients.size());
 
-    //try to change the clientId
-    final UUID originalClientId = clientIdValue.get();
-    clientIdValue.set(UUID.randomUUID());
+    //disconnect
+    request = HttpRequest.newBuilder()
+            .uri(URI.create(SERVER_BASEURL + "/disconnect"))
+            .headers(HEADERS)
+            .POST(HttpRequest.BodyPublishers.noBody()).build();
 
-    uriBuilder = createURIBuilder();
-    uriBuilder.setPath("procedure")
-            .addParameter("procedureId", TestDomain.PROCEDURE_ID);
-    httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.emptyList())));
-    response = client.execute(TARGET_HOST, httpPost, context);
-    assertEquals(401, response.getStatusLine().getStatusCode());
-    response.close();
+    response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+    assertEquals(200, response.statusCode());
 
-    clientIdValue.set(originalClientId);
-
-    uriBuilder = createURIBuilder();
-    uriBuilder.setPath("disconnect");
-    response = client.execute(TARGET_HOST, new HttpPost(uriBuilder.build()), context);
-    response.close();
-
-    client.close();
-
-    clients = admin.getClients(clientTypeId);
+    clients = admin.getClients(TEST_CLIENT_TYPE_ID);
     assertTrue(clients.isEmpty());
   }
 
-  private static URIBuilder createURIBuilder() {
-    final URIBuilder builder = new URIBuilder();
-    builder.setScheme(HTTPS).setHost(SERVER_BASEURL);
-
-    return builder;
-  }
-
-  private static <T> T deserializeResponse(final CloseableHttpResponse response) throws IOException, ClassNotFoundException {
-    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    response.getEntity().writeTo(outputStream);
-
-    return Util.deserialize(outputStream.toByteArray());
-  }
-
-  private static HttpClientContext createHttpContext(final User user, final HttpHost targetHost) {
-    final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-    credentialsProvider.setCredentials(
-            new AuthScope(targetHost.getHostName(), targetHost.getPort()),
-            new UsernamePasswordCredentials(user.getUsername(), String.valueOf(user.getPassword())));
-
-    final AuthCache authCache = new BasicAuthCache();
-    authCache.put(targetHost, new BasicScheme());
-
-    final HttpClientContext context = HttpClientContext.create();
-    context.setCredentialsProvider(credentialsProvider);
-    context.setAuthCache(authCache);
-
-    return context;
-  }
-
-  private static BasicHttpClientConnectionManager createConnectionManager() {
-    try {
-      final SSLContext sslContext = SSLContext.getDefault();
-
-      return new BasicHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().register(HTTPS,
-              new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
-              .build());
-    }
-    catch (final NoSuchAlgorithmException e) {
-      throw new RuntimeException(e);
-    }
-
-  }
-
   private static void configure() {
+    System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.TRUE.toString());
     Server.REGISTRY_PORT.set(2221);
     Server.SERVER_CONNECTION_SSL_ENABLED.set(false);
     Server.SERVER_PORT.set(2223);
@@ -407,6 +291,7 @@ public class EntityServletServerTest {
   }
 
   private static void deconfigure() {
+    System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.FALSE.toString());
     Server.REGISTRY_PORT.set(Registry.REGISTRY_PORT);
     Server.SERVER_CONNECTION_SSL_ENABLED.set(true);
     Server.SERVER_PORT.set(null);

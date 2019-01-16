@@ -3,6 +3,4 @@ dependencies {
     api project(':jminor-common-remote')
 
     api "org.eclipse.jetty:jetty-server:${jettyVersion}"
-
-    testImplementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
 }
