@@ -13,10 +13,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.
@@ -26,6 +28,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private static final long serialVersionUID = 1;
 
   private static final Entity.KeyGenerator DEFAULT_KEY_GENERATOR = new Entities.DefaultKeyGenerator();
+
+  private static final Entity.ToString DEFAULT_STRING_PROVIDER = new Entities.DefaultStringProvider();
 
   /**
    * The domainId
@@ -113,8 +117,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /**
    * The Entity.ToString instance used when toString() is called for this entity type
    */
-  private Entity.ToString stringProvider = entity -> DefaultEntityDefinition.this.entityId + ": " +
-          Objects.requireNonNull(entity, "entity").getKey();
+  private Entity.ToString stringProvider = DEFAULT_STRING_PROVIDER;
 
   /**
    * Provides the background color
@@ -162,50 +165,33 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /**
    * Defines a new entity type with the entityId serving as the initial entity caption.
-   * @param propertyDefinitions the Property objects this entity should encompass
-   * @param entityId the ID uniquely identifying the entity
-   * @param tableName the name of the underlying table
-   * @param derivedProperties
-   * @param primaryKeyProperties
-   * @param foreignKeyProperties
-   * @param transientProperties
-   * @param visibleProperties
-   * @param columnProperties
-   * @param denormalizedProperties
-   * @param selectColumnsString
    * @throws IllegalArgumentException if no primary key property is specified
    */
   DefaultEntityDefinition(final String domainId, final String entityId, final String tableName,
-                          final Map<String, Property> propertyMap,
-                          final ResultPacker<Entity> resultPacker,
-                          final Map<String, Set<Property.DerivedProperty>> derivedProperties,
-                          final List<Property.ColumnProperty> primaryKeyProperties,
-                          final List<Property.ForeignKeyProperty> foreignKeyProperties,
-                          final List<Property.TransientProperty> transientProperties,
-                          final List<Property> visibleProperties,
+                          final ResultPacker<Entity> resultPacker, final Map<String, Property> propertyMap,
                           final List<Property.ColumnProperty> columnProperties,
-                          final Map<String, List<Property.DenormalizedProperty>> denormalizedProperties,
-                          final String selectColumnsString, final String groupByClause) {
+                          final List<Property.ForeignKeyProperty> foreignKeyProperties,
+                          final List<Property.TransientProperty> transientProperties) {
     Util.rejectNullOrEmpty(entityId, "entityId");
     Util.rejectNullOrEmpty(tableName, "tableName");
     this.domainId = domainId;
     this.entityId = entityId;
     this.caption = entityId;
     this.tableName = tableName;
+    this.resultPacker = resultPacker;
     this.propertyMap = propertyMap;
-    this.derivedProperties = derivedProperties;
-    this.primaryKeyProperties = primaryKeyProperties;
-    this.primaryKeyPropertyMap = initializePrimaryKeyPropertyMap();
+    this.columnProperties = columnProperties;
     this.foreignKeyProperties = foreignKeyProperties;
     this.transientProperties = transientProperties;
-    this.visibleProperties = visibleProperties;
-    this.columnProperties = columnProperties;
-    this.denormalizedProperties = denormalizedProperties;
-    this.selectColumnsString = selectColumnsString;
-    this.hasDenormalizedProperties = !this.denormalizedProperties.isEmpty();
     this.properties = Collections.unmodifiableList(new ArrayList(this.propertyMap.values()));
-    this.groupByClause = groupByClause;
-    this.resultPacker = resultPacker;
+    this.primaryKeyProperties = Collections.unmodifiableList(getPrimaryKeyProperties(this.propertyMap.values()));
+    this.primaryKeyPropertyMap = initializePrimaryKeyPropertyMap();
+    this.visibleProperties = Collections.unmodifiableList(getVisibleProperties(this.propertyMap.values()));
+    this.denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(this.propertyMap.values()));
+    this.derivedProperties = initializeDerivedProperties(this.propertyMap.values());
+    this.selectColumnsString = initializeSelectColumnsString(columnProperties);
+    this.groupByClause = initializeGroupByClause(columnProperties);
+    this.hasDenormalizedProperties = !this.denormalizedProperties.isEmpty();
   }
 
   /** {@inheritDoc} */
@@ -603,5 +589,102 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.primaryKeyProperties.forEach(property -> map.put(property.getPropertyId(), property));
 
     return Collections.unmodifiableMap(map);
+  }
+
+  private static Map<String, List<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
+    final Map<String, List<Property.DenormalizedProperty>> denormalizedPropertiesMap = new HashMap<>(properties.size());
+    for (final Property property : properties) {
+      if (property instanceof Property.DenormalizedProperty) {
+        final Property.DenormalizedProperty denormalizedProperty = (Property.DenormalizedProperty) property;
+        final Collection<Property.DenormalizedProperty> denormalizedProperties =
+                denormalizedPropertiesMap.computeIfAbsent(denormalizedProperty.getForeignKeyPropertyId(), k -> new ArrayList<>());
+        denormalizedProperties.add(denormalizedProperty);
+      }
+    }
+
+    return denormalizedPropertiesMap;
+  }
+
+  private static Map<String, Set<Property.DerivedProperty>> initializeDerivedProperties(final Collection<Property> properties) {
+    final Map<String, Set<Property.DerivedProperty>> derivedProperties = new HashMap<>();
+    for (final Property property : properties) {
+      if (property instanceof Property.DerivedProperty) {
+        final Collection<String> derived = ((Property.DerivedProperty) property).getSourcePropertyIds();
+        if (!Util.nullOrEmpty(derived)) {
+          for (final String parentLinkPropertyId : derived) {
+            linkProperties(derivedProperties, parentLinkPropertyId, (Property.DerivedProperty) property);
+          }
+        }
+      }
+    }
+
+    return derivedProperties;
+  }
+
+  private static void linkProperties(final Map<String, Set<Property.DerivedProperty>> derivedProperties,
+                                     final String parentPropertyId, final Property.DerivedProperty derivedProperty) {
+    if (!derivedProperties.containsKey(parentPropertyId)) {
+      derivedProperties.put(parentPropertyId, new HashSet<>());
+    }
+    derivedProperties.get(parentPropertyId).add(derivedProperty);
+  }
+
+  private static List<Property.ColumnProperty> getPrimaryKeyProperties(final Collection<Property> properties) {
+    return properties.stream().filter(property -> property instanceof Property.ColumnProperty
+            && ((Property.ColumnProperty) property).isPrimaryKeyProperty()).map(property -> (Property.ColumnProperty) property)
+            .sorted((pk1, pk2) -> {
+              final Integer index1 = pk1.getPrimaryKeyIndex();
+              final Integer index2 = pk2.getPrimaryKeyIndex();
+
+              return index1.compareTo(index2);
+            }).collect(Collectors.toList());
+  }
+
+  private static List<Property> getVisibleProperties(final Collection<Property> properties) {
+    return properties.stream().filter(property -> !property.isHidden()).collect(Collectors.toList());
+  }
+
+  private static String initializeSelectColumnsString(final List<Property.ColumnProperty> columnProperties) {
+    final StringBuilder stringBuilder = new StringBuilder();
+    int i = 0;
+    for (final Property.ColumnProperty property : columnProperties) {
+      if (property instanceof Property.SubqueryProperty) {
+        stringBuilder.append("(").append(((Property.SubqueryProperty) property).getSubQuery()).append(
+                ") as ").append(property.getColumnName());
+      }
+      else {
+        stringBuilder.append(property.getColumnName());
+      }
+
+      if (i++ < columnProperties.size() - 1) {
+        stringBuilder.append(", ");
+      }
+    }
+
+    return stringBuilder.toString();
+  }
+
+  /**
+   * @param columnProperties the column properties
+   * @return a list of grouping columns separated with a comma, to serve as a group by clause,
+   * null if no grouping properties are defined
+   */
+  private static String initializeGroupByClause(final Collection<Property.ColumnProperty> columnProperties) {
+    final List<Property> groupingProperties = columnProperties.stream()
+            .filter(Property.ColumnProperty::isGroupingColumn).collect(Collectors.toList());
+    if (groupingProperties.isEmpty()) {
+      return null;
+    }
+
+    final StringBuilder stringBuilder = new StringBuilder();
+    int i = 0;
+    for (final Property property : groupingProperties) {
+      stringBuilder.append(property.getPropertyId());
+      if (i++ < groupingProperties.size() - 1) {
+        stringBuilder.append(", ");
+      }
+    }
+
+    return stringBuilder.toString();
   }
 }
