@@ -38,7 +38,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -215,24 +214,14 @@ public class Entities implements Serializable {
     if (entityDefinitions.containsKey(entityId) && !ALLOW_REDEFINE_ENTITY.get()) {
       throw new IllegalArgumentException("Entity has already been defined: " + entityId + ", for table: " + tableName);
     }
-    final Map<String, Property> propertyMap = initializeProperties(domainId, entityId, properties);
+    final Map<String, Property> propertyMap = initializePropertyMap(domainId, entityId, properties);
     final List<Property.ColumnProperty> columnProperties = Collections.unmodifiableList(getColumnProperties(propertyMap.values()));
-    final List<Property.ColumnProperty> primaryKeyProperties = Collections.unmodifiableList(getPrimaryKeyProperties(propertyMap.values()));
-    final List<Property> visibleProperties = Collections.unmodifiableList(getVisibleProperties(propertyMap.values()));
-    final List<Property.TransientProperty> transientProperties = Collections.unmodifiableList(getTransientProperties(propertyMap.values()));
     final List<Property.ForeignKeyProperty> foreignKeyProperties = Collections.unmodifiableList(getForeignKeyProperties(propertyMap.values()));
-    final Map<String, List<Property.DenormalizedProperty>> denormalizedProperties =
-            Collections.unmodifiableMap(getDenormalizedProperties(propertyMap.values()));
-    final Map<String, Set<Property.DerivedProperty>> derivedProperties = initializeDerivedProperties(propertyMap.values());
-    final String selectColumnsString = initializeSelectColumnsString(columnProperties);
+    final List<Property.TransientProperty> transientProperties = Collections.unmodifiableList(getTransientProperties(propertyMap.values()));
+    final EntityResultPacker resultPacker = new EntityResultPacker(this, entityId, columnProperties, transientProperties, propertyMap.size());
 
-    final EntityResultPacker resultPacker = new EntityResultPacker(this, entityId,
-            columnProperties, transientProperties, propertyMap.size());
-    final String groupByClause = initializeGroupByClause(columnProperties);
     final DefaultEntityDefinition entityDefinition = new DefaultEntityDefinition(domainId, entityId,
-            tableName, propertyMap, resultPacker,
-            derivedProperties, primaryKeyProperties, foreignKeyProperties, transientProperties, visibleProperties,
-            columnProperties, denormalizedProperties, selectColumnsString, groupByClause);
+            tableName, resultPacker, propertyMap, columnProperties, foreignKeyProperties, transientProperties);
     entityDefinition.setValidator(new Validator());
     entityDefinitions.put(entityId, entityDefinition);
 
@@ -1224,7 +1213,7 @@ public class Entities implements Serializable {
     return definition;
   }
 
-  private Map<String, Property> initializeProperties(final String domainId, final String entityId, final Property... properties) {
+  private Map<String, Property> initializePropertyMap(final String domainId, final String entityId, final Property... properties) {
     final Map<String, Property> propertyMap = new LinkedHashMap<>(properties.length);
     for (final Property property : properties) {
       validateAndAddProperty(property, domainId, entityId, propertyMap);
@@ -1330,31 +1319,6 @@ public class Entities implements Serializable {
     return domain;
   }
 
-  private static Map<String, List<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
-    final Map<String, List<Property.DenormalizedProperty>> denormalizedPropertiesMap = new HashMap<>(properties.size());
-    for (final Property property : properties) {
-      if (property instanceof Property.DenormalizedProperty) {
-        final Property.DenormalizedProperty denormalizedProperty = (Property.DenormalizedProperty) property;
-        final Collection<Property.DenormalizedProperty> denormalizedProperties =
-                denormalizedPropertiesMap.computeIfAbsent(denormalizedProperty.getForeignKeyPropertyId(), k -> new ArrayList<>());
-        denormalizedProperties.add(denormalizedProperty);
-      }
-    }
-
-    return denormalizedPropertiesMap;
-  }
-
-  private static List<Property.ColumnProperty> getPrimaryKeyProperties(final Collection<Property> properties) {
-    return properties.stream().filter(property -> property instanceof Property.ColumnProperty
-            && ((Property.ColumnProperty) property).isPrimaryKeyProperty()).map(property -> (Property.ColumnProperty) property)
-            .sorted((pk1, pk2) -> {
-              final Integer index1 = pk1.getPrimaryKeyIndex();
-              final Integer index2 = pk2.getPrimaryKeyIndex();
-
-              return index1.compareTo(index2);
-            }).collect(Collectors.toList());
-  }
-
   private static List<Property.ForeignKeyProperty> getForeignKeyProperties(final Collection<Property> properties) {
     return properties.stream().filter(property -> property instanceof Property.ForeignKeyProperty)
             .map(property -> (Property.ForeignKeyProperty) property).collect(Collectors.toList());
@@ -1365,8 +1329,7 @@ public class Entities implements Serializable {
             .filter(property -> property instanceof Property.ColumnProperty)
             .map(property -> (Property.ColumnProperty) property).collect(Collectors.toList());
 
-    final String[] selectColumnNames = initializeSelectColumnNames(columnProperties);
-    for (int idx = 0; idx < selectColumnNames.length; idx++) {
+    for (int idx = 0; idx < columnProperties.size(); idx++) {
       columnProperties.get(idx).setSelectIndex(idx + 1);
     }
 
@@ -1377,89 +1340,6 @@ public class Entities implements Serializable {
     return properties.stream().filter(property -> property instanceof Property.TransientProperty)
             .map(property -> (Property.TransientProperty) property)
             .collect(Collectors.toList());
-  }
-
-  private static List<Property> getVisibleProperties(final Collection<Property> properties) {
-    return properties.stream().filter(property -> !property.isHidden()).collect(Collectors.toList());
-  }
-
-  private static Map<String, Set<Property.DerivedProperty>> initializeDerivedProperties(final Collection<Property> properties) {
-    final Map<String, Set<Property.DerivedProperty>> derivedProperties = new HashMap<>();
-    for (final Property property : properties) {
-      if (property instanceof Property.DerivedProperty) {
-        final Collection<String> derived = ((Property.DerivedProperty) property).getSourcePropertyIds();
-        if (!Util.nullOrEmpty(derived)) {
-          for (final String parentLinkPropertyId : derived) {
-            linkProperties(derivedProperties, parentLinkPropertyId, (Property.DerivedProperty) property);
-          }
-        }
-      }
-    }
-
-    return derivedProperties;
-  }
-
-  private static void linkProperties(final Map<String, Set<Property.DerivedProperty>> derivedProperties,
-                                     final String parentPropertyId, final Property.DerivedProperty derivedProperty) {
-    if (!derivedProperties.containsKey(parentPropertyId)) {
-      derivedProperties.put(parentPropertyId, new HashSet<>());
-    }
-    derivedProperties.get(parentPropertyId).add(derivedProperty);
-  }
-
-  /**
-   * @param columnProperties the properties to base the column names on
-   * @return the column names used to select an entity of this type from the database
-   */
-  private static String[] initializeSelectColumnNames(final Collection<Property.ColumnProperty> columnProperties) {
-    final List<String> columnNames = new ArrayList<>();
-    columnProperties.forEach(columnProperty -> columnNames.add(columnProperty.getPropertyId()));
-
-    return columnNames.toArray(new String[0]);
-  }
-
-  private static String initializeSelectColumnsString(final List<Property.ColumnProperty> columnProperties) {
-    final StringBuilder stringBuilder = new StringBuilder();
-    int i = 0;
-    for (final Property.ColumnProperty property : columnProperties) {
-      if (property instanceof Property.SubqueryProperty) {
-        stringBuilder.append("(").append(((Property.SubqueryProperty) property).getSubQuery()).append(
-                ") as ").append(property.getColumnName());
-      }
-      else {
-        stringBuilder.append(property.getColumnName());
-      }
-
-      if (i++ < columnProperties.size() - 1) {
-        stringBuilder.append(", ");
-      }
-    }
-
-    return stringBuilder.toString();
-  }
-
-  /**
-   * @param columnProperties the column properties
-   * @return a list of grouping columns separated with a comma, to serve as a group by clause,
-   * null if no grouping properties are defined
-   */
-  private static String initializeGroupByClause(final Collection<Property.ColumnProperty> columnProperties) {
-    final List<Property> groupingProperties = columnProperties.stream()
-            .filter(Property.ColumnProperty::isGroupingColumn).collect(Collectors.toList());
-    if (groupingProperties.isEmpty()) {
-      return null;
-    }
-
-    final StringBuilder stringBuilder = new StringBuilder();
-    int i = 0;
-    for (final Property property : groupingProperties) {
-      stringBuilder.append(property.getPropertyId());
-      if (i++ < groupingProperties.size() - 1) {
-        stringBuilder.append(", ");
-      }
-    }
-
-    return stringBuilder.toString();
   }
 
   /**
@@ -1819,6 +1699,16 @@ public class Entities implements Serializable {
       }
 
       return new DefaultEntity(domain, entityId, values);
+    }
+  }
+
+  static final class DefaultStringProvider implements Entity.ToString {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public String toString(final Entity entity) {
+      return entity.getEntityId() + ": " + entity.getKey();
     }
   }
 

@@ -4907,7 +4907,7 @@
   EntityEditView bug fixed, insert() and update() validation failures did not trigger focus request for the given control
   DefaultProperty.hasDefaultValue() bug fixed, did not work with remote connection since the defaultValueProvider was a deserialized instance so defaultValueProvider == DEFAULT_VALUE_PROVIDER did not work, replaced with instanceof operator
   DefaultEntity.writeObject(), readObject() bug fixed, serialization did not respect missing values, that is, it populated all missing values with null when deserializing
-0.11.6
+0.11.6 [client/server incompatible with earlier versions due to DefaultEntityDefinition changes]
   H2Database, unit test for multiple in-memory databases improved, no longer loads sql files as resources (did not work with gradle + java 11)
   JMinorServerKeystore and JMinorClientTruststore renamed to jminor_keystore.jks and jminor_truststore.jks respectively, type changed to pkcs12
   javax.net.ssl.trustStorePassword specified everywhere javax.net.ssl.trustStore is used
@@ -4930,3 +4930,4 @@
   PetstoreApplicationModel constructor now adds all entity models so that the load test works
   SerializationWhitelist.SerializationFilter.allowedClassnames is now a Set instead of a List
   DefaultProperty.DefaultColumnProperty serialVersionUID added
+  DefaultEntityDefinition constructor simplified, relevant methods moved from Entities, Entities.DefaultStringProvider added
