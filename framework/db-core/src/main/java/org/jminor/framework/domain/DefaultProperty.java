@@ -580,6 +580,8 @@ class DefaultProperty implements Property {
 
   static class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
 
+    private static final long serialVersionUID = 1;
+
     private final int columnType;
     private int primaryKeyIndex = -1;
     private boolean columnHasDefaultValue = false;

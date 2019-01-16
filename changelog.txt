@@ -4932,3 +4932,4 @@
   DefaultEntityConnectionServer, SerializationWhitelist enabled for Java > 8
   PetstoreApplicationModel constructor now adds all entity models so that the load test works
   SerializationWhitelist.SerializationFilter.allowedClassnames is now a Set instead of a List
+  DefaultProperty.DefaultColumnProperty serialVersionUID added
