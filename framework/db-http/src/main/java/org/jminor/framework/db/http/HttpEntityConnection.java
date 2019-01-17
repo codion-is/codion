@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.CookieManager;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -484,6 +485,7 @@ final class HttpEntityConnection implements EntityConnection {
 
   private HttpClient createHttpClient() {
     return HttpClient.newBuilder().executor(EXECUTOR)
+            .cookieHandler(new CookieManager())
             .connectTimeout(Duration.ofSeconds(2)).build();
   }
 

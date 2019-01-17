@@ -4936,3 +4936,4 @@
   HttpEntityConnection now uses java.net.http instead of apache http client
   EntityServletServerTest now uses java.net.http instead of apache http client
   DefaultEntityDefinition constructor simplified, relevant methods moved from Entities, Entities.DefaultStringProvider added
+  HttpEntityConnection bug fixed, did not set the cookieHandler on the HttpClient which caused a server side session pile-up
