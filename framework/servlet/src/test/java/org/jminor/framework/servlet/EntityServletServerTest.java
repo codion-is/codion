@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
+import java.net.CookieManager;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -65,7 +66,7 @@ public class EntityServletServerTest {
           "Authorization", AUTHORIZATION_HEADER
   };
 
-  private final HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(2)).build();
+  private final HttpClient client = HttpClient.newBuilder().cookieHandler(new CookieManager()).connectTimeout(Duration.ofSeconds(2)).build();
 
   @BeforeAll
   public static void setUp() throws Exception {
