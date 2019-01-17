@@ -4931,3 +4931,4 @@
   SerializationWhitelist.SerializationFilter.allowedClassnames is now a Set instead of a List
   DefaultProperty.DefaultColumnProperty serialVersionUID added
   DefaultEntityDefinition constructor simplified, relevant methods moved from Entities, Entities.DefaultStringProvider added
+  EntityService, now invalidates session on invalid header client id

@@ -573,18 +573,20 @@ public final class EntityService extends Application {
 
   private static UUID getClientId(final MultivaluedMap<String, String> headers, final HttpSession session)
           throws ServerException.AuthenticationException {
-    final UUID clientId = UUID.fromString(checkHeaderParameter(headers.get(CLIENT_ID), CLIENT_ID));
+    final UUID headerClientId = UUID.fromString(checkHeaderParameter(headers.get(CLIENT_ID), CLIENT_ID));
     if (session.isNew()) {
-      session.setAttribute(CLIENT_ID, clientId);
+      session.setAttribute(CLIENT_ID, headerClientId);
     }
     else {
       final UUID sessionClientId = (UUID) session.getAttribute(CLIENT_ID);
-      if (sessionClientId == null || !sessionClientId.equals(clientId)) {
+      if (sessionClientId == null || !sessionClientId.equals(headerClientId)) {
+        session.invalidate();
+
         throw new ServerException.AuthenticationException("Invalid client id");
       }
     }
 
-    return clientId;
+    return headerClientId;
   }
 
   private static User getUser(final MultivaluedMap<String, String> headers) throws ServerException.AuthenticationException {
