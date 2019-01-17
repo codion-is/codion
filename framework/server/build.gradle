@@ -31,12 +31,6 @@ dependencies {
     serverRuntime project(path: ':jminor-demos-world', configuration: 'domain')
 
     serverRuntime "com.h2database:h2:${h2Version}"
-
-    //for Java >= 9
-    serverRuntime "javax.xml.bind:jaxb-api:${jaxbApiVersion}"
-    serverRuntime "com.sun.activation:javax.activation:${javaxActivationVersion}"
-    testRuntime "javax.xml.bind:jaxb-api:${jaxbApiVersion}"
-    testRuntime "com.sun.activation:javax.activation:${javaxActivationVersion}"
 }
 
 mainClassName = 'org.jminor.framework.server.DefaultEntityConnectionServer'

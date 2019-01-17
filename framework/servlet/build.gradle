@@ -17,8 +17,4 @@ dependencies {
     testImplementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
 
     testRuntime "com.h2database:h2:${h2Version}"
-
-    //for Java >= 9
-    testRuntime "javax.xml.bind:jaxb-api:${jaxbApiVersion}"
-    testRuntime "com.sun.activation:javax.activation:${javaxActivationVersion}"
 }
