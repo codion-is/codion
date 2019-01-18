@@ -3,6 +3,7 @@
  */
 package org.jminor.common.remote;
 
+import org.jminor.common.CredentialsProvider;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
 
@@ -10,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.server.ServerNotActiveException;
@@ -115,6 +118,43 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
     }
     catch (final Exception e) {
       LOG.error("Error on exit", e);
+    }
+  }
+
+  /**
+   * @return a {@link CredentialsProvider} implementation based on {@link CredentialServer}
+   */
+  public static CredentialsProvider provider() {
+    return new DefaultCredentialsProvider();
+  }
+
+  /**
+   * Performs a authentication lookup on localhost via a {@link CredentialServer}.
+   * @param programArguments the arguments list in which to search for the autentication token [authenticationToke:123-123-123]
+   * @return the User credentials associated with the {@code authenticationToken}, null if no token was found in the
+   * arguments list, if the user credentials have expired or if no authentication server is running
+   * @see CredentialServer
+   */
+  private static final class DefaultCredentialsProvider implements CredentialsProvider {
+
+    /** {@inheritDoc} */
+    @Override
+    public User getCredentials(final UUID authenticationToken) {
+      LOG.debug("DefaultCredentialsProvider.getCredentials(" + authenticationToken + ")");
+      if (authenticationToken == null) {
+        return null;
+      }
+      try {
+        final Remote credentialService = Servers.getRegistry(Registry.REGISTRY_PORT).lookup(CredentialService.class.getSimpleName());
+        LOG.debug("CredentialService found: " + credentialService);
+
+        return ((CredentialService) credentialService).getUser(Objects.requireNonNull(authenticationToken, AUTHENTICATION_TOKEN_PREFIX));
+      }
+      catch (final NotBoundException | RemoteException e) {
+        LOG.debug("No CredentialService found", e);
+        //no credential server available or not reachable
+        return null;
+      }
     }
   }
 
