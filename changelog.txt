@@ -4938,3 +4938,4 @@
   DefaultEntityDefinition constructor simplified, relevant methods moved from Entities, Entities.DefaultStringProvider added
   EntityService, now invalidates session on invalid header client id
   HttpEntityConnection bug fixed, did not set the cookieHandler on the HttpClient which caused a server side session pile-up (also set in EntityServletServerTest)
+  CredentialsProvider added along with a default implementation CredentialServer.DefaultCredentialsProvider
