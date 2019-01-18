@@ -2,7 +2,6 @@ dependencies {
     api project(':jminor-common-core')
     api project(':jminor-common-db')
     api project(':jminor-common-model')
-    implementation project(':jminor-common-remote')
 
     implementation project(':jminor-framework-db-core')
     api project(':jminor-framework-model')

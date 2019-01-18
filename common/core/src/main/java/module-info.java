@@ -5,4 +5,5 @@ module org.jminor.common.core {
   exports org.jminor.common.i18n;
 
   uses org.jminor.common.LoggerProxy;
+  uses org.jminor.common.CredentialsProvider;
 }

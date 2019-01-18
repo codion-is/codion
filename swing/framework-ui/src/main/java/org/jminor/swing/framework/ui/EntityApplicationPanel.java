@@ -18,7 +18,6 @@ import org.jminor.common.Version;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.PreferencesUtil;
-import org.jminor.common.remote.CredentialServer;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Entities;
@@ -87,7 +86,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.ServiceLoader;
 
 /**
  * A central application panel class.
@@ -1325,7 +1326,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Looks up user credentials via {@link org.jminor.common.remote.CredentialServer} using an authentication token
+   * Looks up user credentials via a {@link org.jminor.common.CredentialsProvider} service using an authentication token
    * found in the program arguments list. Useful for single sign on application launch.
    * <pre>javaws -open authenticationToken:123-123-123 http://jminor.org/demo/demo.jnlp</pre>
    * <pre>java -jar application/getdown-1.7.1.jar app_dir app_id authenticationToken:123-123-123</pre>
@@ -1334,9 +1335,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * the user credentials have expired or if no authentication server is running
    */
   protected static User getUser(final String[] args) {
+    final ServiceLoader<CredentialsProvider> loader = ServiceLoader.load(CredentialsProvider.class);
+    final Optional<CredentialsProvider> credentialsProvider = loader.findFirst();
+    if (credentialsProvider.isEmpty()) {
+      LOG.debug("No CredentialsProvider service available");
+      return null;
+    }
+    final CredentialsProvider provider = credentialsProvider.get();
     try {
-      final CredentialsProvider provider = CredentialServer.provider();
-
       return provider.getCredentials(provider.getAuthenticationToken(args));
     }
     catch (final IllegalArgumentException e) {

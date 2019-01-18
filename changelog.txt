@@ -4939,3 +4939,4 @@
   EntityService, now invalidates session on invalid header client id
   HttpEntityConnection bug fixed, did not set the cookieHandler on the HttpClient which caused a server side session pile-up (also set in EntityServletServerTest)
   CredentialsProvider added along with a default implementation CredentialServer.DefaultCredentialsProvider
+  CredentialServer now provides CredentialsProvider as a service, org.jminor.swing.framework.ui no longer depends on org.jminor.common.remote
