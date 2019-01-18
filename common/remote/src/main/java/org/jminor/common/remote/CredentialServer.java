@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  * new ProcessBuilder().command("javaws", "-open", token.toString(), jnlpUrl).start();
  * }
  * </pre>
- * @see Clients#getUserCredentials(UUID)
+ * @see CredentialsProvider#getCredentials(UUID)
  */
 public final class CredentialServer extends UnicastRemoteObject implements CredentialService {
 
