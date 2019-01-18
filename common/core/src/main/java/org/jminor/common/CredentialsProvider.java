@@ -44,7 +44,7 @@ public interface CredentialsProvider {
   User getCredentials(final UUID authenticationToken);
 
   /**
-   * @param argument
+   * @param argument the argument
    * @return true if argument is an authentication token ('authenticationToken:123-123-123-123')
    */
   static boolean isAuthenticationToken(final String argument) {
