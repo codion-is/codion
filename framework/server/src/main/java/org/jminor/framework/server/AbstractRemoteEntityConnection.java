@@ -86,7 +86,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
                                            final RMIServerSocketFactory serverSocketFactory)
           throws DatabaseException, RemoteException {
     super(port, clientSocketFactory, serverSocketFactory);
-    this.connectionHandler = new RemoteEntityConnectionHandler(domain, this, remoteClient,
+    this.connectionHandler = new RemoteEntityConnectionHandler(domain, remoteClient,
             connectionPool, database, loggingEnabled);
     this.connectionProxy = Util.initializeProxy(EntityConnection.class, connectionHandler);
   }
@@ -225,11 +225,6 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     private final ConnectionPool connectionPool;
 
     /**
-     * The remote entity connection using this connection handler
-     */
-    private final AbstractRemoteEntityConnection remoteEntityConnection;
-
-    /**
      * The method call log
      */
     private final MethodLogger methodLogger;
@@ -264,11 +259,10 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
      */
     private boolean disconnected = false;
 
-    private RemoteEntityConnectionHandler(final Entities domain, final AbstractRemoteEntityConnection remoteEntityConnection,
-                                          final RemoteClient remoteClient, final ConnectionPool connectionPool,
-                                          final Database database, final boolean loggingEnabled) throws DatabaseException {
+    private RemoteEntityConnectionHandler(final Entities domain, final RemoteClient remoteClient,
+                                          final ConnectionPool connectionPool, final Database database,
+                                          final boolean loggingEnabled) throws DatabaseException {
       this.domain = domain;
-      this.remoteEntityConnection = remoteEntityConnection;
       this.remoteClient = remoteClient;
       this.connectionPool = connectionPool;
       this.database = database;
@@ -298,7 +292,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       Exception exception = null;
       try {
         MDC.put(LOG_IDENTIFIER_PROPERTY, logIdentifier);
-        ACTIVE_CONNECTIONS.add(remoteEntityConnection.connectionHandler.remoteClient.getClientId());
+        ACTIVE_CONNECTIONS.add(remoteClient.getClientId());
         REQUEST_COUNTER.incrementRequestsPerSecondCounter();
         if (methodLogger.isEnabled()) {
           methodLogger.logAccess(methodName, args);
@@ -322,7 +316,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
         throw exception;
       }
       finally {
-        ACTIVE_CONNECTIONS.remove(remoteEntityConnection.connectionHandler.remoteClient.getClientId());
+        ACTIVE_CONNECTIONS.remove(remoteClient.getClientId());
         returnConnection();
         if (methodLogger.isEnabled()) {
           final MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);

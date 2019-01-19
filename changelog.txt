@@ -4933,3 +4933,4 @@
   DefaultEntityDefinition constructor simplified, relevant methods moved from Entities, Entities.DefaultStringProvider added
   EntityService, now invalidates session on invalid header client id
   CredentialsProvider added along with a default implementation CredentialServer.DefaultCredentialsProvider
+  AbstractRemoteEntityConnection, minor refactoring
