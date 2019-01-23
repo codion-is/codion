@@ -28,7 +28,7 @@ ext {
     commonsCollectionsVersion = '3.2.2'
     commonsBeanUtilsVersion = '1.9.3'
     jdtCoreCompilerVersion = '4.6.1'
-    
+
     frameworkModules = subprojects.findAll {
         project -> !project.name.contains("demos")
     }
@@ -85,13 +85,13 @@ configure(project.frameworkModules) {
 
     task jarSources(type: Jar, dependsOn: classes) {
         group 'build'
-        classifier = 'sources'
+        archiveClassifier = 'sources'
         from sourceSets.main.allSource
     }
 
     task jarJavadoc(type: Jar, dependsOn: javadoc) {
         group 'build'
-        classifier = 'javadoc'
+        archiveClassifier = 'javadoc'
         from javadoc.destinationDir
     }
 

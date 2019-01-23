@@ -14,7 +14,7 @@ dependencies {
 
 //base unit test classes that implementation modules (swing/fx) can depend on
 task jarTests(type: Jar, dependsOn: testClasses) {
-    classifier 'tests'
+    archiveClassifier = 'tests'
     from sourceSets.test.output
     include('org/jminor/framework/model/Abstract**', 'org/jminor/framework/model/TestDomain**')
 }
