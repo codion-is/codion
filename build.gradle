@@ -89,13 +89,13 @@ configure(project.frameworkModules) {
 
     task jarSources(type: Jar, dependsOn: classes) {
         group 'build'
-        classifier = 'sources'
+        archiveClassifier = 'sources'
         from sourceSets.main.allSource
     }
 
     task jarJavadoc(type: Jar, dependsOn: javadoc) {
         group 'build'
-        classifier = 'javadoc'
+        archiveClassifier = 'javadoc'
         from javadoc.destinationDir
     }
 
