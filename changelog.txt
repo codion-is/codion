@@ -4942,3 +4942,4 @@
   CredentialServer now provides CredentialsProvider as a service, org.jminor.swing.framework.ui no longer depends on org.jminor.common.remote
   AbstractRemoteEntityConnection, minor refactoring
   AbstractServer.containsConnection() removed, some javadoc improvements
+  org/common/core/version.properties file added, used by Version class and gradle build
