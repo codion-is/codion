@@ -4941,3 +4941,4 @@
   CredentialsProvider added along with a default implementation CredentialServer.DefaultCredentialsProvider
   CredentialServer now provides CredentialsProvider as a service, org.jminor.swing.framework.ui no longer depends on org.jminor.common.remote
   AbstractRemoteEntityConnection, minor refactoring
+  AbstractServer.containsConnection() removed, some javadoc improvements

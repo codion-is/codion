@@ -89,16 +89,6 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   /**
    * @param clientId the client id
-   * @return true if such a client is connected
-   */
-  public final boolean containsConnection(final UUID clientId) {
-    synchronized (connections) {
-      return connections.containsKey(clientId);
-    }
-  }
-
-  /**
-   * @param clientId the client id
    * @return the connection associated with the given client, null if none exists
    */
   public final T getConnection(final UUID clientId) {
@@ -220,7 +210,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   /**
    * Adds a shared LoginProxy, used for all connection requests.
    * @param loginProxy the login proxy
-   * @throws IllegalStateException in case the given login proxy has already been added for the given client type
+   * @throws IllegalStateException in case the given login proxy has already been added
    */
   public final void addSharedLoginProxy(final LoginProxy loginProxy) {
     synchronized (sharedLoginProxies) {
@@ -233,7 +223,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   /**
    * Sets the LoginProxy for the given client type id, if {@code loginProxy} is null
-   * the login proxy is closed and removed.
+   * the current login proxy (if any) is closed and removed.
    * @param clientTypeId the client type ID with which to associate the given login proxy
    * @param loginProxy the login proxy
    * @throws IllegalStateException in case the login proxy has already been set for the given client type
@@ -257,7 +247,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
 
   /**
    * Sets the {@link ConnectionValidator} for the given client type id, if {@code connectionValidator} is null
-   * the connection validator is removed.
+   * the current connection validator (if any) is removed.
    * @param clientTypeId the client type ID with which to associate the given connection validator
    * @param connectionValidator the connection validator
    * @throws IllegalStateException in case the connection validator has already been set for the given client type

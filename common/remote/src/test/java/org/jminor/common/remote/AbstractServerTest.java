@@ -71,10 +71,10 @@ public class AbstractServerTest {
     assertEquals(1, connections.size());
     assertEquals(connection, connections.get(connectionRequest));
     assertEquals(connection, server.getConnection(connectionRequest.getClientId()));
-    assertTrue(server.containsConnection(connectionRequest.getClientId()));
+    assertNotNull(server.getConnection(connectionRequest.getClientId()));
     server.disconnect(connectionRequest.getClientId());
     server.disconnect(null);
-    assertFalse(server.containsConnection(connectionRequest.getClientId()));
+    assertNull(server.getConnection(connectionRequest.getClientId()));
     final ServerTest connection3 = server.connect(connectionRequest);
     assertNotSame(connection, connection3);
     assertNotNull(server.getServerInfo());
