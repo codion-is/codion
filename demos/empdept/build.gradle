@@ -59,9 +59,11 @@ test {
 
 task buildReports(dependsOn: 'compileJava') {
     group 'build'
+    def jasperSourceDir = file('src/main/reports')
+    def jasperTargetDir = file('build/classes/reports')
+    inputs.dir jasperSourceDir
+    outputs.dir jasperTargetDir
     doLast {
-        def jasperSourceDir = file('src/main/reports')
-        def jasperTargetDir = file('build/classes/reports')
         ant {
             taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.runtime.asPath)
             jasperTargetDir.mkdirs()
