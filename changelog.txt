@@ -4934,3 +4934,4 @@
   EntityService, now invalidates session on invalid header client id
   CredentialsProvider added along with a default implementation CredentialServer.DefaultCredentialsProvider
   AbstractRemoteEntityConnection, minor refactoring
+  AbstractServer.containsConnection() removed, some javadoc improvements
