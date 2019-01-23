@@ -4935,3 +4935,4 @@
   CredentialsProvider added along with a default implementation CredentialServer.DefaultCredentialsProvider
   AbstractRemoteEntityConnection, minor refactoring
   AbstractServer.containsConnection() removed, some javadoc improvements
+  org/common/core/version.properties file added, used by Version class and gradle build

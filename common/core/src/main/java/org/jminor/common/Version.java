@@ -3,12 +3,9 @@
  */
 package org.jminor.common;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.nio.charset.Charset;
-import java.util.Objects;
+import java.util.Properties;
 
 /**
  * A simple version class for semantic versioning (http://semver.org)
@@ -26,18 +23,17 @@ public final class Version implements Comparable<Version>, Serializable {
   /**
    * The name of the file containing the current version information
    */
-  public static final String VERSION_FILE = "version.txt";
+  public static final String VERSION_FILE = "version.properties";
 
   private static final Version VERSION;
 
   static {
-    try (final BufferedReader input = new BufferedReader(new InputStreamReader(
-            Objects.requireNonNull(Version.class.getResourceAsStream(VERSION_FILE),
-                    "Version file is missing (org.jminor.common.version.txt"),
-            Charset.defaultCharset()))) {
-      VERSION = parse(input.readLine());
+    try {
+      final Properties properties = new Properties();
+      properties.load(Version.class.getResourceAsStream(VERSION_FILE));
+      VERSION = parse(properties.getProperty("version"));
     }
-    catch (final IOException e) {
+    catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
