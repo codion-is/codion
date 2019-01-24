@@ -56,19 +56,6 @@ configure(project.frameworkModules) {
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     }
 
-    sourceSets {
-        main {
-            java {
-                exclude 'module-info.java'
-            }
-        }
-    }
-
-    javadoc {
-        //to prevent jpms based errors on Java >= 9
-        failOnError = false
-    }
-
     jar {
         manifest {
             attributes(
