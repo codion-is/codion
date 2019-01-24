@@ -31,9 +31,9 @@ public final class Version implements Comparable<Version>, Serializable {
     try {
       final Properties properties = new Properties();
       properties.load(Version.class.getResourceAsStream(VERSION_FILE));
-      VERSION = parse(properties.getProperty("version"));
+      VERSION = fromProperties(properties);
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       throw new RuntimeException(e);
     }
   }
@@ -212,5 +212,13 @@ public final class Version implements Comparable<Version>, Serializable {
     }
 
     return 0;
+  }
+
+  private static Version fromProperties(final Properties properties) {
+    final Version version = parse(properties.getProperty("version"));
+    final String buildTime = properties.getProperty("buildTime");
+    final String metadata = version.metadata + (buildTime != null ? (" " + buildTime) : "");
+
+    return new Version(version.major, version.minor, version.patch, metadata);
   }
 }
