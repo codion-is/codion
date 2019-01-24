@@ -4942,5 +4942,6 @@
   CredentialServer now provides CredentialsProvider as a service, org.jminor.swing.framework.ui no longer depends on org.jminor.common.remote
   AbstractRemoteEntityConnection, minor refactoring
   AbstractServer.containsConnection() removed, some javadoc improvements
-  org/common/core/version.properties file added, used by Version class and gradle build
+  org/jminor/common/version.properties file added, used by Version class and gradle build
   buildReports gradle build task now defines input and output, UP-TO-DATE works now
+  buildTime property added to org/jminor/common/version.properties before common.core jar is created, org.jminor.common.Version updated accordingly
