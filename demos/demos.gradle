@@ -62,5 +62,5 @@ test {
 }
 
 application {
-    mainClassName = 'dummy.class.Name'
+    mainClassName = 'dummyModule/dummy.class.Name'
 }
