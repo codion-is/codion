@@ -33,9 +33,7 @@ public final class EntityLookupProvider extends AbstractInputProvider<Entity, En
 
   private static EntityLookupField createEntityLookupField(final EntityLookupModel lookupModel, final Entity initialValue) {
     final EntityLookupField field = new EntityLookupField(lookupModel, false);
-    if (initialValue != null) {
-      lookupModel.setSelectedEntity(initialValue);
-    }
+    lookupModel.setSelectedEntity(initialValue);
 
     return field;
   }

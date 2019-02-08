@@ -13,14 +13,14 @@ import java.text.NumberFormat;
 public final class IntegerField extends NumberField {
 
   /**
-   * Constructs a new IntField.
+   * Constructs a new IntegerField.
    */
   public IntegerField() {
     this(FormatUtil.getNonGroupingNumberFormat(true));
   }
 
   /**
-   * Constructs a new IntField.
+   * Constructs a new IntegerField.
    * @param columns the number of columns
    */
   public IntegerField(final int columns) {
@@ -28,7 +28,7 @@ public final class IntegerField extends NumberField {
   }
 
   /**
-   * Constructs a new IntField.
+   * Constructs a new IntegerField.
    * @param format the format to use
    */
   public IntegerField(final NumberFormat format) {
@@ -36,7 +36,7 @@ public final class IntegerField extends NumberField {
   }
 
   /**
-   * Constructs a new IntField.
+   * Constructs a new IntegerField.
    * @param format the format to use
    * @param columns the number of columns
    */

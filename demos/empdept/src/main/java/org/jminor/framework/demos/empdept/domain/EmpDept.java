@@ -104,6 +104,7 @@ public final class EmpDept extends Entities {
                     getString(DEPARTMENT_LOCATION)).setPreferredColumnWidth(100))
             .setKeyGenerator(incrementKeyGenerator(T_EMPLOYEE, EMPLOYEE_ID))
             .setOrderBy(orderBy().ascending(EMPLOYEE_DEPARTMENT, EMPLOYEE_NAME))
+            .setSearchPropertyIds(EMPLOYEE_NAME)
             .setStringProvider(new Entities.StringProvider(EMPLOYEE_NAME))
             .setCaption(getString(EMPLOYEE))
             .setBackgroundColorProvider((entity, property) -> {
