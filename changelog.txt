@@ -4945,3 +4945,4 @@
   org/jminor/common/version.properties file added, used by Version class and gradle build
   buildReports gradle build task now defines input and output, UP-TO-DATE works now
   buildTime property added to org/jminor/common/version.properties before common.core jar is created, org.jminor.common.Version updated accordingly
+  3d party libraries upgraded

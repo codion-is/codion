@@ -10,7 +10,7 @@ buildscript {
 }
 
 plugins {
-    id "org.sonarqube" version "2.6.2"
+    id "org.sonarqube" version "2.7"
     id "com.github.ben-manes.versions" version "0.20.0"
 }
 
@@ -25,8 +25,8 @@ ext {
     jettyVersion = '9.4.14.v20181114'
     jaxbApiVersion = '2.3.0'
     javaxActivationVersion = '1.2.0'
-    junitVersion = '5.3.2'
-    jacocoVersion = '0.8.2'
+    junitVersion = '5.4.0'
+    jacocoVersion = '0.8.3'
     //jasperreports
     jasperReportsVersion = '6.6.0'
     commonsLoggingVersion = '1.2'
