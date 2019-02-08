@@ -49,6 +49,7 @@ public class EmpDeptMinimalApp {
                       .setMaxLength(13))
               .setKeyGenerator(incrementKeyGenerator("scott.dept", "deptno"))
               .setCaption("Departments")
+              .setSearchPropertyIds("dname")
               .setStringProvider(new Entities.StringProvider("dname"));
       /*
        * We then define the entity based on the SCOTT.EMP table,
@@ -78,6 +79,7 @@ public class EmpDeptMinimalApp {
                       .setNullable(false))
               .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
               .setCaption("Employees")
+              .setSearchPropertyIds("ename")
               .setStringProvider(new Entities.StringProvider("ename"));
     }
   }
@@ -221,7 +223,7 @@ public class EmpDeptMinimalApp {
     //Let's set the locale, otherwise the application would be in icelandic
     Locale.setDefault(new Locale("en", "EN"));
     //the remote connection settings
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.empdept.domain.EmpDept");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(Domain.class.getName());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
     Server.SERVER_HOST_NAME.set("jminor.no-ip.org");
     //we're using Secure Sockets Layer so we need to specify a truststore
