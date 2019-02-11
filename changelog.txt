@@ -4940,3 +4940,4 @@
   buildTime property added to org/jminor/common/version.properties before common.core jar is created, org.jminor.common.Version updated accordingly
   3d party libraries upgraded
   Minor refactoring of EntityInputProvider, IntegerInputProvider and LongInputProvider
+  SwingTableSelectionModel.getSelectedIndexes() now returns right away if selection is empty
