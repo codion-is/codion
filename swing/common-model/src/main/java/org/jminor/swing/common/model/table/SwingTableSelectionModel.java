@@ -120,6 +120,10 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   /** {@inheritDoc} */
   @Override
   public List<Integer> getSelectedIndexes() {
+    if (isSelectionEmpty()) {
+      return Collections.emptyList();
+    }
+
     return IntStream.rangeClosed(getMinSelectionIndex(), getMaxSelectionIndex())
             .filter(this::isSelectedIndex).boxed().collect(Collectors.toList());
   }
