@@ -48,7 +48,7 @@ public final class EntityGeneratorModel {
   private static final String TABLE_SCHEMA = "TABLE_SCHEM";
   private static final String FOREIGN_KEY_PROPERTY_SUFFIX = "_FK";
   private static final String ENTITY_ID_PREFIX = "T_";
-  private static final String PROPERTIES_COLUMN_PROPERTY = "        Properties.columnProperty(";
+  private static final String PROPERTIES_COLUMN_PROPERTY = "        columnProperty(";
 
   static final Integer SCHEMA_COLUMN_ID = 0;
   static final Integer TABLE_COLUMN_ID = 1;
@@ -247,7 +247,7 @@ public final class EntityGeneratorModel {
     final StringBuilder builder = new StringBuilder();
     final String foreignKeyId = getPropertyId(table, column, true);
     final String caption = getCaption(column);
-    builder.append("        Properties.foreignKeyProperty(").append(foreignKeyId).append(", \"").append(caption)
+    builder.append("        foreignKeyProperty(").append(foreignKeyId).append(", \"").append(caption)
             .append("\", ").append(getEntityID(column.getForeignKeyColumn().getReferencedTable()))
             .append(",").append(Util.LINE_SEPARATOR);
     builder.append("        ").append(columnPropertyDefinition).append(")");
