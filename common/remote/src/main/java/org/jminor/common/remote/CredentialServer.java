@@ -68,6 +68,7 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
   }
 
   /**
+   * Adds an authenticationToken associated with the given user, with the default token validity period
    * @param authenticationToken the one-time token
    * @param user the user credentials associated with the token
    */

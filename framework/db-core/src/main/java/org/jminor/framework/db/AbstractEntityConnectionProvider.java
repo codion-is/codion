@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * An abstract EntityConnectionProvider implementation.
+ * @param <T> the EntityConnection implementation provided by this connection provider
  */
 public abstract class AbstractEntityConnectionProvider<T extends EntityConnection> implements EntityConnectionProvider<T> {
 

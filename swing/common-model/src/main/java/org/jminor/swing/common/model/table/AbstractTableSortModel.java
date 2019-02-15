@@ -171,31 +171,6 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     return maxPriority + 1;
   }
 
-  private int compareRows(final R rowOne, final R rowTwo, final C columnIdentifier, final SortingDirective directive) {
-    final Comparable valueOne = getComparable(rowOne, columnIdentifier);
-    final Comparable valueTwo = getComparable(rowTwo, columnIdentifier);
-    final int comparison;
-    // Define null less than everything, except null.
-    if (valueOne == null && valueTwo == null) {
-      comparison = 0;
-    }
-    else if (valueOne == null) {
-      comparison = -1;
-    }
-    else if (valueTwo == null) {
-      comparison = 1;
-    }
-    else {
-      comparison = columnComparators.computeIfAbsent(columnIdentifier,
-              k -> initializeColumnComparator(columnIdentifier)).compare(valueOne, valueTwo);
-    }
-    if (comparison != 0) {
-      return directive == SortingDirective.DESCENDING ? -comparison : comparison;
-    }
-
-    return 0;
-  }
-
   private final class RowComparator implements Comparator<R> {
 
     private final List<Map.Entry<C, SortingState>> sortedSortingStates;
@@ -211,6 +186,31 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
         if (comparison != 0) {
           return comparison;
         }
+      }
+
+      return 0;
+    }
+
+    private int compareRows(final R rowOne, final R rowTwo, final C columnIdentifier, final SortingDirective directive) {
+      final Comparable valueOne = getComparable(rowOne, columnIdentifier);
+      final Comparable valueTwo = getComparable(rowTwo, columnIdentifier);
+      final int comparison;
+      // Define null less than everything, except null.
+      if (valueOne == null && valueTwo == null) {
+        comparison = 0;
+      }
+      else if (valueOne == null) {
+        comparison = -1;
+      }
+      else if (valueTwo == null) {
+        comparison = 1;
+      }
+      else {
+        comparison = columnComparators.computeIfAbsent(columnIdentifier,
+                k -> initializeColumnComparator(columnIdentifier)).compare(valueOne, valueTwo);
+      }
+      if (comparison != 0) {
+        return directive == SortingDirective.DESCENDING ? -comparison : comparison;
       }
 
       return 0;
