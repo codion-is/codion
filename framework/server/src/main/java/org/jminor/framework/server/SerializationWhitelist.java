@@ -25,6 +25,8 @@ public final class SerializationWhitelist {
 
   protected static final Logger LOG = LoggerFactory.getLogger(SerializationWhitelist.class);
 
+  private SerializationWhitelist() {}
+
   static void configureSerializationWhitelist(final String whitelist, final Boolean dryRun) {
     if (!Util.nullOrEmpty(whitelist)) {
       java.io.ObjectInputFilter.Config.setSerialFilter(dryRun ? new SerializationFilterDryRun() : new SerializationFilter(whitelist));

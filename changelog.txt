@@ -4949,3 +4949,4 @@
   Minor refactoring of EntityInputProvider, IntegerInputProvider and LongInputProvider
   SwingTableSelectionModel.getSelectedIndexes() now returns right away if selection is empty
   EntityGeneratorModel, 'Properties.' prefix removed, assumes static import of org.jminor.framework.domain.Properties.*
+  Sonarqube run
