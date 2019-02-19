@@ -881,6 +881,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       dialog.addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosed(final WindowEvent e) {
+          entityPanel.getModel().savePreferences();
           entityPanel.savePreferences();
         }
       });
