@@ -143,11 +143,6 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
         throw new ScenarioException(e);
       }
     }
-
-    @Override
-    public int getDefaultWeight() {
-      return 1;
-    }
   }
 
   private static final class LoginLogout extends AbstractEntityUsageScenario<EmpDeptAppPanel.EmpDeptApplicationModel> {

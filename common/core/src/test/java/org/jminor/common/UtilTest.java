@@ -27,7 +27,7 @@ public final class UtilTest {
 
   @Test
   public void roundDouble() {
-    final Double d = 5.1234567;
+    final double d = 5.1234567;
     assertEquals(Double.valueOf(5.1), Double.valueOf(Util.roundDouble(d, 1)));
     assertEquals(Double.valueOf(5.12), Double.valueOf(Util.roundDouble(d, 2)));
     assertEquals(Double.valueOf(5.123), Double.valueOf(Util.roundDouble(d, 3)));

@@ -47,7 +47,7 @@ public final class MethodLogger {
   private final ArgumentStringProvider argumentStringProvider;
   private final int maxSize;
 
-  private boolean enabled = false;
+  private boolean enabled;
 
   /**
    * Instantiates a new MethodLogger.

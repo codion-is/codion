@@ -154,14 +154,12 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     }).collect(Collectors.toList());
   }
 
-  @SuppressWarnings({"unchecked"})
   private void resetSortingStates() {
     for (final TableColumn column : columns) {
       sortingStates.put((C) column.getIdentifier(), EMPTY_SORTING_STATE);
     }
   }
 
-  @SuppressWarnings({"unchecked"})
   private int getNextSortPriority() {
     int maxPriority = -1;
     for (final SortingState state : sortingStates.values()) {

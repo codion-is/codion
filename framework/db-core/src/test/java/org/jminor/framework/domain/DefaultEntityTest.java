@@ -608,7 +608,6 @@ public class DefaultEntityTest {
     final Entity.Key compMasterKey = ENTITIES.key(TestDomain.T_COMPOSITE_MASTER);
     compMasterKey.put(TestDomain.COMPOSITE_MASTER_ID, 1);
     compMasterKey.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
-    //noinspection EqualsWithItself
     assertEquals(compMasterKey, compMasterKey);
     assertNotEquals(empKey1, compMasterKey);
     assertNotEquals(compMasterKey, new Object());

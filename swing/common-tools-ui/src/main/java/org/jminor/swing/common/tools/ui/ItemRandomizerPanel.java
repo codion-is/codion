@@ -79,7 +79,6 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   /**
    * @return the currently selected item
    */
-  @SuppressWarnings({"unchecked"})
   public List<ItemRandomizer.RandomItem<T>> getSelectedItems() {
     return itemList.getSelectedValuesList();
   }

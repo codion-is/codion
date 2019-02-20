@@ -208,7 +208,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     private static final String WEIGHT_CAN_NOT_BE_NEGATIVE = "Weight can not be negative";
 
     private final T item;
-    private int weight = 0;
+    private int weight;
     private boolean enabled = true;
 
     /**

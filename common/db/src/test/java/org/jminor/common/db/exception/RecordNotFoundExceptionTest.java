@@ -5,10 +5,14 @@ package org.jminor.common.db.exception;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class RecordNotFoundExceptionTest {
 
   @Test
   public void test() {
-    new RecordNotFoundException("hello");
+    assertThrows(RecordNotFoundException.class, () -> {
+      throw new RecordNotFoundException("hello");
+    });
   }
 }

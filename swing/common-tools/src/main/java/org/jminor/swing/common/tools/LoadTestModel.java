@@ -29,6 +29,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -722,8 +723,8 @@ public abstract class LoadTestModel<T> implements LoadTest {
   public abstract static class AbstractUsageScenario<T> implements LoadTest.UsageScenario<T> {
 
     private final String name;
-    private volatile int successfulRunCount = 0;
-    private volatile int unsuccessfulRunCount = 0;
+    private final AtomicInteger successfulRunCount = new AtomicInteger();
+    private final AtomicInteger unsuccessfulRunCount = new AtomicInteger();
     private final List<ScenarioException> exceptions = new ArrayList<>();
 
     /**
@@ -750,19 +751,19 @@ public abstract class LoadTestModel<T> implements LoadTest {
     /** {@inheritDoc} */
     @Override
     public final int getSuccessfulRunCount() {
-      return successfulRunCount;
+      return successfulRunCount.get();
     }
 
     /** {@inheritDoc} */
     @Override
     public final int getUnsuccessfulRunCount() {
-      return unsuccessfulRunCount;
+      return unsuccessfulRunCount.get();
     }
 
     /** {@inheritDoc} */
     @Override
     public final int getTotalRunCount() {
-      return successfulRunCount + unsuccessfulRunCount;
+      return successfulRunCount.get() + unsuccessfulRunCount.get();
     }
 
     /** {@inheritDoc} */
@@ -776,8 +777,8 @@ public abstract class LoadTestModel<T> implements LoadTest {
     /** {@inheritDoc} */
     @Override
     public final void resetRunCount() {
-      successfulRunCount = 0;
-      unsuccessfulRunCount = 0;
+      successfulRunCount.set(0);
+      unsuccessfulRunCount.set(0);
     }
 
     /** {@inheritDoc} */
@@ -805,10 +806,10 @@ public abstract class LoadTestModel<T> implements LoadTest {
       try {
         prepare(application);
         performScenario(application);
-        successfulRunCount++;
+        successfulRunCount.incrementAndGet();
       }
       catch (final ScenarioException e) {
-        unsuccessfulRunCount++;
+        unsuccessfulRunCount.incrementAndGet();
         synchronized (exceptions) {
           exceptions.add(e);
         }
