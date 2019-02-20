@@ -18,8 +18,8 @@ public final class FlexibleGridLayout extends GridLayout {
 
   private static final double ONE_POINT_O = 1.0;
 
-  private boolean fixedRowHeights = false;
-  private boolean fixedColumnWidths = false;
+  private boolean fixedRowHeights;
+  private boolean fixedColumnWidths;
   private int fixedColumnWidth;
   private int fixedRowHeight;
 

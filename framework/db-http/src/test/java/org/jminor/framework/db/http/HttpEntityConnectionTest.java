@@ -206,7 +206,7 @@ public final class HttpEntityConnectionTest {
 
     final Entity scott = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 7);
     connection.writeBlob(scott.getKey(), TestDomain.EMP_DATA, bytes);
-    assertTrue(Arrays.equals(bytes, connection.readBlob(scott.getKey(), TestDomain.EMP_DATA)));
+    assertArrayEquals(bytes, connection.readBlob(scott.getKey(), TestDomain.EMP_DATA));
   }
 
   @Test

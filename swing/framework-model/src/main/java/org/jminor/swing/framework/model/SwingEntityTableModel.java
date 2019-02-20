@@ -399,7 +399,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   public final String getStatusMessage() {
     final int filteredItemCount = getFilteredItemCount();
 
-    return Integer.toString(getRowCount()) + " (" + Integer.toString(getSelectionModel().getSelectionCount()) + " " +
+    return getRowCount() + " (" + getSelectionModel().getSelectionCount() + " " +
             MESSAGES.getString("selected") + (filteredItemCount > 0 ? ", " +
             filteredItemCount + " " + MESSAGES.getString("hidden") + ")" : ")");
   }

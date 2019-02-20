@@ -8,8 +8,8 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FileUtilTest {
 
@@ -67,7 +67,7 @@ public class FileUtilTest {
             (byte) 119, (byte) 111, (byte) 114, (byte) 108, (byte) 100};
 
     final byte[] bytes = FileUtil.getBytesFromFile(file);
-    assertTrue(Arrays.equals(expected, bytes));
+    assertArrayEquals(expected, bytes);
 
     file.delete();
   }

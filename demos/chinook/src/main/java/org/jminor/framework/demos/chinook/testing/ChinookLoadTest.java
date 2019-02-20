@@ -58,11 +58,6 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
                 throw new ScenarioException(e);
               }
             }
-
-            @Override
-            public int getDefaultWeight() {
-              return 1;
-            }
           };
 
   private static final UsageScenario<ChinookAppPanel.ChinookApplicationModel> VIEW_GENRE =

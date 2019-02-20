@@ -4944,3 +4944,4 @@
   EntityGeneratorModel, 'Properties.' prefix removed, assumes static import of org.jminor.framework.domain.Properties.*
   Sonarqube run
   EntityApplicationPanel.showEntityPanelDialog() bug fixed, now calls savePreferences() on both the panel and model when closing the dialog
+  IntelliJ code analysis run

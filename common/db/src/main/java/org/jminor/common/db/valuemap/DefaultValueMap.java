@@ -44,7 +44,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
   /**
    * Holds the original value for keys which values have changed since they were first set.
    */
-  private Map<K, V> originalValues = null;
+  private Map<K, V> originalValues;
 
   /**
    * Fired when a value changes, null until initialized by a call to getValueChangedEvent().

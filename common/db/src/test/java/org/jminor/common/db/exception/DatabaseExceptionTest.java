@@ -8,12 +8,15 @@ import org.junit.jupiter.api.Test;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DatabaseExceptionTest {
 
   @Test
   public void test() {
-    new DatabaseException("hello");
+    assertThrows(DatabaseException.class, () -> {
+      throw new DatabaseException("hello");
+    });
     DatabaseException dbException = new DatabaseException("hello", "statement");
     assertEquals("statement", dbException.getStatement());
     dbException = new DatabaseException(new SQLException(), "message", "statement");

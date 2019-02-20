@@ -53,7 +53,7 @@ public class TaskSchedulerTest {
     assertTrue(scheduler.isRunning());
     Thread.sleep(25);
     assertTrue(scheduler.isRunning());
-    assertFalse(counter.get() == 0);
+    assertNotEquals(0, counter.get());
     scheduler.stop();
     final int currentCount = counter.get();
     assertFalse(scheduler.isRunning());

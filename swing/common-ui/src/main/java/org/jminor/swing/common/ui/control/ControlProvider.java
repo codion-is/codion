@@ -283,7 +283,7 @@ public final class ControlProvider {
 
   private static final class ToolBarControlIterator implements ControlIterator {
 
-    private boolean includeCaption = true;
+    private boolean includeCaption;
     private final JToolBar toolbar;
 
     private ToolBarControlIterator(final JToolBar owner) {

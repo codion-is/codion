@@ -10,7 +10,6 @@ import org.jminor.framework.domain.Property;
 /**
  * A class for filtering a set of entities based on a property.
  */
-@SuppressWarnings({"unchecked"})
 public class DefaultPropertyFilterModel extends DefaultColumnConditionModel<Property> {
 
   /**

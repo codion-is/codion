@@ -131,12 +131,12 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
       }
     });
     addUpperBoundListener(() -> {
-      if (!isUpdatingModel()) {//noinspection unchecked
+      if (!isUpdatingModel()) {
         final Object upperBound = getUpperBound();
         if (upperBound instanceof Entity) {
           entityLookupModel.setSelectedEntities(Collections.singletonList((Entity) upperBound));
         }
-        else {//noinspection unchecked
+        else {
           entityLookupModel.setSelectedEntities((Collection<Entity>) upperBound);
         }
       }
