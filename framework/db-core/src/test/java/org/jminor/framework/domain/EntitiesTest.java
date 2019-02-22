@@ -7,6 +7,7 @@ import org.jminor.common.DateFormats;
 import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.valuemap.ValueProvider;
+import org.jminor.common.db.valuemap.exception.LengthValidationException;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 
@@ -362,6 +363,19 @@ public class EntitiesTest {
       assertTrue(e instanceof NullValidationException);
       assertEquals(TestDomain.EMP_SALARY, e.getKey());
     }
+  }
+
+  @Test
+  public void maxLengthValidation() {
+    final Entity emp = domain.entity(TestDomain.T_EMP);
+    emp.put(TestDomain.EMP_DEPARTMENT, 1);
+    emp.put(TestDomain.EMP_NAME, "Name");
+    emp.put(TestDomain.EMP_HIREDATE, new Date());
+    emp.put(TestDomain.EMP_SALARY, 1200.0);
+    final Entities.Validator validator = new Entities.Validator();
+    assertDoesNotThrow(() -> validator.validate(Collections.singletonList(emp)));
+    emp.put(TestDomain.EMP_NAME, "LooooongName");
+    assertThrows(LengthValidationException.class, () -> validator.validate(emp));
   }
 
   @Test

@@ -4,8 +4,8 @@
 package org.jminor.common.db.valuemap.exception;
 
 /**
- * An exception used to indicate that a value was being associated with
- * a key which does not fall within the allowed range of values.
+ * An exception used to indicate that a value associated with
+ * a key which not fall within the allowed range of values.
  */
 public class RangeValidationException extends ValidationException {
 

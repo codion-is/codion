@@ -156,8 +156,12 @@ public final class PropertiesTest {
   @Test
   public void denormalizedViewPropertySetReadOnlyFalse() {
     final Property.ColumnProperty columnProperty = columnProperty("property", Types.INTEGER);
-    final Property.ForeignKeyProperty foreignKeyProperty = foreignKeyProperty("foreignId", "caption",
-            "entityId", columnProperty);
+    foreignKeyProperty("foreignId", "caption","entityId", columnProperty);
     assertThrows(UnsupportedOperationException.class, () -> denormalizedViewProperty("test", "foreignId", columnProperty, "caption").setReadOnly(false));
+  }
+
+  @Test
+  public void stringPropertyNegativeMaxLength() {
+    assertThrows(IllegalArgumentException.class, () -> columnProperty("property", Types.VARCHAR).setMaxLength(-4));
   }
 }

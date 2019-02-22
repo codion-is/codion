@@ -13,6 +13,7 @@ import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.valuemap.DefaultValueMap;
 import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.db.valuemap.ValueProvider;
+import org.jminor.common.db.valuemap.exception.LengthValidationException;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
@@ -1589,6 +1590,9 @@ public class Entities implements Serializable {
       if (property.isNumerical()) {
         performRangeValidation(entity, property);
       }
+      else if (property.isString()) {
+        performLengthValidation(entity, property);
+      }
     }
 
     /** {@inheritDoc} */
@@ -1628,6 +1632,23 @@ public class Entities implements Serializable {
         else {
           throw new NullValidationException(property.getPropertyId(), MESSAGES.getString(MSG_PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
         }
+      }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void performLengthValidation(final Entity entity, final Property property) throws LengthValidationException {
+      Objects.requireNonNull(entity, ENTITY_PARAM);
+      Objects.requireNonNull(property, "property");
+      if (entity.isValueNull(property)) {
+        return;
+      }
+
+      final int maxLength = property.getMaxLength();
+      final String value = (String) entity.get(property);
+      if (maxLength != -1 && value.length() > maxLength) {
+        throw new LengthValidationException(property.getPropertyId(), value, "'" + property + "' " +
+                MESSAGES.getString("property_value_too_long") + " " + maxLength);
       }
     }
 

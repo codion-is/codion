@@ -360,6 +360,9 @@ class DefaultProperty implements Property {
   /** {@inheritDoc} */
   @Override
   public final Property setMaxLength(final int maxLength) {
+    if (maxLength <= 0) {
+      throw new IllegalArgumentException("Max length must be a positive integer");
+    }
     this.maxLength = maxLength;
     return this;
   }
