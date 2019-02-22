@@ -8,6 +8,7 @@ import org.jminor.common.Value;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.valuemap.ValueMap;
+import org.jminor.common.db.valuemap.exception.LengthValidationException;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
@@ -474,12 +475,13 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param entity the entity
      * @param property the property
      * @throws NullValidationException in case the property value is null and the property is not nullable
+     * @see Property#setNullable(boolean)
      * @see Property#isNullable()
      */
     void performNullValidation(final Entity entity, final Property property) throws NullValidationException;
 
     /**
-     * Performs a range validation on the given property
+     * Performs a range validation on the given number based property
      * @param entity the entity
      * @param property the property
      * @throws RangeValidationException in case the value of the given property is outside the legal range
@@ -487,6 +489,15 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @see org.jminor.framework.domain.Property#setMin(double)
      */
     void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException;
+
+    /**
+     * Performs a length validation on the given string based property
+     * @param entity the entity
+     * @param property the property
+     * @throws LengthValidationException in case the length of the value of the given property
+     * @see org.jminor.framework.domain.Property#setMaxLength(int)
+     */
+    void performLengthValidation(final Entity entity, final Property property) throws LengthValidationException;
   }
 
   /**
