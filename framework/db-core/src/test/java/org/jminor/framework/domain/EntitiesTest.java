@@ -9,6 +9,7 @@ import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.db.valuemap.exception.LengthValidationException;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
+import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 
 import org.junit.jupiter.api.Test;
@@ -376,6 +377,22 @@ public class EntitiesTest {
     assertDoesNotThrow(() -> validator.validate(Collections.singletonList(emp)));
     emp.put(TestDomain.EMP_NAME, "LooooongName");
     assertThrows(LengthValidationException.class, () -> validator.validate(emp));
+  }
+
+  @Test
+  public void rangeValidation() {
+    final Entity emp = domain.entity(TestDomain.T_EMP);
+    emp.put(TestDomain.EMP_DEPARTMENT, 1);
+    emp.put(TestDomain.EMP_NAME, "Name");
+    emp.put(TestDomain.EMP_HIREDATE, new Date());
+    emp.put(TestDomain.EMP_SALARY, 1200d);
+    emp.put(TestDomain.EMP_COMMISSION, 300d);
+    final Entities.Validator validator = new Entities.Validator();
+    assertDoesNotThrow(() -> validator.validate(Collections.singletonList(emp)));
+    emp.put(TestDomain.EMP_COMMISSION, 10d);
+    assertThrows(RangeValidationException.class, () -> validator.validate(emp));
+    emp.put(TestDomain.EMP_COMMISSION, 2100d);
+    assertThrows(RangeValidationException.class, () -> validator.validate(emp));
   }
 
   @Test
