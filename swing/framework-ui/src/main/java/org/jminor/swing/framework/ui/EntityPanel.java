@@ -58,7 +58,7 @@ import java.util.stream.Collectors;
  * <pre>
  *   String entityId = ...;
  *   EntityConnectionProvider connectionProvider = ...;
- *   EntityModel entityModel = new DefaultEntityModel(entityId, connectionProvider);
+ *   SwingEntityModel entityModel = new SwingEntityModel(entityId, connectionProvider);
  *   EntityPanel entityPanel = new EntityPanel(entityModel);
  *   entityPanel.initializePanel();
  *   JFrame frame = new JFrame();
