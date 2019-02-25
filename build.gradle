@@ -6,7 +6,7 @@ plugins {
 ext {
     slf4jApiVersion = '1.7.25'
     logbackVersion = '1.2.3'
-    h2Version = '1.4.197'
+    h2Version = '1.4.198'
     jsonVersion = '20180130'
     jcalendarVersion = '1.4'
     jcommonVersion = '1.0.24'

@@ -209,7 +209,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
     if (Util.nullOrEmpty(entities)) {
-      return new ArrayList<>();
+      return Collections.emptyList();
     }
     checkReadOnly(entities);
 

@@ -579,7 +579,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    */
   protected List<Entity> performQuery() {
     if (!getConditionModel().isEnabled() && queryConditionRequired) {
-      return new ArrayList<>();
+      return Collections.emptyList();
     }
 
     try {

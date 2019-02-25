@@ -4946,3 +4946,4 @@
   EntityApplicationPanel.showEntityPanelDialog() bug fixed, now calls savePreferences() on both the panel and model when closing the dialog
   IntelliJ code analysis run
   Entity.Validator.performLengthValidation() added, implemented and used in Entities.Validator
+  H2Database upgraded to 1.4.198, plus some minor refactoring
