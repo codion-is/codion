@@ -14,6 +14,11 @@ import org.jminor.framework.domain.Property;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.Collections;
@@ -219,9 +224,53 @@ public class EntityConditionsTest {
   }
 
   @Test
-  public void simpleCondition() {
+  public void stringConditionWithoutValue() {
+    final String crit = "id = 1";
+    final Condition<Property.ColumnProperty> condition = entityConditions.stringCondition(crit);
+    assertEquals(crit, condition.getWhereClause());
+    assertEquals(0, condition.getColumns().size());
+    assertEquals(0, condition.getValues().size());
+  }
+
+  @Test
+  public void stringConditionWithValue() {
+    final String crit = "id = ?";
+    final Condition<Property.ColumnProperty> condition = entityConditions.stringCondition(crit, Collections.singletonList(1),
+            Collections.singletonList(entities.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ID)));
+    assertEquals(crit, condition.getWhereClause());
+    assertEquals(1, condition.getColumns().size());
+    assertEquals(1, condition.getValues().size());
+  }
+
+  @Test
+  public void stringConditionNullConditionString() {
+    assertThrows(NullPointerException.class, () -> entityConditions.stringCondition(null));
+  }
+
+  @Test
+  public void stringConditionNullValues() {
+    assertThrows(NullPointerException.class, () -> entityConditions.stringCondition("some is null", null,
+            Collections.<Property.ColumnProperty>emptyList()));
+  }
+
+  @Test
+  public void stringConditionNullKeys() {
+    assertThrows(NullPointerException.class, () -> entityConditions.stringCondition("some is null", Collections.emptyList(), null));
+  }
+
+  @Test
+  public void serialization() throws IOException, ClassNotFoundException {
+    final Property.ColumnProperty id = entities.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ID);
+    final Condition<Property.ColumnProperty> condition = Conditions.conditionSet(Conjunction.AND,
+            entityConditions.stringCondition("test", Arrays.asList("val1", "val2"), Arrays.asList(id, id)),
+            entityConditions.stringCondition("testing", Arrays.asList("val1", "val2"), Arrays.asList(id, id)));
+    deserialize(serialize(condition));
+  }
+
+  @Test
+  public void stringCondition() {
     final EntitySelectCondition condition = entityConditions.selectCondition(TestDomain.T_DEPARTMENT,
-            Conditions.stringCondition("department name is not null"), -1)
+            entityConditions.stringCondition("department name is not null"), -1)
             .setOrderBy(Entities.orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertTrue(condition.getValues().isEmpty());
     assertTrue(condition.getColumns().isEmpty());
@@ -283,5 +332,17 @@ public class EntityConditionsTest {
     assertEquals(1, condition.getColumns().size());
     assertEquals("DEPT", condition.getValues().get(0));
     assertEquals(TestDomain.DEPARTMENT_NAME, condition.getColumns().get(0).getPropertyId());
+  }
+
+  private static byte[] serialize(final Object obj) throws IOException {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final ObjectOutputStream os = new ObjectOutputStream(out);
+    os.writeObject(obj);
+
+    return out.toByteArray();
+  }
+
+  private static Object deserialize(final byte[] data) throws IOException, ClassNotFoundException {
+    return new ObjectInputStream(new ByteArrayInputStream(data)).readObject();
   }
 }

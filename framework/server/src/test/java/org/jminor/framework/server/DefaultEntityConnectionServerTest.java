@@ -7,6 +7,7 @@ import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.condition.Condition;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.remote.ClientLog;
 import org.jminor.common.remote.Clients;
@@ -20,6 +21,7 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Property;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -60,6 +62,23 @@ public class DefaultEntityConnectionServerTest {
   public static synchronized void tearDown() throws Exception {
     admin.shutdown();
     server = null;
+  }
+
+  @Test
+  public void stringCondition() throws Exception {
+    final ConnectionRequest connectionRequestOne = Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
+            "ClientTypeID", CONNECTION_PARAMS);
+    final RemoteEntityConnection connection = server.connect(connectionRequestOne);
+
+    final Entities domain = connection.getDomain();
+    final EntityConditions conditions = new EntityConditions(domain);
+    final Condition<Property.ColumnProperty> condition = conditions.stringCondition("mgr > ?",
+            Collections.singletonList(4),
+            Collections.singletonList(domain.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_MGR)));
+
+    connection.selectMany(conditions.selectCondition(TestDomain.T_EMP, condition));
+
+    connection.disconnect();
   }
 
   @Test

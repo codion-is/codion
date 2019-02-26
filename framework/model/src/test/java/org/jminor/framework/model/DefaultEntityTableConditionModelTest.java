@@ -8,7 +8,6 @@ import org.jminor.common.EventListener;
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.condition.Condition;
-import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -128,7 +127,7 @@ public class DefaultEntityTableConditionModelTest {
     conditionModel.setAdditionalConditionProvider(new Condition.Provider<Property.ColumnProperty>() {
       @Override
       public Condition<Property.ColumnProperty> getCondition() {
-        return Conditions.stringCondition("1 = 1");
+        return CONNECTION_PROVIDER.getConditions().stringCondition("1 = 1");
       }
     });
     assertNotNull(conditionModel.getAdditionalConditionProvider());

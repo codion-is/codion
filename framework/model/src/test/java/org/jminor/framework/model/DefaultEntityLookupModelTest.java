@@ -6,7 +6,6 @@ package org.jminor.framework.model;
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.condition.Condition;
-import org.jminor.common.db.condition.Conditions;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
@@ -206,7 +205,7 @@ public final class DefaultEntityLookupModelTest {
     List<Entity> result = lookupModel.performQuery();
     assertEquals(1, result.size());
     lookupModel.setSelectedEntities(result);
-    lookupModel.setAdditionalConditionProvider(() -> Conditions.<Property.ColumnProperty>stringCondition("1 = 2"));
+    lookupModel.setAdditionalConditionProvider(() -> ENTITY_CONDITIONS.stringCondition("1 = 2"));
     assertEquals(1, lookupModel.getSelectedEntities().size());
     result = lookupModel.performQuery();
     assertTrue(result.isEmpty());
