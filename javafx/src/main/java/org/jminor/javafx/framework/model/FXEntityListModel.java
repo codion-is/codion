@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -418,7 +419,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   @Override
   protected List<Entity> performQuery() {
     if (!conditionModel.isEnabled() && queryConditionRequired) {
-      return new ArrayList<>();
+      return Collections.emptyList();
     }
 
     try {
