@@ -17,7 +17,7 @@ plugins {
 ext {
     slf4jApiVersion = '1.7.25'
     logbackVersion = '1.2.3'
-    h2Version = '1.4.197'
+    h2Version = '1.4.198'
     jsonVersion = '20180130'
     jcalendarVersion = '1.4'
     jcommonVersion = '1.0.24'
@@ -68,11 +68,6 @@ configure(project.frameworkModules) {
     }
 
     ext.moduleName = "org." + project.name.replace('-', '.')
-
-    javadoc {
-        //to prevent jpms based errors on Java >= 9
-        failOnError = false
-    }
 
     jar {
         manifest {
@@ -203,7 +198,7 @@ task combinedJavadoc(type: Javadoc) {
     group 'documentation'
     title "JMinor Framework API $version"
     failOnError = false
-    options.links 'http://docs.oracle.com/javase/8/docs/api/'
+    options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
     destinationDir = file("${buildDir}/docs/javadoc")
     source frameworkModules.collect { it.sourceSets.main.allJava }
     classpath = files(frameworkModules.collect { it.sourceSets.main.compileClasspath })
