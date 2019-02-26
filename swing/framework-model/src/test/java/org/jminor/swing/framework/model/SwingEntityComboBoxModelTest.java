@@ -6,14 +6,12 @@ package org.jminor.swing.framework.model;
 import org.jminor.common.EventListener;
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
-import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.TestDomain;
 
@@ -150,7 +148,7 @@ public final class SwingEntityComboBoxModelTest {
     comboBoxModel.clear();
     assertEquals(0, comboBoxModel.getSize());
 
-    comboBoxModel.setSelectConditionProvider(() -> Conditions.<Property.ColumnProperty>stringCondition(" ename = 'CLARK'"));
+    comboBoxModel.setSelectConditionProvider(() -> CONNECTION_PROVIDER.getConditions().stringCondition(" ename = 'CLARK'"));
     comboBoxModel.setForeignKeyFilterEntities(TestDomain.EMP_DEPARTMENT_FK, null);
 
     comboBoxModel.forceRefresh();

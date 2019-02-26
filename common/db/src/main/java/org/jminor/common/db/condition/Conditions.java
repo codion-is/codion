@@ -12,9 +12,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * A factory class for {@link Condition} instances
@@ -116,30 +114,6 @@ public final class Conditions {
     return new DefaultSet<>(conjunction, condition);
   }
 
-  /**
-   * Instantiates a new Condition based on the given condition string
-   * @param conditionString the condition string without the WHERE keyword
-   * @param <T> the condition column type
-   * @return a new Condition instance
-   * @throws NullPointerException in case the condition string is null
-   */
-  public static <T extends Column> Condition<T> stringCondition(final String conditionString) {
-    return stringCondition(conditionString, Collections.emptyList(), Collections.<T>emptyList());
-  }
-
-  /**
-   * Instantiates a new Condition based on the given condition string
-   * @param conditionString the condition string without the WHERE keyword
-   * @param values the values required by this condition string
-   * @param keys the keys required by this condition string, in the same order as their respective values
-   * @param <T> the condition column type
-   * @return a new Condition instance
-   * @throws NullPointerException in case any of the parameters are null
-   */
-  public static <T extends Column> Condition<T> stringCondition(final String conditionString, final List values, final List<T> keys) {
-    return new StringCondition<>(conditionString, values, keys);
-  }
-
   private static final class DefaultSet<T extends Column> implements Condition.Set<T> {
 
     private static final long serialVersionUID = 1;
@@ -226,62 +200,6 @@ public final class Conditions {
         case AND: return " and ";
         case OR: return " or ";
         default: throw new IllegalArgumentException("Unknown conjunction: " + conjunction);
-      }
-    }
-  }
-
-  private static final class StringCondition<T extends Column> implements Condition<T> {
-
-    private static final long serialVersionUID = 1;
-
-    private String conditionString;
-    private List values;
-    private List<T> columns;
-
-    private StringCondition(final String conditionString, final List values, final List<T> columns) {
-      this.conditionString = Objects.requireNonNull(conditionString, "conditionString");
-      this.values = Objects.requireNonNull(values, "values");
-      this.columns = Objects.requireNonNull(columns, "keys");
-    }
-
-    @Override
-    public String getWhereClause() {
-      return conditionString;
-    }
-
-    @Override
-    public List getValues() {
-      return values;
-    }
-
-    @Override
-    public List<T> getColumns() {
-      return columns;
-    }
-
-    private void writeObject(final ObjectOutputStream stream) throws IOException {
-      stream.writeObject(conditionString);
-      stream.writeInt(values.size());
-      for (int i = 0; i < values.size(); i++) {
-        stream.writeObject(values.get(i));
-      }
-      stream.writeInt(columns.size());
-      for (int i = 0; i < columns.size(); i++) {
-        stream.writeObject(columns.get(i));
-      }
-    }
-
-    private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
-      conditionString = (String) stream.readObject();
-      final int valueCount = stream.readInt();
-      values = new ArrayList<>(valueCount);
-      for (int i = 0; i < valueCount; i++) {
-        values.add(stream.readObject());
-      }
-      final int columnCount = stream.readInt();
-      columns = new ArrayList<>(columnCount);
-      for (int i = 0; i < columnCount; i++) {
-        columns.add((T) stream.readObject());
       }
     }
   }

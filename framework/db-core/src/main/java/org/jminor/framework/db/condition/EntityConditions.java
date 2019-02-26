@@ -316,6 +316,29 @@ public final class EntityConditions {
     return propertyCondition(foreignKeyProperty.getProperties().get(0), conditionType, Entities.getValues(keys));
   }
 
+  /**
+   * Instantiates a new Condition based on the given condition string
+   * @param conditionString the condition string without the WHERE keyword
+   * @return a new Condition instance
+   * @throws NullPointerException in case the condition string is null
+   */
+  public static Condition<Property.ColumnProperty> stringCondition(final String conditionString) {
+    return stringCondition(conditionString, Collections.emptyList(), Collections.<Property.ColumnProperty>emptyList());
+  }
+
+  /**
+   * Instantiates a new Condition based on the given condition string
+   * @param conditionString the condition string without the WHERE keyword
+   * @param values the values used by this condition string
+   * @param properties the properties representing the values used by this condition, in the same order as their respective values
+   * @return a new Condition instance
+   * @throws NullPointerException in case any of the parameters are null
+   */
+  public static Condition<Property.ColumnProperty> stringCondition(final String conditionString, final List values,
+                                                                   final List<Property.ColumnProperty> properties) {
+    return new StringCondition(conditionString, values, properties);
+  }
+
   /** Assumes {@code keys} is not empty. */
   private Condition<Property.ColumnProperty> createKeyCondition(final List<Entity.Key> keys) {
     final Entity.Key firstKey = keys.get(0);
@@ -646,6 +669,68 @@ public final class EntityConditions {
       limit = stream.readInt();
       offset = stream.readInt();
       domain = Entities.getDomain(domainId);
+    }
+  }
+
+  private static final class StringCondition implements Condition<Property.ColumnProperty> {
+
+    private static final long serialVersionUID = 1;
+
+    private String conditionString;
+    private List values;
+    private List<Property.ColumnProperty> properties;
+
+    private StringCondition(final String conditionString, final List values, final List<Property.ColumnProperty> properties) {
+      this.conditionString = Objects.requireNonNull(conditionString, "conditionString");
+      this.values = Objects.requireNonNull(values, "values");
+      this.properties = Objects.requireNonNull(properties, "properties");
+    }
+
+    @Override
+    public String getWhereClause() {
+      return conditionString;
+    }
+
+    @Override
+    public List getValues() {
+      return values;
+    }
+
+    @Override
+    public List<Property.ColumnProperty> getColumns() {
+      return properties;
+    }
+
+    private void writeObject(final ObjectOutputStream stream) throws IOException {
+      stream.writeObject(conditionString);
+      stream.writeInt(values.size());
+      for (int i = 0; i < values.size(); i++) {
+        stream.writeObject(values.get(i));
+      }
+      stream.writeInt(properties.size());
+      for (int i = 0; i < properties.size(); i++) {
+        final Property.ColumnProperty property = properties.get(i);
+        stream.writeObject(property.getDomainId());
+        stream.writeObject(property.getEntityId());
+        stream.writeObject(property.getPropertyId());
+      }
+    }
+
+    private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
+      conditionString = (String) stream.readObject();
+      final int valueCount = stream.readInt();
+      values = new ArrayList<>(valueCount);
+      for (int i = 0; i < valueCount; i++) {
+        values.add(stream.readObject());
+      }
+      final int columnCount = stream.readInt();
+      properties = new ArrayList<>(columnCount);
+      for (int i = 0; i < columnCount; i++) {
+        final String domainId = (String) stream.readObject();
+        final String entityId = (String) stream.readObject();
+        final String propertyId = (String) stream.readObject();
+        properties.add(Entities.getDomain(domainId).getColumnProperty(entityId, propertyId));
+      }
     }
   }
 
