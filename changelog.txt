@@ -4956,3 +4956,4 @@
   H2Database upgraded to 1.4.198, plus some minor refactoring
 0.11.7 [client/server incompatible with earlier versions due to EntityConditions changes]
   Conditions.stringCondition() moved to EntityConditions, due to serialization related bug
+  EntityPanel bug fixed, double clicking on a detail tab in a dialog now embeds the detail panel, instead of closing it

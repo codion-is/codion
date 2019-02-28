@@ -1460,7 +1460,12 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
             parentLocation.y + (parentSize.height - size.height) - DETAIL_DIALOG_OFFSET);
     detailPanelDialog = UiUtil.displayInDialog(EntityPanel.this, detailPanelTabbedPane,
             caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES), false,
-            Controls.control(() -> setDetailPanelState(PanelState.HIDDEN)));
+            Controls.control(() -> {
+              //the dialog can be closed when embedding the panel, don't hide if that's the case
+              if (getDetailPanelState() != PanelState.EMBEDDED) {
+                setDetailPanelState(PanelState.HIDDEN);
+              }
+            }));
     detailPanelDialog.setSize(size);
     detailPanelDialog.setLocation(location);
   }
