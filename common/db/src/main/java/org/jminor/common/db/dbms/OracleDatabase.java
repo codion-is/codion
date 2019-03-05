@@ -3,6 +3,8 @@
  */
 package org.jminor.common.db.dbms;
 
+import org.jminor.common.Configuration;
+import org.jminor.common.Value;
 import org.jminor.common.db.AbstractDatabase;
 
 import java.sql.SQLException;
@@ -23,6 +25,8 @@ public final class OracleDatabase extends AbstractDatabase {
   static final String DRIVER_CLASS_NAME = "oracle.jdbc.OracleDriver";
   static final String URL_PREFIX = "jdbc:oracle:thin:@";
   static final String CHECK_QUERY = "select 1 from dual";
+
+  private static Value<Boolean> USE_LEGACY_SID = Configuration.booleanValue("jminor.db.oracle.useLegacySID", false);
 
   private static final Integer BOOLEAN_TRUE_VALUE = 1;
   private static final Integer BOOLEAN_FALSE_VALUE = 0;
@@ -90,7 +94,7 @@ public final class OracleDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getURL(final Properties connectionProperties) {
-    return URL_PREFIX + getHost() + ":" + getPort() + ":" + getSid();
+    return URL_PREFIX + getHost() + ":" + getPort() + (USE_LEGACY_SID.get() ? ":" : "/") + getSid();
   }
 
   /**
