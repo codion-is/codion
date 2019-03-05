@@ -29,10 +29,11 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
   private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
   private static final int VALIDITY_CHECK_INTERVAL_SECONDS = 10;
   protected static final String IS_CONNECTED = "isConnected";
+  private final Object lock = new Object();
   private final State connectedState = States.state();
   private final boolean scheduleValidityCheck;
   private final TaskScheduler validityCheckScheduler = new TaskScheduler(this::checkValidity,
-          VALIDITY_CHECK_INTERVAL_SECONDS, 0, TimeUnit.SECONDS);
+          VALIDITY_CHECK_INTERVAL_SECONDS, VALIDITY_CHECK_INTERVAL_SECONDS, TimeUnit.SECONDS);
 
   /**
    * The user used by this connection provider when connecting to the database server
@@ -61,21 +62,25 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
   /** {@inheritDoc} */
   @Override
   public final Entities getDomain() {
-    if (domain == null) {
-      doConnect();
-    }
+    synchronized (lock) {
+      if (domain == null) {
+        doConnect();
+      }
 
-    return domain;
+      return domain;
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public final EntityConditions getConditions() {
-    if (entityConditions == null) {
-      entityConditions = new EntityConditions(getDomain());
-    }
+    synchronized (lock) {
+      if (entityConditions == null) {
+        entityConditions = new EntityConditions(getDomain());
+      }
 
-    return entityConditions;
+      return entityConditions;
+    }
   }
 
   /** {@inheritDoc} */
@@ -86,111 +91,137 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
 
   /** {@inheritDoc} */
   @Override
-  public final synchronized User getUser() {
-    return user;
+  public final User getUser() {
+    synchronized (lock) {
+      return user;
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public final synchronized EntityConnectionProvider setUser(final User user) {
-    disconnect();
-    this.user = user;
+  public final EntityConnectionProvider setUser(final User user) {
+    synchronized (lock) {
+      disconnect();
+      this.user = user;
 
-    return this;
+      return this;
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public final String getDomainClassName() {
-    if (Util.nullOrEmpty(domainClassName)) {
-      throw new IllegalArgumentException("Domain class name has not been specified");
-    }
+    synchronized (lock) {
+      if (Util.nullOrEmpty(domainClassName)) {
+        throw new IllegalArgumentException("Domain class name has not been specified");
+      }
 
-    return domainClassName;
+      return domainClassName;
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public final EntityConnectionProvider setDomainClassName(final String domainClassName) {
-    disconnect();
-    this.domainClassName = Objects.requireNonNull(domainClassName);
+    synchronized (lock) {
+      disconnect();
+      this.domainClassName = Objects.requireNonNull(domainClassName);
 
-    return this;
+      return this;
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public final UUID getClientId() {
-    return clientId;
+    synchronized (lock) {
+      return clientId;
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public final EntityConnectionProvider setClientId(final UUID clientId) {
-    disconnect();
-    this.clientId = Objects.requireNonNull(clientId);
+    synchronized (lock) {
+      disconnect();
+      this.clientId = Objects.requireNonNull(clientId);
 
-    return this;
+      return this;
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public final String getClientTypeId() {
-    if (Util.nullOrEmpty(clientTypeId)) {
-      throw new IllegalArgumentException("Client type id has not been specified");
-    }
+    synchronized (lock) {
+      if (Util.nullOrEmpty(clientTypeId)) {
+        throw new IllegalArgumentException("Client type id has not been specified");
+      }
 
-    return clientTypeId;
+      return clientTypeId;
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public final EntityConnectionProvider setClientTypeId(final String clientTypeId) {
-    disconnect();
-    this.clientTypeId = Objects.requireNonNull(clientTypeId);
+    synchronized (lock) {
+      disconnect();
+      this.clientTypeId = Objects.requireNonNull(clientTypeId);
 
-    return this;
+      return this;
+    }
   }
 
   @Override
   public final Version getClientVersion() {
-    return clientVersion;
+    synchronized (lock) {
+      return clientVersion;
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public final EntityConnectionProvider setClientVersion(final Version clientVersion) {
-    disconnect();
-    this.clientVersion = clientVersion;
+    synchronized (lock) {
+      disconnect();
+      this.clientVersion = clientVersion;
 
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final synchronized boolean isConnected() {
-    return entityConnection != null;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final synchronized T getConnection() {
-    if (user == null) {
-      throw new IllegalStateException("No user set");
+      return this;
     }
-
-    validateConnection();
-
-    return entityConnection;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final synchronized void disconnect() {
-    if (isConnectionValid()) {
-      disconnect(entityConnection);
-      entityConnection = null;
-      connectedState.setActive(false);
+  public final boolean isConnected() {
+    synchronized (lock) {
+      return entityConnection != null;
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final T getConnection() {
+    synchronized (lock) {
+      if (user == null) {
+        throw new IllegalStateException("No user set");
+      }
+
+      validateConnection();
+
+      return entityConnection;
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void disconnect() {
+    synchronized (lock) {
+      if (isConnectionValid()) {
+        disconnect(entityConnection);
+        entityConnection = null;
+        connectedState.setActive(false);
+      }
     }
   }
 
@@ -198,15 +229,17 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
    * @return true if the connection is valid, false if it is invalid or has not been initialized
    */
   protected final boolean isConnectionValid() {
-    if (!isConnected()) {
-      return false;
-    }
-    try {
-      return entityConnection.isConnected();
-    }
-    catch (final RuntimeException e) {
-      LOG.debug("Connection deemed invalid", e);
-      return false;
+    synchronized (lock) {
+      if (!isConnected()) {
+        return false;
+      }
+      try {
+        return entityConnection.isConnected();
+      }
+      catch (final RuntimeException e) {
+        LOG.debug("Connection deemed invalid", e);
+        return false;
+      }
     }
   }
 
