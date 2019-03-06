@@ -3,6 +3,10 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.common.State;
+import org.jminor.common.StateObserver;
+import org.jminor.common.States;
+import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
@@ -12,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A central application model class.
@@ -19,7 +24,12 @@ import java.util.Objects;
  */
 public class DefaultEntityApplicationModel<M extends DefaultEntityModel> implements EntityApplicationModel<M> {
 
+  private static final int VALIDITY_CHECK_INTERVAL_SECONDS = 30;
+
   private final EntityConnectionProvider connectionProvider;
+  private final State connectionValidState = States.state();
+  private final TaskScheduler validityCheckScheduler = new TaskScheduler(this::checkConnectionValidity,
+          VALIDITY_CHECK_INTERVAL_SECONDS, VALIDITY_CHECK_INTERVAL_SECONDS, TimeUnit.SECONDS);
   private final List<M> entityModels = new ArrayList<>();
 
   private boolean warnAboutUnsavedData = EntityEditModel.WARN_ABOUT_UNSAVED_DATA.get();
@@ -32,6 +42,13 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
   public DefaultEntityApplicationModel(final EntityConnectionProvider connectionProvider) {
     Objects.requireNonNull(connectionProvider, "connectionProvider");
     this.connectionProvider = connectionProvider;
+    if (SCHEDULE_CONNECTION_VALIDATION.get()) {
+      validityCheckScheduler.start();
+      connectionProvider.addOnConnectListener(() -> {
+        connectionValidState.setActive(true);
+        validityCheckScheduler.start();
+      });
+    }
   }
 
   /** {@inheritDoc} */
@@ -61,6 +78,12 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
   @Override
   public final EntityConnectionProvider getConnectionProvider() {
     return connectionProvider;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public StateObserver getConnectionValidObserver() {
+    return connectionValidState.getObserver();
   }
 
   /** {@inheritDoc} */
@@ -185,6 +208,13 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
    * Override to add a login handler.
    */
   protected void handleLogin() {/*For subclasses*/}
+
+  private void checkConnectionValidity() {
+    connectionValidState.setActive(connectionProvider.isConnectionValid());
+    if (!connectionValidState.isActive()) {
+      validityCheckScheduler.stop();
+    }
+  }
 
   private static boolean containsUnsavedData(final Collection<? extends EntityModel> models) {
     for (final EntityModel model : models) {

@@ -4,6 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Configuration;
+import org.jminor.common.StateObserver;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.Value;
@@ -48,6 +49,13 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
   Value<String> REPORT_PATH = Configuration.stringValue("jminor.report.path", null);
 
   /**
+   * Specifies whether a periodic (30 sec) validity check of the underlying connection should be scheduled.
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  Value<Boolean> SCHEDULE_CONNECTION_VALIDATION = Configuration.booleanValue("jminor.client.scheduleConnectionValidation", true);
+
+  /**
    * @return the value associated with {@link #REPORT_PATH}
    * @throws IllegalArgumentException in case it is not specified
    */
@@ -81,6 +89,14 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
    * @return the EntityConnectionProvider instance being used by this EntityApplicationModel
    */
   EntityConnectionProvider getConnectionProvider();
+
+  /**
+   * Returns a StateObserver which is active while the underlying application connection provider is connected.
+   * Note that this state is updated every 30 seconds if {@link #SCHEDULE_CONNECTION_VALIDATION} is true
+   * @return a StateObserver indicating the validity of the underlying connection provider
+   * @see #SCHEDULE_CONNECTION_VALIDATION
+   */
+  StateObserver getConnectionValidObserver();
 
   /**
    * @return the underlying domain model Entities

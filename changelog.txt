@@ -4959,3 +4959,4 @@
   EntityPanel bug fixed, double clicking on a detail tab in a dialog now embeds the detail panel, instead of closing it
   OracleDatabase, now requires jminor.db.oracle.useLegacySID=true in case of pre-containerized Oracle databases (<12)
   AbstractEntityConnectionProvider, improved synchronization on a lock object, validityCheckScheduler now uses an initial delay
+  AbstractEntityConnectionProvider, connection validity check scheduler moved to DefaultEntityApplicationModel

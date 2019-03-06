@@ -61,9 +61,7 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    * @param serverPort the server port
    * @param https true if https should be used
    */
-  public HttpEntityConnectionProvider(final String serverHostName, final Integer serverPort,
-                                      final Boolean https) {
-    super(false);
+  public HttpEntityConnectionProvider(final String serverHostName, final Integer serverPort, final Boolean https) {
     this.serverHostName = Objects.requireNonNull(serverHostName, "serverHostName");
     this.serverPort = Objects.requireNonNull(serverPort, "serverPort");
     this.https = Objects.requireNonNull(https, "https");

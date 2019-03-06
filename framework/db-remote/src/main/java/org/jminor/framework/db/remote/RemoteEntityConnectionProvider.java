@@ -41,21 +41,6 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
 
   private String serverHostName;
 
-  /**
-   * Instantiates a new RemoteEntityConnectionProvider.
-   */
-  public RemoteEntityConnectionProvider() {
-    this(true);
-  }
-
-  /**
-   * Instantiates a new RemoteEntityConnectionProvider.
-   * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
-   */
-  public RemoteEntityConnectionProvider(final boolean scheduleValidityCheck) {
-    super(scheduleValidityCheck);
-  }
-
   /** {@inheritDoc} */
   @Override
   public EntityConnection.Type getConnectionType() {

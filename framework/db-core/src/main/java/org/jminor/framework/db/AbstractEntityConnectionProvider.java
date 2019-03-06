@@ -3,10 +3,9 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.State;
-import org.jminor.common.StateObserver;
-import org.jminor.common.States;
-import org.jminor.common.TaskScheduler;
+import org.jminor.common.Event;
+import org.jminor.common.EventListener;
+import org.jminor.common.Events;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.Version;
@@ -18,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 /**
  * An abstract EntityConnectionProvider implementation.
@@ -27,13 +25,9 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractEntityConnectionProvider<T extends EntityConnection> implements EntityConnectionProvider<T> {
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
-  private static final int VALIDITY_CHECK_INTERVAL_SECONDS = 10;
   protected static final String IS_CONNECTED = "isConnected";
   private final Object lock = new Object();
-  private final State connectedState = States.state();
-  private final boolean scheduleValidityCheck;
-  private final TaskScheduler validityCheckScheduler = new TaskScheduler(this::checkValidity,
-          VALIDITY_CHECK_INTERVAL_SECONDS, VALIDITY_CHECK_INTERVAL_SECONDS, TimeUnit.SECONDS);
+  private final Event onConnectEvent = Events.event();
 
   /**
    * The user used by this connection provider when connecting to the database server
@@ -47,17 +41,6 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
   private T entityConnection;
   private Entities domain;
   private EntityConditions entityConditions;
-
-  /**
-   * Instantiates a new AbstractEntityConnectionProvider.
-   * @param scheduleValidityCheck if true then a connection validity check is run every 10 seconds
-   */
-  public AbstractEntityConnectionProvider(final boolean scheduleValidityCheck) {
-    this.scheduleValidityCheck = scheduleValidityCheck;
-    if (this.scheduleValidityCheck) {
-      this.validityCheckScheduler.start();
-    }
-  }
 
   /** {@inheritDoc} */
   @Override
@@ -81,12 +64,6 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
 
       return entityConditions;
     }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final StateObserver getConnectedObserver() {
-    return connectedState.getObserver();
   }
 
   /** {@inheritDoc} */
@@ -201,6 +178,35 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
 
   /** {@inheritDoc} */
   @Override
+  public final boolean isConnectionValid() {
+    synchronized (lock) {
+      if (!isConnected()) {
+        return false;
+      }
+      try {
+        return entityConnection.isConnected();
+      }
+      catch (final RuntimeException e) {
+        LOG.debug("Connection deemed invalid", e);
+        return false;
+      }
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void addOnConnectListener(final EventListener listener) {
+    onConnectEvent.addListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void removeOnConnectListener(final EventListener listener) {
+    onConnectEvent.removeListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final T getConnection() {
     synchronized (lock) {
       if (user == null) {
@@ -220,25 +226,6 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
       if (isConnectionValid()) {
         disconnect(entityConnection);
         entityConnection = null;
-        connectedState.setActive(false);
-      }
-    }
-  }
-
-  /**
-   * @return true if the connection is valid, false if it is invalid or has not been initialized
-   */
-  protected final boolean isConnectionValid() {
-    synchronized (lock) {
-      if (!isConnected()) {
-        return false;
-      }
-      try {
-        return entityConnection.isConnected();
-      }
-      catch (final RuntimeException e) {
-        LOG.debug("Connection deemed invalid", e);
-        return false;
       }
     }
   }
@@ -283,16 +270,6 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
     }
     entityConnection = connect();
     domain = entityConnection.getDomain().registerDomain();
-    connectedState.setActive(true);
-    if (scheduleValidityCheck) {
-      validityCheckScheduler.start();
-    }
-  }
-
-  private void checkValidity() {
-    connectedState.setActive(isConnectionValid());
-    if (!connectedState.isActive()) {
-      validityCheckScheduler.stop();
-    }
+    onConnectEvent.fire();
   }
 }

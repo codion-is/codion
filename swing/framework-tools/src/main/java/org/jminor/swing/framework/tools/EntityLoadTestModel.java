@@ -33,6 +33,7 @@ public abstract class EntityLoadTestModel<M extends EntityApplicationModel> exte
    * Default value: localhost
    */
   public static final Value<String> LOAD_TEST_REMOTE_HOSTNAME = Configuration.stringValue("jminor.loadtest.remote.hostname", "localhost");
+
   /**
    * Specifies the initial think time setting for the load test client
    * (max think time = thinktime, min think time = max think time / 2)<br>
@@ -57,14 +58,14 @@ public abstract class EntityLoadTestModel<M extends EntityApplicationModel> exte
 
   /**
    * Instantiates a new EntityLoadTestModel.
-   * Note that {@link EntityConnectionProvider#CONNECTION_SCHEDULE_VALIDATION} is set to false when this class is instantiated
+   * Note that {@link EntityApplicationModel#SCHEDULE_CONNECTION_VALIDATION} is set to false when this class is instantiated
    * @param user the default user
    * @param usageScenarios the usage scenarios
    */
   public EntityLoadTestModel(final User user, final Collection<? extends UsageScenario<M>> usageScenarios) {
     super(user, usageScenarios, LOAD_TEST_THINKTIME.get(), LOAD_TEST_LOGIN_DELAY.get(),
             LOAD_TEST_BATCH_SIZE.get());
-    EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.set(false);
+    EntityApplicationModel.SCHEDULE_CONNECTION_VALIDATION.set(false);
   }
 
   /** {@inheritDoc} */

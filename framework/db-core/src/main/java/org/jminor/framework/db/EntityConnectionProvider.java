@@ -4,7 +4,7 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.StateObserver;
+import org.jminor.common.EventListener;
 import org.jminor.common.User;
 import org.jminor.common.Value;
 import org.jminor.common.Version;
@@ -56,13 +56,6 @@ public interface EntityConnectionProvider<T extends EntityConnection> {
   Value<String> CLIENT_CONNECTION_TYPE = Configuration.stringValue("jminor.client.connectionType", CONNECTION_TYPE_LOCAL);
 
   /**
-   * Specifies whether client connections, remote or local, should schedule a periodic validity check of the connection.
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  Value<Boolean> CONNECTION_SCHEDULE_VALIDATION = Configuration.booleanValue("jminor.connection.scheduleValidation", true);
-
-  /**
    * @return the underlying domain entities
    */
   Entities getDomain();
@@ -97,16 +90,25 @@ public interface EntityConnectionProvider<T extends EntityConnection> {
 
   /**
    * @return true if a connection has been established, note that this does not check if the actual
-   * connection is healthy, only that one has been established.
+   * connection is valid, only that one has been established.
+   * @see #isConnectionValid()
    */
   boolean isConnected();
 
   /**
-   * Returns a state which is active when this provider is connected, note that this state is only updated
-   * if {@link EntityConnectionProvider#CONNECTION_SCHEDULE_VALIDATION} is set to true
-   * @return a state active when this provider is connected
+   * @return true if a connection has been establised and the connection is in a valid state
    */
-  StateObserver getConnectedObserver();
+  boolean isConnectionValid();
+
+  /**
+   * @param listener a listener notified each time the underlying connection is connected
+   */
+  void addOnConnectListener(final EventListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeOnConnectListener(final EventListener listener);
 
   /**
    * Logs out, disconnects and performs cleanup if required
