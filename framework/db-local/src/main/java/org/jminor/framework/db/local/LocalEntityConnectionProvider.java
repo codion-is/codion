@@ -11,7 +11,6 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 
 import org.slf4j.Logger;
@@ -54,24 +53,6 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * @param database the Database instance to base this connection provider on
    */
   public LocalEntityConnectionProvider(final Database database) {
-    this(database, EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get());
-  }
-
-  /**
-   * Instantiates a new LocalEntityConnectionProvider
-   * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
-   */
-  public LocalEntityConnectionProvider(final boolean scheduleValidityCheck) {
-    this(Databases.getInstance(), scheduleValidityCheck);
-  }
-
-  /**
-   * Instantiates a new LocalEntityConnectionProvider
-   * @param database the Database instance to base this connection provider on
-   * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
-   */
-  public LocalEntityConnectionProvider(final Database database, final boolean scheduleValidityCheck) {
-    super(scheduleValidityCheck);
     this.database = Objects.requireNonNull(database, "database");
   }
 

@@ -41,7 +41,10 @@ public class OracleDatabaseTest {
   @Test
   public void getURL() {
     final OracleDatabase db = new OracleDatabase("host", 1234, "sid");
+    OracleDatabase.USE_LEGACY_SID.set(true);
     assertEquals("jdbc:oracle:thin:@host:1234:sid", db.getURL(null));
+    OracleDatabase.USE_LEGACY_SID.set(false);
+    assertEquals("jdbc:oracle:thin:@host:1234/sid", db.getURL(null));
   }
 
   @Test

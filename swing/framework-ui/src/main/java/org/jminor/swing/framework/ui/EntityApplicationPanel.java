@@ -832,10 +832,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final Comparator<String> comparator = TextUtil.getSpaceAwareCollator();
     final Entities domain = applicationModel.getDomain();
     supportPanelProviders.sort((ep1, ep2) -> {
-        final String thisCompare = ep1.getCaption() == null ? domain.getCaption(ep1.getEntityId()) : ep1.getCaption();
-        final String thatCompare = ep2.getCaption() == null ? domain.getCaption(ep2.getEntityId()) : ep2.getCaption();
+      final String thisCompare = ep1.getCaption() == null ? domain.getCaption(ep1.getEntityId()) : ep1.getCaption();
+      final String thatCompare = ep2.getCaption() == null ? domain.getCaption(ep2.getEntityId()) : ep2.getCaption();
 
-        return comparator.compare(thisCompare, thatCompare);
+      return comparator.compare(thisCompare, thatCompare);
     });
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES),
             FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
@@ -1218,7 +1218,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private void bindEventsInternal() {
-    applicationModel.getConnectionProvider().getConnectedObserver().addDataListener(active ->
+    applicationModel.getConnectionValidObserver().addDataListener(active ->
             setParentWindowTitle(active ? frameTitle : frameTitle + " - " + Messages.get(Messages.NOT_CONNECTED)));
   }
 

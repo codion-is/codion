@@ -1,6 +1,5 @@
 package org.jminor.framework.db;
 
-import org.jminor.common.StateObserver;
 import org.jminor.common.User;
 import org.jminor.common.Util;
 
@@ -29,26 +28,26 @@ public final class AbstractEntityConnectionProviderTest {
     assertEquals(USER, provider.getUser());
     assertNotNull(provider.getConditions());
 
-    final StateObserver connectedObserver = provider.getConnectedObserver();
-
     final EntityConnection connection1 = provider.getConnection();
-    assertTrue(connectedObserver.isActive());
+    assertTrue(provider.isConnectionValid());
     provider.disconnect();
-    assertFalse(connectedObserver.isActive());
+    assertFalse(provider.isConnectionValid());
 
     final EntityConnection connection2 = provider.getConnection();
-    assertTrue(connectedObserver.isActive());
+    assertTrue(provider.isConnectionValid());
     assertNotEquals(connection1, connection2);
 
     connection2.disconnect();
+    assertFalse(provider.isConnectionValid());
     final EntityConnection connection3 = provider.getConnection();
     assertNotEquals(connection2, connection3);
 
     provider.setUser(USER);
     assertFalse(provider.isConnected());
+    assertFalse(provider.isConnectionValid());
 
     final EntityConnection connection4 = provider.getConnection();
-    assertTrue(connectedObserver.isActive());
+    assertTrue(provider.isConnectionValid());
     assertNotEquals(connection3, connection4);
 
     provider.setUser(null);
@@ -56,10 +55,6 @@ public final class AbstractEntityConnectionProviderTest {
   }
 
   private static final class TestProvider extends AbstractEntityConnectionProvider {
-
-    public TestProvider() {
-      super(true);
-    }
 
     @Override
     protected EntityConnection connect() {
