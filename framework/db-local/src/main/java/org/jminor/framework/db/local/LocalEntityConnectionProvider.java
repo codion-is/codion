@@ -8,6 +8,7 @@ import org.jminor.common.MethodLogger;
 import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.db.Database;
+import org.jminor.common.db.Databases;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Entities;
@@ -44,7 +45,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * Instantiates a new LocalEntityConnectionProvider
    */
   public LocalEntityConnectionProvider() {
-    this(EntityConnectionProvider.CONNECTION_SCHEDULE_VALIDATION.get());
+    this(Databases.getInstance());
   }
 
   /**
