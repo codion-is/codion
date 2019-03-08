@@ -217,6 +217,10 @@ public class NavigableImagePanel extends JPanel {
       return (int) Math.round(y);
     }
 
+    public Point toPoint() {
+      return new Point(getIntX(), getIntY());
+    }
+
     @Override
     public String toString() {
       return "[Coordinates: x=" + x + ",y=" + y + "]";
@@ -461,6 +465,28 @@ public class NavigableImagePanel extends JPanel {
   private void centerImage() {
     originX = (getWidth() - getScreenImageWidth()) / 2;
     originY = (getHeight() - getScreenImageHeight()) / 2;
+  }
+
+  /**
+   * Centers the image on the given image coordinates
+   * @param imageCoordinates the image coordinates on which to center the image
+   */
+  public final void centerImage(final Coordinates imageCoordinates) {
+    centerImage(imageToPanelCoords(imageCoordinates).toPoint());
+  }
+
+  /**
+   * If the given point on this panel is within the image the image
+   * is centered on that point.
+   * @param point the point on which to center the image
+   */
+  public final void centerImage(final Point point) {
+    if (isInImage(point)) {
+      final Point currentCenter = new Point(getWidth() / 2, getHeight() / 2);
+      originX += (currentCenter.getX() - point.getX());
+      originY += (currentCenter.getY() - point.getY());
+      repaint();
+    }
   }
 
   /**
