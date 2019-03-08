@@ -4953,3 +4953,4 @@
   OracleDatabase, now requires jminor.db.oracle.useLegacySID=true in case of pre-containerized Oracle databases (<12)
   AbstractEntityConnectionProvider, improved synchronization on a lock object, validityCheckScheduler now uses an initial delay
   AbstractEntityConnectionProvider, connection validity check scheduler moved to DefaultEntityApplicationModel
+  NavigableImagePanel.centerImage(Point) and centerImage(Coordinates) added
