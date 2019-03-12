@@ -4954,3 +4954,4 @@
   AbstractEntityConnectionProvider, improved synchronization on a lock object, validityCheckScheduler now uses an initial delay
   AbstractEntityConnectionProvider, connection validity check scheduler moved to DefaultEntityApplicationModel
   NavigableImagePanel.centerImage(Point) and centerImage(Coordinates) added
+  Controls.toggleControl() overloaded with name parameter
