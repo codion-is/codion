@@ -109,7 +109,7 @@ public final class SerializationWhitelist {
     }
 
     Status checkInput(final String classname) {
-      if (allowedClassnames.contains(classname) || allowWildard(classname)) {
+      if (allowedClassnames.contains(classname) || allowWildcard(classname)) {
         return Status.ALLOWED;
       }
       LOG.debug("Serialization rejected: " + classname);
@@ -117,7 +117,7 @@ public final class SerializationWhitelist {
       return Status.REJECTED;
     }
 
-    private boolean allowWildard(final String classname) {
+    private boolean allowWildcard(final String classname) {
       if (allowedWildcardClassnames.isEmpty()) {
         return true;
       }
