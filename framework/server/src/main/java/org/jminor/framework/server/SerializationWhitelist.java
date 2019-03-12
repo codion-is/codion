@@ -11,15 +11,19 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputFilter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Implements a serialization whitelist for Java 8
+ * Implements a serialization whitelist
  */
 public final class SerializationWhitelist {
 
@@ -29,13 +33,19 @@ public final class SerializationWhitelist {
 
   static void configureSerializationWhitelist(final String whitelist, final Boolean dryRun) {
     if (!Util.nullOrEmpty(whitelist)) {
-      java.io.ObjectInputFilter.Config.setSerialFilter(dryRun ? new SerializationFilterDryRun() : new SerializationFilter(whitelist));
-      LOG.debug("Serialization filter whitelist set: " + whitelist + " (dry run: " + dryRun + ")");
+      try (final Stream<String> stream = Files.lines(Paths.get(whitelist))) {
+        ObjectInputFilter.Config.setSerialFilter(dryRun ? new SerializationFilterDryRun() : new SerializationFilter(stream.collect(Collectors.toSet())));
+        LOG.debug("Serialization filter whitelist set: " + whitelist + " (dry run: " + dryRun + ")");
+      }
+      catch (final IOException e) {
+        LOG.error("Unable to read serialization whitelist: " + whitelist);
+        throw new RuntimeException(e);
+      }
     }
   }
 
   static void writeSerializationWhitelist(final String whitelist) {
-    final java.io.ObjectInputFilter serialFilter = java.io.ObjectInputFilter.Config.getSerialFilter();
+    final ObjectInputFilter serialFilter = ObjectInputFilter.Config.getSerialFilter();
     if (serialFilter instanceof SerializationFilterDryRun) {
       writeDryRunWhitelist(whitelist, (SerializationFilterDryRun) serialFilter);
     }
@@ -56,7 +66,7 @@ public final class SerializationWhitelist {
     }
   }
 
-  private static final class SerializationFilterDryRun implements java.io.ObjectInputFilter {
+  private static final class SerializationFilterDryRun implements ObjectInputFilter {
 
     private final Set<Class> deserializedClasses = new HashSet<>();
 
@@ -71,29 +81,55 @@ public final class SerializationWhitelist {
     }
   }
 
-  private static final class SerializationFilter implements java.io.ObjectInputFilter {
+  static final class SerializationFilter implements ObjectInputFilter {
 
-    private final Set<String> allowedClassnames;
+    private static final String WILDCARD = "*";
 
-    private SerializationFilter(final String whitelist) {
-      try (final Stream<String> stream = Files.lines(Paths.get(whitelist))) {
-        this.allowedClassnames = stream.collect(Collectors.toSet());
-      }
-      catch (final IOException e) {
-        LOG.error("Unable to read serialization whitelist: " + whitelist);
-        throw new RuntimeException(e);
-      }
+    private final Set<String> allowedClassnames = new HashSet<>();
+    private final List<String> allowedWildcardClassnames = new ArrayList<>();
+
+    SerializationFilter(final Collection<String>whitelistItems) {
+      whitelistItems.forEach(whitelistItem -> {
+        if (whitelistItem.endsWith(WILDCARD)) {
+          allowedWildcardClassnames.add(whitelistItem.substring(0, whitelistItem.length() - 1));
+        }
+        else {
+          allowedClassnames.add(whitelistItem);
+        }
+      });
     }
 
     @Override
     public Status checkInput(final FilterInfo filterInfo) {
       final Class clazz = filterInfo.serialClass();
-      if (clazz != null && !allowedClassnames.contains(clazz.getName())) {
-        LOG.debug("Serialization rejected: " + clazz.getName());
-        return Status.REJECTED;
+      if (clazz == null) {
+        return Status.ALLOWED;
       }
 
-      return Status.ALLOWED;
+      return checkInput(clazz.getName());
+    }
+
+    Status checkInput(final String classname) {
+      if (allowedClassnames.contains(classname) || allowWildcard(classname)) {
+        return Status.ALLOWED;
+      }
+      LOG.debug("Serialization rejected: " + classname);
+
+      return Status.REJECTED;
+    }
+
+    private boolean allowWildcard(final String classname) {
+      if (allowedWildcardClassnames.isEmpty()) {
+        return true;
+      }
+
+      for (int i = 0; i < allowedWildcardClassnames.size(); i++) {
+        if (classname.startsWith(allowedWildcardClassnames.get(i))) {
+          return true;
+        }
+      }
+
+      return false;
     }
   }
 }

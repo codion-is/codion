@@ -144,8 +144,6 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   protected static final String SHUTDOWN = "shutdown";
   protected static final String RESTART = "restart";
 
-  /** Only Java 8 compatible for now */
-  private static final boolean OBJECT_INPUT_FILTER_ON_CLASSPATH = Util.onClasspath("sun.misc.ObjectInputFilter");
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
   private static final String FROM_CLASSPATH = "' from classpath";
 
@@ -525,9 +523,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
     catch (final NoSuchObjectException ignored) {/*ignored*/}
     UnicastRemoteObject.unexportObject(serverAdmin, true);
-    if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
-      SerializationWhitelist.writeSerializationWhitelist(SERIALIZATION_FILTER_WHITELIST.get());
-    }
+    SerializationWhitelist.writeSerializationWhitelist(SERIALIZATION_FILTER_WHITELIST.get());
   }
 
   private void disconnectQuietly(final AbstractRemoteEntityConnection connection) {
