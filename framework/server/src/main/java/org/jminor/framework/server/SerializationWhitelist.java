@@ -13,8 +13,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,8 +33,14 @@ public final class SerializationWhitelist {
 
   static void configureSerializationWhitelist(final String whitelist, final Boolean dryRun) {
     if (!Util.nullOrEmpty(whitelist)) {
-      sun.misc.ObjectInputFilter.Config.setSerialFilter(dryRun ? new SerializationFilterDryRun() : new SerializationFilter(whitelist));
-      LOG.debug("Serialization filter whitelist set: " + whitelist + " (dry run: " + dryRun + ")");
+      try (final Stream<String> stream = Files.lines(Paths.get(whitelist))) {
+        sun.misc.ObjectInputFilter.Config.setSerialFilter(dryRun ? new SerializationFilterDryRun() : new SerializationFilter(stream.collect(Collectors.toSet())));
+        LOG.debug("Serialization filter whitelist set: " + whitelist + " (dry run: " + dryRun + ")");
+      }
+      catch (final IOException e) {
+        LOG.error("Unable to read serialization whitelist: " + whitelist);
+        throw new RuntimeException(e);
+      }
     }
   }
 
@@ -71,29 +81,58 @@ public final class SerializationWhitelist {
     }
   }
 
-  private static final class SerializationFilter implements sun.misc.ObjectInputFilter {
+  static final class SerializationFilter implements sun.misc.ObjectInputFilter {
 
-    private final Set<String> allowedClassnames;
+    private static final String WILDCARD = "*";
 
-    private SerializationFilter(final String whitelist) {
-      try (final Stream<String> stream = Files.lines(Paths.get(whitelist))) {
-        this.allowedClassnames = stream.collect(Collectors.toSet());
-      }
-      catch (final IOException e) {
-        LOG.error("Unable to read serialization whitelist: " + whitelist);
-        throw new RuntimeException(e);
-      }
+    private final Set<String> allowedClassnames = new HashSet<>();
+    private final List<String> allowedWildcardClassnames = new ArrayList<>();
+
+    SerializationFilter(final Collection<String>whitelistItems) {
+      whitelistItems.forEach(new Consumer<String>() {
+        @Override
+        public void accept(final String string) {
+          if (string.endsWith(WILDCARD)) {
+            allowedWildcardClassnames.add(string.substring(0, string.length() - 1));
+          }
+          else {
+            allowedClassnames.add(string);
+          }
+        }
+      });
     }
 
     @Override
     public Status checkInput(final FilterInfo filterInfo) {
       final Class clazz = filterInfo.serialClass();
-      if (clazz != null && !allowedClassnames.contains(clazz.getName())) {
-        LOG.debug("Serialization rejected: " + clazz.getName());
-        return Status.REJECTED;
+      if (clazz == null) {
+        return Status.ALLOWED;
       }
 
-      return Status.ALLOWED;
+      return checkInput(clazz.getName());
+    }
+
+    Status checkInput(final String classname) {
+      if (allowedClassnames.contains(classname) || allowWildard(classname)) {
+        return Status.ALLOWED;
+      }
+      LOG.debug("Serialization rejected: " + classname);
+
+      return Status.REJECTED;
+    }
+
+    private boolean allowWildard(final String classname) {
+      if (allowedWildcardClassnames.isEmpty()) {
+        return true;
+      }
+
+      for (int i = 0; i < allowedWildcardClassnames.size(); i++) {
+        if (classname.startsWith(allowedWildcardClassnames.get(i))) {
+          return true;
+        }
+      }
+
+      return false;
     }
   }
 }
