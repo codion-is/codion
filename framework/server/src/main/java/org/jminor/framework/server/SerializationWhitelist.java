@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -89,15 +88,12 @@ public final class SerializationWhitelist {
     private final List<String> allowedWildcardClassnames = new ArrayList<>();
 
     SerializationFilter(final Collection<String>whitelistItems) {
-      whitelistItems.forEach(new Consumer<String>() {
-        @Override
-        public void accept(final String string) {
-          if (string.endsWith(WILDCARD)) {
-            allowedWildcardClassnames.add(string.substring(0, string.length() - 1));
-          }
-          else {
-            allowedClassnames.add(string);
-          }
+      whitelistItems.forEach(whitelistItem -> {
+        if (whitelistItem.endsWith(WILDCARD)) {
+          allowedWildcardClassnames.add(whitelistItem.substring(0, whitelistItem.length() - 1));
+        }
+        else {
+          allowedClassnames.add(whitelistItem);
         }
       });
     }
