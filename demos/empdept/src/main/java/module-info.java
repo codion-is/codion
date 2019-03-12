@@ -17,4 +17,6 @@ module org.jminor.framework.demos.empdept {
           to org.jminor.swing.framework.model;
   exports org.jminor.framework.demos.empdept.beans.ui
           to org.jminor.swing.framework.ui;
+  exports org.jminor.framework.demos.empdept.javafx
+          to javafx.graphics;
 }

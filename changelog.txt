@@ -4963,3 +4963,5 @@
   NavigableImagePanel.centerImage(Point) and centerImage(Coordinates) added
   Controls.toggleControl() overloaded with name parameter
   SerializationWhitelist now supports simple wildcard entries org.jminor.* or org.jminor.common.Value*
+  JavaFX upgraded to 11
+  EmpDept JavaFX demo module-info fixed, run configuration added

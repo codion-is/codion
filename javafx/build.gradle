@@ -9,10 +9,10 @@ dependencies {
     testImplementation project(':jminor-framework-db-local')
     testImplementation project(path: ':jminor-framework-model', configuration: 'testArtifact')
 
-    compile 'org.openjfx:javafx-base:11-ea+25:linux'
-    compile 'org.openjfx:javafx-graphics:11-ea+25:linux'
-    compile 'org.openjfx:javafx-controls:11-ea+25:linux'
-    compile 'org.openjfx:javafx-swing:11-ea+25:linux'
+    compile 'org.openjfx:javafx-base:11:linux'
+    compile 'org.openjfx:javafx-graphics:11:linux'
+    compile 'org.openjfx:javafx-controls:11:linux'
+    compile 'org.openjfx:javafx-swing:11:linux'
 
     implementation "org.json:json:${jsonVersion}"
 
