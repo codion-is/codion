@@ -4965,3 +4965,4 @@
   SerializationWhitelist now supports simple wildcard entries org.jminor.* or org.jminor.common.Value*
   JavaFX upgraded to 11
   EmpDept JavaFX demo module-info fixed, run configuration added
+  A couple of third party dependencies upgraded
