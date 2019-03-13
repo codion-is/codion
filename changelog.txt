@@ -4956,3 +4956,4 @@
   NavigableImagePanel.centerImage(Point) and centerImage(Coordinates) added
   Controls.toggleControl() overloaded with name parameter
   SerializationWhitelist now supports simple wildcard entries org.jminor.* or org.jminor.common.Value*
+  A couple of third party dependencies upgraded

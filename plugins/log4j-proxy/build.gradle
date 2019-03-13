@@ -1,11 +1,6 @@
 dependencies {
     api project(':jminor-common-core')
 
-    implementation 'org.apache.logging.log4j:log4j-api:2.11.1'
-    implementation 'org.apache.logging.log4j:log4j-core:2.11.1'
-}
-
-compileJava {
-    //gradle deprecation warning about leaking annotation processors :|
-    options.compilerArgs += ["-proc:none"]
+    implementation 'org.apache.logging.log4j:log4j-api:2.11.2'
+    implementation 'org.apache.logging.log4j:log4j-core:2.11.2'
 }

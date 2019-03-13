@@ -1,6 +1,6 @@
 plugins {
     id "org.sonarqube" version "2.7"
-    id "com.github.ben-manes.versions" version "0.20.0"
+    id "com.github.ben-manes.versions" version "0.21.0"
 }
 
 ext {
@@ -11,14 +11,14 @@ ext {
     jcalendarVersion = '1.4'
     jcommonVersion = '1.0.24'
     jfreeChartVersion = '1.5.0'
-    jettyVersion = '9.4.14.v20181114'
+    jettyVersion = '9.4.15.v20190215'
     httpClientVersion = '4.5.7'
     jaxbApiVersion = '2.3.0'
     javaxActivationVersion = '1.2.0'
     junitVersion = '5.4.0'
     jacocoVersion = '0.8.3'
     //jasperreports
-    jasperReportsVersion = '6.6.0'
+    jasperReportsVersion = '6.7.1'
     commonsLoggingVersion = '1.2'
     commonsDigesterVersion = '2.1'
     commonsCollectionsVersion = '3.2.2'
@@ -42,6 +42,7 @@ configure(project.frameworkModules) {
     apply plugin: 'java-library'
     apply plugin: 'jacoco'
     apply plugin: 'maven-publish'
+    apply plugin: "com.github.ben-manes.versions"
 
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8

@@ -13,7 +13,7 @@ dependencies {
     }
 
     testRuntime 'org.apache.commons:commons-jexl:2.1.1'
-    testRuntime 'com.thoughtworks.xstream:xstream:1.4.10'
+    testRuntime 'com.thoughtworks.xstream:xstream:1.4.11.1'
     testRuntime 'commons-logging:commons-logging:1.2'
     testRuntime 'com.itextpdf:itextpdf:5.5.6'
 
