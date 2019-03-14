@@ -5,4 +5,6 @@ module org.jminor.swing.framework.ui {
 
   exports org.jminor.swing.framework.ui;
   exports org.jminor.swing.framework.ui.reporting;
+
+  uses org.jminor.common.CredentialsProvider;
 }
