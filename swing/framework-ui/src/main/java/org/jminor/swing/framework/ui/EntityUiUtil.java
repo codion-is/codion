@@ -44,10 +44,8 @@ import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.valuemap.ValueLinkValidators;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
-import javax.swing.Action;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -61,7 +59,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.AbstractDocument;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Point;
@@ -822,29 +819,8 @@ public final class EntityUiUtil {
    */
   public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final String foreignKeyPropertyId,
                                                        final boolean filterButtonTakesFocus) {
-    return createEastButtonPanel(entityComboBox, entityComboBox.createForeignKeyFilterControl(foreignKeyPropertyId),
+    return UiUtil.createEastButtonPanel(entityComboBox, entityComboBox.createForeignKeyFilterControl(foreignKeyPropertyId),
             filterButtonTakesFocus);
-  }
-
-  /**
-   * Creates a panel with centerComponent in the BorderLayout.CENTER position and a button based on buttonAction
-   * in the BorderLayout.EAST position, with the button having size UiUtil.DIMENSION_TEXT_FIELD_SQUARE.
-   * @param centerComponent the center component
-   * @param buttonAction the button action
-   * @param buttonFocusable if true then the button is focusable, otherwise not
-   * @return a panel
-   */
-  public static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction,
-                                             final boolean buttonFocusable) {
-    final JPanel panel = new JPanel(new BorderLayout());
-    final JButton button = new JButton(buttonAction);
-    button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
-    button.setFocusable(buttonFocusable);
-
-    panel.add(centerComponent, BorderLayout.CENTER);
-    panel.add(button, BorderLayout.EAST);
-
-    return panel;
   }
 
   /**

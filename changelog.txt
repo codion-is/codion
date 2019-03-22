@@ -4967,3 +4967,4 @@
   EmpDept JavaFX demo module-info fixed, run configuration added
   A couple of third party dependencies upgraded
   Module org.jminor.swing.framework.ui now uses org.jminor.common.CredentialsProvider
+  EntityUiUtil.createEastButtonPanel() moved to UiUtil, button size now follows preferred size of centerComponent
