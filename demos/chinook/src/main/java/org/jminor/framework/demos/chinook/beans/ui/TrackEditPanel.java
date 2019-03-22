@@ -4,13 +4,13 @@
 package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.swing.common.ui.TextInputPanel;
+import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
-import org.jminor.swing.framework.ui.EntityUiUtil;
 
 import javax.swing.Action;
 import javax.swing.JLabel;
@@ -37,12 +37,12 @@ public class TrackEditPanel extends EntityEditPanel {
     final Action newMediaTypeAction = EntityEditPanel.createEditPanelAction(mediaTypeBox,
             new EntityPanelProvider(T_MEDIATYPE, getEditModel().getDomain().getCaption(T_MEDIATYPE))
                     .setEditPanelClass(MediaTypeEditPanel.class));
-    final JPanel mediaTypePanel = EntityUiUtil.createEastButtonPanel(mediaTypeBox, newMediaTypeAction, false);
+    final JPanel mediaTypePanel = UiUtil.createEastButtonPanel(mediaTypeBox, newMediaTypeAction, false);
     final EntityComboBox genreBox = createForeignKeyComboBox(TRACK_GENREID_FK);
     final Action newGenreAction = EntityEditPanel.createEditPanelAction(genreBox,
             new EntityPanelProvider(T_GENRE, getEditModel().getDomain().getCaption(T_GENRE))
                     .setEditPanelClass(GenreEditPanel.class));
-    final JPanel genrePanel = EntityUiUtil.createEastButtonPanel(genreBox, newGenreAction, false);
+    final JPanel genrePanel = UiUtil.createEastButtonPanel(genreBox, newGenreAction, false);
     final TextInputPanel txtComposer = createTextInputPanel(TRACK_COMPOSER);
     txtComposer.getTextField().setColumns(18);
     final IntegerField txtMilliseconds = (IntegerField) createTextField(TRACK_MILLISECONDS);

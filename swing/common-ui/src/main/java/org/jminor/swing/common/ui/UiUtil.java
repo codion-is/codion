@@ -1728,6 +1728,27 @@ public final class UiUtil {
   }
 
   /**
+   * Creates a panel with {@code centerComponent} in the BorderLayout.CENTER position and a button based on buttonAction
+   * in the BorderLayout.EAST position, with the buttons preferred size based on the preferred height of {@code centerComponent}.
+   * @param centerComponent the center component
+   * @param buttonAction the button action
+   * @param buttonFocusable if true then the button is focusable, otherwise not
+   * @return a panel
+   */
+  public static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction,
+                                             final boolean buttonFocusable) {
+    final JPanel panel = new JPanel(new BorderLayout());
+    final JButton button = new JButton(buttonAction);
+    button.setPreferredSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height));
+    button.setFocusable(buttonFocusable);
+
+    panel.add(centerComponent, BorderLayout.CENTER);
+    panel.add(button, BorderLayout.EAST);
+
+    return panel;
+  }
+
+  /**
    * Displays the given component in a dialog
    * @param owner the dialog owner
    * @param component the component to display

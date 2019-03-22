@@ -10,7 +10,6 @@ import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
-import org.jminor.swing.framework.ui.EntityUiUtil;
 
 import java.awt.Dimension;
 
@@ -32,7 +31,7 @@ public class TagItemEditPanel extends EntityEditPanel {
     box.setPreferredSize(new Dimension(180, UiUtil.getPreferredTextFieldHeight()));
     addPropertyPanel(TAG_ITEM_ITEM_FK);
     box = createForeignKeyComboBox(TAG_ITEM_TAG_FK);
-    add(createPropertyPanel(TAG_ITEM_TAG_FK, EntityUiUtil.createEastButtonPanel(box,
+    add(createPropertyPanel(TAG_ITEM_TAG_FK, UiUtil.createEastButtonPanel(box,
             createEditPanelAction(box, new EntityPanelProvider(Petstore.T_TAG,
                     getEditModel().getDomain().getCaption(Petstore.T_TAG)).setEditPanelClass(TagEditPanel.class)), false)));
   }

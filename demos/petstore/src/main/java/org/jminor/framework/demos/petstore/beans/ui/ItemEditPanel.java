@@ -10,7 +10,6 @@ import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
-import org.jminor.swing.framework.ui.EntityUiUtil;
 
 import javax.swing.JTextField;
 
@@ -39,13 +38,13 @@ public class ItemEditPanel extends EntityEditPanel {
     box = createForeignKeyComboBox(ITEM_C0NTACT_INFO_FK);
     box.setPopupWidth(200);
     box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
-    add(createPropertyPanel(ITEM_C0NTACT_INFO_FK, EntityUiUtil.createEastButtonPanel(box,
+    add(createPropertyPanel(ITEM_C0NTACT_INFO_FK, UiUtil.createEastButtonPanel(box,
             createEditPanelAction(box, new EntityPanelProvider(Petstore.T_SELLER_CONTACT_INFO,
                     getEditModel().getDomain().getCaption(Petstore.T_SELLER_CONTACT_INFO)).setEditPanelClass(ContactInfoEditPanel.class)), false)));
     box = createForeignKeyComboBox(ITEM_ADDRESS_FK);
     box.setPopupWidth(200);
     box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
-    add(createPropertyPanel(ITEM_ADDRESS_FK, EntityUiUtil.createEastButtonPanel(box,
+    add(createPropertyPanel(ITEM_ADDRESS_FK, UiUtil.createEastButtonPanel(box,
             createEditPanelAction(box, new EntityPanelProvider(Petstore.T_ADDRESS,
                     getEditModel().getDomain().getCaption(Petstore.T_ADDRESS)).setEditPanelClass(AddressEditPanel.class)), false)));
     createTextField(ITEM_IMAGE_URL);
