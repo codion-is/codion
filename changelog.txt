@@ -4947,3 +4947,4 @@
   IntelliJ code analysis run
   Entity.Validator.performLengthValidation() added, implemented and used in Entities.Validator
   H2Database upgraded to 1.4.198, plus some minor refactoring
+  [backported from 0.11.7] EntityUiUtil.createEastButtonPanel() button follows centerComponent size

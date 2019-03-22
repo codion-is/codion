@@ -63,6 +63,7 @@ import javax.swing.JTextField;
 import javax.swing.text.AbstractDocument;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.text.DecimalFormat;
@@ -838,7 +839,7 @@ public final class EntityUiUtil {
                                              final boolean buttonFocusable) {
     final JPanel panel = new JPanel(new BorderLayout());
     final JButton button = new JButton(buttonAction);
-    button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
+    button.setPreferredSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height));
     button.setFocusable(buttonFocusable);
 
     panel.add(centerComponent, BorderLayout.CENTER);
