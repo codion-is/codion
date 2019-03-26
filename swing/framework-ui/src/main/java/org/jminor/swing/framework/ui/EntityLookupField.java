@@ -11,6 +11,7 @@ import org.jminor.common.States;
 import org.jminor.common.Util;
 import org.jminor.common.Values;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.table.SortingDirective;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -24,6 +25,7 @@ import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.textfield.TextFieldHint;
+import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -36,17 +38,22 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.Timer;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.Window;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -58,11 +65,14 @@ import java.util.ResourceBundle;
  *
  * The lookup is triggered by the ENTER key and behaves in the following way:
  * If the lookup result is empty a message is shown, if a single entity fits the
- * condition then that entity is selected, otherwise a list containing the entities
+ * condition then that entity is selected, otherwise a component displaying the entities
  * fitting the condition is shown in a dialog allowing either a single or multiple
  * selection based on the lookup model settings.
  *
+ * {@link ListSelectionProvider} is the default {@link SelectionProvider}.
+ *
  * @see EntityLookupModel
+ * @see #setSelectionProvider(SelectionProvider)
  */
 public final class EntityLookupField extends JTextField {
 
@@ -81,6 +91,8 @@ public final class EntityLookupField extends JTextField {
    * the "empty result" message, which happens on windows
    */
   private final State lookupEnabledState = States.state(true);
+
+  private SelectionProvider selectionProvider;
 
   private Color validBackgroundColor;
   private Color invalidBackgroundColor;
@@ -103,6 +115,7 @@ public final class EntityLookupField extends JTextField {
     Objects.requireNonNull(lookupModel, "lookupModel");
     this.model = lookupModel;
     this.settingsPanel = new SettingsPanel(lookupModel);
+    this.selectionProvider = new ListSelectionProvider(model);
     linkToModel();
     setValidBackgroundColor(getBackground());
     setInvalidBackgroundColor(Color.LIGHT_GRAY);
@@ -122,6 +135,17 @@ public final class EntityLookupField extends JTextField {
    */
   public EntityLookupModel getModel() {
     return model;
+  }
+
+  /**
+   * Sets the SelectionProvider, that is, the object responsible for providing the comnponent used
+   * for selecting items from the lookup result.
+   * @param selectionProvider the {@link SelectionProvider} implementation to use when presenting
+   * a selection dialog to the user
+   * @throws NullPointerException in case {@code selectionProvier} is null
+   */
+  public void setSelectionProvider(final SelectionProvider selectionProvider) {
+    this.selectionProvider = Objects.requireNonNull(selectionProvider);
   }
 
   /**
@@ -153,17 +177,9 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void selectEntities(final List<Entity> entities) {
-    final JList<Entity> list = new JList<>(entities.toArray(new Entity[0]));
-    final Window owner = UiUtil.getParentWindow(this);
-    final JDialog dialog = new JDialog(owner, MESSAGES.getString("select_entity"));
-    final Control okControl = Controls.control(() -> {
-      getModel().setSelectedEntities(list.getSelectedValuesList());
-      dialog.dispose();
-    }, Messages.get(Messages.OK));
-    final Action cancelAction = new UiUtil.DisposeWindowAction(dialog);
-    list.setSelectionMode(model.getMultipleSelectionAllowedValue().get() ?
-            ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
-    UiUtil.prepareScrollPanelDialog(dialog, this, list, okControl, cancelAction);
+    final JDialog dialog = new JDialog(UiUtil.getParentWindow(this), MESSAGES.getString("select_entity"));
+    UiUtil.prepareScrollPanelDialog(dialog, this, selectionProvider.getSelectionComponent(entities),
+            selectionProvider.getSelectControl(), new UiUtil.DisposeWindowAction(dialog));
     dialog.setVisible(true);
   }
 
@@ -350,6 +366,133 @@ public final class EntityLookupField extends JTextField {
       panel.add(boxPostfixWildcard);
 
       return panel;
+    }
+  }
+
+  /**
+   * Provides a JComponent for selecting one or more of a given set of entities
+   */
+  public interface SelectionProvider {
+    /**
+     * @param entities the entities to display in the component
+     * @return the component to display for selecting entities
+     */
+    JComponent getSelectionComponent(final List<Entity> entities);
+
+    /**
+     * @return a Control which sets the selected entities in the underlying {@link EntityLookupModel}
+     * and disposes the selection dialog
+     */
+    Control getSelectControl();
+  }
+
+  /**
+   * A {@link SelectionProvider} implementation based on {@link JList}
+   */
+  public static final class ListSelectionProvider implements SelectionProvider {
+
+    private final JList list = new JList();
+    private final Control selectControl;
+
+    /**
+     * @param model the {@link EntityLookupModel}
+     */
+    public ListSelectionProvider(final EntityLookupModel model) {
+      this.selectControl = Controls.control(() -> {
+        model.setSelectedEntities(list.getSelectedValuesList());
+        UiUtil.getParentDialog(list).dispose();
+      }, Messages.get(Messages.OK));
+      list.setSelectionMode(model.getMultipleSelectionAllowedValue().get() ?
+              ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
+      list.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(final MouseEvent e) {
+          if (e.getClickCount() == 2) {
+            selectControl.actionPerformed(null);
+          }
+        }
+      });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public JComponent getSelectionComponent(final List<Entity> entities) {
+      list.setListData(entities.toArray(new Entity[0]));
+      list.removeSelectionInterval(0, list.getModel().getSize());
+      list.scrollRectToVisible(list.getCellBounds(0, 0));
+
+      return list;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Control getSelectControl() {
+      return selectControl;
+    }
+  }
+
+  /**
+   * A {@link SelectionProvider} implementation based on {@link EntityTablePanel}
+   */
+  public static final class TableSelectionProvider implements SelectionProvider {
+
+    private final EntityTablePanel tablePanel;
+    private final Control selectControl;
+
+    /**
+     * @param model the {@link EntityLookupModel}
+     */
+    public TableSelectionProvider(final EntityLookupModel model) {
+      final SwingEntityTableModel tableModel = new SwingEntityTableModel(model.getEntityId(), model.getConnectionProvider()) {
+        @Override
+        protected List<Entity> performQuery() {
+          return Collections.emptyList();
+        }
+      };
+      this.tablePanel = new EntityTablePanel(tableModel);
+      this.selectControl = Controls.control(() -> {
+        model.setSelectedEntities(tableModel.getSelectionModel().getSelectedItems());
+        UiUtil.getParentDialog(tablePanel).dispose();
+      }, Messages.get(Messages.OK));
+      final JTable table = tablePanel.getJTable();
+      table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+      final String enterActionKey = "EntityLookupField.enter";
+      table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enterActionKey);
+      table.getActionMap().put(enterActionKey, selectControl);
+      final Collection<Property.ColumnProperty> lookupProperties = model.getLookupProperties();
+      tableModel.getColumnModel().setColumns(lookupProperties.toArray(new Property[0]));
+      tableModel.setQueryConfigurationAllowed(false);
+      tableModel.getSortModel().setSortingDirective((Property) tableModel.getColumnModel().getColumn(0).getIdentifier(),
+              SortingDirective.ASCENDING, false);
+      tablePanel.setIncludePopupMenu(false);
+      tablePanel.setIncludeSouthPanel(false);
+      tablePanel.getJTable().setSelectionMode(model.getMultipleSelectionAllowedValue().get() ?
+              ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
+      tablePanel.setTableDoubleClickAction(selectControl);
+      tablePanel.initializePanel();
+    }
+
+    /**
+     * @return the underlying EntityTablePanel
+     */
+    public EntityTablePanel getEntityTablePanel() {
+      return tablePanel;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public JComponent getSelectionComponent(final List<Entity> entities) {
+      tablePanel.getEntityTableModel().clear();
+      tablePanel.getEntityTableModel().addEntities(entities, false);
+      tablePanel.getJTable().scrollRectToVisible(tablePanel.getJTable().getCellRect(0, 0, true));
+
+      return tablePanel;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Control getSelectControl() {
+      return selectControl;
     }
   }
 }

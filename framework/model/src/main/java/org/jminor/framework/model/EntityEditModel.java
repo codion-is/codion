@@ -249,16 +249,14 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
   /**
    * @param foreignKeyPropertyId the ID of the property for which to retrieve the {@link EntityLookupModel}
    * @return the {@link EntityLookupModel} associated with the {@code property}, if no lookup model
-   * has been initialized for the given property, a new one is created and associated with
-   * the property, to be returned the next time this method is called
+   * has been initialized for the given property, a new one is created, associated with the property and returned.
    */
   EntityLookupModel getForeignKeyLookupModel(final String foreignKeyPropertyId);
 
   /**
    * @param foreignKeyProperty the foreign key property for which to retrieve the {@link EntityLookupModel}
    * @return the {@link EntityLookupModel} associated with the {@code property}, if no lookup model
-   * has been initialized for the given property, a new one is created and associated with
-   * the property, to be returned the next time this method is called
+   * has been initialized for the given property, a new one is created, associated with the property and returned.
    */
   EntityLookupModel getForeignKeyLookupModel(final Property.ForeignKeyProperty foreignKeyProperty);
 

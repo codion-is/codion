@@ -3,9 +3,13 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
+import org.jminor.common.model.table.SortingDirective;
+import org.jminor.framework.domain.Property;
 import org.jminor.swing.common.ui.DateInputPanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
+import org.jminor.swing.framework.ui.EntityLookupField;
 import org.jminor.swing.framework.ui.EntityPanel;
 
 import javax.swing.BorderFactory;
@@ -31,7 +35,8 @@ public class InvoiceEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     setInitialFocusProperty(INVOICE_CUSTOMERID_FK);
-    final JTextField txtCustomer = createForeignKeyLookupField(INVOICE_CUSTOMERID_FK);
+    final EntityLookupField txtCustomer = createForeignKeyLookupField(INVOICE_CUSTOMERID_FK);
+    configureCustomerLookup(txtCustomer);
     txtCustomer.setColumns(16);
     final DateInputPanel datePanel = createDateInputPanel(INVOICE_INVOICEDATE);
     datePanel.getInputField().setColumns(16);
@@ -66,5 +71,14 @@ public class InvoiceEditPanel extends EntityEditPanel {
     setLayout(new BorderLayout(5, 5));
     add(centerBase, BorderLayout.CENTER);
     add(invoiceLinePanel, BorderLayout.EAST);
+  }
+
+  private void configureCustomerLookup(final EntityLookupField txtCustomer) {
+    final EntityLookupField.TableSelectionProvider customerSelectionProvider = new EntityLookupField.TableSelectionProvider(txtCustomer.getModel());
+    final SwingEntityTableModel tableModel = customerSelectionProvider.getEntityTablePanel().getEntityTableModel();
+    tableModel.setColumns(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME);
+    tableModel.getSortModel().setSortingDirective((Property) tableModel.getColumnModel().getColumn(0).getIdentifier(),
+              SortingDirective.ASCENDING, false);
+    txtCustomer.setSelectionProvider(customerSelectionProvider);
   }
 }
