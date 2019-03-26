@@ -4958,3 +4958,5 @@
   SerializationWhitelist now supports simple wildcard entries org.jminor.* or org.jminor.common.Value*
   A couple of third party dependencies upgraded
   EntityUiUtil.createEastButtonPanel() moved to UiUtil, button size now follows preferred size of centerComponent
+  UiUtil.prepareScrollPanelDialog() no longer adds a double click action to the component
+  EntityLookupField.setSelectionProvider() added, now supports EntityTablePanel based selection via EntityLookupField.TableSelectionProvider

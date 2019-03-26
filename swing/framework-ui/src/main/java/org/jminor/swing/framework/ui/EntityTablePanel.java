@@ -123,6 +123,7 @@ import java.util.ResourceBundle;
  * |____________________________________________________|
  * </pre>
  * The search and summary panels can be hidden
+ * Note that {@link #initializePanel()} must be called to initialize this panel before displaying it.
  * @see EntityTableModel
  */
 public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
@@ -279,12 +280,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * @param doubleClickAction the action to perform when a double click is performed on the table
-   * @see #initializePanel()
-   * @throws IllegalStateException in case the panel has already been initialized
+   * @param doubleClickAction the action to perform when a double click is performed on the table, null for no double click action
    */
   public final void setTableDoubleClickAction(final Action doubleClickAction) {
-    checkIfInitialized();
     this.tableDoubleClickAction = doubleClickAction;
   }
 
@@ -1333,9 +1331,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       @Override
       public void mouseClicked(final MouseEvent e) {
         if (e.getClickCount() == 2) {
-          final Action doubleClickAction = getTableDoubleClickAction();
-          if (doubleClickAction != null) {
-            doubleClickAction.actionPerformed(new ActionEvent(getJTable(), -1, "doubleClick"));
+          if (tableDoubleClickAction != null) {
+            tableDoubleClickAction.actionPerformed(new ActionEvent(getJTable(), -1, "doubleClick"));
           }
           tableDoubleClickedEvent.fire();
         }

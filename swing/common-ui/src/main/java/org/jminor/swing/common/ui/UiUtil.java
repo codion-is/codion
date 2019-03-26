@@ -1347,7 +1347,8 @@ public final class UiUtil {
   }
 
   /**
-   * Prepares the dialog.
+   * Prepares a dialog for displaying {@code toScroll}, with OK and Cancel buttons.
+   * Note that the default Enter key action is disabled on the {@code toScroll} component.
    * @param dialog the dialog
    * @param dialogOwner the dialog owner
    * @param toScroll added to a central scroll pane
@@ -1361,14 +1362,6 @@ public final class UiUtil {
     addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, false, okAction);
     toScroll.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-    toScroll.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(final MouseEvent e) {
-        if (e.getClickCount() == 2) {
-          okAction.actionPerformed(null);
-        }
-      }
-    });
     final JButton btnOk = new JButton(okAction);
     final JButton btnCancel = new JButton(cancelAction);
     btnOk.setText(Messages.get(Messages.OK));
@@ -1838,6 +1831,14 @@ public final class UiUtil {
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
     prepareScrollPanelDialog(dialog, dialogOwner, list, okAction, cancelControl);
+    list.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(final MouseEvent e) {
+        if (e.getClickCount() == 2) {
+          okAction.actionPerformed(null);
+        }
+      }
+    });
     if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
       dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
     }
@@ -1865,7 +1866,7 @@ public final class UiUtil {
      * @param window the window to dispose
      */
     public DisposeWindowAction(final Window window) {
-      super("UiUtil.disposeDialog");
+      super("UiUtil.disposeWindow");
       this.window = window;
     }
 
