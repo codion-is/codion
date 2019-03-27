@@ -4970,3 +4970,4 @@
   EntityUiUtil.createEastButtonPanel() moved to UiUtil, button size now follows preferred size of centerComponent
   UiUtil.prepareScrollPanelDialog() no longer adds a double click action to the component
   EntityLookupField.setSelectionProvider() added, now supports EntityTablePanel based selection via EntityLookupField.TableSelectionProvider
+  LocalEntityConnectionProvider and HttpEntityConnectionProvider can now be instantiated without the required system properties, fail on connect if those are missing

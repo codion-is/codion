@@ -16,6 +16,9 @@ import java.util.Objects;
 
 /**
  * A class responsible for managing a httpConnection entity connection.
+ * @see HttpEntityConnectionProvider#HTTP_CLIENT_HOST_NAME
+ * @see HttpEntityConnectionProvider#HTTP_CLIENT_PORT
+ * @see HttpEntityConnectionProvider#HTTP_CLIENT_SECURE
  */
 public final class HttpEntityConnectionProvider extends AbstractEntityConnectionProvider<HttpEntityConnection> {
 
@@ -42,18 +45,14 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    */
   public static final Value<Boolean> HTTP_CLIENT_SECURE = Configuration.booleanValue("jminor.client.http.secure", true);
 
-  private final String serverHostName;
-  private final Integer serverPort;
-  private final Boolean https;
+  private String serverHostName;
+  private Integer serverPort;
+  private Boolean https;
 
   /**
    * Instantiates a new HttpEntityConnectionProvider.
-   * @see HttpEntityConnectionProvider#HTTP_CLIENT_HOST_NAME
-   * @see HttpEntityConnectionProvider#HTTP_CLIENT_PORT
    */
-  public HttpEntityConnectionProvider() {
-    this(HTTP_CLIENT_HOST_NAME.get(), HTTP_CLIENT_PORT.get(), HTTP_CLIENT_SECURE.get());
-  }
+  public HttpEntityConnectionProvider() {}
 
   /**
    * Instantiates a new HttpEntityConnectionProvider.
@@ -79,15 +78,19 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
   @Override
   public String getDescription() {
     if (!isConnectionValid()) {
-      return serverHostName + " - " + Messages.get(Messages.NOT_CONNECTED);
+      return getServerHostName() + " - " + Messages.get(Messages.NOT_CONNECTED);
     }
 
-    return serverHostName;
+    return getServerHostName();
   }
 
   /** {@inheritDoc} */
   @Override
   public String getServerHostName() {
+    if (serverHostName == null) {
+      serverHostName = HTTP_CLIENT_HOST_NAME.get();
+    }
+
     return serverHostName;
   }
 
@@ -96,8 +99,8 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
   protected HttpEntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      return HttpEntityConnections.createConnection(getDomainId(getDomainClassName()), serverHostName,
-              serverPort, https, getUser(), getClientTypeId(), getClientId());
+      return HttpEntityConnections.createConnection(getDomainId(getDomainClassName()), getServerHostName(),
+              getServerPort(), getHttps(), getUser(), getClientTypeId(), getClientId());
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
@@ -108,5 +111,21 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
   @Override
   protected void disconnect(final HttpEntityConnection connection) {
     connection.disconnect();
+  }
+
+  private Integer getServerPort() {
+    if (serverPort == null) {
+      serverPort = HTTP_CLIENT_PORT.get();
+    }
+
+    return serverPort;
+  }
+
+  private Boolean getHttps() {
+    if (https == null) {
+      https = HTTP_CLIENT_SECURE.get();
+    }
+
+    return https;
   }
 }

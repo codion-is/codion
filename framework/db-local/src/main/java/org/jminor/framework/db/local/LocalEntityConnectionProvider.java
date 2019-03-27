@@ -39,14 +39,12 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   /**
    * The underlying database implementation
    */
-  private final Database database;
+  private Database database;
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
    */
-  public LocalEntityConnectionProvider() {
-    this(Databases.getInstance());
-  }
+  public LocalEntityConnectionProvider() {}
 
   /**
    * Instantiates a new LocalEntityConnectionProvider
@@ -67,6 +65,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    */
   @Override
   public String getDescription() {
+    final Database database = getDatabase();
     final String sid = database.getSid();
     if (sid == null) {
       return database.getHost();
@@ -78,7 +77,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   /** {@inheritDoc} */
   @Override
   public String getServerHostName() {
-    return database.getHost();
+    return getDatabase().getHost();
   }
 
   /** {@inheritDoc} */
@@ -89,7 +88,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
       final Entities domain = (Entities) Class.forName(getDomainClassName()).getConstructor().newInstance();
 
       return Util.initializeProxy(LocalEntityConnection.class, new LocalConnectionHandler(domain,
-              LocalEntityConnections.createConnection(domain, database, getUser())));
+              LocalEntityConnections.createConnection(domain, getDatabase(), getUser())));
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
@@ -100,12 +99,21 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   @Override
   protected void disconnect(final LocalEntityConnection connection) {
     connection.disconnect();
+    final Database database = getDatabase();
     if (database.isEmbedded() && SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT.get()) {
       final Properties connectionProperties = new Properties();
       connectionProperties.put(Database.USER_PROPERTY, getUser().getUsername());
       connectionProperties.put(Database.PASSWORD_PROPERTY, String.valueOf(getUser().getPassword()));
       database.shutdownEmbedded(connectionProperties);
     }
+  }
+
+  private Database getDatabase() {
+    if (database == null) {
+      database = Databases.getInstance();
+    }
+
+    return database;
   }
 
   private static final class LocalConnectionHandler implements InvocationHandler {
