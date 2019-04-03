@@ -483,7 +483,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final Property.ColumnProperty property = domain.getColumnProperty(condition.getEntityId(), propertyId);
     final String columnName = property.getColumnName();
     final EntityCondition entityCondition = entityConditions.condition(condition.getEntityId(),
-            Conditions.conditionSet(Conjunction.AND, condition.getCondition(), entityConditions.stringCondition(columnName + " is not null")));
+            Conditions.conditionSet(Conjunction.AND, condition.getCondition(), EntityConditions.stringCondition(columnName + " is not null")));
     final String selectSQL = createSelectSQL(domain.getSelectTableName(condition.getEntityId()), "distinct " + columnName,
             WHERE + entityCondition.getWhereClause(), columnName);
     PreparedStatement statement = null;

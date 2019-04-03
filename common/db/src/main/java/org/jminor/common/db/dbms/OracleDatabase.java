@@ -26,7 +26,7 @@ public final class OracleDatabase extends AbstractDatabase {
   static final String URL_PREFIX = "jdbc:oracle:thin:@";
   static final String CHECK_QUERY = "select 1 from dual";
 
-  static Value<Boolean> USE_LEGACY_SID = Configuration.booleanValue("jminor.db.oracle.useLegacySID", false);
+  static final Value<Boolean> USE_LEGACY_SID = Configuration.booleanValue("jminor.db.oracle.useLegacySID", false);
 
   private static final Integer BOOLEAN_TRUE_VALUE = 1;
   private static final Integer BOOLEAN_FALSE_VALUE = 0;

@@ -4961,3 +4961,5 @@
   UiUtil.prepareScrollPanelDialog() no longer adds a double click action to the component
   EntityLookupField.setSelectionProvider() added, now supports EntityTablePanel based selection via EntityLookupField.TableSelectionProvider
   LocalEntityConnectionProvider and HttpEntityConnectionProvider can now be instantiated without the required system properties, fail on connect if those are missing
+0.12.0
+  Minor code cleanup
