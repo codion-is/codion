@@ -270,7 +270,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     table.setRowHeight(table.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
     this.conditionPanel = conditionPanel;
     if (conditionPanel != null) {
-      this.conditionScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+      this.conditionScrollPane = new JScrollPane(conditionPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+      this.conditionScrollPane.setVisible(false);
     }
     else {
       this.conditionScrollPane = null;
@@ -386,7 +387,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
 
     if (conditionScrollPane != null) {
-      conditionScrollPane.getViewport().setView(visible ? conditionPanel : null);
+      conditionScrollPane.setVisible(visible);
       if (refreshToolBar != null) {
         refreshToolBar.setVisible(visible);
       }
@@ -399,7 +400,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return true if the condition panel is visible, false if it is hidden
    */
   public final boolean isConditionPanelVisible() {
-    return conditionScrollPane != null && conditionScrollPane.getViewport().getView() == conditionPanel;
+    return conditionScrollPane != null && conditionScrollPane.isVisible();
   }
 
   /**
@@ -1420,7 +1421,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     if (includeConditionPanel && conditionScrollPane != null) {
       getBasePanel().add(conditionScrollPane, BorderLayout.NORTH);
       if (conditionPanel.canToggleAdvanced()) {
-        conditionScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
+        UiUtil.linkBoundedRangeModels(getTableScrollPane().getHorizontalScrollBar().getModel(),
+                conditionScrollPane.getHorizontalScrollBar().getModel());
         conditionPanel.addAdvancedListener(info -> {
           if (isConditionPanelVisible()) {
             revalidate();

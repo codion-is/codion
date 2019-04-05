@@ -4963,3 +4963,4 @@
   LocalEntityConnectionProvider and HttpEntityConnectionProvider can now be instantiated without the required system properties, fail on connect if those are missing
 0.12.0
   Minor code cleanup
+  FilteredTablePanel, EntityTablePanel, ColumnConditionPanel, disappearing horizontal scroll bar bug fixed, focus related bugs fixed

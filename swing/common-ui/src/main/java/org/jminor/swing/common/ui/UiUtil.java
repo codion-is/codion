@@ -30,6 +30,7 @@ import org.jminor.swing.common.ui.worker.ProgressWorker;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -1739,6 +1740,16 @@ public final class UiUtil {
     panel.add(button, BorderLayout.EAST);
 
     return panel;
+  }
+
+  /**
+   * Links the given BoundedRangeModels so that changes in {@code master} are reflected in {@code slave}
+   * @param master the master model
+   * @param slave the model to link with master
+   */
+  public static void linkBoundedRangeModels(final BoundedRangeModel master, final BoundedRangeModel slave) {
+    master.addChangeListener(e -> slave.setRangeProperties(master.getValue(), master.getExtent(),
+            master.getMinimum(), master.getMaximum(), master.getValueIsAdjusting()));
   }
 
   /**

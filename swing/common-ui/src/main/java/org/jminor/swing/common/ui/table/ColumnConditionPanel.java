@@ -6,7 +6,6 @@ package org.jminor.swing.common.ui.table;
 import org.jminor.common.DateUtil;
 import org.jminor.common.Event;
 import org.jminor.common.EventDataListener;
-import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.Item;
@@ -153,15 +152,14 @@ public class ColumnConditionPanel<K> extends JPanel {
     if (includeToggleEnabledButton) {
       this.toggleEnabledButton = ControlProvider.createToggleButton(
               Controls.toggleControl(conditionModel, "enabled", null, conditionModel.getEnabledObserver()));
-      toggleEnabledButton.setIcon(Images.loadImage(Images.IMG_FILTER_16));
+      this.toggleEnabledButton.setIcon(Images.loadImage(Images.IMG_FILTER_16));
     }
     else {
       this.toggleEnabledButton = null;
     }
     if (includeToggleAdvancedConditionButton) {
-      this.toggleAdvancedButton = ControlProvider.createToggleButton(
-              Controls.toggleControl(this, "advancedConditionEnabled", null, advancedConditionState.getObserver()));
-      toggleAdvancedButton.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
+      this.toggleAdvancedButton = ControlProvider.createToggleButton(Controls.toggleControl(advancedConditionState));
+      this.toggleAdvancedButton.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
     }
     else {
       this.toggleAdvancedButton = null;
@@ -283,14 +281,14 @@ public class ColumnConditionPanel<K> extends JPanel {
   /**
    * @param value true if advanced condition should be enabled
    */
-  public final void setAdvancedConditionEnabled(final boolean value) {
+  public final void setAdvanced(final boolean value) {
     advancedConditionState.setActive(value);
   }
 
   /**
    * @return true if the advanced condition is enabled
    */
-  public final boolean isAdvancedConditionEnabled() {
+  public final boolean isAdvanced() {
     return advancedConditionState.isActive();
   }
 
@@ -311,15 +309,15 @@ public class ColumnConditionPanel<K> extends JPanel {
   /**
    * @param listener a listener notified each time the advanced condition state changes
    */
-  public final void addAdvancedConditionListener(final EventListener listener) {
-    advancedConditionState.addListener(listener);
+  public final void addAdvancedListener(final EventDataListener<Boolean> listener) {
+    advancedConditionState.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeAdvancedConditionListener(final EventListener listener) {
-    advancedConditionState.removeListener(listener);
+  public final void removeAdvancedListener(final EventDataListener listener) {
+    advancedConditionState.removeDataListener(listener);
   }
 
   /**
@@ -424,24 +422,17 @@ public class ColumnConditionPanel<K> extends JPanel {
    * Binds events to relevant GUI actions
    */
   private void bindEvents() {
-    advancedConditionState.addListener(() -> {
-      initializePanel();
-      if (toggleAdvancedButton != null) {
-        toggleAdvancedButton.requestFocusInWindow();
-      }
-      else {
-        upperBoundField.requestFocusInWindow();
-      }
-    });
+    advancedConditionState.addListener(this::initializePanel);
     conditionModel.addLowerBoundRequiredListener(() -> {
       initializePanel();
-      revalidate();
       conditionTypeCombo.requestFocusInWindow();
     });
     final FocusAdapter focusGainedListener = new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
-        focusGainedEvent.fire((K) conditionModel.getColumnIdentifier());
+        if (!e.isTemporary()) {
+          focusGainedEvent.fire((K) conditionModel.getColumnIdentifier());
+        }
       }
     };
     conditionTypeCombo.addFocusListener(focusGainedListener);
@@ -582,7 +573,7 @@ public class ColumnConditionPanel<K> extends JPanel {
     dialog.getContentPane().add(conditionPanel);
     dialog.pack();
 
-    addAdvancedConditionListener(dialog::pack);
+    addAdvancedListener(advanced -> dialog.pack());
 
     dialog.addWindowListener(new WindowAdapter() {
       @Override
