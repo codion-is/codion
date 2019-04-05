@@ -6,6 +6,7 @@ package org.jminor.swing.common.ui.table;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.FilteredTableModel;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
+import org.jminor.swing.common.ui.UiUtil;
 
 import javax.swing.JPanel;
 import javax.swing.table.TableColumn;
@@ -24,7 +25,7 @@ public final class FilteredTableSummaryPanel extends AbstractTableColumnSyncPane
   public FilteredTableSummaryPanel(final AbstractFilteredTableModel tableModel) {
     super(tableModel.getColumnModel());
     this.tableModel = tableModel;
-    resetPanel();
+    setVerticalFillerWidth(UiUtil.getPreferredScrollBarWidth());
   }
 
   /** {@inheritDoc} */
