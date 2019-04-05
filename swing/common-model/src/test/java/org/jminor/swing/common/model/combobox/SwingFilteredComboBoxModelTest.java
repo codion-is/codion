@@ -170,7 +170,7 @@ public class SwingFilteredComboBoxModelTest {
     assertEquals(6, testModel.getSize());
     testModel.setFilterCondition(item -> !item.equals(ANNA));
     assertEquals(5, testModel.getSize());
-    assertTrue(!testModel.isVisible(ANNA));
+    assertFalse(testModel.isVisible(ANNA));
     assertTrue(testModel.isFiltered(ANNA));
     testModel.setFilterCondition(item -> item.equals(ANNA));
     assertEquals(2, testModel.getSize());
