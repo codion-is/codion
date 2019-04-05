@@ -202,13 +202,16 @@ public class FilteredTablePanel<R, C> extends JPanel {
     this.basePanel = new JPanel(new BorderLayout());
     this.basePanel.add(tableScrollPane, BorderLayout.CENTER);
     this.summaryPanel = new FilteredTableSummaryPanel(tableModel);
+    this.summaryScrollPane = new JScrollPane(summaryPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     this.summaryBasePanel = new JPanel(new BorderLayout());
-    this.summaryScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    this.summaryBasePanel.add(summaryScrollPane, BorderLayout.NORTH);
+    this.summaryBasePanel.add(horizontalTableScrollBar, BorderLayout.SOUTH);
     this.tableScrollPane.getViewport().addChangeListener(e -> {
       horizontalTableScrollBar.setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
       revalidate();
     });
-    this.summaryScrollPane.getHorizontalScrollBar().setModel(horizontalTableScrollBar.getModel());
+    UiUtil.linkBoundedRangeModels(horizontalTableScrollBar.getModel(), summaryScrollPane.getHorizontalScrollBar().getModel());
+    setSummaryPanelVisible(false);
     basePanel.add(summaryBasePanel, BorderLayout.SOUTH);
     setLayout(new BorderLayout());
     add(basePanel, BorderLayout.CENTER);
@@ -277,26 +280,16 @@ public class FilteredTablePanel<R, C> extends JPanel {
       return;
     }
 
-    if (summaryScrollPane != null) {
-      summaryScrollPane.getViewport().setView(visible ? summaryPanel : null);
-      if (visible) {
-        summaryBasePanel.add(summaryScrollPane, BorderLayout.NORTH);
-        summaryBasePanel.add(horizontalTableScrollBar, BorderLayout.SOUTH);
-      }
-      else {
-        summaryBasePanel.remove(horizontalTableScrollBar);
-        getTableScrollPane().setHorizontalScrollBar(horizontalTableScrollBar);
-      }
-      revalidate();
-      summaryPanelVisibleChangedEvent.fire(visible);
-    }
+    summaryScrollPane.setVisible(visible);
+    revalidate();
+    summaryPanelVisibleChangedEvent.fire(visible);
   }
 
   /**
    * @return true if the column summary panel is visible, false if it is hidden
    */
   public final boolean isSummaryPanelVisible() {
-    return summaryScrollPane != null && summaryScrollPane.getViewport().getView() == summaryPanel;
+    return summaryScrollPane.isVisible();
   }
 
   /**

@@ -26,11 +26,11 @@ public class ColumnConditionPanelTest {
     assertNull(panel.getLastDialogPosition());
     assertFalse(panel.isDialogEnabled());
     assertFalse(panel.isDialogVisible());
-    assertFalse(panel.isAdvancedConditionEnabled());
-    panel.setAdvancedConditionEnabled(true);
-    assertTrue(panel.isAdvancedConditionEnabled());
-    panel.setAdvancedConditionEnabled(false);
-    assertFalse(panel.isAdvancedConditionEnabled());
+    assertFalse(panel.isAdvanced());
+    panel.setAdvanced(true);
+    assertTrue(panel.isAdvanced());
+    panel.setAdvanced(false);
+    assertFalse(panel.isAdvanced());
   }
 
   @Test

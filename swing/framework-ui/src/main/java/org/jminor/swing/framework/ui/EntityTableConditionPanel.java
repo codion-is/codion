@@ -58,8 +58,7 @@ public final class EntityTableConditionPanel extends JPanel {
    * @param tableModel the table model
    */
   public EntityTableConditionPanel(final SwingEntityTableModel tableModel) {
-    this(tableModel, initializeAdvancedConditionPanel(tableModel, UiUtil.getPreferredScrollBarWidth()),
-            initializeSimpleConditionPanel(tableModel.getConditionModel()));
+    this(tableModel, initializeAdvancedConditionPanel(tableModel), initializeSimpleConditionPanel(tableModel.getConditionModel()));
   }
 
   /**
@@ -79,7 +78,8 @@ public final class EntityTableConditionPanel extends JPanel {
     this.simpleConditionPanel = simpleConditionPanel;
     setLayout(new BorderLayout());
     layoutPanel(true);
-    UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Controls.control(tableModel::refresh));
+    UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
+            Controls.control(tableModel::refresh, null, conditionModel.getConditionStateObserver()));
   }
 
   /**
@@ -97,7 +97,7 @@ public final class EntityTableConditionPanel extends JPanel {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
       ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().forEach((column, panel) -> {
         if (panel instanceof ColumnConditionPanel) {
-          ((ColumnConditionPanel) panel).setAdvancedConditionEnabled(value);
+          ((ColumnConditionPanel) panel).setAdvanced(value);
         }
       });
     }
@@ -115,7 +115,7 @@ public final class EntityTableConditionPanel extends JPanel {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
       for (final JPanel conditionPanel : ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().values()) {
         if (conditionPanel instanceof ColumnConditionPanel) {
-          return ((ColumnConditionPanel) conditionPanel).isAdvancedConditionEnabled();
+          return ((ColumnConditionPanel) conditionPanel).isAdvanced();
         }
       }
     }
@@ -257,22 +257,19 @@ public final class EntityTableConditionPanel extends JPanel {
     return panel;
   }
 
-  private static AbstractTableColumnSyncPanel initializeAdvancedConditionPanel(final SwingEntityTableModel tableModel,
-                                                                               final int verticalFillerWidth) {
+  private static AbstractTableColumnSyncPanel initializeAdvancedConditionPanel(final SwingEntityTableModel tableModel) {
     final AbstractTableColumnSyncPanel panel = new AbstractTableColumnSyncPanel(tableModel.getColumnModel()) {
       @Override
       protected JPanel initializeColumnPanel(final TableColumn column) {
         final Property property = (Property) column.getIdentifier();
         if (tableModel.getConditionModel().containsPropertyConditionModel(property.getPropertyId())) {
-          final PropertyConditionModel propertyConditionModel = tableModel.getConditionModel().getPropertyConditionModel(property.getPropertyId());
-          return initializeConditionPanel(propertyConditionModel);
+          return initializeConditionPanel(tableModel.getConditionModel().getPropertyConditionModel(property.getPropertyId()));
         }
-        else {
-          return new JPanel();
-        }
+
+        return new JPanel();
       }
     };
-    panel.setVerticalFillerWidth(verticalFillerWidth);
+    panel.setVerticalFillerWidth(UiUtil.getPreferredScrollBarWidth());
     panel.resetPanel();
 
     return panel;
@@ -283,7 +280,6 @@ public final class EntityTableConditionPanel extends JPanel {
    * @param propertyConditionModel the PropertyConditionModel for which to create a condition panel
    * @return a ColumnConditionPanel based on the given model
    */
-  @SuppressWarnings({"unchecked"})
   private static ColumnConditionPanel initializeConditionPanel(final PropertyConditionModel propertyConditionModel) {
     if (propertyConditionModel instanceof ForeignKeyConditionModel) {
       return new ForeignKeyConditionPanel((ForeignKeyConditionModel) propertyConditionModel, true, false);
