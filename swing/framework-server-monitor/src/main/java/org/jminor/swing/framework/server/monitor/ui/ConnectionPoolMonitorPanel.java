@@ -30,6 +30,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.text.NumberFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 /**
  * A ConnectionPoolMonitorPanel
@@ -81,7 +85,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     txtPoolSize.setText(format.format(statistics.getSize()));
     txtCreated.setText(format.format(statistics.getCreated()));
     txtDestroyed.setText(format.format(statistics.getDestroyed()));
-    txtResetTime.setText(DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(statistics.getResetTime()));
+    txtResetTime.setText(DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP)
+            .format(LocalDateTime.ofInstant(Instant.ofEpochMilli(statistics.getResetTime()), ZoneId.systemDefault())));
     txtRequested.setText(format.format(statistics.getRequests()));
     double prc = (double) statistics.getDelayedRequests() / (double) statistics.getRequests() * HUNDRED;
     txtDelayed.setText(format.format(statistics.getDelayedRequests())

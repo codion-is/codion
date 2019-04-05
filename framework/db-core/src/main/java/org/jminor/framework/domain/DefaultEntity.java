@@ -10,11 +10,12 @@ import org.jminor.common.db.valuemap.ValueMap;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.sql.Timestamp;
 import java.text.Format;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -284,14 +285,20 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  public Date getDate(final String propertyId) {
-    return (Date) get(propertyId);
+  public LocalTime getTime(final String propertyId) {
+    return (LocalTime) get(propertyId);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Timestamp getTimestamp(final String propertyId) {
-    return (Timestamp) get(propertyId);
+  public LocalDate getDate(final String propertyId) {
+    return (LocalDate) get(propertyId);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public LocalDateTime getTimestamp(final String propertyId) {
+    return (LocalDateTime) get(propertyId);
   }
 
   /** {@inheritDoc} */

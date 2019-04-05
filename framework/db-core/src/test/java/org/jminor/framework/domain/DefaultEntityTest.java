@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.DateUtil;
 import org.jminor.common.FileUtil;
 import org.jminor.common.Util;
 
@@ -11,10 +10,10 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,8 +24,8 @@ public class DefaultEntityTest {
   private final int detailInt = 2;
   private final double detailDouble = 1.2;
   private final String detailString = "string";
-  private final Date detailDate = new Date();
-  private final Timestamp detailTimestamp = new Timestamp(new Date().getTime());
+  private final LocalDate detailDate = LocalDate.now();
+  private final LocalDateTime detailTimestamp = LocalDateTime.now();
   private final Boolean detailBoolean = true;
 
   private final String masterName = "master";
@@ -40,7 +39,8 @@ public class DefaultEntityTest {
     referencedEntityValue.put(TestDomain.MASTER_NAME, "name");
     referencedEntityValue.put(TestDomain.MASTER_CODE, 10);
     final String originalStringValue = "string value";
-    final Entity entity = getDetailEntity(10, 34, 23.4, originalStringValue, new Date(), new Timestamp(System.currentTimeMillis()), true, referencedEntityValue);
+    final Entity entity = getDetailEntity(10, 34, 23.4, originalStringValue, LocalDate.now(),
+            LocalDateTime.now(), true, referencedEntityValue);
     entity.put(TestDomain.DETAIL_STRING, "a new String value");
     final File tmp = File.createTempFile("DefaultEntityTest", "serialization");
     FileUtil.serializeToFile(Collections.singletonList(entity), tmp);
@@ -403,13 +403,13 @@ public class DefaultEntityTest {
   @Test
   public void setStringValueDate() {
     final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
-    assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_NAME, new Date()));
+    assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_NAME, LocalDate.now()));
   }
 
   @Test
   public void setStringValueTimestamp() {
     final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
-    assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_NAME, new Timestamp(System.currentTimeMillis())));
+    assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_NAME, LocalDateTime.now()));
   }
 
   @Test
@@ -452,7 +452,7 @@ public class DefaultEntityTest {
     employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
     assertEquals(employee.get(TestDomain.EMP_DEPARTMENT_FK), department);
 
-    final Timestamp date = new Timestamp(DateUtil.floorDate(new Date()).getTime());
+    final LocalDateTime date = LocalDateTime.now();
     employee.put(TestDomain.EMP_HIREDATE, date);
     assertEquals(employee.get(TestDomain.EMP_HIREDATE), date);
 
@@ -661,7 +661,7 @@ public class DefaultEntityTest {
   }
 
   private Entity getDetailEntity(final long id, final Integer intValue, final Double doubleValue,
-                                 final String stringValue, final Date dateValue, final Timestamp timestampValue,
+                                 final String stringValue, final LocalDate dateValue, final LocalDateTime timestampValue,
                                  final Boolean booleanValue, final Entity entityValue) {
     final Entity entity = ENTITIES.entity(TestDomain.T_DETAIL);
     entity.put(TestDomain.DETAIL_ID, id);

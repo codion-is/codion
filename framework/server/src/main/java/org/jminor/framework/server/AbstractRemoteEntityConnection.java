@@ -34,6 +34,8 @@ import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -445,7 +447,8 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 
     private ClientLog getClientLog() {
       synchronized (methodLogger) {
-        return new ClientLog(remoteClient.getClientId(), creationDate, methodLogger.getEntries());
+        return new ClientLog(remoteClient.getClientId(),
+                Instant.ofEpochMilli(creationDate).atZone(ZoneId.systemDefault()).toLocalDateTime(), methodLogger.getEntries());
       }
     }
   }

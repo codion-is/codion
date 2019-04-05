@@ -43,6 +43,7 @@ public final class TestDomain extends Entities {
   public static final String EMP_JOB = "job";
   public static final String EMP_MGR = "mgr";
   public static final String EMP_HIREDATE = "hiredate";
+  public static final String EMP_HIRETIME = "hiretime";
   public static final String EMP_SALARY = "sal";
   public static final String EMP_COMMISSION = "comm";
   public static final String EMP_DEPARTMENT = "deptno";
@@ -70,6 +71,7 @@ public final class TestDomain extends Entities {
                     Properties.columnProperty(EMP_MGR)),
             Properties.columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)
                     .setNullable(false),
+            Properties.columnProperty(EMP_HIRETIME, Types.TIMESTAMP, EMP_HIRETIME),
             Properties.denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
                     getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     DEPARTMENT_LOCATION).setPreferredColumnWidth(100),

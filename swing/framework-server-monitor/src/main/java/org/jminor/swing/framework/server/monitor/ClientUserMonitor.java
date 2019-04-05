@@ -22,12 +22,13 @@ import javax.swing.DefaultListModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.rmi.RemoteException;
-import java.text.Format;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -217,7 +218,7 @@ public final class ClientUserMonitor {
       try {
         for (final RemoteClient remoteClient : server.getClients()) {
           final UserInfo newUserInfo = new UserInfo(remoteClient.getUser(), remoteClient.getClientTypeId(),
-                  remoteClient.getClientHost(), new Date(), remoteClient.getClientId(), remoteClient.getClientVersion(),
+                  remoteClient.getClientHost(), LocalDateTime.now(), remoteClient.getClientId(), remoteClient.getClientVersion(),
                   remoteClient.getFrameworkVersion());
           if (contains(newUserInfo, true)) {
             final UserInfo currentUserInfo = getItemAt(indexOf(newUserInfo));
@@ -261,11 +262,11 @@ public final class ClientUserMonitor {
     private final String clientHost;
     private final Version clientVersion;
     private final Version frameworkVersion;
-    private Date lastSeen;
+    private LocalDateTime lastSeen;
     private UUID clientId;
     private int connectionCount = 1;
 
-    private UserInfo(final User user, final String clientTypeId, final String clientHost, final Date lastSeen,
+    private UserInfo(final User user, final String clientTypeId, final String clientHost, final LocalDateTime lastSeen,
                      final UUID clientId, final Version clientVersion, final Version frameworkVersion) {
       this.user = user;
       this.clientTypeId = clientTypeId;
@@ -288,7 +289,7 @@ public final class ClientUserMonitor {
       return clientHost;
     }
 
-    public Date getLastSeen() {
+    public LocalDateTime getLastSeen() {
       return lastSeen;
     }
 
@@ -308,7 +309,7 @@ public final class ClientUserMonitor {
       return connectionCount;
     }
 
-    public void setLastSeen(final Date lastSeen) {
+    public void setLastSeen(final LocalDateTime lastSeen) {
       this.lastSeen = lastSeen;
     }
 
@@ -363,7 +364,7 @@ public final class ClientUserMonitor {
         case CLIENT_VERSION_COLUMN: return Version.class;
         case FRAMEWORK_VERSION_COLUMN: return Version.class;
         case CLIENT_HOST_COLUMN: return String.class;
-        case LAST_SEEN_COLUMN: return Date.class;
+        case LAST_SEEN_COLUMN: return LocalDateTime.class;
         case CONNECTION_COUNT_COLUMN: return Integer.class;
         default: throw new IllegalArgumentException(columnIdentifier.toString());
       }
@@ -413,12 +414,12 @@ public final class ClientUserMonitor {
 
   private static final class LastSeenRenderer extends DefaultTableCellRenderer {
 
-    private final Format formatter = DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP);
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP);
 
     @Override
     protected void setValue(final Object value) {
-      if (value instanceof Date) {
-        super.setValue(formatter.format(value));
+      if (value instanceof Temporal) {
+        super.setValue(formatter.format((Temporal) value));
       }
       else {
         super.setValue(value);

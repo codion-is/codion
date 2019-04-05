@@ -6,6 +6,7 @@ package org.jminor.common.remote;
 import org.jminor.common.MethodLogger;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,16 +18,16 @@ public final class ClientLog implements Serializable {
   private static final long serialVersionUID = 1;
 
   private final UUID clientId;
-  private final long connectionCreationDate;
+  private final LocalDateTime connectionCreationDate;
   private final List<MethodLogger.Entry> entries;
 
   /**
    * Instantiates a new ClientLog instance.
    * @param clientId the ID of the client this log represents
-   * @param connectionCreationDate the date this client connection was created
+   * @param connectionCreationDate the date and time this client connection was created
    * @param entries the log entries
    */
-  public ClientLog(final UUID clientId, final long connectionCreationDate, final List<MethodLogger.Entry> entries) {
+  public ClientLog(final UUID clientId, final LocalDateTime connectionCreationDate, final List<MethodLogger.Entry> entries) {
     this.clientId = clientId;
     this.connectionCreationDate = connectionCreationDate;
     this.entries = entries;
@@ -49,7 +50,7 @@ public final class ClientLog implements Serializable {
   /**
    * @return the log creation date
    */
-  public long getConnectionCreationDate() {
+  public LocalDateTime getConnectionCreationDate() {
     return connectionCreationDate;
   }
 

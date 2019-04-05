@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.DateUtil;
 import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.State;
@@ -24,9 +23,9 @@ import org.jminor.framework.domain.Property;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -203,7 +202,7 @@ public final class DefaultEntityEditModelTest {
     assertTrue(employeeEditModel.getEntityCopy().isKeyNull(), "Active entity primary key is not null after entity is set to null");
 
     employeeEditModel.setEntity(employee);
-    assertTrue(!employeeEditModel.getEntityCopy().isKeyNull(), "Active entity primary key is null after entity is set");
+    assertFalse(employeeEditModel.getEntityCopy().isKeyNull(), "Active entity primary key is null after entity is set");
 
     final Integer originalEmployeeId = (Integer) employeeEditModel.getValue(TestDomain.EMP_ID);
     employeeEditModel.setValue(TestDomain.EMP_ID, null);
@@ -216,8 +215,8 @@ public final class DefaultEntityEditModelTest {
 
     final Double originalCommission = (Double) employeeEditModel.getValue(TestDomain.EMP_COMMISSION);
     final double commission = 1500.5;
-    final Date originalHiredate = (Date) employeeEditModel.getValue(TestDomain.EMP_HIREDATE);
-    final Date hiredate = new Date();
+    final LocalDate originalHiredate = (LocalDate) employeeEditModel.getValue(TestDomain.EMP_HIREDATE);
+    final LocalDate hiredate = LocalDate.now();
     final String originalName = (String) employeeEditModel.getValue(TestDomain.EMP_NAME);
     final String name = "Mr. Mr";
 
@@ -294,7 +293,7 @@ public final class DefaultEntityEditModelTest {
       assertTrue(employeeEditModel.insert(new ArrayList<>()).isEmpty());
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
       employeeEditModel.setValue(TestDomain.EMP_COMMISSION, 1000d);
-      employeeEditModel.setValue(TestDomain.EMP_HIREDATE, DateUtil.floorDate(new Date()));
+      employeeEditModel.setValue(TestDomain.EMP_HIREDATE, LocalDate.now());
       employeeEditModel.setValue(TestDomain.EMP_JOB, "CLERK");
       employeeEditModel.setValue(TestDomain.EMP_NAME, "Björn");
       employeeEditModel.setValue(TestDomain.EMP_SALARY, 1000d);
@@ -394,7 +393,7 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setEntity(king);
     assertNull(employeeEditModel.getValue(TestDomain.EMP_MGR_FK));
     employeeEditModel.setEntity(null);
-    assertEquals(DateUtil.floorDate(new Date()), employeeEditModel.getValue(TestDomain.EMP_HIREDATE));
+    assertEquals(LocalDate.now(), employeeEditModel.getValue(TestDomain.EMP_HIREDATE));
     assertFalse(employeeEditModel.getEntityCopy().isModified(TestDomain.EMP_HIREDATE));
     assertFalse(employeeEditModel.getEntityCopy().isModified());
   }
@@ -466,7 +465,7 @@ public final class DefaultEntityEditModelTest {
     @Override
     public Object getDefaultValue(final Property property) {
       if (property.is(TestDomain.EMP_HIREDATE)) {
-        return DateUtil.floorDate(new Date());
+        return LocalDate.now();
       }
 
       return super.getDefaultValue(property);

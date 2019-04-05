@@ -11,8 +11,9 @@ import org.jminor.common.Version;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Locale;
-import java.util.TimeZone;
 import java.util.UUID;
 
 /**
@@ -230,7 +231,7 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
     /**
      * @return the time of server startup
      */
-    long getStartTime();
+    ZonedDateTime getStartTime();
 
     /**
      * @return the server locale
@@ -238,9 +239,9 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
     Locale getLocale();
 
     /**
-     * @return the server TimeZone
+     * @return the server time zone
      */
-    TimeZone getTimeZone();
+    ZoneId getTimeZone();
   }
 
   /**

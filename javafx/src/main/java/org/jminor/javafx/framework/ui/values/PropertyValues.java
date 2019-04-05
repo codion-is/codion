@@ -3,6 +3,7 @@
  */
 package org.jminor.javafx.framework.ui.values;
 
+import org.jminor.common.DateFormats;
 import org.jminor.common.Event;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
@@ -24,8 +25,11 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.Temporal;
 import java.util.Collection;
 
 /**
@@ -114,7 +118,25 @@ public final class PropertyValues {
    * @return a {@link LocalDate} {@link StringValue} based on the given string property
    */
   public static StringValue<LocalDate> datePropertyValue(final StringProperty property, final SimpleDateFormat dateFormat) {
-    return new DefaultStringValue<>(property, new DateConverter(dateFormat));
+    return new DefaultStringValue<>(property, new DateConverter(dateFormat, LocalDate::parse));
+  }
+
+  /**
+   * @param property the string property
+   * @param dateFormat the format to use
+   * @return a {@link LocalDateTime} {@link StringValue} based on the given string property
+   */
+  public static StringValue<LocalDateTime> timestampPropertyValue(final StringProperty property, final SimpleDateFormat dateFormat) {
+    return new DefaultStringValue<>(property, new DateConverter(dateFormat, LocalDateTime::parse));
+  }
+
+  /**
+   * @param property the string property
+   * @param dateFormat the format to use
+   * @return a {@link LocalTime} {@link StringValue} based on the given string property
+   */
+  public static StringValue<LocalTime> timePropertyValue(final StringProperty property, final SimpleDateFormat dateFormat) {
+    return new DefaultStringValue<>(property, new DateConverter(dateFormat, LocalTime::parse));
   }
 
   /**
@@ -251,30 +273,32 @@ public final class PropertyValues {
     }
   }
 
-  private static final class DateConverter extends StringConverter<LocalDate> {
+  private static final class DateConverter<T extends Temporal> extends StringConverter<T> {
 
     private final DateTimeFormatter dateFormatter;
+    private final DateFormats.DateParser<T> parser;
 
-    private DateConverter(final SimpleDateFormat dateFormat) {
+    private DateConverter(final SimpleDateFormat dateFormat, final DateFormats.DateParser<T> parser) {
       this.dateFormatter = DateTimeFormatter.ofPattern(dateFormat.toPattern());
+      this.parser = parser;
     }
 
     @Override
-    public String toString(final LocalDate date) {
-      if (date != null) {
-        return dateFormatter.format(date);
+    public String toString(final T value) {
+      if (value != null) {
+        return dateFormatter.format(value);
       }
       else {
         return "";
       }
     }
     @Override
-    public LocalDate fromString(final String string) {
+    public T fromString(final String string) {
       if (Util.nullOrEmpty(string)) {
         return null;
       }
       try {
-        return LocalDate.parse(string, dateFormatter);
+        return parser.parse(string, dateFormatter);
       }
       catch (final DateTimeParseException e) {
         return null;

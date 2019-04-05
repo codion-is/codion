@@ -4,7 +4,6 @@
 package org.jminor.swing.common.ui;
 
 import org.jminor.common.DateFormats;
-import org.jminor.common.DateUtil;
 import org.jminor.common.Value;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
 import org.jminor.swing.common.ui.textfield.DoubleField;
@@ -21,80 +20,77 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
-import java.sql.Types;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UiValuesTest {
 
   @Test
-  public void timeUiValue() throws ParseException {
-    final SimpleDateFormat format = DateFormats.getDateFormat("HH:mm");
-    final JFormattedTextField txt = UiUtil.createFormattedField(DateUtil.getDateMask(format));//HH:mm
-    final Value<Date> value = UiValues.dateValue(txt, format, Types.TIME, true);
+  public void localTimeUiValue() {
+    final String format = "HH:mm";
+    final JFormattedTextField txt = UiUtil.createFormattedField(DateFormats.getDateMask(format));//HH:mm
+    final Value<LocalTime> value = UiValues.localTimeValue(txt, format, true);
+
+    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 
     assertNull(value.get());
     final String timeString = "22:42";
     txt.setText(timeString);
-    final Date date = value.get();
-    assertEquals(format.parse(timeString), date);
-
-    final Calendar calendar = Calendar.getInstance();
-    calendar.setTime(date);
-    assertEquals(1970, calendar.get(Calendar.YEAR));
-    assertEquals(Calendar.JANUARY, calendar.get(Calendar.MONTH));
-    assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+    final LocalTime date = value.get();
+    assertEquals(LocalTime.parse(timeString, formatter), date);
 
     final String invalidDateString = "23:";
     txt.setText(invalidDateString);
     assertEquals("23:__", txt.getText());
     assertNull(value.get());
 
-    value.set(format.parse(timeString));
+    value.set(LocalTime.parse(timeString, formatter));
     assertEquals(timeString, txt.getText());
   }
 
   @Test
-  public void dateUiValue() throws ParseException {
-    final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DASH);
-    final JFormattedTextField txt = UiUtil.createFormattedField(DateUtil.getDateMask(format));//dd-MM-yyyy
-    final Value<Date> value = UiValues.dateValue(txt, format, Types.DATE, true);
+  public void localDateUiValue() {
+    final JFormattedTextField txt = UiUtil.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_DASH));//dd-MM-yyyy
+    final Value<LocalDate> value = UiValues.localDateValue(txt, DateFormats.SHORT_DASH, true);
+
+    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.SHORT_DASH);
 
     assertNull(value.get());
     final String dateString = "03-10-1975";
     txt.setText(dateString);
-    assertEquals(format.parse(dateString), value.get());
+    assertEquals(LocalDate.parse(dateString, formatter), value.get());
 
     final String invalidDateString = "03-10-19";
     txt.setText(invalidDateString);
     assertEquals(invalidDateString + "__", txt.getText());
     assertNull(value.get());
 
-    value.set(format.parse(dateString));
+    value.set(LocalDate.parse(dateString, formatter));
     assertEquals(dateString, txt.getText());
   }
 
   @Test
-  public void timestampUiValue() throws ParseException {
-    final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.TIMESTAMP);
-    final JFormattedTextField txt = UiUtil.createFormattedField(DateUtil.getDateMask(format));//dd-MM-yyyy HH:mm
-    final Value<Date> value = UiValues.dateValue(txt, format, Types.TIMESTAMP, true);
+  public void localDateTimeUiValue() {
+    final JFormattedTextField txt = UiUtil.createFormattedField(DateFormats.getDateMask(DateFormats.TIMESTAMP));//dd-MM-yyyy HH:mm
+    final Value<LocalDateTime> value = UiValues.localDateTimeValue(txt, DateFormats.TIMESTAMP, true);
+
+    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.TIMESTAMP);
 
     assertNull(value.get());
     final String dateString = "03-10-1975 22:45";
     txt.setText(dateString);
-    assertEquals(format.parse(dateString), value.get());
+    assertEquals(LocalDateTime.parse(dateString, formatter), value.get());
 
     final String invalidDateString = "03-10-1975 22";
     txt.setText(invalidDateString);
     assertEquals(invalidDateString + ":__", txt.getText());
     assertNull(value.get());
 
-    value.set(format.parse(dateString));
+    value.set(LocalDateTime.parse(dateString, formatter));
     assertEquals(dateString, txt.getText());
   }
 

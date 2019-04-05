@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -66,7 +66,7 @@ public class DefaultColumnConditionModelTest {
     model.setUpperBound(1);
     model.setUpperBound(false);
     model.setUpperBound('c');
-    model.setUpperBound(new Date());
+    model.setUpperBound(LocalDate.now());
     model.setUpperBound(new Timestamp(System.currentTimeMillis()));
     model.setUpperBound(new Object());
     model.setUpperBound(true);
@@ -75,7 +75,7 @@ public class DefaultColumnConditionModelTest {
     model.setLowerBound(1);
     model.setLowerBound(false);
     model.setLowerBound('c');
-    model.setLowerBound(new Date());
+    model.setLowerBound(LocalDate.now());
     model.setLowerBound(new Timestamp(System.currentTimeMillis()));
     model.setLowerBound(new Object());
     model.setLowerBound(true);

@@ -5,6 +5,7 @@ package org.jminor.common.remote;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public final class ClientLogTest {
   @Test
   public void clientLog() {
     final UUID uuid = UUID.randomUUID();
-    final long currentTime = System.currentTimeMillis();
+    final LocalDateTime currentTime = LocalDateTime.now();
     final ClientLog log = new ClientLog(uuid, currentTime, Collections.emptyList());
     assertEquals(uuid, log.getClientId());
     assertEquals(currentTime, log.getConnectionCreationDate());

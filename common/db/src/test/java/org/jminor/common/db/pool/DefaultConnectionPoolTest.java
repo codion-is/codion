@@ -10,7 +10,7 @@ import org.jminor.common.db.exception.DatabaseException;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -91,7 +91,7 @@ public class DefaultConnectionPoolTest {
 
   @Test
   public void test() throws Exception {
-    final Date startDate = new Date();
+    final Instant startDate = Instant.now();
     final DefaultConnectionPool pool = new DefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
     pool.setCleanupInterval(2000);
     pool.setConnectionTimeout(6000);
@@ -111,7 +111,7 @@ public class DefaultConnectionPoolTest {
 
       pool.setCollectFineGrainedStatistics(true);
       assertTrue(pool.isCollectFineGrainedStatistics());
-      ConnectionPoolStatistics statistics = pool.getStatistics(startDate.getTime());
+      ConnectionPoolStatistics statistics = pool.getStatistics(startDate.toEpochMilli());
       assertEquals(new User(UNIT_TEST_USER.getUsername(), null), statistics.getUser());
       statistics.getTimestamp();
       statistics.getCreationDate();
@@ -122,7 +122,7 @@ public class DefaultConnectionPoolTest {
 
       final DatabaseConnection dbConnectionOne = pool.getDatabaseConnection();
       assertTrue(dbConnectionOne.isConnected());
-      statistics = pool.getStatistics(startDate.getTime());
+      statistics = pool.getStatistics(startDate.toEpochMilli());
       assertEquals(1, statistics.getRequests());
       assertEquals(4, statistics.getCreated());
       assertEquals(3, statistics.getAvailable());
@@ -131,7 +131,7 @@ public class DefaultConnectionPoolTest {
 
       final DatabaseConnection dbConnectionTwo = pool.getDatabaseConnection();
       assertTrue(dbConnectionTwo.isConnected());
-      statistics = pool.getStatistics(startDate.getTime());
+      statistics = pool.getStatistics(startDate.toEpochMilli());
       assertEquals(2, statistics.getRequests());
       assertEquals(4, statistics.getCreated());
       assertEquals(2, statistics.getAvailable());
@@ -139,7 +139,7 @@ public class DefaultConnectionPoolTest {
       assertEquals(4, statistics.getSize());
 
       pool.returnConnection(dbConnectionOne);
-      statistics = pool.getStatistics(startDate.getTime());
+      statistics = pool.getStatistics(startDate.toEpochMilli());
       assertEquals(2, statistics.getRequests());
       assertEquals(4, statistics.getCreated());
       assertEquals(3, statistics.getAvailable());
@@ -148,7 +148,7 @@ public class DefaultConnectionPoolTest {
 
       final DatabaseConnection dbConnectionThree = pool.getDatabaseConnection();
       assertTrue(dbConnectionThree.isConnected());
-      statistics = pool.getStatistics(startDate.getTime());
+      statistics = pool.getStatistics(startDate.toEpochMilli());
       assertEquals(3, statistics.getRequests());
       assertEquals(4, statistics.getCreated());
       assertEquals(2, statistics.getAvailable());
@@ -156,7 +156,7 @@ public class DefaultConnectionPoolTest {
       assertEquals(4, statistics.getSize());
 
       pool.returnConnection(dbConnectionTwo);
-      statistics = pool.getStatistics(startDate.getTime());
+      statistics = pool.getStatistics(startDate.toEpochMilli());
       assertEquals(3, statistics.getRequests());
       assertEquals(4, statistics.getCreated());
       assertEquals(3, statistics.getAvailable());
@@ -164,7 +164,7 @@ public class DefaultConnectionPoolTest {
       assertEquals(4, statistics.getSize());
 
       pool.returnConnection(dbConnectionThree);
-      statistics = pool.getStatistics(startDate.getTime());
+      statistics = pool.getStatistics(startDate.toEpochMilli());
       assertEquals(3, statistics.getRequests());
       assertEquals(4, statistics.getCreated());
       assertEquals(4, statistics.getAvailable());
@@ -174,7 +174,7 @@ public class DefaultConnectionPoolTest {
       assertTrue(statistics.getFineGrainedStatistics().size() > 0);
 
       final DatabaseConnection dbConnectionFour = pool.getDatabaseConnection();
-      statistics = pool.getStatistics(startDate.getTime());
+      statistics = pool.getStatistics(startDate.toEpochMilli());
       assertEquals(4, statistics.getRequests());
       assertEquals(4, statistics.getCreated());
       assertEquals(3, statistics.getAvailable());
@@ -183,7 +183,7 @@ public class DefaultConnectionPoolTest {
 
       dbConnectionFour.disconnect();
       pool.returnConnection(dbConnectionFour);
-      statistics = pool.getStatistics(startDate.getTime());
+      statistics = pool.getStatistics(startDate.toEpochMilli());
       assertEquals(4, statistics.getCreated());
       assertEquals(3, statistics.getAvailable());
       assertEquals(0, statistics.getInUse());
@@ -201,14 +201,14 @@ public class DefaultConnectionPoolTest {
       assertEquals(0, state.getWaiting());//not implemented
 
       pool.resetStatistics();
-      statistics = pool.getStatistics(startDate.getTime());
+      statistics = pool.getStatistics(startDate.toEpochMilli());
       assertEquals(0, statistics.getRequests());
       assertEquals(0, statistics.getCreated());
 
       statistics.getResetTime();
 
       pool.setCollectFineGrainedStatistics(false);
-      statistics = pool.getStatistics(startDate.getTime());
+      statistics = pool.getStatistics(startDate.toEpochMilli());
       assertTrue(statistics.getFineGrainedStatistics().isEmpty());
 
       pool.close();

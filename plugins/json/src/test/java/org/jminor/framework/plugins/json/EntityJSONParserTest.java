@@ -10,11 +10,10 @@ import org.jminor.framework.domain.Entity;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,8 +39,8 @@ public class EntityJSONParserTest {
 
   @Test
   public void entity() throws Exception {
-    final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-    final Date hiredate = format.parse("2001-12-20");
+    final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    final LocalDate hiredate = LocalDate.parse("2001-12-20", format);
 
     EntityJSONParser parser = new EntityJSONParser(ENTITIES);
 
@@ -104,7 +103,7 @@ public class EntityJSONParserTest {
     assertTrue(emp1.getForeignKey(TestDomain.EMP_DEPARTMENT_FK).valuesEqual(emp1Deserialized.getForeignKey(TestDomain.EMP_DEPARTMENT_FK)));
     assertTrue(emp1.getForeignKey(TestDomain.EMP_MGR_FK).valuesEqual(emp1Deserialized.getForeignKey(TestDomain.EMP_MGR_FK)));
 
-    final Date newHiredate = format.parse("2002-11-21");
+    final LocalDate newHiredate = LocalDate.parse("2002-11-21", format);
     emp1.put(TestDomain.EMP_COMMISSION, 550.55);
     emp1.put(TestDomain.EMP_DEPARTMENT_FK, dept20);
     emp1.put(TestDomain.EMP_JOB, "ANALYST");
@@ -182,7 +181,7 @@ public class EntityJSONParserTest {
   }
 
   @Test
-  public void emptyStringAndNull() throws Serializer.SerializeException, ParseException, JSONException {
+  public void emptyStringAndNull() throws Serializer.SerializeException, JSONException {
     final EntityJSONParser parser = new EntityJSONParser(ENTITIES);
     assertEquals(0, parser.deserialize("").size());
     assertEquals(0, parser.deserialize(null).size());

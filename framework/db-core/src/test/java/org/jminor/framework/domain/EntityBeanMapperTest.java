@@ -6,8 +6,8 @@ package org.jminor.framework.domain;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,7 +41,7 @@ public class EntityBeanMapperTest {
 
     final Integer id = 42;
     final Double commission = 42.2;
-    final Date hiredate = new Date();
+    final LocalDateTime hiredate = LocalDateTime.now();
     final String job = "CLERK";
     final Integer manager = 12;
     final String name = "John Doe";
@@ -97,7 +97,7 @@ public class EntityBeanMapperTest {
 
     final Integer id = 42;
     final Double commission = 42.2;
-    final Date hiredate = new Date();
+    final LocalDateTime hiredate = LocalDateTime.now();
     final String job = "CLERK";
     final Integer manager = 12;
     final String name = "John Doe";
@@ -257,7 +257,7 @@ public class EntityBeanMapperTest {
     private String name;
     private String job;
     private Integer mgr;
-    private Date hiredate;
+    private LocalDateTime hiredate;
     private Double salary;
     private Double commission;
     private Integer deptno;
@@ -280,11 +280,11 @@ public class EntityBeanMapperTest {
       this.deptno = deptno;
     }
 
-    public Date getHiredate() {
+    public LocalDateTime getHiredate() {
       return hiredate;
     }
 
-    public void setHiredate(final Date hiredate) {
+    public void setHiredate(final LocalDateTime hiredate) {
       this.hiredate = hiredate;
     }
 

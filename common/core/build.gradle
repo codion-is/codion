@@ -1,6 +1,9 @@
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 jar {
     doFirst {
-        project.versionProperties.put('buildTime', new Date().format("yyyy-MM-dd HH:mm:ss"))
+        project.versionProperties.put('buildTime', LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
         project.versionProperties.put('buildUser', System.getProperty("user.name"))
         project.versionProperties.store(file(sourceSets.main.output.resourcesDir.getAbsolutePath() + project.versionPropertiesFile).newWriter(), null)
     }

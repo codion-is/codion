@@ -20,9 +20,11 @@ import java.sql.Types;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,7 +36,9 @@ class DefaultProperty implements Property {
   private static final long serialVersionUID = 1;
 
   private static final ValueConverter<Object, Object> DEFAULT_VALUE_CONVERTER = new DefaultValueConverter();
-  private static final ValueConverter<java.util.Date, java.sql.Date> DATE_VALUE_CONVERTER = new DateValueConverter();
+  private static final ValueConverter<LocalDate, java.sql.Date> DATE_VALUE_CONVERTER = new DateValueConverter();
+  private static final ValueConverter<LocalDateTime, java.sql.Timestamp> TIMESTAMP_VALUE_CONVERTER = new TimestampValueConverter();
+  private static final ValueConverter<LocalTime, java.sql.Time> TIME_VALUE_CONVERTER = new TimeValueConverter();
   private static final ValueProvider DEFAULT_VALUE_PROVIDER = new DefaultValueProvider();
 
   /**
@@ -463,7 +467,7 @@ class DefaultProperty implements Property {
       throw new IllegalArgumentException("NumberFormat required for numerical property: " + propertyId);
     }
     if (isDateOrTime() && !(format instanceof SimpleDateFormat)) {
-      throw new IllegalArgumentException("SimpleDateFormat required for time based property: " + propertyId);
+      throw new IllegalArgumentException("SimpleDateFormat required for date/time based property: " + propertyId);
     }
     this.format = format;
     return this;
@@ -527,16 +531,14 @@ class DefaultProperty implements Property {
   }
 
   private Format initializeDefaultFormat() {
-    if (isDateOrTime()) {
-      if (isDate()) {
-        return Property.getDefaultDateFormat();
-      }
-      else if (isTime()) {
-        return Property.getDefaultTimeFormat();
-      }
-      else {
-        return Property.getDefaultTimestampFormat();
-      }
+    if (isDate()) {
+      return Property.getDefaultDateFormat();
+    }
+    else if (isTime()) {
+      return Property.getDefaultTimeFormat();
+    }
+    else if (isTimestamp()) {
+      return Property.getDefaultTimestampFormat();
     }
     else if (isNumerical()) {
       final NumberFormat numberFormat = FormatUtil.getNonGroupingNumberFormat(isInteger());
@@ -563,11 +565,11 @@ class DefaultProperty implements Property {
       case Types.DOUBLE:
         return Double.class;
       case Types.DATE:
-        return Date.class;
-      case Types.TIMESTAMP:
-        return Timestamp.class;
+        return LocalDate.class;
       case Types.TIME:
-        return Time.class;
+        return LocalTime.class;
+      case Types.TIMESTAMP:
+        return LocalDateTime.class;
       case Types.VARCHAR:
         return String.class;
       case Types.BOOLEAN:
@@ -799,6 +801,12 @@ class DefaultProperty implements Property {
     private static ValueConverter initializeValueConverter(final ColumnProperty property) {
       if (property.isDate()) {
         return DATE_VALUE_CONVERTER;
+      }
+      else if (property.isTimestamp()) {
+        return TIMESTAMP_VALUE_CONVERTER;
+      }
+      else if (property.isTime()) {
+        return TIME_VALUE_CONVERTER;
       }
 
       return DEFAULT_VALUE_CONVERTER;
@@ -1241,22 +1249,63 @@ class DefaultProperty implements Property {
     }
   }
 
-  private static final class DateValueConverter implements ValueConverter<java.util.Date, java.sql.Date> {
+  private static final class DateValueConverter implements ValueConverter<LocalDate, java.sql.Date> {
     @Override
-    public java.sql.Date toColumnValue(final java.util.Date value) {
+    public java.sql.Date toColumnValue(final LocalDate value) {
       if (value == null) {
         return null;
       }
-      else if (value instanceof java.sql.Date) {
-        return (java.sql.Date) value;
-      }
 
-      return new java.sql.Date(value.getTime());
+      return java.sql.Date.valueOf(value);
     }
 
     @Override
-    public java.util.Date fromColumnValue(final java.sql.Date columnValue) {
-      return columnValue;
+    public LocalDate fromColumnValue(final java.sql.Date columnValue) {
+      if (columnValue == null) {
+        return null;
+      }
+
+      return columnValue.toLocalDate();
+    }
+  }
+
+  private static final class TimestampValueConverter implements ValueConverter<LocalDateTime, java.sql.Timestamp> {
+    @Override
+    public java.sql.Timestamp toColumnValue(final LocalDateTime value) {
+      if (value == null) {
+        return null;
+      }
+
+      return java.sql.Timestamp.valueOf(value);
+    }
+
+    @Override
+    public LocalDateTime fromColumnValue(final java.sql.Timestamp columnValue) {
+      if (columnValue == null) {
+        return null;
+      }
+
+      return columnValue.toLocalDateTime();
+    }
+  }
+
+  private static final class TimeValueConverter implements ValueConverter<LocalTime, java.sql.Time> {
+    @Override
+    public java.sql.Time toColumnValue(final LocalTime value) {
+      if (value == null) {
+        return null;
+      }
+
+      return java.sql.Time.valueOf(value);
+    }
+
+    @Override
+    public LocalTime fromColumnValue(final java.sql.Time columnValue) {
+      if (columnValue == null) {
+        return null;
+      }
+
+      return columnValue.toLocalTime();
     }
   }
 

@@ -3,12 +3,10 @@
  */
 package org.jminor.framework.domain.testing;
 
-import org.jminor.common.DateUtil;
 import org.jminor.common.Item;
 import org.jminor.common.TextUtil;
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.db.TimeUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.db.valuemap.ValueProvider;
@@ -23,13 +21,13 @@ import org.jminor.framework.domain.Property;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -406,11 +404,11 @@ public class EntityTestUnit {
       case Types.CHAR:
         return (char) RANDOM.nextInt();
       case Types.DATE:
-        return DateUtil.floorDate(getRandomDate());
+        return LocalDate.now();
       case Types.TIMESTAMP:
-        return TimeUtil.floorTimestamp(new Timestamp(getRandomDate().getTime()));
+        return LocalDateTime.now();
       case Types.TIME:
-        return TimeUtil.getTime(getRandomDate());
+        return LocalTime.now();
       case Types.DOUBLE:
         return getRandomDouble(property);
       case Types.INTEGER:
@@ -443,16 +441,6 @@ public class EntityTestUnit {
     final int length = property.getMaxLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : property.getMaxLength();
 
     return TextUtil.createRandomString(length, length);
-  }
-
-  private static Date getRandomDate() {
-    final Calendar calendar = Calendar.getInstance();
-    final long offset = calendar.getTimeInMillis();
-    calendar.add(Calendar.YEAR, -1);
-    final long end = System.currentTimeMillis();
-    final long diff = end - offset + 1;
-
-    return new Timestamp(offset + (long) (Math.random() * diff));
   }
 
   private static Object getReferenceEntity(final Property.ForeignKeyProperty property, final Map<String, Entity> referenceEntities) {

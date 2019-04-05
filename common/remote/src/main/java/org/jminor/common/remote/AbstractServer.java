@@ -17,6 +17,8 @@ import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +28,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TimeZone;
 import java.util.UUID;
 
 /**
@@ -70,7 +71,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
   public AbstractServer(final int serverPort, final String serverName, final RMIClientSocketFactory clientSocketFactory,
                         final RMIServerSocketFactory serverSocketFactory) throws RemoteException {
     super(serverPort, clientSocketFactory, serverSocketFactory);
-    this.serverInfo = new DefaultServerInfo(UUID.randomUUID(), serverName, serverPort, System.currentTimeMillis());
+    this.serverInfo = new DefaultServerInfo(UUID.randomUUID(), serverName, serverPort, ZonedDateTime.now());
   }
 
   /**
@@ -406,12 +407,11 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     private final UUID serverId;
     private final String serverName;
     private final int serverPort;
-    private final long serverStartupTime;
+    private final ZonedDateTime serverStartupTime;
     private final Locale locale = Locale.getDefault();
-    private final TimeZone timeZone = TimeZone.getDefault();
     private final Version serverVersion = Version.getVersion();
 
-    private DefaultServerInfo(final UUID serverId, final String serverName, final int serverPort, final long serverStartupTime) {
+    private DefaultServerInfo(final UUID serverId, final String serverName, final int serverPort, final ZonedDateTime serverStartupTime) {
       this.serverId = serverId;
       this.serverName = serverName;
       this.serverPort = serverPort;
@@ -439,7 +439,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
 
     @Override
-    public long getStartTime() {
+    public ZonedDateTime getStartTime() {
       return serverStartupTime;
     }
 
@@ -449,8 +449,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     }
 
     @Override
-    public TimeZone getTimeZone() {
-      return timeZone;
+    public ZoneId getTimeZone() {
+      return serverStartupTime.getZone();
     }
   }
 

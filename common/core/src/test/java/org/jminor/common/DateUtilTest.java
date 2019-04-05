@@ -5,7 +5,6 @@ package org.jminor.common;
 
 import org.junit.jupiter.api.Test;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -13,37 +12,16 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DateUtilTest {
 
-  private static final SimpleDateFormat SHORT_DASH = new SimpleDateFormat("dd-MM-yyyy");
-  private static final SimpleDateFormat SHORT_DOT = new SimpleDateFormat("dd.MM.yyyy");
-  private static final SimpleDateFormat TIMESTAMP = new SimpleDateFormat("dd-MM-yyyy HH:mm");
   private static final SimpleDateFormat EXACT_TIMESTAMP = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-
-  @Test
-  public void isDateValid() throws Exception {
-    assertTrue(DateUtil.isDateValid("03-10-1975", SHORT_DASH), "isDateValid should work");
-    assertFalse(DateUtil.isDateValid("033-102-975", SHORT_DASH), "isDateValid should work with an invalid date");
-
-    assertTrue(DateUtil.isDateValid("", true, SHORT_DASH), "isDateValid should work with an empty string");
-    assertFalse(DateUtil.isDateValid("", false, SHORT_DASH), "isDateValid should not work with an empty string");
-
-    assertTrue(DateUtil.isDateValid("03-10-1975 10:45", false, TIMESTAMP), "isDateValid should work with long date");
-
-    assertTrue(DateUtil.isDateValid("03.10.1975", false, SHORT_DOT), "isDateValid should work with a date format specified");
-  }
 
   @Test
   public void floorFieldsNullCalendar() {
     assertThrows(NullPointerException.class, () -> DateUtil.floorFields(null, Collections.emptyList()));
-  }
-
-  @Test
-  public void getDate() throws ParseException {
-    final Date date = DateUtil.getDate(1975, Calendar.OCTOBER, 3);
-    assertEquals(SHORT_DASH.parse("03-10-1975"), date);
   }
 
   @Test
@@ -86,16 +64,6 @@ public class DateUtilTest {
   }
 
   @Test
-  public void isDateValidMissingDateFormat() {
-    assertThrows(IllegalArgumentException.class, () -> DateUtil.isDateValid("03-10-1975", false));
-  }
-
-  @Test
-  public void isDateValidNullDateFormat() {
-    assertThrows(IllegalArgumentException.class, () -> DateUtil.isDateValid("03-10-1975", false, (DateFormat[]) null));
-  }
-
-  @Test
   public void numberOfDaysInRange() {
     final Date start = DateUtil.getDate(2011, Calendar.JANUARY, 1);
     Date end = DateUtil.getDate(2011, Calendar.JANUARY, 1);
@@ -112,10 +80,5 @@ public class DateUtilTest {
   @Test
   public void numberOfDaysInRangeToAfterFrom() {
     assertThrows(IllegalArgumentException.class, () -> DateUtil.numberOfDaysInRange(DateUtil.getDate(2011, Calendar.FEBRUARY, 1), DateUtil.getDate(2011, Calendar.JANUARY, 1)));
-  }
-
-  @Test
-  public void getDateMask() {
-    assertEquals("##-##-####", DateUtil.getDateMask(new SimpleDateFormat("dd-MM-yyyy")));
   }
 }

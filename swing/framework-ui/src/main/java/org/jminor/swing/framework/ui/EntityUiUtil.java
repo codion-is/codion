@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.DateUtil;
+import org.jminor.common.DateFormats;
 import org.jminor.common.Event;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
@@ -27,7 +27,10 @@ import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
-import org.jminor.swing.common.ui.DateInputPanel;
+import org.jminor.swing.common.ui.LocalDateInputPanel;
+import org.jminor.swing.common.ui.LocalDateTimeInputPanel;
+import org.jminor.swing.common.ui.LocalTimeInputPanel;
+import org.jminor.swing.common.ui.TemporalInputPanel;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
@@ -65,10 +68,12 @@ import java.awt.Point;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -534,39 +539,50 @@ public final class EntityUiUtil {
    * @param property the property
    * @param editModel the edit model to bind with the value
    * @param readOnly if true then the value is read only
-   * @param includeButton if true then a button for opening a date input dialog is included
+   * @param includeButton if true then a button for opening a date input dialog is included (only available for LocalDate)
    * @return a date input panel
    */
-  public static DateInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
-                                                    final boolean readOnly, final boolean includeButton) {
+  public static TemporalInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
+                                                        final boolean readOnly, final boolean includeButton) {
     return createDateInputPanel(property, editModel, readOnly, includeButton, null);
   }
 
   /**
-   * Creates a panel with a date input field and a button for opening a date input dialog
+   * Creates a panel with a date input field and a button for opening a date input dialog (if applicable)
    * @param property the property
    * @param editModel the edit model to bind with the value
    * @param readOnly if true then the value is read only
-   * @param includeButton if true then a button for opening a date input dialog is included
+   * @param includeCalendarButton if true then a button for opening a calendar dialog is included
    * @param enabledState the state controlling the enabled state of the panel
    * @return a date input panel
    */
-  public static DateInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
-                                                    final boolean readOnly, final boolean includeButton,
-                                                    final StateObserver enabledState) {
+  public static TemporalInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
+                                                        final boolean readOnly, final boolean includeCalendarButton,
+                                                        final StateObserver enabledState) {
     Objects.requireNonNull(property, PROPERTY_PARAM_NAME);
     if (!property.isDateOrTime()) {
       throw new IllegalArgumentException("Property " + property + " is not a date or time property");
     }
 
+    final String formatString = ((SimpleDateFormat) property.getFormat()).toPattern();
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, editModel, readOnly,
-            DateUtil.getDateMask((SimpleDateFormat) property.getFormat()), true, enabledState);
-    final DateInputPanel panel = new DateInputPanel(field, (SimpleDateFormat) property.getFormat(), includeButton, enabledState);
-    if (panel.getButton() != null && EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
-      UiUtil.transferFocusOnEnter(panel.getButton());
+            DateFormats.getDateMask(formatString), true, enabledState);
+    if (property.isDate()) {
+      final LocalDateInputPanel panel = new LocalDateInputPanel(field, formatString, includeCalendarButton, enabledState);
+      if (panel.getCalendarButton() != null && EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
+        UiUtil.transferFocusOnEnter(panel.getCalendarButton());
+      }
+
+      return panel;
+    }
+    else if (property.isTimestamp()) {
+      return new LocalDateTimeInputPanel(field, formatString, enabledState);
+    }
+    else if (property.isTime()) {
+      return new LocalTimeInputPanel(field, formatString, enabledState);
     }
 
-    return panel;
+    throw new IllegalArgumentException("Can not create a date input panel for a non-date property");
   }
 
   /**
@@ -729,9 +745,17 @@ public final class EntityUiUtil {
     else if (property.isLong()) {
       ValueLinks.longValueLink((LongField) textField, EditModelValues.<Long>value(editModel, property), false, readOnly, immediateUpdate);
     }
-    else if (property.isDateOrTime()) {
-      ValueLinks.dateValueLink((JFormattedTextField) textField, EditModelValues.<Date>value(editModel, property),
-              readOnly, (SimpleDateFormat) property.getFormat(), property.getType(), immediateUpdate);
+    else if (property.isDate()) {
+      ValueLinks.localDateValueLink((JFormattedTextField) textField, EditModelValues.<LocalDate>value(editModel, property),
+              readOnly, ((SimpleDateFormat) property.getFormat()).toPattern(), immediateUpdate);
+    }
+    else if (property.isTime()) {
+      ValueLinks.localTimeValueLink((JFormattedTextField) textField, EditModelValues.<LocalTime>value(editModel, property),
+              readOnly, ((SimpleDateFormat) property.getFormat()).toPattern(), immediateUpdate);
+    }
+    else if (property.isTimestamp()) {
+      ValueLinks.localDateTimeValueLink((JFormattedTextField) textField, EditModelValues.<LocalDateTime>value(editModel, property),
+              readOnly, ((SimpleDateFormat) property.getFormat()).toPattern(), immediateUpdate);
     }
     else {
       throw new IllegalArgumentException("Not a text based property: " + property);
@@ -870,7 +894,7 @@ public final class EntityUiUtil {
       field = initializeLongField(property);
     }
     else if (property.isDateOrTime()) {
-      field = UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) property.getFormat()));
+      field = UiUtil.createFormattedField(DateFormats.getDateMask((SimpleDateFormat) property.getFormat()));
     }
     else if (property.isString()) {
       field = initializeStringField(formatMaskString, valueContainsLiteralCharacters);

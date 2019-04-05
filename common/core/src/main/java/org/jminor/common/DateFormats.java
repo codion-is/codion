@@ -4,6 +4,8 @@
 package org.jminor.common;
 
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * A collection of date format strings.
@@ -57,5 +59,44 @@ public final class DateFormats {
     format.setLenient(lenient);
 
     return format;
+  }
+
+  /**
+   * Parses the date pattern and returns mask string that can be used in JFormattedFields.
+   * This only works with plain numerical date formats.
+   * @param dateFormat the format from which to retrieve the date mask
+   * @return a String representing the mask to use in JFormattedTextFields, i.e. "##-##-####"
+   */
+  public static String getDateMask(final SimpleDateFormat dateFormat) {
+    return getDateMask(dateFormat.toPattern());
+  }
+
+  /**
+   * Parses the date pattern and returns mask string that can be used in JFormattedFields.
+   * This only works with plain numerical date formats.
+   * @param dateFormat the format pattern from which to retrieve the date mask
+   * @return a String representing the mask to use in JFormattedTextFields, i.e. "##-##-####"
+   */
+  public static String getDateMask(final String dateFormat) {
+    final StringBuilder stringBuilder = new StringBuilder(dateFormat.length());
+    for (final Character character : dateFormat.toCharArray()) {
+      stringBuilder.append(Character.isLetter(character) ? "#" : character);
+    }
+
+    return stringBuilder.toString();
+  }
+
+  /**
+   * Parses a Temporal value from text with a provided formatter
+   * @param <T> the Temporal type
+   */
+  public interface DateParser<T> {
+    /**
+     * @param text the text to parse
+     * @param formatter the formatter to use
+     * @return the Temporal value
+     * @throws DateTimeParseException if unable to parse the text
+     */
+    T parse(final String text, final DateTimeFormatter formatter) throws DateTimeParseException;
   }
 }

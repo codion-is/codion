@@ -5,7 +5,7 @@ package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.framework.domain.Property;
-import org.jminor.swing.common.ui.DateInputPanel;
+import org.jminor.swing.common.ui.TemporalInputPanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
@@ -38,7 +38,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
     final EntityLookupField txtCustomer = createForeignKeyLookupField(INVOICE_CUSTOMERID_FK);
     configureCustomerLookup(txtCustomer);
     txtCustomer.setColumns(16);
-    final DateInputPanel datePanel = createDateInputPanel(INVOICE_INVOICEDATE);
+    final TemporalInputPanel datePanel = createDateInputPanel(INVOICE_INVOICEDATE);
     datePanel.getInputField().setColumns(16);
     final JTextField txtAddress = createTextField(INVOICE_BILLINGADDRESS);
     txtAddress.setColumns(16);

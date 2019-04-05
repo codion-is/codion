@@ -14,9 +14,9 @@ import org.jminor.framework.domain.Property;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Types;
-import java.text.DateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -226,7 +226,7 @@ public class PropertyConditionTest {
 
   @Test
   public void conditionDate() throws Exception {
-    final DateFormat dateFormat = DateFormats.getDateFormat(DateFormats.SHORT_DASH);
+    final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DateFormats.SHORT_DASH);
 
     //string, =
     final Property.ColumnProperty property = Properties.columnProperty("colName", Types.DATE);
@@ -237,7 +237,7 @@ public class PropertyConditionTest {
     assertEquals("colName is null", testCrit.getWhereClause());
 
     //string, =
-    final Date value = dateFormat.parse("10-12-2004");
+    final LocalDate value = LocalDate.parse("10-12-2004", dateFormat);
     testCrit = entityConditions.propertyCondition(property, Condition.Type.LIKE, value);
     String requiredValue = "colName = ?";
     assertEquals(requiredValue, testCrit.getWhereClause());
@@ -248,7 +248,7 @@ public class PropertyConditionTest {
     assertEquals(requiredValue, testCrit.getWhereClause());
 
     //string, between
-    final Date value2 = dateFormat.parse("10-09-2001");
+    final LocalDate value2 = LocalDate.parse("10-09-2001", dateFormat);
     testCrit = entityConditions.propertyCondition(property, Condition.Type.WITHIN_RANGE, Arrays.asList(value, value2));
     requiredValue = "(colName >= ? and colName <= ?)";
     assertEquals(requiredValue, testCrit.getWhereClause());
@@ -259,7 +259,7 @@ public class PropertyConditionTest {
     assertEquals(requiredValue, testCrit.getWhereClause());
 
     //string, in
-    final Date value3 = dateFormat.parse("12-10-2001");
+    final LocalDate value3 = LocalDate.parse("12-10-2001", dateFormat);
     testCrit = entityConditions.propertyCondition(property, Condition.Type.LIKE, Arrays.asList(value, value2, value3));
     requiredValue = "(colName in (?, ?, ?))";
     assertEquals(requiredValue, testCrit.getWhereClause());

@@ -91,7 +91,7 @@ create table chinook.invoice
 (
     invoiceid identity not null,
     customerid integer not null,
-    invoicedate date not null,
+    invoicedate timestamp not null,
     billingaddress varchar(70),
     billingcity varchar(40),
     billingstate varchar(40),

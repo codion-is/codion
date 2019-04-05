@@ -6,7 +6,6 @@ package org.jminor.framework.domain;
 import org.jminor.common.DateFormats;
 import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.db.valuemap.exception.LengthValidationException;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
 import org.jminor.common.db.valuemap.exception.RangeValidationException;
@@ -15,12 +14,12 @@ import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Types;
-import java.text.DateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -336,7 +335,7 @@ public class EntitiesTest {
   public void nullValidation() {
     final Entity emp = domain.entity(TestDomain.T_EMP);
     emp.put(TestDomain.EMP_NAME, "Name");
-    emp.put(TestDomain.EMP_HIREDATE, new Date());
+    emp.put(TestDomain.EMP_HIREDATE, LocalDateTime.now());
     emp.put(TestDomain.EMP_SALARY, 1200.0);
 
     final Entities.Validator validator = new Entities.Validator();
@@ -371,7 +370,7 @@ public class EntitiesTest {
     final Entity emp = domain.entity(TestDomain.T_EMP);
     emp.put(TestDomain.EMP_DEPARTMENT, 1);
     emp.put(TestDomain.EMP_NAME, "Name");
-    emp.put(TestDomain.EMP_HIREDATE, new Date());
+    emp.put(TestDomain.EMP_HIREDATE, LocalDateTime.now());
     emp.put(TestDomain.EMP_SALARY, 1200.0);
     final Entities.Validator validator = new Entities.Validator();
     assertDoesNotThrow(() -> validator.validate(Collections.singletonList(emp)));
@@ -384,7 +383,7 @@ public class EntitiesTest {
     final Entity emp = domain.entity(TestDomain.T_EMP);
     emp.put(TestDomain.EMP_DEPARTMENT, 1);
     emp.put(TestDomain.EMP_NAME, "Name");
-    emp.put(TestDomain.EMP_HIREDATE, new Date());
+    emp.put(TestDomain.EMP_HIREDATE, LocalDateTime.now());
     emp.put(TestDomain.EMP_SALARY, 1200d);
     emp.put(TestDomain.EMP_COMMISSION, 300d);
     final Entities.Validator validator = new Entities.Validator();
@@ -427,18 +426,18 @@ public class EntitiesTest {
     department.put(TestDomain.DEPARTMENT_NAME, "Sales");
 
     final Entity employee = domain.entity(TestDomain.T_EMP);
-    final Date hiredate = new Date();
+    final LocalDateTime hiredate = LocalDateTime.now();
     employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
     employee.put(TestDomain.EMP_NAME, "Darri");
     employee.put(TestDomain.EMP_HIREDATE, hiredate);
 
-    final DateFormat dateFormat = DateFormats.getDateFormat(DateFormats.SHORT_DOT);
+    final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DateFormats.SHORT_TIMESTAMP);
 
     Entities.StringProvider employeeToString = new Entities.StringProvider(TestDomain.EMP_NAME)
             .addText(" (department: ").addValue(TestDomain.EMP_DEPARTMENT_FK).addText(", location: ")
             .addForeignKeyValue(domain.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK),
                     TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
-            .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat).addText(")");
+            .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat.toFormat()).addText(")");
 
     assertEquals("Darri (department: Sales, location: Reykjavik, hiredate: " + dateFormat.format(hiredate) + ")", employeeToString.toString(employee));
 
@@ -453,7 +452,7 @@ public class EntitiesTest {
             .addText(" (department: ").addValue(TestDomain.EMP_DEPARTMENT_FK).addText(", location: ")
             .addForeignKeyValue(domain.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK),
                     TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
-            .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat).addText(")");
+            .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat.toFormat()).addText(")");
 
     assertEquals(" (department: , location: , hiredate: )", employeeToString.toString(employee));
   }
@@ -782,12 +781,7 @@ public class EntitiesTest {
 
   @Test
   public void defaultEntity() {
-    final Entity detail = domain.defaultEntity(TestDomain.T_DETAIL, new ValueProvider<Property, Object>() {
-      @Override
-      public Object get(final Property key) {
-        return null;
-      }
-    });
+    final Entity detail = domain.defaultEntity(TestDomain.T_DETAIL, key -> null);
     assertFalse(detail.containsKey(TestDomain.DETAIL_DOUBLE));//columnHasDefaultValue
     assertFalse(detail.containsKey(TestDomain.DETAIL_DATE));//columnHasDefaultValue
     assertTrue(detail.containsKey(TestDomain.DETAIL_BOOLEAN_NULLABLE));//columnHasDefaultValue && property.hasDefaultValue
