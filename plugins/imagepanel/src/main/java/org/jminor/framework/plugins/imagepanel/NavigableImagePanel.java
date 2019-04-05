@@ -196,27 +196,46 @@ public class NavigableImagePanel extends JPanel {
     private double x;
     private double y;
 
+    /**
+     * @param x the x value
+     * @param y the y value
+     */
     public Coordinates(final double x, final double y) {
       this.x = x;
       this.y = y;
     }
 
+    /**
+     * @return the x value
+     */
     public double getX() {
       return x;
     }
 
+    /**
+     * @return the y value
+     */
     public double getY() {
       return y;
     }
 
+    /**
+     * @return the x value rounded to int
+     */
     public int getIntX() {
       return (int) Math.round(x);
     }
 
+    /**
+     * @return the y value rounded to int
+     */
     public int getIntY() {
       return (int) Math.round(y);
     }
 
+    /**
+     * @return this coordinate as a point based on rounded x and y values
+     */
     public Point toPoint() {
       return new Point(getIntX(), getIntY());
     }

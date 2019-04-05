@@ -65,10 +65,9 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    */
   @Override
   public String getDescription() {
-    final Database database = getDatabase();
-    final String sid = database.getSid();
+    final String sid = getDatabase().getSid();
     if (sid == null) {
-      return database.getHost();
+      return getDatabase().getHost();
     }
 
     return sid;

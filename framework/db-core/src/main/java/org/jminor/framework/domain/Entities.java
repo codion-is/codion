@@ -71,6 +71,7 @@ public class Entities implements Serializable {
   private static final String ENTITY_ID_PARAM = "entityId";
   private static final String ENTITIES_PARAM = "entities";
   private static final String PROPERTY_ID_PARAM = "propertyId";
+  private static final String PROPERTY_PARAM = "property";
 
   private static final Map<String, Entities> REGISTERED_DOMAINS = new HashMap<>();
 
@@ -1599,7 +1600,7 @@ public class Entities implements Serializable {
     @Override
     public final void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
       Objects.requireNonNull(entity, ENTITY_PARAM);
-      Objects.requireNonNull(property, "property");
+      Objects.requireNonNull(property, PROPERTY_PARAM);
       if (entity.isValueNull(property)) {
         return;
       }
@@ -1619,7 +1620,7 @@ public class Entities implements Serializable {
     @Override
     public final void performNullValidation(final Entity entity, final Property property) throws NullValidationException {
       Objects.requireNonNull(entity, ENTITY_PARAM);
-      Objects.requireNonNull(property, "property");
+      Objects.requireNonNull(property, PROPERTY_PARAM);
       if (!isNullable(entity, property) && entity.isValueNull(property)) {
         if ((entity.getKey().isNull() || entity.getOriginalKey().isNull()) && !(property instanceof Property.ForeignKeyProperty)) {
           //a new entity being inserted, allow null for columns with default values and auto generated primary key values
@@ -1639,7 +1640,7 @@ public class Entities implements Serializable {
     @Override
     public void performLengthValidation(final Entity entity, final Property property) throws LengthValidationException {
       Objects.requireNonNull(entity, ENTITY_PARAM);
-      Objects.requireNonNull(property, "property");
+      Objects.requireNonNull(property, PROPERTY_PARAM);
       if (entity.isValueNull(property)) {
         return;
       }
