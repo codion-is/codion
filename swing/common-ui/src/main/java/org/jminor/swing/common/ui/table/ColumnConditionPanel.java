@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.table;
 
-import org.jminor.common.DateUtil;
+import org.jminor.common.DateFormats;
 import org.jminor.common.Event;
 import org.jminor.common.EventDataListener;
 import org.jminor.common.EventObserver;
@@ -382,7 +382,7 @@ public class ColumnConditionPanel<K> extends JPanel {
         case Types.TIME:
         case Types.TIMESTAMP:
         case Types.DATE:
-          return UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) columnConditionModel.getFormat()));
+          return UiUtil.createFormattedField(DateFormats.getDateMask((SimpleDateFormat) columnConditionModel.getFormat()));
         default:
           return new JTextField(DEFAULT_FIELD_COLUMNS);
       }
@@ -407,10 +407,16 @@ public class ColumnConditionPanel<K> extends JPanel {
           ValueLinks.longValueLink((LongField) component, modelValue, false, false, true);
           break;
         case Types.TIME:
+          ValueLinks.localTimeValueLink((JFormattedTextField) component, modelValue, false,
+                  ((SimpleDateFormat) columnConditionModel.getFormat()).toPattern(), true);
+          break;
         case Types.TIMESTAMP:
+          ValueLinks.localDateTimeValueLink((JFormattedTextField) component, modelValue, false,
+                  ((SimpleDateFormat) columnConditionModel.getFormat()).toPattern(), true);
+          break;
         case Types.DATE:
-          ValueLinks.dateValueLink((JFormattedTextField) component, modelValue, false,
-                  (SimpleDateFormat) columnConditionModel.getFormat(), columnConditionModel.getType(), true);
+          ValueLinks.localDateValueLink((JFormattedTextField) component, modelValue, false,
+                  ((SimpleDateFormat) columnConditionModel.getFormat()).toPattern(), true);
           break;
         default:
           ValueLinks.textValueLink((JTextField) component, modelValue, null, true, false);
@@ -449,12 +455,14 @@ public class ColumnConditionPanel<K> extends JPanel {
   }
 
   private void initializePanel() {
+    removeAll();
     if (advancedConditionState.isActive()) {
       initializeAdvancedPanel();
     }
     else {
       initializeSimplePanel();
     }
+    revalidate();
   }
 
   private JComboBox initializeConditionTypeComboBox() {
@@ -481,7 +489,7 @@ public class ColumnConditionPanel<K> extends JPanel {
   }
 
   private void initializeUI() {
-    final FlexibleGridLayout layout = new FlexibleGridLayout(2, 1, 1, 1, true, false);
+    final FlexibleGridLayout layout = new FlexibleGridLayout(2, 1, 0, 0, true, false);
     setLayout(layout);
     if (toggleEnabledButton != null) {
       this.toggleEnabledButton.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
@@ -492,39 +500,31 @@ public class ColumnConditionPanel<K> extends JPanel {
   }
 
   private void initializeSimplePanel() {
-    removeAll();
     ((FlexibleGridLayout) getLayout()).setRows(1);
-    final JPanel basePanel = new JPanel(new BorderLayout(1, 1));
-    if (conditionModel.isLowerBoundRequired()) {
-      final JPanel fieldBase = new JPanel(new GridLayout(1, 2, 1, 1));
-      fieldBase.add(lowerBoundField);
-      fieldBase.add(upperBoundField);
-      basePanel.add(fieldBase, BorderLayout.CENTER);
-    }
-    else {
-      basePanel.add(upperBoundField, BorderLayout.CENTER);
-    }
-
+    final JPanel inputPanel = initializeInputPanel();
     if (toggleEnabledButton != null) {
-      basePanel.add(toggleEnabledButton, BorderLayout.EAST);
+      inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
     }
     if (toggleAdvancedButton != null) {
-      basePanel.add(toggleAdvancedButton, BorderLayout.WEST);
+      inputPanel.add(toggleAdvancedButton, BorderLayout.WEST);
     }
-
-    add(basePanel);
-
-    setPreferredSize(new Dimension(getPreferredSize().width, basePanel.getPreferredSize().height));
-
-    revalidate();
+    add(inputPanel);
+    setPreferredSize(new Dimension(getPreferredSize().width, inputPanel.getPreferredSize().height));
   }
 
   private void initializeAdvancedPanel() {
-    removeAll();
     ((FlexibleGridLayout) getLayout()).setRows(2);
-    final JPanel inputPanel = new JPanel(new BorderLayout(1, 1));
+    final JPanel inputPanel = initializeInputPanel();
+    final JPanel controlPanel = initializeControlPanel();
+    add(controlPanel);
+    add(inputPanel);
+    setPreferredSize(new Dimension(getPreferredSize().width, controlPanel.getPreferredSize().height + inputPanel.getPreferredSize().height));
+  }
+
+  private JPanel initializeInputPanel() {
+    final JPanel inputPanel = new JPanel(new BorderLayout());
     if (conditionModel.isLowerBoundRequired()) {
-      final JPanel fieldBase = new JPanel(new GridLayout(1, 2, 1, 1));
+      final JPanel fieldBase = new JPanel(new GridLayout(1, 2));
       fieldBase.add(lowerBoundField);
       fieldBase.add(upperBoundField);
       inputPanel.add(fieldBase, BorderLayout.CENTER);
@@ -533,7 +533,11 @@ public class ColumnConditionPanel<K> extends JPanel {
       inputPanel.add(upperBoundField, BorderLayout.CENTER);
     }
 
-    final JPanel controlPanel = new JPanel(new BorderLayout(1, 1));
+    return inputPanel;
+  }
+
+  private JPanel initializeControlPanel() {
+    final JPanel controlPanel = new JPanel(new BorderLayout());
     controlPanel.add(conditionTypeCombo, BorderLayout.CENTER);
     if (toggleEnabledButton != null) {
       controlPanel.add(toggleEnabledButton, BorderLayout.EAST);
@@ -542,12 +546,7 @@ public class ColumnConditionPanel<K> extends JPanel {
       controlPanel.add(toggleAdvancedButton, BorderLayout.WEST);
     }
 
-    add(controlPanel);
-    add(inputPanel);
-
-    setPreferredSize(new Dimension(getPreferredSize().width, controlPanel.getPreferredSize().height + inputPanel.getPreferredSize().height));
-
-    revalidate();
+    return controlPanel;
   }
 
   private void linkComponentsToLockedState() {

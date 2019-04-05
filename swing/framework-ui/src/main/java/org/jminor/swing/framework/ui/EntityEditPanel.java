@@ -19,9 +19,9 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditModel;
-import org.jminor.swing.common.ui.DateInputPanel;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.DialogExceptionHandler;
+import org.jminor.swing.common.ui.TemporalInputPanel;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.checkbox.TristateCheckBox;
@@ -1197,7 +1197,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return a DateInputPanel using the default short date format
    * @see Property#DATE_FORMAT
    */
-  protected final DateInputPanel createDateInputPanel(final String propertyId) {
+  protected final TemporalInputPanel createDateInputPanel(final String propertyId) {
     return createDateInputPanel(propertyId, true);
   }
 
@@ -1208,7 +1208,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return a DateInputPanel using the default short date format
    * @see Property#DATE_FORMAT
    */
-  protected final DateInputPanel createDateInputPanel(final String propertyId, final boolean includeButton) {
+  protected final TemporalInputPanel createDateInputPanel(final String propertyId, final boolean includeButton) {
     final Property property = editModel.getDomain().getProperty(editModel.getEntityId(), propertyId);
     return createDateInputPanel(property, includeButton, null);
   }
@@ -1220,8 +1220,8 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param enabledState a state for controlling the enabled state of the input component
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final String propertyId, final boolean includeButton,
-                                                      final StateObserver enabledState) {
+  protected final TemporalInputPanel createDateInputPanel(final String propertyId, final boolean includeButton,
+                                                          final StateObserver enabledState) {
     return createDateInputPanel(propertyId, includeButton, enabledState, isReadOnly(propertyId));
   }
 
@@ -1233,8 +1233,8 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param readOnly if true the component will be read only
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final String propertyId, final boolean includeButton,
-                                                      final StateObserver enabledState, final boolean readOnly) {
+  protected final TemporalInputPanel createDateInputPanel(final String propertyId, final boolean includeButton,
+                                                          final StateObserver enabledState, final boolean readOnly) {
     return createDateInputPanel(editModel.getDomain().getProperty(editModel.getEntityId(), propertyId),
             includeButton, enabledState, readOnly);
   }
@@ -1244,7 +1244,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param property the property for which to create the panel
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final Property property) {
+  protected final TemporalInputPanel createDateInputPanel(final Property property) {
     return createDateInputPanel(property, true);
   }
 
@@ -1254,7 +1254,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param includeButton if true a button for visually editing the date is included
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final Property property, final boolean includeButton) {
+  protected final TemporalInputPanel createDateInputPanel(final Property property, final boolean includeButton) {
     return createDateInputPanel(property, includeButton, null);
   }
 
@@ -1265,8 +1265,8 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param enabledState a state for controlling the enabled state of the input component
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final Property property, final boolean includeButton,
-                                                      final StateObserver enabledState) {
+  protected final TemporalInputPanel createDateInputPanel(final Property property, final boolean includeButton,
+                                                          final StateObserver enabledState) {
     return createDateInputPanel(property, includeButton, enabledState, isReadOnly(property.getPropertyId()));
   }
 
@@ -1278,9 +1278,9 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param readOnly if true the component will be read only
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final Property property, final boolean includeButton,
-                                                      final StateObserver enabledState, final boolean readOnly) {
-    final DateInputPanel panel = EntityUiUtil.createDateInputPanel(property, editModel, readOnly, includeButton, enabledState);
+  protected final TemporalInputPanel createDateInputPanel(final Property property, final boolean includeButton,
+                                                          final StateObserver enabledState, final boolean readOnly) {
+    final TemporalInputPanel panel = EntityUiUtil.createDateInputPanel(property, editModel, readOnly, includeButton, enabledState);
     setComponent(property.getPropertyId(), panel);
 
     return panel;

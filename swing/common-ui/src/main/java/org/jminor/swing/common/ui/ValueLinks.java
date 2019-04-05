@@ -16,12 +16,10 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.text.JTextComponent;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.sql.Types;
-import java.text.DateFormat;
 import java.text.Format;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * A factory class for binding values to UI components
@@ -38,16 +36,13 @@ public final class ValueLinks {
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param readOnly if true the component will be read only
    * @param dateFormat the data format
-   * @param sqlType the actual sql type (Types.DATE, Types.TIMESTAMP or Types.TIME)
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  @SuppressWarnings("unchecked")
-  public static void dateValueLink(final JFormattedTextField textComponent, final Object owner,
-                                   final String beanPropertyName, final EventObserver<Date> valueChangeEvent,
-                                   final boolean readOnly, final DateFormat dateFormat, final int sqlType,
-                                   final boolean immediateUpdate) {
-    dateValueLink(textComponent, Values.beanValue(owner, beanPropertyName, getDateTypeClass(sqlType),
-            valueChangeEvent), readOnly, dateFormat, sqlType, immediateUpdate);
+  public static void localDateValueLink(final JFormattedTextField textComponent, final Object owner,
+                                        final String beanPropertyName, final EventObserver<LocalDate> valueChangeEvent,
+                                        final boolean readOnly, final String dateFormat, final boolean immediateUpdate) {
+    localDateValueLink(textComponent, Values.beanValue(owner, beanPropertyName, LocalDate.class,
+            valueChangeEvent), readOnly, dateFormat, immediateUpdate);
   }
 
   /**
@@ -56,14 +51,74 @@ public final class ValueLinks {
    * @param value the model value
    * @param readOnly if true the component will be read only
    * @param dateFormat the data format
-   * @param sqlType the actual sql type (Types.DATE, Types.TIMESTAMP or Types.TIME)
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void dateValueLink(final JFormattedTextField textComponent, final Value<Date> value,
-                                   final boolean readOnly, final DateFormat dateFormat, final int sqlType,
-                                   final boolean immediateUpdate) {
+  public static void localDateValueLink(final JFormattedTextField textComponent, final Value<LocalDate> value,
+                                        final boolean readOnly, final String dateFormat, final boolean immediateUpdate) {
     textComponent.setEditable(!readOnly);
-    Values.link(value, UiValues.dateValue(textComponent, dateFormat, sqlType, immediateUpdate), readOnly);
+    Values.link(value, UiValues.localDateValue(textComponent, dateFormat, immediateUpdate), readOnly);
+  }
+
+  /**
+   * Links a date bean value with a given text component
+   * @param textComponent the text component to link with the value
+   * @param owner the value owner
+   * @param beanPropertyName the property name
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param readOnly if true the component will be read only
+   * @param dateFormat the data format
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
+   */
+  public static void localTimeValueLink(final JFormattedTextField textComponent, final Object owner,
+                                        final String beanPropertyName, final EventObserver<LocalTime> valueChangeEvent,
+                                        final boolean readOnly, final String dateFormat, final boolean immediateUpdate) {
+    localTimeValueLink(textComponent, Values.beanValue(owner, beanPropertyName, LocalTime.class,
+            valueChangeEvent), readOnly, dateFormat, immediateUpdate);
+  }
+
+  /**
+   * Links a date value with a given text component
+   * @param textComponent the text component to link with the value
+   * @param value the model value
+   * @param readOnly if true the component will be read only
+   * @param dateFormat the data format
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
+   */
+  public static void localTimeValueLink(final JFormattedTextField textComponent, final Value<LocalTime> value,
+                                        final boolean readOnly, final String dateFormat, final boolean immediateUpdate) {
+    textComponent.setEditable(!readOnly);
+    Values.link(value, UiValues.localTimeValue(textComponent, dateFormat, immediateUpdate), readOnly);
+  }
+
+  /**
+   * Links a date bean value with a given text component
+   * @param textComponent the text component to link with the value
+   * @param owner the value owner
+   * @param beanPropertyName the property name
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param readOnly if true the component will be read only
+   * @param dateFormat the data format
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
+   */
+  public static void localDateTimeValueLink(final JFormattedTextField textComponent, final Object owner,
+                                            final String beanPropertyName, final EventObserver<LocalDateTime> valueChangeEvent,
+                                            final boolean readOnly, final String dateFormat, final boolean immediateUpdate) {
+    localDateTimeValueLink(textComponent, Values.beanValue(owner, beanPropertyName, LocalDateTime.class,
+            valueChangeEvent), readOnly, dateFormat, immediateUpdate);
+  }
+
+  /**
+   * Links a date value with a given text component
+   * @param textComponent the text component to link with the value
+   * @param value the model value
+   * @param readOnly if true the component will be read only
+   * @param dateFormat the data format
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
+   */
+  public static void localDateTimeValueLink(final JFormattedTextField textComponent, final Value<LocalDateTime> value,
+                                            final boolean readOnly, final String dateFormat, final boolean immediateUpdate) {
+    textComponent.setEditable(!readOnly);
+    Values.link(value, UiValues.localDateTimeValue(textComponent, dateFormat, immediateUpdate), readOnly);
   }
 
   /**
@@ -438,18 +493,5 @@ public final class ValueLinks {
    */
   public static void intSpinnerValueLink(final SpinnerNumberModel spinnerModel, final Value<Integer> integerValue, final boolean readOnly) {
     Values.link(integerValue, UiValues.integerValue(spinnerModel), readOnly);
-  }
-
-  private static Class getDateTypeClass(final int sqlType) {
-    switch (sqlType) {
-      case Types.DATE:
-        return Date.class;
-      case Types.TIMESTAMP:
-        return Timestamp.class;
-      case Types.TIME:
-        return Time.class;
-      default:
-        throw new IllegalArgumentException("Not a date based type: " + sqlType);
-    }
   }
 }

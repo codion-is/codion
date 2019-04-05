@@ -221,7 +221,7 @@ public final class ChinookImpl extends Entities implements Chinook {
             foreignKeyProperty(INVOICE_CUSTOMERID_FK, "Customer", T_CUSTOMER,
                     columnProperty(INVOICE_CUSTOMERID, Types.BIGINT))
                     .setNullable(false),
-            columnProperty(INVOICE_INVOICEDATE, Types.DATE, "Date")
+            columnProperty(INVOICE_INVOICEDATE, Types.TIMESTAMP, "Date/time")
                     .setNullable(false),
             columnProperty(INVOICE_BILLINGADDRESS, Types.VARCHAR, "Billing address")
                     .setMaxLength(70),

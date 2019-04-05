@@ -3,6 +3,7 @@
  */
 package org.jminor.swing.common.ui;
 
+import org.jminor.common.DateFormats;
 import org.jminor.common.Event;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
@@ -33,14 +34,14 @@ import javax.swing.text.JTextComponent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.sql.Types;
-import java.text.DateFormat;
 import java.text.Format;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.Objects;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.Temporal;
 
 /**
  * A factory class for Value instances based on UI components
@@ -50,17 +51,36 @@ public final class UiValues {
   private UiValues() {}
 
   /**
-   * Note that when using Types.TIME the date fields (year, month and day of month) are
-   * set to 1970, january and 1 respectively
    * @param textComponent the component
    * @param dateFormat the date format
-   * @param sqlType the actual sql type (Types.DATE, Types.TIMESTAMP or Types.TIME)
    * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
-  public static Value<Date> dateValue(final JFormattedTextField textComponent, final DateFormat dateFormat,
-                                      final int sqlType, final boolean immediateUpdate) {
-    return new DateUIValue(textComponent, dateFormat, sqlType, immediateUpdate);
+  public static Value<LocalDate> localDateValue(final JFormattedTextField textComponent, final String dateFormat,
+                                                final boolean immediateUpdate) {
+    return new TemporalUiValue<>(textComponent, dateFormat, immediateUpdate, LocalDate::parse);
+  }
+
+  /**
+   * @param textComponent the component
+   * @param dateFormat the date format
+   * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
+   * @return a Value bound to the given component
+   */
+  public static Value<LocalTime> localTimeValue(final JFormattedTextField textComponent, final String dateFormat,
+                                                final boolean immediateUpdate) {
+    return new TemporalUiValue<>(textComponent, dateFormat, immediateUpdate, LocalTime::parse);
+  }
+
+  /**
+   * @param textComponent the component
+   * @param dateFormat the date format
+   * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
+   * @return a Value bound to the given component
+   */
+  public static Value<LocalDateTime> localDateTimeValue(final JFormattedTextField textComponent, final String dateFormat,
+                                                        final boolean immediateUpdate) {
+    return new TemporalUiValue<>(textComponent, dateFormat, immediateUpdate, LocalDateTime::parse);
   }
 
   /**
@@ -293,7 +313,6 @@ public final class UiValues {
   }
 
   private abstract static class NumberUIValue<T> extends UIValue<T> {
-
     private final NumberField textField;
     private final boolean usePrimitive;
 
@@ -399,29 +418,37 @@ public final class UiValues {
     }
   }
 
-  private static final class DateUIValue extends TextUIValue<Date> {
-    private final int sqlType;
+  private static final class TemporalUiValue<T extends Temporal> extends TextUIValue<T> {
+    private final DateTimeFormatter formatter;
+    private final DateFormats.DateParser<T> dateParser;
 
-    private DateUIValue(final JFormattedTextField textComponent, final DateFormat format, final int sqlType,
-                        final boolean immediateUpdate) {
-      super(textComponent, Objects.requireNonNull(format, "format"), immediateUpdate);
-      if (sqlType != Types.DATE && sqlType != Types.TIMESTAMP && sqlType != Types.TIME) {
-        throw new IllegalArgumentException("DateUIValue only applicable to: Types.DATE, Types.TIMESTAMP and Types.TIME");
-      }
-      this.sqlType = sqlType;
+    private TemporalUiValue(final JFormattedTextField textComponent, final String dateFormat,
+                            final boolean immediateUpdate, final DateFormats.DateParser<T> dateParser) {
+      super(textComponent, null, immediateUpdate);
+      this.formatter = DateTimeFormatter.ofPattern(dateFormat);
+      this.dateParser = dateParser;
     }
 
     @Override
-    protected Date valueFromText(final String text) {
-      final Date parsedValue = super.valueFromText(text);
-      if (parsedValue == null) {
+    protected String textFromValue(final T value) {
+      if (value == null) {
         return null;
       }
-      switch (sqlType) {
-        case Types.DATE: return parsedValue;
-        case Types.TIMESTAMP: return new Timestamp(parsedValue.getTime());
-        case Types.TIME: return new Time(parsedValue.getTime());
-        default: throw new IllegalStateException("Illegal sql type for DateUIValue: " + sqlType);
+
+      return formatter.format(value);
+    }
+
+    @Override
+    protected T valueFromText(final String text) {
+      if (Util.nullOrEmpty(text)) {
+        return null;
+      }
+
+      try {
+        return dateParser.parse(text, formatter);
+      }
+      catch (final DateTimeParseException e) {
+        return null;
       }
     }
   }

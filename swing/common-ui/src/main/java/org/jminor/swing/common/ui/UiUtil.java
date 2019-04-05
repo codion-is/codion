@@ -3,6 +3,7 @@
  */
 package org.jminor.swing.common.ui;
 
+import org.jminor.common.DateFormats;
 import org.jminor.common.DateUtil;
 import org.jminor.common.Event;
 import org.jminor.common.EventDataListener;
@@ -100,9 +101,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -130,6 +136,8 @@ public final class UiUtil {
   }
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(UiUtil.class.getName(), Locale.getDefault());
+
+  private static final String JCALENDAR_CLASS_NAME = "com.toedter.calendar.JCalendar";
 
   /**
    * A wait cursor
@@ -441,27 +449,33 @@ public final class UiUtil {
   }
 
   /**
-   * Retrieves a date from the user. If JCalendar is available on the classpath a JCalendar panel is shown,
-   * otherwise a simple formatted text field is used
+   * @return true if the JCalendar library is available
+   */
+  public static boolean isJCalendarAvailable() {
+    return Util.onClasspath(JCALENDAR_CLASS_NAME);
+  }
+
+  /**
+   * Retrieves a LocalDate from the user via JCalendar.
    * @param startDate the starting date, if null the current date is used
    * @param message the message to display as dialog title
    * @param parent the dialog parent
-   * @return a Date from the user with all time base fields set to zero, null if the action was cancelled
+   * @return a LocalDate from the user, null if the action was cancelled
+   * @throws IllegalStateException in case JCalendar is not found on the classpath
    */
-  public static Date getDateFromUser(final Date startDate, final String message, final Container parent) {
-    final String jCalendarClassName = "com.toedter.calendar.JCalendar";
-    if (!Util.onClasspath(jCalendarClassName)) {
-      return getDateFromUserAsText(startDate, message, parent);
+  public static LocalDate getDateWithCalendar(final LocalDate startDate, final String message, final Container parent) {
+    if (!isJCalendarAvailable()) {
+      throw new IllegalStateException("JCalendar library is not available");
     }
 
     try {
       final Calendar cal = Calendar.getInstance();
       if (startDate != null) {
-        cal.setTime(startDate);
+        cal.setTime(Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
       }
       cal.setTime(DateUtil.floorDate(cal.getTime()));
 
-      final Class<?> jCalendarClass = Class.forName(jCalendarClassName);
+      final Class<?> jCalendarClass = Class.forName(JCALENDAR_CLASS_NAME);
       final Method getCalendar = jCalendarClass.getMethod("getCalendar");
       final Constructor constructor = jCalendarClass.getConstructor(Calendar.class);
       final JPanel calendarPanel = (JPanel) constructor.newInstance(cal);
@@ -490,7 +504,9 @@ public final class UiUtil {
       addKeyEvent(datePanel, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelControl);
       displayInDialog(parent, datePanel, message, true, okBtn, closeEvent, true, null);
 
-      return cancel.isActive() ? null : new Date(returnTime.getTimeInMillis());
+      return cancel.isActive() ? null : Instant.ofEpochMilli(returnTime.getTime().getTime())
+              .atZone(ZoneId.systemDefault())
+              .toLocalDate();
     }
     catch (final Exception e) {
       throw new RuntimeException("Exception while using JCalendar", e);
@@ -501,27 +517,16 @@ public final class UiUtil {
    * Retrieves a date from the user using a simple formatted text field
    * @param startDate the initial date, if null the current date is used
    * @param message the message to display as dialog title
-   * @param parent the dialog parent
-   * @return a Date from the user
-   */
-  public static Date getDateFromUserAsText(final Date startDate, final String message, final Container parent) {
-    return getDateFromUserAsText(startDate, message, (SimpleDateFormat) DateFormat.getDateInstance(DateFormat.SHORT), parent);
-  }
-
-  /**
-   * Retrieves a date from the user using a simple formatted text field
-   * @param startDate the initial date, if null the current date is used
-   * @param message the message to display as dialog title
    * @param inputDateFormat the date format to use
    * @param parent the dialog parent
-   * @return a Date from the user
+   * @return a LocalDateTime from the user
    */
-  public static Date getDateFromUserAsText(final Date startDate, final String message, final SimpleDateFormat inputDateFormat,
-                                           final Container parent) {
+  public static LocalDateTime getDateTimeFromUserAsText(final LocalDateTime startDate, final String message,
+                                                        final String dateFormat, final Container parent) {
     try {
-      final MaskFormatter formatter = new MaskFormatter(DateUtil.getDateMask(inputDateFormat));
+      final MaskFormatter formatter = new MaskFormatter(DateFormats.getDateMask(dateFormat));
       formatter.setPlaceholderCharacter('_');
-      final JFormattedTextField txtField = new JFormattedTextField(inputDateFormat);
+      final JFormattedTextField txtField = new JFormattedTextField(new SimpleDateFormat(dateFormat));
       txtField.setColumns(DEFAULT_DATE_FIELD_COLUMNS);
       txtField.setValue(startDate);
 
@@ -530,7 +535,7 @@ public final class UiUtil {
 
       displayInDialog(parent, datePanel, message);
 
-      return inputDateFormat.parse(txtField.getText());
+      return LocalDateTime.parse(txtField.getText(), DateTimeFormatter.ofPattern(dateFormat));
     }
     catch (final ParseException e) {
       throw new RuntimeException(e);
@@ -539,14 +544,14 @@ public final class UiUtil {
 
   /**
    * Creates a formatted text field using the given format
-   * @param maskFormat the format
+   * @param dateFormat the format
    * @param initialValue the initial value
    * @return the text field
    */
-  public static JFormattedTextField createFormattedDateField(final SimpleDateFormat maskFormat, final Date initialValue) {
-    final JFormattedTextField txtField = createFormattedField(DateUtil.getDateMask(maskFormat));
+  public static JFormattedTextField createFormattedTemporalField(final String dateFormat, final Temporal initialValue) {
+    final JFormattedTextField txtField = createFormattedField(DateFormats.getDateMask(dateFormat));
     if (initialValue != null) {
-      txtField.setText(maskFormat.format(initialValue));
+      txtField.setText(DateTimeFormatter.ofPattern(dateFormat).format(initialValue));
     }
 
     return txtField;
@@ -1366,14 +1371,11 @@ public final class UiUtil {
     final JButton btnOk = new JButton(okAction);
     final JButton btnCancel = new JButton(cancelAction);
     btnOk.setText(Messages.get(Messages.OK));
+    btnOk.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
     btnCancel.setText(Messages.get(Messages.CANCEL));
-    final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
-    final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
-    btnOk.setMnemonic(okMnemonic.charAt(0));
-    btnCancel.setMnemonic(cancelMnemonic.charAt(0));
+    btnCancel.setMnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
     dialog.setLayout(createBorderLayout());
-    final JScrollPane scroller = new JScrollPane(toScroll);
-    dialog.add(scroller, BorderLayout.CENTER);
+    dialog.add(new JScrollPane(toScroll), BorderLayout.CENTER);
     final JPanel buttonPanel = new JPanel(createGridLayout(1, 2));
     buttonPanel.add(btnOk);
     buttonPanel.add(btnCancel);

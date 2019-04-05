@@ -3,7 +3,6 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.common.EventObserver;
 import org.jminor.common.Item;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
@@ -67,13 +66,12 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -240,12 +238,17 @@ public final class FXUiUtil {
         booleanValue.set((Boolean) defaultValue);
         return booleanValue;
       case Types.DATE:
-      case Types.TIMESTAMP:
-      case Types.TIME:
-        final Value<Date> dateValue = Values.value((java.sql.Date) defaultValue);
-        final StringValue<LocalDate> value = createDateValue(property, (DatePicker) control);
-        Values.link(createLocalDateValue(dateValue), value);
+        final Value<LocalDate> dateValue = Values.value((LocalDate) defaultValue);
+        Values.link(dateValue, createDateValue(property, (DatePicker) control));
         return dateValue;
+      case Types.TIMESTAMP:
+        final Value<LocalDateTime> dateTimeValue = Values.value((LocalDateTime) defaultValue);
+        Values.link(dateTimeValue, createTimestampValue(property, (TextField) control));
+        return dateTimeValue;
+      case Types.TIME:
+        final Value<LocalTime> timeValue = Values.value((LocalTime) defaultValue);
+        Values.link(timeValue, createTimeValue(property, (TextField) control));
+        return timeValue;
       case Types.DOUBLE:
         final StringValue<Double> doubleValue = createDoubleValue(property, (TextField) control);
         doubleValue.set((Double) defaultValue);
@@ -323,9 +326,9 @@ public final class FXUiUtil {
       case Types.BOOLEAN:
         return createCheckBox();
       case Types.DATE:
+        return createDatePicker();
       case Types.TIMESTAMP:
       case Types.TIME:
-        return createDatePicker();
       case Types.DOUBLE:
       case Types.INTEGER:
       case Types.BIGINT:
@@ -547,9 +550,7 @@ public final class FXUiUtil {
   public static DatePicker createDatePicker(final Property property, final FXEntityEditModel editModel,
                                             final StateObserver enabledState) {
     final DatePicker picker = createDatePicker(enabledState);
-    final StringValue<LocalDate> value = createDateValue(property, picker);
-
-    Values.link(new LocalDateValue(EditModelValues.value(editModel, property)), value);
+    Values.link(EditModelValues.value(editModel, property), createDateValue(property, picker));
 
     return picker;
   }
@@ -571,12 +572,29 @@ public final class FXUiUtil {
   }
 
   /**
-   * Instantiates a {@link Value} for {@link LocalDate} values, based on the given {@link Date} based {@link Value}
-   * @param dateValue the {@link Date} based {@link Value}
-   * @return a {@link StringValue} for {@link LocalDate} values, based on the given value
+   * Instantiates a {@link StringValue} for {@link LocalDateTime} values, based on the given property and linked to the given text field
+   * @param property the property
+   * @param textField the text field
+   * @return a {@link StringValue} for {@link LocalDateTime} values, based on the given property
    */
-  public static Value<LocalDate> createLocalDateValue(final Value<Date> dateValue) {
-    return new LocalDateValue(dateValue);
+  public static StringValue<LocalDateTime> createTimestampValue(final Property property, final TextField textField) {
+    final StringValue<LocalDateTime> timestampValue = PropertyValues.timestampPropertyValue(textField.textProperty(), (SimpleDateFormat) property.getFormat());
+    textField.setTextFormatter(new TextFormatter<>(timestampValue.getConverter()));
+
+    return timestampValue;
+  }
+
+  /**
+   * Instantiates a {@link StringValue} for {@link LocalTime} values, based on the given property and linked to the given text field
+   * @param property the property
+   * @param textField the text field
+   * @return a {@link StringValue} for {@link LocalTime} values, based on the given property
+   */
+  public static StringValue<LocalTime> createTimeValue(final Property property, final TextField textField) {
+    final StringValue<LocalTime> timeValue = PropertyValues.timePropertyValue(textField.textProperty(), (SimpleDateFormat) property.getFormat());
+    textField.setTextFormatter(new TextFormatter<>(timeValue.getConverter()));
+
+    return timeValue;
   }
 
   /**
@@ -840,43 +858,6 @@ public final class FXUiUtil {
     entityList.refresh();
 
     return entityList.getSortedList();
-  }
-
-  private static final class LocalDateValue implements Value<LocalDate> {
-
-    private final Value dateValue;
-
-    private LocalDateValue(final Value<Date> dateValue) {
-      this.dateValue = dateValue;
-    }
-
-    @Override
-    public void set(final LocalDate value) {
-      if (value == null) {
-        dateValue.set(null);
-      }
-      else {
-        dateValue.set(Date.from(value.atStartOfDay(ZoneId.systemDefault()).toInstant()));
-      }
-    }
-
-    @Override
-    public LocalDate get() {
-      return toLocalDate((Date) dateValue.get());
-    }
-
-    @Override
-    public EventObserver<LocalDate> getObserver() {
-      return dateValue.getObserver();
-    }
-
-    private static LocalDate toLocalDate(final Date date) {
-      if (date == null) {
-        return null;
-      }
-
-      return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
-    }
   }
 
   private static final class ValidationChangeListener implements ChangeListener<String> {

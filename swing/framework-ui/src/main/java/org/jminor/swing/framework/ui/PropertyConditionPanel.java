@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.DateUtil;
+import org.jminor.common.DateFormats;
 import org.jminor.common.Value;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.table.ColumnConditionModel;
@@ -86,7 +86,7 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
         return initializeValueListField((Property.ValueListProperty) property);
       }
       if (property.isDateOrTime()) {
-        return UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) model.getFormat()));
+        return UiUtil.createFormattedField(DateFormats.getDateMask((SimpleDateFormat) model.getFormat()));
       }
       else if (property.isDouble()) {
         return new DoubleField(DEFAULT_FIELD_COLUMNS);
@@ -111,9 +111,17 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
       if (columnProperty instanceof Property.ValueListProperty || columnProperty.isBoolean()) {
         ValueLinks.selectedItemValueLink((JComboBox) field, modelValue);
       }
-      else if (columnProperty.isDateOrTime()) {
-        ValueLinks.dateValueLink((JFormattedTextField) field, modelValue, false,
-                (SimpleDateFormat) model.getFormat(), columnProperty.getType(), true);
+      else if (columnProperty.isTime()) {
+        ValueLinks.localTimeValueLink((JFormattedTextField) field, modelValue, false,
+                ((SimpleDateFormat) model.getFormat()).toPattern(), true);
+      }
+      else if (columnProperty.isDate()) {
+        ValueLinks.localDateValueLink((JFormattedTextField) field, modelValue, false,
+                ((SimpleDateFormat) model.getFormat()).toPattern(), true);
+      }
+      else if (columnProperty.isTimestamp()) {
+        ValueLinks.localDateTimeValueLink((JFormattedTextField) field, modelValue, false,
+                ((SimpleDateFormat) model.getFormat()).toPattern(), true);
       }
       else if (columnProperty.isDouble()) {
         ValueLinks.doubleValueLink((DoubleField) field, modelValue, false, false, true);

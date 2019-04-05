@@ -180,7 +180,7 @@ public final class TestDomain extends Entities {
                     .setMin(100).setMax(2000).setMaximumFractionDigits(2),
             Properties.foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
                     Properties.columnProperty(EMP_MGR)),
-            Properties.columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)
+            Properties.columnProperty(EMP_HIREDATE, Types.TIMESTAMP, EMP_HIREDATE)
                     .setNullable(false),
             Properties.denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
                     getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),

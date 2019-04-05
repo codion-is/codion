@@ -24,7 +24,8 @@ import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * A ClientInstanceMonitorPanel
@@ -74,7 +75,8 @@ public final class ClientInstanceMonitorPanel extends JPanel {
         log.append("Disconnected!");
       }
       chkLoggingEnabled.setSelected(model.isLoggingEnabled());
-      txtCreationDate.setText(DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(new Date(model.getCreationDate())));
+      final LocalDateTime creationDate = model.getCreationDate();
+      txtCreationDate.setText(creationDate == null ? "unknown" : DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP).format(creationDate));
       model.refreshLogTreeModel();
     }
     else {

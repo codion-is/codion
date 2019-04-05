@@ -156,7 +156,7 @@ public interface Property extends Attribute, Serializable {
   boolean isNumerical();
 
   /**
-   * @return true if this is a time based property, Date, Timestamp or Time
+   * @return true if this is a time based property, Date (LocalDate), Timestamp (LocalDatetime) or Time (LocalTime)
    */
   boolean isDateOrTime();
 

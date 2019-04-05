@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.db.local;
 
+import org.jminor.common.DateFormats;
 import org.jminor.common.User;
 import org.jminor.common.db.AbstractFunction;
 import org.jminor.common.db.AbstractProcedure;
@@ -33,6 +34,9 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.Types;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -331,6 +335,26 @@ public class DefaultLocalEntityConnectionTest {
     finally {
       connection.rollbackTransaction();
     }
+  }
+
+  @Test
+  public void dateTime() throws DatabaseException {
+    final Entity sales = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    final double salary = 1500;
+
+    Entity emp = ENTITIES.entity(TestDomain.T_EMP);
+    emp.put(TestDomain.EMP_DEPARTMENT_FK, sales);
+    emp.put(TestDomain.EMP_NAME, "Nobody");
+    emp.put(TestDomain.EMP_SALARY, salary);
+    final LocalDate hiredate = LocalDate.parse("03-10-1975", DateTimeFormatter.ofPattern(DateFormats.SHORT_DASH));
+    emp.put(TestDomain.EMP_HIREDATE, hiredate);
+    final LocalDateTime hiretime = LocalDateTime.parse("03-10-1975 08:30:22", DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP));
+    emp.put(TestDomain.EMP_HIRETIME, hiretime);
+
+    emp = connection.selectSingle(connection.insert(Collections.singletonList(emp)).get(0));
+
+    assertEquals(hiredate, emp.getDate(TestDomain.EMP_HIREDATE));
+    assertEquals(hiretime, emp.getTimestamp(TestDomain.EMP_HIRETIME));
   }
 
   @Test

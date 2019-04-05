@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
-import org.jminor.swing.common.ui.DateInputPanel;
+import org.jminor.swing.common.ui.TemporalInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
@@ -26,7 +26,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     txtFirstName.setColumns(16);
     final JTextField txtLastName = createTextField(EMPLOYEE_LASTNAME);
     txtLastName.setColumns(16);
-    final DateInputPanel birthdateInputPanel = createDateInputPanel(EMPLOYEE_BIRTHDATE);
+    final TemporalInputPanel birthdateInputPanel = createDateInputPanel(EMPLOYEE_BIRTHDATE);
     birthdateInputPanel.getInputField().setColumns(16);
     final JTextField txtAddress = createTextField(EMPLOYEE_ADDRESS);
     txtAddress.setColumns(16);
@@ -45,7 +45,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     final JTextField txtEmail = createTextField(EMPLOYEE_EMAIL);
     txtEmail.setColumns(16);
     createForeignKeyComboBox(EMPLOYEE_REPORTSTO_FK);
-    final DateInputPanel hiredateInputPanel = createDateInputPanel(EMPLOYEE_HIREDATE);
+    final TemporalInputPanel hiredateInputPanel = createDateInputPanel(EMPLOYEE_HIREDATE);
     hiredateInputPanel.getInputField().setColumns(16);
     final JTextField txtTitle = createTextField(EMPLOYEE_TITLE);
     txtTitle.setColumns(16);

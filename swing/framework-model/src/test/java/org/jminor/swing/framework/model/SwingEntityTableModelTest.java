@@ -23,9 +23,9 @@ import org.jminor.framework.model.TestDomain;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.table.TableColumn;
-import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -168,8 +168,8 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals(Integer.class, testModel.getColumnClass(0));
     assertEquals(Double.class, testModel.getColumnClass(1));
     assertEquals(String.class, testModel.getColumnClass(2));
-    assertEquals(Date.class, testModel.getColumnClass(3));
-    assertEquals(Timestamp.class, testModel.getColumnClass(4));
+    assertEquals(LocalDate.class, testModel.getColumnClass(3));
+    assertEquals(LocalDateTime.class, testModel.getColumnClass(4));
     assertEquals(Boolean.class, testModel.getColumnClass(5));
     assertEquals(Boolean.class, testModel.getColumnClass(6));
     assertEquals(Object.class, testModel.getColumnClass(7));

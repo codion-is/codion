@@ -17,11 +17,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -245,7 +245,7 @@ public final class DefaultEntityLookupModelTest {
     final Entity emp = ENTITIES.entity(TestDomain.T_EMP);
     emp.put(TestDomain.EMP_DEPARTMENT_FK, dept);
     emp.put(TestDomain.EMP_COMMISSION, 1000d);
-    emp.put(TestDomain.EMP_HIREDATE, new Date());
+    emp.put(TestDomain.EMP_HIREDATE, LocalDate.now());
     emp.put(TestDomain.EMP_JOB, "CLERK");
     emp.put(TestDomain.EMP_NAME, "John");
     emp.put(TestDomain.EMP_SALARY, 1000d);
@@ -253,7 +253,7 @@ public final class DefaultEntityLookupModelTest {
     final Entity emp2 = ENTITIES.entity(TestDomain.T_EMP);
     emp2.put(TestDomain.EMP_DEPARTMENT_FK, dept);
     emp2.put(TestDomain.EMP_COMMISSION, 1000d);
-    emp2.put(TestDomain.EMP_HIREDATE, new Date());
+    emp2.put(TestDomain.EMP_HIREDATE, LocalDate.now());
     emp2.put(TestDomain.EMP_JOB, "MANAGER");
     emp2.put(TestDomain.EMP_NAME, "johnson");
     emp2.put(TestDomain.EMP_SALARY, 1000d);
@@ -261,7 +261,7 @@ public final class DefaultEntityLookupModelTest {
     final Entity emp3 = ENTITIES.entity(TestDomain.T_EMP);
     emp3.put(TestDomain.EMP_DEPARTMENT_FK, dept);
     emp3.put(TestDomain.EMP_COMMISSION, 1000d);
-    emp3.put(TestDomain.EMP_HIREDATE, new Date());
+    emp3.put(TestDomain.EMP_HIREDATE, LocalDate.now());
     emp3.put(TestDomain.EMP_JOB, "CLERK");
     emp3.put(TestDomain.EMP_NAME, "Andy");
     emp3.put(TestDomain.EMP_SALARY, 1000d);
@@ -269,7 +269,7 @@ public final class DefaultEntityLookupModelTest {
     final Entity emp4 = ENTITIES.entity(TestDomain.T_EMP);
     emp4.put(TestDomain.EMP_DEPARTMENT_FK, dept);
     emp4.put(TestDomain.EMP_COMMISSION, 1000d);
-    emp4.put(TestDomain.EMP_HIREDATE, new Date());
+    emp4.put(TestDomain.EMP_HIREDATE, LocalDate.now());
     emp4.put(TestDomain.EMP_JOB, "MANAGER");
     emp4.put(TestDomain.EMP_NAME, "Andrew");
     emp4.put(TestDomain.EMP_SALARY, 1000d);

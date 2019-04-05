@@ -14,12 +14,12 @@ import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
-import org.jminor.common.db.TimeUtil;
 import org.jminor.common.db.condition.Condition;
 
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.Format;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Objects;
@@ -432,8 +432,8 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
     }
 
     Comparable toCompare = comparable;
-    if (comparable instanceof Timestamp) {//ignore seconds and milliseconds
-      toCompare = TimeUtil.floorTimestamp((Timestamp) toCompare);
+    if (comparable instanceof LocalDateTime) {
+      toCompare = ((LocalDateTime) comparable).truncatedTo(ChronoUnit.MINUTES);
     }
 
     switch (conditionTypeValue.get()) {

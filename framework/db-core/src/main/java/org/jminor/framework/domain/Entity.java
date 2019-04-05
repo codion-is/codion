@@ -16,11 +16,12 @@ import org.jminor.common.db.valuemap.exception.ValidationException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.text.Format;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -111,18 +112,26 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   /**
    * @param propertyId the ID of the date property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId},
-   * assuming it is a Date
-   * @throws ClassCastException if the value is not a Date instance
+   * assuming it is a LocalTime
+   * @throws ClassCastException if the value is not a LocalTime instance
    */
-  Date getDate(final String propertyId);
+  LocalTime getTime(final String propertyId);
 
   /**
    * @param propertyId the ID of the date property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId},
-   * assuming it is a Timestamp
-   * @throws ClassCastException if the value is not a Timestamp instance
+   * assuming it is a LocalDate
+   * @throws ClassCastException if the value is not a LocalDate instance
    */
-  Timestamp getTimestamp(final String propertyId);
+  LocalDate getDate(final String propertyId);
+
+  /**
+   * @param propertyId the ID of the date property for which to retrieve the value
+   * @return the value of the property identified by {@code propertyId},
+   * assuming it is a LocalDatetime
+   * @throws ClassCastException if the value is not a LocalDateTime instance
+   */
+  LocalDateTime getTimestamp(final String propertyId);
 
   /**
    * @param propertyId the ID of the property for which to retrieve the value

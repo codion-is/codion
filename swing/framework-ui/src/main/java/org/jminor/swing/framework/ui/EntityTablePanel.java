@@ -26,6 +26,9 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
+import org.jminor.swing.common.ui.LocalDateInputPanel;
+import org.jminor.swing.common.ui.LocalDateTimeInputPanel;
+import org.jminor.swing.common.ui.LocalTimeInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -33,12 +36,12 @@ import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.input.BooleanInputProvider;
-import org.jminor.swing.common.ui.input.DateInputProvider;
 import org.jminor.swing.common.ui.input.DoubleInputProvider;
 import org.jminor.swing.common.ui.input.InputProvider;
 import org.jminor.swing.common.ui.input.InputProviderPanel;
 import org.jminor.swing.common.ui.input.IntegerInputProvider;
 import org.jminor.swing.common.ui.input.LongInputProvider;
+import org.jminor.swing.common.ui.input.TemporalInputProvider;
 import org.jminor.swing.common.ui.input.TextInputProvider;
 import org.jminor.swing.common.ui.input.ValueListInputProvider;
 import org.jminor.swing.common.ui.table.FilteredTablePanel;
@@ -86,10 +89,12 @@ import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -891,11 +896,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final Control okControl = Controls.control(() -> {
       selected.addAll(lookupModel.getSelectionModel().getSelectedItems());
       dialog.dispose();
-    }, Messages.get(Messages.OK));
+    }, Messages.get(Messages.OK), null, null, Messages.get(Messages.OK_MNEMONIC).charAt(0));
     final Control cancelControl = Controls.control(() -> {
       selected.add(null);//hack to indicate cancel
       dialog.dispose();
-    }, Messages.get(Messages.CANCEL));
+    }, Messages.get(Messages.CANCEL), null, null, Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
 
     final SwingEntityModel model = new SwingEntityModel(lookupModel);
     model.getEditModel().setReadOnly(true);
@@ -921,17 +926,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         JOptionPane.showMessageDialog(UiUtil.getParentWindow(entityTablePanel),
                 FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION));
       }
-    }, FrameworkMessages.get(FrameworkMessages.SEARCH));
+    }, FrameworkMessages.get(FrameworkMessages.SEARCH), null, null, FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC).charAt(0));
 
     final JButton btnOk = new JButton(okControl);
     final JButton btnCancel = new JButton(cancelControl);
     final JButton btnSearch = new JButton(searchControl);
-    final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
-    final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
-    final String searchMnemonic = FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC);
-    btnOk.setMnemonic(okMnemonic.charAt(0));
-    btnCancel.setMnemonic(cancelMnemonic.charAt(0));
-    btnSearch.setMnemonic(searchMnemonic.charAt(0));
     UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelControl);
     entityTablePanel.getJTable().getInputMap(
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
@@ -1247,11 +1246,14 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       case Types.BOOLEAN:
         return new BooleanInputProvider((Boolean) currentValue);
       case Types.DATE:
-        return new DateInputProvider((Date) currentValue, (SimpleDateFormat) property.getFormat());
+        return new TemporalInputProvider<>(new LocalDateInputPanel((LocalDate) currentValue,
+                ((SimpleDateFormat) property.getFormat()).toPattern()));
       case Types.TIMESTAMP:
-        return new DateInputProvider((Date) currentValue, (SimpleDateFormat) property.getFormat());
+        return new TemporalInputProvider<>(new LocalDateTimeInputPanel((LocalDateTime) currentValue,
+                ((SimpleDateFormat) property.getFormat()).toPattern()));
       case Types.TIME:
-        return new DateInputProvider((Date) currentValue, (SimpleDateFormat) property.getFormat());
+        return new TemporalInputProvider<>(new LocalTimeInputPanel((LocalTime) currentValue,
+                ((SimpleDateFormat) property.getFormat()).toPattern()));
       case Types.DOUBLE:
         return new DoubleInputProvider((Double) currentValue);
       case Types.INTEGER:
