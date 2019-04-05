@@ -251,20 +251,8 @@ public final class EntityUiUtil {
       throw new IllegalArgumentException("Boolean property required for createCheckBox");
     }
 
-    final JCheckBox checkBox = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
-    ValueLinks.toggleValueLink(checkBox.getModel(), EditModelValues.<Boolean>value(editModel, property), false);
-    UiUtil.linkToEnabledState(enabledState, checkBox);
-    if (property.getDescription() != null) {
-      checkBox.setToolTipText(property.getDescription());
-    }
-    else {
-      checkBox.setToolTipText(property.getCaption());
-    }
-    if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
-      UiUtil.transferFocusOnEnter(checkBox);
-    }
-
-    return checkBox;
+    return initializeCheckBox(property, editModel, enabledState,
+            includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox());
   }
 
   /**
@@ -285,20 +273,8 @@ public final class EntityUiUtil {
       throw new IllegalArgumentException("Nullable boolean property required for createTristateCheckBox");
     }
 
-    final TristateCheckBox checkBox = new TristateCheckBox(includeCaption ? property.getCaption() : null);
-    ValueLinks.toggleValueLink(checkBox.getModel(), EditModelValues.<Boolean>value(editModel, property), false);
-    UiUtil.linkToEnabledState(enabledState, checkBox);
-    if (property.getDescription() != null) {
-      checkBox.setToolTipText(property.getDescription());
-    }
-    else {
-      checkBox.setToolTipText(property.getCaption());
-    }
-    if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
-      UiUtil.transferFocusOnEnter(checkBox);
-    }
-
-    return checkBox;
+    return (TristateCheckBox) initializeCheckBox(property, editModel, enabledState,
+            new TristateCheckBox(includeCaption ? property.getCaption() : null));
   }
 
   /**
@@ -943,6 +919,23 @@ public final class EntityUiUtil {
     }
 
     return field;
+  }
+
+  private static JCheckBox initializeCheckBox(final Property property, final EntityEditModel editModel,
+                                              final StateObserver enabledState, final JCheckBox checkBox) {
+    ValueLinks.toggleValueLink(checkBox.getModel(), EditModelValues.<Boolean>value(editModel, property), false);
+    UiUtil.linkToEnabledState(enabledState, checkBox);
+    if (property.getDescription() != null) {
+      checkBox.setToolTipText(property.getDescription());
+    }
+    else {
+      checkBox.setToolTipText(property.getCaption());
+    }
+    if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
+      UiUtil.transferFocusOnEnter(checkBox);
+    }
+
+    return checkBox;
   }
 
   private static NumberFormat cloneFormat(final NumberFormat format) {

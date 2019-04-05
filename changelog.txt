@@ -4975,3 +4975,4 @@
   FilteredTablePanel, EntityTablePanel, ColumnConditionPanel, disappearing horizontal scroll bar bug fixed, focus related bugs fixed
 0.12.0
   Migrate from java.util.Date to java.time
+  IntelliJ code analysis, Sonar run

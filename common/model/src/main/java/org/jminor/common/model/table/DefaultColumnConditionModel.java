@@ -180,20 +180,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   /** {@inheritDoc} */
   @Override
   public final Object getUpperBound() {
-    final Object upperBound = upperBoundValue.get();
-    if (type == Types.VARCHAR) {
-      if (upperBound == null || (upperBound instanceof String && ((String) upperBound).length() == 0)) {
-        return null;
-      }
-      if (upperBound instanceof Collection) {
-        return upperBound;
-      }
-
-      return addWildcard((String) upperBound);
-    }
-    else {
-      return upperBound;
-    }
+    return getBoundValue(upperBoundValue.get());
   }
 
   /** {@inheritDoc} */
@@ -206,20 +193,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   /** {@inheritDoc} */
   @Override
   public final Object getLowerBound() {
-    final Object lowerBound = lowerBoundValue.get();
-    if (type == Types.VARCHAR) {
-      if (lowerBound == null || (lowerBound instanceof String && ((String) lowerBound).length() == 0)) {
-        return null;
-      }
-      if (lowerBound instanceof Collection) {
-        return lowerBound;
-      }
-
-      return addWildcard((String) lowerBound);
-    }
-    else {
-      return lowerBound;
-    }
+    return getBoundValue(lowerBoundValue.get());
   }
 
   /** {@inheritDoc} */
@@ -460,6 +434,21 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
    */
   protected Comparable getComparable(final Object object) {
     return (Comparable) object;
+  }
+
+  private Object getBoundValue(final Object upperBound) {
+    if (type == Types.VARCHAR) {
+      if (upperBound == null || (upperBound instanceof String && ((String) upperBound).length() == 0)) {
+        return null;
+      }
+      if (upperBound instanceof Collection) {
+        return upperBound;
+      }
+
+      return addWildcard((String) upperBound);
+    }
+
+    return upperBound;
   }
 
   private boolean includeLike(final Comparable comparable) {

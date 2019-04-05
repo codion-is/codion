@@ -517,7 +517,7 @@ public final class UiUtil {
    * Retrieves a date from the user using a simple formatted text field
    * @param startDate the initial date, if null the current date is used
    * @param message the message to display as dialog title
-   * @param inputDateFormat the date format to use
+   * @param dateFormat the date format to use
    * @param parent the dialog parent
    * @return a LocalDateTime from the user
    */

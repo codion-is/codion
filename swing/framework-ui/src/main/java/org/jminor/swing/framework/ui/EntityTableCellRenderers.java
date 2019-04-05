@@ -125,7 +125,7 @@ public final class EntityTableCellRenderers {
       this.tableModel = Objects.requireNonNull(tableModel, "tableModel");
       this.property = Objects.requireNonNull(property, "property");
       this.format = format == null ? property.getFormat() : format;
-      this.dateTimeFormatter = this.format instanceof SimpleDateFormat ? DateTimeFormatter.ofPattern(((SimpleDateFormat) format).toPattern()) : null;
+      this.dateTimeFormatter = this.format instanceof SimpleDateFormat ? DateTimeFormatter.ofPattern(((SimpleDateFormat) this.format).toPattern()) : null;
       setHorizontalAlignment(horizontalAlignment);
     }
 

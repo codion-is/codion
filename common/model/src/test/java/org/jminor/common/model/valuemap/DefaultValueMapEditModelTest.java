@@ -59,7 +59,7 @@ public class DefaultValueMapEditModelTest {
     assertEquals(1, anyValueChangeCounter.get());
 
     assertFalse(model.isNullable(testAttribute));
-    assertTrue(!model.isValueNull(testAttribute));
+    assertFalse(model.isValueNull(testAttribute));
     assertEquals(1, model.getValue(testAttribute));
 
     model.setValue(testAttribute, null);

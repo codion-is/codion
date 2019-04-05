@@ -124,12 +124,7 @@ public class DefaultEntityTableConditionModelTest {
     nameConditionModel.setLikeValue("SCOTT");
     assertEquals("(ename = ? and (deptno in (?, ?)))", conditionModel.getCondition().getWhereClause());
 
-    conditionModel.setAdditionalConditionProvider(new Condition.Provider<Property.ColumnProperty>() {
-      @Override
-      public Condition<Property.ColumnProperty> getCondition() {
-        return CONNECTION_PROVIDER.getConditions().stringCondition("1 = 1");
-      }
-    });
+    conditionModel.setAdditionalConditionProvider(() -> CONNECTION_PROVIDER.getConditions().stringCondition("1 = 1"));
     assertNotNull(conditionModel.getAdditionalConditionProvider());
     assertEquals("(ename = ? and (deptno in (?, ?)) and 1 = 1)", conditionModel.getCondition().getWhereClause());
   }
