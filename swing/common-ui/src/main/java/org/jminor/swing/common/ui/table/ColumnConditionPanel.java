@@ -46,8 +46,10 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.Types;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
@@ -355,11 +357,11 @@ public class ColumnConditionPanel<K> extends JPanel {
      */
     @Override
     public JComponent initializeInputField(final boolean isUpperBound) {
-      if (columnConditionModel.getType() == Types.BOOLEAN && !isUpperBound) {
+      if (columnConditionModel.getTypeClass().equals(Boolean.class) && !isUpperBound) {
         return null;//no lower bound field required for boolean values
       }
       final JComponent field = initializeField();
-      if (columnConditionModel.getType() == Types.BOOLEAN) {
+      if (columnConditionModel.getTypeClass().equals(Boolean.class)) {
         createToggleProperty((JCheckBox) field, isUpperBound);
       }
       else {
@@ -370,22 +372,24 @@ public class ColumnConditionPanel<K> extends JPanel {
     }
 
     private JComponent initializeField() {
-      switch (columnConditionModel.getType()) {
-        case Types.INTEGER:
-          return new IntegerField(DEFAULT_FIELD_COLUMNS);
-        case Types.DOUBLE:
-          return new DoubleField(DEFAULT_FIELD_COLUMNS);
-        case Types.BIGINT:
-          return new LongField(DEFAULT_FIELD_COLUMNS);
-        case Types.BOOLEAN:
-          return new JCheckBox();
-        case Types.TIME:
-        case Types.TIMESTAMP:
-        case Types.DATE:
-          return UiUtil.createFormattedField(DateFormats.getDateMask((SimpleDateFormat) columnConditionModel.getFormat()));
-        default:
-          return new JTextField(DEFAULT_FIELD_COLUMNS);
+      final Class typeClass = columnConditionModel.getTypeClass();
+      if (typeClass.equals(Integer.class)) {
+        return new IntegerField(DEFAULT_FIELD_COLUMNS);
       }
+      else if (typeClass.equals(Double.class)) {
+        return new DoubleField(DEFAULT_FIELD_COLUMNS);
+      }
+      else if (typeClass.equals(Long.class)) {
+        return new LongField(DEFAULT_FIELD_COLUMNS);
+      }
+      else if (typeClass.equals(Boolean.class)) {
+        return new JCheckBox();
+      }
+      else if (typeClass.equals(LocalTime.class) || typeClass.equals(LocalDateTime.class) || typeClass.equals(LocalDate.class)) {
+        return UiUtil.createFormattedField(DateFormats.getDateMask((SimpleDateFormat) columnConditionModel.getFormat()));
+      }
+
+      return new JTextField(DEFAULT_FIELD_COLUMNS);
     }
 
     private void createToggleProperty(final JCheckBox checkBox, final boolean upperBound) {
@@ -396,30 +400,30 @@ public class ColumnConditionPanel<K> extends JPanel {
     @SuppressWarnings("unchecked")
     private void createTextProperty(final JComponent component, final boolean upperBound) {
       final Value modelValue = upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue();
-      switch (columnConditionModel.getType()) {
-        case Types.INTEGER:
-          ValueLinks.integerValueLink((IntegerField) component, modelValue, false, false, true);
-          break;
-        case Types.DOUBLE:
-          ValueLinks.doubleValueLink((DoubleField) component, modelValue, false, false, true);
-          break;
-        case Types.BIGINT:
-          ValueLinks.longValueLink((LongField) component, modelValue, false, false, true);
-          break;
-        case Types.TIME:
-          ValueLinks.localTimeValueLink((JFormattedTextField) component, modelValue, false,
-                  ((SimpleDateFormat) columnConditionModel.getFormat()).toPattern(), true);
-          break;
-        case Types.TIMESTAMP:
-          ValueLinks.localDateTimeValueLink((JFormattedTextField) component, modelValue, false,
-                  ((SimpleDateFormat) columnConditionModel.getFormat()).toPattern(), true);
-          break;
-        case Types.DATE:
-          ValueLinks.localDateValueLink((JFormattedTextField) component, modelValue, false,
-                  ((SimpleDateFormat) columnConditionModel.getFormat()).toPattern(), true);
-          break;
-        default:
-          ValueLinks.textValueLink((JTextField) component, modelValue, null, true, false);
+      final Class typeClass = columnConditionModel.getTypeClass();
+      if (typeClass.equals(Integer.class)) {
+        ValueLinks.integerValueLink((IntegerField) component, modelValue, false, false, true);
+      }
+      else if (typeClass.equals(Double.class)) {
+        ValueLinks.doubleValueLink((DoubleField) component, modelValue, false, false, true);
+      }
+      else if (typeClass.equals(Long.class)) {
+        ValueLinks.longValueLink((LongField) component, modelValue, false, false, true);
+      }
+      else if (typeClass.equals(LocalTime.class)) {
+        ValueLinks.localTimeValueLink((JFormattedTextField) component, modelValue, false,
+                ((SimpleDateFormat) columnConditionModel.getFormat()).toPattern(), true);
+      }
+      else if (typeClass.equals(LocalDateTime.class)) {
+        ValueLinks.localDateTimeValueLink((JFormattedTextField) component, modelValue, false,
+                ((SimpleDateFormat) columnConditionModel.getFormat()).toPattern(), true);
+      }
+      else if (typeClass.equals(LocalDate.class)) {
+        ValueLinks.localDateValueLink((JFormattedTextField) component, modelValue, false,
+                ((SimpleDateFormat) columnConditionModel.getFormat()).toPattern(), true);
+      }
+      else {
+        ValueLinks.textValueLink((JTextField) component, modelValue, null, true, false);
       }
     }
   }

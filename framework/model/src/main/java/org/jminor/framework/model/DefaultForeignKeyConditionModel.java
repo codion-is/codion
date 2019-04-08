@@ -41,7 +41,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
    */
   public DefaultForeignKeyConditionModel(final EntityConditions entityConditions, final Property.ForeignKeyProperty property,
                                          final EntityLookupModel entityLookupModel) {
-    super(property, property.getType(), Property.WILDCARD_CHARACTER.get());
+    super(property, Entity.class, Property.WILDCARD_CHARACTER.get());
     this.entityConditions = entityConditions;
     this.entityLookupModel = entityLookupModel;
     if (entityLookupModel != null) {

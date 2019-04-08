@@ -98,9 +98,8 @@ public interface ColumnConditionModel<K> {
 
   /**
    * @return the data type this condition model is based on
-   * @see java.sql.Types
    */
-  int getType();
+  Class getTypeClass();
 
   /**
    * @param upper the new upper bound

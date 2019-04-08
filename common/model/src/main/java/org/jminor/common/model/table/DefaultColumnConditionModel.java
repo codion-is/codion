@@ -16,7 +16,6 @@ import org.jminor.common.Value;
 import org.jminor.common.Values;
 import org.jminor.common.db.condition.Condition;
 
-import java.sql.Types;
 import java.text.Format;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -53,7 +52,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   private final State lowerBoundRequiredState = States.state();
 
   private final K columnIdentifier;
-  private final int type;
+  private final Class typeClass;
   private final Format format;
 
   private boolean autoEnable = true;
@@ -64,52 +63,52 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   /**
    * Instantiates a DefaultColumnConditionModel.
    * @param columnIdentifier the column identifier
-   * @param type the column data type
+   * @param typeClass the data type
    * @param wildcard the string to use as wildcard
    */
-  public DefaultColumnConditionModel(final K columnIdentifier, final int type, final String wildcard) {
-    this(columnIdentifier, type, wildcard, null);
+  public DefaultColumnConditionModel(final K columnIdentifier, final Class typeClass, final String wildcard) {
+    this(columnIdentifier, typeClass, wildcard, null);
   }
 
   /**
    * Instantiates a DefaultColumnConditionModel.
    * @param columnIdentifier the column identifier
-   * @param type the column data type
+   * @param typeClass the data type
    * @param wildcard the string to use as wildcard
    * @param format the format to use when presenting the values, dates for example
    */
-  public DefaultColumnConditionModel(final K columnIdentifier, final int type, final String wildcard,
+  public DefaultColumnConditionModel(final K columnIdentifier, final Class typeClass, final String wildcard,
                                      final Format format) {
-    this(columnIdentifier, type, wildcard, format, AUTOMATIC_WILDCARD.get());
+    this(columnIdentifier, typeClass, wildcard, format, AUTOMATIC_WILDCARD.get());
   }
 
   /**
    * Instantiates a DefaultColumnConditionModel.
    * @param columnIdentifier the column identifier
-   * @param type the column data type
+   * @param typeClass the data type
    * @param wildcard the string to use as wildcard
    * @param format the format to use when presenting the values, dates for example
    * @param automaticWildcard the automatic wildcard type to use
    */
-  public DefaultColumnConditionModel(final K columnIdentifier, final int type, final String wildcard,
+  public DefaultColumnConditionModel(final K columnIdentifier, final Class typeClass, final String wildcard,
                                      final Format format, final AutomaticWildcard automaticWildcard) {
-    this(columnIdentifier, type, wildcard, format, automaticWildcard, CASE_SENSITIVE.get());
+    this(columnIdentifier, typeClass, wildcard, format, automaticWildcard, CASE_SENSITIVE.get());
   }
 
   /**
    * Instantiates a DefaultColumnConditionModel.
    * @param columnIdentifier the column identifier
-   * @param type the column data type
+   * @param typeClass the data type
    * @param wildcard the string to use as wildcard
    * @param format the format to use when presenting the values, dates for example
    * @param automaticWildcard the automatic wildcard type to use
    * @param caseSensitive true if string based conditions should be case sensitive
    */
-  public DefaultColumnConditionModel(final K columnIdentifier, final int type, final String wildcard,
+  public DefaultColumnConditionModel(final K columnIdentifier, final Class typeClass, final String wildcard,
                                      final Format format, final AutomaticWildcard automaticWildcard,
                                      final boolean caseSensitive) {
     this.columnIdentifier = Objects.requireNonNull(columnIdentifier, "columnIdentifier");
-    this.type = type;
+    this.typeClass = typeClass;
     this.wildcard = wildcard;
     this.format = format;
     this.automaticWildcard = automaticWildcard;
@@ -155,8 +154,8 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
   /** {@inheritDoc} */
   @Override
-  public final int getType() {
-    return type;
+  public final Class getTypeClass() {
+    return typeClass;
   }
 
   /** {@inheritDoc} */
@@ -172,9 +171,10 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
   /** {@inheritDoc} */
   @Override
-  public final void setUpperBound(final Object upper) {
+  public final void setUpperBound(final Object value) {
+    validateType(value);
     checkLock();
-    upperBoundValue.set(upper);
+    upperBoundValue.set(value);
   }
 
   /** {@inheritDoc} */
@@ -186,6 +186,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   /** {@inheritDoc} */
   @Override
   public final void setLowerBound(final Object value) {
+    validateType(value);
     checkLock();
     lowerBoundValue.set(value);
   }
@@ -437,7 +438,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   }
 
   private Object getBoundValue(final Object upperBound) {
-    if (type == Types.VARCHAR) {
+    if (typeClass.equals(String.class)) {
       if (upperBound == null || (upperBound instanceof String && ((String) upperBound).length() == 0)) {
         return null;
       }
@@ -510,7 +511,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
 
   private String prepareForRegex(final String string) {
     //a somewhat dirty fix to get rid of the '$' sign from the pattern, since it interferes with the regular expression parsing
-    return string.replaceAll(wildcard, ".*").replaceAll("\\$", "lib/test").replaceAll("\\]", "\\\\]").replaceAll("\\[", "\\\\[");
+    return string.replaceAll(wildcard, ".*").replaceAll("\\$", ".").replaceAll("\\]", "\\\\]").replaceAll("\\[", "\\\\[");
   }
 
   private boolean includeLessThan(final Comparable comparable) {
@@ -611,6 +612,19 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   private void checkLock() {
     if (lockedState.isActive()) {
       throw new IllegalStateException("Condition model for column identified by " + columnIdentifier + " is locked");
+    }
+  }
+
+  private void validateType(final Object value) {
+    if (value != null) {
+      if (value instanceof Collection) {
+        for (final Object collValue : ((Collection) value)) {
+          validateType(collValue);
+        }
+      }
+      else if (!typeClass.isAssignableFrom(value.getClass())) {
+        throw new IllegalArgumentException("Value of type " + typeClass + " expected for condition " + this + ", got: " + value.getClass());
+      }
     }
   }
 }

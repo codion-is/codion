@@ -17,7 +17,7 @@ public class DefaultPropertyFilterModel extends DefaultColumnConditionModel<Prop
    * @param property the property
    */
   public DefaultPropertyFilterModel(final Property property) {
-    super(property, property.getType(), Property.WILDCARD_CHARACTER.get(), property.getFormat());
+    super(property, property.getTypeClass(), Property.WILDCARD_CHARACTER.get(), property.getFormat());
   }
 
   /** {@inheritDoc} */

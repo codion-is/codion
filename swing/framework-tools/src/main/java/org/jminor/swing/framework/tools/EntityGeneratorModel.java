@@ -357,8 +357,8 @@ public final class EntityGeneratorModel {
             return rowObject.getTableName();
           }
         }
-      }, Arrays.asList(new DefaultColumnConditionModel<>(0, Types.VARCHAR, "%"),
-              new DefaultColumnConditionModel<>(1, Types.VARCHAR, "%")));
+      }, Arrays.asList(new DefaultColumnConditionModel<>(0, String.class, "%"),
+              new DefaultColumnConditionModel<>(1, String.class, "%")));
       this.metaData = metaData;
       this.schema = schema;
       this.catalog = catalog;

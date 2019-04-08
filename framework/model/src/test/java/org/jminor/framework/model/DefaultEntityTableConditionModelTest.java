@@ -17,7 +17,6 @@ import org.jminor.framework.domain.Property;
 
 import org.junit.jupiter.api.Test;
 
-import java.sql.Types;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -80,12 +79,12 @@ public class DefaultEntityTableConditionModelTest {
 
   @Test
   public void setFilterValue() {
-    conditionModel.setFilterValue(TestDomain.EMP_COMMISSION, 1400);
+    conditionModel.setFilterValue(TestDomain.EMP_COMMISSION, 1400d);
     final ColumnConditionModel<Property> propertyConditionModel = conditionModel.getPropertyFilterModel(TestDomain.EMP_COMMISSION);
     assertTrue(propertyConditionModel.isEnabled());
     assertTrue(conditionModel.isFilterEnabled(TestDomain.EMP_COMMISSION));
     assertEquals(Condition.Type.LIKE, propertyConditionModel.getConditionType());
-    assertEquals(1400, propertyConditionModel.getUpperBound());
+    assertEquals(1400d, propertyConditionModel.getUpperBound());
   }
 
   @Test
@@ -165,14 +164,14 @@ public class DefaultEntityTableConditionModelTest {
     final String wildcard = Property.WILDCARD_CHARACTER.get();
     conditionModel.setSimpleConditionString(value);
     for (final PropertyConditionModel model : conditionModel.getPropertyConditionModels()) {
-      if (model.getType() == Types.VARCHAR) {
+      if (model.getTypeClass().equals(String.class)) {
         assertEquals(wildcard + value + wildcard, model.getUpperBound());
         assertTrue(model.isEnabled());
       }
     }
     conditionModel.setSimpleConditionString(null);
     for (final PropertyConditionModel model : conditionModel.getPropertyConditionModels()) {
-      if (model.getType() == Types.VARCHAR) {
+      if (model.getTypeClass().equals(String.class)) {
         assertNull(model.getUpperBound());
         assertFalse(model.isEnabled());
       }
