@@ -4968,3 +4968,4 @@
   IntelliJ code analysis, Sonar run
   DateUtil, removed methods that have become redundant with the new java.time api
   ColumnConditionModel no longer based on java.sql.Types, replaced with typeClass (Class)
+  Column.isSearchable() removed, not used anywhere

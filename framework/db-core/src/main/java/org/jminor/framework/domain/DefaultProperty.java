@@ -591,7 +591,6 @@ class DefaultProperty implements Property {
     private int primaryKeyIndex = -1;
     private boolean columnHasDefaultValue = false;
     private boolean updatable = true;
-    private boolean searchable = true;
     private ForeignKeyProperty foreignKeyProperty = null;
 
     private final transient ValueFetcher<Object> valueFetcher;
@@ -661,17 +660,6 @@ class DefaultProperty implements Property {
     public final ColumnProperty setUpdatable(final boolean updatable) {
       this.updatable = updatable;
       return this;
-    }
-
-    @Override
-    public final ColumnProperty setSearchable(final boolean searchable) {
-      this.searchable = searchable;
-      return this;
-    }
-
-    @Override
-    public final boolean isSearchable() {
-      return searchable;
     }
 
     @Override

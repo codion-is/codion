@@ -83,8 +83,6 @@ public final class ConditionsTest {
     @Override
     public boolean isUpdatable() {return false;}
     @Override
-    public boolean isSearchable() {return false;}
-    @Override
     public String getCaption() {return null;}
     @Override
     public String getDescription() {return null;}

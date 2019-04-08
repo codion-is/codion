@@ -74,7 +74,7 @@ public interface Property extends Attribute, Serializable {
   Value<String> WILDCARD_CHARACTER = Configuration.stringValue("jminor.wildcardCharacter", "%");
 
   /**
-   * @return A non-lenient SimpleDateFormat based on Configuration.DATE_FORMAT
+   * @return A non-lenient SimpleDateFormat based on the configuration value {@link #DATE_FORMAT}
    * @see Property#DATE_FORMAT
    */
   static SimpleDateFormat getDefaultDateFormat() {
@@ -82,7 +82,7 @@ public interface Property extends Attribute, Serializable {
   }
 
   /**
-   * @return A non-lenient SimpleDateFormat based on Configuration.TIMESTAMP_FORMAT
+   * @return A non-lenient SimpleDateFormat based on the configuration value {@link #TIMESTAMP_FORMAT}
    * @see Property#TIMESTAMP_FORMAT
    */
   static SimpleDateFormat getDefaultTimestampFormat() {
@@ -90,7 +90,7 @@ public interface Property extends Attribute, Serializable {
   }
 
   /**
-   * @return A non-lenient SimpleDateFormat based on Configuration.TIME_FORMAT
+   * @return A non-lenient SimpleDateFormat based on the configuration value {@link #TIME_FORMAT}
    * @see Property#TIME_FORMAT
    */
   static SimpleDateFormat getDefaultTimeFormat() {
@@ -431,12 +431,6 @@ public interface Property extends Attribute, Serializable {
      * @return this Property instance
      */
     ColumnProperty setColumnHasDefaultValue(final boolean columnHasDefaultValue);
-
-    /**
-     * @param searchable true if this column can be included in search condition
-     * @return this Property instance
-     */
-    ColumnProperty setSearchable(final boolean searchable);
 
     /**
      * @return this propertys zero based index in the primary key, -1 if this property is not part of a primary key
