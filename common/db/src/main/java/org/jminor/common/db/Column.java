@@ -24,9 +24,4 @@ public interface Column extends Attribute {
    * @return true if this column is updatable
    */
   boolean isUpdatable();
-
-  /**
-   * @return true if this column can be used in search condition, or where clauses
-   */
-  boolean isSearchable();
 }
