@@ -4976,3 +4976,4 @@
 0.12.0
   Migrate from java.util.Date to java.time
   IntelliJ code analysis, Sonar run
+  DateUtil, removed methods that have become redundant with the new java.time api
