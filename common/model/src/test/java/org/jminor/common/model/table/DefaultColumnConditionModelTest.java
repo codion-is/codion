@@ -9,9 +9,6 @@ import org.jminor.common.db.condition.Condition;
 
 import org.junit.jupiter.api.Test;
 
-import java.sql.Types;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,7 +32,7 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   public void testSetBounds() {
-    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", Types.VARCHAR, "%");
+    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setAutoEnable(false);
     assertFalse(model.isAutoEnable());
     model.addUpperBoundListener(upperBoundListener);
@@ -62,24 +59,6 @@ public class DefaultColumnConditionModelTest {
     assertEquals(2, upperBoundCounter.get());
     assertEquals("test", model.getUpperBound());
 
-    model.setUpperBound(2.2);
-    model.setUpperBound(1);
-    model.setUpperBound(false);
-    model.setUpperBound('c');
-    model.setUpperBound(LocalDate.now());
-    model.setUpperBound(LocalDateTime.now());
-    model.setUpperBound(new Object());
-    model.setUpperBound(true);
-
-    model.setLowerBound(2.2);
-    model.setLowerBound(1);
-    model.setLowerBound(false);
-    model.setLowerBound('c');
-    model.setLowerBound(LocalDate.now());
-    model.setLowerBound(LocalDateTime.now());
-    model.setLowerBound(new Object());
-    model.setLowerBound(true);
-
     model.clearCondition();
     assertEquals(1, clearCounter.get());
 
@@ -91,7 +70,7 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   public void testConditionType() {
-    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", Types.VARCHAR, "%");
+    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.addConditionTypeListener(conditionTypeListener);
     assertEquals(Condition.Type.LIKE, model.getConditionType());
     model.setConditionType(Condition.Type.LESS_THAN);
@@ -109,14 +88,14 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   public void test() throws Exception {
-    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", Types.VARCHAR, "%");
+    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     assertTrue(model.isAutoEnable());
     model.setUpperBound("test");
     assertTrue(model.isEnabled());
     model.setCaseSensitive(false);
     assertFalse(model.isCaseSensitive());
     assertEquals("test", model.getColumnIdentifier());
-    assertEquals(Types.VARCHAR, model.getType());
+    assertEquals(String.class, model.getTypeClass());
     assertEquals("%", model.getWildcard());
 
     model.setWildcard("#");
@@ -136,39 +115,44 @@ public class DefaultColumnConditionModelTest {
     model.setLocked(true);
     assertTrue(model.isLocked());
     assertTrue(model.getLockedObserver().isActive());
+
+    assertThrows(IllegalArgumentException.class, () -> model.setLowerBound(1));
+    assertThrows(IllegalArgumentException.class, () -> model.setUpperBound(1d));
+    assertThrows(IllegalArgumentException.class, () -> model.setLowerBound(Arrays.asList("2", 1)));
+    assertThrows(IllegalArgumentException.class, () -> model.setUpperBound(Arrays.asList("1", true)));
   }
 
   @Test
   public void setUpperBoundLocked() {
-    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", Types.VARCHAR, "%");
+    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setUpperBound("test"));
   }
 
   @Test
   public void setLowerBoundLocked() {
-    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", Types.VARCHAR, "%");
+    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setLowerBound("test"));
   }
 
   @Test
   public void setEnabledLocked() {
-    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", Types.VARCHAR, "%");
+    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setEnabled(true));
   }
 
   @Test
   public void setConditionTypeLocked() {
-    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", Types.VARCHAR, "%");
+    final DefaultColumnConditionModel<String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setConditionType(Condition.Type.NOT_LIKE));
   }
 
   @Test
   public void include() {
-    final DefaultColumnConditionModel<String> conditionModel = new DefaultColumnConditionModel<>("test", Types.INTEGER, "%");
+    final DefaultColumnConditionModel<String> conditionModel = new DefaultColumnConditionModel<>("test", Integer.class, "%");
     conditionModel.setUpperBound(10);
     conditionModel.setConditionType(Condition.Type.LIKE);
     assertFalse(conditionModel.include(9));
@@ -215,7 +199,7 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   public void multiConditionString() {
-    final DefaultColumnConditionModel<String> conditionModel = new DefaultColumnConditionModel<>("test", Types.VARCHAR, "%");
+    final DefaultColumnConditionModel<String> conditionModel = new DefaultColumnConditionModel<>("test", String.class, "%");
 
     final Collection<String> strings = Arrays.asList("abc", "def");
     conditionModel.setUpperBound(strings);

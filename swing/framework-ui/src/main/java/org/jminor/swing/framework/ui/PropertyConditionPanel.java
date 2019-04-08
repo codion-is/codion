@@ -24,7 +24,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
-import java.sql.Types;
 import java.text.SimpleDateFormat;
 
 /**
@@ -71,7 +70,7 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
 
     @Override
     public JComponent initializeInputField(final boolean isUpperBound) {
-      if (model.getType() == Types.BOOLEAN && !isUpperBound) {
+      if (model.getTypeClass().equals(Boolean.class) && !isUpperBound) {
         return null;//no lower bound field required for booleans
       }
       final JComponent field = initializeField();

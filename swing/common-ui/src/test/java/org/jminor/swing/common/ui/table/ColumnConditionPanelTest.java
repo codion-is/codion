@@ -9,8 +9,6 @@ import org.jminor.common.model.table.DefaultColumnConditionModel;
 
 import org.junit.jupiter.api.Test;
 
-import java.sql.Types;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ColumnConditionPanelTest {
@@ -18,7 +16,7 @@ public class ColumnConditionPanelTest {
   @Test
   public void test() {
     final String key = "key";
-    final ColumnConditionModel<String> model = new DefaultColumnConditionModel<>(key, Types.VARCHAR, "%");
+    final ColumnConditionModel<String> model = new DefaultColumnConditionModel<>(key, String.class, "%");
     final ColumnConditionPanel<String> panel = new ColumnConditionPanel<>(model, true, true);
     assertEquals(model, panel.getConditionModel());
     assertNotNull(panel.getUpperBoundField());

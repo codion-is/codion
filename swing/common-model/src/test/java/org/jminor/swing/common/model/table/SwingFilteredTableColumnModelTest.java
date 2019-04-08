@@ -10,7 +10,6 @@ import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.table.TableColumn;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -117,7 +116,7 @@ public class SwingFilteredTableColumnModelTest {
   private SwingFilteredTableColumnModel createTestModel() {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnConditionModel<Integer> filterModel = new DefaultColumnConditionModel<>(0, Types.VARCHAR, "%");
+    final ColumnConditionModel<Integer> filterModel = new DefaultColumnConditionModel<>(0, String.class, "%");
 
     return new SwingFilteredTableColumnModel<>(Collections.singletonList(column), Collections.singletonList(filterModel));
   }

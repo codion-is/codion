@@ -16,7 +16,7 @@ public class DefaultPropertyConditionModelProvider implements PropertyConditionM
   @Override
   public PropertyConditionModel<Property.ColumnProperty> initializePropertyConditionModel(
           final EntityConditions entityConditions, final Property.ColumnProperty property) {
-    return new DefaultPropertyConditionModel(entityConditions, (Property.ColumnProperty) property);
+    return new DefaultPropertyConditionModel(entityConditions, property);
   }
 
   /** {@inheritDoc} */
