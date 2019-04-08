@@ -4966,3 +4966,4 @@
   FilteredTablePanel, EntityTablePanel, ColumnConditionPanel, disappearing horizontal scroll bar bug fixed, focus related bugs fixed
   Migrate from java.util.Date to java.time
   IntelliJ code analysis, Sonar run
+  DateUtil, removed methods that have become redundant with the new java.time api

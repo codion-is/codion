@@ -4,7 +4,6 @@
 package org.jminor.swing.common.ui;
 
 import org.jminor.common.DateFormats;
-import org.jminor.common.DateUtil;
 import org.jminor.common.Event;
 import org.jminor.common.EventDataListener;
 import org.jminor.common.EventObserver;
@@ -470,10 +469,7 @@ public final class UiUtil {
 
     try {
       final Calendar cal = Calendar.getInstance();
-      if (startDate != null) {
-        cal.setTime(Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
-      }
-      cal.setTime(DateUtil.floorDate(cal.getTime()));
+      cal.setTime(startDate == null ? Date.from(Instant.now()) : Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
 
       final Class<?> jCalendarClass = Class.forName(JCALENDAR_CLASS_NAME);
       final Method getCalendar = jCalendarClass.getMethod("getCalendar");
