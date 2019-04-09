@@ -50,12 +50,6 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
 
   /** {@inheritDoc} */
   @Override
-  public ColumnValueProvider getValueProvider() {
-    return valueProvider;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final void setSummary(final Summary summary) {
     if (isLocked()) {
       throw new IllegalStateException("Summary model is locked");
