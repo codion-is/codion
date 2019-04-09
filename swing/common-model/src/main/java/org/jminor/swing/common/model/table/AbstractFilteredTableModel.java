@@ -16,7 +16,6 @@ import org.jminor.common.model.table.RowColumn;
 import org.jminor.common.model.table.SelectionModel;
 import org.jminor.common.model.table.TableSortModel;
 
-import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
@@ -32,6 +31,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 /**
  * A TableModel implementation that supports filtering, searching and sorting.
@@ -254,27 +254,15 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final Collection getValues(final C columnIdentifier, final boolean selectedOnly) {
     final int columnModelIndex = columnModel.getTableColumn(columnIdentifier).getModelIndex();
-    final ListSelectionModel listSelectionModel = (ListSelectionModel) getSelectionModel();
     final Collection values = new ArrayList();
-    for (int row = 0; row < getVisibleItemCount(); row++) {
-      if (!selectedOnly || listSelectionModel.isSelectedIndex(row)) {
-        final Object value = getValueAt(row, columnModelIndex);
-        if (value != null) {
-          values.add(value);
-        }
-      }
+    if (selectedOnly) {
+      getSelectionModel().getSelectedIndexes().forEach(rowIndex -> values.add(getValueAt(rowIndex, columnModelIndex)));
+    }
+    else {
+      IntStream.range(0, getVisibleItemCount()).forEach(rowIndex -> values.add(getValueAt(rowIndex, columnModelIndex)));
     }
 
     return values;
-  }
-
-  /**
-   * Creates a ColumnValueProvider for the given column
-   * @param columnIdentifier the column identifier
-   * @return a ColumnValueProvider for the column identified by {@code columnIdentifier}
-   */
-  protected ColumnSummaryModel.ColumnValueProvider createColumnValueProvider(final C columnIdentifier) {
-    return new DefaultColumnValueProvider(columnIdentifier, this, null);
   }
 
   /** {@inheritDoc} */
@@ -515,6 +503,15 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   protected abstract void doRefresh();
 
   /**
+   * Creates a ColumnValueProvider for the given column
+   * @param columnIdentifier the column identifier
+   * @return a ColumnValueProvider for the column identified by {@code columnIdentifier}
+   */
+  protected ColumnSummaryModel.ColumnValueProvider createColumnValueProvider(final C columnIdentifier) {
+    return new DefaultColumnValueProvider(columnIdentifier, this, null);
+  }
+
+  /**
    * Adds the given items to this table model, filtering on the fly and sorting if sorting is enabled and
    * the items are not being added at the front.
    * @param items the items to add
@@ -658,8 +655,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     private final Object columnIdentifier;
     private final FilteredTableModel tableModel;
     private final Format format;
-
-    private boolean useValueSubset = true;
+    private final boolean numerical;
 
     /**
      * @param columnIdentifier the identifier of the column which values are provided
@@ -671,6 +667,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       this.columnIdentifier = columnIdentifier;
       this.tableModel = tableModel;
       this.format = format;
+      final Class columnClass = tableModel.getSortModel().getColumnClass(columnIdentifier);
+      this.numerical = columnClass.equals(Integer.class) || columnClass.equals(Long.class) || columnClass.equals(Double.class);
     }
 
     @Override
@@ -686,37 +684,17 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
     @Override
     public boolean isNumerical() {
-      return isInteger() || isDouble();
+      return numerical;
     }
 
     @Override
     public Collection getValues() {
-      return tableModel.getValues(columnIdentifier, useValueSubset && isValueSubset());
-    }
-
-    @Override
-    public boolean isInteger() {
-      return tableModel.getSortModel().getColumnClass(columnIdentifier).equals(Integer.class);
-    }
-
-    @Override
-    public boolean isDouble() {
-      return tableModel.getSortModel().getColumnClass(columnIdentifier).equals(Double.class);
+      return tableModel.getValues(columnIdentifier, isValueSubset());
     }
 
     @Override
     public boolean isValueSubset() {
       return !tableModel.getSelectionModel().isSelectionEmpty();
-    }
-
-    @Override
-    public boolean isUseValueSubset() {
-      return useValueSubset;
-    }
-
-    @Override
-    public void setUseValueSubset(final boolean useValueSubset) {
-      this.useValueSubset = useValueSubset;
     }
   }
 }

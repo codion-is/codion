@@ -27,27 +27,13 @@ public class DefaultColumnSummaryModelTest {
       return true;
     }
     @Override
-    public boolean isInteger() {
-      return true;
-    }
-    @Override
-    public boolean isDouble() {
-      return false;
-    }
-    @Override
     public Collection getValues() {
-      return Arrays.asList(1, 2, 3, 4, 5);
+      return Arrays.asList(1, 2, 3, null, 4, 5);
     }
     @Override
     public boolean isValueSubset() {
       return false;
     }
-    @Override
-    public boolean isUseValueSubset() {
-      return false;
-    }
-    @Override
-    public void setUseValueSubset(final boolean value) {}
     @Override
     public void addValuesChangedListener(final EventListener event) {}
   });
@@ -60,27 +46,13 @@ public class DefaultColumnSummaryModelTest {
       return true;
     }
     @Override
-    public boolean isInteger() {
-      return false;
-    }
-    @Override
-    public boolean isDouble() {
-      return true;
-    }
-    @Override
     public Collection getValues() {
-      return Arrays.asList(1.1, 2.2, 3.3, 4.4, 5.5);
+      return Arrays.asList(1.1, 2.2, 3.3, null, 4.4, 5.5);
     }
     @Override
     public boolean isValueSubset() {
       return false;
     }
-    @Override
-    public boolean isUseValueSubset() {
-      return false;
-    }
-    @Override
-    public void setUseValueSubset(final boolean value) {}
     @Override
     public void addValuesChangedListener(final EventListener event) {}
   });
@@ -107,7 +79,7 @@ public class DefaultColumnSummaryModelTest {
   @Test
   public void intAverage() {
     testIntModel.setSummary(ColumnSummary.AVERAGE);
-    assertEquals("3", testIntModel.getSummaryText());
+    assertEquals("2.5", testIntModel.getSummaryText());
   }
 
   @Test
@@ -137,7 +109,7 @@ public class DefaultColumnSummaryModelTest {
   @Test
   public void doubleAverage() {
     testDoubleModel.setSummary(ColumnSummary.AVERAGE);
-    assertEquals(numberFormat.format(3.3), testDoubleModel.getSummaryText());
+    assertEquals(numberFormat.format(2.75), testDoubleModel.getSummaryText());
   }
 
   @Test

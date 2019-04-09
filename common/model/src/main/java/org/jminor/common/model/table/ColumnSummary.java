@@ -5,6 +5,8 @@ package org.jminor.common.model.table;
 
 import java.util.Collection;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.OptionalDouble;
 import java.util.ResourceBundle;
 
 /**
@@ -29,26 +31,13 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public String getSummary(final ColumnSummaryModel.ColumnValueProvider valueProvider) {
-      String txt = "";
       final Collection values = valueProvider.getValues();
       if (!values.isEmpty()) {
-        if (valueProvider.isInteger()) {
-          long sum = 0;
-          for (final Object obj : values) {
-            sum += (Integer) obj;
-          }
-          txt = valueProvider.format(sum);
-        }
-        else if (valueProvider.isDouble()) {
-          double sum = 0;
-          for (final Object obj : values) {
-            sum += (Double) obj;
-          }
-          txt = valueProvider.format(sum);
-        }
+        return addSubsetIndicator(valueProvider.format(values.stream().filter(Objects::nonNull)
+                .mapToDouble(value -> ((Number) value).doubleValue()).sum()), valueProvider);
       }
 
-      return addSubsetIndicator(txt, valueProvider);
+      return "";
     }
   }, AVERAGE {
     @Override
@@ -58,30 +47,15 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public String getSummary(final ColumnSummaryModel.ColumnValueProvider valueProvider) {
-      String txt = "";
       final Collection values = valueProvider.getValues();
       if (!values.isEmpty()) {
-        if (valueProvider.isInteger()) {
-          double sum = 0;
-          int count = 0;
-          for (final Object obj : values) {
-            sum += (Integer) obj;
-            count++;
-          }
-          txt = valueProvider.format(sum / count);
-        }
-        else if (valueProvider.isDouble()) {
-          double sum = 0;
-          int count = 0;
-          for (final Object obj : values) {
-            sum += (Double) obj;
-            count++;
-          }
-          txt = valueProvider.format(sum / count);
+        final OptionalDouble average = values.stream().mapToDouble(value -> value == null ? 0d : ((Number) value).doubleValue()).average();
+        if (average.isPresent()) {
+          return addSubsetIndicator(valueProvider.format(average.getAsDouble()), valueProvider);
         }
       }
 
-      return addSubsetIndicator(txt, valueProvider);
+      return "";
     }
   }, MINIMUM {
     @Override
@@ -91,25 +65,15 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public String getSummary(final ColumnSummaryModel.ColumnValueProvider valueProvider) {
-      String txt = "";
       final Collection values = valueProvider.getValues();
       if (!values.isEmpty()) {
-        if (valueProvider.isInteger()) {
-          int min = Integer.MAX_VALUE;
-          for (final Object obj : values) {
-            min = Math.min(min, (Integer) obj);
-          }
-          txt = valueProvider.format(min);
-        }
-        else if (valueProvider.isDouble()) {
-          double min = Double.MAX_VALUE;
-          for (final Object obj : values) {
-            min = Math.min(min, (Double) obj);
-          }
-          txt = valueProvider.format(min);
+        final OptionalDouble min = values.stream().filter(Objects::nonNull).mapToDouble(value -> ((Number) value).doubleValue()).min();
+        if (min.isPresent()) {
+          return addSubsetIndicator(valueProvider.format(min.getAsDouble()), valueProvider);
         }
       }
-      return addSubsetIndicator(txt, valueProvider);
+
+      return "";
     }
   }, MAXIMUM {
     @Override
@@ -119,26 +83,15 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public String getSummary(final ColumnSummaryModel.ColumnValueProvider valueProvider) {
-      String txt = "";
       final Collection values = valueProvider.getValues();
       if (!values.isEmpty()) {
-        if (valueProvider.isInteger()) {
-          int max = 0;
-          for (final Object obj : values) {
-            max = Math.max(max, (Integer) obj);
-          }
-          txt = valueProvider.format(max);
-        }
-        else if (valueProvider.isDouble()) {
-          double max = 0;
-          for (final Object obj : values) {
-            max = Math.max(max, (Double) obj);
-          }
-          txt = valueProvider.format(max);
+        final OptionalDouble max = values.stream().filter(Objects::nonNull).mapToDouble(value -> ((Number) value).doubleValue()).max();
+        if (max.isPresent()) {
+          return addSubsetIndicator(valueProvider.format(max.getAsDouble()), valueProvider);
         }
       }
 
-      return addSubsetIndicator(txt, valueProvider);
+      return "";
     }
   }, MINIMUM_MAXIMUM {
     @Override
@@ -148,40 +101,22 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
     @Override
     public String getSummary(final ColumnSummaryModel.ColumnValueProvider valueProvider) {
-      String txt = "";
       final Collection values = valueProvider.getValues();
       if (!values.isEmpty()) {
-        if (valueProvider.isInteger()) {
-          int min = Integer.MAX_VALUE;
-          int max = Integer.MIN_VALUE;
-          for (final Object obj : values) {
-            max = Math.max(max, (Integer) obj);
-            min = Math.min(min, (Integer) obj);
-          }
-          txt = valueProvider.format(min) + "/" + valueProvider.format(max);
-        }
-        else if (valueProvider.isDouble()) {
-          double min = Double.MAX_VALUE;
-          double max = Double.MIN_VALUE;
-          for (final Object obj : values) {
-            max = Math.max(max, (Double) obj);
-            min = Math.min(min, (Double) obj);
-          }
-          txt = valueProvider.format(min) + "/" + valueProvider.format(max);
+        final OptionalDouble min = values.stream().filter(Objects::nonNull).mapToDouble(value -> ((Number) value).doubleValue()).min();
+        final OptionalDouble max = values.stream().filter(Objects::nonNull).mapToDouble(value -> ((Number) value).doubleValue()).max();
+        if (min.isPresent() && max.isPresent()) {
+          return addSubsetIndicator(valueProvider.format(min.getAsDouble()) + "/" + valueProvider.format(max.getAsDouble()), valueProvider);
         }
       }
 
-      return addSubsetIndicator(txt, valueProvider);
+      return "";
     }
   };
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnSummary.class.getName(), Locale.getDefault());
 
   protected String addSubsetIndicator(final String txt, final ColumnSummaryModel.ColumnValueProvider valueProvider) {
-    if (valueProvider.isUseValueSubset()) {
-      return txt.length() != 0 ? txt + (valueProvider.isValueSubset() ? "*" : "") : txt;
-    }
-
-    return txt;
+    return txt.isEmpty() ? txt : txt + (valueProvider.isValueSubset() ? "*" : "");
   }
 }

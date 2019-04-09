@@ -28,11 +28,6 @@ public interface ColumnSummaryModel {
   }
 
   /**
-   * @return the value provider
-   */
-  ColumnValueProvider getValueProvider();
-
-  /**
    * @param summary the type of summary to show
    */
   void setSummary(final Summary summary);
@@ -104,29 +99,9 @@ public interface ColumnSummaryModel {
     Collection getValues();
 
     /**
-     * @return true if the values are of type Integer
-     */
-    boolean isInteger();
-
-    /**
-     * @return true if the values are of type Double
-     */
-    boolean isDouble();
-
-    /**
      * @return true if the values provided by {@code getValues()} is a subset of the total available values
      */
     boolean isValueSubset();
-
-    /**
-     * @return true if this value provider returns a subset of the data if available
-     */
-    boolean isUseValueSubset();
-
-    /**
-     * @param value true if this value provider should return a subset of the data if available
-     */
-    void setUseValueSubset(final boolean value);
 
     /**
      * @param listener the listener to notify of changes to the underlying data which require a summary refresh

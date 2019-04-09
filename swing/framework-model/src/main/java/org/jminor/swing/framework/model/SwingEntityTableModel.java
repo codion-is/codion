@@ -551,6 +551,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     getSelectionModel().addSelectionChangedListener(listener);
   }
 
+  /** {@inheritDoc} */
   @Override
   protected final ColumnSummaryModel.ColumnValueProvider createColumnValueProvider(final Property property) {
     return new DefaultColumnValueProvider(property, this, property.getFormat());
