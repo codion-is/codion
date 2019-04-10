@@ -5,6 +5,7 @@ package org.jminor.framework.model;
 
 import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
+import org.jminor.common.State;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.FilterCondition;
@@ -194,9 +195,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void deleteSelected() throws DatabaseException {}
     @Override
-    public boolean isQueryConditionRequired() {return false;}
-    @Override
-    public EntityTableModel<TestEntityEditModel> setQueryConditionRequired(final boolean value) {return null;}
+    public State getQueryConditionRequiredState() {return null;}
     @Override
     public boolean isRemoveEntitiesOnDelete() {return false;}
     @Override

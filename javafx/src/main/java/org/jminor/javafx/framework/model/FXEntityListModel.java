@@ -3,6 +3,8 @@
  */
 package org.jminor.javafx.framework.model;
 
+import org.jminor.common.State;
+import org.jminor.common.States;
 import org.jminor.common.TextUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
@@ -44,13 +46,13 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private static final Logger LOG = LoggerFactory.getLogger(FXEntityListModel.class);
 
   private final EntityTableConditionModel conditionModel;
+  private final State queryConditionRequiredState = States.state();
 
   private FXEntityEditModel editModel;
   private ObservableList<? extends TableColumn<Entity, ?>> columns;
   private List<PropertyTableColumn> initialColumns;
 
   private InsertAction insertAction = InsertAction.ADD_TOP;
-  private boolean queryConditionRequired = false;
   private boolean queryConfigurationAllowed = true;
   private boolean batchUpdateAllowed = true;
   private boolean removeEntitiesOnDelete = true;
@@ -90,7 +92,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public Entities getDomain() {
+  public final Entities getDomain() {
     return getConnectionProvider().getDomain();
   }
 
@@ -139,15 +141,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isQueryConditionRequired() {
-    return queryConditionRequired;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final FXEntityListModel setQueryConditionRequired(final boolean value) {
-    this.queryConditionRequired = value;
-    return this;
+  public final State getQueryConditionRequiredState() {
+    return queryConditionRequiredState;
   }
 
   /** {@inheritDoc} */
@@ -415,10 +410,16 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
             String.valueOf(delimiter));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Queries for the data used to populate this EntityTableModel when it is refreshed,
+   * using the order by clause returned by {@link #getOrderBy()}
+   * @return entities selected from the database according the the query condition.
+   * @see #getQueryConditionRequiredState()
+   * @see EntityTableConditionModel#getCondition()
+   */
   @Override
   protected List<Entity> performQuery() {
-    if (!conditionModel.isEnabled() && queryConditionRequired) {
+    if (!conditionModel.isEnabled() && queryConditionRequiredState.isActive()) {
       return Collections.emptyList();
     }
 
@@ -460,7 +461,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  protected void bindSelectionModelEvents() {
+  protected final void bindSelectionModelEvents() {
     super.bindSelectionModelEvents();
     getSelectionModel().addSelectedIndexListener(index -> {
       if (editModel != null) {

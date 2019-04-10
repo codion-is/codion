@@ -4,6 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.EventListener;
+import org.jminor.common.State;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.FilteredModel;
@@ -221,19 +222,14 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
    */
   void deleteSelected() throws DatabaseException;
 
-  /**
-   * @return whether to show all underlying entities when no condition is applied.
+   /**
+   * Returns a State controlling whether this table model should display all underlying entities
+   * when no query condition has been set. Setting this value to 'true' prevents all records from
+   * being fetched by accident, when no condition has been set, which is recommended for tables
+   * with a large underlying dataset.
+   * @return a State specifying whether this table model requires a query condition
    */
-  boolean isQueryConditionRequired();
-
-  /**
-   * @param value set to true to prevent refreshing unless a query condition has been set.
-   * This is recommended for entities with large underlying datasets. If false then all underlying
-   * entities are retreived when no condition has been set.
-   * @return this table model instance
-   * @see EntityTableConditionModel#isEnabled()
-   */
-  EntityTableModel<E> setQueryConditionRequired(final boolean value);
+  State getQueryConditionRequiredState();
 
   /**
    * @return true if entities that are deleted via the associated edit model

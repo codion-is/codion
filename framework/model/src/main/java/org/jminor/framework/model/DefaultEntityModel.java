@@ -195,7 +195,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     this.detailModels.add(detailModel);
     detailModel.setMasterModel((M) this);
     if (detailModel.containsTableModel()) {
-      detailModel.getTableModel().setQueryConditionRequired(true);
+      detailModel.getTableModel().getQueryConditionRequiredState().setActive(true);
     }
 
     return detailModel;

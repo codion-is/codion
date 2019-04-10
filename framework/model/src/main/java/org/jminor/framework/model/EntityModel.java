@@ -110,7 +110,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Adds the given detail model to this model, sets this model as the master model of the
    * given detail models via {@link #setMasterModel(EntityModel)}, a side-effect if the detail model contains
    * a table model is that it is configured so that a query condition is required for it to show
-   * any data, via {@link EntityTableModel#setQueryConditionRequired(boolean)}
+   * any data, via {@link EntityTableModel#getQueryConditionRequiredState()}
    * @param detailModels the detail models to add
    */
   void addDetailModels(final M... detailModels);
@@ -119,7 +119,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Adds the given detail model to this model, sets this model as the master model of the
    * given detail model via {@link #setMasterModel(EntityModel)}, a side-effect if the detail model contains
    * a table model is that it is configured so that a query condition is required for it to show
-   * any data, via {@link EntityTableModel#setQueryConditionRequired(boolean)}
+   * any data, via {@link EntityTableModel#getQueryConditionRequiredState()}
    * @param detailModel the detail model
    * @return the detail model just added
    */
