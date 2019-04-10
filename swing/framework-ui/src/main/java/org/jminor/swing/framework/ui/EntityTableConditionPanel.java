@@ -52,6 +52,8 @@ public final class EntityTableConditionPanel extends JPanel {
   private final JPanel advancedConditionPanel;
   private final JPanel simpleConditionPanel;
 
+  private final Controls.ToggleControl conditionRequiredControl;
+
   /**
    * Instantiates a new EntityTableConditionPanel with a default condition panel setup, based on
    * an {@link AbstractTableColumnSyncPanel} containing {@link PropertyConditionPanel}s
@@ -76,6 +78,8 @@ public final class EntityTableConditionPanel extends JPanel {
     this.columns = tableModel.getColumnModel().getAllColumns();
     this.advancedConditionPanel = advancedConditionPanel;
     this.simpleConditionPanel = simpleConditionPanel;
+    this.conditionRequiredControl = Controls.toggleControl(tableModel.getQueryConditionRequiredState(), MESSAGES.getString("require_query_condition"));
+    this.conditionRequiredControl.setDescription(MESSAGES.getString("require_query_condition_description"));
     setLayout(new BorderLayout());
     layoutPanel(true);
     UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
@@ -208,6 +212,8 @@ public final class EntityTableConditionPanel extends JPanel {
               FrameworkMessages.get(FrameworkMessages.ADVANCED), advancedChangedEvent));
     }
     controlSet.add(Controls.control(conditionModel::clearPropertyConditionModels, FrameworkMessages.get(FrameworkMessages.CLEAR)));
+    controlSet.addSeparator();
+    controlSet.add(conditionRequiredControl);
 
     return controlSet;
   }

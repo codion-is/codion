@@ -135,8 +135,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName(), Locale.getDefault());
 
-  private static final String MSG_CONFIGURE_QUERY = "configure_query";
-
   /**
    * Specifies whether or not columns can be rearranged in tables<br>
    * Value type: Boolean<br>
@@ -165,7 +163,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public static final String DELETE_SELECTED = "deleteSelected";
   public static final String VIEW_DEPENDENCIES = "viewDependencies";
   public static final String UPDATE_SELECTED = "updateSelected";
-  public static final String CONFIGURE_QUERY = "configureQuery";
   public static final String SELECT_COLUMNS = "selectTableColumns";
   public static final String EXPORT_JSON = "exportJSON";
   public static final String CLEAR = "clear";
@@ -358,31 +355,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Shows a dialog for configuring the underlying EntityTableModel query.
-   * If the underlying table model does not allow query configuration this
-   * method returns silently
-   * @see EntityTableModel#isQueryConfigurationAllowed()
-   */
-  public final void configureQuery() {
-    if (!getEntityTableModel().isQueryConfigurationAllowed()) {
-      return;
-    }
-
-    final EntityConditionPanel panel;
-    Control refreshControl;
-    try {
-      UiUtil.setWaitCursor(true, this);
-      panel = new EntityConditionPanel(getEntityTableModel());
-      refreshControl = Controls.control(getEntityTableModel()::refresh, MESSAGES.getString("apply"), null,
-              null, MESSAGES.getString("apply_mnemonic").charAt(0));
-    }
-    finally {
-      UiUtil.setWaitCursor(false, this);
-    }
-    UiUtil.displayInDialog(this, panel, MESSAGES.getString(MSG_CONFIGURE_QUERY), refreshControl);
-  }
-
-  /**
    * Hides or shows the column condition panel for this EntityTablePanel
    * @param visible if true the condition panel is shown, if false it is hidden
    */
@@ -501,16 +473,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     });
 
     return controlSet;
-  }
-
-  /**
-   * @return a control for showing the query configuration dialog
-   */
-  public final Control getConfigureQueryControl() {
-    return Controls.control(this::configureQuery,
-            MESSAGES.getString(MSG_CONFIGURE_QUERY) + TRIPLEDOT, null,
-            MESSAGES.getString(MSG_CONFIGURE_QUERY), 0,
-            null, Images.loadImage(Images.IMG_PREFERENCES_16));
   }
 
   /**
@@ -1052,9 +1014,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
     if (controlMap.containsKey(TOGGLE_CONDITION_PANEL)) {
       toolbarControls.add(controlMap.get(TOGGLE_CONDITION_PANEL));
-    }
-    if (controlMap.containsKey(CONFIGURE_QUERY)) {
-      toolbarControls.add(controlMap.get(CONFIGURE_QUERY));
       toolbarControls.addSeparator();
     }
     if (controlMap.containsKey(DELETE_SELECTED)) {
@@ -1124,12 +1083,12 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       }
       popupControls.add(controlMap.get(SELECT_COLUMNS));
     }
-    if (controlMap.containsKey(CONFIGURE_QUERY)) {
+    if (getEntityTableModel().isQueryConfigurationAllowed()) {
       if (separatorRequired) {
         popupControls.addSeparator();
-        separatorRequired = false;
       }
       addConditionControls(popupControls);
+      separatorRequired = true;
     }
     if (separatorRequired) {
       popupControls.addSeparator();
@@ -1152,7 +1111,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   private void addConditionControls(final ControlSet popupControls) {
-    popupControls.add(controlMap.get(CONFIGURE_QUERY));
     if (conditionPanel != null) {
       final ControlSet controls = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
       if (controlMap.containsKey(CONDITION_PANEL_VISIBLE)) {
@@ -1388,7 +1346,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       setControl(UPDATE_SELECTED, getUpdateSelectedControlSet());
     }
     if (getEntityTableModel().isQueryConfigurationAllowed()) {
-      setControl(CONFIGURE_QUERY, getConfigureQueryControl());
       setControl(CONDITION_PANEL_VISIBLE, getConditionPanelControl());
     }
     setControl(CLEAR, getClearControl());

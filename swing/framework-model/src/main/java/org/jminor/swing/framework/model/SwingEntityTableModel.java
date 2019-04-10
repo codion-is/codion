@@ -4,6 +4,8 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.common.EventListener;
+import org.jminor.common.State;
+import org.jminor.common.States;
 import org.jminor.common.TextUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
@@ -98,6 +100,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private final EntityConditions entityConditions;
 
   /**
+   * If true then querying should be disabled if no condition is specified
+   */
+  private final State queryConditionRequiredState = States.state();
+
+  /**
    * the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched
    */
   private int fetchCount = -1;
@@ -106,11 +113,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * True if the underlying query should be configurable by the user
    */
   private boolean queryConfigurationAllowed = true;
-
-  /**
-   * If true then querying should be disabled if no condition is specified
-   */
-  private boolean queryConditionRequired = false;
 
   /**
    * If true then items deleted via the edit model are removed from this table model
@@ -165,7 +167,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public Entities getDomain() {
+  public final Entities getDomain() {
     return connectionProvider.getDomain();
   }
 
@@ -224,26 +226,19 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isQueryConditionRequired() {
-    return queryConditionRequired;
+  public final State getQueryConditionRequiredState() {
+    return queryConditionRequiredState;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final SwingEntityTableModel setQueryConditionRequired(final boolean value) {
-    this.queryConditionRequired = value;
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public InsertAction getInsertAction() {
+  public final InsertAction getInsertAction() {
     return insertAction;
   }
 
   /** {@inheritDoc} */
   @Override
-  public SwingEntityTableModel setInsertAction(final InsertAction insertAction) {
+  public final SwingEntityTableModel setInsertAction(final InsertAction insertAction) {
     Objects.requireNonNull(insertAction, "insertAction");
     this.insertAction = insertAction;
     return this;
@@ -372,7 +367,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @param addColumnToSort if true then the column is added to the sorting state
    * @see TableSortModel#setSortingDirective(Object, SortingDirective, boolean)
    */
-  public void setSortingDirective(final String propertyId, final SortingDirective directive, final boolean addColumnToSort) {
+  public final void setSortingDirective(final String propertyId, final SortingDirective directive, final boolean addColumnToSort) {
     getSortModel().setSortingDirective(getDomain().getProperty(getEntityId(), propertyId), directive, addColumnToSort);
   }
 
@@ -418,7 +413,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public void setForeignKeyConditionValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
+  public final void setForeignKeyConditionValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
     Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
     if (conditionModel.setConditionValues(foreignKeyProperty.getPropertyId(), foreignKeyValues)) {
       refresh();
@@ -508,7 +503,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public void setColumns(final String... propertyIds) {
+  public final void setColumns(final String... propertyIds) {
     final List<Property> properties = getDomain().getProperties(getEntityId(), propertyIds);
     getColumnModel().setColumns(properties.toArray(new Property[0]));
   }
@@ -547,7 +542,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public void addSelectionChangedListener(final EventListener listener) {
+  public final void addSelectionChangedListener(final EventListener listener) {
     getSelectionModel().addSelectionChangedListener(listener);
   }
 
@@ -576,10 +571,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * Queries for the data used to populate this EntityTableModel when it is refreshed,
    * using the order by clause returned by {@link #getOrderBy()}
    * @return entities selected from the database according the the query condition.
+   * @see #getQueryConditionRequiredState()
    * @see EntityTableConditionModel#getCondition()
    */
   protected List<Entity> performQuery() {
-    if (!getConditionModel().isEnabled() && queryConditionRequired) {
+    if (!getConditionModel().isEnabled() && queryConditionRequiredState.isActive()) {
       return Collections.emptyList();
     }
 

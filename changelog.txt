@@ -4980,3 +4980,5 @@
   ColumnConditionModel no longer based on java.sql.Types, replaced with typeClass (Class)
   Column.isSearchable() removed, not used anywhere
   ColumnSummary and related classes refactored, now uses streams for most things
+  EntityTableModel.get/setQueryConditionRequired() replaced with getQueryConditionRequiredState()
+  EntityConditionPanel removed, pretty much redundant, query condition required action moved to EntityTablePanel popup menu via EntityTableConditionPanel.getControls()

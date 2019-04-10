@@ -267,10 +267,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   @Test
   public void testTheRest() {
     assertNotNull(testModel.getConnectionProvider());
-    testModel.setQueryConditionRequired(false);
-    assertFalse(testModel.isQueryConditionRequired());
-    testModel.setQueryConditionRequired(true);
-    assertTrue(testModel.isQueryConditionRequired());
+    testModel.getQueryConditionRequiredState().setActive(false);
+    assertFalse(testModel.getQueryConditionRequiredState().isActive());
+    testModel.getQueryConditionRequiredState().setActive(true);
+    assertTrue(testModel.getQueryConditionRequiredState().isActive());
     testModel.setQueryConfigurationAllowed(false);
     assertFalse(testModel.isQueryConfigurationAllowed());
     testModel.setQueryConfigurationAllowed(true);

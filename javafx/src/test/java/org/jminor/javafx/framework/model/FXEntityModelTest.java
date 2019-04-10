@@ -30,7 +30,7 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
     entityModel.addDetailModel(employeeModel);
     entityModel.setDetailModelForeignKey(employeeModel, TestDomain.EMP_DEPARTMENT_FK);
     entityModel.addLinkedDetailModel(employeeModel);
-    employeeModel.getTableModel().setQueryConditionRequired(false);
+    employeeModel.getTableModel().getQueryConditionRequiredState().setActive(false);
 
     return entityModel;
   }
