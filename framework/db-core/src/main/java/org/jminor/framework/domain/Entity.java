@@ -494,8 +494,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param entity the entity
      * @param property the property
      * @throws RangeValidationException in case the value of the given property is outside the legal range
-     * @see org.jminor.framework.domain.Property#setMax(double)
-     * @see org.jminor.framework.domain.Property#setMin(double)
+     * @see Property#setMax(double)
+     * @see Property#setMin(double)
      */
     void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException;
 
@@ -504,7 +504,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param entity the entity
      * @param property the property
      * @throws LengthValidationException in case the length of the value of the given property
-     * @see org.jminor.framework.domain.Property#setMaxLength(int)
+     * @see Property#setMaxLength(int)
      */
     void performLengthValidation(final Entity entity, final Property property) throws LengthValidationException;
   }
@@ -527,13 +527,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   interface OrderBy extends Serializable {
 
     /**
-     * The order by sort order
-     */
-    enum SortOrder {
-      ASCENDING, DESCENDING
-    }
-
-    /**
      * Adds an 'ascending' order by for the given properties
      * @param propertyIds the property ids
      * @return this OrderBy instance
@@ -548,9 +541,25 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     OrderBy descending(final String... propertyIds);
 
     /**
-     * @return a map containing the sort order mapped to their respective propertyIds
+     * @return an unmodifiable List containing the propertyIds and their respective order
      */
-    Map<String, SortOrder> getSortOrder();
+    List<OrderByProperty> getOrderByProperties();
+
+    /**
+     * Specifies a propertyId and the order
+     */
+    interface OrderByProperty extends Serializable {
+
+      /**
+       * @return the id of the property to order by
+       */
+      String getPropertyId();
+
+      /**
+       * @return true if this property should be ordered in 'descending' order
+       */
+      boolean isDescending();
+    }
   }
 
   /**

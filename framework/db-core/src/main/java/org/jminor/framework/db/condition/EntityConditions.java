@@ -583,7 +583,7 @@ public final class EntityConditions {
     }
 
     @Override
-    public Entity.OrderBy getOrderby() {
+    public Entity.OrderBy getOrderBy() {
       return orderBy;
     }
 
