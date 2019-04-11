@@ -47,6 +47,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -526,7 +527,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         final List<Integer> result = Databases.INTEGER_RESULT_PACKER.pack(resultSet, -1);
         commitIfTransactionIsNotOpen();
         if (result.isEmpty()) {
-          throw new SQLException("Record count query returned no value");
+          throw new SQLException("Row count query returned no value");
         }
 
         return result.get(0);
@@ -1127,26 +1128,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private String getOrderByClause(final EntitySelectCondition selectCondition) {
-    final Entity.OrderBy orderBy = selectCondition.getOrderby();
-    if (orderBy == null || orderBy.getSortOrder().isEmpty()) {
+    if (selectCondition.getOrderBy() == null) {
       return null;
     }
 
-    final StringBuilder builder = new StringBuilder();
-    final Set<Map.Entry<String, Entity.OrderBy.SortOrder>> entries = orderBy.getSortOrder().entrySet();
-    int counter = 0;
-    for (final Map.Entry<String, Entity.OrderBy.SortOrder> entry : entries) {
-      final Property.ColumnProperty property = domain.getColumnProperty(selectCondition.getEntityId(), entry.getKey());
-      builder.append(property.getColumnName());
-      if (entry.getValue().equals(Entity.OrderBy.SortOrder.DESCENDING)) {
-        builder.append(" desc");
-      }
-      if (counter++ < entries.size() - 1) {
-        builder.append(", ");
-      }
-    }
+    final List<String> orderBys = new LinkedList<>();
+    selectCondition.getOrderBy().getOrderByProperties().forEach(property ->
+            orderBys.add(domain.getColumnProperty(selectCondition.getEntityId(), property.getPropertyId()).getColumnName()
+                    + (property.isDescending() ? " desc" : "")));
 
-    return builder.toString();
+    return String.join(", ", orderBys);
   }
 
   /**

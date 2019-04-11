@@ -11,16 +11,16 @@ import org.jminor.framework.domain.Entity;
 public interface EntitySelectCondition extends EntityCondition {
 
   /**
+   * @return the OrderBy for this condition, null if none is specified
+   */
+  Entity.OrderBy getOrderBy();
+
+  /**
    * Sets the OrderBy for this condition
    * @param orderBy the OrderBy to use when applying this condition
    * @return this EntitySelectCondition instance
    */
   EntitySelectCondition setOrderBy(final Entity.OrderBy orderBy);
-
-  /**
-   * @return the OrderBy for this condition, null if none is specified
-   */
-  Entity.OrderBy getOrderby();
 
   /**
    * @return the limit to use for the given condition

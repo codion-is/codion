@@ -33,6 +33,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
@@ -146,13 +147,13 @@ public class Entities implements Serializable {
    * Instantiates a new {@link Entity} of the given type using the values provided by {@code valueProvider}.
    * Values are fetched for {@link Property.ColumnProperty} and its descendants, {@link Property.ForeignKeyProperty}
    * and {@link Property.TransientProperty} (excluding its descendants).
-   * If a {@link org.jminor.framework.domain.Property.ColumnProperty}s column has a default value the property is
+   * If a {@link Property.ColumnProperty}s column has a default value the property is
    * skipped unless it has a default value, which then overrides the columns default value.
    * @param entityId the entity ID
    * @param valueProvider the value provider
    * @return the populated entity
-   * @see org.jminor.framework.domain.Property.ColumnProperty#setColumnHasDefaultValue(boolean)
-   * @see org.jminor.framework.domain.Property.ColumnProperty#setDefaultValue(Object)
+   * @see Property.ColumnProperty#setColumnHasDefaultValue(boolean)
+   * @see Property.ColumnProperty#setDefaultValue(Object)
    */
   public final Entity defaultEntity(final String entityId, final ValueProvider<Property, Object> valueProvider) {
     final Entity entity = entity(entityId);
@@ -1860,32 +1861,73 @@ public class Entities implements Serializable {
 
     private static final long serialVersionUID = 1;
 
-    private final HashMap<String, SortOrder> propertySortOrder = new LinkedHashMap<>();
+    private final List<OrderByProperty> orderByProperties = new LinkedList<>();
 
     @Override
     public Entity.OrderBy ascending(final String... propertyIds) {
-      put(SortOrder.ASCENDING, propertyIds);
+      add(false, propertyIds);
       return this;
     }
 
     @Override
     public Entity.OrderBy descending(final String... propertyIds) {
-      put(SortOrder.DESCENDING, propertyIds);
+      add(true, propertyIds);
       return this;
     }
 
     @Override
-    public Map<String, SortOrder> getSortOrder() {
-      return propertySortOrder;
+    public List<OrderByProperty> getOrderByProperties() {
+      return Collections.unmodifiableList(orderByProperties);
     }
 
-    private void put(final SortOrder sortOrder, final String... propertyIds) {
+    private void add(final boolean descending, final String... propertyIds) {
       Objects.requireNonNull(propertyIds, "propertyIds");
       for (final String propertyId : propertyIds) {
-        if (propertySortOrder.containsKey(propertyId)) {
+        final OrderByProperty property = new DefaultOrderByProperty(propertyId, descending);
+        if (orderByProperties.contains(property)) {
           throw new IllegalArgumentException("Order by already contains property: " + propertyId);
         }
-        propertySortOrder.put(propertyId, sortOrder);
+        orderByProperties.add(property);
+      }
+    }
+
+    private static final class DefaultOrderByProperty implements OrderByProperty {
+
+      private static final long serialVersionUID = 1;
+
+      private final String propertyId;
+      private final boolean descending;
+
+      private DefaultOrderByProperty(final String propertyId, final boolean descending) {
+        this.propertyId = Objects.requireNonNull(propertyId, PROPERTY_ID_PARAM);
+        this.descending = descending;
+      }
+
+      @Override
+      public String getPropertyId() {
+        return propertyId;
+      }
+
+      @Override
+      public boolean isDescending() {
+        return descending;
+      }
+
+      @Override
+      public boolean equals(final Object object) {
+        if (this == object) {
+          return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+          return false;
+        }
+
+        return propertyId.equals(((DefaultOrderByProperty) object).propertyId);
+      }
+
+      @Override
+      public int hashCode() {
+        return propertyId.hashCode();
       }
     }
   }

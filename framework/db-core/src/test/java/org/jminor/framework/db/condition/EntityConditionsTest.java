@@ -274,8 +274,9 @@ public class EntityConditionsTest {
             .setOrderBy(Entities.orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertTrue(condition.getValues().isEmpty());
     assertTrue(condition.getColumns().isEmpty());
-    assertEquals(condition.getOrderby().getSortOrder().get(TestDomain.DEPARTMENT_NAME), Entity.OrderBy
-            .SortOrder.ASCENDING);
+    final Entity.OrderBy.OrderByProperty deptNameOrder = condition.getOrderBy().getOrderByProperties().get(0);
+    assertEquals(deptNameOrder.getPropertyId(), TestDomain.DEPARTMENT_NAME);
+    assertFalse(deptNameOrder.isDescending());
   }
 
   @Test
@@ -293,10 +294,18 @@ public class EntityConditionsTest {
   public void selectConditionOrderBy() {
     final EntitySelectCondition condition = entityConditions.selectCondition(TestDomain.T_EMP)
             .setOrderBy(Entities.orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_ID));
-    assertEquals(condition.getOrderby().getSortOrder().get(TestDomain.EMP_DEPARTMENT), Entity.OrderBy
-            .SortOrder.ASCENDING);
-    assertEquals(condition.getOrderby().getSortOrder().get(TestDomain.EMP_ID), Entity.OrderBy
-            .SortOrder.DESCENDING);
+    final Entity.OrderBy.OrderByProperty deptOrder = condition.getOrderBy().getOrderByProperties().get(0);
+    assertEquals(deptOrder.getPropertyId(), TestDomain.EMP_DEPARTMENT);
+    assertFalse(deptOrder.isDescending());
+    final Entity.OrderBy.OrderByProperty empOrder = condition.getOrderBy().getOrderByProperties().get(1);
+    assertEquals(empOrder.getPropertyId(), TestDomain.EMP_ID);
+    assertTrue(empOrder.isDescending());
+  }
+
+  @Test
+  public void selectConditionOrderByDuplicate() {
+    assertThrows(IllegalArgumentException.class, () -> entityConditions.selectCondition(TestDomain.T_EMP)
+            .setOrderBy(Entities.orderBy().ascending(TestDomain.EMP_NAME).descending(TestDomain.EMP_NAME)));
   }
 
   @Test
