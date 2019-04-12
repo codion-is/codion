@@ -22,27 +22,27 @@ public class LongValueLinkTest {
 
   @Test
   public void testInteger() throws Exception {
-    final LongField txtLong = new LongField();
-    ValueLinks.longValueLink(txtLong, this, "longValue", evtLongValueChanged, false, true);
-    assertNull(txtLong.getLong());
+    final LongField longField = new LongField();
+    ValueLinks.longValueLink(longField, this, "longValue", evtLongValueChanged, false, true);
+    assertNull(longField.getLong());
     setLongValue(2L);
-    assertEquals(2, txtLong.getLong().longValue());
-    txtLong.setText("42");
+    assertEquals(2, longField.getLong().longValue());
+    longField.setText("42");
     assertEquals(42, longValue.longValue());
-    txtLong.setText("");
+    longField.setText("");
     assertNull(longValue);
   }
 
   @Test
   public void testInt() throws Exception {
-    final LongField txtLong = new LongField();
-    ValueLinks.longValueLink(txtLong, this, "longPrimValue", evtLongPrimitiveValueChanged, true, true);
-    assertEquals(Long.valueOf(0), txtLong.getLong());
+    final LongField longField = new LongField();
+    ValueLinks.longValueLink(longField, this, "longPrimValue", evtLongPrimitiveValueChanged, true, true);
+    assertEquals(Long.valueOf(0), longField.getLong());
     setLongPrimValue(2);
-    assertEquals(2, txtLong.getLong().longValue());
-    txtLong.setText("42");
+    assertEquals(2, longField.getLong().longValue());
+    longField.setText("42");
     assertEquals(42, longPrimValue);
-    txtLong.setText("");
+    longField.setText("");
     assertEquals(0, longPrimValue);
   }
 

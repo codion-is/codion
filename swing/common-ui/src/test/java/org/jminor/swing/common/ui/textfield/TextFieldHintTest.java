@@ -34,11 +34,11 @@ public class TextFieldHintTest {
 
   @Test
   public void test() {
-    final JTextField txt = new JTextField();
-    final TextFieldHint hint = TextFieldHint.enable(txt, "search");
+    final JTextField textField = new JTextField();
+    final TextFieldHint hint = TextFieldHint.enable(textField, "search");
     assertEquals("search", hint.getHintText());
-    assertEquals("search", txt.getText());
-    txt.setText("he");
-    assertEquals("he", txt.getText());
+    assertEquals("search", textField.getText());
+    textField.setText("he");
+    assertEquals("he", textField.getText());
   }
 }

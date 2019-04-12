@@ -17,19 +17,19 @@ public class InputProviderPanelTest {
 
   @Test
   public void test() {
-    final JTextField txt = new JTextField();
+    final JTextField textField = new JTextField();
     final InputProviderPanel panel = new InputProviderPanel("Test", new InputProvider() {
       @Override
       public JComponent getInputComponent() {
-        return txt;
+        return textField;
       }
       @Override
       public Object getValue() {
-        return txt.getText();
+        return textField.getText();
       }
     });
-    assertEquals(txt, panel.getInputComponent());
-    txt.setText("hello");
+    assertEquals(textField, panel.getInputComponent());
+    textField.setText("hello");
     assertEquals("hello", panel.getValue());
     assertFalse(panel.isInputAccepted());
     final AtomicInteger eventCounter = new AtomicInteger();

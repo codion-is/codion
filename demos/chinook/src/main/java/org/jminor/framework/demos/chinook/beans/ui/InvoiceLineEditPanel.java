@@ -30,11 +30,11 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     setInitialFocusProperty(INVOICELINE_TRACKID_FK);
-    final JTextField txtTrack = createForeignKeyLookupField(INVOICELINE_TRACKID_FK);
-    txtTrack.setColumns(25);
-    final JTextField txtQuantity = createTextField(INVOICELINE_QUANTITY);
-    UiUtil.removeTransferFocusOnEnter(txtQuantity);//otherwise the action added below wont work
-    txtQuantity.addActionListener(getSaveControl());
+
+    createForeignKeyLookupField(INVOICELINE_TRACKID_FK).setColumns(25);
+    final JTextField quantityField = createTextField(INVOICELINE_QUANTITY);
+    UiUtil.removeTransferFocusOnEnter(quantityField);//otherwise the action added below wont work
+    quantityField.addActionListener(getSaveControl());
 
     setLayout(new BorderLayout(5, 5));
     add(createPropertyPanel(INVOICELINE_TRACKID_FK), BorderLayout.WEST);

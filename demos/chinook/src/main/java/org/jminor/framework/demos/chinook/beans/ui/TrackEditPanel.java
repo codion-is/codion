@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
-import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.textfield.IntegerField;
@@ -29,10 +28,9 @@ public class TrackEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     setInitialFocusProperty(TRACK_ALBUMID_FK);
-    final JTextField txtAlbum = createForeignKeyLookupField(TRACK_ALBUMID_FK);
-    txtAlbum.setColumns(18);
-    final JTextField txtName = createTextField(TRACK_NAME);
-    txtName.setColumns(18);
+
+    createForeignKeyLookupField(TRACK_ALBUMID_FK).setColumns(18);
+    createTextField(TRACK_NAME).setColumns(18);
     final EntityComboBox mediaTypeBox = createForeignKeyComboBox(TRACK_MEDIATYPEID_FK);
     final Action newMediaTypeAction = EntityEditPanel.createEditPanelAction(mediaTypeBox,
             new EntityPanelProvider(T_MEDIATYPE, getEditModel().getDomain().getCaption(T_MEDIATYPE))
@@ -43,19 +41,17 @@ public class TrackEditPanel extends EntityEditPanel {
             new EntityPanelProvider(T_GENRE, getEditModel().getDomain().getCaption(T_GENRE))
                     .setEditPanelClass(GenreEditPanel.class));
     final JPanel genrePanel = UiUtil.createEastButtonPanel(genreBox, newGenreAction, false);
-    final TextInputPanel txtComposer = createTextInputPanel(TRACK_COMPOSER);
-    txtComposer.getTextField().setColumns(18);
-    final IntegerField txtMilliseconds = (IntegerField) createTextField(TRACK_MILLISECONDS);
-    txtMilliseconds.setGroupingUsed(true);
-    final IntegerField txtBytes = (IntegerField) createTextField(TRACK_BYTES);
-    txtBytes.setGroupingUsed(true);
-    txtBytes.setColumns(18);
-    final JTextField txtUnitPrice = createTextField(TRACK_UNITPRICE);
-    txtUnitPrice.setColumns(18);
-    final JTextField txtDuration = createTextField(TRACK_MINUTES_SECONDS_DERIVED, true);
+    createTextInputPanel(TRACK_COMPOSER).getTextField().setColumns(18);
+    final IntegerField millisecondsField = (IntegerField) createTextField(TRACK_MILLISECONDS);
+    millisecondsField.setGroupingUsed(true);
+    final IntegerField bytesField = (IntegerField) createTextField(TRACK_BYTES);
+    bytesField.setGroupingUsed(true);
+    bytesField.setColumns(18);
+    createTextField(TRACK_UNITPRICE).setColumns(18);
+    final JTextField durationField = createTextField(TRACK_MINUTES_SECONDS_DERIVED, true);
     final JPanel durationPanel = new JPanel(new GridLayout(1, 2, 5, 5));
-    durationPanel.add(createPropertyPanel(TRACK_MILLISECONDS, txtMilliseconds));
-    durationPanel.add(createPropertyPanel(new JLabel("(min/sec)"), txtDuration, true));
+    durationPanel.add(createPropertyPanel(TRACK_MILLISECONDS, millisecondsField));
+    durationPanel.add(createPropertyPanel(new JLabel("(min/sec)"), durationField, true));
 
     setLayout(new FlexibleGridLayout(4, 2, 5, 5, true, false));
     addPropertyPanel(TRACK_ALBUMID_FK);

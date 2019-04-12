@@ -116,7 +116,7 @@ public enum ColumnSummary implements ColumnSummaryModel.Summary {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnSummary.class.getName(), Locale.getDefault());
 
-  protected String addSubsetIndicator(final String txt, final ColumnSummaryModel.ColumnValueProvider valueProvider) {
-    return txt.isEmpty() ? txt : txt + (valueProvider.isValueSubset() ? "*" : "");
+  protected String addSubsetIndicator(final String text, final ColumnSummaryModel.ColumnValueProvider valueProvider) {
+    return text.isEmpty() ? text : text + (valueProvider.isValueSubset() ? "*" : "");
   }
 }

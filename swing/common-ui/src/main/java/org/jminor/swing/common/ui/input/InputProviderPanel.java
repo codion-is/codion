@@ -114,9 +114,9 @@ public final class InputProviderPanel<T, K extends JComponent> extends JPanel im
       setBorder(BorderFactory.createTitledBorder(caption));
     }
     add(inputProvider.getInputComponent(), BorderLayout.CENTER);
-    final JPanel btnBase = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    btnBase.add(createButtonPanel());
-    add(btnBase, BorderLayout.SOUTH);
+    final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    panel.add(createButtonPanel());
+    add(panel, BorderLayout.SOUTH);
   }
 
   private JPanel createButtonPanel() {

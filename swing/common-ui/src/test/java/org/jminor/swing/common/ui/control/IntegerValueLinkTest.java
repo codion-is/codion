@@ -22,27 +22,27 @@ public class IntegerValueLinkTest {
 
   @Test
   public void testInteger() throws Exception {
-    final IntegerField txtInt = new IntegerField();
-    ValueLinks.integerValueLink(txtInt, this, "integerValue", evtIntegerValueChanged, false, true);
-    assertNull(txtInt.getInteger());
+    final IntegerField integerField = new IntegerField();
+    ValueLinks.integerValueLink(integerField, this, "integerValue", evtIntegerValueChanged, false, true);
+    assertNull(integerField.getInteger());
     setIntegerValue(2);
-    assertEquals(2, txtInt.getInteger().intValue());
-    txtInt.setText("42");
+    assertEquals(2, integerField.getInteger().intValue());
+    integerField.setText("42");
     assertEquals(42, integerValue.intValue());
-    txtInt.setText("");
+    integerField.setText("");
     assertNull(integerValue);
   }
 
   @Test
   public void testInt() throws Exception {
-    final IntegerField txtInt = new IntegerField();
-    ValueLinks.integerValueLink(txtInt, this, "intValue", evtIntValueChanged, true, true);
-    assertEquals((Integer) 0, txtInt.getInteger());
+    final IntegerField integerField = new IntegerField();
+    ValueLinks.integerValueLink(integerField, this, "intValue", evtIntValueChanged, true, true);
+    assertEquals((Integer) 0, integerField.getInteger());
     setIntValue(2);
-    assertEquals(2, txtInt.getInteger().intValue());
-    txtInt.setText("42");
+    assertEquals(2, integerField.getInteger().intValue());
+    integerField.setText("42");
     assertEquals(42, intValue);
-    txtInt.setText("");
+    integerField.setText("");
     assertEquals(0, intValue);
   }
 

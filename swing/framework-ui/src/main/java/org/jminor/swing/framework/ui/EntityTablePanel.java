@@ -889,9 +889,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       }
     }, FrameworkMessages.get(FrameworkMessages.SEARCH), null, null, FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC).charAt(0));
 
-    final JButton btnOk = new JButton(okControl);
-    final JButton btnCancel = new JButton(cancelControl);
-    final JButton btnSearch = new JButton(searchControl);
+    final JButton okButton = new JButton(okControl);
+    final JButton cancelButton = new JButton(cancelControl);
+    final JButton searchButton = new JButton(searchControl);
     UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelControl);
     entityTablePanel.getJTable().getInputMap(
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
@@ -902,10 +902,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
     dialog.add(entityTablePanel, BorderLayout.CENTER);
     final JPanel buttonPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.RIGHT));
-    buttonPanel.add(btnSearch);
-    buttonPanel.add(btnOk);
-    buttonPanel.add(btnCancel);
-    dialog.getRootPane().setDefaultButton(btnOk);
+    buttonPanel.add(searchButton);
+    buttonPanel.add(okButton);
+    buttonPanel.add(cancelButton);
+    dialog.getRootPane().setDefaultButton(okButton);
     dialog.add(buttonPanel, BorderLayout.SOUTH);
     dialog.pack();
     dialog.setLocationRelativeTo(dialogOwner);

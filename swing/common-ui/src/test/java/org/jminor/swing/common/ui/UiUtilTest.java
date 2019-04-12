@@ -50,60 +50,60 @@ public class UiUtilTest {
 
   @Test
   public void makeUpperCase() {
-    JTextField txt = UiUtil.makeUpperCase(new JTextField());
-    txt.setText("hello");
-    assertEquals("HELLO", txt.getText());
+    JTextField textField = UiUtil.makeUpperCase(new JTextField());
+    textField.setText("hello");
+    assertEquals("HELLO", textField.getText());
 
-    txt = new JTextField();
-    txt.setDocument(new SizedDocument());
-    UiUtil.makeUpperCase(txt);
-    txt.setText("hello");
-    assertEquals("HELLO", txt.getText());
+    textField = new JTextField();
+    textField.setDocument(new SizedDocument());
+    UiUtil.makeUpperCase(textField);
+    textField.setText("hello");
+    assertEquals("HELLO", textField.getText());
   }
 
   @Test
   public void makeLowerCase() {
-    JTextField txt = UiUtil.makeLowerCase(new JTextField());
-    txt.setText("HELLO");
-    assertEquals("hello", txt.getText());
+    JTextField textField = UiUtil.makeLowerCase(new JTextField());
+    textField.setText("HELLO");
+    assertEquals("hello", textField.getText());
 
-    txt = new JTextField();
-    txt.setDocument(new SizedDocument());
-    UiUtil.makeLowerCase(txt);
-    txt.setText("HELLO");
-    assertEquals("hello", txt.getText());
+    textField = new JTextField();
+    textField.setDocument(new SizedDocument());
+    UiUtil.makeLowerCase(textField);
+    textField.setText("HELLO");
+    assertEquals("hello", textField.getText());
   }
 
   @Test
   public void addKeyEventWithoutName() {
-    final JTextField txt = new JTextField();
-    final String actionName = txt.getClass().getSimpleName() + KeyEvent.VK_ENTER + 0 + "true";
-    assertNull(txt.getActionMap().get(actionName));
-    UiUtil.addKeyEvent(txt, KeyEvent.VK_ENTER, Controls.control(() -> {}));
-    assertNotNull(txt.getActionMap().get(actionName));
+    final JTextField textField = new JTextField();
+    final String actionName = textField.getClass().getSimpleName() + KeyEvent.VK_ENTER + 0 + "true";
+    assertNull(textField.getActionMap().get(actionName));
+    UiUtil.addKeyEvent(textField, KeyEvent.VK_ENTER, Controls.control(() -> {}));
+    assertNotNull(textField.getActionMap().get(actionName));
   }
 
   @Test
   public void setPreferredWidth() {
-    final JTextField txt = new JTextField();
-    UiUtil.setPreferredWidth(txt, 42);
-    assertEquals(new Dimension(42, txt.getPreferredSize().height), txt.getPreferredSize());
+    final JTextField textField = new JTextField();
+    UiUtil.setPreferredWidth(textField, 42);
+    assertEquals(new Dimension(42, textField.getPreferredSize().height), textField.getPreferredSize());
   }
 
   @Test
   public void setPreferredHeight() {
-    final JTextField txt = new JTextField();
-    UiUtil.setPreferredHeight(txt, 42);
-    assertEquals(new Dimension(txt.getPreferredSize().width, 42), txt.getPreferredSize());
+    final JTextField textField = new JTextField();
+    UiUtil.setPreferredHeight(textField, 42);
+    assertEquals(new Dimension(textField.getPreferredSize().width, 42), textField.getPreferredSize());
   }
 
   @Test
   public void selectAllOnFocusGained() {
-    final JTextField txt = new JTextField("test");
-    final int focusListenerCount = txt.getFocusListeners().length;
-    UiUtil.selectAllOnFocusGained(txt);
-    assertEquals(focusListenerCount + 1, txt.getFocusListeners().length);
-    UiUtil.selectNoneOnFocusGained(txt);
-    assertEquals(focusListenerCount, txt.getFocusListeners().length);
+    final JTextField textField = new JTextField("test");
+    final int focusListenerCount = textField.getFocusListeners().length;
+    UiUtil.selectAllOnFocusGained(textField);
+    assertEquals(focusListenerCount + 1, textField.getFocusListeners().length);
+    UiUtil.selectNoneOnFocusGained(textField);
+    assertEquals(focusListenerCount, textField.getFocusListeners().length);
   }
 }

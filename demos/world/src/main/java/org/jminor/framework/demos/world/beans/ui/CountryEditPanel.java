@@ -8,7 +8,6 @@ import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
-import javax.swing.JTextField;
 import java.awt.GridLayout;
 
 public final class CountryEditPanel extends EntityEditPanel {
@@ -24,12 +23,8 @@ public final class CountryEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusProperty(World.COUNTRY_CODE);
 
-    final JTextField txtCode = createTextField(World.COUNTRY_CODE);
-    txtCode.setColumns(TEXT_FIELD_COLUMNS);
-    UiUtil.makeUpperCase(txtCode);
-    final JTextField txtCode2 = createTextField(World.COUNTRY_CODE2);
-    txtCode2.setColumns(TEXT_FIELD_COLUMNS);
-    UiUtil.makeUpperCase(txtCode2);
+    UiUtil.makeUpperCase(createTextField(World.COUNTRY_CODE)).setColumns(TEXT_FIELD_COLUMNS);
+    UiUtil.makeUpperCase(createTextField(World.COUNTRY_CODE2)).setColumns(TEXT_FIELD_COLUMNS);
     createTextField(World.COUNTRY_NAME).setColumns(TEXT_FIELD_COLUMNS);
     UiUtil.setPreferredWidth(createPropertyComboBox(World.COUNTRY_CONTINENT), COMBOBOX_WIDTH);
     UiUtil.setPreferredWidth(createPropertyComboBox(World.COUNTRY_REGION), COMBOBOX_WIDTH);

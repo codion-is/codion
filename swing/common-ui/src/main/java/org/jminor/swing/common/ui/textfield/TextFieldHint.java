@@ -19,29 +19,29 @@ import java.util.Objects;
  */
 public final class TextFieldHint {
 
-  private final JTextField txtField;
+  private final JTextField textField;
   private final String hintText;
   private final Color defaultForegroundColor;
   private final Color hintForegroundColor;
 
   /**
    * Instantiates a new TextFieldHint for the given field.
-   * @param txtField the text field
+   * @param textField the text field
    * @param hintText the hint text
    * @param hintForegroundColor the font color for the hint text
    */
-  private TextFieldHint(final JTextField txtField, final String hintText, final Color hintForegroundColor) {
-    Objects.requireNonNull(txtField, "txtField");
+  private TextFieldHint(final JTextField textField, final String hintText, final Color hintForegroundColor) {
+    Objects.requireNonNull(textField, "textField");
     if (Util.nullOrEmpty(hintText)) {
       throw new IllegalArgumentException("Hint text is null or empty");
     }
     Objects.requireNonNull(hintForegroundColor, "hintForegroundColor");
-    this.txtField = txtField;
+    this.textField = textField;
     this.hintText = hintText;
-    this.defaultForegroundColor = txtField.getForeground();
+    this.defaultForegroundColor = textField.getForeground();
     this.hintForegroundColor = hintForegroundColor;
-    this.txtField.addFocusListener(initializeFocusListener());
-    this.txtField.getDocument().addDocumentListener(initializeDocumentListener());
+    this.textField.addFocusListener(initializeFocusListener());
+    this.textField.getDocument().addDocumentListener(initializeDocumentListener());
     updateState();
   }
 
@@ -56,29 +56,29 @@ public final class TextFieldHint {
    * @return true if the hint text is visible
    */
   public boolean isHintTextVisible() {
-    return txtField.getText().equals(hintText);
+    return textField.getText().equals(hintText);
   }
 
   /**
    * Enables the search hint for the given field
-   * @param txtField the text field
+   * @param textField the text field
    * @param hintText the hint text
    * @return the TextFieldHint instance
    */
-  public static TextFieldHint enable(final JTextField txtField, final String hintText) {
-    return enable(txtField, hintText, Color.LIGHT_GRAY);
+  public static TextFieldHint enable(final JTextField textField, final String hintText) {
+    return enable(textField, hintText, Color.LIGHT_GRAY);
   }
 
   /**
    * Enables the search hint for the given field
-   * @param txtField the text field
+   * @param textField the text field
    * @param hintText the hint text
    * @param hintForegroundColor the font color for the hint text
    * @return the TextFieldHint instance
    */
-  public static TextFieldHint enable(final JTextField txtField, final String hintText,
+  public static TextFieldHint enable(final JTextField textField, final String hintText,
                                      final Color hintForegroundColor) {
-    return new TextFieldHint(txtField, hintText, hintForegroundColor);
+    return new TextFieldHint(textField, hintText, hintForegroundColor);
   }
 
   private FocusListener initializeFocusListener() {
@@ -109,20 +109,20 @@ public final class TextFieldHint {
    * and is not focused.
    */
   private void updateState() {
-    final boolean hasFocus = txtField.hasFocus();
-    final boolean hideHint = hasFocus && txtField.getText().equals(hintText);
-    final boolean showHint = !hasFocus && txtField.getText().length() == 0;
+    final boolean hasFocus = textField.hasFocus();
+    final boolean hideHint = hasFocus && textField.getText().equals(hintText);
+    final boolean showHint = !hasFocus && textField.getText().length() == 0;
     if (hideHint) {
-      txtField.setText("");
+      textField.setText("");
     }
     else if (showHint) {
-      txtField.setText(hintText);
+      textField.setText(hintText);
     }
     updateColor();
   }
 
   private void updateColor() {
-    final boolean hintForeground = !txtField.hasFocus() && isHintTextVisible();
-    txtField.setForeground(hintForeground ? hintForegroundColor : defaultForegroundColor);
+    final boolean hintForeground = !textField.hasFocus() && isHintTextVisible();
+    textField.setForeground(hintForeground ? hintForegroundColor : defaultForegroundColor);
   }
 }

@@ -4975,3 +4975,4 @@
   Entity.OrderBy refactored, no longer uses a Map for the property order
   DefaultLocalEntityConnection, some minor refactoring
   ControlProvider.createButton() removed
+  Cleanup of ui variable names, abbreviations retired

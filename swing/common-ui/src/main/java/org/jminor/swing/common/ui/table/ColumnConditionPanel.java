@@ -563,9 +563,9 @@ public class ColumnConditionPanel<K> extends JPanel {
       return;
     }
 
-    final JDialog dlgParent = UiUtil.getParentDialog(parent);
-    if (dlgParent != null) {
-      dialog = new JDialog(dlgParent, conditionModel.getColumnIdentifier().toString(), false);
+    final JDialog dialogParent = UiUtil.getParentDialog(parent);
+    if (dialogParent != null) {
+      dialog = new JDialog(dialogParent, conditionModel.getColumnIdentifier().toString(), false);
     }
     else {
       dialog = new JDialog(UiUtil.getParentFrame(parent), conditionModel.getColumnIdentifier().toString(), false);

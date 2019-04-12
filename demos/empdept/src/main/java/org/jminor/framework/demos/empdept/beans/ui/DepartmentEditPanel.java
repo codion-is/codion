@@ -21,19 +21,19 @@ public class DepartmentEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusProperty(EmpDept.DEPARTMENT_ID);
 
-    final JTextField txtDepartmentNumber = createTextField(EmpDept.DEPARTMENT_ID);
-    txtDepartmentNumber.setColumns(10);
+    final JTextField departmentIdField = createTextField(EmpDept.DEPARTMENT_ID);
+    departmentIdField.setColumns(10);
     UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_NAME));
     UiUtil.makeUpperCase(createTextField(EmpDept.DEPARTMENT_LOCATION));
 
     //we don't allow editing of the department number since it's a primary key
     getEditModel().getPrimaryKeyNullObserver().addListener(() -> {
       if (getEditModel().isEntityNew()) {
-        txtDepartmentNumber.setEnabled(true);
+        departmentIdField.setEnabled(true);
         setInitialFocusProperty(EmpDept.DEPARTMENT_ID);
       }
       else {
-        txtDepartmentNumber.setEnabled(false);
+        departmentIdField.setEnabled(false);
         setInitialFocusProperty(EmpDept.DEPARTMENT_NAME);
       }
     });

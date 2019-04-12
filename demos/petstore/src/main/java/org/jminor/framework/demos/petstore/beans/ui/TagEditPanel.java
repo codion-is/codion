@@ -7,8 +7,6 @@ import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
-import javax.swing.JTextField;
-
 import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_TAG;
 
 public class TagEditPanel extends EntityEditPanel {
@@ -19,10 +17,11 @@ public class TagEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
+    setInitialFocusProperty(TAG_TAG);
+
+    createTextField(TAG_TAG).setColumns(16);
+
     setLayout(new FlexibleGridLayout(1, 1, 5, 5));
-    final JTextField txt = createTextField(TAG_TAG);
-    setInitialFocusComponent(txt);
-    txt.setColumns(16);
     addPropertyPanel(TAG_TAG);
   }
 }

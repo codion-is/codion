@@ -38,8 +38,8 @@ public final class EntityUiUtilTest {
 
   @Test
   public void createLabel() {
-    final JLabel lbl = EntityUiUtil.createLabel(ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING));
-    assertEquals(ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING).getCaption(), lbl.getText());
+    final JLabel label = EntityUiUtil.createLabel(ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING));
+    assertEquals(ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING).getCaption(), label.getText());
   }
 
   @Test

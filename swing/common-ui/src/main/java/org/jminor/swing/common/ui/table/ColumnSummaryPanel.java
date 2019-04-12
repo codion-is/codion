@@ -21,7 +21,7 @@ import java.awt.event.MouseEvent;
 public final class ColumnSummaryPanel extends JPanel {
 
   private final ColumnSummaryModel model;
-  private final JTextField txtSummary = new JTextField();
+  private final JTextField summaryField = new JTextField();
 
   /**
    * @param model the PropertySummaryModel instance
@@ -30,8 +30,8 @@ public final class ColumnSummaryPanel extends JPanel {
     this.model = model;
     model.addSummaryValueListener(() -> {
       final String summaryText = model.getSummaryText();
-      txtSummary.setText(summaryText);
-      txtSummary.setToolTipText(summaryText.length() != 0 ? (model.getSummary() + ": " + summaryText) : summaryText);
+      summaryField.setText(summaryText);
+      summaryField.setToolTipText(summaryText.length() != 0 ? (model.getSummary() + ": " + summaryText) : summaryText);
     });
     initialize();
   }
@@ -45,16 +45,16 @@ public final class ColumnSummaryPanel extends JPanel {
 
   private void initialize() {
     setLayout(new BorderLayout());
-    txtSummary.setHorizontalAlignment(JTextField.RIGHT);
-    txtSummary.setEditable(false);
-    txtSummary.setFocusable(false);
-    add(txtSummary, BorderLayout.CENTER);
+    summaryField.setHorizontalAlignment(JTextField.RIGHT);
+    summaryField.setEditable(false);
+    summaryField.setFocusable(false);
+    add(summaryField, BorderLayout.CENTER);
     final JPopupMenu menu = createPopupMenu();
-    txtSummary.addMouseListener(new MouseAdapter() {
+    summaryField.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseReleased(final MouseEvent e) {
         if (!model.isLocked()) {
-          menu.show(txtSummary, e.getX(), e.getY() - menu.getPreferredSize().height);
+          menu.show(summaryField, e.getX(), e.getY() - menu.getPreferredSize().height);
         }
       }
     });

@@ -32,66 +32,66 @@ public class UiValuesTest {
   @Test
   public void localTimeUiValue() {
     final String format = "HH:mm";
-    final JFormattedTextField txt = UiUtil.createFormattedField(DateFormats.getDateMask(format));//HH:mm
-    final Value<LocalTime> value = UiValues.localTimeValue(txt, format, true);
+    final JFormattedTextField textField = UiUtil.createFormattedField(DateFormats.getDateMask(format));//HH:mm
+    final Value<LocalTime> value = UiValues.localTimeValue(textField, format, true);
 
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 
     assertNull(value.get());
     final String timeString = "22:42";
-    txt.setText(timeString);
+    textField.setText(timeString);
     final LocalTime date = value.get();
     assertEquals(LocalTime.parse(timeString, formatter), date);
 
     final String invalidDateString = "23:";
-    txt.setText(invalidDateString);
-    assertEquals("23:__", txt.getText());
+    textField.setText(invalidDateString);
+    assertEquals("23:__", textField.getText());
     assertNull(value.get());
 
     value.set(LocalTime.parse(timeString, formatter));
-    assertEquals(timeString, txt.getText());
+    assertEquals(timeString, textField.getText());
   }
 
   @Test
   public void localDateUiValue() {
-    final JFormattedTextField txt = UiUtil.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_DASH));//dd-MM-yyyy
-    final Value<LocalDate> value = UiValues.localDateValue(txt, DateFormats.SHORT_DASH, true);
+    final JFormattedTextField textField = UiUtil.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_DASH));//dd-MM-yyyy
+    final Value<LocalDate> value = UiValues.localDateValue(textField, DateFormats.SHORT_DASH, true);
 
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.SHORT_DASH);
 
     assertNull(value.get());
     final String dateString = "03-10-1975";
-    txt.setText(dateString);
+    textField.setText(dateString);
     assertEquals(LocalDate.parse(dateString, formatter), value.get());
 
     final String invalidDateString = "03-10-19";
-    txt.setText(invalidDateString);
-    assertEquals(invalidDateString + "__", txt.getText());
+    textField.setText(invalidDateString);
+    assertEquals(invalidDateString + "__", textField.getText());
     assertNull(value.get());
 
     value.set(LocalDate.parse(dateString, formatter));
-    assertEquals(dateString, txt.getText());
+    assertEquals(dateString, textField.getText());
   }
 
   @Test
   public void localDateTimeUiValue() {
-    final JFormattedTextField txt = UiUtil.createFormattedField(DateFormats.getDateMask(DateFormats.TIMESTAMP));//dd-MM-yyyy HH:mm
-    final Value<LocalDateTime> value = UiValues.localDateTimeValue(txt, DateFormats.TIMESTAMP, true);
+    final JFormattedTextField textField = UiUtil.createFormattedField(DateFormats.getDateMask(DateFormats.TIMESTAMP));//dd-MM-yyyy HH:mm
+    final Value<LocalDateTime> value = UiValues.localDateTimeValue(textField, DateFormats.TIMESTAMP, true);
 
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.TIMESTAMP);
 
     assertNull(value.get());
     final String dateString = "03-10-1975 22:45";
-    txt.setText(dateString);
+    textField.setText(dateString);
     assertEquals(LocalDateTime.parse(dateString, formatter), value.get());
 
     final String invalidDateString = "03-10-1975 22";
-    txt.setText(invalidDateString);
-    assertEquals(invalidDateString + ":__", txt.getText());
+    textField.setText(invalidDateString);
+    assertEquals(invalidDateString + ":__", textField.getText());
     assertNull(value.get());
 
     value.set(LocalDateTime.parse(dateString, formatter));
-    assertEquals(dateString, txt.getText());
+    assertEquals(dateString, textField.getText());
   }
 
   @Test
@@ -141,109 +141,109 @@ public class UiValuesTest {
 
   @Test
   public void integerTextUiValue() {
-    final IntegerField txt = new IntegerField();
-    final Value<Integer> value = UiValues.integerValue(txt, false, true);
+    final IntegerField integerField = new IntegerField();
+    final Value<Integer> value = UiValues.integerValue(integerField, false, true);
 
     assertNull(value.get());
-    txt.setText("122");
+    integerField.setText("122");
     assertEquals(Integer.valueOf(122), value.get());
-    txt.setText("");
+    integerField.setText("");
     assertNull(value.get());
 
     value.set(42);
-    assertEquals("42", txt.getText());
+    assertEquals("42", integerField.getText());
   }
 
   @Test
   public void integerPrimitiveTextUiValue() {
-    final IntegerField txt = new IntegerField();
-    final Value<Integer> value = UiValues.integerValue(txt, true, true);
+    final IntegerField integerField = new IntegerField();
+    final Value<Integer> value = UiValues.integerValue(integerField, true, true);
 
     assertEquals(Integer.valueOf(0), value.get());
-    txt.setText("122");
+    integerField.setText("122");
     assertEquals(Integer.valueOf(122), value.get());
-    txt.setText("");
+    integerField.setText("");
     assertEquals(Integer.valueOf(0), value.get());
 
     value.set(42);
-    assertEquals("42", txt.getText());
+    assertEquals("42", integerField.getText());
   }
 
   @Test
   public void longTextUiValue() {
-    final LongField txt = new LongField();
-    final Value<Long> value = UiValues.longValue(txt, false, true);
+    final LongField longField = new LongField();
+    final Value<Long> value = UiValues.longValue(longField, false, true);
 
     assertNull(value.get());
-    txt.setText("122");
+    longField.setText("122");
     assertEquals(Long.valueOf(122), value.get());
-    txt.setText("");
+    longField.setText("");
     assertNull(value.get());
 
     value.set(42L);
-    assertEquals("42", txt.getText());
+    assertEquals("42", longField.getText());
   }
 
   @Test
   public void longPrimitiveTextUiValue() {
-    final LongField txt = new LongField();
-    final Value<Long> value = UiValues.longValue(txt, true, true);
+    final LongField longField = new LongField();
+    final Value<Long> value = UiValues.longValue(longField, true, true);
 
     assertEquals(Long.valueOf(0), value.get());
-    txt.setText("122");
+    longField.setText("122");
     assertEquals(Long.valueOf(122), value.get());
-    txt.setText("");
+    longField.setText("");
     assertEquals(Long.valueOf(0), value.get());
 
     value.set(42L);
-    assertEquals("42", txt.getText());
+    assertEquals("42", longField.getText());
   }
 
   @Test
   public void doubleTextUiValue() {
-    final DoubleField txt = new DoubleField();
-    txt.setSeparators('.', ',');
-    final Value<Double> value = UiValues.doubleValue(txt, false, true);
+    final DoubleField doubleField = new DoubleField();
+    doubleField.setSeparators('.', ',');
+    final Value<Double> value = UiValues.doubleValue(doubleField, false, true);
 
     assertNull(value.get());
-    txt.setText("122.2");
+    doubleField.setText("122.2");
     assertEquals(Double.valueOf(122.2), value.get());
-    txt.setText("");
+    doubleField.setText("");
     assertNull(value.get());
 
     value.set(42.2);
-    assertEquals("42.2", txt.getText());
+    assertEquals("42.2", doubleField.getText());
   }
 
   @Test
   public void doublePrimitiveTextUiValue() {
-    final DoubleField txt = new DoubleField();
-    txt.setSeparators('.', ',');
-    final Value<Double> value = UiValues.doubleValue(txt, true, true);
+    final DoubleField doubleField = new DoubleField();
+    doubleField.setSeparators('.', ',');
+    final Value<Double> value = UiValues.doubleValue(doubleField, true, true);
 
     assertEquals(Double.valueOf(0), value.get());
-    txt.setText("122.2");
+    doubleField.setText("122.2");
     assertEquals(Double.valueOf(122.2), value.get());
-    txt.setText("");
+    doubleField.setText("");
     assertEquals(Double.valueOf(0), value.get());
 
     value.set(42.2);
-    assertEquals("42.2", txt.getText());
+    assertEquals("42.2", doubleField.getText());
   }
 
   @Test
   public void textUiValueImmediate() {
-    final JTextField txt = new JTextField();
-    final Value<String> value = UiValues.textValue(txt, null, true);
+    final JTextField textField = new JTextField();
+    final Value<String> value = UiValues.textValue(textField, null, true);
 
     assertNull(value.get());
-    txt.setText("hello there");
+    textField.setText("hello there");
     assertEquals("hello there", value.get());
-    txt.setText("");
+    textField.setText("");
     assertNull(value.get());
 
     value.set("hi");
-    assertEquals("hi", txt.getText());
+    assertEquals("hi", textField.getText());
   }
 
   @Test

@@ -39,7 +39,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   private final ClientUserMonitor model;
 
   private final ClientMonitorPanel clientTypeMonitorPanel = new ClientMonitorPanel();
-  private JComboBox<Integer> cmbMaintenance;
+  private JComboBox<Integer> maintenanceBox;
 
   /**
    * Instantiates a new ClientUserMonitorPanel
@@ -94,10 +94,10 @@ public final class ClientUserMonitorPanel extends JPanel {
     actionBase.add(initializeMaintenanceIntervalComponent());
 
     actionBase.add(new JLabel("Connection timeout (s)"));
-    final JSpinner spnConnectionTimeout = new JSpinner(
+    final JSpinner connectionTimeoutSpinner = new JSpinner(
             ValueLinks.intSpinnerValueLink(model, "connectionTimeout", model.getConnectionTimeoutObserver()));
-    ((JSpinner.DefaultEditor) spnConnectionTimeout.getEditor()).getTextField().setColumns(7);
-    actionBase.add(spnConnectionTimeout);
+    ((JSpinner.DefaultEditor) connectionTimeoutSpinner.getEditor()).getTextField().setColumns(7);
+    actionBase.add(connectionTimeoutSpinner);
 
     actionBase.setBorder(BorderFactory.createTitledBorder("Remote connection controls"));
     actionBase.add(new JButton(Controls.control(model::disconnectTimedOut,
@@ -123,14 +123,14 @@ public final class ClientUserMonitorPanel extends JPanel {
 
   private JPanel createConnectionHistoryPanel() {
     final JPanel configPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
-    final JSpinner spnUpdateInterval = new JSpinner(ValueLinks.intSpinnerValueLink(model.getUpdateScheduler(),
+    final JSpinner updateIntervalSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
-    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
+    ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
 
     configPanel.add(new JLabel("Update interval (s)"));
-    configPanel.add(spnUpdateInterval);
+    configPanel.add(updateIntervalSpinner);
 
     final JPanel configBase = new JPanel(UiUtil.createBorderLayout());
     configBase.add(configPanel, BorderLayout.CENTER);
@@ -146,18 +146,18 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private JComponent initializeMaintenanceIntervalComponent() throws RemoteException {
-    cmbMaintenance = new JComboBox<>(new Integer[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 120, 180, 340, 6000, 10000});
-    cmbMaintenance.setSelectedItem(model.getMaintenanceInterval());
-    cmbMaintenance.addItemListener(e -> {
+    maintenanceBox = new JComboBox<>(new Integer[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 120, 180, 340, 6000, 10000});
+    maintenanceBox.setSelectedItem(model.getMaintenanceInterval());
+    maintenanceBox.addItemListener(e -> {
       try {
-        model.setMaintenanceInterval((Integer) cmbMaintenance.getSelectedItem());
+        model.setMaintenanceInterval((Integer) maintenanceBox.getSelectedItem());
       }
       catch (final RemoteException ex) {
         handleException(ex);
       }
     });
 
-    return cmbMaintenance;
+    return maintenanceBox;
   }
 
   private void handleException(final Exception exception) {

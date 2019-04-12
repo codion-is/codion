@@ -66,12 +66,12 @@ public class LocalDateInputPanelTest {
   @Test
   public void enabledState() {
     final State enabledState = States.state();
-    final JFormattedTextField txtField = new JFormattedTextField();
-    final LocalDateInputPanel inputPanel = new LocalDateInputPanel(txtField, "dd.MM.yyyy", true, enabledState.getObserver());
-    assertFalse(txtField.isEnabled());
+    final JFormattedTextField textField = new JFormattedTextField();
+    final LocalDateInputPanel inputPanel = new LocalDateInputPanel(textField, "dd.MM.yyyy", true, enabledState.getObserver());
+    assertFalse(textField.isEnabled());
     assertFalse(inputPanel.getCalendarButton().isEnabled());
     enabledState.setActive(true);
-    assertTrue(txtField.isEnabled());
+    assertTrue(textField.isEnabled());
     assertTrue(inputPanel.getCalendarButton().isEnabled());
   }
 }
