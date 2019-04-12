@@ -248,7 +248,7 @@ public final class LoadTestPanel extends JPanel {
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
     controlPanel.add(ControlProvider.createCheckBox(Controls.toggleControl(loadTestModel, "collectChartData",
             "Collect chart data", loadTestModel.collectChartDataObserver())));
-    controlPanel.add(ControlProvider.createButton(Controls.control(loadTestModel::resetChartData, "Reset")));
+    controlPanel.add(new JButton(Controls.control(loadTestModel::resetChartData, "Reset")));
 
     return controlPanel;
   }

@@ -2221,11 +2221,11 @@ public final class UiUtil {
       final JPanel rightButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, COMPONENT_GAP, COMPONENT_GAP));
       final JPanel leftButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, COMPONENT_GAP, COMPONENT_GAP));
 
-      final JButton btnClose = ControlProvider.createButton(ctrClose);
-      btnPrint = ControlProvider.createButton(ctrPrint);
-      btnSave = ControlProvider.createButton(ctrSave);
-      btnCopy = ControlProvider.createButton(ctrCopy);
-      btnEmail = ControlProvider.createButton(ctrEmail);
+      final JButton btnClose = new JButton(ctrClose);
+      btnPrint = new JButton(ctrPrint);
+      btnSave = new JButton(ctrSave);
+      btnCopy = new JButton(ctrCopy);
+      btnEmail = new JButton(ctrEmail);
       rightButtonPanel.add(btnEmail);
       rightButtonPanel.add(btnCopy);
       rightButtonPanel.add(btnPrint);

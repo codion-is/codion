@@ -37,7 +37,7 @@ public final class CommandControlTest {
   public void test() throws Exception {
     final State stEnabled = States.state();
     final Control control = Controls.control(this::method, "test", stEnabled);
-    final JButton btn = ControlProvider.createButton(control);
+    final JButton btn = new JButton(control);
     assertFalse(btn.isEnabled());
     stEnabled.setActive(true);
     assertTrue(btn.isEnabled());

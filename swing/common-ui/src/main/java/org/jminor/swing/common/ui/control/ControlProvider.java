@@ -30,14 +30,6 @@ public final class ControlProvider {
   private ControlProvider() {}
 
   /**
-   * @param control the control
-   * @return a button based on the given control
-   */
-  public static JButton createButton(final Control control) {
-    return new JButton(control);
-  }
-
-  /**
    * Creates a vertically laid out panel of buttons from a control set and adds it to the panel
    * @param panel the panel
    * @param controlSet the control set
@@ -201,7 +193,7 @@ public final class ControlProvider {
         btnPanel.add(createCheckBox((Controls.ToggleControl) control));
       }
       else {
-        btnPanel.add(createButton(control));
+        btnPanel.add(new JButton(control));
       }
     }
 
@@ -283,8 +275,8 @@ public final class ControlProvider {
 
   private static final class ToolBarControlIterator implements ControlIterator {
 
-    private boolean includeCaption;
     private final JToolBar toolbar;
+    private final boolean includeCaption;
 
     private ToolBarControlIterator(final JToolBar owner) {
       this(owner, true);
@@ -361,7 +353,7 @@ public final class ControlProvider {
    * @param controlIterator the control iterator
    * @param controlSet the control set
    */
-  public static void iterate(final ControlIterator controlIterator, final ControlSet controlSet) {
+  private static void iterate(final ControlIterator controlIterator, final ControlSet controlSet) {
     Objects.requireNonNull(controlIterator, "controlIterator");
     Objects.requireNonNull(controlSet, "controlSet");
     for (final Action action : controlSet.getActions()) {

@@ -49,7 +49,6 @@ import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 
-import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
@@ -1420,7 +1419,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     inputMap.put(keyStroke, "EntityTablePanel.refreshControl");
     actionMap.put("EntityTablePanel.refreshControl", refresh);
 
-    final AbstractButton button = ControlProvider.createButton(refresh);
+    final JButton button = new JButton(refresh);
     button.setPreferredSize(TOOLBAR_BUTTON_SIZE);
     button.setFocusable(false);
 

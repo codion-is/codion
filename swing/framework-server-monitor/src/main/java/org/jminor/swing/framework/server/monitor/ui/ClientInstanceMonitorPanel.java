@@ -7,11 +7,11 @@ import org.jminor.common.DateFormats;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.remote.ClientLog;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.server.monitor.ClientInstanceMonitor;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -107,7 +107,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     chkLoggingEnabled = new JCheckBox("Logging enabled");
     final JPanel pnlSettings = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
     pnlSettings.add(chkLoggingEnabled);
-    pnlSettings.add(ControlProvider.createButton(Controls.control(this::updateView, "Refresh log")));
+    pnlSettings.add(new JButton(Controls.control(this::updateView, "Refresh log")));
     infoBase.add(pnlSettings, BorderLayout.EAST);
     add(infoBase, BorderLayout.NORTH);
 

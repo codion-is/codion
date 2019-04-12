@@ -286,16 +286,14 @@ public final class Controls {
     }
   }
 
-  /**
-   * So as to not introduce a dependency to common.ui
-   */
   private static final class BooleanValue implements Value<Boolean> {
+
     private final ButtonModel buttonModel;
     private final Event<Boolean> changeEvent = Events.event();
 
     private BooleanValue(final ButtonModel buttonModel) {
       this.buttonModel = buttonModel;
-      buttonModel.addItemListener(e -> changeEvent.fire());
+      this.buttonModel.addItemListener(e -> changeEvent.fire());
     }
 
     @Override

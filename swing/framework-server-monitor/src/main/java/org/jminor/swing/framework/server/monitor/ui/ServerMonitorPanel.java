@@ -6,7 +6,6 @@ package org.jminor.swing.framework.server.monitor.ui;
 import org.jminor.common.TaskScheduler;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
-import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.framework.server.monitor.ServerMonitor;
@@ -18,6 +17,7 @@ import org.jfree.chart.plot.PlotOrientation;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -115,7 +115,7 @@ public final class ServerMonitorPanel extends JPanel {
     infoPanel.add(initializeMemoryField());
     infoPanel.add(new JLabel("Logging", JLabel.RIGHT));
     infoPanel.add(initializeLoggingLevelField());
-    infoPanel.add(ControlProvider.createButton(Controls.control(this::shutdownServer, "Shutdown")));
+    infoPanel.add(new JButton(Controls.control(this::shutdownServer, "Shutdown")));
 
     setLayout(new BorderLayout());
     add(infoPanel, BorderLayout.NORTH);
@@ -142,7 +142,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     final JPanel controlPanelBase = new JPanel(UiUtil.createBorderLayout());
     controlPanelBase.add(controlPanel, BorderLayout.WEST);
-    controlPanelBase.add(ControlProvider.createButton(Controls.control(model::resetStatistics, "Reset")), BorderLayout.EAST);
+    controlPanelBase.add(new JButton(Controls.control(model::resetStatistics, "Reset")), BorderLayout.EAST);
 
     final JPanel chartPanelLeft = new JPanel(new GridLayout(3, 1, 5, 5));
     final JPanel chartPanelRight = new JPanel(new GridLayout(3, 1, 5, 5));
@@ -182,7 +182,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JScrollPane scroller = new JScrollPane(table);
 
     final JPanel refreshPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-    refreshPanel.add(ControlProvider.createButton(Controls.control(model::refreshDomainList, "Refresh")));
+    refreshPanel.add(new JButton(Controls.control(model::refreshDomainList, "Refresh")));
     panel.add(refreshPanel, BorderLayout.NORTH);
     panel.add(scroller, BorderLayout.CENTER);
 

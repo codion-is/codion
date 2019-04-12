@@ -8,7 +8,6 @@ import org.jminor.common.TaskScheduler;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
-import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.server.monitor.ConnectionPoolMonitor;
 
@@ -191,7 +190,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     txtResetTime.setEditable(false);
     txtResetTime.setHorizontalAlignment(JLabel.CENTER);
 
-    final JButton btnReset = ControlProvider.createButton(Controls.control(model::resetStatistics, "Reset"));
+    final JButton btnReset = new JButton(Controls.control(model::resetStatistics, "Reset"));
     btnReset.setMaximumSize(UiUtil.getPreferredTextFieldSize());
 
     statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Pool size"), txtPoolSize));
@@ -230,7 +229,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
     final JPanel configBase = new JPanel(UiUtil.createBorderLayout());
     configBase.add(chartConfig, BorderLayout.WEST);
-    final JButton btnReset = ControlProvider.createButton(Controls.control(model::resetInPoolStatistics, "Reset"));
+    final JButton btnReset = new JButton(Controls.control(model::resetInPoolStatistics, "Reset"));
     btnReset.setMaximumSize(UiUtil.getPreferredTextFieldSize());
     configBase.add(btnReset, BorderLayout.EAST);
 
