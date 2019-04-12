@@ -462,8 +462,8 @@ public class DefaultEntityTest {
     employee.put(TestDomain.EMP_NAME, "noname");
     assertEquals(employee.get(TestDomain.EMP_NAME), "noname");
 
-    employee.addValueListener(info -> {
-      if (info.getKey().equals(TestDomain.EMP_DEPARTMENT_FK)) {
+    employee.addValueListener(valueChange -> {
+      if (valueChange.getKey().equals(TestDomain.EMP_DEPARTMENT_FK)) {
         assertTrue(employee.isValueNull(TestDomain.EMP_DEPARTMENT_FK));
         assertTrue(employee.isValueNull(TestDomain.EMP_DEPARTMENT));
       }

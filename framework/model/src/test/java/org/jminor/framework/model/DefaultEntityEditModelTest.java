@@ -167,13 +167,13 @@ public final class DefaultEntityEditModelTest {
     assertTrue(employeeEditModel.getAllowUpdateObserver().isActive());
     assertTrue(employeeEditModel.getAllowDeleteObserver().isActive());
 
-    final EventDataListener infoListener = data -> {};
-    employeeEditModel.addAfterDeleteListener(infoListener);
-    employeeEditModel.addAfterInsertListener(infoListener);
-    employeeEditModel.addAfterUpdateListener(infoListener);
-    employeeEditModel.addBeforeDeleteListener(infoListener);
-    employeeEditModel.addBeforeInsertListener(infoListener);
-    employeeEditModel.addBeforeUpdateListener(infoListener);
+    final EventDataListener eventDataListener = data -> {};
+    employeeEditModel.addAfterDeleteListener(eventDataListener);
+    employeeEditModel.addAfterInsertListener(eventDataListener);
+    employeeEditModel.addAfterUpdateListener(eventDataListener);
+    employeeEditModel.addBeforeDeleteListener(eventDataListener);
+    employeeEditModel.addBeforeInsertListener(eventDataListener);
+    employeeEditModel.addBeforeUpdateListener(eventDataListener);
     final EventListener listener = () -> {};
     employeeEditModel.addEntitiesChangedListener(listener);
     employeeEditModel.addBeforeRefreshListener(listener);
@@ -258,12 +258,12 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setEntity(null);
     assertTrue(employeeEditModel.getEntityCopy().isKeyNull(), "Active entity is not null after model is cleared");
 
-    employeeEditModel.removeAfterDeleteListener(infoListener);
-    employeeEditModel.removeAfterInsertListener(infoListener);
-    employeeEditModel.removeAfterUpdateListener(infoListener);
-    employeeEditModel.removeBeforeDeleteListener(infoListener);
-    employeeEditModel.removeBeforeInsertListener(infoListener);
-    employeeEditModel.removeBeforeUpdateListener(infoListener);
+    employeeEditModel.removeAfterDeleteListener(eventDataListener);
+    employeeEditModel.removeAfterInsertListener(eventDataListener);
+    employeeEditModel.removeAfterUpdateListener(eventDataListener);
+    employeeEditModel.removeBeforeDeleteListener(eventDataListener);
+    employeeEditModel.removeBeforeInsertListener(eventDataListener);
+    employeeEditModel.removeBeforeUpdateListener(eventDataListener);
     employeeEditModel.removeEntitiesChangedListener(listener);
     employeeEditModel.removeBeforeRefreshListener(listener);
     employeeEditModel.removeAfterRefreshListener(listener);
@@ -307,8 +307,8 @@ public final class DefaultEntityEditModelTest {
 
       employeeEditModel.setValue(TestDomain.EMP_DEPARTMENT_FK, department);
 
-      employeeEditModel.addAfterInsertListener(info ->
-              assertEquals(department, info.getInsertedEntities().get(0).get(TestDomain.EMP_DEPARTMENT_FK)));
+      employeeEditModel.addAfterInsertListener(data ->
+              assertEquals(department, data.getInsertedEntities().get(0).get(TestDomain.EMP_DEPARTMENT_FK)));
       employeeEditModel.setInsertAllowed(false);
       assertFalse(employeeEditModel.isInsertAllowed());
       assertThrows(IllegalStateException.class, () -> employeeEditModel.insert());
@@ -368,7 +368,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER"));
       final List<Entity> toDelete = Collections.singletonList(employeeEditModel.getEntityCopy());
-      employeeEditModel.addAfterDeleteListener(info -> assertEquals(toDelete, info.getDeletedEntities()));
+      employeeEditModel.addAfterDeleteListener(data -> assertEquals(toDelete, data.getDeletedEntities()));
       employeeEditModel.setDeleteAllowed(false);
       assertFalse(employeeEditModel.isDeleteAllowed());
       assertThrows(IllegalStateException.class, () -> employeeEditModel.delete());

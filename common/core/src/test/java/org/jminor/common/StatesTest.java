@@ -194,7 +194,7 @@ public class StatesTest {
   }
 
   @Test
-  public void aggregateStateInfoListener() {
+  public void aggregateStateDataListener() {
     final State one = States.state();
     final State two = States.state();
     final State three = States.state();

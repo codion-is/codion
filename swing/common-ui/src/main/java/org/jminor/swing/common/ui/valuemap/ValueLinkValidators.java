@@ -87,7 +87,7 @@ public final class ValueLinkValidators {
       this.editModel = editModel;
       this.defaultToolTip = defaultToolTip;
       this.editModel.getValidator().addRevalidationListener(this::validate);
-      this.editModel.addValueListener(key, info -> validate());
+      this.editModel.addValueListener(key, data -> validate());
     }
 
     /**

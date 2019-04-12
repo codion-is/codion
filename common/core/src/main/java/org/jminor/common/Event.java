@@ -17,7 +17,7 @@ package org.jminor.common;
  *
  * event.fire();
  * </pre>
- * @param <T> the type of info propagated with this event
+ * @param <T> the type of data propagated with this event
  */
 public interface Event<T> extends EventListener, EventDataListener<T>, EventObserver<T> {
 
@@ -28,9 +28,9 @@ public interface Event<T> extends EventListener, EventDataListener<T>, EventObse
 
   /**
    * Notifies all listeners that this event has occurred
-   * @param info information to propagate to listeners when notifying
+   * @param data information to propagate to listeners when notifying
    */
-  void fire(final T info);
+  void fire(final T data);
 
   /**
    * @return an observer notified each time this event fires
