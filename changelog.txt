@@ -4973,3 +4973,4 @@
   EntityTableModel.get/setQueryConditionRequired() replaced with getQueryConditionRequiredState()
   EntityConditionPanel removed, pretty much redundant, query condition required action moved to EntityTablePanel popup menu via EntityTableConditionPanel.getControls()
   Entity.OrderBy refactored, no longer uses a Map for the property order
+  DefaultLocalEntityConnection, some minor refactoring
