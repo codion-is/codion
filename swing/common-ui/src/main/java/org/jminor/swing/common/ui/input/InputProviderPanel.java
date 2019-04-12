@@ -85,7 +85,7 @@ public final class InputProviderPanel<T, K extends JComponent> extends JPanel im
 
   /**
    * @return an EventObserver notified when a button is clicked,
-   * the event info is either {@link JOptionPane#CANCEL_OPTION}
+   * the event data is either {@link JOptionPane#CANCEL_OPTION}
    * or {@link JOptionPane#OK_OPTION} depending on the button clicked
    */
   public EventObserver<Integer> getButtonClickObserver() {
@@ -94,7 +94,7 @@ public final class InputProviderPanel<T, K extends JComponent> extends JPanel im
 
   /**
    * @param listener a listener notified each time a button is clicked,
-   * the event info is either {@link JOptionPane#CANCEL_OPTION}
+   * the event data is either {@link JOptionPane#CANCEL_OPTION}
    * or {@link JOptionPane#OK_OPTION} depending on the button clicked
    */
   public void addButtonClickListener(final EventDataListener<Integer> listener) {

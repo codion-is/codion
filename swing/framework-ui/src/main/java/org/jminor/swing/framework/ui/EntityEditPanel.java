@@ -2140,9 +2140,9 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     public void actionPerformed(final ActionEvent e) {
       final EntityEditPanel editPanel = panelProvider.createEditPanel(connectionProvider);
       editPanel.initializePanel();
-      editPanel.getEditModel().addAfterInsertListener(info -> {
+      editPanel.getEditModel().addAfterInsertListener(data -> {
         lastInsertedEntities.clear();
-        lastInsertedEntities.addAll(info.getInsertedEntities());
+        lastInsertedEntities.addAll(data.getInsertedEntities());
       });
       final JOptionPane pane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
       final JDialog dialog = pane.createDialog(component, panelProvider.getCaption());

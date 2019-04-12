@@ -356,8 +356,8 @@ public final class EntityUiUtil {
     textField.setFocusable(false);
     textField.setToolTipText(foreignKeyProperty.getDescription());
     final Event<String> valueChangeEvent = Events.event();
-    editModel.addValueListener(foreignKeyProperty, info -> {
-      final Entity value = (Entity) info.getNewValue();
+    editModel.addValueListener(foreignKeyProperty, data -> {
+      final Entity value = (Entity) data.getNewValue();
       valueChangeEvent.fire(value == null ? "" : value.toString());
     });
     ValueLinks.textValueLink(textField, new Value<String>() {

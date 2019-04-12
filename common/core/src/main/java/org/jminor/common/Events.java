@@ -30,12 +30,12 @@ public final class Events {
    * @param listener the data listener
    * @return a {@link EventListener} causing the given {@link EventDataListener} to be fired with null data on each occurrence
    */
-  public static EventListener listener(final EventDataListener<?> listener) {
+  public static EventListener listener(final EventDataListener listener) {
     return () -> listener.eventOccurred(null);
   }
 
   /**
-   * @param <T> the type of info propagated to listeners on event firing
+   * @param <T> the type of data propagated to listeners on event firing
    * @param listener the listener
    * @return a {@link EventDataListener} causing the given {@link EventListener} to be fired on each occurrence
    */
@@ -54,13 +54,13 @@ public final class Events {
     }
 
     @Override
-    public void fire(final T info) {
+    public void fire(final T data) {
       if (observer != null && observer.hasListeners()) {
         for (final EventListener listener : observer.getEventListeners()) {
           listener.eventOccurred();
         }
-        for (final EventDataListener<T> infoListener : observer.getEventInfoListeners()) {
-          infoListener.eventOccurred(info);
+        for (final EventDataListener<T> dataListener : observer.getEventDataListeners()) {
+          dataListener.eventOccurred(data);
         }
       }
     }
@@ -111,19 +111,19 @@ public final class Events {
 
     private final Object lock = new Object();
     private Collection<EventListener> listeners;
-    private Collection<EventDataListener<T>> infoListeners;
+    private Collection<EventDataListener<T>> dataListeners;
 
     @Override
     public void addDataListener(final EventDataListener<T> listener) {
       synchronized (lock) {
-        getInfoListeners().add(Objects.requireNonNull(listener, "listener"));
+        getDataListeners().add(Objects.requireNonNull(listener, "listener"));
       }
     }
 
     @Override
     public void removeDataListener(final EventDataListener listener) {
       synchronized (lock) {
-        getInfoListeners().remove(listener);
+        getDataListeners().remove(listener);
       }
     }
 
@@ -151,19 +151,19 @@ public final class Events {
       }
     }
 
-    private Collection<EventDataListener<T>> getEventInfoListeners() {
+    private Collection<EventDataListener<T>> getEventDataListeners() {
       synchronized (lock) {
-        if (infoListeners == null) {
+        if (dataListeners == null) {
           return Collections.emptyList();
         }
 
-        return new ArrayList<>(infoListeners);
+        return new ArrayList<>(dataListeners);
       }
     }
 
     private boolean hasListeners() {
       synchronized (lock) {
-        return (listeners != null && !listeners.isEmpty()) || (infoListeners != null && !infoListeners.isEmpty());
+        return (listeners != null && !listeners.isEmpty()) || (dataListeners != null && !dataListeners.isEmpty());
       }
     }
 
@@ -175,12 +175,12 @@ public final class Events {
       return listeners;
     }
 
-    private Collection<EventDataListener<T>> getInfoListeners() {
-      if (infoListeners == null) {
-        infoListeners = new LinkedHashSet<>(1);
+    private Collection<EventDataListener<T>> getDataListeners() {
+      if (dataListeners == null) {
+        dataListeners = new LinkedHashSet<>(1);
       }
 
-      return infoListeners;
+      return dataListeners;
     }
   }
 }

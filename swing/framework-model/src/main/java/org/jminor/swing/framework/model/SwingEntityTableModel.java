@@ -663,8 +663,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     editModel.addAfterUpdateListener(this::handleUpdate);
     editModel.addAfterDeleteListener(this::handleDeleteInternal);
     editModel.addAfterRefreshListener(this::refresh);
-    editModel.addEntitySetListener(info -> {
-      if (info == null && !getSelectionModel().isSelectionEmpty()) {
+    editModel.addEntitySetListener(data -> {
+      if (data == null && !getSelectionModel().isSelectionEmpty()) {
         getSelectionModel().clearSelection();
       }
     });

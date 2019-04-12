@@ -4986,3 +4986,4 @@
   DefaultLocalEntityConnection, some minor refactoring
   ControlProvider.createButton() removed
   Cleanup of ui variable names, abbreviations retired
+  Further code cleanup
