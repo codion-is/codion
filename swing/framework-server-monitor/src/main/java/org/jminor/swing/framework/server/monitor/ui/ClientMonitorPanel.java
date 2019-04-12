@@ -11,6 +11,7 @@ import org.jminor.swing.framework.server.monitor.ClientInstanceMonitor;
 import org.jminor.swing.framework.server.monitor.ClientMonitor;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -70,7 +71,7 @@ public final class ClientMonitorPanel extends JPanel {
     final JScrollPane clientInstanceScroller = new JScrollPane(clientInstanceList);
     clientInstanceScroller.setBorder(BorderFactory.createTitledBorder("Clients"));
     clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);
-    clientInstanceBase.add(ControlProvider.createButton(Controls.control(this::refresh, "Refresh")), BorderLayout.SOUTH);
+    clientInstanceBase.add(new JButton(Controls.control(this::refresh, "Refresh")), BorderLayout.SOUTH);
 
     final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     splitPane.setOneTouchExpandable(true);

@@ -139,10 +139,10 @@ public final class ValueLinkValidators {
     protected static final Color VALID_DISABLED_BACKGROUND_COLOR;
 
     static {
-      final JTextField txtField = new JTextField();
-      VALID_ENABLED_BACKGROUND_COLOR = txtField.getBackground();
-      txtField.setEnabled(false);
-      VALID_DISABLED_BACKGROUND_COLOR = txtField.getBackground();
+      final JTextField textField = new JTextField();
+      VALID_ENABLED_BACKGROUND_COLOR = textField.getBackground();
+      textField.setEnabled(false);
+      VALID_DISABLED_BACKGROUND_COLOR = textField.getBackground();
     }
 
     private final Color invalidBackgroundColor;

@@ -7,11 +7,11 @@ import org.jminor.common.DateFormats;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.remote.ClientLog;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.server.monitor.ClientInstanceMonitor;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -32,12 +32,12 @@ import java.time.format.DateTimeFormatter;
  */
 public final class ClientInstanceMonitorPanel extends JPanel {
 
-  private final JTextField txtCreationDate = new JTextField();
-  private final JTextArea txtLog = new JTextArea();
+  private final JTextField creationDateField = new JTextField();
+  private final JTextArea logArea = new JTextArea();
   private final JTree treeLog = new JTree();
 
   private ClientInstanceMonitor model;
-  private JCheckBox chkLoggingEnabled;
+  private JCheckBox loggingEnabledCheckBox;
 
   /**
    * Instantiates a new ClientInstanceMonitorPanel
@@ -51,7 +51,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   public void setModel(final ClientInstanceMonitor model) throws RemoteException {
     this.model = model;
     if (model != null) {
-      chkLoggingEnabled.setModel(model.getLoggingEnabledButtonModel());
+      loggingEnabledCheckBox.setModel(model.getLoggingEnabledButtonModel());
       treeLog.setModel(model.getLogTreeModel());
     }
     else {
@@ -74,15 +74,15 @@ public final class ClientInstanceMonitorPanel extends JPanel {
       else {
         log.append("Disconnected!");
       }
-      chkLoggingEnabled.setSelected(model.isLoggingEnabled());
+      loggingEnabledCheckBox.setSelected(model.isLoggingEnabled());
       final LocalDateTime creationDate = model.getCreationDate();
-      txtCreationDate.setText(creationDate == null ? "unknown" : DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP).format(creationDate));
+      creationDateField.setText(creationDate == null ? "unknown" : DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP).format(creationDate));
       model.refreshLogTreeModel();
     }
     else {
-      txtCreationDate.setText("");
+      creationDateField.setText("");
     }
-    txtLog.setText(log.toString());
+    logArea.setText(log.toString());
   }
 
   public boolean isLoggingEnabled() throws RemoteException {
@@ -97,23 +97,23 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
   private void initializeUI() {
     setLayout(UiUtil.createBorderLayout());
-    txtCreationDate.setEditable(false);
+    creationDateField.setEditable(false);
     final JPanel infoPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
     infoPanel.add(new JLabel("Creation date"));
-    infoPanel.add(txtCreationDate);
+    infoPanel.add(creationDateField);
     final JPanel infoBase = new JPanel(UiUtil.createBorderLayout());
     infoBase.setBorder(BorderFactory.createTitledBorder("Connection info"));
     infoBase.add(infoPanel, BorderLayout.CENTER);
-    chkLoggingEnabled = new JCheckBox("Logging enabled");
-    final JPanel pnlSettings = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
-    pnlSettings.add(chkLoggingEnabled);
-    pnlSettings.add(ControlProvider.createButton(Controls.control(this::updateView, "Refresh log")));
-    infoBase.add(pnlSettings, BorderLayout.EAST);
+    loggingEnabledCheckBox = new JCheckBox("Logging enabled");
+    final JPanel settingsPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
+    settingsPanel.add(loggingEnabledCheckBox);
+    settingsPanel.add(new JButton(Controls.control(this::updateView, "Refresh log")));
+    infoBase.add(settingsPanel, BorderLayout.EAST);
     add(infoBase, BorderLayout.NORTH);
 
-    txtLog.setLineWrap(false);
-    txtLog.setEditable(false);
-    final JScrollPane scrollPane = new JScrollPane(txtLog);
+    logArea.setLineWrap(false);
+    logArea.setEditable(false);
+    final JScrollPane scrollPane = new JScrollPane(logArea);
 
     treeLog.setRootVisible(false);
     final JScrollPane treeScrollPane = new JScrollPane(treeLog);

@@ -6,7 +6,6 @@ package org.jminor.swing.framework.server.monitor.ui;
 import org.jminor.common.TaskScheduler;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
-import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.framework.server.monitor.ServerMonitor;
@@ -18,6 +17,7 @@ import org.jfree.chart.plot.PlotOrientation;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -107,15 +107,15 @@ public final class ServerMonitorPanel extends JPanel {
     infoPanel.add(new JLabel("Connections", JLabel.RIGHT));
     infoPanel.add(initializeConnectionCountField());
     infoPanel.add(new JLabel("limit", JLabel.RIGHT));
-    final JSpinner spnConnectionLimit = new JSpinner(
+    final JSpinner connectionLimitSpinner = new JSpinner(
             ValueLinks.intSpinnerValueLink(model, "connectionLimit", model.getConnectionLimitObserver()));
-    ((JSpinner.DefaultEditor) spnConnectionLimit.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
-    infoPanel.add(spnConnectionLimit);
+    ((JSpinner.DefaultEditor) connectionLimitSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
+    infoPanel.add(connectionLimitSpinner);
     infoPanel.add(new JLabel("Mem. usage", JLabel.RIGHT));
     infoPanel.add(initializeMemoryField());
     infoPanel.add(new JLabel("Logging", JLabel.RIGHT));
     infoPanel.add(initializeLoggingLevelField());
-    infoPanel.add(ControlProvider.createButton(Controls.control(this::shutdownServer, "Shutdown")));
+    infoPanel.add(new JButton(Controls.control(this::shutdownServer, "Shutdown")));
 
     setLayout(new BorderLayout());
     add(infoPanel, BorderLayout.NORTH);
@@ -131,18 +131,18 @@ public final class ServerMonitorPanel extends JPanel {
   private JPanel initializePerformancePanel() {
     final JPanel controlPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
 
-    final JSpinner spnUpdateInterval = new JSpinner(ValueLinks.intSpinnerValueLink(model.getUpdateScheduler(),
+    final JSpinner updateIntervalSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
-    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
+    ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
 
     controlPanel.add(new JLabel("Update interval (s)"));
-    controlPanel.add(spnUpdateInterval);
+    controlPanel.add(updateIntervalSpinner);
 
     final JPanel controlPanelBase = new JPanel(UiUtil.createBorderLayout());
     controlPanelBase.add(controlPanel, BorderLayout.WEST);
-    controlPanelBase.add(ControlProvider.createButton(Controls.control(model::resetStatistics, "Reset")), BorderLayout.EAST);
+    controlPanelBase.add(new JButton(Controls.control(model::resetStatistics, "Reset")), BorderLayout.EAST);
 
     final JPanel chartPanelLeft = new JPanel(new GridLayout(3, 1, 5, 5));
     final JPanel chartPanelRight = new JPanel(new GridLayout(3, 1, 5, 5));
@@ -182,7 +182,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JScrollPane scroller = new JScrollPane(table);
 
     final JPanel refreshPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-    refreshPanel.add(ControlProvider.createButton(Controls.control(model::refreshDomainList, "Refresh")));
+    refreshPanel.add(new JButton(Controls.control(model::refreshDomainList, "Refresh")));
     panel.add(refreshPanel, BorderLayout.NORTH);
     panel.add(scroller, BorderLayout.CENTER);
 
@@ -200,21 +200,21 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JTextField initializeConnectionCountField() {
-    final IntegerField txtConnectionCount = new IntegerField(4);
-    txtConnectionCount.setEditable(false);
-    txtConnectionCount.setHorizontalAlignment(JLabel.CENTER);
-    ValueLinks.integerValueLink(txtConnectionCount, model, "connectionCount", model.getStatisticsUpdatedObserver(), true, true, true);
+    final IntegerField connectionCountField = new IntegerField(4);
+    connectionCountField.setEditable(false);
+    connectionCountField.setHorizontalAlignment(JLabel.CENTER);
+    ValueLinks.integerValueLink(connectionCountField, model, "connectionCount", model.getStatisticsUpdatedObserver(), true, true, true);
 
-    return txtConnectionCount;
+    return connectionCountField;
   }
 
   private JTextField initializeMemoryField() {
-    final JTextField txtMemory = new JTextField(8);
-    txtMemory.setEditable(false);
-    txtMemory.setHorizontalAlignment(JLabel.CENTER);
-    ValueLinks.textValueLink(txtMemory, model, "memoryUsage", model.getStatisticsUpdatedObserver(), true);
+    final JTextField memoryField = new JTextField(8);
+    memoryField.setEditable(false);
+    memoryField.setHorizontalAlignment(JLabel.CENTER);
+    ValueLinks.textValueLink(memoryField, model, "memoryUsage", model.getStatisticsUpdatedObserver(), true);
 
-    return txtMemory;
+    return memoryField;
   }
 
   private JComboBox initializeLoggingLevelField() {

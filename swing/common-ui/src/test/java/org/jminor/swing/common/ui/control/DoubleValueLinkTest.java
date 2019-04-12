@@ -22,29 +22,29 @@ public class DoubleValueLinkTest {
 
   @Test
   public void testDouble() throws Exception {
-    final DoubleField txtDouble = new DoubleField();
-    txtDouble.setSeparators('.', ',');
-    ValueLinks.doubleValueLink(txtDouble, this, "doubleValue", evtDoubleValueChanged, false, true);
-    assertNull(txtDouble.getDouble());
+    final DoubleField doubleField = new DoubleField();
+    doubleField.setSeparators('.', ',');
+    ValueLinks.doubleValueLink(doubleField, this, "doubleValue", evtDoubleValueChanged, false, true);
+    assertNull(doubleField.getDouble());
     setDoubleValue(2.2);
-    assertEquals(Double.valueOf(2.2), txtDouble.getDouble());
-    txtDouble.setText("42.2");
+    assertEquals(Double.valueOf(2.2), doubleField.getDouble());
+    doubleField.setText("42.2");
     assertEquals(Double.valueOf(42.2), doubleValue);
-    txtDouble.setText("");
+    doubleField.setText("");
     assertNull(doubleValue);
   }
 
   @Test
   public void testDoublePrimitive() throws Exception {
-    final DoubleField txtDouble = new DoubleField();
-    txtDouble.setSeparators('.', ',');
-    ValueLinks.doubleValueLink(txtDouble, this, "doublePrimitiveValue", evtDoublePrimitiveValueValueChanged, true, true);
-    assertEquals((Double) 0.0, txtDouble.getDouble());
+    final DoubleField doubleField = new DoubleField();
+    doubleField.setSeparators('.', ',');
+    ValueLinks.doubleValueLink(doubleField, this, "doublePrimitiveValue", evtDoublePrimitiveValueValueChanged, true, true);
+    assertEquals((Double) 0.0, doubleField.getDouble());
     setDoublePrimitiveValue(2.2);
-    assertEquals(Double.valueOf(2.2), txtDouble.getDouble());
-    txtDouble.setText("42.2");
+    assertEquals(Double.valueOf(2.2), doubleField.getDouble());
+    doubleField.setText("42.2");
     assertEquals(42.2, doublePrimitiveValue);
-    txtDouble.setText("");
+    doubleField.setText("");
     assertEquals(0.0, doublePrimitiveValue);
   }
 

@@ -403,9 +403,9 @@ public class FilteredTablePanel<R, C> extends JPanel {
       if (result == 0) {
         setSelected(checkBoxes, true);
       }
-      checkBoxes.forEach(chkButton -> SwingUtilities.invokeLater(() -> {
-        final TableColumn column = allColumns.get(checkBoxes.indexOf(chkButton));
-        tableModel.getColumnModel().setColumnVisible((C) column.getIdentifier(), chkButton.isSelected());
+      checkBoxes.forEach(checkBox -> SwingUtilities.invokeLater(() -> {
+        final TableColumn column = allColumns.get(checkBoxes.indexOf(checkBox));
+        tableModel.getColumnModel().setColumnVisible((C) column.getIdentifier(), checkBox.isSelected());
       }));
     }
   }
@@ -435,38 +435,38 @@ public class FilteredTablePanel<R, C> extends JPanel {
   }
 
   private JTextField initializeSearchField() {
-    final JTextField txtSearch = new JTextField();
-    txtSearch.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
-    txtSearch.setColumns(SEARCH_FIELD_COLUMNS);
-    TextFieldHint.enable(txtSearch, Messages.get(Messages.SEARCH_FIELD_HINT));
-    txtSearch.getDocument().addDocumentListener(new DocumentAdapter() {
+    final JTextField searchField = new JTextField();
+    searchField.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
+    searchField.setColumns(SEARCH_FIELD_COLUMNS);
+    TextFieldHint.enable(searchField, Messages.get(Messages.SEARCH_FIELD_HINT));
+    searchField.getDocument().addDocumentListener(new DocumentAdapter() {
       @Override
       public void contentsChanged(final DocumentEvent e) {
-        performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 : lastSearchResultCoordinate.getRow(), true, txtSearch.getText());
+        performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 : lastSearchResultCoordinate.getRow(), true, searchField.getText());
       }
     });
-    txtSearch.addKeyListener(new KeyAdapter() {
+    searchField.addKeyListener(new KeyAdapter() {
       @Override
       public void keyReleased(final KeyEvent e) {
         if (e.getModifiers() != 0) {
           return;
         }
         if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN) {
-          findNextValue(e.isShiftDown(), true, txtSearch.getText());
+          findNextValue(e.isShiftDown(), true, searchField.getText());
         }
         else if (e.getKeyCode() == KeyEvent.VK_UP) {
-          findNextValue(e.isShiftDown(), false, txtSearch.getText());
+          findNextValue(e.isShiftDown(), false, searchField.getText());
         }
         else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
           getJTable().requestFocusInWindow();
         }
       }
     });
-    UiUtil.selectAllOnFocusGained(txtSearch);
+    UiUtil.selectAllOnFocusGained(searchField);
 
-    txtSearch.setComponentPopupMenu(initializeSearchFieldPopupMenu());
+    searchField.setComponentPopupMenu(initializeSearchFieldPopupMenu());
 
-    return txtSearch;
+    return searchField;
   }
 
   private void performSearch(final boolean addToSelection, final int fromIndex, final boolean forward, final String searchText) {
@@ -513,10 +513,10 @@ public class FilteredTablePanel<R, C> extends JPanel {
   private JPanel initializeSelectColumnsPanel(final List<TableColumn> allColumns, final List<JCheckBox> checkBoxes) {
     final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, allColumns.size()), 0));
     allColumns.forEach(column -> {
-      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(),
+      final JCheckBox columnCheckBox = new JCheckBox(column.getHeaderValue().toString(),
               tableModel.getColumnModel().isColumnVisible((C) column.getIdentifier()));
-      checkBoxes.add(chkColumn);
-      togglePanel.add(chkColumn);
+      checkBoxes.add(columnCheckBox);
+      togglePanel.add(columnCheckBox);
     });
     final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     southPanel.add(new JButton(Controls.control(() -> setSelected(checkBoxes, true), MESSAGES.getString("select_all"))));

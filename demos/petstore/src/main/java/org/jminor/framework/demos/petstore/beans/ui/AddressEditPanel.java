@@ -8,7 +8,6 @@ import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JLabel;
-import javax.swing.JTextField;
 
 import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
@@ -20,27 +19,24 @@ public class AddressEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
+    setInitialFocusProperty(ADDRESS_CITY);
+
+    createTextField(ADDRESS_CITY).setColumns(12);
+    createTextField(ADDRESS_STATE).setColumns(12);
+    createTextField(ADDRESS_ZIP).setColumns(12);
+    createTextField(ADDRESS_STREET_1).setColumns(12);
+    createTextField(ADDRESS_STREET_2).setColumns(12);
+    createTextField(ADDRESS_LATITUDE);
+    createTextField(ADDRESS_LONGITUDE);
+
     setLayout(new FlexibleGridLayout(4, 2, 5, 5));
-    JTextField txt = createTextField(ADDRESS_CITY);
-    setInitialFocusComponent(txt);
-    txt.setColumns(12);
     addPropertyPanel(ADDRESS_CITY);
-    txt = createTextField(ADDRESS_STATE);
-    txt.setColumns(12);
     addPropertyPanel(ADDRESS_STATE);
     add(new JLabel());
-    txt = createTextField(ADDRESS_ZIP);
-    txt.setColumns(12);
     addPropertyPanel(ADDRESS_ZIP);
-    txt = createTextField(ADDRESS_STREET_1);
-    txt.setColumns(12);
     addPropertyPanel(ADDRESS_STREET_1);
-    txt = createTextField(ADDRESS_STREET_2);
-    txt.setColumns(12);
     addPropertyPanel(ADDRESS_STREET_2);
-    createTextField(ADDRESS_LATITUDE);
     addPropertyPanel(ADDRESS_LATITUDE);
-    createTextField(ADDRESS_LONGITUDE);
     addPropertyPanel(ADDRESS_LONGITUDE);
   }
 }

@@ -120,13 +120,13 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     final JSpinner spinner = new JSpinner(createWeightSpinnerModel(item.getItem()));
     ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
     spinner.setToolTipText(item.getItem().toString());
-    final JCheckBox chkEnabled = createEnabledCheckBox(item.getItem());
-    final JLabel lblWeight = new JLabel("Weight");
-    lblWeight.setHorizontalAlignment(SwingConstants.RIGHT);
+    final JCheckBox enabledCheckBox = createEnabledCheckBox(item.getItem());
+    final JLabel weightLabel = new JLabel("Weight");
+    weightLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
     panel.add(new JLabel(item.getItem().toString()), BorderLayout.NORTH);
-    panel.add(chkEnabled, BorderLayout.WEST);
-    panel.add(lblWeight, BorderLayout.CENTER);
+    panel.add(enabledCheckBox, BorderLayout.WEST);
+    panel.add(weightLabel, BorderLayout.CENTER);
     panel.add(spinner, BorderLayout.EAST);
 
     return panel;

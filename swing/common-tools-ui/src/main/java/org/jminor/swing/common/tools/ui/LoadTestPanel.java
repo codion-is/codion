@@ -172,22 +172,22 @@ public final class LoadTestPanel extends JPanel {
 
   private JPanel initializeUserPanel() {
     final User user = loadTestModel.getUser();
-    final JTextField txtUsername = new JTextField(user.getUsername());
-    txtUsername.setColumns(LARGE_TEXT_FIELD_COLUMNS);
-    final JPasswordField txtPassword = new JPasswordField(String.valueOf(user.getPassword()));
-    txtPassword.setColumns(LARGE_TEXT_FIELD_COLUMNS);
-    final ActionListener userInfoListener = e -> loadTestModel.setUser(new User(txtUsername.getText(), txtPassword.getPassword()));
-    txtUsername.addActionListener(userInfoListener);
-    txtPassword.addActionListener(userInfoListener);
+    final JTextField usernameField = new JTextField(user.getUsername());
+    usernameField.setColumns(LARGE_TEXT_FIELD_COLUMNS);
+    final JPasswordField passwordField = new JPasswordField(String.valueOf(user.getPassword()));
+    passwordField.setColumns(LARGE_TEXT_FIELD_COLUMNS);
+    final ActionListener userInfoListener = e -> loadTestModel.setUser(new User(usernameField.getText(), passwordField.getPassword()));
+    usernameField.addActionListener(userInfoListener);
+    passwordField.addActionListener(userInfoListener);
     final FlexibleGridLayout layout = UiUtil.createFlexibleGridLayout(2, 2, true, false);
     layout.setFixedRowHeight(UiUtil.getPreferredTextFieldHeight());
     final JPanel userBase = new JPanel(layout);
     userBase.setBorder(BorderFactory.createTitledBorder("User"));
 
     userBase.add(new JLabel("Username"));
-    userBase.add(txtUsername);
+    userBase.add(usernameField);
     userBase.add(new JLabel("Password"));
-    userBase.add(txtPassword);
+    userBase.add(passwordField);
 
     return userBase;
   }
@@ -200,16 +200,16 @@ public final class LoadTestPanel extends JPanel {
     final JPanel applicationPanel = new JPanel(UiUtil.createBorderLayout());
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
 
-    final JSpinner spnBatchSize = new JSpinner(ValueLinks.intSpinnerValueLink(loadTestModel, "applicationBatchSize",
+    final JSpinner batchSizeSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(loadTestModel, "applicationBatchSize",
             loadTestModel.applicationBatchSizeObserver()));
-    spnBatchSize.setToolTipText("Application batch size");
-    ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
+    batchSizeSpinner.setToolTipText("Application batch size");
+    ((JSpinner.DefaultEditor) batchSizeSpinner.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) batchSizeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
 
     final JPanel applicationCountPanel = new JPanel(UiUtil.createBorderLayout());
     applicationCountPanel.add(initializeApplicationCountButtonPanel(), BorderLayout.WEST);
     applicationCountPanel.add(applicationCountField, BorderLayout.CENTER);
-    applicationCountPanel.add(spnBatchSize, BorderLayout.EAST);
+    applicationCountPanel.add(batchSizeSpinner, BorderLayout.EAST);
 
     applicationPanel.add(applicationCountPanel, BorderLayout.NORTH);
 
@@ -217,15 +217,15 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private JPanel initializeApplicationCountButtonPanel() {
-    final JPanel btnPanel = new JPanel(new GridLayout(1, 2, COMPONENT_GAP, COMPONENT_GAP));
-    btnPanel.add(initializeAddRemoveApplicationButton(false));
-    btnPanel.add(initializeAddRemoveApplicationButton(true));
+    final JPanel buttonPanel = new JPanel(new GridLayout(1, 2, COMPONENT_GAP, COMPONENT_GAP));
+    buttonPanel.add(initializeAddRemoveApplicationButton(false));
+    buttonPanel.add(initializeAddRemoveApplicationButton(true));
 
-    return btnPanel;
+    return buttonPanel;
   }
 
   private JButton initializeAddRemoveApplicationButton(final boolean add) {
-    final JButton btn = new JButton(new Control(add ? "+" : "-") {
+    final JButton button = new JButton(new Control(add ? "+" : "-") {
       @Override
       public void actionPerformed(final ActionEvent e) {
         if (add) {
@@ -236,11 +236,11 @@ public final class LoadTestPanel extends JPanel {
         }
       }
     });
-    btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
-    btn.setMargin(new Insets(COMPONENT_GAP, COMPONENT_GAP, COMPONENT_GAP, COMPONENT_GAP));
-    btn.setToolTipText(add ? "Add application batch" : "Remove application batch");
+    button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
+    button.setMargin(new Insets(COMPONENT_GAP, COMPONENT_GAP, COMPONENT_GAP, COMPONENT_GAP));
+    button.setToolTipText(add ? "Add application batch" : "Remove application batch");
 
-    return btn;
+    return button;
   }
 
   private JPanel initializeChartControlPanel() {
@@ -248,7 +248,7 @@ public final class LoadTestPanel extends JPanel {
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
     controlPanel.add(ControlProvider.createCheckBox(Controls.toggleControl(loadTestModel, "collectChartData",
             "Collect chart data", loadTestModel.collectChartDataObserver())));
-    controlPanel.add(ControlProvider.createButton(Controls.control(loadTestModel::resetChartData, "Reset")));
+    controlPanel.add(new JButton(Controls.control(loadTestModel::resetChartData, "Reset")));
 
     return controlPanel;
   }
@@ -320,21 +320,21 @@ public final class LoadTestPanel extends JPanel {
     final SpinnerNumberModel maxSpinnerModel = ValueLinks.intSpinnerValueLink(loadTestModel, "maximumThinkTime",
             loadTestModel.maximumThinkTimeObserver());
     maxSpinnerModel.setStepSize(SPINNER_STEP_SIZE);
-    final JSpinner spnMaxThinkTime = new JSpinner(maxSpinnerModel);
-    ((JSpinner.DefaultEditor) spnMaxThinkTime.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
+    final JSpinner maxThinkTimeSpinner = new JSpinner(maxSpinnerModel);
+    ((JSpinner.DefaultEditor) maxThinkTimeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
 
     final SpinnerNumberModel minSpinnerModel = ValueLinks.intSpinnerValueLink(loadTestModel, "minimumThinkTime",
             loadTestModel.getMinimumThinkTimeObserver());
     minSpinnerModel.setStepSize(SPINNER_STEP_SIZE);
-    final JSpinner spnMinThinkTimeField = new JSpinner(minSpinnerModel);
-    ((JSpinner.DefaultEditor) spnMinThinkTimeField.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
+    final JSpinner minThinkTimeSpinner = new JSpinner(minSpinnerModel);
+    ((JSpinner.DefaultEditor) minThinkTimeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
 
     final SpinnerNumberModel warningSpinnerModel = ValueLinks.intSpinnerValueLink(loadTestModel, "warningTime",
             loadTestModel.getWarningTimeObserver());
     warningSpinnerModel.setStepSize(SPINNER_STEP_SIZE);
-    final JSpinner spnWarningTime = new JSpinner(warningSpinnerModel);
-    ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
-    spnWarningTime.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
+    final JSpinner warningTimeSpinner = new JSpinner(warningSpinnerModel);
+    ((JSpinner.DefaultEditor) warningTimeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
+    warningTimeSpinner.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
 
     final Controls.ToggleControl pauseControl = Controls.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.getPauseObserver());
     pauseControl.setMnemonic('P');
@@ -343,11 +343,11 @@ public final class LoadTestPanel extends JPanel {
     layout.setFixedRowHeight(UiUtil.getPreferredTextFieldHeight());
     final JPanel thinkTimePanel = new JPanel(layout);
     thinkTimePanel.add(new JLabel("Max. think time", JLabel.CENTER));
-    thinkTimePanel.add(spnMaxThinkTime);
+    thinkTimePanel.add(maxThinkTimeSpinner);
     thinkTimePanel.add(new JLabel("Min. think time", JLabel.CENTER));
-    thinkTimePanel.add(spnMinThinkTimeField);
+    thinkTimePanel.add(minThinkTimeSpinner);
     thinkTimePanel.add(new JLabel("Warning time", JLabel.CENTER));
-    thinkTimePanel.add(spnWarningTime);
+    thinkTimePanel.add(warningTimeSpinner);
     thinkTimePanel.add(ControlProvider.createToggleButton(pauseControl));
 
     thinkTimePanel.setBorder(BorderFactory.createTitledBorder("Activity"));
@@ -383,19 +383,19 @@ public final class LoadTestPanel extends JPanel {
     final JTabbedPane tabPanel = new JTabbedPane();
     tabPanel.addTab("Duration", scenarioDurationChartPanel);
 
-    final JTextArea txtExceptions = new JTextArea();
+    final JTextArea exceptionsArea = new JTextArea();
     final JPanel scenarioExceptionPanel = new JPanel(UiUtil.createBorderLayout());
-    scenarioExceptionPanel.add(txtExceptions, BorderLayout.CENTER);
-    final JButton btnRefresh = new JButton(new RefreshExceptionsAction(txtExceptions, item));
-    btnRefresh.doClick();
-    final JButton btnClear = new JButton(new ClearExceptionsAction(txtExceptions, item));
+    scenarioExceptionPanel.add(exceptionsArea, BorderLayout.CENTER);
+    final JButton refreshButton = new JButton(new RefreshExceptionsAction(exceptionsArea, item));
+    refreshButton.doClick();
+    final JButton clearButton = new JButton(new ClearExceptionsAction(exceptionsArea, item));
 
-    final JScrollPane exceptionScroller = new JScrollPane(txtExceptions);
+    final JScrollPane exceptionScroller = new JScrollPane(exceptionsArea);
 
     scenarioExceptionPanel.add(exceptionScroller, BorderLayout.CENTER);
     final JPanel buttonPanel = new JPanel(UiUtil.createBorderLayout());
-    buttonPanel.add(btnRefresh, BorderLayout.NORTH);
-    buttonPanel.add(btnClear, BorderLayout.SOUTH);
+    buttonPanel.add(refreshButton, BorderLayout.NORTH);
+    buttonPanel.add(clearButton, BorderLayout.SOUTH);
 
     scenarioExceptionPanel.add(buttonPanel, BorderLayout.EAST);
 
@@ -432,8 +432,8 @@ public final class LoadTestPanel extends JPanel {
 
   private static final class ClearExceptionsAction extends ExceptionsAction {
 
-    private ClearExceptionsAction(final JTextArea txtExceptions, final LoadTest.UsageScenario scenario) {
-      super("Clear", txtExceptions, scenario);
+    private ClearExceptionsAction(final JTextArea exceptionsArea, final LoadTest.UsageScenario scenario) {
+      super("Clear", exceptionsArea, scenario);
     }
 
     @Override
@@ -445,8 +445,8 @@ public final class LoadTestPanel extends JPanel {
 
   private static final class RefreshExceptionsAction extends ExceptionsAction {
 
-    private RefreshExceptionsAction(final JTextArea txtExceptions, final LoadTest.UsageScenario scenario) {
-      super("Refresh", txtExceptions, scenario);
+    private RefreshExceptionsAction(final JTextArea exceptionsArea, final LoadTest.UsageScenario scenario) {
+      super("Refresh", exceptionsArea, scenario);
     }
 
     @Override

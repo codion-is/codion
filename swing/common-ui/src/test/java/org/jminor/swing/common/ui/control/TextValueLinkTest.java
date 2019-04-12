@@ -21,37 +21,37 @@ public class TextValueLinkTest {
   @Test
   public void testNullInitialValue() throws Exception {
     stringValue = null;
-    final JTextField txtString = new JTextField();
-    ValueLinks.textValueLink(txtString, this, "stringValue", evtStringValueChanged);
+    final JTextField textField = new JTextField();
+    ValueLinks.textValueLink(textField, this, "stringValue", evtStringValueChanged);
     assertNull(stringValue);
-    assertEquals("", txtString.getText());
+    assertEquals("", textField.getText());
     setStringValue("hello");
-    assertEquals("hello", txtString.getText());
-    txtString.setText("42");
+    assertEquals("hello", textField.getText());
+    textField.setText("42");
     assertEquals("42", stringValue);
-    txtString.setText("");
+    textField.setText("");
     assertNull(stringValue);
 
-    final JTextField txtString2 = new JTextField();
+    final JTextField textField2 = new JTextField();
     stringValue = "test";
-    ValueLinks.textValueLink(txtString2, this, "stringValue", evtStringValueChanged, true);
-    assertEquals("test", txtString2.getText());
-    assertFalse(txtString2.isEditable());
+    ValueLinks.textValueLink(textField2, this, "stringValue", evtStringValueChanged, true);
+    assertEquals("test", textField2.getText());
+    assertFalse(textField2.isEditable());
   }
 
   @Test
   public void testNonNullInitialValue() throws Exception {
     stringValue = "name";
-    final JTextField txtString = new JTextField();
-    ValueLinks.textValueLink(txtString, this, "stringValue", evtStringValueChanged);
-    assertEquals("name", txtString.getText());
-    txtString.setText("darri");
+    final JTextField textField = new JTextField();
+    ValueLinks.textValueLink(textField, this, "stringValue", evtStringValueChanged);
+    assertEquals("name", textField.getText());
+    textField.setText("darri");
     assertFalse(getStringValue().isEmpty());
     assertEquals("darri", getStringValue());
-    txtString.setText("");
+    textField.setText("");
     assertNull(getStringValue());
     setStringValue("Björn");
-    assertEquals("Björn", txtString.getText());
+    assertEquals("Björn", textField.getText());
   }
 
   public String getStringValue() {

@@ -6,7 +6,6 @@ package org.jminor.framework.demos.chinook.beans.ui;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
-import javax.swing.JTextField;
 import java.awt.GridLayout;
 
 import static org.jminor.framework.demos.chinook.domain.Chinook.ALBUM_ARTISTID_FK;
@@ -21,10 +20,9 @@ public class AlbumEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     setInitialFocusProperty(ALBUM_ARTISTID_FK);
-    final JTextField txtArtist = createForeignKeyLookupField(ALBUM_ARTISTID_FK);
-    txtArtist.setColumns(18);
-    final JTextField txtTitle = createTextField(ALBUM_TITLE);
-    txtTitle.setColumns(18);
+
+    createForeignKeyLookupField(ALBUM_ARTISTID_FK).setColumns(18);
+    createTextField(ALBUM_TITLE).setColumns(18);
 
     setLayout(new GridLayout(2, 1, 5, 5));
     addPropertyPanel(ALBUM_ARTISTID_FK);

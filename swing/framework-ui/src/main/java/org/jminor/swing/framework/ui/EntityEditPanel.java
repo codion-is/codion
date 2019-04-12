@@ -902,8 +902,8 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * required for editing the underlying entity type.
    * <pre>
    *   protected void initializeUI() {
-   *      JTextField txtName = createTextField(DomainModel.USER_NAME);
-   *      JTextField txtAddress = createTextField(DomainModel.USER_ADDRESS);
+   *      createTextField(DomainModel.USER_NAME);
+   *      createTextField(DomainModel.USER_ADDRESS);
    *      setLayout(new GridLayout(2, 1, 5, 5);
    *      addPropertyPanel(DomainModel.USER_NAME);
    *      addPropertyPanel(DomainModel.USER_ADDRESS);
@@ -1429,11 +1429,11 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   protected final JTextField createTextField(final Property property, final boolean readOnly,
                                              final String maskString, final boolean immediateUpdate,
                                              final StateObserver enabledState, final boolean valueIncludesLiteralCharacters) {
-    final JTextField txt = EntityUiUtil.createTextField(property, editModel, readOnly, maskString, immediateUpdate,
+    final JTextField textField = EntityUiUtil.createTextField(property, editModel, readOnly, maskString, immediateUpdate,
             enabledState, valueIncludesLiteralCharacters);
-    setComponent(property.getPropertyId(), txt);
+    setComponent(property.getPropertyId(), textField);
 
-    return txt;
+    return textField;
   }
 
   /**

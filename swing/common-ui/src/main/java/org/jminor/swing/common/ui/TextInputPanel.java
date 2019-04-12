@@ -29,7 +29,7 @@ public final class TextInputPanel extends JPanel {
   private final JTextField textField;
   private final JButton button;
   private final String dialogTitle;
-  private final Dimension txtAreaSize;
+  private final Dimension textAreaSize;
   private int maxLength = -1;
 
   /**
@@ -46,28 +46,28 @@ public final class TextInputPanel extends JPanel {
    * Instantiates a new TextInputPanel.
    * @param textField the text field
    * @param dialogTitle the input dialog title
-   * @param txtAreaSize the input text area size
+   * @param textAreaSize the input text area size
    * @throws NullPointerException in case textComponent is null
    */
   public TextInputPanel(final JTextField textField, final String dialogTitle,
-                        final Dimension txtAreaSize) {
-    this(textField, dialogTitle, txtAreaSize, true);
+                        final Dimension textAreaSize) {
+    this(textField, dialogTitle, textAreaSize, true);
   }
 
   /**
    * Instantiates a new TextInputPanel.
    * @param textField the text field
    * @param dialogTitle the input dialog title
-   * @param txtAreaSize the input text area size
+   * @param textAreaSize the input text area size
    * @param buttonFocusable if true then the input button is focusable
    * @throws NullPointerException in case textComponent is null
    */
   public TextInputPanel(final JTextField textField, final String dialogTitle,
-                        final Dimension txtAreaSize, final boolean buttonFocusable) {
+                        final Dimension textAreaSize, final boolean buttonFocusable) {
     Objects.requireNonNull(textField, "textComponent");
     this.dialogTitle = dialogTitle;
     this.textField = textField;
-    this.txtAreaSize = txtAreaSize == null ? UiUtil.getScreenSizeRatio(DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO) : txtAreaSize;
+    this.textAreaSize = textAreaSize == null ? UiUtil.getScreenSizeRatio(DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO) : textAreaSize;
     this.button = createButton(buttonFocusable, UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
     initializeUI();
   }
@@ -137,7 +137,7 @@ public final class TextInputPanel extends JPanel {
   }
 
   private void getInputFromUser() {
-    final JTextArea txtArea = new JTextArea(textField.getText()) {
+    final JTextArea textArea = new JTextArea(textField.getText()) {
       @Override
       protected Document createDefaultModel() {
         final SizedDocument document = new SizedDocument();
@@ -146,12 +146,12 @@ public final class TextInputPanel extends JPanel {
         return document;
       }
     };
-    txtArea.setPreferredSize(txtAreaSize);
-    txtArea.setLineWrap(true);
-    txtArea.setWrapStyleWord(true);
-    final Control okControl = Controls.control(() -> textField.setText(txtArea.getText()),
+    textArea.setPreferredSize(textAreaSize);
+    textArea.setLineWrap(true);
+    textArea.setWrapStyleWord(true);
+    final Control okControl = Controls.control(() -> textField.setText(textArea.getText()),
             Messages.get(Messages.OK), null, null, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-    UiUtil.displayInDialog(textField, new JScrollPane(txtArea), dialogTitle, okControl);
+    UiUtil.displayInDialog(textField, new JScrollPane(textArea), dialogTitle, okControl);
     textField.requestFocusInWindow();
   }
 }

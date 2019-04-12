@@ -35,17 +35,17 @@ public class DateValueLinkTest {
     final String format = "HH:mm";
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 
-    final JFormattedTextField txtString = UiUtil.createFormattedField(DateFormats.getDateMask(format));
-    ValueLinks.localTimeValueLink(txtString, this, "time", evtTimeValueChanged, false, format, true);
-    assertEquals("__:__", txtString.getText());
+    final JFormattedTextField textField = UiUtil.createFormattedField(DateFormats.getDateMask(format));
+    ValueLinks.localTimeValueLink(textField, this, "time", evtTimeValueChanged, false, format, true);
+    assertEquals("__:__", textField.getText());
 
     final LocalTime date = LocalTime.parse("22:42", formatter);
 
     setTime(date);
-    assertEquals("22:42", txtString.getText());
-    txtString.setText("23:50");
+    assertEquals("22:42", textField.getText());
+    textField.setText("23:50");
     assertEquals(LocalTime.parse("23:50", formatter), timeValue);
-    txtString.setText("");
+    textField.setText("");
     assertNull(timeValue);
   }
 
@@ -53,17 +53,17 @@ public class DateValueLinkTest {
   public void testDate() throws Exception {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.SHORT_DOT);
 
-    final JFormattedTextField txtString = UiUtil.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_DOT));
-    ValueLinks.localDateValueLink(txtString, this, "date", evtDateValueChanged, false, DateFormats.SHORT_DOT, true);
-    assertEquals("__.__.____", txtString.getText());
+    final JFormattedTextField textField = UiUtil.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_DOT));
+    ValueLinks.localDateValueLink(textField, this, "date", evtDateValueChanged, false, DateFormats.SHORT_DOT, true);
+    assertEquals("__.__.____", textField.getText());
 
     final LocalDate date = LocalDate.parse("03.10.1975", formatter);
 
     setDate(date);
-    assertEquals("03.10.1975", txtString.getText());
-    txtString.setText("03.03.1983");
+    assertEquals("03.10.1975", textField.getText());
+    textField.setText("03.03.1983");
     assertEquals(LocalDate.parse("03.03.1983", formatter), dateValue);
-    txtString.setText("");
+    textField.setText("");
     assertNull(dateValue);
   }
 
@@ -71,17 +71,17 @@ public class DateValueLinkTest {
   public void testTimestamp() throws Exception {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.SHORT_TIMESTAMP);
 
-    final JFormattedTextField txtString = UiUtil.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_TIMESTAMP));
-    ValueLinks.localDateTimeValueLink(txtString, this, "timestamp", evtTimestampValueChanged, false, DateFormats.SHORT_TIMESTAMP, true);
-    assertEquals("__-__-__ __:__", txtString.getText());
+    final JFormattedTextField textField = UiUtil.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_TIMESTAMP));
+    ValueLinks.localDateTimeValueLink(textField, this, "timestamp", evtTimestampValueChanged, false, DateFormats.SHORT_TIMESTAMP, true);
+    assertEquals("__-__-__ __:__", textField.getText());
 
     final LocalDateTime date = LocalDateTime.parse("03-10-75 10:34", formatter);
 
     setTimestamp(date);
-    assertEquals("03-10-75 10:34", txtString.getText());
-    txtString.setText("03-03-83 11:42");
+    assertEquals("03-10-75 10:34", textField.getText());
+    textField.setText("03-03-83 11:42");
     assertEquals(LocalDateTime.parse("03-03-83 11:42", formatter), timestamp);
-    txtString.setText("");
+    textField.setText("");
     assertNull(timestamp);
   }
 

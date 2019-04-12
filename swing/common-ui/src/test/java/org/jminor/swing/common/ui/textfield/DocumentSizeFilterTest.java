@@ -16,26 +16,26 @@ public class DocumentSizeFilterTest {
   public void insert() {
     final JTextArea textArea = new JTextArea();
     ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new DocumentSizeFilter(10));
-    final String txt8 = "12345678";
-    textArea.setText(txt8);
-    assertEquals(txt8, textArea.getText());
+    final String text8 = "12345678";
+    textArea.setText(text8);
+    assertEquals(text8, textArea.getText());
     textArea.insert("90", 8);
-    final String txt10 = "1234567890";
-    assertEquals(txt10, textArea.getText());
-    textArea.insert(txt10, 10);
-    assertEquals(txt10, textArea.getText());
+    final String text10 = "1234567890";
+    assertEquals(text10, textArea.getText());
+    textArea.insert(text10, 10);
+    assertEquals(text10, textArea.getText());
   }
 
   @Test
   public void replace() {
     final JTextArea textArea = new JTextArea();
     ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new DocumentSizeFilter(10));
-    final String txt8 = "12345678";
-    textArea.setText(txt8);
+    final String text8 = "12345678";
+    textArea.setText(text8);
     textArea.replaceRange("90", 8, 8);
-    final String txt10 = "1234567890";
-    assertEquals(txt10, textArea.getText());
+    final String text10 = "1234567890";
+    assertEquals(text10, textArea.getText());
     textArea.replaceRange("ab", 4, 4);
-    assertEquals(txt10, textArea.getText());
+    assertEquals(text10, textArea.getText());
   }
 }

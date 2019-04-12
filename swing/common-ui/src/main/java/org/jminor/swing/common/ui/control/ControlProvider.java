@@ -30,14 +30,6 @@ public final class ControlProvider {
   private ControlProvider() {}
 
   /**
-   * @param control the control
-   * @return a button based on the given control
-   */
-  public static JButton createButton(final Control control) {
-    return new JButton(control);
-  }
-
-  /**
    * Creates a vertically laid out panel of buttons from a control set and adds it to the panel
    * @param panel the panel
    * @param controlSet the control set
@@ -52,10 +44,10 @@ public final class ControlProvider {
    * @return the button panel
    */
   public static JPanel createVerticalButtonPanel(final ControlSet controlSet) {
-    final JPanel btnPanel = new JPanel(new GridLayout(0, 1, 5, 5));
-    iterate(new ButtonControlIterator(btnPanel, true), controlSet);
+    final JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
+    iterate(new ButtonControlIterator(panel, true), controlSet);
 
-    return btnPanel;
+    return panel;
   }
 
   /**
@@ -73,10 +65,10 @@ public final class ControlProvider {
    * @return the button panel
    */
   public static JPanel createHorizontalButtonPanel(final ControlSet controlSet) {
-    final JPanel btnPanel = new JPanel(new GridLayout(1, 0, 5, 5));
-    iterate(new ButtonControlIterator(btnPanel, false), controlSet);
+    final JPanel panel = new JPanel(new GridLayout(1, 0, 5, 5));
+    iterate(new ButtonControlIterator(panel, false), controlSet);
 
-    return btnPanel;
+    return panel;
   }
 
   /**
@@ -182,42 +174,42 @@ public final class ControlProvider {
 
   private static final class ButtonControlIterator implements ControlIterator {
 
-    private final JPanel btnPanel;
+    private final JPanel panel;
     private final boolean vertical;
 
-    private ButtonControlIterator(final JPanel btnPanel, final boolean vertical) {
-      this.btnPanel = btnPanel;
+    private ButtonControlIterator(final JPanel panel, final boolean vertical) {
+      this.panel = panel;
       this.vertical = vertical;
     }
 
     @Override
     public void handleSeparator() {
-      btnPanel.add(new JLabel());
+      panel.add(new JLabel());
     }
 
     @Override
     public void handleControl(final Control control) {
       if (control instanceof Controls.ToggleControl) {
-        btnPanel.add(createCheckBox((Controls.ToggleControl) control));
+        panel.add(createCheckBox((Controls.ToggleControl) control));
       }
       else {
-        btnPanel.add(createButton(control));
+        panel.add(new JButton(control));
       }
     }
 
     @Override
     public void handleControlSet(final ControlSet controlSet) {
       if (vertical) {
-        createVerticalButtonPanel(btnPanel, controlSet);
+        createVerticalButtonPanel(panel, controlSet);
       }
       else {
-        createHorizontalButtonPanel(btnPanel, controlSet);
+        createHorizontalButtonPanel(panel, controlSet);
       }
     }
 
     @Override
     public void handleAction(final Action action) {
-      btnPanel.add(new JButton(action));
+      panel.add(new JButton(action));
     }
   }
 
@@ -283,8 +275,8 @@ public final class ControlProvider {
 
   private static final class ToolBarControlIterator implements ControlIterator {
 
-    private boolean includeCaption;
     private final JToolBar toolbar;
+    private final boolean includeCaption;
 
     private ToolBarControlIterator(final JToolBar owner) {
       this(owner, true);
@@ -361,7 +353,7 @@ public final class ControlProvider {
    * @param controlIterator the control iterator
    * @param controlSet the control set
    */
-  public static void iterate(final ControlIterator controlIterator, final ControlSet controlSet) {
+  private static void iterate(final ControlIterator controlIterator, final ControlSet controlSet) {
     Objects.requireNonNull(controlIterator, "controlIterator");
     Objects.requireNonNull(controlSet, "controlSet");
     for (final Action action : controlSet.getActions()) {

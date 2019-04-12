@@ -35,13 +35,13 @@ public final class CommandControlTest {
 
   @Test
   public void test() throws Exception {
-    final State stEnabled = States.state();
-    final Control control = Controls.control(this::method, "test", stEnabled);
-    final JButton btn = ControlProvider.createButton(control);
-    assertFalse(btn.isEnabled());
-    stEnabled.setActive(true);
-    assertTrue(btn.isEnabled());
-    btn.doClick();
+    final State enabledState = States.state();
+    final Control control = Controls.control(this::method, "test", enabledState);
+    final JButton button = new JButton(control);
+    assertFalse(button.isEnabled());
+    enabledState.setActive(true);
+    assertTrue(button.isEnabled());
+    button.doClick();
     assertEquals(1, callCount);
   }
 

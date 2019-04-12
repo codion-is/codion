@@ -6,7 +6,6 @@ package org.jminor.swing.framework.server.monitor.ui;
 import org.jminor.common.TaskScheduler;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
-import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.server.monitor.DatabaseMonitor;
 
@@ -16,6 +15,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -60,18 +60,18 @@ public final class DatabaseMonitorPanel extends JPanel {
 
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
-    final JSpinner spnUpdateInterval = new JSpinner(ValueLinks.intSpinnerValueLink(model.getUpdateScheduler(),
+    final JSpinner updateIntervalSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
-    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
+    ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
 
     chartConfig.add(new JLabel("Update interval (s)"));
-    chartConfig.add(spnUpdateInterval);
+    chartConfig.add(updateIntervalSpinner);
 
     final JPanel configBase = new JPanel(UiUtil.createBorderLayout());
     configBase.add(chartConfig, BorderLayout.CENTER);
-    configBase.add(ControlProvider.createButton(Controls.control(model::resetStatistics, "Reset")), BorderLayout.EAST);
+    configBase.add(new JButton(Controls.control(model::resetStatistics, "Reset")), BorderLayout.EAST);
 
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());
     queriesPerSecondChartPanel.setBorder(BorderFactory.createEtchedBorder());

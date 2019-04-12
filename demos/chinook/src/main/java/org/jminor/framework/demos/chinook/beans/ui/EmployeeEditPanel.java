@@ -3,13 +3,10 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
-import org.jminor.swing.common.ui.TemporalInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
-
-import javax.swing.JTextField;
 
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
@@ -22,33 +19,21 @@ public class EmployeeEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     setInitialFocusProperty(EMPLOYEE_FIRSTNAME);
-    final JTextField txtFirstName = createTextField(EMPLOYEE_FIRSTNAME);
-    txtFirstName.setColumns(16);
-    final JTextField txtLastName = createTextField(EMPLOYEE_LASTNAME);
-    txtLastName.setColumns(16);
-    final TemporalInputPanel birthdateInputPanel = createDateInputPanel(EMPLOYEE_BIRTHDATE);
-    birthdateInputPanel.getInputField().setColumns(16);
-    final JTextField txtAddress = createTextField(EMPLOYEE_ADDRESS);
-    txtAddress.setColumns(16);
-    final JTextField txtCity = createTextField(EMPLOYEE_CITY);
-    txtCity.setColumns(16);
-    final JTextField txtState = UiUtil.makeUpperCase(createTextField(EMPLOYEE_STATE));
-    txtState.setColumns(16);
-    final JTextField txtCountry = createTextField(EMPLOYEE_COUNTRY);
-    txtCountry.setColumns(16);
-    final JTextField txtPostalcode = createTextField(EMPLOYEE_POSTALCODE);
-    txtPostalcode.setColumns(16);
-    final JTextField txtPhone = createTextField(EMPLOYEE_PHONE);
-    txtPhone.setColumns(16);
-    final JTextField txtFax = createTextField(EMPLOYEE_FAX);
-    txtFax.setColumns(16);
-    final JTextField txtEmail = createTextField(EMPLOYEE_EMAIL);
-    txtEmail.setColumns(16);
+
+    createTextField(EMPLOYEE_FIRSTNAME).setColumns(16);
+    createTextField(EMPLOYEE_LASTNAME).setColumns(16);
+    createDateInputPanel(EMPLOYEE_BIRTHDATE).getInputField().setColumns(16);
+    createTextField(EMPLOYEE_ADDRESS).setColumns(16);
+    createTextField(EMPLOYEE_CITY).setColumns(16);
+    UiUtil.makeUpperCase(createTextField(EMPLOYEE_STATE)).setColumns(16);
+    createTextField(EMPLOYEE_COUNTRY).setColumns(16);
+    createTextField(EMPLOYEE_POSTALCODE).setColumns(16);
+    createTextField(EMPLOYEE_PHONE).setColumns(16);
+    createTextField(EMPLOYEE_FAX).setColumns(16);
+    createTextField(EMPLOYEE_EMAIL).setColumns(16);
     createForeignKeyComboBox(EMPLOYEE_REPORTSTO_FK);
-    final TemporalInputPanel hiredateInputPanel = createDateInputPanel(EMPLOYEE_HIREDATE);
-    hiredateInputPanel.getInputField().setColumns(16);
-    final JTextField txtTitle = createTextField(EMPLOYEE_TITLE);
-    txtTitle.setColumns(16);
+    createDateInputPanel(EMPLOYEE_HIREDATE).getInputField().setColumns(16);
+    createTextField(EMPLOYEE_TITLE).setColumns(16);
 
     setLayout(new FlexibleGridLayout(4, 4, 5, 5));
     addPropertyPanel(EMPLOYEE_FIRSTNAME);

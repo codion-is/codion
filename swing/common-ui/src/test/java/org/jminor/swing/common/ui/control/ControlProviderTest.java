@@ -6,7 +6,6 @@ package org.jminor.swing.common.ui.control;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -45,12 +44,6 @@ public class ControlProviderTest {
     set.add(new Control("one"));
     set.add(new Control("two"));
     set.add(Controls.toggleControl(this, "booleanValue", "three", null));
-  }
-
-  @Test
-  public void createButton() {
-    final JButton button = ControlProvider.createButton(new Control("Test"));
-    assertEquals("Test", button.getText());
   }
 
   @Test

@@ -8,7 +8,6 @@ import org.jminor.common.TaskScheduler;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
-import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.server.monitor.ConnectionPoolMonitor;
 
@@ -60,13 +59,13 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private ChartPanel checkOutTimePanel;
 
-  private final JTextField txtResetTime = new JTextField(RESET_FIELD_COLUMNS);
-  private final JTextField txtPoolSize = new JTextField();
-  private final JTextField txtCreated = new JTextField();
-  private final JTextField txtDestroyed = new JTextField();
-  private final JTextField txtRequested = new JTextField();
-  private final JTextField txtDelayed = new JTextField();
-  private final JTextField txtFailed = new JTextField();
+  private final JTextField resetTimeField = new JTextField(RESET_FIELD_COLUMNS);
+  private final JTextField poolSizeField = new JTextField();
+  private final JTextField createdField = new JTextField();
+  private final JTextField destroyedField = new JTextField();
+  private final JTextField requestedField = new JTextField();
+  private final JTextField delayedField = new JTextField();
+  private final JTextField failedField = new JTextField();
 
   /**
    * Instantiates a new ConnectionPoolMonitorPanel
@@ -82,17 +81,17 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private void updateView() {
     final ConnectionPoolStatistics statistics = model.getConnectionPoolStatistics();
-    txtPoolSize.setText(format.format(statistics.getSize()));
-    txtCreated.setText(format.format(statistics.getCreated()));
-    txtDestroyed.setText(format.format(statistics.getDestroyed()));
-    txtResetTime.setText(DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP)
+    poolSizeField.setText(format.format(statistics.getSize()));
+    createdField.setText(format.format(statistics.getCreated()));
+    destroyedField.setText(format.format(statistics.getDestroyed()));
+    resetTimeField.setText(DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP)
             .format(LocalDateTime.ofInstant(Instant.ofEpochMilli(statistics.getResetTime()), ZoneId.systemDefault())));
-    txtRequested.setText(format.format(statistics.getRequests()));
+    requestedField.setText(format.format(statistics.getRequests()));
     double prc = (double) statistics.getDelayedRequests() / (double) statistics.getRequests() * HUNDRED;
-    txtDelayed.setText(format.format(statistics.getDelayedRequests())
+    delayedField.setText(format.format(statistics.getDelayedRequests())
             + (prc > 0 ? " (" + format.format(prc) + "%)" : ""));
     prc = (double) statistics.getFailedRequests() / (double) statistics.getRequests() * HUNDRED;
-    txtFailed.setText(format.format(statistics.getFailedRequests())
+    failedField.setText(format.format(statistics.getFailedRequests())
             + (prc > 0 ? " (" + format.format(prc) + "%)" : ""));
     if (model.datasetContainsData()) {
       inPoolFineGrainedChart.getXYPlot().setDataset(model.getFineGrainedInPoolDataset());
@@ -146,26 +145,26 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private JPanel getConfigurationPanel() {
     final JPanel configBase = new JPanel(UiUtil.createGridLayout(0, 1));
 
-    final JSpinner spnTimeout = new JSpinner(ValueLinks.intSpinnerValueLink(model, "pooledConnectionTimeout", null));
-    final JSpinner spnCleanupInterval = new JSpinner(ValueLinks.intSpinnerValueLink(model, "poolCleanupInterval", null));
-    final JSpinner spnMaximumSize = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumPoolSize", null));
-    final JSpinner spnMinimumSize = new JSpinner(ValueLinks.intSpinnerValueLink(model, "minimumPoolSize", null));
-    final JSpinner spnMaximumRetryWait = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumRetryWaitPeriod", null));
-    final JSpinner spnMaximumCheckOutTime = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumCheckOutTime", null));
-    final JSpinner spnNewConnectionThreshold = new JSpinner(ValueLinks.intSpinnerValueLink(model, "newConnectionThreshold", null));
+    final JSpinner timeoutSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "pooledConnectionTimeout", null));
+    final JSpinner cleanupIntervalSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "poolCleanupInterval", null));
+    final JSpinner maximumSizeSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumPoolSize", null));
+    final JSpinner minimumSizeSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "minimumPoolSize", null));
+    final JSpinner maximumRetryWaitSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumRetryWaitPeriod", null));
+    final JSpinner maximumCheckOutTimeSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumCheckOutTime", null));
+    final JSpinner newConnectionThresholdSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model, "newConnectionThreshold", null));
 
-    ((JSpinner.DefaultEditor) spnTimeout.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnCleanupInterval.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnMinimumSize.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnMaximumSize.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) timeoutSpinner.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) cleanupIntervalSpinner.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) minimumSizeSpinner.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) maximumSizeSpinner.getEditor()).getTextField().setEditable(false);
 
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Min size"), spnMinimumSize));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Max size"), spnMaximumSize));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Max retry wait (ms)"), spnMaximumRetryWait));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Max check out time (ms)"), spnMaximumCheckOutTime));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("New conn. threshold (ms)"), spnNewConnectionThreshold));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Idle timeout (s)"), spnTimeout));
-    configBase.add(UiUtil.northCenterPanel(new JLabel("Cleanup interval (s)"), spnCleanupInterval));
+    configBase.add(UiUtil.northCenterPanel(new JLabel("Min size"), minimumSizeSpinner));
+    configBase.add(UiUtil.northCenterPanel(new JLabel("Max size"), maximumSizeSpinner));
+    configBase.add(UiUtil.northCenterPanel(new JLabel("Max retry wait (ms)"), maximumRetryWaitSpinner));
+    configBase.add(UiUtil.northCenterPanel(new JLabel("Max check out time (ms)"), maximumCheckOutTimeSpinner));
+    configBase.add(UiUtil.northCenterPanel(new JLabel("New conn. threshold (ms)"), newConnectionThresholdSpinner));
+    configBase.add(UiUtil.northCenterPanel(new JLabel("Idle timeout (s)"), timeoutSpinner));
+    configBase.add(UiUtil.northCenterPanel(new JLabel("Cleanup interval (s)"), cleanupIntervalSpinner));
 
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());
     panel.setBorder(BorderFactory.createTitledBorder("Configuration"));
@@ -176,63 +175,63 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private JPanel getStatisticsPanel() {
     final JPanel statisticsBase = new JPanel(UiUtil.createGridLayout(0, 1));
-    txtPoolSize.setEditable(false);
-    txtPoolSize.setHorizontalAlignment(JLabel.CENTER);
-    txtCreated.setEditable(false);
-    txtCreated.setHorizontalAlignment(JLabel.CENTER);
-    txtDestroyed.setEditable(false);
-    txtDestroyed.setHorizontalAlignment(JLabel.CENTER);
-    txtRequested.setEditable(false);
-    txtRequested.setHorizontalAlignment(JLabel.CENTER);
-    txtDelayed.setEditable(false);
-    txtDelayed.setHorizontalAlignment(JLabel.CENTER);
-    txtFailed.setEditable(false);
-    txtFailed.setHorizontalAlignment(JLabel.CENTER);
-    txtResetTime.setEditable(false);
-    txtResetTime.setHorizontalAlignment(JLabel.CENTER);
+    poolSizeField.setEditable(false);
+    poolSizeField.setHorizontalAlignment(JLabel.CENTER);
+    createdField.setEditable(false);
+    createdField.setHorizontalAlignment(JLabel.CENTER);
+    destroyedField.setEditable(false);
+    destroyedField.setHorizontalAlignment(JLabel.CENTER);
+    requestedField.setEditable(false);
+    requestedField.setHorizontalAlignment(JLabel.CENTER);
+    delayedField.setEditable(false);
+    delayedField.setHorizontalAlignment(JLabel.CENTER);
+    failedField.setEditable(false);
+    failedField.setHorizontalAlignment(JLabel.CENTER);
+    resetTimeField.setEditable(false);
+    resetTimeField.setHorizontalAlignment(JLabel.CENTER);
 
-    final JButton btnReset = ControlProvider.createButton(Controls.control(model::resetStatistics, "Reset"));
-    btnReset.setMaximumSize(UiUtil.getPreferredTextFieldSize());
+    final JButton resetButton = new JButton(Controls.control(model::resetStatistics, "Reset"));
+    resetButton.setMaximumSize(UiUtil.getPreferredTextFieldSize());
 
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Pool size"), txtPoolSize));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections requested"), txtRequested));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Delayed requests"), txtDelayed));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Failed requests"), txtFailed));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections created"), txtCreated));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections destroyed"), txtDestroyed));
-    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("since"), txtResetTime));
+    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Pool size"), poolSizeField));
+    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections requested"), requestedField));
+    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Delayed requests"), delayedField));
+    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Failed requests"), failedField));
+    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections created"), createdField));
+    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections destroyed"), destroyedField));
+    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("since"), resetTimeField));
 
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());
     panel.setBorder(BorderFactory.createTitledBorder("Statistics"));
     panel.add(statisticsBase, BorderLayout.NORTH);
-    panel.add(btnReset, BorderLayout.SOUTH);
+    panel.add(resetButton, BorderLayout.SOUTH);
 
     return panel;
   }
 
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(UiUtil.createFlexibleGridLayout(1, 3, true, false));
-    final JSpinner spnUpdateInterval = new JSpinner(ValueLinks.intSpinnerValueLink(model.getUpdateScheduler(),
+    final JSpinner updateIntervalSpinner = new JSpinner(ValueLinks.intSpinnerValueLink(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
-    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
+    ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) updateIntervalSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
 
     chartConfig.add(new JLabel("Update interval (s)"));
-    chartConfig.add(spnUpdateInterval);
+    chartConfig.add(updateIntervalSpinner);
 
-    final JCheckBox chkCollectStatistics = new JCheckBox("Fine grained statistics");
-    chkCollectStatistics.setModel(ValueLinks.toggleValueLink(model, "collectFineGrainedStatistics",
+    final JCheckBox collectStatisticsCheckBox = new JCheckBox("Fine grained statistics");
+    collectStatisticsCheckBox.setModel(ValueLinks.toggleValueLink(model, "collectFineGrainedStatistics",
             model.getCollectFineGrainedStatisticsObserver()));
-    chkCollectStatistics.setMaximumSize(UiUtil.getPreferredTextFieldSize());
+    collectStatisticsCheckBox.setMaximumSize(UiUtil.getPreferredTextFieldSize());
 
-    chartConfig.add(chkCollectStatistics);
+    chartConfig.add(collectStatisticsCheckBox);
 
     final JPanel configBase = new JPanel(UiUtil.createBorderLayout());
     configBase.add(chartConfig, BorderLayout.WEST);
-    final JButton btnReset = ControlProvider.createButton(Controls.control(model::resetInPoolStatistics, "Reset"));
-    btnReset.setMaximumSize(UiUtil.getPreferredTextFieldSize());
-    configBase.add(btnReset, BorderLayout.EAST);
+    final JButton resetButton = new JButton(Controls.control(model::resetInPoolStatistics, "Reset"));
+    resetButton.setMaximumSize(UiUtil.getPreferredTextFieldSize());
+    configBase.add(resetButton, BorderLayout.EAST);
 
     final JPanel chartBase = new JPanel(new GridLayout(2, 2));
     chartBase.add(requestsPerSecondChartPanel);

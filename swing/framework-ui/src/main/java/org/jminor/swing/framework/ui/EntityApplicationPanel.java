@@ -766,10 +766,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());
     final String versionString = Version.getVersionAndBuildNumberString();
     panel.add(new JLabel(Images.loadImage("jminor_logo32.gif")), BorderLayout.WEST);
-    final JTextField txtVersionMemory = new JTextField(versionString + " (" + Util.getMemoryUsageString() + ")");
-    txtVersionMemory.setEditable(false);
-    txtVersionMemory.setFocusable(false);
-    panel.add(txtVersionMemory, BorderLayout.CENTER);
+    final JTextField versionMemoryField = new JTextField(versionString + " (" + Util.getMemoryUsageString() + ")");
+    versionMemoryField.setEditable(false);
+    versionMemoryField.setFocusable(false);
+    panel.add(versionMemoryField, BorderLayout.CENTER);
 
     return panel;
   }
@@ -1066,9 +1066,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     progressBar.setIndeterminate(true);
     panel.add(progressBar, BorderLayout.CENTER);
     if (icon != null) {
-      final JLabel lblIcon = new JLabel(icon);
-      lblIcon.setBorder(BorderFactory.createRaisedBevelBorder());
-      panel.add(lblIcon, BorderLayout.WEST);
+      final JLabel iconLabel = new JLabel(icon);
+      iconLabel.setBorder(BorderFactory.createRaisedBevelBorder());
+      panel.add(iconLabel, BorderLayout.WEST);
     }
 
     return panel;

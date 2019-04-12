@@ -283,13 +283,13 @@ public final class EntityLookupField extends JTextField {
               okButton.doClick();
               closeEvent.fire();
             }, "EntityLookupField.emptyResultOK"));
-    final JPanel btnBase = new JPanel(UiUtil.createFlowLayout(FlowLayout.CENTER));
-    btnBase.add(okButton);
+    final JPanel buttonPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.CENTER));
+    buttonPanel.add(okButton);
     final JLabel messageLabel = new JLabel(FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION));
     messageLabel.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, 0, BORDER_SIZE));
     final JPanel messagePanel = new JPanel(UiUtil.createBorderLayout());
     messagePanel.add(messageLabel, BorderLayout.CENTER);
-    messagePanel.add(btnBase, BorderLayout.SOUTH);
+    messagePanel.add(buttonPanel, BorderLayout.SOUTH);
     disableLookup();
     UiUtil.displayInDialog(this, messagePanel, SwingMessages.get("OptionPane.messageDialogTitle"), closeEvent);
     enableLookup();
@@ -332,19 +332,19 @@ public final class EntityLookupField extends JTextField {
       ValueLinks.toggleValueLink(boxAllowMultipleValues.getModel(), lookupModel.getMultipleSelectionAllowedValue(), false);
       final SizedDocument document = new SizedDocument();
       document.setMaxLength(1);
-      final JTextField txtMultipleValueSeparator = new JTextField(document, "", 1);
-      ValueLinks.textValueLink(txtMultipleValueSeparator, lookupModel.getMultipleItemSeparatorValue(), null, true, false);
+      final JTextField multipleValueSeparatorField = new JTextField(document, "", 1);
+      ValueLinks.textValueLink(multipleValueSeparatorField, lookupModel.getMultipleItemSeparatorValue(), null, true, false);
 
       final JPanel generalSettingsPanel = new JPanel(UiUtil.createGridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
 
       generalSettingsPanel.add(boxAllowMultipleValues);
 
-      final JPanel pnlValueSeparator = new JPanel(UiUtil.createBorderLayout());
-      pnlValueSeparator.add(txtMultipleValueSeparator, BorderLayout.WEST);
-      pnlValueSeparator.add(new JLabel(MESSAGES.getString("multiple_search_value_separator")), BorderLayout.CENTER);
+      final JPanel valueSeparatorPanel = new JPanel(UiUtil.createBorderLayout());
+      valueSeparatorPanel.add(multipleValueSeparatorField, BorderLayout.WEST);
+      valueSeparatorPanel.add(new JLabel(MESSAGES.getString("multiple_search_value_separator")), BorderLayout.CENTER);
 
-      generalSettingsPanel.add(pnlValueSeparator);
+      generalSettingsPanel.add(valueSeparatorPanel);
 
       setLayout(UiUtil.createBorderLayout());
       add(new JComboBox<>(propertyComboBoxModel), BorderLayout.NORTH);

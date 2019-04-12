@@ -249,13 +249,13 @@ public final class UiUtil {
    * @return a text field displaying the current VM memory usage
    */
   public static JTextField createMemoryUsageField(final int updateIntervalMilliseconds) {
-    final JTextField txt = new JTextField(8);
-    txt.setEditable(false);
-    txt.setHorizontalAlignment(JTextField.CENTER);
+    final JTextField textField = new JTextField(8);
+    textField.setEditable(false);
+    textField.setHorizontalAlignment(JTextField.CENTER);
     new TaskScheduler(() -> SwingUtilities.invokeLater(() ->
-            txt.setText(Util.getMemoryUsageString())), updateIntervalMilliseconds, 0, TimeUnit.MILLISECONDS).start();
+            textField.setText(Util.getMemoryUsageString())), updateIntervalMilliseconds, 0, TimeUnit.MILLISECONDS).start();
 
-    return txt;
+    return textField;
   }
 
   /**
@@ -482,7 +482,7 @@ public final class UiUtil {
       final State cancel = States.state();
       final Calendar returnTime = Calendar.getInstance();
       returnTime.setTime(cal.getTime());
-      final JButton okBtn = new JButton(Controls.control(() -> {
+      final JButton okButton = new JButton(Controls.control(() -> {
         returnTime.setTimeInMillis(((Calendar) getCalendar.invoke(calendarPanel)).getTimeInMillis());
         closeEvent.fire();
       }, Messages.get(Messages.OK)));
@@ -490,15 +490,15 @@ public final class UiUtil {
         cancel.setActive(true);
         closeEvent.fire();
       }, Messages.get(Messages.CANCEL));
-      final JButton cancelBtn = new JButton(cancelControl);
+      final JButton cancelButton = new JButton(cancelControl);
       final JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 5, 5));
-      buttonPanel.add(okBtn);
-      buttonPanel.add(cancelBtn);
+      buttonPanel.add(okButton);
+      buttonPanel.add(cancelButton);
 
       datePanel.add(buttonPanel, BorderLayout.SOUTH);
 
       addKeyEvent(datePanel, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelControl);
-      displayInDialog(parent, datePanel, message, true, okBtn, closeEvent, true, null);
+      displayInDialog(parent, datePanel, message, true, okButton, closeEvent, true, null);
 
       return cancel.isActive() ? null : Instant.ofEpochMilli(returnTime.getTime().getTime())
               .atZone(ZoneId.systemDefault())
@@ -522,16 +522,16 @@ public final class UiUtil {
     try {
       final MaskFormatter formatter = new MaskFormatter(DateFormats.getDateMask(dateFormat));
       formatter.setPlaceholderCharacter('_');
-      final JFormattedTextField txtField = new JFormattedTextField(new SimpleDateFormat(dateFormat));
-      txtField.setColumns(DEFAULT_DATE_FIELD_COLUMNS);
-      txtField.setValue(startDate);
+      final JFormattedTextField textField = new JFormattedTextField(new SimpleDateFormat(dateFormat));
+      textField.setColumns(DEFAULT_DATE_FIELD_COLUMNS);
+      textField.setValue(startDate);
 
       final JPanel datePanel = new JPanel(createGridLayout(1, 1));
-      datePanel.add(txtField);
+      datePanel.add(textField);
 
       displayInDialog(parent, datePanel, message);
 
-      return LocalDateTime.parse(txtField.getText(), DateTimeFormatter.ofPattern(dateFormat));
+      return LocalDateTime.parse(textField.getText(), DateTimeFormatter.ofPattern(dateFormat));
     }
     catch (final ParseException e) {
       throw new RuntimeException(e);
@@ -545,12 +545,12 @@ public final class UiUtil {
    * @return the text field
    */
   public static JFormattedTextField createFormattedTemporalField(final String dateFormat, final Temporal initialValue) {
-    final JFormattedTextField txtField = createFormattedField(DateFormats.getDateMask(dateFormat));
+    final JFormattedTextField textField = createFormattedField(DateFormats.getDateMask(dateFormat));
     if (initialValue != null) {
-      txtField.setText(DateTimeFormatter.ofPattern(dateFormat).format(initialValue));
+      textField.setText(DateTimeFormatter.ofPattern(dateFormat).format(initialValue));
     }
 
-    return txtField;
+    return textField;
   }
 
   /**
@@ -1266,15 +1266,15 @@ public final class UiUtil {
   /**
    * Adds a CTRL-SPACE action the the given text field for displaying a lookup dialog showing the values provided
    * by the given value provider
-   * @param txtField the text field
+   * @param textField the text field
    * @param valueCollectionProvider provides the values for the lookup dialog
    */
-  public static void addLookupDialog(final JTextField txtField, final ValueCollectionProvider valueCollectionProvider) {
+  public static void addLookupDialog(final JTextField textField, final ValueCollectionProvider valueCollectionProvider) {
     Objects.requireNonNull(valueCollectionProvider);
-    addKeyEvent(txtField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, Controls.control(() -> {
-      final Object value = selectValue(txtField, valueCollectionProvider.values());
+    addKeyEvent(textField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, Controls.control(() -> {
+      final Object value = selectValue(textField, valueCollectionProvider.values());
       if (value != null) {
-        txtField.setText(value.toString());
+        textField.setText(value.toString());
       }
     }, "UiUtil.lookupValue"));
   }
@@ -1364,17 +1364,17 @@ public final class UiUtil {
     addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, false, okAction);
     toScroll.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-    final JButton btnOk = new JButton(okAction);
-    final JButton btnCancel = new JButton(cancelAction);
-    btnOk.setText(Messages.get(Messages.OK));
-    btnOk.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
-    btnCancel.setText(Messages.get(Messages.CANCEL));
-    btnCancel.setMnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
+    final JButton okButton = new JButton(okAction);
+    final JButton cancelButton = new JButton(cancelAction);
+    okButton.setText(Messages.get(Messages.OK));
+    okButton.setMnemonic(Messages.get(Messages.OK_MNEMONIC).charAt(0));
+    cancelButton.setText(Messages.get(Messages.CANCEL));
+    cancelButton.setMnemonic(Messages.get(Messages.CANCEL_MNEMONIC).charAt(0));
     dialog.setLayout(createBorderLayout());
     dialog.add(new JScrollPane(toScroll), BorderLayout.CENTER);
     final JPanel buttonPanel = new JPanel(createGridLayout(1, 2));
-    buttonPanel.add(btnOk);
-    buttonPanel.add(btnCancel);
+    buttonPanel.add(okButton);
+    buttonPanel.add(cancelButton);
     final JPanel buttonBasePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     buttonBasePanel.add(buttonPanel);
     dialog.add(buttonBasePanel, BorderLayout.SOUTH);
@@ -1388,14 +1388,14 @@ public final class UiUtil {
 
   /**
    * Creates a Control instance, with a triple-dot name ('...') for selecting a file path to display in the given text field
-   * @param txtFilename the text field for displaying the file path
+   * @param filenameField the text field for displaying the file path
    * @return the Control
    */
-  public static Control getBrowseControl(final JTextField txtFilename) {
+  public static Control getBrowseControl(final JTextField filenameField) {
     return Controls.control(() -> {
       try {
-        final File file = selectFile(txtFilename, getParentPath(txtFilename.getText()));
-        txtFilename.setText(file.getAbsolutePath());
+        final File file = selectFile(filenameField, getParentPath(filenameField.getText()));
+        filenameField.setText(file.getAbsolutePath());
       }
       catch (final CancelException ignored) {/*ignored*/}
     }, "...");
@@ -2080,17 +2080,17 @@ public final class UiUtil {
     private JPanel centerPanel;
     private JTextArea detailsArea;
     private JLabel descriptionLabel;
-    private JButton btnPrint;
-    private JButton btnSave;
-    private JButton btnCopy;
-    private JButton btnEmail;
+    private JButton printButton;
+    private JButton saveButton;
+    private JButton copyButton;
+    private JButton emailButton;
     //controls
-    private Controls.ToggleControl ctrDetails;
-    private Control ctrClose;
-    private Control ctrPrint;
-    private Control ctrSave;
-    private Control ctrCopy;
-    private Control ctrEmail;
+    private Controls.ToggleControl detailsControl;
+    private Control closeControl;
+    private Control printControl;
+    private Control saveControl;
+    private Control copyControl;
+    private Control emailControl;
 
     private final State showDetailsState = States.state();
 
@@ -2107,25 +2107,25 @@ public final class UiUtil {
     }
 
     private void setupControls() {
-      ctrDetails = Controls.toggleControl(showDetailsState);
-      ctrDetails.setName(MESSAGES.getString("details"));
-      ctrDetails.setDescription(MESSAGES.getString("show_details"));
-      ctrPrint = Controls.control(() -> detailsArea.print(), Messages.get(Messages.PRINT));
-      ctrPrint.setDescription(MESSAGES.getString("print_error_report"));
-      ctrPrint.setMnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0));
-      ctrClose = Controls.control(this::dispose, Messages.get(Messages.CLOSE));
-      ctrClose.setDescription(MESSAGES.getString("close_dialog"));
-      ctrClose.setMnemonic(MESSAGES.getString("close_mnemonic").charAt(0));
-      ctrSave = Controls.control(() -> FileUtil.writeFile(detailsArea.getText(), selectFileToSave(detailsArea, null, null)),
+      detailsControl = Controls.toggleControl(showDetailsState);
+      detailsControl.setName(MESSAGES.getString("details"));
+      detailsControl.setDescription(MESSAGES.getString("show_details"));
+      printControl = Controls.control(() -> detailsArea.print(), Messages.get(Messages.PRINT));
+      printControl.setDescription(MESSAGES.getString("print_error_report"));
+      printControl.setMnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0));
+      closeControl = Controls.control(this::dispose, Messages.get(Messages.CLOSE));
+      closeControl.setDescription(MESSAGES.getString("close_dialog"));
+      closeControl.setMnemonic(MESSAGES.getString("close_mnemonic").charAt(0));
+      saveControl = Controls.control(() -> FileUtil.writeFile(detailsArea.getText(), selectFileToSave(detailsArea, null, null)),
               MESSAGES.getString("save"));
-      ctrSave.setDescription(MESSAGES.getString("save_error_log"));
-      ctrSave.setMnemonic(MESSAGES.getString("save_mnemonic").charAt(0));
-      ctrCopy = Controls.control(() -> setClipboard(detailsArea.getText()), Messages.get(Messages.COPY));
-      ctrCopy.setDescription(MESSAGES.getString("copy_to_clipboard"));
-      ctrCopy.setMnemonic(MESSAGES.getString("copy_mnemonic").charAt(0));
-      ctrEmail = Controls.control(this::emailErrorReport, MESSAGES.getString("send"));
-      ctrEmail.setDescription(MESSAGES.getString("send_email"));
-      ctrEmail.setMnemonic(MESSAGES.getString("send_mnemonic").charAt(0));
+      saveControl.setDescription(MESSAGES.getString("save_error_log"));
+      saveControl.setMnemonic(MESSAGES.getString("save_mnemonic").charAt(0));
+      copyControl = Controls.control(() -> setClipboard(detailsArea.getText()), Messages.get(Messages.COPY));
+      copyControl.setDescription(MESSAGES.getString("copy_to_clipboard"));
+      copyControl.setMnemonic(MESSAGES.getString("copy_mnemonic").charAt(0));
+      emailControl = Controls.control(this::emailErrorReport, MESSAGES.getString("send"));
+      emailControl.setDescription(MESSAGES.getString("send_email"));
+      emailControl.setMnemonic(MESSAGES.getString("send_mnemonic").charAt(0));
     }
 
     private void initializeUI() {
@@ -2148,10 +2148,10 @@ public final class UiUtil {
     }
 
     private void initializeDetailView(final boolean show) {
-      btnPrint.setVisible(show);
-      btnSave.setVisible(show);
-      btnCopy.setVisible(show);
-      btnEmail.setVisible(show);
+      printButton.setVisible(show);
+      saveButton.setVisible(show);
+      copyButton.setVisible(show);
+      emailButton.setVisible(show);
       detailPanel.setVisible(show);
       centerPanel.setVisible(show);
       pack();
@@ -2221,22 +2221,22 @@ public final class UiUtil {
       final JPanel rightButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, COMPONENT_GAP, COMPONENT_GAP));
       final JPanel leftButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, COMPONENT_GAP, COMPONENT_GAP));
 
-      final JButton btnClose = ControlProvider.createButton(ctrClose);
-      btnPrint = ControlProvider.createButton(ctrPrint);
-      btnSave = ControlProvider.createButton(ctrSave);
-      btnCopy = ControlProvider.createButton(ctrCopy);
-      btnEmail = ControlProvider.createButton(ctrEmail);
-      rightButtonPanel.add(btnEmail);
-      rightButtonPanel.add(btnCopy);
-      rightButtonPanel.add(btnPrint);
-      rightButtonPanel.add(btnSave);
-      rightButtonPanel.add(btnClose);
-      leftButtonPanel.add(ControlProvider.createCheckBox(ctrDetails));
+      final JButton closeButton = new JButton(closeControl);
+      printButton = new JButton(printControl);
+      saveButton = new JButton(saveControl);
+      copyButton = new JButton(copyControl);
+      emailButton = new JButton(emailControl);
+      rightButtonPanel.add(emailButton);
+      rightButtonPanel.add(copyButton);
+      rightButtonPanel.add(printButton);
+      rightButtonPanel.add(saveButton);
+      rightButtonPanel.add(closeButton);
+      leftButtonPanel.add(ControlProvider.createCheckBox(detailsControl));
 
       baseButtonPanel.add(leftButtonPanel, BorderLayout.WEST);
       baseButtonPanel.add(rightButtonPanel, BorderLayout.CENTER);
 
-      getRootPane().setDefaultButton(btnClose);
+      getRootPane().setDefaultButton(closeButton);
 
       return baseButtonPanel;
     }
