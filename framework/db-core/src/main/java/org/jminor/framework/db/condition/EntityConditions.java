@@ -8,6 +8,7 @@ import org.jminor.common.Util;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.condition.Conditions;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -313,7 +314,7 @@ public final class EntityConditions {
               entityKey == null ? null : entityKey.getFirstValue());
     }
 
-    return propertyCondition(foreignKeyProperty.getProperties().get(0), conditionType, Domain.getValues(keys));
+    return propertyCondition(foreignKeyProperty.getProperties().get(0), conditionType, Entities.getValues(keys));
   }
 
   /**
@@ -346,7 +347,7 @@ public final class EntityConditions {
       return createCompositeKeyCondition(firstKey.getProperties(), firstKey.getProperties(), Condition.Type.LIKE, keys);
     }
 
-    return propertyCondition(firstKey.getFirstProperty(), Condition.Type.LIKE, Domain.getValues(keys));
+    return propertyCondition(firstKey.getFirstProperty(), Condition.Type.LIKE, Entities.getValues(keys));
   }
 
   /** Assumes {@code keys} is not empty. */

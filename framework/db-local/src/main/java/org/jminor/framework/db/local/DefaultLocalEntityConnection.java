@@ -27,6 +27,7 @@ import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -270,7 +271,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String updateSQL = null;
     synchronized (connection) {
       try {
-        final Map<String, List<Entity>> mappedEntities = Domain.mapToEntityId(entities);
+        final Map<String, List<Entity>> mappedEntities = Entities.mapToEntityId(entities);
         if (optimisticLocking) {
           lockAndCheckForUpdate(mappedEntities);
         }
@@ -301,7 +302,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statementProperties.clear();
             statementValues.clear();
           }
-          final List<Entity> selected = doSelectMany(entityConditions.selectCondition(Domain.getKeys(toUpdate)), 0);
+          final List<Entity> selected = doSelectMany(entityConditions.selectCondition(Entities.getKeys(toUpdate)), 0);
           if (selected.size() != toUpdate.size()) {
             throw new UpdateException(toUpdate.size() + " updated rows expected, query returned " + selected.size() + " entityId: " + entityId);
           }
@@ -370,7 +371,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String deleteSQL = null;
     synchronized (connection) {
       try {
-        final Map<String, List<Entity.Key>> mappedKeys = Domain.mapKeysToEntityID(entityKeys);
+        final Map<String, List<Entity.Key>> mappedKeys = Entities.mapKeysToEntityID(entityKeys);
         for (final String entityId : mappedKeys.keySet()) {
           checkReadOnly(entityId);
         }
@@ -433,7 +434,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         final List<Entity> result = new ArrayList<>();
-        for (final Map.Entry<String, List<Entity.Key>> entry : Domain.mapKeysToEntityID(keys).entrySet()) {
+        for (final Map.Entry<String, List<Entity.Key>> entry : Entities.mapKeysToEntityID(keys).entrySet()) {
           result.addAll(doSelectMany(entityConditions.selectCondition(entry.getValue()), 0));
         }
         if (!isTransactionOpen()) {
@@ -785,18 +786,18 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    */
   private void lockAndCheckForUpdate(final Map<String, List<Entity>> entities) throws SQLException, RecordModifiedException {
     for (final Map.Entry<String, List<Entity>> entry : entities.entrySet()) {
-      final List<Entity.Key> originalKeys = Domain.getKeys(entry.getValue(), true);
+      final List<Entity.Key> originalKeys = Entities.getKeys(entry.getValue(), true);
       final EntitySelectCondition selectForUpdateCondition = entityConditions.selectCondition(originalKeys);
       selectForUpdateCondition.setForUpdate(true);
       final List<Entity> currentValues = doSelectMany(selectForUpdateCondition, 0);
-      final Map<Entity.Key, Entity> mappedEntities = Domain.mapToKey(currentValues);
+      final Map<Entity.Key, Entity> mappedEntities = Entities.mapToKey(currentValues);
       for (final Entity entity : entry.getValue()) {
         final Entity current = mappedEntities.get(entity.getOriginalKey());
         if (current == null) {
           throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED_EXCEPTION)
                   + ", " + entity.getOriginalCopy() + " " + MESSAGES.getString("has_been_deleted"));
         }
-        final Collection<Property.ColumnProperty> modified = Domain.getModifiedColumnProperties(entity, current);
+        final Collection<Property.ColumnProperty> modified = Entities.getModifiedColumnProperties(entity, current);
         if (!modified.isEmpty()) {
           throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modified));
         }
@@ -859,7 +860,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             referencedEntitiesCondition.setForeignKeyFetchDepthLimit(conditionFetchDepthLimit);
             final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);
-            final Map<Entity.Key, Entity> mappedReferencedEntities = Domain.mapToKey(referencedEntities);
+            final Map<Entity.Key, Entity> mappedReferencedEntities = Entities.mapToKey(referencedEntities);
             for (int j = 0; j < entities.size(); j++) {
               final Entity entity = entities.get(j);
               final Entity.Key referencedKey = entity.getReferencedKey(foreignKeyProperty);

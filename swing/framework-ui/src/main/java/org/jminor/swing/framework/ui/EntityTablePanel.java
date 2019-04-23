@@ -19,7 +19,7 @@ import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -549,13 +549,13 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       return;
     }
 
-    final List<Entity> selectedEntities = Domain.copyEntities(getEntityTableModel().getSelectionModel().getSelectedItems());
+    final List<Entity> selectedEntities = Entities.copyEntities(getEntityTableModel().getSelectionModel().getSelectedItems());
     final InputProviderPanel inputPanel = new InputProviderPanel(propertyToUpdate.getCaption(),
             getInputProvider(propertyToUpdate, selectedEntities));
     UiUtil.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), true,
             inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
-      Domain.put(propertyToUpdate.getPropertyId(), inputPanel.getValue(), selectedEntities);
+      Entities.put(propertyToUpdate.getPropertyId(), inputPanel.getValue(), selectedEntities);
       try {
         UiUtil.setWaitCursor(true, this);
         getEntityTableModel().update(selectedEntities);
@@ -619,8 +619,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   /**
    * Exports the selected records as a text file using the available serializer
-   * @see Domain#getEntitySerializer()
-   * @see Domain#ENTITY_SERIALIZER_CLASS
+   * @see org.jminor.framework.domain.Domain#getEntitySerializer()
+   * @see org.jminor.framework.domain.Domain#ENTITY_SERIALIZER_CLASS
    */
   public final void exportSelected() {
     try {
@@ -1191,7 +1191,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @see #updateSelectedEntities(org.jminor.framework.domain.Property)
    */
   protected InputProvider getInputProvider(final Property property, final List<Entity> toUpdate) {
-    final Collection values = Domain.getDistinctValues(property.getPropertyId(), toUpdate);
+    final Collection values = Entities.getDistinctValues(property.getPropertyId(), toUpdate);
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
     if (property instanceof Property.ValueListProperty) {
       return new ValueListInputProvider(currentValue, ((Property.ValueListProperty) property).getValues());

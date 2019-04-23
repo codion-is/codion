@@ -10,6 +10,7 @@ import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 
 import org.junit.jupiter.api.Test;
@@ -260,7 +261,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     testModel.refresh();
     testModel.getSelectionModel().setSelectedIndexes(Arrays.asList(0, 1));
     final List<Entity> entities = testModel.getSelectionModel().getSelectedItems();
-    Domain.put(TestDomain.DETAIL_STRING, "hello", entities);
+    Entities.put(TestDomain.DETAIL_STRING, "hello", entities);
     assertThrows(IllegalStateException.class, () -> testModel.update(entities));
   }
 

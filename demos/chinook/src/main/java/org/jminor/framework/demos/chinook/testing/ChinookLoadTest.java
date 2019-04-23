@@ -8,7 +8,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.framework.model.EntityComboBoxModel;
@@ -48,7 +48,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
                 selectRandomRows(invoiceModel.getTableModel(), RANDOM.nextInt(6) + 2);
                 final SwingEntityTableModel invoiceLineTableModel = invoiceModel.getDetailModel(T_INVOICELINE).getTableModel();
                 final List<Entity> invoiceLines = invoiceLineTableModel.getAllItems();
-                Domain.put(Chinook.INVOICELINE_QUANTITY, RANDOM.nextInt(4) + 1, invoiceLines);
+                Entities.put(Chinook.INVOICELINE_QUANTITY, RANDOM.nextInt(4) + 1, invoiceLines);
 
                 invoiceLineTableModel.update(invoiceLines);
 
@@ -94,7 +94,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
 
                 final String reportPath = EntityApplicationModel.getReportPath() + "/customer_report.jasper";
                 final Collection customerIDs =
-                        Domain.getDistinctValues(CUSTOMER_CUSTOMERID, customerModel.getSelectionModel().getSelectedItems());
+                        Entities.getDistinctValues(CUSTOMER_CUSTOMERID, customerModel.getSelectionModel().getSelectedItems());
                 final HashMap<String, Object> reportParameters = new HashMap<>();
                 reportParameters.put("CUSTOMER_IDS", customerIDs);
                 EntityReportUtil.fillReport(new JasperReportsWrapper(reportPath, reportParameters),

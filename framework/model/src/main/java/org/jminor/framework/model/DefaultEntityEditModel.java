@@ -21,6 +21,7 @@ import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.valuemap.DefaultValueMapEditModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -369,13 +370,13 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public boolean isEntityNew() {
-    return Domain.isEntityNew(getEntity());
+    return Entities.isEntityNew(getEntity());
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setForeignKeyValues(final List<Entity> values) {
-    final Map<String, List<Entity>> mapped = Domain.mapToEntityId(values);
+    final Map<String, List<Entity>> mapped = Entities.mapToEntityId(values);
     for (final Map.Entry<String, List<Entity>> entry : mapped.entrySet()) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : getDomain()
               .getForeignKeyProperties(entityId, entry.getKey())) {
@@ -464,7 +465,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
       return Collections.emptyList();
     }
 
-    fireBeforeUpdateEvent(new DefaultUpdateEvent(Domain.mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(entities))));
+    fireBeforeUpdateEvent(new DefaultUpdateEvent(Entities.mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(entities))));
     validate(modifiedEntities);
 
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
@@ -473,7 +474,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
       doSetEntity(updatedEntities.get(index));
     }
 
-    fireAfterUpdateEvent(new DefaultUpdateEvent(Domain.mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(updatedEntities))));
+    fireAfterUpdateEvent(new DefaultUpdateEvent(Entities.mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(updatedEntities))));
 
     return updatedEntities;
   }
@@ -794,7 +795,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    * @throws DatabaseException in case of a database exception
    */
   protected List<Entity> doDelete(final List<Entity> entities) throws DatabaseException {
-    connectionProvider.getConnection().delete(Domain.getKeys(entities));
+    connectionProvider.getConnection().delete(Entities.getKeys(entities));
 
     return entities;
   }
@@ -810,7 +811,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
    * @see #update(java.util.List)
    */
   protected List<Entity> getModifiedEntities(final List<Entity> entities) {
-    return Domain.getModifiedEntities(entities);
+    return Entities.getModifiedEntities(entities);
   }
 
   /**
