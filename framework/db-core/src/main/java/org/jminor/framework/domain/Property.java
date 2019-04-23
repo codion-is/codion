@@ -98,12 +98,12 @@ public interface Property extends Attribute, Serializable {
   }
 
   /**
-   * @return the domain id
+   * @return the id of the domain model this property belongs to
    */
   String getDomainId();
 
   /**
-   * @param domainId the domain id
+   * @param domainId the id of the domain model this property belongs to
    * @return this Property instance
    */
   Property setDomainID(final String domainId);
@@ -268,21 +268,22 @@ public interface Property extends Attribute, Serializable {
   Property setMin(final double min);
 
   /**
-   * Sets the maximum fraction digits to show for this property, only applicable to DOUBLE properties
-   * Note that this setting is overridden during subsequent calls to {@link #setFormat(java.text.Format)}
+   * Sets the maximum fraction digits to show for this property, only applicable to properties based on Types.DOUBLE.
+   * This setting is overridden during subsequent calls to {@link #setFormat(java.text.Format)}.
+   * Note that values associated with this property are automatically rounded to {@code maximumFractionDigits} digits.
    * @param maximumFractionDigits the maximum fraction digits
    * @return this Property instance
    */
   Property setMaximumFractionDigits(final int maximumFractionDigits);
 
   /**
-   * @return the maximum number of fraction digits to show for this property value,
-   * only applicable to DOUBLE properties
+   * @return the maximum number of fraction digits to use for this property value,
+   * only applicable to properties based on Types.DOUBLE
    */
   int getMaximumFractionDigits();
 
   /**
-   * Specifies whether to use number grouping when presenting this value.
+   * Specifies whether to use number grouping when presenting the value associated with this property.
    * i.e. 1234567 shown as 1.234.567 or 1,234,567 depending on locale.
    * By default grouping is not used.
    * Only applicable to numerical properties.
@@ -293,13 +294,12 @@ public interface Property extends Attribute, Serializable {
   Property setUseNumberFormatGrouping(final boolean useGrouping);
 
   /**
-   * @return the preferred column width of this property when
-   * presented in a table, 0 if none has been specified
+   * @return the preferred column width of this property in pixels when presented in a table, 0 if none has been specified
    */
   int getPreferredColumnWidth();
 
   /**
-   * @param preferredColumnWidth the preferred column width to be used when this property is shown in a table
+   * @param preferredColumnWidth the preferred column width of this property in pixels when displayed in a table
    * @return this Property instance
    */
   Property setPreferredColumnWidth(final int preferredColumnWidth);
@@ -319,7 +319,7 @@ public interface Property extends Attribute, Serializable {
   Property setNullable(final boolean nullable);
 
   /**
-   * @return true if this property accepts a null value
+   * @return true if values associated with this property can be set null
    */
   boolean isNullable();
 
