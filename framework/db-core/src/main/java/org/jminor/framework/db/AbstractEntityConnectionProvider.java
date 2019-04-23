@@ -10,7 +10,7 @@ import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.Version;
 import org.jminor.framework.db.condition.EntityConditions;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,12 +39,12 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
   private String clientTypeId;
 
   private T entityConnection;
-  private Entities domain;
+  private Domain domain;
   private EntityConditions entityConditions;
 
   /** {@inheritDoc} */
   @Override
-  public final Entities getDomain() {
+  public final Domain getDomain() {
     synchronized (lock) {
       if (domain == null) {
         doConnect();

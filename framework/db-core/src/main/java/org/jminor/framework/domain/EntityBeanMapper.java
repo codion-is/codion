@@ -24,7 +24,7 @@ public class EntityBeanMapper {
   private static final String PROPERTY_ID_PARAM = "propertyId";
   private static final String PROPERTY_NAME_PARAM = "propertyName";
 
-  private final Entities domain;
+  private final Domain domain;
 
   private final Map<Class, String> entityIdMap = new HashMap<>();
   private final Map<Class, Map<String, GetterSetter>> propertyMap = new HashMap<>();
@@ -32,7 +32,7 @@ public class EntityBeanMapper {
   /**
    * @param domain the domain entities
    */
-  public EntityBeanMapper(final Entities domain) {
+  public EntityBeanMapper(final Domain domain) {
     this.domain = domain;
   }
 
@@ -110,9 +110,9 @@ public class EntityBeanMapper {
   }
 
   /**
-   * Transforms the given beans into a Entities according to the information found in this EntityBeanMapper instance
+   * Transforms the given beans into a entities according to the information found in this EntityBeanMapper instance
    * @param beans the beans to transform
-   * @return a List containing the Entities derived from the given beans, an empty List if {@code beans} is null or empty
+   * @return a List containing the entities derived from the given beans, an empty List if {@code beans} is null or empty
    * @throws InvocationTargetException in case an exception is thrown during a bean method call
    * @throws IllegalAccessException if a required method is not accessible
    */

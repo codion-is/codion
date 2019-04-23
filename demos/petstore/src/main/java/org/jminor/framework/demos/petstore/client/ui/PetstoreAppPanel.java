@@ -14,7 +14,7 @@ import org.jminor.framework.demos.petstore.beans.ui.ProductEditPanel;
 import org.jminor.framework.demos.petstore.beans.ui.TagEditPanel;
 import org.jminor.framework.demos.petstore.beans.ui.TagItemEditPanel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
@@ -33,7 +33,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppPa
      *     ITEM
      *       ITEMTAG
      */
-    final Entities domain = getModel().getDomain();
+    final Domain domain = getModel().getDomain();
     final EntityPanelProvider tagItemProvider = new EntityPanelProvider(Petstore.T_TAG_ITEM,
             domain.getCaption(Petstore.T_TAG_ITEM)).setEditPanelClass(TagItemEditPanel.class);
     final EntityPanelProvider itemProvider = new EntityPanelProvider(Petstore.T_ITEM,

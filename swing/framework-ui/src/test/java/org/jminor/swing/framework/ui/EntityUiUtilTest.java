@@ -7,7 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityUiUtilTest {
 
-  private static final Entities ENTITIES = new TestDomain();
+  private static final Domain DOMAIN = new TestDomain();
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(new User(
@@ -38,30 +38,30 @@ public final class EntityUiUtilTest {
 
   @Test
   public void createLabel() {
-    final JLabel label = EntityUiUtil.createLabel(ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING));
-    assertEquals(ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING).getCaption(), label.getText());
+    final JLabel label = EntityUiUtil.createLabel(DOMAIN.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING));
+    assertEquals(DOMAIN.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING).getCaption(), label.getText());
   }
 
   @Test
   public void createTristateCheckBoxNonNullableBooleanProperty() {
-    assertThrows(IllegalArgumentException.class, () -> EntityUiUtil.createTristateCheckBox(ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_BOOLEAN), editModel, null, true));
+    assertThrows(IllegalArgumentException.class, () -> EntityUiUtil.createTristateCheckBox(DOMAIN.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_BOOLEAN), editModel, null, true));
   }
 
   @Test
   public void createTristateCheckBoxNonBooleanProperty() {
-    assertThrows(IllegalArgumentException.class, () -> EntityUiUtil.createTristateCheckBox(ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_TIMESTAMP), editModel, null, true));
+    assertThrows(IllegalArgumentException.class, () -> EntityUiUtil.createTristateCheckBox(DOMAIN.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_TIMESTAMP), editModel, null, true));
   }
 
   @Test
   public void createCheckBoxNonBooleanProperty() {
-    assertThrows(IllegalArgumentException.class, () -> EntityUiUtil.createCheckBox(ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_TIMESTAMP), editModel));
+    assertThrows(IllegalArgumentException.class, () -> EntityUiUtil.createCheckBox(DOMAIN.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_TIMESTAMP), editModel));
   }
 
   @Test
   public void createCheckBox() {
     //set default values
     editModel.setEntity(null);
-    final JCheckBox box = EntityUiUtil.createCheckBox(ENTITIES.getProperty(TestDomain.T_DETAIL,
+    final JCheckBox box = EntityUiUtil.createCheckBox(DOMAIN.getProperty(TestDomain.T_DETAIL,
             TestDomain.DETAIL_BOOLEAN), editModel);
     assertTrue(box.isSelected());//default value is true
     assertTrue((Boolean) editModel.getValue(TestDomain.DETAIL_BOOLEAN));
@@ -79,7 +79,7 @@ public final class EntityUiUtilTest {
   public void createTristateCheckBox() {
     //set default values
     editModel.setEntity(null);
-    final TristateCheckBox box = EntityUiUtil.createTristateCheckBox(ENTITIES.getProperty(TestDomain.T_DETAIL,
+    final TristateCheckBox box = EntityUiUtil.createTristateCheckBox(DOMAIN.getProperty(TestDomain.T_DETAIL,
             TestDomain.DETAIL_BOOLEAN_NULLABLE), editModel, null, false);
     assertTrue(box.isSelected());//default value is true
     assertTrue((Boolean) editModel.getValue(TestDomain.DETAIL_BOOLEAN_NULLABLE));
@@ -97,7 +97,7 @@ public final class EntityUiUtilTest {
   public void createBooleanComboBox() {
     //set default values
     editModel.setEntity(null);
-    final BooleanComboBoxModel boxModel = (BooleanComboBoxModel) EntityUiUtil.createBooleanComboBox(ENTITIES.getProperty(TestDomain.T_DETAIL,
+    final BooleanComboBoxModel boxModel = (BooleanComboBoxModel) EntityUiUtil.createBooleanComboBox(DOMAIN.getProperty(TestDomain.T_DETAIL,
             TestDomain.DETAIL_BOOLEAN), editModel).getModel();
     assertTrue(boxModel.getSelectedValue().getItem());//default value is true
     boxModel.setSelectedItem(null);
@@ -109,7 +109,7 @@ public final class EntityUiUtilTest {
 
   @Test
   public void createValueListComboBox() {
-    final JComboBox box = EntityUiUtil.createValueListComboBox((Property.ValueListProperty) ENTITIES.getProperty(TestDomain.T_DETAIL,
+    final JComboBox box = EntityUiUtil.createValueListComboBox((Property.ValueListProperty) DOMAIN.getProperty(TestDomain.T_DETAIL,
             TestDomain.DETAIL_INT_VALUE_LIST), editModel);
 
     assertNull(editModel.getValue(TestDomain.DETAIL_INT_VALUE_LIST));
@@ -126,7 +126,7 @@ public final class EntityUiUtilTest {
   @Test
   public void createComboBox() {
     final DefaultComboBoxModel boxModel = new DefaultComboBoxModel<>(new Object[] {0, 1, 2, 3});
-    final JComboBox box = EntityUiUtil.createComboBox(ENTITIES.getProperty(TestDomain.T_DETAIL,
+    final JComboBox box = EntityUiUtil.createComboBox(DOMAIN.getProperty(TestDomain.T_DETAIL,
             TestDomain.DETAIL_INT), editModel, boxModel, null);
 
     assertNull(editModel.getValue(TestDomain.DETAIL_INT));

@@ -29,7 +29,7 @@ import org.jminor.common.remote.Server;
 import org.jminor.common.remote.ServerException;
 import org.jminor.common.remote.Servers;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -314,7 +314,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     if (domainId == null) {
       throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID + "' parameter not specified");
     }
-    final Entities domainModel = Entities.getDomain(domainId);
+    final Domain domainModel = Domain.getDomain(domainId);
     if (connectionPool != null) {
       return new DefaultRemoteEntityConnection(domainModel, connectionPool, remoteClient, port, clientLoggingEnabled,
               clientSocketFactory, serverSocketFactory);
@@ -397,7 +397,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    */
   Map<String, String> getEntityDefinitions() {
     final Map<String, String> definitions = new HashMap<>();
-    for (final Entities domain : Entities.getAllDomains()) {
+    for (final Domain domain : Domain.getRegisteredDomains()) {
       for (final String entityId : domain.getDefinedEntities()) {
         definitions.put(entityId, domain.getTableName(entityId));
       }
@@ -672,7 +672,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
         for (final String className : domainModelClassNames) {
           final String message = "Server loading and registering domain model class '" + className + FROM_CLASSPATH;
           LOG.info(message);
-          final Entities domain = (Entities) Class.forName(className).getDeclaredConstructor().newInstance();
+          final Domain domain = (Domain) Class.forName(className).getDeclaredConstructor().newInstance();
           domain.registerDomain();
         }
       }

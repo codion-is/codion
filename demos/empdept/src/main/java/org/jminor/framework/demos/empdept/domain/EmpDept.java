@@ -4,7 +4,7 @@
 package org.jminor.framework.demos.empdept.domain;
 
 import org.jminor.common.Item;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 
 import java.awt.Color;
 import java.sql.Types;
@@ -18,7 +18,7 @@ import static org.jminor.framework.domain.Properties.*;
 /**
  * This class contains the specification for the EmpDept application domain model
  */
-public final class EmpDept extends Entities {
+public final class EmpDept extends Domain {
 
   private static final ResourceBundle bundle =
           ResourceBundle.getBundle("org.jminor.framework.demos.empdept.domain.EmpDept", Locale.getDefault());
@@ -77,7 +77,7 @@ public final class EmpDept extends Entities {
                     .setPreferredColumnWidth(150).setMaxLength(13))
             .setSmallDataset(true)
             .setOrderBy(orderBy().ascending(DEPARTMENT_NAME))
-            .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
+            .setStringProvider(new StringProvider(DEPARTMENT_NAME))
             .setCaption(getString(DEPARTMENT));
   }
 
@@ -105,7 +105,7 @@ public final class EmpDept extends Entities {
             .setKeyGenerator(incrementKeyGenerator(T_EMPLOYEE, EMPLOYEE_ID))
             .setOrderBy(orderBy().ascending(EMPLOYEE_DEPARTMENT, EMPLOYEE_NAME))
             .setSearchPropertyIds(EMPLOYEE_NAME)
-            .setStringProvider(new Entities.StringProvider(EMPLOYEE_NAME))
+            .setStringProvider(new StringProvider(EMPLOYEE_NAME))
             .setCaption(getString(EMPLOYEE))
             .setBackgroundColorProvider((entity, property) -> {
               if (property.is(EMPLOYEE_JOB) && "MANAGER".equals(entity.get(EMPLOYEE_JOB))) {

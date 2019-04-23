@@ -27,9 +27,9 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   private static final long serialVersionUID = 1;
 
-  private static final Entity.KeyGenerator DEFAULT_KEY_GENERATOR = new Entities.DefaultKeyGenerator();
+  private static final Entity.KeyGenerator DEFAULT_KEY_GENERATOR = new Domain.DefaultKeyGenerator();
 
-  private static final Entity.ToString DEFAULT_STRING_PROVIDER = new Entities.DefaultStringProvider();
+  private static final Entity.ToString DEFAULT_STRING_PROVIDER = new Domain.DefaultStringProvider();
 
   /**
    * The domainId

@@ -7,7 +7,7 @@ import org.jminor.common.Conjunction;
 import org.jminor.common.Util;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.condition.Conditions;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -32,12 +32,12 @@ public final class EntityConditions {
   private static final String ENTITY_ID_PARAM = "entityId";
   private static final String CONDITION_TYPE_PARAM = "conditionType";
 
-  private final Entities domain;
+  private final Domain domain;
 
   /**
-   * @param domain the domain entities
+   * @param domain the domain model
    */
-  public EntityConditions(final Entities domain) {
+  public EntityConditions(final Domain domain) {
     this.domain = Objects.requireNonNull(domain, "domain");
   }
 
@@ -313,7 +313,7 @@ public final class EntityConditions {
               entityKey == null ? null : entityKey.getFirstValue());
     }
 
-    return propertyCondition(foreignKeyProperty.getProperties().get(0), conditionType, Entities.getValues(keys));
+    return propertyCondition(foreignKeyProperty.getProperties().get(0), conditionType, Domain.getValues(keys));
   }
 
   /**
@@ -346,7 +346,7 @@ public final class EntityConditions {
       return createCompositeKeyCondition(firstKey.getProperties(), firstKey.getProperties(), Condition.Type.LIKE, keys);
     }
 
-    return propertyCondition(firstKey.getFirstProperty(), Condition.Type.LIKE, Entities.getValues(keys));
+    return propertyCondition(firstKey.getFirstProperty(), Condition.Type.LIKE, Domain.getValues(keys));
   }
 
   /** Assumes {@code keys} is not empty. */
@@ -498,7 +498,7 @@ public final class EntityConditions {
 
     private static final long serialVersionUID = 1;
 
-    private Entities domain;
+    private Domain domain;
 
     private EntityCondition condition;
     private HashMap<String, Integer> foreignKeyFetchDepthLimits;
@@ -514,7 +514,7 @@ public final class EntityConditions {
      * @param domain the domain model
      * @param entityId the ID of the entity to select
      */
-    private DefaultEntitySelectCondition(final Entities domain, final String entityId) {
+    private DefaultEntitySelectCondition(final Domain domain, final String entityId) {
       this(domain, entityId, null);
     }
 
@@ -526,7 +526,7 @@ public final class EntityConditions {
      * @see PropertyCondition
      * @see EntityKeyCondition
      */
-    private DefaultEntitySelectCondition(final Entities domain, final String entityId, final Condition<Property.ColumnProperty> condition) {
+    private DefaultEntitySelectCondition(final Domain domain, final String entityId, final Condition<Property.ColumnProperty> condition) {
       this(domain, entityId, condition, -1);
     }
 
@@ -539,7 +539,7 @@ public final class EntityConditions {
      * @see PropertyCondition
      * @see EntityKeyCondition
      */
-    private DefaultEntitySelectCondition(final Entities domain, final String entityId,
+    private DefaultEntitySelectCondition(final Domain domain, final String entityId,
                                          final Condition<Property.ColumnProperty> condition, final int fetchCount) {
       this.domain = Objects.requireNonNull(domain);
       this.condition = new DefaultEntityCondition(entityId, condition);
@@ -668,7 +668,7 @@ public final class EntityConditions {
       condition = (EntityCondition) stream.readObject();
       limit = stream.readInt();
       offset = stream.readInt();
-      domain = Entities.getDomain(domainId);
+      domain = Domain.getDomain(domainId);
     }
   }
 
@@ -729,7 +729,7 @@ public final class EntityConditions {
         final String domainId = (String) stream.readObject();
         final String entityId = (String) stream.readObject();
         final String propertyId = (String) stream.readObject();
-        properties.add(Entities.getDomain(domainId).getColumnProperty(entityId, propertyId));
+        properties.add(Domain.getDomain(domainId).getColumnProperty(entityId, propertyId));
       }
     }
   }
@@ -945,7 +945,7 @@ public final class EntityConditions {
       final String domainId = (String) stream.readObject();
       final String entityId = (String) stream.readObject();
       final String propertyId = (String) stream.readObject();
-      property = Entities.getDomain(domainId).getColumnProperty(entityId, propertyId);
+      property = Domain.getDomain(domainId).getColumnProperty(entityId, propertyId);
       conditionType = (Type) stream.readObject();
       isNullCondition = stream.readBoolean();
       caseSensitive = stream.readBoolean();

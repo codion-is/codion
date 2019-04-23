@@ -45,11 +45,11 @@ import java.util.stream.Collectors;
 /**
  * A {@link Entity} repository specifying the {@link Entity.Definition}s for a given domain.
  */
-public class Entities implements Serializable {
+public class Domain implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(Entities.class.getName(), Locale.getDefault());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(Domain.class.getName(), Locale.getDefault());
 
   private static final String MSG_PROPERTY_VALUE_IS_REQUIRED = "property_value_is_required";
 
@@ -74,7 +74,7 @@ public class Entities implements Serializable {
   private static final String PROPERTY_ID_PARAM = "propertyId";
   private static final String PROPERTY_PARAM = "property";
 
-  private static final Map<String, Entities> REGISTERED_DOMAINS = new HashMap<>();
+  private static final Map<String, Domain> REGISTERED_DOMAINS = new HashMap<>();
 
   private final String domainId;
   private final Map<String, Entity.Definition> entityDefinitions = new LinkedHashMap<>();
@@ -83,16 +83,16 @@ public class Entities implements Serializable {
   private final transient Map<String, DatabaseConnection.Operation> databaseOperations = new HashMap<>();
 
   /**
-   * Instantiates a Entities instance
+   * Instantiates a Domain instance
    */
-  public Entities() {
+  public Domain() {
     this.domainId = getClass().getSimpleName();
   }
 
   /**
    * @param domainId the domain identifier
    */
-  public Entities(final String domainId) {
+  public Domain(final String domainId) {
     this.domainId = Objects.requireNonNull(domainId, "domainId");
   }
 
@@ -100,7 +100,7 @@ public class Entities implements Serializable {
    * A copy constructor
    * @param domain the domain to copy
    */
-  public Entities(final Entities domain) {
+  public Domain(final Domain domain) {
     this.domainId = domain.domainId;
     this.entityDefinitions.putAll(domain.entityDefinitions);
   }
@@ -769,11 +769,11 @@ public class Entities implements Serializable {
   @SuppressWarnings({"unchecked"})
   public final Serializer<Entity> getEntitySerializer() {
     if (!entitySerializerAvailable()) {
-      throw new IllegalArgumentException("Required configuration property is missing: " + Entities.ENTITY_SERIALIZER_CLASS);
+      throw new IllegalArgumentException("Required configuration property is missing: " + Domain.ENTITY_SERIALIZER_CLASS);
     }
 
     try {
-      final String serializerClass = Entities.ENTITY_SERIALIZER_CLASS.get();
+      final String serializerClass = Domain.ENTITY_SERIALIZER_CLASS.get();
 
       return (Serializer<Entity>) Class.forName(serializerClass).getConstructor().newInstance();
     }
@@ -846,11 +846,11 @@ public class Entities implements Serializable {
   }
 
   /**
-   * Registers this instance for lookup via {@link Entities#getDomain(String)}
-   * @return this Entities instance
+   * Registers this instance for lookup via {@link Domain#getDomain(String)}
+   * @return this Domain instance
    * @see #getDomainId()
    */
-  public final Entities registerDomain() {
+  public final Domain registerDomain() {
     return registerDomain(domainId, this);
   }
 
@@ -1156,8 +1156,8 @@ public class Entities implements Serializable {
    * @throws IllegalArgumentException in case the domain has not been registered
    * @see #registerDomain()
    */
-  public static Entities getDomain(final String domainId) {
-    final Entities domain = REGISTERED_DOMAINS.get(domainId);
+  public static Domain getDomain(final String domainId) {
+    final Domain domain = REGISTERED_DOMAINS.get(domainId);
     if (domain == null) {
       throw new IllegalArgumentException("Domain '" + domainId + "' has not been registered");
     }
@@ -1168,7 +1168,7 @@ public class Entities implements Serializable {
   /**
    * @return all domains that have been registered via {@link #registerDomain()}
    */
-  public static Collection<Entities> getAllDomains() {
+  public static Collection<Domain> getRegisteredDomains() {
     return Collections.unmodifiableCollection(REGISTERED_DOMAINS.values());
   }
 
@@ -1316,7 +1316,7 @@ public class Entities implements Serializable {
     throw new IllegalArgumentException("Entity is missing a primary key: " + entityId);
   }
 
-  private Entities registerDomain(final String domainId, final Entities domain) {
+  private Domain registerDomain(final String domainId, final Domain domain) {
     REGISTERED_DOMAINS.put(domainId, domain);
 
     return domain;
@@ -1355,7 +1355,7 @@ public class Entities implements Serializable {
    * "key4" -&#62; {Entity instance with a single mapping "refKey" -&#62; refValue}
    * </pre>
    * {@code
-   * Entities.StringProvider provider = new Entities.StringProvider();<br>
+   * Domain.StringProvider provider = new Domain.StringProvider();<br>
    * provider.addText("key1=").addValue("key1").addText(", key3='").addValue("key3")<br>
    *         .addText("' foreign key value=").addForeignKeyValue("key4", "refKey");<br>
    * System.out.println(provider.toString(entity));<br>
@@ -1679,7 +1679,7 @@ public class Entities implements Serializable {
    */
   private static final class EntityResultPacker implements ResultPacker<Entity> {
 
-    private final Entities domain;
+    private final Domain domain;
     private final String entityId;
     private final List<Property.ColumnProperty> properties;
     private final List<Property.TransientProperty> transientProperties;
@@ -1690,7 +1690,7 @@ public class Entities implements Serializable {
      * Instantiates a new EntityResultPacker.
      * @param entityId the ID of the entities this packer packs
      */
-    private EntityResultPacker(final Entities domain, final String entityId, final List<Property.ColumnProperty> columnProperties,
+    private EntityResultPacker(final Domain domain, final String entityId, final List<Property.ColumnProperty> columnProperties,
                                final List<Property.TransientProperty> transientProperties, final int propertyCount) {
       this.domain = domain;
       this.entityId = entityId;

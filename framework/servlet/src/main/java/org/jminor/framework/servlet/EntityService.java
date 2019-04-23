@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * A service for dealing with Entities
+ * A service for dealing with entities
  */
 @Path("/")
 public final class EntityService extends Application {

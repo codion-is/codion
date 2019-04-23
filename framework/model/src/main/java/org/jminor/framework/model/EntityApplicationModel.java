@@ -10,7 +10,7 @@ import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.model.Refreshable;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 
 import java.util.List;
 
@@ -99,9 +99,9 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
   StateObserver getConnectionValidObserver();
 
   /**
-   * @return the underlying domain model Entities
+   * @return the underlying domain model
    */
-  Entities getDomain();
+  Domain getDomain();
 
   /**
    * Adds the given entity models to this model.

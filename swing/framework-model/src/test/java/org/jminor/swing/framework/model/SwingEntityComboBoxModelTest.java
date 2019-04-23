@@ -10,7 +10,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.TestDomain;
@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class SwingEntityComboBoxModelTest {
 
-  private static final Entities ENTITIES = new TestDomain();
+  private static final Domain DOMAIN = new TestDomain();
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(new User(
@@ -116,7 +116,7 @@ public final class SwingEntityComboBoxModelTest {
     comboBoxModel.setFilterCondition(new FilterCondition.RejectAllCondition<>());
     comboBoxModel.setSelectedEntityByKey(clark.getKey());
     assertEquals(clark, comboBoxModel.getSelectedValue());
-    final Entity.Key nobodyPK = ENTITIES.key(TestDomain.T_EMP);
+    final Entity.Key nobodyPK = DOMAIN.key(TestDomain.T_EMP);
     nobodyPK.put(TestDomain.EMP_ID, -1);
     comboBoxModel.setSelectedEntityByKey(nobodyPK);
     assertEquals(clark, comboBoxModel.getSelectedValue());
@@ -214,10 +214,10 @@ public final class SwingEntityComboBoxModelTest {
   @Test
   public void getEntity() {
     comboBoxModel.refresh();
-    final Entity.Key allenPK = ENTITIES.key(TestDomain.T_EMP);
+    final Entity.Key allenPK = DOMAIN.key(TestDomain.T_EMP);
     allenPK.put(TestDomain.EMP_ID, 1);
     assertNotNull(comboBoxModel.getEntity(allenPK));
-    final Entity.Key nobodyPK = ENTITIES.key(TestDomain.T_EMP);
+    final Entity.Key nobodyPK = DOMAIN.key(TestDomain.T_EMP);
     nobodyPK.put(TestDomain.EMP_ID, -1);
     assertNull(comboBoxModel.getEntity(nobodyPK));
   }

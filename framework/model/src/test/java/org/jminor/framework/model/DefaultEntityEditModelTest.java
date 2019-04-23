@@ -16,7 +16,7 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultEntityEditModelTest {
 
-  private static final Entities ENTITIES = new TestDomain();
+  private static final Domain DOMAIN = new TestDomain();
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(new User(
           System.getProperty("jminor.unittest.username", "scott"),
@@ -45,8 +45,8 @@ public final class DefaultEntityEditModelTest {
 
   @BeforeEach
   public void setUp() {
-    jobProperty = ENTITIES.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
-    deptProperty = ENTITIES.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
+    jobProperty = DOMAIN.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
+    deptProperty = DOMAIN.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
     employeeEditModel = new TestEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 
@@ -66,7 +66,7 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void createForeignKeyLookupModel() {
-    final EntityLookupModel model = employeeEditModel.createForeignKeyLookupModel(ENTITIES.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
+    final EntityLookupModel model = employeeEditModel.createForeignKeyLookupModel(DOMAIN.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
     assertNotNull(model);
     assertEquals(TestDomain.T_DEPARTMENT, model.getEntityId());
   }
@@ -126,7 +126,7 @@ public final class DefaultEntityEditModelTest {
     dept = employeeEditModel.getForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK);
     assertNull(dept);
     dept = (Entity) employeeEditModel.getDefaultValue(
-            ENTITIES.getProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
+            DOMAIN.getProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
     assertNotNull(dept);
   }
 
@@ -244,13 +244,13 @@ public final class DefaultEntityEditModelTest {
     //test validation
     try {
       employeeEditModel.setValue(TestDomain.EMP_COMMISSION, 50d);
-      employeeEditModel.validate(ENTITIES.getProperty(TestDomain.T_EMP, TestDomain.EMP_COMMISSION));
+      employeeEditModel.validate(DOMAIN.getProperty(TestDomain.T_EMP, TestDomain.EMP_COMMISSION));
       fail("Validation should fail on invalid commission value");
     }
     catch (final ValidationException e) {
       assertEquals(TestDomain.EMP_COMMISSION, e.getKey());
       assertEquals(50d, e.getValue());
-      final Property property = ENTITIES.getProperty(TestDomain.T_EMP, (String) e.getKey());
+      final Property property = DOMAIN.getProperty(TestDomain.T_EMP, (String) e.getKey());
       assertTrue(e.getMessage().contains(property.toString()));
       assertTrue(e.getMessage().contains(property.getMin().toString()));
     }
@@ -298,7 +298,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.setValue(TestDomain.EMP_NAME, "Björn");
       employeeEditModel.setValue(TestDomain.EMP_SALARY, 1000d);
 
-      final Entity tmpDept = ENTITIES.entity(TestDomain.T_DEPARTMENT);
+      final Entity tmpDept = DOMAIN.entity(TestDomain.T_DEPARTMENT);
       tmpDept.put(TestDomain.DEPARTMENT_ID, 99);
       tmpDept.put(TestDomain.DEPARTMENT_LOCATION, "Limbo");
       tmpDept.put(TestDomain.DEPARTMENT_NAME, "Judgment");

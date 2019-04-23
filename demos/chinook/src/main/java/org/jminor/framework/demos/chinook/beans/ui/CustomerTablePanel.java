@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 import org.jminor.framework.plugins.jasperreports.ui.JasperReportsUIWrapper;
@@ -31,7 +31,7 @@ public class CustomerTablePanel extends EntityTablePanel {
 
     final String reportPath = EntityApplicationModel.getReportPath() + "/customer_report.jasper";
     final Collection customerIDs =
-            Entities.getDistinctValues(CUSTOMER_CUSTOMERID, getEntityTableModel().getSelectionModel().getSelectedItems());
+            Domain.getDistinctValues(CUSTOMER_CUSTOMERID, getEntityTableModel().getSelectionModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);
     EntityReportUiUtil.viewJdbcReport(CustomerTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),

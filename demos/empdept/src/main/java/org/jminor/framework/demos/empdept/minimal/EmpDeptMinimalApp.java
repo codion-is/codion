@@ -9,7 +9,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.remote.Server;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityComboBoxModel;
@@ -34,9 +34,9 @@ public class EmpDeptMinimalApp {
   /**
    * This class initializes the domain model based on the SCOTT schema
    */
-  private static final class Domain extends Entities {
+  private static final class EmpDeptDomain extends Domain {
 
-    public Domain() {
+    public EmpDeptDomain() {
       /*
        * We start by defining the entity based on the SCOTT.DEPT table
        */
@@ -50,7 +50,7 @@ public class EmpDeptMinimalApp {
               .setKeyGenerator(incrementKeyGenerator("scott.dept", "deptno"))
               .setCaption("Departments")
               .setSearchPropertyIds("dname")
-              .setStringProvider(new Entities.StringProvider("dname"));
+              .setStringProvider(new StringProvider("dname"));
       /*
        * We then define the entity based on the SCOTT.EMP table,
        * notice the foreign key wrapper properties, referencing the
@@ -80,7 +80,7 @@ public class EmpDeptMinimalApp {
               .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
               .setCaption("Employees")
               .setSearchPropertyIds("ename")
-              .setStringProvider(new Entities.StringProvider("ename"));
+              .setStringProvider(new StringProvider("ename"));
     }
   }
 
@@ -223,7 +223,7 @@ public class EmpDeptMinimalApp {
     //Let's set the locale, otherwise the application would be in icelandic
     Locale.setDefault(new Locale("en", "EN"));
     //the remote connection settings
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(Domain.class.getName());
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(EmpDeptDomain.class.getName());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
     Server.SERVER_HOST_NAME.set("jminor.no-ip.org");
     //we're using Secure Sockets Layer so we need to specify a truststore

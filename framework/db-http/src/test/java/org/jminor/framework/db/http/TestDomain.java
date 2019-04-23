@@ -8,7 +8,7 @@ import org.jminor.common.db.AbstractFunction;
 import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Properties;
 
 import java.sql.Types;
@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public final class TestDomain extends Entities {
+public final class TestDomain extends Domain {
 
   public TestDomain() {
     department();

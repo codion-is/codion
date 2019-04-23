@@ -170,7 +170,7 @@ public final class ServerMonitorPanel extends JPanel {
   private JTabbedPane initializeEnvironmentPanel() throws RemoteException {
     final JTabbedPane panel = new JTabbedPane();
     panel.addTab("System", initializeEnvironmentInfoPanel());
-    panel.addTab("Entities", initializeDomainModelPanel());
+    panel.addTab("Domain", initializeDomainModelPanel());
 
     return panel;
   }

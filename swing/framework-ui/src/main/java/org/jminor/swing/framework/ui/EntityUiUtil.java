@@ -17,7 +17,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.valuemap.EditModelValues;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -147,7 +147,7 @@ public final class EntityUiUtil {
    * @param lookupCaption the caption for the lookup field, used as a caption for the dialog as well
    * @return the selected entities or an empty collection in case a selection was not performed
    * @see EntityLookupField
-   * @see Entities#getSearchProperties(String)
+   * @see Domain#getSearchProperties(String)
    */
   public static Collection<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
                                                   final boolean singleSelection, final JComponent dialogParent,
@@ -166,7 +166,7 @@ public final class EntityUiUtil {
    * @param dialogTitle the title to display on the dialog
    * @return the selected entities or an empty collection in case a selection was not performed
    * @see EntityLookupField
-   * @see Entities#getSearchProperties(String)
+   * @see Domain#getSearchProperties(String)
    */
   public static Collection<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
                                                   final boolean singleSelection, final JComponent dialogParent,
@@ -965,7 +965,7 @@ public final class EntityUiUtil {
    */
   private static void populateEntityMenu(final JComponent rootMenu, final Entity entity,
                                          final EntityConnectionProvider connectionProvider) {
-    final Entities domain = connectionProvider.getDomain();
+    final Domain domain = connectionProvider.getDomain();
     populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(domain.getPrimaryKeyProperties(entity.getEntityId())));
     populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(domain.getForeignKeyProperties(entity.getEntityId())));
     populateValueMenu(rootMenu, entity, new ArrayList<>(domain.getProperties(entity.getEntityId(), true)), domain);
@@ -1044,7 +1044,7 @@ public final class EntityUiUtil {
   }
 
   private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties,
-                                        final Entities domain) {
+                                        final Domain domain) {
     TextUtil.collate(properties);
     final int maxValueLength = 20;
     final Entity.Validator validator = domain.getValidator(entity.getEntityId());

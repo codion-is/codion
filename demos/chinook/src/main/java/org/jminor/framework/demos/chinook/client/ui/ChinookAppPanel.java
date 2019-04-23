@@ -23,7 +23,7 @@ import org.jminor.framework.demos.chinook.beans.ui.PlaylistEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.PlaylistTrackEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.TrackEditPanel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
@@ -55,7 +55,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPane
    */
   @Override
   protected void setupEntityPanelProviders() {
-    final Entities domain = getModel().getDomain();
+    final Domain domain = getModel().getDomain();
     final EntityPanelProvider trackProvider = new EntityPanelProvider(T_TRACK, domain.getCaption(T_TRACK));
     trackProvider.setEditPanelClass(TrackEditPanel.class);
 

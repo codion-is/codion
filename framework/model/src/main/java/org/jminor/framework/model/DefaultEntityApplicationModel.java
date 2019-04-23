@@ -9,7 +9,7 @@ import org.jminor.common.States;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.User;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -88,7 +88,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
 
   /** {@inheritDoc} */
   @Override
-  public Entities getDomain() {
+  public Domain getDomain() {
     return connectionProvider.getDomain();
   }
 
