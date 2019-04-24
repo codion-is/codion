@@ -81,7 +81,7 @@ public class DefaultEntityTest {
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
     test.setAs(testEntity);
-    assertEquals(test, testEntity, "Domain should be equal after .setAs()");
+    assertEquals(test, testEntity, "Entities should be equal after .setAs()");
     assertTrue(test.valuesEqual(testEntity), "Entity property values should be equal after .setAs()");
 
     //assure that no cached foreign key values linger
@@ -273,7 +273,7 @@ public class DefaultEntityTest {
     //test copy()
     final Entity test2 = (Entity) testEntity.getCopy();
     assertNotSame(test2, testEntity, "Entity copy should not be == the original");
-    assertEquals(test2, testEntity, "Domain should be equal after .getCopy()");
+    assertEquals(test2, testEntity, "Entities should be equal after .getCopy()");
     assertTrue(test2.valuesEqual(testEntity), "Entity property values should be equal after .getCopy()");
     assertNotSame(testEntity.getForeignKey(TestDomain.DETAIL_MASTER_FK), test2.getForeignKey(TestDomain.DETAIL_MASTER_FK), "This should be a deep copy");
 
