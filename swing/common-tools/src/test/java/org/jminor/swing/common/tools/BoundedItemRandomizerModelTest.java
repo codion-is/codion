@@ -22,7 +22,7 @@ public class BoundedItemRandomizerModelTest {
 
   @Test
   public void constructWithoutObjects() {
-    assertThrows(IllegalArgumentException.class, () -> new BoundedItemRandomizerModel<>(10, Collections.<String>emptyList()));
+    assertThrows(IllegalArgumentException.class, () -> new BoundedItemRandomizerModel<>(10, Collections.emptyList()));
   }
 
   @Test
@@ -32,7 +32,7 @@ public class BoundedItemRandomizerModelTest {
 
   @Test
   public void constructNegativeWeight() {
-    assertThrows(IllegalArgumentException.class, () -> new BoundedItemRandomizerModel<>(-10, Collections.<String>emptyList()));
+    assertThrows(IllegalArgumentException.class, () -> new BoundedItemRandomizerModel<>(-10, Collections.emptyList()));
   }
 
   @Test

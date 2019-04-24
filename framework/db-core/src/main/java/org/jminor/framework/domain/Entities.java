@@ -25,6 +25,8 @@ public final class Entities {
 
   private static final String ENTITIES_PARAM = "entities";
 
+  private Entities() {}
+
   /**
    * Returns true if the entity has a null primary key or a null original primary key,
    * which is the best guess about an entity being new, as in, not existing in a database.

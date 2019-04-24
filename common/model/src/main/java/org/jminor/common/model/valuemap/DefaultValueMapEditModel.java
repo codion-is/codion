@@ -223,7 +223,7 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
 
   private Event<ValueChange<K, V>> getValueSetEvent(final K key) {
     if (!valueSetEventMap.containsKey(key)) {
-      valueSetEventMap.put(key, Events.<ValueChange<K, V>>event());
+      valueSetEventMap.put(key, Events.event());
     }
 
     return valueSetEventMap.get(key);
@@ -231,7 +231,7 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
 
   private Event<ValueChange<K, V>> getValueChangeEvent(final K key) {
     if (!valueChangeEventMap.containsKey(key)) {
-      valueChangeEventMap.put(key, Events.<ValueChange<K, V>>event());
+      valueChangeEventMap.put(key, Events.event());
     }
 
     return valueChangeEventMap.get(key);

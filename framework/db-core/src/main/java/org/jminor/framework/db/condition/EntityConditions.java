@@ -324,7 +324,7 @@ public final class EntityConditions {
    * @throws NullPointerException in case the condition string is null
    */
   public static Condition<Property.ColumnProperty> stringCondition(final String conditionString) {
-    return stringCondition(conditionString, Collections.emptyList(), Collections.<Property.ColumnProperty>emptyList());
+    return stringCondition(conditionString, Collections.emptyList(), Collections.emptyList());
   }
 
   /**

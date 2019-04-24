@@ -909,7 +909,7 @@ class DefaultProperty implements Property {
      */
     DefaultForeignKeyProperty(final String propertyId, final String caption, final String foreignEntityId,
                               final List<ColumnProperty> columnProperties) {
-      super(propertyId, Types.REF, caption);
+      super(propertyId, Types.OTHER, caption);
       Objects.requireNonNull(foreignEntityId, "foreignEntityId");
       validateParameters(propertyId, foreignEntityId, columnProperties);
       columnProperties.forEach(columnProperty -> columnProperty.setForeignKeyProperty(this));

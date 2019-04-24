@@ -214,7 +214,7 @@ public class DefaultEntityTest {
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_DATE).getType(), Types.DATE);
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_TIMESTAMP).getType(), Types.TIMESTAMP);
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_BOOLEAN).getType(), Types.BOOLEAN);
-    assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_FK).getType(), Types.REF);
+    assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_FK).getType(), Types.OTHER);
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_ID).getType(), Types.BIGINT);
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_NAME).getType(), Types.VARCHAR);
     assertEquals(testEntity.getProperty(TestDomain.DETAIL_MASTER_CODE).getType(), Types.INTEGER);

@@ -43,7 +43,9 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
     this.formatter = DateTimeFormatter.ofPattern(dateFormat);
     add(inputField, BorderLayout.CENTER);
     addFocusListener(new InputFocusAdapter(inputField));
-    UiUtil.linkToEnabledState(enabledState, inputField);
+    if (enabledState != null) {
+      UiUtil.linkToEnabledState(enabledState, inputField);
+    }
   }
 
   /**

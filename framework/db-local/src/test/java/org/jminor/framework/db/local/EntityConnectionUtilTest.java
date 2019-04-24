@@ -83,7 +83,7 @@ public class EntityConnectionUtilTest {
     assertEquals(sourceConnection.selectRowCount(ENTITY_CONDITIONS.condition(TestDomain.T_DEPARTMENT)),
             DESTINATION_CONNECTION.selectRowCount(ENTITY_CONDITIONS.condition(TestDomain.T_DEPARTMENT)));
 
-    EntityConnectionUtil.batchInsert(DESTINATION_CONNECTION, Collections.<Entity>emptyList(), null, 10, null);
+    EntityConnectionUtil.batchInsert(DESTINATION_CONNECTION, Collections.emptyList(), null, 10, null);
     DESTINATION_CONNECTION.delete(ENTITY_CONDITIONS.condition(TestDomain.T_DEPARTMENT));
   }
 

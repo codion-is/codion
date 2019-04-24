@@ -250,7 +250,7 @@ public class EntityConditionsTest {
   @Test
   public void stringConditionNullValues() {
     assertThrows(NullPointerException.class, () -> entityConditions.stringCondition("some is null", null,
-            Collections.<Property.ColumnProperty>emptyList()));
+            Collections.emptyList()));
   }
 
   @Test

@@ -600,8 +600,8 @@ public final class UiUtil {
   /**
    * Links the given action to the given StateObserver, so that the action is enabled
    * only when the observed state is active
-   * @param enabledState the StateObserver with which to link the action, if null then nothing is done
-   * @param action the action, if null then nothing is done
+   * @param enabledState the StateObserver with which to link the action
+   * @param action the action
    * @return the linked action
    */
   public static Action linkToEnabledState(final StateObserver enabledState, final Action action) {
@@ -616,35 +616,34 @@ public final class UiUtil {
   /**
    * Links the given components to the given StateObserver, so that each component is enabled and focusable
    * only when the observed state is active
-   * @param enabledState the StateObserver with which to link the components, if null then nothing is done
-   * @param components the components, if null nothing is done
+   * @param enabledState the StateObserver with which to link the components
+   * @param components the components
    */
   public static void linkToEnabledState(final StateObserver enabledState, final JComponent... components) {
     linkToEnabledState(enabledState, true, components);
   }
 
   /**
-   * Links the given components to the given StateObserver, so that each component is enabled only when the observed state is active
-   * @param enabledState the StateObserver with which to link the components, if null then nothing is done
+   * Links the given components to the given StateObserver, so that each component is enabled only when the observed state is active.
+   * @param enabledState the StateObserver with which to link the components
    * @param includeFocusable if true then the focusable attribute is set as well as the enabled attribute
-   * @param components the components, if null nothing is done
+   * @param components the components
    */
   public static void linkToEnabledState(final StateObserver enabledState, final boolean includeFocusable, final JComponent... components) {
     Objects.requireNonNull(components, "components");
-    if (enabledState != null) {
-      for (final JComponent component : components) {
-        if (component != null) {
+    Objects.requireNonNull(enabledState, "enabledState");
+    for (final JComponent component : components) {
+      if (component != null) {
+        component.setEnabled(enabledState.isActive());
+        if (includeFocusable) {
+          component.setFocusable(enabledState.isActive());
+        }
+        enabledState.addListener(() -> {
           component.setEnabled(enabledState.isActive());
           if (includeFocusable) {
             component.setFocusable(enabledState.isActive());
           }
-          enabledState.addListener(() -> {
-            component.setEnabled(enabledState.isActive());
-            if (includeFocusable) {
-              component.setFocusable(enabledState.isActive());
-            }
-          });
-        }
+        });
       }
     }
   }
@@ -2129,8 +2128,7 @@ public final class UiUtil {
     }
 
     private void initializeUI() {
-      final Control closeControl = Controls.control(this::dispose, "close");
-      addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, closeControl);
+      addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, Controls.control(this::dispose));
       final JPanel basePanel = new JPanel(createBorderLayout());
       basePanel.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
       basePanel.add(createNorthPanel(), BorderLayout.NORTH);
