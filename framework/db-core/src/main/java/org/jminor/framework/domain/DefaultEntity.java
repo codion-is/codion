@@ -620,9 +620,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /**
    * Sets the denormalized property values
-   * @param foreignKeyProperty the foreign key property referring to the value source
-   * @param referencedEntity the entity value owning the denormalized values
-   * @param entityDefinitions a global entity definition map
+   * @param foreignKeyProperty the foreign key property from which to denormalize the values
+   * @param referencedEntity the foreign key entity containing the values to denormalize
    */
   private void setDenormalizedValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
     final List<Property.DenormalizedProperty> denormalizedProperties =
