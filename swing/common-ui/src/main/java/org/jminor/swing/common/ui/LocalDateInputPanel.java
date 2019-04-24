@@ -45,7 +45,9 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
     if (includeCalendarButton && UiUtil.isJCalendarAvailable()) {
       this.button = new JButton(Controls.control(this::displayCalendar, "..."));
       this.button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
-      UiUtil.linkToEnabledState(enabledState, button);
+      if (enabledState != null) {
+        UiUtil.linkToEnabledState(enabledState, button);
+      }
       add(this.button, BorderLayout.EAST);
     }
   }

@@ -435,38 +435,38 @@ public class FilteredTablePanel<R, C> extends JPanel {
   }
 
   private JTextField initializeSearchField() {
-    final JTextField searchField = new JTextField();
-    searchField.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
-    searchField.setColumns(SEARCH_FIELD_COLUMNS);
-    TextFieldHint.enable(searchField, Messages.get(Messages.SEARCH_FIELD_HINT));
-    searchField.getDocument().addDocumentListener(new DocumentAdapter() {
+    final JTextField field = new JTextField();
+    field.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
+    field.setColumns(SEARCH_FIELD_COLUMNS);
+    TextFieldHint.enable(field, Messages.get(Messages.SEARCH_FIELD_HINT));
+    field.getDocument().addDocumentListener(new DocumentAdapter() {
       @Override
       public void contentsChanged(final DocumentEvent e) {
-        performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 : lastSearchResultCoordinate.getRow(), true, searchField.getText());
+        performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 : lastSearchResultCoordinate.getRow(), true, field.getText());
       }
     });
-    searchField.addKeyListener(new KeyAdapter() {
+    field.addKeyListener(new KeyAdapter() {
       @Override
       public void keyReleased(final KeyEvent e) {
         if (e.getModifiers() != 0) {
           return;
         }
         if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN) {
-          findNextValue(e.isShiftDown(), true, searchField.getText());
+          findNextValue(e.isShiftDown(), true, field.getText());
         }
         else if (e.getKeyCode() == KeyEvent.VK_UP) {
-          findNextValue(e.isShiftDown(), false, searchField.getText());
+          findNextValue(e.isShiftDown(), false, field.getText());
         }
         else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
           getJTable().requestFocusInWindow();
         }
       }
     });
-    UiUtil.selectAllOnFocusGained(searchField);
+    UiUtil.selectAllOnFocusGained(field);
 
-    searchField.setComponentPopupMenu(initializeSearchFieldPopupMenu());
+    field.setComponentPopupMenu(initializeSearchFieldPopupMenu());
 
-    return searchField;
+    return field;
   }
 
   private void performSearch(final boolean addToSelection, final int fromIndex, final boolean forward, final String searchText) {

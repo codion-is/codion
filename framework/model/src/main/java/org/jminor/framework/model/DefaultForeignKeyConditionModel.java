@@ -76,7 +76,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
       return Collections.singletonList((Entity) upperBound);
     }
     //noinspection unchecked
-    return upperBound == null ? Collections.<Entity>emptyList() : (Collection<Entity>) upperBound;
+    return upperBound == null ? Collections.emptyList() : (Collection<Entity>) upperBound;
   }
 
   /** {@inheritDoc} */

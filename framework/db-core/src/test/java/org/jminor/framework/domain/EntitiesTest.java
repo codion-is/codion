@@ -22,7 +22,7 @@ public final class EntitiesTest {
   @Test
   public void isKeyModified() {
     assertFalse(Entities.isKeyModified(null));
-    assertFalse(Entities.isKeyModified(Collections.<Entity>emptyList()));
+    assertFalse(Entities.isKeyModified(Collections.emptyList()));
 
     final Entity department = domain.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, 1);
@@ -104,7 +104,7 @@ public final class EntitiesTest {
     propertyValues = Entities.getValues(property.getPropertyId(), entityList);
     assertTrue(propertyValues.containsAll(values));
     assertTrue(Entities.getValues(TestDomain.DEPARTMENT_ID, null).isEmpty());
-    assertTrue(Entities.getValues(TestDomain.DEPARTMENT_ID, Collections.<Entity>emptyList()).isEmpty());
+    assertTrue(Entities.getValues(TestDomain.DEPARTMENT_ID, Collections.emptyList()).isEmpty());
   }
 
   @Test

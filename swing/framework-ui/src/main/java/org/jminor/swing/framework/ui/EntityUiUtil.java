@@ -68,9 +68,6 @@ import java.awt.Point;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -328,8 +325,10 @@ public final class EntityUiUtil {
     final EntityComboBoxModel boxModel = ((SwingEntityEditModel) editModel).getForeignKeyComboBoxModel(foreignKeyProperty);
     boxModel.refresh();
     final EntityComboBox comboBox = new EntityComboBox(boxModel);
-    ValueLinks.selectedItemValueLink(comboBox, EditModelValues.<Entity>value(editModel, foreignKeyProperty));
-    UiUtil.linkToEnabledState(enabledState, comboBox);
+    ValueLinks.selectedItemValueLink(comboBox, EditModelValues.value(editModel, foreignKeyProperty));
+    if (enabledState != null) {
+      UiUtil.linkToEnabledState(enabledState, comboBox);
+    }
     addComboBoxCompletion(comboBox);
     comboBox.setToolTipText(foreignKeyProperty.getDescription());
     if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
@@ -405,8 +404,10 @@ public final class EntityUiUtil {
     if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
       lookupField.setTransferFocusOnEnter();
     }
-    Values.link(EditModelValues.<Entity>value(editModel, foreignKeyProperty), new LookupUIValue(lookupField.getModel()));
-    UiUtil.linkToEnabledState(enabledState, lookupField);
+    Values.link(EditModelValues.value(editModel, foreignKeyProperty), new LookupUIValue(lookupField.getModel()));
+    if (enabledState != null) {
+      UiUtil.linkToEnabledState(enabledState, lookupField);
+    }
     lookupField.setToolTipText(foreignKeyProperty.getDescription());
     UiUtil.selectAllOnFocusGained(lookupField);
 
@@ -500,7 +501,9 @@ public final class EntityUiUtil {
     final SteppedComboBox comboBox = new SteppedComboBox(model);
     comboBox.setEditable(editable);
     ValueLinks.selectedItemValueLink(comboBox, EditModelValues.value(editModel, property));
-    UiUtil.linkToEnabledState(enabledState, comboBox);
+    if (enabledState != null) {
+      UiUtil.linkToEnabledState(enabledState, comboBox);
+    }
     comboBox.setToolTipText(property.getDescription());
     if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
       UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
@@ -641,7 +644,7 @@ public final class EntityUiUtil {
       UiUtil.linkToEnabledState(enabledState, textArea);
     }
 
-    ValueLinks.textValueLink(textArea, EditModelValues.<String>value(editModel, property), null, true, readOnly);
+    ValueLinks.textValueLink(textArea, EditModelValues.value(editModel, property), null, true, readOnly);
     ValueLinkValidators.addValidator(property, textArea, editModel);
     textArea.setToolTipText(property.getDescription());
 
@@ -710,27 +713,27 @@ public final class EntityUiUtil {
     checkProperty(property, editModel);
     final JTextField textField = initializeTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     if (property.isString()) {
-      ValueLinks.textValueLink(textField, EditModelValues.<String>value(editModel, property), property.getFormat(), immediateUpdate, readOnly);
+      ValueLinks.textValueLink(textField, EditModelValues.value(editModel, property), property.getFormat(), immediateUpdate, readOnly);
     }
     else if (property.isInteger()) {
-      ValueLinks.integerValueLink((IntegerField) textField, EditModelValues.<Integer>value(editModel, property), false, readOnly, immediateUpdate);
+      ValueLinks.integerValueLink((IntegerField) textField, EditModelValues.value(editModel, property), false, readOnly, immediateUpdate);
     }
     else if (property.isDouble()) {
-      ValueLinks.doubleValueLink((DoubleField) textField, EditModelValues.<Double>value(editModel, property), false, readOnly, immediateUpdate);
+      ValueLinks.doubleValueLink((DoubleField) textField, EditModelValues.value(editModel, property), false, readOnly, immediateUpdate);
     }
     else if (property.isLong()) {
-      ValueLinks.longValueLink((LongField) textField, EditModelValues.<Long>value(editModel, property), false, readOnly, immediateUpdate);
+      ValueLinks.longValueLink((LongField) textField, EditModelValues.value(editModel, property), false, readOnly, immediateUpdate);
     }
     else if (property.isDate()) {
-      ValueLinks.localDateValueLink((JFormattedTextField) textField, EditModelValues.<LocalDate>value(editModel, property),
+      ValueLinks.localDateValueLink((JFormattedTextField) textField, EditModelValues.value(editModel, property),
               readOnly, ((SimpleDateFormat) property.getFormat()).toPattern(), immediateUpdate);
     }
     else if (property.isTime()) {
-      ValueLinks.localTimeValueLink((JFormattedTextField) textField, EditModelValues.<LocalTime>value(editModel, property),
+      ValueLinks.localTimeValueLink((JFormattedTextField) textField, EditModelValues.value(editModel, property),
               readOnly, ((SimpleDateFormat) property.getFormat()).toPattern(), immediateUpdate);
     }
     else if (property.isTimestamp()) {
-      ValueLinks.localDateTimeValueLink((JFormattedTextField) textField, EditModelValues.<LocalDateTime>value(editModel, property),
+      ValueLinks.localDateTimeValueLink((JFormattedTextField) textField, EditModelValues.value(editModel, property),
               readOnly, ((SimpleDateFormat) property.getFormat()).toPattern(), immediateUpdate);
     }
     else {
@@ -843,7 +846,9 @@ public final class EntityUiUtil {
                                                 final StateObserver enabledState, final String formatMaskString,
                                                 final boolean valueContainsLiteralCharacters) {
     final JTextField field = initializeTextField(property, formatMaskString, valueContainsLiteralCharacters);
-    UiUtil.linkToEnabledState(enabledState, field);
+    if (enabledState != null) {
+      UiUtil.linkToEnabledState(enabledState, field);
+    }
     if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
       UiUtil.transferFocusOnEnter(field);
     }
@@ -923,8 +928,10 @@ public final class EntityUiUtil {
 
   private static JCheckBox initializeCheckBox(final Property property, final EntityEditModel editModel,
                                               final StateObserver enabledState, final JCheckBox checkBox) {
-    ValueLinks.toggleValueLink(checkBox.getModel(), EditModelValues.<Boolean>value(editModel, property), false);
-    UiUtil.linkToEnabledState(enabledState, checkBox);
+    ValueLinks.toggleValueLink(checkBox.getModel(), EditModelValues.value(editModel, property), false);
+    if (enabledState != null) {
+      UiUtil.linkToEnabledState(enabledState, checkBox);
+    }
     if (property.getDescription() != null) {
       checkBox.setToolTipText(property.getDescription());
     }
