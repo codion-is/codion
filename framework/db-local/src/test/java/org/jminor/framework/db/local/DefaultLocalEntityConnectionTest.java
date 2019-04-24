@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -133,8 +132,6 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void fillReport() throws Exception {
-    final Map<String, Object> reportParameters = new HashMap<>();
-    reportParameters.put("DEPTNO", Arrays.asList(10, 20));
     final ReportResult reportResult = () -> "result";
     connection.fillReport(new ReportWrapper() {
       @Override

@@ -35,7 +35,6 @@ import java.io.ObjectInputStream;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -529,9 +528,9 @@ public final class EntityService extends Application {
     final String clientTypeId = getClientTypeId(headerValues);
     final UUID clientId = getClientId(headerValues, request.getSession());
     final User user = getUser(headerValues);
-    final Map<String, Object> parameters = new HashMap<>(2);
-    parameters.put(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, domainId);
-    parameters.put(Server.CLIENT_HOST_KEY, getRemoteHost(request));
+    final Map<String, Object> parameters = Map.of(
+            RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, domainId,
+            Server.CLIENT_HOST_KEY, getRemoteHost(request));
 
     return server.connect(Clients.connectionRequest(user, clientId, clientTypeId, parameters));
   }
