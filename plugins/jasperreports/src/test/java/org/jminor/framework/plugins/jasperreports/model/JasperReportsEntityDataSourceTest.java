@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.plugins.jasperreports.model;
 
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 
 import net.sf.jasperreports.engine.JRField;
@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class JasperReportsEntityDataSourceTest {
 
-  private static final Entities ENTITIES = new TestDomain();
+  private static final Domain DOMAIN = new TestDomain();
 
   @Test
   public void constructorNullIterator() {
@@ -28,7 +28,7 @@ public class JasperReportsEntityDataSourceTest {
 
   @Test
   public void iterator() throws Exception {
-    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
+    final Entity department = DOMAIN.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, 10);
     department.put(TestDomain.DEPARTMENT_NAME, "name");
     department.put(TestDomain.DEPARTMENT_LOCATION, "none");

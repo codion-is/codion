@@ -258,7 +258,7 @@ class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public Property setDomainID(final String domainId) {
+  public Property setDomainId(final String domainId) {
     if (this.domainId != null) {
       throw new IllegalStateException("domainId (" + this.domainId + ") has already been set for property: " + propertyId);
     }
@@ -274,7 +274,7 @@ class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public Property setEntityID(final String entityId) {
+  public Property setEntityId(final String entityId) {
     if (this.entityId != null) {
       throw new IllegalStateException("entityId (" + this.entityId + ") has already been set for property: " + propertyId);
     }

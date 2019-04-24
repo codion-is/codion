@@ -11,7 +11,7 @@ import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.http.HttpServer;
 import org.jminor.framework.db.condition.EntityConditions;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
@@ -40,8 +40,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityServletServerTest {
 
-  private static final Entities ENTITIES = new TestDomain();
-  private static final EntityConditions CONDITIONS = new EntityConditions(ENTITIES);
+  private static final Domain DOMAIN = new TestDomain();
+  private static final EntityConditions CONDITIONS = new EntityConditions(DOMAIN);
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
@@ -149,7 +149,7 @@ public class EntityServletServerTest {
     List<Entity> queryEntities = Util.deserialize(response.body());
     assertEquals(4, queryEntities.size());
 
-    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
+    final Entity department = DOMAIN.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, null);
     department.put(TestDomain.DEPARTMENT_ID, -42);
     department.put(TestDomain.DEPARTMENT_NAME, "Test");

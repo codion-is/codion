@@ -5,7 +5,7 @@ package org.jminor.framework.plugins.json;
 
 import org.jminor.common.Serializer;
 import org.jminor.common.Util;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -41,7 +41,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
   private final DateTimeFormatter jsonDateFormat = DateTimeFormatter.ofPattern(JSON_DATE_FORMAT);
   private final DateTimeFormatter jsonTimestampFormat = DateTimeFormatter.ofPattern(JSON_TIMESTAMP_FORMAT);
 
-  private final Entities domain;
+  private final Domain domain;
 
   private boolean includeForeignKeyValues = false;
   private boolean includeNullValues = true;
@@ -49,9 +49,9 @@ public final class EntityJSONParser implements Serializer<Entity> {
   private int indentation = -1;
 
   /**
-   * @param domain the underlying domain entities
+   * @param domain the underlying domain model
    */
-  public EntityJSONParser(final Entities domain) {
+  public EntityJSONParser(final Domain domain) {
     this.domain = domain;
   }
 

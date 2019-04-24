@@ -17,7 +17,7 @@ public final class HttpEntityConnections {
 
   /**
    * Instantiates a new http based {@link EntityConnection} instance
-   * @param domainId the id of the domain entities
+   * @param domainId the id of the domain model
    * @param serverHostName the http server host name
    * @param serverPort the http server port
    * @param httpsEnabled true if https should be used

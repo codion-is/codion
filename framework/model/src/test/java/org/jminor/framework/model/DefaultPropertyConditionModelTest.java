@@ -6,7 +6,7 @@ package org.jminor.framework.model;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.framework.db.condition.EntityConditions;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Property;
 
 import org.junit.jupiter.api.Test;
@@ -17,12 +17,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultPropertyConditionModelTest {
 
-  private static final Entities ENTITIES = new TestDomain();
-  private static final EntityConditions ENTITY_CONDITIONS = new EntityConditions(ENTITIES);
+  private static final Domain DOMAIN = new TestDomain();
+  private static final EntityConditions ENTITY_CONDITIONS = new EntityConditions(DOMAIN);
 
   @Test
   public void propertyConditionModel() throws Exception {
-    final Property.ColumnProperty property = (Property.ColumnProperty) ENTITIES.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
+    final Property.ColumnProperty property = (Property.ColumnProperty) DOMAIN.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
     final PropertyConditionModel model = new DefaultPropertyConditionModel(ENTITY_CONDITIONS, property);
     assertEquals(property, model.getColumnIdentifier());
     model.setConditionType(Condition.Type.LIKE);

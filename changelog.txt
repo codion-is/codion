@@ -4987,3 +4987,9 @@
   ControlProvider.createButton() removed
   Cleanup of ui variable names, abbreviations retired
   Further code cleanup
+  Entities renamed to Domain
+  Entities reintroduced for static helper methods moved from Domain
+  EntitiesTest refactored from DomainTest
+  Entity.getPrimaryKeyProperties() added, Domain.isKeyModified() moved to Entities
+  Some javadoc fixes and improvements
+  Entities.sort(Properties) moved to Properties

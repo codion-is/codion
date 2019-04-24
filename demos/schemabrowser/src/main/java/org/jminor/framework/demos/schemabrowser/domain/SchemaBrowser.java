@@ -4,7 +4,7 @@
 package org.jminor.framework.demos.schemabrowser.domain;
 
 import org.jminor.common.db.Database;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Property;
 
 import java.sql.Types;
@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 
 import static org.jminor.framework.domain.Properties.*;
 
-public final class SchemaBrowser extends Entities {
+public final class SchemaBrowser extends Domain {
 
   public SchemaBrowser() {
     defineSchema();
@@ -35,7 +35,7 @@ public final class SchemaBrowser extends Entities {
             primaryKeyProperty(SCHEMA_NAME, Types.VARCHAR, "Name"))
             .setOrderBy(orderBy().ascending(SCHEMA_NAME))
             .setReadOnly(true)
-            .setStringProvider(new Entities.StringProvider(SCHEMA_NAME))
+            .setStringProvider(new StringProvider(SCHEMA_NAME))
             .setCaption("Schemas");
   }
 
@@ -51,7 +51,7 @@ public final class SchemaBrowser extends Entities {
             primaryKeyProperty(TABLE_NAME, Types.VARCHAR, "Name").setPrimaryKeyIndex(1))
             .setOrderBy(orderBy().ascending(TABLE_SCHEMA, TABLE_NAME))
             .setReadOnly(true)
-            .setStringProvider(new Entities.StringProvider(TABLE_SCHEMA_FK).addText(".").addValue(TABLE_NAME))
+            .setStringProvider(new StringProvider(TABLE_SCHEMA_FK).addText(".").addValue(TABLE_NAME))
             .setCaption("Tables");
   }
 
@@ -72,7 +72,7 @@ public final class SchemaBrowser extends Entities {
             columnProperty(COLUMN_DATA_TYPE, Types.VARCHAR, "Data type"))
             .setOrderBy(orderBy().ascending(COLUMN_SCHEMA, COLUMN_TABLE_NAME, COLUMN_NAME))
             .setReadOnly(true)
-            .setStringProvider(new Entities.StringProvider(COLUMN_TABLE_FK).addText(".").addValue(COLUMN_NAME))
+            .setStringProvider(new StringProvider(COLUMN_TABLE_FK).addText(".").addValue(COLUMN_NAME))
             .setCaption("Columns");
   }
 
@@ -93,7 +93,7 @@ public final class SchemaBrowser extends Entities {
             columnProperty(CONSTRAINT_TYPE, Types.VARCHAR, "Type"))
             .setOrderBy(orderBy().ascending(CONSTRAINT_SCHEMA, CONSTRAINT_TABLE_NAME, CONSTRAINT_NAME))
             .setReadOnly(true)
-            .setStringProvider(new Entities.StringProvider(CONSTRAINT_TABLE_FK).addText(".").addValue(CONSTRAINT_NAME))
+            .setStringProvider(new StringProvider(CONSTRAINT_TABLE_FK).addText(".").addValue(CONSTRAINT_NAME))
             .setCaption("Constraints");
   }
 

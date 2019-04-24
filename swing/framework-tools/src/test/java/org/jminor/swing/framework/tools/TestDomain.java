@@ -4,14 +4,14 @@
 package org.jminor.swing.framework.tools;
 
 import org.jminor.common.Item;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Properties;
 
 import java.awt.Color;
 import java.sql.Types;
 import java.util.Arrays;
 
-public final class TestDomain extends Entities {
+public final class TestDomain extends Domain {
 
   public TestDomain() {
     master();

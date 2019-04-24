@@ -9,6 +9,7 @@ import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnection;
 import org.jminor.framework.demos.chinook.domain.Chinook;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 
@@ -18,7 +19,7 @@ import java.util.List;
 
 import static org.jminor.framework.domain.Properties.*;
 
-public final class ChinookImpl extends Entities implements Chinook {
+public final class ChinookImpl extends Domain implements Chinook {
 
   public ChinookImpl() {
     artist();
@@ -44,7 +45,7 @@ public final class ChinookImpl extends Entities implements Chinook {
                     .setPreferredColumnWidth(160))
             .setKeyGenerator(automaticKeyGenerator("chinook.artist"))
             .setOrderBy(orderBy().ascending(ARTIST_NAME))
-            .setStringProvider(new Entities.StringProvider(ARTIST_NAME))
+            .setStringProvider(new StringProvider(ARTIST_NAME))
             .setSearchPropertyIds(ARTIST_NAME)
             .setCaption("Artists");
   }
@@ -62,7 +63,7 @@ public final class ChinookImpl extends Entities implements Chinook {
                     .setPreferredColumnWidth(160))
             .setKeyGenerator(automaticKeyGenerator("chinook.album"))
             .setOrderBy(orderBy().ascending(ALBUM_ARTISTID, ALBUM_TITLE))
-            .setStringProvider(new Entities.StringProvider(ALBUM_TITLE))
+            .setStringProvider(new StringProvider(ALBUM_TITLE))
             .setSearchPropertyIds(ALBUM_TITLE)
             .setCaption("Albums");
   }
@@ -100,7 +101,7 @@ public final class ChinookImpl extends Entities implements Chinook {
                     .setMaxLength(60))
             .setKeyGenerator(automaticKeyGenerator("chinook.employee"))
             .setOrderBy(orderBy().ascending(EMPLOYEE_LASTNAME, EMPLOYEE_FIRSTNAME))
-            .setStringProvider(new Entities.StringProvider(EMPLOYEE_LASTNAME)
+            .setStringProvider(new StringProvider(EMPLOYEE_LASTNAME)
                     .addText(", ").addValue(EMPLOYEE_FIRSTNAME))
             .setSearchPropertyIds(EMPLOYEE_FIRSTNAME, EMPLOYEE_LASTNAME, EMPLOYEE_EMAIL)
             .setCaption("Employees");
@@ -138,7 +139,7 @@ public final class ChinookImpl extends Entities implements Chinook {
                     columnProperty(CUSTOMER_SUPPORTREPID, Types.BIGINT)))
             .setKeyGenerator(automaticKeyGenerator("chinook.customer"))
             .setOrderBy(orderBy().ascending(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME))
-            .setStringProvider(new Entities.StringProvider(CUSTOMER_LASTNAME)
+            .setStringProvider(new StringProvider(CUSTOMER_LASTNAME)
                     .addText(", ").addValue(CUSTOMER_FIRSTNAME))
             .setSearchPropertyIds(CUSTOMER_FIRSTNAME, CUSTOMER_LASTNAME, CUSTOMER_EMAIL)
             .setCaption("Customers");
@@ -153,7 +154,7 @@ public final class ChinookImpl extends Entities implements Chinook {
                     .setPreferredColumnWidth(160))
             .setKeyGenerator(automaticKeyGenerator("chinook.genre"))
             .setOrderBy(orderBy().ascending(GENRE_NAME))
-            .setStringProvider(new Entities.StringProvider(GENRE_NAME))
+            .setStringProvider(new StringProvider(GENRE_NAME))
             .setSearchPropertyIds(GENRE_NAME)
             .setSmallDataset(true)
             .setCaption("Genres");
@@ -167,7 +168,7 @@ public final class ChinookImpl extends Entities implements Chinook {
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
             .setKeyGenerator(automaticKeyGenerator("chinook.mediatype"))
-            .setStringProvider(new Entities.StringProvider(MEDIATYPE_NAME))
+            .setStringProvider(new StringProvider(MEDIATYPE_NAME))
             .setSmallDataset(true)
             .setCaption("Media types");
   }
@@ -205,7 +206,7 @@ public final class ChinookImpl extends Entities implements Chinook {
                     .setNullable(false))
             .setKeyGenerator(automaticKeyGenerator("chinook.track"))
             .setOrderBy(orderBy().ascending(TRACK_NAME))
-            .setStringProvider(new Entities.StringProvider(TRACK_NAME))
+            .setStringProvider(new StringProvider(TRACK_NAME))
             .setSearchPropertyIds(TRACK_NAME)
             .setCaption("Tracks");
   }
@@ -240,7 +241,7 @@ public final class ChinookImpl extends Entities implements Chinook {
                     .setMaximumFractionDigits(2))
             .setKeyGenerator(automaticKeyGenerator("chinook.invoice"))
             .setOrderBy(orderBy().ascending(INVOICE_CUSTOMERID).descending(INVOICE_INVOICEDATE))
-            .setStringProvider(new Entities.StringProvider(INVOICE_INVOICEID))
+            .setStringProvider(new StringProvider(INVOICE_INVOICEID))
             .setSearchPropertyIds(INVOICE_INVOICEID_AS_STRING)
             .setCaption("Invoices");
   }
@@ -276,7 +277,7 @@ public final class ChinookImpl extends Entities implements Chinook {
                     .setPreferredColumnWidth(160))
             .setKeyGenerator(automaticKeyGenerator("chinook.playlist"))
             .setOrderBy(orderBy().ascending(PLAYLIST_NAME))
-            .setStringProvider(new Entities.StringProvider(PLAYLIST_NAME))
+            .setStringProvider(new StringProvider(PLAYLIST_NAME))
             .setSearchPropertyIds(PLAYLIST_NAME)
             .setCaption("Playlists");
   }
@@ -301,7 +302,7 @@ public final class ChinookImpl extends Entities implements Chinook {
             denormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACKID_FK,
                     getProperty(T_TRACK, TRACK_ALBUMID_FK), "Album")
                     .setPreferredColumnWidth(160))
-            .setStringProvider(new Entities.StringProvider(PLAYLISTTRACK_PLAYLISTID_FK)
+            .setStringProvider(new StringProvider(PLAYLISTTRACK_PLAYLISTID_FK)
                     .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
             .setCaption("Playlist tracks");
   }

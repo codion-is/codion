@@ -22,6 +22,7 @@ import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Properties;
@@ -174,7 +175,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void selectManyLimitOffset() throws Exception {
     final EntitySelectCondition condition = ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP)
-            .setOrderBy(Entities.orderBy().ascending(TestDomain.EMP_NAME)).setLimit(2);
+            .setOrderBy(Domain.orderBy().ascending(TestDomain.EMP_NAME)).setLimit(2);
     List<Entity> result = connection.selectMany(condition);
     assertEquals(2, result.size());
     condition.setLimit(3);

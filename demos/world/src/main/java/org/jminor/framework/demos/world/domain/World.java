@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.world.domain;
 
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 
 import java.sql.Types;
@@ -11,7 +11,7 @@ import java.sql.Types;
 import static org.jminor.framework.domain.Properties.columnProperty;
 import static org.jminor.framework.domain.Properties.foreignKeyProperty;
 
-public final class World extends Entities {
+public final class World extends Domain {
 
   public World() {
     cityCountry();
@@ -88,7 +88,7 @@ public final class World extends Entities {
                     .setMaxLength(2))
             .setOrderBy(orderBy().ascending(COUNTRY_NAME))
             .setSearchPropertyIds(COUNTRY_NAME)
-            .setStringProvider(new Entities.StringProvider(COUNTRY_NAME))
+            .setStringProvider(new StringProvider(COUNTRY_NAME))
             .setCaption("Country");
 
     define(T_CITY,
@@ -108,7 +108,7 @@ public final class World extends Entities {
             .setKeyGenerator(sequenceKeyGenerator("world.city_seq"))
             .setOrderBy(orderBy().ascending(CITY_NAME))
             .setSearchPropertyIds(CITY_NAME)
-            .setStringProvider(new Entities.StringProvider(CITY_NAME))
+            .setStringProvider(new StringProvider(CITY_NAME))
             .setCaption("City");
   }
 

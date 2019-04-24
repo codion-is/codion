@@ -11,7 +11,7 @@ import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.SelectionModel;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -49,9 +49,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   }
 
   /**
-   * @return the underlying domain entities
+   * @return the underlying domain model
    */
-  Entities getDomain();
+  Domain getDomain();
 
   /**
    * Returns the {@link EntityEditModel} associated with this table model
@@ -204,7 +204,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   /**
    * Updates the given entities. If the entities are unmodified or the list is empty
    * this method returns silently.
-   * @param entities the Entities to update
+   * @param entities the entities to update
    * @throws DatabaseException in case of a database exception
    * @throws org.jminor.common.model.CancelException in case the user cancels the operation
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user

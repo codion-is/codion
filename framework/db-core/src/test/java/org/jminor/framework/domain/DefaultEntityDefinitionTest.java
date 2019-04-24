@@ -13,17 +13,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityDefinitionTest {
 
-  private final Entities domain = new Entities();
+  private final Domain domain = new Domain();
 
   @Test
   public void test() {
-    final Entities.StringProvider stringProvider = new Entities.StringProvider("name");
+    final Domain.StringProvider stringProvider = new Domain.StringProvider("name");
     final Comparator<Entity> comparator = (o1, o2) -> 0;
     final Entity.Definition definition = domain.define("entityId", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR))
             .setSelectQuery("select * from dual", false)
-            .setOrderBy(Entities.orderBy().descending("name"))
+            .setOrderBy(Domain.orderBy().descending("name"))
             .setReadOnly(true).setSelectTableName("selectTableName").setGroupByClause("name")
             .setStringProvider(stringProvider).setComparator(comparator);
     assertEquals("entityId", definition.toString());

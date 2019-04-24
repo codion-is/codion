@@ -15,6 +15,7 @@ import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.table.TableSortModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -167,7 +168,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public final Entities getDomain() {
+  public final Domain getDomain() {
     return connectionProvider.getDomain();
   }
 
@@ -617,7 +618,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * The order by clause to use when selecting the data for this model,
    * by default the order by clause defined for the underlying entity
    * @return the order by clause
-   * @see Entities#getOrderBy(String)
+   * @see Domain#getOrderBy(String)
    */
   protected Entity.OrderBy getOrderBy() {
     return getDomain().getOrderBy(entityId);
@@ -794,14 +795,14 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    */
   public static class DefaultEntityTableSortModel extends AbstractTableSortModel<Entity, Property> {
 
-    private final Entities domain;
+    private final Domain domain;
 
     /**
      * Instantiates a new DefaultEntityTableSortModel
      * @param domain the underlying entities
      * @param entityId the entity ID
      */
-    public DefaultEntityTableSortModel(final Entities domain, final String entityId) {
+    public DefaultEntityTableSortModel(final Domain domain, final String entityId) {
       super(initializeColumns(domain, entityId));
       this.domain = domain;
     }
@@ -828,7 +829,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       return (Comparable) entity.get(property);
     }
 
-    private static List<TableColumn> initializeColumns(final Entities domain, final String entityId) {
+    private static List<TableColumn> initializeColumns(final Domain domain, final String entityId) {
       int modelIndex = 0;
       final List<Property> visibleProperties = domain.getVisibleProperties(entityId);
       if (visibleProperties.isEmpty()) {

@@ -24,22 +24,22 @@ public class EntityBeanMapper {
   private static final String PROPERTY_ID_PARAM = "propertyId";
   private static final String PROPERTY_NAME_PARAM = "propertyName";
 
-  private final Entities domain;
+  private final Domain domain;
 
   private final Map<Class, String> entityIdMap = new HashMap<>();
   private final Map<Class, Map<String, GetterSetter>> propertyMap = new HashMap<>();
 
   /**
-   * @param domain the domain entities
+   * @param domain the domain model
    */
-  public EntityBeanMapper(final Entities domain) {
+  public EntityBeanMapper(final Domain domain) {
     this.domain = domain;
   }
 
   /**
    * Associates the given bean class with the given entityId
    * @param beanClass the bean class representing entities with the given entityId
-   * @param entityId the ID of the entity represented by the given bean class
+   * @param entityId the id of the entity represented by the given bean class
    */
   public final void setEntityId(final Class beanClass, final String entityId) {
     Objects.requireNonNull(beanClass, BEAN_CLASS_PARAM);
@@ -110,9 +110,9 @@ public class EntityBeanMapper {
   }
 
   /**
-   * Transforms the given beans into a Entities according to the information found in this EntityBeanMapper instance
+   * Transforms the given beans into a entities according to the information found in this EntityBeanMapper instance
    * @param beans the beans to transform
-   * @return a List containing the Entities derived from the given beans, an empty List if {@code beans} is null or empty
+   * @return a List containing the entities derived from the given beans, an empty List if {@code beans} is null or empty
    * @throws InvocationTargetException in case an exception is thrown during a bean method call
    * @throws IllegalAccessException if a required method is not accessible
    */

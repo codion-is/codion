@@ -16,7 +16,7 @@ import org.jminor.framework.domain.Entity;
 /**
  * EntityConnection implementation based on a local JDBC connection.
  * <pre>
- * Entities domain = new Domain();
+ * Domain domain = new Domain();
  * EntityConditions conditions = new EntityConditions(domain);
  * Database database = new H2Database("pathToDb");
  * User user = new User("scott", "tiger".toCharArray());

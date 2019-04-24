@@ -73,7 +73,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
     return new FXEntityListModel(foreignKeyProperty.getForeignEntityId(), getConnectionProvider());
     //todo
 //    if (getValidator().isNullable(getEntity(), foreignKeyProperty.getPropertyId())) {
-//      model.setNullValue(Entities.createToStringEntity(foreignKeyProperty.getForeignEntityId(),
+//      model.setNullValue(Domain.createToStringEntity(foreignKeyProperty.getForeignEntityId(),
 //              (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM)));
 //    }
   }

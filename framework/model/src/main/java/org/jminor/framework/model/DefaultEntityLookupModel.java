@@ -20,7 +20,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -86,7 +86,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    * Instantiates a new EntityLookupModel, using the search properties for the given entity type
    * @param entityId the ID of the entity to lookup
    * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
-   * @see Entities#getSearchProperties(String)
+   * @see Domain#getSearchProperties(String)
    */
   public DefaultEntityLookupModel(final String entityId, final EntityConnectionProvider connectionProvider) {
     this(entityId, connectionProvider, connectionProvider.getDomain().getSearchProperties(entityId));

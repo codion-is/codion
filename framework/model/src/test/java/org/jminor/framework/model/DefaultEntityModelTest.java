@@ -16,7 +16,7 @@ import org.jminor.common.model.table.RowColumn;
 import org.jminor.common.model.table.SelectionModel;
 import org.jminor.common.model.table.TableSortModel;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -147,7 +147,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void addRowsDeletedListener(final EventDataListener<List<Integer>> listener) {}
     @Override
-    public Entities getDomain() {return null;}
+    public Domain getDomain() {return null;}
     @Override
     public TestEntityEditModel getEditModel() {return null;}
     @Override

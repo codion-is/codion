@@ -7,7 +7,7 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEntityModel<Model, EditModel, TableModel>,
         EditModel extends DefaultEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
-  protected static final Entities ENTITIES = new TestDomain();
+  protected static final Domain DOMAIN = new TestDomain();
 
   protected static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),

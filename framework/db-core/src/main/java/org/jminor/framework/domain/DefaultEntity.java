@@ -43,9 +43,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   private Map<String, Key> referencedKeyCache;
 
   /**
-   * The domain entities
+   * The domain model defining this entity
    */
-  private Entities domain;
+  private Domain domain;
 
   /**
    * Keep a reference to this frequently referenced object
@@ -61,7 +61,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * Instantiates a new DefaultEntity
    * @param domain the domain
    */
-  DefaultEntity(final Entities domain, final String entityId) {
+  DefaultEntity(final Domain domain, final String entityId) {
     this(domain, entityId, null, null);
   }
 
@@ -70,27 +70,28 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @param domain the domain
    * @param key the primary key
    */
-  DefaultEntity(final Entities domain, final Key key) {
+  DefaultEntity(final Domain domain, final Key key) {
     this(domain, Objects.requireNonNull(key, "key").getEntityId(), createValueMap(key));
     this.key = key;
   }
 
   /**
    * Instantiates a new DefaultEntity
-   * @param definition the definition of the entity type
+   * @param domain the domain model
+   * @param entityId the entity id
    * @param values the initial values
    */
-  DefaultEntity(final Entities domain, final String entityId, final Map<Property, Object> values) {
+  DefaultEntity(final Domain domain, final String entityId, final Map<Property, Object> values) {
     this(domain, entityId, values, null);
   }
 
   /**
    * Instantiates a new DefaultEntity based on the given values.
-   * @param definition the definition of the entity type
+   * @param domain the domain model
    * @param values the initial values
    * @param originalValues the original values, may be null
    */
-  DefaultEntity(final Entities domain, final String entityId, final Map<Property, Object> values,
+  DefaultEntity(final Domain domain, final String entityId, final Map<Property, Object> values,
                 final Map<Property, Object> originalValues) {
     super(values, originalValues);
     this.domain = Objects.requireNonNull(domain, "domain");
@@ -141,6 +142,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   public List<Property> getProperties() {
     return definition.getProperties();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public List<Property.ColumnProperty> getPrimaryKeyProperties() {
+    return definition.getPrimaryKeyProperties();
   }
 
   /** {@inheritDoc} */
@@ -774,7 +781,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     final String domainId = (String) stream.readObject();
     final String entityId = (String) stream.readObject();
     final boolean isModified = stream.readBoolean();
-    domain = Entities.getDomain(domainId);
+    domain = Domain.getDomain(domainId);
     definition = domain.getDefinition(entityId);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityId);
@@ -1131,7 +1138,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
       final String domainId = (String) stream.readObject();
       final String entityId = (String) stream.readObject();
-      definition = Entities.getDomain(domainId).getDefinition(entityId);
+      definition = Domain.getDomain(domainId).getDefinition(entityId);
       if (definition == null) {
         throw new IllegalArgumentException("Undefined entity: " + entityId);
       }
