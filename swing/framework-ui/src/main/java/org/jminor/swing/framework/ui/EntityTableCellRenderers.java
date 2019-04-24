@@ -14,10 +14,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.util.Objects;
 
 /**
@@ -192,14 +190,8 @@ public final class EntityTableCellRenderers {
         if (property instanceof Property.ValueListProperty) {
           setText((String) value);
         }
-        else if (property.isTime()) {
-          setText(dateTimeFormatter.format((LocalTime) value));
-        }
-        else if (property.isDate()) {
-          setText(dateTimeFormatter.format((LocalDate) value));
-        }
-        else if (property.isTimestamp()) {
-          setText(dateTimeFormatter.format((LocalDateTime) value));
+        else if (value instanceof Temporal) {
+          setText(dateTimeFormatter.format((Temporal) value));
         }
         else {
           setText(value == null ? "" : format.format(value));

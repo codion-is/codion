@@ -4983,3 +4983,4 @@
   Entity.getPrimaryKeyProperties() added, Domain.isKeyModified() moved to Entities
   Some javadoc fixes and improvements
   Entities.sort(Properties) moved to Properties
+  EntityTableCellRenderer bug fixed, Temporal values now properly rendered, did not handle null correctly
