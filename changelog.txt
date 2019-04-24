@@ -4982,3 +4982,4 @@
   EntitiesTest refactored from DomainTest
   Entity.getPrimaryKeyProperties() added, Domain.isKeyModified() moved to Entities
   Some javadoc fixes and improvements
+  Entities.sort(Properties) moved to Properties

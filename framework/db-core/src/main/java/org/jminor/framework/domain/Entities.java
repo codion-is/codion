@@ -7,7 +7,6 @@ import org.jminor.common.Util;
 import org.jminor.common.db.valuemap.ValueMap;
 
 import java.sql.Types;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -282,16 +281,6 @@ public final class Entities {
     Objects.requireNonNull(entities, ENTITIES_PARAM);
 
     return entities.stream().map(entity -> (Entity) entity.getCopy()).collect(Collectors.toList());
-  }
-
-  /**
-   * Sorts the given properties by caption, or if that is not available, property id, ignoring case
-   * @param properties the properties to sort
-   */
-  public static void sort(final List<? extends Property> properties) {
-    Objects.requireNonNull(properties, "properties");
-    final Collator collator = Collator.getInstance();
-    properties.sort((o1, o2) -> collator.compare(o1.toString().toLowerCase(), o2.toString().toLowerCase()));
   }
 
   /**

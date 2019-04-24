@@ -725,7 +725,7 @@ public class Domain implements Serializable {
         updatable.add(foreignKeyProperty);
       }
     }
-    Entities.sort(updatable);
+    Properties.sort(updatable);
 
     return updatable;
   }
@@ -774,7 +774,7 @@ public class Domain implements Serializable {
    */
   public final List<Property> getSortedProperties(final String entityId, final Collection<String> propertyIds) {
     final List<Property> properties = new ArrayList<>(getProperties(entityId, propertyIds));
-    Entities.sort(properties);
+    Properties.sort(properties);
 
     return properties;
   }
