@@ -36,6 +36,7 @@ public final class EntityConditions {
   private final Domain domain;
 
   /**
+   * Instantiates a new EntityConditions instance based on the given domain model
    * @param domain the domain model
    */
   public EntityConditions(final Domain domain) {
@@ -43,6 +44,7 @@ public final class EntityConditions {
   }
 
   /**
+   * Creates a {@link EntitySelectCondition} instance for selecting the entity with the given key
    * @param key the key
    * @return a select condition based on the given key
    */
@@ -51,6 +53,8 @@ public final class EntityConditions {
   }
 
   /**
+   * Creates a {@link EntitySelectCondition} instance for selecting the entities with the given keys,
+   * it is assumed they are all of the same type
    * @param keys the keys
    * @return a select condition based on the given keys
    */
@@ -60,9 +64,13 @@ public final class EntityConditions {
   }
 
   /**
+   * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityId}
+   * with a where condition based on the property identified by {@code propertyId}, the operators based on
+   * {@code conditionType} and {@code value}. Note that {@code value} may be a single value, a Collection
+   * of values or null.
    * @param entityId the entity ID
    * @param propertyId the property ID
-   * @param conditionType the search type
+   * @param conditionType the condition type
    * @param value the condition value, can be a Collection of values
    * @return a select condition based on the given value
    */
@@ -72,6 +80,10 @@ public final class EntityConditions {
   }
 
   /**
+   * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityId}
+   * with a where condition based on the property identified by {@code propertyId}, the operators based on
+   * {@code conditionType} and {@code value}. Note that {@code value} may be a single value, a Collection
+   * of values or null.
    * @param entityId the entity ID
    * @param propertyId the property ID
    * @param conditionType the search type
@@ -86,6 +98,10 @@ public final class EntityConditions {
   }
 
   /**
+   * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityId}
+   * with a where condition based on the property identified by {@code propertyId}, the operators based on
+   * {@code conditionType} and {@code value}. Note that {@code value} may be a single value, a Collection
+   * of values or null.
    * @param entityId the entity ID
    * @param propertyCondition the column condition
    * @param fetchCount the maximum number of entities to fetch
@@ -97,6 +113,7 @@ public final class EntityConditions {
   }
 
   /**
+   * Creates a {@link EntitySelectCondition} instance for selecting all entities of the type identified by {@code entityId}
    * @param entityId the entity ID
    * @return a select condition encompassing all entities of the given type
    */
@@ -105,15 +122,19 @@ public final class EntityConditions {
   }
 
   /**
+   * Creates a {@link EntitySelectCondition} instance for selecting at most {@code fetchCount} number
+   * of entities identified by {@code entityId}
    * @param entityId the entity ID
    * @param fetchCount the maximum number of entities to fetch
-   * @return a select condition encompassing all entities of the given type
+   * @return a select condition encompassing at most {@code fetchCount} entities of the given type
    */
   public EntitySelectCondition selectCondition(final String entityId, final int fetchCount) {
     return new DefaultEntitySelectCondition(domain, entityId, null, fetchCount);
   }
 
   /**
+   * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityId},
+   * using the given {@link Condition}
    * @param entityId the entity ID
    * @param propertyCondition the column condition
    * @return a select condition based on the given column condition
@@ -123,14 +144,17 @@ public final class EntityConditions {
   }
 
   /**
+   * Creates a {@link EntityCondition} instance specifying the entity of the type identified by {@code key}
    * @param key the primary key
-   * @return a condition specifying the entity having the given primary key
+   * @return a condition specifying the entity with the given primary key
    */
   public EntityCondition condition(final Entity.Key key) {
     return condition(Collections.singletonList(key));
   }
 
   /**
+   * Creates a {@link EntityCondition} instance specifying the entities of the type identified by {@code key},
+   * using the given {@link Condition}
    * @param entityId the entity ID
    * @param condition the column condition
    * @return a condition based on the given column condition
@@ -140,7 +164,7 @@ public final class EntityConditions {
   }
 
   /**
-   * Creates a condition based on the given primary keys, it is assumed they are all for the same entityId
+   * Creates a condition based on the given primary keys, it is assumed they are all of the same type
    * @param keys the primary keys
    * @return a condition specifying the entities having the given primary keys
    */
@@ -150,6 +174,7 @@ public final class EntityConditions {
   }
 
   /**
+   * Creates a {@link EntitySelectCondition} instance specifying all entities of the type identified by {@code entityId}
    * @param entityId the entity ID
    * @return a condition specifying all entities of the given type
    */
@@ -158,6 +183,10 @@ public final class EntityConditions {
   }
 
   /**
+   * Creates a {@link EntityCondition} instance for specifying entities of the type identified by {@code entityId}
+   * with a where condition based on the property identified by {@code propertyId}, the operators based on
+   * {@code conditionType} and {@code value}. Note that {@code value} may be a single value, a Collection
+   * of values or null.
    * @param entityId the entity ID
    * @param propertyId the property ID
    * @param conditionType the search type
@@ -170,6 +199,9 @@ public final class EntityConditions {
   }
 
   /**
+   * Creates a {@link Condition} for the entity type identified by {@code entityId}, based on the property
+   * identified by {@code propertyId}, with the operator specified by the {@code conditionType} and {@code value}.
+   * Note that {@code value} may be a single value, a Collection of values or null.
    * @param entityId the entity ID
    * @param propertyId the property ID
    * @param conditionType the search type
@@ -182,6 +214,9 @@ public final class EntityConditions {
   }
 
   /**
+   * Creates a {@link Condition} for the entity type identified by {@code entityId}, based on the property
+   * identified by {@code propertyId}, with the operator specified by the {@code conditionType} and {@code value}.
+   * Note that {@code value} may be a single value, a Collection of values or null.
    * @param entityId the entity ID
    * @param propertyId the property ID
    * @param conditionType the search type
@@ -211,6 +246,8 @@ public final class EntityConditions {
   }
 
   /**
+   * Creates a {@link Condition} for the given property, with the operator specified by the {@code conditionType}
+   * and {@code value}. Note that {@code value} may be a single value, a Collection of values or null.
    * @param property the property
    * @param conditionType the search type
    * @param value the condition value, can be a Collection of values
@@ -222,6 +259,8 @@ public final class EntityConditions {
   }
 
   /**
+   * Creates a {@link Condition} for the given property, with the operator specified by the {@code conditionType}
+   * and {@code value}. Note that {@code value} may be a single value, a Collection of values or null.
    * @param property the property
    * @param conditionType the search type
    * @param caseSensitive true if the condition should be case sensitive, only applicable to string properties
@@ -235,46 +274,55 @@ public final class EntityConditions {
   }
 
   /**
+   * Creates a {@link Condition} for the entity type identified by {@code entityId}, based on the foreign key property
+   * identified by {@code foreignKeyPropertyId}, with the operator specified by the {@code conditionType} and {@code value}.
    * @param entityId the entity ID
-   * @param fkPropertyId the property ID
+   * @param foreignKeyPropertyId the property ID
    * @param conditionType the search type
-   * @param value the condition value
+   * @param value the condition value, may be null
    * @return a foreign key property condition based on the given value
    */
-  public Condition<Property.ColumnProperty> foreignKeyCondition(final String entityId, final String fkPropertyId,
+  public Condition<Property.ColumnProperty> foreignKeyCondition(final String entityId, final String foreignKeyPropertyId,
                                                                 final Condition.Type conditionType, final Entity value) {
-    return foreignKeyCondition(entityId, fkPropertyId, conditionType, Collections.singletonList(value));
+    return foreignKeyCondition(entityId, foreignKeyPropertyId, conditionType, Collections.singletonList(value));
   }
 
   /**
+   * Creates a {@link Condition} for the entity type identified by {@code entityId}, based on the foreign key property
+   * identified by {@code foreignKeyPropertyId}, with the operator specified by the {@code conditionType} and {@code value}.
    * @param entityId the entity ID
-   * @param fkPropertyId the property ID
+   * @param foreignKeyPropertyId the property ID
    * @param conditionType the search type
-   * @param value the condition value
+   * @param value the condition value, may be null
    * @return a foreign key property condition based on the given value
    */
-  public Condition<Property.ColumnProperty> foreignKeyCondition(final String entityId, final String fkPropertyId,
+  public Condition<Property.ColumnProperty> foreignKeyCondition(final String entityId, final String foreignKeyPropertyId,
                                                                 final Condition.Type conditionType, final Entity.Key value) {
-    return foreignKeyCondition(entityId, fkPropertyId, conditionType, Collections.singletonList(value));
+    return foreignKeyCondition(entityId, foreignKeyPropertyId, conditionType, Collections.singletonList(value));
   }
 
   /**
+   * Creates a {@link Condition} for the entity type identified by {@code entityId}, based on the foreign key property
+   * identified by {@code foreignKeyPropertyId}, with the operator specified by the {@code conditionType} and {@code values}.
+   * {@code values} may contain either instances of {@link Entity} or {@link Entity.Key}
    * @param entityId the entity ID
-   * @param fkPropertyId the property ID
+   * @param foreignKeyPropertyId the property ID
    * @param conditionType the search type
    * @param values the condition values
    * @return a foreign key property condition based on the given values
    */
-  public Condition<Property.ColumnProperty> foreignKeyCondition(final String entityId, final String fkPropertyId,
+  public Condition<Property.ColumnProperty> foreignKeyCondition(final String entityId, final String foreignKeyPropertyId,
                                                                 final Condition.Type conditionType, final Collection values) {
-    return foreignKeyCondition(domain.getForeignKeyProperty(entityId, fkPropertyId), conditionType, values);
+    return foreignKeyCondition(domain.getForeignKeyProperty(entityId, foreignKeyPropertyId), conditionType, values);
   }
 
   /**
+   * Creates a {@link Condition} for the given foreign key property, with the operator specified by the {@code conditionType}
+   * and {@code value}.
    * @param foreignKeyProperty the foreign key property
    * @param conditionType the search type
-   * @param value the condition value
-   * @return a property condition based on the given value
+   * @param value the condition value, may be null
+   * @return a foreign key condition based on the given value
    */
   public Condition<Property.ColumnProperty> foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
                                                                 final Condition.Type conditionType, final Entity value) {
@@ -282,10 +330,12 @@ public final class EntityConditions {
   }
 
   /**
+   * Creates a {@link Condition} for the given foreign key property, with the operator specified by the {@code conditionType}
+   * and {@code value}.
    * @param foreignKeyProperty the foreign key property
    * @param conditionType the search type
    * @param value the condition value
-   * @return a property condition based on the given value
+   * @return a foreign key condition based on the given value
    */
   public Condition<Property.ColumnProperty> foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
                                                                 final Condition.Type conditionType, final Entity.Key value) {
@@ -293,10 +343,13 @@ public final class EntityConditions {
   }
 
   /**
+   * Creates a {@link Condition} for the given foreign key property, with the operator specified by
+   * the {@code conditionType} and {@code values}.
+   * {@code values} may contain either instances of {@link Entity} or {@link Entity.Key}
    * @param foreignKeyProperty the foreign key property
    * @param conditionType the search type
    * @param values the condition values
-   * @return a property condition based on the given values
+   * @return a foreign key condition based on the given values
    */
   public Condition<Property.ColumnProperty> foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
                                                                 final Condition.Type conditionType, final Collection values) {
@@ -318,7 +371,7 @@ public final class EntityConditions {
   }
 
   /**
-   * Instantiates a new Condition based on the given condition string
+   * Creates a new {@link Condition} based on the given condition string
    * @param conditionString the condition string without the WHERE keyword
    * @return a new Condition instance
    * @throws NullPointerException in case the condition string is null
@@ -328,7 +381,7 @@ public final class EntityConditions {
   }
 
   /**
-   * Instantiates a new Condition based on the given condition string
+   * Condition a new Condition based on the given condition string
    * @param conditionString the condition string without the WHERE keyword
    * @param values the values used by this condition string
    * @param properties the properties representing the values used by this condition, in the same order as their respective values

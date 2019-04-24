@@ -101,11 +101,13 @@ public interface EntityConnectionProvider<T extends EntityConnection> {
   boolean isConnectionValid();
 
   /**
+   * Adds a listener notified each time this connection provider establishes a connection to the database
    * @param listener a listener notified each time the underlying connection is connected
    */
   void addOnConnectListener(final EventListener listener);
 
   /**
+   * Removes the given listener
    * @param listener the listener to remove
    */
   void removeOnConnectListener(final EventListener listener);

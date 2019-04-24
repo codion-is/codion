@@ -92,6 +92,7 @@ public final class DateFormats {
    */
   public interface DateParser<T> {
     /**
+     * Parses the given text with the given formatter
      * @param text the text to parse
      * @param formatter the formatter to use
      * @return the Temporal value
