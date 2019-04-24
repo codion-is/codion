@@ -146,6 +146,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
+  public List<Property.ColumnProperty> getPrimaryKeyProperties() {
+    return definition.getPrimaryKeyProperties();
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public KeyGenerator.Type getKeyGeneratorType() {
     return definition.getKeyGeneratorType();
   }

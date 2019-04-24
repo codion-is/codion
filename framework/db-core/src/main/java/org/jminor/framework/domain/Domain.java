@@ -39,7 +39,8 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 /**
- * A {@link Entity} repository specifying the {@link Entity.Definition}s for a given domain.
+ * A repository specifying the {@link Entity.Definition}s for a given domain.
+ * Used to instantiate {@link Entity} and {@link Entity.Key} instances.
  */
 public class Domain implements Serializable {
 
@@ -78,13 +79,15 @@ public class Domain implements Serializable {
   private final transient Map<String, DatabaseConnection.Operation> databaseOperations = new HashMap<>();
 
   /**
-   * Instantiates a Domain instance
+   * Instantiates a new Domain with the simple name of the class as domain id
+   * @see Class#getSimpleName()
    */
   public Domain() {
     this.domainId = getClass().getSimpleName();
   }
 
   /**
+   * Instantiates a new Domain
    * @param domainId the domain identifier
    */
   public Domain(final String domainId) {
@@ -92,11 +95,11 @@ public class Domain implements Serializable {
   }
 
   /**
-   * A copy constructor
+   * Instantiates a new domain and copies all the entity definitions from {@code domain}
    * @param domain the domain to copy
    */
   public Domain(final Domain domain) {
-    this.domainId = domain.domainId;
+    this.domainId = Objects.requireNonNull(domain).domainId;
     this.entityDefinitions.putAll(domain.entityDefinitions);
   }
 
@@ -109,7 +112,7 @@ public class Domain implements Serializable {
 
   /**
    * Creates a new {@link Entity} instance with the given entityId
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return a new {@link Entity} instance
    */
   public final Entity entity(final String entityId) {
@@ -129,7 +132,7 @@ public class Domain implements Serializable {
    * Instantiates a new {@link Entity} instance using the given maps for the values and original values respectively.
    * Note that the given map instances are used internally, modifying the contents of those maps outside the
    * {@link Entity} instance will definitely result in some unexpected and unpleasant behaviour.
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @param values the values
    * @param originalValues the original values
    * @return a new {@link Entity} instance
@@ -144,7 +147,7 @@ public class Domain implements Serializable {
    * and {@link Property.TransientProperty} (excluding its descendants).
    * If a {@link Property.ColumnProperty}s column has a default value the property is
    * skipped unless it has a default value, which then overrides the columns default value.
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @param valueProvider the value provider
    * @return the populated entity
    * @see Property.ColumnProperty#setColumnHasDefaultValue(boolean)
@@ -176,7 +179,7 @@ public class Domain implements Serializable {
 
   /**
    * Creates a new {@link Entity.Key} instance with the given entityId
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return a new {@link Entity.Key} instance
    */
   public final Entity.Key key(final String entityId) {
@@ -185,7 +188,7 @@ public class Domain implements Serializable {
 
   /**
    * Defines a new entity, by default the {@code entityId} is used as the underlying table name
-   * @param entityId the ID uniquely identifying the entity
+   * @param entityId the id uniquely identifying the entity type
    * @param properties the {@link Property} objects to base this entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
    * @return a new {@link Entity.Definition}
@@ -198,7 +201,7 @@ public class Domain implements Serializable {
 
   /**
    * Defines a new entity
-   * @param entityId the ID uniquely identifying the entity
+   * @param entityId the id uniquely identifying the entity type
    * @param tableName the name of the underlying table
    * @param properties the {@link Property} objects to base the entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
@@ -227,8 +230,8 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
-   * @return a String array containing the IDs of the properties used as default search properties
+   * @param entityId the entity id
+   * @return a String array containing the ids of the properties used as default search properties
    * for entities identified by {@code entityId}
    * @see Entity.Definition#setSearchPropertyIds(String...)
    */
@@ -238,8 +241,8 @@ public class Domain implements Serializable {
 
   /**
    * Retrieves the properties used when searching for a entity of the given type,
-   * if no search property IDs are defined all STRING based properties are returned.
-   * @param entityId the entity ID
+   * if no search property ids are defined all STRING based properties are returned.
+   * @param entityId the entity id
    * @return the search properties to use
    * @see Entity.Definition#setSearchPropertyIds(String...)
    */
@@ -250,8 +253,8 @@ public class Domain implements Serializable {
 
   /**
    * Retrieves the properties used when searching for a entity of the given type,
-   * @param entityId the entity ID
-   * @param searchPropertyIds the IDs of the search properties to retrieve
+   * @param entityId the entity id
+   * @param searchPropertyIds the ids of the search properties to retrieve
    * @return the search properties to use
    * @see Entity.Definition#setSearchPropertyIds(String...)
    */
@@ -264,7 +267,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return a list containing the primary key properties of the entity identified by {@code entityId}
    */
   public final List<Property.ColumnProperty> getPrimaryKeyProperties(final String entityId) {
@@ -272,7 +275,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return true if the entity identified by {@code entityId} is read only
    * @throws IllegalArgumentException if the entity is undefined
    */
@@ -281,7 +284,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return true if the entity identified by {@code entityId} is based on a small dataset
    * @throws IllegalArgumentException if the entity is undefined
    */
@@ -290,7 +293,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return true if the entity identified by {@code entityId} is based on static data
    * @throws IllegalArgumentException if the entity is undefined
    */
@@ -299,7 +302,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return the default order by for this entity
    */
   public final Entity.OrderBy getOrderBy(final String entityId) {
@@ -307,7 +310,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return a comma separated list of columns to use in the group by clause
    */
   public final String getGroupByClause(final String entityId) {
@@ -315,7 +318,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return the having clause associated with this entity
    */
   public final String getHavingClause(final String entityId) {
@@ -323,7 +326,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return the name of the table used to select entities identified by {@code entityId}
    * @throws IllegalArgumentException if the entity is undefined
    */
@@ -332,7 +335,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return the name of the table on which entities identified by {@code entityId} are based
    * @throws IllegalArgumentException if the entity is undefined
    */
@@ -341,7 +344,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return the sql query used when selecting entities identified by {@code entityId}
    * @throws IllegalArgumentException if the entity is undefined
    */
@@ -350,7 +353,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return true if the select query for the given entity, if any, contains a where clause
    */
   public final boolean selectQueryContainsWhereClause(final String entityId) {
@@ -358,7 +361,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return the query string used to select entities identified by {@code entityId}
    * @throws IllegalArgumentException if the entity is undefined
    */
@@ -367,7 +370,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return the primary key generator for entities identified by {@code entityId}
    * @throws IllegalArgumentException if the entity is undefined
    */
@@ -376,7 +379,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return the type of primary key generator used by entities identified by {@code entityId}
    * @throws IllegalArgumentException if the entity is undefined
    */
@@ -385,7 +388,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return the {@link Entity.ToString} instance used to provide string representations
    * of entities of the given type
    * @throws IllegalArgumentException if the entity is undefined
@@ -395,7 +398,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return the default Comparator to use when sorting entities of the given type
    */
   public final Comparator<Entity> getComparator(final String entityId) {
@@ -406,7 +409,7 @@ public class Domain implements Serializable {
    * Returns true if the value for the primary key of this entity is automatically generated, either by the framework,
    * such as values queried from sequences or set by triggers. If not the primary key value must be set manually
    * before the entity is inserted.
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return true if the value for the primary key is automatically generated
    */
   public final boolean isPrimaryKeyAutoGenerated(final String entityId) {
@@ -414,7 +417,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return true if the primary key of the given type of entity is comprised of a single integer value
    */
   public final boolean hasSingleIntegerPrimaryKey(final String entityId) {
@@ -424,7 +427,7 @@ public class Domain implements Serializable {
 
   /**
    * Retrieves the column properties comprising the entity identified by {@code entityId}
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @param includePrimaryKeyProperties if true primary key properties are included
    * @param includeReadOnly if true then properties that are marked as 'read only' are included
    * @param includeNonUpdatable if true then non updatable properties are included
@@ -445,7 +448,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return a list containing the visible (non-hidden) properties
    * in the entity identified by {@code entityId}
    */
@@ -456,8 +459,8 @@ public class Domain implements Serializable {
 
   /**
    * @param entityId the entityId
-   * @param propertyIds the IDs of the properties to retrieve
-   * @return the {@link Property.ColumnProperty}s specified by the given property IDs
+   * @param propertyIds the ids of the properties to retrieve
+   * @return the {@link Property.ColumnProperty}s specified by the given property ids
    * @throws IllegalArgumentException in case a given propertyId does not represent a {@link Property.ColumnProperty}
    */
   public final List<Property.ColumnProperty> getColumnProperties(final String entityId, final Collection<String> propertyIds) {
@@ -469,9 +472,9 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
-   * @param propertyId the property ID
-   * @return the column property identified by property ID
+   * @param entityId the entity id
+   * @param propertyId the property id
+   * @return the column property identified by property id
    * @throws IllegalArgumentException in case the propertyId does not represent a {@link Property.ColumnProperty}
    */
   public final Property.ColumnProperty getColumnProperty(final String entityId, final String propertyId) {
@@ -484,8 +487,8 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
-   * @param propertyId the property ID
+   * @param entityId the entity id
+   * @param propertyId the property id
    * @return the property identified by {@code propertyId} in the entity identified by {@code entityId}
    * @throws IllegalArgumentException in case no such property exists
    */
@@ -501,8 +504,8 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
-   * @param propertyIds the IDs of the properties to retrieve
+   * @param entityId the entity id
+   * @param propertyIds the ids of the properties to retrieve
    * @return a list containing the properties identified by {@code propertyIds}, found in
    * the entity identified by {@code entityId}
    */
@@ -512,8 +515,8 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
-   * @param propertyIds the IDs of the properties to retrieve
+   * @param entityId the entity id
+   * @param propertyIds the ids of the properties to retrieve
    * @return a list containing the properties identified by {@code propertyIds}, found in
    * the entity identified by {@code entityId}
    */
@@ -525,7 +528,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @param includeHidden true if hidden properties should be included in the result
    * @return a collection containing the properties found in the entity identified by {@code entityId}
    */
@@ -534,7 +537,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return a list containing all database properties found in the entity identified by {@code entityId},
    * that is, properties that map to database columns
    */
@@ -543,7 +546,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return a list containing all transient database properties found in the entity identified by {@code entityId},
    * that is, properties that do not map to database columns
    */
@@ -552,7 +555,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return a list containing all the foreign key properties found in the entity
    * identified by {@code entityId}
    */
@@ -561,7 +564,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return true if the given entity contains denormalized properties
    */
   public final boolean hasDenormalizedProperties(final String entityId) {
@@ -569,10 +572,10 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @param foreignKeyPropertyId the foreign key id
    * @return a list containing all denormalized properties of the entity identified by {@code entityId}
-   * which source is the entity identified by {@code propertyOwnerEntityID}
+   * which source is the entity referenced by {@code foreignKeyPropertyId}
    */
   public final List<Property.DenormalizedProperty> getDenormalizedProperties(final String entityId,
                                                                              final String foreignKeyPropertyId) {
@@ -580,10 +583,10 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @param foreignKeyPropertyId the foreign key id
    * @return true if the entity identified by {@code entityId} contains denormalized properties
-   * which source is the entity identified by {@code propertyOwnerEntityID}
+   * which source is the entity referenced by {@code foreignKeyPropertyId}
    */
   public final boolean hasDenormalizedProperties(final String entityId, final String foreignKeyPropertyId) {
     return getDefinition(entityId).hasDenormalizedProperties(foreignKeyPropertyId);
@@ -592,7 +595,7 @@ public class Domain implements Serializable {
   /**
    * Returns true if this entity contains properties which values are derived from the value of the given property
    * @param entityId the entityId
-   * @param propertyId the ID of the property
+   * @param propertyId the id of the property
    * @return true if any properties are derived from the given property
    */
   public final boolean hasDerivedProperties(final String entityId, final String propertyId) {
@@ -603,7 +606,7 @@ public class Domain implements Serializable {
    * Returns the properties which values are derived from the value of the given property,
    * an empty collection if no such derived properties exist
    * @param entityId the entityId
-   * @param propertyId the ID of the property
+   * @param propertyId the id of the property
    * @return a collection containing the properties which are derived from the given property
    */
   public final Collection<Property.DerivedProperty> getDerivedProperties(final String entityId, final String propertyId) {
@@ -612,8 +615,8 @@ public class Domain implements Serializable {
 
   /**
    * Returns the foreign key properties referencing entities of the given type
-   * @param entityId the ID of the entity from which to retrieve the foreign key properties
-   * @param foreignEntityId the ID of the referenced entity
+   * @param entityId the id of the entity from which to retrieve the foreign key properties
+   * @param foreignEntityId the id of the referenced entity
    * @return a List containing the properties, an empty list is returned in case no properties fit the condition
    */
   public final List<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityId, final String foreignEntityId) {
@@ -622,8 +625,8 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
-   * @param propertyId the property ID
+   * @param entityId the entity id
+   * @param propertyId the property id
    * @return the Property.ForeignKeyProperty with the given propertyId
    * @throws IllegalArgumentException in case no such property exists
    */
@@ -661,7 +664,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return the properties comprising the given entity type
    */
   public final List<Property> getProperties(final String entityId) {
@@ -669,7 +672,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return the caption associated with the given entity type
    */
   public final String getCaption(final String entityId) {
@@ -700,7 +703,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the entity id
    * @return true if the entity is defined
    */
   public final boolean isDefined(final String entityId) {
@@ -708,8 +711,8 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
-   * @return a list containing all updatable properties associated with the given entity ID
+   * @param entityId the entity id
+   * @return a list containing all updatable properties associated with the given entity id
    */
   public final List<Property> getUpdatableProperties(final String entityId) {
     final List<Property.ColumnProperty> columnProperties = getColumnProperties(entityId,
@@ -725,19 +728,6 @@ public class Domain implements Serializable {
     Entities.sort(updatable);
 
     return updatable;
-  }
-
-  /**
-   * @param entities the entities to check
-   * @return true if any of the given entities has a modified primary key
-   */
-  public final boolean isKeyModified(final Collection<Entity> entities) {
-    if (Util.nullOrEmpty(entities)) {
-      return false;
-    }
-
-    return entities.stream().anyMatch(entity ->
-            getPrimaryKeyProperties(entity.getEntityId()).stream().anyMatch(entity::isModified));
   }
 
   /**
@@ -778,9 +768,9 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param entityId the entity ID
-   * @param propertyIds the property IDs
-   * @return the given properties sorted by caption, or if that is not available, property ID
+   * @param entityId the entity id
+   * @param propertyIds the property ids
+   * @return the given properties sorted by caption, or if that is not available, property id
    */
   public final List<Property> getSortedProperties(final String entityId, final Collection<String> propertyIds) {
     final List<Property> properties = new ArrayList<>(getProperties(entityId, propertyIds));
@@ -800,7 +790,7 @@ public class Domain implements Serializable {
   /**
    * Adds the given Operation to this domain
    * @param operation the operation to add
-   * @throws IllegalArgumentException in case an operation with the same ID has already been added
+   * @throws IllegalArgumentException in case an operation with the same id has already been added
    */
   public final void addOperation(final DatabaseConnection.Operation operation) {
     if (databaseOperations.containsKey(operation.getId())) {
@@ -812,7 +802,7 @@ public class Domain implements Serializable {
 
   /**
    * @param <C> the type of the database connection this procedure requires
-   * @param procedureId the procedure ID
+   * @param procedureId the procedure id
    * @return the procedure
    * @throws IllegalArgumentException in case the procedure is not found
    */
@@ -827,7 +817,7 @@ public class Domain implements Serializable {
 
   /**
    * @param <C> the type of the database connection this function requires
-   * @param functionId the function ID
+   * @param functionId the function id
    * @return the function
    * @throws IllegalArgumentException in case the function is not found
    */
@@ -841,7 +831,8 @@ public class Domain implements Serializable {
   }
 
   /**
-   * Registers this instance for lookup via {@link Domain#getDomain(String)}
+   * Registers this instance for lookup via {@link Domain#getDomain(String)}, required for serialization
+   * of domain objects, entities and related classes.
    * @return this Domain instance
    * @see #getDomainId()
    */
@@ -900,7 +891,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * @param domainId the ID of the domain for which to retrieve the entity definitions
+   * @param domainId the id of the domain for which to retrieve the entity definitions
    * @return the domain instance registered for the given domainId
    * @throws IllegalArgumentException in case the domain has not been registered
    * @see #registerDomain()
@@ -968,14 +959,14 @@ public class Domain implements Serializable {
   private static void validateAndAddProperty(final Property property, final String domainId, final String entityId,
                                              final Map<String, Property> propertyMap) {
     checkIfUniquePropertyId(property, entityId, propertyMap);
-    property.setDomainID(domainId);
-    property.setEntityID(entityId);
+    property.setDomainId(domainId);
+    property.setEntityId(entityId);
     propertyMap.put(property.getPropertyId(), property);
   }
 
   private static void checkIfUniquePropertyId(final Property property, final String entityId, final Map<String, Property> propertyMap) {
     if (propertyMap.containsKey(property.getPropertyId())) {
-      throw new IllegalArgumentException("Property with ID " + property.getPropertyId()
+      throw new IllegalArgumentException("Property with id " + property.getPropertyId()
               + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
               + " has already been defined as: " + propertyMap.get(property.getPropertyId()) + " in entity: " + entityId);
     }
@@ -1063,7 +1054,7 @@ public class Domain implements Serializable {
 
     /**
      * Instantiates a new {@link StringProvider} instance
-     * @param propertyId the ID of the property which value should be used for a string representation
+     * @param propertyId the id of the property which value should be used for a string representation
      */
     public StringProvider(final String propertyId) {
       addValue(propertyId);
@@ -1079,7 +1070,7 @@ public class Domain implements Serializable {
 
     /**
      * Adds the value mapped to the given key to this {@link StringProvider}
-     * @param propertyId the ID of the property which value should be added to the string representation
+     * @param propertyId the id of the property which value should be added to the string representation
      * @return this {@link StringProvider} instance
      */
     public StringProvider addValue(final String propertyId) {
@@ -1090,7 +1081,7 @@ public class Domain implements Serializable {
 
     /**
      * Adds the value mapped to the given key to this StringProvider
-     * @param propertyId the ID of the property which value should be added to the string representation
+     * @param propertyId the id of the property which value should be added to the string representation
      * @param format the Format to use when appending the value
      * @return this {@link StringProvider} instance
      */
@@ -1105,7 +1096,7 @@ public class Domain implements Serializable {
      * Adds the value mapped to the given property in the {@link Entity} instance mapped to the given foreignKeyProperty
      * to this {@link StringProvider}
      * @param foreignKeyProperty the foreign key property
-     * @param propertyId the ID of the property in the referenced entity to use
+     * @param propertyId the id of the property in the referenced entity to use
      * @return this {@link StringProvider} instance
      */
     public StringProvider addForeignKeyValue(final Property.ForeignKeyProperty foreignKeyProperty,
@@ -1205,7 +1196,14 @@ public class Domain implements Serializable {
   }
 
   /**
-   * A default extensible {@link Entity.Validator} implementation.
+   * A default {@link Entity.Validator} implementation providing null validation for properties marked as not null,
+   * range validation for numerical properties with max and/or min values specified and string length validation
+   * based on the specified max length.
+   * This Validator can be extended to provide further validation.
+   * @see Property#setNullable(boolean)
+   * @see Property#setMin(double)
+   * @see Property#setMax(double)
+   * @see Property#setMaxLength(int)
    */
   public static class Validator extends DefaultValueMap.DefaultValidator<Property, Entity> implements Entity.Validator {
 
@@ -1373,7 +1371,7 @@ public class Domain implements Serializable {
 
     /**
      * Instantiates a new EntityResultPacker.
-     * @param entityId the ID of the entities this packer packs
+     * @param entityId the id of the entities this packer packs
      */
     private EntityResultPacker(final Domain domain, final String entityId, final List<Property.ColumnProperty> columnProperties,
                                final List<Property.TransientProperty> transientProperties, final int propertyCount) {

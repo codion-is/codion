@@ -20,14 +20,14 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Helper class for working with Entity and related classes
+ * Helper class for working with Entity instances and related classes
  */
 public final class Entities {
 
   private static final String ENTITIES_PARAM = "entities";
 
   /**
-   * Returns true if this entity has a null primary key or a null original primary key,
+   * Returns true if the entity has a null primary key or a null original primary key,
    * which is the best guess about an entity being new, as in, not existing in a database.
    * @param entity the entity
    * @return true if this entity has not been persisted
@@ -40,8 +40,24 @@ public final class Entities {
   }
 
   /**
+   * Checks if the primary key of any of the given entities is modified
+   * @param entities the entities to check
+   * @return true if any of the given entities has a modified primary key
+   */
+  public static boolean isKeyModified(final Collection<Entity> entities) {
+    if (Util.nullOrEmpty(entities)) {
+      return false;
+    }
+
+    return entities.stream().anyMatch(entity ->
+            entity.getPrimaryKeyProperties().stream().anyMatch(entity::isModified));
+  }
+
+  /**
+   * Returns all of the given entities which have been modified
    * @param entities the entities
    * @return a List of entities that have been modified
+   * @see Entity#isModified()
    */
   public static List<Entity> getModifiedEntities(final Collection<Entity> entities) {
     Objects.requireNonNull(entities, ENTITIES_PARAM);
@@ -50,10 +66,11 @@ public final class Entities {
   }
 
   /**
+   * Returns all {@link Property.ColumnProperty}s which value is missing or the original value differs from the one in the comparison
+   * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison} 
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
-   * @return all {@link Property.ColumnProperty}s which value is missing or the original value differs from the one in the comparison
-   * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}
+   * @return the properties which values differ from the ones in the comparison entity
    */
   public static final Collection<Property.ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison) {
     //BLOB property values are not loaded, so we can't compare those
@@ -64,6 +81,7 @@ public final class Entities {
   }
 
   /**
+   * Returns the primary keys of the given entities.
    * @param entities the entities
    * @return a List containing the primary keys of the given entities
    */
@@ -72,6 +90,7 @@ public final class Entities {
   }
 
   /**
+   * Returns the original primary key values of the given entities.
    * @param entities the entities
    * @param originalValue if true then the original value of the primary key is used
    * @return a List containing the primary keys of the given entities
@@ -100,10 +119,11 @@ public final class Entities {
   }
 
   /**
+   * Returns the values associated with the given property from the given entities.
    * @param <T> the value type
-   * @param propertyId the ID of the property for which to retrieve the values
+   * @param propertyId the id of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the property value
-   * @return a Collection containing the values of the property with the given ID from the given entities,
+   * @return a Collection containing the values of the property with the given id from the given entities,
    * null values are included
    */
   public static <T> Collection<T> getValues(final String propertyId, final Collection<Entity> entities) {
@@ -111,11 +131,12 @@ public final class Entities {
   }
 
   /**
+   * Returns the values associated with the given property from the given entities.
    * @param <T> the value type
-   * @param propertyId the ID of the property for which to retrieve the values
+   * @param propertyId the id of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the property value
    * @param includeNullValues if true then null values are included
-   * @return a Collection containing the values of the property with the given ID from the given entities
+   * @return a Collection containing the values of the property with the given id from the given entities
    */
   public static <T> Collection<T> getValues(final String propertyId, final Collection<Entity> entities,
                                             final boolean includeNullValues) {
@@ -126,7 +147,7 @@ public final class Entities {
    * Returns a Collection containing the distinct values of {@code propertyId} from the given entities, excluding null values.
    * If the {@code entities} list is null an empty Collection is returned.
    * @param <T> the value type
-   * @param propertyId the ID of the property for which to retrieve the values
+   * @param propertyId the id of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the values
    * @return a Collection containing the distinct property values, excluding null values
    */
@@ -138,7 +159,7 @@ public final class Entities {
    * Returns a Collection containing the distinct values of {@code propertyId} from the given entities.
    * If the {@code entities} list is null an empty Collection is returned.
    * @param <T> the value type
-   * @param propertyId the ID of the property for which to retrieve the values
+   * @param propertyId the id of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the values
    * @param includeNullValue if true then null is considered a value
    * @return a Collection containing the distinct property values
@@ -149,9 +170,9 @@ public final class Entities {
   }
 
   /**
-   * Sets the value of the property with ID {@code propertyId} to {@code value}
+   * Sets the value of the property with id {@code propertyId} to {@code value}
    * in the given entities
-   * @param propertyId the ID of the property for which to set the value
+   * @param propertyId the id of the property for which to set the value
    * @param value the value
    * @param entities the entities for which to set the value
    * @return the old property values mapped to their respective primary key
@@ -183,10 +204,10 @@ public final class Entities {
   }
 
   /**
-   * Returns a LinkedHashMap containing the given entities mapped to the value of the property with ID {@code propertyId},
+   * Returns a LinkedHashMap containing the given entities mapped to the value of the property with id {@code propertyId},
    * respecting the iteration order of the given collection
    * @param <K> the key type
-   * @param propertyId the ID of the property which value should be used for mapping
+   * @param propertyId the id of the property which value should be used for mapping
    * @param entities the entities to map by property value
    * @return a Map of entities mapped to property value
    */
@@ -210,7 +231,7 @@ public final class Entities {
    * @param keys the entity keys to map by entityId
    * @return a Map of entity keys mapped to entityId
    */
-  public static LinkedHashMap<String, List<Entity.Key>> mapKeysToEntityID(final Collection<Entity.Key> keys) {
+  public static LinkedHashMap<String, List<Entity.Key>> mapKeysToEntityId(final Collection<Entity.Key> keys) {
     return Util.map(keys, Entity.Key::getEntityId);
   }
 
@@ -253,6 +274,7 @@ public final class Entities {
   }
 
   /**
+   * Copies the given entities, with new copied instances of all foreign key value entities.
    * @param entities the entities to copy
    * @return deep copies of the entities, in the same order as they are received
    */
@@ -263,7 +285,7 @@ public final class Entities {
   }
 
   /**
-   * Sorts the given properties by caption, or if that is not available, property ID, ignoring case
+   * Sorts the given properties by caption, or if that is not available, property id, ignoring case
    * @param properties the properties to sort
    */
   public static void sort(final List<? extends Property> properties) {

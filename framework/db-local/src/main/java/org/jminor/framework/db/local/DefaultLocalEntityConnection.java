@@ -371,7 +371,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String deleteSQL = null;
     synchronized (connection) {
       try {
-        final Map<String, List<Entity.Key>> mappedKeys = Entities.mapKeysToEntityID(entityKeys);
+        final Map<String, List<Entity.Key>> mappedKeys = Entities.mapKeysToEntityId(entityKeys);
         for (final String entityId : mappedKeys.keySet()) {
           checkReadOnly(entityId);
         }
@@ -434,7 +434,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         final List<Entity> result = new ArrayList<>();
-        for (final Map.Entry<String, List<Entity.Key>> entry : Entities.mapKeysToEntityID(keys).entrySet()) {
+        for (final Map.Entry<String, List<Entity.Key>> entry : Entities.mapKeysToEntityId(keys).entrySet()) {
           result.addAll(doSelectMany(entityConditions.selectCondition(entry.getValue()), 0));
         }
         if (!isTransactionOpen()) {

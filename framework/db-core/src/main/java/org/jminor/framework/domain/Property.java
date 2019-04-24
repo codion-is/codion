@@ -106,24 +106,24 @@ public interface Property extends Attribute, Serializable {
    * @param domainId the id of the domain model this property belongs to
    * @return this Property instance
    */
-  Property setDomainID(final String domainId);
+  Property setDomainId(final String domainId);
 
   /**
-   * @return the ID of the entity this property is associated with
+   * @return the id of the entity this property is associated with
    */
   String getEntityId();
 
   /**
-   * @param entityId the ID of the entity this property is associated with
+   * @param entityId the id of the entity this property is associated with
    * @throws IllegalStateException in case the entityId has already been set
    * @return this Property instance
    */
-  Property setEntityID(final String entityId);
+  Property setEntityId(final String entityId);
 
   /**
    * The property identifier, should be unique within an Entity.
-   * By default this ID serves as column name for database properties.
-   * @return the ID of this property
+   * By default this id serves as column name for database properties.
+   * @return the id of this property
    */
   String getPropertyId();
 
@@ -540,7 +540,7 @@ public interface Property extends Attribute, Serializable {
     boolean isUpdatable();
 
     /**
-     * @return the ID of the entity referenced by this foreign key
+     * @return the id of the entity referenced by this foreign key
      */
     String getForeignEntityId();
 
@@ -618,6 +618,8 @@ public interface Property extends Attribute, Serializable {
    * A property that does not map to an underlying database column. The value of a transient property
    * is initialized to null when entities are loaded, which means transient properties always have null as the original value.
    * The value of transient properties can be set and retrieved like normal properties but are ignored during DML operations.
+   * Note that by default setting a transient value marks the entity as being modified, but trying to update an entity
+   * with only transient values modified will result in an error.
    */
   interface TransientProperty extends Property {
 
@@ -639,7 +641,7 @@ public interface Property extends Attribute, Serializable {
   interface DerivedProperty extends TransientProperty {
 
     /**
-     * @return the IDs of properties this property derives from.
+     * @return the ids of properties this property derives from.
      */
     List<String> getSourcePropertyIds();
 

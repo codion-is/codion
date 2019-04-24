@@ -30,7 +30,7 @@ public class EntityBeanMapper {
   private final Map<Class, Map<String, GetterSetter>> propertyMap = new HashMap<>();
 
   /**
-   * @param domain the domain entities
+   * @param domain the domain model
    */
   public EntityBeanMapper(final Domain domain) {
     this.domain = domain;
@@ -39,7 +39,7 @@ public class EntityBeanMapper {
   /**
    * Associates the given bean class with the given entityId
    * @param beanClass the bean class representing entities with the given entityId
-   * @param entityId the ID of the entity represented by the given bean class
+   * @param entityId the id of the entity represented by the given bean class
    */
   public final void setEntityId(final Class beanClass, final String entityId) {
     Objects.requireNonNull(beanClass, BEAN_CLASS_PARAM);

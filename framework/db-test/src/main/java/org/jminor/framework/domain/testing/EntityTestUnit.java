@@ -39,7 +39,7 @@ import java.util.Random;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * A class for unit testing domain entities.
+ * A class for unit testing a domain model.
  */
 public class EntityTestUnit {
 

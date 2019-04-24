@@ -82,7 +82,7 @@ public interface EntityConnectionProvider<T extends EntityConnection> {
   Domain getDomain();
 
   /**
-   * @return a EntityConditions instance based on the domain entities
+   * @return a EntityConditions instance based on the underlying domain model
    */
   EntityConditions getConditions();
 
