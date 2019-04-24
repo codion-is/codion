@@ -64,6 +64,11 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   List<Property> getProperties();
 
   /**
+   * @return the primary key properties of this entity type, sorted by primary key column index
+   */
+  List<Property.ColumnProperty> getPrimaryKeyProperties();
+
+  /**
    * @param propertyId the ID of the property for which to retrieve the value
    * @return the value of the given property
    */

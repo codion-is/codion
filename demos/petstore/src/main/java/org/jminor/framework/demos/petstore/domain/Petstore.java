@@ -3,13 +3,13 @@
  */
 package org.jminor.framework.demos.petstore.domain;
 
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 
 import java.sql.Types;
 
 import static org.jminor.framework.domain.Properties.*;
 
-public final class Petstore extends Entities {
+public final class Petstore extends Domain {
 
   public Petstore() {
     defineAddress();
@@ -45,7 +45,7 @@ public final class Petstore extends Entities {
             columnProperty(ADDRESS_LONGITUDE, Types.DOUBLE, "Longitude").setNullable(false).setMaximumFractionDigits(2))
             .setKeyGenerator(incrementKeyGenerator("petstore.address", ADDRESS_ID))
             .setOrderBy(orderBy().ascending(ADDRESS_CITY, ADDRESS_STREET_1, ADDRESS_STREET_2))
-            .setStringProvider(new Entities.StringProvider(ADDRESS_STREET_1).addText(" ")
+            .setStringProvider(new StringProvider(ADDRESS_STREET_1).addText(" ")
                     .addValue(ADDRESS_STREET_2).addText(", ").addValue(ADDRESS_CITY).addText(" ")
                     .addValue(ADDRESS_ZIP).addText(", ").addValue(ADDRESS_STATE))
             .setCaption("Addresses");
@@ -65,7 +65,7 @@ public final class Petstore extends Entities {
             columnProperty(CATEGORY_IMAGE_URL, Types.VARCHAR, "Image URL").setHidden(true))
             .setKeyGenerator(incrementKeyGenerator("petstore.category", CATEGORY_ID))
             .setOrderBy(orderBy().ascending(CATEGORY_NAME))
-            .setStringProvider(new Entities.StringProvider(CATEGORY_NAME))
+            .setStringProvider(new StringProvider(CATEGORY_NAME))
             .setCaption("Categories");
   }
 
@@ -87,7 +87,7 @@ public final class Petstore extends Entities {
             columnProperty(PRODUCT_IMAGE_URL, Types.VARCHAR, "Image URL").setMaxLength(55).setHidden(true))
             .setKeyGenerator(incrementKeyGenerator("petstore.product", PRODUCT_ID))
             .setOrderBy(orderBy().ascending(PRODUCT_NAME))
-            .setStringProvider(new Entities.StringProvider(PRODUCT_CATEGORY_FK)
+            .setStringProvider(new StringProvider(PRODUCT_CATEGORY_FK)
                     .addText(" - ").addValue(PRODUCT_NAME))
             .setCaption("Products");
   }
@@ -106,7 +106,7 @@ public final class Petstore extends Entities {
             columnProperty(SELLER_CONTACT_INFO_EMAIL, Types.VARCHAR, "Email").setMaxLength(24).setNullable(false))
             .setKeyGenerator(incrementKeyGenerator("petstore.sellercontactinfo", SELLER_CONTACT_INFO_ID))
             .setOrderBy(orderBy().ascending(SELLER_CONTACT_INFO_LAST_NAME, SELLER_CONTACT_INFO_FIRST_NAME))
-            .setStringProvider(new Entities.StringProvider(SELLER_CONTACT_INFO_LAST_NAME)
+            .setStringProvider(new StringProvider(SELLER_CONTACT_INFO_LAST_NAME)
                     .addText(", ").addValue(SELLER_CONTACT_INFO_FIRST_NAME))
             .setCaption("Seller info");
   }
@@ -143,7 +143,7 @@ public final class Petstore extends Entities {
             booleanProperty(ITEM_DISABLED, Types.INTEGER, "Disabled", 1, 0).setDefaultValue(false))
             .setKeyGenerator(incrementKeyGenerator("petstore.item", ITEM_ID))
             .setOrderBy(orderBy().ascending(ITEM_NAME))
-            .setStringProvider(new Entities.StringProvider(ITEM_PRODUCT_FK).addText(" - ").addValue(ITEM_NAME))
+            .setStringProvider(new StringProvider(ITEM_PRODUCT_FK).addText(" - ").addValue(ITEM_NAME))
             .setCaption("Items");
   }
 
@@ -161,7 +161,7 @@ public final class Petstore extends Entities {
             .setKeyGenerator(incrementKeyGenerator("petstore.tag", TAG_ID))
             .setOrderBy(orderBy().ascending(TAG_TAG))
             .setSelectTableName("petstore.tag tag")
-            .setStringProvider(new Entities.StringProvider(TAG_TAG))
+            .setStringProvider(new StringProvider(TAG_TAG))
             .setCaption("Tags");
   }
 
@@ -177,7 +177,7 @@ public final class Petstore extends Entities {
                     primaryKeyProperty(TAG_ITEM_ITEM_ID, Types.INTEGER).setPrimaryKeyIndex(0)).setNullable(false),
             foreignKeyProperty(TAG_ITEM_TAG_FK, "Tag", T_TAG,
                     primaryKeyProperty(TAG_ITEM_TAG_ID, Types.INTEGER).setPrimaryKeyIndex(1)).setNullable(false))
-            .setStringProvider(new Entities.StringProvider(TAG_ITEM_ITEM_FK).addText(" - ").addValue(TAG_ITEM_TAG_FK))
+            .setStringProvider(new StringProvider(TAG_ITEM_ITEM_FK).addText(" - ").addValue(TAG_ITEM_TAG_FK))
             .setCaption("Item tags");
   }
 }

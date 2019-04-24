@@ -20,7 +20,7 @@ import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Property;
 
 import org.junit.jupiter.api.AfterAll;
@@ -70,7 +70,7 @@ public class DefaultEntityConnectionServerTest {
             "ClientTypeID", CONNECTION_PARAMS);
     final RemoteEntityConnection connection = server.connect(connectionRequestOne);
 
-    final Entities domain = connection.getDomain();
+    final Domain domain = connection.getDomain();
     final EntityConditions conditions = new EntityConditions(domain);
     final Condition<Property.ColumnProperty> condition = conditions.stringCondition("mgr > ?",
             Collections.singletonList(4),
@@ -165,7 +165,7 @@ public class DefaultEntityConnectionServerTest {
 
     final EntityConditions entityConditions = new EntityConditions(remoteConnectionTwo.getDomain());
     final EntitySelectCondition selectCondition = entityConditions.selectCondition(TestDomain.T_EMP)
-            .setOrderBy(Entities.orderBy().ascending(TestDomain.EMP_NAME));
+            .setOrderBy(Domain.orderBy().ascending(TestDomain.EMP_NAME));
     remoteConnectionTwo.selectMany(selectCondition);
 
     admin.getDatabaseStatistics();
@@ -324,7 +324,7 @@ public class DefaultEntityConnectionServerTest {
     Server.KEYSTORE_PASSWORD.set("crappypass");
   }
 
-  public static class EmptyDomain extends Entities {}
+  public static class EmptyDomain extends Domain {}
 
   public static final class TestWebServer implements Server.AuxiliaryServer {
 

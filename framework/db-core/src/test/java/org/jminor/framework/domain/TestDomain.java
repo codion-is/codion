@@ -9,7 +9,7 @@ import java.sql.Types;
 import java.util.Arrays;
 import java.util.List;
 
-public final class TestDomain extends Entities {
+public final class TestDomain extends Domain {
 
   public TestDomain() {
     compositeMaster();
@@ -61,7 +61,7 @@ public final class TestDomain extends Entities {
 
               return code1.compareTo(code2);
             })
-            .setStringProvider(new Entities.StringProvider(MASTER_NAME));
+            .setStringProvider(new StringProvider(MASTER_NAME));
   }
 
   public static final String T_DETAIL = "domain.detail_entity";
@@ -124,7 +124,7 @@ public final class TestDomain extends Entities {
             .setOrderBy(orderBy().ascending(DETAIL_STRING))
             .setSelectTableName(DETAIL_SELECT_TABLE_NAME)
             .setSmallDataset(true)
-            .setStringProvider(new Entities.StringProvider(DETAIL_STRING));
+            .setStringProvider(new StringProvider(DETAIL_STRING));
   }
 
   public static final String DEPARTMENT_ID = "deptno";
@@ -146,7 +146,7 @@ public final class TestDomain extends Entities {
             .setSmallDataset(true)
             .setSearchPropertyIds(DEPARTMENT_NAME)
             .setOrderBy(orderBy().ascending(DEPARTMENT_NAME))
-            .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
+            .setStringProvider(new StringProvider(DEPARTMENT_NAME))
             .setCaption("Department");
   }
 
@@ -196,7 +196,7 @@ public final class TestDomain extends Entities {
             }, EMP_NAME, EMP_DEPARTMENT_FK))
             .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
             .setOrderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
-            .setStringProvider(new Entities.StringProvider(EMP_NAME))
+            .setStringProvider(new StringProvider(EMP_NAME))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
             .setCaption("Employee");
   }

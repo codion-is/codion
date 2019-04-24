@@ -20,6 +20,7 @@ import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.valuemap.DefaultValueMapEditModel;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -142,7 +143,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public Entities getDomain() {
+  public Domain getDomain() {
     return connectionProvider.getDomain();
   }
 

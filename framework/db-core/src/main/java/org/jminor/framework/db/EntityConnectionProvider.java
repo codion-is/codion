@@ -9,7 +9,7 @@ import org.jminor.common.User;
 import org.jminor.common.Value;
 import org.jminor.common.Version;
 import org.jminor.framework.db.condition.EntityConditions;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 
 import java.util.UUID;
 
@@ -77,12 +77,12 @@ public interface EntityConnectionProvider<T extends EntityConnection> {
   Value<String> LOCAL_CONNECTION_PROVIDER = Configuration.stringValue("jminor.client.localConnectionProvider", "org.jminor.framework.db.local.LocalEntityConnectionProvider");
 
   /**
-   * @return the underlying domain entities
+   * @return the underlying domain model
    */
-  Entities getDomain();
+  Domain getDomain();
 
   /**
-   * @return a EntityConditions instance based on the domain entities
+   * @return a EntityConditions instance based on the underlying domain model
    */
   EntityConditions getConditions();
 

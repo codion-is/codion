@@ -8,7 +8,7 @@ import org.jminor.common.db.Databases;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.TestDomain;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SwingEntityEditModelTest {
 
-  private static final Entities ENTITIES = new TestDomain();
+  private static final Domain DOMAIN = new TestDomain();
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(new User(
@@ -33,8 +33,8 @@ public class SwingEntityEditModelTest {
 
   @BeforeEach
   public void setUp() {
-    jobProperty = ENTITIES.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
-    deptProperty = ENTITIES.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
+    jobProperty = DOMAIN.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
+    deptProperty = DOMAIN.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
     employeeEditModel = new SwingEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 

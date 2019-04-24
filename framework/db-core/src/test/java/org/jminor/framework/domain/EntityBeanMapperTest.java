@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityBeanMapperTest {
 
-  private static final Entities DOMAIN = new TestDomain();
+  private static final Domain DOMAIN = new TestDomain();
 
   @Test
   public void toBeans() throws InvocationTargetException, NoSuchMethodException,

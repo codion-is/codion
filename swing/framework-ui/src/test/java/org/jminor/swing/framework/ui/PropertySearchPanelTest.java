@@ -5,7 +5,7 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.db.condition.Condition;
 import org.jminor.framework.db.condition.EntityConditions;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.DefaultPropertyConditionModel;
 import org.jminor.framework.model.PropertyConditionModel;
@@ -18,13 +18,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PropertySearchPanelTest {
 
-  private static final Entities ENTITIES = new TestDomain();
+  private static final Domain DOMAIN = new TestDomain();
 
   @Test
   public void createWithInitializedModel() {
     final PropertyConditionModel<Property.ColumnProperty> conditionModel =
-            new DefaultPropertyConditionModel(new EntityConditions(ENTITIES),
-                    ENTITIES.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME));
+            new DefaultPropertyConditionModel(new EntityConditions(DOMAIN),
+                    DOMAIN.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME));
     conditionModel.setUpperBound("DALLAS");
     conditionModel.setConditionType(Condition.Type.LIKE);
     conditionModel.setEnabled(true);

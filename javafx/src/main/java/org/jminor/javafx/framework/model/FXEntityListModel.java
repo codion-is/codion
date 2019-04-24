@@ -11,6 +11,7 @@ import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -92,7 +93,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public final Entities getDomain() {
+  public final Domain getDomain() {
     return getConnectionProvider().getDomain();
   }
 
@@ -438,7 +439,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * The order by clause to use when selecting the data for this model,
    * by default the order by clause defined for the underlying entity
    * @return the order by clause
-   * @see Entities#getOrderBy(String)
+   * @see Domain#getOrderBy(String)
    */
   protected Entity.OrderBy getOrderBy() {
     return getDomain().getOrderBy(getEntityId());

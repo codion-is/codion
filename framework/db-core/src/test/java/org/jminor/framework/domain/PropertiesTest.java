@@ -96,9 +96,9 @@ public final class PropertiesTest {
   }
 
   @Test
-  public void setEntityIDAlreadySet() {
-    final Property property = columnProperty("propertyId").setEntityID("entityId");
-    assertThrows(IllegalStateException.class, () -> property.setEntityID("test"));
+  public void setEntityIdAlreadySet() {
+    final Property property = columnProperty("propertyId").setEntityId("entityId");
+    assertThrows(IllegalStateException.class, () -> property.setEntityId("test"));
   }
 
   @Test

@@ -19,7 +19,7 @@ import org.jminor.common.remote.RemoteClient;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.local.LocalEntityConnection;
 import org.jminor.framework.db.local.LocalEntityConnections;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +82,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
    */
-  protected AbstractRemoteEntityConnection(final Entities domain, final ConnectionPool connectionPool, final Database database,
+  protected AbstractRemoteEntityConnection(final Domain domain, final ConnectionPool connectionPool, final Database database,
                                            final RemoteClient remoteClient, final int port, final boolean loggingEnabled,
                                            final RMIClientSocketFactory clientSocketFactory,
                                            final RMIServerSocketFactory serverSocketFactory)
@@ -207,9 +207,9 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     private static final Set<UUID> ACTIVE_CONNECTIONS = Collections.synchronizedSet(new HashSet<>());
 
     /**
-     * The domain model Entities
+     * The domain model
      */
-    private final Entities domain;
+    private final Domain domain;
 
     /**
      * Contains information about the client using this connection
@@ -261,7 +261,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
      */
     private boolean disconnected = false;
 
-    private RemoteEntityConnectionHandler(final Entities domain, final RemoteClient remoteClient,
+    private RemoteEntityConnectionHandler(final Domain domain, final RemoteClient remoteClient,
                                           final ConnectionPool connectionPool, final Database database,
                                           final boolean loggingEnabled) throws DatabaseException {
       this.domain = domain;

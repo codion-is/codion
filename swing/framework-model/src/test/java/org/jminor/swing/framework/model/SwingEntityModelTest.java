@@ -10,7 +10,7 @@ import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.valuemap.EditModelValues;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.AbstractEntityModelTest;
 import org.jminor.framework.model.EntityComboBoxModel;
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class SwingEntityModelTest
         extends AbstractEntityModelTest<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
-  private static final Entities ENTITIES = new TestDomain();
+  private static final Domain DOMAIN = new TestDomain();
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(new User(
@@ -84,7 +84,7 @@ public final class SwingEntityModelTest
     final SwingEntityTableModel employeeTableModel = employeeModel.getTableModel();
     ValueLinks.selectedItemValueLink(new JComboBox<>((ComboBoxModel<Entity>)
                     employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)),
-            EditModelValues.<Entity>value(employeeEditModel, ENTITIES.getProperty(TestDomain.T_EMP, TestDomain.EMP_MGR_FK)));
+            EditModelValues.<Entity>value(employeeEditModel, DOMAIN.getProperty(TestDomain.T_EMP, TestDomain.EMP_MGR_FK)));
     employeeTableModel.refresh();
     for (final Entity employee : employeeTableModel.getAllItems()) {
       employeeTableModel.getSelectionModel().setSelectedItem(employee);
@@ -103,9 +103,9 @@ public final class SwingEntityModelTest
     departmentModel.refresh();
     final SwingEntityEditModel employeeEditModel = (SwingEntityEditModel) employeeModel.getEditModel();
     final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getForeignKeyComboBoxModel(
-            ENTITIES.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
+            DOMAIN.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
     departmentsComboBoxModel.refresh();
-    final Entity.Key primaryKey = ENTITIES.key(TestDomain.T_DEPARTMENT);
+    final Entity.Key primaryKey = DOMAIN.key(TestDomain.T_DEPARTMENT);
     primaryKey.put(TestDomain.DEPARTMENT_ID, 40);//operations, no employees
     final List<Entity.Key> keys = new ArrayList<>();
     keys.add(primaryKey);

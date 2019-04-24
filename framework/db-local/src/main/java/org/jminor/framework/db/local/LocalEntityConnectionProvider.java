@@ -11,7 +11,7 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +84,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   protected LocalEntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      final Entities domain = (Entities) Class.forName(getDomainClassName()).getConstructor().newInstance();
+      final Domain domain = (Domain) Class.forName(getDomainClassName()).getConstructor().newInstance();
 
       return Util.initializeProxy(LocalEntityConnection.class, new LocalConnectionHandler(domain,
               LocalEntityConnections.createConnection(domain, getDatabase(), getUser())));
@@ -119,7 +119,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     private final LocalEntityConnection connection;
     private final MethodLogger methodLogger;
 
-    private LocalConnectionHandler(final Entities domain, final LocalEntityConnection connection) {
+    private LocalConnectionHandler(final Domain domain, final LocalEntityConnection connection) {
       this.connection = connection;
       this.methodLogger = LocalEntityConnections.createLogger(domain);
       this.connection.setMethodLogger(methodLogger);

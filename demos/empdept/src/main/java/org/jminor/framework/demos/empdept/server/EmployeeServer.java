@@ -10,7 +10,7 @@ import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.remote.RemoteClient;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.server.AbstractRemoteEntityConnection;
 import org.jminor.framework.server.DefaultEntityConnectionServer;
@@ -22,7 +22,7 @@ import java.util.List;
 
 public final class EmployeeServer extends DefaultEntityConnectionServer {
 
-  private static final Entities ENTITIES = new EmpDept().registerDomain();
+  private static final Domain DOMAIN = new EmpDept().registerDomain();
 
   public EmployeeServer(final Database database, final int serverPort, final int serverAdminPort,
                         final int registryPort) throws RemoteException {
@@ -48,13 +48,13 @@ public final class EmployeeServer extends DefaultEntityConnectionServer {
     private DefaultEmployeeService(final Database database, final RemoteClient remoteClient, final int port,
                                    final boolean loggingEnabled)
             throws DatabaseException, RemoteException {
-      super(ENTITIES, null, database, remoteClient, port, loggingEnabled, null, null);
+      super(DOMAIN, null, database, remoteClient, port, loggingEnabled, null, null);
     }
 
     @Override
     public List<Entity> getEmployees() throws DatabaseException {
       synchronized (connectionProxy) {
-        return connectionProxy.selectMany(new EntityConditions(ENTITIES).selectCondition(EmpDept.T_EMPLOYEE));
+        return connectionProxy.selectMany(new EntityConditions(DOMAIN).selectCondition(EmpDept.T_EMPLOYEE));
       }
     }
   }

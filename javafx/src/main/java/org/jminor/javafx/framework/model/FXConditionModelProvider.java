@@ -4,14 +4,14 @@
 package org.jminor.javafx.framework.model;
 
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.DefaultPropertyConditionModelProvider;
 import org.jminor.framework.model.PropertyConditionModel;
 
 /**
  * Provides foreign key condition models based on {@link ObservableEntityList} for
- * entities based on small datasets, see {@link Entities#isSmallDataset(String)}
+ * entities based on small datasets, see {@link Domain#isSmallDataset(String)}
  */
 public class FXConditionModelProvider extends DefaultPropertyConditionModelProvider {
 
@@ -20,7 +20,7 @@ public class FXConditionModelProvider extends DefaultPropertyConditionModelProvi
   public PropertyConditionModel<Property.ForeignKeyProperty> initializeForeignKeyConditionModel(
           final Property.ForeignKeyProperty foreignKeyProperty, final EntityConnectionProvider connectionProvider) {
     if (connectionProvider.getDomain().isSmallDataset(foreignKeyProperty.getForeignEntityId())) {
-      //todo comboBoxModel.setNullValue(Entities.createToStringEntity(property.getForeignEntityId(), ""));
+      //todo comboBoxModel.setNullValue(Domain.createToStringEntity(property.getForeignEntityId(), ""));
       return new FXForeignKeyConditionListModel(connectionProvider.getConditions(), foreignKeyProperty,
               new ObservableEntityList(foreignKeyProperty.getForeignEntityId(), connectionProvider));
     }

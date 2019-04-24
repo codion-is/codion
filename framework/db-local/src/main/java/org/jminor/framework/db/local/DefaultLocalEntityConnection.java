@@ -26,6 +26,7 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -73,7 +74,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    */
   private static final ResultPacker<Blob> BLOB_RESULT_PACKER = new BlobPacker();
 
-  private final Entities domain;
+  private final Domain domain;
   private final DatabaseConnection connection;
   private final EntityConditions entityConditions;
 
@@ -93,7 +94,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @throws DatabaseException in case there is a problem connecting to the database,
    * such as a wrong username or password being provided
    */
-  DefaultLocalEntityConnection(final Entities domain, final Database database, final User user, final boolean optimisticLocking,
+  DefaultLocalEntityConnection(final Domain domain, final Database database, final User user, final boolean optimisticLocking,
                                final boolean limitForeignKeyFetchDepth, final int validityCheckTimeout) throws DatabaseException {
     this.domain = Objects.requireNonNull(domain, "domain");
     this.connection = DatabaseConnections.createConnection(database, user, validityCheckTimeout);
@@ -114,7 +115,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @throws DatabaseException in case a validation statement is required but could not be created
    * @see org.jminor.common.db.Database#supportsIsValid()
    */
-  DefaultLocalEntityConnection(final Entities domain, final Database database, final Connection connection, final boolean optimisticLocking,
+  DefaultLocalEntityConnection(final Domain domain, final Database database, final Connection connection, final boolean optimisticLocking,
                                final boolean limitForeignKeyFetchDepth, final int validityCheckTimeout) throws DatabaseException {
     this.domain = Objects.requireNonNull(domain, "domain");
     this.connection = DatabaseConnections.createConnection(database, connection, validityCheckTimeout);
@@ -142,8 +143,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public Entities getDomain() {
-    return new Entities(domain);
+  public Domain getDomain() {
+    return new Domain(domain);
   }
 
   /** {@inheritDoc} */
@@ -370,7 +371,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String deleteSQL = null;
     synchronized (connection) {
       try {
-        final Map<String, List<Entity.Key>> mappedKeys = Entities.mapKeysToEntityID(entityKeys);
+        final Map<String, List<Entity.Key>> mappedKeys = Entities.mapKeysToEntityId(entityKeys);
         for (final String entityId : mappedKeys.keySet()) {
           checkReadOnly(entityId);
         }
@@ -433,7 +434,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         final List<Entity> result = new ArrayList<>();
-        for (final Map.Entry<String, List<Entity.Key>> entry : Entities.mapKeysToEntityID(keys).entrySet()) {
+        for (final Map.Entry<String, List<Entity.Key>> entry : Entities.mapKeysToEntityId(keys).entrySet()) {
           result.addAll(doSelectMany(entityConditions.selectCondition(entry.getValue()), 0));
         }
         if (!isTransactionOpen()) {
@@ -1257,7 +1258,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private void checkReadOnly(final String entityId) throws DatabaseException {
     if (domain.isReadOnly(entityId)) {
-      throw new DatabaseException("Entities of type: " + entityId + " are read only");
+      throw new DatabaseException("Domain of type: " + entityId + " are read only");
     }
   }
 
@@ -1273,9 +1274,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    */
   static final class EntityArgumentStringProvider extends MethodLogger.DefaultArgumentStringProvider {
 
-    private final Entities domain;
+    private final Domain domain;
 
-    EntityArgumentStringProvider(final Entities domain) {
+    EntityArgumentStringProvider(final Domain domain) {
       this.domain = domain;
     }
 

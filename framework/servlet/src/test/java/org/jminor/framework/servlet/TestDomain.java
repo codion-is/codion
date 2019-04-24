@@ -8,7 +8,7 @@ import org.jminor.common.db.AbstractFunction;
 import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Properties;
 
 import java.sql.Types;
@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public final class TestDomain extends Entities {
+public final class TestDomain extends Domain {
 
   public TestDomain() {
     department();
@@ -41,7 +41,7 @@ public final class TestDomain extends Entities {
                     .setPreferredColumnWidth(150).setMaxLength(13))
             .setSmallDataset(true)
             .setSearchPropertyIds(DEPARTMENT_NAME)
-            .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
+            .setStringProvider(new StringProvider(DEPARTMENT_NAME))
             .setCaption("Department");
   }
 
@@ -79,7 +79,7 @@ public final class TestDomain extends Entities {
             Properties.denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
                     getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     DEPARTMENT_LOCATION).setPreferredColumnWidth(100))
-            .setStringProvider(new Entities.StringProvider(EMP_NAME))
+            .setStringProvider(new StringProvider(EMP_NAME))
             .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
             .setCaption("Employee");

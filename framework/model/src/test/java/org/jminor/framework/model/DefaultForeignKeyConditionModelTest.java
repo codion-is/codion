@@ -8,7 +8,7 @@ import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ public class DefaultForeignKeyConditionModelTest {
 
   @Test
   public void getSearchEntitiesLookupModel() throws DatabaseException {
-    final Entities domain = CONNECTION_PROVIDER.getDomain();
+    final Domain domain = CONNECTION_PROVIDER.getDomain();
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER,
             Collections.singletonList(CONNECTION_PROVIDER.getDomain().getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
     final ForeignKeyConditionModel conditionModel = new DefaultForeignKeyConditionModel(

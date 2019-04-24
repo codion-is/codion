@@ -9,7 +9,7 @@ import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.swing.framework.model.reporting.EntityReportUtil;
 
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ public class NextReportsWrapperTest {
   public void fillReport() throws ReportException, IOException {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
             new H2Database("h2db", System.getProperty("jminor.db.initScript")))
-            .setDomainClassName(Entities.class.getName()).setUser(UNIT_TEST_USER);
+            .setDomainClassName(Domain.class.getName()).setUser(UNIT_TEST_USER);
     final ReportResult<NextReportsResult> result = EntityReportUtil.fillReport(
             new NextReportsWrapper("src/test/reports/test-report.report",
                     Collections.emptyMap(), ReportRunner.CSV_FORMAT), connectionProvider);

@@ -8,8 +8,10 @@ import org.jminor.common.db.ValueConverter;
 import org.jminor.common.db.valuemap.ValueMap;
 
 import java.sql.Types;
+import java.text.Collator;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A Property factory class.
@@ -343,5 +345,15 @@ public final class Properties {
    */
   public static ValueConverter booleanValueConverter(final Object trueValue, final Object falseValue) {
     return new DefaultProperty.BooleanValueConverter(trueValue, falseValue);
+  }
+
+  /**
+   * Sorts the given properties by caption, or if that is not available, property id, ignoring case
+   * @param properties the properties to sort
+   */
+  public static void sort(final List<? extends Property> properties) {
+    Objects.requireNonNull(properties, "properties");
+    final Collator collator = Collator.getInstance();
+    properties.sort((o1, o2) -> collator.compare(o1.toString().toLowerCase(), o2.toString().toLowerCase()));
   }
 }

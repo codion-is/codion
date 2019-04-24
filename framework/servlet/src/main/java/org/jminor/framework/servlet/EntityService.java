@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * A service for dealing with Entities
+ * A service for dealing with entities
  */
 @Path("/")
 public final class EntityService extends Application {
@@ -59,7 +59,7 @@ public final class EntityService extends Application {
   private static Server<RemoteEntityConnection, Remote> server;
 
   /**
-   * Returns the underlying domain entities
+   * Returns the underlying domain model
    * @param request the servlet request
    * @param headers the headers
    * @return a response

@@ -9,7 +9,7 @@ import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.TestDomain;
 import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class SwingPropertyComboBoxModelTest {
 
-  private static final Entities ENTITIES = new TestDomain();
+  private static final Domain DOMAIN = new TestDomain();
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(new User(
@@ -32,7 +32,7 @@ public final class SwingPropertyComboBoxModelTest {
   private final Event refreshEvent = Events.event();
 
   public SwingPropertyComboBoxModelTest() {
-    final Property.ColumnProperty property = ENTITIES.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
+    final Property.ColumnProperty property = DOMAIN.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
     comboBoxModel = new SwingPropertyComboBoxModel(TestDomain.T_DEPARTMENT,
             CONNECTION_PROVIDER, property, null);
     refreshEvent.addListener(comboBoxModel::refresh);

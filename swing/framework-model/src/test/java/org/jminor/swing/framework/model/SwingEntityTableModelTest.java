@@ -10,7 +10,7 @@ import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.AbstractEntityTableModelTest;
@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class SwingEntityTableModelTest extends AbstractEntityTableModelTest<SwingEntityEditModel, SwingEntityTableModel> {
 
-  private static final Entities ENTITIES = new TestDomain();
+  private static final Domain DOMAIN = new TestDomain();
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(new User(
@@ -98,7 +98,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER,
             new DefaultPropertyFilterModelProvider(), new DefaultPropertyConditionModelProvider());
     assertThrows(IllegalArgumentException.class, () -> new SwingEntityTableModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
-            new SwingEntityTableModel.DefaultEntityTableSortModel(ENTITIES, TestDomain.T_EMP), conditionModel));
+            new SwingEntityTableModel.DefaultEntityTableSortModel(DOMAIN, TestDomain.T_EMP), conditionModel));
   }
 
   @Test
@@ -151,14 +151,14 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   public void testSortComparator() {
-    final Property masterFKProperty = ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK);
+    final Property masterFKProperty = DOMAIN.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK);
     final Comparator comparator = ((SwingEntityTableModel.DefaultEntityTableSortModel) testModel.getSortModel()).initializeColumnComparator(masterFKProperty);
-    assertEquals(comparator, ENTITIES.getComparator(TestDomain.T_MASTER));
+    assertEquals(comparator, DOMAIN.getComparator(TestDomain.T_MASTER));
   }
 
   @Test
   public void columnModel() {
-    final Property property = ENTITIES.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING);
+    final Property property = DOMAIN.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING);
     final TableColumn column = testModel.getColumnModel().getTableColumn(property);
     assertEquals(property, column.getIdentifier());
   }
@@ -184,16 +184,16 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   public void indexOf() {
     final SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
     tableModel.refresh();
-    tableModel.getSortModel().setSortingDirective(ENTITIES.getProperty(TestDomain.T_EMP, TestDomain.EMP_NAME),
+    tableModel.getSortModel().setSortingDirective(DOMAIN.getProperty(TestDomain.T_EMP, TestDomain.EMP_NAME),
             SortingDirective.ASCENDING, false);
     assertEquals(SortingDirective.ASCENDING, tableModel.getSortModel()
-            .getSortingState(ENTITIES.getProperty(TestDomain.T_EMP, TestDomain.EMP_NAME)).getDirective());
+            .getSortingState(DOMAIN.getProperty(TestDomain.T_EMP, TestDomain.EMP_NAME)).getDirective());
 
-    final Entity.Key pk1 = ENTITIES.key(TestDomain.T_EMP);
+    final Entity.Key pk1 = DOMAIN.key(TestDomain.T_EMP);
     pk1.put(TestDomain.EMP_ID, 10);//ADAMS
     assertEquals(0, tableModel.indexOf(pk1));
 
-    final Entity.Key pk2 = ENTITIES.key(TestDomain.T_EMP);
+    final Entity.Key pk2 = DOMAIN.key(TestDomain.T_EMP);
     pk2.put(TestDomain.EMP_ID, -66);
     assertEquals(-1, tableModel.indexOf(pk2));
   }
@@ -203,9 +203,9 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     testModel.clearPreferences();
 
     final SwingEntityTableModel tableModel = createTestTableModel();
-    assertTrue(tableModel.getColumnModel().isColumnVisible(ENTITIES.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING)));
+    assertTrue(tableModel.getColumnModel().isColumnVisible(DOMAIN.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING)));
 
-    tableModel.getColumnModel().setColumnVisible(ENTITIES.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING), false);
+    tableModel.getColumnModel().setColumnVisible(DOMAIN.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING), false);
     tableModel.getColumnModel().moveColumn(1, 0);//double to 0, int to 1
     TableColumn column = tableModel.getColumnModel().getColumn(3);
     column.setWidth(150);//timestamp
@@ -215,7 +215,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     tableModel.savePreferences();
 
     final SwingEntityTableModel model = createTestTableModel();
-    assertFalse(model.getColumnModel().isColumnVisible(ENTITIES.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING)));
+    assertFalse(model.getColumnModel().isColumnVisible(DOMAIN.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING)));
     assertEquals(0, model.getPropertyColumnIndex(TestDomain.DETAIL_DOUBLE));
     assertEquals(1, model.getPropertyColumnIndex(TestDomain.DETAIL_INT));
     column = model.getColumnModel().getColumn(3);

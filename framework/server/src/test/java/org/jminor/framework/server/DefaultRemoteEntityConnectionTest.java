@@ -20,7 +20,7 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
-import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Domain;
 
 import org.junit.jupiter.api.Test;
 
@@ -37,8 +37,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DefaultRemoteEntityConnectionTest {
 
-  private static final Entities ENTITIES = new TestDomain();
-  private static final EntityConditions ENTITY_CONDITIONS = new EntityConditions(ENTITIES);
+  private static final Domain DOMAIN = new TestDomain();
+  private static final EntityConditions ENTITY_CONDITIONS = new EntityConditions(DOMAIN);
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
@@ -47,25 +47,25 @@ public class DefaultRemoteEntityConnectionTest {
   @Test
   public void wrongUsername() throws Exception {
     final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(new User("foo", "bar".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
-    assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(ENTITIES, Databases.getInstance(), client, 1234, true));
+    assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1234, true));
   }
 
   @Test
   public void wrongPassword() throws Exception {
     final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(new User(UNIT_TEST_USER.getUsername(), "xxxxx".toCharArray()), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
-    assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(ENTITIES, Databases.getInstance(), client, 1235, true));
+    assertThrows(DatabaseException.class, () -> new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1235, true));
   }
 
   @Test
   public void rollbackOnDisconnect() throws Exception {
     final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
-    DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(ENTITIES, Databases.getInstance(), client, 1238, true);
+    DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1238, true);
     final EntitySelectCondition condition = ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP);
     connection.beginTransaction();
     connection.delete(condition);
     assertTrue(connection.selectMany(condition).isEmpty());
     connection.disconnect();
-    connection = new DefaultRemoteEntityConnection(ENTITIES, Databases.getInstance(), client, 1238, true);
+    connection = new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1238, true);
     assertTrue(connection.selectMany(condition).size() > 0);
     connection.disconnect();
   }
@@ -93,7 +93,7 @@ public class DefaultRemoteEntityConnectionTest {
       }
     };
     final ConnectionPool connectionPool = ConnectionPools.createDefaultConnectionPool(connectionProvider);
-    final DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(ENTITIES, connectionPool, client, 1238, true);
+    final DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, connectionPool, client, 1238, true);
     final EntitySelectCondition condition = ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP);
     connection.beginTransaction();
     connection.selectMany(condition);
@@ -110,7 +110,7 @@ public class DefaultRemoteEntityConnectionTest {
     final String serviceName = "DefaultRemoteEntityConnectionTest";
     try {
       final RemoteClient client = Servers.remoteClient(Clients.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
-      adapter = new DefaultRemoteEntityConnection(ENTITIES, Databases.getInstance(), client, 1238, true);
+      adapter = new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1238, true);
 
       Servers.initializeRegistry(Registry.REGISTRY_PORT);
 
