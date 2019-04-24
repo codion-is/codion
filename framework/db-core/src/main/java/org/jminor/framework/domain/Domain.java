@@ -230,9 +230,10 @@ public class Domain implements Serializable {
   }
 
   /**
+   * Returns the propertyIds specifying the properties to search by when looking up
+   * entities of the type identified by {@code entityId}
    * @param entityId the entity id
-   * @return a String array containing the ids of the properties used as default search properties
-   * for entities identified by {@code entityId}
+   * @return the ids of the properties used as search properties for entities identified by {@code entityId}
    * @see Entity.Definition#setSearchPropertyIds(String...)
    */
   public final Collection<String> getSearchPropertyIds(final String entityId) {
@@ -240,10 +241,9 @@ public class Domain implements Serializable {
   }
 
   /**
-   * Retrieves the properties used when searching for a entity of the given type,
-   * if no search property ids are defined all STRING based properties are returned.
+   * Returns the properties to search by when looking up entities of the type identified by {@code entityId}
    * @param entityId the entity id
-   * @return the search properties to use
+   * @return the properties to use when searching
    * @see Entity.Definition#setSearchPropertyIds(String...)
    */
   public final Collection<Property.ColumnProperty> getSearchProperties(final String entityId) {
@@ -252,10 +252,11 @@ public class Domain implements Serializable {
   }
 
   /**
-   * Retrieves the properties used when searching for a entity of the given type,
+   * Retrieves the properties used when searching for a entity of the given type, restricted to those
+   * identified by {@code searchPropertyIds}
    * @param entityId the entity id
    * @param searchPropertyIds the ids of the search properties to retrieve
-   * @return the search properties to use
+   * @return the search properties
    * @see Entity.Definition#setSearchPropertyIds(String...)
    */
   public final Collection<Property.ColumnProperty> getSearchProperties(final String entityId, final String... searchPropertyIds) {
@@ -267,6 +268,7 @@ public class Domain implements Serializable {
   }
 
   /**
+   * Returns the properties comprising the primary key of entities of the type identified by {@code entityId}
    * @param entityId the entity id
    * @return a list containing the primary key properties of the entity identified by {@code entityId}
    */
@@ -275,8 +277,9 @@ public class Domain implements Serializable {
   }
 
   /**
+   * Returns the readOnly status of entities of the type identified by {@code entityId}
    * @param entityId the entity id
-   * @return true if the entity identified by {@code entityId} is read only
+   * @return true if entities identified by {@code entityId} are read only
    * @throws IllegalArgumentException if the entity is undefined
    */
   public final boolean isReadOnly(final String entityId) {
@@ -284,6 +287,7 @@ public class Domain implements Serializable {
   }
 
   /**
+   * Returns whether or not the entity identified by {@code entityId} is based on a small database.
    * @param entityId the entity id
    * @return true if the entity identified by {@code entityId} is based on a small dataset
    * @throws IllegalArgumentException if the entity is undefined
@@ -293,6 +297,8 @@ public class Domain implements Serializable {
   }
 
   /**
+   * Returns whether or not the data the entity identified by {@code entityId} is based on is static,
+   * that is, rarely changes
    * @param entityId the entity id
    * @return true if the entity identified by {@code entityId} is based on static data
    * @throws IllegalArgumentException if the entity is undefined
