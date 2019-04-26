@@ -83,9 +83,8 @@ public final class TristateCheckBox extends JCheckBox {
     }
   }
 
-  //Empty override of super class method
   @Override
-  public synchronized void addMouseListener(final MouseListener l) {}
+  public synchronized void addMouseListener(final MouseListener l) {/*Disabled*/}
 
   // Mostly delegates to model
   private void iterateState() {

@@ -15,10 +15,11 @@ import java.time.temporal.Temporal;
 public final class TemporalInputProvider<T extends Temporal> extends AbstractInputProvider<T, TemporalInputPanel<T>> {
 
   /**
-   * @param inputComponent the input component
+   * Instantiates a new {@link InputProvider} for {@link Temporal} values.
+   * @param inputPanel the input panel to use
    */
-  public TemporalInputProvider(final TemporalInputPanel<T> inputComponent) {
-    super(inputComponent);
+  public TemporalInputProvider(final TemporalInputPanel<T> inputPanel) {
+    super(inputPanel);
   }
 
   /** {@inheritDoc} */
