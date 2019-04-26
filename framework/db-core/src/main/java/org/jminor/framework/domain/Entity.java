@@ -435,22 +435,24 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
 
     /**
      * Prepares the given entity for insert, that is, generates and fetches any required primary key values
-     * and populates the entitys primary key
+     * and populates the entitys primary key.
+     * The default version does nothing, override to implement.
      * @param entity the entity to prepare
      * @param connection the connection to use
      * @throws SQLException in case of an exception
      */
-    void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException;
+    default void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {};
 
     /**
      * Prepares the given entity after insert, that is, fetches automatically generated primary
-     * key values and populates the entitys primary key
+     * key values and populates the entitys primary key.
+     * The default version does nothing, override to implement.
      * @param entity the entity to prepare
      * @param connection the connection to use
      * @param statement the insert statement
      * @throws SQLException in case of an exception
      */
-    void afterInsert(final Entity entity, final DatabaseConnection connection, final Statement statement) throws SQLException;
+    default void afterInsert(final Entity entity, final DatabaseConnection connection, final Statement statement) throws SQLException {};
 
     /**
      * @return the key generator type

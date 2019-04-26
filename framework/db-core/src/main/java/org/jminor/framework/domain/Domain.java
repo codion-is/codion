@@ -847,6 +847,8 @@ public class Domain implements Serializable {
   /**
    * Instantiates a primary key generator which fetches the current maximum primary key value and increments
    * it by one prior to insert.
+   * Note that if the primary key value of the entity being inserted is already populated this key
+   * generator does nothing, that is, it does not overwrite a manually set primary key value.
    * @param tableName the table name
    * @param columnName the primary key column name
    * @return a incrementing primary key generator
@@ -856,7 +858,9 @@ public class Domain implements Serializable {
   }
 
   /**
-   * Instantiates a primary key generator which fetches primary key values from a sequence prior to insert
+   * Instantiates a primary key generator which fetches primary key values from a sequence prior to insert.
+   * Note that if the primary key value of the entity being inserted is already populated this key
+   * generator does nothing, that is, it does not overwrite a manually set primary key value.
    * @param sequenceName the sequence name
    * @return a sequence based primary key generator
    */
@@ -865,12 +869,14 @@ public class Domain implements Serializable {
   }
 
   /**
-   * Instantiates a primary key generator which fetches primary key values using the given query prior to insert
+   * Instantiates a primary key generator which fetches primary key values using the given query prior to insert.
+   * Note that if the primary key value of the entity being inserted is already populated this key
+   * generator does nothing, that is, it does not overwrite a manually set primary key value.
    * @param query a query for retrieving the primary key value
    * @return a query based primary key generator
    */
   public final Entity.KeyGenerator queriedKeyGenerator(final String query) {
-    return new QueriedKeyGenerator() {
+    return new AbstractQueriedKeyGenerator() {
       @Override
       protected String getQuery(final Database database) {
         return query;
@@ -879,7 +885,7 @@ public class Domain implements Serializable {
   }
 
   /**
-   * Instantiates a primary key generator which fetches automatically incremented primary key values after insert
+   * Instantiates a primary key generator which fetches automatically incremented primary key values after insert.
    * @param valueSource the value source, whether a sequence or a table name
    * @return a auto-increment based primary key generator
    */
@@ -1353,31 +1359,7 @@ public class Domain implements Serializable {
     }
   }
 
-  static final class DefaultStringProvider implements Entity.ToString {
-
-    private static final long serialVersionUID = 1;
-
-    @Override
-    public String toString(final Entity entity) {
-      return entity.getEntityId() + ": " + entity.getKey();
-    }
-  }
-
-  static class DefaultKeyGenerator implements Entity.KeyGenerator {
-
-    @Override
-    public Type getType() {
-      return Type.NONE;
-    }
-
-    @Override
-    public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {/*Provided for subclasses*/}
-
-    @Override
-    public void afterInsert(final Entity entity, final DatabaseConnection connection, final Statement statement) throws SQLException {/*Provided for subclasses*/}
-  }
-
-  abstract class QueriedKeyGenerator extends DefaultKeyGenerator {
+  private abstract class AbstractQueriedKeyGenerator implements Entity.KeyGenerator {
 
     @Override
     public Type getType() {
@@ -1407,11 +1389,11 @@ public class Domain implements Serializable {
     protected abstract String getQuery(final Database database);
   }
 
-  final class IncrementKeyGenerator extends QueriedKeyGenerator {
+  private final class IncrementKeyGenerator extends AbstractQueriedKeyGenerator {
 
     private final String query;
 
-    IncrementKeyGenerator(final String tableName, final String columnName) {
+    private IncrementKeyGenerator(final String tableName, final String columnName) {
       this.query = "select max(" + columnName + ") + 1 from " + tableName;
     }
 
@@ -1434,11 +1416,11 @@ public class Domain implements Serializable {
     }
   }
 
-  final class SequenceKeyGenerator extends QueriedKeyGenerator {
+  private final class SequenceKeyGenerator extends AbstractQueriedKeyGenerator {
 
     private final String sequenceName;
 
-    SequenceKeyGenerator(final String sequenceName) {
+    private SequenceKeyGenerator(final String sequenceName) {
       this.sequenceName = sequenceName;
     }
 
@@ -1461,11 +1443,11 @@ public class Domain implements Serializable {
     }
   }
 
-  final class AutomaticKeyGenerator extends QueriedKeyGenerator {
+  private final class AutomaticKeyGenerator extends AbstractQueriedKeyGenerator {
 
     private final String valueSource;
 
-    AutomaticKeyGenerator(final String valueSource) {
+    private AutomaticKeyGenerator(final String valueSource) {
       this.valueSource = valueSource;
     }
 
