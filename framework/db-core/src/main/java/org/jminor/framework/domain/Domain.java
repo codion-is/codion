@@ -187,7 +187,8 @@ public class Domain implements Serializable {
   }
 
   /**
-   * Defines a new entity, by default the {@code entityId} is used as the underlying table name
+   * Adds a new {@link Entity.Definition} to this domain model, using the {@code entityId} as table name.
+   * Returns the {@link Entity.Definition} instance for further configuration.
    * @param entityId the id uniquely identifying the entity type
    * @param properties the {@link Property} objects to base this entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
@@ -200,7 +201,8 @@ public class Domain implements Serializable {
   }
 
   /**
-   * Defines a new entity
+   * Adds a new {@link Entity.Definition} to this domain model.
+   * Returns the {@link Entity.Definition} instance for further configuration.
    * @param entityId the id uniquely identifying the entity type
    * @param tableName the name of the underlying table
    * @param properties the {@link Property} objects to base the entity on. In case a select query is specified

@@ -97,8 +97,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   @Override
   protected void disconnect(final LocalEntityConnection connection) {
     connection.disconnect();
-    final Database database = getDatabase();
-    if (database.isEmbedded() && SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT.get()) {
+    if (database != null && database.isEmbedded() && SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT.get()) {
       final Properties connectionProperties = new Properties();
       connectionProperties.put(Database.USER_PROPERTY, getUser().getUsername());
       connectionProperties.put(Database.PASSWORD_PROPERTY, String.valueOf(getUser().getPassword()));
