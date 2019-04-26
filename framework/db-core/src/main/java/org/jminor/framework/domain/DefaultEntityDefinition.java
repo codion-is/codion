@@ -26,9 +26,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   private static final long serialVersionUID = 1;
 
-  private static final Entity.KeyGenerator DEFAULT_KEY_GENERATOR = new Domain.DefaultKeyGenerator();
-
-  private static final Entity.ToString DEFAULT_STRING_PROVIDER = new Domain.DefaultStringProvider();
+  private static final Entity.KeyGenerator DEFAULT_KEY_GENERATOR = new DefaultKeyGenerator();
+  private static final Entity.ToString DEFAULT_STRING_PROVIDER = new DefaultStringProvider();
 
   /**
    * The domainId
@@ -673,5 +672,29 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     return stringBuilder.toString();
+  }
+
+  /**
+   * A ToString implementation using the entityId plus primary key value.
+   */
+  private static final class DefaultStringProvider implements Entity.ToString {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public String toString(final Entity entity) {
+      return entity.getEntityId() + ": " + entity.getKey();
+    }
+  }
+
+  /**
+   * A no-op key generator.
+   */
+  private static final class DefaultKeyGenerator implements Entity.KeyGenerator {
+
+    @Override
+    public Type getType() {
+      return Type.NONE;
+    }
   }
 }

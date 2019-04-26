@@ -4993,3 +4993,4 @@
   Some code cleanup and javadoc improvements
   Entity.Definition.getResultPacker() removed, EntityResultPacker moved to DefaultLocalEntityConnection
   DefaultLocalEntityConnection.iterator() now synchronizes on connection
+  Domain, minor refactoring of KeyGenerators
