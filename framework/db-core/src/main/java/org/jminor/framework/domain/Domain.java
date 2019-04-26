@@ -9,7 +9,6 @@ import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.valuemap.DefaultValueMap;
 import org.jminor.common.db.valuemap.ValueProvider;
 import org.jminor.common.db.valuemap.exception.LengthValidationException;
@@ -18,7 +17,6 @@ import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 
 import java.io.Serializable;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
@@ -221,10 +219,9 @@ public class Domain implements Serializable {
     final List<Property.ColumnProperty> columnProperties = Collections.unmodifiableList(getColumnProperties(propertyMap.values()));
     final List<Property.ForeignKeyProperty> foreignKeyProperties = Collections.unmodifiableList(getForeignKeyProperties(propertyMap.values()));
     final List<Property.TransientProperty> transientProperties = Collections.unmodifiableList(getTransientProperties(propertyMap.values()));
-    final EntityResultPacker resultPacker = new EntityResultPacker(this, entityId, columnProperties, transientProperties, propertyMap.size());
 
     final DefaultEntityDefinition entityDefinition = new DefaultEntityDefinition(domainId, entityId,
-            tableName, resultPacker, propertyMap, columnProperties, foreignKeyProperties, transientProperties);
+            tableName, propertyMap, columnProperties, foreignKeyProperties, transientProperties);
     entityDefinition.setValidator(new Validator());
     entityDefinitions.put(entityId, entityDefinition);
 
@@ -693,14 +690,6 @@ public class Domain implements Serializable {
    */
   public final Entity.Validator getValidator(final String entityId) {
     return getDefinition(entityId).getValidator();
-  }
-
-  /**
-   * @param entityId the entityId
-   * @return the ResultPacker responsible for packing this entity type
-   */
-  public final ResultPacker<Entity> getResultPacker(final String entityId) {
-    return getDefinition(entityId).getResultPacker();
   }
 
   /**
@@ -1361,58 +1350,6 @@ public class Domain implements Serializable {
     private static boolean isNonKeyColumnPropertyWithoutDefaultValue(final Property property) {
       return property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).isPrimaryKeyProperty()
               && !((Property.ColumnProperty) property).columnHasDefaultValue();
-    }
-  }
-
-  /**
-   * Handles packing Entity query results.
-   * Loads all database property values except for foreign key properties (Property.ForeignKeyProperty).
-   */
-  private static final class EntityResultPacker implements ResultPacker<Entity> {
-
-    private final Domain domain;
-    private final String entityId;
-    private final List<Property.ColumnProperty> properties;
-    private final List<Property.TransientProperty> transientProperties;
-    private final boolean hasTransientProperties;
-    private final int propertyCount;
-
-    /**
-     * Instantiates a new EntityResultPacker.
-     * @param entityId the id of the entities this packer packs
-     */
-    private EntityResultPacker(final Domain domain, final String entityId, final List<Property.ColumnProperty> columnProperties,
-                               final List<Property.TransientProperty> transientProperties, final int propertyCount) {
-      this.domain = domain;
-      this.entityId = entityId;
-      this.properties = columnProperties;
-      this.transientProperties = transientProperties;
-      this.hasTransientProperties = !Util.nullOrEmpty(this.transientProperties);
-      this.propertyCount = propertyCount;
-    }
-
-    @Override
-    public Entity fetch(final ResultSet resultSet) throws SQLException {
-      final Map<Property, Object> values = new HashMap<>(propertyCount);
-      if (hasTransientProperties) {
-        for (int i = 0; i < transientProperties.size(); i++) {
-          final Property.TransientProperty transientProperty = transientProperties.get(i);
-          if (!(transientProperty instanceof Property.DerivedProperty)) {
-            values.put(transientProperty, null);
-          }
-        }
-      }
-      for (int i = 0; i < properties.size(); i++) {
-        final Property.ColumnProperty property = properties.get(i);
-        try {
-          values.put(property, property.fetchValue(resultSet));
-        }
-        catch (final Exception e) {
-          throw new SQLException("Exception fetching: " + property + ", entity: " + entityId + " [" + e.getMessage() + "]", e);
-        }
-      }
-
-      return new DefaultEntity(domain, entityId, values);
     }
   }
 

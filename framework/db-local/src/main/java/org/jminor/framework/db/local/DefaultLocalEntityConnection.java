@@ -76,6 +76,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final Domain domain;
   private final DatabaseConnection connection;
   private final EntityConditions entityConditions;
+  private final Map<String, ResultPacker<Entity>> resultPackers = new HashMap<>();
 
   private boolean optimisticLocking;
   private boolean limitForeignKeyFetchDepth;
@@ -735,11 +736,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public ResultIterator<Entity> iterator(final EntityCondition condition) throws DatabaseException {
-    try {
-      return createIterator(condition);
-    }
-    catch (final SQLException e) {
-      throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+    synchronized (connection) {
+      try {
+        return createIterator(condition);
+      }
+      catch (final SQLException e) {
+        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+      }
     }
   }
 
@@ -892,7 +895,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       statement = prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, condition);
 
-      return new EntityResultIterator(statement, resultSet, domain.getResultPacker(condition.getEntityId()));
+      return new EntityResultIterator(statement, resultSet,
+              resultPackers.computeIfAbsent(condition.getEntityId(), entityId -> new EntityResultPacker(domain, entityId)));
     }
     catch (final SQLException e) {
       Databases.closeSilently(resultSet);
@@ -1385,6 +1389,57 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     public void close() {
       Databases.closeSilently(resultSet);
       Databases.closeSilently(statement);
+    }
+  }
+
+  /**
+   * Handles packing Entity query results.
+   * Loads all database property values except for foreign key properties (Property.ForeignKeyProperty).
+   */
+  private static final class EntityResultPacker implements ResultPacker<Entity> {
+
+    private final Domain domain;
+    private final String entityId;
+    private final List<Property.ColumnProperty> columnProperties;
+    private final List<Property.TransientProperty> transientProperties;
+    private final boolean hasTransientProperties;
+    private final int propertyCount;
+
+    /**
+     * Instantiates a new EntityResultPacker.
+     * @param entityId the id of the entities this packer packs
+     */
+    private EntityResultPacker(final Domain domain, final String entityId) {
+      this.domain = domain;
+      this.entityId = entityId;
+      this.columnProperties = domain.getColumnProperties(entityId);
+      this.transientProperties = domain.getTransientProperties(entityId);
+      this.hasTransientProperties = !Util.nullOrEmpty(this.transientProperties);
+      this.propertyCount = domain.getProperties(entityId).size();
+    }
+
+    @Override
+    public Entity fetch(final ResultSet resultSet) throws SQLException {
+      final Map<Property, Object> values = new HashMap<>(propertyCount);
+      if (hasTransientProperties) {
+        for (int i = 0; i < transientProperties.size(); i++) {
+          final Property.TransientProperty transientProperty = transientProperties.get(i);
+          if (!(transientProperty instanceof Property.DerivedProperty)) {
+            values.put(transientProperty, null);
+          }
+        }
+      }
+      for (int i = 0; i < columnProperties.size(); i++) {
+        final Property.ColumnProperty property = columnProperties.get(i);
+        try {
+          values.put(property, property.fetchValue(resultSet));
+        }
+        catch (final Exception e) {
+          throw new SQLException("Exception fetching: " + property + ", entity: " + entityId + " [" + e.getMessage() + "]", e);
+        }
+      }
+
+      return domain.entity(entityId, values, null);
     }
   }
 }

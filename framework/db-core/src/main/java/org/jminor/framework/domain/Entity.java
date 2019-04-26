@@ -6,7 +6,6 @@ package org.jminor.framework.domain;
 import org.jminor.common.Configuration;
 import org.jminor.common.Value;
 import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.db.valuemap.exception.LengthValidationException;
 import org.jminor.common.db.valuemap.exception.NullValidationException;
@@ -618,11 +617,6 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @return the validator for this entity type
      */
     Validator getValidator();
-
-    /**
-     * @return the ResultPacker responsible for packing this entity type
-     */
-    ResultPacker<Entity> getResultPacker();
 
     /**
      * @return the caption to use when presenting entities of this type

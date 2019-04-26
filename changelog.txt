@@ -4991,3 +4991,5 @@
   EntityConnection.TYPE and getType() removed
   EntityConnectionProvider.getConnectionType() now returns a String
   Some code cleanup and javadoc improvements
+  Entity.Definition.getResultPacker() removed, EntityResultPacker moved to DefaultLocalEntityConnection
+  DefaultLocalEntityConnection.iterator() now synchronizes on connection
