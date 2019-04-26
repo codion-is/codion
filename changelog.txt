@@ -4987,4 +4987,6 @@
   Type for foreign key property is now Types.OTHER instead of Types.REF
   UiUtil.linkToEnabledState() no longer allows enabledState to be null
   Some code quality improvements
-  Some javadoc improvements
+  Some javadoc improvements, continued
+  EntityConnection.TYPE and getType() removed
+  EntityConnectionProvider.getConnectionType() now returns a String

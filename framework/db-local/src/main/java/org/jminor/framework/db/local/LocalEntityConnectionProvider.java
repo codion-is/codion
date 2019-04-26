@@ -10,7 +10,6 @@ import org.jminor.common.Value;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
-import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.domain.Domain;
 
 import org.slf4j.Logger;
@@ -56,8 +55,8 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   /** {@inheritDoc} */
   @Override
-  public EntityConnection.Type getConnectionType() {
-    return EntityConnection.Type.LOCAL;
+  public String getConnectionType() {
+    return CONNECTION_TYPE_LOCAL;
   }
 
   /**

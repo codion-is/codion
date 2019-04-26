@@ -8,7 +8,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
-import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Domain;
@@ -30,12 +29,6 @@ public interface RemoteEntityConnection extends Remote {
    * @throws RemoteException in case of an exception
    */
   Domain getDomain() throws RemoteException;
-
-  /**
-   * @return the connection type
-   * @throws RemoteException in case of an exception
-   */
-  EntityConnection.Type getType() throws RemoteException;
 
   /**
    * @return the user being used by this connection

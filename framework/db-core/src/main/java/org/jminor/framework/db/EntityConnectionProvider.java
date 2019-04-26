@@ -14,8 +14,9 @@ import org.jminor.framework.domain.Domain;
 import java.util.UUID;
 
 /**
- * Interface for a class responsible for providing EntityConnection objects.
- * @param <T> the type of EntityConnection provided
+ * Specifies a class resposible for providing a single {@link EntityConnection} instance.
+ * {@link #getConnection()} is guaranteed to return a healthy connection or throw an exception.
+ * @param <T> the type of {@link EntityConnection} provided
  */
 public interface EntityConnectionProvider<T extends EntityConnection> {
 
@@ -77,6 +78,7 @@ public interface EntityConnectionProvider<T extends EntityConnection> {
   Value<String> LOCAL_CONNECTION_PROVIDER = Configuration.stringValue("jminor.client.localConnectionProvider", "org.jminor.framework.db.local.LocalEntityConnectionProvider");
 
   /**
+   * Returns the domain model this connection is based on
    * @return the underlying domain model
    */
   Domain getDomain();
@@ -94,10 +96,10 @@ public interface EntityConnectionProvider<T extends EntityConnection> {
   T getConnection();
 
   /**
-   * Returns the Type this connection provider represents
-   * @return the Type
+   * Returns a String specifying the type of connection provided by this connection provider
+   * @return a String specifying the type of connection, e.g. "local" or "remote"
    */
-  EntityConnection.Type getConnectionType();
+  String getConnectionType();
 
   /**
    * @return a short description of the database provider

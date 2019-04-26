@@ -23,7 +23,7 @@ public final class AbstractEntityConnectionProviderTest {
     final EntityConnectionProvider provider = new TestProvider().setUser(USER);
     assertEquals("description", provider.getDescription());
     assertEquals("localhost", provider.getServerHostName());
-    assertEquals(EntityConnection.Type.LOCAL, provider.getConnectionType());
+    assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.getConnectionType());
     assertEquals(provider.getDomain(), DOMAIN);
     assertEquals(USER, provider.getUser());
     assertNotNull(provider.getConditions());
@@ -84,8 +84,8 @@ public final class AbstractEntityConnectionProviderTest {
     }
 
     @Override
-    public EntityConnection.Type getConnectionType() {
-      return EntityConnection.Type.LOCAL;
+    public String getConnectionType() {
+      return EntityConnectionProvider.CONNECTION_TYPE_LOCAL;
     }
 
     @Override

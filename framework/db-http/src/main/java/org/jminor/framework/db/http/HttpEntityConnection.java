@@ -127,12 +127,6 @@ final class HttpEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public EntityConnection.Type getType() {
-    return EntityConnection.Type.HTTP;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public User getUser() {
     return user;
   }
