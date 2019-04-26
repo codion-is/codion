@@ -10,6 +10,7 @@ import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.ResultIterator;
 import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
@@ -559,6 +560,19 @@ public class DefaultLocalEntityConnectionTest {
       }
       baseConnection.disconnect();
       optimisticConnection.disconnect();
+    }
+  }
+
+  @Test
+  public void dualIterator() throws Exception {
+    final DefaultLocalEntityConnection connection = initializeConnection();
+    final ResultIterator<Entity> deptIterator = connection.iterator(ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT));
+    while (deptIterator.hasNext()) {
+      final ResultIterator<Entity> empIterator = connection.iterator(ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP,
+              TestDomain.EMP_DEPARTMENT_FK, Condition.Type.LIKE, deptIterator.next()));
+      while (empIterator.hasNext()) {
+        empIterator.next();
+      }
     }
   }
 

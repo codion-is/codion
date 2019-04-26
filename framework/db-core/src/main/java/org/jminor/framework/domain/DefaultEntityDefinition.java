@@ -5,7 +5,6 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.TextUtil;
 import org.jminor.common.Util;
-import org.jminor.common.db.ResultPacker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,11 +49,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * A list view of the properties
    */
   private final List<Property> properties;
-
-  /**
-   * The ResultPacker responsible for packing entities of this type
-   */
-  private final transient ResultPacker<Entity> resultPacker;
 
   /**
    * The name of the underlying table
@@ -168,7 +162,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * @throws IllegalArgumentException if no primary key property is specified
    */
   DefaultEntityDefinition(final String domainId, final String entityId, final String tableName,
-                          final ResultPacker<Entity> resultPacker, final Map<String, Property> propertyMap,
+                          final Map<String, Property> propertyMap,
                           final List<Property.ColumnProperty> columnProperties,
                           final List<Property.ForeignKeyProperty> foreignKeyProperties,
                           final List<Property.TransientProperty> transientProperties) {
@@ -178,7 +172,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.entityId = entityId;
     this.caption = entityId;
     this.tableName = tableName;
-    this.resultPacker = resultPacker;
     this.propertyMap = propertyMap;
     this.columnProperties = columnProperties;
     this.foreignKeyProperties = foreignKeyProperties;
@@ -552,12 +545,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
   @Override
   public Entity.Validator getValidator() {
     return validator;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public ResultPacker<Entity> getResultPacker() {
-    return resultPacker;
   }
 
   /** {@inheritDoc} */
