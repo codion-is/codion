@@ -22,7 +22,6 @@ import org.jminor.common.db.exception.UpdateException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
 import org.jminor.common.db.reports.ReportWrapper;
-import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
@@ -145,12 +144,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public Domain getDomain() {
     return new Domain(domain);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Type getType() {
-    return EntityConnection.Type.LOCAL;
   }
 
   /** {@inheritDoc} */

@@ -110,12 +110,6 @@ final class HttpEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public Type getType() {
-    return Type.HTTP;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public User getUser() {
     return user;
   }

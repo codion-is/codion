@@ -21,11 +21,11 @@ public final class EntityConnectionProviders {
     final String clientConnectionType = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     final ServiceLoader<EntityConnectionProvider> loader = ServiceLoader.load(EntityConnectionProvider.class);
     for (final EntityConnectionProvider provider : loader) {
-      if (provider.getConnectionType().toString().equalsIgnoreCase(clientConnectionType)) {
+      if (provider.getConnectionType().equalsIgnoreCase(clientConnectionType)) {
         return provider;
       }
     }
 
-    throw new IllegalArgumentException("No connection provider available for connection type: " + clientConnectionType);
+    throw new IllegalArgumentException("No connection provider available for requested client connection type: " + clientConnectionType);
   }
 }

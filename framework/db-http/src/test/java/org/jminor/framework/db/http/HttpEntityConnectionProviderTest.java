@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.db.http;
 
-import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 
@@ -21,7 +20,7 @@ public class HttpEntityConnectionProviderTest {
     final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider()
             .setDomainClassName(TestDomain.class.getName()).setClientTypeId("test");
     assertEquals("HttpEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
-    assertEquals(EntityConnection.Type.HTTP, connectionProvider.getConnectionType());
+    assertEquals(EntityConnectionProvider.CONNECTION_TYPE_HTTP, connectionProvider.getConnectionType());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);
   }
 }

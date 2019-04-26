@@ -4,7 +4,6 @@
 package org.jminor.framework.db.remote;
 
 import org.jminor.common.User;
-import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Domain;
@@ -31,7 +30,7 @@ public class RemoteEntityConnectionProviderTest {
     final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider()
             .setDomainClassName(Domain.class.getName()).setClientTypeId("test").setUser(UNIT_TEST_USER);
     assertEquals("RemoteEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
-    assertEquals(EntityConnection.Type.REMOTE, connectionProvider.getConnectionType());
+    assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, connectionProvider.getConnectionType());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);
   }
 }

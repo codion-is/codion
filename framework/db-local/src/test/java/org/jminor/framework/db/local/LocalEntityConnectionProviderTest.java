@@ -29,13 +29,11 @@ public class LocalEntityConnectionProviderTest {
     assertEquals(database.getHost(), provider.getServerHostName());
 
     final EntityConnection firstConnection = provider.getConnection();
-    assertEquals(EntityConnection.Type.LOCAL, firstConnection.getType());
     assertNotNull(firstConnection);
     assertTrue(firstConnection.isConnected());
     provider.disconnect();
 
     final EntityConnection secondConnection = provider.getConnection();
-    assertEquals(EntityConnection.Type.LOCAL, secondConnection.getType());
     assertNotNull(secondConnection);
     assertNotSame(firstConnection, secondConnection);
     assertTrue(secondConnection.isConnected());
@@ -49,7 +47,7 @@ public class LocalEntityConnectionProviderTest {
     final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider()
             .setDomainClassName(TestDomain.class.getName()).setClientTypeId("test");
     assertEquals("LocalEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
-    assertEquals(EntityConnection.Type.LOCAL, connectionProvider.getConnectionType());
+    assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, connectionProvider.getConnectionType());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);
   }
 }

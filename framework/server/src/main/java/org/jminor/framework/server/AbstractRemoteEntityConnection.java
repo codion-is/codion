@@ -94,13 +94,6 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   }
 
   /**
-   * @return {@link EntityConnection.Type#REMOTE}
-   */
-  public final EntityConnection.Type getType() {
-    return EntityConnection.Type.REMOTE;
-  }
-
-  /**
    * @return the user this connection is using
    */
   public final User getUser() {

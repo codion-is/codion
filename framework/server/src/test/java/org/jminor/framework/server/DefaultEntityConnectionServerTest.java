@@ -16,6 +16,7 @@ import org.jminor.common.remote.RemoteClient;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.ServerException;
 import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.remote.RemoteEntityConnection;
@@ -238,15 +239,15 @@ public class DefaultEntityConnectionServerTest {
     final RemoteEntityConnectionProvider provider = (RemoteEntityConnectionProvider) new RemoteEntityConnectionProvider()
             .setDomainClassName("TestDomain").setClientTypeId("TestClient").setUser(UNIT_TEST_USER);
 
-    assertEquals(EntityConnection.Type.REMOTE, provider.getConnectionType());
-    assertEquals(EntityConnection.Type.REMOTE, provider.getConnection().getType());
-
-    assertEquals(Server.SERVER_HOST_NAME.get(), provider.getServerHostName());
+    assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, provider.getConnectionType());
 
     final EntityConnection db = provider.getConnection();
     assertNotNull(db);
     assertTrue(db.isConnected());
     provider.disconnect();
+
+    //not available until a connection has been requested
+    assertEquals(Server.SERVER_HOST_NAME.get(), provider.getServerHostName());
 
     final EntityConnection db2 = provider.getConnection();
     assertNotNull(db2);

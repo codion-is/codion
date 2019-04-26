@@ -43,8 +43,8 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
 
   /** {@inheritDoc} */
   @Override
-  public EntityConnection.Type getConnectionType() {
-    return EntityConnection.Type.REMOTE;
+  public String getConnectionType() {
+    return CONNECTION_TYPE_REMOTE;
   }
 
   /**

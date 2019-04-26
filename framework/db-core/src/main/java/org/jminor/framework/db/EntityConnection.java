@@ -18,27 +18,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Defines the database methods the database layer offers.
- * All DML operations are committed unless a transaction is open.
+ * A connection to a database, for querying and manipulating {@link Entity}s and running database
+ * operations specified by a single {@link Domain} model.
+ * All DML operations are automatically committed unless they are run within a transaction.
+ * @see #beginTransaction()
+ * @see #rollbackTransaction()
+ * @see #commitTransaction()
  */
 public interface EntityConnection {
-
-  /**
-   * The possible EntityConnection types
-   */
-  enum Type {
-    LOCAL, REMOTE, HTTP
-  }
 
   /**
    * @return the underlying domain model
    */
   Domain getDomain();
-
-  /**
-   * @return the connection type
-   */
-  Type getType();
 
   /**
    * @return the user being used by this connection

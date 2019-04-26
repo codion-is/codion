@@ -7,7 +7,6 @@ import org.jminor.common.Configuration;
 import org.jminor.common.Value;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
-import org.jminor.framework.db.EntityConnection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,8 +67,8 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
 
   /** {@inheritDoc} */
   @Override
-  public EntityConnection.Type getConnectionType() {
-    return EntityConnection.Type.HTTP;
+  public String getConnectionType() {
+    return CONNECTION_TYPE_HTTP;
   }
 
   /**
