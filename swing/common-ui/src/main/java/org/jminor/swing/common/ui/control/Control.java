@@ -36,7 +36,7 @@ public class Control extends AbstractAction {
   /**
    * Constructs a new Control.
    * @param name the control name
-   * @param enabledObserver the state observer dictating the enable state of this control
+   * @param enabledObserver the state observer controlling the enabled state of this control
    */
   public Control(final String name, final StateObserver enabledObserver) {
     this(name, enabledObserver, null);
@@ -45,14 +45,14 @@ public class Control extends AbstractAction {
   /**
    * Constructs a new Control.
    * @param name the control name
-   * @param enabledObserver the state observer dictating the enable state of this control
+   * @param enabledObserver the state observer controlling the enabled state of this control
    * @param icon the icon
    */
   public Control(final String name, final StateObserver enabledObserver, final Icon icon) {
-    super(name);
+    super(name, icon);
     this.enabledObserver = enabledObserver == null ? States.state(true) : enabledObserver;
-    this.enabledObserver.addDataListener(enabled -> firePropertyChange("enabled", !enabled, enabled));
-    setIcon(icon);
+    this.enabledObserver.addDataListener(super::setEnabled);
+    super.setEnabled(this.enabledObserver.isActive());
   }
 
   /** {@inheritDoc} */
@@ -61,15 +61,10 @@ public class Control extends AbstractAction {
     return getName();
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public final boolean isEnabled() {
-    return enabledObserver.isActive();
-  }
-
   /**
    * Unsupported, the enabled state of Controls is based on their {@code enabledObserver}
    * @throws UnsupportedOperationException always
+   * @see #Control(String, StateObserver)
    */
   @Override
   public final void setEnabled(final boolean newValue) {
@@ -100,7 +95,7 @@ public class Control extends AbstractAction {
    * @return the name
    */
   public final String getName() {
-    return (String) this.getValue(javax.swing.Action.NAME);
+    return (String) this.getValue(NAME);
   }
 
   /**
