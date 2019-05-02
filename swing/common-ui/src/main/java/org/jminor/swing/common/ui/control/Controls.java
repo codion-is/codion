@@ -270,6 +270,10 @@ public final class Controls {
     private ToggleControl(final String name, final ButtonModel buttonModel, final StateObserver enabledObserver) {
       super(name, enabledObserver);
       this.buttonModel = buttonModel;
+      if (enabledObserver != null) {
+        enabledObserver.addDataListener(buttonModel::setEnabled);
+        buttonModel.setEnabled(enabledObserver.isActive());
+      }
     }
 
     /**
