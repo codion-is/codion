@@ -322,6 +322,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
+  public Long getLong(final String propertyId) {
+    return (Long) get(propertyId);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public Boolean getBoolean(final String propertyId) {
     return (Boolean) get(propertyId);
   }
