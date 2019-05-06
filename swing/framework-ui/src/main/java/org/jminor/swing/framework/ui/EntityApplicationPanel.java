@@ -662,14 +662,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected ControlSet getSettingsControlSet() {
     final ImageIcon setLoggingIcon = Images.loadImage(Images.ICON_LOGGING);
-    final Control ctrSetLoggingLevel = Controls.control(this::setLoggingLevel,
+    final Control setLoggingLevel = Controls.control(this::setLoggingLevel,
             FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL));
-    ctrSetLoggingLevel.setDescription(FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL_DESC));
-    ctrSetLoggingLevel.setIcon(setLoggingIcon);
+    setLoggingLevel.setDescription(FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL_DESC));
+    setLoggingLevel.setIcon(setLoggingIcon);
 
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SETTINGS));
 
-    controlSet.add(ctrSetLoggingLevel);
+    controlSet.add(setLoggingLevel);
 
     return controlSet;
   }
@@ -691,9 +691,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected ControlSet getViewControlSet() {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.VIEW),
             FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0));
-    final Control ctrRefreshAll = Controls.control(applicationModel::refresh,
+    final Control refreshAll = Controls.control(applicationModel::refresh,
             FrameworkMessages.get(FrameworkMessages.REFRESH_ALL));
-    controlSet.add(ctrRefreshAll);
+    controlSet.add(refreshAll);
     controlSet.addSeparator();
     controlSet.add(Controls.control(this::viewApplicationTree,
             resourceBundle.getString("view_application_tree")));
@@ -704,9 +704,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     controlSet.add(Controls.control(this::selectFontSize,
             resourceBundle.getString("select_font_size")));
     controlSet.addSeparator();
-    final Control ctrAlwaysOnTop = Controls.toggleControl(this,
+    final Control alwaysOnTop = Controls.toggleControl(this,
             "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), alwaysOnTopChangedEvent);
-    controlSet.add(ctrAlwaysOnTop);
+    controlSet.add(alwaysOnTop);
 
     return controlSet;
   }
@@ -717,13 +717,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected ControlSet getHelpControlSet() {
     final ControlSet controlSet = new ControlSet(resourceBundle.getString(MSG_HELP),
             resourceBundle.getString("help_mnemonic").charAt(0));
-    final Control ctrHelp = Controls.control(this::showHelp,
+    final Control help = Controls.control(this::showHelp,
             resourceBundle.getString(MSG_HELP) + "...", null, null);
-    controlSet.add(ctrHelp);
+    controlSet.add(help);
     controlSet.addSeparator();
-    final Control ctrAbout = Controls.control(this::showAbout,
+    final Control about = Controls.control(this::showAbout,
             resourceBundle.getString(MSG_ABOUT) + "...", null, null);
-    controlSet.add(ctrAbout);
+    controlSet.add(about);
 
     return controlSet;
   }

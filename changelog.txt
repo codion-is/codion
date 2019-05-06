@@ -4997,3 +4997,4 @@
   Control bug fixed, did not initialize enabled status according to enabledState
   Controls.ToggleControl bug fixed, buttonModel enabled status did not follow enabledState
   Entity.getLong() added
+  EntityApplicationPanel, removed ctr abbreviations
