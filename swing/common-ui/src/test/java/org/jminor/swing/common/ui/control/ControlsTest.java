@@ -55,8 +55,13 @@ public final class ControlsTest {
 
   @Test
   public void stateToggleControl() {
-    final State enabledState = States.state(true);
+    final State enabledState = States.state(false);
     final Controls.ToggleControl control = Controls.toggleControl(state, "stateToggleControl", enabledState);
+    assertFalse(control.isEnabled());
+    assertFalse(control.getButtonModel().isEnabled());
+    enabledState.setActive(true);
+    assertTrue(control.isEnabled());
+    assertTrue(control.getButtonModel().isEnabled());
     assertEquals(control.getName(), "stateToggleControl");
     assertFalse(control.getButtonModel().isSelected());
     state.setActive(true);

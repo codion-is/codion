@@ -5004,3 +5004,6 @@
   Entity.Definition.getResultPacker() removed, EntityResultPacker moved to DefaultLocalEntityConnection
   DefaultLocalEntityConnection.iterator() now synchronizes on connection
   Domain, minor refactoring of KeyGenerators
+  Control bug fixed, did not initialize enabled status according to enabledState
+  Controls.ToggleControl bug fixed, buttonModel enabled status did not follow enabledState
+  Entity.getLong() added

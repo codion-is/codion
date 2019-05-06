@@ -10,6 +10,7 @@ import org.jminor.framework.domain.Properties;
 import java.awt.Color;
 import java.sql.Types;
 import java.util.Arrays;
+import java.util.Comparator;
 
 public final class TestDomain extends Domain {
 
@@ -31,12 +32,7 @@ public final class TestDomain extends Domain {
             Properties.primaryKeyProperty(MASTER_ID, Types.BIGINT),
             Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
             Properties.columnProperty(MASTER_CODE, Types.INTEGER))
-            .setComparator((o1, o2) -> {
-              final Integer code1 = o1.getInteger(MASTER_CODE);
-              final Integer code2 = o2.getInteger(MASTER_CODE);
-
-              return code1.compareTo(code2);
-            })
+            .setComparator(Comparator.comparing(o -> o.getInteger(MASTER_CODE)))
             .setStringProvider(new StringProvider(MASTER_NAME));
   }
 

@@ -98,6 +98,14 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   /**
    * @param propertyId the ID of the property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId},
+   * assuming it is a Long
+   * @throws ClassCastException if the value is not a Integer instance
+   */
+  Long getLong(final String propertyId);
+
+  /**
+   * @param propertyId the ID of the property for which to retrieve the value
+   * @return the value of the property identified by {@code propertyId},
    * assuming it is a Character
    * @throws ClassCastException if the value is not a Character instance
    */
