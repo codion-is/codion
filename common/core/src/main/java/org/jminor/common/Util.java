@@ -352,14 +352,12 @@ public class Util {
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   public static Method getSetMethod(final Class valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
-    Objects.requireNonNull(valueType, "valueType");
-    Objects.requireNonNull(property, "property");
-    Objects.requireNonNull(ownerClass, "ownerClass");
-    if (property.length() == 0) {
+    if (Objects.requireNonNull(property, "property").length() == 0) {
       throw new IllegalArgumentException("Property must be specified");
     }
-    final String propertyName = Character.toUpperCase(property.charAt(0)) + property.substring(1);
-    return ownerClass.getMethod("set" + propertyName, valueType);
+
+    return Objects.requireNonNull(ownerClass, "ownerClass").getMethod("set" +
+            Character.toUpperCase(property.charAt(0)) + property.substring(1), Objects.requireNonNull(valueType, "valueType"));
   }
 
   /**
@@ -370,8 +368,7 @@ public class Util {
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   public static Method getGetMethod(final Class valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
-    Objects.requireNonNull(valueOwner, "valueOwner");
-    return getGetMethod(valueType, property, valueOwner.getClass());
+    return getGetMethod(valueType, property, Objects.requireNonNull(valueOwner, "valueOwner").getClass());
   }
 
   /**

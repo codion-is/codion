@@ -216,10 +216,26 @@ public final class Controls {
    * @return a ToggleControl based on the given state
    */
   public static ToggleControl toggleControl(final State state, final String name, final StateObserver enabledState) {
+    return toggleControl(state, name, enabledState, null);
+  }
+
+  /**
+   * Creates a ToggleControl based on the given {@link State}
+   * @param state the state to toggle
+   * @param name the name of this control
+   * @param enabledState the state which controls the enabled state of the control
+   * @param icon the icon
+   * @return a ToggleControl based on the given state
+   */
+  public static ToggleControl toggleControl(final State state, final String name, final StateObserver enabledState,
+                                            final Icon icon) {
     final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
     Values.link(Values.stateValue(state), new BooleanValue(buttonModel));
 
-    return new ToggleControl(name, buttonModel, enabledState);
+    final ToggleControl control = new ToggleControl(name, buttonModel, enabledState);
+    control.setIcon(icon);
+
+    return control;
   }
 
   /**

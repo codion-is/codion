@@ -924,8 +924,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     for (final EntityPanel entityPanel : entityPanels) {
       applicationTabPane.addTab(entityPanel.getCaption(), entityPanel);
       if (entityPanel.getEditPanel() != null) {
-        entityPanel.getEditPanel().getActiveObserver().addListener(() -> {
-          if (entityPanel.getEditPanel().isActive()) {
+        entityPanel.getEditPanel().getActiveObserver().addDataListener(active -> {
+          if (active) {
             LOG.debug("{} selectApplicationTab", entityPanel.getEditModel().getEntityId());
             applicationTabPane.setSelectedComponent(entityPanel);
           }

@@ -126,7 +126,7 @@ public final class ValueLinks {
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param usePrimitive if true then the property is assumed to be a primitive, int instead of Integer
+   * @param usePrimitive if true then the property value is assumed to be a primitive
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void integerValueLink(final IntegerField integerField, final Object owner, final String beanPropertyName,
@@ -141,7 +141,7 @@ public final class ValueLinks {
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param usePrimitive if true then the property is assumed to be a primitive, int instead of Integer
+   * @param usePrimitive if true then the property value is assumed to be a primitive
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
@@ -155,7 +155,7 @@ public final class ValueLinks {
   /**
    * @param integerField the int field to link with the value
    * @param value the model value
-   * @param usePrimitive if true then the property is assumed to be a primitive, int instead of Integer
+   * @param usePrimitive if true then the property value is assumed to be a primitive
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
@@ -170,7 +170,7 @@ public final class ValueLinks {
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
+   * @param usePrimitive if true then the property value is assumed to be a primitive
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void doubleValueLink(final DoubleField doubleField, final Object owner, final String beanPropertyName,
@@ -184,7 +184,7 @@ public final class ValueLinks {
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
+   * @param usePrimitive if true then the property value is assumed to be a primitive
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
@@ -198,7 +198,7 @@ public final class ValueLinks {
   /**
    * @param doubleField the double field to link with the value
    * @param value the model value
-   * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
+   * @param usePrimitive if true then the property value is assumed to be a primitive
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
@@ -213,7 +213,7 @@ public final class ValueLinks {
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
+   * @param usePrimitive if true then the property value is assumed to be a primitive
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void longValueLink(final LongField longField, final Object owner, final String beanPropertyName,
@@ -227,7 +227,7 @@ public final class ValueLinks {
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
+   * @param usePrimitive if true then the property value is assumed to be a primitive
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
@@ -241,7 +241,7 @@ public final class ValueLinks {
   /**
    * @param longField the long field to link with the value
    * @param value the model value
-   * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
+   * @param usePrimitive if true then the property value is assumed to be a primitive
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */

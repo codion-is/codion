@@ -153,6 +153,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   public void testSortComparator() {
     final Property masterFKProperty = DOMAIN.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_MASTER_FK);
     final Comparator comparator = ((SwingEntityTableModel.DefaultEntityTableSortModel) testModel.getSortModel()).initializeColumnComparator(masterFKProperty);
+    //make sure we get the comparator from the entity referenced by the foreign key
     assertEquals(comparator, DOMAIN.getComparator(TestDomain.T_MASTER));
   }
 

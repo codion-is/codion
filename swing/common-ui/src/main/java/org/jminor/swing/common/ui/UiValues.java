@@ -181,6 +181,10 @@ public final class UiValues {
         try {
           SwingUtilities.invokeAndWait(() -> setInternal(value));
         }
+        catch(final InterruptedException ex){
+          Thread.currentThread().interrupt();
+          throw new RuntimeException(ex);
+        }
         catch (final Exception e) {
           throw new RuntimeException(e);
         }

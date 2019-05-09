@@ -234,13 +234,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * @return true if this edit panel is active and ready to receive input
-   */
-  public final boolean isActive() {
-    return activeState.isActive();
-  }
-
-  /**
    * Prepares the UI.
    * @param requestInitialFocus if true then the initial focus is set
    * @param clearUI if true the UI is cleared.
@@ -1021,8 +1014,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final JPanel createPropertyPanel(final String propertyId, final JComponent inputComponent,
                                              final boolean labelOnTop, final int labelAlignment) {
-    return createPropertyPanel(EntityUiUtil.createLabel(editModel.getDomain().getProperty(editModel.getEntityId(),
-            propertyId), labelAlignment), inputComponent, labelOnTop);
+    return createPropertyPanel(createLabel(propertyId, labelAlignment), inputComponent, labelOnTop);
   }
 
   /**

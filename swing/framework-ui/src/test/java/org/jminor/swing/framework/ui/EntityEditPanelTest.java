@@ -37,9 +37,9 @@ public final class EntityEditPanelTest {
     assertTrue(editPanel.isPanelInitialized());
 
     assertEquals(editModel, editPanel.getEditModel());
-    assertFalse(editPanel.isActive());
+    assertFalse(editPanel.getActiveObserver().isActive());
     editPanel.setActive(true);
-    assertTrue(editPanel.isActive());
+    assertTrue(editPanel.getActiveObserver().isActive());
 
     final Entity martin = editModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP,
             TestDomain.EMP_NAME, "MARTIN");
