@@ -9,7 +9,6 @@ import org.jminor.framework.domain.Properties;
 
 import java.sql.Types;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 public final class TestDomain extends Domain {
@@ -32,7 +31,12 @@ public final class TestDomain extends Domain {
             Properties.primaryKeyProperty(MASTER_ID, Types.BIGINT),
             Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
             Properties.columnProperty(MASTER_CODE, Types.INTEGER))
-            .setComparator(Comparator.comparing(o -> o.getInteger(MASTER_CODE)))
+            .setComparator((o1, o2) -> {//keep like this for equality test in SwingEntityTableModelTest.testSortComparator()
+              final Integer code1 = o1.getInteger(MASTER_CODE);
+              final Integer code2 = o2.getInteger(MASTER_CODE);
+
+              return code1.compareTo(code2);
+            })
             .setStringProvider(new StringProvider(MASTER_NAME));
   }
 

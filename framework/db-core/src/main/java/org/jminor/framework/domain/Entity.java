@@ -449,7 +449,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param connection the connection to use
      * @throws SQLException in case of an exception
      */
-    default void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {};
+    default void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {/*for overriding*/}
 
     /**
      * Prepares the given entity after insert, that is, fetches automatically generated primary
@@ -460,7 +460,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param statement the insert statement
      * @throws SQLException in case of an exception
      */
-    default void afterInsert(final Entity entity, final DatabaseConnection connection, final Statement statement) throws SQLException {};
+    default void afterInsert(final Entity entity, final DatabaseConnection connection, final Statement statement) throws SQLException {/*for overriding*/}
 
     /**
      * @return the key generator type
