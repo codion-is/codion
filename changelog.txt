@@ -5010,3 +5010,4 @@
   EntityApplicationPanel, removed ctr abbreviations
   Controls.toggleControl() overloaded with icon parameter, plus some misc. refactoring and javadoc improvements
   EntityEditPanel.isActive() removed, use getActiveObserver().isActive() instead
+  FilteredTablePanel.isCellVisible() added
