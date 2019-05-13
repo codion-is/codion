@@ -293,6 +293,21 @@ public class FilteredTablePanel<R, C> extends JPanel {
   }
 
   /**
+   * Returns true if the given cell is visible.
+   * @param row the row
+   * @param column the column
+   * @return true if the cell with the given coordinates is visible
+   */
+  public final boolean isCellVisible(final int row, final int column) {
+    final JViewport viewport = (JViewport) getJTable().getParent();
+    final Rectangle cellRect = getJTable().getCellRect(row, column, true);
+    final Point viewPosition = viewport.getViewPosition();
+    cellRect.setLocation(cellRect.x - viewPosition.x, cellRect.y - viewPosition.y);
+
+    return new Rectangle(viewport.getExtentSize()).contains(cellRect);
+  }
+
+  /**
    * Scrolls horizontally so that the column identified by columnIdentifier becomes visible, centered if possible
    * @param columnIdentifier the column identifier
    */
