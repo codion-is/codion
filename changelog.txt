@@ -5001,3 +5001,5 @@
   Controls.toggleControl() overloaded with icon parameter, plus some misc. refactoring and javadoc improvements
   EntityEditPanel.isActive() removed, use getActiveObserver().isActive() instead
   FilteredTablePanel.isCellVisible() added
+  Domain.getDefinition() is now protected instead of package private
+  Entity.Definition.setKeyGenerator() now sets the key generator to the default no-op generator on receiving null as parameter instead of throwing a NullPointerException

@@ -915,7 +915,12 @@ public class Domain implements Serializable {
     return Collections.unmodifiableCollection(REGISTERED_DOMAINS.values());
   }
 
-  Entity.Definition getDefinition(final String entityId) {
+  /**
+   * @param entityId the entity id
+   * @return the definition of the given entity
+   * @throws IllegalArgumentException in case no entity with the given id has been defined
+   */
+  protected final Entity.Definition getDefinition(final String entityId) {
     final Entity.Definition definition = entityDefinitions.get(Objects.requireNonNull(entityId, ENTITY_ID_PARAM));
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityId);

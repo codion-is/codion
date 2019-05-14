@@ -80,7 +80,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void derivedProperty() {
-    final Entity.Definition definition = domain.define("entityId", "tableName",
+    final Entity.Definition definition = domain.define("entityId",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR),
             Properties.columnProperty("info", Types.VARCHAR),
@@ -130,14 +130,14 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void testNoPrimaryKey() {
-    assertThrows(IllegalArgumentException.class, () -> domain.define("entityId", "tableName",
+    assertThrows(IllegalArgumentException.class, () -> domain.define("entityId",
             Properties.columnProperty("propertyId", Types.INTEGER)));
   }
 
   @Test
   public void testForeignPrimaryKey() {
     Entity.Definition.STRICT_FOREIGN_KEYS.set(false);
-    domain.define("entityId", "tableName",
+    domain.define("entityId",
             Properties.foreignKeyProperty("fkPropertyID", "caption", "parent",
                     Properties.primaryKeyProperty("propertyId")));
     Entity.Definition.STRICT_FOREIGN_KEYS.set(true);
@@ -173,7 +173,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void getBackgroundColor() {
-    final Entity.Definition def = domain.define("entity", "tableName",
+    final Entity.Definition def = domain.define("entity",
             Properties.primaryKeyProperty("propertyId"));
     final Entity entity = domain.entity("entity");
     assertNull(def.getBackgroundColor(entity, entity.getKey().getFirstProperty()));
@@ -184,7 +184,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void setToStringProvider() {
-    final Entity.Definition def = domain.define("entityToString", "tableName",
+    final Entity.Definition def = domain.define("entityToString",
             Properties.primaryKeyProperty("propertyId"));
     final Entity entity = domain.entity("entityToString");
     entity.put("propertyId", 1);
@@ -193,5 +193,14 @@ public class DefaultEntityDefinitionTest {
     //the toString value is cached, so we need to clear it by setting a value
     entity.put("propertyId", 2);
     assertEquals("test", entity.toString());
+  }
+
+  @Test
+  public void nullKeyGenerator() {
+    final Entity.Definition definition = domain.define("nullKeyGenerator",
+            Properties.primaryKeyProperty("propertyId")).setKeyGenerator(domain.automaticKeyGenerator("table"));
+    assertEquals(Entity.KeyGenerator.Type.AUTOMATIC, definition.getKeyGeneratorType());
+    definition.setKeyGenerator(null);
+    assertEquals(Entity.KeyGenerator.Type.NONE, definition.getKeyGeneratorType());
   }
 }

@@ -274,9 +274,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setKeyGenerator(final Entity.KeyGenerator keyGenerator) {
-    Objects.requireNonNull(keyGenerator, "keyGenerator");
-    this.keyGenerator = keyGenerator;
-    this.keyGeneratorType = keyGenerator.getType();
+    this.keyGenerator = keyGenerator == null ? DEFAULT_KEY_GENERATOR : keyGenerator;
+    this.keyGeneratorType = this.keyGenerator.getType();
     return this;
   }
 
