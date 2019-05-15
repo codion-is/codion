@@ -1255,7 +1255,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private void checkReadOnly(final String entityId) throws DatabaseException {
     if (domain.isReadOnly(entityId)) {
-      throw new DatabaseException("Domain of type: " + entityId + " are read only");
+      throw new DatabaseException("Entities of type: " + entityId + " are read only");
     }
   }
 

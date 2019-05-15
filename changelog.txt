@@ -5003,3 +5003,4 @@
   FilteredTablePanel.isCellVisible() added
   Domain.getDefinition() is now protected instead of package private
   Entity.Definition.setKeyGenerator() now sets the key generator to the default no-op generator on receiving null as parameter instead of throwing a NullPointerException
+  DefaultLocalEntityConnection.checkReadOnly() error message fixed
