@@ -687,8 +687,8 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     KeyGenerator getKeyGenerator();
 
     /**
-     * Sets the primary key generator
-     * @param keyGenerator the primary key generator
+     * Sets the primary key generator, if {@code keyGenerator} is null then a default no-op generator is used.
+     * @param keyGenerator the primary key generator, null for a no-op generator
      * @return this {@link Entity.Definition} instance
      */
     Definition setKeyGenerator(final KeyGenerator keyGenerator);
