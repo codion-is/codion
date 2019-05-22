@@ -773,7 +773,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /**
    * Selects the given entities for update and checks if they have been modified by comparing
    * the property values to the current values in the database. Note that this does not
-   * include BLOB properties.
+   * include BLOB properties or properties that are readOnly.
    * The calling method is responsible for releasing the select for update lock.
    * @param entities the entities to check, mapped to entityId
    * @throws SQLException in case of exception
@@ -793,7 +793,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED_EXCEPTION)
                   + ", " + entity.getOriginalCopy() + " " + MESSAGES.getString("has_been_deleted"));
         }
-        final Collection<Property.ColumnProperty> modified = Entities.getModifiedColumnProperties(entity, current);
+        final Collection<Property.ColumnProperty> modified = Entities.getModifiedColumnProperties(entity, current, false);
         if (!modified.isEmpty()) {
           throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modified));
         }

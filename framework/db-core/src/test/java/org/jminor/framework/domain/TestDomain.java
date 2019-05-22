@@ -138,7 +138,8 @@ public final class TestDomain extends Domain {
                     .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
             Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
                     .setPreferredColumnWidth(150).setMaxLength(13),
-            Properties.booleanProperty(DEPARTMENT_ACTIVE, Types.INTEGER, null, 1, 0))
+            Properties.booleanProperty(DEPARTMENT_ACTIVE, Types.INTEGER, null, 1, 0)
+                    .setReadOnly(true))
             .setSmallDataset(true)
             .setSearchPropertyIds(DEPARTMENT_NAME)
             .setOrderBy(orderBy().ascending(DEPARTMENT_NAME))
