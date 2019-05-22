@@ -166,7 +166,8 @@ public interface ColumnConditionModel<K> {
   void setEnabled(final boolean value);
 
   /**
-   * Clears this condition model
+   * Disables and clears this condition model, that is, sets the upper and lower bounds to null
+   * and the condition type to the default value {@link Condition.Type#LIKE}
    */
   void clearCondition();
 
