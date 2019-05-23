@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Types;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 
 import static org.jminor.framework.domain.Properties.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,12 +39,12 @@ public final class PropertiesTest {
 
   @Test
   public void intPropertyWithDateFormat() {
-    assertThrows(IllegalArgumentException.class, () -> columnProperty("propertyId", Types.INTEGER).setFormat(DateFormats.getDateFormat(DateFormats.COMPACT)));
+    assertThrows(IllegalArgumentException.class, () -> columnProperty("propertyId", Types.INTEGER).setFormat(new SimpleDateFormat(DateFormats.COMPACT)));
   }
 
   @Test
   public void doublePropertyWithDateFormat() {
-    assertThrows(IllegalArgumentException.class, () -> columnProperty("propertyId", Types.DOUBLE).setFormat(DateFormats.getDateFormat(DateFormats.COMPACT)));
+    assertThrows(IllegalArgumentException.class, () -> columnProperty("propertyId", Types.DOUBLE).setFormat(new SimpleDateFormat(DateFormats.COMPACT)));
   }
 
   @Test

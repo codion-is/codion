@@ -14,6 +14,7 @@ import java.text.Format;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.TemporalAccessor;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -355,6 +356,11 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
       if (referencedKey != null) {
         return referencedKey.toString();
       }
+    }
+    if (property.isDateOrTime()) {
+      final TemporalAccessor value = (TemporalAccessor) get(property);
+
+      return value == null ? "" : property.getDateTimeFormatter().format(value);
     }
 
     return getFormatted(property, property.getFormat());

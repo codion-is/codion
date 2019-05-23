@@ -62,6 +62,11 @@ public interface ColumnConditionModel<K> {
   Format getFormat();
 
   /**
+   * @return the date/time format pattern, if any
+   */
+  String getDateTimeFormatPattern();
+
+  /**
    * @param object the object
    * @return true if the object should be included or if this model is not enabled
    */

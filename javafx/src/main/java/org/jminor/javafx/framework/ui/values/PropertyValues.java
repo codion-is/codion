@@ -23,7 +23,6 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -114,29 +113,29 @@ public final class PropertyValues {
 
   /**
    * @param property the string property
-   * @param dateFormat the format to use
+   * @param dateTimeFormatter the formatter to use
    * @return a {@link LocalDate} {@link StringValue} based on the given string property
    */
-  public static StringValue<LocalDate> datePropertyValue(final StringProperty property, final SimpleDateFormat dateFormat) {
-    return new DefaultStringValue<>(property, new DateConverter(dateFormat, LocalDate::parse));
+  public static StringValue<LocalDate> datePropertyValue(final StringProperty property, final DateTimeFormatter dateTimeFormatter) {
+    return new DefaultStringValue<>(property, new DateConverter(dateTimeFormatter, LocalDate::parse));
   }
 
   /**
    * @param property the string property
-   * @param dateFormat the format to use
+   * @param dateTimeFormatter the formatter to use
    * @return a {@link LocalDateTime} {@link StringValue} based on the given string property
    */
-  public static StringValue<LocalDateTime> timestampPropertyValue(final StringProperty property, final SimpleDateFormat dateFormat) {
-    return new DefaultStringValue<>(property, new DateConverter(dateFormat, LocalDateTime::parse));
+  public static StringValue<LocalDateTime> timestampPropertyValue(final StringProperty property, final DateTimeFormatter dateTimeFormatter) {
+    return new DefaultStringValue<>(property, new DateConverter(dateTimeFormatter, LocalDateTime::parse));
   }
 
   /**
    * @param property the string property
-   * @param dateFormat the format to use
+   * @param dateTimeFormatter the formatter to use
    * @return a {@link LocalTime} {@link StringValue} based on the given string property
    */
-  public static StringValue<LocalTime> timePropertyValue(final StringProperty property, final SimpleDateFormat dateFormat) {
-    return new DefaultStringValue<>(property, new DateConverter(dateFormat, LocalTime::parse));
+  public static StringValue<LocalTime> timePropertyValue(final StringProperty property, final DateTimeFormatter dateTimeFormatter) {
+    return new DefaultStringValue<>(property, new DateConverter(dateTimeFormatter, LocalTime::parse));
   }
 
   /**
@@ -278,8 +277,8 @@ public final class PropertyValues {
     private final DateTimeFormatter dateFormatter;
     private final DateFormats.DateParser<T> parser;
 
-    private DateConverter(final SimpleDateFormat dateFormat, final DateFormats.DateParser<T> parser) {
-      this.dateFormatter = DateTimeFormatter.ofPattern(dateFormat.toPattern());
+    private DateConverter(final DateTimeFormatter dateFormatter, final DateFormats.DateParser<T> parser) {
+      this.dateFormatter = dateFormatter;
       this.parser = parser;
     }
 

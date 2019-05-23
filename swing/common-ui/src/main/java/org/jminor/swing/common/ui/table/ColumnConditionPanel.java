@@ -46,7 +46,6 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -386,7 +385,7 @@ public class ColumnConditionPanel<K> extends JPanel {
         return new JCheckBox();
       }
       else if (typeClass.equals(LocalTime.class) || typeClass.equals(LocalDateTime.class) || typeClass.equals(LocalDate.class)) {
-        return UiUtil.createFormattedField(DateFormats.getDateMask((SimpleDateFormat) columnConditionModel.getFormat()));
+        return UiUtil.createFormattedField(DateFormats.getDateMask(columnConditionModel.getDateTimeFormatPattern()));
       }
 
       return new JTextField(DEFAULT_FIELD_COLUMNS);
@@ -412,15 +411,15 @@ public class ColumnConditionPanel<K> extends JPanel {
       }
       else if (typeClass.equals(LocalTime.class)) {
         ValueLinks.localTimeValueLink((JFormattedTextField) component, modelValue, false,
-                ((SimpleDateFormat) columnConditionModel.getFormat()).toPattern(), true);
+                columnConditionModel.getDateTimeFormatPattern(), true);
       }
       else if (typeClass.equals(LocalDateTime.class)) {
         ValueLinks.localDateTimeValueLink((JFormattedTextField) component, modelValue, false,
-                ((SimpleDateFormat) columnConditionModel.getFormat()).toPattern(), true);
+                columnConditionModel.getDateTimeFormatPattern(), true);
       }
       else if (typeClass.equals(LocalDate.class)) {
         ValueLinks.localDateValueLink((JFormattedTextField) component, modelValue, false,
-                ((SimpleDateFormat) columnConditionModel.getFormat()).toPattern(), true);
+                columnConditionModel.getDateTimeFormatPattern(), true);
       }
       else {
         ValueLinks.textValueLink((JTextField) component, modelValue, null, true, false);

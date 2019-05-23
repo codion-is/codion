@@ -18,8 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EntityConditionTest {
 
-  private static final TestDomain entities = new TestDomain();
-  private static final EntityConditions entityConditions = new EntityConditions(entities);
+  private static final TestDomain DOMAIN = new TestDomain();
+  private static final EntityConditions entityConditions = new EntityConditions(DOMAIN);
 
   @Test
   public void test() {

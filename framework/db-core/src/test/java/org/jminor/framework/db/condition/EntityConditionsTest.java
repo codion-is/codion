@@ -27,8 +27,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityConditionsTest {
 
-  private static final TestDomain entities = new TestDomain();
-  private static final EntityConditions entityConditions = new EntityConditions(entities);
+  private static final TestDomain DOMAIN = new TestDomain();
+  private static final EntityConditions entityConditions = new EntityConditions(DOMAIN);
 
   @Test
   public void test() {
@@ -52,7 +52,7 @@ public class EntityConditionsTest {
 
   @Test
   public void condition() {
-    final Entity entity = entities.entity(TestDomain.T_DEPARTMENT);
+    final Entity entity = DOMAIN.entity(TestDomain.T_DEPARTMENT);
     entity.put(TestDomain.DEPARTMENT_ID, 10);
 
     EntityCondition condition = entityConditions.condition(entity.getKey());
@@ -67,7 +67,7 @@ public class EntityConditionsTest {
 
   @Test
   public void selectCondition() {
-    final Entity entity = entities.entity(TestDomain.T_DEPARTMENT);
+    final Entity entity = DOMAIN.entity(TestDomain.T_DEPARTMENT);
     entity.put(TestDomain.DEPARTMENT_ID, 10);
 
     EntitySelectCondition condition = entityConditions.selectCondition(entity.getKey());
@@ -107,13 +107,13 @@ public class EntityConditionsTest {
 
   @Test
   public void foreignKeyConditionEntity() {
-    final Entity department = entities.entity(TestDomain.T_DEPARTMENT);
+    final Entity department = DOMAIN.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, 10);
     Condition<Property.ColumnProperty> condition = entityConditions.foreignKeyCondition(TestDomain.T_EMP,
             TestDomain.EMP_DEPARTMENT_FK, Condition.Type.LIKE, department);
     assertEquals("deptno = ?", condition.getWhereClause());
 
-    final Entity department2 = entities.entity(TestDomain.T_DEPARTMENT);
+    final Entity department2 = DOMAIN.entity(TestDomain.T_DEPARTMENT);
     department2.put(TestDomain.DEPARTMENT_ID, 11);
     condition = entityConditions.foreignKeyCondition(TestDomain.T_EMP,
             TestDomain.EMP_DEPARTMENT_FK, Condition.Type.LIKE, Arrays.asList(department, department2));
@@ -126,7 +126,7 @@ public class EntityConditionsTest {
 
   @Test
   public void foreignKeyCondition() {
-    final Property.ForeignKeyProperty foreignKeyProperty = entities.getForeignKeyProperty(TestDomain.T_MASTER, TestDomain.MASTER_SUPER_FK);
+    final Property.ForeignKeyProperty foreignKeyProperty = DOMAIN.getForeignKeyProperty(TestDomain.T_MASTER, TestDomain.MASTER_SUPER_FK);
     final Condition<Property.ColumnProperty> condition = entityConditions.foreignKeyCondition(foreignKeyProperty,
             Condition.Type.LIKE, Collections.singletonList(null));
     assertEquals("super_id is null", condition.getWhereClause());
@@ -134,7 +134,7 @@ public class EntityConditionsTest {
 
   @Test
   public void foreignKeyConditionEntityKey() {
-    final Entity department = entities.entity(TestDomain.T_DEPARTMENT);
+    final Entity department = DOMAIN.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, 10);
     final Condition<Property.ColumnProperty> condition = entityConditions.foreignKeyCondition(TestDomain.T_EMP,
             TestDomain.EMP_DEPARTMENT_FK, Condition.Type.LIKE, department.getKey());
@@ -143,11 +143,11 @@ public class EntityConditionsTest {
 
   @Test
   public void compositeForeignKey() {
-    final Entity master1 = entities.entity(TestDomain.T_MASTER);
+    final Entity master1 = DOMAIN.entity(TestDomain.T_MASTER);
     master1.put(TestDomain.MASTER_ID_1, 1);
     master1.put(TestDomain.MASTER_ID_2, 2);
 
-    final Entity master2 = entities.entity(TestDomain.T_MASTER);
+    final Entity master2 = DOMAIN.entity(TestDomain.T_MASTER);
     master2.put(TestDomain.MASTER_ID_1, 3);
     master2.put(TestDomain.MASTER_ID_2, 4);
 
@@ -168,11 +168,11 @@ public class EntityConditionsTest {
 
   @Test
   public void selectConditionCompositeKey() {
-    final Entity master1 = entities.entity(TestDomain.T_MASTER);
+    final Entity master1 = DOMAIN.entity(TestDomain.T_MASTER);
     master1.put(TestDomain.MASTER_ID_1, 1);
     master1.put(TestDomain.MASTER_ID_2, 2);
 
-    final Entity master2 = entities.entity(TestDomain.T_MASTER);
+    final Entity master2 = DOMAIN.entity(TestDomain.T_MASTER);
     master2.put(TestDomain.MASTER_ID_1, 3);
     master2.put(TestDomain.MASTER_ID_2, 4);
 
@@ -197,7 +197,7 @@ public class EntityConditionsTest {
             TestDomain.EMP_DEPARTMENT_FK, Condition.Type.LIKE, null);
     assertEquals("deptno is null", condition.getWhereClause());
 
-    final Entity.Key master1 = entities.key(TestDomain.T_MASTER);
+    final Entity.Key master1 = DOMAIN.key(TestDomain.T_MASTER);
     master1.put(TestDomain.MASTER_ID_1, null);
     master1.put(TestDomain.MASTER_ID_2, null);
 
@@ -210,7 +210,7 @@ public class EntityConditionsTest {
             TestDomain.DETAIL_MASTER_FK, Condition.Type.LIKE, master1);
     assertEquals("(master_id is null and master_id_2 = ?)", condition.getWhereClause());
 
-    final Entity.Key deptKey = entities.key(TestDomain.T_DEPARTMENT);
+    final Entity.Key deptKey = DOMAIN.key(TestDomain.T_DEPARTMENT);
     deptKey.put(TestDomain.DEPARTMENT_ID, 42);
 
     condition = entityConditions.selectCondition(TestDomain.T_EMP,
@@ -236,7 +236,7 @@ public class EntityConditionsTest {
   public void stringConditionWithValue() {
     final String crit = "id = ?";
     final Condition<Property.ColumnProperty> condition = entityConditions.stringCondition(crit, Collections.singletonList(1),
-            Collections.singletonList(entities.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ID)));
+            Collections.singletonList(DOMAIN.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ID)));
     assertEquals(crit, condition.getWhereClause());
     assertEquals(1, condition.getColumns().size());
     assertEquals(1, condition.getValues().size());
@@ -260,7 +260,7 @@ public class EntityConditionsTest {
 
   @Test
   public void serialization() throws IOException, ClassNotFoundException {
-    final Property.ColumnProperty id = entities.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ID);
+    final Property.ColumnProperty id = DOMAIN.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ID);
     final Condition<Property.ColumnProperty> condition = Conditions.conditionSet(Conjunction.AND,
             entityConditions.stringCondition("test", Arrays.asList("val1", "val2"), Arrays.asList(id, id)),
             entityConditions.stringCondition("testing", Arrays.asList("val1", "val2"), Arrays.asList(id, id)));

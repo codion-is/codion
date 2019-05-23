@@ -4,7 +4,6 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.DateFormats;
 import org.jminor.common.Item;
 import org.jminor.common.Value;
 import org.jminor.common.db.Attribute;
@@ -15,7 +14,7 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.Format;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -72,30 +71,6 @@ public interface Property extends Attribute, Serializable {
    * Default value: %
    */
   Value<String> WILDCARD_CHARACTER = Configuration.stringValue("jminor.wildcardCharacter", "%");
-
-  /**
-   * @return A non-lenient SimpleDateFormat based on the configuration value {@link #DATE_FORMAT}
-   * @see Property#DATE_FORMAT
-   */
-  static SimpleDateFormat getDefaultDateFormat() {
-    return DateFormats.getDateFormat(DATE_FORMAT.get());
-  }
-
-  /**
-   * @return A non-lenient SimpleDateFormat based on the configuration value {@link #TIMESTAMP_FORMAT}
-   * @see Property#TIMESTAMP_FORMAT
-   */
-  static SimpleDateFormat getDefaultTimestampFormat() {
-    return DateFormats.getDateFormat(TIMESTAMP_FORMAT.get());
-  }
-
-  /**
-   * @return A non-lenient SimpleDateFormat based on the configuration value {@link #TIME_FORMAT}
-   * @see Property#TIME_FORMAT
-   */
-  static SimpleDateFormat getDefaultTimeFormat() {
-    return DateFormats.getDateFormat(TIME_FORMAT.get());
-  }
 
   /**
    * @return the id of the domain model this property belongs to
@@ -365,9 +340,27 @@ public interface Property extends Attribute, Serializable {
    * @return this Property instance
    * @throws NullPointerException in case format is null
    * @throws IllegalArgumentException in case the format does not fit the property type,
-   * f.ex. NumberFormat is expected for numerical properties and DateFormat for date properties
+   * f.ex. NumberFormat is expected for numerical properties
    */
   Property setFormat(final Format format);
+
+  /**
+   * @return the date/time format pattern
+   */
+  String getDateTimeFormatPattern();
+
+  /**
+   * Sets the date/time format pattern used when presenting values
+   * @param dateTimeFormatPattern
+   * @return this Property instance
+   * @throws IllegalArgumentException in case the pattern is invalid or if this property is not a date/time based one
+   */
+  Property setDateTimeFormatPattern(final String dateTimeFormatPattern);
+
+  /**
+   * @return the DateTimeFormatter for this property or null if this is not a date/time based property
+   */
+  DateTimeFormatter getDateTimeFormatter();
 
   /**
    * Specifies whether or not this attribute is read only

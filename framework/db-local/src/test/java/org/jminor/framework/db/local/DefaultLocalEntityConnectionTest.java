@@ -60,17 +60,17 @@ public class DefaultLocalEntityConnectionTest {
 
   private DefaultLocalEntityConnection connection;
 
-  private static final TestDomain ENTITIES = new TestDomain();
-  private static final EntityConditions ENTITY_CONDITIONS = new EntityConditions(ENTITIES);
+  private static final TestDomain DOMAIN = new TestDomain();
+  private static final EntityConditions ENTITY_CONDITIONS = new EntityConditions(DOMAIN);
 
   @BeforeAll
   public static void beforeClass() {
-    ENTITIES.define(JOINED_QUERY_ENTITY_ID,
+    DOMAIN.define(JOINED_QUERY_ENTITY_ID,
             Properties.primaryKeyProperty("e.empno"),
             Properties.columnProperty("d.deptno", Types.INTEGER))
             .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno", true);
 
-    ENTITIES.define(GROUP_BY_QUERY_ENTITY_ID,
+    DOMAIN.define(GROUP_BY_QUERY_ENTITY_ID,
             Properties.columnProperty("job", Types.VARCHAR)
                     .setPrimaryKeyIndex(0)
                     .setGroupingColumn(true))
@@ -92,7 +92,7 @@ public class DefaultLocalEntityConnectionTest {
   public void delete() throws Exception {
     try {
       connection.beginTransaction();
-      final Entity.Key key = ENTITIES.key(TestDomain.T_DEPARTMENT);
+      final Entity.Key key = DOMAIN.key(TestDomain.T_DEPARTMENT);
       key.put(TestDomain.DEPARTMENT_ID, 40);
       connection.delete(new ArrayList<>());
       connection.delete(Collections.singletonList(key));
@@ -107,7 +107,7 @@ public class DefaultLocalEntityConnectionTest {
     }
     try {
       connection.beginTransaction();
-      final Entity.Key key = ENTITIES.key(TestDomain.T_DEPARTMENT);
+      final Entity.Key key = DOMAIN.key(TestDomain.T_DEPARTMENT);
       key.put(TestDomain.DEPARTMENT_ID, 40);
       connection.delete(ENTITY_CONDITIONS.condition(key));
       try {
@@ -232,9 +232,9 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectManyByKey() throws DatabaseException {
-    final Entity.Key deptKey = ENTITIES.key(TestDomain.T_DEPARTMENT);
+    final Entity.Key deptKey = DOMAIN.key(TestDomain.T_DEPARTMENT);
     deptKey.put(TestDomain.DEPARTMENT_ID, 10);
-    final Entity.Key empKey = ENTITIES.key(TestDomain.T_EMP);
+    final Entity.Key empKey = DOMAIN.key(TestDomain.T_EMP);
     empKey.put(TestDomain.EMP_ID, 8);
 
     final List<Entity> selected = connection.selectMany(Arrays.asList(deptKey, empKey));
@@ -288,7 +288,7 @@ public class DefaultLocalEntityConnectionTest {
         return null;
       }
     };
-    ENTITIES.addOperation(func);
+    DOMAIN.addOperation(func);
     connection.executeFunction(func.getId());
   }
 
@@ -298,7 +298,7 @@ public class DefaultLocalEntityConnectionTest {
       @Override
       public void execute(final EntityConnection connection, final Object... arguments) {}
     };
-    ENTITIES.addOperation(proc);
+    DOMAIN.addOperation(proc);
     connection.executeProcedure(proc.getId());
   }
 
@@ -316,7 +316,7 @@ public class DefaultLocalEntityConnectionTest {
   public void insertOnlyNullValues() throws DatabaseException {
     try {
       connection.beginTransaction();
-      final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
+      final Entity department = DOMAIN.entity(TestDomain.T_DEPARTMENT);
       assertThrows(DatabaseException.class, () -> connection.insert(Collections.singletonList(department)));
     }
     finally {
@@ -341,7 +341,7 @@ public class DefaultLocalEntityConnectionTest {
     final Entity sales = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
     final double salary = 1500;
 
-    Entity emp = ENTITIES.entity(TestDomain.T_EMP);
+    Entity emp = DOMAIN.entity(TestDomain.T_EMP);
     emp.put(TestDomain.EMP_DEPARTMENT_FK, sales);
     emp.put(TestDomain.EMP_NAME, "Nobody");
     emp.put(TestDomain.EMP_SALARY, salary);
@@ -363,7 +363,7 @@ public class DefaultLocalEntityConnectionTest {
     final double salary = 1500;
     final double defaultCommission = 200;
 
-    Entity emp = ENTITIES.entity(TestDomain.T_EMP);
+    Entity emp = DOMAIN.entity(TestDomain.T_EMP);
     emp.put(TestDomain.EMP_DEPARTMENT_FK, sales);
     emp.put(TestDomain.EMP_NAME, name);
     emp.put(TestDomain.EMP_SALARY, salary);
@@ -582,7 +582,7 @@ public class DefaultLocalEntityConnectionTest {
     try {
       final Database db = Databases.getInstance();
       connection = db.createConnection(UNIT_TEST_USER);
-      final EntityConnection conn = new DefaultLocalEntityConnection(ENTITIES, db, connection, true, true, 1);
+      final EntityConnection conn = new DefaultLocalEntityConnection(DOMAIN, db, connection, true, true, 1);
       assertTrue(conn.isConnected());
     }
     finally {
@@ -603,7 +603,7 @@ public class DefaultLocalEntityConnectionTest {
         final Database db = Databases.getInstance();
         connection = db.createConnection(UNIT_TEST_USER);
         connection.close();
-        new DefaultLocalEntityConnection(ENTITIES, db, connection, true, true, 1);
+        new DefaultLocalEntityConnection(DOMAIN, db, connection, true, true, 1);
       }
       finally {
         if (connection != null) {
@@ -618,12 +618,12 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void writeBlobIncorrectType() throws DatabaseException {
-    assertThrows(IllegalArgumentException.class, () -> connection.writeBlob(ENTITIES.key(TestDomain.T_DEPARTMENT), TestDomain.DEPARTMENT_NAME, new byte[0]));
+    assertThrows(IllegalArgumentException.class, () -> connection.writeBlob(DOMAIN.key(TestDomain.T_DEPARTMENT), TestDomain.DEPARTMENT_NAME, new byte[0]));
   }
 
   @Test
   public void readBlobIncorrectType() throws DatabaseException {
-    assertThrows(IllegalArgumentException.class, () -> connection.readBlob(ENTITIES.key(TestDomain.T_DEPARTMENT), TestDomain.DEPARTMENT_NAME));
+    assertThrows(IllegalArgumentException.class, () -> connection.readBlob(DOMAIN.key(TestDomain.T_DEPARTMENT), TestDomain.DEPARTMENT_NAME));
   }
 
   @Test
@@ -668,6 +668,6 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   private static DefaultLocalEntityConnection initializeConnection() throws DatabaseException {
-    return new DefaultLocalEntityConnection(ENTITIES, Databases.getInstance(), UNIT_TEST_USER, true, true, 1);
+    return new DefaultLocalEntityConnection(DOMAIN, Databases.getInstance(), UNIT_TEST_USER, true, true, 1);
   }
 }
