@@ -3,7 +3,6 @@
  */
 package org.jminor.common;
 
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -38,38 +37,6 @@ public final class DateFormats {
   public static final String FULL_COMPACT_TIMESTAMP = "ddMMyy HH:mm:ss";
 
   private DateFormats() {}
-
-  /**
-   * Instantiates a non-lenient date format
-   * @param formatString the format string
-   * @return a non-lenient date format
-   */
-  public static SimpleDateFormat getDateFormat(final String formatString) {
-    return getDateFormat(formatString, false);
-  }
-
-  /**
-   * Instantiates a date format
-   * @param formatString the format string
-   * @param lenient the lenient status
-   * @return a date format
-   */
-  public static SimpleDateFormat getDateFormat(final String formatString, final boolean lenient) {
-    final SimpleDateFormat format = new SimpleDateFormat(formatString);
-    format.setLenient(lenient);
-
-    return format;
-  }
-
-  /**
-   * Parses the date pattern and returns mask string that can be used in JFormattedFields.
-   * This only works with plain numerical date formats.
-   * @param dateFormat the format from which to retrieve the date mask
-   * @return a String representing the mask to use in JFormattedTextFields, i.e. "##-##-####"
-   */
-  public static String getDateMask(final SimpleDateFormat dateFormat) {
-    return getDateMask(dateFormat.toPattern());
-  }
 
   /**
    * Parses the date pattern and returns mask string that can be used in JFormattedFields.

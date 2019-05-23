@@ -65,10 +65,10 @@ import java.sql.Types;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -562,11 +562,9 @@ public final class FXUiUtil {
    * @return a {@link StringValue} for {@link LocalDate} values, based on the given property
    */
   public static StringValue<LocalDate> createDateValue(final Property property, final DatePicker picker) {
-    final SimpleDateFormat dateFormat = (SimpleDateFormat) property.getFormat();
-    final StringValue<LocalDate> dateValue = PropertyValues.datePropertyValue(picker.getEditor().textProperty(), dateFormat);
-
+    final StringValue<LocalDate> dateValue = PropertyValues.datePropertyValue(picker.getEditor().textProperty(), property.getDateTimeFormatter());
     picker.setConverter(dateValue.getConverter());
-    picker.setPromptText(dateFormat.toPattern().toLowerCase());
+    picker.setPromptText(property.getDateTimeFormatPattern().toLowerCase());
 
     return dateValue;
   }
@@ -578,7 +576,7 @@ public final class FXUiUtil {
    * @return a {@link StringValue} for {@link LocalDateTime} values, based on the given property
    */
   public static StringValue<LocalDateTime> createTimestampValue(final Property property, final TextField textField) {
-    final StringValue<LocalDateTime> timestampValue = PropertyValues.timestampPropertyValue(textField.textProperty(), (SimpleDateFormat) property.getFormat());
+    final StringValue<LocalDateTime> timestampValue = PropertyValues.timestampPropertyValue(textField.textProperty(), property.getDateTimeFormatter());
     textField.setTextFormatter(new TextFormatter<>(timestampValue.getConverter()));
 
     return timestampValue;
@@ -591,7 +589,7 @@ public final class FXUiUtil {
    * @return a {@link StringValue} for {@link LocalTime} values, based on the given property
    */
   public static StringValue<LocalTime> createTimeValue(final Property property, final TextField textField) {
-    final StringValue<LocalTime> timeValue = PropertyValues.timePropertyValue(textField.textProperty(), (SimpleDateFormat) property.getFormat());
+    final StringValue<LocalTime> timeValue = PropertyValues.timePropertyValue(textField.textProperty(), property.getDateTimeFormatter());
     textField.setTextFormatter(new TextFormatter<>(timeValue.getConverter()));
 
     return timeValue;
@@ -893,6 +891,18 @@ public final class FXUiUtil {
       final int maxLength = property.getMaxLength();
       if (maxLength > -1 && value != null && value.length() > maxLength) {
         return false;
+      }
+      if (property.isDateOrTime()) {
+        try {
+          if (value != null) {
+            property.getDateTimeFormatter().parse(value);
+          }
+
+          return true;
+        }
+        catch (final DateTimeParseException e) {
+          return false;
+        }
       }
       final Format format = property.getFormat();
       Object parsedValue = null;

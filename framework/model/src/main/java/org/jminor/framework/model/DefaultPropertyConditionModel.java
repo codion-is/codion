@@ -26,7 +26,7 @@ public class DefaultPropertyConditionModel extends DefaultColumnConditionModel<P
    * @throws IllegalArgumentException if an illegal constant is used
    */
   public DefaultPropertyConditionModel(final EntityConditions entityConditions, final Property.ColumnProperty property) {
-    super(property, property.getTypeClass(), Property.WILDCARD_CHARACTER.get(), property.getFormat());
+    super(property, property.getTypeClass(), Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimeFormatPattern());
     this.entityConditions = entityConditions;
   }
 

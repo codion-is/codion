@@ -19,10 +19,10 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.Format;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -142,6 +142,16 @@ class DefaultProperty implements Property {
   private Format format;
 
   /**
+   * The date/time format pattern
+   */
+  private String dateTimeFormatPattern;
+
+  /**
+   * The DateTimeFormatter to use, based on dateTimeFormatPattern
+   */
+  private transient DateTimeFormatter dateTimeFormatter;
+
+  /**
    * @param propertyId the property ID, this is used as the underlying column name
    * @param type the data type of this property
    * @param caption the caption of this property, if this is null then this property is defined as hidden
@@ -155,7 +165,8 @@ class DefaultProperty implements Property {
     this.typeClass = getTypeClass(type);
     this.isDouble = isType(Types.DOUBLE);
     setHidden(caption == null);
-    setFormat(initializeDefaultFormat());
+    this.format = initializeDefaultFormat();
+    this.dateTimeFormatPattern = getDefaultDateTimeFormatPattern();
   }
 
   /**
@@ -466,11 +477,38 @@ class DefaultProperty implements Property {
     if (isNumerical() && !(format instanceof NumberFormat)) {
       throw new IllegalArgumentException("NumberFormat required for numerical property: " + propertyId);
     }
-    if (isDateOrTime() && !(format instanceof SimpleDateFormat)) {
-      throw new IllegalArgumentException("SimpleDateFormat required for date/time based property: " + propertyId);
+    if (isDateOrTime()) {
+      throw new IllegalArgumentException("Use setDateTimeFormatPattern() for date/time based property: " + propertyId);
     }
     this.format = format;
     return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Property setDateTimeFormatPattern(final String dateTimeFormatPattern) {
+    if (!isDateOrTime()) {
+      throw new IllegalArgumentException("dateTimeFormatPattern is only applicable to date/time based property: " + propertyId);
+    }
+    this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormatPattern);
+    this.dateTimeFormatPattern = dateTimeFormatPattern;
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getDateTimeFormatPattern() {
+    return dateTimeFormatPattern;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public DateTimeFormatter getDateTimeFormatter() {
+    if (dateTimeFormatter == null && dateTimeFormatPattern != null) {
+      dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormatPattern);
+    }
+
+    return dateTimeFormatter;
   }
 
   /** {@inheritDoc} */
@@ -531,16 +569,7 @@ class DefaultProperty implements Property {
   }
 
   private Format initializeDefaultFormat() {
-    if (isDate()) {
-      return Property.getDefaultDateFormat();
-    }
-    else if (isTime()) {
-      return Property.getDefaultTimeFormat();
-    }
-    else if (isTimestamp()) {
-      return Property.getDefaultTimestampFormat();
-    }
-    else if (isNumerical()) {
+    if (isNumerical()) {
       final NumberFormat numberFormat = FormatUtil.getNonGroupingNumberFormat(isInteger());
       if (isDouble()) {
         numberFormat.setMaximumFractionDigits(Property.MAXIMUM_FRACTION_DIGITS.get());
@@ -550,6 +579,20 @@ class DefaultProperty implements Property {
     }
 
     return FormatUtil.NULL_FORMAT;
+  }
+
+  private String getDefaultDateTimeFormatPattern() {
+    if (isDate()) {
+      return DATE_FORMAT.get();
+    }
+    else if (isTime()) {
+      return TIME_FORMAT.get();
+    }
+    else if (isTimestamp()) {
+      return TIMESTAMP_FORMAT.get();
+    }
+
+    return null;
   }
 
   /**

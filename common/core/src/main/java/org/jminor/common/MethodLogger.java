@@ -9,13 +9,15 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
-import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -226,13 +228,7 @@ public final class MethodLogger {
   public static final class Entry implements Serializable {
 
     private static final long serialVersionUID = 1;
-    private static final String TIMESTAMP_FORMAT_STRING = "yyyy-MM-dd HH:mm:ss.SSS";
-    private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = new ThreadLocal<DateFormat>() {
-      @Override
-      protected synchronized DateFormat initialValue() {
-        return new SimpleDateFormat(TIMESTAMP_FORMAT_STRING);
-      }
-    };
+    private static final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     private static final NumberFormat MICROSECONDS_FORMAT = NumberFormat.getIntegerInstance();
 
     private LinkedList<Entry> subEntries = new LinkedList<>();
@@ -341,11 +337,12 @@ public final class MethodLogger {
     public String toString(final int indentation) {
       final String indentString = indentation > 0 ? TextUtil.padString("", indentation, '\t', TextUtil.Alignment.RIGHT) : "";
       final StringBuilder stringBuilder = new StringBuilder();
-      final DateFormat timestampFormat = TIMESTAMP_FORMAT.get();
+      final LocalDateTime accessDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(accessTime), TimeZone.getDefault().toZoneId());
       if (isComplete()) {
-        stringBuilder.append(indentString).append(timestampFormat.format(accessTime)).append(" @ ").append(method).append(
+        stringBuilder.append(indentString).append(TIMESTAMP_FORMATTER.format(accessDateTime)).append(" @ ").append(method).append(
                 !Util.nullOrEmpty(accessMessage) ? (": " + accessMessage) : "").append("\n");
-        stringBuilder.append(indentString).append(timestampFormat.format(exitTime)).append(" > ")
+        final LocalDateTime exitDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(exitTime), TimeZone.getDefault().toZoneId());
+        stringBuilder.append(indentString).append(TIMESTAMP_FORMATTER.format(exitDateTime)).append(" > ")
                 .append(MICROSECONDS_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(getDuration()))).append(" μs")
                 .append(exitMessage == null ? "" : " (" + exitMessage + ")");
         if (stackTrace != null) {
@@ -353,7 +350,7 @@ public final class MethodLogger {
         }
       }
       else {
-        stringBuilder.append(indentString).append(timestampFormat.format(accessTime)).append(" @ ").append(method).append(
+        stringBuilder.append(indentString).append(TIMESTAMP_FORMATTER.format(accessDateTime)).append(" @ ").append(method).append(
                 !Util.nullOrEmpty(accessMessage) ? (": " + accessMessage) : "");
       }
 

@@ -87,7 +87,6 @@ import java.awt.event.MouseListener;
 import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.sql.Types;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -1203,14 +1202,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       case Types.BOOLEAN:
         return new BooleanInputProvider((Boolean) currentValue);
       case Types.DATE:
-        return new TemporalInputProvider<>(new LocalDateInputPanel((LocalDate) currentValue,
-                ((SimpleDateFormat) property.getFormat()).toPattern()));
+        return new TemporalInputProvider<>(new LocalDateInputPanel((LocalDate) currentValue, property.getDateTimeFormatPattern()));
       case Types.TIMESTAMP:
-        return new TemporalInputProvider<>(new LocalDateTimeInputPanel((LocalDateTime) currentValue,
-                ((SimpleDateFormat) property.getFormat()).toPattern()));
+        return new TemporalInputProvider<>(new LocalDateTimeInputPanel((LocalDateTime) currentValue, property.getDateTimeFormatPattern()));
       case Types.TIME:
-        return new TemporalInputProvider<>(new LocalTimeInputPanel((LocalTime) currentValue,
-                ((SimpleDateFormat) property.getFormat()).toPattern()));
+        return new TemporalInputProvider<>(new LocalTimeInputPanel((LocalTime) currentValue, property.getDateTimeFormatPattern()));
       case Types.DOUBLE:
         return new DoubleInputProvider((Double) currentValue);
       case Types.INTEGER:

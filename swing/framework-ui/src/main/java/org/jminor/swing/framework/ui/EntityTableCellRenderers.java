@@ -13,7 +13,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
 import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.util.Objects;
@@ -98,7 +97,8 @@ public final class EntityTableCellRenderers {
      * @param property the property
      */
     public DefaultEntityTableCellRenderer(final EntityTableModel tableModel, final Property property) {
-      this(tableModel, property, property.getFormat(), property.isNumerical() || property.isDateOrTime() ? RIGHT : LEFT);
+      this(tableModel, property, property.getFormat(), property.getDateTimeFormatter(),
+              property.isNumerical() || property.isDateOrTime() ? RIGHT : LEFT);
     }
 
     /**
@@ -106,9 +106,11 @@ public final class EntityTableCellRenderers {
      * @param tableModel the table model providing the data to render
      * @param property the property
      * @param format the format, overrides the format associated with the property
+     * @param dateTimeFormatter the date/time formatter
      */
-    public DefaultEntityTableCellRenderer(final EntityTableModel tableModel, final Property property, final Format format) {
-      this(tableModel, property, format, LEFT);
+    public DefaultEntityTableCellRenderer(final EntityTableModel tableModel, final Property property, final Format format,
+                                          final DateTimeFormatter dateTimeFormatter) {
+      this(tableModel, property, format, dateTimeFormatter, LEFT);
     }
 
     /**
@@ -116,14 +118,15 @@ public final class EntityTableCellRenderers {
      * @param tableModel the table model providing the data to render
      * @param property the property
      * @param format overrides the format defined by the property
+     * @param dateTimeFormatter the date/time formatter
      * @param horizontalAlignment the horizontal alignment
      */
     public DefaultEntityTableCellRenderer(final EntityTableModel tableModel, final Property property, final Format format,
-                                          final int horizontalAlignment) {
+                                          final DateTimeFormatter dateTimeFormatter, final int horizontalAlignment) {
       this.tableModel = Objects.requireNonNull(tableModel, "tableModel");
       this.property = Objects.requireNonNull(property, "property");
       this.format = format == null ? property.getFormat() : format;
-      this.dateTimeFormatter = this.format instanceof SimpleDateFormat ? DateTimeFormatter.ofPattern(((SimpleDateFormat) this.format).toPattern()) : null;
+      this.dateTimeFormatter = dateTimeFormatter;
       setHorizontalAlignment(horizontalAlignment);
     }
 
@@ -218,7 +221,7 @@ public final class EntityTableCellRenderers {
     private final JCheckBox checkBox = new JCheckBox();
 
     private BooleanRenderer(final EntityTableModel tableModel, final Property property) {
-      super(tableModel, property, null, CENTER);
+      super(tableModel, property, null, null, CENTER);
       checkBox.setHorizontalAlignment(CENTER);
       checkBox.setOpaque(true);
     }

@@ -67,7 +67,6 @@ import java.awt.Font;
 import java.awt.Point;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -543,7 +542,7 @@ public final class EntityUiUtil {
       throw new IllegalArgumentException("Property " + property + " is not a date or time property");
     }
 
-    final String formatString = ((SimpleDateFormat) property.getFormat()).toPattern();
+    final String formatString = property.getDateTimeFormatPattern();
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, editModel, readOnly,
             DateFormats.getDateMask(formatString), true, enabledState);
     if (property.isDate()) {
@@ -726,15 +725,15 @@ public final class EntityUiUtil {
     }
     else if (property.isDate()) {
       ValueLinks.localDateValueLink((JFormattedTextField) textField, EditModelValues.value(editModel, property),
-              readOnly, ((SimpleDateFormat) property.getFormat()).toPattern(), immediateUpdate);
+              readOnly, property.getDateTimeFormatPattern(), immediateUpdate);
     }
     else if (property.isTime()) {
       ValueLinks.localTimeValueLink((JFormattedTextField) textField, EditModelValues.value(editModel, property),
-              readOnly, ((SimpleDateFormat) property.getFormat()).toPattern(), immediateUpdate);
+              readOnly, property.getDateTimeFormatPattern(), immediateUpdate);
     }
     else if (property.isTimestamp()) {
       ValueLinks.localDateTimeValueLink((JFormattedTextField) textField, EditModelValues.value(editModel, property),
-              readOnly, ((SimpleDateFormat) property.getFormat()).toPattern(), immediateUpdate);
+              readOnly, property.getDateTimeFormatPattern(), immediateUpdate);
     }
     else {
       throw new IllegalArgumentException("Not a text based property: " + property);
@@ -875,7 +874,7 @@ public final class EntityUiUtil {
       field = initializeLongField(property);
     }
     else if (property.isDateOrTime()) {
-      field = UiUtil.createFormattedField(DateFormats.getDateMask((SimpleDateFormat) property.getFormat()));
+      field = UiUtil.createFormattedField(DateFormats.getDateMask(property.getDateTimeFormatPattern()));
     }
     else if (property.isString()) {
       field = initializeStringField(formatMaskString, valueContainsLiteralCharacters);

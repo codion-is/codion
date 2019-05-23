@@ -24,7 +24,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
-import java.text.SimpleDateFormat;
 
 /**
  * A column condition panel based on the the Property class.
@@ -85,7 +84,7 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
         return initializeValueListField((Property.ValueListProperty) property);
       }
       if (property.isDateOrTime()) {
-        return UiUtil.createFormattedField(DateFormats.getDateMask((SimpleDateFormat) model.getFormat()));
+        return UiUtil.createFormattedField(DateFormats.getDateMask(model.getDateTimeFormatPattern()));
       }
       else if (property.isDouble()) {
         return new DoubleField(DEFAULT_FIELD_COLUMNS);
@@ -112,15 +111,15 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
       }
       else if (columnProperty.isTime()) {
         ValueLinks.localTimeValueLink((JFormattedTextField) field, modelValue, false,
-                ((SimpleDateFormat) model.getFormat()).toPattern(), true);
+                model.getDateTimeFormatPattern(), true);
       }
       else if (columnProperty.isDate()) {
         ValueLinks.localDateValueLink((JFormattedTextField) field, modelValue, false,
-                ((SimpleDateFormat) model.getFormat()).toPattern(), true);
+                model.getDateTimeFormatPattern(), true);
       }
       else if (columnProperty.isTimestamp()) {
         ValueLinks.localDateTimeValueLink((JFormattedTextField) field, modelValue, false,
-                ((SimpleDateFormat) model.getFormat()).toPattern(), true);
+                model.getDateTimeFormatPattern(), true);
       }
       else if (columnProperty.isDouble()) {
         ValueLinks.doubleValueLink((DoubleField) field, modelValue, false, false, true);

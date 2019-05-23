@@ -54,6 +54,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   private final K columnIdentifier;
   private final Class typeClass;
   private final Format format;
+  private final String dateTimeFormatPattern;
 
   private boolean autoEnable = true;
   private AutomaticWildcard automaticWildcard;
@@ -67,7 +68,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
    * @param wildcard the string to use as wildcard
    */
   public DefaultColumnConditionModel(final K columnIdentifier, final Class typeClass, final String wildcard) {
-    this(columnIdentifier, typeClass, wildcard, null);
+    this(columnIdentifier, typeClass, wildcard, null, null);
   }
 
   /**
@@ -75,11 +76,12 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
    * @param columnIdentifier the column identifier
    * @param typeClass the data type
    * @param wildcard the string to use as wildcard
-   * @param format the format to use when presenting the values, dates for example
+   * @param format the format to use when presenting the values, numbers for example
+   * @param dateTimeFormatPattern the date/time format pattern to use in case of a date/time column
    */
   public DefaultColumnConditionModel(final K columnIdentifier, final Class typeClass, final String wildcard,
-                                     final Format format) {
-    this(columnIdentifier, typeClass, wildcard, format, AUTOMATIC_WILDCARD.get());
+                                     final Format format, final String dateTimeFormatPattern) {
+    this(columnIdentifier, typeClass, wildcard, format, dateTimeFormatPattern, AUTOMATIC_WILDCARD.get());
   }
 
   /**
@@ -87,12 +89,14 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
    * @param columnIdentifier the column identifier
    * @param typeClass the data type
    * @param wildcard the string to use as wildcard
-   * @param format the format to use when presenting the values, dates for example
+   * @param format the format to use when presenting the values, numbers for example
+   * @param dateTimeFormatPattern the date/time format pattern to use in case of a date/time column
    * @param automaticWildcard the automatic wildcard type to use
    */
   public DefaultColumnConditionModel(final K columnIdentifier, final Class typeClass, final String wildcard,
-                                     final Format format, final AutomaticWildcard automaticWildcard) {
-    this(columnIdentifier, typeClass, wildcard, format, automaticWildcard, CASE_SENSITIVE.get());
+                                     final Format format, final String dateTimeFormatPattern,
+                                     final AutomaticWildcard automaticWildcard) {
+    this(columnIdentifier, typeClass, wildcard, format, dateTimeFormatPattern, automaticWildcard, CASE_SENSITIVE.get());
   }
 
   /**
@@ -100,17 +104,19 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
    * @param columnIdentifier the column identifier
    * @param typeClass the data type
    * @param wildcard the string to use as wildcard
-   * @param format the format to use when presenting the values, dates for example
+   * @param format the format to use when presenting the values, numbers for example
+   * @param dateTimeFormatPattern the date/time format pattern to use in case of a date/time column
    * @param automaticWildcard the automatic wildcard type to use
    * @param caseSensitive true if string based conditions should be case sensitive
    */
   public DefaultColumnConditionModel(final K columnIdentifier, final Class typeClass, final String wildcard,
-                                     final Format format, final AutomaticWildcard automaticWildcard,
-                                     final boolean caseSensitive) {
+                                     final Format format, final String dateTimeFormatPattern,
+                                     final AutomaticWildcard automaticWildcard, final boolean caseSensitive) {
     this.columnIdentifier = Objects.requireNonNull(columnIdentifier, "columnIdentifier");
     this.typeClass = typeClass;
     this.wildcard = wildcard;
     this.format = format;
+    this.dateTimeFormatPattern = dateTimeFormatPattern;
     this.automaticWildcard = automaticWildcard;
     this.caseSensitive = caseSensitive;
     bindEvents();
@@ -138,6 +144,12 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   @Override
   public final Format getFormat() {
     return format;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getDateTimeFormatPattern() {
+    return dateTimeFormatPattern;
   }
 
   /** {@inheritDoc} */
