@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.DateFormats;
 import org.jminor.common.Item;
 
 import java.sql.Types;
@@ -178,6 +179,7 @@ public final class TestDomain extends Domain {
             Properties.foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
                     Properties.columnProperty(EMP_MGR)),
             Properties.columnProperty(EMP_HIREDATE, Types.TIMESTAMP, EMP_HIREDATE)
+                    .setDateTimeFormatPattern(DateFormats.SHORT_DOT)
                     .setNullable(false),
             Properties.denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
                     getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),

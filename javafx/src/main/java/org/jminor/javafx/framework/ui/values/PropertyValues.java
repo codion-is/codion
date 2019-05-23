@@ -113,7 +113,7 @@ public final class PropertyValues {
 
   /**
    * @param property the string property
-   * @param dateFormat the format to use
+   * @param dateTimeFormatter the formatter to use
    * @return a {@link LocalDate} {@link StringValue} based on the given string property
    */
   public static StringValue<LocalDate> datePropertyValue(final StringProperty property, final DateTimeFormatter dateTimeFormatter) {
@@ -122,7 +122,7 @@ public final class PropertyValues {
 
   /**
    * @param property the string property
-   * @param dateFormat the format to use
+   * @param dateTimeFormatter the formatter to use
    * @return a {@link LocalDateTime} {@link StringValue} based on the given string property
    */
   public static StringValue<LocalDateTime> timestampPropertyValue(final StringProperty property, final DateTimeFormatter dateTimeFormatter) {
@@ -131,7 +131,7 @@ public final class PropertyValues {
 
   /**
    * @param property the string property
-   * @param dateFormat the format to use
+   * @param dateTimeFormatter the formatter to use
    * @return a {@link LocalTime} {@link StringValue} based on the given string property
    */
   public static StringValue<LocalTime> timePropertyValue(final StringProperty property, final DateTimeFormatter dateTimeFormatter) {
