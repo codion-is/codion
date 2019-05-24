@@ -453,11 +453,13 @@ public class FilteredTablePanel<R, C> extends JPanel {
     final JTextField field = new JTextField();
     field.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
     field.setColumns(SEARCH_FIELD_COLUMNS);
-    TextFieldHint.enable(field, Messages.get(Messages.SEARCH_FIELD_HINT));
+    final TextFieldHint textFieldHint = TextFieldHint.enable(field, Messages.get(Messages.SEARCH_FIELD_HINT));
     field.getDocument().addDocumentListener(new DocumentAdapter() {
       @Override
       public void contentsChanged(final DocumentEvent e) {
-        performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 : lastSearchResultCoordinate.getRow(), true, field.getText());
+        if (!textFieldHint.isHintTextVisible()) {
+          performSearch(false, lastSearchResultCoordinate.getRow() == -1 ? 0 : lastSearchResultCoordinate.getRow(), true, field.getText());
+        }
       }
     });
     field.addKeyListener(new KeyAdapter() {

@@ -5007,3 +5007,4 @@
   Entities.getModifiedColumnProperties() includeReadOnlyProperties parameter added
   DefaultLocalEntityCollection.lockAndCheckForUpdate() no longer includes readOnly properties in the optimistic locking comparison
   Property.dateTimeFormatPattern, getDateTimeFormatter() added, used throughout, SimpleDateFormat usages removed
+  FilteredTablePanel bug fixed, searchField no longer triggers search on focusLost/contentsChanged if search hint is visible
