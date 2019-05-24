@@ -61,7 +61,8 @@ public final class EntitiesTest {
     current.saveAll();
     assertTrue(Entities.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_ID));
     assertEquals(Entities.getModifiedColumnProperties(current, entity, false).iterator().next().getPropertyId(), TestDomain.DEPARTMENT_ID);
-    current.remove(TestDomain.DEPARTMENT_ID);
+    final Integer id = (Integer) current.remove(TestDomain.DEPARTMENT_ID);
+    assertEquals(2, id);
     current.saveAll();
     assertTrue(Entities.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_ID));
     assertEquals(Entities.getModifiedColumnProperties(current, entity, false).iterator().next().getPropertyId(), TestDomain.DEPARTMENT_ID);

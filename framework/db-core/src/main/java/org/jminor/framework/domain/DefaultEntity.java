@@ -433,8 +433,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
 
   /** {@inheritDoc} */
   @Override
-  public void remove(final String propertyId) {
-    remove(getProperty(propertyId));
+  public Object remove(final String propertyId) {
+    return remove(getProperty(propertyId));
   }
 
   /** {@inheritDoc} */
