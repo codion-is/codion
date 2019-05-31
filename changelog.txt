@@ -5010,3 +5010,4 @@
   FilteredTablePanel bug fixed, searchField no longer triggers search on focusLost/contentsChanged if search hint is visible
   Entity.remove(propertyId) now returns the value being removed
   SwingEntityTableModel.setForeignKeyConditionValues() no longer final
+  DefaultColumnConditionModel.AUTOMATIC_WILDCARD and CASE_SENSITIVE configuration values moved to ColumnConditionModel

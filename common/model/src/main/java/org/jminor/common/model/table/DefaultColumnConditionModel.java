@@ -3,7 +3,6 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.Configuration;
 import org.jminor.common.Event;
 import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
@@ -29,17 +28,6 @@ import java.util.regex.Pattern;
  * @param <K> the type of the column identifier
  */
 public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
-
-  /**
-   * Specifies whether wildcards are automatically to string conditions<br>
-   * Value type: {@link AutomaticWildcard}<br>
-   * Default value: {@link AutomaticWildcard#NONE}
-   */
-  public static final Value<AutomaticWildcard> AUTOMATIC_WILDCARD = Configuration.value(
-          "org.jminor.common.model.table.DefaultColumnConditionModel.automaticWildard",
-          AutomaticWildcard.NONE, AutomaticWildcard::valueOf);
-  public static final Value<Boolean> CASE_SENSITIVE = Configuration.booleanValue(
-          "org.jminor.common.model.table.DefaultColumnConditionModel.caseSensitive", true);
 
   private final Value upperBoundValue = Values.value();
   private final Value lowerBoundValue = Values.value();

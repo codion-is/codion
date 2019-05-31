@@ -3,6 +3,7 @@
  */
 package org.jminor.common.model.table;
 
+import org.jminor.common.Configuration;
 import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
@@ -18,6 +19,23 @@ import java.text.Format;
  * @param <K> the type of objects used to identify columns
  */
 public interface ColumnConditionModel<K> {
+
+  /**
+   * Specifies whether wildcards are automatically added to string conditions<br>
+   * Value type: {@link AutomaticWildcard}<br>
+   * Default value: {@link AutomaticWildcard#NONE}
+   */
+  Value<AutomaticWildcard> AUTOMATIC_WILDCARD = Configuration.value(
+          "org.jminor.common.model.table.ColumnConditionModel.automaticWildard",
+          AutomaticWildcard.NONE, AutomaticWildcard::valueOf);
+
+  /**
+   * Specifies whether string based conditions are case sensitive or not
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  Value<Boolean> CASE_SENSITIVE = Configuration.booleanValue(
+                  "org.jminor.common.model.table.ColumnConditionModel.caseSensitive", true);
 
   /**
    * The possible automatic wildcard types
