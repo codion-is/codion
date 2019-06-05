@@ -18,6 +18,7 @@ import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
+import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.exception.UpdateException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
@@ -384,7 +385,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(Databases.createLogMessage(getUser(), deleteSQL, entityKeys, e, null));
-        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+        final Database database = connection.getDatabase();
+        if (database.isReferentialIntegrityException(e)) {
+          throw new ReferentialIntegrityException(e, database.getErrorMessage(e));
+        }
+        else {
+          throw new DatabaseException(e, database.getErrorMessage(e));
+        }
       }
       finally {
         Databases.closeSilently(statement);

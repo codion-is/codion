@@ -153,4 +153,13 @@ public final class OracleDatabase extends AbstractDatabase {
   public boolean isAuthenticationException(final SQLException exception) {
     return exception.getErrorCode() == LOGIN_CREDS_ERROR;
   }
+
+  /**
+   * @param exception the exception
+   * @return true if this exception is a referential integrity error
+   */
+  @Override
+  public boolean isReferentialIntegrityException(final SQLException exception) {
+    return exception.getErrorCode() == CHILD_RECORD_ERROR;
+  }
 }

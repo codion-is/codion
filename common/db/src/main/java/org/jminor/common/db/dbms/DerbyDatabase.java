@@ -20,6 +20,7 @@ import java.util.Properties;
 public final class DerbyDatabase extends AbstractDatabase {
 
   private static final String SHUTDOWN_ERROR_CODE = "08006";
+  private static final int FOREIGN_KEY_ERROR = 23503;
 
   static final String DRIVER_CLASS_NAME = "org.apache.derby.jdbc.ClientDriver";
   static final String EMBEDDED_DRIVER_CLASS_NAME = "org.apache.derby.jdbc.EmbeddedDriver";
@@ -94,5 +95,14 @@ public final class DerbyDatabase extends AbstractDatabase {
         LOG.error("Embedded Derby database was did not successfully shut down!", e);
       }
     }
+  }
+
+  /**
+   * @param exception the exception
+   * @return true if this exception is a referential integrity error
+   */
+  @Override
+  public boolean isReferentialIntegrityException(final SQLException exception) {
+    return exception.getErrorCode() == FOREIGN_KEY_ERROR;
   }
 }

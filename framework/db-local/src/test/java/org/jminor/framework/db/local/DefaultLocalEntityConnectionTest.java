@@ -15,6 +15,7 @@ import org.jminor.common.db.condition.Condition;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
+import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.exception.UpdateException;
 import org.jminor.common.db.reports.ReportDataWrapper;
 import org.jminor.common.db.reports.ReportException;
@@ -120,6 +121,13 @@ public class DefaultLocalEntityConnectionTest {
     finally {
       connection.rollbackTransaction();
     }
+  }
+
+  @Test
+  public void deleteReferentialIntegrity() {
+    final Entity.Key key = DOMAIN.key(TestDomain.T_DEPARTMENT);
+    key.put(TestDomain.DEPARTMENT_ID, 10);
+    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(Collections.singletonList(key)));
   }
 
   @Test

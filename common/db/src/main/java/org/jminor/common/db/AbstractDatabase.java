@@ -244,6 +244,16 @@ public abstract class AbstractDatabase implements Database {
     return false;
   }
 
+  /**
+   * This default implementation returns false
+   * @param exception the exception
+   * @return false
+   */
+  @Override
+  public boolean isReferentialIntegrityException(final SQLException exception) {
+    return false;
+  }
+
   /** {@inheritDoc} */
   @Override
   public Properties addConnectionProperties(final Properties properties) {
