@@ -9,12 +9,12 @@ import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.FileUtil;
-import org.jminor.common.Serializer;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
@@ -26,6 +26,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
+import org.jminor.swing.common.ui.DialogExceptionHandler;
 import org.jminor.swing.common.ui.LocalDateInputPanel;
 import org.jminor.swing.common.ui.LocalDateTimeInputPanel;
 import org.jminor.swing.common.ui.LocalTimeInputPanel;
@@ -48,6 +49,9 @@ import org.jminor.swing.common.ui.table.FilteredTablePanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -129,7 +133,9 @@ import java.util.ResourceBundle;
  * Note that {@link #initializePanel()} must be called to initialize this panel before displaying it.
  * @see EntityTableModel
  */
-public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
+public class EntityTablePanel extends FilteredTablePanel<Entity, Property> implements DialogExceptionHandler {
+
+  private static final Logger LOG = LoggerFactory.getLogger(EntityTablePanel.class);
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName(), Locale.getDefault());
 
@@ -156,6 +162,14 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   public static final Value<Integer> TABLE_AUTO_RESIZE_MODE = Configuration.integerValue(
           "org.jminor.swing.framework.ui.EntityTablePanel.tableAutoResizeMode", JTable.AUTO_RESIZE_OFF);
+
+  /**
+   * Specifies whether the dependent entities are displayed when a referential integrity error occurs on delete<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final Value<Boolean> DISPLAY_DEPENDENCIES_ON_REFERENTIAL_INTEGRITY_ERROR = Configuration.booleanValue(
+          "org.jminor.swing.framework.ui.EntityTablePanel.displayDependenciesOnReferentialIntegrityError", false);
 
   public static final String PRINT_TABLE = "printTable";
   public static final String DELETE_SELECTED = "deleteSelected";
@@ -232,6 +246,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * True after {@code initializePanel()} has been called
    */
   private boolean panelInitialized = false;
+
+  /**
+   * True if dependent entities should be displayed when a referential integrity error occurs on delete
+   */
+  private boolean displayDependenciesOnReferentialIntegrityError = DISPLAY_DEPENDENCIES_ON_REFERENTIAL_INTEGRITY_ERROR.get();
 
   /**
    * Initializes a new EntityTablePanel instance
@@ -421,6 +440,20 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
   }
 
+  /**
+   * True if dependent entities should be displayed when a referential integrity error occurs on delete
+   */
+  public final boolean isDisplayDependenciesOnReferentialIntegrityError() {
+    return displayDependenciesOnReferentialIntegrityError;
+  }
+
+  /**
+   * @param value true if dependent entities should be displayed when a referential integrity error occurs on delete
+   */
+  public final void setDisplayDependenciesOnReferentialIntegrityError(final boolean value) {
+    this.displayDependenciesOnReferentialIntegrityError = value;
+  }
+
   /** {@inheritDoc} */
   @Override
   public final String toString() {
@@ -559,7 +592,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         UiUtil.setWaitCursor(true, this);
         getEntityTableModel().update(selectedEntities);
       }
-      catch (final ValidationException | CancelException | DatabaseException e) {
+      catch (final Exception e) {
         handleException(e);
       }
       finally {
@@ -582,14 +615,14 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       final Map<String, Collection<Entity>> dependencies =
               tableModel.selectDependentEntities(tableModel.getSelectionModel().getSelectedItems());
       if (!dependencies.isEmpty()) {
-        showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this);
+        showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this, MESSAGES.getString("dependent_records_found"));
       }
       else {
         JOptionPane.showMessageDialog(this, MESSAGES.getString("none_found"),
                 MESSAGES.getString("no_dependent_records"), JOptionPane.INFORMATION_MESSAGE);
       }
     }
-    catch (final DatabaseException e) {
+    catch (final Exception e) {
       handleException(e);
     }
     finally {
@@ -602,17 +635,28 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @see #confirmDelete()
    */
   public final void delete() {
-    if (confirmDelete()) {
-      try {
-        UiUtil.setWaitCursor(true, this);
-        getEntityTableModel().deleteSelected();
+    try {
+      if (confirmDelete()) {
+        try {
+          UiUtil.setWaitCursor(true, this);
+          getEntityTableModel().deleteSelected();
+        }
+        finally {
+          UiUtil.setWaitCursor(false, this);
+        }
       }
-      catch (final DatabaseException | CancelException e) {
+    }
+    catch (final ReferentialIntegrityException e) {
+      if (displayDependenciesOnReferentialIntegrityError) {
+        showDependenciesDialog(getEntityTableModel().getSelectionModel().getSelectedItems(),
+                getEntityTableModel().getConnectionProvider(), this);
+      }
+      else {
         handleException(e);
       }
-      finally {
-        UiUtil.setWaitCursor(false, this);
-      }
+    }
+    catch (final Exception e) {
+      handleException(e);
     }
   }
 
@@ -628,7 +672,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
               .serialize(selected), UiUtil.selectFileToSave(this, null, null));
       JOptionPane.showMessageDialog(this, MESSAGES.getString("export_selected_done"));
     }
-    catch (final IOException | CancelException | Serializer.SerializeException e) {
+    catch (final Exception e) {
       handleException(e);
     }
   }
@@ -643,12 +687,26 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Uses the default exception handler to handle the given exception
-   * @param exception the exception to handle
-   * @see DefaultDialogExceptionHandler#handleException(Throwable, javax.swing.JComponent)
+   * Handles the given exception, which usually means simply displaying it to the user
+   * @param throwable the exception to handle
    */
-  public final void handleException(final Exception exception) {
-    DefaultDialogExceptionHandler.getInstance().handleException(exception, UiUtil.getParentWindow(this));
+  public final void handleException(final Throwable throwable) {
+    LOG.error(throwable.getMessage(), throwable);
+    if (throwable instanceof ValidationException) {
+      handleException((ValidationException) throwable);
+    }
+    else if (throwable instanceof DatabaseException) {
+      handleException((DatabaseException) throwable);
+    }
+    else {
+      displayException(throwable, UiUtil.getParentWindow(this));
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void displayException(final Throwable throwable, final Window dialogParent) {
+    DefaultDialogExceptionHandler.getInstance().displayException(throwable, dialogParent);
   }
 
   /**
@@ -740,6 +798,23 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   public final void removeTableDoubleClickListener(final EventListener listener) {
     tableDoubleClickedEvent.removeListener(listener);
+  }
+
+  /**
+   * Displays a dialog with the entities depending on the given entities.
+   * @param entities the entities for which to display dependencies
+   * @param connectionProvider the connection provider
+   * @param dialogParent the dialog parent
+   */
+  public static void showDependenciesDialog(final Collection<Entity> entities, final EntityConnectionProvider connectionProvider,
+                                            final JComponent dialogParent) {
+    try {
+      final Map<String, Collection<Entity>> dependencies = connectionProvider.getConnection().selectDependentEntities(entities);
+      showDependenciesDialog(dependencies, connectionProvider, dialogParent, MESSAGES.getString("delete_dependent_records"));
+    }
+    catch (final DatabaseException e) {
+      DefaultDialogExceptionHandler.getInstance().displayException(e, UiUtil.getParentWindow(dialogParent));
+    }
   }
 
   /**
@@ -1165,6 +1240,24 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
+   * Handles ValidationExceptions.
+   * By default displays the exception message to the user.
+   * @param exception the exception to handle
+   */
+  protected void handleException(final ValidationException exception) {
+    displayException(exception, UiUtil.getParentWindow(this));
+  }
+
+  /**
+   * Handles DatabaseExceptions
+   * By default displays the exception message to the user.
+   * @param exception the exception to handle
+   */
+  protected void handleException(final DatabaseException exception) {
+    displayException(exception, UiUtil.getParentWindow(this));
+  }
+
+  /**
    * Called before a delete is performed, if true is returned the delete action is performed otherwise it is canceled
    * @return true if the delete action should be performed
    */
@@ -1502,9 +1595,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
   }
 
-  private void showDependenciesDialog(final Map<String, Collection<Entity>> dependencies,
-                                      final EntityConnectionProvider connectionProvider,
-                                      final JComponent dialogParent) {
+  private static void showDependenciesDialog(final Map<String, Collection<Entity>> dependencies,
+                                             final EntityConnectionProvider connectionProvider,
+                                             final JComponent dialogParent, final String title) {
     JPanel dependenciesPanel;
     try {
       UiUtil.setWaitCursor(true, dialogParent);
@@ -1513,8 +1606,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     finally {
       UiUtil.setWaitCursor(false, dialogParent);
     }
-    UiUtil.displayInDialog(UiUtil.getParentWindow(dialogParent), dependenciesPanel,
-            MESSAGES.getString("dependent_records_found"));
+    UiUtil.displayInDialog(UiUtil.getParentWindow(dialogParent), dependenciesPanel, title);
   }
 
   private static JLabel initializeStatusMessageLabel() {
@@ -1524,8 +1616,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     return label;
   }
 
-  private JPanel createDependenciesPanel(final Map<String, Collection<Entity>> dependencies,
-                                         final EntityConnectionProvider connectionProvider) {
+  private static JPanel createDependenciesPanel(final Map<String, Collection<Entity>> dependencies,
+                                                final EntityConnectionProvider connectionProvider) {
     final JPanel panel = new JPanel(new BorderLayout());
     final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
     for (final Map.Entry<String, Collection<Entity>> entry : dependencies.entrySet()) {

@@ -4,11 +4,9 @@
 package org.jminor.swing.common.ui;
 
 import org.jminor.common.Util;
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 
-import javax.swing.JComponent;
 import java.awt.Window;
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
@@ -32,47 +30,20 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
     return INSTANCE;
   }
 
-  /**
-   * Handles the given exception by displaying it in a dialog
-   * @param exception the exception
-   * @param dialogParent the component to use as parent to the exception dialog
-   */
-  public void handleException(final Throwable exception, final JComponent dialogParent) {
-    handleException(exception, UiUtil.getParentWindow(dialogParent));
-  }
-
+  /** {@inheritDoc} */
   @Override
-  public void handleException(final Throwable exception, final Window dialogParent) {
+  public void displayException(final Throwable exception, final Window dialogParent) {
     final Throwable rootCause = unwrapExceptions(exception, Arrays.asList(RemoteException.class, RuntimeException.class,
             InvocationTargetException.class, ExceptionInInitializerError.class, UndeclaredThrowableException.class));
     if (rootCause instanceof CancelException) {
       return;
     }
 
-    if (rootCause instanceof DatabaseException) {
-      handleDatabaseException((DatabaseException) rootCause, dialogParent);
+    String message = rootCause.getMessage();
+    if (Util.nullOrEmpty(message)) {
+      message = rootCause.getCause() != null ? trimMessage(rootCause.getCause()) : trimMessage(rootCause);
     }
-    else {
-      UiUtil.showExceptionDialog(dialogParent, getMessageTitle(rootCause), rootCause.getMessage(), rootCause);
-    }
-  }
-
-  /**
-   * Handles the given database exception by displaying it in a dialog
-   * @param dbException the exception
-   * @param dialogParent the component to use as parent to the exception dialog
-   */
-  private static void handleDatabaseException(final DatabaseException dbException, final Window dialogParent) {
-    String errMsg = dbException.getMessage();
-    if (Util.nullOrEmpty(errMsg)) {
-      if (dbException.getCause() == null) {
-        errMsg = trimMessage(dbException);
-      }
-      else {
-        errMsg = trimMessage(dbException.getCause());
-      }
-    }
-    UiUtil.showExceptionDialog(dialogParent, Messages.get(Messages.EXCEPTION), errMsg, dbException);
+    UiUtil.showExceptionDialog(dialogParent, getMessageTitle(rootCause), message, rootCause);
   }
 
   static Throwable unwrapExceptions(final Throwable exception, final Collection<Class<? extends Throwable>> exceptions) {
@@ -107,11 +78,11 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
   }
 
   private static String trimMessage(final Throwable e) {
-    final String msg = e.getMessage();
-    if (msg.length() > MAXIMUM_MESSAGE_LENGTH) {
-      return msg.substring(0, MAXIMUM_MESSAGE_LENGTH) + "...";
+    final String message = e.getMessage();
+    if (message.length() > MAXIMUM_MESSAGE_LENGTH) {
+      return message.substring(0, MAXIMUM_MESSAGE_LENGTH) + "...";
     }
 
-    return msg;
+    return message;
   }
 }

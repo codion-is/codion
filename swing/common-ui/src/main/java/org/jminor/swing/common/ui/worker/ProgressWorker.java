@@ -114,7 +114,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    */
   protected void handleException(final Throwable throwable) {
     if (!(throwable instanceof CancelException)) {
-      DefaultDialogExceptionHandler.getInstance().handleException(throwable, getDialogOwner());
+      DefaultDialogExceptionHandler.getInstance().displayException(throwable, getDialogOwner());
     }
   }
 

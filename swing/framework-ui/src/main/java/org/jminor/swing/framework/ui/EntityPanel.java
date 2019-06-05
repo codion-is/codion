@@ -5,7 +5,6 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.Value;
-import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.MasterDetailPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
@@ -727,19 +726,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     toggle.setDescription(MESSAGES.getString("toggle_detail"));
 
     return toggle;
-  }
-
-  /**
-   * By default this delegates to the edit panel
-   * @param exception the exception to handle
-   */
-  public final void handleException(final Exception exception) {
-    if (editPanel != null) {
-      editPanel.handleException(exception);
-    }
-    else {
-      DefaultDialogExceptionHandler.getInstance().handleException(exception, this);
-    }
   }
 
   /**

@@ -11,6 +11,7 @@ import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Value;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -61,6 +62,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -100,6 +102,14 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   public static final Value<Boolean> USE_SAVE_CONTROL = Configuration.booleanValue(
           "org.jminor.swing.framework.ui.EntityEditPanel.useSaveControl", true);
+
+  /**
+   * Specifies whether the dependent entities are displayed when a referential integrity error occurs on delete<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final Value<Boolean> DISPLAY_DEPENDENCIES_ON_REFERENTIAL_INTEGRITY_ERROR = Configuration.booleanValue(
+          "org.jminor.swing.framework.ui.EntityEditPanel.displayDependenciesOnReferentialIntegrityError", false);
 
   /**
    * The standard controls available to the EditPanel
@@ -178,6 +188,11 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * True after {@code initializePanel()} has been called
    */
   private boolean panelInitialized = false;
+
+  /**
+   * True if dependent entities should be displayed when a referential integrity error occurs on delete
+   */
+  private boolean displayDependenciesOnReferentialIntegrityError = DISPLAY_DEPENDENCIES_ON_REFERENTIAL_INTEGRITY_ERROR.get();
 
   /**
    * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
@@ -423,6 +438,20 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   /**
+   * True if dependent entities should be displayed when a referential integrity error occurs on delete
+   */
+  public final boolean isDisplayDependenciesOnReferentialIntegrityError() {
+    return displayDependenciesOnReferentialIntegrityError;
+  }
+
+  /**
+   * @param value true if dependent entities should be displayed when a referential integrity error occurs on delete
+   */
+  public final void setDisplayDependenciesOnReferentialIntegrityError(final boolean value) {
+    this.displayDependenciesOnReferentialIntegrityError = value;
+  }
+
+  /**
    * @param controlCode the control code
    * @return the control associated with {@code controlCode}
    * @throws IllegalArgumentException in case no control is associated with the given control code
@@ -511,29 +540,26 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * Handles the given exception, which usually means simply displaying it to the user
+   * Handles the given exception, which usually means simply logging it and displaying it to the user.
    * @param throwable the exception to handle
    */
   public final void handleException(final Throwable throwable) {
+    LOG.error(throwable.getMessage(), throwable);
     if (throwable instanceof ValidationException) {
-      JOptionPane.showMessageDialog(this, throwable.getMessage(), Messages.get(Messages.EXCEPTION),
-              JOptionPane.ERROR_MESSAGE);
-      requestComponentFocus((String) ((ValidationException) throwable).getKey());
+      handleException((ValidationException) throwable);
+    }
+    else if (throwable instanceof DatabaseException) {
+      handleException((DatabaseException) throwable);
     }
     else {
-      handleException(throwable, UiUtil.getParentWindow(this));
+      displayException(throwable, UiUtil.getParentWindow(this));
     }
   }
 
-  /**
-   * Handles the given exception
-   * @param throwable the exception to handle
-   * @param dialogParent the component to use as exception dialog parent
-   */
+  /** {@inheritDoc} */
   @Override
-  public final void handleException(final Throwable throwable, final Window dialogParent) {
-    LOG.error(throwable.getMessage(), throwable);
-    DefaultDialogExceptionHandler.getInstance().handleException(throwable, dialogParent);
+  public final void displayException(final Throwable throwable, final Window dialogParent) {
+    DefaultDialogExceptionHandler.getInstance().displayException(throwable, dialogParent);
   }
 
   /**
@@ -663,8 +689,8 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
         return true;
       }
     }
-    catch (final ValidationException | DatabaseException v) {
-      handleException(v);
+    catch (final Exception ex) {
+      handleException(ex);
     }
 
     return false;
@@ -697,7 +723,16 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
         return true;
       }
     }
-    catch (final DatabaseException ex) {
+    catch (final ReferentialIntegrityException e) {
+      if (displayDependenciesOnReferentialIntegrityError) {
+        EntityTablePanel.showDependenciesDialog(Collections.singletonList(editModel.getEntityCopy()),
+                getEditModel().getConnectionProvider(), this);
+      }
+      else {
+        handleException(e);
+      }
+    }
+    catch (final Exception ex) {
       handleException(ex);
     }
 
@@ -733,8 +768,8 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
         return true;
       }
     }
-    catch (final ValidationException | DatabaseException v) {
-      handleException(v);
+    catch (final Exception ex) {
+      handleException(ex);
     }
 
     return false;
@@ -786,6 +821,26 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @throws ValidationException in case of a validation failure
    */
   protected void validateData() throws ValidationException {}
+
+  /**
+   * Handles ValidationExceptions.
+   * By default displays the exception message to the user and requests focus for the component involved.
+   * @param exception the exception to handle
+   */
+  protected void handleException(final ValidationException exception) {
+    JOptionPane.showMessageDialog(this, exception.getMessage(), Messages.get(Messages.EXCEPTION),
+            JOptionPane.ERROR_MESSAGE);
+    requestComponentFocus((String) exception.getKey());
+  }
+
+  /**
+   * Handles DatabaseExceptions
+   * By default displays the exception message to the user.
+   * @param exception the exception to handle
+   */
+  protected void handleException(final DatabaseException exception) {
+    displayException(exception, UiUtil.getParentWindow(this));
+  }
 
   /**
    * Called before a insert is performed, the default implementation simply returns true
