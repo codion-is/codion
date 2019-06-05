@@ -93,7 +93,7 @@ public interface EntityConnection {
    * Performs a commit unless a transaction is open.
    * @param entities the entities to insert
    * @return the primary key values of the inserted entities
-   * @throws DatabaseException in case of a db exception
+   * @throws DatabaseException in case of a database exception
    */
   List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException;
 
@@ -102,7 +102,7 @@ public interface EntityConnection {
    * Throws an exception if any of the given entities is unmodified.
    * @param entities the entities to update
    * @return the updated entities, in no particular order
-   * @throws DatabaseException in case of a db exception
+   * @throws DatabaseException in case of a database exception
    * @throws org.jminor.common.db.exception.UpdateException in case there is a mismatch between expected and actual umber of updated rows
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    */
@@ -112,14 +112,14 @@ public interface EntityConnection {
    * Deletes the entities according to the given primary keys.
    * Performs a commit unless a transaction is open.
    * @param entityKeys the primary keys of the entities to delete
-   * @throws DatabaseException in case of a db exception
+   * @throws DatabaseException in case of a database exception
    */
   void delete(final List<Entity.Key> entityKeys) throws DatabaseException;
 
   /**
    * Deletes the entities specified by the given condition.
    * @param condition the condition specifying the entities to delete
-   * @throws DatabaseException in case of a db exception
+   * @throws DatabaseException in case of a database exception
    */
   void delete(final EntityCondition condition) throws DatabaseException;
 
@@ -129,7 +129,7 @@ public interface EntityConnection {
    * @param propertyId the ID of the property
    * @param condition the condition
    * @return the values in the given column (Property)
-   * @throws DatabaseException in case of a db exception
+   * @throws DatabaseException in case of a database exception
    * @throws IllegalArgumentException in case the given property is not a column based property
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
@@ -142,7 +142,7 @@ public interface EntityConnection {
    * @param value the value to use in the condition
    * @return an entity of the type {@code entityId}, having the
    * value of {@code propertyId} as {@code value}
-   * @throws DatabaseException in case of a db exception or if many records were found
+   * @throws DatabaseException in case of a database exception or if many records were found
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
    */
   Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException;
@@ -151,7 +151,7 @@ public interface EntityConnection {
    * Selects a single entity by key
    * @param key the key of the entity to select
    * @return an entity having the key {@code key}
-   * @throws DatabaseException in case of a db exception or if many records were found
+   * @throws DatabaseException in case of a database exception or if many records were found
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
    */
   Entity selectSingle(final Entity.Key key) throws DatabaseException;
@@ -161,7 +161,7 @@ public interface EntityConnection {
    * if the condition results in more than one entity
    * @param condition the condition specifying the entity to select
    * @return the entities according to the given condition
-   * @throws DatabaseException in case of a db exception or if many records were found
+   * @throws DatabaseException in case of a database exception or if many records were found
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
    */
   Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException;
@@ -170,7 +170,7 @@ public interface EntityConnection {
    * Returns entities according to {@code keys}
    * @param keys the keys used in the condition
    * @return entities according to {@code keys}
-   * @throws DatabaseException in case of a db exception
+   * @throws DatabaseException in case of a database exception
    */
   List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException;
 
@@ -178,7 +178,7 @@ public interface EntityConnection {
    * Selects entities according to the specified condition
    * @param condition the condition specifying which entities to select
    * @return entities according to the given condition
-   * @throws DatabaseException in case of a db exception
+   * @throws DatabaseException in case of a database exception
    */
   List<Entity> selectMany(final EntitySelectCondition condition) throws DatabaseException;
 
@@ -188,7 +188,7 @@ public interface EntityConnection {
    * @param propertyId the ID of the condition property
    * @param values the property values to use as condition
    * @return entities of the type {@code entityId} according to {@code propertyId} and {@code values}
-   * @throws DatabaseException in case of a db exception
+   * @throws DatabaseException in case of a database exception
    */
   List<Entity> selectMany(final String entityId, final String propertyId, final Object... values) throws DatabaseException;
 
@@ -196,7 +196,7 @@ public interface EntityConnection {
    * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityIds
    * @param entities the entities for which to retrieve dependencies, must be of same type
    * @return the entities that depend on {@code entities}
-   * @throws DatabaseException in case of a db exception
+   * @throws DatabaseException in case of a database exception
    */
   Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException;
 
@@ -204,7 +204,7 @@ public interface EntityConnection {
    * Selects the number of rows returned according to the given condition
    * @param condition the search condition
    * @return the number of rows fitting the given condition
-   * @throws DatabaseException in case of a db exception
+   * @throws DatabaseException in case of a database exception
    */
   int selectRowCount(final EntityCondition condition) throws DatabaseException;
 
@@ -212,7 +212,7 @@ public interface EntityConnection {
    * Takes a ReportWrapper object using a JDBC datasource and returns an initialized ReportResult object
    * @param reportWrapper the wrapper containing the report to fill
    * @return an initialized ReportResult object
-   * @throws DatabaseException in case of a db exception
+   * @throws DatabaseException in case of a database exception
    * @throws org.jminor.common.db.reports.ReportException in case of a report exception
    * @see org.jminor.common.db.reports.ReportWrapper#fillReport(java.sql.Connection)
    */
@@ -224,7 +224,7 @@ public interface EntityConnection {
    * @param primaryKey the primary key of the entity for which to write the blob field
    * @param blobPropertyId the ID of the blob property
    * @param blobData the blob data
-   * @throws DatabaseException in case of a db exception
+   * @throws DatabaseException in case of a database exception
    */
   void writeBlob(final Entity.Key primaryKey, final String blobPropertyId, final byte[] blobData) throws DatabaseException;
 
@@ -233,7 +233,7 @@ public interface EntityConnection {
    * @param primaryKey the primary key of the entity
    * @param blobPropertyId the ID of the blob property
    * @return a byte array containing the blob data
-   * @throws DatabaseException in case of a db exception
+   * @throws DatabaseException in case of a database exception
    */
   byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyId) throws DatabaseException;
 }
