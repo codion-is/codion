@@ -547,6 +547,16 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     getSelectionModel().addSelectionChangedListener(listener);
   }
 
+  /**
+   * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityIds
+   * @param entities the entities for which to retrieve dependencies, must be of same type
+   * @return the entities that depend on {@code entities}
+   * @throws DatabaseException in case of a database exception
+   */
+  public Map<String, Collection<Entity>> selectDependentEntities(final List<Entity> entities) throws DatabaseException {
+    return getConnectionProvider().getConnection().selectDependentEntities(entities);
+  }
+
   /** {@inheritDoc} */
   @Override
   protected final ColumnSummaryModel.ColumnValueProvider createColumnValueProvider(final Property property) {

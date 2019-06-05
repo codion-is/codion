@@ -5022,3 +5022,5 @@
   SwingEntityTableModel.setForeignKeyConditionValues() no longer final
   DefaultColumnConditionModel.AUTOMATIC_WILDCARD and CASE_SENSITIVE configuration values moved to ColumnConditionModel
   NavigableImagePanel, some minor refactoring/renaming
+  EntityTablePanel.createEntityTablePanel(), resulting panel popup menu now includes a delete action and a view dependencies action
+  SwingEntityTableModel.selectDependentEntities() added

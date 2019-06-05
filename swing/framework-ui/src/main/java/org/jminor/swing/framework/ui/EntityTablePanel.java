@@ -580,7 +580,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     try {
       UiUtil.setWaitCursor(true, this);
       final Map<String, Collection<Entity>> dependencies =
-              tableModel.getConnectionProvider().getConnection().selectDependentEntities(tableModel.getSelectionModel().getSelectedItems());
+              tableModel.selectDependentEntities(tableModel.getSelectionModel().getSelectedItems());
       if (!dependencies.isEmpty()) {
         showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this);
       }
@@ -768,7 +768,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   /**
    * Creates a static entity table panel showing the given entities, note that this table panel will
-   * provide a popup menu for updating the selected entities unless the underlying entities are read-only.
+   * provide a popup menu for updating and deleting the selected entities unless the underlying entities are read-only.
    * @param entities the entities to show in the panel
    * @param connectionProvider the EntityConnectionProvider, in case the returned panel should require one
    * @return a static EntityTablePanel showing the given entities
@@ -796,8 +796,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   /**
    * Creates a entity table panel based on the given table model.
-   * If the table model is not read only, a popup menu for updating the selected entities is provided,
-   * otherwise not popup menu is available.
+   * If the table model is not read only, a popup menu for updating or deleting the selected entities is provided.
    * @param tableModel the table model
    * @return a entity table panel based on the given model
    */
@@ -810,12 +809,16 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         }
 
         final ControlSet popupControls = new ControlSet();
-        popupControls.add(getUpdateSelectedControlSet());
+        if (!tableModel.isReadOnly()) {
+          popupControls.add(getUpdateSelectedControlSet());
+          popupControls.add(getDeleteSelectedControl());
+          popupControls.addSeparator();
+        }
+        popupControls.add(getViewDependenciesControl());
 
         return popupControls;
       }
     };
-    tablePanel.setIncludePopupMenu(!tableModel.isReadOnly());
     tablePanel.setIncludeSouthPanel(false);
     tablePanel.initializePanel();
 
