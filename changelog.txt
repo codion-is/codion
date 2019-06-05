@@ -5020,3 +5020,6 @@
   DialogExceptionHandler.handleException() renamed to displayException
   EntityEditPanel, EntityTablePanel, exception handling refactored
   EntityEditPanel, EntityTablePanel now handle ReferentialIntegrityException by displaying the dependent records (if configured to do so), allowing the user to delete them
+  Property.ForeignKeyProperty.softReference attribute added
+  DefaultLocalEntityConnection.selectDependentEntities() excludes soft foreign key references
+  NavigableImagePanel.isInImage() renamed to isWithinImage() and made final, minor literal edge case bug fixes

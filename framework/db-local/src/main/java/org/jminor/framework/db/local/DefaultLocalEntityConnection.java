@@ -557,10 +557,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final Collection<Property.ForeignKeyProperty> foreignKeyReferences = domain.getForeignKeyReferences(
             entities.iterator().next().getEntityId());
     for (final Property.ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
-      final List<Entity> dependencies = selectMany(entityConditions.selectCondition(foreignKeyReference.getEntityId(),
-              foreignKeyReference.getPropertyId(), Condition.Type.LIKE, entities));
-      if (!dependencies.isEmpty()) {
-        dependencyMap.put(foreignKeyReference.getEntityId(), dependencies);
+      if (!foreignKeyReference.isSoftReference()) {
+        final List<Entity> dependencies = selectMany(entityConditions.selectCondition(foreignKeyReference.getEntityId(),
+                foreignKeyReference.getPropertyId(), Condition.Type.LIKE, entities));
+        if (!dependencies.isEmpty()) {
+          dependencyMap.put(foreignKeyReference.getEntityId(), dependencies);
+        }
       }
     }
 

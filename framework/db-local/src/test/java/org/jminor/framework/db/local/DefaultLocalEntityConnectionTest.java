@@ -174,14 +174,9 @@ public class DefaultLocalEntityConnectionTest {
     assertTrue(emps.containsKey(TestDomain.T_EMP));
     assertEquals(7, emps.get(TestDomain.T_EMP).size());
 
-    Entity emp = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
-    Map<String, Collection<Entity>> deps = connection.selectDependentEntities(Collections.singletonList(emp));
-    assertTrue(deps.containsKey(TestDomain.T_EMP));
-    assertEquals(3, deps.get(TestDomain.T_EMP).size());
-
-    emp = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER");
-    deps = connection.selectDependentEntities(Collections.singletonList(emp));
-    assertFalse(deps.containsKey(TestDomain.T_EMP));
+    final Entity emp = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
+    final Map<String, Collection<Entity>> deps = connection.selectDependentEntities(Collections.singletonList(emp));
+    assertTrue(deps.isEmpty());//soft foreign key reference
   }
 
   @Test

@@ -441,7 +441,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   }
 
   /**
-   * True if dependent entities should be displayed when a referential integrity error occurs on delete
+   * @return true if dependent entities should be displayed when a referential integrity error occurs on delete
    */
   public final boolean isDisplayDependenciesOnReferentialIntegrityError() {
     return displayDependenciesOnReferentialIntegrityError;

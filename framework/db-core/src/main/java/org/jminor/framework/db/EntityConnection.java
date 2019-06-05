@@ -12,6 +12,7 @@ import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
 
 import java.util.Collection;
 import java.util.List;
@@ -193,10 +194,11 @@ public interface EntityConnection {
   List<Entity> selectMany(final String entityId, final String propertyId, final Object... values) throws DatabaseException;
 
   /**
-   * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityIds
+   * Returns the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityIds
    * @param entities the entities for which to retrieve dependencies, must be of same type
    * @return the entities that depend on {@code entities}
    * @throws DatabaseException in case of a database exception
+   * @see Property.ForeignKeyProperty#isSoftReference()
    */
   Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException;
 

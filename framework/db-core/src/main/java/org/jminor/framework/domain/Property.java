@@ -558,6 +558,17 @@ public interface Property extends Attribute, Serializable {
      * @return this ForeignKeyProperty instance
      */
     ForeignKeyProperty setFetchDepth(final int fetchDepth);
+
+    /**
+     * @return true if this foreign key is not based on a physical (table) foreign key
+     */
+    boolean isSoftReference();
+
+    /**
+     * @param softReference true if this foreign key is not based on a physical (table) foreign key
+     * @return this ForeignKeyProperty instance
+     */
+    ForeignKeyProperty setSoftReference(final boolean softReference);
   }
 
   /**
