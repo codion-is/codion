@@ -5,6 +5,7 @@ package org.jminor.common.db.dbms;
 
 import org.jminor.common.db.AbstractDatabase;
 
+import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -13,9 +14,10 @@ import java.util.Properties;
  */
 public final class MySQLDatabase extends AbstractDatabase {
 
-  static final String DRIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
   static final String AUTO_INCREMENT_QUERY = "select last_insert_id() from dual";
-  static final String URL_PREFIX = "jdbc:mysql://";
+  private static final String DRIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
+  private static final String URL_PREFIX = "jdbc:mysql://";
+  private static final int REFERENTIAL_CONSTRAINT_ERROR = 256;
 
   /**
    * Instantiates a new MySQLDatabase.
@@ -51,5 +53,14 @@ public final class MySQLDatabase extends AbstractDatabase {
   @Override
   public boolean supportsNowait() {
     return false;
+  }
+
+  /**
+   * @param exception the exception
+   * @return true if this exception is a referential integrity error
+   */
+  @Override
+  public boolean isReferentialIntegrityException(final SQLException exception) {
+    return exception.getErrorCode() == REFERENTIAL_CONSTRAINT_ERROR;
   }
 }

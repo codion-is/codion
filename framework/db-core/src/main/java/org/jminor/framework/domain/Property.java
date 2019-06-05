@@ -351,7 +351,7 @@ public interface Property extends Attribute, Serializable {
 
   /**
    * Sets the date/time format pattern used when presenting values
-   * @param dateTimeFormatPattern
+   * @param dateTimeFormatPattern the format pattern
    * @return this Property instance
    * @throws IllegalArgumentException in case the pattern is invalid or if this property is not a date/time based one
    */

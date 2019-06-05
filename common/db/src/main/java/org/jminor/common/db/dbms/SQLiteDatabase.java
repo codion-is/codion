@@ -6,6 +6,7 @@ package org.jminor.common.db.dbms;
 import org.jminor.common.db.AbstractDatabase;
 import org.jminor.common.db.Database;
 
+import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -17,6 +18,7 @@ public final class SQLiteDatabase extends AbstractDatabase {
   private static final String DRIVER_CLASS_NAME = "org.sqlite.JDBC";
   private static final String URL_PREFIX_FILE = "jdbc:sqlite:";
   private static final String AUTO_INCREMENT_QUERY = "select last_insert_rowid()";
+  private static final int FOREIGN_KEY_ERROR = 787;
 
   private final String databaseFilePath;
 
@@ -52,5 +54,14 @@ public final class SQLiteDatabase extends AbstractDatabase {
   @Override
   public boolean supportsNowait() {
     return false;
+  }
+
+  /**
+   * @param exception the exception
+   * @return true if this exception is a referential integrity error
+   */
+  @Override
+  public boolean isReferentialIntegrityException(final SQLException exception) {
+    return exception.getErrorCode() == FOREIGN_KEY_ERROR;
   }
 }

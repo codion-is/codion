@@ -15,6 +15,7 @@ import java.util.Properties;
 public final class PostgreSQLDatabase extends AbstractDatabase {
 
   private static final String INVALID_AUTHORIZATION_SPECIFICATION = "28000";
+  private static final String INTEGRITY_CONSTRAINT_VIOLATION = "23000";
 
   static final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
   static final String URL_PREFIX = "jdbc:postgresql://";
@@ -63,6 +64,15 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
   @Override
   public boolean isAuthenticationException(final SQLException exception) {
     return exception.getSQLState().equals(INVALID_AUTHORIZATION_SPECIFICATION);
+  }
+
+  /**
+   * @param exception the exception
+   * @return true if this exception is a referential integrity error
+   */
+  @Override
+  public boolean isReferentialIntegrityException(final SQLException exception) {
+    return exception.getSQLState().equals(INTEGRITY_CONSTRAINT_VIOLATION);
   }
 
   /**

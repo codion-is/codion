@@ -5024,3 +5024,6 @@
   NavigableImagePanel, some minor refactoring/renaming
   EntityTablePanel.createEntityTablePanel(), resulting panel popup menu now includes a delete action and a view dependencies action
   SwingEntityTableModel.selectDependentEntities() added
+  ReferentialIntegrityException added
+  Database.isReferentialIntegrityException() added
+  DefaultLocalEntityConnection.delete() now throws ReferentialIntegrityException if applicable
