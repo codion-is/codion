@@ -930,6 +930,7 @@ class DefaultProperty implements Property {
     private final List<ColumnProperty> columnProperties;
     private final boolean compositeReference;
     private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
+    private boolean softReference = false;
 
     /**
      * @param propertyId the property ID
@@ -998,6 +999,17 @@ class DefaultProperty implements Property {
     @Override
     public ForeignKeyProperty setFetchDepth(final int fetchDepth) {
       this.fetchDepth = fetchDepth;
+      return this;
+    }
+
+    @Override
+    public boolean isSoftReference() {
+      return softReference;
+    }
+
+    @Override
+    public ForeignKeyProperty setSoftReference(final boolean softReference) {
+      this.softReference = softReference;
       return this;
     }
 

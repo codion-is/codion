@@ -438,7 +438,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * True if dependent entities should be displayed when a referential integrity error occurs on delete
+   * @return true if dependent entities should be displayed when a referential integrity error occurs on delete
    */
   public final boolean isDisplayDependenciesOnReferentialIntegrityError() {
     return displayDependenciesOnReferentialIntegrityError;

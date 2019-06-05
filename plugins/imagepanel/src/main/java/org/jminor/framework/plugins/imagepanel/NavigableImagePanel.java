@@ -270,7 +270,7 @@ public class NavigableImagePanel extends JPanel {
         }
         zoomNavigationImage();
       }
-      else if (isInImage(p)) {
+      else if (isWithinImage(p)) {
         if (zoomIn) {
           zoomFactor = 1 + zoomIncrement;
         }
@@ -292,7 +292,7 @@ public class NavigableImagePanel extends JPanel {
           navZoomFactor = 1 - zoomIncrement;
           zoomNavigationImage();
         }
-        else if (isInImage(p)) {
+        else if (isWithinImage(p)) {
           zoomFactor = 1 - zoomIncrement;
           zoomImage();
         }
@@ -302,7 +302,7 @@ public class NavigableImagePanel extends JPanel {
           navZoomFactor = 1 + zoomIncrement;
           zoomNavigationImage();
         }
-        else if (isInImage(p)) {
+        else if (isWithinImage(p)) {
           zoomFactor = 1 + zoomIncrement;
           zoomImage();
         }
@@ -509,12 +509,25 @@ public class NavigableImagePanel extends JPanel {
    * @param point the point on which to center the image
    */
   public final void centerImage(final Point point) {
-    if (isInImage(point)) {
+    if (isWithinImage(point)) {
       final Point currentCenter = new Point(getWidth() / 2, getHeight() / 2);
       originX += (currentCenter.getX() - point.getX());
       originY += (currentCenter.getY() - point.getY());
       repaint();
     }
+  }
+
+  /**
+   * Tests whether a given point in the panel falls within the image boundaries.
+   * @param p the point
+   * @return true if the given point is within the image
+   */
+  public final boolean isWithinImage(final Point p) {
+    final Coordinates coords = panelToImageCoords(p);
+    final double width = getImageWidth();
+    final double height = getImageHeight();
+
+    return coords.getX() >= 0 && coords.getX() <= width && coords.getY() >= 0 && coords.getY() <= height;
   }
 
   /**
@@ -616,18 +629,6 @@ public class NavigableImagePanel extends JPanel {
     originX = -(scrImagePoint.x - getWidth() / 2);
     originY = -(scrImagePoint.y - getHeight() / 2);
     repaint();
-  }
-
-  /**
-   * Tests whether a given point in the panel falls within the image boundaries.
-   * @param p the point
-   * @return true if the given point is within the image
-   */
-  public boolean isInImage(final Point p) {
-    final Coordinates coords = panelToImageCoords(p);
-    final int x = coords.getIntX();
-    final int y = coords.getIntY();
-    return x >= 0 && x < image.getWidth() && y >= 0 && y < image.getHeight();
   }
 
   /**

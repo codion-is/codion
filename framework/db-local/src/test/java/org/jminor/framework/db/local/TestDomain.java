@@ -68,7 +68,9 @@ public final class TestDomain extends Domain {
             Properties.columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
                     .setMin(100).setMax(2000).setMaximumFractionDigits(2),
             Properties.foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
-                    Properties.columnProperty(EMP_MGR)),
+                    Properties.columnProperty(EMP_MGR))
+                    //not really soft, just for testing purposes
+                    .setSoftReference(true),
             Properties.columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)
                     .setNullable(false),
             Properties.columnProperty(EMP_HIRETIME, Types.TIMESTAMP, EMP_HIRETIME),
