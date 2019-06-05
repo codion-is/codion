@@ -60,7 +60,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   public EntityServerMonitorPanel() throws RemoteException {
     this(new EntityServerMonitor(Server.SERVER_HOST_NAME.get(), Server.REGISTRY_PORT.get()));
     Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-            DefaultDialogExceptionHandler.getInstance().handleException(e, UiUtil.getParentWindow(EntityServerMonitorPanel.this)));
+            DefaultDialogExceptionHandler.getInstance().displayException(e, UiUtil.getParentWindow(EntityServerMonitorPanel.this)));
   }
 
   /**

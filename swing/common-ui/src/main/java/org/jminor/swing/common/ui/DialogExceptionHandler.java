@@ -14,5 +14,5 @@ public interface DialogExceptionHandler {
    * @param exception the exception
    * @param dialogParent the Window to use as parent to the exception dialog
    */
-  void handleException(final Throwable exception, final Window dialogParent);
+  void displayException(final Throwable exception, final Window dialogParent);
 }

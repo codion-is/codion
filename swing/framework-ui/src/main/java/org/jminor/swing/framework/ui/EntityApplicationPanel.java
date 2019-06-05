@@ -172,19 +172,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     setUncaughtExceptionHandler();
   }
 
-  /**
-   * Handles the given exception, which simply means displaying it to the user
-   * @param throwable the exception to handle
-   */
-  public final void handleException(final Throwable throwable) {
-    handleException(throwable, UiUtil.getParentWindow(this));
-  }
-
   /** {@inheritDoc} */
   @Override
-  public final void handleException(final Throwable exception, final Window dialogParent) {
+  public final void displayException(final Throwable exception, final Window dialogParent) {
     LOG.error(exception.getMessage(), exception);
-    DefaultDialogExceptionHandler.getInstance().handleException(exception, dialogParent);
+    DefaultDialogExceptionHandler.getInstance().displayException(exception, dialogParent);
   }
 
   /**
@@ -438,7 +430,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       System.exit(0);
     }
     catch (final Exception e) {
-      handleException(e);
+      displayException(e, null);
       System.exit(1);
     }
     return null;
@@ -1215,7 +1207,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Sets the uncaught exception handler
    */
   private void setUncaughtExceptionHandler() {
-    Thread.setDefaultUncaughtExceptionHandler((t, e) -> handleException(e));
+    Thread.setDefaultUncaughtExceptionHandler((t, e) -> displayException(e, UiUtil.getParentWindow(EntityApplicationPanel.this)));
   }
 
   private void bindEventsInternal() {
@@ -1275,7 +1267,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     catch (final Exception ex) {
       LOG.debug("Exception while disconnecting after a failed startup", ex);
     }
-    handleException(e, null);
+    displayException(e, null);
     if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null,
             resourceBundle.getString("retry"), resourceBundle.getString("retry_title"),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
