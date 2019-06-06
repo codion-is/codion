@@ -5033,3 +5033,4 @@
   Property.ForeignKeyProperty.softReference attribute added
   DefaultLocalEntityConnection.selectDependentEntities() excludes soft foreign key references
   NavigableImagePanel.isInImage() renamed to isWithinImage() and made final, minor literal edge case bug fixes
+  EntityTablePanel.ReferentialIntegrityErrorHandling enum added, some relevant refactoring

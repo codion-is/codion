@@ -104,14 +104,6 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
           "org.jminor.swing.framework.ui.EntityEditPanel.useSaveControl", true);
 
   /**
-   * Specifies whether the dependent entities are displayed when a referential integrity error occurs on delete<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  public static final Value<Boolean> DISPLAY_DEPENDENCIES_ON_REFERENTIAL_INTEGRITY_ERROR = Configuration.booleanValue(
-          "org.jminor.swing.framework.ui.EntityEditPanel.displayDependenciesOnReferentialIntegrityError", false);
-
-  /**
    * The standard controls available to the EditPanel
    */
   public enum ControlCode {
@@ -190,9 +182,9 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   private boolean panelInitialized = false;
 
   /**
-   * True if dependent entities should be displayed when a referential integrity error occurs on delete
+   * The action to take when a referential integrity error occurs on delete
    */
-  private boolean displayDependenciesOnReferentialIntegrityError = DISPLAY_DEPENDENCIES_ON_REFERENTIAL_INTEGRITY_ERROR.get();
+  private EntityTablePanel.ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling = EntityTablePanel.REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
 
   /**
    * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
@@ -438,17 +430,10 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * @return true if dependent entities should be displayed when a referential integrity error occurs on delete
+   * @param referentialIntegrityErrorHandling the action to take on a referential integrity error on delete
    */
-  public final boolean isDisplayDependenciesOnReferentialIntegrityError() {
-    return displayDependenciesOnReferentialIntegrityError;
-  }
-
-  /**
-   * @param value true if dependent entities should be displayed when a referential integrity error occurs on delete
-   */
-  public final void setDisplayDependenciesOnReferentialIntegrityError(final boolean value) {
-    this.displayDependenciesOnReferentialIntegrityError = value;
+  public final void setReferentialIntegrityErrorHandling(final EntityTablePanel.ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling) {
+    this.referentialIntegrityErrorHandling = referentialIntegrityErrorHandling;
   }
 
   /**
@@ -724,7 +709,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
       }
     }
     catch (final ReferentialIntegrityException e) {
-      if (displayDependenciesOnReferentialIntegrityError) {
+      if (referentialIntegrityErrorHandling == EntityTablePanel.ReferentialIntegrityErrorHandling.DEPENDENCIES) {
         EntityTablePanel.showDependenciesDialog(Collections.singletonList(editModel.getEntityCopy()),
                 getEditModel().getConnectionProvider(), this);
       }

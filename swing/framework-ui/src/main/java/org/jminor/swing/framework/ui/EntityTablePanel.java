@@ -164,12 +164,23 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
           "org.jminor.swing.framework.ui.EntityTablePanel.tableAutoResizeMode", JTable.AUTO_RESIZE_OFF);
 
   /**
-   * Specifies whether the dependent entities are displayed when a referential integrity error occurs on delete<br>
-   * Value type: Boolean<br>
-   * Default value: false
+   * Specifies whether to display the error message or the dependent entities in case of a referential integrity error on delete<br>
+   * Value type: {@link ReferentialIntegrityErrorHandling}<br>
+   * Default value: {@link ReferentialIntegrityErrorHandling#ERROR}
    */
-  public static final Value<Boolean> DISPLAY_DEPENDENCIES_ON_REFERENTIAL_INTEGRITY_ERROR = Configuration.booleanValue(
-          "org.jminor.swing.framework.ui.EntityTablePanel.displayDependenciesOnReferentialIntegrityError", false);
+  public static final Value<ReferentialIntegrityErrorHandling> REFERENTIAL_INTEGRITY_ERROR_HANDLING = Configuration.value(
+          "org.jminor.swing.framework.ui.EntityTablePanel.referentialIntegrityErrorHandling", ReferentialIntegrityErrorHandling.ERROR,
+          ReferentialIntegrityErrorHandling::valueOf);
+
+  /**
+   * The possible actions to take on a referential integrity error
+   */
+  public enum ReferentialIntegrityErrorHandling {
+    /** Display the error */
+    ERROR,
+    /** Display the dependencies causing the error */
+    DEPENDENCIES
+  }
 
   public static final String PRINT_TABLE = "printTable";
   public static final String DELETE_SELECTED = "deleteSelected";
@@ -248,9 +259,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   private boolean panelInitialized = false;
 
   /**
-   * True if dependent entities should be displayed when a referential integrity error occurs on delete
+   * The action to take when a referential integrity error occurs on delete
    */
-  private boolean displayDependenciesOnReferentialIntegrityError = DISPLAY_DEPENDENCIES_ON_REFERENTIAL_INTEGRITY_ERROR.get();
+  private ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling = REFERENTIAL_INTEGRITY_ERROR_HANDLING.get();
 
   /**
    * Initializes a new EntityTablePanel instance
@@ -441,17 +452,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   }
 
   /**
-   * @return true if dependent entities should be displayed when a referential integrity error occurs on delete
+   * @param referentialIntegrityErrorHandling the action to take on a referential integrity error on delete
    */
-  public final boolean isDisplayDependenciesOnReferentialIntegrityError() {
-    return displayDependenciesOnReferentialIntegrityError;
-  }
-
-  /**
-   * @param value true if dependent entities should be displayed when a referential integrity error occurs on delete
-   */
-  public final void setDisplayDependenciesOnReferentialIntegrityError(final boolean value) {
-    this.displayDependenciesOnReferentialIntegrityError = value;
+  public final void setReferentialIntegrityErrorHandling(final ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling) {
+    this.referentialIntegrityErrorHandling = referentialIntegrityErrorHandling;
   }
 
   /** {@inheritDoc} */
@@ -647,7 +651,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       }
     }
     catch (final ReferentialIntegrityException e) {
-      if (displayDependenciesOnReferentialIntegrityError) {
+      if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DEPENDENCIES) {
         showDependenciesDialog(getEntityTableModel().getSelectionModel().getSelectedItems(),
                 getEntityTableModel().getConnectionProvider(), this);
       }
