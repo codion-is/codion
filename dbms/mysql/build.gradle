@@ -1,0 +1,5 @@
+dependencies {
+    api project(':jminor-common-db')
+    
+    implementation 'mysql:mysql-connector-java:8.0.16'
+}

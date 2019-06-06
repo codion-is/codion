@@ -15,6 +15,30 @@ project(':jminor-common-remote').projectDir = file('common/remote')
 include 'jminor-common-remote-http'
 project(':jminor-common-remote-http').projectDir = file('common/remote-http')
 
+include 'jminor-dbms-derby'
+project(':jminor-dbms-derby').projectDir = file('dbms/derby')
+
+include 'jminor-dbms-h2'
+project(':jminor-dbms-h2').projectDir = file('dbms/h2')
+
+include 'jminor-dbms-hsqldb'
+project(':jminor-dbms-hsqldb').projectDir = file('dbms/hsqldb')
+
+include 'jminor-dbms-mysql'
+project(':jminor-dbms-mysql').projectDir = file('dbms/mysql')
+
+include 'jminor-dbms-oracle'
+project(':jminor-dbms-oracle').projectDir = file('dbms/oracle')
+
+include 'jminor-dbms-postgresql'
+project(':jminor-dbms-postgresql').projectDir = file('dbms/postgresql')
+
+include 'jminor-dbms-sqlite'
+project(':jminor-dbms-sqlite').projectDir = file('dbms/sqlite')
+
+include 'jminor-dbms-sqlserver'
+project(':jminor-dbms-sqlserver').projectDir = file('dbms/sqlserver')
+
 include 'jminor-framework-db-core'
 project(':jminor-framework-db-core').projectDir = file('framework/db-core')
 

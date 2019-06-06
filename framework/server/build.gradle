@@ -15,7 +15,7 @@ dependencies {
     api project(':jminor-framework-db-remote')
     implementation project(':jminor-framework-db-local')
 
-    testRuntime "com.h2database:h2:${h2Version}"
+    testRuntimeOnly project(':jminor-dbms-h2')
 
     serverRuntime project(':jminor-common-remote-http')
     serverRuntime project(':jminor-framework-server')
@@ -30,7 +30,7 @@ dependencies {
     serverRuntime project(path: ':jminor-demos-schemabrowser', configuration: 'domain')
     serverRuntime project(path: ':jminor-demos-world', configuration: 'domain')
 
-    serverRuntime "com.h2database:h2:${h2Version}"
+    serverRuntime project(':jminor-dbms-h2')
 }
 
 mainClassName = 'org.jminor.framework.server.DefaultEntityConnectionServer'

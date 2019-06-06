@@ -16,5 +16,5 @@ dependencies {
 
     testImplementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
 
-    testRuntime "com.h2database:h2:${h2Version}"
+    testRuntimeOnly project(':jminor-dbms-h2')
 }

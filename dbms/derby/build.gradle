@@ -1,0 +1,5 @@
+dependencies {
+    api project(':jminor-common-db')
+    
+    implementation 'org.apache.derby:derby:10.15.1.3'
+}

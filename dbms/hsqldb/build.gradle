@@ -1,0 +1,5 @@
+dependencies {
+    api project(':jminor-common-db')
+    
+    implementation 'org.hsqldb:hsqldb:2.5.0'
+}

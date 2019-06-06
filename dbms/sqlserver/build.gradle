@@ -1,0 +1,5 @@
+dependencies {
+    api project(':jminor-common-db')
+    
+    //sqlserver jdbc dependency if it were available
+}
