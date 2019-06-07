@@ -1,5 +1,3 @@
 dependencies {
     api project(':jminor-common-db')
-    
-    //oracle jdbc dependency if it were available
 }

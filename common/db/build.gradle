@@ -9,4 +9,6 @@ dependencies {
     testImplementation project(':jminor-dbms-postgresql')
     testImplementation project(':jminor-dbms-sqlite')
     testImplementation project(':jminor-dbms-sqlserver')
+
+    testRuntimeOnly "com.h2database:h2:${h2Version}"
 }

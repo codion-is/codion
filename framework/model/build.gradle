@@ -10,6 +10,7 @@ dependencies {
     runtimeOnly "org.json:json:${jsonVersion}"
 
     testRuntimeOnly project(':jminor-dbms-h2')
+    testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 
 //base unit test classes that implementation modules (swing/fx) can depend on

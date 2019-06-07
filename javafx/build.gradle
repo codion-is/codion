@@ -15,4 +15,5 @@ dependencies {
     testCompile "org.testfx:testfx-junit5:4.0.15-alpha"
 
     testRuntimeOnly project(':jminor-dbms-h2')
+    testRuntimeOnly "com.h2database:h2:${h2Version}"
 }

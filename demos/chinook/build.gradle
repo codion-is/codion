@@ -42,6 +42,7 @@ dependencies {
     runtime "org.eclipse.jdt.core.compiler:ecj:${jdtCoreCompilerVersion}"
 
     runtimeOnly project(':jminor-dbms-h2')
+    runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
 test {

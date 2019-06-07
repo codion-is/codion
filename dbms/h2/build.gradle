@@ -1,5 +1,5 @@
 dependencies {
     api project(':jminor-common-db')
     
-    implementation "com.h2database:h2:${h2Version}"
+    testRuntimeOnly "com.h2database:h2:${h2Version}"
 }

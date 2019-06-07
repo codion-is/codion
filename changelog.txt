@@ -5027,3 +5027,4 @@
   EntityPanel.displayException() convenience method added
 0.12.1
   org.jminor.common.db.dbms package broken up into seperate dbms modules, projects must now include dbms module dependency
+  dbms modules no longer include jdbc dependencies

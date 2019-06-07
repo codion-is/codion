@@ -6,4 +6,5 @@ dependencies {
     implementation 'org.apache.tomcat:tomcat-juli:9.0.16'
 
     testImplementation project(':jminor-dbms-h2')
+    testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
