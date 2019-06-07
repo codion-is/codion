@@ -1,5 +1,14 @@
 dependencies {
     api project(':jminor-common-core')
 
+    testImplementation project(':jminor-dbms-derby')
+    testImplementation project(':jminor-dbms-h2')
+    testImplementation project(':jminor-dbms-hsqldb')
+    testImplementation project(':jminor-dbms-mysql')
+    testImplementation project(':jminor-dbms-oracle')
+    testImplementation project(':jminor-dbms-postgresql')
+    testImplementation project(':jminor-dbms-sqlite')
+    testImplementation project(':jminor-dbms-sqlserver')
+
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }

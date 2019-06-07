@@ -17,7 +17,8 @@ dependencies {
     testRuntime 'commons-logging:commons-logging:1.2'
     testRuntime 'com.itextpdf:itextpdf:5.5.6'
 
-    testRuntime "com.h2database:h2:${h2Version}"
+    testImplementation project(':jminor-dbms-h2')
+    testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 
 test {

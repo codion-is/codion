@@ -16,7 +16,8 @@ dependencies {
 
     runtimeOnly "com.toedter:jcalendar:${jcalendarVersion}"
 
-    testRuntime "com.h2database:h2:${h2Version}"
+    testRuntimeOnly project(':jminor-dbms-h2')
+    testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 
 compileTestJava {

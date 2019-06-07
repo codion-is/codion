@@ -1,0 +1,5 @@
+--add-modules
+    org.jminor.dbms.h2
+
+--add-reads
+    org.jminor.framework.db.local=org.jminor.dbms.h2

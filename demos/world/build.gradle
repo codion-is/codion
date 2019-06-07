@@ -24,6 +24,7 @@ dependencies {
     runtimeOnly project(':jminor-framework-db-remote')
     runtimeOnly project(':jminor-framework-db-http')
 
+    runtimeOnly project(':jminor-dbms-h2')
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 

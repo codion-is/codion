@@ -17,7 +17,8 @@ dependencies {
     api project(':jminor-framework-db-remote')
     api project(':jminor-framework-db-local')
 
-    testRuntime "com.h2database:h2:${h2Version}"
+    testRuntimeOnly project(':jminor-dbms-h2')
+    testRuntimeOnly "com.h2database:h2:${h2Version}"
 
     serverRuntime project(':jminor-framework-servlet')
     serverRuntime project(':jminor-framework-plugins-jasperreports')
@@ -30,6 +31,7 @@ dependencies {
     serverRuntime project(path: ':jminor-demos-schemabrowser', configuration: 'domain')
     serverRuntime project(path: ':jminor-demos-world', configuration: 'domain')
 
+    serverRuntime project(':jminor-dbms-h2')
     serverRuntime "com.h2database:h2:${h2Version}"
 }
 

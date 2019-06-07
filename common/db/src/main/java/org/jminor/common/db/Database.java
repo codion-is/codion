@@ -285,21 +285,21 @@ public interface Database {
     final Database.Type dbType = Database.getDatabaseType();
     switch (dbType) {
       case POSTGRESQL:
-        return "org.jminor.common.db.dbms.PostgreSQLDatabase";
+        return "org.jminor.dbms.postgresql.PostgreSQLDatabase";
       case MYSQL:
-        return "org.jminor.common.db.dbms.MySQLDatabase";
+        return "org.jminor.dbms.mysql.MySQLDatabase";
       case ORACLE:
-        return "org.jminor.common.db.dbms.OracleDatabase";
+        return "org.jminor.dbms.oracle.OracleDatabase";
       case SQLSERVER:
-        return "org.jminor.common.db.dbms.SQLServerDatabase";
+        return "org.jminor.dbms.sqlserver.SQLServerDatabase";
       case DERBY:
-        return "org.jminor.common.db.dbms.DerbyDatabase";
+        return "org.jminor.dbms.derby.DerbyDatabase";
       case H2:
-        return "org.jminor.common.db.dbms.H2Database";
+        return "org.jminor.dbms.h2.H2Database";
       case HSQL:
-        return "org.jminor.common.db.dbms.HSQLDatabase";
+        return "org.jminor.dbms.hsqldb.HSQLDatabase";
       case SQLITE:
-        return "org.jminor.common.db.dbms.SQLiteDatabase";
+        return "org.jminor.dbms.sqllite.SQLiteDatabase";
       case OTHER:
         throw new IllegalArgumentException("Database type OTHER does not have an implementation");
       default:

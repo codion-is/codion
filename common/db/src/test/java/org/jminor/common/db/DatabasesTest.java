@@ -4,14 +4,14 @@
 package org.jminor.common.db;
 
 import org.jminor.common.User;
-import org.jminor.common.db.dbms.DerbyDatabase;
-import org.jminor.common.db.dbms.H2Database;
-import org.jminor.common.db.dbms.HSQLDatabase;
-import org.jminor.common.db.dbms.MySQLDatabase;
-import org.jminor.common.db.dbms.OracleDatabase;
-import org.jminor.common.db.dbms.PostgreSQLDatabase;
-import org.jminor.common.db.dbms.SQLServerDatabase;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.dbms.derby.DerbyDatabase;
+import org.jminor.dbms.h2.H2Database;
+import org.jminor.dbms.hsqldb.HSQLDatabase;
+import org.jminor.dbms.mysql.MySQLDatabase;
+import org.jminor.dbms.oracle.OracleDatabase;
+import org.jminor.dbms.postgresql.PostgreSQLDatabase;
+import org.jminor.dbms.sqlserver.SQLServerDatabase;
 
 import org.junit.jupiter.api.Test;
 

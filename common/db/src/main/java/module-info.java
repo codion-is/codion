@@ -6,7 +6,6 @@ module org.jminor.common.db {
   exports org.jminor.common.db;
   exports org.jminor.common.db.condition;
   exports org.jminor.common.db.exception;
-  exports org.jminor.common.db.dbms;
   exports org.jminor.common.db.reports;
   exports org.jminor.common.db.pool;
   exports org.jminor.common.db.valuemap;

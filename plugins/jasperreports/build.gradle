@@ -22,7 +22,8 @@ dependencies {
     runtime "commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}"
     runtime "org.eclipse.jdt.core.compiler:ecj:${jdtCoreCompilerVersion}"
 
-    testRuntime "com.h2database:h2:${h2Version}"
+    testImplementation project(':jminor-dbms-h2')
+    testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 
 task buildReports(dependsOn: 'compileJava') {
