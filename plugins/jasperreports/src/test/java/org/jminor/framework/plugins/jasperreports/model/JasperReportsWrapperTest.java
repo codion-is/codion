@@ -5,7 +5,7 @@ package org.jminor.framework.plugins.jasperreports.model;
 
 import org.jminor.common.User;
 import org.jminor.common.db.reports.ReportException;
-import org.jminor.dbms.h2.H2Database;
+import org.jminor.dbms.h2database.H2Database;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.swing.framework.model.reporting.EntityReportUtil;

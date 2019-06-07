@@ -18,8 +18,8 @@ project(':jminor-common-remote-http').projectDir = file('common/remote-http')
 include 'jminor-dbms-derby'
 project(':jminor-dbms-derby').projectDir = file('dbms/derby')
 
-include 'jminor-dbms-h2'
-project(':jminor-dbms-h2').projectDir = file('dbms/h2')
+include 'jminor-dbms-h2database'
+project(':jminor-dbms-h2database').projectDir = file('dbms/h2database')
 
 include 'jminor-dbms-hsqldb'
 project(':jminor-dbms-hsqldb').projectDir = file('dbms/hsqldb')

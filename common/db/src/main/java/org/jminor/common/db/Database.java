@@ -295,11 +295,11 @@ public interface Database {
       case DERBY:
         return "org.jminor.dbms.derby.DerbyDatabase";
       case H2:
-        return "org.jminor.dbms.h2.H2Database";
+        return "org.jminor.dbms.h2database.H2Database";
       case HSQL:
         return "org.jminor.dbms.hsqldb.HSQLDatabase";
       case SQLITE:
-        return "org.jminor.dbms.sqllite.SQLiteDatabase";
+        return "org.jminor.dbms.sqlite.SQLiteDatabase";
       case OTHER:
         throw new IllegalArgumentException("Database type OTHER does not have an implementation");
       default:

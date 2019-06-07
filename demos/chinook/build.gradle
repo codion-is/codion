@@ -41,7 +41,7 @@ dependencies {
     runtime "commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}"
     runtime "org.eclipse.jdt.core.compiler:ecj:${jdtCoreCompilerVersion}"
 
-    runtimeOnly project(':jminor-dbms-h2')
+    runtimeOnly project(':jminor-dbms-h2database')
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
