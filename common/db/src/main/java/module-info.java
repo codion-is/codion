@@ -14,5 +14,6 @@ module org.jminor.common.db {
   provides org.jminor.common.db.pool.ConnectionPoolProvider
           with org.jminor.common.db.pool.DefaultConnectionPoolProvider;
 
+  uses org.jminor.common.db.Database;
   uses org.jminor.common.db.pool.ConnectionPoolProvider;
 }

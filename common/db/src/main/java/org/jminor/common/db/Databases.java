@@ -14,10 +14,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Objects;
+import java.util.ServiceLoader;
 
 /**
  * Utility class for {@link Database} implementations and misc. database related things.
- * @see Database#DATABASE_IMPLEMENTATION_CLASS
  * @see Database#DATABASE_TYPE
  */
 public final class Databases {
@@ -45,7 +45,6 @@ public final class Databases {
   /**
    * @return a Database instance based on the current runtime database type property
    * @see Database#DATABASE_TYPE
-   * @see Database#DATABASE_IMPLEMENTATION_CLASS
    * @see Database#getDatabaseType()
    * @throws IllegalArgumentException in case an unsupported database type is specified
    * @throws RuntimeException in case of an exception occurring while instantiating the database implementation instance
@@ -53,9 +52,10 @@ public final class Databases {
   public static synchronized Database getInstance() {
     try {
       final Database.Type currentType = Database.getDatabaseType();
+      final ServiceLoader<Database> loader = ServiceLoader.load(Database.class);
       if (instance == null || !instance.getType().equals(currentType)) {
         //refresh the instance
-        instance = (Database) Class.forName(Database.getDatabaseClassName()).getDeclaredConstructor().newInstance();
+        instance = findDatabaseServiceOfType(loader, currentType);
       }
 
       return instance;
@@ -184,6 +184,16 @@ public final class Databases {
     finally {
       closeSilently(rs);
     }
+  }
+
+  private static Database findDatabaseServiceOfType(final ServiceLoader<Database> loader, final Database.Type type) {
+    for (final Database database : loader) {
+      if (database.getType().equals(type)) {
+        return database;
+      }
+    }
+
+    throw new IllegalArgumentException("No database implementation available for type: " + type);
   }
 
   /**
