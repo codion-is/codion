@@ -1,5 +1,5 @@
 --add-modules
-    org.jminor.dbms.derby,org.jminor.dbms.h2,org.jminor.dbms.hsqldb,org.jminor.dbms.mysql,org.jminor.dbms.oracle,org.jminor.dbms.postgresql,org.jminor.dbms.sqlite,org.jminor.dbms.sqlserver
+    org.jminor.dbms.derby,org.jminor.dbms.h2database,org.jminor.dbms.hsqldb,org.jminor.dbms.mysql,org.jminor.dbms.oracle,org.jminor.dbms.postgresql,org.jminor.dbms.sqlite,org.jminor.dbms.sqlserver
 
 --add-reads
-    org.jminor.common.db=org.jminor.dbms.derby,org.jminor.dbms.h2,org.jminor.dbms.hsqldb,org.jminor.dbms.mysql,org.jminor.dbms.oracle,org.jminor.dbms.postgresql,org.jminor.dbms.sqlite,org.jminor.dbms.sqlserver
+    org.jminor.common.db=org.jminor.dbms.derby,org.jminor.dbms.h2database,org.jminor.dbms.hsqldb,org.jminor.dbms.mysql,org.jminor.dbms.oracle,org.jminor.dbms.postgresql,org.jminor.dbms.sqlite,org.jminor.dbms.sqlserver

@@ -5,6 +5,6 @@ dependencies {
 
     api project(':jminor-framework-db-core')
 
-    testRuntimeOnly project(':jminor-dbms-h2')
+    testRuntimeOnly project(':jminor-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }

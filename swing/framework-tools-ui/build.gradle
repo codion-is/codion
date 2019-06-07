@@ -16,7 +16,7 @@ dependencies {
     testRuntime project(':jminor-framework-db-remote')
     testRuntime project(':jminor-framework-server')
 
-    testRuntimeOnly project(':jminor-dbms-h2')
+    testRuntimeOnly project(':jminor-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 

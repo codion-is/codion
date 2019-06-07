@@ -21,7 +21,7 @@ dependencies {
     implementation "org.jfree:jcommon:${jcommonVersion}"
     implementation "org.jfree:jfreechart:${jfreeChartVersion}"
 
-    testRuntimeOnly project(':jminor-dbms-h2')
+    testRuntimeOnly project(':jminor-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 
     runtime project(':jminor-framework-plugins-logback-proxy')

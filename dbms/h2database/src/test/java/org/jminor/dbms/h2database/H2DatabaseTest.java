@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.dbms.h2;
+package org.jminor.dbms.h2database;
 
 import org.jminor.common.FileUtil;
 import org.jminor.common.User;

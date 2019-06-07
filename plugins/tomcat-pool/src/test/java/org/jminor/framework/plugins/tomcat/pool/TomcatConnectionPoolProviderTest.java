@@ -5,7 +5,7 @@ package org.jminor.framework.plugins.tomcat.pool;
 
 import org.jminor.common.User;
 import org.jminor.common.db.pool.ConnectionPool;
-import org.jminor.dbms.h2.H2Database;
+import org.jminor.dbms.h2database.H2Database;
 
 import org.junit.jupiter.api.Test;
 

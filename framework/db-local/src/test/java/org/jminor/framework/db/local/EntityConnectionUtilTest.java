@@ -7,7 +7,7 @@ import org.jminor.common.ProgressReporter;
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.dbms.h2.H2Database;
+import org.jminor.dbms.h2database.H2Database;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionUtil;

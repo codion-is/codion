@@ -1,5 +1,5 @@
 --add-modules
-    org.jminor.dbms.h2
+    org.jminor.dbms.h2database
 
 --add-reads
-    org.jminor.framework.plugins.tomcat.pool=org.jminor.dbms.h2
+    org.jminor.framework.plugins.tomcat.pool=org.jminor.dbms.h2database

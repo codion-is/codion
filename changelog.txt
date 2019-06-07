@@ -5039,3 +5039,4 @@
   org.jminor.common.db.dbms package broken up into seperate dbms modules, projects must now include dbms module dependency
   dbms modules no longer include jdbc dependencies
   Database now service based
+  jminor-dbms-h2 module renamed to jminor-dbms-h2database

@@ -6,7 +6,7 @@ package org.jminor.common.db;
 import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.dbms.derby.DerbyDatabase;
-import org.jminor.dbms.h2.H2Database;
+import org.jminor.dbms.h2database.H2Database;
 import org.jminor.dbms.hsqldb.HSQLDatabase;
 import org.jminor.dbms.mysql.MySQLDatabase;
 import org.jminor.dbms.oracle.OracleDatabase;
