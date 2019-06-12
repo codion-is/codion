@@ -10,6 +10,7 @@ dependencies {
     implementation project(':jminor-swing-common-model')
     implementation project(':jminor-swing-common-ui')
 
+    testImplementation project(':jminor-framework-domain')
     testImplementation project(':jminor-framework-db-core')
     testImplementation project(':jminor-framework-db-remote')
     testRuntime project(':jminor-framework-db-local')
