@@ -79,7 +79,7 @@ public class DefaultColumnSummaryModelTest {
   @Test
   public void intAverage() {
     testIntModel.setSummary(ColumnSummary.AVERAGE);
-    assertEquals("2.5", testIntModel.getSummaryText());
+    assertEquals(numberFormat.format(2.5), testIntModel.getSummaryText());
   }
 
   @Test

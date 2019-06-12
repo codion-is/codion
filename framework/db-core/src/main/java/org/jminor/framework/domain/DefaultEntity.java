@@ -982,7 +982,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
 
     @Override
-    public ValueMap<Property.ColumnProperty, Object> newInstance() {
+    public Entity.Key newInstance() {
       return new DefaultKey(definition, (Map) null);
     }
 
