@@ -2,6 +2,7 @@ dependencies {
     api project(':jminor-common-core')
     api project(':jminor-common-db')
 
+    api project(':jminor-framework-domain')
     api project(':jminor-framework-db-core')
 
     testImplementation project(':jminor-common-remote')

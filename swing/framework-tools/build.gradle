@@ -3,6 +3,7 @@ dependencies {
     implementation project(':jminor-common-db')
     implementation project(':jminor-common-model')
 
+    implementation project(':jminor-framework-domain')
     implementation project(':jminor-framework-db-core')
     api project(':jminor-framework-model')
 

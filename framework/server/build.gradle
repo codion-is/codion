@@ -13,6 +13,7 @@ dependencies {
     api project(':jminor-common-db')
     api project(':jminor-common-remote')
 
+    api project(':jminor-framework-domain')
     api project(':jminor-framework-db-core')
     api project(':jminor-framework-db-remote')
     api project(':jminor-framework-db-local')

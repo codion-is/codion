@@ -39,6 +39,9 @@ project(':jminor-dbms-sqlite').projectDir = file('dbms/sqlite')
 include 'jminor-dbms-sqlserver'
 project(':jminor-dbms-sqlserver').projectDir = file('dbms/sqlserver')
 
+include 'jminor-framework-domain'
+project(':jminor-framework-domain').projectDir = file('framework/domain')
+
 include 'jminor-framework-db-core'
 project(':jminor-framework-db-core').projectDir = file('framework/db-core')
 
