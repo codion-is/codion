@@ -42,7 +42,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   private MethodLogger methodLogger;
 
   /**
-   * Constructs a new DefaultDatabaseConnection instance, initialized and ready for usage,
+   * Constructs a new DefaultDatabaseConnection instance, initialized and ready for use,
    * using {@link DefaultDatabaseConnection#DEFAULT_VALIDITY_CHECK_TIMEOUT} as the validity check timeout.
    * @param database the database
    * @param user the user to base this database connection on
@@ -53,7 +53,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   }
 
   /**
-   * Constructs a new DefaultDatabaseConnection instance, initialized and ready for usage
+   * Constructs a new DefaultDatabaseConnection instance, initialized and ready for use
    * @param database the database
    * @param user the user to base this database connection on
    * @param validityCheckTimeout the timoeout in seconds when checking if this connection is valid
@@ -318,7 +318,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * Performs a query and returns the result packed by the {@code resultPacker}
    * @param sql the sql query
    * @param resultPacker the result packer
-   * @param fetchCount the number of records to fetch
+   * @param fetchCount the maximum number of records to fetch
    * @param <T> the type of object returned by the query
    * @return a List of records based on the given query
    * @throws SQLException thrown if anything goes wrong during the execution
