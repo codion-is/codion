@@ -11,6 +11,7 @@ import org.jminor.dbms.hsqldb.HSQLDatabase;
 import org.jminor.dbms.mysql.MySQLDatabase;
 import org.jminor.dbms.oracle.OracleDatabase;
 import org.jminor.dbms.postgresql.PostgreSQLDatabase;
+import org.jminor.dbms.sqlite.SQLiteDatabase;
 import org.jminor.dbms.sqlserver.SQLServerDatabase;
 
 import org.junit.jupiter.api.Test;
@@ -21,8 +22,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DatabasesTest {
 
@@ -36,6 +36,9 @@ public class DatabasesTest {
     final Boolean embeddedInMemory = Database.DATABASE_EMBEDDED_IN_MEMORY.get();
     final String initScript = Database.DATABASE_INIT_SCRIPT.get();
     try {
+      Database.DATABASE_TYPE.set(null);
+      assertThrows(IllegalArgumentException.class, Databases::getInstance);
+
       Database.DATABASE_TYPE.set(Database.Type.DERBY.toString());
       Database.DATABASE_HOST.set("host");
       Database.DATABASE_EMBEDDED.set(true);
@@ -77,6 +80,16 @@ public class DatabasesTest {
       Database.DATABASE_SID.set("sid");
       database = Databases.getInstance();
       assertTrue(database instanceof SQLServerDatabase);
+
+      Database.DATABASE_TYPE.set(Database.Type.SQLITE.toString());
+      database = Databases.getInstance();
+      assertTrue(database instanceof SQLiteDatabase);
+
+      Database.DATABASE_TYPE.set(Database.Type.OTHER.toString());
+      assertThrows(IllegalArgumentException.class, Databases::getInstance);
+
+      Database.DATABASE_TYPE.set("Unknown");
+      assertThrows(IllegalArgumentException.class, Databases::getInstance);
     }
     finally {
       Database.DATABASE_TYPE.set(type);
