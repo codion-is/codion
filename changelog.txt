@@ -5041,3 +5041,4 @@
   Database now service based
   jminor-dbms-h2 module renamed to jminor-dbms-h2database
   jminor-framework-domain module split from jminor-framework-db-core
+  DatabasesTest coverage improved a bit
