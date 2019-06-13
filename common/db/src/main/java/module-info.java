@@ -1,3 +1,9 @@
+/**
+ * Classes concerned with database connectivity via JDBC.
+ * @uses org.jminor.common.db.Database
+ * @uses org.jminor.common.db.pool.ConnectionPoolProvider
+ * @provides org.jminor.common.db.pool.ConnectionPoolProvider
+ */
 module org.jminor.common.db {
   requires slf4j.api;
   requires transitive java.sql;

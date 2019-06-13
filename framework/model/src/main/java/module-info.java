@@ -1,3 +1,6 @@
+/**
+ * Non-ui specific application model classes.
+ */
 module org.jminor.framework.model {
   requires slf4j.api;
   requires transitive org.jminor.common.model;

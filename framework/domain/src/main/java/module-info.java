@@ -1,3 +1,6 @@
+/**
+ * Framework domain model classes.
+ */
 module org.jminor.framework.domain {
   requires slf4j.api;
   requires transitive org.jminor.common.db;

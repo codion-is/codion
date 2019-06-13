@@ -1,3 +1,7 @@
+/**
+ * Framework database connection classes for connections via http.
+ * @provides org.jminor.framework.db.EntityConnectionProvider
+ */
 module org.jminor.framework.db.http {
   requires slf4j.api;
   requires java.net.http;

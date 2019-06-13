@@ -1,3 +1,7 @@
+/**
+ * RMI client/server classes.
+ * @provides org.jminor.common.CredentialsProvider
+ */
 module org.jminor.common.remote {
   requires slf4j.api;
   requires transitive java.rmi;

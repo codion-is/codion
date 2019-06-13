@@ -1,3 +1,6 @@
+/**
+ * Non-ui applicaton model classes.
+ */
 module org.jminor.common.model {
   requires java.prefs;
   requires transitive org.jminor.common.db;

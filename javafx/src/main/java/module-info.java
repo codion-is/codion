@@ -1,3 +1,6 @@
+/**
+ * JavaFX ui application classes.
+ */
 module org.jminor.javafx.framework {
   requires slf4j.api;
   requires json;

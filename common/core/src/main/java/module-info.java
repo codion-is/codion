@@ -1,3 +1,8 @@
+/**
+ * Common classes used throughout.
+ * @uses org.jminor.common.LoggerProxy
+ * @uses org.jminor.common.CredentialsProvider
+ */
 module org.jminor.common.core {
   requires slf4j.api;
 

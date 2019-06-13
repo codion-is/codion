@@ -1,3 +1,6 @@
+/**
+ * Servlet application server.
+ */
 module org.jminor.framework.servlet {
   requires slf4j.api;
   requires java.ws.rs;

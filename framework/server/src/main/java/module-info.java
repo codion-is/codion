@@ -1,3 +1,6 @@
+/**
+ * RMI application server.
+ */
 module org.jminor.framework.server {
   requires slf4j.api;
   requires java.management;

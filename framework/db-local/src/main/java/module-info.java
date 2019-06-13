@@ -1,3 +1,7 @@
+/**
+ * Framework database connection classes for local JDBC connections.
+ * @provides org.jminor.framework.db.EntityConnectionProvider
+ */
 module org.jminor.framework.db.local {
   requires slf4j.api;
   requires transitive org.jminor.framework.db.core;
