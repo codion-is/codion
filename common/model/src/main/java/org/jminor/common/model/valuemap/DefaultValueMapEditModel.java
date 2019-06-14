@@ -77,8 +77,7 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
   public final void put(final K key, final V value) {
     Objects.requireNonNull(key, KEY);
     final boolean initialization = !valueMap.containsKey(key);
-    final V oldValue = valueMap.get(key);
-    valueMap.put(key, value);
+    final V oldValue = valueMap.put(key, value);
     if (!Objects.equals(value, oldValue)) {
       notifyValueChange(key, ValueChanges.valueChange(key, value, oldValue, initialization));
     }
@@ -88,9 +87,9 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
   @Override
   public final V remove(final K key) {
     Objects.requireNonNull(key, KEY);
-    final V value = valueMap.get(key);
+    V value = null;
     if (valueMap.containsKey(key)) {
-      valueMap.remove(key);
+      value = valueMap.remove(key);
       notifyValueChange(key, ValueChanges.valueChange(key, null, value, false));
     }
 
