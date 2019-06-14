@@ -5032,3 +5032,4 @@
   jminor-framework-domain module split from jminor-framework-db-core
   DatabasesTest coverage improved a bit
   ValueMapEditModel, EntityEditModel, setValue(), removeValue(), getValue() and getForeignKeyValue() renamed to put(), remove(), get() and getForeignKey() respectively, now consistent with ValueMap and Entity method names
+  DefaultValueMapEditModel, minor refactoring of put() and remove() methods
