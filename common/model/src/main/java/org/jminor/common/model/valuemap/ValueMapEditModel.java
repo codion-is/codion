@@ -29,7 +29,7 @@ public interface ValueMapEditModel<K extends Attribute, V> {
 
   /**
    * Adds a listener notified each time the value associated with the given key is set via
-   * {@link ValueMapEditModel#setValue(Attribute, Object)}, note that this event is only fired when the the value changes
+   * {@link ValueMapEditModel#put(Attribute, Object)}, note that this event is only fired when the the value changes
    * @param key the key for which to monitor value changes
    * @param listener a listener notified each time the value of {@code key} is set via this model
    */
@@ -87,21 +87,21 @@ public interface ValueMapEditModel<K extends Attribute, V> {
    * @param key the key to associate the given value with
    * @param value the value to associate with the given key
    */
-  void setValue(final K key, final V value);
+  void put(final K key, final V value);
 
   /**
    * Removes the given value from the map
    * @param key the key associated with the value to remove
    * @return the value, if any
    */
-  V removeValue(final K key);
+  V remove(final K key);
 
   /**
    * Returns the value associated with the given key in the underlying value map
    * @param key the key of the value to retrieve
    * @return the value associated with the given key
    */
-  V getValue(final K key);
+  V get(final K key);
 
   /**
    * Checks if the value associated with the given key is valid, throws a ValidationException if not

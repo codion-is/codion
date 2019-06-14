@@ -178,14 +178,14 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
                 final EntityComboBoxModel mediaTypeComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(TRACK_MEDIATYPEID_FK);
                 selectRandomItem(mediaTypeComboBoxModel);
                 for (int i = 0; i < 10; i++) {
-                  trackEditModel.setValue(TRACK_ALBUMID_FK, insertedAlbum);
-                  trackEditModel.setValue(TRACK_NAME, "Track " + i);
-                  trackEditModel.setValue(TRACK_BYTES, 10000000);
-                  trackEditModel.setValue(TRACK_COMPOSER, "Composer");
-                  trackEditModel.setValue(TRACK_MILLISECONDS, 1000000);
-                  trackEditModel.setValue(TRACK_UNITPRICE, 2d);
-                  trackEditModel.setValue(TRACK_GENREID_FK, genreComboBoxModel.getSelectedValue());
-                  trackEditModel.setValue(TRACK_MEDIATYPEID_FK, mediaTypeComboBoxModel.getSelectedValue());
+                  trackEditModel.put(TRACK_ALBUMID_FK, insertedAlbum);
+                  trackEditModel.put(TRACK_NAME, "Track " + i);
+                  trackEditModel.put(TRACK_BYTES, 10000000);
+                  trackEditModel.put(TRACK_COMPOSER, "Composer");
+                  trackEditModel.put(TRACK_MILLISECONDS, 1000000);
+                  trackEditModel.put(TRACK_UNITPRICE, 2d);
+                  trackEditModel.put(TRACK_GENREID_FK, genreComboBoxModel.getSelectedValue());
+                  trackEditModel.put(TRACK_MEDIATYPEID_FK, mediaTypeComboBoxModel.getSelectedValue());
                   trackEditModel.insert();
                 }
 

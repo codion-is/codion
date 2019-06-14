@@ -64,14 +64,14 @@ public final class EntityUiUtilTest {
     final JCheckBox box = EntityUiUtil.createCheckBox(DOMAIN.getProperty(TestDomain.T_DETAIL,
             TestDomain.DETAIL_BOOLEAN), editModel);
     assertTrue(box.isSelected());//default value is true
-    assertTrue((Boolean) editModel.getValue(TestDomain.DETAIL_BOOLEAN));
+    assertTrue((Boolean) editModel.get(TestDomain.DETAIL_BOOLEAN));
 
     box.doClick();
 
     assertFalse(box.isSelected());
-    assertFalse((Boolean) editModel.getValue(TestDomain.DETAIL_BOOLEAN));
+    assertFalse((Boolean) editModel.get(TestDomain.DETAIL_BOOLEAN));
 
-    editModel.setValue(TestDomain.DETAIL_BOOLEAN, true);
+    editModel.put(TestDomain.DETAIL_BOOLEAN, true);
     assertTrue(box.isSelected());
   }
 
@@ -82,14 +82,14 @@ public final class EntityUiUtilTest {
     final TristateCheckBox box = EntityUiUtil.createTristateCheckBox(DOMAIN.getProperty(TestDomain.T_DETAIL,
             TestDomain.DETAIL_BOOLEAN_NULLABLE), editModel, null, false);
     assertTrue(box.isSelected());//default value is true
-    assertTrue((Boolean) editModel.getValue(TestDomain.DETAIL_BOOLEAN_NULLABLE));
+    assertTrue((Boolean) editModel.get(TestDomain.DETAIL_BOOLEAN_NULLABLE));
 
     box.getMouseListeners()[0].mousePressed(null);
 
     assertTrue(box.isIndeterminate());
-    assertNull(editModel.getValue(TestDomain.DETAIL_BOOLEAN_NULLABLE));
+    assertNull(editModel.get(TestDomain.DETAIL_BOOLEAN_NULLABLE));
 
-    editModel.setValue(TestDomain.DETAIL_BOOLEAN_NULLABLE, false);
+    editModel.put(TestDomain.DETAIL_BOOLEAN_NULLABLE, false);
     assertFalse(box.isSelected());
   }
 
@@ -101,9 +101,9 @@ public final class EntityUiUtilTest {
             TestDomain.DETAIL_BOOLEAN), editModel).getModel();
     assertTrue(boxModel.getSelectedValue().getItem());//default value is true
     boxModel.setSelectedItem(null);
-    assertNull(editModel.getValue(TestDomain.DETAIL_BOOLEAN));
+    assertNull(editModel.get(TestDomain.DETAIL_BOOLEAN));
 
-    editModel.setValue(TestDomain.DETAIL_BOOLEAN, false);
+    editModel.put(TestDomain.DETAIL_BOOLEAN, false);
     assertFalse(boxModel.getSelectedValue().getItem());
   }
 
@@ -112,15 +112,15 @@ public final class EntityUiUtilTest {
     final JComboBox box = EntityUiUtil.createValueListComboBox((Property.ValueListProperty) DOMAIN.getProperty(TestDomain.T_DETAIL,
             TestDomain.DETAIL_INT_VALUE_LIST), editModel);
 
-    assertNull(editModel.getValue(TestDomain.DETAIL_INT_VALUE_LIST));
+    assertNull(editModel.get(TestDomain.DETAIL_INT_VALUE_LIST));
     box.setSelectedItem(1);
-    assertEquals(1, editModel.getValue(TestDomain.DETAIL_INT_VALUE_LIST));
+    assertEquals(1, editModel.get(TestDomain.DETAIL_INT_VALUE_LIST));
     box.setSelectedItem(2);
-    assertEquals(2, editModel.getValue(TestDomain.DETAIL_INT_VALUE_LIST));
+    assertEquals(2, editModel.get(TestDomain.DETAIL_INT_VALUE_LIST));
     box.setSelectedItem(3);
-    assertEquals(3, editModel.getValue(TestDomain.DETAIL_INT_VALUE_LIST));
+    assertEquals(3, editModel.get(TestDomain.DETAIL_INT_VALUE_LIST));
     box.setSelectedItem(4);//does not exist
-    assertEquals(3, editModel.getValue(TestDomain.DETAIL_INT_VALUE_LIST));
+    assertEquals(3, editModel.get(TestDomain.DETAIL_INT_VALUE_LIST));
   }
 
   @Test
@@ -129,15 +129,15 @@ public final class EntityUiUtilTest {
     final JComboBox box = EntityUiUtil.createComboBox(DOMAIN.getProperty(TestDomain.T_DETAIL,
             TestDomain.DETAIL_INT), editModel, boxModel, null);
 
-    assertNull(editModel.getValue(TestDomain.DETAIL_INT));
+    assertNull(editModel.get(TestDomain.DETAIL_INT));
     box.setSelectedItem(1);
-    assertEquals(1, editModel.getValue(TestDomain.DETAIL_INT));
+    assertEquals(1, editModel.get(TestDomain.DETAIL_INT));
     box.setSelectedItem(2);
-    assertEquals(2, editModel.getValue(TestDomain.DETAIL_INT));
+    assertEquals(2, editModel.get(TestDomain.DETAIL_INT));
     box.setSelectedItem(3);
-    assertEquals(3, editModel.getValue(TestDomain.DETAIL_INT));
+    assertEquals(3, editModel.get(TestDomain.DETAIL_INT));
     box.setSelectedItem(4);//does not exist
-    assertEquals(3, editModel.getValue(TestDomain.DETAIL_INT));
+    assertEquals(3, editModel.get(TestDomain.DETAIL_INT));
   }
 
   @Test

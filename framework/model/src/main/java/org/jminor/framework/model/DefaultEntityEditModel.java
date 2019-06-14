@@ -320,12 +320,12 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     final List<Property.ForeignKeyProperty> foreignKeyProperties = getDomain()
             .getForeignKeyProperties(this.entityId, foreignKeyEntityId);
     for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      final Entity currentForeignKeyValue = getForeignKeyValue(foreignKeyProperty.getPropertyId());
+      final Entity currentForeignKeyValue = getForeignKey(foreignKeyProperty.getPropertyId());
       if (currentForeignKeyValue != null) {
         for (final Entity newForeignKeyValue : foreignKeyValues) {
           if (currentForeignKeyValue.equals(newForeignKeyValue)) {
-            setValue(foreignKeyProperty, null);
-            setValue(foreignKeyProperty, newForeignKeyValue);
+            put(foreignKeyProperty, null);
+            put(foreignKeyProperty, newForeignKeyValue);
           }
         }
       }
@@ -351,8 +351,8 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public final Entity getForeignKeyValue(final String foreignKeyPropertyId) {
-    return (Entity) getValue(getDomain().getForeignKeyProperty(entityId, foreignKeyPropertyId));
+  public final Entity getForeignKey(final String foreignKeyPropertyId) {
+    return (Entity) get(getDomain().getForeignKeyProperty(entityId, foreignKeyPropertyId));
   }
 
   /** {@inheritDoc} */
@@ -381,27 +381,27 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
       for (final Property.ForeignKeyProperty foreignKeyProperty : getDomain()
               .getForeignKeyProperties(entityId, entry.getKey())) {
         //todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?
-        setValue(foreignKeyProperty, entry.getValue().iterator().next());
+        put(foreignKeyProperty, entry.getValue().iterator().next());
       }
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public Object getValue(final String propertyId) {
-    return getValue(getDomain().getProperty(entityId, propertyId));
+  public Object get(final String propertyId) {
+    return get(getDomain().getProperty(entityId, propertyId));
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setValue(final String propertyId, final Object value) {
-    setValue(getDomain().getProperty(entityId, propertyId), value);
+  public void put(final String propertyId, final Object value) {
+    put(getDomain().getProperty(entityId, propertyId), value);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Object removeValue(final String propertyId) {
-    return removeValue(getDomain().getProperty(entityId, propertyId));
+  public Object remove(final String propertyId) {
+    return remove(getDomain().getProperty(entityId, propertyId));
   }
 
   /** {@inheritDoc} */
@@ -898,7 +898,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   }
 
   private boolean valueModified(final Property property) {
-    return !Objects.equals(getValue(property), getDefaultValue(property));
+    return !Objects.equals(get(property), getDefaultValue(property));
   }
 
   private void bindEventsInternal() {

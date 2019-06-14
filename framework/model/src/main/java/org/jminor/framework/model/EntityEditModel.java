@@ -117,21 +117,21 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param propertyId the ID of the property to associate the given value with
    * @param value the value to associate with the given property
    */
-  void setValue(final String propertyId, final Object value);
+  void put(final String propertyId, final Object value);
 
   /**
    * Removes the given value from the underlying value map
    * @param propertyId the ID of the property
    * @return the value, if any
    */
-  Object removeValue(final String propertyId);
+  Object remove(final String propertyId);
 
   /**
    * Returns the value associated with the given property
    * @param propertyId the ID of the property
    * @return the value associated with the given property
    */
-  Object getValue(final String propertyId);
+  Object get(final String propertyId);
 
   /**
    * Returns the value associated with the given propertyId assuming it
@@ -140,7 +140,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @return the value assuming it is an {@link Entity}
    * @throws ClassCastException in case the value was not an {@link Entity}
    */
-  Entity getForeignKeyValue(final String foreignKeyPropertyId);
+  Entity getForeignKey(final String foreignKeyPropertyId);
 
   /**
    * For every field referencing the given foreign key values, replaces that foreign key instance with
@@ -441,7 +441,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
 
   /**
    * Adds a listener notified each time the value associated with the given property is set via
-   * {@link ValueMapEditModel#setValue(Attribute, Object)}, note that this event is only fired when the the value changes
+   * {@link ValueMapEditModel#put(Attribute, Object)}, note that this event is only fired when the the value changes
    * @param propertyId the ID of the property for which to monitor value changes
    * @param listener a listener notified each time the value of the given property is set via this model
    */
