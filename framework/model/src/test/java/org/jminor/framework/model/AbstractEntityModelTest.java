@@ -61,7 +61,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     deptTableModel.setSelectedByKey(Collections.singletonList(operationsKey));
 
     assertFalse(deptTableModel.getSelectionModel().isSelectionEmpty());
-    deptEditModel.setValue(TestDomain.DEPARTMENT_ID, 80);
+    deptEditModel.put(TestDomain.DEPARTMENT_ID, 80);
     assertFalse(deptTableModel.getSelectionModel().isSelectionEmpty());
     deptEditModel.update();
 
@@ -73,7 +73,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
             !Objects.equals(80, item.get(TestDomain.DEPARTMENT_ID)));
 
     deptEditModel.setEntity(operations);
-    deptEditModel.setValue(TestDomain.DEPARTMENT_ID, 40);
+    deptEditModel.put(TestDomain.DEPARTMENT_ID, 40);
     deptEditModel.update();
 
     deptTableModel.filterContents();
@@ -257,9 +257,9 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     employeeModel.setFilterOnMasterInsert(true);
     assertTrue(employeeModel.isFilterOnMasterInsert());
     final EntityEditModel editModel = departmentModel.getEditModel();
-    editModel.setValue(TestDomain.DEPARTMENT_ID, 100);
-    editModel.setValue(TestDomain.DEPARTMENT_NAME, "Name");
-    editModel.setValue(TestDomain.DEPARTMENT_LOCATION, "Loc");
+    editModel.put(TestDomain.DEPARTMENT_ID, 100);
+    editModel.put(TestDomain.DEPARTMENT_NAME, "Name");
+    editModel.put(TestDomain.DEPARTMENT_LOCATION, "Loc");
     final List<Entity> inserted = editModel.insert();
     final Entity upperBoundEntity;
     final Object upperBound = employeeModel.getTableModel().getConditionModel().getPropertyConditionModel(TestDomain.EMP_DEPARTMENT_FK).getUpperBound();

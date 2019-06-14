@@ -82,7 +82,7 @@ public final class DefaultEntityEditModelTest {
       employee.put(TestDomain.EMP_NAME, "NOONE");
       connection.update(Collections.singletonList(employee));
       employeeEditModel.refreshEntity();
-      assertEquals("NOONE", employeeEditModel.getValue(TestDomain.EMP_NAME));
+      assertEquals("NOONE", employeeEditModel.get(TestDomain.EMP_NAME));
     }
     finally {
       connection.rollbackTransaction();
@@ -117,13 +117,13 @@ public final class DefaultEntityEditModelTest {
             TestDomain.EMP_NAME, "MARTIN");
     employeeEditModel.setEntity(employee);
     //clear the department foreign key value
-    Entity dept = employeeEditModel.getForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK);
-    employeeEditModel.setValue(TestDomain.EMP_DEPARTMENT_FK, null);
+    Entity dept = employeeEditModel.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);
+    employeeEditModel.put(TestDomain.EMP_DEPARTMENT_FK, null);
     //set the reference key property value
     assertTrue(employeeEditModel.isValueNull(TestDomain.EMP_DEPARTMENT_FK));
-    employeeEditModel.setValue(TestDomain.EMP_DEPARTMENT, dept.get(TestDomain.DEPARTMENT_ID));
+    employeeEditModel.put(TestDomain.EMP_DEPARTMENT, dept.get(TestDomain.DEPARTMENT_ID));
     assertFalse(employeeEditModel.getEntityCopy().isLoaded(TestDomain.EMP_DEPARTMENT_FK));
-    dept = employeeEditModel.getForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK);
+    dept = employeeEditModel.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);
     assertNull(dept);
     dept = (Entity) employeeEditModel.getDefaultValue(
             DOMAIN.getProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
@@ -204,46 +204,46 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setEntity(employee);
     assertFalse(employeeEditModel.getEntityCopy().isKeyNull(), "Active entity primary key is null after entity is set");
 
-    final Integer originalEmployeeId = (Integer) employeeEditModel.getValue(TestDomain.EMP_ID);
-    employeeEditModel.setValue(TestDomain.EMP_ID, null);
+    final Integer originalEmployeeId = (Integer) employeeEditModel.get(TestDomain.EMP_ID);
+    employeeEditModel.put(TestDomain.EMP_ID, null);
     assertTrue(primaryKeyNullState.isActive());
-    employeeEditModel.setValue(TestDomain.EMP_ID, originalEmployeeId);
+    employeeEditModel.put(TestDomain.EMP_ID, originalEmployeeId);
     assertFalse(primaryKeyNullState.isActive());
 
     employeeEditModel.setEntity(null);
     assertTrue(entityNewState.isActive());
 
-    final Double originalCommission = (Double) employeeEditModel.getValue(TestDomain.EMP_COMMISSION);
+    final Double originalCommission = (Double) employeeEditModel.get(TestDomain.EMP_COMMISSION);
     final double commission = 1500.5;
-    final LocalDate originalHiredate = (LocalDate) employeeEditModel.getValue(TestDomain.EMP_HIREDATE);
+    final LocalDate originalHiredate = (LocalDate) employeeEditModel.get(TestDomain.EMP_HIREDATE);
     final LocalDate hiredate = LocalDate.now();
-    final String originalName = (String) employeeEditModel.getValue(TestDomain.EMP_NAME);
+    final String originalName = (String) employeeEditModel.get(TestDomain.EMP_NAME);
     final String name = "Mr. Mr";
 
-    employeeEditModel.setValue(TestDomain.EMP_COMMISSION, commission);
+    employeeEditModel.put(TestDomain.EMP_COMMISSION, commission);
     assertTrue(employeeEditModel.getModifiedObserver().isActive());
-    employeeEditModel.setValue(TestDomain.EMP_HIREDATE, hiredate);
-    employeeEditModel.setValue(TestDomain.EMP_NAME, name);
+    employeeEditModel.put(TestDomain.EMP_HIREDATE, hiredate);
+    employeeEditModel.put(TestDomain.EMP_NAME, name);
 
-    assertEquals(employeeEditModel.getValue(TestDomain.EMP_COMMISSION), commission, "Commission does not fit");
-    assertEquals(employeeEditModel.getValue(TestDomain.EMP_HIREDATE), hiredate, "Hiredate does not fit");
-    assertEquals(employeeEditModel.getValue(TestDomain.EMP_NAME), name, "Name does not fit");
+    assertEquals(employeeEditModel.get(TestDomain.EMP_COMMISSION), commission, "Commission does not fit");
+    assertEquals(employeeEditModel.get(TestDomain.EMP_HIREDATE), hiredate, "Hiredate does not fit");
+    assertEquals(employeeEditModel.get(TestDomain.EMP_NAME), name, "Name does not fit");
 
-    employeeEditModel.setValue(TestDomain.EMP_COMMISSION, originalCommission);
+    employeeEditModel.put(TestDomain.EMP_COMMISSION, originalCommission);
     assertTrue(employeeEditModel.isModified());
     assertTrue(employeeEditModel.getModifiedObserver().isActive());
-    employeeEditModel.setValue(TestDomain.EMP_HIREDATE, originalHiredate);
+    employeeEditModel.put(TestDomain.EMP_HIREDATE, originalHiredate);
     assertTrue(employeeEditModel.isModified());
-    employeeEditModel.setValue(TestDomain.EMP_NAME, originalName);
+    employeeEditModel.put(TestDomain.EMP_NAME, originalName);
     assertFalse(employeeEditModel.isModified());
 
-    employeeEditModel.setValue(TestDomain.EMP_COMMISSION, 50d);
-    assertNotNull(employeeEditModel.removeValue(TestDomain.EMP_COMMISSION));
-    assertNull(employeeEditModel.getValue(TestDomain.EMP_COMMISSION));
+    employeeEditModel.put(TestDomain.EMP_COMMISSION, 50d);
+    assertNotNull(employeeEditModel.remove(TestDomain.EMP_COMMISSION));
+    assertNull(employeeEditModel.get(TestDomain.EMP_COMMISSION));
 
     //test validation
     try {
-      employeeEditModel.setValue(TestDomain.EMP_COMMISSION, 50d);
+      employeeEditModel.put(TestDomain.EMP_COMMISSION, 50d);
       employeeEditModel.validate(DOMAIN.getProperty(TestDomain.T_EMP, TestDomain.EMP_COMMISSION));
       fail("Validation should fail on invalid commission value");
     }
@@ -292,11 +292,11 @@ public final class DefaultEntityEditModelTest {
     try {
       assertTrue(employeeEditModel.insert(new ArrayList<>()).isEmpty());
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
-      employeeEditModel.setValue(TestDomain.EMP_COMMISSION, 1000d);
-      employeeEditModel.setValue(TestDomain.EMP_HIREDATE, LocalDate.now());
-      employeeEditModel.setValue(TestDomain.EMP_JOB, "CLERK");
-      employeeEditModel.setValue(TestDomain.EMP_NAME, "Björn");
-      employeeEditModel.setValue(TestDomain.EMP_SALARY, 1000d);
+      employeeEditModel.put(TestDomain.EMP_COMMISSION, 1000d);
+      employeeEditModel.put(TestDomain.EMP_HIREDATE, LocalDate.now());
+      employeeEditModel.put(TestDomain.EMP_JOB, "CLERK");
+      employeeEditModel.put(TestDomain.EMP_NAME, "Björn");
+      employeeEditModel.put(TestDomain.EMP_SALARY, 1000d);
 
       final Entity tmpDept = DOMAIN.entity(TestDomain.T_DEPARTMENT);
       tmpDept.put(TestDomain.DEPARTMENT_ID, 99);
@@ -305,7 +305,7 @@ public final class DefaultEntityEditModelTest {
 
       final Entity department = employeeEditModel.getConnectionProvider().getConnection().selectSingle(employeeEditModel.getConnectionProvider().getConnection().insert(Collections.singletonList(tmpDept)).get(0));
 
-      employeeEditModel.setValue(TestDomain.EMP_DEPARTMENT_FK, department);
+      employeeEditModel.put(TestDomain.EMP_DEPARTMENT_FK, department);
 
       employeeEditModel.addAfterInsertListener(data ->
               assertEquals(department, data.getInsertedEntities().get(0).get(TestDomain.EMP_DEPARTMENT_FK)));
@@ -321,7 +321,7 @@ public final class DefaultEntityEditModelTest {
       assertFalse(entityCopy.getKey().isNull());
       assertEquals(entityCopy.getKey(), entityCopy.getOriginalKey());
 
-      employeeEditModel.setValue(TestDomain.EMP_NAME, "Bobby");
+      employeeEditModel.put(TestDomain.EMP_NAME, "Bobby");
       try {
         employeeEditModel.insert();
       }
@@ -341,7 +341,7 @@ public final class DefaultEntityEditModelTest {
       assertTrue(employeeEditModel.update(new ArrayList<>()).isEmpty());
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER"));
-      employeeEditModel.setValue(TestDomain.EMP_NAME, "BJORN");
+      employeeEditModel.put(TestDomain.EMP_NAME, "BJORN");
       final List<Entity> toUpdate = Collections.singletonList(employeeEditModel.getEntityCopy());
       final EventDataListener<EntityEditModel.UpdateEvent> listener = data ->
               assertEquals(toUpdate, new ArrayList<>(data.getUpdatedEntities().values()));
@@ -387,13 +387,13 @@ public final class DefaultEntityEditModelTest {
     final Entity martin = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MARTIN");
     final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
     employeeEditModel.setEntity(king);
-    employeeEditModel.setValue(TestDomain.EMP_MGR_FK, martin);
+    employeeEditModel.put(TestDomain.EMP_MGR_FK, martin);
     employeeEditModel.setEntity(null);
     king.put(TestDomain.EMP_MGR_FK, null);
     employeeEditModel.setEntity(king);
-    assertNull(employeeEditModel.getValue(TestDomain.EMP_MGR_FK));
+    assertNull(employeeEditModel.get(TestDomain.EMP_MGR_FK));
     employeeEditModel.setEntity(null);
-    assertEquals(LocalDate.now(), employeeEditModel.getValue(TestDomain.EMP_HIREDATE));
+    assertEquals(LocalDate.now(), employeeEditModel.get(TestDomain.EMP_HIREDATE));
     assertFalse(employeeEditModel.getEntityCopy().isModified(TestDomain.EMP_HIREDATE));
     assertFalse(employeeEditModel.getEntityCopy().isModified());
   }
@@ -402,14 +402,14 @@ public final class DefaultEntityEditModelTest {
   public void setValuePersistent() throws Exception {
     final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
     employeeEditModel.setEntity(king);
-    assertNotNull(employeeEditModel.getValue(TestDomain.EMP_JOB));
+    assertNotNull(employeeEditModel.get(TestDomain.EMP_JOB));
     employeeEditModel.setValuePersistent(TestDomain.EMP_JOB, true);
     employeeEditModel.setEntity(null);
-    assertNotNull(employeeEditModel.getValue(TestDomain.EMP_JOB));
+    assertNotNull(employeeEditModel.get(TestDomain.EMP_JOB));
     employeeEditModel.setEntity(king);
     employeeEditModel.setValuePersistent(TestDomain.EMP_JOB, false);
     employeeEditModel.setEntity(null);
-    assertNull(employeeEditModel.getValue(TestDomain.EMP_JOB));
+    assertNull(employeeEditModel.get(TestDomain.EMP_JOB));
   }
 
   @Test
@@ -424,7 +424,7 @@ public final class DefaultEntityEditModelTest {
     final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
     final Entity adams = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "ADAMS");
     employeeEditModel.setEntity(king);
-    employeeEditModel.setValue(TestDomain.EMP_NAME, "New name");
+    employeeEditModel.put(TestDomain.EMP_NAME, "New name");
     employeeEditModel.setEntity(adams);
     assertEquals(adams, employeeEditModel.getEntityCopy());
 
@@ -432,17 +432,17 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setEntity(null);
     employeeEditModel.addConfirmSetEntityObserver(alwaysDenyListener);
 
-    employeeEditModel.setValue(TestDomain.EMP_NAME, "A name");
+    employeeEditModel.put(TestDomain.EMP_NAME, "A name");
     employeeEditModel.setEntity(king);
-    assertEquals("A name", employeeEditModel.getValue(TestDomain.EMP_NAME));
+    assertEquals("A name", employeeEditModel.get(TestDomain.EMP_NAME));
 
     employeeEditModel.removeConfirmSetEntityObserver(alwaysDenyListener);
     employeeEditModel.setEntity(null);
     employeeEditModel.addConfirmSetEntityObserver(alwaysDenyListener);
 
-    employeeEditModel.setValue(TestDomain.EMP_DEPARTMENT_FK, king.get(TestDomain.EMP_DEPARTMENT_FK));
+    employeeEditModel.put(TestDomain.EMP_DEPARTMENT_FK, king.get(TestDomain.EMP_DEPARTMENT_FK));
     employeeEditModel.setEntity(adams);
-    assertEquals(king.get(TestDomain.EMP_DEPARTMENT_FK), employeeEditModel.getValue(TestDomain.EMP_DEPARTMENT_FK));
+    assertEquals(king.get(TestDomain.EMP_DEPARTMENT_FK), employeeEditModel.get(TestDomain.EMP_DEPARTMENT_FK));
 
     employeeEditModel.setWarnAboutUnsavedData(false);
   }

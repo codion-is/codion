@@ -126,18 +126,18 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     deptModel.getTableModel().getSelectionModel().setSelectedIndex(0);
     empModel.getTableModel().getSelectionModel().setSelectedIndex(0);
 
-    String name = (String) empModel.getEditModel().getValue(TestDomain.EMP_NAME);
-    empModel.getEditModel().setValue(TestDomain.EMP_NAME, "Darri");
+    String name = (String) empModel.getEditModel().get(TestDomain.EMP_NAME);
+    empModel.getEditModel().put(TestDomain.EMP_NAME, "Darri");
     assertTrue(model.containsUnsavedData());
 
-    empModel.getEditModel().setValue(TestDomain.EMP_NAME, name);
+    empModel.getEditModel().put(TestDomain.EMP_NAME, name);
     assertFalse(model.containsUnsavedData());
 
-    name = (String) deptModel.getEditModel().getValue(TestDomain.DEPARTMENT_NAME);
-    deptModel.getEditModel().setValue(TestDomain.DEPARTMENT_NAME, "Darri");
+    name = (String) deptModel.getEditModel().get(TestDomain.DEPARTMENT_NAME);
+    deptModel.getEditModel().put(TestDomain.DEPARTMENT_NAME, "Darri");
     assertTrue(model.containsUnsavedData());
 
-    deptModel.getEditModel().setValue(TestDomain.DEPARTMENT_NAME, name);
+    deptModel.getEditModel().put(TestDomain.DEPARTMENT_NAME, name);
     assertFalse(model.containsUnsavedData());
   }
 

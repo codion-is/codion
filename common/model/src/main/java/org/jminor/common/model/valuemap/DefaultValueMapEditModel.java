@@ -68,13 +68,13 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
 
   /** {@inheritDoc} */
   @Override
-  public final V getValue(final K key) {
+  public final V get(final K key) {
     return valueMap.get(key);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setValue(final K key, final V value) {
+  public final void put(final K key, final V value) {
     Objects.requireNonNull(key, KEY);
     final boolean initialization = !valueMap.containsKey(key);
     final V oldValue = valueMap.get(key);
@@ -86,7 +86,7 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
 
   /** {@inheritDoc} */
   @Override
-  public final V removeValue(final K key) {
+  public final V remove(final K key) {
     Objects.requireNonNull(key, KEY);
     final V value = valueMap.get(key);
     if (valueMap.containsKey(key)) {

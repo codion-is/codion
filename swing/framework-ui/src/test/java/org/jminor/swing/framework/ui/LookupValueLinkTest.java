@@ -35,11 +35,11 @@ public class LookupValueLinkTest {
     final EntityLookupModel lookupModel = EntityUiUtil.createForeignKeyLookupField(fkProperty, model).getModel();
     assertEquals(0, lookupModel.getSelectedEntities().size());
     Entity department = model.getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-    model.setValue(TestDomain.EMP_DEPARTMENT_FK, department);
+    model.put(TestDomain.EMP_DEPARTMENT_FK, department);
     assertEquals(lookupModel.getSelectedEntities().size(), 1);
     assertEquals(lookupModel.getSelectedEntities().iterator().next(), department);
     department = model.getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "OPERATIONS");
     lookupModel.setSelectedEntity(department);
-    assertEquals(model.getValue(fkProperty.getPropertyId()), department);
+    assertEquals(model.get(fkProperty.getPropertyId()), department);
   }
 }

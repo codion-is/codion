@@ -363,7 +363,7 @@ public final class EntityUiUtil {
       public void set(final String value) {/*read only*/}
       @Override
       public String get() {
-        final Entity value = editModel.getForeignKeyValue(foreignKeyProperty.getPropertyId());
+        final Entity value = editModel.getForeignKey(foreignKeyProperty.getPropertyId());
 
         return value == null ? "" : value.toString();
       }

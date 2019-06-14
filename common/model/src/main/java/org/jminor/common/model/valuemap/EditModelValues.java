@@ -47,12 +47,12 @@ public final class EditModelValues {
 
     @Override
     public V get() {
-      return editModel.getValue(key);
+      return editModel.get(key);
     }
 
     @Override
     public void set(final V value) {
-      editModel.setValue(key, value);
+      editModel.put(key, value);
     }
 
     @Override

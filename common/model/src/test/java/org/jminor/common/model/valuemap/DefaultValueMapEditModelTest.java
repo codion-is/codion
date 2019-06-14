@@ -43,7 +43,7 @@ public class DefaultValueMapEditModelTest {
     model.addValueListener(testAttribute, valueChangeListener);
     model.addValueSetListener(testAttribute, valueSetListener);
 
-    model.setValue(testAttribute, 1);
+    model.put(testAttribute, 1);
     model.validate();
     model.validate(testAttribute);
     assertTrue(model.isValid());
@@ -53,16 +53,16 @@ public class DefaultValueMapEditModelTest {
     assertEquals(1, valueChangeCounter.get());
     assertEquals(1, anyValueChangeCounter.get());
 
-    model.setValue(testAttribute, 1);
+    model.put(testAttribute, 1);
     assertEquals(1, valueSetCounter.get());
     assertEquals(1, valueChangeCounter.get());
     assertEquals(1, anyValueChangeCounter.get());
 
     assertFalse(model.isNullable(testAttribute));
     assertFalse(model.isValueNull(testAttribute));
-    assertEquals(1, model.getValue(testAttribute));
+    assertEquals(1, model.get(testAttribute));
 
-    model.setValue(testAttribute, null);
+    model.put(testAttribute, null);
     assertFalse(model.isValid());
     assertFalse(model.isValid(testAttribute));
     assertThrows(ValidationException.class, model::validate);
@@ -75,15 +75,15 @@ public class DefaultValueMapEditModelTest {
 
     final TestAttribute nameAttribute = new TestAttribute();
 
-    model.setValue(nameAttribute, "Name");
+    model.put(nameAttribute, "Name");
     assertEquals(2, valueSetCounter.get());
     assertEquals(2, valueChangeCounter.get());
     assertEquals(3, anyValueChangeCounter.get());
 
-    assertNotNull(model.getValue(nameAttribute));
-    assertNotNull(model.removeValue(nameAttribute));
-    assertNull(model.getValue(nameAttribute));
-    assertNull(model.removeValue(nameAttribute));
+    assertNotNull(model.get(nameAttribute));
+    assertNotNull(model.remove(nameAttribute));
+    assertNull(model.get(nameAttribute));
+    assertNull(model.remove(nameAttribute));
 
     model.removeValueListener(testAttribute, valueChangeListener);
     model.removeValueSetListener(testAttribute, valueSetListener);
