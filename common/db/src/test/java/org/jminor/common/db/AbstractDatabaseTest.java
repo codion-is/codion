@@ -8,14 +8,13 @@ import org.junit.jupiter.api.Test;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class AbstractDatabaseTest {
 
   private static final String DRIVER_CLASS = "some.driver.Class";
 
-  private final AbstractDatabase database = new AbstractDatabase(Database.Type.H2, DRIVER_CLASS) {
+  private final AbstractDatabase database = new AbstractDatabase(Database.Type.H2, DRIVER_CLASS, "host", 1234, "sid", false) {
     @Override
     public String getAutoIncrementQuery(final String idSource) {
       return null;
@@ -28,6 +27,10 @@ public final class AbstractDatabaseTest {
 
   @Test
   public void test() throws Exception {
+    assertEquals("host", database.getHost());
+    assertEquals(1234, database.getPort());
+    assertEquals("sid", database.getSid());
+    assertFalse(database.isEmbedded());
     assertTrue(database.supportsIsValid());
     assertTrue(database.supportsNowait());
     assertEquals(DRIVER_CLASS, database.getDriverClassName());
