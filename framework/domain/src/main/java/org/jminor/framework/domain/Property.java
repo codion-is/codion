@@ -602,7 +602,7 @@ public interface Property extends Attribute, Serializable {
 
     /**
      * @param value the value to validate
-     * @return true if the given value exists in this value list
+     * @return true if the given value is valid for this property
      */
     boolean isValid(final Object value);
 

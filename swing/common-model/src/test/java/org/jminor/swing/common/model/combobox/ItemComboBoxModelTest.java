@@ -40,16 +40,16 @@ public class ItemComboBoxModelTest {
 
     model.setSelectedItem(1);
     assertEquals(model.getSelectedItem(), aOne);
-    assertEquals(1, (int) model.getSelectedValue().getItem());
+    assertEquals(1, (int) model.getSelectedValue().getValue());
     assertEquals("AOne", model.getSelectedItem().toString());
     model.setSelectedItem(2);
-    assertEquals(2, (int) model.getSelectedValue().getItem());
+    assertEquals(2, (int) model.getSelectedValue().getValue());
     assertEquals(model.getSelectedItem(), bTwo);
     model.setSelectedItem(4);
-    assertEquals(4, (int) model.getSelectedValue().getItem());
+    assertEquals(4, (int) model.getSelectedValue().getValue());
     assertEquals(model.getSelectedItem(), dFour);
     model.setSelectedItem(null);
-    assertNull(model.getSelectedValue().getItem());
+    assertNull(model.getSelectedValue().getValue());
     assertEquals(model.getSelectedItem(), nullItem);
 
     model.clear();

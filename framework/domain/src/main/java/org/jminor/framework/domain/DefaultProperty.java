@@ -1075,39 +1075,45 @@ class DefaultProperty implements Property {
 
   static final class DefaultValueListProperty extends DefaultColumnProperty implements ValueListProperty {
 
-    private final List<Item> values;
+    private final List<Item> items;
 
     /**
      * @param propertyId the property ID
      * @param type the data type of this property
      * @param caption the property caption
-     * @param values the values to base this property on
+     * @param items the allowed values for this property
      */
-    DefaultValueListProperty(final String propertyId, final int type, final String caption,
-                             final List<Item> values) {
+    DefaultValueListProperty(final String propertyId, final int type, final String caption, final List<Item> items) {
       super(propertyId, type, caption);
-      this.values = Collections.unmodifiableList(values);
+      this.items = Collections.unmodifiableList(items);
     }
 
     @Override
     public boolean isValid(final Object value) {
-      return values.contains(new Item<>(value, ""));
+      return findItem(value) != null;
     }
 
     @Override
     public List<Item> getValues() {
-      return values;
+      return items;
     }
 
     @Override
     public String getCaption(final Object value) {
-      final Item<Object> item = new Item<>(value, "");
-      final int index = values.indexOf(item);
-      if (index >= 0) {
-        return values.get(index).getCaption();
+      final Item item = findItem(value);
+
+      return item == null ? "" : item.getCaption();
+    }
+
+    private Item findItem(final Object value) {
+      for (int i = 0; i < items.size(); i++) {
+        final Item item = items.get(i);
+        if (Objects.equals(item.getValue(), value)) {
+          return item;
+        }
       }
 
-      return "";
+      return null;
     }
   }
 

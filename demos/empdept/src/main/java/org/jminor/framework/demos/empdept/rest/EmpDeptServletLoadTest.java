@@ -161,7 +161,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
         final Entity employee = client.getDomain().entity(EmpDept.T_EMPLOYEE);
         employee.put(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
         employee.put(EmpDept.EMPLOYEE_NAME, TextUtil.createRandomString(5, 10));
-        employee.put(EmpDept.EMPLOYEE_JOB, EmpDept.JOB_VALUES.get(random.nextInt(EmpDept.JOB_VALUES.size())).getItem());
+        employee.put(EmpDept.EMPLOYEE_JOB, EmpDept.JOB_VALUES.get(random.nextInt(EmpDept.JOB_VALUES.size())).getValue());
         employee.put(EmpDept.EMPLOYEE_SALARY, (double) random.nextInt(1000) + 1000);
         employee.put(EmpDept.EMPLOYEE_HIREDATE, LocalDate.now());
         employee.put(EmpDept.EMPLOYEE_COMMISSION, random.nextDouble() * 500);

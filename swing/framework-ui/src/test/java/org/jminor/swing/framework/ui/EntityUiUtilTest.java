@@ -99,12 +99,12 @@ public final class EntityUiUtilTest {
     editModel.setEntity(null);
     final BooleanComboBoxModel boxModel = (BooleanComboBoxModel) EntityUiUtil.createBooleanComboBox(DOMAIN.getProperty(TestDomain.T_DETAIL,
             TestDomain.DETAIL_BOOLEAN), editModel).getModel();
-    assertTrue(boxModel.getSelectedValue().getItem());//default value is true
+    assertTrue(boxModel.getSelectedValue().getValue());//default value is true
     boxModel.setSelectedItem(null);
     assertNull(editModel.get(TestDomain.DETAIL_BOOLEAN));
 
     editModel.put(TestDomain.DETAIL_BOOLEAN, false);
-    assertFalse(boxModel.getSelectedValue().getItem());
+    assertFalse(boxModel.getSelectedValue().getValue());
   }
 
   @Test

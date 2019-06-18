@@ -31,7 +31,7 @@ public final class ValueListInputProvider<T> extends AbstractInputProvider<T, JC
   @SuppressWarnings({"unchecked"})
   @Override
   public T getValue() {
-    return ((ItemComboBoxModel<T>) getInputComponent().getModel()).getSelectedValue().getItem();
+    return ((ItemComboBoxModel<T>) getInputComponent().getModel()).getSelectedValue().getValue();
   }
 
   private static <T> JComboBox createComboBox(final T currentValue, final List<Item<T>> values) {

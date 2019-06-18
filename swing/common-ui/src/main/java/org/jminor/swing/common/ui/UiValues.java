@@ -503,7 +503,7 @@ public final class UiValues {
     public V get() {
       final ComboBoxModel<V> comboBoxModel = comboBox.getModel();
       if (comboBoxModel instanceof ItemComboBoxModel) {
-        return (V) ((Item) comboBoxModel.getSelectedItem()).getItem();
+        return (V) ((Item) comboBoxModel.getSelectedItem()).getValue();
       }
       else if (comboBoxModel instanceof FilteredComboBoxModel) {
         return (V) ((FilteredComboBoxModel) comboBoxModel).getSelectedValue();

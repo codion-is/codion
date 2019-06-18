@@ -17,10 +17,10 @@ public class BooleanComboBoxModelTest {
     final BooleanComboBoxModel model = new BooleanComboBoxModel();
 
     model.setSelectedItem(false);
-    assertEquals(false, ((Item) model.getSelectedItem()).getItem());
+    assertEquals(false, ((Item) model.getSelectedItem()).getValue());
     model.setSelectedItem(true);
-    assertEquals(true, ((Item) model.getSelectedItem()).getItem());
+    assertEquals(true, ((Item) model.getSelectedItem()).getValue());
     model.setSelectedItem(null);
-    assertNull(((Item) model.getSelectedItem()).getItem());
+    assertNull(((Item) model.getSelectedItem()).getValue());
   }
 }
