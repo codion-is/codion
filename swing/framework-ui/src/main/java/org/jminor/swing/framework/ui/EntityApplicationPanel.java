@@ -349,7 +349,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         final Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         if (index >= 0) {
           final Font font = component.getFont();
-          final int newSize = Math.round(font.getSize() * (values.get(index).getItem() / (float) defaultFontSize.doubleValue()));
+          final int newSize = Math.round(font.getSize() * (values.get(index).getValue() / (float) defaultFontSize.doubleValue()));
           component.setFont(new Font(font.getName(), font.getStyle(), newSize));
         }
 
@@ -361,7 +361,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             resourceBundle.getString("select_font_size"), JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE, null, null, null);
     if (option == JOptionPane.OK_OPTION) {
-      PreferencesUtil.putUserPreference(applicationFontSizeProperty, comboBoxModel.getSelectedItem().getItem().toString());
+      PreferencesUtil.putUserPreference(applicationFontSizeProperty, comboBoxModel.getSelectedItem().getValue().toString());
       JOptionPane.showMessageDialog(this, resourceBundle.getString("font_size_selected_message"));
     }
   }

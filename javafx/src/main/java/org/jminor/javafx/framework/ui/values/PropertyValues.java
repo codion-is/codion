@@ -401,8 +401,7 @@ public final class PropertyValues {
 
     public SelectedItemValue(final SelectionModel<Item> selectionModel) {
       this.selectionModel = selectionModel;
-      selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) ->
-              changeEvent.fire(newValue.getItem()));
+      selectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) -> changeEvent.fire(newValue.getValue()));
     }
 
     @Override
@@ -412,7 +411,7 @@ public final class PropertyValues {
 
     @Override
     public Object get() {
-      return selectionModel.getSelectedItem().getItem();
+      return selectionModel.getSelectedItem().getValue();
     }
 
     @Override

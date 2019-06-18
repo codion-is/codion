@@ -190,12 +190,12 @@ public final class Properties {
    * @param propertyId the property ID
    * @param type the data type of this property
    * @param caption the property caption
-   * @param values the values to base this property on
+   * @param validItems all allowed values for this property
    * @return a new value list property
    */
   public static Property.ValueListProperty valueListProperty(final String propertyId, final int type, final String caption,
-                                                             final List<Item> values) {
-    return new DefaultProperty.DefaultValueListProperty(propertyId, type, caption, values);
+                                                             final List<Item> validItems) {
+    return new DefaultProperty.DefaultValueListProperty(propertyId, type, caption, validItems);
   }
 
   /**

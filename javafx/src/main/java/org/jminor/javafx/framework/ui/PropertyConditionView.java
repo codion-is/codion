@@ -95,7 +95,7 @@ public final class PropertyConditionView extends BorderPane {
     final ComboBox<Item<Condition.Type>> comboBox = new ComboBox<>(
             FXCollections.observableArrayList(getConditionTypes(model.getColumnIdentifier())));
     comboBox.getSelectionModel().select(new Item<>(model.getConditionType()));
-    comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> model.setConditionType(newValue.getItem()));
+    comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> model.setConditionType(newValue.getValue()));
     comboBox.maxWidthProperty().set(Double.MAX_VALUE);
     comboBox.minWidthProperty().set(0);
     FXUiUtil.link(comboBox.disableProperty(), model.getLockedObserver());

@@ -5033,3 +5033,5 @@
   DatabasesTest coverage improved a bit
   ValueMapEditModel, EntityEditModel, setValue(), removeValue(), getValue() and getForeignKeyValue() renamed to put(), remove(), get() and getForeignKey() respectively, now consistent with ValueMap and Entity method names
   DefaultValueMapEditModel, minor refactoring of put() and remove() methods
+  Item.item renamed to value
+  DefaultValueListProperty.getCaption() and isValid() now iterate the value list instead of instantiating a new Item and using indexOf()

@@ -454,7 +454,7 @@ public class EntityTestUnit {
     final List<Item> items = property.getValues();
     final Item item = items.get(RANDOM.nextInt(items.size()));
 
-    return item.getItem();
+    return item.getValue();
   }
 
   private static int getRandomInteger(final Property property) {

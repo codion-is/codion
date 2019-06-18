@@ -10,35 +10,34 @@ import java.util.Comparator;
 import java.util.Objects;
 
 /**
- * A class encapsulating an item and caption.
- * @param <T> the type of the actual item
+ * A class encapsulating a value and a caption representing the value.
+ * @param <T> the type of the value
  */
 public final class Item<T> implements Comparable<Item>, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final T item;
+  private final T value;
   private final String caption;
 
   private transient Comparator<String> collator = TextUtil.getSpaceAwareCollator();
 
   /**
-   * Instantiates a new Item, with the caption as item.toString(),
-   * zero length string in case of a null item
-   * @param item the item, may be null
+   * Instantiates a new Item, with the caption as item.toString() or an empty string in case of a null value
+   * @param value the value, may be null
    */
-  public Item(final T item) {
-    this(item, item == null ? "" : item.toString());
+  public Item(final T value) {
+    this(value, value == null ? "" : value.toString());
   }
 
   /**
    * Instantiates a new Item.
-   * @param item the item, may be null
+   * @param value the value, may be null
    * @param caption the caption
    * @throws NullPointerException if caption is null
    */
-  public Item(final T item, final String caption) {
-    this.item = item;
+  public Item(final T value, final String caption) {
+    this.value = value;
     this.caption = Objects.requireNonNull(caption, "caption");
   }
 
@@ -50,14 +49,14 @@ public final class Item<T> implements Comparable<Item>, Serializable {
   }
 
   /**
-   * @return the actual item
+   * @return the value
    */
-  public T getItem() {
-    return item;
+  public T getValue() {
+    return value;
   }
 
   /**
-   * @return the item caption
+   * @return the caption
    */
   @Override
   public String toString() {
@@ -67,23 +66,23 @@ public final class Item<T> implements Comparable<Item>, Serializable {
   /** {@inheritDoc} */
   @Override
   public boolean equals(final Object obj) {
-    return obj instanceof Item && Objects.equals(item, ((Item) obj).item);
+    return obj instanceof Item && Objects.equals(value, ((Item) obj).value);
   }
 
   /** {@inheritDoc} */
   @Override
   public int hashCode() {
-    return item == null ? 0 : item.hashCode();
+    return value == null ? 0 : value.hashCode();
   }
 
   /**
-   * Compares this item with the given item according to the caption.
-   * @param o the item to compare with
+   * Compares this items caption with with the caption of the given item
+   * @param item the item to compare with
    * @return the compare result
    */
   @Override
-  public int compareTo(final Item o) {
-    return collator.compare(caption, o.caption);
+  public int compareTo(final Item item) {
+    return collator.compare(caption, item.caption);
   }
 
   private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {

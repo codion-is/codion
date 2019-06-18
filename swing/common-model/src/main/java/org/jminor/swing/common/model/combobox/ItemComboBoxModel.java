@@ -38,12 +38,12 @@ public class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<T>> {
   }
 
   /**
-   * @param item the item
-   * @return the index of the given item
+   * @param value the value
+   * @return the index of the given value
    */
-  public final int indexOf(final T item) {
+  public final int indexOf(final T value) {
     for (int i = 0; i < getSize(); i++) {
-      if (Objects.equals(getElementAt(i).getItem(), item)) {
+      if (Objects.equals(getElementAt(i).getValue(), value)) {
         return i;
       }
     }

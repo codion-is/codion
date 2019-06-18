@@ -482,7 +482,7 @@ public class ColumnConditionPanel<K> extends JPanel {
       public Component getListCellRendererComponent(final JList list, final Object value, final int index,
                                                     final boolean isSelected, final boolean cellHasFocus) {
         final JComponent component = (JComponent) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        component.setToolTipText(((Item<Condition.Type>) value).getItem().getDescription());
+        component.setToolTipText(((Item<Condition.Type>) value).getValue().getDescription());
 
         return component;
       }
