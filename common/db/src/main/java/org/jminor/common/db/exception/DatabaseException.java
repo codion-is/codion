@@ -11,9 +11,10 @@ import java.sql.SQLException;
 public class DatabaseException extends Exception {
 
   /**
-   * The sql statement being run when this exception occurred, if any
+   * The sql statement being run when this exception occurred, if any, transient
+   * so it's not available client side if running in a server/client environment
    */
-  private final String statement;
+  private final transient String statement;
 
   /**
    * The underlying error code, if any, transient so it's not
@@ -68,6 +69,8 @@ public class DatabaseException extends Exception {
   }
 
   /**
+   * Returns the sql statement causing this exception, if available, note that this is only
+   * available when running with a local database connection.
    * @return the sql query which caused the exception, null if not applicable
    */
   public final String getStatement() {
@@ -75,11 +78,11 @@ public class DatabaseException extends Exception {
   }
 
   /**
-   * Returns the underlying error code, not that this is not available when running
-   * in a client/server environment.
+   * Returns the underlying error code, note that this is only available when running with
+   * a local database connection.
    * @return the underlying error code, -1 if not available
    */
-  public int getErrorCode() {
+  public final int getErrorCode() {
     return errorCode;
   }
 }
