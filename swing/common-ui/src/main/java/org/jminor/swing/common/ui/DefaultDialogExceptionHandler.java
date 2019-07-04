@@ -79,7 +79,7 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
 
   private static String trimMessage(final Throwable e) {
     final String message = e.getMessage();
-    if (message.length() > MAXIMUM_MESSAGE_LENGTH) {
+    if (message != null && message.length() > MAXIMUM_MESSAGE_LENGTH) {
       return message.substring(0, MAXIMUM_MESSAGE_LENGTH) + "...";
     }
 

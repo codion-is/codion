@@ -50,6 +50,17 @@ public final class Controls {
   /**
    * Creates a control based on a {@link Control.Command}
    * @param command the {@link Control.Command} on which to base this control
+   * @param icon the icon
+   * @param enabledState the state which controls the enabled state of the control
+   * @return a Control for calling the given {@link Control.Command}
+   */
+  public static Control control(final Control.Command command, final Icon icon, final StateObserver enabledState) {
+    return control(command, null, enabledState, null, -1, null, icon);
+  }
+
+  /**
+   * Creates a control based on a {@link Control.Command}
+   * @param command the {@link Control.Command} on which to base this control
    * @param name the name of the control
    * @return a Control for calling the given {@link Control.Command}
    */

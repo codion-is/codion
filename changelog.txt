@@ -5046,3 +5046,7 @@
   DefaultValueMapEditModel, minor refactoring of put() and remove() methods
   Item.item renamed to value
   DefaultValueListProperty.getCaption() and isValid() now iterate the value list instead of instantiating a new Item and using indexOf()
+  DatabaseException.statement now transient like errorCode, so it's not available when running as client/server
+  EntityApplicationPanel.ApplicationFrameProvider added along with constructor, for customized application frames
+  Controls.control() overloaded with command, icon and enabled state
+  DefaultDialogExceptionHandler now handles null messages correctly

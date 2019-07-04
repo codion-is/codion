@@ -83,7 +83,7 @@ public final class EntityTableConditionPanel extends JPanel {
     setLayout(new BorderLayout());
     layoutPanel(true);
     UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-            Controls.control(tableModel::refresh, null, conditionModel.getConditionStateObserver()));
+            Controls.control(tableModel::refresh, (String) null, conditionModel.getConditionStateObserver()));
   }
 
   /**
