@@ -144,6 +144,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private final String applicationLookAndFeelProperty;
   private final String applicationFontSizeProperty;
 
+  private final ApplicationFrameProvider frameProvider;
   private final List<EntityPanelProvider> entityPanelProviders = new ArrayList<>();
   private final List<EntityPanelProvider> supportPanelProviders = new ArrayList<>();
   private final List<EntityPanel> entityPanels = new ArrayList<>();
@@ -166,6 +167,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * A default constructor
    */
   public EntityApplicationPanel() {
+    this(JFrame::new);
+  }
+
+  public EntityApplicationPanel(final ApplicationFrameProvider frameProvider) {
+    this.frameProvider = frameProvider;
     this.applicationLookAndFeelProperty = LOOK_AND_FEEL_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationFontSizeProperty = FONT_SIZE_PROPERTY + "#" + getClass().getSimpleName();
     setUncaughtExceptionHandler();
@@ -1052,7 +1058,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return an initialized startup progress panel
    */
   protected JPanel initializeStartupProgressPanel(final Icon icon) {
-    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
+    final JPanel panel = new JPanel(new BorderLayout());
     final JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL);
     progressBar.setIndeterminate(true);
     panel.add(progressBar, BorderLayout.CENTER);
@@ -1087,7 +1093,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected final JFrame prepareFrame(final String title, final boolean maximize,
                                       final boolean showMenuBar, final Dimension size,
                                       final ImageIcon applicationIcon, final boolean setVisible) {
-    final JFrame frame = new JFrame();
+    final JFrame frame = frameProvider.getApplicationFrame();
     frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     frame.setIconImage(applicationIcon.getImage());
     frame.addWindowListener(new WindowAdapter() {
@@ -1399,7 +1405,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       final List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
       for (final String entityId : domain.getDefinedEntities()) {
         for (final Property.ForeignKeyProperty fkProperty : domain.getForeignKeyProperties(entityId)) {
-          if (fkProperty.getForeignEntityId().equals(getEntityId()) && !foreignKeyCycle(fkProperty.getForeignEntityId())) {
+          if (fkProperty.getForeignEntityId().equals(getEntityId()) && !fkProperty.isSoftReference()
+                  && !foreignKeyCycle(fkProperty.getForeignEntityId())) {
             childrenList.add(new EntityDependencyTreeNode(entityId, domain));
           }
         }
@@ -1419,5 +1426,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
       return false;
     }
+  }
+
+  /**
+   * Provides the JFrame instance to use for the application
+   */
+  public interface ApplicationFrameProvider {
+    /**
+     * @return the application frame
+     */
+    JFrame getApplicationFrame();
   }
 }
