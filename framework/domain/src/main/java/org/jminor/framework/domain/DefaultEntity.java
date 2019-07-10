@@ -584,10 +584,10 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   protected void handleValueChangedEventInitialized() {
     if (definition.hasDerivedProperties()) {
       addValueListener(valueChange -> {
-        final Collection<Property.DerivedProperty> linkedProperties = definition.getDerivedProperties(valueChange.getKey().getPropertyId());
-        for (final Property.DerivedProperty property : linkedProperties) {
-          final Object linkedValue = get(property);
-          notifyValueChange(property, linkedValue, linkedValue, false);
+        final Collection<Property.DerivedProperty> derivedProperties = definition.getDerivedProperties(valueChange.getKey().getPropertyId());
+        for (final Property.DerivedProperty derivedProperty : derivedProperties) {
+          final Object derivedValue = getDerivedValue(derivedProperty);
+          notifyValueChange(derivedProperty, derivedValue, derivedValue, false);
         }
       });
     }
