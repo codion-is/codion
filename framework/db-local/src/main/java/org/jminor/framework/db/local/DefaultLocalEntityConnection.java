@@ -454,7 +454,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity> selectMany(final String entityId, final String propertyId, final Object... values) throws DatabaseException {
-    return selectMany(entityConditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, Arrays.asList(values)));
+    return selectMany(entityConditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, values == null ? null : Arrays.asList(values)));
   }
 
   /** {@inheritDoc} */
