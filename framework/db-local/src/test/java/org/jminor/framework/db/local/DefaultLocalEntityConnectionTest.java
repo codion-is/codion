@@ -195,6 +195,12 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
+  public void selectManyWhereNull() throws Exception {
+    connection.selectMany(TestDomain.T_EMP, TestDomain.EMP_MGR_FK, (Object[]) null);
+    connection.selectMany(TestDomain.T_EMP, TestDomain.EMP_DATA, (Object) null);
+  }
+
+  @Test
   public void selectMany() throws Exception {
     List<Entity> result = connection.selectMany(new ArrayList<>());
     assertTrue(result.isEmpty());

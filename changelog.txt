@@ -5041,3 +5041,4 @@
   DefaultDialogExceptionHandler now handles null messages correctly
   SwingEntityComboBoxModel.linkForeignKeyComboBoxModel() improved a bit
   SwingEntityComboBoxModel.linkForeignKeyComboBoxModel() improved a bit more
+  DefaultLocalEntityConnection.selectMany() now handles null value as varargs parameter
