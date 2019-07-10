@@ -55,20 +55,24 @@ public final class SwingEntityComboBoxModelTest {
   public void foreignKeyFilterComboBoxModel() throws Exception {
     final EntityConnectionProvider connectionProvider = comboBoxModel.getConnectionProvider();
     final SwingEntityComboBoxModel empBox = new SwingEntityComboBoxModel(TestDomain.T_EMP, connectionProvider);
+    empBox.setNullValue(connectionProvider.getDomain().createToStringEntity(TestDomain.T_EMP, "-"));
     empBox.refresh();
-    assertEquals(16, empBox.getSize());
+    assertEquals(17, empBox.getSize());
     final SwingEntityComboBoxModel deptBox = (SwingEntityComboBoxModel) empBox.createForeignKeyFilterComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
-    assertEquals(0, empBox.getSize());
+    assertEquals(1, empBox.getSize());
     final Entity.Key accountingKey = connectionProvider.getDomain().key(TestDomain.T_DEPARTMENT);
     accountingKey.put(TestDomain.DEPARTMENT_ID, 10);
     deptBox.setSelectedEntityByKey(accountingKey);
-    assertEquals(7, empBox.getSize());
+    assertEquals(8, empBox.getSize());
     deptBox.setSelectedItem(null);
-    assertEquals(0, empBox.getSize());
+    assertEquals(1, empBox.getSize());
     final Entity.Key salesKey = connectionProvider.getDomain().key(TestDomain.T_DEPARTMENT);
     salesKey.put(TestDomain.DEPARTMENT_ID, 30);
     deptBox.setSelectedEntityByKey(salesKey);
-    assertEquals(4, empBox.getSize());
+    assertEquals(5, empBox.getSize());
+    empBox.setSelectedItem(empBox.getVisibleItems().get(1));
+    empBox.setSelectedItem(null);
+    assertNull(deptBox.getSelectedValue());
   }
 
   @Test
