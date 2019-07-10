@@ -205,8 +205,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     else {
       foreignKeyFilterEntities.put(foreignKeyPropertyId, new HashSet<>(entities));
     }
-
-    filterContents();
+    setFilterCondition(foreignKeyFilterCondition);
   }
 
   /** {@inheritDoc} */
@@ -257,8 +256,18 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     if (!Util.nullOrEmpty(filterEntities)) {
       foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
     }
-    foreignKeyModel.addSelectionListener(selected -> setForeignKeyFilterEntities(foreignKeyPropertyId,
-            selected == null ? new ArrayList<>(0) : Collections.singletonList(selected)));
+    final FilterCondition.RejectAllCondition rejectAllCondition = new FilterCondition.RejectAllCondition();
+    if (isStrictForeignKeyFiltering()) {
+      setFilterCondition(rejectAllCondition);
+    }
+    foreignKeyModel.addSelectionListener(selected -> {
+      if (selected == null && isStrictForeignKeyFiltering()) {
+        setFilterCondition(rejectAllCondition);
+      }
+      else {
+        setForeignKeyFilterEntities(foreignKeyPropertyId, selected == null ? Collections.emptyList() : Collections.singletonList(selected));
+      }
+    });
     addSelectionListener(selected -> {
       if (selected != null) {
         foreignKeyModel.setSelectedEntityByKey(selected.getReferencedKey(foreignKeyProperty));

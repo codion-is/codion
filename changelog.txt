@@ -5050,3 +5050,4 @@
   EntityApplicationPanel.ApplicationFrameProvider added along with constructor, for customized application frames
   Controls.control() overloaded with command, icon and enabled state
   DefaultDialogExceptionHandler now handles null messages correctly
+  SwingEntityComboBoxModel.linkForeignKeyComboBoxModel() improved a bit
