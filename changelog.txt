@@ -5053,3 +5053,4 @@
   SwingEntityComboBoxModel.linkForeignKeyComboBoxModel() improved a bit
   SwingEntityComboBoxModel.linkForeignKeyComboBoxModel() improved a bit more
   DefaultLocalEntityConnection.selectMany() now handles null value as varargs parameter
+  DefaultLocalEntityConnection, fetchDepthLimit of -1 is now interpreted as no limit

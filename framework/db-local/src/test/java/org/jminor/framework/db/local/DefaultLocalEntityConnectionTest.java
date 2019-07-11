@@ -237,6 +237,14 @@ public class DefaultLocalEntityConnectionTest {
     assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
     emp = emp.getForeignKey(TestDomain.EMP_MGR_FK);
     assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
+
+    result = connection.selectMany(condition.setForeignKeyFetchDepthLimit(TestDomain.EMP_MGR_FK, -1));
+    assertEquals(1, result.size());
+    emp = result.get(0);
+    assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
+    assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
+    emp = emp.getForeignKey(TestDomain.EMP_MGR_FK);
+    assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
   }
 
   @Test
