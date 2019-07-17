@@ -10,6 +10,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnSummaryModel;
+import org.jminor.common.model.table.FilteredTableModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entities;
@@ -20,6 +21,7 @@ import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityModel;
 import org.jminor.framework.model.EntityTableConditionModel;
 import org.jminor.framework.model.EntityTableModel;
+import org.jminor.javafx.framework.ui.EntityTableColumn;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -37,6 +39,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -134,6 +138,24 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     applyPreferences();
   }
 
+  /**
+   * Returns the table column for property with the given id
+   * @param propertyId the propertyId
+   * @return the column
+   * @throws IllegalArgumentException in case the column was not found
+   */
+  public final EntityTableColumn getTableColumn(final String propertyId) {
+    final Optional<? extends TableColumn<Entity, ?>> tableColumn = columns.stream()
+            .filter((Predicate<TableColumn<Entity, ?>>) entityTableColumn ->
+                    ((EntityTableColumn) entityTableColumn).getProperty().getPropertyId().equals(propertyId)).findFirst();
+
+    if (tableColumn.isPresent()) {
+      return (EntityTableColumn) tableColumn.get();
+    }
+
+    throw new IllegalArgumentException("Column for property with id: " + propertyId + " not found");
+  }
+
   /** {@inheritDoc} */
   @Override
   public final EntityTableConditionModel getConditionModel() {
@@ -190,12 +212,15 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public final void addEntities(final List<Entity> entities, final boolean atTop) {
-    if (atTop) {
-      addAll(0, entities);
+  public final void addEntities(final List<Entity> entities, final FilteredTableModel.AddingStrategy strategy) {
+    if (strategy == FilteredTableModel.AddingStrategy.BOTTOM) {
+      addAll(entities);
     }
     else {
-      addAll(entities);
+      addAll(0, entities);
+    }
+    if (strategy == FilteredTableModel.AddingStrategy.TOP_SORTED) {
+      sort(getSortedList().getComparator());
     }
   }
 
@@ -474,8 +499,19 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private void handleInsert(final EntityEditModel.InsertEvent insertEvent) {
     getSelectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
-      addEntities(insertEvent.getInsertedEntities().stream().filter(entity ->
-              entity.getEntityId().equals(getEntityId())).collect(Collectors.toList()), insertAction.equals(InsertAction.ADD_TOP));
+      final List<Entity> entitiesToAdd = insertEvent.getInsertedEntities().stream().filter(entity ->
+              entity.getEntityId().equals(getEntityId())).collect(Collectors.toList());
+      switch (insertAction) {
+        case ADD_TOP:
+          addEntities(entitiesToAdd, FilteredTableModel.AddingStrategy.TOP);
+          break;
+        case ADD_BOTTOM:
+          addEntities(entitiesToAdd, FilteredTableModel.AddingStrategy.BOTTOM);
+          break;
+        case ADD_TOP_SORTED:
+          addEntities(entitiesToAdd, FilteredTableModel.AddingStrategy.TOP_SORTED);
+          break;
+      }
     }
   }
 

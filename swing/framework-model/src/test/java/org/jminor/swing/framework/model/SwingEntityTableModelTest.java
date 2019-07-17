@@ -71,6 +71,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   protected SwingEntityTableModel createDepartmentTableModel() {
     final SwingEntityTableModel deptModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider());
     deptModel.setEditModel(new SwingEntityEditModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider()));
+    deptModel.setSortingDirective(TestDomain.DEPARTMENT_NAME, SortingDirective.ASCENDING, false);
 
     return deptModel;
   }

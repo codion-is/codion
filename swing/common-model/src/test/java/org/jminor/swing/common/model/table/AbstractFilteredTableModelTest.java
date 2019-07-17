@@ -9,6 +9,7 @@ import org.jminor.common.Events;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
+import org.jminor.common.model.table.FilteredTableModel;
 import org.jminor.common.model.table.RowColumn;
 import org.jminor.common.model.table.SortingDirective;
 
@@ -47,7 +48,7 @@ public final class AbstractFilteredTableModelTest {
     @Override
     protected void doRefresh() {
       clear();
-      addItems(Arrays.asList(ITEMS), false);
+      addItems(Arrays.asList(ITEMS), AddingStrategy.TOP_SORTED);
     }
 
     @Override
@@ -56,7 +57,7 @@ public final class AbstractFilteredTableModelTest {
     }
 
     public void addItemsAt(final List<String> items, final int index) {
-      addItems(items, index);
+      addItems(items, index, false);
     }
   }
 
@@ -246,7 +247,7 @@ public final class AbstractFilteredTableModelTest {
       @Override
       protected void doRefresh() {
         clear();
-        addItems(items, false);
+        addItems(items, AddingStrategy.BOTTOM);
       }
 
       @Override
@@ -365,7 +366,7 @@ public final class AbstractFilteredTableModelTest {
 
     final List<String> items = new ArrayList<>();
     items.add(null);
-    tableModel.addItems(items, true);
+    tableModel.addItems(items, FilteredTableModel.AddingStrategy.TOP);
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
     assertEquals(0, tableModel.indexOf(null));
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
@@ -373,7 +374,7 @@ public final class AbstractFilteredTableModelTest {
 
     tableModel.refresh();
     items.add(null);
-    tableModel.addItems(items, true);
+    tableModel.addItems(items, FilteredTableModel.AddingStrategy.TOP);
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
     assertEquals(0, tableModel.indexOf(null));
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
@@ -689,7 +690,7 @@ public final class AbstractFilteredTableModelTest {
 
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("b");
     final int rowCount = tableModel.getRowCount();
-    tableModel.addItems(Collections.singletonList("x"), true);
+    tableModel.addItems(Collections.singletonList("x"), FilteredTableModel.AddingStrategy.TOP);
     assertEquals(rowCount, tableModel.getRowCount());
 
     tableModel.removeFilteringListener(listener);

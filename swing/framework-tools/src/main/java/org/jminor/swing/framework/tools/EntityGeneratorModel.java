@@ -381,7 +381,7 @@ public final class EntityGeneratorModel {
           }
         }
         items.addAll(tables);
-        addItems(new ArrayList<>(items), true);
+        addItems(new ArrayList<>(items), AddingStrategy.TOP);
       }
       catch (final SQLException e) {
         LOG.error(e.getMessage(), e);

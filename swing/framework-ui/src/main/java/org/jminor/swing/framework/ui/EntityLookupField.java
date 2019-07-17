@@ -11,6 +11,7 @@ import org.jminor.common.States;
 import org.jminor.common.Util;
 import org.jminor.common.Values;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.table.FilteredTableModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -483,7 +484,7 @@ public final class EntityLookupField extends JTextField {
     @Override
     public JComponent getSelectionComponent(final List<Entity> entities) {
       tablePanel.getEntityTableModel().clear();
-      tablePanel.getEntityTableModel().addEntities(entities, false);
+      tablePanel.getEntityTableModel().addEntities(entities, FilteredTableModel.AddingStrategy.BOTTOM);
       tablePanel.getJTable().scrollRectToVisible(tablePanel.getJTable().getCellRect(0, 0, true));
 
       return tablePanel;

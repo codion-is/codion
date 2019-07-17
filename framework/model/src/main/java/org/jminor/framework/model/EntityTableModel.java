@@ -10,6 +10,7 @@ import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnSummaryModel;
+import org.jminor.common.model.table.FilteredTableModel;
 import org.jminor.common.model.table.SelectionModel;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
@@ -45,7 +46,12 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
     /**
      * The entities inserted via the associated edit model are added as the bottommost rows in the model
      */
-    ADD_BOTTOM
+    ADD_BOTTOM,
+    /**
+     * The entities inserted via the associated edit model are added as the topmost rows in the model,
+     * if sorting is enabled then sorting is performed
+     */
+    ADD_TOP_SORTED
   }
 
   /**
@@ -101,9 +107,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
    * directly to this table model after they have been inserted into the underlying table
    * since otherwise they will disappear during the next table model refresh.
    * @param entities the entities to add
-   * @param atTop if true the entities are added to the top of this table model, otherwise at the bottom
+   * @param strategy the strategy to use when adding items
    */
-  void addEntities(final List<Entity> entities, final boolean atTop);
+  void addEntities(final List<Entity> entities, final FilteredTableModel.AddingStrategy strategy);
 
   /**
    * Replaces the given entities in this table model

@@ -38,7 +38,7 @@ public class SwingTableSelectionModelTest {
       @Override
       protected void doRefresh() {
         clear();
-        addItems(data, true);
+        addItems(data, AddingStrategy.TOP);
       }
 
       @Override
