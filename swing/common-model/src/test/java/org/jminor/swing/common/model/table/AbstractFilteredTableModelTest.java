@@ -9,7 +9,6 @@ import org.jminor.common.Events;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.DefaultColumnConditionModel;
-import org.jminor.common.model.table.FilteredTableModel;
 import org.jminor.common.model.table.RowColumn;
 import org.jminor.common.model.table.SortingDirective;
 
@@ -48,7 +47,7 @@ public final class AbstractFilteredTableModelTest {
     @Override
     protected void doRefresh() {
       clear();
-      addItems(Arrays.asList(ITEMS), AddingStrategy.TOP_SORTED);
+      addItems(Arrays.asList(ITEMS), true, true);
     }
 
     @Override
@@ -247,7 +246,7 @@ public final class AbstractFilteredTableModelTest {
       @Override
       protected void doRefresh() {
         clear();
-        addItems(items, AddingStrategy.BOTTOM);
+        addItems(items, false, false);
       }
 
       @Override
@@ -366,7 +365,7 @@ public final class AbstractFilteredTableModelTest {
 
     final List<String> items = new ArrayList<>();
     items.add(null);
-    tableModel.addItems(items, FilteredTableModel.AddingStrategy.TOP);
+    tableModel.addItems(items, true, false);
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
     assertEquals(0, tableModel.indexOf(null));
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
@@ -374,7 +373,7 @@ public final class AbstractFilteredTableModelTest {
 
     tableModel.refresh();
     items.add(null);
-    tableModel.addItems(items, FilteredTableModel.AddingStrategy.TOP);
+    tableModel.addItems(items, true, false);
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
     assertEquals(0, tableModel.indexOf(null));
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
@@ -690,7 +689,7 @@ public final class AbstractFilteredTableModelTest {
 
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("b");
     final int rowCount = tableModel.getRowCount();
-    tableModel.addItems(Collections.singletonList("x"), FilteredTableModel.AddingStrategy.TOP);
+    tableModel.addItems(Collections.singletonList("x"), true, false);
     assertEquals(rowCount, tableModel.getRowCount());
 
     tableModel.removeFilteringListener(listener);

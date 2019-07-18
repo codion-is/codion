@@ -132,7 +132,7 @@ public class FilteredTablePanelTest {
     @Override
     protected void doRefresh() {
       clear();
-      addItems(Arrays.asList(ITEMS), AddingStrategy.BOTTOM);
+      addItems(Arrays.asList(ITEMS), true, false);
     }
 
     @Override

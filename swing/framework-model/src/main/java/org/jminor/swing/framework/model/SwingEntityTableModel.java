@@ -402,8 +402,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public final void addEntities(final List<Entity> entities, final AddingStrategy strategy) {
-    addItems(entities, strategy);
+  public final void addEntities(final List<Entity> entities, final boolean atTop, final boolean sortAfterAdding) {
+    addItems(entities, atTop, sortAfterAdding);
   }
 
   /** {@inheritDoc} */
@@ -570,7 +570,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       LOG.debug("{} refreshing", this);
       final List<Entity> queryResult = performQuery();
       clear();
-      addItems(queryResult, AddingStrategy.BOTTOM);
+      addItems(queryResult, true, true);
       conditionModel.rememberCurrentConditionState();
     }
     finally {
@@ -699,13 +699,13 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
               entity.getEntityId().equals(getEntityId())).collect(Collectors.toList());
       switch (insertAction) {
         case ADD_TOP:
-          addEntities(entitiesToAdd, AddingStrategy.TOP);
+          addEntities(entitiesToAdd, true, false);
           break;
         case ADD_BOTTOM:
-          addEntities(entitiesToAdd, AddingStrategy.BOTTOM);
+          addEntities(entitiesToAdd, false, false);
           break;
         case ADD_TOP_SORTED:
-          addEntities(entitiesToAdd, AddingStrategy.TOP_SORTED);
+          addEntities(entitiesToAdd, true, true);
           break;
       }
     }

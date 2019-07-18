@@ -19,24 +19,6 @@ import java.util.Collection;
 public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, TableModelProxy<R>, Refreshable {
 
   /**
-   * Enum indicating how to add items to a FilteredTableModel
-   */
-  enum AddingStrategy {
-    /**
-     * Add at the top
-     */
-    TOP,
-    /**
-     * Add at the bottom
-     */
-    BOTTOM,
-    /**
-     * Add at the top then sort if sorting is enabled
-     */
-    TOP_SORTED
-  }
-
-  /**
    * @param listener a listener to be notified each time a refresh is about to start
    */
   void addRefreshStartedListener(final EventListener listener);
