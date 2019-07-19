@@ -107,25 +107,34 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     deptModel.setInsertAction(EntityTableModel.InsertAction.ADD_BOTTOM);
     final Entity dept = DOMAIN.entity(TestDomain.T_DEPARTMENT);
     dept.put(TestDomain.DEPARTMENT_ID, -10);
-    dept.put(TestDomain.DEPARTMENT_LOCATION, "Nowhere");
-    dept.put(TestDomain.DEPARTMENT_NAME, "Noname");
+    dept.put(TestDomain.DEPARTMENT_LOCATION, "Nowhere1");
+    dept.put(TestDomain.DEPARTMENT_NAME, "HELLO");
     final int count = deptModel.getRowCount();
     deptModel.getEditModel().insert(Collections.singletonList(dept));
     assertEquals(count + 1, deptModel.getRowCount());
     assertEquals(dept, deptModel.getAllItems().get(deptModel.getRowCount() - 1));
 
-    deptModel.setInsertAction(EntityTableModel.InsertAction.DO_NOTHING);
+    deptModel.setInsertAction(EntityTableModel.InsertAction.ADD_TOP_SORTED);
     final Entity dept2 = DOMAIN.entity(TestDomain.T_DEPARTMENT);
     dept2.put(TestDomain.DEPARTMENT_ID, -20);
     dept2.put(TestDomain.DEPARTMENT_LOCATION, "Nowhere2");
-    dept2.put(TestDomain.DEPARTMENT_NAME, "Noname2");
+    dept2.put(TestDomain.DEPARTMENT_NAME, "NONAME");
     deptModel.getEditModel().insert(Collections.singletonList(dept2));
-    assertEquals(count + 1, deptModel.getRowCount());
+    assertEquals(count + 2, deptModel.getRowCount());
+    assertEquals(dept2, deptModel.getAllItems().get(2));
 
-    deptModel.refresh();
+    deptModel.setInsertAction(EntityTableModel.InsertAction.DO_NOTHING);
+    final Entity dept3 = DOMAIN.entity(TestDomain.T_DEPARTMENT);
+    dept3.put(TestDomain.DEPARTMENT_ID, -30);
+    dept3.put(TestDomain.DEPARTMENT_LOCATION, "Nowhere3");
+    dept3.put(TestDomain.DEPARTMENT_NAME, "NONAME2");
+    deptModel.getEditModel().insert(Collections.singletonList(dept3));
     assertEquals(count + 2, deptModel.getRowCount());
 
-    deptModel.getEditModel().delete(Arrays.asList(dept, dept2));
+    deptModel.refresh();
+    assertEquals(count + 3, deptModel.getRowCount());
+
+    deptModel.getEditModel().delete(Arrays.asList(dept, dept2, dept3));
   }
 
   @Test

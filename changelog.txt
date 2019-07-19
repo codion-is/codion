@@ -5054,3 +5054,10 @@
   SwingEntityComboBoxModel.linkForeignKeyComboBoxModel() improved a bit more
   DefaultLocalEntityConnection.selectMany() now handles null value as varargs parameter
   DefaultLocalEntityConnection, fetchDepthLimit of -1 is now interpreted as no limit
+  FilteredTableModel.AddingStrategy added
+  FXEntityListModel.getTableColumn(propertyId) added
+  FXEntityListModel.addEntities() now sorts if required
+  AbstractFilteredTableModel.addItems() changed to use FilteredTableModel.AddingStrategy
+  FilteredTableModel.AddingStrategy removed
+  AbstractFilteredTableModel.addItems() and SwingEntityTableModel.addEntities() now with atTop/index and sortAfterAdding parameters
+  NavigableImagePanel, minor refactoring

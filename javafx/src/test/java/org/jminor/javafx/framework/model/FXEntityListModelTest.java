@@ -58,7 +58,8 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
   protected FXEntityListModel createDepartmentTableModel() {
     final FXEntityListModel deptModel = new FXEntityListModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider());
     deptModel.setEditModel(new FXEntityEditModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider()));
-    new EntityTableView(deptModel);
+    final EntityTableView tableView = new EntityTableView(deptModel);
+    tableView.getSortOrder().add(deptModel.getTableColumn(TestDomain.DEPARTMENT_NAME));
 
     return deptModel;
   }

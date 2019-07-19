@@ -498,7 +498,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * Refreshes the data in this table model.
    * @see #clear()
-   * @see #addItems(java.util.List, boolean)
+   * @see #addItems(List, boolean, boolean)
+   * @see #addItems(List, int, boolean)
    */
   protected abstract void doRefresh();
 
@@ -512,39 +513,26 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /**
-   * Adds the given items to this table model, filtering on the fly and sorting if sorting is enabled and
-   * the items are not being added at the front.
+   * Adds the given items to this table model, non-filtered items are added at top or bottom. If {@code sortAfterAdding}
+   * is true and sorting is enabled this model is sorted after the items have been added
    * @param items the items to add
-   * @param atFront if true then the items are added at the front (topmost) in the order they are received, otherwise they are added last
+   * @param atTop if true then items are added at the top of the table model, else at the bottom
+   * @param sortAfterAdding if true and sorting is enabled the model contents are sorted after adding
+   * @see TableSortModel#isSortingEnabled()
    */
-  protected final void addItems(final List<R> items, final boolean atFront) {
-    int index = 0;
-    for (final R item : items) {
-      if (filterCondition == null || filterCondition.include(item)) {
-        if (atFront) {
-          visibleItems.add(index++, item);
-        }
-        else {
-          visibleItems.add(item);
-        }
-      }
-      else {
-        filteredItems.add(item);
-      }
-    }
-    if (!atFront && sortModel.isSortingEnabled()) {
-      sortModel.sort(visibleItems);
-    }
-    fireTableDataChanged();
+  protected final void addItems(final List<R> items, final boolean atTop, final boolean sortAfterAdding) {
+    addItems(items, atTop ? 0 : visibleItems.size(), sortAfterAdding);
   }
 
   /**
-   * Adds the given items to this table model, non-filtered items are added at the given index. If sorting
-   * is enabled this model is sorted after the items have been added
+   * Adds the given items to this table model, non-filtered items are added at the given index. If {@code sortAfterAdding}
+   * is true and sorting is enabled this model is sorted after the items have been added
    * @param items the items to add
    * @param index the index at which to add the items
+   * @param sortAfterAdding if true and sorting is enabled then the model is sorted after adding
+   * @see TableSortModel#isSortingEnabled()
    */
-  protected final void addItems(final List<R> items, final int index) {
+  protected final void addItems(final List<R> items, final int index, final boolean sortAfterAdding) {
     int counter = 0;
     for (final R item : items) {
       if (filterCondition == null || filterCondition.include(item)) {
@@ -554,7 +542,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         filteredItems.add(item);
       }
     }
-    if (sortModel.isSortingEnabled()) {
+    if (sortAfterAdding && sortModel.isSortingEnabled()) {
       sortModel.sort(visibleItems);
     }
     fireTableDataChanged();

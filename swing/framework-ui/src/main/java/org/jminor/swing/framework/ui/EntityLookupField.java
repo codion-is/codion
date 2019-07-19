@@ -483,7 +483,7 @@ public final class EntityLookupField extends JTextField {
     @Override
     public JComponent getSelectionComponent(final List<Entity> entities) {
       tablePanel.getEntityTableModel().clear();
-      tablePanel.getEntityTableModel().addEntities(entities, false);
+      tablePanel.getEntityTableModel().addEntities(entities, false, false);
       tablePanel.getJTable().scrollRectToVisible(tablePanel.getJTable().getCellRect(0, 0, true));
 
       return tablePanel;

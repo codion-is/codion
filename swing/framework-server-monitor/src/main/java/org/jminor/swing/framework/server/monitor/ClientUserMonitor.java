@@ -229,7 +229,7 @@ public final class ClientUserMonitor {
             }
           }
           else {
-            addItems(Collections.singletonList(newUserInfo), true);
+            addItems(Collections.singletonList(newUserInfo), true, false);
           }
         }
         sortContents();

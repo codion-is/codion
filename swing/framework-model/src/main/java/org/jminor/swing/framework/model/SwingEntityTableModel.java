@@ -402,8 +402,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
-  public final void addEntities(final List<Entity> entities, final boolean atTop) {
-    addItems(entities, atTop);
+  public final void addEntities(final List<Entity> entities, final boolean atTop, final boolean sortAfterAdding) {
+    addItems(entities, atTop, sortAfterAdding);
   }
 
   /** {@inheritDoc} */
@@ -570,7 +570,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       LOG.debug("{} refreshing", this);
       final List<Entity> queryResult = performQuery();
       clear();
-      addItems(queryResult, false);
+      addItems(queryResult, true, true);
       conditionModel.rememberCurrentConditionState();
     }
     finally {
@@ -695,8 +695,19 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private void handleInsert(final EntityEditModel.InsertEvent insertEvent) {
     getSelectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
-      addEntities(insertEvent.getInsertedEntities().stream().filter(entity ->
-              entity.getEntityId().equals(getEntityId())).collect(Collectors.toList()), insertAction.equals(InsertAction.ADD_TOP));
+      final List<Entity> entitiesToAdd = insertEvent.getInsertedEntities().stream().filter(entity ->
+              entity.getEntityId().equals(getEntityId())).collect(Collectors.toList());
+      switch (insertAction) {
+        case ADD_TOP:
+          addEntities(entitiesToAdd, true, false);
+          break;
+        case ADD_BOTTOM:
+          addEntities(entitiesToAdd, false, false);
+          break;
+        case ADD_TOP_SORTED:
+          addEntities(entitiesToAdd, true, true);
+          break;
+      }
     }
   }
 
