@@ -4,9 +4,9 @@
 package org.jminor.framework.demos.empdept.beans.ui;
 
 import org.jminor.common.User;
+import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.empdept.beans.EmployeeEditModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.testing.EntityEditPanelTestUnit;
 
 import org.junit.jupiter.api.Test;
@@ -18,16 +18,14 @@ public class EmployeeEditPanelTest extends EntityEditPanelTestUnit {
           System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   public EmployeeEditPanelTest() {
-    super(EmpDept.class.getName(), EmployeeEditPanel.class, EmpDept.T_EMPLOYEE, UNIT_TEST_USER);
+    super(new EmployeeEditModel(EntityConnectionProviders.connectionProvider()
+                    .setDomainClassName(EmpDept.class.getName())
+                    .setClientTypeId(EmployeeEditPanelTest.class.getName()).setUser(UNIT_TEST_USER)),
+            EmployeeEditPanel.class);
   }
 
   @Test
   public void initializePanel() throws Exception {
     testInitializePanel();
-  }
-
-  @Override
-  protected SwingEntityEditModel createEditModel() {
-    return new EmployeeEditModel(getConnectionProvider());
   }
 }

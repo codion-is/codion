@@ -3,9 +3,6 @@
  */
 package org.jminor.swing.framework.ui.testing;
 
-import org.jminor.common.User;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
@@ -16,41 +13,28 @@ import java.util.Objects;
  */
 public abstract class EntityEditPanelTestUnit {
 
-  private final EntityConnectionProvider connectionProvider;
+  private final SwingEntityEditModel editModel;
   private final Class<? extends EntityEditPanel> editPanelClass;
-  private final String entityId;
 
   /**
    * Instantiates a new edit panel test unit for the given edit panel class
-   * @param domainclass the domain model class name
+   * @param editModel the edit model
    * @param editPanelClass the edit panel class
-   * @param entityId the entityId
-   * @param user the user
    */
-  protected EntityEditPanelTestUnit(final String domainclass, final Class<? extends EntityEditPanel> editPanelClass,
-                                    final String entityId, final User user) {
+  protected EntityEditPanelTestUnit(final SwingEntityEditModel editModel,
+                                    final Class<? extends EntityEditPanel> editPanelClass) {
+    Objects.requireNonNull(editModel, "editModel");
     Objects.requireNonNull(editPanelClass, "editPanelClass");
-    Objects.requireNonNull(entityId, "entityId");
-    Objects.requireNonNull(user, "user");
-    this.connectionProvider = EntityConnectionProviders.connectionProvider().setDomainClassName(domainclass)
-            .setClientTypeId(getClass().getName()).setUser(user);
+    this.editModel = editModel;
     this.editPanelClass = editPanelClass;
-    this.entityId = entityId;
   }
 
   /**
-   * @return the entityId of the panel being tested
-   */
-  public final String getEntityId() {
-    return entityId;
-  }
-
-  /**
-   * Initializes the edit panel using the model returned by {@link #createEditModel()}
+   * Initializes the edit panel and calls {@link EntityEditPanel#createControlPanel(boolean)}
    * @throws Exception in case of an exception
    */
   protected final void testInitializePanel() throws Exception {
-    createEditPanel().initializePanel();
+    createEditPanel().initializePanel().createControlPanel(false);
   }
 
   /**
@@ -59,20 +43,13 @@ public abstract class EntityEditPanelTestUnit {
    * @throws Exception in case of an exception
    */
   protected EntityEditPanel createEditPanel() throws Exception {
-    return editPanelClass.getConstructor(SwingEntityEditModel.class).newInstance(createEditModel());
+    return editPanelClass.getConstructor(SwingEntityEditModel.class).newInstance(getEditModel());
   }
 
   /**
-   * @return the edit model to base the edit panel on, by default a default edit model implementation
+   * @return the edit model
    */
-  protected SwingEntityEditModel createEditModel() {
-    return new SwingEntityEditModel(getEntityId(), getConnectionProvider());
-  }
-
-  /**
-   * @return a connection provider
-   */
-  protected final EntityConnectionProvider getConnectionProvider() {
-    return connectionProvider;
+  protected SwingEntityEditModel getEditModel() {
+    return editModel;
   }
 }
