@@ -5061,3 +5061,4 @@
   FilteredTableModel.AddingStrategy removed
   AbstractFilteredTableModel.addItems() and SwingEntityTableModel.addEntities() now with atTop/index and sortAfterAdding parameters
   NavigableImagePanel, minor refactoring
+  EntityEditPanelTestUnit refactored and improved somewhat
