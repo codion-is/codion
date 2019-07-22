@@ -18,7 +18,7 @@ dependencies {
 
     runtime "commons-logging:commons-logging:${commonsLoggingVersion}"
     runtime "commons-digester:commons-digester:${commonsDigesterVersion}"
-    runtime "commons-collections:commons-collections:${commonsCollectionsVersion}"
+    runtime "org.apache.commons:commons-collections4:${commonsCollectionsVersion}"
     runtime "commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}"
     runtime "org.eclipse.jdt.core.compiler:ecj:${jdtCoreCompilerVersion}"
 
