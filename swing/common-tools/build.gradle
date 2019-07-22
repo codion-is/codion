@@ -8,3 +8,22 @@ dependencies {
     testRuntimeOnly project(':jminor-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
+
+ext {
+    testAddModules = ['org.jminor.common.model']
+    testAddReads = ['org.jminor.swing.common.tools': 'org.jminor.common.model']
+}
+
+compileTestJava {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}
+
+test {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}

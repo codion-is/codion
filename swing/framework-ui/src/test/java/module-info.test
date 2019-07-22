@@ -1,5 +1,0 @@
---add-modules
-    org.jminor.framework.db.local
-
---add-reads
-    org.jminor.swing.framework.ui=org.jminor.framework.db.local

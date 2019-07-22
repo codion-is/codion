@@ -28,6 +28,25 @@ dependencies {
     runtime project(':jminor-framework-plugins-logback-proxy')
 }
 
+ext {
+    testAddModules = ['org.jminor.framework.db.core,org.jminor.framework.db.remote']
+    testAddReads = ['org.jminor.swing.framework.server.monitor': 'org.jminor.framework.db.core,org.jminor.framework.db.remote']
+}
+
+compileTestJava {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}
+
+test {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}
+
 mainClassName = "$moduleName/org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel"
 
 task runServerMonitor(type: ModularJavaExec) {

@@ -1,5 +1,0 @@
---add-modules
-    org.jminor.dbms.h2database,org.jminor.framework.db.core,org.jminor.framework.db.local,org.jminor.swing.framework.model
-
---add-reads
-    org.jminor.framework.plugins.nextreports=org.jminor.dbms.h2database,org.jminor.framework.db.core,org.jminor.framework.db.local,org.jminor.swing.framework.model

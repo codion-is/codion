@@ -20,6 +20,25 @@ dependencies {
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 
+ext {
+    testAddModules = ['org.jminor.common.db,org.jminor.common.model,org.jminor.swing.common.model']
+    testAddReads = ['org.jminor.swing.framework.tools.ui': 'org.jminor.common.db,org.jminor.common.model,org.jminor.swing.common.model']
+}
+
+compileTestJava {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}
+
+test {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}
+
 distributions {
     main {
         baseName = "jminor.entity.generator"

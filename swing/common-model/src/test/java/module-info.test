@@ -1,5 +1,0 @@
---add-modules
-    java.sql
-
---add-reads
-    org.jminor.swing.common.model=java.sql

@@ -1,5 +1,0 @@
---add-modules
-    java.sql,java.net.http,org.jminor.framework.server
-
---add-reads
-    org.jminor.framework.servlet=java.sql,java.net.http,org.jminor.framework.server

@@ -21,8 +21,23 @@ dependencies {
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 
+ext {
+    testAddModules = ['org.jminor.dbms.h2database,org.jminor.framework.db.core,org.jminor.framework.db.local,org.jminor.swing.framework.model']
+    testAddReads = ['org.jminor.framework.plugins.nextreports': 'org.jminor.dbms.h2database,org.jminor.framework.db.core,org.jminor.framework.db.local,org.jminor.swing.framework.model']
+}
+
+compileTestJava {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}
+
 test {
     moduleOptions {
+        //these are here for future reference, addModules and addReads are not necessary when running on classpath
+        addModules = testAddModules
+        addReads = testAddReads
         runOnClasspath = true
     }
 }

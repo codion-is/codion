@@ -7,3 +7,22 @@ dependencies {
     testImplementation project(':jminor-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
+
+ext {
+    testAddModules = ['org.jminor.dbms.h2database']
+    testAddReads = ['org.jminor.framework.plugins.hikari.pool': 'org.jminor.dbms.h2database']
+}
+
+compileTestJava {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}
+
+test {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}

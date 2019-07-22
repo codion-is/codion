@@ -1,5 +1,0 @@
---add-modules
-    java.sql,org.jminor.framework.db.local
-
---add-reads
-    org.jminor.framework.model=java.sql,org.jminor.framework.db.local

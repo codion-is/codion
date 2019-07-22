@@ -1,5 +1,0 @@
---add-modules
-    org.jminor.common.model
-
---add-reads
-    org.jminor.swing.common.tools=org.jminor.common.model

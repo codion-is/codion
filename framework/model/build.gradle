@@ -14,6 +14,25 @@ dependencies {
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 
+ext {
+    testAddModules = ['java.sql,org.jminor.framework.db.local']
+    testAddReads = ['org.jminor.framework.model': 'java.sql,org.jminor.framework.db.local']
+}
+
+compileTestJava {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}
+
+test {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}
+
 //base unit test classes that implementation modules (swing/fx) can depend on
 task jarTests(type: Jar, dependsOn: testClasses) {
     archiveClassifier = 'tests'

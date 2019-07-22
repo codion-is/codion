@@ -26,6 +26,25 @@ dependencies {
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 
+ext {
+    testAddModules = ['org.jminor.dbms.h2database,org.jminor.framework.db.local,org.jminor.swing.framework.model']
+    testAddReads = ['org.jminor.framework.plugins.jasperreports': 'org.jminor.dbms.h2database,org.jminor.framework.db.local,org.jminor.swing.framework.model']
+}
+
+compileTestJava {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}
+
+test {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}
+
 task buildReports(dependsOn: 'compileJava') {
     group 'build'
     def jasperSourceDir = file('src/test/reports')

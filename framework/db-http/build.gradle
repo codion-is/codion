@@ -13,3 +13,22 @@ dependencies {
     testRuntimeOnly project(':jminor-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
+
+ext {
+    testAddModules = ['java.sql,java.rmi,org.jminor.common.remote,org.jminor.common.remote.http,org.jminor.framework.server,org.jminor.framework.servlet']
+    testAddReads = ['org.jminor.framework.db.http': 'java.sql,java.rmi,org.jminor.common.remote,org.jminor.common.remote.http,org.jminor.framework.server,org.jminor.framework.servlet']
+}
+
+compileTestJava {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}
+
+test {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}

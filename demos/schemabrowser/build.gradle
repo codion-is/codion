@@ -35,7 +35,23 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
+ext {
+    testAddModules = ['org.jminor.framework.db.test']
+    testAddReads = ['org.jminor.framework.demos.schemabrowser': 'org.jminor.framework.db.test']
+}
+
+compileTestJava {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}
+
 test {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
     systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser"
 }

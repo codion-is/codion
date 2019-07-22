@@ -1,5 +1,0 @@
---add-modules
-    org.jminor.framework.db.test
-
---add-reads
-    org.jminor.framework.demos.petstore=org.jminor.framework.db.test

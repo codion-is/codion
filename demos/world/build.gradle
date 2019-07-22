@@ -29,7 +29,23 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
+ext {
+    testAddModules = ['org.jminor.framework.db.test', 'org.jminor.swing.framework.ui.test']
+    testAddReads = ['org.jminor.framework.demos.world': 'org.jminor.framework.db.test,org.jminor.swing.framework.ui.test']
+}
+
+compileTestJava {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}
+
 test {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
     systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.world.domain.World"
 }
