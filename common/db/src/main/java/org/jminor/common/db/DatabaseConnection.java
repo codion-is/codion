@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Specifies a database connection, providing basic transaction control and pooling info
  */
-public interface DatabaseConnection {
+public interface DatabaseConnection extends AutoCloseable {
 
   /**
    * Specifies the timeout (in seconds) to use when checking if database connections are valid.

@@ -98,6 +98,12 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   /** {@inheritDoc} */
   @Override
+  public void close() throws Exception {
+    disconnect();
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public void setPoolTime(final long time) {
     this.poolTime = time;
   }
