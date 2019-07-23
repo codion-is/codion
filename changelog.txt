@@ -5053,3 +5053,4 @@
   EntityEditPanelTestUnit refactored and improved somewhat
   DatabaseConnection now extends AutoCloseable
   3d party dependencies upgraded
+  SelectionModel.removeSelectedIndex() added, implemented in SwingTableSelectionModel

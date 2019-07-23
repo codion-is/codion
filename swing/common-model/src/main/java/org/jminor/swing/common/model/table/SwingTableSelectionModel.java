@@ -69,6 +69,22 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
 
   /** {@inheritDoc} */
   @Override
+  public void removeSelectedIndex(final int index) {
+    checkIndex(index, tableModelProxy.getRowCount());
+    removeSelectionInterval(index, index);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void removeSelectedIndexes(final Collection<Integer> indexes) {
+    indexes.forEach(index -> {
+      checkIndex(index, tableModelProxy.getRowCount());
+      removeSelectionInterval(index, index);
+    });
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public void setSelectedIndex(final int index) {
     checkIndex(index, tableModelProxy.getRowCount());
     setSelectionInterval(index, index);
@@ -186,6 +202,18 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   public void addSelectedItems(final Collection<R> items) {
     addSelectedIndexes(items.stream().mapToInt(tableModelProxy::indexOf)
             .filter(index -> index >= 0).boxed().collect(Collectors.toList()));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void removeSelectedItem(final R item) {
+    removeSelectedItems(Collections.singletonList(item));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void removeSelectedItems(final Collection<R> items) {
+    items.forEach(item -> removeSelectedIndex(tableModelProxy.indexOf(item)));
   }
 
   @Override

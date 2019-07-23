@@ -152,6 +152,34 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   }
 
   /** {@inheritDoc} */
+ @Override
+  public void removeSelectedIndex(final int index) {
+    if (selectionModel instanceof MultipleSelectionModel) {
+      ((MultipleSelectionModel) selectionModel).getSelectedIndices().remove(index);
+    }
+    else {
+      if (selectionModel.selectedIndexProperty().get() == index) {
+        selectionModel.clearSelection();
+      }
+    }
+  }
+
+  @Override
+  public void removeSelectedIndexes(final Collection<Integer> indexes) {
+   //todo
+  }
+
+  @Override
+  public void removeSelectedItem(final Entity item) {
+   //todo
+  }
+
+  @Override
+  public void removeSelectedItems(final Collection<Entity> items) {
+   //todo
+  }
+
+  /** {@inheritDoc} */
   @Override
   public void setSelectedIndex(final int index) {
     selectionModel.selectedIndexProperty().add(index);

@@ -98,6 +98,18 @@ public interface SelectionModel<R> {
   void addSelectedIndex(final int index);
 
   /**
+   * Removes the item at {@code index} from the selection
+   * @param index the index
+   */
+  void removeSelectedIndex(final int index);
+
+  /**
+   * Removes the given indexes from the selection
+   * @param indexes the indexes
+   */
+  void removeSelectedIndexes(final Collection<Integer> indexes);
+
+  /**
    * Clears the selection and selects the item at {@code index}
    * @param index the index
    */
@@ -164,6 +176,18 @@ public interface SelectionModel<R> {
    * @param items the items to add to the selection
    */
   void addSelectedItems(final Collection<R> items);
+
+  /**
+   * Remove the given item from the selection
+   * @param item the item to remove from the selection
+   */
+  void removeSelectedItem(final R item);
+
+  /**
+   * Remove the given items from the selection
+   * @param items the items to remove from the selection
+   */
+  void removeSelectedItems(final Collection<R> items);
 
   /**
    * Clears the selection
