@@ -5054,3 +5054,4 @@
   DatabaseConnection now extends AutoCloseable
   3d party dependencies upgraded
   SelectionModel.removeSelectedIndex() added, implemented in SwingTableSelectionModel
+  SelectionModel added a few methods, implemented in SwingTableSelectionModel and FXEntityListSelectionModel

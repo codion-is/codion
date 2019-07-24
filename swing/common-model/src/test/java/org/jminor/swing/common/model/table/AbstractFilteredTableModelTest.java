@@ -557,6 +557,15 @@ public final class AbstractFilteredTableModelTest {
     selectionModel.addSelectedItems(Arrays.asList(ITEMS[1], ITEMS[2]));
     assertEquals(3, selectionModel.getSelectionCount());
     assertEquals(0, selectionModel.getMinSelectionIndex());
+    selectionModel.removeSelectedItem(ITEMS[1]);
+    assertEquals(2, selectionModel.getSelectionCount());
+    assertEquals(0, selectionModel.getMinSelectionIndex());
+    selectionModel.removeSelectedItem(ITEMS[2]);
+    assertEquals(1, selectionModel.getSelectionCount());
+    assertEquals(0, selectionModel.getMinSelectionIndex());
+    selectionModel.addSelectedItems(Arrays.asList(ITEMS[1], ITEMS[2]));
+    assertEquals(3, selectionModel.getSelectionCount());
+    assertEquals(0, selectionModel.getMinSelectionIndex());
     selectionModel.addSelectedItem(ITEMS[4]);
     assertEquals(4, selectionModel.getSelectionCount());
     assertEquals(0, selectionModel.getMinSelectionIndex());

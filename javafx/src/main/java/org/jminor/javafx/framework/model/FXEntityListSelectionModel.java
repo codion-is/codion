@@ -152,10 +152,10 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   }
 
   /** {@inheritDoc} */
- @Override
+  @Override
   public void removeSelectedIndex(final int index) {
     if (selectionModel instanceof MultipleSelectionModel) {
-      ((MultipleSelectionModel) selectionModel).getSelectedIndices().remove(index);
+      removeSelectedIndexes(Collections.singletonList(index));
     }
     else {
       if (selectionModel.selectedIndexProperty().get() == index) {
@@ -164,19 +164,32 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void removeSelectedIndexes(final Collection<Integer> indexes) {
-   //todo
+    if (selectionModel instanceof MultipleSelectionModel) {
+      indexes.forEach(index -> ((MultipleSelectionModel) selectionModel).getSelectedIndices().remove(index));
+    }
+    else {
+      throw new UnsupportedOperationException();
+    }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void removeSelectedItem(final Entity item) {
-   //todo
+    removeSelectedItems(Collections.singletonList(item));
   }
 
+  /** {@inheritDoc} */
   @Override
   public void removeSelectedItems(final Collection<Entity> items) {
-   //todo
+    if (selectionModel instanceof MultipleSelectionModel) {
+      ((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems().removeAll(items);
+    }
+    else {
+      throw new UnsupportedOperationException();
+    }
   }
 
   /** {@inheritDoc} */
