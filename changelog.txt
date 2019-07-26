@@ -5058,3 +5058,5 @@
   AbstractEntityConnectionProvider.onDisconnect() added
   SwingTableSelectionModel.fireValueChanged() bug fix reverted, ill thought out
   SwingTableSelectionModel.addSelectedIndexes() and fireValueChange() refactored and improved
+  AbstractFilteredTableModel.sortContents() and filterContents() bug fixed, table lost selected column on fireTableDataChanged(), now uses fireTableRowsUpdated() instead
+  AbstractFilteredTableModel.removeItems() now uses removeItem() again, performance sacrificed for correct table model events

@@ -296,7 +296,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       sortingStartedEvent.fire();
       final List<R> selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
       sortModel.sort(visibleItems);
-      fireTableDataChanged();
+      fireTableRowsUpdated(0, visibleItems.size());
       selectionModel.setSelectedItems(selectedItems);
     }
     finally {
@@ -321,7 +321,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         }
       }
       sortModel.sort(visibleItems);
-      fireTableDataChanged();
+      fireTableRowsUpdated(0, visibleItems.size());
       selectionModel.setSelectedItems(selectedItems);
     }
     finally {
@@ -370,22 +370,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final void removeItems(final Collection<R> items) {
-    boolean visibleItemRemoved = false;
     for (final R item : items) {
-      final int index = visibleItems.indexOf(item);
-      if (index >= 0) {
-        visibleItems.remove(index);
-        visibleItemRemoved = true;
-      }
-      else {
-        final int filteredIndex = filteredItems.indexOf(item);
-        if (filteredIndex >= 0) {
-          filteredItems.remove(item);
-        }
-      }
-    }
-    if (visibleItemRemoved) {
-      fireTableDataChanged();
+      removeItem(item);
     }
   }
 
