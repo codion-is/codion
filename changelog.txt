@@ -5066,3 +5066,6 @@
   3d party dependencies upgraded
   SelectionModel.removeSelectedIndex() added, implemented in SwingTableSelectionModel
   SelectionModel added a few methods, implemented in SwingTableSelectionModel and FXEntityListSelectionModel
+  AbstractEntityConnectionProvider.onDisconnect() added
+  SwingTableSelectionModel.fireValueChanged() bug fix reverted, ill thought out
+  SwingTableSelectionModel.addSelectedIndexes() and fireValueChange() refactored and improved

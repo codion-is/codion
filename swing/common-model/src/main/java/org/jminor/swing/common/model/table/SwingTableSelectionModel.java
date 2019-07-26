@@ -16,7 +16,6 @@ import org.jminor.common.model.table.TableModelProxy;
 import javax.swing.DefaultListSelectionModel;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -34,11 +33,6 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   private final State selectionEmptyState = States.state(true);
   private final State multipleSelectionState = States.state(false);
   private final State singleSelectionState = States.state(false);
-
-  /**
-   * true while the selection is being updated
-   */
-  private boolean isUpdatingSelection = false;
 
   /**
    * Holds the topmost (minimum) selected index
@@ -108,21 +102,11 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
       return;
     }
     checkIndexes(indexes);
-    final Iterator<Integer> iterator = indexes.iterator();
-    /* hold on to the first index and add last in order to avoid firing selectionChanged
-     * for each index being added, see fireValueChanged(int, int, boolean) */
-    final int firstIndex = iterator.next();
-    try {
-      isUpdatingSelection = true;
-      while (iterator.hasNext()) {
-        final int index = iterator.next();
-        addSelectionInterval(index, index);
-      }
+    setValueIsAdjusting(true);
+    for (final Integer index : indexes) {
+      addSelectionInterval(index, index);
     }
-    finally {
-      isUpdatingSelection = false;
-      addSelectionInterval(firstIndex, firstIndex);
-    }
+    setValueIsAdjusting(false);
   }
 
   /** {@inheritDoc} */
@@ -284,16 +268,16 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   @Override
   public void fireValueChanged(final int firstIndex, final int lastIndex, final boolean isAdjusting) {
     super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
-    selectionEmptyState.setActive(isSelectionEmpty());
-    singleSelectionState.setActive(getSelectionCount() == 1);
-    multipleSelectionState.setActive(!selectionEmptyState.isActive() && !singleSelectionState.isActive());
-    final int minSelIndex = getMinSelectionIndex();
-    if (selectedIndex != minSelIndex) {
-      selectedIndex = minSelIndex;
-      selectedIndexChangedEvent.fire(selectedIndex);
-      selectedItemChangedEvent.fire(getSelectedItem());
-    }
-    if (!(isAdjusting || isUpdatingSelection)) {
+    if (!isAdjusting) {
+      selectionEmptyState.setActive(isSelectionEmpty());
+      singleSelectionState.setActive(getSelectionCount() == 1);
+      multipleSelectionState.setActive(!selectionEmptyState.isActive() && !singleSelectionState.isActive());
+      final int minSelIndex = getMinSelectionIndex();
+      if (selectedIndex != minSelIndex) {
+        selectedIndex = minSelIndex;
+        selectedIndexChangedEvent.fire(selectedIndex);
+        selectedItemChangedEvent.fire(getSelectedItem());
+      }
       selectionChangedEvent.fire();
       selectedItemsChangedEvent.fire(getSelectedItems());
     }
