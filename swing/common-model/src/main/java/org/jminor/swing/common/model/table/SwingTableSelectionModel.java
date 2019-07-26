@@ -288,15 +288,12 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
     singleSelectionState.setActive(getSelectionCount() == 1);
     multipleSelectionState.setActive(!selectionEmptyState.isActive() && !singleSelectionState.isActive());
     final int minSelIndex = getMinSelectionIndex();
-    final boolean selectedIndexChanged = selectedIndex != minSelIndex;
-    if (selectedIndexChanged) {
+    if (selectedIndex != minSelIndex) {
       selectedIndex = minSelIndex;
+      selectedIndexChangedEvent.fire(selectedIndex);
+      selectedItemChangedEvent.fire(getSelectedItem());
     }
     if (!(isAdjusting || isUpdatingSelection)) {
-      if (selectedIndexChanged) {
-        selectedIndexChangedEvent.fire(selectedIndex);
-        selectedItemChangedEvent.fire(getSelectedItem());
-      }
       selectionChangedEvent.fire();
       selectedItemsChangedEvent.fire(getSelectedItems());
     }
