@@ -119,6 +119,12 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   void replaceEntities(final Collection<Entity> entities);
 
   /**
+   * Refreshes the entities with the given keys by re-selecting them from the underlying database.
+   * @param keys the keys of the entities to refresh
+   */
+  void refreshEntities(final List<Entity.Key> keys);
+
+  /**
    * @return true if the underlying query should be configurable
    */
   boolean isQueryConfigurationAllowed();

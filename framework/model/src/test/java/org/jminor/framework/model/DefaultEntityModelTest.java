@@ -163,6 +163,8 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void replaceEntities(final Collection<Entity> entities) {}
     @Override
+    public void refreshEntities(final List<Entity.Key> keys) {}
+    @Override
     public boolean isQueryConfigurationAllowed() {return false;}
     @Override
     public EntityTableModel<TestEntityEditModel> setQueryConfigurationAllowed(final boolean value) {return null;}

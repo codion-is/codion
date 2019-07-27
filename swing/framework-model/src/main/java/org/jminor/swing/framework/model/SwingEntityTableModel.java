@@ -414,6 +414,17 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
+  public final void refreshEntities(final List<Entity.Key> keys) {
+    try {
+      replaceEntities(getConnectionProvider().getConnection().selectMany(keys));
+    }
+    catch (final DatabaseException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public void setForeignKeyConditionValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
     Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
     if (conditionModel.setConditionValues(foreignKeyProperty.getPropertyId(), foreignKeyValues)) {

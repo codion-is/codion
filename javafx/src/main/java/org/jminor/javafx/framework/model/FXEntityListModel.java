@@ -226,6 +226,17 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
+  public final void refreshEntities(final List<Entity.Key> keys) {
+    try {
+      replaceEntities(getConnectionProvider().getConnection().selectMany(keys));
+    }
+    catch (final DatabaseException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final boolean isQueryConfigurationAllowed() {
     return queryConfigurationAllowed;
   }
