@@ -529,7 +529,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Shows a help dialog
    * @see #getHelpPanel()
    */
-  public final void showHelp() {
+  public final void displayHelp() {
     final JOptionPane pane = new JOptionPane(getHelpPanel(), JOptionPane.PLAIN_MESSAGE,
             JOptionPane.DEFAULT_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
     final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
@@ -546,7 +546,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Shows an about dialog
    * @see #getAboutPanel()
    */
-  public final void showAbout() {
+  public final void displayAbout() {
     final JOptionPane pane = new JOptionPane(getAboutPanel(), JOptionPane.PLAIN_MESSAGE,
             JOptionPane.DEFAULT_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
     final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
@@ -593,17 +593,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
     final Domain domain = applicationModel.getDomain();
     for (final String entityId : domain.getDefinedEntities()) {
-      if (domain.getForeignKeyProperties(entityId).isEmpty() || referencesOnlySelf(entityId)) {
+      if (domain.getForeignKeyProperties(entityId).isEmpty() || referencesOnlySelf(applicationModel.getDomain(), entityId)) {
         root.add(new EntityDependencyTreeNode(entityId, domain));
       }
     }
 
     return new DefaultTreeModel(root);
-  }
-
-  private boolean referencesOnlySelf(final String entityId) {
-    return applicationModel.getDomain().getForeignKeyProperties(entityId).stream()
-            .allMatch(fkProperty -> fkProperty.getForeignEntityId().equals(entityId));
   }
 
   /**
@@ -649,9 +644,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected ControlSet getFileControlSet() {
     final ControlSet file = new ControlSet(FrameworkMessages.get(FrameworkMessages.FILE));
     file.setMnemonic(FrameworkMessages.get(FrameworkMessages.FILE_MNEMONIC).charAt(0));
-    file.add(Controls.control(this::exit, FrameworkMessages.get(FrameworkMessages.EXIT),
-            null, FrameworkMessages.get(FrameworkMessages.EXIT_TIP),
-            FrameworkMessages.get(FrameworkMessages.EXIT_MNEMONIC).charAt(0)));
+    file.add(createExitControl());
 
     return file;
   }
@@ -660,15 +653,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the ControlSet specifying the items in the 'Settings' menu
    */
   protected ControlSet getSettingsControlSet() {
-    final ImageIcon setLoggingIcon = Images.loadImage(Images.ICON_LOGGING);
-    final Control setLoggingLevel = Controls.control(this::setLoggingLevel,
-            FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL));
-    setLoggingLevel.setDescription(FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL_DESC));
-    setLoggingLevel.setIcon(setLoggingIcon);
-
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SETTINGS));
-
-    controlSet.add(setLoggingLevel);
+    controlSet.add(createLoggingLevelControl());
 
     return controlSet;
   }
@@ -690,22 +676,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected ControlSet getViewControlSet() {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.VIEW),
             FrameworkMessages.get(FrameworkMessages.VIEW_MNEMONIC).charAt(0));
-    final Control refreshAll = Controls.control(applicationModel::refresh,
-            FrameworkMessages.get(FrameworkMessages.REFRESH_ALL));
-    controlSet.add(refreshAll);
+    controlSet.add(createRefreshAllControl());
     controlSet.addSeparator();
-    controlSet.add(Controls.control(this::viewApplicationTree,
-            resourceBundle.getString("view_application_tree")));
-    controlSet.add(Controls.control(this::viewDependencyTree,
-            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES)));
-    controlSet.add(Controls.control(this::selectLookAndFeel,
-            resourceBundle.getString(MSG_SELECT_LOOK_AND_FEEL)));
-    controlSet.add(Controls.control(this::selectFontSize,
-            resourceBundle.getString("select_font_size")));
+    controlSet.add(createViewApplicationTreeControl());
+    controlSet.add(createViewDependencyTree());
+    controlSet.add(createSelectLookAndFeelControl());
+    controlSet.add(createSelectFontSizeControl());
     controlSet.addSeparator();
-    final Control alwaysOnTop = Controls.toggleControl(this,
-            "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), alwaysOnTopChangedEvent);
-    controlSet.add(alwaysOnTop);
+    controlSet.add(createAlwaysOnTopControl());
 
     return controlSet;
   }
@@ -716,15 +694,90 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected ControlSet getHelpControlSet() {
     final ControlSet controlSet = new ControlSet(resourceBundle.getString(MSG_HELP),
             resourceBundle.getString("help_mnemonic").charAt(0));
-    final Control help = Controls.control(this::showHelp,
-            resourceBundle.getString(MSG_HELP) + "...", null, null);
-    controlSet.add(help);
+    controlSet.add(createHelpControl());
     controlSet.addSeparator();
-    final Control about = Controls.control(this::showAbout,
-            resourceBundle.getString(MSG_ABOUT) + "...", null, null);
-    controlSet.add(about);
+    controlSet.add(createAboutControl());
 
     return controlSet;
+  }
+
+  /**
+   * @return a Control for exiting the application
+   */
+  protected final Control createExitControl() {
+    return Controls.control(this::exit, FrameworkMessages.get(FrameworkMessages.EXIT),
+            null, FrameworkMessages.get(FrameworkMessages.EXIT_TIP),
+            FrameworkMessages.get(FrameworkMessages.EXIT_MNEMONIC).charAt(0));
+  }
+
+  /**
+   * @return a Control for setting the logging level
+   */
+  protected final Control createLoggingLevelControl() {
+    final ImageIcon setLoggingIcon = Images.loadImage(Images.ICON_LOGGING);
+    final Control setLoggingLevel = Controls.control(this::setLoggingLevel,
+            FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL));
+    setLoggingLevel.setDescription(FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL_DESC));
+    setLoggingLevel.setIcon(setLoggingIcon);
+
+    return setLoggingLevel;
+  }
+
+  /**
+   * @return a Control for refreshing the application model
+   */
+  protected final Control createRefreshAllControl() {
+    return Controls.control(applicationModel::refresh, FrameworkMessages.get(FrameworkMessages.REFRESH_ALL));
+  }
+
+  /**
+   * @return a Control for viewing the application structure tree
+   */
+  protected final Control createViewApplicationTreeControl() {
+    return Controls.control(this::viewApplicationTree, resourceBundle.getString("view_application_tree"));
+  }
+
+  /**
+   * @return a Control for viewing the application dependency tree
+   */
+  protected final Control createViewDependencyTree() {
+    return Controls.control(this::viewDependencyTree, FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES));
+  }
+
+  /**
+   * @return a Control for selecting the application look and feel
+   */
+  protected final Control createSelectLookAndFeelControl() {
+    return Controls.control(this::selectLookAndFeel, resourceBundle.getString(MSG_SELECT_LOOK_AND_FEEL));
+  }
+
+  /**
+   * @return a Control for selecting the font size
+   */
+  protected final Control createSelectFontSizeControl() {
+    return Controls.control(this::selectFontSize, resourceBundle.getString("select_font_size"));
+  }
+
+  /**
+   * @return a Control controlling the always on top status
+   */
+  protected final Controls.ToggleControl createAlwaysOnTopControl() {
+    return Controls.toggleControl(this,
+            "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), alwaysOnTopChangedEvent);
+  }
+
+  /**
+   * @return a Control for viewing information about the application
+   */
+  protected final Control createAboutControl() {
+    return Controls.control(this::displayAbout, resourceBundle.getString(MSG_ABOUT) + "...", null, null);
+  }
+
+  /**
+   * @return a Control for displaying the help
+   */
+  protected final Control createHelpControl() {
+    return Controls.control(this::displayHelp, resourceBundle.getString(MSG_HELP) + "...", null, null);
   }
 
   /**
@@ -1380,6 +1433,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     return username;
+  }
+
+  private static boolean referencesOnlySelf(final Domain domain, final String entityId) {
+    return domain.getForeignKeyProperties(entityId).stream()
+            .allMatch(fkProperty -> fkProperty.getForeignEntityId().equals(entityId));
   }
 
   private static final class EntityDependencyTreeNode extends DefaultMutableTreeNode {
