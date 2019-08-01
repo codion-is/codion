@@ -143,8 +143,8 @@ public class Domain implements Serializable {
    * Instantiates a new {@link Entity} of the given type using the values provided by {@code valueProvider}.
    * Values are fetched for {@link Property.ColumnProperty} and its descendants, {@link Property.ForeignKeyProperty}
    * and {@link Property.TransientProperty} (excluding its descendants).
-   * If a {@link Property.ColumnProperty}s column has a default value the property is
-   * skipped unless it has a default value, which then overrides the columns default value.
+   * If a {@link Property.ColumnProperty}s underlying column has a default value the property is
+   * skipped unless the property itself has a default value, which then overrides the columns default value.
    * @param entityId the entity id
    * @param valueProvider the value provider
    * @return the populated entity
@@ -229,41 +229,14 @@ public class Domain implements Serializable {
   }
 
   /**
-   * Returns the propertyIds specifying the properties to search by when looking up
-   * entities of the type identified by {@code entityId}
-   * @param entityId the entity id
-   * @return the ids of the properties used as search properties for entities identified by {@code entityId}
-   * @see Entity.Definition#setSearchPropertyIds(String...)
-   */
-  public final Collection<String> getSearchPropertyIds(final String entityId) {
-    return getDefinition(entityId).getSearchPropertyIds();
-  }
-
-  /**
    * Returns the properties to search by when looking up entities of the type identified by {@code entityId}
    * @param entityId the entity id
    * @return the properties to use when searching
    * @see Entity.Definition#setSearchPropertyIds(String...)
    */
   public final Collection<Property.ColumnProperty> getSearchProperties(final String entityId) {
-    final Collection<String> searchPropertyIds = getSearchPropertyIds(entityId);
-    return getSearchProperties(entityId, searchPropertyIds.toArray(new String[0]));
-  }
-
-  /**
-   * Retrieves the properties used when searching for a entity of the given type, restricted to those
-   * identified by {@code searchPropertyIds}
-   * @param entityId the entity id
-   * @param searchPropertyIds the ids of the search properties to retrieve
-   * @return the search properties
-   * @see Entity.Definition#setSearchPropertyIds(String...)
-   */
-  public final Collection<Property.ColumnProperty> getSearchProperties(final String entityId, final String... searchPropertyIds) {
-    if (searchPropertyIds != null && searchPropertyIds.length > 0) {
-      return Arrays.stream(searchPropertyIds).map(propertyId -> getColumnProperty(entityId, propertyId)).collect(Collectors.toList());
-    }
-
-    return Collections.emptyList();
+    return getDefinition(entityId).getSearchPropertyIds().stream().map(propertyId ->
+            getColumnProperty(entityId, propertyId)).collect(Collectors.toList());
   }
 
   /**
@@ -436,7 +409,7 @@ public class Domain implements Serializable {
    * @param includePrimaryKeyProperties if true primary key properties are included
    * @param includeReadOnly if true then properties that are marked as 'read only' are included
    * @param includeNonUpdatable if true then non updatable properties are included
-   * @return a list containing the database properties (properties that map to database columns) comprising
+   * @return a list containing the column properties (properties that map to database columns) comprising
    * the entity identified by {@code entityId}
    */
   public final List<Property.ColumnProperty> getColumnProperties(final String entityId,
@@ -460,20 +433,6 @@ public class Domain implements Serializable {
   public final List<Property> getVisibleProperties(final String entityId) {
     Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
     return getDefinition(entityId).getVisibleProperties();
-  }
-
-  /**
-   * @param entityId the entityId
-   * @param propertyIds the ids of the properties to retrieve
-   * @return the {@link Property.ColumnProperty}s specified by the given property ids
-   * @throws IllegalArgumentException in case a given propertyId does not represent a {@link Property.ColumnProperty}
-   */
-  public final List<Property.ColumnProperty> getColumnProperties(final String entityId, final Collection<String> propertyIds) {
-    if (propertyIds == null || propertyIds.isEmpty()) {
-      return Collections.emptyList();
-    }
-
-    return propertyIds.stream().map(propertyId -> getColumnProperty(entityId, propertyId)).collect(Collectors.toList());
   }
 
   /**

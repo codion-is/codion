@@ -168,16 +168,6 @@ public class DomainTest {
   }
 
   @Test
-  public void getColumnProperties() {
-    List<Property.ColumnProperty> properties = domain.getColumnProperties(TestDomain.T_MASTER);
-    assertEquals(3, properties.size());
-    properties = domain.getColumnProperties(TestDomain.T_MASTER, null);
-    assertTrue(properties.isEmpty());
-    properties = domain.getColumnProperties(TestDomain.T_MASTER, Collections.emptyList());
-    assertTrue(properties.isEmpty());
-  }
-
-  @Test
   public void getForeignKeyProperties() {
     List<Property.ForeignKeyProperty> foreignKeyProperties = domain.getForeignKeyProperties(TestDomain.T_DETAIL, TestDomain.T_EMP);
     assertEquals(0, foreignKeyProperties.size());
@@ -329,22 +319,9 @@ public class DomainTest {
     assertTrue(searchProperties.contains(domain.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB)));
     assertTrue(searchProperties.contains(domain.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME)));
 
-    searchProperties = domain.getSearchProperties(TestDomain.T_EMP, TestDomain.EMP_NAME);
-    assertTrue(searchProperties.contains(domain.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME)));
-
     searchProperties = domain.getSearchProperties(TestDomain.T_DEPARTMENT);
     //should contain all string based properties
     assertTrue(searchProperties.contains(domain.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
-  }
-
-  @Test
-  public void getSearchPropertyIds() {
-    Collection<String> searchPropertyIDs = domain.getSearchPropertyIds(TestDomain.T_EMP);
-    assertTrue(searchPropertyIDs.contains(TestDomain.EMP_JOB));
-    assertTrue(searchPropertyIDs.contains(TestDomain.EMP_NAME));
-
-    searchPropertyIDs = domain.getSearchPropertyIds(TestDomain.T_DEPARTMENT);
-    assertTrue(searchPropertyIDs.contains(TestDomain.DEPARTMENT_NAME));
   }
 
   @Test
