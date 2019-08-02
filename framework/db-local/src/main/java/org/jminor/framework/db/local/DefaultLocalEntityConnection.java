@@ -1217,26 +1217,26 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   /**
-   * @param inserting if true then all properties available in {@code entity} are added,
+   * @param inserting if true then all properties with values available in {@code entity} are added,
    * otherwise update is assumed and only properties with modified values are added.
    * @param entity the Entity instance
-   * @param columnProperties the column properties the entity type is based on
-   * @param properties afterwards this collection will contain the properties on which to base the statement
-   * @param values afterwards this collection will contain the values to use in the statement
+   * @param entityProperties the column properties the entity type is based on
+   * @param statementProperties the list to populate with the properties to use in the statement
+   * @param statementValues the list to populate with the values to be used in the statement
    * @throws java.sql.SQLException if no properties to populate the values for were found
    */
   private static void populateStatementPropertiesAndValues(final boolean inserting, final Entity entity,
-                                                           final List<Property.ColumnProperty> columnProperties,
-                                                           final List<Property.ColumnProperty> properties,
-                                                           final Collection<Object> values) throws SQLException {
-    for (int i = 0; i < columnProperties.size(); i++) {
-      final Property.ColumnProperty property = columnProperties.get(i);
+                                                           final List<Property.ColumnProperty> entityProperties,
+                                                           final List<Property.ColumnProperty> statementProperties,
+                                                           final List<Object> statementValues) throws SQLException {
+    for (int i = 0; i < entityProperties.size(); i++) {
+      final Property.ColumnProperty property = entityProperties.get(i);
       if (entity.containsKey(property) && (inserting || entity.isModified(property))) {
-        properties.add(property);
-        values.add(entity.get(property));
+        statementProperties.add(property);
+        statementValues.add(entity.get(property));
       }
     }
-    if (properties.isEmpty()) {
+    if (statementProperties.isEmpty()) {
       if (inserting) {
         throw new SQLException("Unable to insert entity " + entity.getEntityId() + ", no properties to insert");
       }
