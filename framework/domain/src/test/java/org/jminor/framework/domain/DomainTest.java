@@ -29,10 +29,10 @@ public class DomainTest {
   private final TestDomain domain = new TestDomain();
 
   @Test
-  public void getSortedProperties() {
-    final List<Property> properties = domain.getSortedProperties(TestDomain.T_EMP,
+  public void sortProperties() {
+    final List<Property> properties = Properties.sort(domain.getProperties(TestDomain.T_EMP,
             Arrays.asList(TestDomain.EMP_HIREDATE, TestDomain.EMP_COMMISSION,
-                    TestDomain.EMP_SALARY, TestDomain.EMP_JOB));
+                    TestDomain.EMP_SALARY, TestDomain.EMP_JOB)));
     assertEquals(TestDomain.EMP_COMMISSION, properties.get(0).getPropertyId());
     assertEquals(TestDomain.EMP_HIREDATE, properties.get(1).getPropertyId());
     assertEquals(TestDomain.EMP_JOB, properties.get(2).getPropertyId());

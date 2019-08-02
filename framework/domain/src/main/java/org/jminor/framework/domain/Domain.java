@@ -22,7 +22,6 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.text.Format;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -474,21 +473,10 @@ public class Domain implements Serializable {
    * the entity identified by {@code entityId}
    */
   public final List<Property> getProperties(final String entityId, final Collection<String> propertyIds) {
-    Objects.requireNonNull(propertyIds, PROPERTY_ID_PARAM);
-    return getProperties(entityId, propertyIds.toArray(new String[0]));
-  }
-
-  /**
-   * @param entityId the entity id
-   * @param propertyIds the ids of the properties to retrieve
-   * @return a list containing the properties identified by {@code propertyIds}, found in
-   * the entity identified by {@code entityId}
-   */
-  public final List<Property> getProperties(final String entityId, final String... propertyIds) {
     Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
-    Objects.requireNonNull(propertyIds, PROPERTY_ID_PARAM);
+    Objects.requireNonNull(propertyIds, "propertyIds");
 
-    return Arrays.stream(propertyIds).map(propertyId -> getProperty(entityId, propertyId)).collect(Collectors.toList());
+    return propertyIds.stream().map(propertyId -> getProperty(entityId, propertyId)).collect(Collectors.toList());
   }
 
   /**
@@ -681,7 +669,6 @@ public class Domain implements Serializable {
         updatable.add(foreignKeyProperty);
       }
     }
-    Properties.sort(updatable);
 
     return updatable;
   }
@@ -721,18 +708,6 @@ public class Domain implements Serializable {
     catch (final Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  /**
-   * @param entityId the entity id
-   * @param propertyIds the property ids
-   * @return the given properties sorted by caption, or if that is not available, property id
-   */
-  public final List<Property> getSortedProperties(final String entityId, final Collection<String> propertyIds) {
-    final List<Property> properties = new ArrayList<>(getProperties(entityId, propertyIds));
-    Properties.sort(properties);
-
-    return properties;
   }
 
   /**

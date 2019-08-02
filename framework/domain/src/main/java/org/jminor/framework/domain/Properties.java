@@ -350,10 +350,13 @@ public final class Properties {
   /**
    * Sorts the given properties by caption, or if that is not available, property id, ignoring case
    * @param properties the properties to sort
+   * @return the sorted list
    */
-  public static void sort(final List<? extends Property> properties) {
+  public static List<Property> sort(final List<Property> properties) {
     Objects.requireNonNull(properties, "properties");
     final Collator collator = Collator.getInstance();
     properties.sort((o1, o2) -> collator.compare(o1.toString().toLowerCase(), o2.toString().toLowerCase()));
+
+    return properties;
   }
 }
