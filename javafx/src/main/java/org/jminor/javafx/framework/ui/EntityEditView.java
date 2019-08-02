@@ -11,6 +11,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.javafx.framework.model.FXEntityEditModel;
@@ -115,7 +116,7 @@ public abstract class EntityEditView extends BorderPane {
    * Displays a dialog for choosing a input component to receive focus
    */
   public void selectInputControl() {
-    final List<Property> properties = getEditModel().getDomain().getSortedProperties(editModel.getEntityId(), controls.keySet());
+    final List<Property> properties = Properties.sort(getEditModel().getDomain().getProperties(editModel.getEntityId(), controls.keySet()));
     properties.removeIf(property -> {
       final Control control = controls.get(property.getPropertyId());
 

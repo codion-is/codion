@@ -29,10 +29,10 @@ public class DomainTest {
   private final TestDomain domain = new TestDomain();
 
   @Test
-  public void getSortedProperties() {
-    final List<Property> properties = domain.getSortedProperties(TestDomain.T_EMP,
+  public void sortProperties() {
+    final List<Property> properties = Properties.sort(domain.getProperties(TestDomain.T_EMP,
             Arrays.asList(TestDomain.EMP_HIREDATE, TestDomain.EMP_COMMISSION,
-                    TestDomain.EMP_SALARY, TestDomain.EMP_JOB));
+                    TestDomain.EMP_SALARY, TestDomain.EMP_JOB)));
     assertEquals(TestDomain.EMP_COMMISSION, properties.get(0).getPropertyId());
     assertEquals(TestDomain.EMP_HIREDATE, properties.get(1).getPropertyId());
     assertEquals(TestDomain.EMP_JOB, properties.get(2).getPropertyId());
@@ -165,16 +165,6 @@ public class DomainTest {
   @Test
   public void getPropertyInvalid() {
     assertThrows(IllegalArgumentException.class, () -> domain.getProperty(TestDomain.T_MASTER, "unknown property"));
-  }
-
-  @Test
-  public void getColumnProperties() {
-    List<Property.ColumnProperty> properties = domain.getColumnProperties(TestDomain.T_MASTER);
-    assertEquals(3, properties.size());
-    properties = domain.getColumnProperties(TestDomain.T_MASTER, null);
-    assertTrue(properties.isEmpty());
-    properties = domain.getColumnProperties(TestDomain.T_MASTER, Collections.emptyList());
-    assertTrue(properties.isEmpty());
   }
 
   @Test
@@ -329,22 +319,9 @@ public class DomainTest {
     assertTrue(searchProperties.contains(domain.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB)));
     assertTrue(searchProperties.contains(domain.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME)));
 
-    searchProperties = domain.getSearchProperties(TestDomain.T_EMP, TestDomain.EMP_NAME);
-    assertTrue(searchProperties.contains(domain.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME)));
-
     searchProperties = domain.getSearchProperties(TestDomain.T_DEPARTMENT);
     //should contain all string based properties
     assertTrue(searchProperties.contains(domain.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
-  }
-
-  @Test
-  public void getSearchPropertyIds() {
-    Collection<String> searchPropertyIDs = domain.getSearchPropertyIds(TestDomain.T_EMP);
-    assertTrue(searchPropertyIDs.contains(TestDomain.EMP_JOB));
-    assertTrue(searchPropertyIDs.contains(TestDomain.EMP_NAME));
-
-    searchPropertyIDs = domain.getSearchPropertyIds(TestDomain.T_DEPARTMENT);
-    assertTrue(searchPropertyIDs.contains(TestDomain.DEPARTMENT_NAME));
   }
 
   @Test

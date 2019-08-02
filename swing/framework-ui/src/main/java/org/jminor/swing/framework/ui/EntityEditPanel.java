@@ -16,6 +16,7 @@ import org.jminor.common.db.valuemap.exception.ValidationException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityComboBoxModel;
@@ -346,7 +347,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   public void selectInputComponent() {
     final List<String> propertyIds = getSelectComponentPropertyIds();
-    final List<Property> properties = editModel.getDomain().getSortedProperties(getEditModel().getEntityId(), propertyIds);
+    final List<Property> properties = Properties.sort(editModel.getDomain().getProperties(getEditModel().getEntityId(), propertyIds));
     final Property property = UiUtil.selectValue(this, properties, Messages.get(Messages.SELECT_INPUT_FIELD));
     if (property != null) {
       requestComponentFocus(property.getPropertyId());

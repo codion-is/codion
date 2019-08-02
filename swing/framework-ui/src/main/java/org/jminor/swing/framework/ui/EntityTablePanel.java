@@ -21,6 +21,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityEditModel;
@@ -499,8 +500,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
-    getEntityTableModel().getConnectionProvider().getDomain().getUpdatableProperties(
-            getEntityTableModel().getEntityId()).forEach(property -> {
+    Properties.sort(getEntityTableModel().getConnectionProvider().getDomain().getUpdatableProperties(
+            getEntityTableModel().getEntityId())).forEach(property -> {
       if (includeUpdateSelectedProperty(property)) {
         final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
         controlSet.add(Controls.control(() -> updateSelectedEntities(property), caption, enabled));

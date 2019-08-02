@@ -5073,3 +5073,4 @@
   AbstractFilteredTableModel.removeItems() now uses removeItem() again, performance sacrificed for correct table model events
   EntityTableModel.refreshEntities() added
   EntityApplicationPanel, all main menu controls created via functions, for easier menu customization in subclasses
+  Domain, some method culling

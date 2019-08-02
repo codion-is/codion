@@ -36,6 +36,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -516,8 +517,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /** {@inheritDoc} */
   @Override
   public final void setColumns(final String... propertyIds) {
-    final List<Property> properties = getDomain().getProperties(getEntityId(), propertyIds);
-    getColumnModel().setColumns(properties.toArray(new Property[0]));
+    getColumnModel().setColumns(getDomain().getProperties(getEntityId(), Arrays.asList(propertyIds)).toArray(new Property[0]));
   }
 
   /** {@inheritDoc} */
