@@ -812,23 +812,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private List<Entity> doSelectMany(final EntitySelectCondition condition, final int currentForeignKeyFetchDepth) throws SQLException {
     Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
-    String selectSQL = null;
-    try {
-      selectSQL = getSelectSQL(condition, connection.getDatabase());
-      final List<Entity> result = new ArrayList<>();
-      try (final ResultIterator<Entity> iterator = createIterator(condition)) {
-        packResult(result, iterator);
-      }
-      if (!condition.isForUpdate()) {
-        setForeignKeys(result, condition, currentForeignKeyFetchDepth);
-      }
+    final List<Entity> result;
+    try (final ResultIterator<Entity> iterator = createIterator(condition)) {
+      result = packResult(iterator);
+    }
+    if (!condition.isForUpdate()) {
+      setForeignKeys(result, condition, currentForeignKeyFetchDepth);
+    }
 
-      return result;
-    }
-    catch (final SQLException e) {
-      LOG.error(Databases.createLogMessage(getUser(), selectSQL, condition.getValues(), e, null));
-      throw e;
-    }
+    return result;
   }
 
   /**
@@ -968,13 +960,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private void packResult(final List<Entity> result, final ResultIterator<Entity> iterator) throws SQLException {
+  private List<Entity> packResult(final ResultIterator<Entity> iterator) throws SQLException {
     SQLException packingException = null;
+    final List<Entity> result = new ArrayList<>();
     try {
       logAccess("packResult", null);
       while (iterator.hasNext()) {
         result.add(iterator.next());
       }
+
+      return result;
     }
     catch (final SQLException e) {
       packingException = e;

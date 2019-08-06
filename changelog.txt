@@ -5064,3 +5064,5 @@
   EntityApplicationPanel, all main menu controls created via functions, for easier menu customization in subclasses
   Domain, some method culling
 0.12.2
+  DefaultLocalEntityConnection.doSelectMany(), redundant error logging removed, error logged during createIterator()
+  DefaultLocalEntityConnection.packResult() now returns the result list instead of receiving it as parameter
