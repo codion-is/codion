@@ -5066,3 +5066,4 @@
 0.12.2
   DefaultLocalEntityConnection.doSelectMany(), redundant error logging removed, error logged during createIterator()
   DefaultLocalEntityConnection.packResult() now returns the result list instead of receiving it as parameter
+  SQLServerDatabase.AUTO_INCREMENT_QUERY now uses @@IDENTITY instead of SCOPE_IDENTITY()

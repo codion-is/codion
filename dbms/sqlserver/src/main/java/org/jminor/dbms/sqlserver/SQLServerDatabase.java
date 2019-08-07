@@ -15,7 +15,7 @@ import java.util.Properties;
 public final class SQLServerDatabase extends AbstractDatabase {
 
   static final String DRIVER_CLASS_NAME = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-  static final String AUTO_INCREMENT_QUERY = "SELECT SCOPE_IDENTITY()";
+  static final String AUTO_INCREMENT_QUERY = "SELECT @@IDENTITY";
   static final String URL_PREFIX = "jdbc:sqlserver://";
 
   private static final Integer BOOLEAN_TRUE_VALUE = 1;
