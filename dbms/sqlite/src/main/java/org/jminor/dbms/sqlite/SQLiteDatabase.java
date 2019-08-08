@@ -47,7 +47,7 @@ public final class SQLiteDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getURL(final Properties connectionProperties) {
-    return URL_PREFIX_FILE + databaseFilePath;
+    return URL_PREFIX_FILE + databaseFilePath + getUrlAppend();
   }
 
   /** {@inheritDoc} */

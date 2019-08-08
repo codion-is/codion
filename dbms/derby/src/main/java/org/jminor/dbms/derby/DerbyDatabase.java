@@ -75,10 +75,10 @@ public final class DerbyDatabase extends AbstractDatabase {
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
-      return URL_PREFIX + getHost() + (authentication == null ? "" : ";" + authentication);
+      return URL_PREFIX + getHost() + (authentication == null ? "" : ";" + authentication) + getUrlAppend();
     }
     else {
-      return URL_PREFIX + "//" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication);
+      return URL_PREFIX + "//" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication) + getUrlAppend();
     }
   }
 

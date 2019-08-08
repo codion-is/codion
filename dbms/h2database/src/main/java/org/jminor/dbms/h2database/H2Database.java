@@ -42,7 +42,6 @@ public final class H2Database extends AbstractDatabase {
   static final String URL_PREFIX_FILE = "jdbc:h2:file:";
 
   private final boolean embeddedInMemory;
-  private String urlAppend = "";
 
   /**
    * Instantiates a new embedded H2Database, using {@link Database#DATABASE_HOST} for database name.
@@ -106,15 +105,6 @@ public final class H2Database extends AbstractDatabase {
     this.embeddedInMemory = embeddedInMemory;
   }
 
-  /**
-   * @param urlAppend a string to append to the connection URL
-   * @return this H2Database instance
-   */
-  public H2Database setUrlAppend(final String urlAppend) {
-    this.urlAppend = urlAppend;
-    return this;
-  }
-
   /** {@inheritDoc} */
   @Override
   public String getAutoIncrementQuery(final String idSource) {
@@ -137,10 +127,10 @@ public final class H2Database extends AbstractDatabase {
       }
       final String urlPrefix = embeddedInMemory ? URL_PREFIX_MEM : URL_PREFIX_FILE;
 
-      return urlPrefix + getHost() + (authentication == null ? "" : ";" + authentication) + urlAppend;
+      return urlPrefix + getHost() + (authentication == null ? "" : ";" + authentication) + getUrlAppend();
     }
     else {
-      return URL_PREFIX_SERVER + "//" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication) + urlAppend;
+      return URL_PREFIX_SERVER + "//" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication) + getUrlAppend();
     }
   }
 

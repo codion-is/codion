@@ -49,7 +49,7 @@ public final class SQLServerDatabase extends AbstractDatabase {
   @Override
   public String getURL(final Properties connectionProperties) {
     final String sid = getSid();
-    return URL_PREFIX + getHost() + ":" + getPort() + (!Util.nullOrEmpty(sid) ? ";databaseName=" + sid : "");
+    return URL_PREFIX + getHost() + ":" + getPort() + (!Util.nullOrEmpty(sid) ? ";databaseName=" + sid : "") + getUrlAppend();
   }
 
   /** {@inheritDoc} */

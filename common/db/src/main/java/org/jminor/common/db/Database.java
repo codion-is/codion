@@ -120,6 +120,16 @@ public interface Database {
   boolean isEmbedded();
 
   /**
+   * @param urlAppend a string to append to the connection URL
+   */
+  void setUrlAppend(final String urlAppend);
+
+  /**
+   * @return the string to append to the connection URL
+   */
+  String getUrlAppend();
+
+  /**
    * Returns a query string for retrieving the last automatically generated id from the given id source
    * @param idSource the source for the id, for example a sequence name or in the case of Derby, the name of the table auto generating the value
    * @return a query string for retrieving the last auto-increment value from idSource
