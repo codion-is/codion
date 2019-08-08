@@ -175,6 +175,12 @@ public abstract class AbstractDatabase implements Database {
 
   /** {@inheritDoc} */
   @Override
+  public boolean supportsSelectForUpdate() {
+    return true;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public boolean supportsNowait() {
     return true;
   }

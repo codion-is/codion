@@ -177,6 +177,11 @@ public interface Database {
   boolean supportsIsValid();
 
   /**
+   * @return true if the dbms supports the 'select for update' syntax
+   */
+  boolean supportsSelectForUpdate();
+
+  /**
    * Returns true if the dbms supports the select for update NOWAIT option
    * @return true if NOWAIT is supported for select for update
    */

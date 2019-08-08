@@ -6,6 +6,7 @@ package org.jminor.dbms.sqlserver;
 import org.jminor.common.Util;
 import org.jminor.common.db.AbstractDatabase;
 
+import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -18,6 +19,8 @@ public final class SQLServerDatabase extends AbstractDatabase {
   static final String AUTO_INCREMENT_QUERY = "SELECT @@IDENTITY";
   static final String URL_PREFIX = "jdbc:sqlserver://";
 
+  private static final int AUTHENTICATION_ERROR = 18456;
+  private static final int REFERENTIAL_INTEGRITY_ERROR = 547;
   private static final Integer BOOLEAN_TRUE_VALUE = 1;
   private static final Integer BOOLEAN_FALSE_VALUE = 0;
 
@@ -37,6 +40,18 @@ public final class SQLServerDatabase extends AbstractDatabase {
   public SQLServerDatabase(final String host, final Integer port, final String databaseName) {
     super(Type.SQLSERVER, DRIVER_CLASS_NAME, Objects.requireNonNull(host, "host"),
             Objects.requireNonNull(port, "port"), Objects.requireNonNull(databaseName, "databaseName"), false);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean supportsSelectForUpdate() {
+    return false;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean supportsNowait() {
+    return false;
   }
 
   /** {@inheritDoc} */
@@ -62,5 +77,17 @@ public final class SQLServerDatabase extends AbstractDatabase {
   @Override
   public Object getBooleanFalseValue() {
     return BOOLEAN_FALSE_VALUE;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isAuthenticationException(final SQLException exception) {
+    return exception.getErrorCode() == AUTHENTICATION_ERROR;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isReferentialIntegrityException(final SQLException exception) {
+    return exception.getErrorCode() == REFERENTIAL_INTEGRITY_ERROR;
   }
 }

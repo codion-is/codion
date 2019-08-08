@@ -1096,9 +1096,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private static void addForUpdate(final Database database, final StringBuilder queryBuilder) {
-    queryBuilder.append(" for update");
-    if (database.supportsNowait()) {
-      queryBuilder.append(" nowait");
+    if (database.supportsSelectForUpdate()) {
+      queryBuilder.append(" for update");
+      if (database.supportsNowait()) {
+        queryBuilder.append(" nowait");
+      }
     }
   }
 
