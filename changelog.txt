@@ -5075,3 +5075,9 @@
   EntityApplicationPanel, all main menu controls created via functions, for easier menu customization in subclasses
   Domain, some method culling
 0.12.2
+  DefaultLocalEntityConnection.doSelectMany(), redundant error logging removed, error logged during createIterator()
+  DefaultLocalEntityConnection.packResult() now returns the result list instead of receiving it as parameter
+  SQLServerDatabase.AUTO_INCREMENT_QUERY now uses @@IDENTITY instead of SCOPE_IDENTITY()
+  Database.setUrlAppend()/getUrlAppend() added
+  Database.supportsSelectForUpdate() added (for SQL Server), used in DefaultLocalEntityConnection
+  SQLServerDatabase, isAuthenticationError() and isReferentialIntegrityError() overridden

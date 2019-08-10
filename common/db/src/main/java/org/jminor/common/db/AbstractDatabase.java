@@ -31,6 +31,8 @@ public abstract class AbstractDatabase implements Database {
   private final Integer port;
   private final boolean embedded;
 
+  private String urlAppend = "";
+
   /**
    * Instantiates a new AbstractDatabase using host/port/sid/embedded settings specified by system properties
    * @param databaseType the database type
@@ -141,6 +143,16 @@ public abstract class AbstractDatabase implements Database {
   }
 
   /** {@inheritDoc} */
+  public final void setUrlAppend(final String urlAppend) {
+    this.urlAppend = urlAppend;
+  }
+
+  /** {@inheritDoc} */
+  public final String getUrlAppend() {
+    return urlAppend;
+  }
+
+  /** {@inheritDoc} */
   @Override
   public final Connection createConnection(final User user) throws DatabaseException {
     if (Util.nullOrEmpty(Objects.requireNonNull(user, "user").getUsername())) {
@@ -159,6 +171,12 @@ public abstract class AbstractDatabase implements Database {
       }
       throw new DatabaseException(e, getErrorMessage(e));
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean supportsSelectForUpdate() {
+    return true;
   }
 
   /** {@inheritDoc} */

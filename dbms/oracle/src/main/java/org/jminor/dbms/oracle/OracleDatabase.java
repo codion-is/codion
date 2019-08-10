@@ -94,7 +94,7 @@ public final class OracleDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getURL(final Properties connectionProperties) {
-    return URL_PREFIX + getHost() + ":" + getPort() + (USE_LEGACY_SID.get() ? ":" : "/") + getSid();
+    return URL_PREFIX + getHost() + ":" + getPort() + (USE_LEGACY_SID.get() ? ":" : "/") + getSid() + getUrlAppend();
   }
 
   /**

@@ -6,6 +6,7 @@ package org.jminor.dbms.sqlserver;
 import org.jminor.common.Util;
 import org.jminor.common.db.AbstractDatabase;
 
+import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -15,9 +16,11 @@ import java.util.Properties;
 public final class SQLServerDatabase extends AbstractDatabase {
 
   static final String DRIVER_CLASS_NAME = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-  static final String AUTO_INCREMENT_QUERY = "SELECT SCOPE_IDENTITY()";
+  static final String AUTO_INCREMENT_QUERY = "SELECT @@IDENTITY";
   static final String URL_PREFIX = "jdbc:sqlserver://";
 
+  private static final int AUTHENTICATION_ERROR = 18456;
+  private static final int REFERENTIAL_INTEGRITY_ERROR = 547;
   private static final Integer BOOLEAN_TRUE_VALUE = 1;
   private static final Integer BOOLEAN_FALSE_VALUE = 0;
 
@@ -41,6 +44,18 @@ public final class SQLServerDatabase extends AbstractDatabase {
 
   /** {@inheritDoc} */
   @Override
+  public boolean supportsSelectForUpdate() {
+    return false;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean supportsNowait() {
+    return false;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public String getAutoIncrementQuery(final String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
@@ -49,7 +64,7 @@ public final class SQLServerDatabase extends AbstractDatabase {
   @Override
   public String getURL(final Properties connectionProperties) {
     final String sid = getSid();
-    return URL_PREFIX + getHost() + ":" + getPort() + (!Util.nullOrEmpty(sid) ? ";databaseName=" + sid : "");
+    return URL_PREFIX + getHost() + ":" + getPort() + (!Util.nullOrEmpty(sid) ? ";databaseName=" + sid : "") + getUrlAppend();
   }
 
   /** {@inheritDoc} */
@@ -62,5 +77,17 @@ public final class SQLServerDatabase extends AbstractDatabase {
   @Override
   public Object getBooleanFalseValue() {
     return BOOLEAN_FALSE_VALUE;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isAuthenticationException(final SQLException exception) {
+    return exception.getErrorCode() == AUTHENTICATION_ERROR;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isReferentialIntegrityException(final SQLException exception) {
+    return exception.getErrorCode() == REFERENTIAL_INTEGRITY_ERROR;
   }
 }

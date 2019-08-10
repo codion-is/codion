@@ -812,23 +812,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private List<Entity> doSelectMany(final EntitySelectCondition condition, final int currentForeignKeyFetchDepth) throws SQLException {
     Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
-    String selectSQL = null;
-    try {
-      selectSQL = getSelectSQL(condition, connection.getDatabase());
-      final List<Entity> result = new ArrayList<>();
-      try (final ResultIterator<Entity> iterator = createIterator(condition)) {
-        packResult(result, iterator);
-      }
-      if (!condition.isForUpdate()) {
-        setForeignKeys(result, condition, currentForeignKeyFetchDepth);
-      }
+    final List<Entity> result;
+    try (final ResultIterator<Entity> iterator = createIterator(condition)) {
+      result = packResult(iterator);
+    }
+    if (!condition.isForUpdate()) {
+      setForeignKeys(result, condition, currentForeignKeyFetchDepth);
+    }
 
-      return result;
-    }
-    catch (final SQLException e) {
-      LOG.error(Databases.createLogMessage(getUser(), selectSQL, condition.getValues(), e, null));
-      throw e;
-    }
+    return result;
   }
 
   /**
@@ -968,13 +960,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private void packResult(final List<Entity> result, final ResultIterator<Entity> iterator) throws SQLException {
+  private List<Entity> packResult(final ResultIterator<Entity> iterator) throws SQLException {
     SQLException packingException = null;
+    final List<Entity> result = new ArrayList<>();
     try {
       logAccess("packResult", null);
       while (iterator.hasNext()) {
         result.add(iterator.next());
       }
+
+      return result;
     }
     catch (final SQLException e) {
       packingException = e;
@@ -1101,9 +1096,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private static void addForUpdate(final Database database, final StringBuilder queryBuilder) {
-    queryBuilder.append(" for update");
-    if (database.supportsNowait()) {
-      queryBuilder.append(" nowait");
+    if (database.supportsSelectForUpdate()) {
+      queryBuilder.append(" for update");
+      if (database.supportsNowait()) {
+        queryBuilder.append(" nowait");
+      }
     }
   }
 
@@ -1217,26 +1214,26 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   /**
-   * @param inserting if true then all properties available in {@code entity} are added,
+   * @param inserting if true then all properties with values available in {@code entity} are added,
    * otherwise update is assumed and only properties with modified values are added.
    * @param entity the Entity instance
-   * @param columnProperties the column properties the entity type is based on
-   * @param properties afterwards this collection will contain the properties on which to base the statement
-   * @param values afterwards this collection will contain the values to use in the statement
+   * @param entityProperties the column properties the entity type is based on
+   * @param statementProperties the list to populate with the properties to use in the statement
+   * @param statementValues the list to populate with the values to be used in the statement
    * @throws java.sql.SQLException if no properties to populate the values for were found
    */
   private static void populateStatementPropertiesAndValues(final boolean inserting, final Entity entity,
-                                                           final List<Property.ColumnProperty> columnProperties,
-                                                           final List<Property.ColumnProperty> properties,
-                                                           final Collection<Object> values) throws SQLException {
-    for (int i = 0; i < columnProperties.size(); i++) {
-      final Property.ColumnProperty property = columnProperties.get(i);
+                                                           final List<Property.ColumnProperty> entityProperties,
+                                                           final List<Property.ColumnProperty> statementProperties,
+                                                           final List<Object> statementValues) throws SQLException {
+    for (int i = 0; i < entityProperties.size(); i++) {
+      final Property.ColumnProperty property = entityProperties.get(i);
       if (entity.containsKey(property) && (inserting || entity.isModified(property))) {
-        properties.add(property);
-        values.add(entity.get(property));
+        statementProperties.add(property);
+        statementValues.add(entity.get(property));
       }
     }
-    if (properties.isEmpty()) {
+    if (statementProperties.isEmpty()) {
       if (inserting) {
         throw new SQLException("Unable to insert entity " + entity.getEntityId() + ", no properties to insert");
       }

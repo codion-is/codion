@@ -62,10 +62,10 @@ public final class HSQLDatabase extends AbstractDatabase {
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {
-      return EMBEDDED_URL_PREFIX + getHost() + (authentication == null ? "" : ";" + authentication);
+      return EMBEDDED_URL_PREFIX + getHost() + (authentication == null ? "" : ";" + authentication) + getUrlAppend();
     }
     else {
-      return NETWORKED_URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication);
+      return NETWORKED_URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication) + getUrlAppend();
     }
   }
 }

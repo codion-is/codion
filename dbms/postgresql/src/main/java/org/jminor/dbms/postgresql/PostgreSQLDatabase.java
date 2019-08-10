@@ -54,7 +54,7 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getURL(final Properties connectionProperties) {
-    return URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid();
+    return URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid() + getUrlAppend();
   }
 
   /**
