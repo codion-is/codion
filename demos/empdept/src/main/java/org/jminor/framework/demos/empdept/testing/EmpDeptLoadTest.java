@@ -80,17 +80,17 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
           try {
             selectRandomRow(employeeModel.getTableModel());
             Entity selected = employeeModel.getTableModel().getSelectionModel().getSelectedItem();
-            EntityTestUnit.randomize(application.getDomain(), selected, false, null);
+            EntityTestUnit.randomize(application.getDomain(), selected, null);
             employeeModel.getEditModel().setEntity(selected);
             employeeModel.getEditModel().update();
             selectRandomRow(employeeModel.getTableModel());
             selected = employeeModel.getTableModel().getSelectionModel().getSelectedItem();
-            EntityTestUnit.randomize(application.getDomain(), selected, false, null);
+            EntityTestUnit.randomize(application.getDomain(), selected, null);
             employeeModel.getEditModel().setEntity(selected);
             employeeModel.getEditModel().update();
           }
           finally {
-            if (random.nextDouble() < 0.5) {
+            if (random.nextBoolean()) {
               employeeModel.getConnectionProvider().getConnection().rollbackTransaction();
             }
             else {

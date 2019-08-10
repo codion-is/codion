@@ -5070,3 +5070,4 @@
   Database.setUrlAppend()/getUrlAppend() added
   Database.supportsSelectForUpdate() added (for SQL Server), used in DefaultLocalEntityConnection
   SQLServerDatabase, isAuthenticationError() and isReferentialIntegrityError() overridden
+  DefaultLocalEntityConnection now caches the insert and update properties for entities
