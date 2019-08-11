@@ -18,13 +18,25 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 
 /**
- * A utility class for working with text
+ * A utility class for working with text, such as sorting a reading from files
  */
 public final class TextUtil {
+
+  /**
+   * Specifies the default collator locale language.<br>
+   * Value type: String<br>
+   * Default value: {@code Locale.getDefault().getLanguage()}.
+   * @see #getSpaceAwareCollator()
+   * @see #collate(List)
+   * @see Locale#toLanguageTag()
+   */
+  public static final Value<String> DEFAULT_COLLATOR_LANGUAGE =
+          Configuration.stringValue("jminor.defaultCollatorLanguage", Locale.getDefault().getLanguage());
 
   /**
    * Left or right alignment
@@ -135,9 +147,20 @@ public final class TextUtil {
    * @param <T> the comparison type
    * @return a Comparator which compares the string representations of the objects
    * using the default Collator, taking spaces into account.
+   * @see #DEFAULT_COLLATOR_LANGUAGE
    */
   public static <T> Comparator<T> getSpaceAwareCollator() {
-    return new ComparatorSansSpace<>();
+    return getSpaceAwareCollator(new Locale(DEFAULT_COLLATOR_LANGUAGE.get()));
+  }
+
+  /**
+   * @param <T> the comparison type
+   * @param locale the collator locale
+   * @return a Comparator which compares the string representations of the objects
+   * using the default Collator, taking spaces into account.
+   */
+  public static <T> Comparator<T> getSpaceAwareCollator(final Locale locale) {
+    return new ComparatorSansSpace<>(locale);
   }
 
   /**
@@ -145,7 +168,7 @@ public final class TextUtil {
    * @param collator the collator
    * @param list the list
    */
-  public static void collateSansSpaces(final Collator collator, final List<?> list) {
+  public static void collateSansSpaces(final Collator collator, final List list) {
     list.sort((o1, o2) -> collateSansSpaces(collator, o1.toString(), o2.toString()));
   }
 
@@ -370,7 +393,14 @@ public final class TextUtil {
 
     private static final long serialVersionUID = 1;
 
-    private transient Collator collator = Collator.getInstance();
+    private final Locale locale;
+
+    private transient Collator collator;
+
+    private ComparatorSansSpace(final Locale locale) {
+      this.locale = locale;
+      this.collator = Collator.getInstance(locale);
+    }
 
     @Override
     public int compare(final T o1, final T o2) {
@@ -378,7 +408,8 @@ public final class TextUtil {
     }
 
     private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-      this.collator = Collator.getInstance();
+      stream.defaultReadObject();
+      this.collator = Collator.getInstance(this.locale);
     }
   }
 }

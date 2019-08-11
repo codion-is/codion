@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,14 +24,33 @@ public final class TextUtilTest {
     final String one = "björn";
     final String two = "bjö rn";
     final String three = "björ n";
-    final List<String> strings = Arrays.asList(one, two, three);
+    List<String> strings = Arrays.asList(one, two, three);
 
-    final Comparator<String> collator = TextUtil.getSpaceAwareCollator();
-
+    Comparator<String> collator = TextUtil.getSpaceAwareCollator();
     strings.sort(collator);
     assertEquals(two, strings.get(0));
     assertEquals(three, strings.get(1));
     assertEquals(one, strings.get(2));
+
+    final String four = "tha";
+    final String five = "þe";
+    final String six = "æi";
+    final String seven = "aj";
+    strings = Arrays.asList(four, five, six, seven);
+
+    collator = TextUtil.getSpaceAwareCollator(new Locale("is"));
+    strings.sort(collator);
+    assertEquals(seven, strings.get(0));
+    assertEquals(four, strings.get(1));
+    assertEquals(five, strings.get(2));
+    assertEquals(six, strings.get(3));
+
+    collator = TextUtil.getSpaceAwareCollator(new Locale("en"));
+    strings.sort(collator);
+    assertEquals(six, strings.get(0));
+    assertEquals(seven, strings.get(1));
+    assertEquals(four, strings.get(2));
+    assertEquals(five, strings.get(3));
   }
 
   @Test
