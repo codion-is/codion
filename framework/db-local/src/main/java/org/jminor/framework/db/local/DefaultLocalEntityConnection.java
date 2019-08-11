@@ -78,6 +78,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final DatabaseConnection connection;
   private final EntityConditions entityConditions;
   private final Map<String, ResultPacker<Entity>> resultPackers = new HashMap<>();
+  private final Map<String, List<Property.ColumnProperty>> insertProperties = new HashMap<>();
+  private final Map<String, List<Property.ColumnProperty>> updateProperties = new HashMap<>();
 
   private boolean optimisticLocking;
   private boolean limitForeignKeyFetchDepth;
@@ -223,8 +225,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           final Entity.KeyGenerator keyGenerator = domain.getKeyGenerator(entityId);
           keyGenerator.beforeInsert(entity, connection);
 
-          final List<Property.ColumnProperty> insertColumnProperties = domain.getColumnProperties(entityId,
-                  !keyGenerator.getType().isAutoIncrement(), false, true);
+          final List<Property.ColumnProperty> insertColumnProperties = insertProperties.computeIfAbsent(entityId,
+                  eId -> domain.getColumnProperties(eId, !keyGenerator.getType().isAutoIncrement(), true));
           populateStatementPropertiesAndValues(true, entity, insertColumnProperties, statementProperties, statementValues);
 
           insertSQL = createInsertSQL(domain.getTableName(entityId), statementProperties);
@@ -277,8 +279,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           final String entityId = mappedEntitiesMapEntry.getKey();
           final Collection<Entity> toUpdate = mappedEntitiesMapEntry.getValue();
           final String tableName = domain.getTableName(entityId);
-          final List<Property.ColumnProperty> updateColumnProperties =
-                  domain.getColumnProperties(entityId, true, false, false);
+          final List<Property.ColumnProperty> updateColumnProperties = updateProperties.computeIfAbsent(entityId,
+                  eId -> domain.getColumnProperties(eId, true, false));
 
           for (final Entity entity : toUpdate) {
             populateStatementPropertiesAndValues(false, entity, updateColumnProperties, statementProperties, statementValues);
@@ -908,7 +910,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private int executePreparedUpdate(final PreparedStatement statement, final String sqlStatement,
-                                    final List<Property.ColumnProperty> properties, final List<?> values) throws SQLException {
+                                    final List<Property.ColumnProperty> properties, final List values) throws SQLException {
     SQLException exception = null;
     Databases.QUERY_COUNTER.count(sqlStatement);
     try {
@@ -1328,8 +1330,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
     private String getEntityParameterString(final Entity entity) {
       final StringBuilder builder = new StringBuilder(entity.getEntityId()).append(" {");
-      final List<Property.ColumnProperty> columnProperties = domain.getColumnProperties(entity.getEntityId(), true,
-              true, true);
+      final List<Property.ColumnProperty> columnProperties = domain.getColumnProperties(entity.getEntityId());
       for (int i = 0; i < columnProperties.size(); i++) {
         final Property.ColumnProperty property = columnProperties.get(i);
         final boolean modified = entity.isModified(property);
