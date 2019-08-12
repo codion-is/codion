@@ -338,7 +338,7 @@ public final class TextUtil {
    * @param onePerLine if true then each item is put on a separate line, otherwise a comma separator is used
    * @return the collection contents as a string (using toString())
    */
-  public static String getCollectionContentsAsString(final Collection<?> collection, final boolean onePerLine) {
+  public static String getCollectionContentsAsString(final Collection collection, final boolean onePerLine) {
     if (collection == null) {
       return "";
     }

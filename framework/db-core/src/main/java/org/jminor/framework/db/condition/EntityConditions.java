@@ -508,7 +508,7 @@ public final class EntityConditions {
     }
 
     @Override
-    public List<?> getValues() {
+    public List getValues() {
       return condition == null ? Collections.emptyList() : condition.getValues();
     }
 
@@ -616,7 +616,7 @@ public final class EntityConditions {
     }
 
     @Override
-    public List<?> getValues() {
+    public List getValues() {
       return condition.getValues();
     }
 

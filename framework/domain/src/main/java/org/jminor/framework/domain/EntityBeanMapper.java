@@ -116,7 +116,7 @@ public class EntityBeanMapper {
    * @throws InvocationTargetException in case an exception is thrown during a bean method call
    * @throws IllegalAccessException if a required method is not accessible
    */
-  public List<Entity> toEntities(final List<?> beans) throws InvocationTargetException, IllegalAccessException {
+  public List<Entity> toEntities(final List beans) throws InvocationTargetException, IllegalAccessException {
     if (Util.nullOrEmpty(beans)) {
       return Collections.emptyList();
     }
@@ -140,7 +140,7 @@ public class EntityBeanMapper {
   public Object toBean(final Entity entity) throws NoSuchMethodException,
           InvocationTargetException, IllegalAccessException, InstantiationException {
     Objects.requireNonNull(entity, "entity");
-    final Class<?> beanClass = getBeanClass(entity.getEntityId());
+    final Class beanClass = getBeanClass(entity.getEntityId());
     final Object bean = beanClass.getConstructor().newInstance();
     final Map<String, GetterSetter> beanPropertyMap = propertyMap.get(beanClass);
     for (final Map.Entry<String, GetterSetter> propertyEntry : beanPropertyMap.entrySet()) {

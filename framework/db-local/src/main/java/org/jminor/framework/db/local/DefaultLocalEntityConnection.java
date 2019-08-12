@@ -934,7 +934,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                                           final EntityCondition condition) throws SQLException {
     SQLException exception = null;
     Databases.QUERY_COUNTER.count(sqlStatement);
-    final List<?> values = condition.getValues();
+    final List values = condition.getValues();
     try {
       logAccess("executePreparedSelect", values == null ? new Object[] {sqlStatement} : new Object[] {sqlStatement, values});
       setParameterValues(statement, values, condition.getColumns());
@@ -1236,12 +1236,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
     }
     if (statementProperties.isEmpty()) {
-      if (inserting) {
-        throw new SQLException("Unable to insert entity " + entity.getEntityId() + ", no properties to insert");
-      }
-      else {
-        throw new SQLException("Unable to update entity " + entity.getEntityId() + ", no modified values found");
-      }
+      throw inserting ?
+              new SQLException("Unable to insert entity " + entity.getEntityId() + ", no properties to insert") :
+              new SQLException("Unable to update entity " + entity.getEntityId() + ", no modified values found");
     }
   }
 
@@ -1320,7 +1317,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       if (!Util.nullOrEmpty(whereClause)) {
         builder.append(",").append(WHERE_SPACE_PREFIX).append(whereClause);
       }
-      final List<?> values = condition.getValues();
+      final List values = condition.getValues();
       if (values != null) {
         builder.append(", ").append(toString(values));
       }

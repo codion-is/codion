@@ -343,9 +343,9 @@ public class ColumnConditionPanel<K> extends JPanel {
 
   private static final class DefaultInputFieldProvider implements InputFieldProvider {
 
-    private final ColumnConditionModel<?> columnConditionModel;
+    private final ColumnConditionModel columnConditionModel;
 
-    private DefaultInputFieldProvider(final ColumnConditionModel<?> columnConditionModel) {
+    private DefaultInputFieldProvider(final ColumnConditionModel columnConditionModel) {
       Objects.requireNonNull(columnConditionModel, "columnConditionModel");
       this.columnConditionModel = columnConditionModel;
     }

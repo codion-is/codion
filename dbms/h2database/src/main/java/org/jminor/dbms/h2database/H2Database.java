@@ -171,7 +171,7 @@ public final class H2Database extends AbstractDatabase {
    */
   public void runScript(final String scriptPath, final String username, final String password, final Charset scriptCharset) throws SQLException {
     try {
-      final Class<?> runScriptToolClass = Class.forName(RUN_TOOL_CLASS_NAME);
+      final Class runScriptToolClass = Class.forName(RUN_TOOL_CLASS_NAME);
       final Method execute = runScriptToolClass.getMethod("execute", String.class, String.class, String.class, String.class, Charset.class, boolean.class);
       execute.invoke(runScriptToolClass.getDeclaredConstructor().newInstance(), getURL(null), username, password, scriptPath, scriptCharset, false);
     }
