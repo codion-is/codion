@@ -226,7 +226,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           keyGenerator.beforeInsert(entity, connection);
 
           final List<Property.ColumnProperty> insertColumnProperties = insertProperties.computeIfAbsent(entityId,
-                  eId -> domain.getColumnProperties(eId, !keyGenerator.getType().isAutoIncrement(), true));
+                  e -> domain.getWritableColumnProperties(entityId, !keyGenerator.getType().isAutoIncrement(), true));
           populateStatementPropertiesAndValues(true, entity, insertColumnProperties, statementProperties, statementValues);
 
           insertSQL = createInsertSQL(domain.getTableName(entityId), statementProperties);
@@ -280,7 +280,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           final Collection<Entity> toUpdate = mappedEntitiesMapEntry.getValue();
           final String tableName = domain.getTableName(entityId);
           final List<Property.ColumnProperty> updateColumnProperties = updateProperties.computeIfAbsent(entityId,
-                  eId -> domain.getColumnProperties(eId, true, false));
+                  e -> domain.getWritableColumnProperties(entityId, true, false));
 
           for (final Entity entity : toUpdate) {
             populateStatementPropertiesAndValues(false, entity, updateColumnProperties, statementProperties, statementValues);

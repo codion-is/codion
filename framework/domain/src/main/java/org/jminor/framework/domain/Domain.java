@@ -403,18 +403,19 @@ public class Domain implements Serializable {
   }
 
   /**
-   * Retrieves the column properties comprising the entity identified by {@code entityId}
+   * Retrieves the writable (non read-only) column properties comprising the entity identified by {@code entityId}
    * @param entityId the entity id
    * @param includePrimaryKeyProperties if true primary key properties are included
    * @param includeNonUpdatable if true then non updatable properties are included
    * @return a list containing the column properties (properties that map to database columns) comprising
    * the entity identified by {@code entityId}
    */
-  public final List<Property.ColumnProperty> getColumnProperties(final String entityId,
-                                                                 final boolean includePrimaryKeyProperties,
-                                                                 final boolean includeNonUpdatable) {
+  public final List<Property.ColumnProperty> getWritableColumnProperties(final String entityId,
+                                                                         final boolean includePrimaryKeyProperties,
+                                                                         final boolean includeNonUpdatable) {
     final List<Property.ColumnProperty> properties = new ArrayList<>(getDefinition(entityId).getColumnProperties());
-    properties.removeIf(property -> !includeNonUpdatable && !property.isUpdatable() ||
+    properties.removeIf(property -> property.isReadOnly() ||
+            !includeNonUpdatable && !property.isUpdatable() ||
             !includePrimaryKeyProperties && property.isPrimaryKeyProperty());
 
     return properties;
@@ -655,7 +656,7 @@ public class Domain implements Serializable {
    * @return a list containing all updatable properties associated with the given entity id
    */
   public final List<Property> getUpdatableProperties(final String entityId) {
-    final List<Property.ColumnProperty> columnProperties = getColumnProperties(entityId,
+    final List<Property.ColumnProperty> columnProperties = getWritableColumnProperties(entityId,
             getKeyGeneratorType(entityId).isManual(), false);
     columnProperties.removeIf(property -> property.isForeignKeyProperty() || property.isDenormalized());
     final List<Property> updatable = new ArrayList<>(columnProperties);
