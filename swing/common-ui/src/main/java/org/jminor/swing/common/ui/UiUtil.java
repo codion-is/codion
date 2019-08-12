@@ -471,7 +471,7 @@ public final class UiUtil {
       final Calendar cal = Calendar.getInstance();
       cal.setTime(startDate == null ? Date.from(Instant.now()) : Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
 
-      final Class<?> jCalendarClass = Class.forName(JCALENDAR_CLASS_NAME);
+      final Class jCalendarClass = Class.forName(JCALENDAR_CLASS_NAME);
       final Method getCalendar = jCalendarClass.getMethod("getCalendar");
       final Constructor constructor = jCalendarClass.getConstructor(Calendar.class);
       final JPanel calendarPanel = (JPanel) constructor.newInstance(cal);

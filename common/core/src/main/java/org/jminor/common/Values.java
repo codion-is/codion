@@ -111,7 +111,7 @@ public final class Values {
     private final Method getMethod;
     private Method setMethod;
 
-    private BeanValue(final Object valueOwner, final String propertyName, final Class<?> valueClass, final EventObserver<V> changeEvent) {
+    private BeanValue(final Object valueOwner, final String propertyName, final Class valueClass, final EventObserver<V> changeEvent) {
       if (Util.nullOrEmpty(propertyName)) {
         throw new IllegalArgumentException("propertyName is null or an empty string");
       }

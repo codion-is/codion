@@ -151,7 +151,7 @@ public final class Databases {
    * @param entry the log entry
    * @return a log message
    */
-  public static String createLogMessage(final User user, final String sqlStatement, final List<?> values,
+  public static String createLogMessage(final User user, final String sqlStatement, final List values,
                                         final Exception exception, final MethodLogger.Entry entry) {
     final StringBuilder logMessage = new StringBuilder(user.toString()).append("\n");
     if (entry == null) {

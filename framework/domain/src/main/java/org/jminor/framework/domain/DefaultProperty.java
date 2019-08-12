@@ -66,7 +66,7 @@ class DefaultProperty implements Property {
   /**
    * The class representing the values associated with this property
    */
-  private final Class<?> typeClass;
+  private final Class typeClass;
 
   /**
    * The caption to use when this property is presented
@@ -556,7 +556,7 @@ class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public final Class<?> getTypeClass() {
+  public final Class getTypeClass() {
     return typeClass;
   }
 
@@ -599,7 +599,7 @@ class DefaultProperty implements Property {
    * @param sqlType the type
    * @return the Class representing the given type
    */
-  private static Class<?> getTypeClass(final int sqlType) {
+  private static Class getTypeClass(final int sqlType) {
     switch (sqlType) {
       case Types.BIGINT:
         return Long.class;

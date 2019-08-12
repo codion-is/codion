@@ -95,7 +95,7 @@ public class DefaultValueMapEditModelTest {
     @Override
     public String getDescription() {return null;}
     @Override
-    public Class<?> getTypeClass() {return null;}
+    public Class getTypeClass() {return null;}
     @Override
     public void validateType(final Object value) {}
   }

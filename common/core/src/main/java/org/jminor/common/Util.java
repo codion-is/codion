@@ -351,7 +351,7 @@ public class Util {
    * @return the method used to set the value of the linked property
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
-  public static Method getSetMethod(final Class valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
+  public static Method getSetMethod(final Class valueType, final String property, final Class ownerClass) throws NoSuchMethodException {
     if (Objects.requireNonNull(property, "property").length() == 0) {
       throw new IllegalArgumentException("Property must be specified");
     }
@@ -378,7 +378,7 @@ public class Util {
    * @return the method used to get the value of the linked property
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
-  public static Method getGetMethod(final Class valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
+  public static Method getGetMethod(final Class valueType, final String property, final Class ownerClass) throws NoSuchMethodException {
     Objects.requireNonNull(valueType, "valueType");
     Objects.requireNonNull(property, "property");
     Objects.requireNonNull(ownerClass, "ownerClass");

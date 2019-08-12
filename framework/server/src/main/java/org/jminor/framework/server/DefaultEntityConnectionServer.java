@@ -575,7 +575,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     if (loginProxyClassNames != null) {
       for (final String loginProxyClassName : loginProxyClassNames) {
         LOG.info("Server loading login proxy class '" + loginProxyClassName + FROM_CLASSPATH);
-        final Class<?> loginProxyClass = Class.forName(loginProxyClassName);
+        final Class loginProxyClass = Class.forName(loginProxyClassName);
         try {
           final LoginProxy proxy = (LoginProxy) loginProxyClass.getConstructor().newInstance();
           setLoginProxy(proxy.getClientTypeId(), proxy);
@@ -592,7 +592,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     if (connectionValidatorClassNames != null) {
       for (final String connectionValidatorClassName : connectionValidatorClassNames) {
         LOG.info("Server loading connection validation class '" + connectionValidatorClassName + FROM_CLASSPATH);
-        final Class<?> clientValidatorClass = Class.forName(connectionValidatorClassName);
+        final Class clientValidatorClass = Class.forName(connectionValidatorClassName);
         try {
           final ConnectionValidator validator = (ConnectionValidator) clientValidatorClass.getConstructor().newInstance();
           setConnectionValidator(validator.getClientTypeId(), validator);

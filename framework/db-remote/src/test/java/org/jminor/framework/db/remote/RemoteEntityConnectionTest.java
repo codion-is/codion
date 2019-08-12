@@ -26,7 +26,7 @@ public class RemoteEntityConnectionTest {
       final Class[] parameterTypes = localDbMethod.getParameterTypes();
       boolean found = false;
       for (final Method remoteDbMethod : remoteConnectionClass.getDeclaredMethods()) {
-        final Collection<Class<?>> exceptionTypes = Arrays.asList(remoteDbMethod.getExceptionTypes());
+        final Collection<Class> exceptionTypes = Arrays.asList(remoteDbMethod.getExceptionTypes());
         if (remoteDbMethod.getReturnType().equals(localDbMethod.getReturnType())
                 && remoteDbMethod.getName().equals(localDbMethod.getName())
                 && Arrays.equals(remoteDbMethod.getParameterTypes(), parameterTypes)

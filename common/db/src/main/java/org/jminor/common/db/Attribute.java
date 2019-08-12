@@ -21,7 +21,7 @@ public interface Attribute {
   /**
    * @return the Class representing the values of this attribute
    */
-  Class<?> getTypeClass();
+  Class getTypeClass();
 
   /**
    * @param value the value to validate

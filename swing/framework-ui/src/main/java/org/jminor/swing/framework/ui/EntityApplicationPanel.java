@@ -350,7 +350,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final JComboBox comboBox = new JComboBox(comboBoxModel);
     comboBox.setRenderer(new DefaultListCellRenderer() {
       @Override
-      public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index,
+      public Component getListCellRendererComponent(final JList list, final Object value, final int index,
                                                     final boolean isSelected, final boolean cellHasFocus) {
         final Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         if (index >= 0) {
