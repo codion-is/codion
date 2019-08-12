@@ -21,12 +21,37 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DomainTest {
 
   private final TestDomain domain = new TestDomain();
+
+  @Test
+  public void getWritableColumnProperties() {
+    List<String> writable = domain.getWritableColumnProperties(TestDomain.T_DEPARTMENT, true, true)
+            .stream().map(Property::getPropertyId).collect(Collectors.toList());
+    assertTrue(writable.contains(TestDomain.DEPARTMENT_ID));
+    assertTrue(writable.contains(TestDomain.DEPARTMENT_NAME));
+    assertTrue(writable.contains(TestDomain.DEPARTMENT_LOCATION));
+    assertFalse(writable.contains(TestDomain.DEPARTMENT_ACTIVE));
+
+    writable = domain.getWritableColumnProperties(TestDomain.T_DEPARTMENT, false, true)
+            .stream().map(Property::getPropertyId).collect(Collectors.toList());
+    assertFalse(writable.contains(TestDomain.DEPARTMENT_ID));
+    assertTrue(writable.contains(TestDomain.DEPARTMENT_NAME));
+    assertTrue(writable.contains(TestDomain.DEPARTMENT_LOCATION));
+    assertFalse(writable.contains(TestDomain.DEPARTMENT_ACTIVE));
+
+    writable = domain.getWritableColumnProperties(TestDomain.T_DEPARTMENT, false, false)
+            .stream().map(Property::getPropertyId).collect(Collectors.toList());
+    assertFalse(writable.contains(TestDomain.DEPARTMENT_ID));
+    assertTrue(writable.contains(TestDomain.DEPARTMENT_NAME));
+    assertTrue(writable.contains(TestDomain.DEPARTMENT_LOCATION));
+    assertFalse(writable.contains(TestDomain.DEPARTMENT_ACTIVE));
+  }
 
   @Test
   public void sortProperties() {
