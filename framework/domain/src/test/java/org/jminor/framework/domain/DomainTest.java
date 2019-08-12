@@ -51,6 +51,34 @@ public class DomainTest {
     assertTrue(writable.contains(TestDomain.DEPARTMENT_NAME));
     assertTrue(writable.contains(TestDomain.DEPARTMENT_LOCATION));
     assertFalse(writable.contains(TestDomain.DEPARTMENT_ACTIVE));
+
+    writable = domain.getWritableColumnProperties(TestDomain.T_EMP, true, true)
+            .stream().map(Property::getPropertyId).collect(Collectors.toList());
+    assertTrue(writable.contains(TestDomain.EMP_ID));
+    assertTrue(writable.contains(TestDomain.EMP_HIREDATE));
+    assertTrue(writable.contains(TestDomain.EMP_NAME));
+    assertFalse(writable.contains(TestDomain.EMP_NAME_DEPARTMENT));
+
+    writable = domain.getWritableColumnProperties(TestDomain.T_EMP, false, true)
+            .stream().map(Property::getPropertyId).collect(Collectors.toList());
+    assertFalse(writable.contains(TestDomain.EMP_ID));
+    assertTrue(writable.contains(TestDomain.EMP_HIREDATE));
+    assertTrue(writable.contains(TestDomain.EMP_NAME));
+    assertFalse(writable.contains(TestDomain.EMP_NAME_DEPARTMENT));
+
+    writable = domain.getWritableColumnProperties(TestDomain.T_EMP, false, false)
+            .stream().map(Property::getPropertyId).collect(Collectors.toList());
+    assertFalse(writable.contains(TestDomain.EMP_ID));
+    assertFalse(writable.contains(TestDomain.EMP_HIREDATE));
+    assertTrue(writable.contains(TestDomain.EMP_NAME));
+    assertFalse(writable.contains(TestDomain.EMP_NAME_DEPARTMENT));
+
+    writable = domain.getWritableColumnProperties(TestDomain.T_EMP, true, false)
+            .stream().map(Property::getPropertyId).collect(Collectors.toList());
+    assertFalse(writable.contains(TestDomain.EMP_ID));//overridden by includeNonUpdatable
+    assertFalse(writable.contains(TestDomain.EMP_HIREDATE));
+    assertTrue(writable.contains(TestDomain.EMP_NAME));
+    assertFalse(writable.contains(TestDomain.EMP_NAME_DEPARTMENT));
   }
 
   @Test

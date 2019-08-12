@@ -405,20 +405,20 @@ public class Domain implements Serializable {
   /**
    * Retrieves the writable (non read-only) column properties comprising the entity identified by {@code entityId}
    * @param entityId the entity id
-   * @param includePrimaryKeyProperties if true primary key properties are included
+   * @param includePrimaryKeyProperties if true primary key properties are included, non-updatable primary key properties
+   * are only included if {@code includeNonUpdatable} is true
    * @param includeNonUpdatable if true then non updatable properties are included
-   * @return a list containing the column properties (properties that map to database columns) comprising
+   * @return a list containing the writable column properties (properties that map to database columns) comprising
    * the entity identified by {@code entityId}
    */
   public final List<Property.ColumnProperty> getWritableColumnProperties(final String entityId,
                                                                          final boolean includePrimaryKeyProperties,
                                                                          final boolean includeNonUpdatable) {
-    final List<Property.ColumnProperty> properties = new ArrayList<>(getDefinition(entityId).getColumnProperties());
-    properties.removeIf(property -> property.isReadOnly() ||
-            !includeNonUpdatable && !property.isUpdatable() ||
-            !includePrimaryKeyProperties && property.isPrimaryKeyProperty());
-
-    return properties;
+    return getDefinition(entityId).getColumnProperties().stream()
+            .filter(property -> !property.isReadOnly() &&
+                    (includeNonUpdatable || property.isUpdatable()) &&
+                    (includePrimaryKeyProperties || !property.isPrimaryKeyProperty()))
+            .collect(Collectors.toList());
   }
 
   /**
