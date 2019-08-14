@@ -5086,3 +5086,4 @@
   Package info with configuration values added to packages containing classes with configurable values
   Domain.getColumnProperties(entityId, includePrimaryKeyProperties, includeNonUpdatable) bug fixed, did not exclude read-only properties, renamed to getWritableColumnProperties()
   Removed a bunch of redundant generic wildcards
+  Domain.getWritableColumnProperties() streamlined, tests added

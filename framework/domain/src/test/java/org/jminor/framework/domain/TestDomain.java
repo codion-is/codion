@@ -171,7 +171,8 @@ public final class TestDomain extends Domain {
                     Properties.columnProperty(EMP_DEPARTMENT))
                     .setNullable(false),
             Properties.valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
-                    Arrays.asList(new Item("ANALYST"), new Item("CLERK"), new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN"))),
+                    Arrays.asList(new Item("ANALYST"), new Item("CLERK"),
+                            new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN"))),
             Properties.columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY)
                     .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
             Properties.columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
@@ -179,6 +180,7 @@ public final class TestDomain extends Domain {
             Properties.foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
                     Properties.columnProperty(EMP_MGR)),
             Properties.columnProperty(EMP_HIREDATE, Types.TIMESTAMP, EMP_HIREDATE)
+                    .setUpdatable(false)
                     .setDateTimeFormatPattern(DateFormats.SHORT_DOT)
                     .setNullable(false),
             Properties.denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
