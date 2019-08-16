@@ -319,7 +319,7 @@ public class EntityTestUnit {
       assertEquals(testEntity, tmp, "Entity of type " + testEntity.getEntityId() + " failed equals comparison");
     }
     else {
-      connection.selectMany(getConditions().selectCondition(entityId, SELECT_FETCH_COUNT));
+      connection.selectMany(getConditions().selectCondition(entityId).setFetchCount(SELECT_FETCH_COUNT));
     }
   }
 

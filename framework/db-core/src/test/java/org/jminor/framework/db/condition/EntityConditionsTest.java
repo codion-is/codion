@@ -86,7 +86,7 @@ public class EntityConditionsTest {
             Domain.orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertEquals(-1, condition.getFetchCount());
 
-    condition = entityConditions.selectCondition(TestDomain.T_DEPARTMENT, 10);
+    condition = entityConditions.selectCondition(TestDomain.T_DEPARTMENT).setFetchCount(10);
     assertEquals(10, condition.getFetchCount());
   }
 
@@ -270,7 +270,7 @@ public class EntityConditionsTest {
   @Test
   public void stringCondition() {
     final EntitySelectCondition condition = entityConditions.selectCondition(TestDomain.T_DEPARTMENT,
-            entityConditions.stringCondition("department name is not null"), -1)
+            entityConditions.stringCondition("department name is not null"))
             .setOrderBy(Domain.orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertTrue(condition.getValues().isEmpty());
     assertTrue(condition.getColumns().isEmpty());
