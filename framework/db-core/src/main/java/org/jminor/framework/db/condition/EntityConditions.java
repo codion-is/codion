@@ -76,40 +76,7 @@ public final class EntityConditions {
    */
   public EntitySelectCondition selectCondition(final String entityId, final String propertyId,
                                                final Condition.Type conditionType, final Object value) {
-    return selectCondition(entityId, propertyId, conditionType, -1, value);
-  }
-
-  /**
-   * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityId}
-   * with a where condition based on the property identified by {@code propertyId}, the operators based on
-   * {@code conditionType} and {@code value}. Note that {@code value} may be a single value, a Collection
-   * of values or null.
-   * @param entityId the entity ID
-   * @param propertyId the property ID
-   * @param conditionType the search type
-   * @param fetchCount the maximum number of entities to fetch
-   * @param value the condition value, can be a Collection of values
-   * @return a select condition based on the given value
-   */
-  public EntitySelectCondition selectCondition(final String entityId, final String propertyId,
-                                               final Condition.Type conditionType, final int fetchCount, final Object value) {
-    return new DefaultEntitySelectCondition(domain, entityId, propertyCondition(entityId, propertyId, conditionType, value),
-            fetchCount);
-  }
-
-  /**
-   * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityId}
-   * with a where condition based on the property identified by {@code propertyId}, the operators based on
-   * {@code conditionType} and {@code value}. Note that {@code value} may be a single value, a Collection
-   * of values or null.
-   * @param entityId the entity ID
-   * @param propertyCondition the column condition
-   * @param fetchCount the maximum number of entities to fetch
-   * @return a select condition based on the given column condition
-   */
-  public EntitySelectCondition selectCondition(final String entityId, final Condition<Property.ColumnProperty> propertyCondition,
-                                               final int fetchCount) {
-    return new DefaultEntitySelectCondition(domain, entityId, propertyCondition, fetchCount);
+    return selectCondition(entityId, propertyCondition(entityId, propertyId, conditionType, value));
   }
 
   /**
@@ -119,17 +86,6 @@ public final class EntityConditions {
    */
   public EntitySelectCondition selectCondition(final String entityId) {
     return new DefaultEntitySelectCondition(domain, entityId);
-  }
-
-  /**
-   * Creates a {@link EntitySelectCondition} instance for selecting at most {@code fetchCount} number
-   * of entities identified by {@code entityId}
-   * @param entityId the entity ID
-   * @param fetchCount the maximum number of entities to fetch
-   * @return a select condition encompassing at most {@code fetchCount} entities of the given type
-   */
-  public EntitySelectCondition selectCondition(final String entityId, final int fetchCount) {
-    return new DefaultEntitySelectCondition(domain, entityId, null, fetchCount);
   }
 
   /**
@@ -558,7 +514,7 @@ public final class EntityConditions {
     private HashMap<String, Integer> foreignKeyFetchDepthLimits;
 
     private Entity.OrderBy orderBy;
-    private int fetchCount;
+    private int fetchCount = -1;
     private boolean forUpdate;
     private int limit;
     private int offset;
@@ -581,20 +537,6 @@ public final class EntityConditions {
      * @see EntityKeyCondition
      */
     private DefaultEntitySelectCondition(final Domain domain, final String entityId, final Condition<Property.ColumnProperty> condition) {
-      this(domain, entityId, condition, -1);
-    }
-
-    /**
-     * Instantiates a new {@link DefaultEntitySelectCondition}
-     * @param domain the domain model
-     * @param entityId the ID of the entity to select
-     * @param condition the Condition object
-     * @param fetchCount the maximum number of records to fetch from the result
-     * @see PropertyCondition
-     * @see EntityKeyCondition
-     */
-    private DefaultEntitySelectCondition(final Domain domain, final String entityId,
-                                         final Condition<Property.ColumnProperty> condition, final int fetchCount) {
       this.domain = Objects.requireNonNull(domain);
       this.condition = new DefaultEntityCondition(entityId, condition);
       this.fetchCount = fetchCount;
@@ -628,6 +570,12 @@ public final class EntityConditions {
     @Override
     public int getFetchCount() {
       return fetchCount;
+    }
+
+    @Override
+    public EntitySelectCondition setFetchCount(final int fetchCount) {
+      this.fetchCount = fetchCount;
+      return this;
     }
 
     @Override

@@ -5088,3 +5088,4 @@
   Removed a bunch of redundant generic wildcards
   Domain.getWritableColumnProperties() streamlined, tests added
   UiUtil, file chooser now clears the previously selected files when selecting files to open or save
+  EntitySelectCondition.setFetchCount() added

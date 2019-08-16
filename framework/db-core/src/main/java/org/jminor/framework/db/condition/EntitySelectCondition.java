@@ -64,6 +64,12 @@ public interface EntitySelectCondition extends EntityCondition {
   int getFetchCount();
 
   /**
+   * @param fetchCount the maximum number of records to fetch from the result
+   * @return this EntitySelectCondition instance
+   */
+  EntitySelectCondition setFetchCount(final int fetchCount);
+
+  /**
    * Returns the number of levels of foreign key values to fetch, with 0 meaning no referenced entities
    * should be fetched.
    * @param foreignKeyPropertyId the foreign key property ID
