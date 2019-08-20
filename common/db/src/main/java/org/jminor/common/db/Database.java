@@ -182,16 +182,6 @@ public interface Database {
   boolean supportsNowait();
 
   /**
-   * @return the value used to represent 'true' in the database
-   */
-  Object getBooleanTrueValue();
-
-  /**
-   * @return the value used to represent 'false' in the database
-   */
-  Object getBooleanFalseValue();
-
-  /**
    * Returns a query to use when checking if the connection is valid,
    * this is used in cases where the dbms does not support the isValid() call.
    * Returning null is safe if isValid() is supported.

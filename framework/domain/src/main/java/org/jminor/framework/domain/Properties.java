@@ -222,21 +222,13 @@ public final class Properties {
   /**
    * @param propertyId the property ID
    * @param columnType the data type of the underlying column
+   * @param trueValue the value representing 'true' in the underlying column
+   * @param falseValue the value representing 'false' in the underlying column
    * @return a new boolean property
    */
-  public static Property.ColumnProperty booleanProperty(final String propertyId, final int columnType) {
-    return booleanProperty(propertyId, columnType, null);
-  }
-
-  /**
-   * @param propertyId the property ID
-   * @param columnType the data type of the underlying column
-   * @param caption the caption of this property
-   * @return a new boolean property
-   */
-  public static Property.ColumnProperty booleanProperty(final String propertyId, final int columnType, final String caption) {
-    return new DefaultProperty.DefaultColumnProperty(propertyId, Types.BOOLEAN, caption, columnType)
-            .setValueConverter(booleanValueConverter());
+  public static Property.ColumnProperty booleanProperty(final String propertyId, final int columnType,
+                                                        final Object trueValue, final Object falseValue) {
+    return booleanProperty(propertyId, columnType, null, trueValue, falseValue);
   }
 
   /**
@@ -330,20 +322,13 @@ public final class Properties {
   }
 
   /**
-   * @return a value converter which converts an underlying database representation
-   * of a boolean value into an actual Boolean
-   */
-  public static ValueConverter booleanValueConverter() {
-    return new DefaultProperty.BooleanValueConverter();
-  }
-
-  /**
    * @param trueValue the value used to represent 'true' in the underlying database, can be null
    * @param falseValue the value used to represent 'false' in the underlying database, can be null
+   * @param <T> the type of the value used to represent a boolean
    * @return a value converter which converts an underlying database representation
    * of a boolean value into an actual Boolean
    */
-  public static ValueConverter booleanValueConverter(final Object trueValue, final Object falseValue) {
+  public static <T> ValueConverter<Boolean, T> booleanValueConverter(final T trueValue, final T falseValue) {
     return new DefaultProperty.BooleanValueConverter(trueValue, falseValue);
   }
 

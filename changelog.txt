@@ -5089,3 +5089,6 @@
   Domain.getWritableColumnProperties() streamlined, tests added
   UiUtil, file chooser now clears the previously selected files when selecting files to open or save
   EntitySelectCondition.setFetchCount() added
+  DefaultProperty.BooleanValueConverter, no longer depends on Database.getBooleanTrueValue() and getBooleanFalseValue()
+  Database.getBooleanTrueValue() and getBooleanFalseValue() removed
+  Properties.booleanProperty() calls must now specify trueValue and falseValue as parameters

@@ -21,8 +21,6 @@ public final class SQLServerDatabase extends AbstractDatabase {
 
   private static final int AUTHENTICATION_ERROR = 18456;
   private static final int REFERENTIAL_INTEGRITY_ERROR = 547;
-  private static final Integer BOOLEAN_TRUE_VALUE = 1;
-  private static final Integer BOOLEAN_FALSE_VALUE = 0;
 
   /**
    * Instantiates a new SQLServerDatabase.
@@ -65,18 +63,6 @@ public final class SQLServerDatabase extends AbstractDatabase {
   public String getURL(final Properties connectionProperties) {
     final String sid = getSid();
     return URL_PREFIX + getHost() + ":" + getPort() + (!Util.nullOrEmpty(sid) ? ";databaseName=" + sid : "") + getUrlAppend();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Object getBooleanTrueValue() {
-    return BOOLEAN_TRUE_VALUE;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Object getBooleanFalseValue() {
-    return BOOLEAN_FALSE_VALUE;
   }
 
   /** {@inheritDoc} */
