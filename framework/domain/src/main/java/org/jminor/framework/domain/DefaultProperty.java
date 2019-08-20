@@ -7,7 +7,6 @@ import org.jminor.common.FormatUtil;
 import org.jminor.common.Item;
 import org.jminor.common.Util;
 import org.jminor.common.db.Column;
-import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
 import org.jminor.common.db.ValueFetcher;
@@ -654,7 +653,7 @@ class DefaultProperty implements Property {
       this.columnType = columnType;
       this.valueConverter = initializeValueConverter(this);
       this.valueFetcher = initializeValueFetcher(this);
-      this.resultPacker = new PropertyResultPacker(this);
+      this.resultPacker = new PropertyResultPacker();
     }
 
     @Override
@@ -870,6 +869,27 @@ class DefaultProperty implements Property {
           return (ValueFetcher) resultSet -> null;
         default:
           throw new IllegalArgumentException("Unsupported SQL value type: " + property.columnType);
+      }
+    }
+
+    private final class PropertyResultPacker implements ResultPacker<Object> {
+
+      private static final int COLUMN_INDEX = 1;
+
+      @Override
+      public Object fetch(final ResultSet resultSet) throws SQLException {
+        if (isInteger()) {
+          return getInteger(resultSet, COLUMN_INDEX);
+        }
+        else if (isLong()) {
+          return getLong(resultSet, COLUMN_INDEX);
+        }
+        else if (isDouble()) {
+          return getDouble(resultSet, COLUMN_INDEX);
+        }
+        else {
+          return resultSet.getObject(COLUMN_INDEX);
+        }
       }
     }
 
@@ -1236,22 +1256,18 @@ class DefaultProperty implements Property {
     }
   }
 
-  static final class BooleanValueConverter implements ValueConverter<Boolean, Object> {
+  static final class BooleanValueConverter<T> implements ValueConverter<Boolean, T> {
 
-    private final Object trueValue;
-    private final Object falseValue;
+    private final T trueValue;
+    private final T falseValue;
 
-    BooleanValueConverter() {
-      this(Databases.getInstance().getBooleanTrueValue(), Databases.getInstance().getBooleanFalseValue());
-    }
-
-    BooleanValueConverter(final Object trueValue, final Object falseValue) {
-      this.trueValue = trueValue;
-      this.falseValue = falseValue;
+    BooleanValueConverter(final T trueValue, final T falseValue) {
+      this.trueValue = Objects.requireNonNull(trueValue);
+      this.falseValue = Objects.requireNonNull(falseValue);
     }
 
     @Override
-    public Boolean fromColumnValue(final Object columnValue) {
+    public Boolean fromColumnValue(final T columnValue) {
       if (Objects.equals(trueValue, columnValue)) {
         return true;
       }
@@ -1263,7 +1279,7 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public Object toColumnValue(final Boolean value) {
+    public T toColumnValue(final Boolean value) {
       if (value == null) {
         return null;
       }
@@ -1355,31 +1371,6 @@ class DefaultProperty implements Property {
       }
 
       return columnValue.toLocalTime();
-    }
-  }
-
-  private static final class PropertyResultPacker implements ResultPacker<Object> {
-    private static final int COLUMN_INDEX = 1;
-    private final Property.ColumnProperty property;
-
-    private PropertyResultPacker(final Property.ColumnProperty property) {
-      this.property = property;
-    }
-
-    @Override
-    public Object fetch(final ResultSet resultSet) throws SQLException {
-      if (property.isInteger()) {
-        return DefaultColumnProperty.getInteger(resultSet, COLUMN_INDEX);
-      }
-      else if (property.isLong()) {
-        return DefaultColumnProperty.getLong(resultSet, COLUMN_INDEX);
-      }
-      else if (property.isDouble()) {
-        return DefaultColumnProperty.getDouble(resultSet, COLUMN_INDEX);
-      }
-      else {
-        return resultSet.getObject(1);
-      }
     }
   }
 }
