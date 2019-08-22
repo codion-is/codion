@@ -1,3 +1,7 @@
+plugins {
+    id 'org.openjfx.javafxplugin' version '0.0.8'
+}
+
 dependencies {
     api project(':jminor-common-core')
     api project(':jminor-common-db')
@@ -9,11 +13,6 @@ dependencies {
 
     testImplementation project(':jminor-framework-db-local')
     testImplementation project(path: ':jminor-framework-model', configuration: 'testArtifact')
-
-    compile 'org.openjfx:javafx-base:11:linux'
-    compile 'org.openjfx:javafx-graphics:11:linux'
-    compile 'org.openjfx:javafx-controls:11:linux'
-    compile 'org.openjfx:javafx-swing:11:linux'
 
     implementation "org.json:json:${jsonVersion}"
 
@@ -30,6 +29,11 @@ ext {
             'org.jminor.javafx.framework': 'org.jminor.framework.db.local,org.jminor.framework.model',
             'org.jminor.framework.model': 'org.jminor.framework.db.local,org.junit.jupiter.api'
     ]
+}
+
+javafx {
+    version = '12'
+    modules = ['javafx.base', 'javafx.graphics', 'javafx.controls', 'javafx.swing']
 }
 
 compileTestJava {

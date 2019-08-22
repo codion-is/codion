@@ -1,6 +1,10 @@
 import org.javamodularity.moduleplugin.tasks.ModularCreateStartScripts
 import org.javamodularity.moduleplugin.tasks.ModularJavaExec
 
+plugins {
+    id 'org.openjfx.javafxplugin' version '0.0.8'
+}
+
 apply from: '../demos.gradle'
 
 dependencies {
@@ -54,6 +58,11 @@ dependencies {
 ext {
     testAddModules = ['org.jminor.framework.db.test']
     testAddReads = ['org.jminor.framework.demos.chinook': 'org.jminor.framework.db.test']
+}
+
+javafx {
+    version = '12'
+    modules = ['javafx.base', 'javafx.graphics', 'javafx.controls', 'javafx.swing']
 }
 
 compileTestJava {
