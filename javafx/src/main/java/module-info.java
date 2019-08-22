@@ -2,7 +2,7 @@
  * JavaFX ui application classes.
  */
 module org.jminor.javafx.framework {
-  requires slf4j.api;
+  requires org.slf4j;
   requires json;
   requires transitive javafx.graphics;
   requires transitive javafx.controls;

@@ -4,7 +4,7 @@
  * @uses org.jminor.common.CredentialsProvider
  */
 module org.jminor.common.core {
-  requires slf4j.api;
+  requires org.slf4j;
 
   exports org.jminor.common;
   exports org.jminor.common.i18n;

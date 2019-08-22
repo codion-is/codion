@@ -2,7 +2,7 @@
  * Servlet application server.
  */
 module org.jminor.framework.servlet {
-  requires slf4j.api;
+  requires org.slf4j;
   requires java.ws.rs;
   requires javax.servlet.api;
   requires jetty.servlet;

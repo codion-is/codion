@@ -5,7 +5,7 @@
  * @provides org.jminor.common.db.pool.ConnectionPoolProvider
  */
 module org.jminor.common.db {
-  requires slf4j.api;
+  requires org.slf4j;
   requires transitive java.sql;
   requires transitive org.jminor.common.core;
 
