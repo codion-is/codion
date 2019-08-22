@@ -28,7 +28,7 @@ ext {
     testAddModules = ['org.jminor.framework.db.local,org.jminor.framework.model']
     testAddReads = [
             'org.jminor.javafx.framework': 'org.jminor.framework.db.local,org.jminor.framework.model',
-            'org.jminor.framework.model': 'org.jminor.framework.db.local'
+            'org.jminor.framework.model': 'org.jminor.framework.db.local,org.junit.jupiter.api'
     ]
 }
 
