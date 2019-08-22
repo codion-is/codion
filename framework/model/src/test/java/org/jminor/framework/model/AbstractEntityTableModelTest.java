@@ -4,6 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.User;
+import org.jminor.common.Util;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
@@ -321,10 +322,11 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final TableModel deptModel = createDepartmentTableModel();
     deptModel.setColumns(TestDomain.DEPARTMENT_ID, TestDomain.DEPARTMENT_NAME, TestDomain.DEPARTMENT_LOCATION);
     deptModel.refresh();
-    final String expected = "deptno\tdname\tloc\n" +
-            "10\tACCOUNTING\tNEW YORK\n" +
-            "40\tOPERATIONS\tBOSTON\n" +
-            "20\tRESEARCH\tDALLAS\n" +
+    final String newline = Util.LINE_SEPARATOR;
+    final String expected = "deptno\tdname\tloc" + newline +
+            "10\tACCOUNTING\tNEW YORK" + newline +
+            "40\tOPERATIONS\tBOSTON" + newline +
+            "20\tRESEARCH\tDALLAS" + newline +
             "30\tSALES\tCHICAGO";
     assertEquals(expected, deptModel.getTableDataAsDelimitedString('\t'));
   }
