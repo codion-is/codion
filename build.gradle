@@ -183,6 +183,12 @@ configure(project.frameworkModules) {
     createServerKeystore.onlyIf { !new File(keystore).exists() }
 
     test {
+        moduleOptions {
+            addExports = [
+                    'org.junit.platform.commons/org.junit.platform.commons.util': 'ALL-UNNAMED',
+                    'org.junit.platform.commons/org.junit.platform.commons.logging': 'ALL-UNNAMED'
+            ]
+        }
         useJUnitPlatform()
         systemProperty "jminor.db.type", "h2"
         systemProperty "jminor.db.host", "h2db"
