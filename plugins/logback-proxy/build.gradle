@@ -1,6 +1,8 @@
 dependencies {
     api project(':jminor-common-core')
 
-    implementation "ch.qos.logback:logback-classic:${logbackVersion}"
+    implementation ("ch.qos.logback:logback-classic:${logbackVersion}") {
+        exclude group: 'javax.activation', module: 'activation'
+    }
     implementation "ch.qos.logback:logback-core:${logbackVersion}"
 }

@@ -9,7 +9,6 @@ dependencies {
     implementation project(':jminor-framework-db-remote')
     implementation project(':jminor-framework-server')
 
-    api 'javax.ws.rs:javax.ws.rs-api:2.1'
     api 'javax.xml.bind:jaxb-api:2.3.0'
     api 'javax.activation:javax.activation-api:1.2.0'
 
