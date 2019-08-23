@@ -1278,7 +1278,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
                                           final User silentLoginUser) throws Exception {
     LOG.debug("{} application starting", frameCaption);
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
-    UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
+    final String defaultLookAndFeelClassName = getDefaultLookAndFeelClassName();
+    if (!UIManager.getLookAndFeel().getClass().getName().equals(defaultLookAndFeelClassName)) {
+      UIManager.setLookAndFeel(defaultLookAndFeelClassName);
+    }
     final Integer fontSize = getDefaultFontSize();
     if (!fontSize.equals(100)) {
       UiUtil.setFontSize(fontSize / 100f);
