@@ -19,6 +19,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
+import org.jminor.common.db.exception.UniqueConstraintException;
 import org.jminor.common.db.exception.UpdateException;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
@@ -247,7 +248,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(Databases.createLogMessage(getUser(), insertSQL, statementValues, e, null));
-        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+        throw translateInsertUpdateSQLException(e);
       }
       finally {
         Databases.closeSilently(statement);
@@ -313,7 +314,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(Databases.createLogMessage(getUser(), updateSQL, statementValues, e, null));
-        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+        throw translateInsertUpdateSQLException(e);
       }
       catch (final RecordModifiedException e) {
         rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
@@ -349,7 +350,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(Databases.createLogMessage(getUser(), deleteSQL, condition.getValues(), e, null));
-        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+        throw translateDeleteSQLException(e);
       }
       finally {
         Databases.closeSilently(statement);
@@ -387,13 +388,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(Databases.createLogMessage(getUser(), deleteSQL, entityKeys, e, null));
-        final Database database = connection.getDatabase();
-        if (database.isReferentialIntegrityException(e)) {
-          throw new ReferentialIntegrityException(e, database.getErrorMessage(e));
-        }
-        else {
-          throw new DatabaseException(e, database.getErrorMessage(e));
-        }
+        throw translateDeleteSQLException(e);
       }
       finally {
         Databases.closeSilently(statement);
@@ -979,6 +974,26 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     finally {
       logExit("packResult", packingException, "row count: " + result.size());
+    }
+  }
+
+  private DatabaseException translateInsertUpdateSQLException(final SQLException exception) {
+    final Database database = connection.getDatabase();
+    if (database.isUniqueConstraintException(exception)) {
+      return new UniqueConstraintException(exception, database.getErrorMessage(exception));
+    }
+    else {
+      return new DatabaseException(exception, database.getErrorMessage(exception));
+    }
+  }
+
+  private DatabaseException translateDeleteSQLException(final SQLException exception) {
+    final Database database = connection.getDatabase();
+    if (database.isReferentialIntegrityException(exception)) {
+      return new ReferentialIntegrityException(exception, database.getErrorMessage(exception));
+    }
+    else {
+      return new DatabaseException(exception, database.getErrorMessage(exception));
     }
   }
 

@@ -29,6 +29,7 @@ public final class H2Database extends AbstractDatabase {
    */
   private static final int AUTHENTICATION_ERROR = 28000;
   private static final int REFERENTIAL_INTEGRITY_ERROR = 23503;
+  private static final int UNIQUE_CONSTRAINT_ERROR = 23505;
 
   private static boolean sharedDatabaseInitialized = false;
 
@@ -134,22 +135,22 @@ public final class H2Database extends AbstractDatabase {
     }
   }
 
-  /**
-   * @param exception the exception
-   * @return true if this exception represents a login credentials failure
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isAuthenticationException(final SQLException exception) {
     return exception.getErrorCode() == AUTHENTICATION_ERROR;
   }
 
-  /**
-   * @param exception the exception
-   * @return true if this exception is a referential integrity error
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isReferentialIntegrityException(final SQLException exception) {
     return exception.getErrorCode() == REFERENTIAL_INTEGRITY_ERROR;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isUniqueConstraintException(final SQLException exception) {
+    return exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR;
   }
 
   /**

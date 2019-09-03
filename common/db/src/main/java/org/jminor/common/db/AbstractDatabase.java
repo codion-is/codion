@@ -262,6 +262,12 @@ public abstract class AbstractDatabase implements Database {
 
   /** {@inheritDoc} */
   @Override
+  public boolean isUniqueConstraintException(final SQLException exception) {
+    return false;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public Properties addConnectionProperties(final Properties properties) {
     return properties;
   }

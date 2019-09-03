@@ -17,7 +17,9 @@ public final class MySQLDatabase extends AbstractDatabase {
   static final String AUTO_INCREMENT_QUERY = "select last_insert_id() from dual";
   private static final String DRIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
   private static final String URL_PREFIX = "jdbc:mysql://";
-  private static final int REFERENTIAL_CONSTRAINT_ERROR = 256;
+  private static final int REFERENTIAL_CONSTRAINT_ERROR = 1452;
+  private static final int UNIQUE_CONSTRAINT_ERROR1 = 1062;
+  private static final int UNIQUE_CONSTRAINT_ERROR2 = 1586;
 
   /**
    * Instantiates a new MySQLDatabase.
@@ -55,12 +57,15 @@ public final class MySQLDatabase extends AbstractDatabase {
     return false;
   }
 
-  /**
-   * @param exception the exception
-   * @return true if this exception is a referential integrity error
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isReferentialIntegrityException(final SQLException exception) {
     return exception.getErrorCode() == REFERENTIAL_CONSTRAINT_ERROR;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isUniqueConstraintException(final SQLException exception) {
+    return exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR1 || exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR2;
   }
 }
