@@ -5082,3 +5082,4 @@
   Database.getBooleanTrueValue() and getBooleanFalseValue() removed
   Properties.booleanProperty() calls must now specify trueValue and falseValue as parameters
   EntityApplicationPanel no longer sets the Look&Feel during startup if it's already set to the default one
+  Entities.equal() added
