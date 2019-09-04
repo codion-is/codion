@@ -112,11 +112,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private int fetchCount = -1;
 
   /**
-   * True if the underlying query should be configurable by the user
-   */
-  private boolean queryConfigurationAllowed = true;
-
-  /**
    * If true then items deleted via the edit model are removed from this table model
    */
   private boolean removeEntitiesOnDelete = true;
@@ -198,19 +193,6 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public final boolean hasEditModel() {
     return this.editModel != null;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean isQueryConfigurationAllowed() {
-    return queryConfigurationAllowed;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final SwingEntityTableModel setQueryConfigurationAllowed(final boolean value) {
-    this.queryConfigurationAllowed = value;
-    return this;
   }
 
   /** {@inheritDoc} */

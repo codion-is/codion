@@ -165,10 +165,6 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void refreshEntities(final List<Entity.Key> keys) {}
     @Override
-    public boolean isQueryConfigurationAllowed() {return false;}
-    @Override
-    public EntityTableModel<TestEntityEditModel> setQueryConfigurationAllowed(final boolean value) {return null;}
-    @Override
     public EntityTableConditionModel getConditionModel() {return null;}
     @Override
     public boolean isDeleteAllowed() {return false;}
