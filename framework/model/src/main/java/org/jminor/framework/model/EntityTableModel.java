@@ -125,18 +125,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   void refreshEntities(final List<Entity.Key> keys);
 
   /**
-   * @return true if the underlying query should be configurable
-   */
-  boolean isQueryConfigurationAllowed();
-
-  /**
-   * Specifies whether or not the underlying query should be configurable
-   * @param value the value
-   * @return this {@link EntityTableModel} instance
-   */
-  EntityTableModel<E> setQueryConfigurationAllowed(final boolean value);
-
-  /**
    * @return the {@link EntityTableConditionModel} instance used by this table model
    */
   EntityTableConditionModel getConditionModel();

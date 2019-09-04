@@ -282,10 +282,6 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertFalse(testModel.getQueryConditionRequiredState().isActive());
     testModel.getQueryConditionRequiredState().setActive(true);
     assertTrue(testModel.getQueryConditionRequiredState().isActive());
-    testModel.setQueryConfigurationAllowed(false);
-    assertFalse(testModel.isQueryConfigurationAllowed());
-    testModel.setQueryConfigurationAllowed(true);
-    assertTrue(testModel.isQueryConfigurationAllowed());
     testModel.setFetchCount(10);
     assertEquals(10, testModel.getFetchCount());
     assertNotNull(testModel.getEditModel());

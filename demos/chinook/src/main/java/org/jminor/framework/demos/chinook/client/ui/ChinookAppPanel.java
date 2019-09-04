@@ -180,7 +180,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPane
       final SwingEntityModel customerModel = new SwingEntityModel(Chinook.T_CUSTOMER, connectionProvider);
       final SwingEntityModel invoiceModel = new SwingEntityModel(Chinook.T_INVOICE, connectionProvider);
       final SwingEntityModel invoiceLineModel = new SwingEntityModel(Chinook.T_INVOICELINE, connectionProvider);
-      invoiceLineModel.getTableModel().setQueryConfigurationAllowed(false);
       invoiceModel.addDetailModel(invoiceLineModel);
       invoiceModel.addLinkedDetailModel(invoiceLineModel);
       customerModel.addDetailModel(invoiceModel);

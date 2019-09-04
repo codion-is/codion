@@ -719,7 +719,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @return a condition panel toggle button
    */
   public final Control getToggleConditionPanelControl() {
-    if (!getEntityTableModel().isQueryConfigurationAllowed()) {
+    if (!includeConditionPanel) {
       return null;
     }
 
@@ -840,7 +840,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
         return new ArrayList<>(entities);
       }
     };
-    tableModel.setQueryConfigurationAllowed(false);
     tableModel.refresh();
 
     return createEntityTablePanel(tableModel);
@@ -868,7 +867,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       }
     };
     tableModel.setEditModel(editModel);
-    tableModel.setQueryConfigurationAllowed(false);
     tableModel.refresh();
 
     return createEntityTablePanel(tableModel);
@@ -899,6 +897,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
         return popupControls;
       }
     };
+    tablePanel.setIncludeConditionPanel(false);
     tablePanel.setIncludeSouthPanel(false);
     tablePanel.initializePanel();
 
@@ -1164,7 +1163,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
       }
       popupControls.add(controlMap.get(SELECT_COLUMNS));
     }
-    if (getEntityTableModel().isQueryConfigurationAllowed()) {
+    if (includeConditionPanel) {
       if (separatorRequired) {
         popupControls.addSeparator();
       }
@@ -1441,7 +1440,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isUpdateAllowed() && getEntityTableModel().isBatchUpdateAllowed()) {
       setControl(UPDATE_SELECTED, getUpdateSelectedControlSet());
     }
-    if (getEntityTableModel().isQueryConfigurationAllowed()) {
+    if (includeConditionPanel) {
       setControl(CONDITION_PANEL_VISIBLE, getConditionPanelControl());
     }
     setControl(CLEAR, getClearControl());

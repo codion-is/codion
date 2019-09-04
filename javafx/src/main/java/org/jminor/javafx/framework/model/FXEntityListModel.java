@@ -57,7 +57,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private List<PropertyTableColumn> initialColumns;
 
   private InsertAction insertAction = InsertAction.ADD_TOP;
-  private boolean queryConfigurationAllowed = true;
   private boolean batchUpdateAllowed = true;
   private boolean removeEntitiesOnDelete = true;
   private int fetchCount = -1;
@@ -233,19 +232,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean isQueryConfigurationAllowed() {
-    return queryConfigurationAllowed;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final FXEntityListModel setQueryConfigurationAllowed(final boolean queryConfigurationAllowed) {
-    this.queryConfigurationAllowed = queryConfigurationAllowed;
-    return this;
   }
 
   /** {@inheritDoc} */

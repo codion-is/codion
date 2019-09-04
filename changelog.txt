@@ -5085,3 +5085,5 @@
   Entities.equal() added
   UniqueConstraintException added, used in DefaultLocalEntityConnection, some minor related fixes and refactorings
   DefaultLocalEntityConnection.insert() and update() now throw ReferentialIntegrityException when applicable (only H2Database and Oracle for now)
+  EntityTableModel.isQueryConfigurationAllowed property removed, EntityTablePanel.includeConditionPanel used instead
+  EntityTableConditionPanel, require_query_condition i18n caption changed
