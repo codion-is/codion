@@ -16,6 +16,7 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
 
   private static final String INVALID_AUTHORIZATION_SPECIFICATION = "28000";
   private static final String INTEGRITY_CONSTRAINT_VIOLATION = "23000";
+  private static final String UNIQUE_CONSTRAINT_ERROR = "23505";
 
   static final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
   static final String URL_PREFIX = "jdbc:postgresql://";
@@ -57,22 +58,22 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
     return URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid() + getUrlAppend();
   }
 
-  /**
-   * @param exception the exception
-   * @return true if this exception represents a login credentials failure
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isAuthenticationException(final SQLException exception) {
     return exception.getSQLState().equals(INVALID_AUTHORIZATION_SPECIFICATION);
   }
 
-  /**
-   * @param exception the exception
-   * @return true if this exception is a referential integrity error
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isReferentialIntegrityException(final SQLException exception) {
     return exception.getSQLState().equals(INTEGRITY_CONSTRAINT_VIOLATION);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isUniqueConstraintException(final SQLException exception) {
+    return exception.getSQLState().equals(UNIQUE_CONSTRAINT_ERROR);
   }
 
   /**

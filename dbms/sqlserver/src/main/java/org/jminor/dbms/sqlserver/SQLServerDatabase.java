@@ -21,6 +21,8 @@ public final class SQLServerDatabase extends AbstractDatabase {
 
   private static final int AUTHENTICATION_ERROR = 18456;
   private static final int REFERENTIAL_INTEGRITY_ERROR = 547;
+  private static final int UNIQUE_CONSTRAINT_ERROR1 = 2601;
+  private static final int UNIQUE_CONSTRAINT_ERROR2 = 2627;
 
   /**
    * Instantiates a new SQLServerDatabase.
@@ -75,5 +77,11 @@ public final class SQLServerDatabase extends AbstractDatabase {
   @Override
   public boolean isReferentialIntegrityException(final SQLException exception) {
     return exception.getErrorCode() == REFERENTIAL_INTEGRITY_ERROR;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isUniqueConstraintException(final SQLException exception) {
+    return exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR1 || exception.getErrorCode() == UNIQUE_CONSTRAINT_ERROR2;
   }
 }

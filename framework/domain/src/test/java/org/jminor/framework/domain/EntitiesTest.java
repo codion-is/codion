@@ -20,6 +20,32 @@ public final class EntitiesTest {
   private final TestDomain domain = new TestDomain();
 
   @Test
+  public void equal() {
+    final Entity department1 = domain.entity(TestDomain.T_DEPARTMENT);
+    department1.put(TestDomain.DEPARTMENT_ID, 1);
+    department1.put(TestDomain.DEPARTMENT_NAME, "name");
+    department1.put(TestDomain.DEPARTMENT_LOCATION, "loc");
+
+    final Entity department2 = domain.entity(TestDomain.T_DEPARTMENT);
+    department2.put(TestDomain.DEPARTMENT_ID, 2);
+    department2.put(TestDomain.DEPARTMENT_NAME, "name");
+    department2.put(TestDomain.DEPARTMENT_LOCATION, "loc");
+
+    assertFalse(Entities.equal(department1, department2,
+            TestDomain.DEPARTMENT_ID, TestDomain.DEPARTMENT_NAME, TestDomain.DEPARTMENT_LOCATION));
+    assertTrue(Entities.equal(department1, department2,
+            TestDomain.DEPARTMENT_NAME, TestDomain.DEPARTMENT_LOCATION));
+    department2.remove(TestDomain.DEPARTMENT_LOCATION);
+    assertFalse(Entities.equal(department1, department2,
+            TestDomain.DEPARTMENT_NAME, TestDomain.DEPARTMENT_LOCATION));
+    department1.remove(TestDomain.DEPARTMENT_LOCATION);
+    assertTrue(Entities.equal(department1, department2,
+            TestDomain.DEPARTMENT_NAME, TestDomain.DEPARTMENT_LOCATION));
+
+    assertThrows(IllegalArgumentException.class, () -> Entities.equal(department1, department2));
+  }
+
+  @Test
   public void isKeyModified() {
     assertFalse(Entities.isKeyModified(null));
     assertFalse(Entities.isKeyModified(Collections.emptyList()));

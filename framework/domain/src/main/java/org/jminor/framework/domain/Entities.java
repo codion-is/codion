@@ -315,6 +315,29 @@ public final class Entities {
   }
 
   /**
+   * Returns true if the values of the given properties are equal in the given entities.
+   * @param entityOne the first entity
+   * @param entityTwo the second entity
+   * @param propertyIds the ids of the properties to use
+   * @return true if the values of the given properties are equal in the given entities
+   */
+  public static boolean equal(final Entity entityOne, final Entity entityTwo, final String... propertyIds) {
+    Objects.requireNonNull(entityOne);
+    Objects.requireNonNull(entityTwo);
+    Objects.requireNonNull(propertyIds);
+    if (propertyIds.length == 0) {
+      throw new IllegalArgumentException("No properties provided for equality check");
+    }
+    for (final String propertyId : propertyIds) {
+      if (!Objects.equals(entityOne.get(propertyId), entityTwo.get(propertyId))) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
    * @param propertyId the property to check

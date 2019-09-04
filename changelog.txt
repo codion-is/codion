@@ -5093,3 +5093,6 @@
   Database.getBooleanTrueValue() and getBooleanFalseValue() removed
   Properties.booleanProperty() calls must now specify trueValue and falseValue as parameters
   EntityApplicationPanel no longer sets the Look&Feel during startup if it's already set to the default one
+  Entities.equal() added
+  UniqueConstraintException added, used in DefaultLocalEntityConnection, some minor related fixes and refactorings
+  DefaultLocalEntityConnection.insert() and update() now throw ReferentialIntegrityException when applicable (only H2Database and Oracle for now)

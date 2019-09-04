@@ -4,7 +4,8 @@ CREATE TABLE scott.dept (
   deptno INT NOT NULL,
   dname VARCHAR(14) NOT NULL,
   loc VARCHAR(13),
-  constraint dept_pk primary key (deptno)
+  constraint dept_pk primary key (deptno),
+  constraint dept_uk unique (dname)
 );
 
 CREATE TABLE scott.emp (

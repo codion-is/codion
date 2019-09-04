@@ -130,21 +130,21 @@ public final class OracleDatabase extends AbstractDatabase {
     return exception.getMessage();
   }
 
-  /**
-   * @param exception the exception
-   * @return true if this exception represents a login credentials failure
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isAuthenticationException(final SQLException exception) {
     return exception.getErrorCode() == LOGIN_CREDS_ERROR;
   }
 
-  /**
-   * @param exception the exception
-   * @return true if this exception is a referential integrity error
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isReferentialIntegrityException(final SQLException exception) {
-    return exception.getErrorCode() == CHILD_RECORD_ERROR;
+    return exception.getErrorCode() == CHILD_RECORD_ERROR || exception.getErrorCode() == INTEGRITY_CONSTRAINT_ERROR;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isUniqueConstraintException(final SQLException exception) {
+    return exception.getErrorCode() == UNIQUE_KEY_ERROR;
   }
 }

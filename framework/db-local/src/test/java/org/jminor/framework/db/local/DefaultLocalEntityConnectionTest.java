@@ -16,6 +16,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
+import org.jminor.common.db.exception.UniqueConstraintException;
 import org.jminor.common.db.exception.UpdateException;
 import org.jminor.common.db.reports.ReportDataWrapper;
 import org.jminor.common.db.reports.ReportException;
@@ -127,6 +128,38 @@ public class DefaultLocalEntityConnectionTest {
     final Entity.Key key = DOMAIN.key(TestDomain.T_DEPARTMENT);
     key.put(TestDomain.DEPARTMENT_ID, 10);
     assertThrows(ReferentialIntegrityException.class, () -> connection.delete(Collections.singletonList(key)));
+  }
+
+  @Test
+  public void insertUniqueConstraint() {
+    final Entity department = DOMAIN.entity(TestDomain.T_DEPARTMENT);
+    department.put(TestDomain.DEPARTMENT_ID, 1000);
+    department.put(TestDomain.DEPARTMENT_NAME, "SALES");
+    assertThrows(UniqueConstraintException.class, () -> connection.insert(Collections.singletonList(department)));
+  }
+
+  @Test
+  public void updateUniqueConstraint() throws DatabaseException {
+    final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID, 20);
+    department.put(TestDomain.DEPARTMENT_NAME, "SALES");
+    assertThrows(UniqueConstraintException.class, () -> connection.update(Collections.singletonList(department)));
+  }
+
+  @Test
+  public void insertNoParentKey() {
+    final Entity emp = DOMAIN.entity(TestDomain.T_EMP);
+    emp.put(TestDomain.EMP_ID, -100);
+    emp.put(TestDomain.EMP_NAME, "Testing");
+    emp.put(TestDomain.EMP_DEPARTMENT, -1010);//not available
+    emp.put(TestDomain.EMP_SALARY, 2000d);
+    assertThrows(ReferentialIntegrityException.class, () -> connection.insert(Collections.singletonList(emp)));
+  }
+
+  @Test
+  public void updateNoParentKey() throws DatabaseException {
+    final Entity emp = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 3);
+    emp.put(TestDomain.EMP_DEPARTMENT, -1010);//not available
+    assertThrows(ReferentialIntegrityException.class, () -> connection.update(Collections.singletonList(emp)));
   }
 
   @Test

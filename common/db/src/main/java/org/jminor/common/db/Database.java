@@ -211,6 +211,12 @@ public interface Database {
   boolean isReferentialIntegrityException(final SQLException exception);
 
   /**
+   * @param exception the exception
+   * @return true if this exception is a unique key exception
+   */
+  boolean isUniqueConstraintException(final SQLException exception);
+
+  /**
    * Adds any dbms specific connection properties to the given properties map,
    * called each time a connection is created
    * @param properties the properties map to add to
