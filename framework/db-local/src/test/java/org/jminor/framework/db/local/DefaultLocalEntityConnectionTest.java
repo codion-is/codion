@@ -147,6 +147,23 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
+  public void insertNoParentKey() {
+    final Entity emp = DOMAIN.entity(TestDomain.T_EMP);
+    emp.put(TestDomain.EMP_ID, -100);
+    emp.put(TestDomain.EMP_NAME, "Testing");
+    emp.put(TestDomain.EMP_DEPARTMENT, -1010);//not available
+    emp.put(TestDomain.EMP_SALARY, 2000d);
+    assertThrows(ReferentialIntegrityException.class, () -> connection.insert(Collections.singletonList(emp)));
+  }
+
+  @Test
+  public void updateNoParentKey() throws DatabaseException {
+    final Entity emp = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 3);
+    emp.put(TestDomain.EMP_DEPARTMENT, -1010);//not available
+    assertThrows(ReferentialIntegrityException.class, () -> connection.update(Collections.singletonList(emp)));
+  }
+
+  @Test
   public void deleteByKeyWithForeignKeys() throws DatabaseException {
     final Entity accounting = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     assertThrows(DatabaseException.class, () -> connection.delete(Collections.singletonList(accounting.getKey())));

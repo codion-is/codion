@@ -982,6 +982,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (database.isUniqueConstraintException(exception)) {
       return new UniqueConstraintException(exception, database.getErrorMessage(exception));
     }
+    else if (database.isReferentialIntegrityException(exception)) {
+      return new ReferentialIntegrityException(exception, database.getErrorMessage(exception));
+    }
     else {
       return new DatabaseException(exception, database.getErrorMessage(exception));
     }

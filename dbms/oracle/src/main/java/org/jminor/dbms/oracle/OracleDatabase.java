@@ -139,7 +139,7 @@ public final class OracleDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public boolean isReferentialIntegrityException(final SQLException exception) {
-    return exception.getErrorCode() == CHILD_RECORD_ERROR;
+    return exception.getErrorCode() == CHILD_RECORD_ERROR || exception.getErrorCode() == INTEGRITY_CONSTRAINT_ERROR;
   }
 
   /** {@inheritDoc} */

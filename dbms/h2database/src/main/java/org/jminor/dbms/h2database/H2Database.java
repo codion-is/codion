@@ -28,7 +28,8 @@ public final class H2Database extends AbstractDatabase {
    * The error code representing incorrect login credentials
    */
   private static final int AUTHENTICATION_ERROR = 28000;
-  private static final int REFERENTIAL_INTEGRITY_ERROR = 23503;
+  private static final int REFERENTIAL_INTEGRITY_ERROR_CHILD_EXISTS = 23503;
+  private static final int REFERENTIAL_INTEGRITY_ERROR_PARENT_MISSING = 23506;
   private static final int UNIQUE_CONSTRAINT_ERROR = 23505;
 
   private static boolean sharedDatabaseInitialized = false;
@@ -144,7 +145,8 @@ public final class H2Database extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public boolean isReferentialIntegrityException(final SQLException exception) {
-    return exception.getErrorCode() == REFERENTIAL_INTEGRITY_ERROR;
+    return exception.getErrorCode() == REFERENTIAL_INTEGRITY_ERROR_CHILD_EXISTS ||
+            exception.getErrorCode() == REFERENTIAL_INTEGRITY_ERROR_PARENT_MISSING;
   }
 
   /** {@inheritDoc} */
