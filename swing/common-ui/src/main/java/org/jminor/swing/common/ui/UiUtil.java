@@ -346,7 +346,7 @@ public final class UiUtil {
     else {
       fileChooserOpen.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     }
-    fileChooserOpen.setSelectedFile(new File(""));
+    fileChooserOpen.setSelectedFiles(new File[] {new File("")});
     fileChooserOpen.removeChoosableFileFilter(fileChooserOpen.getFileFilter());
     fileChooserOpen.setMultiSelectionEnabled(multiSelection);
     if (!Util.nullOrEmpty(startDir) && new File(startDir).exists()) {
@@ -404,7 +404,7 @@ public final class UiUtil {
         setWaitCursor(false, dialogParent);
       }
     }
-    fileChooserSave.setSelectedFile(new File(""));
+    fileChooserSave.setSelectedFiles(new File[] {new File("")});
     fileChooserSave.setFileSelectionMode(JFileChooser.FILES_ONLY);
     fileChooserSave.removeChoosableFileFilter(fileChooserSave.getFileFilter());
     fileChooserSave.setMultiSelectionEnabled(false);
