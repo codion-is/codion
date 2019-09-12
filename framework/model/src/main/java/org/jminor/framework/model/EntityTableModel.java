@@ -328,6 +328,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
   /**
    * @param value true if this table model should automatically refresh when foreign key condition values are set
    * @see #setForeignKeyConditionValues(Property.ForeignKeyProperty, Collection)
+   * @return this {@link EntityTableModel} instance
    */
   EntityTableModel setRefreshOnForeignKeyConditionValuesSet(final boolean value);
 
