@@ -563,7 +563,7 @@ class DefaultProperty implements Property {
   @Override
   public final void validateType(final Object value) {
     if (value != null && !typeClass.equals(value.getClass()) && !typeClass.isAssignableFrom(value.getClass())) {
-      throw new IllegalArgumentException("Value of type " + typeClass + " expected for property " + this + ", got: " + value.getClass());
+      throw new IllegalArgumentException("Value of type " + typeClass + " expected for property " + this + " in entity " + entityId + ", got: " + value.getClass());
     }
   }
 

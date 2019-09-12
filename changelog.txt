@@ -5088,3 +5088,4 @@
   EntityTableModel.isQueryConfigurationAllowed property removed, EntityTablePanel.includeConditionPanel used instead
   EntityTableConditionPanel, require_query_condition i18n caption changed
   UiUtil, file chooser now clears the previously selected files properly when selecting files to open or save
+  DefaultProperty.validateType() improved error message now includes entityId
