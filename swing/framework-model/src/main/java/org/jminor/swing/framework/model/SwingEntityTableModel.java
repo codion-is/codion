@@ -127,6 +127,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private boolean batchUpdateAllowed = true;
 
   /**
+   * Indicates if this table model should automatically refresh when foreign key condition values are set
+   */
+  private boolean refreshOnForeignKeyConditionValuesSet = true;
+
+  /**
    * Instantiates a new DefaultEntityTableModel with default column and condition models.
    * @param entityId the entity ID
    * @param connectionProvider the db provider
@@ -283,6 +288,19 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /** {@inheritDoc} */
   @Override
+  public final SwingEntityTableModel setRefreshOnForeignKeyConditionValuesSet(final boolean value) {
+    this.refreshOnForeignKeyConditionValuesSet = value;
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isRefreshOnForeignKeyConditionValuesSet() {
+    return refreshOnForeignKeyConditionValuesSet;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final boolean isDeleteAllowed() {
     return editModel != null && editModel.isDeleteAllowed();
   }
@@ -410,7 +428,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public void setForeignKeyConditionValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
     Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-    if (conditionModel.setConditionValues(foreignKeyProperty.getPropertyId(), foreignKeyValues)) {
+    if (conditionModel.setConditionValues(foreignKeyProperty.getPropertyId(), foreignKeyValues) && refreshOnForeignKeyConditionValuesSet) {
       refresh();
     }
   }

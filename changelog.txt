@@ -5089,3 +5089,5 @@
   EntityTableConditionPanel, require_query_condition i18n caption changed
   UiUtil, file chooser now clears the previously selected files properly when selecting files to open or save
   DefaultProperty.validateType() improved error message now includes entityId
+  EntityTableModel.set/getRefreshOnForeignKeyConditionValuesSet() added
+  SwingEntityTableModel and FXEntityListModel implement the above
