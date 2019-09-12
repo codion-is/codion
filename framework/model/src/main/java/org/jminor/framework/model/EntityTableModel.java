@@ -324,4 +324,16 @@ public interface EntityTableModel<E extends EntityEditModel> extends EntityDataP
    * @param listener notified when the selection changes in the underlying selection model
    */
   void addSelectionChangedListener(final EventListener listener);
+
+  /**
+   * @param value true if this table model should automatically refresh when foreign key condition values are set
+   * @see #setForeignKeyConditionValues(Property.ForeignKeyProperty, Collection)
+   */
+  EntityTableModel setRefreshOnForeignKeyConditionValuesSet(final boolean value);
+
+  /**
+   * @return true if this table model automatically refreshes when foreign key condition values are set
+   * @see #setForeignKeyConditionValues(Property.ForeignKeyProperty, Collection)
+   */
+  boolean isRefreshOnForeignKeyConditionValuesSet();
 }

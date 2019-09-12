@@ -258,5 +258,9 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     public String getEntityId() {return entityId;}
     @Override
     public EntityConnectionProvider getConnectionProvider() {return connectionProvider;}
+    @Override
+    public EntityTableModel setRefreshOnForeignKeyConditionValuesSet(final boolean value) {return null;}
+    @Override
+    public boolean isRefreshOnForeignKeyConditionValuesSet() {return false;}
   }
 }

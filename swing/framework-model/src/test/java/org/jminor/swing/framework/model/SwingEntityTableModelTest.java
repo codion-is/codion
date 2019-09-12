@@ -5,6 +5,7 @@ package org.jminor.swing.framework.model;
 
 import org.jminor.common.User;
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.PreferencesUtil;
 import org.jminor.common.model.table.ColumnConditionModel;
 import org.jminor.common.model.table.SortingDirective;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import javax.swing.table.TableColumn;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -92,6 +94,26 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   @Override
   protected SwingEntityEditModel createDetailEditModel() {
     return new SwingEntityEditModel(TestDomain.T_DETAIL, CONNECTION_PROVIDER);
+  }
+
+  @Test
+  public void refreshOnForeignKeyConditionValuesSet() throws DatabaseException {
+    final SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
+    assertEquals(0, employeeTableModel.getRowCount());
+    final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
+            TestDomain.DEPARTMENT_ID, 10);
+    final Property.ForeignKeyProperty deptFkProperty = DOMAIN.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
+    employeeTableModel.setForeignKeyConditionValues(deptFkProperty,
+            Collections.singletonList(accounting));
+    assertEquals(7, employeeTableModel.getRowCount());
+    employeeTableModel.clear();
+    employeeTableModel.setRefreshOnForeignKeyConditionValuesSet(false);
+    final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT,
+            TestDomain.DEPARTMENT_ID, 30);
+    employeeTableModel.setForeignKeyConditionValues(deptFkProperty, Collections.singleton(sales));
+    assertEquals(0, employeeTableModel.getRowCount());
+    employeeTableModel.refresh();
+    assertEquals(4, employeeTableModel.getRowCount());
   }
 
   @Test
