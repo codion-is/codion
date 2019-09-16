@@ -5102,3 +5102,4 @@
   DefaultProperty.validateType() improved error message now includes entityId
   EntityTableModel.set/getRefreshOnForeignKeyConditionValuesSet() added
   SwingEntityTableModel and FXEntityListModel implement the above
+  EntityTablePanel, EntityTableView, popup menu controls setup refactored

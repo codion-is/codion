@@ -163,23 +163,25 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void addPopupMenu() {
-    final MenuItem refresh = createRefreshItem();
-    final MenuItem clear = createClearItem();
-    final Menu updateSelected = createUpdateSelectedItem();
-    final MenuItem delete = createDeleteSelectionItem();
-    final Menu search = createSearchMenu();
-    final Menu copy = createCopyMenu();
-
     final ContextMenu contextMenu = new ContextMenu();
-    contextMenu.getItems().add(refresh);
-    contextMenu.getItems().add(clear);
+    contextMenu.getItems().add(createRefreshItem());
+    contextMenu.getItems().add(createClearItem());
     contextMenu.getItems().add(new SeparatorMenuItem());
-    contextMenu.getItems().add(updateSelected);
-    contextMenu.getItems().add(delete);
+    boolean separatorRequired = false;
+    if (includeUpdateSelectedControls()) {
+      contextMenu.getItems().add(createUpdateSelectedItem());
+      separatorRequired = true;
+    }
+    if (includeDeleteSelectedControl()) {
+      contextMenu.getItems().add(createDeleteSelectionItem());
+      separatorRequired = true;
+    }
+    if (separatorRequired) {
+      contextMenu.getItems().add(new SeparatorMenuItem());
+    }
+    contextMenu.getItems().add(createSearchMenu());
     contextMenu.getItems().add(new SeparatorMenuItem());
-    contextMenu.getItems().add(search);
-    contextMenu.getItems().add(new SeparatorMenuItem());
-    contextMenu.getItems().add(copy);
+    contextMenu.getItems().add(createCopyMenu());
 
     setContextMenu(contextMenu);
   }
@@ -317,5 +319,19 @@ public class EntityTableView extends TableView<Entity> {
       }
     });
     setOnKeyReleased(this::onKeyRelease);
+  }
+
+  private boolean includeUpdateSelectedControls() {
+    final FXEntityListModel entityTableModel = getListModel();
+
+    return !entityTableModel.isReadOnly() && entityTableModel.isUpdateAllowed() &&
+            entityTableModel.isBatchUpdateAllowed() && !entityTableModel.getDomain()
+            .getUpdatableProperties(entityTableModel.getEntityId()).isEmpty();
+  }
+
+  private boolean includeDeleteSelectedControl() {
+    final FXEntityListModel entityTableModel = getListModel();
+
+    return !entityTableModel.isReadOnly() && entityTableModel.isDeleteAllowed();
   }
 }

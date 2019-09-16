@@ -490,8 +490,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @see EntityEditModel#getAllowUpdateObserver()
    */
   public ControlSet getUpdateSelectedControlSet() {
-    if (getEntityTableModel().isReadOnly() || !getEntityTableModel().isUpdateAllowed()
-            || !getEntityTableModel().isBatchUpdateAllowed()) {
+    if (!includeUpdateSelectedControls()) {
       throw new IllegalStateException("Table model is read only or does not allow updates");
     }
     final StateObserver selectionNotEmpty = getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver();
@@ -500,7 +499,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
-    Properties.sort(getEntityTableModel().getConnectionProvider().getDomain().getUpdatableProperties(
+    Properties.sort(getEntityTableModel().getDomain().getUpdatableProperties(
             getEntityTableModel().getEntityId())).forEach(property -> {
       if (includeUpdateSelectedProperty(property)) {
         final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
@@ -526,7 +525,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * @throws IllegalStateException in case the underlying model is read only or if deleting is not allowed
    */
   public final Control getDeleteSelectedControl() {
-    if (getEntityTableModel().isReadOnly() || !getEntityTableModel().isDeleteAllowed()) {
+    if (!includeDeleteSelectedControl()) {
       throw new IllegalStateException("Table model is read only or does not allow delete");
     }
     return Controls.control(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
@@ -882,21 +881,21 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     final EntityTablePanel tablePanel = new EntityTablePanel(tableModel) {
       @Override
       protected ControlSet getPopupControls(final List<ControlSet> additionalPopupControlSets) {
-        if (tableModel.isReadOnly()) {
-          return null;
-        }
-
-        final ControlSet popupControls = new ControlSet();
-        if (!tableModel.isReadOnly()) {
-          popupControls.add(getUpdateSelectedControlSet());
-          popupControls.add(getDeleteSelectedControl());
-          popupControls.addSeparator();
-        }
-        popupControls.add(getViewDependenciesControl());
-
-        return popupControls;
+        return additionalPopupControlSets.get(0);
       }
     };
+    final ControlSet popupControls = new ControlSet();
+    if (tablePanel.includeUpdateSelectedControls()) {
+      popupControls.add(tablePanel.getUpdateSelectedControlSet());
+    }
+    if (tablePanel.includeDeleteSelectedControl()) {
+      popupControls.add(tablePanel.getDeleteSelectedControl());
+    }
+    if (popupControls.size() > 0) {
+      popupControls.addSeparator();
+    }
+    popupControls.add(tablePanel.getViewDependenciesControl());
+    tablePanel.addPopupControls(popupControls);
     tablePanel.setIncludeConditionPanel(false);
     tablePanel.setIncludeSouthPanel(false);
     tablePanel.initializePanel();
@@ -1434,10 +1433,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   }
 
   private void setupControls() {
-    if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isDeleteAllowed()) {
+    if (includeDeleteSelectedControl()) {
       setControl(DELETE_SELECTED, getDeleteSelectedControl());
     }
-    if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isUpdateAllowed() && getEntityTableModel().isBatchUpdateAllowed()) {
+    if (includeUpdateSelectedControls()) {
       setControl(UPDATE_SELECTED, getUpdateSelectedControlSet());
     }
     if (includeConditionPanel) {
@@ -1469,6 +1468,20 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
 
   private void copyTableAsDelimitedString() {
     UiUtil.setClipboard(getEntityTableModel().getTableDataAsDelimitedString('\t'));
+  }
+
+  private boolean includeUpdateSelectedControls() {
+    final SwingEntityTableModel entityTableModel = getEntityTableModel();
+
+    return !entityTableModel.isReadOnly() && entityTableModel.isUpdateAllowed() &&
+            entityTableModel.isBatchUpdateAllowed() && !entityTableModel.getDomain()
+            .getUpdatableProperties(entityTableModel.getEntityId()).isEmpty();
+  }
+
+  private boolean includeDeleteSelectedControl() {
+    final SwingEntityTableModel entityTableModel = getEntityTableModel();
+
+    return !entityTableModel.isReadOnly() && entityTableModel.isDeleteAllowed();
   }
 
   private void initializeUI() {
@@ -1538,7 +1551,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   }
 
   private void bindPanelEvents() {
-    if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isDeleteAllowed()) {
+    if (includeDeleteSelectedControl()) {
       UiUtil.addKeyEvent(getJTable(), KeyEvent.VK_DELETE, getDeleteSelectedControl());
     }
     final EventListener statusListener = () -> SwingUtilities.invokeLater(EntityTablePanel.this::updateStatusMessage);
