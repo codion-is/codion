@@ -5103,3 +5103,4 @@
   EntityTableModel.set/getRefreshOnForeignKeyConditionValuesSet() added
   SwingEntityTableModel and FXEntityListModel implement the above
   EntityTablePanel, EntityTableView, popup menu controls setup refactored
+  TristateCheckBox, FilteredTablePanel, IntegerFieldTest, deprecation warnings fixed

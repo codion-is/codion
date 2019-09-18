@@ -65,9 +65,11 @@ public class IntegerFieldTest {
     integerField.setNumber(123456);
     assertEquals("123.456", integerField.getText());
     integerField.setCaretPosition(3);
-    keyListener.keyReleased(new KeyEvent(integerField, KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0, KeyEvent.VK_DELETE));
+    keyListener.keyReleased(new KeyEvent(integerField, KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0,
+            KeyEvent.VK_DELETE, KeyEvent.CHAR_UNDEFINED));
     assertEquals(4, integerField.getCaretPosition());
-    keyListener.keyReleased(new KeyEvent(integerField, KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0, KeyEvent.VK_BACK_SPACE));
+    keyListener.keyReleased(new KeyEvent(integerField, KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0,
+            KeyEvent.VK_BACK_SPACE, KeyEvent.CHAR_UNDEFINED));
     assertEquals(3, integerField.getCaretPosition());
   }
 }
