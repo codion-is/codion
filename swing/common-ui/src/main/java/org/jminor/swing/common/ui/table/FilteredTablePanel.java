@@ -465,7 +465,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
     field.addKeyListener(new KeyAdapter() {
       @Override
       public void keyReleased(final KeyEvent e) {
-        if (e.getModifiers() != 0) {
+        if (e.getModifiersEx() != 0) {
           return;
         }
         if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN) {
