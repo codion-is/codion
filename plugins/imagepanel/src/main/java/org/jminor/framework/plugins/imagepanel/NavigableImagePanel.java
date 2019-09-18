@@ -33,7 +33,7 @@ import java.util.ResourceBundle;
  * {@code NavigableImagePanel} is a lightweight container displaying
  * an image that can be zoomed in and out and panned with ease and simplicity,
  * using an adaptive rendering for high quality display and satisfactory performance.
- * <h3>Image</h3>
+ * <h2>Image</h2>
  * <p>An image is loaded either via a constructor:</p>
  * <pre>
  * NavigableImagePanel panel = new NavigableImagePanel(image);
@@ -46,7 +46,7 @@ import java.util.ResourceBundle;
  * When an image is set, it is initially painted centered in the component,
  * at the largest possible size, fully visible, with its aspect ratio is preserved.
  * This is defined as 100% of the image size and its corresponding zoom level is 1.0.
- * <h3>Zooming</h3>
+ * <h2>Zooming</h2>
  * Zooming can be controlled interactively, using either the mouse scroll wheel (default)
  * or the mouse two buttons, or programmatically, allowing the programmer to
  * implement other custom zooming methods. If the mouse does not have a scroll wheel,
@@ -82,7 +82,7 @@ import java.util.ResourceBundle;
  * panel.setZoom(newZoomLevel);
  * </pre>
  * There are no lower or upper zoom level limits.
- * <h3>Navigation</h3>
+ * <h2>Navigation</h2>
  * {@code NavigableImagePanel} does not use scroll bars for navigation,
  * but relies on a navigation image located in the upper left corner of the panel.
  * The navigation image is a small replica of the image displayed in the panel.
@@ -97,7 +97,7 @@ import java.util.ResourceBundle;
  * </pre>
  * and use {@code getImageOrigin()} and
  * {@code setImageOrigin()} to move the image around the panel.
- * <h3>Rendering</h3>
+ * <h2>Rendering</h2>
  * {@code NavigableImagePanel} uses the Nearest Neighbor interpolation
  * for image rendering (default in Java).
  * When the scaled image becomes larger than the original image,
