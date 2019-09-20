@@ -18,7 +18,7 @@ dependencies {
     implementation project(':jminor-swing-framework-tools')
 
     runtimeOnly project(':jminor-plugin-logback-proxy')
-    
+
     runtimeOnly project(':jminor-framework-db-local')
     runtimeOnly project(':jminor-framework-db-remote')
     runtimeOnly project(':jminor-framework-db-http')
