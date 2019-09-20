@@ -28,12 +28,12 @@ public interface ResultPacker<T> {
    */
   default List<T> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
     Objects.requireNonNull(resultSet, "resultSet");
-    final List<T> result = fetchCount > 0 ? new ArrayList<>(fetchCount) : new ArrayList<>();
+    final List<T> result = fetchCount < 0 ? new ArrayList<>() : new ArrayList<>(fetchCount);
     int counter = 0;
     while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
       final T item = fetch(resultSet);
       if (item != null) {
-        result.add(fetch(resultSet));
+        result.add(item);
       }
     }
 
