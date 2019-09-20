@@ -21,7 +21,7 @@ dependencies {
     implementation project(':jminor-swing-framework-tools')
 
     runtimeOnly project(':jminor-framework-plugins-logback-proxy')
-    
+
     runtimeOnly project(':jminor-framework-db-local')
     runtimeOnly project(':jminor-framework-db-remote')
     runtimeOnly project(':jminor-framework-db-http')
@@ -145,7 +145,7 @@ task clientRemoteScript(type: ModularCreateStartScripts) {
 task clientHttpScript(type: ModularCreateStartScripts) {
     runTask = tasks.runClientHttp
     applicationName = project.name + '-http'
-        defaultJvmOpts = [
+    defaultJvmOpts = [
             '-Djminor.client.connectionType=http',
             '-Djminor.client.http.secure=false',
             '-Djminor.client.http.hostname=localhost',
