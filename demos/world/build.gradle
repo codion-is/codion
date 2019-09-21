@@ -4,16 +4,6 @@ import org.javamodularity.moduleplugin.tasks.ModularJavaExec
 apply from: '../demos.gradle'
 
 dependencies {
-    implementation project(':jminor-common-core')
-    implementation project(':jminor-common-db')
-    implementation project(':jminor-common-model')
-
-    implementation project(':jminor-framework-domain')
-    implementation project(':jminor-framework-db-core')
-    implementation project(':jminor-framework-model')
-
-    implementation project(':jminor-swing-common-ui')
-    implementation project(':jminor-swing-framework-model')
     implementation project(':jminor-swing-framework-ui')
 
     testImplementation project(':jminor-framework-db-test')
