@@ -65,10 +65,10 @@ configure(project.frameworkModules) {
         manifest {
             attributes(
                     "Specification-Title": project.name,
-                    "Specification-Version": "${version}",
+                    "Specification-Version": version,
                     "Specification-Vendor": "JMinor",
                     "Implementation-Title": project.name,
-                    "Implementation-Version": "${version}",
+                    "Implementation-Version": version,
                     "Implementation-Vendor": "JMinor",
                     "Implementation-Vendor-Id": "org.jminor",
                     "Implementation-URL": "http://jminor.org",
