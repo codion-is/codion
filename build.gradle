@@ -46,7 +46,7 @@ ext {
 file("${projectDir}/common/core/src/main/resources" + project.versionPropertiesFile).withInputStream { project.versionProperties.load(it) }
 
 allprojects {
-    version = project.versionProperties.getProperty('version')
+    project.version = project.versionProperties.getProperty('version')
 }
 
 configure(project.frameworkModules) {
@@ -83,10 +83,10 @@ configure(project.frameworkModules) {
         manifest {
             attributes(
                     "Specification-Title": project.name,
-                    "Specification-Version": version,
+                    "Specification-Version": project.version,
                     "Specification-Vendor": "JMinor",
                     "Implementation-Title": project.name,
-                    "Implementation-Version": version,
+                    "Implementation-Version": project.version,
                     "Implementation-Vendor": "JMinor",
                     "Implementation-Vendor-Id": "org.jminor",
                     "Implementation-URL": "http://jminor.org",
@@ -144,7 +144,7 @@ configure(project.frameworkModules) {
         properties {
             property "sonar.projectName", "org." + project.name.replace('-', '.')
             property "sonar.projectKey", "org.jminor:jminor"
-            property "sonar.projectVersion", version
+            property "sonar.projectVersion", project.version
             property "sonar.java.source", "1.8"
             property "sonar.sourceEncoding", "UTF-8"
             property "sonar.exclusions", "**/*module-info.java,**/*TestDomain.java"
@@ -212,7 +212,7 @@ htmlDependencyReport {
 
 task combinedJavadoc(type: Javadoc) {
     group 'documentation'
-    title "JMinor Framework API $version"
+    title "JMinor Framework API $project.version"
     failOnError = false
     options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
     destinationDir = file("${buildDir}/docs/javadoc")
