@@ -5094,3 +5094,4 @@
   EntityTablePanel, EntityTableView, popup menu controls setup refactored
   TristateCheckBox, FilteredTablePanel, IntegerFieldTest, deprecation warnings fixed
   ResultPacker bug fixed, redundant call to fetch() removed
+  Gradle wrapper added
