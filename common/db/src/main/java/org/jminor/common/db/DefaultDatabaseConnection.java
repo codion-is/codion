@@ -58,6 +58,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @param user the user to base this database connection on
    * @param validityCheckTimeout the timoeout in seconds when checking if this connection is valid
    * @throws DatabaseException in case there is a problem connecting to the database
+   * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
    */
   public DefaultDatabaseConnection(final Database database, final User user,
                                    final int validityCheckTimeout) throws DatabaseException {

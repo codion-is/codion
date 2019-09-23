@@ -68,7 +68,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnection.class);
   private static final String CONDITION_PARAM_NAME = "condition";
   private static final String WHERE = "where ";
-  private static final String WHERE_SPACE_PREFIX = " where ";
+  private static final String WHERE_SPACE_PREFIX = " " + WHERE;
 
   /**
    * A result packer for fetching blobs from a result set containing a single blob column
@@ -95,8 +95,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param optimisticLocking if true then optimistic locking is used during updates
    * @param limitForeignKeyFetchDepth if false then there is no limiting of foreign key fetch depth
    * @param validityCheckTimeout specifies the timeout in seconds when validating this connection
-   * @throws DatabaseException in case there is a problem connecting to the database,
-   * such as a wrong username or password being provided
+   * @throws DatabaseException in case there is a problem connecting to the database
+   * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
    */
   DefaultLocalEntityConnection(final Domain domain, final Database database, final User user, final boolean optimisticLocking,
                                final boolean limitForeignKeyFetchDepth, final int validityCheckTimeout) throws DatabaseException {

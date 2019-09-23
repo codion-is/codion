@@ -229,6 +229,7 @@ public interface Database {
    * @param user the user for which to create a connection
    * @return a Connection
    * @throws DatabaseException in case of a connection error
+   * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
    */
   Connection createConnection(final User user) throws DatabaseException;
 
