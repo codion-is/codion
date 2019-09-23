@@ -226,27 +226,13 @@ public final class TextUtil {
     Objects.requireNonNull(delimiter, "delimiter");
     final StringBuilder contents = new StringBuilder();
     for (final String[] header : headers) {
-      for (int j = 0; j < header.length; j++) {
-        contents.append(header[j]);
-        if (j < header.length - 1) {
-          contents.append(delimiter);
-        }
-      }
-      contents.append(Util.LINE_SEPARATOR);
+      contents.append(String.join(delimiter, header)).append(Util.LINE_SEPARATOR);
     }
-
-    for (int i = 0; i < data.length; i++) {
-      final String[] line = data[i];
-      for (int j = 0; j < line.length; j++) {
-        contents.append(line[j]);
-        if (j < line.length - 1) {
-          contents.append(delimiter);
-        }
-      }
-      if (i < data.length - 1) {
-        contents.append(Util.LINE_SEPARATOR);
-      }
+    for (final String[] line : data) {
+      contents.append(String.join(delimiter, line)).append(Util.LINE_SEPARATOR);
     }
+    //remove the last line separator
+    contents.replace(contents.length() - 1, contents.length(), "");
 
     return contents.toString();
   }
