@@ -26,6 +26,7 @@ public final class LocalEntityConnections {
    * @param user the user used for connecting to the database
    * @return a new LocalEntityConnection instance
    * @throws DatabaseException in case there is a problem connecting to the database
+   * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
    */
   public static LocalEntityConnection createConnection(final Domain domain, final Database database, final User user)
           throws DatabaseException {

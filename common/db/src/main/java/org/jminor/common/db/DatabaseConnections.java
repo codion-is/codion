@@ -33,6 +33,7 @@ public final class DatabaseConnections {
    * @param validityCheckTimeout the number of seconds specified when checking if the connection is valid
    * @return a new DatabaseConnection instance
    * @throws DatabaseException in case there is a problem connecting to the database
+   * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
    */
   public static DatabaseConnection createConnection(final Database database, final User user,
                                                     final int validityCheckTimeout) throws DatabaseException {
