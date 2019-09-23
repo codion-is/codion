@@ -235,7 +235,7 @@ public final class Values {
 
     private void bindEvents(final Value<V> originalValue, final Value<V> linkedValue, final boolean readOnly) {
       if (originalValue.getObserver() != null) {
-        originalValue.getObserver().addListener(() -> updateLinkedvalue(originalValue, linkedValue));
+        originalValue.getObserver().addListener(() -> updateLinkedValue(originalValue, linkedValue));
       }
       if (!readOnly && linkedValue.getObserver() != null) {
         linkedValue.getObserver().addListener(() -> updateOriginalValue(originalValue, linkedValue));
@@ -254,7 +254,7 @@ public final class Values {
       }
     }
 
-    private void updateLinkedvalue(final Value<V> originalValue, final Value<V> linkedValue) {
+    private void updateLinkedValue(final Value<V> originalValue, final Value<V> linkedValue) {
       if (!isUpdatingOriginal) {
         try {
           isUpdatingLinked = true;
