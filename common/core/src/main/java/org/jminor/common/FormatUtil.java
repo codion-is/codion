@@ -32,10 +32,10 @@ public final class FormatUtil {
    * @return a NumberFormat instance with grouping disabled
    */
   public static NumberFormat getNonGroupingNumberFormat(final boolean integerFormat) {
-    final NumberFormat ret = integerFormat ? NumberFormat.getIntegerInstance() : NumberFormat.getNumberInstance();
-    ret.setGroupingUsed(false);
+    final NumberFormat format = integerFormat ? NumberFormat.getIntegerInstance() : NumberFormat.getNumberInstance();
+    format.setGroupingUsed(false);
 
-    return ret;
+    return format;
   }
 
   /**

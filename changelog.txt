@@ -5101,3 +5101,4 @@
   ValueObserver.getObserver() renamed to getChangeObserver()
   Misc. javadoc fixes and some minor changes
   TableModelProxy removed
+  Minor javadoc fixes and getting rid of ret return variable name

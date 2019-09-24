@@ -151,12 +151,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final boolean contains(final R item, final boolean includeFiltered) {
-    final boolean ret = visibleItems.contains(item);
-    if (!ret && includeFiltered) {
+    final boolean visible = visibleItems.contains(item);
+    if (!visible && includeFiltered) {
       return filteredItems.contains(item);
     }
 
-    return ret;
+    return visible;
   }
 
   /** {@inheritDoc} */

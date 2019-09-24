@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.Comparator;
 
 /**
- * A ComboBoxModel extension that allows filtering via FilterCriteria objects.
+ * A ComboBoxModel that allows filtering via FilterCondition objects.
  * @param <T> the type of the combo box model elements
  * @see FilterCondition
  * @see #setFilterCondition(FilterCondition)

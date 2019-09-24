@@ -161,10 +161,10 @@ public final class ServerMonitorPanel extends JPanel {
     overviewPanel.add(controlPanelBase, BorderLayout.SOUTH);
     overviewPanel.add(chartPanel, BorderLayout.CENTER);
 
-    final JPanel ret = new JPanel(UiUtil.createBorderLayout());
-    ret.add(overviewPanel, BorderLayout.CENTER);
+    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
+    panel.add(overviewPanel, BorderLayout.CENTER);
 
-    return ret;
+    return panel;
   }
 
   private JTabbedPane initializeEnvironmentPanel() throws RemoteException {
