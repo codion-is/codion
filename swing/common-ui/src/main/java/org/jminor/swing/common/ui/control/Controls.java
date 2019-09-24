@@ -9,6 +9,7 @@ import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.Value;
+import org.jminor.common.ValueObserver;
 import org.jminor.common.Values;
 import org.jminor.common.model.CancelException;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
@@ -361,8 +362,13 @@ public final class Controls {
     }
 
     @Override
-    public EventObserver<Boolean> getObserver() {
+    public EventObserver<Boolean> getChangeObserver() {
       return changeEvent.getObserver();
+    }
+
+    @Override
+    public ValueObserver<Boolean> getValueObserver() {
+      return Values.valueObserver(this);
     }
   }
 }

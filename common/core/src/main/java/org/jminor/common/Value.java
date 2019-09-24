@@ -7,7 +7,7 @@ package org.jminor.common;
  * A wrapper class for setting and getting a value
  * @param <V> the type of the value
  */
-public interface Value<V> {
+public interface Value<V> extends ValueObserver<V> {
 
   /**
    * Sets the value, setting the same value again does not trigger a value change
@@ -16,12 +16,7 @@ public interface Value<V> {
   void set(final V value);
 
   /**
-   * @return the value
+   * @return a read only view of this value
    */
-  V get();
-
-  /**
-   * @return an observer notified each time the value changes
-   */
-  EventObserver<V> getObserver();
+  ValueObserver<V> getValueObserver();
 }

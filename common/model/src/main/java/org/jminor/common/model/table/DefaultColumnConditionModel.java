@@ -318,25 +318,25 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   /** {@inheritDoc} */
   @Override
   public final void addUpperBoundListener(final EventListener listener) {
-    upperBoundValue.getObserver().addListener(listener);
+    upperBoundValue.getChangeObserver().addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeUpperBoundListener(final EventListener listener) {
-    upperBoundValue.getObserver().removeListener(listener);
+    upperBoundValue.getChangeObserver().removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addLowerBoundListener(final EventListener listener) {
-    lowerBoundValue.getObserver().addListener(listener);
+    lowerBoundValue.getChangeObserver().addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeLowerBoundListener(final EventListener listener) {
-    lowerBoundValue.getObserver().removeListener(listener);
+    lowerBoundValue.getChangeObserver().removeListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -378,19 +378,19 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   /** {@inheritDoc} */
   @Override
   public final void addConditionTypeListener(final EventDataListener<Condition.Type> listener) {
-    conditionTypeValue.getObserver().addDataListener(listener);
+    conditionTypeValue.getChangeObserver().addDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeConditionTypeListener(final EventDataListener listener) {
-    conditionTypeValue.getObserver().removeDataListener(listener);
+    conditionTypeValue.getChangeObserver().removeDataListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final EventObserver<Condition.Type> getConditionTypeObserver() {
-    return conditionTypeValue.getObserver();
+    return conditionTypeValue.getChangeObserver();
   }
 
   /** {@inheritDoc} */
@@ -599,13 +599,13 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
         }
       }
     };
-    upperBoundValue.getObserver().addListener(autoEnableListener);
-    lowerBoundValue.getObserver().addListener(autoEnableListener);
-    upperBoundValue.getObserver().addListener(conditionStateChangedEvent);
-    lowerBoundValue.getObserver().addListener(conditionStateChangedEvent);
-    conditionTypeValue.getObserver().addListener(conditionStateChangedEvent);
+    upperBoundValue.getChangeObserver().addListener(autoEnableListener);
+    lowerBoundValue.getChangeObserver().addListener(autoEnableListener);
+    upperBoundValue.getChangeObserver().addListener(conditionStateChangedEvent);
+    lowerBoundValue.getChangeObserver().addListener(conditionStateChangedEvent);
+    conditionTypeValue.getChangeObserver().addListener(conditionStateChangedEvent);
     enabledState.addListener(conditionStateChangedEvent);
-    conditionTypeValue.getObserver().addListener(() ->
+    conditionTypeValue.getChangeObserver().addListener(() ->
             lowerBoundRequiredState.setActive(getConditionType().getValues().equals(Condition.Type.Values.TWO)));
   }
 

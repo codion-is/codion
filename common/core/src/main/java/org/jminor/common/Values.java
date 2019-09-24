@@ -56,6 +56,16 @@ public final class Values {
   }
 
   /**
+   * Instantiates a new ValueObserver for the given value.
+   * @param value the value to observe
+   * @param <V> the value type
+   * @return a ValueObserver for the given value
+   */
+  public static <V> ValueObserver<V> valueObserver(final Value<V> value) {
+    return new DefaultValueObserver<>(value);
+  }
+
+  /**
    * Links the two values together so that changes in one are reflected in the other
    * @param originalValue the original value
    * @param linkedValue the linked value
@@ -99,8 +109,13 @@ public final class Values {
     }
 
     @Override
-    public EventObserver<V> getObserver() {
+    public EventObserver<V> getChangeObserver() {
       return changeEvent.getObserver();
+    }
+
+    @Override
+    public ValueObserver<V> getValueObserver() {
+      return valueObserver(this);
     }
   }
 
@@ -162,8 +177,13 @@ public final class Values {
     }
 
     @Override
-    public EventObserver<V> getObserver() {
+    public EventObserver<V> getChangeObserver() {
       return changeEvent;
+    }
+
+    @Override
+    public ValueObserver<V> getValueObserver() {
+      return valueObserver(this);
     }
   }
 
@@ -189,8 +209,13 @@ public final class Values {
     }
 
     @Override
-    public EventObserver<Boolean> getObserver() {
+    public EventObserver<Boolean> getChangeObserver() {
       return state.getObserver();
+    }
+
+    @Override
+    public ValueObserver<Boolean> getValueObserver() {
+      return valueObserver(this);
     }
   }
 
@@ -234,11 +259,11 @@ public final class Values {
     }
 
     private void bindEvents(final Value<V> originalValue, final Value<V> linkedValue, final boolean readOnly) {
-      if (originalValue.getObserver() != null) {
-        originalValue.getObserver().addListener(() -> updateLinkedvalue(originalValue, linkedValue));
+      if (originalValue.getChangeObserver() != null) {
+        originalValue.getChangeObserver().addListener(() -> updateLinkedValue(originalValue, linkedValue));
       }
-      if (!readOnly && linkedValue.getObserver() != null) {
-        linkedValue.getObserver().addListener(() -> updateOriginalValue(originalValue, linkedValue));
+      if (!readOnly && linkedValue.getChangeObserver() != null) {
+        linkedValue.getChangeObserver().addListener(() -> updateOriginalValue(originalValue, linkedValue));
       }
     }
 
@@ -254,7 +279,7 @@ public final class Values {
       }
     }
 
-    private void updateLinkedvalue(final Value<V> originalValue, final Value<V> linkedValue) {
+    private void updateLinkedValue(final Value<V> originalValue, final Value<V> linkedValue) {
       if (!isUpdatingOriginal) {
         try {
           isUpdatingLinked = true;
@@ -264,6 +289,25 @@ public final class Values {
           isUpdatingLinked = false;
         }
       }
+    }
+  }
+
+  private static final class DefaultValueObserver<V> implements ValueObserver<V> {
+
+    private final Value<V> value;
+
+    private DefaultValueObserver(final Value<V> value) {
+      this.value = Objects.requireNonNull(value, "value");
+    }
+
+    @Override
+    public V get() {
+      return value.get();
+    }
+
+    @Override
+    public EventObserver<V> getChangeObserver() {
+      return value.getChangeObserver();
     }
   }
 }

@@ -232,13 +232,18 @@ public final class Configuration {
     }
 
     @Override
-    public final EventObserver<T> getObserver() {
+    public final EventObserver<T> getChangeObserver() {
       return changeEvent.getObserver();
     }
 
     @Override
     public final String toString() {
       return key;
+    }
+
+    @Override
+    public ValueObserver<T> getValueObserver() {
+      return Values.valueObserver(this);
     }
   }
 }

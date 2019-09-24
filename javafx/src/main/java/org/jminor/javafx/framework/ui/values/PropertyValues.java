@@ -10,6 +10,8 @@ import org.jminor.common.Events;
 import org.jminor.common.Item;
 import org.jminor.common.Util;
 import org.jminor.common.Value;
+import org.jminor.common.ValueObserver;
+import org.jminor.common.Values;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.EntityLookupModel;
 
@@ -328,8 +330,13 @@ public final class PropertyValues {
     }
 
     @Override
-    public final EventObserver<V> getObserver() {
+    public final EventObserver<V> getChangeObserver() {
       return changeEvent.getObserver();
+    }
+
+    @Override
+    public ValueObserver<V> getValueObserver() {
+      return Values.valueObserver(this);
     }
 
     @Override
@@ -363,8 +370,13 @@ public final class PropertyValues {
     }
 
     @Override
-    public EventObserver<Boolean> getObserver() {
+    public EventObserver<Boolean> getChangeObserver() {
       return changeEvent.getObserver();
+    }
+
+    @Override
+    public ValueObserver<Boolean> getValueObserver() {
+      return Values.valueObserver(this);
     }
   }
 
@@ -389,8 +401,13 @@ public final class PropertyValues {
     }
 
     @Override
-    public EventObserver<V> getObserver() {
+    public EventObserver<V> getChangeObserver() {
       return changeEvent.getObserver();
+    }
+
+    @Override
+    public ValueObserver<V> getValueObserver() {
+      return Values.valueObserver(this);
     }
   }
 
@@ -415,8 +432,13 @@ public final class PropertyValues {
     }
 
     @Override
-    public EventObserver getObserver() {
+    public EventObserver getChangeObserver() {
       return changeEvent.getObserver();
+    }
+
+    @Override
+    public ValueObserver getValueObserver() {
+      return Values.valueObserver(this);
     }
   }
 
@@ -443,8 +465,13 @@ public final class PropertyValues {
     }
 
     @Override
-    public EventObserver<Entity> getObserver() {
+    public EventObserver<Entity> getChangeObserver() {
       return selectionListener.getObserver();
+    }
+
+    @Override
+    public ValueObserver<Entity> getValueObserver() {
+      return Values.valueObserver(this);
     }
   }
 
@@ -469,8 +496,13 @@ public final class PropertyValues {
     }
 
     @Override
-    public EventObserver<Collection<Entity>> getObserver() {
+    public EventObserver<Collection<Entity>> getChangeObserver() {
       return selectionListener.getObserver();
+    }
+
+    @Override
+    public ValueObserver<Collection<Entity>> getValueObserver() {
+      return Values.valueObserver(this);
     }
   }
 }

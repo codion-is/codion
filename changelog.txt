@@ -5107,3 +5107,6 @@
   ResultPacker bug fixed, redundant call to fetch() removed
   Gradle wrapper added
   Database, DatabaseConnections, DefaultDatabaseConnection, LocalEntityConnections, DefaultLocalEntityConnection now document where AuthenticationException is thrown
+  TestUtil.getDelimitedString() simplified using String.join()
+  ValueObserver added, for read only access to Values, Value.get() and Value.getObserver() moved to ValueObserver, Value implements it, Values.DefaultValueObserver values it
+  ValueObserver.getObserver() renamed to getChangeObserver()

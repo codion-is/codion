@@ -34,8 +34,8 @@ public class ValuesTest {
   public void value() {
     final AtomicInteger eventCounter = new AtomicInteger();
     final Value<Integer> intValue = Values.value(42);
-    intValue.getObserver().addListener(eventCounter::incrementAndGet);
-    intValue.getObserver().addDataListener(data -> {
+    intValue.getChangeObserver().addListener(eventCounter::incrementAndGet);
+    intValue.getValueObserver().getChangeObserver().addDataListener(data -> {
       if (eventCounter.get() != 2) {
         assertNotNull(data);
       }
@@ -58,9 +58,9 @@ public class ValuesTest {
     final Value<Integer> modelValue = Values.beanValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue);
-    modelValue.getObserver().addListener(modelValueEventCounter::incrementAndGet);
+    modelValue.getChangeObserver().addListener(modelValueEventCounter::incrementAndGet);
     final AtomicInteger uiValueEventCounter = new AtomicInteger();
-    uiValue.getObserver().addListener(uiValueEventCounter::incrementAndGet);
+    uiValue.getChangeObserver().addListener(uiValueEventCounter::incrementAndGet);
     assertEquals(Integer.valueOf(42), uiValue.get());
     assertEquals(0, modelValueEventCounter.get());
     assertEquals(0, uiValueEventCounter.get());
@@ -92,9 +92,9 @@ public class ValuesTest {
     final Value<Integer> modelValue = Values.beanValue(this, "intValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue, true);
-    modelValue.getObserver().addListener(modelValueEventCounter::incrementAndGet);
+    modelValue.getChangeObserver().addListener(modelValueEventCounter::incrementAndGet);
     final AtomicInteger uiValueEventCounter = new AtomicInteger();
-    uiValue.getObserver().addListener(uiValueEventCounter::incrementAndGet);
+    uiValue.getChangeObserver().addListener(uiValueEventCounter::incrementAndGet);
     assertEquals(Integer.valueOf(42), uiValue.get());
     assertEquals(0, modelValueEventCounter.get());
     assertEquals(0, uiValueEventCounter.get());
@@ -124,7 +124,7 @@ public class ValuesTest {
   public void stateValue() {
     final State state = States.state(true);
     final Value<Boolean> stateValue = Values.stateValue(state);
-    assertNotNull(stateValue.getObserver());
+    assertNotNull(stateValue.getChangeObserver());
     assertTrue(stateValue.get());
     stateValue.set(false);
     assertFalse(state.isActive());

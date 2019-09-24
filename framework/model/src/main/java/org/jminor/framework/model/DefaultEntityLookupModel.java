@@ -326,9 +326,9 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   private void bindEventsInternal() {
-    searchStringValue.getObserver().addListener(() ->
+    searchStringValue.getChangeObserver().addListener(() ->
             searchStringRepresentsSelectedState.setActive(searchStringRepresentsSelected()));
-    multipleItemSeparatorValue.getObserver().addListener(this::refreshSearchText);
+    multipleItemSeparatorValue.getChangeObserver().addListener(this::refreshSearchText);
   }
 
   private String toString(final Collection<Entity> entities) {
