@@ -222,7 +222,7 @@ public interface ValueMap<K extends Attribute, V> extends ValueProvider<K, V>, V
 
     /**
      * @param listener a listener notified each time a re-validation of all values is required, for example
-     * when the validation settings have changed and need to be reflected in the UI
+     * when the underlying validation settings have changed
      */
     void addRevalidationListener(final EventListener listener);
 

@@ -147,10 +147,9 @@ public final class Conditions {
       }
 
       final StringBuilder conditionString = new StringBuilder(conditions.size() > 1 ? "(" : "");
-      int i = 0;
-      for (final Condition condition : conditions) {
-        conditionString.append(condition.getWhereClause());
-        if (i++ < conditions.size() - 1) {
+      for (int i = 0; i < conditions.size(); i++) {
+        conditionString.append(conditions.get(i).getWhereClause());
+        if (i < conditions.size() - 1) {
           conditionString.append(toString(conjunction));
         }
       }
