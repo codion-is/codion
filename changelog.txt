@@ -5100,3 +5100,4 @@
   ValueObserver added, for read only access to Values, Value.get() and Value.getObserver() moved to ValueObserver, Value implements it, Values.DefaultValueObserver values it
   ValueObserver.getObserver() renamed to getChangeObserver()
   Misc. javadoc fixes and some minor changes
+  TableModelProxy removed

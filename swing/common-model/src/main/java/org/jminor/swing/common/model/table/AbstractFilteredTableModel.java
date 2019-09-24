@@ -399,6 +399,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
+  public void removeRowsDeletedListener(final EventDataListener listener) {
+    rowsDeletedEvent.removeDataListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final SwingFilteredTableColumnModel<C> getColumnModel() {
     return columnModel;
   }
