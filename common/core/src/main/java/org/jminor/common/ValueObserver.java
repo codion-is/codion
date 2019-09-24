@@ -16,5 +16,5 @@ public interface ValueObserver<V> {
   /**
    * @return an observer notified each time the value changes
    */
-  EventObserver<V> getObserver();
+  EventObserver<V> getChangeObserver();
 }

@@ -232,7 +232,7 @@ public final class Configuration {
     }
 
     @Override
-    public final EventObserver<T> getObserver() {
+    public final EventObserver<T> getChangeObserver() {
       return changeEvent.getObserver();
     }
 

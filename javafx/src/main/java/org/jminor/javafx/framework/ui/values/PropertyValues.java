@@ -330,7 +330,7 @@ public final class PropertyValues {
     }
 
     @Override
-    public final EventObserver<V> getObserver() {
+    public final EventObserver<V> getChangeObserver() {
       return changeEvent.getObserver();
     }
 
@@ -370,7 +370,7 @@ public final class PropertyValues {
     }
 
     @Override
-    public EventObserver<Boolean> getObserver() {
+    public EventObserver<Boolean> getChangeObserver() {
       return changeEvent.getObserver();
     }
 
@@ -401,7 +401,7 @@ public final class PropertyValues {
     }
 
     @Override
-    public EventObserver<V> getObserver() {
+    public EventObserver<V> getChangeObserver() {
       return changeEvent.getObserver();
     }
 
@@ -432,7 +432,7 @@ public final class PropertyValues {
     }
 
     @Override
-    public EventObserver getObserver() {
+    public EventObserver getChangeObserver() {
       return changeEvent.getObserver();
     }
 
@@ -465,7 +465,7 @@ public final class PropertyValues {
     }
 
     @Override
-    public EventObserver<Entity> getObserver() {
+    public EventObserver<Entity> getChangeObserver() {
       return selectionListener.getObserver();
     }
 
@@ -496,7 +496,7 @@ public final class PropertyValues {
     }
 
     @Override
-    public EventObserver<Collection<Entity>> getObserver() {
+    public EventObserver<Collection<Entity>> getChangeObserver() {
       return selectionListener.getObserver();
     }
 

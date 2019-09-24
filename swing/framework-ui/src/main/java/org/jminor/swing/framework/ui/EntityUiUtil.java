@@ -369,7 +369,7 @@ public final class EntityUiUtil {
         return value == null ? "" : value.toString();
       }
       @Override
-      public EventObserver<String> getObserver() {
+      public EventObserver<String> getChangeObserver() {
         return valueChangeEvent.getObserver();
       }
       @Override
@@ -1162,7 +1162,7 @@ public final class EntityUiUtil {
     }
 
     @Override
-    public EventObserver<Entity> getObserver() {
+    public EventObserver<Entity> getChangeObserver() {
       return changeEvent.getObserver();
     }
 
