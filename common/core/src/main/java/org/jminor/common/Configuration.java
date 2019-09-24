@@ -240,5 +240,10 @@ public final class Configuration {
     public final String toString() {
       return key;
     }
+
+    @Override
+    public ValueObserver<T> getValueObserver() {
+      return Values.valueObserver(this);
+    }
   }
 }

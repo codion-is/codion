@@ -35,7 +35,7 @@ public class ValuesTest {
     final AtomicInteger eventCounter = new AtomicInteger();
     final Value<Integer> intValue = Values.value(42);
     intValue.getObserver().addListener(eventCounter::incrementAndGet);
-    intValue.getObserver().addDataListener(data -> {
+    intValue.getValueObserver().getObserver().addDataListener(data -> {
       if (eventCounter.get() != 2) {
         assertNotNull(data);
       }

@@ -8,6 +8,7 @@ import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.Value;
+import org.jminor.common.ValueObserver;
 import org.jminor.common.Values;
 import org.jminor.swing.common.tools.ItemRandomizer;
 import org.jminor.swing.common.tools.ItemRandomizerModel;
@@ -165,21 +166,26 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     @Override
     public void set(final Boolean value) {
-      getModel().setItemEnabled(item, value);
+      model.setItemEnabled(item, value);
     }
 
     @Override
     public Boolean get() {
-      return getModel().isItemEnabled(item);
+      return model.isItemEnabled(item);
     }
 
     @Override
     public EventObserver<Boolean> getObserver() {
-      return getModel().getEnabledObserver();
+      return model.getEnabledObserver();
+    }
+
+    @Override
+    public ValueObserver<Boolean> getValueObserver() {
+      return Values.valueObserver(this);
     }
   }
 
-  private final class EnabledUIValue implements Value<Boolean> {
+  private static final class EnabledUIValue implements Value<Boolean> {
     private final Event<Boolean> changeEvent = Events.event();
     private final ButtonModel buttonModel;
 
@@ -202,6 +208,11 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     public EventObserver<Boolean> getObserver() {
       return changeEvent.getObserver();
     }
+
+    @Override
+    public ValueObserver<Boolean> getValueObserver() {
+      return Values.valueObserver(this);
+    }
   }
 
   private final class WeightModelValue implements Value<Integer> {
@@ -213,21 +224,26 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     @Override
     public void set(final Integer value) {
-      getModel().setWeight(item, value);
+      model.setWeight(item, value);
     }
 
     @Override
     public Integer get() {
-      return getModel().getWeight(item);
+      return model.getWeight(item);
     }
 
     @Override
     public EventObserver<Integer> getObserver() {
-      return getModel().getWeightsObserver();
+      return model.getWeightsObserver();
+    }
+
+    @Override
+    public ValueObserver<Integer> getValueObserver() {
+      return Values.valueObserver(this);
     }
   }
 
-  private final class WeightUIValue implements Value<Integer> {
+  private static final class WeightUIValue implements Value<Integer> {
     private final Event<Integer> changeEvent = Events.event();
     private final SpinnerNumberModel spinnerModel;
 
@@ -249,6 +265,11 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     @Override
     public EventObserver<Integer> getObserver() {
       return changeEvent.getObserver();
+    }
+
+    @Override
+    public ValueObserver<Integer> getValueObserver() {
+      return Values.valueObserver(this);
     }
   }
 }

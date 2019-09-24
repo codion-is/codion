@@ -10,6 +10,8 @@ import org.jminor.common.Events;
 import org.jminor.common.Item;
 import org.jminor.common.Util;
 import org.jminor.common.Value;
+import org.jminor.common.ValueObserver;
+import org.jminor.common.Values;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.EntityLookupModel;
 
@@ -333,6 +335,11 @@ public final class PropertyValues {
     }
 
     @Override
+    public ValueObserver<V> getValueObserver() {
+      return Values.valueObserver(this);
+    }
+
+    @Override
     public StringConverter<V> getConverter() {
       return converter;
     }
@@ -366,6 +373,11 @@ public final class PropertyValues {
     public EventObserver<Boolean> getObserver() {
       return changeEvent.getObserver();
     }
+
+    @Override
+    public ValueObserver<Boolean> getValueObserver() {
+      return Values.valueObserver(this);
+    }
   }
 
   private static final class SelectedValue<V> implements Value<V> {
@@ -392,6 +404,11 @@ public final class PropertyValues {
     public EventObserver<V> getObserver() {
       return changeEvent.getObserver();
     }
+
+    @Override
+    public ValueObserver<V> getValueObserver() {
+      return Values.valueObserver(this);
+    }
   }
 
   private static final class SelectedItemValue implements Value {
@@ -417,6 +434,11 @@ public final class PropertyValues {
     @Override
     public EventObserver getObserver() {
       return changeEvent.getObserver();
+    }
+
+    @Override
+    public ValueObserver getValueObserver() {
+      return Values.valueObserver(this);
     }
   }
 
@@ -446,6 +468,11 @@ public final class PropertyValues {
     public EventObserver<Entity> getObserver() {
       return selectionListener.getObserver();
     }
+
+    @Override
+    public ValueObserver<Entity> getValueObserver() {
+      return Values.valueObserver(this);
+    }
   }
 
   private static final class EntityLookupMultiValue implements Value<Collection<Entity>> {
@@ -471,6 +498,11 @@ public final class PropertyValues {
     @Override
     public EventObserver<Collection<Entity>> getObserver() {
       return selectionListener.getObserver();
+    }
+
+    @Override
+    public ValueObserver<Collection<Entity>> getValueObserver() {
+      return Values.valueObserver(this);
     }
   }
 }

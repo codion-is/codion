@@ -12,6 +12,7 @@ import org.jminor.common.LoggerProxy;
 import org.jminor.common.StateObserver;
 import org.jminor.common.TextUtil;
 import org.jminor.common.Value;
+import org.jminor.common.ValueObserver;
 import org.jminor.common.Values;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
@@ -370,6 +371,10 @@ public final class EntityUiUtil {
       @Override
       public EventObserver<String> getObserver() {
         return valueChangeEvent.getObserver();
+      }
+      @Override
+      public ValueObserver<String> getValueObserver() {
+        return Values.valueObserver(this);
       }
     }, null, false, true);
 
@@ -1159,6 +1164,11 @@ public final class EntityUiUtil {
     @Override
     public EventObserver<Entity> getObserver() {
       return changeEvent.getObserver();
+    }
+
+    @Override
+    public ValueObserver<Entity> getValueObserver() {
+      return Values.valueObserver(this);
     }
   }
 }

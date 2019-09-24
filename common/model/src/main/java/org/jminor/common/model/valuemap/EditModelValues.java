@@ -7,6 +7,8 @@ import org.jminor.common.Event;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.Value;
+import org.jminor.common.ValueObserver;
+import org.jminor.common.Values;
 import org.jminor.common.db.Attribute;
 
 /**
@@ -58,6 +60,11 @@ public final class EditModelValues {
     @Override
     public EventObserver<V> getObserver() {
       return changeEvent.getObserver();
+    }
+
+    @Override
+    public ValueObserver<V> getValueObserver() {
+      return Values.valueObserver(this);
     }
   }
 }

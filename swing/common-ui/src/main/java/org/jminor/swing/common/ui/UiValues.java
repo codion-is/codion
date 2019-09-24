@@ -11,6 +11,8 @@ import org.jminor.common.FormatUtil;
 import org.jminor.common.Item;
 import org.jminor.common.Util;
 import org.jminor.common.Value;
+import org.jminor.common.ValueObserver;
+import org.jminor.common.Values;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.swing.common.model.DocumentAdapter;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
@@ -170,6 +172,11 @@ public final class UiValues {
     @Override
     public final EventObserver<V> getObserver() {
       return changeEvent.getObserver();
+    }
+
+    @Override
+    public ValueObserver<V> getValueObserver() {
+      return Values.valueObserver(this);
     }
 
     @Override

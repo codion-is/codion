@@ -56,6 +56,16 @@ public final class Values {
   }
 
   /**
+   * Instantiates a new ValueObserver for the given value.
+   * @param value the value to observe
+   * @param <V> the value type
+   * @return a ValueObserver for the given value
+   */
+  public static <V> ValueObserver<V> valueObserver(final Value<V> value) {
+    return new DefaultValueObserver<>(value);
+  }
+
+  /**
    * Links the two values together so that changes in one are reflected in the other
    * @param originalValue the original value
    * @param linkedValue the linked value
@@ -101,6 +111,11 @@ public final class Values {
     @Override
     public EventObserver<V> getObserver() {
       return changeEvent.getObserver();
+    }
+
+    @Override
+    public ValueObserver<V> getValueObserver() {
+      return valueObserver(this);
     }
   }
 
@@ -165,6 +180,11 @@ public final class Values {
     public EventObserver<V> getObserver() {
       return changeEvent;
     }
+
+    @Override
+    public ValueObserver<V> getValueObserver() {
+      return valueObserver(this);
+    }
   }
 
   /**
@@ -191,6 +211,11 @@ public final class Values {
     @Override
     public EventObserver<Boolean> getObserver() {
       return state.getObserver();
+    }
+
+    @Override
+    public ValueObserver<Boolean> getValueObserver() {
+      return valueObserver(this);
     }
   }
 
@@ -264,6 +289,25 @@ public final class Values {
           isUpdatingLinked = false;
         }
       }
+    }
+  }
+
+  private static final class DefaultValueObserver<V> implements ValueObserver<V> {
+
+    private final Value<V> value;
+
+    private DefaultValueObserver(final Value<V> value) {
+      this.value = Objects.requireNonNull(value, "value");
+    }
+
+    @Override
+    public V get() {
+      return value.get();
+    }
+
+    @Override
+    public EventObserver<V> getObserver() {
+      return value.getObserver();
     }
   }
 }
