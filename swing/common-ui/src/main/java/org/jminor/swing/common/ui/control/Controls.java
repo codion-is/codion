@@ -5,20 +5,18 @@ package org.jminor.swing.common.ui.control;
 
 import org.jminor.common.Event;
 import org.jminor.common.EventObserver;
-import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.Value;
-import org.jminor.common.ValueObserver;
 import org.jminor.common.Values;
 import org.jminor.common.model.CancelException;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
+import org.jminor.swing.common.ui.UiValues;
 
 import javax.swing.ButtonModel;
 import javax.swing.Icon;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
 import java.util.Objects;
 
@@ -183,7 +181,7 @@ public final class Controls {
    * @param caption the control caption
    * @param changeEvent an event fired each time the property value changes in the underlying object
    * @param enabledState the state which controls the enabled state of the control
-   * @param tristate if truen then a tristate (false, true, null) model is used
+   * @param tristate if true then a tristate (false, true, null) button model is used
    * @return a toggle control
    */
   public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,
@@ -196,7 +194,7 @@ public final class Controls {
     else {
       buttonModel = new JToggleButton.ToggleButtonModel();
     }
-    Values.link(Values.beanValue(owner, beanPropertyName, tristate ? Boolean.class : boolean.class, changeEvent), new BooleanValue(buttonModel));
+    Values.link(Values.beanValue(owner, beanPropertyName, tristate ? Boolean.class : boolean.class, changeEvent), UiValues.booleanValue(buttonModel));
 
     return new ToggleControl(caption, buttonModel, enabledState);
   }
@@ -241,8 +239,59 @@ public final class Controls {
    */
   public static ToggleControl toggleControl(final State state, final String name, final StateObserver enabledState,
                                             final Icon icon) {
-    final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
-    Values.link(Values.stateValue(state), new BooleanValue(buttonModel));
+    return toggleControl(Values.stateValue(state), name, enabledState, icon);
+  }
+
+  /**
+   * Creates a ToggleControl based on the given boolean {@link Value}.
+   * If the value is nullable then a TristateButtonModel is used.
+   * @param value the value to toggle
+   * @return a ToggleControl based on the given state
+   * @see Value#isNullable()
+   */
+  public static ToggleControl toggleControl(final Value<Boolean> value) {
+    return toggleControl(value, null);
+  }
+
+  /**
+   * Creates a ToggleControl based on the given boolean {@link Value}
+   * If the value is nullable then a TristateButtonModel is used.
+   * @param value the value to toggle
+   * @param name the name of this control
+   * @return a ToggleControl based on the given state
+   * @see Value#isNullable()
+   */
+  public static ToggleControl toggleControl(final Value<Boolean> value, final String name) {
+    return toggleControl(value, name, (StateObserver) null);
+  }
+
+  /**
+   * Creates a ToggleControl based on the given boolean {@link Value}
+   * If the value is nullable then a TristateButtonModel is used.
+   * @param value the value to toggle
+   * @param name the name of this control
+   * @param enabledState the state which controls the enabled state of the control
+   * @return a ToggleControl based on the given state
+   * @see Value#isNullable()
+   */
+  public static ToggleControl toggleControl(final Value<Boolean> value, final String name, final StateObserver enabledState) {
+    return toggleControl(value, name, enabledState, null);
+  }
+
+  /**
+   * Creates a ToggleControl based on the given boolean {@link Value}
+   * If the value is nullable then a TristateButtonModel is used.
+   * @param value the value to toggle
+   * @param name the name of this control
+   * @param enabledState the state which controls the enabled state of the control
+   * @param icon the icon
+   * @return a ToggleControl based on the given state
+   * @see Value#isNullable()
+   */
+  public static ToggleControl toggleControl(final Value<Boolean> value, final String name, final StateObserver enabledState,
+                                            final Icon icon) {
+    final ButtonModel buttonModel = value.isNullable() ? new TristateButtonModel() : new JToggleButton.ToggleButtonModel();
+    Values.link(value, UiValues.booleanValue(buttonModel));
 
     final ToggleControl control = new ToggleControl(name, buttonModel, enabledState);
     control.setIcon(icon);
@@ -315,60 +364,6 @@ public final class Controls {
     protected ToggleControl doSetMnemonic(final int mnemonic) {
       this.buttonModel.setMnemonic(mnemonic);
       return (ToggleControl) super.doSetMnemonic(mnemonic);
-    }
-  }
-
-  private static final class BooleanValue implements Value<Boolean> {
-
-    private final ButtonModel buttonModel;
-    private final Event<Boolean> changeEvent = Events.event();
-
-    private BooleanValue(final ButtonModel buttonModel) {
-      this.buttonModel = buttonModel;
-      this.buttonModel.addItemListener(e -> changeEvent.fire());
-    }
-
-    @Override
-    public Boolean get() {
-      if (buttonModel instanceof TristateButtonModel && ((TristateButtonModel) buttonModel).isIndeterminate()) {
-        return null;
-      }
-
-      return buttonModel.isSelected();
-    }
-
-    @Override
-    public void set(final Boolean value) {
-      if (SwingUtilities.isEventDispatchThread()) {
-        setValue(value);
-      }
-      else {
-        try {
-          SwingUtilities.invokeAndWait(() -> setValue(value));
-        }
-        catch (final Exception e) {
-          throw new RuntimeException(e);
-        }
-      }
-    }
-
-    private void setValue(final Boolean value) {
-      if (value == null && buttonModel instanceof TristateButtonModel) {
-        ((TristateButtonModel) buttonModel).setIndeterminate();
-      }
-      else {
-        buttonModel.setSelected(value != null && value);
-      }
-    }
-
-    @Override
-    public EventObserver<Boolean> getChangeObserver() {
-      return changeEvent.getObserver();
-    }
-
-    @Override
-    public ValueObserver<Boolean> getValueObserver() {
-      return Values.valueObserver(this);
     }
   }
 }

@@ -14,6 +14,12 @@ public interface ValueObserver<V> {
   V get();
 
   /**
+   * If false then get() is guaranteed to never return null.
+   * @return true if this value can be null
+   */
+  boolean isNullable();
+
+  /**
    * @return an observer notified each time the value changes
    */
   EventObserver<V> getChangeObserver();

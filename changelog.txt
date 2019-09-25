@@ -5108,8 +5108,11 @@
   Gradle wrapper added
   Database, DatabaseConnections, DefaultDatabaseConnection, LocalEntityConnections, DefaultLocalEntityConnection now document where AuthenticationException is thrown
   TestUtil.getDelimitedString() simplified using String.join()
-  ValueObserver added, for read only access to Values, Value.get() and Value.getObserver() moved to ValueObserver, Value implements it, Values.DefaultValueObserver values it
+  ValueObserver added, for read only access to Values, Value.get() and Value.getObserver() moved to ValueObserver, Value extends it
   ValueObserver.getObserver() renamed to getChangeObserver()
   Misc. javadoc fixes and some minor changes
   TableModelProxy removed
   Minor javadoc fixes and getting rid of ret return variable name
+  Values.value() overloaded with nullValue parameter, for preventing null values
+  Value.isNullable() added, some related refactoring
+  Values.valueState() added

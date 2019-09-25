@@ -7,6 +7,8 @@ import org.jminor.common.Event;
 import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.States;
+import org.jminor.common.Value;
+import org.jminor.common.Values;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
 
 import org.junit.jupiter.api.Test;
@@ -46,6 +48,24 @@ public final class ControlsTest {
     assertFalse(value);
     setValue(true);
     assertTrue(control.getButtonModel().isSelected());
+
+    final Value<Boolean> nullableValue = Values.value(true);
+    final Controls.ToggleControl nullableControl = Controls.toggleControl(nullableValue);
+    assertTrue(nullableControl.getButtonModel() instanceof TristateButtonModel);
+    assertTrue(nullableControl.getButtonModel().isSelected());
+    nullableValue.set(false);
+    assertFalse(nullableControl.getButtonModel().isSelected());
+    nullableValue.set(null);
+    assertTrue(((TristateButtonModel) nullableControl.getButtonModel()).isIndeterminate());
+
+    final Value<Boolean> nonNullableValue = Values.value(true, false);
+    final Controls.ToggleControl nonNullableControl = Controls.toggleControl(nonNullableValue);
+    assertFalse(nonNullableControl.getButtonModel() instanceof TristateButtonModel);
+    assertTrue(nonNullableControl.getButtonModel().isSelected());
+    nonNullableValue.set(false);
+    assertFalse(nonNullableControl.getButtonModel().isSelected());
+    nonNullableValue.set(null);
+    assertFalse(nonNullableControl.getButtonModel().isSelected());
   }
 
   @Test

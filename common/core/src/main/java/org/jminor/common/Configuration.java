@@ -232,6 +232,11 @@ public final class Configuration {
     }
 
     @Override
+    public boolean isNullable() {
+      return true;
+    }
+
+    @Override
     public final EventObserver<T> getChangeObserver() {
       return changeEvent.getObserver();
     }

@@ -175,6 +175,11 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
 
     @Override
+    public boolean isNullable() {
+      return false;
+    }
+
+    @Override
     public EventObserver<Boolean> getChangeObserver() {
       return model.getEnabledObserver();
     }
@@ -202,6 +207,11 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     @Override
     public Boolean get() {
       return buttonModel.isSelected();
+    }
+
+    @Override
+    public boolean isNullable() {
+      return false;
     }
 
     @Override
@@ -233,6 +243,11 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
 
     @Override
+    public boolean isNullable() {
+      return false;
+    }
+
+    @Override
     public EventObserver<Integer> getChangeObserver() {
       return model.getWeightsObserver();
     }
@@ -260,6 +275,11 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     @Override
     public Integer get() {
       return (Integer) spinnerModel.getValue();
+    }
+
+    @Override
+    public boolean isNullable() {
+      return false;
     }
 
     @Override

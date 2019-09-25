@@ -14,7 +14,7 @@ public final class Values {
   private Values() {}
 
   /**
-   * Instantiates a new Value instance wrapping a null value
+   * Instantiates a new Value instance wrapping a null initial value
    * @param <V> type to wrap
    * @return a Value for the given type
    */
@@ -29,7 +29,18 @@ public final class Values {
    * @return a Value for the given type with the given initial value
    */
   public static <V> Value<V> value(final V initialValue) {
-    return new DefaultValue<>(initialValue);
+    return value(initialValue, null);
+  }
+
+  /**
+   * Instantiates a new Value
+   * @param initialValue the initial value
+   * @param nullValue the actual value to use when the value is set to null
+   * @param <V> type to wrap
+   * @return a Value for the given type with the given initial value
+   */
+  public static <V> Value<V> value(final V initialValue, final V nullValue) {
+    return new DefaultValue<>(nullValue, initialValue);
   }
 
   /**
@@ -47,12 +58,30 @@ public final class Values {
   }
 
   /**
-   * Instantiates a boolean Value based on a {@link State}
+   * Instantiates a boolean Value based on a {@link State}.
+   * Null values are translated to 'false'.
    * @param state the state to base the value on
    * @return a boolean state based on the given value
    */
   public static Value<Boolean> stateValue(final State state) {
     return new StateValue(state);
+  }
+
+  /**
+   * Instantiates a State linked to the given boolean value.
+   * @param booleanValue the boolean value to link to the state
+   * @return a State linked to the given value
+   * @throws IllegalArgumentException in case the boolean value is nullable
+   * @see Value#isNullable()
+   */
+  public static State valueState(final Value<Boolean> booleanValue) {
+    if (booleanValue.isNullable()) {
+      throw new IllegalArgumentException("States can not be created for a nullable value");
+    }
+    final State state = States.state();
+    Values.link(booleanValue, Values.stateValue(state));
+
+    return state;
   }
 
   /**
@@ -89,16 +118,19 @@ public final class Values {
   private static final class DefaultValue<V> implements Value<V> {
 
     private final Event<V> changeEvent = Events.event();
+    private final V nullValue;
     private V value;
 
-    private DefaultValue(final V initialValue) {
-      this.value = initialValue;
+    private DefaultValue(final V nullValue, final V initialValue) {
+      this.nullValue = nullValue;
+      this.value = initialValue == null ? nullValue : initialValue;
     }
 
     @Override
     public void set(final V value) {
-      if (!Objects.equals(this.value, value)) {
-        this.value = value;
+      final V actualValue = value == null ? nullValue : value;
+      if (!Objects.equals(this.value, actualValue)) {
+        this.value = actualValue;
         changeEvent.fire(this.value);
       }
     }
@@ -106,6 +138,11 @@ public final class Values {
     @Override
     public V get() {
       return value;
+    }
+
+    @Override
+    public boolean isNullable() {
+      return nullValue == null;
     }
 
     @Override
@@ -177,6 +214,11 @@ public final class Values {
     }
 
     @Override
+    public boolean isNullable() {
+      return true;
+    }
+
+    @Override
     public EventObserver<V> getChangeObserver() {
       return changeEvent;
     }
@@ -188,24 +230,29 @@ public final class Values {
   }
 
   /**
-   * A boolean value based on a State
+   * A boolean value based on a State, null values are translated to 'false'
    */
   private static final class StateValue implements Value<Boolean> {
 
     private final State state;
 
     private StateValue(final State state) {
-      this.state = state;
+      this.state = Objects.requireNonNull(state);
     }
 
     @Override
     public void set(final Boolean value) {
-      state.setActive(value);
+      state.setActive(value == null ? false : value);
     }
 
     @Override
     public Boolean get() {
       return state.isActive();
+    }
+
+    @Override
+    public boolean isNullable() {
+      return false;
     }
 
     @Override
@@ -303,6 +350,11 @@ public final class Values {
     @Override
     public V get() {
       return value.get();
+    }
+
+    @Override
+    public boolean isNullable() {
+      return value.isNullable();
     }
 
     @Override
