@@ -5,6 +5,7 @@ package org.jminor.common;
 
 /**
  * A read only value observer
+ * @param <V> the type of the value
  */
 public interface ValueObserver<V> {
 
