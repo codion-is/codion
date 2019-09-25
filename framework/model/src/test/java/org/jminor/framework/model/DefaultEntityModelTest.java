@@ -147,6 +147,8 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void addRowsDeletedListener(final EventDataListener<List<Integer>> listener) {}
     @Override
+    public void removeRowsDeletedListener(final EventDataListener listener) {}
+    @Override
     public Domain getDomain() {return null;}
     @Override
     public TestEntityEditModel getEditModel() {return null;}

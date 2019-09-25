@@ -26,7 +26,7 @@ public interface ReportWrapper<R, D> {
   ReportResult<R> fillReport(final Connection connection) throws ReportException;
 
   /**
-   * Fills the report using the given data wrapper
+   * Fills the report using the data source wrapped by the given data wrapper
    * @param dataWrapper the data provider to use for the report generation
    * @return a filled report ready for display
    * @throws ReportException in case of an exception

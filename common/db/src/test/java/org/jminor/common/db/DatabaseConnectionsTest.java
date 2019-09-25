@@ -59,7 +59,7 @@ public class DatabaseConnectionsTest {
 
   @Test
   public void createConnectionWithClosedConnection() throws DatabaseException, SQLException {
-    assertThrows(IllegalArgumentException.class, () -> {
+    assertThrows(DatabaseException.class, () -> {
       Connection connection = null;
       try {
         connection = DATABASE.createConnection(UNIT_TEST_USER);

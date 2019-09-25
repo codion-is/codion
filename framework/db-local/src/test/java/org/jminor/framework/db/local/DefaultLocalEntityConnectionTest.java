@@ -647,7 +647,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void testConstructorInvalidConnection() throws Exception {
-    assertThrows(IllegalArgumentException.class, () -> {
+    assertThrows(DatabaseException.class, () -> {
       Connection connection = null;
       try {
         final Database db = Databases.getInstance();

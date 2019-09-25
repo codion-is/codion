@@ -53,7 +53,7 @@ public class DefaultDatabaseConnectionTest {
   public void constructorWithInvalidConnection() throws DatabaseException, SQLException {
     final Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
     connection.close();
-    assertThrows(IllegalArgumentException.class, () -> new DefaultDatabaseConnection(DATABASE, connection));
+    assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, connection));
   }
 
   @Test

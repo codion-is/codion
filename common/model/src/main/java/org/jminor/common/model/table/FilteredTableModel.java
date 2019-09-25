@@ -3,12 +3,14 @@
  */
 package org.jminor.common.model.table;
 
+import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.model.FilterCondition;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Specifies a table model supporting selection as well as filtering
@@ -16,7 +18,7 @@ import java.util.Collection;
  * @param <C> type type used to identify columns in this table model, Integer for simple indexed identification for example
  * @param <T> the type representing table columns
  */
-public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, TableModelProxy<R>, Refreshable {
+public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, Refreshable {
 
   /**
    * @param listener a listener to be notified each time a refresh is about to start
@@ -67,6 +69,39 @@ public interface FilteredTableModel<R, C, T> extends FilteredModel<R>, TableMode
    * @param listener the listener to remove
    */
   void removeTableModelClearedListener(final EventListener listener);
+
+  /**
+   * Adds a listener that is notified each time rows are deleted from the data model.
+   * @param listener the listener, the data list contains the fromIndex and toIndex as items at index 0 and 1
+   */
+  void addRowsDeletedListener(final EventDataListener<List<Integer>> listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeRowsDeletedListener(final EventDataListener listener);
+
+  /**
+   * @return true if an impending selection change should be allowed
+   */
+  boolean allowSelectionChange();
+
+  /**
+   * @return the size of the table model
+   */
+  int getRowCount();
+
+  /**
+   * @param item the item
+   * @return the index of the item in the table model
+   */
+  int indexOf(final R item);
+
+  /**
+   * @param index the index
+   * @return the item at the given index in the table model
+   */
+  R getItemAt(final int index);
 
   /**
    * Removes the given items from this table model

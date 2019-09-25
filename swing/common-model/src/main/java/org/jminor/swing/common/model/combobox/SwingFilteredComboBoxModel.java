@@ -239,12 +239,12 @@ public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, 
   /** {@inheritDoc} */
   @Override
   public final boolean contains(final T item, final boolean includeFiltered) {
-    final boolean ret = visibleItems.contains(item);
-    if (!ret && includeFiltered) {
+    final boolean visible = visibleItems.contains(item);
+    if (!visible && includeFiltered) {
       return filteredItems.contains(item);
     }
 
-    return ret;
+    return visible;
   }
 
   /** {@inheritDoc} */

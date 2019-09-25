@@ -11,15 +11,15 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * A generic interface for objects serving as where conditions in database queries
+ * Specifies objects serving as where conditions in database queries
  * @param <T> the type used to describe the columns involved in the condition
  */
 public interface Condition<T extends Column> extends Serializable {
   /**
-   * Returns a condition clause based on this Condition, note that this
-   * clause contains the ? substitute character instead of the actual values.
+   * Returns a condition clause based on this Condition without the WHERE keyword,
+   * note that this clause contains the ? substitution character instead of actual values.
    * Note that this method can return an empty string.
-   * @return a where clause based on this Condition
+   * @return a where clause based on this Condition or an empty string if it does not represent a condition
    * @see #getValues()
    */
   String getWhereClause();
@@ -68,7 +68,7 @@ public interface Condition<T extends Column> extends Serializable {
   }
 
   /**
-   * Enumerating all the possible condition types.
+   * Enumerating all the available condition types.
    */
   enum Type {
 

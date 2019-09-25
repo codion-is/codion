@@ -2025,13 +2025,13 @@ public final class UiUtil {
     }
 
     @Override
-    public Object stringToValue(final String value) throws ParseException {
-      String ret = value;
+    public Object stringToValue(final String string) throws ParseException {
+      String value = string;
       if (toUpperCase) {
-        ret = ret.toUpperCase(Locale.getDefault());
+        value = value.toUpperCase(Locale.getDefault());
       }
 
-      return super.stringToValue(ret);
+      return super.stringToValue(value);
     }
 
     @Override

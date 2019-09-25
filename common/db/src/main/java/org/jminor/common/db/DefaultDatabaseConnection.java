@@ -372,7 +372,12 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
   }
 
-  private void initialize(final Connection connection) {
+  /**
+   * Disables auto-commit on the given connection and sets the internal connection.
+   * @param connection the connection
+   * @throws DatabaseException in case disabling auto-commit fails
+   */
+  private void initialize(final Connection connection) throws DatabaseException {
     if (isConnected()) {
       throw new IllegalStateException("Already connected");
     }
@@ -383,7 +388,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
     catch (final SQLException e) {
       LOG.error("Unable to disable auto commit on connection, assuming invalid state", e);
-      throw new IllegalArgumentException("Connection invalid during instantiation", e);
+      throw new DatabaseException(e, "Connection invalid during instantiation");
     }
   }
 
@@ -391,8 +396,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * Returns a User with the username from the meta data retrieved from the given connection
    * @param connection the connection
    * @return a user based on the information gleamed from the given connection
-   * @throws DatabaseException in case of an exception while retrieving
-   * the username from the connection meta data
+   * @throws DatabaseException in case of an exception while retrieving the username from the connection meta data
    * @see java.sql.DatabaseMetaData#getUserName()
    */
   private static User getUser(final Connection connection) throws DatabaseException {

@@ -61,18 +61,18 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private boolean staticData = false;
 
   /**
-   * used to indicate that a refresh is being forced
+   * used to indicate that a refresh is being forced, as in, overriding the staticData directive
    */
   private boolean forceRefresh = false;
 
   /**
-   * the Condition.Provider used to filter the data when queried
+   * the Condition.Provider used when querying
    */
   private Condition.Provider<Property.ColumnProperty> selectConditionProvider;
 
   /**
    * A map of entities used to filter the contents of this model by foreign key value.
-   * The key in the map is the ID of the relevant foreign key property.
+   * The key in the map is the propertyId of the foreign key property.
    */
   private final Map<String, Set<Entity>> foreignKeyFilterEntities = new HashMap<>();
 
@@ -93,7 +93,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   };
 
   /**
-   * @param entityId the ID of the entity this combo box model should represent
+   * @param entityId the id of the entity this combo box model should represent
    * @param connectionProvider a EntityConnectionProvider instance
    */
   public SwingEntityComboBoxModel(final String entityId, final EntityConnectionProvider connectionProvider) {
