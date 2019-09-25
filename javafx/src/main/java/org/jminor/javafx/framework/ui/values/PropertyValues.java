@@ -330,6 +330,11 @@ public final class PropertyValues {
     }
 
     @Override
+    public boolean isNullable() {
+      return true;
+    }
+
+    @Override
     public final EventObserver<V> getChangeObserver() {
       return changeEvent.getObserver();
     }
@@ -370,6 +375,11 @@ public final class PropertyValues {
     }
 
     @Override
+    public boolean isNullable() {
+      return false;
+    }
+
+    @Override
     public EventObserver<Boolean> getChangeObserver() {
       return changeEvent.getObserver();
     }
@@ -401,6 +411,11 @@ public final class PropertyValues {
     }
 
     @Override
+    public boolean isNullable() {
+      return true;
+    }
+
+    @Override
     public EventObserver<V> getChangeObserver() {
       return changeEvent.getObserver();
     }
@@ -429,6 +444,11 @@ public final class PropertyValues {
     @Override
     public Object get() {
       return selectionModel.getSelectedItem().getValue();
+    }
+
+    @Override
+    public boolean isNullable() {
+      return true;
     }
 
     @Override
@@ -465,6 +485,11 @@ public final class PropertyValues {
     }
 
     @Override
+    public boolean isNullable() {
+      return true;
+    }
+
+    @Override
     public EventObserver<Entity> getChangeObserver() {
       return selectionListener.getObserver();
     }
@@ -493,6 +518,11 @@ public final class PropertyValues {
     @Override
     public Collection<Entity> get() {
       return lookupModel.getSelectedEntities();
+    }
+
+    @Override
+    public boolean isNullable() {
+      return false;
     }
 
     @Override

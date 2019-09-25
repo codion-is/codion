@@ -58,6 +58,11 @@ public final class EditModelValues {
     }
 
     @Override
+    public boolean isNullable() {
+      return true;
+    }
+
+    @Override
     public EventObserver<V> getChangeObserver() {
       return changeEvent.getObserver();
     }

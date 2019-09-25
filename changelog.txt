@@ -5102,3 +5102,5 @@
   Misc. javadoc fixes and some minor changes
   TableModelProxy removed
   Minor javadoc fixes and getting rid of ret return variable name
+  Values.value() overloaded with nullValue parameter, for preventing null values
+  Value.isNullable() added, some related refactoring

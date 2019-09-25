@@ -198,6 +198,11 @@ public final class UiValues {
       }
     }
 
+    @Override
+    public boolean isNullable() {
+      return true;
+    }
+
     protected final void fireChangeEvent() {
       changeEvent.fire();
     }
@@ -307,10 +312,6 @@ public final class UiValues {
       catch (final BadLocationException e) {
         throw new RuntimeException(e);
       }
-    }
-
-    protected Format getFormat() {
-      return format;
     }
 
     private String formatText(final String text) {
@@ -482,15 +483,18 @@ public final class UiValues {
     }
 
     @Override
-    protected void setInternal(final Boolean value) {
-      buttonModel.setSelected(value != null && value);
-      if (buttonModel instanceof TristateButtonModel && value == null) {
-        ((TristateButtonModel) getButtonModel()).setIndeterminate();
-      }
+    public boolean isNullable() {
+      return buttonModel instanceof TristateButtonModel;
     }
 
-    private ButtonModel getButtonModel() {
-      return buttonModel;
+    @Override
+    protected void setInternal(final Boolean value) {
+      if (value == null && buttonModel instanceof TristateButtonModel) {
+        ((TristateButtonModel) buttonModel).setIndeterminate();
+      }
+      else {
+        buttonModel.setSelected(value != null && value);
+      }
     }
   }
 

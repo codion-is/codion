@@ -277,6 +277,13 @@ public class UiValuesTest {
     assertTrue(model.isSelected());
     value.set(null);
     assertTrue(model.isIndeterminate());
+
+    model.setSelected(false);
+    assertFalse(value.get());
+    model.setSelected(true);
+    assertTrue(value.get());
+    model.setIndeterminate();
+    assertNull(value.get());
   }
 
   @Test

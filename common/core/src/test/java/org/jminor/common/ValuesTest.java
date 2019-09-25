@@ -33,7 +33,8 @@ public class ValuesTest {
   @Test
   public void value() {
     final AtomicInteger eventCounter = new AtomicInteger();
-    final Value<Integer> intValue = Values.value(42);
+    final Value<Integer> intValue = Values.value(42, -1);
+    assertFalse(intValue.isNullable());
     intValue.getChangeObserver().addListener(eventCounter::incrementAndGet);
     intValue.getValueObserver().getChangeObserver().addDataListener(data -> {
       if (eventCounter.get() != 2) {
@@ -45,11 +46,23 @@ public class ValuesTest {
     intValue.set(20);
     assertEquals(1, eventCounter.get());
     intValue.set(null);
+    assertEquals(-1, intValue.get());
     assertEquals(2, eventCounter.get());
     intValue.set(null);
+    assertEquals(-1, intValue.get());
     assertEquals(2, eventCounter.get());
     intValue.set(42);
     assertEquals(3, eventCounter.get());
+    intValue.set(null);
+    assertEquals(-1, intValue.get());
+
+    final Value<String> stringValue = Values.value(null, "null");
+    assertFalse(stringValue.isNullable());
+    assertEquals("null", stringValue.get());
+    stringValue.set("test");
+    assertEquals("test", stringValue.get());
+    stringValue.set(null);
+    assertEquals("null", stringValue.get());
   }
 
   @Test

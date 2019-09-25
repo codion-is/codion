@@ -369,6 +369,10 @@ public final class EntityUiUtil {
         return value == null ? "" : value.toString();
       }
       @Override
+      public boolean isNullable() {
+        return false;
+      }
+      @Override
       public EventObserver<String> getChangeObserver() {
         return valueChangeEvent.getObserver();
       }
@@ -1159,6 +1163,11 @@ public final class EntityUiUtil {
     public Entity get() {
       final Collection<Entity> selectedEntities = lookupModel.getSelectedEntities();
       return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
+    }
+
+    @Override
+    public boolean isNullable() {
+      return true;
     }
 
     @Override
