@@ -31,7 +31,7 @@ public final class ConfigurationStore {
   private final String propertiesFile;
   private final Map<String, Value> configurationValues = new HashMap<>();
 
-  //trying to make to configuration file human readable by sorting the keys
+  //trying to make the configuration file human readable by sorting the keys
   private final Properties properties = new Properties() {
     //sort to make properties file easier for human consumption
     @Override
@@ -56,9 +56,9 @@ public final class ConfigurationStore {
 
   /**
    * Instantiates a Value representing the given property.
-   * This value is not nullable, missing or null values are interpreted as 'false'.
    * @param property the configuration property identifying this value
-   * @param defaultValue the default value to use if no value is present
+   * @param defaultValue the default value to use if no value is present and
+   * when the value is set to null
    * @return the configuration value
    * @throws NullPointerException if {@code property} or {@code defaultValue} is null
    */
@@ -68,10 +68,8 @@ public final class ConfigurationStore {
     if (get(property) == null) {
       set(property, Boolean.toString(defaultValue));
     }
-    final Value<Boolean> value = Values.value(parseValue(property, stringValue ->
-            stringValue == null ? false : Boolean.parseBoolean(stringValue)), false);
-    value.getChangeObserver().addDataListener(booleanValue -> set(property, booleanValue == null ? "false" : Boolean.toString(booleanValue)));
-
+    final Value<Boolean> value = Values.value(parseValue(property, Boolean::parseBoolean), defaultValue);
+    value.getChangeObserver().addDataListener(booleanValue -> set(property, Boolean.toString(booleanValue)));
 
     return value;
   }
@@ -79,7 +77,8 @@ public final class ConfigurationStore {
   /**
    * Instantiates a Value representing the given property.
    * @param property the configuration property identifying this value
-   * @param defaultValue the default value to use if no value is present
+   * @param defaultValue the default value to use if no value is present and
+   * when the value is set to null
    * @return the configuration value
    * @throws NullPointerException if {@code property} or {@code defaultValue} is null
    */
@@ -89,7 +88,7 @@ public final class ConfigurationStore {
     if (get(property) == null) {
       set(property, defaultValue);
     }
-    final Value<String> value = Values.value(get(property));
+    final Value<String> value = Values.value(get(property), defaultValue);
     value.getChangeObserver().addDataListener(stringValue -> set(property, stringValue));
     configurationValues.put(property, value);
 
@@ -99,7 +98,8 @@ public final class ConfigurationStore {
   /**
    * Instantiates a Value representing the given property.
    * @param property the configuration property identifying this value
-   * @param defaultValue the default value to use if no value is present
+   * @param defaultValue the default value to use if no value is present and
+   * when the value is set to null
    * @return the configuration value
    * @throws NullPointerException if {@code property} or {@code defaultValue} is null
    */
@@ -109,7 +109,7 @@ public final class ConfigurationStore {
     if (get(property) == null) {
       set(property, Integer.toString(defaultValue));
     }
-    final Value<Integer> value = Values.value(parseValue(property, Integer::parseInt));
+    final Value<Integer> value = Values.value(parseValue(property, Integer::parseInt), defaultValue);
     value.getChangeObserver().addDataListener(integerValue -> set(property, Integer.toString(integerValue)));
     configurationValues.put(property, value);
 
@@ -119,7 +119,8 @@ public final class ConfigurationStore {
   /**
    * Instantiates a Value representing the given property.
    * @param property the configuration property identifying this value
-   * @param defaultValue the default value to use if no value is present
+   * @param defaultValue the default value to use if no value is present and
+   * when the value is set to null
    * @return the configuration value
    * @throws NullPointerException if {@code property} or {@code defaultValue} is null
    */
@@ -129,7 +130,7 @@ public final class ConfigurationStore {
     if (get(property) == null) {
       set(property, Double.toString(defaultValue));
     }
-    final Value<Double> value = Values.value(parseValue(property, Double::parseDouble));
+    final Value<Double> value = Values.value(parseValue(property, Double::parseDouble), defaultValue);
     value.getChangeObserver().addDataListener(doubleValue -> set(property, Double.toString(doubleValue)));
     configurationValues.put(property, value);
 
@@ -139,7 +140,8 @@ public final class ConfigurationStore {
   /**
    * Instantiates a Value representing the given property.
    * @param property the configuration property identifying this value
-   * @param defaultValue the default value to use if no value is present
+   * @param defaultValue the default value to use if no value is present and
+   * when the value is set to null
    * @return the configuration value
    * @throws NullPointerException if {@code property} or {@code defaultValue} is null
    */
@@ -149,7 +151,7 @@ public final class ConfigurationStore {
     if (get(property) == null) {
       setStringList(property, defaultValue);
     }
-    final Value<List<String>> value = Values.value(getStringList(property));
+    final Value<List<String>> value = Values.value(getStringList(property), defaultValue);
     value.getChangeObserver().addDataListener(values -> setStringList(property, values));
     configurationValues.put(property, value);
 
