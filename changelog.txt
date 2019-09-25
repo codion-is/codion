@@ -5118,3 +5118,5 @@
   Values.valueState() added
   Values.StatValue.set() minor improvement
   ConfigurationStore added
+  ConfigurationStore values now set the value to defaultValue when values are set to null
+  ConfigurationStore, major refactoring
