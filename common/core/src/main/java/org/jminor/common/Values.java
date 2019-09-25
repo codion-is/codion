@@ -68,6 +68,23 @@ public final class Values {
   }
 
   /**
+   * Instantiates a State linked to the given boolean value.
+   * @param booleanValue the boolean value to link to the state
+   * @return a State linked to the given value
+   * @throws IllegalArgumentException in case the boolean value is nullable
+   * @see Value#isNullable()
+   */
+  public static State valueState(final Value<Boolean> booleanValue) {
+    if (booleanValue.isNullable()) {
+      throw new IllegalArgumentException("States can not be created for a nullable value");
+    }
+    final State state = States.state();
+    Values.link(booleanValue, Values.stateValue(state));
+
+    return state;
+  }
+
+  /**
    * Instantiates a new ValueObserver for the given value.
    * @param value the value to observe
    * @param <V> the value type

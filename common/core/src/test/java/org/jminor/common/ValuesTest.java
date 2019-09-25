@@ -148,6 +148,28 @@ public class ValuesTest {
   }
 
   @Test
+  public void booleanValueState() {
+    final Value<Boolean> nullableBooleanValue = Values.value();
+    assertThrows(IllegalArgumentException.class, () -> Values.valueState(nullableBooleanValue));
+    final Value<Boolean> booleanValue = Values.value(true, false);
+    final State state = Values.valueState(booleanValue);
+    final StateObserver reversed = state.getReversedObserver();
+    assertTrue(state.isActive());
+    assertFalse(reversed.isActive());
+    state.setActive(false);
+    assertFalse(booleanValue.get());
+    booleanValue.set(true);
+    assertTrue(state.isActive());
+    assertFalse(reversed.isActive());
+    booleanValue.set(null);
+    assertFalse(state.isActive());
+    assertTrue(reversed.isActive());
+    assertFalse(booleanValue.get());
+    state.setActive(true);
+    assertTrue(booleanValue.get());
+  }
+
+  @Test
   public void beanValueNoGetter() {
     assertThrows(IllegalArgumentException.class, () -> Values.beanValue(this, "nonexistent", Integer.class, integerValueChange.getObserver()));
   }
