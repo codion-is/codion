@@ -5117,3 +5117,4 @@
   Value.isNullable() added, some related refactoring
   Values.valueState() added
   Values.StatValue.set() minor improvement
+  ConfigurationStore added
