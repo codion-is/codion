@@ -5116,3 +5116,4 @@
   Values.value() overloaded with nullValue parameter, for preventing null values
   Value.isNullable() added, some related refactoring
   Values.valueState() added
+  Values.StatValue.set() minor improvement
