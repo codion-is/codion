@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,6 +23,7 @@ public final class ConfigurationStoreTest {
     configFile.deleteOnExit();
     final StringBuilder configBuilder = new StringBuilder()
             .append("stringlist.property=value1;value2;value3").append(Util.LINE_SEPARATOR)
+            .append("intlist.property=1;2;3").append(Util.LINE_SEPARATOR)
             .append("int.property1=42").append(Util.LINE_SEPARATOR)
             .append("int.property3=44").append(Util.LINE_SEPARATOR)
             .append("double.property=3.14").append(Util.LINE_SEPARATOR)
@@ -32,10 +34,15 @@ public final class ConfigurationStoreTest {
     final Value<String> stringValue = store.value("string.property", "value");
     assertEquals("value", stringValue.get());
 
-    final Value<List<String>> stringListValue = store.value("stringlist.property", Collections.emptyList());
+    final Value<List<String>> stringListValue = store.listValue("stringlist.property", Collections.emptyList(), Objects::toString);
     assertTrue(stringListValue.get().contains("value1"));
     assertTrue(stringListValue.get().contains("value2"));
     assertTrue(stringListValue.get().contains("value3"));
+
+    final Value<List<Integer>> integerListValue = store.listValue("intlist.property", Collections.emptyList(), Integer::parseInt);
+    assertTrue(integerListValue.get().contains(1));
+    assertTrue(integerListValue.get().contains(2));
+    assertTrue(integerListValue.get().contains(3));
 
     final Value<Integer> intValue1 = store.value("int.property1", 0);
     assertEquals(42, intValue1.get());
@@ -111,7 +118,7 @@ public final class ConfigurationStoreTest {
     doubleValue.set(1.1);
     doubleValue.set(null);
     assertEquals(3.14, doubleValue.get());
-    final Value<List<String>> listValue = store.value("stringlist.property", Arrays.asList("value1", "value2"));
+    final Value<List<String>> listValue = store.listValue("stringlist.property", Arrays.asList("value1", "value2"), Objects::toString);
     List<String> strings = listValue.get();
     assertTrue(strings.contains("value1"));
     assertTrue(strings.contains("value2"));
@@ -123,12 +130,21 @@ public final class ConfigurationStoreTest {
   }
 
   @Test
-  public void nullDefaultValue() throws IOException {
+  public void exceptions() throws IOException {
     final ConfigurationStore store = new ConfigurationStore("test.file");
     assertThrows(NullPointerException.class, () -> store.value("test", (Boolean) null));
     assertThrows(NullPointerException.class, () -> store.value("test", (Double) null));
     assertThrows(NullPointerException.class, () -> store.value("test", (Integer) null));
     assertThrows(NullPointerException.class, () -> store.value("test", (String) null));
-    assertThrows(NullPointerException.class, () -> store.value("test", (List<String>) null));
+    assertThrows(NullPointerException.class, () -> store.listValue("test", null, Objects::toString));
+
+    final Value<String> value = store.value("test", "test");
+    assertSame(value, store.value("test", "test"));
+    final Value<List<String>> testList = store.listValue("testList", Collections.emptyList(), Objects::toString);
+    assertSame(testList, store.listValue("testList", Collections.emptyList(), Objects::toString));
+
+    assertThrows(IllegalArgumentException.class, () -> store.set("test", "bla"));
+    assertThrows(IllegalArgumentException.class, () -> store.set("testList", "bla;bla"));
+    assertThrows(IllegalArgumentException.class, () -> store.removeAll("test"));
   }
 }
