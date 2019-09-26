@@ -5109,3 +5109,4 @@
   ConfigurationStore added
   ConfigurationStore values now set the value to defaultValue when values are set to null
   ConfigurationStore, major refactoring
+  ConfigurationStore.getConfigurationValue() added
