@@ -104,7 +104,7 @@ public final class Configuration {
    * @param <T> the value type
    * @return the configuration value
    */
-  public static <T> Value<T> value(final String key, final T defaultValue, final ValueParser<T> parser) {
+  public static <T> Value<T> value(final String key, final T defaultValue, final StringParser<T> parser) {
     return new ConfigurationValue<>(key, defaultValue, parser);
   }
 
@@ -177,20 +177,6 @@ public final class Configuration {
   }
 
   /**
-   * Parses a configuration value from a non-null string
-   * @param <T> the value type
-   */
-  public interface ValueParser<T> {
-
-    /**
-     * Parses the given string value and returns a type T, it is assumed the string is not null
-     * @param value the string to parse
-     * @return a value of type T parsed from the given string
-     */
-    T parse(final String value);
-  }
-
-  /**
    * A Value for configuration, setting the value also sets the System property
    * @param <T> the value type
    */
@@ -206,7 +192,7 @@ public final class Configuration {
      * @param key the configuration key
      * @param defaultValue the default value
      */
-    private ConfigurationValue(final String key, final T defaultValue, final ValueParser<T> parser) {
+    private ConfigurationValue(final String key, final T defaultValue, final StringParser<T> parser) {
       this.key = Objects.requireNonNull(key, "key");
       final String stringValue = System.getProperty(key);
       this.value = stringValue == null ? defaultValue : parser.parse(stringValue);

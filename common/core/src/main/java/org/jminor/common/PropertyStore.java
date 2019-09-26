@@ -24,14 +24,14 @@ import java.util.stream.Collectors;
 /**
  * Provides configuration values which sync with a central configuration store, which can be written to file.
  */
-public final class ConfigurationStore {
+public final class PropertyStore {
 
   public static final String VALUE_SEPARATOR = ";";
 
   private final String propertiesFile;
-  private final Map<String, Value> configurationValues = new HashMap<>();
+  private final Map<String, Value> propertyValues = new HashMap<>();
 
-  //trying to make the configuration file human readable by sorting the keys
+  //trying to make the configuration file a bit easier to read by sorting the keys
   private final Properties properties = new Properties() {
     //sort to make properties file easier for human consumption
     @Override
@@ -46,90 +46,74 @@ public final class ConfigurationStore {
   /**
    * Instantiates a new ConfigurationStore backed by the given file.
    * If the file exists this ConfigurationStore is initialized with the properties and values found in it.
-   * @param propertiesFile the file to read from initially and to use when persisting the configuration properties
+   * @param propertiesFile the path to the file to read from initially and to use when persisting the configuration properties
    * @throws IOException in case the given properties file exists but reading it failed
    */
-  public ConfigurationStore(final String propertiesFile) throws IOException {
+  public PropertyStore(final String propertiesFile) throws IOException {
     this.propertiesFile = Objects.requireNonNull(propertiesFile);
     readFromFile();
   }
 
   /**
-   * Returns the configuration value associated with the given property.
-   * @param property the property
-   * @param <V> the value type
-   * @return the configuration value or null if none is found
-   */
-  public <V> Value<V> getConfigurationValue(final String property) {
-    return configurationValues.get(property);
-  }
-
-  /**
    * Instantiates a Value representing the given property.
-   * If a Value has been created previously for the given property it is returned.
    * @param property the configuration property identifying this value
-   * @param defaultValue the default value to use if no value is present and
-   * when the value is set to null
+   * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @return the configuration value
    * @throws NullPointerException if {@code property} or {@code defaultValue} is null
+   * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public Value<Boolean> value(final String property, final Boolean defaultValue) {
-    return value(property, defaultValue, Boolean::parseBoolean);
+  public Value<Boolean> propertyValue(final String property, final Boolean defaultValue) {
+    return propertyValue(property, defaultValue, Boolean::parseBoolean);
   }
 
   /**
    * Instantiates a Value representing the given property.
-   * If a Value has been created previously for the given property it is returned.
    * @param property the configuration property identifying this value
-   * @param defaultValue the default value to use if no value is present and
-   * when the value is set to null
+   * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @return the configuration value
    * @throws NullPointerException if {@code property} or {@code defaultValue} is null
+   * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public Value<String> value(final String property, final String defaultValue) {
-    return value(property, defaultValue, Objects::toString);
+  public Value<String> propertyValue(final String property, final String defaultValue) {
+    return propertyValue(property, defaultValue, Objects::toString);
   }
 
   /**
    * Instantiates a Value representing the given property.
-   * If a Value has been created previously for the given property it is returned.
    * @param property the configuration property identifying this value
-   * @param defaultValue the default value to use if no value is present and
-   * when the value is set to null
+   * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @return the configuration value
    * @throws NullPointerException if {@code property} or {@code defaultValue} is null
+   * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public Value<Integer> value(final String property, final Integer defaultValue) {
-    return value(property, defaultValue, Integer::parseInt);
+  public Value<Integer> propertyValue(final String property, final Integer defaultValue) {
+    return propertyValue(property, defaultValue, Integer::parseInt);
   }
 
   /**
    * Instantiates a Value representing the given property.
-   * If a Value has been created previously for the given property it is returned.
    * @param property the configuration property identifying this value
-   * @param defaultValue the default value to use if no value is present and
-   * when the value is set to null
+   * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @return the configuration value
    * @throws NullPointerException if {@code property} or {@code defaultValue} is null
+   * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public Value<Double> value(final String property, final Double defaultValue) {
-    return value(property, defaultValue, Double::parseDouble);
+  public Value<Double> propertyValue(final String property, final Double defaultValue) {
+    return propertyValue(property, defaultValue, Double::parseDouble);
   }
 
   /**
    * Instantiates a Value representing the given property.
-   * If a Value has been created previously for the given property it is returned.
    * @param <V> the value type
    * @param property the configuration property identifying this value
-   * @param defaultValue the default value to use if no value is present and
-   * when the value is set to null
+   * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @param parser a parser for parsing a value from a string
    * @return the configuration value
    * @throws NullPointerException if {@code property}, {@code defaultValue} or {@code parser} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public <V> Value<V> value(final String property, final V defaultValue, final Configuration.ValueParser<V> parser) {
-    if (configurationValues.containsKey(Objects.requireNonNull(property, "property"))) {
+  public <V> Value<V> propertyValue(final String property, final V defaultValue, final StringParser<V> parser) {
+    if (propertyValues.containsKey(Objects.requireNonNull(property, "property"))) {
       throw new IllegalArgumentException("Configuration value for property '" + property + "' has already been created");
     }
     Objects.requireNonNull(defaultValue, "defaultValue");
@@ -139,26 +123,23 @@ public final class ConfigurationStore {
     }
     final Value<V> value = Values.value(parser.parse(properties.getProperty(property)), defaultValue);
     value.getChangeObserver().addDataListener(doubleValue -> properties.setProperty(property, doubleValue.toString()));
-    configurationValues.put(property, value);
+    propertyValues.put(property, value);
 
     return value;
   }
 
   /**
    * Instantiates a Value representing the given property.
-   * If a Value has been created previously for the given property it is returned.
    * @param <V> the value type
    * @param property the configuration property identifying this value
-   * @param defaultValue the default value to use if no value is present and
-   * when the value is set to null
+   * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @param parser a parser for parsing a value from a string
    * @return the configuration value
    * @throws NullPointerException if {@code property}, {@code defaultValue} or {@code parser} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public <V> Value<List<V>> listValue(final String property, final List<V> defaultValue,
-                                      final Configuration.ValueParser<V> parser) {
-    if (configurationValues.containsKey(Objects.requireNonNull(property, "property"))) {
+  public <V> Value<List<V>> propertyListValue(final String property, final List<V> defaultValue, final StringParser<V> parser) {
+    if (propertyValues.containsKey(Objects.requireNonNull(property, "property"))) {
       throw new IllegalArgumentException("Configuration value for property '" + property + "' has already been created");
     }
     Objects.requireNonNull(defaultValue, "defaultValue");
@@ -170,9 +151,19 @@ public final class ConfigurationStore {
             .map(parser::parse).collect(Collectors.toList()), defaultValue);
     value.getChangeObserver().addDataListener(values ->
             properties.setProperty(property, values.stream().map(Object::toString).collect(Collectors.joining(VALUE_SEPARATOR))));
-    configurationValues.put(property, value);
+    propertyValues.put(property, value);
 
     return value;
+  }
+
+  /**
+   * Returns the Value associated with the given property, null if none is present.
+   * @param property the property
+   * @param <V> the value type
+   * @return the configuration value or null if none is found
+   */
+  public <V> Value<V> getPropertyValue(final String property) {
+    return propertyValues.get(property);
   }
 
   /**
@@ -181,36 +172,38 @@ public final class ConfigurationStore {
    * @param value the value
    * @throws IllegalArgumentException in the property is value bound
    */
-  public void set(final String property, final String value) {
-    if (configurationValues.containsKey(property)) {
-      throw new IllegalArgumentException("Value bound properties can not be directly manipulated");
+  public void setProperty(final String property, final String value) {
+    if (propertyValues.containsKey(property)) {
+      throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
     }
     properties.setProperty(property, value);
   }
 
   /**
-   * Retreives the value for the given property
+   * Retrieves the value for the given property, null if no value is present
    * @param property the property
-   * @return the value
+   * @return the value or null if no value is present
    */
-  public String get(final String property) {
+  public String getProperty(final String property) {
     return properties.getProperty(property);
   }
 
   /**
-   * @return all properties with the given prefix
+   * Returns the values associated with the properties with the given prefix
+   * @return all values associated with the properties with the given prefix
    * @param prefix the property prefix
    */
-  public List<String> getValues(final String prefix) {
+  public List<String> getProperties(final String prefix) {
     return properties.stringPropertyNames().stream().filter(propertyName ->
             propertyName.startsWith(prefix)).map(properties::getProperty).collect(Collectors.toList());
   }
 
   /**
-   * @return all properties with the given prefix
-   * @param prefix the property prefix
+   * Returns all property names with the given prefix
+   * @return all property names with the given prefix
+   * @param prefix the property name prefix
    */
-  public List<String> getProperties(final String prefix) {
+  public List<String> getPropertyNames(final String prefix) {
     return properties.stringPropertyNames().stream().filter(propertyName ->
             propertyName.startsWith(prefix)).collect(Collectors.toList());
   }
@@ -221,9 +214,9 @@ public final class ConfigurationStore {
    * @throws IllegalArgumentException in case any of the properties with the given prefix are value bound
    */
   public void removeAll(final String prefix) {
-    final List<String> propertyKeys = getProperties(prefix);
-    if (propertyKeys.stream().anyMatch(configurationValues::containsKey)) {
-      throw new IllegalArgumentException("Value bound properties can not be directly manipulated");
+    final List<String> propertyKeys = getPropertyNames(prefix);
+    if (propertyKeys.stream().anyMatch(propertyValues::containsKey)) {
+      throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
     }
     propertyKeys.forEach(properties::remove);
   }
@@ -242,10 +235,14 @@ public final class ConfigurationStore {
     }
   }
 
+  /**
+   * Reads all properties from the underlying properties file
+   * @throws IOException in case the file exists but can not be read
+   */
   private void readFromFile() throws IOException {
-    final File conigurationFile = new File(propertiesFile);
-    if (conigurationFile.exists()) {
-      try (final InputStream input = new FileInputStream(conigurationFile)) {
+    final File file = new File(propertiesFile);
+    if (file.exists()) {
+      try (final InputStream input = new FileInputStream(file)) {
         properties.load(input);
       }
     }
