@@ -55,6 +55,16 @@ public final class ConfigurationStore {
   }
 
   /**
+   * Returns the configuration value associated with the given property.
+   * @param property the property
+   * @param <V> the value type
+   * @return the configuration value or null if none is found
+   */
+  public <V> Value<V> getConfigurationValue(final String property) {
+    return configurationValues.get(property);
+  }
+
+  /**
    * Instantiates a Value representing the given property.
    * If a Value has been created previously for the given property it is returned.
    * @param property the configuration property identifying this value
@@ -116,10 +126,11 @@ public final class ConfigurationStore {
    * @param parser a parser for parsing a value from a string
    * @return the configuration value
    * @throws NullPointerException if {@code property}, {@code defaultValue} or {@code parser} is null
+   * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
   public <V> Value<V> value(final String property, final V defaultValue, final Configuration.ValueParser<V> parser) {
     if (configurationValues.containsKey(Objects.requireNonNull(property, "property"))) {
-      return configurationValues.get(property);
+      throw new IllegalArgumentException("Configuration value for property '" + property + "' has already been created");
     }
     Objects.requireNonNull(defaultValue, "defaultValue");
     Objects.requireNonNull(parser, "parser");
@@ -148,7 +159,7 @@ public final class ConfigurationStore {
   public <V> Value<List<V>> listValue(final String property, final List<V> defaultValue,
                                       final Configuration.ValueParser<V> parser) {
     if (configurationValues.containsKey(Objects.requireNonNull(property, "property"))) {
-      return configurationValues.get(property);
+      throw new IllegalArgumentException("Configuration value for property '" + property + "' has already been created");
     }
     Objects.requireNonNull(defaultValue, "defaultValue");
     Objects.requireNonNull(parser, "parser");

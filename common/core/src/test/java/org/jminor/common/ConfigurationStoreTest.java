@@ -33,6 +33,7 @@ public final class ConfigurationStoreTest {
 
     final Value<String> stringValue = store.value("string.property", "value");
     assertEquals("value", stringValue.get());
+    assertSame(stringValue, store.getConfigurationValue("string.property"));
 
     final Value<List<String>> stringListValue = store.listValue("stringlist.property", Collections.emptyList(), Objects::toString);
     assertTrue(stringListValue.get().contains("value1"));
@@ -138,10 +139,10 @@ public final class ConfigurationStoreTest {
     assertThrows(NullPointerException.class, () -> store.value("test", (String) null));
     assertThrows(NullPointerException.class, () -> store.listValue("test", null, Objects::toString));
 
-    final Value<String> value = store.value("test", "test");
-    assertSame(value, store.value("test", "test"));
-    final Value<List<String>> testList = store.listValue("testList", Collections.emptyList(), Objects::toString);
-    assertSame(testList, store.listValue("testList", Collections.emptyList(), Objects::toString));
+    store.value("test", "test");
+    assertThrows(IllegalArgumentException.class, () -> store.value("test", "test"));
+    store.listValue("testList", Collections.emptyList(), Objects::toString);
+    assertThrows(IllegalArgumentException.class, () -> store.listValue("testList", Collections.emptyList(), Objects::toString));
 
     assertThrows(IllegalArgumentException.class, () -> store.set("test", "bla"));
     assertThrows(IllegalArgumentException.class, () -> store.set("testList", "bla;bla"));
