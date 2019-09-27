@@ -714,7 +714,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     }
   }
 
-  private static <T> T logShutdownAndReturn(final T exception, final DefaultEntityConnectionServer server) {
+  private static <T extends Throwable> T logShutdownAndReturn(final T exception, final DefaultEntityConnectionServer server) {
     LOG.error("Exception on server startup", exception);
     try {
       server.shutdown();
@@ -768,7 +768,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
     else {
       LOG.info("Admin user: " + adminUser);
     }
-    DefaultEntityConnectionServer server;
+    final DefaultEntityConnectionServer server;
     try {
       server = new DefaultEntityConnectionServer(serverName, serverPort, serverAdminPort, registryPort, database,
               sslEnabled, connectionLimit, domainModelClassNames, loginProxyClassNames, connectionValidationClassNames,

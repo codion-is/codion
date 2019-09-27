@@ -988,24 +988,13 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         break;
       case RIGHT:
         if (horizontalSplitPane != null) {
-          final int rightPos = horizontalSplitPane.getDividerLocation() + pixelAmount;
-          if (rightPos <= horizontalSplitPane.getMaximumDividerLocation()) {
-            horizontalSplitPane.setDividerLocation(rightPos);
-          }
-          else {
-            horizontalSplitPane.setDividerLocation(horizontalSplitPane.getMaximumDividerLocation());
-          }
+          horizontalSplitPane.setDividerLocation(Math.min(horizontalSplitPane.getDividerLocation() + pixelAmount,
+                          horizontalSplitPane.getMaximumDividerLocation()));
         }
         break;
       case LEFT:
         if (horizontalSplitPane != null) {
-          final int leftPos = horizontalSplitPane.getDividerLocation() - pixelAmount;
-          if (leftPos >= 0) {
-            horizontalSplitPane.setDividerLocation(leftPos);
-          }
-          else {
-            horizontalSplitPane.setDividerLocation(0);
-          }
+          horizontalSplitPane.setDividerLocation(Math.max(horizontalSplitPane.getDividerLocation() - pixelAmount, 0));
         }
         break;
       default:

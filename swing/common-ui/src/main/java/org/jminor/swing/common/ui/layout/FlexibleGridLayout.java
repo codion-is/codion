@@ -158,9 +158,7 @@ public final class FlexibleGridLayout extends GridLayout {
       else {
         maxColumnWidth = fixedColumnWidth;
       }
-      for (int i = 0; i < columnWidths.length; i++) {
-        columnWidths[i] = maxColumnWidth;
-      }
+      Arrays.fill(columnWidths, maxColumnWidth);
     }
     if (fixedRowHeights) {
       int maxRowHeight = 0;
@@ -172,9 +170,7 @@ public final class FlexibleGridLayout extends GridLayout {
       else {
         maxRowHeight = fixedRowHeight;
       }
-      for (int i = 0; i < rowHeights.length; i++) {
-        rowHeights[i] = maxRowHeight;
-      }
+      Arrays.fill(rowHeights, maxRowHeight);
     }
   }
 

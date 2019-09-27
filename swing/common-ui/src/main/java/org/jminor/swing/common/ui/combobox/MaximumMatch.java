@@ -104,7 +104,7 @@ public final class MaximumMatch extends CompletionDocument {
     final String two = isNormalize() ? normalize(str2) : str2;
     final char[] ch1 = one.toUpperCase().toCharArray();
     final char[] ch2 = two.toUpperCase().toCharArray();
-    final int n = ch1.length > ch2.length ? ch2.length : ch1.length;
+    final int n = Math.min(ch1.length, ch2.length);
     for (int i = 0; i < n; i++) {
       if (ch1[i] != ch2[i]) {
         return i;

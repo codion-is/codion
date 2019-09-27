@@ -732,8 +732,8 @@ public class NavigableImagePanel extends JPanel {
       return null;
     }
 
-    final int x1 = (panelX1 < 0) ? 0 : panelX1;
-    final int y1 = (panelY1 < 0) ? 0 : panelY1;
+    final int x1 = Math.max(panelX1, 0);
+    final int y1 = Math.max(panelY1, 0);
     final int x2 = (panelX2 >= image.getWidth()) ? image.getWidth() - 1 : panelX2;
     final int y2 = (panelY2 >= image.getHeight()) ? image.getHeight() - 1 : panelY2;
 

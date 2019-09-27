@@ -5125,3 +5125,4 @@
   ConfigurationStore, renamed to PropertyStore, some internal renamings as well as javadoc fixes
   State.isActive() and setActive() renamed to get() and set() respectively
   ValueChange.getOldValue() and getNewValue() renamed to getPreviousValue() and getCurrentValue() respectively
+  IntelliJ code analysis based fixes
