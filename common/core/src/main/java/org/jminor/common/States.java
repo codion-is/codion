@@ -18,7 +18,7 @@ public final class States {
   private States() {}
 
   /**
-   * Instantiates a new inactive State object.
+   * Instantiates a new 'false' State object.
    * @return a new State
    */
   public static State state() {
@@ -27,11 +27,11 @@ public final class States {
 
   /**
    * Instantiates a new State object.
-   * @param initialState the initial state
+   * @param value the initial state value
    * @return a new State
    */
-  public static State state(final boolean initialState) {
-    return new DefaultState(initialState);
+  public static State state(final boolean value) {
+    return new DefaultState(value);
   }
 
   /**
@@ -59,36 +59,36 @@ public final class States {
 
     private final Object lock = new Object();
     private StateObserver observer;
-    private boolean active;
+    private boolean value;
 
     DefaultState() {
       this(false);
     }
 
-    DefaultState(final boolean initialState) {
-      this.active = initialState;
+    DefaultState(final boolean value) {
+      this.value = value;
     }
 
     @Override
     public String toString() {
-      return active ? "active" : "inactive";
+      return Boolean.toString(value);
     }
 
     @Override
-    public void setActive(final boolean active) {
+    public void set(final boolean value) {
       synchronized (lock) {
-        if (this.active != active) {
-          final boolean previousValue = this.active;
-          this.active = active;
-          ((DefaultStateObserver) getObserver()).notifyObservers(previousValue, active);
+        if (this.value != value) {
+          final boolean previousValue = this.value;
+          this.value = value;
+          ((DefaultStateObserver) getObserver()).notifyObservers(previousValue, value);
         }
       }
     }
 
     @Override
-    public boolean isActive() {
+    public boolean get() {
       synchronized (lock) {
-        return active;
+        return value;
       }
     }
 
@@ -176,9 +176,9 @@ public final class States {
       Objects.requireNonNull(state, "state");
       synchronized (lock) {
         if (findListener(state) == null) {
-          final boolean wasActive = isActive();
+          final boolean value = get();
           stateListeners.add(new AggregateStateListener(state));
-          ((DefaultStateObserver) getObserver()).notifyObservers(wasActive, isActive());
+          ((DefaultStateObserver) getObserver()).notifyObservers(value, get());
         }
       }
     }
@@ -187,32 +187,32 @@ public final class States {
     public void removeState(final StateObserver state) {
       Objects.requireNonNull(state, "state");
       synchronized (lock) {
-        final boolean wasActive = isActive();
+        final boolean value = get();
         final AggregateStateListener listener = findListener(state);
         if (listener != null) {
           state.removeDataListener(listener);
           stateListeners.remove(listener);
-          ((DefaultStateObserver) getObserver()).notifyObservers(wasActive, isActive());
+          ((DefaultStateObserver) getObserver()).notifyObservers(value, get());
         }
       }
     }
 
     @Override
-    public boolean isActive() {
+    public boolean get() {
       synchronized (lock) {
-        return isActive(conjunction, null, false);
+        return get(conjunction, null, false);
       }
     }
 
     @Override
-    public void setActive(final boolean active) {
+    public void set(final boolean value) {
       throw new UnsupportedOperationException("The state of aggregate states can't be set");
     }
 
-    private boolean isActive(final Conjunction conjunction, final StateObserver exclude, final boolean excludeReplacement) {
+    private boolean get(final Conjunction conjunction, final StateObserver exclude, final boolean excludeReplacement) {
       for (final AggregateStateListener listener : stateListeners) {
         final StateObserver state = listener.getState();
-        final boolean value = state.equals(exclude) ? excludeReplacement : state.isActive();
+        final boolean value = state.equals(exclude) ? excludeReplacement : state.get();
         if (conjunction == Conjunction.AND) {
           if (!value) {
             return false;
@@ -240,12 +240,12 @@ public final class States {
 
       @Override
       public void eventOccurred(final Boolean newValue) {
-        ((DefaultStateObserver) getObserver()).notifyObservers(getPreviousState(state, !newValue), isActive());
+        ((DefaultStateObserver) getObserver()).notifyObservers(getPreviousState(state, !newValue), get());
       }
 
       private boolean getPreviousState(final StateObserver excludeState, final boolean previousValue) {
         synchronized (lock) {
-          return isActive(conjunction, excludeState, previousValue);
+          return get(conjunction, excludeState, previousValue);
         }
       }
 
@@ -278,9 +278,9 @@ public final class States {
     }
 
     @Override
-    public boolean isActive() {
+    public boolean get() {
       synchronized (lock) {
-        return reversed ? !stateObserver.isActive() : stateObserver.isActive();
+        return reversed ? !stateObserver.get() : stateObserver.get();
       }
     }
 
@@ -375,8 +375,8 @@ public final class States {
           if (referredState == null) {//remove this dead weak reference
             iterator.remove();
           }
-          else if (state.isActive() && !state.equals(referredState)) {
-            referredState.setActive(false);
+          else if (state.get() && !state.equals(referredState)) {
+            referredState.set(false);
           }
         }
       }

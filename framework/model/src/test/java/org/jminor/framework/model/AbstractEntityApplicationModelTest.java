@@ -48,7 +48,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     if (!deptModel.containsTableModel()) {
       return;
     }
-    deptModel.getDetailModel(TestDomain.T_EMP).getTableModel().getQueryConditionRequiredState().setActive(false);
+    deptModel.getDetailModel(TestDomain.T_EMP).getTableModel().getQueryConditionRequiredState().set(false);
     model.refresh();
     assertTrue(deptModel.getTableModel().getRowCount() > 0);
   }

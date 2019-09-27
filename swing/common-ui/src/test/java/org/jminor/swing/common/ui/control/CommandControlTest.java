@@ -39,7 +39,7 @@ public final class CommandControlTest {
     final Control control = Controls.control(this::method, "test", enabledState);
     final JButton button = new JButton(control);
     assertFalse(button.isEnabled());
-    enabledState.setActive(true);
+    enabledState.set(true);
     assertTrue(button.isEnabled());
     button.doClick();
     assertEquals(1, callCount);

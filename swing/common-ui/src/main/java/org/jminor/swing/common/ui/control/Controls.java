@@ -349,7 +349,7 @@ public final class Controls {
       this.buttonModel = buttonModel;
       if (enabledObserver != null) {
         enabledObserver.addDataListener(buttonModel::setEnabled);
-        buttonModel.setEnabled(enabledObserver.isActive());
+        buttonModel.setEnabled(enabledObserver.get());
       }
     }
 

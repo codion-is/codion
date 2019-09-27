@@ -12,7 +12,7 @@ package org.jminor.common;
  *
  * observer.getChangeObserver().addDataListener(this::handleStateChange);
  *
- * state.setActive(true);
+ * state.set(true);
  * </pre>
  */
 public interface State extends StateObserver {
@@ -20,7 +20,7 @@ public interface State extends StateObserver {
   /**
    * @param value the new active state of this State instance
    */
-  void setActive(final boolean value);
+  void set(final boolean value);
 
   /**
    * @return an StateObserver notified each time the state changes

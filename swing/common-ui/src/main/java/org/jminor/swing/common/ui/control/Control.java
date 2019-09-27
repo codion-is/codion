@@ -52,7 +52,7 @@ public class Control extends AbstractAction {
     super(name, icon);
     this.enabledObserver = enabledObserver == null ? States.state(true) : enabledObserver;
     this.enabledObserver.addDataListener(super::setEnabled);
-    super.setEnabled(this.enabledObserver.isActive());
+    super.setEnabled(this.enabledObserver.get());
   }
 
   /** {@inheritDoc} */

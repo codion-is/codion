@@ -44,7 +44,7 @@ public final class SwingEntityModelTest
     departmentModel.addDetailModel(employeeModel);
     departmentModel.setDetailModelForeignKey(employeeModel, TestDomain.EMP_DEPARTMENT_FK);
     departmentModel.addLinkedDetailModel(employeeModel);
-    employeeModel.getTableModel().getQueryConditionRequiredState().setActive(false);
+    employeeModel.getTableModel().getQueryConditionRequiredState().set(false);
 
     return departmentModel;
   }

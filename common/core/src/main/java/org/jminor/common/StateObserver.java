@@ -9,9 +9,9 @@ package org.jminor.common;
 public interface StateObserver extends EventObserver<Boolean> {
 
   /**
-   * @return true if the state being observed is active, false otherwise
+   * @return the value of the state being observed
    */
-  boolean isActive();
+  boolean get();
 
   /**
    * @return an EventObserver notified each time the observed state changes

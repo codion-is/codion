@@ -296,14 +296,14 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void disableLookup() {
-    lookupEnabledState.setActive(false);
+    lookupEnabledState.set(false);
   }
 
   /**
    * @see #lookupEnabledState
    */
   private void enableLookup() {
-    final Timer timer = new Timer(ENABLE_LOOKUP_DELAY, e -> lookupEnabledState.setActive(true));
+    final Timer timer = new Timer(ENABLE_LOOKUP_DELAY, e -> lookupEnabledState.set(true));
     timer.setRepeats(false);
     timer.start();
   }

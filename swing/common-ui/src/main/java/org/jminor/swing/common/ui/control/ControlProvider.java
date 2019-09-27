@@ -225,8 +225,8 @@ public final class ControlProvider {
       }
       final StateObserver enabledState = controlSet.getEnabledObserver();
       if (enabledState != null) {
-        menu.setEnabled(enabledState.isActive());
-        enabledState.addListener(() -> menu.setEnabled(enabledState.isActive()));
+        menu.setEnabled(enabledState.get());
+        enabledState.addListener(() -> menu.setEnabled(enabledState.get()));
       }
       final Icon icon = controlSet.getIcon();
       if (icon != null) {

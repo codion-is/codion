@@ -143,13 +143,13 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   /** {@inheritDoc} */
   @Override
   public final void setLocked(final boolean value) {
-    lockedState.setActive(value);
+    lockedState.set(value);
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean isLocked() {
-    return lockedState.isActive();
+    return lockedState.get();
   }
 
   /** {@inheritDoc} */
@@ -164,7 +164,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
     setConditionType(Condition.Type.LIKE);
     setUpperBound(value);
     final boolean enableSearch = value != null;
-    if (enabledState.isActive() != enableSearch) {
+    if (enabledState.get() != enableSearch) {
       setEnabled(enableSearch);
     }
   }
@@ -213,7 +213,7 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   /** {@inheritDoc} */
   @Override
   public final boolean isLowerBoundRequired() {
-    return lowerBoundRequiredState.isActive();
+    return lowerBoundRequiredState.get();
   }
 
   /**
@@ -245,15 +245,15 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   /** {@inheritDoc} */
   @Override
   public final boolean isEnabled() {
-    return enabledState.isActive();
+    return enabledState.get();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setEnabled(final boolean enabled) {
     checkLock();
-    if (enabledState.isActive() != enabled) {
-      enabledState.setActive(enabled);
+    if (enabledState.get() != enabled) {
+      enabledState.set(enabled);
     }
   }
 
@@ -396,13 +396,13 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
   /** {@inheritDoc} */
   @Override
   public final boolean include(final Object object) {
-    return !enabledState.isActive() || include(getComparable(object));
+    return !enabledState.get() || include(getComparable(object));
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean include(final Comparable comparable) {
-    if (!enabledState.isActive()) {
+    if (!enabledState.get()) {
       return true;
     }
 
@@ -606,11 +606,11 @@ public class DefaultColumnConditionModel<K> implements ColumnConditionModel<K> {
     conditionTypeValue.getChangeObserver().addListener(conditionStateChangedEvent);
     enabledState.addListener(conditionStateChangedEvent);
     conditionTypeValue.getChangeObserver().addListener(() ->
-            lowerBoundRequiredState.setActive(getConditionType().getValues().equals(Condition.Type.Values.TWO)));
+            lowerBoundRequiredState.set(getConditionType().getValues().equals(Condition.Type.Values.TWO)));
   }
 
   private void checkLock() {
-    if (lockedState.isActive()) {
+    if (lockedState.get()) {
       throw new IllegalStateException("Condition model for column identified by " + columnIdentifier + " is locked");
     }
   }

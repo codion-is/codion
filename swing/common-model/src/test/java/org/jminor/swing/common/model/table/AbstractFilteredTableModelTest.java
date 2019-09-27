@@ -455,16 +455,16 @@ public final class AbstractFilteredTableModelTest {
     selectionModel.addSelectedItemListener(dataListener);
     selectionModel.addSelectedItemsListener(dataListener);
 
-    assertFalse(selectionModel.getSingleSelectionObserver().isActive());
-    assertTrue(selectionModel.getSelectionEmptyObserver().isActive());
-    assertFalse(selectionModel.getMultipleSelectionObserver().isActive());
+    assertFalse(selectionModel.getSingleSelectionObserver().get());
+    assertTrue(selectionModel.getSelectionEmptyObserver().get());
+    assertFalse(selectionModel.getMultipleSelectionObserver().get());
 
     tableModel.refresh();
     selectionModel.setSelectedIndex(2);
     assertEquals(4, events.get());
-    assertTrue(selectionModel.getSingleSelectionObserver().isActive());
-    assertFalse(selectionModel.getSelectionEmptyObserver().isActive());
-    assertFalse(selectionModel.getMultipleSelectionObserver().isActive());
+    assertTrue(selectionModel.getSingleSelectionObserver().get());
+    assertFalse(selectionModel.getSelectionEmptyObserver().get());
+    assertFalse(selectionModel.getMultipleSelectionObserver().get());
     assertEquals(2, selectionModel.getSelectedIndex());
     selectionModel.moveSelectionDown();
     assertEquals(12, events.get());
@@ -497,24 +497,24 @@ public final class AbstractFilteredTableModelTest {
     selectionModel.selectAll();
     assertEquals(5, selectionModel.getSelectedItems().size());
     selectionModel.clearSelection();
-    assertFalse(selectionModel.getSingleSelectionObserver().isActive());
-    assertTrue(selectionModel.getSelectionEmptyObserver().isActive());
-    assertFalse(selectionModel.getMultipleSelectionObserver().isActive());
+    assertFalse(selectionModel.getSingleSelectionObserver().get());
+    assertTrue(selectionModel.getSelectionEmptyObserver().get());
+    assertFalse(selectionModel.getMultipleSelectionObserver().get());
     assertEquals(0, selectionModel.getSelectedItems().size());
 
     selectionModel.setSelectedItem(ITEMS[0]);
-    assertFalse(selectionModel.getMultipleSelectionObserver().isActive());
+    assertFalse(selectionModel.getMultipleSelectionObserver().get());
     assertEquals(ITEMS[0], selectionModel.getSelectedItem());
     assertEquals(0, selectionModel.getSelectedIndex());
     assertEquals(1, selectionModel.getSelectionCount());
     assertFalse(selectionModel.isSelectionEmpty());
     selectionModel.addSelectedIndex(1);
-    assertTrue(selectionModel.getMultipleSelectionObserver().isActive());
+    assertTrue(selectionModel.getMultipleSelectionObserver().get());
     assertEquals(ITEMS[0], selectionModel.getSelectedItem());
     assertEquals(Arrays.asList(0, 1), selectionModel.getSelectedIndexes());
     assertEquals(0, selectionModel.getSelectedIndex());
     selectionModel.addSelectedIndex(4);
-    assertTrue(selectionModel.getMultipleSelectionObserver().isActive());
+    assertTrue(selectionModel.getMultipleSelectionObserver().get());
     assertEquals(Arrays.asList(0, 1, 4), selectionModel.getSelectedIndexes());
     selectionModel.removeIndexInterval(1, 4);
     assertEquals(Collections.singletonList(0), selectionModel.getSelectedIndexes());
@@ -574,7 +574,7 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(0, selectionModel.getMinSelectionIndex());
 
     tableModel.clear();
-    assertTrue(selectionModel.getSelectionEmptyObserver().isActive());
+    assertTrue(selectionModel.getSelectionEmptyObserver().get());
     assertNull(selectionModel.getSelectedItem());
 
     selectionModel.clearSelection();

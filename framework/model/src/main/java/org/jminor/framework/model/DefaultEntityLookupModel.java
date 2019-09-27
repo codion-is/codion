@@ -222,14 +222,14 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   @Override
   public final void refreshSearchText() {
     setSearchString(selectedEntities.isEmpty() ? "" : toString(getSelectedEntities()));
-    searchStringRepresentsSelectedState.setActive(searchStringRepresentsSelected());
+    searchStringRepresentsSelectedState.set(searchStringRepresentsSelected());
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setSearchString(final String searchString) {
     this.searchStringValue.set(searchString == null ? "" : searchString);
-    searchStringRepresentsSelectedState.setActive(searchStringRepresentsSelected());
+    searchStringRepresentsSelectedState.set(searchStringRepresentsSelected());
   }
 
   /** {@inheritDoc} */
@@ -327,7 +327,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   private void bindEventsInternal() {
     searchStringValue.getChangeObserver().addListener(() ->
-            searchStringRepresentsSelectedState.setActive(searchStringRepresentsSelected()));
+            searchStringRepresentsSelectedState.set(searchStringRepresentsSelected()));
     multipleItemSeparatorValue.getChangeObserver().addListener(this::refreshSearchText);
   }
 

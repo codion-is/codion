@@ -35,9 +35,9 @@ public class ControlTest {
     assertEquals("control", control.getName());
     assertEquals(enabledState, control.getEnabledObserver());
     assertFalse(control.isEnabled());
-    enabledState.setActive(true);
+    enabledState.set(true);
     assertTrue(control.isEnabled());
-    enabledState.setActive(false);
+    enabledState.set(false);
     assertFalse(control.isEnabled());
   }
 

@@ -32,9 +32,9 @@ public class UiUtilTest {
 
     UiUtil.linkToEnabledState(state, action);
     assertFalse(action.isEnabled());
-    state.setActive(true);
+    state.set(true);
     assertTrue(action.isEnabled());
-    state.setActive(false);
+    state.set(false);
     assertFalse(action.isEnabled());
 
     final JComponent comp = new JTextField();
@@ -42,9 +42,9 @@ public class UiUtilTest {
 
     UiUtil.linkToEnabledState(state, comp);
     assertFalse(comp.isEnabled());
-    state.setActive(true);
+    state.set(true);
     assertTrue(comp.isEnabled());
-    state.setActive(false);
+    state.set(false);
     assertFalse(comp.isEnabled());
   }
 

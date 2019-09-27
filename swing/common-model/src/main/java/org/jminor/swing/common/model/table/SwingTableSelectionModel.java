@@ -269,9 +269,9 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   public void fireValueChanged(final int firstIndex, final int lastIndex, final boolean isAdjusting) {
     super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
     if (!isAdjusting) {
-      selectionEmptyState.setActive(isSelectionEmpty());
-      singleSelectionState.setActive(getSelectionCount() == 1);
-      multipleSelectionState.setActive(!selectionEmptyState.isActive() && !singleSelectionState.isActive());
+      selectionEmptyState.set(isSelectionEmpty());
+      singleSelectionState.set(getSelectionCount() == 1);
+      multipleSelectionState.set(!selectionEmptyState.get() && !singleSelectionState.get());
       final int minSelIndex = getMinSelectionIndex();
       if (selectedIndex != minSelIndex) {
         selectedIndex = minSelIndex;

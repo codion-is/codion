@@ -151,7 +151,7 @@ public class EntityJSONParserTest {
     assertEquals(1, entities.size());
     final Entity parsedEntity = entities.iterator().next();
     assertTrue(emp1.valuesEqual(parsedEntity));
-    assertTrue(parsedEntity.getModifiedObserver().isActive());
+    assertTrue(parsedEntity.getModifiedObserver().get());
     assertTrue(parsedEntity.isModified());
     assertTrue(parsedEntity.isModified(TestDomain.EMP_COMMISSION));
     assertTrue(parsedEntity.isModified(TestDomain.EMP_DEPARTMENT));

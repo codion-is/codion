@@ -45,7 +45,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
     if (SCHEDULE_CONNECTION_VALIDATION.get()) {
       validityCheckScheduler.start();
       connectionProvider.addOnConnectListener(() -> {
-        connectionValidState.setActive(true);
+        connectionValidState.set(true);
         validityCheckScheduler.start();
       });
     }
@@ -210,8 +210,8 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
   protected void handleLogin() {/*For subclasses*/}
 
   private void checkConnectionValidity() {
-    connectionValidState.setActive(connectionProvider.isConnectionValid());
-    if (!connectionValidState.isActive()) {
+    connectionValidState.set(connectionProvider.isConnectionValid());
+    if (!connectionValidState.get()) {
       validityCheckScheduler.stop();
     }
   }

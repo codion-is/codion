@@ -489,7 +489,7 @@ public final class UiUtil {
         closeEvent.fire();
       }, Messages.get(Messages.OK)));
       final Control cancelControl = Controls.control(() -> {
-        cancel.setActive(true);
+        cancel.set(true);
         closeEvent.fire();
       }, Messages.get(Messages.CANCEL));
       final JButton cancelButton = new JButton(cancelControl);
@@ -502,7 +502,7 @@ public final class UiUtil {
       addKeyEvent(datePanel, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelControl);
       displayInDialog(parent, datePanel, message, true, okButton, closeEvent, true, null);
 
-      return cancel.isActive() ? null : Instant.ofEpochMilli(returnTime.getTime().getTime())
+      return cancel.get() ? null : Instant.ofEpochMilli(returnTime.getTime().getTime())
               .atZone(ZoneId.systemDefault())
               .toLocalDate();
     }
@@ -608,8 +608,8 @@ public final class UiUtil {
    */
   public static Action linkToEnabledState(final StateObserver enabledState, final Action action) {
     if (enabledState != null && action != null) {
-      action.setEnabled(enabledState.isActive());
-      enabledState.addListener(() -> action.setEnabled(enabledState.isActive()));
+      action.setEnabled(enabledState.get());
+      enabledState.addListener(() -> action.setEnabled(enabledState.get()));
     }
 
     return action;
@@ -636,14 +636,14 @@ public final class UiUtil {
     Objects.requireNonNull(enabledState, "enabledState");
     for (final JComponent component : components) {
       if (component != null) {
-        component.setEnabled(enabledState.isActive());
+        component.setEnabled(enabledState.get());
         if (includeFocusable) {
-          component.setFocusable(enabledState.isActive());
+          component.setFocusable(enabledState.get());
         }
         enabledState.addListener(() -> {
-          component.setEnabled(enabledState.isActive());
+          component.setEnabled(enabledState.get());
           if (includeFocusable) {
-            component.setFocusable(enabledState.isActive());
+            component.setFocusable(enabledState.get());
           }
         });
       }
@@ -1175,7 +1175,7 @@ public final class UiUtil {
     else {
       final State confirmClose = States.state();
       confirmCloseListener.eventOccurred(confirmClose);
-      if (confirmClose.isActive()) {
+      if (confirmClose.get()) {
         dialog.dispose();
       }
     }

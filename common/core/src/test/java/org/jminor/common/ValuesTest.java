@@ -140,10 +140,10 @@ public class ValuesTest {
     assertNotNull(stateValue.getChangeObserver());
     assertTrue(stateValue.get());
     stateValue.set(false);
-    assertFalse(state.isActive());
+    assertFalse(state.get());
     stateValue.set(true);
-    assertTrue(state.isActive());
-    state.setActive(false);
+    assertTrue(state.get());
+    state.set(false);
     assertFalse(stateValue.get());
   }
 
@@ -154,18 +154,18 @@ public class ValuesTest {
     final Value<Boolean> booleanValue = Values.value(true, false);
     final State state = Values.valueState(booleanValue);
     final StateObserver reversed = state.getReversedObserver();
-    assertTrue(state.isActive());
-    assertFalse(reversed.isActive());
-    state.setActive(false);
+    assertTrue(state.get());
+    assertFalse(reversed.get());
+    state.set(false);
     assertFalse(booleanValue.get());
     booleanValue.set(true);
-    assertTrue(state.isActive());
-    assertFalse(reversed.isActive());
+    assertTrue(state.get());
+    assertFalse(reversed.get());
     booleanValue.set(null);
-    assertFalse(state.isActive());
-    assertTrue(reversed.isActive());
+    assertFalse(state.get());
+    assertTrue(reversed.get());
     assertFalse(booleanValue.get());
-    state.setActive(true);
+    state.set(true);
     assertTrue(booleanValue.get());
   }
 

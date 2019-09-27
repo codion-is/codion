@@ -316,7 +316,7 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private void save() {
-    if (editModel.isEntityNew() || !editModel.getModifiedObserver().isActive()) {
+    if (editModel.isEntityNew() || !editModel.getModifiedObserver().get()) {
       //no entity selected or selected entity is unmodified can only insert
       insert();
     }

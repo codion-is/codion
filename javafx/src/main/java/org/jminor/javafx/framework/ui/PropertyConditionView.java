@@ -65,7 +65,7 @@ public final class PropertyConditionView extends BorderPane {
    * @param advanced the toggle values
    */
   public void setAdvanced(final boolean advanced) {
-    advancedCondition.setActive(advanced);
+    advancedCondition.set(advanced);
     initializeUI();
   }
 
@@ -164,7 +164,7 @@ public final class PropertyConditionView extends BorderPane {
   }
 
   private void initializeUI() {
-    if (advancedCondition.isActive()) {
+    if (advancedCondition.get()) {
       setCenter(createAdvancedView());
     }
     else {

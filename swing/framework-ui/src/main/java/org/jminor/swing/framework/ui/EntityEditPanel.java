@@ -238,7 +238,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param active the active state
    */
   public final void setActive(final boolean active) {
-    activeState.setActive(active);
+    activeState.set(active);
   }
 
   /**
@@ -2118,7 +2118,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
       final int result = JOptionPane.showConfirmDialog(UiUtil.getParentWindow(EntityEditPanel.this),
               FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING), FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
               JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-      confirmationState.setActive(result == JOptionPane.YES_OPTION);
+      confirmationState.set(result == JOptionPane.YES_OPTION);
     });
   }
 

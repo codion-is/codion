@@ -70,7 +70,7 @@ public class LocalDateInputPanelTest {
     final LocalDateInputPanel inputPanel = new LocalDateInputPanel(textField, "dd.MM.yyyy", true, enabledState.getObserver());
     assertFalse(textField.isEnabled());
     assertFalse(inputPanel.getCalendarButton().isEnabled());
-    enabledState.setActive(true);
+    enabledState.set(true);
     assertTrue(textField.isEnabled());
     assertTrue(inputPanel.getCalendarButton().isEnabled());
   }

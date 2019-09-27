@@ -114,7 +114,7 @@ public class DefaultColumnConditionModelTest {
 
     model.setLocked(true);
     assertTrue(model.isLocked());
-    assertTrue(model.getLockedObserver().isActive());
+    assertTrue(model.getLockedObserver().get());
 
     assertThrows(IllegalArgumentException.class, () -> model.setLowerBound(1));
     assertThrows(IllegalArgumentException.class, () -> model.setUpperBound(1d));

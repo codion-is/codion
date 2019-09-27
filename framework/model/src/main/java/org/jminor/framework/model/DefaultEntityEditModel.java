@@ -171,15 +171,15 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final boolean isReadOnly() {
-    return readOnlyState.isActive();
+    return readOnlyState.get();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EntityEditModel setReadOnly(final boolean readOnly) {
-    allowInsertState.setActive(!readOnly);
-    allowUpdateState.setActive(!readOnly);
-    allowDeleteState.setActive(!readOnly);
+    allowInsertState.set(!readOnly);
+    allowUpdateState.set(!readOnly);
+    allowDeleteState.set(!readOnly);
     return this;
   }
 
@@ -222,13 +222,13 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final boolean isInsertAllowed() {
-    return allowInsertState.isActive();
+    return allowInsertState.get();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EntityEditModel setInsertAllowed(final boolean value) {
-    allowInsertState.setActive(value);
+    allowInsertState.set(value);
     return this;
   }
 
@@ -247,13 +247,13 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final boolean isUpdateAllowed() {
-    return allowUpdateState.isActive();
+    return allowUpdateState.get();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EntityEditModel setUpdateAllowed(final boolean value) {
-    allowUpdateState.setActive(value);
+    allowUpdateState.set(value);
     return this;
   }
 
@@ -266,13 +266,13 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final boolean isDeleteAllowed() {
-    return allowDeleteState.isActive();
+    return allowDeleteState.get();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EntityEditModel setDeleteAllowed(final boolean value) {
-    allowDeleteState.setActive(value);
+    allowDeleteState.set(value);
     return this;
   }
 
@@ -364,7 +364,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
   /** {@inheritDoc} */
   @Override
   public final boolean isModified() {
-    return getModifiedObserver().isActive();
+    return getModifiedObserver().get();
   }
 
   /** {@inheritDoc} */
@@ -886,7 +886,7 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
       final State confirmation = States.state(true);
       confirmSetEntityEvent.fire(confirmation);
 
-      return confirmation.isActive();
+      return confirmation.get();
     }
 
     return true;
@@ -906,8 +906,8 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
     afterInsertEvent.addListener(entitiesChangedEvent);
     afterUpdateEvent.addListener(entitiesChangedEvent);
     getEntity().addValueListener(valueChange -> {
-      primaryKeyNullState.setActive(getEntity().isKeyNull());
-      entityNewState.setActive(isEntityNew());
+      primaryKeyNullState.set(getEntity().isKeyNull());
+      entityNewState.set(isEntityNew());
     });
   }
 
