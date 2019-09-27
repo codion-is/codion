@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -118,12 +119,12 @@ public final class PropertyStore {
    * @param <V> the value type
    * @param property the configuration property identifying this value
    * @param defaultValue the default value to use if no value is present and when the value is set to null
-   * @param parser a parser for parsing a value from a string
+   * @param parser a parser for parsing the value from a string
    * @return the configuration value
    * @throws NullPointerException if {@code property}, {@code defaultValue} or {@code parser} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public <V> Value<V> propertyValue(final String property, final V defaultValue, final StringParser<V> parser) {
+  public <V> Value<V> propertyValue(final String property, final V defaultValue, final Function<String, V> parser) {
     if (propertyValues.containsKey(Objects.requireNonNull(property, "property"))) {
       throw new IllegalArgumentException("Configuration value for property '" + property + "' has already been created");
     }
@@ -132,7 +133,7 @@ public final class PropertyStore {
     if (properties.getProperty(property) == null) {
       properties.setProperty(property, defaultValue.toString());
     }
-    final Value<V> value = Values.value(parser.parse(properties.getProperty(property)), defaultValue);
+    final Value<V> value = Values.value(parser.apply(properties.getProperty(property)), defaultValue);
     value.getChangeObserver().addDataListener(doubleValue -> properties.setProperty(property, doubleValue.toString()));
     propertyValues.put(property, value);
 
@@ -149,7 +150,7 @@ public final class PropertyStore {
    * @throws NullPointerException if {@code property}, {@code defaultValue} or {@code parser} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public <V> Value<List<V>> propertyListValue(final String property, final List<V> defaultValue, final StringParser<V> parser) {
+  public <V> Value<List<V>> propertyListValue(final String property, final List<V> defaultValue, final Function<String, V> parser) {
     if (propertyValues.containsKey(Objects.requireNonNull(property, "property"))) {
       throw new IllegalArgumentException("Configuration value for property '" + property + "' has already been created");
     }
@@ -159,7 +160,7 @@ public final class PropertyStore {
       properties.setProperty(property, defaultValue.stream().map(Object::toString).collect(Collectors.joining(VALUE_SEPARATOR)));
     }
     final Value<List<V>> value = Values.value(Arrays.stream(properties.getProperty(property).split(VALUE_SEPARATOR))
-            .map(parser::parse).collect(Collectors.toList()), defaultValue);
+            .map(parser).collect(Collectors.toList()), defaultValue);
     value.getChangeObserver().addDataListener(values ->
             properties.setProperty(property, values.stream().map(Object::toString).collect(Collectors.joining(VALUE_SEPARATOR))));
     propertyValues.put(property, value);
