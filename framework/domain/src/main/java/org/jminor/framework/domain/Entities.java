@@ -180,17 +180,17 @@ public final class Entities {
    * @param propertyId the id of the property for which to set the value
    * @param value the value
    * @param entities the entities for which to set the value
-   * @return the old property values mapped to their respective primary key
+   * @return the previous property values mapped to the primary key of the entity
    */
   public static Map<Entity.Key, Object> put(final String propertyId, final Object value,
                                             final Collection<Entity> entities) {
     Objects.requireNonNull(entities, ENTITIES_PARAM);
-    final Map<Entity.Key, Object> oldValues = new HashMap<>(entities.size());
+    final Map<Entity.Key, Object> previousValues = new HashMap<>(entities.size());
     for (final Entity entity : entities) {
-      oldValues.put(entity.getKey(), entity.put(propertyId, value));
+      previousValues.put(entity.getKey(), entity.put(propertyId, value));
     }
 
-    return oldValues;
+    return previousValues;
   }
 
   /**

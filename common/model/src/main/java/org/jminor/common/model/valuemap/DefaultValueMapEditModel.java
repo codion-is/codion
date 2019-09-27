@@ -77,9 +77,9 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
   public final void put(final K key, final V value) {
     Objects.requireNonNull(key, KEY);
     final boolean initialization = !valueMap.containsKey(key);
-    final V oldValue = valueMap.put(key, value);
-    if (!Objects.equals(value, oldValue)) {
-      notifyValueChange(key, ValueChanges.valueChange(key, value, oldValue, initialization));
+    final V previousValue = valueMap.put(key, value);
+    if (!Objects.equals(value, previousValue)) {
+      notifyValueChange(key, ValueChanges.valueChange(key, value, previousValue, initialization));
     }
   }
 

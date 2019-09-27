@@ -18,14 +18,14 @@ public interface ValueChange<K extends Attribute, V> {
   K getKey();
 
   /**
-   * @return the old value
+   * @return the previous value
    */
-  V getOldValue();
+  V getPreviousValue();
 
   /**
-   * @return the new value
+   * @return the current value
    */
-  V getNewValue();
+  V getCurrentValue();
 
   /**
    * @return true if this key had no associated value prior to this value change

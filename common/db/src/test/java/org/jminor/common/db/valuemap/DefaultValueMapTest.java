@@ -50,12 +50,12 @@ public class DefaultValueMapTest {
 
     final ValueMap<TestAttribute, Integer> valueMap = new DefaultValueMap<>();
 
-    final EventDataListener<ValueChange<TestAttribute, Integer>> valueListener = data -> {
-      assertEquals(attr1, data.getKey());
-      data.toString();
-      data.getOldValue();
-      data.getNewValue();
-      data.isInitialization();
+    final EventDataListener<ValueChange<TestAttribute, Integer>> valueListener = valueChange -> {
+      assertEquals(attr1, valueChange.getKey());
+      valueChange.toString();
+      valueChange.getPreviousValue();
+      valueChange.getCurrentValue();
+      valueChange.isInitialization();
     };
     valueMap.addValueListener(valueListener);
 
