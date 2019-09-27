@@ -19,31 +19,31 @@ public final class ValueChanges {
    * @param <K> the type of the value key
    * @param <V> the type of the value
    * @param key the key associated with the value
-   * @param newValue the new value
-   * @param oldValue the old value
+   * @param currentValue the current value
+   * @param previousValue the previous value
    * @param initialization true if the value was being initialized
    * @return a new {@link ValueChange} instance
    */
-  public static <K extends Attribute, V> ValueChange<K, V> valueChange(final K key, final V newValue, final V oldValue, final boolean initialization) {
-    return new DefaultValueChange<>(key, newValue, oldValue, initialization);
+  public static <K extends Attribute, V> ValueChange<K, V> valueChange(final K key, final V currentValue, final V previousValue, final boolean initialization) {
+    return new DefaultValueChange<>(key, currentValue, previousValue, initialization);
   }
 
   private static final class DefaultValueChange<K extends Attribute, V> implements ValueChange<K, V> {
 
     /**
-     * The key identifying the value having changed
+     * The key identifying the changed value
      */
     private final K key;
 
     /**
      * The new value
      */
-    private final V newValue;
+    private final V currentValue;
 
     /**
      * The old value
      */
-    private final V oldValue;
+    private final V previousValue;
 
     /**
      * True if this value change indicates an initialization, that is, a value was not present before this value change
@@ -54,14 +54,14 @@ public final class ValueChanges {
      * Instantiates a new DefaultValueChange
      * @param source the source of the value change
      * @param key the key associated with the value
-     * @param newValue the new value
-     * @param oldValue the old value
-     * @param initialization true if the value was being initialized, as in, no previous value exists
+     * @param currentValue the current value
+     * @param previousValue the previous value
+     * @param initialization true if the value was being initialized, as in, no previous value existed
      */
-    private DefaultValueChange(final K key, final V newValue, final V oldValue, final boolean initialization) {
+    private DefaultValueChange(final K key, final V currentValue, final V previousValue, final boolean initialization) {
       this.key = Objects.requireNonNull(key, "key");
-      this.newValue = newValue;
-      this.oldValue = oldValue;
+      this.currentValue = currentValue;
+      this.previousValue = previousValue;
       this.initialization = initialization;
     }
 
@@ -71,13 +71,13 @@ public final class ValueChanges {
     }
 
     @Override
-    public V getOldValue() {
-      return oldValue;
+    public V getPreviousValue() {
+      return previousValue;
     }
 
     @Override
-    public V getNewValue() {
-      return newValue;
+    public V getCurrentValue() {
+      return currentValue;
     }
 
     @Override
@@ -88,10 +88,10 @@ public final class ValueChanges {
     @Override
     public String toString() {
       if (initialization) {
-        return key + ": " + newValue;
+        return key + ": " + currentValue;
       }
       else {
-        return key + ": " + oldValue + " -> " + newValue;
+        return key + ": " + previousValue + " -> " + currentValue;
       }
     }
   }

@@ -44,7 +44,7 @@ public final class EditModelValues {
     private EditModelValue(final ValueMapEditModel editModel, final Attribute key) {
       this.editModel = editModel;
       this.key = key;
-      this.editModel.getValueObserver(key).addDataListener(data -> changeEvent.fire((V) data.getNewValue()));
+      this.editModel.getValueObserver(key).addDataListener(valueChange -> changeEvent.fire((V) valueChange.getCurrentValue()));
     }
 
     @Override

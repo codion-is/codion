@@ -53,7 +53,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
       //only show managers in the same department as the active entity
       if (containsComboBoxModel(EmpDept.EMPLOYEE_MGR_FK)) {
         getForeignKeyComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setFilterCondition(item ->
-                Objects.equals(item.getForeignKey(EmpDept.EMPLOYEE_DEPARTMENT_FK), valueChange.getNewValue())
+                Objects.equals(item.getForeignKey(EmpDept.EMPLOYEE_DEPARTMENT_FK), valueChange.getCurrentValue())
                         && !Objects.equals(item, getEntityCopy()));
       }
     });

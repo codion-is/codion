@@ -330,15 +330,15 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
     return getValueChangedEvent().getObserver();
   }
 
-  protected final void notifyValueChange(final K key, final V value, final V oldValue, final boolean initialization) {
-    valueChangedEvent.fire(ValueChanges.valueChange(key, value, oldValue, initialization));
+  protected final void notifyValueChange(final K key, final V currentValue, final V previousValue, final boolean initialization) {
+    valueChangedEvent.fire(ValueChanges.valueChange(key, currentValue, previousValue, initialization));
   }
 
-  protected final void setOriginalValue(final K key, final V oldValue) {
+  protected final void setOriginalValue(final K key, final V previousValue) {
     if (originalValues == null) {
       originalValues = new HashMap<>();
     }
-    originalValues.put(key, oldValue);
+    originalValues.put(key, previousValue);
   }
 
   protected final void removeOriginalValue(final K key) {
