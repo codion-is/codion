@@ -23,6 +23,17 @@ import java.util.stream.Collectors;
 
 /**
  * Provides configuration values which sync with a central configuration store, which can be written to file.
+ * <pre>
+ * PropertyStore store = new PropertyStore(System.getProperty("user.home") + "/app.properties");
+ *
+ * Value&lt;Boolean&gt; featureEnabled = store.propertyValue("feature.enabled", false);
+ * Value&lt;String&gt; defaultUsername = store.propertyValue("default.username", System.getProperty("user.name"));
+ *
+ * featureEnabled.set(true);
+ * defaultUsername.set("scott");
+ *
+ * store.writeToFile();
+ * </pre>
  */
 public final class PropertyStore {
 

@@ -7,15 +7,14 @@ package org.jminor.common;
  * A event class.
  * Listeners are notified in the order they were added.
  * <pre>
- * Event event = Events.event();
+ * Event&lt;Boolean&gt; event = Events.event();
  *
- * event.addListener(new EventListener...);
+ * EventObserver&lt;Boolean&gt; observer = event.getObserver();
  *
- * EventObserver observer = event.getObserver();
+ * observer.addListener(this::doSomething);
+ * observer.addDataListener(this::handleBoolean);
  *
- * bindModelToEvent(observer);
- *
- * event.fire();
+ * event.fire(true);
  * </pre>
  * @param <T> the type of data propagated with this event
  */
