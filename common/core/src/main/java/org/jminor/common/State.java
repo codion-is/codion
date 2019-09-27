@@ -5,6 +5,15 @@ package org.jminor.common;
 
 /**
  * A class encapsulating a boolean state.
+ * <pre>
+ * State state = States.state();
+ *
+ * StateObserver observer = state.getObserver();
+ *
+ * observer.getChangeObserver().addDataListener(this::handleStateChange);
+ *
+ * state.setActive(true);
+ * </pre>
  */
 public interface State extends StateObserver {
 
