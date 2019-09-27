@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.function.Function;
 
 /**
  * A utility class for configuration values.
@@ -104,7 +105,7 @@ public final class Configuration {
    * @param <T> the value type
    * @return the configuration value
    */
-  public static <T> Value<T> value(final String key, final T defaultValue, final StringParser<T> parser) {
+  public static <T> Value<T> value(final String key, final T defaultValue, final Function<String, T> parser) {
     return new ConfigurationValue<>(key, defaultValue, parser);
   }
 
@@ -191,11 +192,12 @@ public final class Configuration {
      * if no value is found in system properties the default value is used.
      * @param key the configuration key
      * @param defaultValue the default value
+     * @param parser a function for parsing the value from a String
      */
-    private ConfigurationValue(final String key, final T defaultValue, final StringParser<T> parser) {
+    private ConfigurationValue(final String key, final T defaultValue, final Function<String, T> parser) {
       this.key = Objects.requireNonNull(key, "key");
       final String stringValue = System.getProperty(key);
-      this.value = stringValue == null ? defaultValue : parser.parse(stringValue);
+      this.value = stringValue == null ? defaultValue : parser.apply(stringValue);
       LOG.debug("ConfigurationValue.init() '" + key + "': " + stringValue + " [default: " + defaultValue + "]");
     }
 
