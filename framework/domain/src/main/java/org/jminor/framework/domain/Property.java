@@ -35,24 +35,21 @@ public interface Property extends Attribute, Serializable {
   Value<Integer> MAXIMUM_FRACTION_DIGITS = Configuration.integerValue("jminor.domain.maximumFractionDigits", DEFAULT_MAXIMUM_FRACTION_DIGITS);
 
   /**
-   * The date format pattern to use when showing time values in tables and when
-   * creating default time input fields<br>
+   * The date format pattern to use when showing time values in tables and when creating default time input fields<br>
    * Value type: String<br>
    * Default value: HH:mm
    */
   Value<String> TIME_FORMAT = Configuration.stringValue("jminor.domain.timeFormat", "HH:mm");
 
   /**
-   * The date format pattern to use when showing timestamp values in tables and when
-   * creating default timestamp input fields<br>
+   * The date format pattern to use when showing timestamp values in tables and when creating default timestamp input fields<br>
    * Value type: String<br>
    * Default value: dd-MM-yyyy HH:mm
    */
   Value<String> TIMESTAMP_FORMAT = Configuration.stringValue("jminor.domain.timestampFormat", "dd-MM-yyyy HH:mm");
 
   /**
-   * The date format pattern to use when showing date values in tables and when
-   * creating default date input fields<br>
+   * The date format pattern to use when showing date values in tables and when creating default date input fields<br>
    * Value type: String<br>
    * Default value: dd-MM-yyyy
    */

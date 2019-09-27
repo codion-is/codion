@@ -8,7 +8,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FileUtilTest {
@@ -51,23 +50,6 @@ public class FileUtilTest {
     final List<Integer> readInts = FileUtil.deserializeFromFile(file);
 
     assertEquals(ints, readInts);
-
-    file.delete();
-  }
-
-  @Test
-  public void getBytesFromFile() throws IOException {
-    final File file = File.createTempFile("FileUtilTest.getBytesFromFile", ".txt");
-    file.deleteOnExit();
-
-    final String helloWorld = "hello world";
-    FileUtil.writeFile(helloWorld, file);
-
-    final byte[] expected = {(byte) 104, (byte) 101, (byte) 108, (byte) 108, (byte) 111, (byte) 32,
-            (byte) 119, (byte) 111, (byte) 114, (byte) 108, (byte) 100};
-
-    final byte[] bytes = FileUtil.getBytesFromFile(file);
-    assertArrayEquals(expected, bytes);
 
     file.delete();
   }
