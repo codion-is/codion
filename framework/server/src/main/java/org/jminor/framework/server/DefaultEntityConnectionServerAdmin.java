@@ -387,7 +387,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   /** {@inheritDoc} */
   @Override
   public void setConnectionLimit(final int value) {
-    LOG.info("setConnectionLimit", value);
+    LOG.info("setConnectionLimit({})", value);
     server.setConnectionLimit(value);
   }
 

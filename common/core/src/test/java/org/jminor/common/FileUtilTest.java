@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class FileUtilTest {
     FileUtil.writeDelimitedFile(headers, data, "-", file);
     final String newline = System.getProperty("line.separator");
     final String fileContents = "h1-h2-h3" + newline + "one-two-three" + newline + "1-2-3";
-    assertEquals(fileContents, TextUtil.getTextFileContents(file.toString(), Charset.forName("UTF-8")));
+    assertEquals(fileContents, TextUtil.getTextFileContents(file.toString(), StandardCharsets.UTF_8));
 
     file.delete();
   }

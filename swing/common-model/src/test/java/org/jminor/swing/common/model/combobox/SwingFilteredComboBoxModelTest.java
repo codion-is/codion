@@ -240,7 +240,7 @@ public class SwingFilteredComboBoxModelTest {
   public void setContentsSelectedItem() {
     class Data {
       final int id;
-      String data;
+      final String data;
 
       Data(final int id, final String data) {
         this.id = id;
