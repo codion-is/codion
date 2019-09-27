@@ -102,15 +102,15 @@ public class DefaultEntityTest {
 
     entity.put(TestDomain.MASTER_ID, -55L);
     //the id is not updatable as it is part of the primary key, which is not updatable by default
-    assertFalse(entity.getModifiedObserver().isActive());
+    assertFalse(entity.getModifiedObserver().get());
     entity.save(TestDomain.MASTER_ID);
-    assertFalse(entity.getModifiedObserver().isActive());
+    assertFalse(entity.getModifiedObserver().get());
 
     entity.put(TestDomain.MASTER_NAME, newName);
-    assertTrue(entity.getModifiedObserver().isActive());
+    assertTrue(entity.getModifiedObserver().get());
     entity.revert(TestDomain.MASTER_NAME);
     assertEquals(masterName, entity.get(TestDomain.MASTER_NAME));
-    assertFalse(entity.getModifiedObserver().isActive());
+    assertFalse(entity.getModifiedObserver().get());
 
     entity.put(TestDomain.MASTER_NAME, newName);
     assertTrue(entity.isModified());

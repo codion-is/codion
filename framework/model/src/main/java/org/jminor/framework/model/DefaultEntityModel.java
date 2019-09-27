@@ -195,7 +195,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     this.detailModels.add(detailModel);
     detailModel.setMasterModel((M) this);
     if (detailModel.containsTableModel()) {
-      detailModel.getTableModel().getQueryConditionRequiredState().setActive(true);
+      detailModel.getTableModel().getQueryConditionRequiredState().set(true);
     }
 
     return detailModel;
@@ -502,7 +502,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   private List<Entity> getActiveEntities() {
     final List<Entity> activeEntities;
-    if (containsTableModel() && !tableModel.getSelectionModel().getSelectionEmptyObserver().isActive()) {
+    if (containsTableModel() && !tableModel.getSelectionModel().getSelectionEmptyObserver().get()) {
       activeEntities = tableModel.getSelectionModel().getSelectedItems();
     }
     else {

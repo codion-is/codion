@@ -147,13 +147,13 @@ public final class EntityLookupField extends TextField {
     }
 
     private void handleEnter() {
-      if (!model.getSearchStringRepresentsSelectedObserver().isActive()) {
+      if (!model.getSearchStringRepresentsSelectedObserver().get()) {
         performLookup(true);
       }
     }
 
     private void handleEscape() {
-      if (model.getSearchStringRepresentsSelectedObserver().getReversedObserver().isActive()) {
+      if (model.getSearchStringRepresentsSelectedObserver().getReversedObserver().get()) {
         model.refreshSearchText();
         selectAll();
       }

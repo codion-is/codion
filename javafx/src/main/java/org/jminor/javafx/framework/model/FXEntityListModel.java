@@ -450,7 +450,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    */
   @Override
   protected List<Entity> performQuery() {
-    if (!conditionModel.isEnabled() && queryConditionRequiredState.isActive()) {
+    if (!conditionModel.isEnabled() && queryConditionRequiredState.get()) {
       return Collections.emptyList();
     }
 

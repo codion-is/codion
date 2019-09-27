@@ -117,7 +117,7 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
   /** {@inheritDoc} */
   @Override
   public final boolean isValid() {
-    return validState.isActive();
+    return validState.get();
   }
 
   /** {@inheritDoc} */
@@ -238,7 +238,7 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
 
   private void bindEvents() {
     valueMap.addValueListener(valueChange -> {
-      validState.setActive(validator.isValid(valueMap));
+      validState.set(validator.isValid(valueMap));
       final Event<ValueChange<K, V>> valueChangeEvent = valueChangeEventMap.get(valueChange.getKey());
       if (valueChangeEvent != null) {
         valueChangeEvent.fire(valueChange);

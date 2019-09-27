@@ -84,13 +84,13 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   @Override
   public final void rememberCurrentConditionState() {
     rememberedConditionState = getConditionModelState();
-    conditionStateChangedState.setActive(false);
+    conditionStateChangedState.set(false);
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean hasConditionStateChanged() {
-    return conditionStateChangedState.isActive();
+    return conditionStateChangedState.get();
   }
 
   /** {@inheritDoc} */
@@ -348,7 +348,7 @@ public class DefaultEntityTableConditionModel implements EntityTableConditionMod
   private void bindEvents() {
     for (final PropertyConditionModel conditionModel : propertyConditionModels.values()) {
       conditionModel.addConditionStateListener(() -> {
-        conditionStateChangedState.setActive(!rememberedConditionState.equals(getConditionModelState()));
+        conditionStateChangedState.set(!rememberedConditionState.equals(getConditionModelState()));
         conditionStateChangedEvent.fire();
       });
     }

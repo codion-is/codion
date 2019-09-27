@@ -192,7 +192,7 @@ public class SwingEntityModelProvider
         tableModel = tableModelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       if (detailModel) {
-        tableModel.getQueryConditionRequiredState().setActive(true);
+        tableModel.getQueryConditionRequiredState().set(true);
       }
       configureTableModel(tableModel);
 

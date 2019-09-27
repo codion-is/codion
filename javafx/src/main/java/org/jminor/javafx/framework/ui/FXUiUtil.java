@@ -603,7 +603,7 @@ public final class FXUiUtil {
   public static void link(final BooleanProperty property, final StateObserver stateObserver) {
     Objects.requireNonNull(property);
     Objects.requireNonNull(stateObserver);
-    property.setValue(stateObserver.isActive());
+    property.setValue(stateObserver.get());
     stateObserver.addDataListener(property::setValue);
   }
 
@@ -871,17 +871,17 @@ public final class FXUiUtil {
 
     @Override
     public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
-      if (ignoreChange.isActive()) {
+      if (ignoreChange.get()) {
         return;
       }
       if (!isValid(property, newValue)) {
         Platform.runLater(() -> {
           try {
-            ignoreChange.setActive(true);
+            ignoreChange.set(true);
             stringProperty.setValue(oldValue);
           }
           finally {
-            ignoreChange.setActive(false);
+            ignoreChange.set(false);
           }
         });
       }

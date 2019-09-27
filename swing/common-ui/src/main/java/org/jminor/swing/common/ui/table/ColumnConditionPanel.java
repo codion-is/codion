@@ -283,14 +283,14 @@ public class ColumnConditionPanel<K> extends JPanel {
    * @param value true if advanced condition should be enabled
    */
   public final void setAdvanced(final boolean value) {
-    advancedConditionState.setActive(value);
+    advancedConditionState.set(value);
   }
 
   /**
    * @return true if the advanced condition is enabled
    */
   public final boolean isAdvanced() {
-    return advancedConditionState.isActive();
+    return advancedConditionState.get();
   }
 
   /**
@@ -459,7 +459,7 @@ public class ColumnConditionPanel<K> extends JPanel {
 
   private void initializePanel() {
     removeAll();
-    if (advancedConditionState.isActive()) {
+    if (advancedConditionState.get()) {
       initializeAdvancedPanel();
     }
     else {

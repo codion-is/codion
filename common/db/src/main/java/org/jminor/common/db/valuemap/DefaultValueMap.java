@@ -319,7 +319,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
   @Override
   public final StateObserver getModifiedObserver() {
     final State state = States.state(isModified());
-    getValueObserver().addDataListener(data -> state.setActive(isModified()));
+    getValueObserver().addDataListener(valueChange -> state.set(isModified()));
 
     return state.getObserver();
   }

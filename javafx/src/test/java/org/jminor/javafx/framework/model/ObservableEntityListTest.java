@@ -104,18 +104,18 @@ public final class ObservableEntityListTest {
             TestDomain.DEPARTMENT_NAME, "OPERATIONS");
 
     list.getSelectionModel().setSelectedItem(sales);
-    assertFalse(list.getSelectionEmptyObserver().isActive());
-    assertTrue(list.getSingleSelectionObserver().isActive());
-    assertFalse(list.getMultipleSelectionObserver().isActive());
+    assertFalse(list.getSelectionEmptyObserver().get());
+    assertTrue(list.getSingleSelectionObserver().get());
+    assertFalse(list.getMultipleSelectionObserver().get());
 
     list.getSelectionModel().setSelectedItems(Arrays.asList(sales, operations));
-    assertFalse(list.getSelectionEmptyObserver().isActive());
-    assertFalse(list.getSingleSelectionObserver().isActive());
-    assertTrue(list.getMultipleSelectionObserver().isActive());
+    assertFalse(list.getSelectionEmptyObserver().get());
+    assertFalse(list.getSingleSelectionObserver().get());
+    assertTrue(list.getMultipleSelectionObserver().get());
 
     list.getSelectionModel().clearSelection();
-    assertTrue(list.getSelectionEmptyObserver().isActive());
-    assertFalse(list.getSingleSelectionObserver().isActive());
-    assertFalse(list.getMultipleSelectionObserver().isActive());
+    assertTrue(list.getSelectionEmptyObserver().get());
+    assertFalse(list.getSingleSelectionObserver().get());
+    assertFalse(list.getMultipleSelectionObserver().get());
   }
 }

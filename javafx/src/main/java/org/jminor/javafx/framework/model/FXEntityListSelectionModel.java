@@ -43,13 +43,13 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
    */
   public FXEntityListSelectionModel(final javafx.scene.control.SelectionModel<Entity> selectionModel) {
     this.selectionModel = selectionModel;
-    this.selectionEmptyState.setActive(selectionModel.isEmpty());
+    this.selectionEmptyState.set(selectionModel.isEmpty());
     if (selectionModel instanceof MultipleSelectionModel) {
-      this.singleSelectionState.setActive(((MultipleSelectionModel<Entity>) selectionModel).getSelectedIndices().size() == 1);
-      this.multipleSelectionState.setActive(!selectionEmptyState.isActive() && !singleSelectionState.isActive());
+      this.singleSelectionState.set(((MultipleSelectionModel<Entity>) selectionModel).getSelectedIndices().size() == 1);
+      this.multipleSelectionState.set(!selectionEmptyState.get() && !singleSelectionState.get());
     }
     else {
-      this.singleSelectionState.setActive(!selectionModel.isEmpty());
+      this.singleSelectionState.set(!selectionModel.isEmpty());
     }
     bindEvents();
   }
@@ -345,9 +345,9 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   private void bindEvents() {
     if (selectionModel instanceof MultipleSelectionModel) {
       ((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems().addListener((ListChangeListener<Entity>) change -> {
-        selectionEmptyState.setActive(selectionModel.isEmpty());
-        singleSelectionState.setActive(getSelectedIndexes().size() == 1);
-        multipleSelectionState.setActive(!selectionEmptyState.isActive() && !singleSelectionState.isActive());
+        selectionEmptyState.set(selectionModel.isEmpty());
+        singleSelectionState.set(getSelectedIndexes().size() == 1);
+        multipleSelectionState.set(!selectionEmptyState.get() && !singleSelectionState.get());
         selectionChangedEvent.fire();
         selectedItemChangedEvent.fire(getSelectedItem());
         selectedItemsChangedEvent.fire(getSelectedItems());

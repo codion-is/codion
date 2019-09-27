@@ -242,12 +242,12 @@ public final class Values {
 
     @Override
     public void set(final Boolean value) {
-      state.setActive(value != null && value);
+      state.set(value != null && value);
     }
 
     @Override
     public Boolean get() {
-      return state.isActive();
+      return state.get();
     }
 
     @Override

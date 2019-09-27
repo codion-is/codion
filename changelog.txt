@@ -5112,3 +5112,4 @@
   ConfigurationStore.getConfigurationValue() added
   ValueParser moved up from Configuration and renamed StringParser
   ConfigurationStore, renamed to PropertyStore, some internal renamings as well as javadoc fixes
+  State.isActive() and setActive() renamed to get() and set() respectively

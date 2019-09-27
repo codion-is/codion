@@ -48,7 +48,7 @@ public class DefaultValueMapEditModelTest {
     model.validate(testAttribute);
     assertTrue(model.isValid());
     assertTrue(model.isValid(testAttribute));
-    assertTrue(model.getValidObserver().isActive());
+    assertTrue(model.getValidObserver().get());
     assertEquals(1, valueSetCounter.get());
     assertEquals(1, valueChangeCounter.get());
     assertEquals(1, anyValueChangeCounter.get());
