@@ -12,7 +12,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -122,7 +121,7 @@ public final class FileUtil {
   }
 
   /**
-   * Srializes a Collection of Objects to a given file
+   * Serializes a Collection of Objects to a given file
    * @param objects the objects to serialize
    * @param file the file
    * @throws IOException in case the file can not be written
@@ -132,33 +131,6 @@ public final class FileUtil {
       for (final Object object : objects) {
         outputStream.writeObject(object);
       }
-    }
-  }
-
-  /**
-   * Reads the complete file into memory, so this is not meant for reading large files.
-   * @param file the file
-   * @return the bytes comprising the given file
-   * @throws IOException in case of an exception
-   */
-  public static byte[] getBytesFromFile(final File file) throws IOException {
-    Objects.requireNonNull(file, "file");
-    try (final InputStream inputStream = new FileInputStream(file)) {
-      final byte[] bytes = new byte[(int) file.length()];
-
-      int offset = 0;
-      int numRead = inputStream.read(bytes, offset, bytes.length - offset);
-      while (offset < bytes.length && numRead >= 0) {
-        offset += numRead;
-        numRead = inputStream.read(bytes, offset, bytes.length - offset);
-      }
-
-      // Ensure all the bytes have been read in
-      if (offset < bytes.length) {
-        throw new IOException("Could not completely read file " + file.getName());
-      }
-
-      return bytes;
     }
   }
 }
