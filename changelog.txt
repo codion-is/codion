@@ -5128,3 +5128,4 @@
   IntelliJ code analysis based fixes
   StringParser removed, replaced with Function<String, ?>
   FileUtil.getBytesFromFile() removed, use Files.readAllBytes()
+  PropertyStore now removes the property when the value is set to null instead of using the defaultValue

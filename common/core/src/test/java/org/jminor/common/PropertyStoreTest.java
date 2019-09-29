@@ -32,15 +32,25 @@ public final class PropertyStoreTest {
     final PropertyStore store = new PropertyStore(configFile.getAbsolutePath());
 
     final Value<String> stringValue = store.propertyValue("string.property", "value");
+    assertTrue(store.containsProperty("string.property"));
     assertEquals("value", stringValue.get());
     assertSame(stringValue, store.getPropertyValue("string.property"));
+    stringValue.set(null);
+    assertFalse(store.containsProperty("string.property"));
 
     final Value<List<String>> stringListValue = store.propertyListValue("stringlist.property", Collections.emptyList(), Objects::toString);
+    assertTrue(store.containsProperty("stringlist.property"));
+
     assertTrue(stringListValue.get().contains("value1"));
     assertTrue(stringListValue.get().contains("value2"));
     assertTrue(stringListValue.get().contains("value3"));
 
+    stringListValue.set(Collections.emptyList());
+    assertFalse(store.containsProperty("stringlist.property"));
+
     final Value<List<Integer>> integerListValue = store.propertyListValue("intlist.property", Collections.emptyList(), Integer::parseInt);
+    assertTrue(store.containsProperty("intlist.property"));
+
     assertTrue(integerListValue.get().contains(1));
     assertTrue(integerListValue.get().contains(2));
     assertTrue(integerListValue.get().contains(3));
@@ -54,9 +64,10 @@ public final class PropertyStoreTest {
 
     final Value<Double> doubleValue = store.propertyValue("double.property", 0d);
     assertEquals(3.14, doubleValue.get());
+    doubleValue.set(null);
+    assertFalse(store.containsProperty("double.property"));
 
     final Value<Boolean> booleanValue = store.propertyValue("boolean.property", false);
-    assertFalse(booleanValue.isNullable());
     assertTrue(booleanValue.get());
 
     final List<String> intProperties = store.getPropertyNames("int.");
@@ -73,11 +84,12 @@ public final class PropertyStoreTest {
 
     stringValue.set("newValue");
     stringListValue.set(Arrays.asList("value4", "value5", "value6"));
+    integerListValue.set(null);
     intValue1.set(24);
     intValue2.set(25);
     intValue3.set(26);
     doubleValue.set(4.22);
-    booleanValue.set(false);
+    booleanValue.set(null);
 
     store.writeToFile();
 
@@ -88,7 +100,8 @@ public final class PropertyStoreTest {
     assertTrue(propertyValues.contains("int.property2=25"));
     assertTrue(propertyValues.contains("int.property3=26"));
     assertTrue(propertyValues.contains("double.property=4.22"));
-    assertTrue(propertyValues.contains("boolean.property=false"));
+    assertFalse(propertyValues.contains("boolean.property=false"));
+    assertFalse(propertyValues.contains("intlist.property=1;2;3"));
 
     configFile.delete();
   }
@@ -100,44 +113,33 @@ public final class PropertyStoreTest {
     final PropertyStore store = new PropertyStore(configFile.getAbsolutePath());
     final Value<String> stringValue = store.propertyValue("string.property", "value");
     assertEquals("value", stringValue.get());
-    stringValue.set("test");
     stringValue.set(null);
-    assertEquals("value", stringValue.get());
+    assertNull(stringValue.get());
     final Value<Boolean> booleanValue1 = store.propertyValue("boolean.property", true);
     assertTrue(booleanValue1.get());
     booleanValue1.set(false);
     assertFalse(booleanValue1.get());
     booleanValue1.set(null);
-    assertTrue(booleanValue1.get());
+    assertNull(booleanValue1.get());
     final Value<Integer> integerValue = store.propertyValue("integer.property", 42);
     assertEquals(42, integerValue.get());
-    integerValue.set(1);
     integerValue.set(null);
-    assertEquals(42, integerValue.get());
+    assertNull(integerValue.get());
     final Value<Double> doubleValue = store.propertyValue("double.property", 3.14);
     assertEquals(3.14, doubleValue.get());
-    doubleValue.set(1.1);
     doubleValue.set(null);
-    assertEquals(3.14, doubleValue.get());
+    assertNull(doubleValue.get());
     final Value<List<String>> listValue = store.propertyListValue("stringlist.property", Arrays.asList("value1", "value2"), Objects::toString);
-    List<String> strings = listValue.get();
+    final List<String> strings = listValue.get();
     assertTrue(strings.contains("value1"));
     assertTrue(strings.contains("value2"));
-    listValue.set(Collections.singletonList("test"));
     listValue.set(null);
-    strings = listValue.get();
-    assertTrue(strings.contains("value1"));
-    assertTrue(strings.contains("value2"));
+    assertTrue(listValue.get().isEmpty());
   }
 
   @Test
   public void exceptions() throws IOException {
     final PropertyStore store = new PropertyStore("test.file");
-    assertThrows(NullPointerException.class, () -> store.propertyValue("test", (Boolean) null));
-    assertThrows(NullPointerException.class, () -> store.propertyValue("test", (Double) null));
-    assertThrows(NullPointerException.class, () -> store.propertyValue("test", (Integer) null));
-    assertThrows(NullPointerException.class, () -> store.propertyValue("test", (String) null));
-    assertThrows(NullPointerException.class, () -> store.propertyListValue("test", null, Objects::toString));
 
     store.propertyValue("test", "test");
     assertThrows(IllegalArgumentException.class, () -> store.propertyValue("test", "test"));
