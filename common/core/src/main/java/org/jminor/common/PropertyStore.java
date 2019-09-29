@@ -3,6 +3,9 @@
  */
 package org.jminor.common;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,9 +26,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Provides configuration values which sync with a central configuration store, which can be written to file.
+ * Provides configuration values which sync with a central configuration store as well as system properties,
+ * which can be written to file.
+ * Initial values parsed from a configuration file are overridden by system properties.
+ * If values are not found in the configuration file or in system properties the default value is used.
  * <pre>
- * PropertyStore store = new PropertyStore(System.getProperty("user.home") + "/app.properties");
+ * String configurationFile = System.getProperty("user.home") + "/app.properties";
+ *
+ * PropertyStore store = new PropertyStore(configurationFile);
  *
  * Value&lt;Boolean&gt; featureEnabled = store.propertyValue("feature.enabled", false);
  * Value&lt;String&gt; defaultUsername = store.propertyValue("default.username", System.getProperty("user.name"));
@@ -33,14 +41,18 @@ import java.util.stream.Collectors;
  * featureEnabled.set(true);
  * defaultUsername.set("scott");
  *
- * store.writeToFile();
+ * store.writeToFile(configurationFile);
  * </pre>
  */
 public final class PropertyStore {
 
+  private static final Logger LOG = LoggerFactory.getLogger(PropertyStore.class);
+
+  /**
+   * The separator used to separate multiple values.
+   */
   public static final String VALUE_SEPARATOR = ";";
 
-  private final String propertiesFile;
   private final Map<String, Value> propertyValues = new HashMap<>();
 
   //trying to make the configuration file a bit easier to read by sorting the keys
@@ -56,14 +68,21 @@ public final class PropertyStore {
   };
 
   /**
-   * Instantiates a new ConfigurationStore backed by the given file.
-   * If the file exists this ConfigurationStore is initialized with the properties and values found in it.
-   * @param propertiesFile the path to the file to read from initially and to use when persisting the configuration properties
+   * Instantiates a new PropertyStore backed by the given file.
+   * If the file exists this PropertyStore is initialized with the properties and values found in it.
+   * @param propertiesFile the path to the file to read from initially
    * @throws IOException in case the given properties file exists but reading it failed
    */
   public PropertyStore(final String propertiesFile) throws IOException {
-    this.propertiesFile = Objects.requireNonNull(propertiesFile);
-    readFromFile();
+    this(readFromFile(Objects.requireNonNull(propertiesFile)));
+  }
+
+  /**
+   * Instantiates a new PropertyStore initialized with the given properties.
+   * @param properties the initial properties
+   */
+  public PropertyStore(final Properties properties) {
+    this.properties.putAll(Objects.requireNonNull(properties, "properties"));
   }
 
   /**
@@ -71,11 +90,11 @@ public final class PropertyStore {
    * @param property the configuration property identifying this value
    * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @return the configuration value
-   * @throws NullPointerException if {@code property} or {@code defaultValue} is null
+   * @throws NullPointerException if {@code property} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
   public Value<Boolean> propertyValue(final String property, final Boolean defaultValue) {
-    return propertyValue(property, defaultValue, Boolean::parseBoolean);
+    return propertyValue(property, defaultValue, Boolean::parseBoolean, Objects::toString);
   }
 
   /**
@@ -83,11 +102,11 @@ public final class PropertyStore {
    * @param property the configuration property identifying this value
    * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @return the configuration value
-   * @throws NullPointerException if {@code property} or {@code defaultValue} is null
+   * @throws NullPointerException if {@code property} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
   public Value<String> propertyValue(final String property, final String defaultValue) {
-    return propertyValue(property, defaultValue, Objects::toString);
+    return propertyValue(property, defaultValue, Objects::toString, Objects::toString);
   }
 
   /**
@@ -95,11 +114,11 @@ public final class PropertyStore {
    * @param property the configuration property identifying this value
    * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @return the configuration value
-   * @throws NullPointerException if {@code property} or {@code defaultValue} is null
+   * @throws NullPointerException if {@code property} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
   public Value<Integer> propertyValue(final String property, final Integer defaultValue) {
-    return propertyValue(property, defaultValue, Integer::parseInt);
+    return propertyValue(property, defaultValue, Integer::parseInt, Objects::toString);
   }
 
   /**
@@ -107,11 +126,11 @@ public final class PropertyStore {
    * @param property the configuration property identifying this value
    * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @return the configuration value
-   * @throws NullPointerException if {@code property} or {@code defaultValue} is null
+   * @throws NullPointerException if {@code property} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
   public Value<Double> propertyValue(final String property, final Double defaultValue) {
-    return propertyValue(property, defaultValue, Double::parseDouble);
+    return propertyValue(property, defaultValue, Double::parseDouble, Objects::toString);
   }
 
   /**
@@ -119,27 +138,18 @@ public final class PropertyStore {
    * @param <V> the value type
    * @param property the configuration property identifying this value
    * @param defaultValue the default value to use if no initial value is present
-   * @param parser a parser for parsing the value from a string
+   * @param decoder a decoder for decoding the value from a string
+   * @param encoder an encoder for encoding the value to a string
    * @return the configuration value
-   * @throws NullPointerException if {@code property} or {@code parser} is null
+   * @throws NullPointerException if {@code property}, {@code decoder} or {@code encoder} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public <V> Value<V> propertyValue(final String property, final V defaultValue, final Function<String, V> parser) {
+  public <V> Value<V> propertyValue(final String property, final V defaultValue,
+                                    final Function<String, V> decoder, final Function<V, String> encoder) {
     if (propertyValues.containsKey(Objects.requireNonNull(property, "property"))) {
       throw new IllegalArgumentException("Configuration value for property '" + property + "' has already been created");
     }
-    Objects.requireNonNull(parser, "parser");
-    final Value<V> value = Values.value();
-    value.getChangeObserver().addDataListener(theValue -> {
-      if (theValue == null) {
-        properties.remove(property);
-      }
-      else {
-        properties.setProperty(property, theValue.toString());
-      }
-    });
-    final String currentValue = properties.getProperty(property);
-    value.set(currentValue == null ? defaultValue : parser.apply(currentValue));
+    final PropertyValue<V> value = new PropertyValue<>(property, defaultValue, decoder, encoder);
     propertyValues.put(property, value);
 
     return value;
@@ -150,36 +160,29 @@ public final class PropertyStore {
    * @param <V> the value type
    * @param property the configuration property identifying this value
    * @param defaultValue the default value to use if no initial value is present
-   * @param parser a parser for parsing a value from a string
+   * @param decoder a decoder for decoding the value from a string
+   * @param encoder an encoder for encoding the value to a string
    * @return the configuration value
-   * @throws NullPointerException if {@code property} or {@code parser} is null
+   * @throws NullPointerException if {@code property}, {@code decoder} or {@code encoder} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public <V> Value<List<V>> propertyListValue(final String property, final List<V> defaultValue, final Function<String, V> parser) {
+  public <V> Value<List<V>> propertyListValue(final String property, final List<V> defaultValue,
+                                              final Function<String, V> decoder, final Function<V, String> encoder) {
     if (propertyValues.containsKey(Objects.requireNonNull(property, "property"))) {
       throw new IllegalArgumentException("Configuration value for property '" + property + "' has already been created");
     }
-    Objects.requireNonNull(defaultValue, "defaultValue");
-    Objects.requireNonNull(parser, "parser");
-    final Value<List<V>> value = Values.value(null, Collections.emptyList());
-    value.getChangeObserver().addDataListener(values -> {
-      if (Util.nullOrEmpty(values)) {
-        properties.remove(property);
-      }
-      else {
-        properties.setProperty(property, values.stream().map(Object::toString).collect(Collectors.joining(VALUE_SEPARATOR)));
-      }
-    });
-    final String currentValue = properties.getProperty(property);
-    value.set(currentValue == null ? defaultValue :
-            Arrays.stream(currentValue.split(VALUE_SEPARATOR)).map(parser).collect(Collectors.toList()));
+
+    final PropertyValue<List<V>> value = new PropertyValue<>(property, defaultValue,
+            stringValue -> stringValue == null ? Collections.emptyList() :
+                    Arrays.stream(stringValue.split(VALUE_SEPARATOR)).map(decoder).collect(Collectors.toList()),
+            valueList -> valueList.stream().map(encoder).collect(Collectors.joining(VALUE_SEPARATOR)));
     propertyValues.put(property, value);
 
     return value;
   }
 
   /**
-   * Returns the Value associated with the given property, null if none is present.
+   * Returns the Value associated with the given property, null if none has been created.
    * @param property the property
    * @param <V> the value type
    * @return the configuration value or null if none is found
@@ -254,28 +257,101 @@ public final class PropertyStore {
 
   /**
    * Writes the stored properties to a file
+   * @param propertiesFile the properties file to write to
    * @throws IOException in case writing the file was not successful
    */
-  public void writeToFile() throws IOException {
-    final File configurationFile = new File(propertiesFile);
+  public void writeToFile(final String propertiesFile) throws IOException {
+    final File configurationFile = new File(Objects.requireNonNull(propertiesFile, "propertiesFile"));
     if (!configurationFile.exists() && !configurationFile.createNewFile()) {
       throw new IOException("Unable to create configuration file");
     }
+    LOG.debug("Writing configuration to file: {}", configurationFile);
     try (final OutputStream output = new FileOutputStream(configurationFile)) {
       properties.store(output, null);
     }
   }
 
   /**
-   * Reads all properties from the underlying properties file
+   * Reads all properties from the givcen properties file if it exists
+   * @param propertiesFile the properties file to read from
+   * @return the properties read from the given file
    * @throws IOException in case the file exists but can not be read
    */
-  private void readFromFile() throws IOException {
-    final File file = new File(propertiesFile);
+  public static Properties readFromFile(final String propertiesFile) throws IOException {
+    final Properties propertiesFromFile = new Properties();
+    final File file = new File(Objects.requireNonNull(propertiesFile, "propertiesFile"));
     if (file.exists()) {
+      LOG.debug("Reading configuration from file: {}", propertiesFile);
       try (final InputStream input = new FileInputStream(file)) {
-        properties.load(input);
+        propertiesFromFile.load(input);
       }
+    }
+
+    return propertiesFromFile;
+  }
+
+  private final class PropertyValue<T> implements Value<T> {
+
+    private final Event<T> changeEvent = Events.event();
+    private final String property;
+    private final Function<T, String> encoder;
+
+    private T value;
+
+    private PropertyValue(final String property, final T defaultValue,
+                          final Function<String, T> decoder, final Function<T, String> encoder) {
+      this.property = property;
+      Objects.requireNonNull(decoder, "decoder");
+      this.encoder = Objects.requireNonNull(encoder, "encoder");
+      final String initialValue = getInitialValue(property);
+      set(initialValue == null ? defaultValue : decoder.apply(initialValue));
+    }
+
+    @Override
+    public void set(final T value) {
+      if (!Objects.equals(this.value, value)) {
+        this.value = value;
+        if (value == null) {
+          LOG.debug("Property value removed {}", property);
+          properties.remove(property);
+          System.clearProperty(property);
+        }
+        else {
+          LOG.debug("Property value set {} -> {}", property, value);
+          properties.setProperty(property, encoder.apply(value));
+          System.setProperty(property, properties.getProperty(property));
+        }
+        changeEvent.fire(this.value);
+      }
+    }
+
+    @Override
+    public ValueObserver<T> getValueObserver() {
+      return Values.valueObserver(this);
+    }
+
+    @Override
+    public T get() {
+      return value;
+    }
+
+    @Override
+    public boolean isNullable() {
+      return true;
+    }
+
+    @Override
+    public EventObserver<T> getChangeObserver() {
+      return changeEvent.getObserver();
+    }
+
+    private String getInitialValue(final String property) {
+      String initialValue = System.getProperty(property);
+      if (initialValue == null) {
+        initialValue = properties.getProperty(property);
+      }
+
+      return initialValue;
     }
   }
 }

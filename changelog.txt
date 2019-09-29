@@ -5119,3 +5119,5 @@
   FileUtil.getBytesFromFile() removed, use Files.readAllBytes()
   PropertyStore now removes the property when the value is set to null instead of using the defaultValue
 0.12.3
+  PropertyStore now syncs values to system properties
+  Configuration now based on PropertyStore
