@@ -141,6 +141,8 @@ public class ValuesTest {
     assertTrue(stateValue.get());
     stateValue.set(false);
     assertFalse(state.get());
+    stateValue.set(null);
+    assertFalse(state.get());
     stateValue.set(true);
     assertTrue(state.get());
     state.set(false);
@@ -150,7 +152,13 @@ public class ValuesTest {
   @Test
   public void booleanValueState() {
     final Value<Boolean> nullableBooleanValue = Values.value();
-    assertThrows(IllegalArgumentException.class, () -> Values.valueState(nullableBooleanValue));
+    final State nullableValueState = Values.valueState(nullableBooleanValue);
+    assertFalse(nullableValueState.get());
+    nullableBooleanValue.set(true);
+    assertTrue(nullableValueState.get());
+    nullableBooleanValue.set(null);
+    assertFalse(nullableValueState.get());
+
     final Value<Boolean> booleanValue = Values.value(true, false);
     final State state = Values.valueState(booleanValue);
     final StateObserver reversed = state.getReversedObserver();

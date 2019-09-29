@@ -118,23 +118,28 @@ public final class PropertyStore {
    * Instantiates a Value representing the given property.
    * @param <V> the value type
    * @param property the configuration property identifying this value
-   * @param defaultValue the default value to use if no value is present and when the value is set to null
+   * @param defaultValue the default value to use if no initial value is present
    * @param parser a parser for parsing the value from a string
    * @return the configuration value
-   * @throws NullPointerException if {@code property}, {@code defaultValue} or {@code parser} is null
+   * @throws NullPointerException if {@code property} or {@code parser} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
   public <V> Value<V> propertyValue(final String property, final V defaultValue, final Function<String, V> parser) {
     if (propertyValues.containsKey(Objects.requireNonNull(property, "property"))) {
       throw new IllegalArgumentException("Configuration value for property '" + property + "' has already been created");
     }
-    Objects.requireNonNull(defaultValue, "defaultValue");
     Objects.requireNonNull(parser, "parser");
-    if (properties.getProperty(property) == null) {
-      properties.setProperty(property, defaultValue.toString());
-    }
-    final Value<V> value = Values.value(parser.apply(properties.getProperty(property)), defaultValue);
-    value.getChangeObserver().addDataListener(doubleValue -> properties.setProperty(property, doubleValue.toString()));
+    final Value<V> value = Values.value();
+    value.getChangeObserver().addDataListener(theValue -> {
+      if (theValue == null) {
+        properties.remove(property);
+      }
+      else {
+        properties.setProperty(property, theValue.toString());
+      }
+    });
+    final String currentValue = properties.getProperty(property);
+    value.set(currentValue == null ? defaultValue : parser.apply(currentValue));
     propertyValues.put(property, value);
 
     return value;
@@ -144,10 +149,10 @@ public final class PropertyStore {
    * Instantiates a Value representing the given property.
    * @param <V> the value type
    * @param property the configuration property identifying this value
-   * @param defaultValue the default value to use if no value is present and when the value is set to null
+   * @param defaultValue the default value to use if no initial value is present
    * @param parser a parser for parsing a value from a string
    * @return the configuration value
-   * @throws NullPointerException if {@code property}, {@code defaultValue} or {@code parser} is null
+   * @throws NullPointerException if {@code property} or {@code parser} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
   public <V> Value<List<V>> propertyListValue(final String property, final List<V> defaultValue, final Function<String, V> parser) {
@@ -156,13 +161,18 @@ public final class PropertyStore {
     }
     Objects.requireNonNull(defaultValue, "defaultValue");
     Objects.requireNonNull(parser, "parser");
-    if (properties.getProperty(property) == null) {
-      properties.setProperty(property, defaultValue.stream().map(Object::toString).collect(Collectors.joining(VALUE_SEPARATOR)));
-    }
-    final Value<List<V>> value = Values.value(Arrays.stream(properties.getProperty(property).split(VALUE_SEPARATOR))
-            .map(parser).collect(Collectors.toList()), defaultValue);
-    value.getChangeObserver().addDataListener(values ->
-            properties.setProperty(property, values.stream().map(Object::toString).collect(Collectors.joining(VALUE_SEPARATOR))));
+    final Value<List<V>> value = Values.value(null, Collections.emptyList());
+    value.getChangeObserver().addDataListener(values -> {
+      if (Util.nullOrEmpty(values)) {
+        properties.remove(property);
+      }
+      else {
+        properties.setProperty(property, values.stream().map(Object::toString).collect(Collectors.joining(VALUE_SEPARATOR)));
+      }
+    });
+    final String currentValue = properties.getProperty(property);
+    value.set(currentValue == null ? defaultValue :
+            Arrays.stream(currentValue.split(VALUE_SEPARATOR)).map(parser).collect(Collectors.toList()));
     propertyValues.put(property, value);
 
     return value;
@@ -218,6 +228,15 @@ public final class PropertyStore {
   public List<String> getPropertyNames(final String prefix) {
     return properties.stringPropertyNames().stream().filter(propertyName ->
             propertyName.startsWith(prefix)).collect(Collectors.toList());
+  }
+
+  /**
+   * Returns true if this PropertyStore contains a value for the given property
+   * @param property the property
+   * @return true if a value for the given property exists
+   */
+  public boolean containsProperty(final String property) {
+    return properties.containsKey(property);
   }
 
   /**

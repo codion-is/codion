@@ -69,15 +69,11 @@ public final class Values {
 
   /**
    * Instantiates a State linked to the given boolean value.
+   * Null values are translated to 'false'.
    * @param booleanValue the boolean value to link to the state
    * @return a State linked to the given value
-   * @throws IllegalArgumentException in case the boolean value is nullable
-   * @see Value#isNullable()
    */
   public static State valueState(final Value<Boolean> booleanValue) {
-    if (booleanValue.isNullable()) {
-      throw new IllegalArgumentException("States can not be created for a nullable value");
-    }
     final State state = States.state();
     Values.link(booleanValue, Values.stateValue(state));
 
