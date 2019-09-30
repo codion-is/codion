@@ -5,7 +5,7 @@ package org.jminor.framework.db.local;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.MethodLogger;
-import org.jminor.common.Value;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.ResultIterator;
 import org.jminor.common.db.exception.DatabaseException;
@@ -37,7 +37,7 @@ public interface LocalEntityConnection extends EntityConnection {
    * Value type: Integer<br>
    * Default value: 40
    */
-  Value<Integer> CONNECTION_LOG_SIZE = Configuration.integerValue("jminor.db.clientLogSize", DEFAULT_CONNECTION_LOG_SIZE);
+  PropertyValue<Integer> CONNECTION_LOG_SIZE = Configuration.integerValue("jminor.db.clientLogSize", DEFAULT_CONNECTION_LOG_SIZE);
 
   /**
    * Specifies whether optimistic locking should be performed, that is, if entities should
@@ -45,7 +45,7 @@ public interface LocalEntityConnection extends EntityConnection {
    * Value type: Boolean<br>
    * Default value: true
    */
-  Value<Boolean> USE_OPTIMISTIC_LOCKING = Configuration.booleanValue("jminor.db.useOptimisticLocking", true);
+  PropertyValue<Boolean> USE_OPTIMISTIC_LOCKING = Configuration.booleanValue("jminor.db.useOptimisticLocking", true);
 
   /**
    * Specifies whether the foreign key value graph should be fully populated instead of
@@ -53,7 +53,7 @@ public interface LocalEntityConnection extends EntityConnection {
    * Value type: Boolean<br>
    * Default value: true<br>
    */
-  Value<Boolean> LIMIT_FOREIGN_KEY_FETCH_DEPTH = Configuration.booleanValue("jminor.db.limitForeignKeyFetchDepth", true);
+  PropertyValue<Boolean> LIMIT_FOREIGN_KEY_FETCH_DEPTH = Configuration.booleanValue("jminor.db.limitForeignKeyFetchDepth", true);
 
   /**
    * @param methodLogger the MethodLogger to use

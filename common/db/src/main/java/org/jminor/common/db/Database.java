@@ -4,8 +4,8 @@
 package org.jminor.common.db;
 
 import org.jminor.common.Configuration;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.User;
-import org.jminor.common.Value;
 import org.jminor.common.db.exception.DatabaseException;
 
 import java.sql.Connection;
@@ -35,42 +35,42 @@ public interface Database {
    * @see Type#SQLSERVER
    * @see Type#SQLITE
    */
-  Value<String> DATABASE_TYPE = Configuration.stringValue("jminor.db.type", null);
+  PropertyValue<String> DATABASE_TYPE = Configuration.stringValue("jminor.db.type", null);
 
   /**
    * Specifies the machine hosting the database, in the case of embedded databases
    * this specifies the name of the database
    */
-  Value<String> DATABASE_HOST = Configuration.stringValue("jminor.db.host", null);
+  PropertyValue<String> DATABASE_HOST = Configuration.stringValue("jminor.db.host", null);
 
   /**
    * Specifies the database sid (used for dbname for MySQL, SQLServer and Derby server connections)
    */
-  Value<String> DATABASE_SID = Configuration.stringValue("jminor.db.sid", null);
+  PropertyValue<String> DATABASE_SID = Configuration.stringValue("jminor.db.sid", null);
 
   /**
    * Specifies the database port
    */
-  Value<Integer> DATABASE_PORT = Configuration.integerValue("jminor.db.port", null);
+  PropertyValue<Integer> DATABASE_PORT = Configuration.integerValue("jminor.db.port", null);
 
   /**
    * Specifies whether or not the database should be run in embedded mode, if applicable<br>
    * Values: "true"/"false"<br>
    * Default: "false"<br>
    */
-  Value<Boolean> DATABASE_EMBEDDED = Configuration.booleanValue("jminor.db.embedded", false);
+  PropertyValue<Boolean> DATABASE_EMBEDDED = Configuration.booleanValue("jminor.db.embedded", false);
 
   /**
    * Specifies whether or not the database should be run in in-memory mode<br>
    * Values: "true"/"false"<br>
    * Default: "false"<br>
    */
-  Value<Boolean> DATABASE_EMBEDDED_IN_MEMORY = Configuration.booleanValue("jminor.db.embeddedInMemory", false);
+  PropertyValue<Boolean> DATABASE_EMBEDDED_IN_MEMORY = Configuration.booleanValue("jminor.db.embeddedInMemory", false);
 
   /**
    * A comma separated list of paths to scripts to run when initializing the database, implementation specific
    */
-  Value<String> DATABASE_INIT_SCRIPT = Configuration.stringValue("jminor.db.initScript", null);
+  PropertyValue<String> DATABASE_INIT_SCRIPT = Configuration.stringValue("jminor.db.initScript", null);
 
   /**
    * The constant used to denote the username value in the connection properties

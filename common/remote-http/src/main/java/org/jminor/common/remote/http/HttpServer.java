@@ -4,8 +4,8 @@
 package org.jminor.common.remote.http;
 
 import org.jminor.common.Configuration;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.Util;
-import org.jminor.common.Value;
 import org.jminor.common.remote.Server;
 
 import org.eclipse.jetty.server.Connector;
@@ -35,21 +35,21 @@ public class HttpServer extends org.eclipse.jetty.server.Server implements Serve
    * Value type: Integer<br>
    * Default value: 8080
    */
-  public static final Value<Integer> HTTP_SERVER_PORT = Configuration.integerValue("jminor.server.http.port", 8080);
+  public static final PropertyValue<Integer> HTTP_SERVER_PORT = Configuration.integerValue("jminor.server.http.port", 8080);
 
   /**
    * Specifies whether https should be used.<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("jminor.server.http.secure", true);
+  public static final PropertyValue<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("jminor.server.http.secure", true);
 
   /**
    * Specifies the keystore to use for securing http connections.<br>
    * Value type: String<br>
    * Default value: null
    */
-  public static final Value<String> HTTP_SERVER_KEYSTORE_PATH = Configuration.stringValue("jminor.server.http.keyStore", null);
+  public static final PropertyValue<String> HTTP_SERVER_KEYSTORE_PATH = Configuration.stringValue("jminor.server.http.keyStore", null);
 
 
   /**
@@ -57,14 +57,14 @@ public class HttpServer extends org.eclipse.jetty.server.Server implements Serve
    * Value type: String<br>
    * Default value: null
    */
-  public static final Value<String> HTTP_SERVER_KEYSTORE_PASSWORD = Configuration.stringValue("jminor.server.http.keyStorePassword", null);
+  public static final PropertyValue<String> HTTP_SERVER_KEYSTORE_PASSWORD = Configuration.stringValue("jminor.server.http.keyStorePassword", null);
 
   /**
    * Specifies the document root for file serving<br>.
    * Value type: String<br>
    * Default value: null
    */
-  public static final Value<String> DOCUMENT_ROOT = Configuration.stringValue("jminor.server.http.documentRoot", null);
+  public static final PropertyValue<String> DOCUMENT_ROOT = Configuration.stringValue("jminor.server.http.documentRoot", null);
 
   private final Server connectionServer;
   private final HandlerList handlers;

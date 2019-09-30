@@ -4,7 +4,7 @@
 package org.jminor.framework.plugins.jasperreports.model;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.Value;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.db.reports.ReportDataWrapper;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportResult;
@@ -40,7 +40,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> CACHE_REPORTS = Configuration.booleanValue("jminor.report.cacheReports", true);
+  public static final PropertyValue<Boolean> CACHE_REPORTS = Configuration.booleanValue("jminor.report.cacheReports", true);
 
   private final JasperReport report;
   private final Map<String, Object> reportParameters;

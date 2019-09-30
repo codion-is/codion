@@ -4,8 +4,8 @@
 package org.jminor.common.remote;
 
 import org.jminor.common.Configuration;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.User;
-import org.jminor.common.Value;
 import org.jminor.common.Version;
 
 import java.rmi.Remote;
@@ -60,7 +60,7 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
    * Value type: String<br>
    * Default value: localhost
    */
-  Value<String> SERVER_HOST_NAME = Configuration.stringValue("jminor.server.hostname", LOCALHOST);
+  PropertyValue<String> SERVER_HOST_NAME = Configuration.stringValue("jminor.server.hostname", LOCALHOST);
 
   /**
    * Specifies the rmi server hostname<br>
@@ -68,14 +68,14 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
    * Value type: String<br>
    * Default value: localhost
    */
-  Value<String> RMI_SERVER_HOSTNAME = Configuration.stringValue("java.rmi.server.hostname", LOCALHOST);
+  PropertyValue<String> RMI_SERVER_HOSTNAME = Configuration.stringValue("java.rmi.server.hostname", LOCALHOST);
 
   /**
    * Specifies the prefix used when exporting/looking up the JMinor server<br>
    * Value type: String<br>
    * Default value: JMinor Server
    */
-  Value<String> SERVER_NAME_PREFIX = Configuration.stringValue("jminor.server.namePrefix", "JMinor Server");
+  PropertyValue<String> SERVER_NAME_PREFIX = Configuration.stringValue("jminor.server.namePrefix", "JMinor Server");
 
   /**
    * The port on which the server is made available to clients.<br>
@@ -84,69 +84,69 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
    * Value type: Integer<br>
    * Default value: none
    */
-  Value<Integer> SERVER_PORT = Configuration.integerValue("jminor.server.port", null);
+  PropertyValue<Integer> SERVER_PORT = Configuration.integerValue("jminor.server.port", null);
 
   /**
    * The port on which to locate the server registry<br>
    * Value type: Integer<br>
    * Default value: Registry.REGISTRY_PORT (1099)
    */
-  Value<Integer> REGISTRY_PORT = Configuration.integerValue("jminor.server.registryPort", Registry.REGISTRY_PORT);
+  PropertyValue<Integer> REGISTRY_PORT = Configuration.integerValue("jminor.server.registryPort", Registry.REGISTRY_PORT);
 
   /**
    * The rmi ssl keystore to use<br>
    * Value type: String
    * Default value: null
    */
-  Value<String> KEYSTORE = Configuration.stringValue(JAVAX_NET_KEYSTORE, null);
+  PropertyValue<String> KEYSTORE = Configuration.stringValue(JAVAX_NET_KEYSTORE, null);
 
   /**
    * The rmi ssl keystore password to use<br>
    * Value type: String
    * Default value: null
    */
-  Value<String> KEYSTORE_PASSWORD = Configuration.stringValue(JAVAX_NET_KEYSTORE_PASSWORD, null);
+  PropertyValue<String> KEYSTORE_PASSWORD = Configuration.stringValue(JAVAX_NET_KEYSTORE_PASSWORD, null);
 
   /**
    * The rmi ssl truststore to use<br>
    * Value type: String
    * Default value: null
    */
-  Value<String> TRUSTSTORE = Configuration.stringValue(JAVAX_NET_TRUSTSTORE, null);
+  PropertyValue<String> TRUSTSTORE = Configuration.stringValue(JAVAX_NET_TRUSTSTORE, null);
 
   /**
    * The rmi ssl truststore password to use<br>
    * Value type: String
    * Default value: null
    */
-  Value<String> TRUSTSTORE_PASSWORD = Configuration.stringValue(JAVAX_NET_TRUSTSTORE_PASSWORD, null);
+  PropertyValue<String> TRUSTSTORE_PASSWORD = Configuration.stringValue(JAVAX_NET_TRUSTSTORE_PASSWORD, null);
 
   /**
    * The port on which the server should export the remote admin interface<br>
    * Value type: Integer<br>
    * Default value: none
    */
-  Value<Integer> SERVER_ADMIN_PORT = Configuration.integerValue("jminor.server.admin.port", null);
+  PropertyValue<Integer> SERVER_ADMIN_PORT = Configuration.integerValue("jminor.server.admin.port", null);
 
   /**
    * Specifies a username:password combination representing the server admin user<br>
    * Example: scott:tiger
    */
-  Value<String> SERVER_ADMIN_USER = Configuration.stringValue("jminor.server.admin.user", null);
+  PropertyValue<String> SERVER_ADMIN_USER = Configuration.stringValue("jminor.server.admin.user", null);
 
   /**
    * Specifies whether the server should establish connections using a secure sockets layer, true (on) or false (off)<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  Value<Boolean> SERVER_CONNECTION_SSL_ENABLED = Configuration.booleanValue("jminor.server.connection.sslEnabled", true);
+  PropertyValue<Boolean> SERVER_CONNECTION_SSL_ENABLED = Configuration.booleanValue("jminor.server.connection.sslEnabled", true);
 
   /**
    * Specifies a specific connection timeout for different client types
    * Value type: Integer<br>
    * Default value: 120000ms (2 minutes)
    */
-  Value<Integer> SERVER_CONNECTION_TIMEOUT = Configuration.integerValue("jminor.server.connectionTimeout", DEFAULT_SERVER_CONNECTION_TIMEOUT);
+  PropertyValue<Integer> SERVER_CONNECTION_TIMEOUT = Configuration.integerValue("jminor.server.connectionTimeout", DEFAULT_SERVER_CONNECTION_TIMEOUT);
 
   /**
    * A comma separated list of auxiliary servers to run alongside this Server<br>
@@ -155,8 +155,7 @@ public interface Server<T extends Remote, A extends Remote> extends Remote {
    * Default value: none
    * @see AuxiliaryServer
    */
-  Value<String> AUXILIARY_SERVER_CLASS_NAMES = Configuration.stringValue("jminor.server.auxiliaryServerClassNames", null);
-
+  PropertyValue<String> AUXILIARY_SERVER_CLASS_NAMES = Configuration.stringValue("jminor.server.auxiliaryServerClassNames", null);
 
   /**
    * Establishes a connection to this Server

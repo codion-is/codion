@@ -5,8 +5,8 @@ package org.jminor.framework.db.local;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.MethodLogger;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.Util;
-import org.jminor.common.Value;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
@@ -33,7 +33,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final Value<Boolean> SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT = Configuration.booleanValue("jminor.db.shutdownEmbeddedOnDisconnect", false);
+  public static final PropertyValue<Boolean> SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT = Configuration.booleanValue("jminor.db.shutdownEmbeddedOnDisconnect", false);
 
   /**
    * The underlying database implementation

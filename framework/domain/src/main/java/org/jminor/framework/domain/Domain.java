@@ -4,9 +4,9 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.Configuration;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.Serializer;
 import org.jminor.common.Util;
-import org.jminor.common.Value;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.valuemap.DefaultValueMap;
@@ -53,14 +53,14 @@ public class Domain implements Serializable {
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final Value<Boolean> ALLOW_REDEFINE_ENTITY = Configuration.booleanValue("jminor.domain.allowRedefineEntity", false);
+  public static final PropertyValue<Boolean> ALLOW_REDEFINE_ENTITY = Configuration.booleanValue("jminor.domain.allowRedefineEntity", false);
 
   /**
    * Specifies the class used for serializing and deserializing entity instances.<br>
    * Value type: String, the name of the class implementing org.jminor.common.Serializer&#60;Entity&#62;<br>
    * Default value: none
    */
-  public static final Value<String> ENTITY_SERIALIZER_CLASS = Configuration.stringValue("jminor.domain.entitySerializerClass", null);
+  public static final PropertyValue<String> ENTITY_SERIALIZER_CLASS = Configuration.stringValue("jminor.domain.entitySerializerClass", null);
 
   private static final String ENTITY_PARAM = "entity";
   private static final String ENTITY_ID_PARAM = "entityId";

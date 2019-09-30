@@ -10,10 +10,10 @@ import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.Item;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.TextUtil;
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.Value;
 import org.jminor.common.Version;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
@@ -111,14 +111,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final Value<Boolean> CONFIRM_EXIT = Configuration.booleanValue("jminor.swing.confirmExit", false);
+  public static final PropertyValue<Boolean> CONFIRM_EXIT = Configuration.booleanValue("jminor.swing.confirmExit", false);
 
   /**
    * Specifies whether a startup dialog should be shown<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue("jminor.swing.showStartupDialog", true);
+  public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue("jminor.swing.showStartupDialog", true);
 
   /**
    * Specifies if EntityPanels opened via the {@code EntityApplicationPanel.showEntityPanelDialog} method
@@ -127,14 +127,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Default value: false
    * @see EntityApplicationPanel#showEntityPanelDialog(EntityPanelProvider)
    */
-  public static final Value<Boolean> PERSIST_ENTITY_PANELS = Configuration.booleanValue("jminor.swing.persistEntityPanels", false);
+  public static final PropertyValue<Boolean> PERSIST_ENTITY_PANELS = Configuration.booleanValue("jminor.swing.persistEntityPanels", false);
 
   /**
    * Specifies the tab placement<br>
    * Value type: Integer (JTabbedPane.TOP, JTabbedPane.BOTTOM, JTabbedPane.LEFT, JTabbedPane.RIGHT)<br>
    * Default value: JTabbedPane.TOP
    */
-  public static final Value<Integer> TAB_PLACEMENT = Configuration.integerValue("jminor.swing.tabPlacement", JTabbedPane.TOP);
+  public static final PropertyValue<Integer> TAB_PLACEMENT = Configuration.integerValue("jminor.swing.tabPlacement", JTabbedPane.TOP);
 
   private static final String LOOK_AND_FEEL_PROPERTY = "org.jminor.swing.framework.ui.LookAndFeel";
   private static final String FONT_SIZE_PROPERTY = "org.jminor.swing.framework.ui.FontSize";

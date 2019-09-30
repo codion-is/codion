@@ -5133,3 +5133,5 @@
   PropertyStore now syncs values to system properties
   Configuration now based on PropertyStore
   PropertyValue interface added, PropertyStore now uses these
+  Configuration now uses PropertyValue
+  PropertyValue.toString() overridden, now returns the property name

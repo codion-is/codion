@@ -22,7 +22,7 @@ public interface LoggerProxy {
    * Default value: org.jminor.framework.plugins.logback.LogbackProxy.
    * @see LoggerProxy
    */
-  Value<String> LOGGER_PROXY_IMPLEMENTATION = Configuration.stringValue("jminor.logger.proxy", "org.jminor.framework.plugins.logback.LogbackProxy");
+  PropertyValue<String> LOGGER_PROXY_IMPLEMENTATION = Configuration.stringValue("jminor.logger.proxy", "org.jminor.framework.plugins.logback.LogbackProxy");
 
   /**
    * @return the current log level

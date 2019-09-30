@@ -5,8 +5,8 @@ package org.jminor.framework.db;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.EventListener;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.User;
-import org.jminor.common.Value;
 import org.jminor.common.Version;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Domain;
@@ -43,7 +43,7 @@ public interface EntityConnectionProvider<T extends EntityConnection> {
    * Value type: String<br>
    * Default value: null
    */
-  Value<String> CLIENT_DOMAIN_CLASS = Configuration.stringValue("jminor.client.domainClass", null);
+  PropertyValue<String> CLIENT_DOMAIN_CLASS = Configuration.stringValue("jminor.client.domainClass", null);
 
   /**
    * Specifies whether the client should connect locally, remotely or via http,
@@ -54,7 +54,7 @@ public interface EntityConnectionProvider<T extends EntityConnection> {
    * @see #CONNECTION_TYPE_REMOTE
    * @see #CONNECTION_TYPE_HTTP
    */
-  Value<String> CLIENT_CONNECTION_TYPE = Configuration.stringValue("jminor.client.connectionType", CONNECTION_TYPE_LOCAL);
+  PropertyValue<String> CLIENT_CONNECTION_TYPE = Configuration.stringValue("jminor.client.connectionType", CONNECTION_TYPE_LOCAL);
 
   /**
    * Returns the domain model this connection is based on

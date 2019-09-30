@@ -350,6 +350,11 @@ public final class PropertyStore {
       return changeEvent.getObserver();
     }
 
+    @Override
+    public String toString() {
+      return property;
+    }
+
     private String getInitialValue(final String property) {
       String initialValue = System.getProperty(property);
       if (initialValue == null) {

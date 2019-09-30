@@ -4,7 +4,7 @@
 package org.jminor.dbms.oracle;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.Value;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.db.AbstractDatabase;
 
 import java.sql.SQLException;
@@ -26,7 +26,7 @@ public final class OracleDatabase extends AbstractDatabase {
   static final String URL_PREFIX = "jdbc:oracle:thin:@";
   static final String CHECK_QUERY = "select 1 from dual";
 
-  static final Value<Boolean> USE_LEGACY_SID = Configuration.booleanValue("jminor.db.oracle.useLegacySID", false);
+  static final PropertyValue<Boolean> USE_LEGACY_SID = Configuration.booleanValue("jminor.db.oracle.useLegacySID", false);
 
   private static final Map<Integer, String> ERROR_CODE_MAP = new HashMap<>();
 

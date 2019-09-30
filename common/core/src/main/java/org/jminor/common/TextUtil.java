@@ -35,7 +35,7 @@ public final class TextUtil {
    * @see #collate(List)
    * @see Locale#toLanguageTag()
    */
-  public static final Value<String> DEFAULT_COLLATOR_LANGUAGE =
+  public static final PropertyValue<String> DEFAULT_COLLATOR_LANGUAGE =
           Configuration.stringValue("jminor.defaultCollatorLanguage", Locale.getDefault().getLanguage());
 
   /**
