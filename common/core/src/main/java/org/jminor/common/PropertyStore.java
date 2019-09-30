@@ -53,7 +53,7 @@ public final class PropertyStore {
    */
   public static final String VALUE_SEPARATOR = ";";
 
-  private final Map<String, Value> propertyValues = new HashMap<>();
+  private final Map<String, PropertyValue> propertyValues = new HashMap<>();
 
   //trying to make the configuration file a bit easier to read by sorting the keys
   private final Properties properties = new Properties() {
@@ -93,7 +93,7 @@ public final class PropertyStore {
    * @throws NullPointerException if {@code property} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public Value<Boolean> propertyValue(final String property, final Boolean defaultValue) {
+  public PropertyValue<Boolean> propertyValue(final String property, final Boolean defaultValue) {
     return propertyValue(property, defaultValue, Boolean::parseBoolean, Objects::toString);
   }
 
@@ -105,7 +105,7 @@ public final class PropertyStore {
    * @throws NullPointerException if {@code property} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public Value<String> propertyValue(final String property, final String defaultValue) {
+  public PropertyValue<String> propertyValue(final String property, final String defaultValue) {
     return propertyValue(property, defaultValue, Objects::toString, Objects::toString);
   }
 
@@ -117,7 +117,7 @@ public final class PropertyStore {
    * @throws NullPointerException if {@code property} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public Value<Integer> propertyValue(final String property, final Integer defaultValue) {
+  public PropertyValue<Integer> propertyValue(final String property, final Integer defaultValue) {
     return propertyValue(property, defaultValue, Integer::parseInt, Objects::toString);
   }
 
@@ -129,7 +129,7 @@ public final class PropertyStore {
    * @throws NullPointerException if {@code property} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public Value<Double> propertyValue(final String property, final Double defaultValue) {
+  public PropertyValue<Double> propertyValue(final String property, final Double defaultValue) {
     return propertyValue(property, defaultValue, Double::parseDouble, Objects::toString);
   }
 
@@ -144,12 +144,12 @@ public final class PropertyStore {
    * @throws NullPointerException if {@code property}, {@code decoder} or {@code encoder} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public <V> Value<V> propertyValue(final String property, final V defaultValue,
+  public <V> PropertyValue<V> propertyValue(final String property, final V defaultValue,
                                     final Function<String, V> decoder, final Function<V, String> encoder) {
     if (propertyValues.containsKey(Objects.requireNonNull(property, "property"))) {
       throw new IllegalArgumentException("Configuration value for property '" + property + "' has already been created");
     }
-    final PropertyValue<V> value = new PropertyValue<>(property, defaultValue, decoder, encoder);
+    final DefaultPropertyValue<V> value = new DefaultPropertyValue<>(property, defaultValue, decoder, encoder);
     propertyValues.put(property, value);
 
     return value;
@@ -166,13 +166,13 @@ public final class PropertyStore {
    * @throws NullPointerException if {@code property}, {@code decoder} or {@code encoder} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public <V> Value<List<V>> propertyListValue(final String property, final List<V> defaultValue,
+  public <V> PropertyValue<List<V>> propertyListValue(final String property, final List<V> defaultValue,
                                               final Function<String, V> decoder, final Function<V, String> encoder) {
     if (propertyValues.containsKey(Objects.requireNonNull(property, "property"))) {
       throw new IllegalArgumentException("Configuration value for property '" + property + "' has already been created");
     }
 
-    final PropertyValue<List<V>> value = new PropertyValue<>(property, defaultValue,
+    final DefaultPropertyValue<List<V>> value = new DefaultPropertyValue<>(property, defaultValue,
             stringValue -> stringValue == null ? Collections.emptyList() :
                     Arrays.stream(stringValue.split(VALUE_SEPARATOR)).map(decoder).collect(Collectors.toList()),
             valueList -> valueList.stream().map(encoder).collect(Collectors.joining(VALUE_SEPARATOR)));
@@ -187,7 +187,7 @@ public final class PropertyStore {
    * @param <V> the value type
    * @return the configuration value or null if none is found
    */
-  public <V> Value<V> getPropertyValue(final String property) {
+  public <V> PropertyValue<V> getPropertyValue(final String property) {
     return propertyValues.get(property);
   }
 
@@ -290,7 +290,7 @@ public final class PropertyStore {
     return propertiesFromFile;
   }
 
-  private final class PropertyValue<T> implements Value<T> {
+  private final class DefaultPropertyValue<T> implements PropertyValue<T> {
 
     private final Event<T> changeEvent = Events.event();
     private final String property;
@@ -298,13 +298,18 @@ public final class PropertyStore {
 
     private T value;
 
-    private PropertyValue(final String property, final T defaultValue,
-                          final Function<String, T> decoder, final Function<T, String> encoder) {
+    private DefaultPropertyValue(final String property, final T defaultValue,
+                                 final Function<String, T> decoder, final Function<T, String> encoder) {
       this.property = property;
       Objects.requireNonNull(decoder, "decoder");
       this.encoder = Objects.requireNonNull(encoder, "encoder");
       final String initialValue = getInitialValue(property);
       set(initialValue == null ? defaultValue : decoder.apply(initialValue));
+    }
+
+    @Override
+    public String getProperty() {
+      return property;
     }
 
     @Override
