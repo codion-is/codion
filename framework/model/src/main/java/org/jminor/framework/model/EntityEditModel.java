@@ -7,9 +7,9 @@ import org.jminor.common.Configuration;
 import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
-import org.jminor.common.Value;
 import org.jminor.common.db.Attribute;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.valuemap.ValueChange;
@@ -36,7 +36,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * Value type: Boolean<br>
    * Default value: true
    */
-  Value<Boolean> PERSIST_FOREIGN_KEY_VALUES = Configuration.booleanValue("jminor.client.persistForeignKeyValues", true);
+  PropertyValue<Boolean> PERSIST_FOREIGN_KEY_VALUES = Configuration.booleanValue("jminor.client.persistForeignKeyValues", true);
 
   /**
    * Indicates whether the application should ask for confirmation when exiting if some data is unsaved<br>
@@ -44,7 +44,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * Value type: Boolean<br>
    * Default value: false
    */
-  Value<Boolean> WARN_ABOUT_UNSAVED_DATA = Configuration.booleanValue("jminor.client.warnAboutUnsavedData", false);
+  PropertyValue<Boolean> WARN_ABOUT_UNSAVED_DATA = Configuration.booleanValue("jminor.client.warnAboutUnsavedData", false);
 
   /**
    * Specifies the value used by default to represent a null value in combo box models.
@@ -52,7 +52,7 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * Value type: String<br>
    * Default value: -
    */
-  Value<String> COMBO_BOX_NULL_VALUE_ITEM = Configuration.stringValue("jminor.client.comboBoxNullValueItem", "-");
+  PropertyValue<String> COMBO_BOX_NULL_VALUE_ITEM = Configuration.stringValue("jminor.client.comboBoxNullValueItem", "-");
 
   /**
    * @return an Entity instance populated with default values for all properties

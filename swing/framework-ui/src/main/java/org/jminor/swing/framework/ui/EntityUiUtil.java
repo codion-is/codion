@@ -9,6 +9,7 @@ import org.jminor.common.Event;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.LoggerProxy;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.StateObserver;
 import org.jminor.common.TextUtil;
 import org.jminor.common.Value;
@@ -97,7 +98,7 @@ public final class EntityUiUtil {
    * Value type: Integer (JLabel.LEFT, JLabel.RIGHT, JLabel.CENTER)<br>
    * Default value: JLabel.LEFT
    */
-  public static final Value<Integer> LABEL_TEXT_ALIGNMENT = Configuration.integerValue("jminor.swing.labelTextAlignment", JLabel.LEFT);
+  public static final PropertyValue<Integer> LABEL_TEXT_ALIGNMENT = Configuration.integerValue("jminor.swing.labelTextAlignment", JLabel.LEFT);
 
   /**
    * Specifies whether maximum match or autocomplete is used for comboboxes,
@@ -106,7 +107,7 @@ public final class EntityUiUtil {
    * Value type:String<br>
    * Default value: {@link #COMPLETION_MODE_MAXIMUM_MATCH}
    */
-  public static final Value<String> COMBO_BOX_COMPLETION_MODE = Configuration.stringValue("jminor.swing.comboBoxCompletionMode", COMPLETION_MODE_MAXIMUM_MATCH);
+  public static final PropertyValue<String> COMBO_BOX_COMPLETION_MODE = Configuration.stringValue("jminor.swing.comboBoxCompletionMode", COMPLETION_MODE_MAXIMUM_MATCH);
 
   private static final String PROPERTY_PARAM_NAME = "property";
   private static final String EDIT_MODEL_PARAM_NAME = "editModel";

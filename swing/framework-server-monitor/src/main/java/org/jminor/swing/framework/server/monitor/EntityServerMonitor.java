@@ -6,9 +6,9 @@ package org.jminor.swing.framework.server.monitor;
 import org.jminor.common.Configuration;
 import org.jminor.common.Event;
 import org.jminor.common.Events;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.Value;
 import org.jminor.common.remote.Server;
 
 import java.rmi.RemoteException;
@@ -27,7 +27,7 @@ public final class EntityServerMonitor {
    * Value type: Integer<br>
    * Default value: 5
    */
-  public static final Value<Integer> SERVER_MONITOR_UPDATE_RATE = Configuration.integerValue("jminor.server.monitor.updateRate", DEFAULT_SERVER_MONITOR_UPDATE_RATE);
+  public static final PropertyValue<Integer> SERVER_MONITOR_UPDATE_RATE = Configuration.integerValue("jminor.server.monitor.updateRate", DEFAULT_SERVER_MONITOR_UPDATE_RATE);
 
   private static final User ADMIN_USER;
 

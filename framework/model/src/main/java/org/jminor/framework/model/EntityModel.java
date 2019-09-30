@@ -6,8 +6,8 @@ package org.jminor.framework.model;
 import org.jminor.common.Configuration;
 import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.Util;
-import org.jminor.common.Value;
 import org.jminor.common.model.Refreshable;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -30,7 +30,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Value type: Boolean<br>
    * Default value: false
    */
-  Value<Boolean> FILTER_ON_MASTER_INSERT = Configuration.booleanValue(
+  PropertyValue<Boolean> FILTER_ON_MASTER_INSERT = Configuration.booleanValue(
           "org.jminor.framework.model.EntityModel.filterOnMasterInsert", false);
 
   /**
@@ -38,7 +38,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Value type: Boolean<br>
    * Default value: true if required JSON library is found on classpath, false otherwise
    */
-  Value<Boolean> USE_CLIENT_PREFERENCES = Configuration.booleanValue(
+  PropertyValue<Boolean> USE_CLIENT_PREFERENCES = Configuration.booleanValue(
           "org.jminor.framework.model.EntityModel.useClientPreferences", Util.onClasspath("org.json.JSONObject"));
 
   /**

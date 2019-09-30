@@ -6,10 +6,10 @@ package org.jminor.swing.framework.ui;
 import org.jminor.common.Configuration;
 import org.jminor.common.Conjunction;
 import org.jminor.common.EventDataListener;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
-import org.jminor.common.Value;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
@@ -84,7 +84,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> TRANSFER_FOCUS_ON_ENTER = Configuration.booleanValue(
+  public static final PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER = Configuration.booleanValue(
           "org.jminor.swing.framework.ui.EntityEditPanel.transferFocusOnEnter", true);
 
   /**
@@ -93,7 +93,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * Default value: false
    * @see EntityPanel#USE_FOCUS_ACTIVATION
    */
-  public static final Value<Boolean> ALL_PANELS_ACTIVE = Configuration.booleanValue(
+  public static final PropertyValue<Boolean> ALL_PANELS_ACTIVE = Configuration.booleanValue(
           "org.jminor.swing.framework.ui.EntityEditPanel.allPanelsActive", false);
 
   /**
@@ -101,7 +101,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> USE_SAVE_CONTROL = Configuration.booleanValue(
+  public static final PropertyValue<Boolean> USE_SAVE_CONTROL = Configuration.booleanValue(
           "org.jminor.swing.framework.ui.EntityEditPanel.useSaveControl", true);
 
   /**

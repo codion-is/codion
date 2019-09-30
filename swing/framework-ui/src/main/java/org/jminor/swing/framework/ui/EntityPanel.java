@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.Value;
+import org.jminor.common.PropertyValue;
 import org.jminor.swing.common.ui.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.MasterDetailPanel;
 import org.jminor.swing.common.ui.UiUtil;
@@ -83,7 +83,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Default value: true
    * @see org.jminor.swing.framework.ui.EntityEditPanel#ALL_PANELS_ACTIVE
    */
-  public static final Value<Boolean> USE_FOCUS_ACTIVATION = Configuration.booleanValue(
+  public static final PropertyValue<Boolean> USE_FOCUS_ACTIVATION = Configuration.booleanValue(
           "org.jminor.swing.framework.ui.EntityPanel.useFocusActivation", true);
 
   /**
@@ -91,7 +91,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> USE_KEYBOARD_NAVIGATION = Configuration.booleanValue(
+  public static final PropertyValue<Boolean> USE_KEYBOARD_NAVIGATION = Configuration.booleanValue(
           "org.jminor.swing.framework.ui.EntityPanel.useKeyboardNavigation", true);
 
   /**
@@ -101,7 +101,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final Value<Boolean> CENTER_APPLICATION_DIALOGS = Configuration.booleanValue(
+  public static final PropertyValue<Boolean> CENTER_APPLICATION_DIALOGS = Configuration.booleanValue(
           "org.jminor.swing.framework.ui.EntityPanel.centerApplicationDialogs", false);
 
   /**
@@ -109,7 +109,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> DISPOSE_EDIT_DIALOG_ON_ESCAPE = Configuration.booleanValue(
+  public static final PropertyValue<Boolean> DISPOSE_EDIT_DIALOG_ON_ESCAPE = Configuration.booleanValue(
           "org.jminor.swing.framework.ui.EntityPanel.disposeEditDialogOnEscape", true);
 
   /**
@@ -117,7 +117,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> SHOW_TOGGLE_EDIT_PANEL_CONTROL = Configuration.booleanValue(
+  public static final PropertyValue<Boolean> SHOW_TOGGLE_EDIT_PANEL_CONTROL = Configuration.booleanValue(
           "org.jminor.swing.framework.ui.EntityPanel.showToggleEditPanelControl", true);
 
   /**
@@ -125,7 +125,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> SHOW_DETAIL_PANEL_CONTROLS = Configuration.booleanValue(
+  public static final PropertyValue<Boolean> SHOW_DETAIL_PANEL_CONTROLS = Configuration.booleanValue(
           "org.jminor.swing.framework.ui.EntityPanel.showDetailPanelControls", true);
 
   /**
@@ -133,7 +133,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Value type: Integer<br>
    * Default value: 18<br>
    */
-  public static final Value<Integer> SPLIT_PANE_DIVIDER_SIZE = Configuration.integerValue(
+  public static final PropertyValue<Integer> SPLIT_PANE_DIVIDER_SIZE = Configuration.integerValue(
           "org.jminor.swing.framework.ui.EntityPanel.splitPaneDividerSize", DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
 
   /**
@@ -141,7 +141,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> COMPACT_ENTITY_PANEL_LAYOUT = Configuration.booleanValue(
+  public static final PropertyValue<Boolean> COMPACT_ENTITY_PANEL_LAYOUT = Configuration.booleanValue(
           "org.jminor.swing.framework.ui.EntityPanel.compactEntityPanelLayout", true);
 
   /**
@@ -149,7 +149,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final Value<Boolean> TOOLBAR_BUTTONS = Configuration.booleanValue(
+  public static final PropertyValue<Boolean> TOOLBAR_BUTTONS = Configuration.booleanValue(
           "org.jminor.swing.framework.ui.EntityPanel.toolbarButtons", false);
 
   /**

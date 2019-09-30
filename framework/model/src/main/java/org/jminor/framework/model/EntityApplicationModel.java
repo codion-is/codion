@@ -4,10 +4,10 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.Configuration;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.StateObserver;
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.Value;
 import org.jminor.common.model.Refreshable;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
@@ -25,14 +25,14 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
    * Value type: String<br>
    * Default value: [empty string]
    */
-  Value<String> USERNAME_PREFIX = Configuration.stringValue("jminor.client.usernamePrefix", "");
+  PropertyValue<String> USERNAME_PREFIX = Configuration.stringValue("jminor.client.usernamePrefix", "");
 
   /**
    * Specifies whether user authentication is required<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  Value<Boolean> AUTHENTICATION_REQUIRED = Configuration.booleanValue("jminor.client.authenticationRequired", true);
+  PropertyValue<Boolean> AUTHENTICATION_REQUIRED = Configuration.booleanValue("jminor.client.authenticationRequired", true);
 
   /**
    * Specifies whether or not the client saves the last successful login username,<br>
@@ -40,20 +40,20 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
    * Value type: Boolean<br>
    * Default value: true
    */
-  Value<Boolean> SAVE_DEFAULT_USERNAME = Configuration.booleanValue("jminor.client.saveDefaultUsername", true);
+  PropertyValue<Boolean> SAVE_DEFAULT_USERNAME = Configuration.booleanValue("jminor.client.saveDefaultUsername", true);
 
   /**
    * The report path used for the default report generation,
    * either file or http based
    */
-  Value<String> REPORT_PATH = Configuration.stringValue("jminor.report.path", null);
+  PropertyValue<String> REPORT_PATH = Configuration.stringValue("jminor.report.path", null);
 
   /**
    * Specifies whether a periodic (30 sec) validity check of the underlying connection should be scheduled.
    * Value type: Boolean<br>
    * Default value: true
    */
-  Value<Boolean> SCHEDULE_CONNECTION_VALIDATION = Configuration.booleanValue("jminor.client.scheduleConnectionValidation", true);
+  PropertyValue<Boolean> SCHEDULE_CONNECTION_VALIDATION = Configuration.booleanValue("jminor.client.scheduleConnectionValidation", true);
 
   /**
    * @return the value associated with {@link #REPORT_PATH}

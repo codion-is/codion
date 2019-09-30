@@ -9,10 +9,10 @@ import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.FileUtil;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Util;
-import org.jminor.common.Value;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.ReferentialIntegrityException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
@@ -145,7 +145,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> ALLOW_COLUMN_REORDERING = Configuration.booleanValue(
+  public static final PropertyValue<Boolean> ALLOW_COLUMN_REORDERING = Configuration.booleanValue(
           "org.jminor.swing.framework.ui.EntityTablePanel.allowColumnReordering", true);
 
   /**
@@ -153,7 +153,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final Value<Boolean> TABLE_CONDITION_PANEL_VISIBLE = Configuration.booleanValue(
+  public static final PropertyValue<Boolean> TABLE_CONDITION_PANEL_VISIBLE = Configuration.booleanValue(
           "org.jminor.swing.framework.ui.EntityTablePanel.tableConditionPanelVisible", false);
 
   /**
@@ -161,7 +161,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * Value type: Integer (JTable.AUTO_RESIZE_*)<br>
    * Default value: JTable.AUTO_RESIZE_OFF
    */
-  public static final Value<Integer> TABLE_AUTO_RESIZE_MODE = Configuration.integerValue(
+  public static final PropertyValue<Integer> TABLE_AUTO_RESIZE_MODE = Configuration.integerValue(
           "org.jminor.swing.framework.ui.EntityTablePanel.tableAutoResizeMode", JTable.AUTO_RESIZE_OFF);
 
   /**
@@ -169,7 +169,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
    * Value type: {@link ReferentialIntegrityErrorHandling}<br>
    * Default value: {@link ReferentialIntegrityErrorHandling#ERROR}
    */
-  public static final Value<ReferentialIntegrityErrorHandling> REFERENTIAL_INTEGRITY_ERROR_HANDLING = Configuration.value(
+  public static final PropertyValue<ReferentialIntegrityErrorHandling> REFERENTIAL_INTEGRITY_ERROR_HANDLING = Configuration.value(
           "org.jminor.swing.framework.ui.EntityTablePanel.referentialIntegrityErrorHandling", ReferentialIntegrityErrorHandling.ERROR,
           ReferentialIntegrityErrorHandling::valueOf);
 

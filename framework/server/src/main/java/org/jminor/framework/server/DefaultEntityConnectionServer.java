@@ -5,11 +5,11 @@ package org.jminor.framework.server;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.DaemonThreadFactory;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.TextUtil;
 import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.Value;
 import org.jminor.common.Version;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
@@ -69,13 +69,13 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
   /**
    * The serialization whitelist file to use if any
    */
-  public static final Value<String> SERIALIZATION_FILTER_WHITELIST = Configuration.stringValue("jminor.server.serializationFilterWhitelist", null);
+  public static final PropertyValue<String> SERIALIZATION_FILTER_WHITELIST = Configuration.stringValue("jminor.server.serializationFilterWhitelist", null);
 
   /**
    * If true then the serialization whitelist specified by {@link #SERIALIZATION_FILTER_WHITELIST} is populated
    * with the names of all deserialized classes on server shutdown. Note this overwrites the file if it already exists.
    */
-  public static final Value<Boolean> SERIALIZATION_FILTER_DRYRUN = Configuration.booleanValue("jminor.server.serializationFilterDryRun", false);
+  public static final PropertyValue<Boolean> SERIALIZATION_FILTER_DRYRUN = Configuration.booleanValue("jminor.server.serializationFilterDryRun", false);
 
   /**
    * Specifies the class name of the connection pool provider to user, if none is specified
@@ -84,7 +84,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * Default value: none
    * @see ConnectionPoolProvider
    */
-  public static final Value<String> SERVER_CONNECTION_POOL_PROVIDER_CLASS = Configuration.stringValue("jminor.server.pooling.poolProviderClass", null);
+  public static final PropertyValue<String> SERVER_CONNECTION_POOL_PROVIDER_CLASS = Configuration.stringValue("jminor.server.pooling.poolProviderClass", null);
 
   /**
    * Specifies maximum number of concurrent connections the server accepts<br>
@@ -92,7 +92,7 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * Value type: Integer<br>
    * Default value: -1
    */
-  public static final Value<Integer> SERVER_CONNECTION_LIMIT = Configuration.integerValue("jminor.server.connectionLimit", DEFAULT_SERVER_CONNECTION_LIMIT);
+  public static final PropertyValue<Integer> SERVER_CONNECTION_LIMIT = Configuration.integerValue("jminor.server.connectionLimit", DEFAULT_SERVER_CONNECTION_LIMIT);
 
   /**
    * Specifies the default client connection timeout (ms) in a comma separated list.
@@ -100,40 +100,40 @@ public class DefaultEntityConnectionServer extends AbstractServer<AbstractRemote
    * Value type: String<br>
    * Default value: none
    */
-  public static final Value<String> SERVER_CLIENT_CONNECTION_TIMEOUT = Configuration.stringValue("jminor.server.clientConnectionTimeout", null);
+  public static final PropertyValue<String> SERVER_CLIENT_CONNECTION_TIMEOUT = Configuration.stringValue("jminor.server.clientConnectionTimeout", null);
 
   /**
    * The initial connection logging status on the server, either true (on) or false (off)<br>
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final Value<Boolean> SERVER_CLIENT_LOGGING_ENABLED = Configuration.booleanValue("jminor.server.clientLoggingEnabled", false);
+  public static final PropertyValue<Boolean> SERVER_CLIENT_LOGGING_ENABLED = Configuration.booleanValue("jminor.server.clientLoggingEnabled", false);
 
   /**
    * Specifies a comma separated list of username:password combinations for which to create connection pools on startup
    * Example: scott:tiger,john:foo,paul:bar
    */
-  public static final Value<String> SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS = Configuration.stringValue("jminor.server.pooling.startupPoolUsers", null);
+  public static final PropertyValue<String> SERVER_CONNECTION_POOLING_STARTUP_POOL_USERS = Configuration.stringValue("jminor.server.pooling.startupPoolUsers", null);
 
   /**
    * Specifies a comma separated list of ConnectionValidator class names, which should be initialized on server startup,
    * these classes must be available on the server classpath and contain a parameterless constructor
    * @see ConnectionValidator
    */
-  public static final Value<String> SERVER_CONNECTION_VALIDATOR_CLASSES = Configuration.stringValue("jminor.server.connectionValidatorClasses", null);
+  public static final PropertyValue<String> SERVER_CONNECTION_VALIDATOR_CLASSES = Configuration.stringValue("jminor.server.connectionValidatorClasses", null);
 
   /**
    * Specifies a comma separated list of LoginProxy class names, which should be initialized on server startup,
    * these classes must be available on the server classpath and contain a parameterless constructor
    * @see LoginProxy
    */
-  public static final Value<String> SERVER_LOGIN_PROXY_CLASSES = Configuration.stringValue("jminor.server.loginProxyClasses", null);
+  public static final PropertyValue<String> SERVER_LOGIN_PROXY_CLASSES = Configuration.stringValue("jminor.server.loginProxyClasses", null);
 
   /**
    * Specifies a comma separated list of domain model class names, these classes must be
    * available on the server classpath
    */
-  public static final Value<String> SERVER_DOMAIN_MODEL_CLASSES = Configuration.stringValue("jminor.server.domain.classes", null);
+  public static final PropertyValue<String> SERVER_DOMAIN_MODEL_CLASSES = Configuration.stringValue("jminor.server.domain.classes", null);
 
   private static final long serialVersionUID = 1;
 

@@ -7,6 +7,7 @@ import org.jminor.common.Configuration;
 import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.StateObserver;
 import org.jminor.common.Value;
 import org.jminor.common.db.condition.Condition;
@@ -25,7 +26,7 @@ public interface ColumnConditionModel<K> {
    * Value type: {@link AutomaticWildcard}<br>
    * Default value: {@link AutomaticWildcard#NONE}
    */
-  Value<AutomaticWildcard> AUTOMATIC_WILDCARD = Configuration.value(
+  PropertyValue<AutomaticWildcard> AUTOMATIC_WILDCARD = Configuration.value(
           "org.jminor.common.model.table.ColumnConditionModel.automaticWildard",
           AutomaticWildcard.NONE, AutomaticWildcard::valueOf);
 
@@ -34,7 +35,7 @@ public interface ColumnConditionModel<K> {
    * Value type: Boolean<br>
    * Default value: true
    */
-  Value<Boolean> CASE_SENSITIVE = Configuration.booleanValue(
+  PropertyValue<Boolean> CASE_SENSITIVE = Configuration.booleanValue(
                   "org.jminor.common.model.table.ColumnConditionModel.caseSensitive", true);
 
   /**

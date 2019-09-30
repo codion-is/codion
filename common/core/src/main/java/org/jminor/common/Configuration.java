@@ -42,7 +42,7 @@ public final class Configuration {
    * @param defaultValue the default value, if any
    * @return the configuration value
    */
-  public static Value<Boolean> booleanValue(final String key, final Boolean defaultValue) {
+  public static PropertyValue<Boolean> booleanValue(final String key, final Boolean defaultValue) {
     return value(key, defaultValue, value -> value.equalsIgnoreCase(Boolean.TRUE.toString()));
   }
 
@@ -52,7 +52,7 @@ public final class Configuration {
    * @param defaultValue the default value, if any
    * @return the configuration value
    */
-  public static Value<Integer> integerValue(final String key, final Integer defaultValue) {
+  public static PropertyValue<Integer> integerValue(final String key, final Integer defaultValue) {
     return value(key, defaultValue, Integer::parseInt);
   }
 
@@ -62,7 +62,7 @@ public final class Configuration {
    * @param defaultValue the default value, if any
    * @return the configuration value
    */
-  public static Value<Long> longValue(final String key, final Long defaultValue) {
+  public static PropertyValue<Long> longValue(final String key, final Long defaultValue) {
     return value(key, defaultValue, Long::parseLong);
   }
 
@@ -72,7 +72,7 @@ public final class Configuration {
    * @param defaultValue the default value, if any
    * @return the configuration value
    */
-  public static Value<Double> doubleValue(final String key, final Double defaultValue) {
+  public static PropertyValue<Double> doubleValue(final String key, final Double defaultValue) {
     return value(key, defaultValue, Double::parseDouble);
   }
 
@@ -82,7 +82,7 @@ public final class Configuration {
    * @param defaultValue the default value, if any
    * @return the configuration value
    */
-  public static Value<String> stringValue(final String key, final String defaultValue) {
+  public static PropertyValue<String> stringValue(final String key, final String defaultValue) {
     return value(key, defaultValue, value -> value);
   }
 
@@ -94,7 +94,7 @@ public final class Configuration {
    * @param <T> the value type
    * @return the configuration value
    */
-  public static <T> Value<T> value(final String key, final T defaultValue, final Function<String, T> parser) {
+  public static <T> PropertyValue<T> value(final String key, final T defaultValue, final Function<String, T> parser) {
     return STORE.propertyValue(key, defaultValue, parser, Objects::toString);
   }
 }

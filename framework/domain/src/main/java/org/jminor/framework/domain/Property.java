@@ -5,7 +5,7 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.Item;
-import org.jminor.common.Value;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.db.Attribute;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
@@ -32,42 +32,42 @@ public interface Property extends Attribute, Serializable {
    * Value type: Integer<br>
    * Default value: 10
    */
-  Value<Integer> MAXIMUM_FRACTION_DIGITS = Configuration.integerValue("jminor.domain.maximumFractionDigits", DEFAULT_MAXIMUM_FRACTION_DIGITS);
+  PropertyValue<Integer> MAXIMUM_FRACTION_DIGITS = Configuration.integerValue("jminor.domain.maximumFractionDigits", DEFAULT_MAXIMUM_FRACTION_DIGITS);
 
   /**
    * The date format pattern to use when showing time values in tables and when creating default time input fields<br>
    * Value type: String<br>
    * Default value: HH:mm
    */
-  Value<String> TIME_FORMAT = Configuration.stringValue("jminor.domain.timeFormat", "HH:mm");
+  PropertyValue<String> TIME_FORMAT = Configuration.stringValue("jminor.domain.timeFormat", "HH:mm");
 
   /**
    * The date format pattern to use when showing timestamp values in tables and when creating default timestamp input fields<br>
    * Value type: String<br>
    * Default value: dd-MM-yyyy HH:mm
    */
-  Value<String> TIMESTAMP_FORMAT = Configuration.stringValue("jminor.domain.timestampFormat", "dd-MM-yyyy HH:mm");
+  PropertyValue<String> TIMESTAMP_FORMAT = Configuration.stringValue("jminor.domain.timestampFormat", "dd-MM-yyyy HH:mm");
 
   /**
    * The date format pattern to use when showing date values in tables and when creating default date input fields<br>
    * Value type: String<br>
    * Default value: dd-MM-yyyy
    */
-  Value<String> DATE_FORMAT = Configuration.stringValue("jminor.domain.dateFormat", "dd-MM-yyyy");
+  PropertyValue<String> DATE_FORMAT = Configuration.stringValue("jminor.domain.dateFormat", "dd-MM-yyyy");
 
   /**
    * Specifies the default foreign key fetch depth<br>
    * Value type: Integer<br>
    * Default value: 1
    */
-  Value<Integer> FOREIGN_KEY_FETCH_DEPTH = Configuration.integerValue("jminor.domain.foreignKeyFetchDepth", DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
+  PropertyValue<Integer> FOREIGN_KEY_FETCH_DEPTH = Configuration.integerValue("jminor.domain.foreignKeyFetchDepth", DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
 
   /**
    * Specifies the wildcard character used by the framework<br>
    * Value type: String<br>
    * Default value: %
    */
-  Value<String> WILDCARD_CHARACTER = Configuration.stringValue("jminor.wildcardCharacter", "%");
+  PropertyValue<String> WILDCARD_CHARACTER = Configuration.stringValue("jminor.wildcardCharacter", "%");
 
   /**
    * @return the id of the domain model this property belongs to

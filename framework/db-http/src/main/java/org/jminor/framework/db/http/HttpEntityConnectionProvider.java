@@ -4,7 +4,7 @@
 package org.jminor.framework.db.http;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.Value;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
 
@@ -28,21 +28,21 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    * Value type: String<br>
    * Default value: localhost
    */
-  public static final Value<String> HTTP_CLIENT_HOST_NAME = Configuration.stringValue("jminor.client.http.hostname", "localhost");
+  public static final PropertyValue<String> HTTP_CLIENT_HOST_NAME = Configuration.stringValue("jminor.client.http.hostname", "localhost");
 
   /**
    * The port which the http client should use.<br>
    * Value type: Integer<br>
    * Default value: 8080
    */
-  public static final Value<Integer> HTTP_CLIENT_PORT = Configuration.integerValue("jminor.client.http.port", 8080);
+  public static final PropertyValue<Integer> HTTP_CLIENT_PORT = Configuration.integerValue("jminor.client.http.port", 8080);
 
   /**
    * Specifies whether https should be used.<br>
    * Value types: Boolean<br>
    * Default value: true
    */
-  public static final Value<Boolean> HTTP_CLIENT_SECURE = Configuration.booleanValue("jminor.client.http.secure", true);
+  public static final PropertyValue<Boolean> HTTP_CLIENT_SECURE = Configuration.booleanValue("jminor.client.http.secure", true);
 
   private String serverHostName;
   private Integer serverPort;

@@ -4,7 +4,7 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.Configuration;
-import org.jminor.common.Value;
+import org.jminor.common.PropertyValue;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.db.valuemap.exception.LengthValidationException;
@@ -588,7 +588,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * Value type: Boolean<br>
      * Default value: true
      */
-    Value<Boolean> STRICT_FOREIGN_KEYS = Configuration.booleanValue("jminor.domain.strictForeignKeys", true);
+    PropertyValue<Boolean> STRICT_FOREIGN_KEYS = Configuration.booleanValue("jminor.domain.strictForeignKeys", true);
 
     /**
      * @return the entity ID
