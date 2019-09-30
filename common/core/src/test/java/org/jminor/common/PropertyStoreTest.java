@@ -32,48 +32,48 @@ public final class PropertyStoreTest {
     FileUtil.writeFile(configBuilder.toString(), configFile);
     final PropertyStore store = new PropertyStore(configFile.getAbsolutePath());
 
-    final Value<String> stringValue = store.propertyValue("string.property", "value");
+    final PropertyValue<String> stringValue = store.propertyValue("string.property", "value");
     assertTrue(store.containsProperty("string.property"));
     assertEquals("value", stringValue.get());
-    assertEquals("value", System.getProperty("string.property"));
-    assertSame(stringValue, store.getPropertyValue("string.property"));
+    assertEquals("value", System.getProperty(stringValue.getProperty()));
+    assertSame(stringValue, store.getPropertyValue(stringValue.getProperty()));
     stringValue.set(null);
-    assertFalse(store.containsProperty("string.property"));
-    assertNull(System.getProperty("string.property"));
+    assertFalse(store.containsProperty(stringValue.getProperty()));
+    assertNull(System.getProperty(stringValue.getProperty()));
 
-    final Value<List<String>> stringListValue = store.propertyListValue("stringlist.property", Collections.emptyList(), Objects::toString, Objects::toString);
-    assertTrue(store.containsProperty("stringlist.property"));
+    final PropertyValue<List<String>> stringListValue = store.propertyListValue("stringlist.property", Collections.emptyList(), Objects::toString, Objects::toString);
+    assertTrue(store.containsProperty(stringListValue.getProperty()));
 
     assertTrue(stringListValue.get().contains("value1"));
     assertTrue(stringListValue.get().contains("value2"));
     assertTrue(stringListValue.get().contains("value3"));
 
     stringListValue.set(Collections.emptyList());
-    assertEquals("", store.getProperty("stringlist.property"));
+    assertEquals("", store.getProperty(stringListValue.getProperty()));
     stringListValue.set(null);
-    assertFalse(store.containsProperty("stringlist.property"));
+    assertFalse(store.containsProperty(stringListValue.getProperty()));
 
-    final Value<List<Integer>> integerListValue = store.propertyListValue("intlist.property", Collections.emptyList(), Integer::parseInt, Objects::toString);
-    assertTrue(store.containsProperty("intlist.property"));
+    final PropertyValue<List<Integer>> integerListValue = store.propertyListValue("intlist.property", Collections.emptyList(), Integer::parseInt, Objects::toString);
+    assertTrue(store.containsProperty(integerListValue.getProperty()));
 
     assertTrue(integerListValue.get().contains(1));
     assertTrue(integerListValue.get().contains(2));
     assertTrue(integerListValue.get().contains(3));
 
-    final Value<Integer> intValue1 = store.propertyValue("int.property1", 0);
+    final PropertyValue<Integer> intValue1 = store.propertyValue("int.property1", 0);
     assertEquals(42, intValue1.get());
-    final Value<Integer> intValue2 = store.propertyValue("int.property2", 0);
+    final PropertyValue<Integer> intValue2 = store.propertyValue("int.property2", 0);
     assertEquals(0, intValue2.get());//default value kicks in
-    final Value<Integer> intValue3 = store.propertyValue("int.property3", 0);
+    final PropertyValue<Integer> intValue3 = store.propertyValue("int.property3", 0);
     assertEquals(44, intValue3.get());
 
-    final Value<Double> doubleValue = store.propertyValue("double.property", 0d);
+    final PropertyValue<Double> doubleValue = store.propertyValue("double.property", 0d);
     assertEquals(3.14, doubleValue.get());
-    assertEquals("3.14", System.getProperty("double.property"));
+    assertEquals("3.14", System.getProperty(doubleValue.getProperty()));
     doubleValue.set(null);
-    assertFalse(store.containsProperty("double.property"));
+    assertFalse(store.containsProperty(doubleValue.getProperty()));
 
-    final Value<Boolean> booleanValue = store.propertyValue("boolean.property", false);
+    final PropertyValue<Boolean> booleanValue = store.propertyValue("boolean.property", false);
     assertTrue(booleanValue.get());
 
     final List<String> intProperties = store.getPropertyNames("int.");
@@ -117,25 +117,25 @@ public final class PropertyStoreTest {
     final File configFile = File.createTempFile("config_store", "properties");
     configFile.deleteOnExit();
     final PropertyStore store = new PropertyStore(configFile.getAbsolutePath());
-    final Value<String> stringValue = store.propertyValue("string.property", "value");
+    final PropertyValue<String> stringValue = store.propertyValue("string.property", "value");
     assertEquals("value", stringValue.get());
     stringValue.set(null);
     assertNull(stringValue.get());
-    final Value<Boolean> booleanValue1 = store.propertyValue("boolean.property", true);
+    final PropertyValue<Boolean> booleanValue1 = store.propertyValue("boolean.property", true);
     assertTrue(booleanValue1.get());
     booleanValue1.set(false);
     assertFalse(booleanValue1.get());
     booleanValue1.set(null);
     assertNull(booleanValue1.get());
-    final Value<Integer> integerValue = store.propertyValue("integer.property", 42);
+    final PropertyValue<Integer> integerValue = store.propertyValue("integer.property", 42);
     assertEquals(42, integerValue.get());
     integerValue.set(null);
     assertNull(integerValue.get());
-    final Value<Double> doubleValue = store.propertyValue("double.property", 3.14);
+    final PropertyValue<Double> doubleValue = store.propertyValue("double.property", 3.14);
     assertEquals(3.14, doubleValue.get());
     doubleValue.set(null);
     assertNull(doubleValue.get());
-    final Value<List<String>> listValue = store.propertyListValue("stringlist.property", Arrays.asList("value1", "value2"), Objects::toString, Objects::toString);
+    final PropertyValue<List<String>> listValue = store.propertyListValue("stringlist.property", Arrays.asList("value1", "value2"), Objects::toString, Objects::toString);
     final List<String> strings = listValue.get();
     assertTrue(strings.contains("value1"));
     assertTrue(strings.contains("value2"));
@@ -164,7 +164,7 @@ public final class PropertyStoreTest {
     System.setProperty("property", "system");
 
     PropertyStore store = new PropertyStore(properties);
-    Value<String> value = store.propertyValue("property", "def");
+    PropertyValue<String> value = store.propertyValue("property", "def");
     assertEquals("system", value.get());
 
     System.clearProperty("property");

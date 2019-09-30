@@ -5132,3 +5132,4 @@
 0.12.3
   PropertyStore now syncs values to system properties
   Configuration now based on PropertyStore
+  PropertyValue interface added, PropertyStore now uses these
