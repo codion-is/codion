@@ -44,3 +44,26 @@ JMinor uses SLF4J throughout so all you need to do is add a SLF4J bridge for you
 |---|---
 |Logback|org.jminor:jminor-plugin-logback-proxy:0.12.2|
 |Log4j|org.jminor:jminor-plugin-log4j-proxy:0.12.2|
+
+### Gradle
+```groovy
+dependencies {
+    //Swing client UI module
+    compile 'org.jminor:jminor-swing-framework-ui:0.12.2'
+    
+    //JSON for persisting client configuration
+    runtime 'org.jminor:jminor-framework-plugins-json:0.12.2'    
+    //Local JDBC connection module
+    runtime 'org.jminor:jminor-framework-db-local:0.12.2'
+    //H2 DBMS module
+    runtime 'org.jminor:jminor-dbms-h2database:0.12.2'
+    //H2 JDBC driver
+    runtime 'com.h2database:h2:1.4.199'
+
+    //Domain model unit testing module
+    testCompile 'org.jminor:jminor-framework-db-test:0.12.2'
+    //JUnit
+    testCompile 'org.junit.jupiter:junit-jupiter-api:5.5.1'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
+}
+```

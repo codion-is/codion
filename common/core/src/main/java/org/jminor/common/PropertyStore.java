@@ -145,7 +145,7 @@ public final class PropertyStore {
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
   public <V> PropertyValue<V> propertyValue(final String property, final V defaultValue,
-                                    final Function<String, V> decoder, final Function<V, String> encoder) {
+                                            final Function<String, V> decoder, final Function<V, String> encoder) {
     if (propertyValues.containsKey(Objects.requireNonNull(property, "property"))) {
       throw new IllegalArgumentException("Configuration value for property '" + property + "' has already been created");
     }
@@ -167,7 +167,7 @@ public final class PropertyStore {
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
   public <V> PropertyValue<List<V>> propertyListValue(final String property, final List<V> defaultValue,
-                                              final Function<String, V> decoder, final Function<V, String> encoder) {
+                                                      final Function<String, V> decoder, final Function<V, String> encoder) {
     if (propertyValues.containsKey(Objects.requireNonNull(property, "property"))) {
       throw new IllegalArgumentException("Configuration value for property '" + property + "' has already been created");
     }
