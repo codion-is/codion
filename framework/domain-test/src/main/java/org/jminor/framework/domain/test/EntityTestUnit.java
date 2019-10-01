@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain.testing;
+package org.jminor.framework.domain.test;
 
 import org.jminor.common.Item;
 import org.jminor.common.TextUtil;
