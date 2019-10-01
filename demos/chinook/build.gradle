@@ -24,7 +24,7 @@ dependencies {
     runtimeOnly project(':jminor-framework-db-http')
     runtimeOnly project(':jminor-framework-db-remote')
 
-    testImplementation project(':jminor-framework-db-test')
+    testImplementation project(':jminor-framework-domain-test')
 
     implementation "org.jfree:jcommon:${jcommonVersion}"
     implementation "org.jfree:jfreechart:${jfreeChartVersion}"

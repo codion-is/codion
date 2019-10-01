@@ -61,7 +61,7 @@ dependencies {
     runtime 'com.h2database:h2:1.4.199'
 
     //Domain model unit testing module
-    testCompile 'org.jminor:jminor-framework-db-test:0.12.2'
+    testCompile 'org.jminor:jminor-framework-domain-test:0.12.2'
     //JUnit
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.5.1'
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
