@@ -1,7 +1,7 @@
 #### JMinor Quickstart
 
 ## Rich client
-JMinor is primarily a Swing based framework, the Swing client is very mature and stable while the JavaFX client is quite rudimentary and still in the 'proof-of-concept' stage.
+JMinor is primarily a Swing based framework, the Swing client is very mature and stable while the JavaFX client is quite rudimentary and still in the 'proof-of-concept' stage. This artifact pulls in all required framework dependencies.
 
 |Client|Artifact|
 |---|---
@@ -51,7 +51,7 @@ dependencies {
     //Swing client UI module
     compile 'org.jminor:jminor-swing-framework-ui:0.12.2'
     
-    //JSON for persisting client configuration
+    //JSON for persisting client preferences
     runtime 'org.jminor:jminor-framework-plugins-json:0.12.2'    
     //Local JDBC connection module
     runtime 'org.jminor:jminor-framework-db-local:0.12.2'
@@ -59,6 +59,8 @@ dependencies {
     runtime 'org.jminor:jminor-dbms-h2database:0.12.2'
     //H2 JDBC driver
     runtime 'com.h2database:h2:1.4.199'
+    //Logging with Logback
+    runtime 'org.jminor11:jminor-framework-plugins-logback-proxy:0.12.2'
 
     //Domain model unit testing module
     testCompile 'org.jminor:jminor-framework-domain-test:0.12.2'
