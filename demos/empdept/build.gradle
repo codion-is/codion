@@ -3,7 +3,7 @@ apply from: '../demos.gradle'
 dependencies {
     implementation project(':jminor-framework-db-local')
     implementation project(':jminor-framework-db-http')
-    implementation project(':jminor-framework-db-test')
+    implementation project(':jminor-framework-domain-test')
     implementation project(':jminor-framework-server')
     implementation project(':jminor-framework-servlet')
 

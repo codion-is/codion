@@ -3,7 +3,7 @@ apply from: '../demos.gradle'
 dependencies {
     implementation project(':jminor-swing-framework-ui')
 
-    testImplementation project(':jminor-framework-db-test')
+    testImplementation project(':jminor-framework-domain-test')
     testImplementation project(':jminor-swing-framework-ui-test')
 
     runtimeOnly project(':jminor-plugin-logback-proxy')

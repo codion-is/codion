@@ -5124,3 +5124,4 @@
   PropertyValue interface added, PropertyStore now uses these
   Configuration now uses PropertyValue
   PropertyValue.toString() overridden, now returns the property name
+  Module jminor-framework-db-test renamed to jminor-framework-domain-test

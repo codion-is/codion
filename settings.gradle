@@ -42,6 +42,9 @@ project(':jminor-dbms-sqlserver').projectDir = file('dbms/sqlserver')
 include 'jminor-framework-domain'
 project(':jminor-framework-domain').projectDir = file('framework/domain')
 
+include 'jminor-framework-domain-test'
+project(':jminor-framework-domain-test').projectDir = file('framework/domain-test')
+
 include 'jminor-framework-db-core'
 project(':jminor-framework-db-core').projectDir = file('framework/db-core')
 
@@ -53,9 +56,6 @@ project(':jminor-framework-db-remote').projectDir = file('framework/db-remote')
 
 include 'jminor-framework-db-http'
 project(':jminor-framework-db-http').projectDir = file('framework/db-http')
-
-include 'jminor-framework-db-test'
-project(':jminor-framework-db-test').projectDir = file('framework/db-test')
 
 include 'jminor-framework-model'
 project(':jminor-framework-model').projectDir = file('framework/model')
