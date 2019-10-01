@@ -7,7 +7,7 @@ import org.jminor.common.User;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.ui.testing.EntityEditPanelTestUnit;
+import org.jminor.swing.framework.ui.test.EntityEditPanelTestUnit;
 
 import org.junit.jupiter.api.Test;
 
