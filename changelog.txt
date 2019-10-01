@@ -5139,3 +5139,4 @@
   Package names org.jminor.framework.domain.testing and org.jminor.swing.framework.ui.testing to .test to reflect module names
   org.jminor.common.core module now has a requires transitive dependency on slf4j, slf4j requires clause removed from other modules
   AbstractTableColumnSyncPanel now uses FlexibleGridLayout instead of FlowLayout, which stretches the component to fill all available vertical space
+  Documentation migrated from markdown to asciidoc

@@ -1,16 +1,19 @@
-###### JMinor Application Framework
+= JMinor Application Framework
 
-##### Architecture
+:javadoc-url: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
+
+== Architecture
 
 A typical JMinor application has two layers, the model and the UI. The model encapsulates the application data, communicates with the underlying database and contains most of the business logic whereas the UI displays the data and provides ways to modify it. The model layer works with a domain model which defines the tables, columns, primary and foreign keys used by the application.
 
-#### Domain Model
+== Domain Model
 
 The JMinor framework is not an ORM (Object-relational mapping) framework, instead the database structure is modelled much like an E/R diagram, with each table represented by an Entity, each column by a Property and each foreign key relationship with a ForeignKeyProperty.
 
-The database structure is defined in the [Domain](https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api/org/jminor/framework/domain/Domain.html) class. An instance of this class contains a [Entity.Definition](https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api/org/jminor/framework/domain/Entity.Definition.html) for each table, which in turn contains a [Property](https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api/org/jminor/framework/domain/Property.html) instance for each column in the table. Actual rows in a table are represented by the [Entity](https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api/org/jminor/framework/domain/Entity.html) class which contains the column values mapped to their respective Properties.
+The database structure is defined in the {javadoc-url}/org/jminor/framework/domain/Domain.html[Domain] class. An instance of this class contains a {javadoc-url}/org/jminor/framework/domain/Entity.Definition.html[Entity.Definition] for each table, which in turn contains a {javadoc-url}/org/jminor/framework/domain/Property.html[Property] instance for each column in the table. Actual rows in a table are represented by the {javadoc-url}/org/jminor/framework/domain/Entity.html[Entity] class which contains the column values mapped to their respective Properties.
 
-```java
+[source,java]
+----
 import static org.jminor.framework.domain.Properties.*;
 
 public class Store extends Domain {
@@ -36,11 +39,12 @@ public class Store extends Domain {
     define(T_CUSTOMER, id, firstName, lastName, active);
   }
 }
-```
+----
 
 As well as serving as a container for the domain model the Domain object serves as a factory for Entity and Entity.Key instances.
 
-```java
+[source,java]
+----
 Store store = new Store();
 
 List<Property> customerProperties = store.getProperties(Store.T_CUSTOMER);
@@ -56,11 +60,12 @@ String firstName = john.getString(Store.CUSTOMER_FIRST_NAME);
 
 Entity.Key johnKey = store.key(Store.T_CUSTOMER);
 johnKey.put(Store.CUSTOMER_ID, 2);
-```
+----
 
-Each table is identified by a String constant (which must be unique within the domain), called **entityId**, these should be defined in the Domain class. In the example below the **entityId** constants are prefixed by **T_**.
+Each table is identified by a String constant (which must be unique within the domain), called *entityId*, these should be defined in the Domain class. In the example below the *entityId* constants are prefixed by *T_*.
 
-```java
+[source,java]
+----
 public class Store extends Domain {
   
   /** entityId representing the "address" table in the "store" schema */
@@ -70,10 +75,11 @@ public class Store extends Domain {
   public static final String T_CUSTOMER = "store.customer";
 
 }
-```
-Each column in a table is identified by a String constant (which must be unique within its Entity) called **propertyId** and is represented by the [Property](https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api/org/jminor/framework/domain/Property.html) class or one of its subclasses.
+----
+Each column in a table is identified by a String constant (which must be unique within its Entity) called *propertyId* and is represented by the {javadoc-url}/org/jminor/framework/domain/Property.html[Property] class or one of its subclasses.
 
-```java
+[source,java]
+----
 public class Store extends Domain {
   
   /** entityId representing the "address" table in the "store" schema */
@@ -96,17 +102,16 @@ public class Store extends Domain {
   public static final String CUSTOMER_IS_ACTIVE = "is_active";
   public static final String CUSTOMER_CITY = "city";
   public static final String CUSTOMER_DERIVED = "derived";
-
 }
-```
+----
 
-### Entity
+== Entity
 
-An Entity instance is a map-like structure, mapping column values to their respective properties via **put()** and **get()** methods with a few useful features added.
+An Entity instance is a map-like structure, mapping column values to their respective properties via *put()* and *get()* methods with a few useful features added.
 
-#### Model Layer
+=== Model Layer
 
-### EntityModel
+=== EntityModel
 
 The EntityModel class coordinates two other classes, the EntityEditModel and the EntityTableModel, which are concerned with editing a 
 
