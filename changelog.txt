@@ -5126,3 +5126,4 @@
   PropertyValue.toString() overridden, now returns the property name
   Module jminor-framework-db-test renamed to jminor-framework-domain-test
   Package names org.jminor.framework.domain.testing and org.jminor.swing.framework.ui.testing to .test to reflect module names
+  AbstractTableColumnSyncPanel now uses FlexibleGridLayout instead of FlowLayout, which stretches the component to fill all available vertical space
