@@ -3,7 +3,6 @@
  * @provides org.jminor.common.CredentialsProvider
  */
 module org.jminor.common.remote {
-  requires org.slf4j;
   requires transitive java.rmi;
   requires transitive org.jminor.common.core;
 

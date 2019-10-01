@@ -8,7 +8,7 @@
  * @uses org.jminor.common.CredentialsProvider
  */
 module org.jminor.common.core {
-  requires org.slf4j;
+  requires transitive org.slf4j;
 
   exports org.jminor.common;
   exports org.jminor.common.i18n;

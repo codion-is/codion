@@ -3,7 +3,6 @@
  * @provides org.jminor.framework.db.EntityConnectionProvider
  */
 module org.jminor.framework.db.remote {
-  requires org.slf4j;
   requires transitive org.jminor.common.remote;
   requires transitive org.jminor.framework.db.core;
 

@@ -3,7 +3,6 @@
  * @provides org.jminor.framework.db.EntityConnectionProvider
  */
 module org.jminor.framework.db.local {
-  requires org.slf4j;
   requires transitive org.jminor.framework.db.core;
 
   exports org.jminor.framework.db.local;

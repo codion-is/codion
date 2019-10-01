@@ -5137,3 +5137,4 @@
   PropertyValue.toString() overridden, now returns the property name
   Module jminor-framework-db-test renamed to jminor-framework-domain-test
   Package names org.jminor.framework.domain.testing and org.jminor.swing.framework.ui.testing to .test to reflect module names
+  org.jminor.common.core module now has a requires transitive dependency on slf4j, slf4j requires clause removed from other modules

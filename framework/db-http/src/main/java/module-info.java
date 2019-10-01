@@ -3,7 +3,6 @@
  * @provides org.jminor.framework.db.EntityConnectionProvider
  */
 module org.jminor.framework.db.http {
-  requires org.slf4j;
   requires java.net.http;
   requires org.jminor.framework.db.core;
 
