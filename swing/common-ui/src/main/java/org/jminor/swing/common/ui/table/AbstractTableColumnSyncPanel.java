@@ -4,6 +4,7 @@
 package org.jminor.swing.common.ui.table;
 
 import org.jminor.swing.common.model.table.SwingFilteredTableColumnModel;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 
 import javax.swing.Box;
 import javax.swing.JPanel;
@@ -13,8 +14,8 @@ import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
@@ -30,6 +31,7 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
   private final TableColumnModel columnModel;
   private final List<TableColumn> columns;
   private final Box.Filler verticalFiller;
+  private final JPanel basePanel;
   private Map<TableColumn, JPanel> columnPanels;
 
   /**
@@ -37,12 +39,14 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
    * @param columnModel the column model
    */
   public AbstractTableColumnSyncPanel(final SwingFilteredTableColumnModel columnModel) {
-    setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    setLayout(new BorderLayout());
+    this.basePanel = new JPanel(new FlexibleGridLayout(1, 0, 0, 0));
     this.columnModel = columnModel;
     this.columns = columnModel.getAllColumns();
     this.columnModel.addColumnModelListener(new SyncColumnModelListener());
     final Dimension fillerSize = new Dimension();
     this.verticalFiller = new Box.Filler(fillerSize, fillerSize, fillerSize);
+    add(basePanel, BorderLayout.WEST);
   }
 
   /**
@@ -71,12 +75,12 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
    * Resets the panel and lays out all sub-panels.
    */
   public final void resetPanel() {
-    removeAll();
+    basePanel.removeAll();
     final Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
     while (columnEnumeration.hasMoreElements()) {
-      add(getColumnPanels().get(columnEnumeration.nextElement()));
+      basePanel.add(getColumnPanels().get(columnEnumeration.nextElement()));
     }
-    add(verticalFiller);
+    basePanel.add(verticalFiller);
 
     syncPanelWidths();
     repaint();
