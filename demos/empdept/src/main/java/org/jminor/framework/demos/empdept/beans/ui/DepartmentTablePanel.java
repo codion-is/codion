@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.demos.empdept.beans.ui;
 
+import org.jminor.common.StateObserver;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.model.EntityApplicationModel;
@@ -24,23 +25,24 @@ public class DepartmentTablePanel extends EntityTablePanel {
   }
 
   public void viewEmployeeReport() throws Exception {
-    if (getEntityTableModel().getSelectionModel().isSelectionEmpty()) {
-      return;
-    }
-
     final String reportPath = EntityApplicationModel.getReportPath() + "/empdept_employees.jasper";
     final Collection departmentNumbers =
-            Entities.getDistinctValues(EmpDept.DEPARTMENT_ID, getEntityTableModel().getSelectionModel().getSelectedItems());
+            Entities.getDistinctValues(EmpDept.DEPARTMENT_ID,
+                    getEntityTableModel().getSelectionModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", departmentNumbers);
-    EntityReportUiUtil.viewJdbcReport(DepartmentTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
-            new JasperReportsUIWrapper(), null, getEntityTableModel().getConnectionProvider());
+    EntityReportUiUtil.viewJdbcReport(DepartmentTablePanel.this,
+            new JasperReportsWrapper(reportPath, reportParameters),
+            new JasperReportsUIWrapper(), "Employee Report", getEntityTableModel().getConnectionProvider());
   }
 
   @Override
   protected ControlSet getPrintControls() {
     final ControlSet printControlSet = super.getPrintControls();
-    printControlSet.add(Controls.control(this::viewEmployeeReport, EmpDept.getString(EmpDept.EMPLOYEE_REPORT)));
+    final StateObserver selectionNotEmptyObserver = getEntityTableModel().getSelectionModel()
+            .getSelectionEmptyObserver().getReversedObserver();
+    printControlSet.add(Controls.control(this::viewEmployeeReport,
+            EmpDept.getString(EmpDept.EMPLOYEE_REPORT), selectionNotEmptyObserver));
 
     return printControlSet;
   }

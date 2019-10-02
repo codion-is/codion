@@ -7,13 +7,13 @@
 
 == Domain model
 
-We start by creating a class named EmpDept in a package of our choosing, extending Entities. This first section contains a few optional fields, which are included here for demonstration purposes, **bundle** and the i18n constants.
+We start by creating a class named EmpDept in a package of our choosing, extending Domain. This first section contains a few optional fields, which are included here for demonstration purposes, **bundle** and the i18n constants.
 [source,java]
 ----
 include::{source-dir}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=16..32]
 ----
 
-Next we define the constants required for the department {javadoc-root}/org/jminor/framework/domain/Entity.html[Entity], which is based on the SCOTT.DEPT table. One constant defines the entity itself and will be referred to as the *entityId* (here prefixed with T_), the other three represent the columns in the table and will be referred to as *propertyIds*. The entityId in this example contains the actual table name (scott.dept), but the table name can be specified if that is preferred. The propertyIds contain the actual column names from the table.
+Next we define the constants required for the department {javadoc-root}/org/jminor/framework/domain/Entity.html[Entity], which is based on the SCOTT.DEPT table. One constant defines the entity itself and will be referred to as the *entityId* (here prefixed with T_), the other three represent the columns in the table and will be referred to as *propertyIds*. The entityId in this example contains the actual table name (scott.dept), but the table name can be specified via a __tableName__ parameter when the entity is defined. The propertyIds contain the actual column names from the table, but that is not required either.
 
 [source,java]
 ----
@@ -34,14 +34,14 @@ In this section we add a constructor, calling the two methods which define the d
 include::{source-dir}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=63..68]
 ----
 
-Next we add the method defining the department entity. *EntityDefinition* instances are provided by the {javadoc-root}/org/jminor/framework/domain/Domain.html[Domain] class, via the *define* method which comes in two flavours, one which assumes the *entityID* contains the underlying table name and one which does not, and therefore requires an additional *tableName* parameter. We use the latter below. Note that we fetch caption strings for the properties from the i18n bundle via *getString()*. In a single language model we would simply use "Caption" instead, see <<chinook.adoc#Domain-model, Chinook domain model>>. For an overview of the *Property* class see <<{manual-dir}/jminor-manual.adoc#Property, Manual#Property>>. The *EntityDefinition* class provides chained setters for setting entity attributes, such as the primary key value source. Here we set *idSource* to *IdSource.NONE* since the department number is chosen manually, the so-called *stringProvider* which is responsible for providing *toString()* implementations for entities, the *smallDataset* attribute which hints that it is OK to automatically base ComboBoxes on the entity and we also set the *caption*. In this case we simply have the department string provider return the department name.
+Next we add the method defining the department entity. *Entity.Definition* instances are provided by the {javadoc-root}/org/jminor/framework/domain/Domain.html[Domain] class, via the *define* method which comes in two flavours, one which assumes the *entityID* contains the underlying table name and one which does not, and therefore requires an additional *tableName* parameter. We use the former below. Note that we fetch caption strings for the properties from the i18n bundle via *getString()*. In a single language model we would simply use "Caption" instead, see <<chinook.adoc#Domain-model, Chinook domain model>>. For an overview of the *Property* class see <<{manual-dir}/jminor-manual.adoc#Property, Manual#Property>>. The *Entity.Definition* class provides chained setters for setting entity attributes, such as the primary key value source. Here we set *idSource* to *IdSource.NONE* since the department number is not generated but rather set manually, the so-called *stringProvider* which is responsible for providing *toString()* implementations for entities, the *smallDataset* attribute which hints that it is OK to automatically base ComboBoxes on the entity and we also set the *caption*. In this case we simply have the department string provider return the department name.
 
 [source,java]
 ----
 include::{source-dir}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=69..83]
 ----
 
-Next we define the employee entity. Here we set the *keyGenerator* to *Entities.incrementKeyGenerator(T_EMPLOYEE, EMPLOYEE_ID)* which, as the name suggests, simply increments the maximum column value by one (__N.B. this is a very simplistic implementation which is absolutely not transaction safe__). Here we also introduce the <<{manual-dir}/jminor-manual.adoc#ForeignKeyProperty, Manual#ForeignKeyProperty>>, the *orderByClause*, as well as a *BackgroundColorProvider* which is responsible for providing a custom color for a entity instance.
+Next we define the employee entity. Here we set the *keyGenerator* to *Entities.incrementKeyGenerator(T_EMPLOYEE, EMPLOYEE_ID)* which, as the name suggests, simply increments the maximum column value by one (__N.B. this is a very simplistic implementation which is absolutely not transaction safe__). Here we also introduce the <<{manual-dir}/jminor-manual.adoc#ForeignKeyProperty, ForeignKeyProperty>>, the *orderBy*, as well as a *BackgroundColorProvider* which is responsible for providing a custom color for a entity instance.
 
 [source,java]
 ----
@@ -76,9 +76,9 @@ For further information on parameters required for running JMinor applications s
 
 == Application model layer
 
-In many cases we can use the default model implementations, but here we will customize the employee edit model by extending {javadoc-root}/org/jminor/framework/model/DefaultEntityEditModel.html[DefaultEntityEditModel].
+In many cases we can use the default model implementations, but here we will customize the employee edit model by extending {javadoc-root}/org/jminor/swing/framework/model/SwingEntityEditModel.html[SwingEntityEditModel].
 
-We must provide a constructor taking a single *EntityConnectionProvider* parameter. We also call the *bindEvents* method we define later on.
+We must provide a constructor with a single *EntityConnectionProvider* parameter. We also call the *bindEvents* method we define later on.
 
 [source,java]
 ----
@@ -87,20 +87,20 @@ include::{source-dir}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel
 
 Now, at some point we are going to be editing the manager property of an employee which means we'll need a value list of managers. We override *createForeignKeyComboBoxModel* in order to provide a specialized combo box model for the manager property.
 
-NOTE: The foreign key propertyID is used when referring to the manager property, very rarely do we have to worry about the underlying reference property.
+NOTE: The foreign key propertyId (EmpDept.EMPLOYEE_MGR_FK) is used when referring to the manager property, very rarely do we have to worry about the underlying reference property (EmpDept.EMPLOYEE_MGR).
 
-After handling the manager case we simply delegate to the super class implementation, which by default creates an unfiltered {javadoc-root}/org/jminor/framework/model/EntityComboBoxModel.html[EntityComboBoxModel], showing all the underlying entities.
+We start by callin the super class method which creates an unfiltered {javadoc-root}/org/jminor/framework/model/EntityComboBoxModel.html[EntityComboBoxModel], then we configure the one for the manager foreign key so it only display employees with the job PRESIDENT or MANAGER.
 
 [source,java]
 ----
 include::{source-dir}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=24..42]
 ----
 
-Finally we bind a couple events, for further information see <<{manual-dir}/jminor-manual.adoc#Event-binding, Manual#Event binding>>.
+Finally we bind a couple of events, for further information see <<{manual-dir}/jminor-manual.adoc#Event-binding, Manual#Event binding>>.
 
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=43..64]
+include::{source-dir}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=43..61]
 ----
 
 == Application UI layer
@@ -123,7 +123,7 @@ include::{source-dir}/org/jminor/framework/demos/empdept/beans/ui/DepartmentEdit
 
 We extend *EntityTablePanel* for the department entity in order to provide a report print action.
 
-A class extending *EntityTablePanel* must provide a constructor taking a single *EntityTableModel* parameter.
+A class extending *EntityTablePanel* must provide a constructor taking a single *SwingEntityTableModel* parameter.
 
 [source,java]
 ----
@@ -134,14 +134,14 @@ We create a method for viewing a report, which is called via an action we'll ini
 
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/empdept/beans/ui/DepartmentTablePanel.java[lines=26..39]
+include::{source-dir}/org/jminor/framework/demos/empdept/beans/ui/DepartmentTablePanel.java[lines=26..37]
 ----
 
 Next we override *getPrintControls()* to add our report action to the popup print control set.
 
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/empdept/beans/ui/DepartmentTablePanel.java[lines=40..48]
+include::{source-dir}/org/jminor/framework/demos/empdept/beans/ui/DepartmentTablePanel.java[lines=39..50]
 ----
 
 For editing employee entities we create the *EmployeeEditPanel* class.
@@ -160,63 +160,60 @@ include::{source-dir}/org/jminor/framework/demos/empdept/beans/ui/EmployeeEditPa
 
 == Main application panel
 
-We create a main application panel by extending {javadoc-root}/org/jminor/framework/client/ui/EntityApplicationPanel.html[EntityApplicationPanel]. Overriding *setupEntityPanelProviders()* we configure two *EntityPanelProvider* objects, __employeePanelProvider__ and __departmentPanelProvider__. We'll define the *EmployeePanelProvider* class later.
-
-We override *setupEntityPanelProviders* and call *addEntityPanelProvider()* designating the department panel as the main application panel.
+We create a main application panel by extending {javadoc-root}/org/jminor/framework/client/ui/EntityApplicationPanel.html[EntityApplicationPanel]. Overriding *setupEntityPanelProviders()* we configure two sets of *SwingEntityModelProvider* and *EntityPanelProvider* objects, which allow lazy initialization of UI components. We'll define the *EmployeePanelProvider* class later. We call *addEntityPanelProvider()* making the department panel the main application panel.
 
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=33..55]
+include::{source-dir}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=33..57]
 ----
 
 Next we add a method for importing a JSON text file, which we'll call via an action initialized in the next section.
 
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=57..62]
+include::{source-dir}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=59..64]
 ----
 
 We override *getToolsControlSet()* to add our import action to the Tools menu.
 
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=64..70]
+include::{source-dir}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=66..72]
 ----
 
-We implement *initializeApplicationModel()* by returning an instance of the *EmpDeptApplicationModel* class, which we'll create later.
-
-[source,java]
-----
-include::{source-dir}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=72..75]
-----
-
-We create a *main()* method for configuring and running the application.
+We implement *initializeApplicationModel()* by returning an instance of the *EmpDeptApplicationModel* class, which we'll define later.
 
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=77..83]
+include::{source-dir}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=74..77]
 ----
 
-We then create the *EmpDeptApplicationModel* class by extending *SwingEntityApplicationModel*.
-
-[source,java]
-----
-include::{source-dir}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=85..90]
-----
-
-We then create a *EmployeeModelProvider* by extending *SwingEntityModelProvider*, in order to configure the table model after initialization.
+We create a *main()* method for configuring and running the application. See [[documentation:technical:client#configuration|client configuration]] for what configuration is required for running the client.
 
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=92..102]
+include::{source-dir}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=79..85]
+----
+
+We then define the *EmpDeptApplicationModel* class by extending *SwingEntityApplicationModel*.
+
+[source,java]
+----
+include::{source-dir}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=87..92]
+----
+
+Then we define a *EmployeeModelProvider* by extending *SwingEntityModelProvider*, in order to configure the table model after initialization.
+
+[source,java]
+----
+include::{source-dir}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=94..104]
 ----
 
 We create a *EmployeePanelProvider* by extending *EntityPanelProvider*, in order to configure the table panel after initialization.
-See [[documentation:technical:client#configuration|client configuration]] for what is required for running the client.
 
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=104..113]
+include::{source-dir}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPanel.java[lines=106..115]
 ----
 
 == Application load test

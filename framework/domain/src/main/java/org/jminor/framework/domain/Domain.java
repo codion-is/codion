@@ -970,10 +970,10 @@ public class Domain implements Serializable {
    * "key4" -&#62; {Entity instance with a single mapping "refKey" -&#62; refValue}
    * </pre>
    * {@code
-   * Domain.StringProvider provider = new Domain.StringProvider();<br>
-   * provider.addText("key1=").addValue("key1").addText(", key3='").addValue("key3")<br>
-   *         .addText("' foreign key value=").addForeignKeyValue("key4", "refKey");<br>
-   * System.out.println(provider.toString(entity));<br>
+   * Domain.StringProvider provider = new Domain.StringProvider();
+   * provider.addText("key1=").addValue("key1").addText(", key3='").addValue("key3")
+   *         .addText("' foreign key value=").addForeignKeyValue("key4", "refKey");
+   * System.out.println(provider.toString(entity));
    * }
    * <br>
    * outputs the following String:<br><br>
