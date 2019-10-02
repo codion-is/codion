@@ -304,14 +304,14 @@ Properties.subqueryProperty(SUBQUERY_PROPERTY_ID, Types.VARCHAR, "Caption",
 
 === TransientProperty
 
-{javadoc-root}/org/jminor/framework/domain/Property.TransientProperty.html[TransientProperty] is used to represent a property which has no underlying column, these properties all have a default value of null and can set and retrieved just like normal properties.
+{javadoc-root}/org/jminor/framework/domain/Property.TransientProperty.html[TransientProperty] is used to represent a property which is not based on an underlying column, these properties all have a default value of null and can be set and retrieved just like normal properties.
 
 === DerivedProperty
 
-{javadoc-root}/org/jminor/framework/domain/Property.DerivedProperty.html[DerivedProperty] is used to represent a transient property which value is derived from one or more linked property values. The value of a derived property is provided via a {javadoc-root}/org/jminor/framework/domain/Property.DerivedProperty.Provider.html[DerivedProperty.Provider] implementation as shown below.
+{javadoc-root}/org/jminor/framework/domain/Property.DerivedProperty.html[DerivedProperty] is used to represent a transient property which value is derived from one or more properties in the same entity. The value of a derived property is provided via a {javadoc-root}/org/jminor/framework/domain/Property.DerivedProperty.Provider.html[DerivedProperty.Provider] implementation as shown below.
 [source,java]
 ----
-Properties.derivedProperty(PROPERTY_ID, Types.INTEGER, "Derived value",
+Properties.derivedProperty(SUM_ID, Types.INTEGER, "Sum",
          new Property.DerivedProperty.Provider() {
            public Object getValue(final Map<String, Object> linkedValues) {
              //linkedValues contains the values of the linked properties
@@ -322,11 +322,12 @@ Properties.derivedProperty(PROPERTY_ID, Types.INTEGER, "Derived value",
            }
          }, SOURCE_PROPERTY_ID_1, SOURCE_PROPERTY_ID_2),
 ----
-Example: [[documentation:tutorials:chinook#domain_model[Chinook domain]
+===== Examples
+* <<{tutorials-dir}/chinook.adoc#Domain-model, Chinook domain model>>
 
 == Domain
 
-The *Domain* class serves as a factory class for Entity objects as well as a central repository of entity meta-information (the domain model), each entity type must be defined, by calling {javadoc-root}/org/jminor/framework/domain/Domain.html#define-java.lang.String-org.jminor.framework.domain.Property...-[Domain.define] for each entity. By default the framework uses the *entityId* as table name, unless the *tableName* parameter is specified.
+The *Domain* class serves as a factory class for Entity objects as well as a central repository of entity meta-information (the domain model), each entity type must be defined, by calling {javadoc-root}/org/jminor/framework/domain/Domain.html#define-java.lang.String-org.jminor.framework.domain.Property...-[Domain.define] for each entity. The framework assumes the *entityId* is the table name, unless the *tableName* parameter is specified.
 
 [source,java]
 ----
@@ -362,7 +363,7 @@ The *Domain* class serves as a factory class for Entity objects as well as a cen
 
 === Domain.StringProvider
 
-The {javadoc-root}/org/jminor/framework/domain/Domain.StringProvider.html[Domain.StringProvider] class is for providing __toString()__ implementations for each Entity type. This value is f. ex. used when the entity instance is shown in a ComboBox or as a foreign key value in table views.
+The {javadoc-root}/org/jminor/framework/domain/Domain.StringProvider.html[Domain.StringProvider] class is for providing __toString()__ implementations entities. This value is f. ex. used when entties are displayed in a ComboBox or as a foreign key values in table views.
 
 See the Domain.StringProvider API doc for further information.
 

@@ -44,7 +44,9 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
         entityModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getQueryConditionRequiredState().set(false);
       }
     };
+    //This relies on the foreign key association between employee and department
     departmentModelProvider.addDetailModelProvider(employeeModelProvider);
+
     final EntityPanelProvider departmentPanelProvider = new EntityPanelProvider(departmentModelProvider,
             getModel().getDomain().getCaption(EmpDept.T_DEPARTMENT));
     departmentPanelProvider.setEditPanelClass(DepartmentEditPanel.class);
