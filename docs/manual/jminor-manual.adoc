@@ -40,15 +40,11 @@ States are instantiated via the {javadoc-root}/org/jminor/common/States.html[Sta
 
 [source,java]
 ----
-State state = States.state();
+State state = States.state(false);
 
-state.addListener(new EventListener() {
-  public void eventOccurred() {
-    System.out.println("State changed");
-  }
-});
+state.addListener(() -> System.out.println("State changed"));
 
-state.set(true);//writes out "State changed";
+state.set(true);//prints out "State changed";
 ----
 
 Any *Action* object can be linked to a *State* object via the *UiUtil.linkToEnabledState* method, where the action's *enabled* status is synchronized with the state.
@@ -104,7 +100,8 @@ The following attributes can be set by using chained method calls:
 __hidden, updatable, readOnly, nullable, defaultValue, maxLength, preferredWidth, description, mnemonic, columnHasDefaultValue, format__
 [source,java]
 ----
-Properties.columnProperty(PROPERTY_ID, Types.INTEGER, "Caption").setNullable(false).setDescription("This is a non-nullable property")
+Properties.columnProperty(PROPERTY_ID, Types.INTEGER, "Caption")
+              .setNullable(false).setDescription("This is a non-nullable property")
 ----
 
 ==== Supported data types
