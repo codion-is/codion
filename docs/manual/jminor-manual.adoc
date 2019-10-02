@@ -1,118 +1,945 @@
-= JMinor Application Framework
+= JMinor Manual
 
-:javadoc-url: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
+:javadoc-root: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
 
-== Architecture
+== The basics
 
-A typical JMinor application has two layers, the model and the UI. The model encapsulates the application data, communicates with the underlying database and contains most of the business logic whereas the UI displays the data and provides ways to modify it. The model layer works with a domain model which defines the tables, columns, primary and foreign keys used by the application.
+=== Common classes
 
-== Domain Model
+Two common classes used throughout the framework are the {javadoc-root}/org/jminor/common/Event.html[Event] and {javadoc-root}/org/jminor/common/State.html[State] classes and their respective observers {javadoc-root}/org/jminor/common/EventObserver.html[EventObserver] and {javadoc-root}/org/jminor/common/StateObserver.html[StateObserver] and listeners {javadoc-root}/org/jminor/common/EventListener.html[EventListener] and {javadoc-root}/org/jminor/common/EventInfoListener.html[EventInfoListener].
 
-The JMinor framework is not an ORM (Object-relational mapping) framework, instead the database structure is modelled much like an E/R diagram, with each table represented by an Entity, each column by a Property and each foreign key relationship with a ForeignKeyProperty.
+=== Event ===
 
-The database structure is defined in the {javadoc-url}/org/jminor/framework/domain/Domain.html[Domain] class. An instance of this class contains a {javadoc-url}/org/jminor/framework/domain/Entity.Definition.html[Entity.Definition] for each table, which in turn contains a {javadoc-url}/org/jminor/framework/domain/Property.html[Property] instance for each column in the table. Actual rows in a table are represented by the {javadoc-url}/org/jminor/framework/domain/Entity.html[Entity] class which contains the column values mapped to their respective Properties.
+The {javadoc-root}/org/jminor/common/Event.html[Event] class is a simple event implementation used throughout the framework to signal object state changes or to indicate that an action is about to start or has ended. Classes typically publish their events via public *addListener* methods. Events are triggered by calling the *fire()* method, with or without an *eventInfo* parameter.
+
+Events are instantiated via the {javadoc-root}/org/jminor/common/Events.html[Events] factory class.
+
+To listen to Events you use the {javadoc-root}/org/jminor/common/EventListener.html[EventListener] or {javadoc-root}/org/jminor/common/EventDataListener.html[EventDataListener] interfaces.
 
 [source,java]
 ----
-import static org.jminor.framework.domain.Properties.*;
+Event<String> event = Events.event();
 
+event.addDataListener(new EventDataListener<String>() {
+  @Override
+  public void eventOccurred(final String data) {
+    System.out.println("Event happened: " + data);
+  }
+});
+
+event.fire();//writes out "Event happened: null";
+event.fire("data");//writes out "Event happened: data";
+----
+
+=== State ===
+
+The {javadoc-root}/org/jminor/common/State.html[State] class encapsulates a boolean state (active/inactive) and provides a {javadoc-root}/org/jminor/common/StateObserver.html[StateObserver]:
+
+States are instantiated via the {javadoc-root}/org/jminor/common/States.html[States] factory class.
+
+[source,java]
+----
+State state = States.state();
+
+state.addListener(new EventListener() {
+  public void eventOccurred() {
+    System.out.println("State changed");
+  }
+});
+
+state.set(true);//writes out "State changed";
+----
+
+Any *Action* object can be linked to a *State* object via the *UiUtil.linkToEnabledState* method, where the action's *enabled* status is synchronized with the state.
+
+
+[source,java]
+----
+State state = States.state();
+
+Action action = new AbstractAction("action") {
+  public void actionPerformed(final ActionEvent e) {}
+};
+
+UiUtil.linkToEnabledState(state, action);
+
+//action.isEnabled() now returns false, since State objects are by default inactive.
+
+state.set(true);
+
+//action.isEnabled() now returns true.
+----
+
+== Domain model
+
+=== Introduction
+
+The domain model is based around two interfaces, {javadoc-root}/org/jminor/framework/domain/Entity.html[org.jminor.framework.domain.Entity], which represents a row in a table, and {javadoc-root}/org/jminor/framework/domain/Property.html[org.jminor.framework.domain.Property], which represents columns. The
+{javadoc-root}/org/jminor/framework/domain/Domain.html[org.jminor.framework.domain.Domain] class serves as a container for the domain model definition and as a factory for Entity and Entity.Key objects.
+
+=== Entity
+
+An Entity object represents a row in a table and maps each column value to its respective property. Each type of Entity is identified by a *entityId*,
+a string constant which must be unique within the domain. The simplest way to define a unique *entityId* is to use the underlying table name.
+
+Defining the *entityId* as a static string constant in the domain class is recommended.
+
+[source,java]
+----
+/*
+ * The Store class defines the domain model for the Store application
+ */
 public class Store extends Domain {
+  //the full name of the table, will serve as the entityId for the Entity based on this table
+  public static final String T_ADDRESS = "store.address";
 
-  //String constants for the entity and it's properties,
-  //the entityId and propertyIds respectively
+  //the full name of the table, will serve as the entityId for the Entity based on this table
   public static final String T_CUSTOMER = "store.customer";
-  public static final String CUSTOMER_ID = "id";
-  public static final String CUSTOMER_FIRST_NAME = "first_name";
-  public static final String CUSTOMER_LAST_NAME = "last_name";
-  public static final String CUSTOMER_ACTIVE = "active";
-  
-  public Store() {
-    defineCustomer();
-  }
-  
-  private void defineCustomer() {
-    Property id = primaryKeyProperty(CUSTOMER_ID, Types.INTEGER);
-    Property firstName = columnProperty(CUSTOMER_FIRST_NAME, Types.VARCHAR, "First name");
-    Property lastName = columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name");
-    Property active = booleanProperty(CUSTOMER_ACTIVE, Types.BOOLEAN, "Active", 1, 0);
-
-    define(T_CUSTOMER, id, firstName, lastName, active);
-  }
 }
 ----
 
-As well as serving as a container for the domain model the Domain object serves as a factory for Entity and Entity.Key instances.
+=== Property
+Each column in a table is defined by the {javadoc-root}/org/jminor/framework/domain/Property.html[Property] class or one of its subclasses. The {javadoc-root}/org/jminor/framework/domain/Properties.html[Properties] class provides factory methods for constructing Property objects.
+The following properties can be set by using chained method calls:
+__hidden, updatable, readOnly, nullable, defaultValue, maxLength, preferredWidth, description, mnemonic, columnHasDefaultValue, format__
+[source,java]
+----
+Properties.columnProperty(PROPERTY_ID, Types.INTEGER, "Caption").setNullable(false).setDescription("This is a non-nullable property")
+----
+
+==== Supported data types
+
+JMinor supports the following column data types:
+
+  * Integer (java.sql.Types.INTEGER)
+  * Double (java.sql.Types.DOUBLE)
+  * Long (java.sql.Types.BIGINT)
+  * LocalDateTime (java.sql.Types.TIMESTAMP)
+  * LocalDate (java.sql.Types.DATE)
+  * LocalTime (java.sql.Types.TIME)
+  * String (java.sql.Types.VARCHAR)
+  * Boolean (java.sql.Types.BOOLEAN)
+  * Character (java.sql.Types.CHAR)
+  * Blob (java.sql.Types.BLOB)
+
+=== Property Id constants ===
+
+For each column you define a string constant containing the column name, i.e. 'first_name'. This constant is used when defining the property based on that column and serves as the property identifier. This __propertyId__ is used as column name when constructing SQL queries unless the column name is set via __setColumnName()__.
 
 [source,java]
 ----
-Store store = new Store();
-
-List<Property> customerProperties = store.getProperties(Store.T_CUSTOMER);
-
-Entity john = store.entity(Store.T_CUSTOMER);
-
-john.put(Store.CUSTOMER_ID, 1);
-john.put(Store.CUSTOMER_FIRST_NAME, "John");
-john.put(Store.CUSTOMER_LAST_NAME, "Doe");
-john.put(Store.CUSTOMER_ACTIVE, true);
-
-String firstName = john.getString(Store.CUSTOMER_FIRST_NAME);
-
-Entity.Key johnKey = store.key(Store.T_CUSTOMER);
-johnKey.put(Store.CUSTOMER_ID, 2);
-----
-
-Each table is identified by a String constant (which must be unique within the domain), called *entityId*, these should be defined in the Domain class. In the example below the *entityId* constants are prefixed by *T_*.
-
-[source,java]
-----
+/*
+ * The Store class defines the domain model for the Store application
+ */
 public class Store extends Domain {
-  
-  /** entityId representing the "address" table in the "store" schema */
-  public static final String T_ADDRESS = "store.address";
-  
-  /** entityId representing the "customer" table in the "store" schema */
-  public static final String T_CUSTOMER = "store.customer";
-
-}
-----
-Each column in a table is identified by a String constant (which must be unique within its Entity) called *propertyId* and is represented by the {javadoc-url}/org/jminor/framework/domain/Property.html[Property] class or one of its subclasses.
-
-[source,java]
-----
-public class Store extends Domain {
-  
-  /** entityId representing the "address" table in the "store" schema */
+  //the full name of the table, will serve as the entityId for the Entity based on this table
   public static final String T_ADDRESS = "store.address";
 
-  /** propertIds for the columns in the "address" table */
+  //Property constant identifying the column ID in the ADDRESS table
   public static final String ADDRESS_ID = "id";
+  //Property constant identifying the column STREET in the ADDRESS table
   public static final String ADDRESS_STREET = "street";
+  //Property constant identifying the column CITY in the ADDRESS table
   public static final String ADDRESS_CITY = "city";
- 
-  /** entityId representing the "customer" table in the "store" schema */
+
+  //the full name of the table, will serve as the entityId for the Entity based on this table
   public static final String T_CUSTOMER = "store.customer";
- 
-  /** propertIds for the columns in the "customer" table */
+
+  //Property constant identifying the column ID in the CUSTOMER table
   public static final String CUSTOMER_ID = "id";
+  //Property constant identifying the column FIRST_NAME in the CUSTOMER table
   public static final String CUSTOMER_FIRST_NAME = "first_name";
+  //Property constant identifying the column LAST_NAME in the CUSTOMER table
   public static final String CUSTOMER_LAST_NAME = "last_name";
+  //Property constant identifying the foreign key referencing the ADDRESS entity,
+  //the value is somewhat arbitrary since it does not map to a column
   public static final String CUSTOMER_ADDRESS_FK = "address_fk";
+  //Property constant identifying the column referencing the STORE.ADDRESS table
   public static final String CUSTOMER_ADDRESS_ID = "address_id";
+  //Property constant identifying the column IS_ACTIVE in the CUSTOMER table
   public static final String CUSTOMER_IS_ACTIVE = "is_active";
+  //Property constant identifying the denormalized column CITY in the CUSTOMER table
   public static final String CUSTOMER_CITY = "city";
+  //Property constant identifying a derived property CUSTOMER entity
   public static final String CUSTOMER_DERIVED = "derived";
 }
 ----
 
-== Entity
+=== Property
+{javadoc-root}/org/jminor/framework/domain/Property.html[Property] and its subclasses is used to represent entity properties, these can be transient or based on table columns.
 
-An Entity instance is a map-like structure, mapping column values to their respective properties via *put()* and *get()* methods with a few useful features added.
+[source,java]
+----
+Properties.transientProperty(CUSTOMER_TOKEN, Types.VARCHAR, "Token")
+----
 
-=== Model Layer
+=== ColumnProperty
+{javadoc-root}/org/jminor/framework/domain/Property.ColumnProperty.html[ColumnProperty] is used to represent properties that are based on table columns.
 
-=== EntityModel
+[source,java]
+----
+Properties.columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name")
+----
 
-The EntityModel class coordinates two other classes, the EntityEditModel and the EntityTableModel, which are concerned with editing a 
+=== Primary key
+Entities must have at least one primary key column property.
 
-The EntityModel class is the base class for working with entities, it is comprised of a EntityEditModel, for editing a entity instance, and a EntityTableModel for working with multiple entities. The EntityModel coordinates between the edit model and the table model.
+The only requirement is that the primary key properties represent a unique column combination for the underlying table, it does not have to correspond to an actual table primary key, although that is of course preferable. The framework does not enforce uniqueness for these properties, so a unique or primary key on the corresponding table columns is strongly recommended.
+[source,java]
+----
+Properties.primaryKeyProperty(CUSTOMER_ID)//by default Types.INTEGER and primaryKeyIndex 0
+----
+If the primary key is comprised of more than one column you must set the primary key index.
+[source,java]
+----
+Properties.columnProperty(ID_1, Types.INTEGER).setPrimaryKeyIndex(0),
+Properties.columnProperty(ID_2, Types.INTEGER).setPrimaryKeyIndex(1),
+----
+
+=== ForeignKeyProperty
+{javadoc-root}/org/jminor/framework/domain/Property.ForeignKeyProperty.html[ForeignKeyProperty] is a wrapper property used to indicate a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of non-trivial primary keys.
+[source,java]
+----
+//referring to an entity with a single column primary key
+Properties.foreignKeyProperty(CUSTOMER_ADDRESS_FK, "Address", T_ADDRESS,
+        Properties.columnProperty(CUSTOMER_ADDRESS_ID))
+
+//referring to an entity with a dual column primary key
+Properties.foreignKeyProperty(MASTER_FK, "Master", T_MASTER,
+        new Property.ColumnProperty[] {
+                Properties.columnProperty(MASTER_ID_1),
+                Properties.columnProperty(MASTER_ID_2)
+        });
+----
+
+In this example CUSTOMER_ADDRESS_FK is the ID of the foreign key property and can be used to retrieve the actual entity being referred to.
+[source,java]
+----
+Entity address = customer.getForeignKey(CUSTOMER_ADDRESS_FK);
+----
+CUSTOMER_ADDRESS_ID is the actual column used as foreign key and retrieving that will simply return the reference id value.
+[source,java]
+----
+Integer addressId = customer.getInteger(CUSTOMER_ADDRESS_ID);
+----
+By default one level of foreign key values is eagerly fetched during selects, this can be overridden via __setFetchDepth()__. Note that the example below does not really make sense since the ADDRESS entity doesn't have any foreign keys, but if id did the entities referred to via these keys would be eagerly loaded.
+[source,java]
+----
+//referring to an entity with a single column primary key
+Properties.foreignKeyProperty(CUSTOMER_ADDRESS_FK, "Address", T_ADDRESS,
+        Properties.columnProperty(CUSTOMER_ADDRESS_ID)).setFetchDepth(2)
+----
+=== Boolean Properties
+For databases supporting *Types.BOOLEAN* you simply use *Properties.columnProperty*.
+[source,java]
+----
+Properties.columnProperty(CUSTOMER_IS_ACTIVE, Types.BOOLEAN, "Is active")
+----
+For databases lacking native boolean support we use the *Properties.booleanProperty* method, specifying the actual true/false values.
+[source,java]
+----
+Properties.booleanProperty(CUSTOMER_IS_ACTIVE, Types.INTEGER, "Is active", 1, 0)
+----
+For boolean columns using unconventional types you can specify the true and false values.
+[source,java]
+----
+Properties.booleanProperty(CUSTOMER_IS_ACTIVE, Types.VARCHAR, "Is active", "true", "false")
+----
+[source,java]
+----
+Properties.booleanProperty(CUSTOMER_IS_ACTIVE, Types.CHAR, "Is active", 'T', 'F')
+----
+Note that boolean properties always use the boolean Java type, the framework handles translating to and from the actual column values.
+[source,java]
+----
+entity.put(CUSTOMER_IS_ACTIVE, true);
+
+boolean isActive = entity.getBoolean(CUSTOMER_IS_ACTIVE);
+----
+=== DenormalizedProperty
+{javadoc-root}/org/jminor/framework/domain/Property.DenormalizedProperty.html[DenormalizedProperty] is used for columns that should automatically get their value from a column in a referenced table. This property automatically gets the value from the column in the referenced table when the corresponding reference property value is set.
+[source,java]
+----
+Properties.denormalizedProperty(CUSTOMER_CITY, CUSTOMER_ADDRESS_FK,
+        getProperty(T_ADDRESS, ADDRESS_CITY), "City")
+----
+
+NOTE: The property is not kept in sync if the denormalized property is updated in the referenced entity.
+
+[source,java]
+----
+Domain domain = getDomain();
+Entity address = domain.entity(T_ADDRESS);
+address.put(ADDRESS_CITY, "Syracuse");
+
+Entity customer = domain.entity(T_CUSTOMER);
+customer.put(CUSTOMER_ADDRESS_FK, address);
+
+customer.get(CUSTOMER_CITY);//returns "Syracuse"
+
+//NB
+address.put(ADDRESS_CITY, "Canastota");
+customer.get(CUSTOMER_CITY, still returns "Syracuse"
+
+customer.put(CUSTOMER_ADDRESS_FK, address);//set the referenced value again
+customer.get(CUSTOMER_CITY);//now this returns "Canastota"
+----
+=== SubqueryProperty
+{javadoc-root}/org/jminor/framework/domain/Property.SubqueryProperty.html[SubqueryProperty] is used to represent properties which get their value from a subquery returning a single value. Note that in the example below __reference_id__ must be available when the query is run, that is, the entity must include that column as a property.
+[source,java]
+----
+Properties.subqueryProperty(SUBQUERY_PROPERTY_ID, Types.VARCHAR, "Caption",
+        "select field from schema.table where id = reference_id"))
+----
+=== TransientProperty
+{javadoc-root}/org/jminor/framework/domain/Property.TransientProperty.html[TransientProperty] is used to represent a property which has no underlying column, these properties all have a default value of null and can set and retrieved just like normal properties.
+
+=== DerivedProperty
+{javadoc-root}/org/jminor/framework/domain/Property.DerivedProperty.html[DerivedProperty] is used to represent a transient property which value is derived from one or more linked property values. The value of a derived property is provided via a {javadoc-root}/org/jminor/framework/domain/Property.DerivedProperty.Provider.html[DerivedProperty.Provider] implementation as shown below.
+[source,java]
+----
+Properties.derivedProperty(PROPERTY_ID, Types.INTEGER, "Derived value",
+         new Property.DerivedProperty.Provider() {
+           public Object getValue(final Map<String, Object> linkedValues) {
+             //linkedValues contains the values of the linked properties
+             final Integer linkedOne = (Integer) linkedValues.get(SOURCE_PROPERTY_ID_1);
+             final Integer linkedTwo = (Integer) linkedValues.get(SOURCE_PROPERTY_ID_2);
+
+             return linkedOne + linkedTwo;
+           }
+         }, SOURCE_PROPERTY_ID_1, SOURCE_PROPERTY_ID_2),
+----
+Example: [[documentation:tutorials:chinook#domain_model[Chinook domain]
+
+== Domain
+
+The *Domain* class serves as a factory class for Entity objects as well as a central repository of entity meta-information (the domain model), each entity type must be defined, by calling {javadoc-root}/org/jminor/framework/domain/Domain.html#define-java.lang.String-org.jminor.framework.domain.Property...-[Domain.define] for each entity. By default the framework uses the *entityId* as table name, unless the *tableName* parameter is specified.
+
+[source,java]
+----
+//public class Store continued
+
+  public Store() {
+    //Defining the entity that represents the table STORE.ADDRESS,
+    //with a property for each column in the table, identified by their respective constants
+    define(T_ADDRESS,
+        Properties.primaryKeyProperty(ADDRESS_ID),
+        Properties.columnProperty(ADDRESS_STREET, Types.VARCHAR, "Street"),
+        Properties.columnProperty(ADDRESS_CITY, Types.VARCHAR, "City"))
+        .setStringProvider(new StringProvider(ADDRESS_STREET).addText(" - ").addValue(ADDRESS_CITY)
+    );
+
+    //Defining the entity that represents the table STORE.CUSTOMER,
+    //with a property for each column in the table, identified by their respective constants
+    define(T_CUSTOMER,
+        Properties.primaryKeyProperty(CUSTOMER_ID),
+        Properties.columnProperty(CUSTOMER_FIRST_NAME, Types.VARCHAR, "First name").setDescription("The first name of the customer"),
+        Properties.columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name").setDescription("The last name of the customer"),
+        Properties.foreignKeyProperty(CUSTOMER_ADDRESS_FK, "Address", T_ADDRESS,
+            Properties.columnProperty(CUSTOMER_ADDRESS_ID)).setNullable(false),
+        Properties.booleanProperty(CUSTOMER_IS_ACTIVE, Types.VARCHAR, "Is active", "true", "false").setDefaultValue(true),
+        Properties.denormalizedProperty(CUSTOMER_CITY, T_ADDRESS,
+            getProperty(T_ADDRESS, ADDRESS_CITY), "City"),
+        Properties.transientProperty(CUSTOMER_TRANSIENT, Types.VARCHAR, "Transient"))
+        .setStringProvider(new StringProvider(CUSTOMER_LAST_NAME).addText(", ").addValue(CUSTOMER_FIRST_NAME)
+    );
+  }
+}
+----
+
+=== Domain.StringProvider
+
+The {javadoc-root}/org/jminor/framework/domain/Domain.StringProvider.html[Domain.StringProvider] class is for providing __toString()__ implementations for each Entity type. This value is f. ex. used when the entity instance is shown in a ComboBox or as a foreign key value in table views.
+
+See the Domain.StringProvider API doc for further information.
+
+=== Helper classes
+
+The following classes can come in handy when working with entities.
+
+{javadoc-root}/org/jminor/framework/domain/Domain.Validator.html[Domain.Validator]
+
+A default *Entity.Validator* implementation which provides basic range and null validation, can be overridden to provide further validations. Note that validation is performed quite often so it should not perform expensive operations. Validation requiring database access f.ex. belongs in the application model or ui.
+
+[source,java]
+----
+define("entityID", [...]).setValidator(new Domain.Validator() {
+      @Override
+      public void validate(Entity entity, Property property) throws ValidationException {
+        super.validate(entity, property);
+
+        Object value = entity.get(property);
+
+        if (!isValid(value)) {
+          throw new ValidationException(property.getPropertyId(), value, value + " is invalid");
+        }
+      }
+    });
+----
+
+{javadoc-root}/org/jminor/framework/domain/Entity.BackgroundColorProvider.html[Entity.BackgroundColorProvider]
+
+Provides the background color for entity property cells when displayed in a table.
+
+[source,java]
+----
+define("entityID", [...]).setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
+      public Object getBackgroundColor(final Entity entity, final Property property) {
+        if (property.is("colorPropertyID") && entity.getString("colorPropertyID").equals("CYAN")) {
+          return Color.CYAN;
+        }
+
+        return null;
+      }
+    });
+----
+
+Example: [[documentation:tutorials:empdept#domain_model[EmpDept domain]
+
+=== Entities in action
+
+Using the Entity class is rather straight forward.
+
+[source,java]
+----
+//initialize the domain model by instantiating the domain model class
+Store store = new Store();
+
+//Initialize a database connection provider using the domain model, user credentials scott/tiger and application identifier TestApp
+EntityConnectionProvider connectionProvider = EntityConnectionProviders.createConnectionProvider(
+             store, new User("scott", "tiger".toCharArray()), "TestApp");
+
+EntityConnection connection = connectionProvider.getConnection();
+
+//Initialize a new entity representing the table STORE.ADDRESS
+Entity address = store.entity(Store.T_ADDRESS);
+
+//Set the value of the column ID to 42
+address.put(Store.ADDRESS_ID, 42);
+//Set the value of the column STREET to "Elm Street"
+address.put(Store.ADDRESS_STREET, "Elm Street");
+//Set the value of the column CITY to "Seattle"
+address.put(Store.ADDRESS_CITY, "Seattle");
+
+//Insert the address entity
+connection.insert(Collections.singletonList(address));
+
+//Initialize a new entity representing the table STORE.CUSTOMER
+Entity customer = store.entity(Store.T_CUSTOMER);
+
+//Set the value of the column ID to 42
+customer.put(Store.CUSTOMER_ID, 42);
+//Set the value of the column FIRST_NAME to John
+customer.put(Store.CUSTOMER_FIRST_NAME, "John");
+//Set the value of the column LAST_NAME to Doe
+customer.put(Store.CUSTOMER_LAST_NAME, "Doe");
+//Set the reference value ADDRESS
+customer.put(Store.CUSTOMER_ADDRESS_FK, address);
+//Set the value of the column IS_ACTIVE to true
+customer.put(Store.CUSTOMER_IS_ACTIVE, true);
+
+//Insert the entity representing the customer John Doe,
+//receiving the primary key of the new record in a list as a return value
+List<Entity.Key> key = connection.insert(Collections.singletonList(customer));
+
+//Retrieve the ID value
+Integer id = customer.getInteger(Store.CUSTOMER_ID);
+//Retrieve the first name value
+String firstName = customer.getString(Store.CUSTOMER_FIRST_NAME);
+
+//Select the entity from the database by primary key
+Entity customerByKey = connection.selectSingle(key.get(0));
+
+//Select entities representing the table STORE.CUSTOMER by first name
+List<Entity> entitiesByFirstName = connection.selectMany(Store.T_CUSTOMER, Store.CUSTOMER_FIRST_NAME, "Björn");
+----
+
+=== EntityGenerator
+
+Using the EntityGenerator tool you can quickly generate a domain class containing the property Id constants for a given database schema as well as basic entity definitions.
+
+The required command line arguments are: schema_name domain_class_package_name username password
+Additionally you can add a comma seperated list of tables to include.
+
+[source,bash]
+----
+java -Djminor.db.type=h2 -Djminor.db.embedded=true -Djminor.db.host=h2db/h2 -cp dist/jminor.jar:lib/h2-1.1.114.jar:lib/log4j-1.2.15.jar:lib/jcalendar-1.3.2.jar org.jminor.swing.framework.tools.ui.EntityGenerator PETSTORE org.petstore.domain.Petstore scott tiger
+----
+
+==== Examples ====
+
+  * [[documentation:tutorials:chinook#domain_model[Chinook domain model]
+  * [[documentation:tutorials:empdept#domain_model[EmpDept domain model]
+  * [[documentation:tutorials:petstore#domain_model[Pet Store domain model]
+
+== Domain model test
+
+=== Introduction
+
+To unit test the CRUD operations on the domain model extend {javadoc-root}/org/jminor/framework/domain/test/EntityTestUnit.html[EntityTestUnit].
+
+The unit tests are run within a single transaction which is rolled back after the test finishes, so these tests are pretty much guaranteed to leave no junk data behind.
+
+=== EntityTestUnit
+
+The following methods all have default implementations which are based on randomly created property values, based on the constraints set in the domain model, override if the default ones are not working.
+
+* {javadoc-root}/org/jminor/framework/domain/testing/EntityTestUnit.html#initializeReferenceEntity-java.lang.String-[initializeReferenceEntity] should initialize return an instance of the given entity type to use for a foreign key reference required for inserting the entity being tested.
+* {javadoc-root}/org/jminor/framework/domain/testing/EntityTestUnit.html#initializeTestEntity-java.lang.String-[initializeTestEntity] should return a entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
+* {javadoc-root}/org/jminor/framework/domain/testing/EntityTestUnit.html#modifyEntity-org.jminor.framework.domain.Entity-[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the db layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
+
+To run the full CRUD test for a domain entity you need to call the //testEntity(String entityID)// method with the ID of the given entity as parameter. You can either create a single //testDomain()// method and call the //testEntity// method in turn for each entityID or create a single //testEntityName// for each domain entity, as we do in the example below.
+
+[source,java]
+----
+public class TestStore extends EntityTestUnit {
+
+  public TestStore() {
+    super(new Store());
+  }
+
+  @Test //a unit test method for the address entity
+  public void address() throws Exception {
+    //The testEntity method performs basic insert/select/update/delete tests for the given entity
+    testEntity(Store.T_ADDRESS);
+  }
+
+  @Test //a unit test method for the customer entity
+  public void customer() throws Exception {
+    testEntity(Store.T_CUSTOMER);
+  }
+
+  @Override
+  protected void initializeReferenceEntity(String entityID) throws Exception {
+    //see if the currently running test requires an ADDRESS entity
+    if (entityIDs.contains(Store.T_ADDRESS)) {
+      Entity address = new Entity(Store.ADDRESS);
+      address.put(Store.ADDRESS_ID, 21);
+      address.put(Store.ADDRESS_STREET, "One Way");
+      address.put(Store.ADDRESS_CITY, "Sin City");
+
+      return address;
+    }
+
+    return super.initializeReferenceEntity(entityID);
+  }
+
+  @Override
+  protected Entity initializeTestEntity(String entityID) {
+    if (entityID.equals(Store.T_ADDRESS)) {
+      //Initialize a entity representing the table STORE.ADDRESS,
+      //which can be used for the testing
+      Entity address = new Entity(Store.T_ADDRESS);
+      address.put(Store.ADDRESS_ID, 42);
+      address.put(Store.ADDRESS_STREET, "Street");
+      address.put(Store.ADDRESS_CITY, "City");
+
+      return address;
+    }
+    else if (entityID.equals(Store.T_CUSTOMER)) {
+      //Initialize a entity representing the table STORE.CUSTOMER,
+      //which can be used for the testing
+      Entity customer = new Entity(Store.T_CUSTOMER);
+      customer.put(Store.CUSTOMER_ID, 42);
+      customer.put(Store.CUSTOMER_FIRST_NAME, "Robert");
+      customer.put(Store.CUSTOMER_LAST_NAME, "Ford");
+      //the getReferenceEntity() method returns the entity initialized in initializeReferenceEntities()
+      customer.put(Store.CUSTOMER_ADDRESS_FK, getReferenceEntity(Store.T_ADDRESS));
+      customer.put(Store.CUSTOMER_IS_ACTIVE, true);
+
+      return customer;
+    }
+
+    return null;
+  }
+
+  @Override
+  protected void modifyEntity(Entity testEntity) {
+    if (testEntity.is(Store.T_ADDRESS)) {
+      testEntity.put(Store.ADDRESS_STREET, "New Street");
+      testEntity.put(Store.ADDRESS_CITY, "New City");
+    }
+    else if (testEntity.is(Store.T_CUSTOMER)) {
+      //It is sufficient to change the value of a single property, but the more the merrier
+      testEntity.put(Store.CUSTOMER_FIRST_NAME, "Jesse");
+      testEntity.put(Store.CUSTOMER_LAST_NAME, "James");
+      testEntity.put(Store.CUSTOMER_IS_ACTIVE, false);
+    }
+  }
+}
+----
+
+==== Examples ====
+
+  * [[documentation:tutorials:chinook#domain_model_unit_test[Chinook domain model test]
+  * [[documentation:tutorials:empdept#domain_model_unit_test[EmpDept domain model test]
+  * [[documentation:tutorials:petstore#domain_model_unit_test[Pet Store domain model test]
+
+== EntityModel
+
+=== Introduction
+
+The {javadoc-root}/org/jminor/framework/model/EntityEditModel.html[EntityEditModel] interface defines the CRUD business logic used by the {javadoc-root}/org/jminor/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] class when entities are being edited, and must be defined for each entity requiring a CRUD user interface. The EntityEditModel works with a single entity instance, called the active entity, which can be set via the {javadoc-root}/org/jminor/framework/model/EntityEditModel.html#setEntity-org.jminor.framework.domain.Entity-[setEntity(Entity entity)] method and retrieved via {javadoc-root}/org/jminor/framework/model/EntityEditModel.html#getEntityCopy--[getEntityCopy()]. The EntityEditModel interface exposes a number of methods for manipulating as well as querying the property values of the active entity, via the {javadoc-root}/org/jminor/common/model/valuemap/ValueMapEditModel.html[ValueMapEditModel] interface which it extends
+
+[source,java]
+----
+public class CustomerEditModel extends SwingEntityEditModel {
+  public CustomerEditModel(EntityConnectionProvider connectionProvider) {
+    super(Store.T_CUSTOMER, connectionProvider);
+  }
+}
+----
+[source,java]
+----
+public class AddressEditModel extends SwingEntityEditModel {
+  public AddressModel(EntityConnectionProvider connectionProvider) {
+    super(Store.T_ADDRESS, connectionProvider);
+    addDetailModel(new CustomerModel(connectionProvider));
+  }
+}
+----
+[source,java]
+----
+//Initialize a database provider object using the credentials scott/tiger and application identifier TestApp
+EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider().setDomainClassName(Store.class.getName()).setUser(new User("scott", "tiger".toCharArray()).setClientTypeId("TestApp");
+
+CustomerEditModel customerModel = new CustomerEditModel(connectionProvider);
+
+customerModel.put(Store.CUSTOMER_ID, 42);
+customerModel.put(Store.CUSTOMER_FIRST_NAME, "Björn");
+customerModel.put(Store.CUSTOMER_LAST_NAME, "Sigurðsson");
+customerModel.put(Store.CUSTOMER_IS_ACTIVE, true);
+
+//inserts the active entity
+List<Entity.Key> primaryKeys = customerModel.insert();
+
+//select the customer we just inserted
+Entity customer = connectionProvider.getConnection().selectSingle(primaryKeys.get(0));
+
+//set the customer as the entity to edit in the edit model
+customerModel.setEntity(customer);
+
+//modify some property values
+customerModel.put(Store.CUSTOMER_FIRST_NAME, "John");
+customerModel.put(Store.CUSTOMER_LAST_NAME, "Doe");
+
+//updates the active entity
+customerModel.update();
+
+//deletes the active entity
+customerModel.delete();
+----
+
+=== Detail models
+
+Directly adding a detail models is a trivial matter, the framework handles everything as long as the master/detail relationship is defined in the domain model.
+
+[source,java]
+----
+addDetailModel(new CustomerModel(connectionProvider);
+----
+
+=== Table model
+
+Each {javadoc-root}/org/jminor/framework/model/EntityModel.html[EntityModel] can contain a single {javadoc-root}/org/jminor/framework/model/EntityTableModel.html[EntityTableModel] instance. This table model can be created automatically by the //EntityModel// or supplied via a constructor argument in case of a specialized implementation.
+
+[source,java]
+----
+static class CustomerTableModel extends SwingEntityTableModel {
+  public CustomerTableModel(EntityConnectionProvider connectionProvider) {
+    super(Store.T_CUSTOMER, connectionProvider);
+  }
+}
+
+static class CustomerModel extends SwingEntityModel {
+  public CustomerModel(EntityConnectionProvider connectionProvider) {
+    super(new CustomerTableModel(connectionProvider));
+  }
+}
+----
+
+=== Edit model
+
+Each {javadoc-root}/org/jminor/framework/model/EntityModel.html[EntityModel] contains a single {javadoc-root}/org/jminor/framework/model/EntityEditModel.html[EntityEditModel] instance. This edit model can be created automatically by the __EntityModel__ or supplied via a constructor argument in case of a specialized implementation.
+
+[source,java]
+----
+static class CustomerEditModel extends SwingEntityEditModel {
+  public CustomerEditModel(EntityConnectionProvider connectionProvider) {
+    super(Store.T_CUSTOMER, connectionProvider);
+  }
+}
+
+static class CustomerModel extends SwingEntityModel {
+  public CustomerModel(EntityConnectionProvider connectionProvider) {
+    super(new CustomerEditModel(connectionProvider));
+  }
+}
+----
+
+=== Event binding
+
+The EntityModel, EntityEditModel and EntityTableModel classes expose a number of *addListener* methods.
+
+The following example prints, to the standard output, all changes made to a given property as well as a message indicating that a refresh has started.
+[source,java]
+----
+protected void bindEvents() {
+  getTableModel().addRefreshStartedListener(new EventListener() {
+    public void eventOccurred() {
+      System.out.println("Refresh is about to start");
+    }
+  });
+  getEditModel().addValueListener(EmpDept.EMPLOYEE_DEPARTMENT_FK, new ValueChangeListener() {
+    protected void valueChanged(ValueChangeEvent event) {
+      System.out.println("Property " + e.getKey() + " changed from " + e.getOldValue() + " to " + e.getNewValue());
+    }
+  });
+}
+----
+
+=== Examples
+  * [[documentation:tutorials:empdept#application_model_layer[EmpDept entity models]
+
+== EntityApplicationModel
+
+=== Introduction
+
+The EntityApplicationModel class serves as the base for the application. Its main purpose is to hold references to the root EntityModel instances used by the application.
+
+When implementing this class you must provide a constructor taking a single EntityConnectionProvider instance as argument, as seen below.
+
+[source,java]
+----
+public class StoreApplicationModel extends SwingEntityApplicationModel {
+
+  public StoreApplicationModel(final EntityConnectionProvider connectionProvider) {
+    super(connectionProvider);
+    addEntityModel(new CustomerModel(connectionProvider));
+  }
+}
+----
+
+== Application load testing
+
+=== Introduction
+
+The application load testing harness is used to see how your application, server and database handle multiple concurrent users. This is done by extending the abstract class {javadoc-root}/org/jminor/swing/framework/tools/EntityLoadTestModel.html[EntityLoadTestModel].
+
+[source,java]
+----
+public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
+
+  private static final Store STORE = new Store();
+
+  public StoreLoadTest() {
+    super(new User("scott", "tiger".toCharArray()));
+  }
+
+  @Override
+  protected void performWork(final StoreAppModel application) {
+    try {
+      final EntityModel customerModel = application.getMainApplicationModels().iterator().next();
+      customerModel.getTableModel().clearSelection();
+      customerModel.refresh();
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  protected StoreAppModel initializeApplication() {
+    return new StoreAppModel(new RemoteEntityConnectionProvider(STORE, getUser(), UUID.randomUUID(), getClass().getSimpleName()));
+  }
+
+  public static void main(String[] args) {
+    new LoadTestPanel(new StoreLoadTest()).showFrame();
+  }
+}
+----
+
+=== Examples
+
+  * [[documentation:tutorials:empdept#application_load_test[EmpDept application load test]
+  * [[documentation:tutorials:chinook#application_load_test[Chinook application load test]
+  * [[documentation:tutorials:petstore#application_load_test[Pet Store application load test]
+
+== EntityPanel
+
+=== Introduction
+
+The {javadoc-root}/org/jminor/swing/framework/ui/EntityPanel.html[EntityPanel] is the base UI class for working with entity instances. It usually consists of an {javadoc-root}/org/jminor/swing/framework/ui/EntityTablePanel.html[EntityTablePanel], an {javadoc-root}/org/jminor/swing/framework/ui/EntityEditPanel.html[EntityEditPanel], which contains the controls (text fields, combo boxes and such) for editing an entity instance and a set of detail panels representing the entities having a master/detail relationship with the underlying entity.
+
+==== EntityEditPanel
+
+When instantiating an EntityPanel you can supply an EntityEditPanel instance as a parameter. When implementing an EntityEditPanel you must implement the //initializeUI()// method, in which you should initialize the edit panel UI. The EntityEditPanel class exposes methods for creating input components and binding them with the underlying EntityEditModel instance.
+[source,java]
+----
+public class CustomerEditPanel extends EntityEditPanel {
+
+  public CustomerEditPanel(final SwingEntityEditModel editModel) {
+    super(editModel);
+  }
+
+  @Override
+  protected void initializeUI() {
+    //the firstName field should receive the focus whenever the panel is initialized
+    setInitialFocusProperty(Store.CUSTOMER_FIRST_NAME);
+
+    setLayout(new GridLayout(4,1));
+    createTextField(Store.CUSTOMER_FIRST_NAME);
+    createTextField(Store.CUSTOMER_LAST_NAME);
+    createForeignKeyComboBox(Store.CUSTOMER_ADDRESS_FK);
+    createCheckBox(Store.CUSTOMER_IS_ACTIVE, null, false);
+
+    //the createControlPanel method creates a panel containing the
+    //component associated with the property as well as a JLabel with the
+    //property caption as defined in the domain model
+    addPropertyPanel(Store.CUSTOMER_FIRST_NAME);
+    addPropertyPanel(Store.CUSTOMER_LAST_NAME);
+    addPropertyPanel(Store.CUSTOMER_ADDRESS_FK);
+    addPropertyPanel(Store.CUSTOMER_IS_ACTIVE);
+  }
+}
+----
+
+=== Detail panels
+
+Adding a detail panel is done with a single method call, but note that the underlying EntityModel must contain the correct detail model for the detail panel, in this case a *CustomerModel* instance, see [[documentation:manual#detail_models[detail models].
+[source,java]
+----
+public TestPanel extends EntityPanel {
+  public TestPanel(EntityModel model) {
+    super("caption", model);
+    addDetailPanel(new CustomerPanel(model.getDetailModel(CustomerModel.class)));
+  }
+}
+----
+
+=== Custom actions
+The action mechanism used throughout the JMinor framework is based on the {javadoc-root}/org/jminor/swing/common/ui/control/Control.html[Control] class and its subclasses and the {javadoc-root}/org/jminor/swing/common/ui/control/ControlSet.html[ControlSet] class which, as the name suggests, represents a set of controls. There are two static utility classes for creating and presenting controls, {javadoc-root}/org/jminor/swing/common/ui/control/Controls.html[Controls] and {javadoc-root}/org/jminor/swing/common/ui/control/ControlProvider.html[ControlProvider] respectively.
+
+=== Controls
+
+Provides methods for initializing MethodControl objects as well as ToggleBeanValueLink objects.
+
+[source,java]
+----
+public class MethodControlTest {
+
+  public void printString() {
+    System.out.println("printing a string");
+  }
+
+  public static void main(String[] args) {
+    MethodControlTest testObj = new MethodControlTest();
+    MethodControl control = Controls.methodControl(testObj, "printString", "Print string");
+    //calls testObj.printString()
+    control.actionPerformed(new ActionEvent(testObj, 0, "actionPerformed"));
+  }
+}
+----
+
+=== ControlProvider ===
+
+The ControlProvider class provides static factory methods for creating UI components based on Control objects.
+
+[source,java]
+----
+public class MethodControlTest {
+
+  public void printString() {
+    System.out.println("printing a string");
+  }
+
+  public static void main(String[] args) {
+    MethodControlTest testObj = new MethodControlTest();
+    MethodControl control = Controlsy.methodControl(testObj, "printString", "Print string");
+    JButton printButton = ControlProvider.createButton(control);
+
+    //calls testObj.printString()
+    printButton.doClick();
+  }
+}
+----
+
+=== Adding a print action ===
+
+The most common place to add a custom control is the table popup menu, f.ex. an action for printing reports. The table popup menu is based on the ControlSet returned by the //getTablePopupControlSet()// method in the EntityPanel class which in turn uses the ControlSet returned by the //getPrintControls()// method in the same class for constructing the print popup submenu. So, to add a custom print action you override the //getPrintControls()// method and return a ControlSet containing the action.
+[source,java]
+----
+@Override
+public ControlSet getPrintControls() {
+  ControlSet printControls = new ControlSet("Print");
+  //creates a MethodControl which calls the viewReport method in this class on activation
+  printControls.add(Controls.methodControl(this, "viewReport", "Report"));
+  //add the default print table control as well
+  printControls.add(getControl(PRINT));
+
+  return printControls;
+}
+----
+
+== EntityApplicationPanel
+
+=== Examples
+
+  * [[documentation:tutorials:empdept#main_application_panel[EmpDept application panel]
+  * [[documentation:tutorials:chinook#main_application_panel[Chinook application panel]
+  * [[documentation:tutorials:petstore#main_application_panel[Pet Store application panel]
+
+== Reporting with JasperReports
+
+=== Introduction
+
+JMinor uses a plugin oriented approach to report viewing, and provides an implementation for JasperReports and NextReports.
+
+With the JMinor JasperReports plugin you can either design your report based on a SQL query in which case you use the JasperReportsWrapper class, which facilitates the report being filled using the active database connection or you can design your report around the JRDataSource implementation provided by the {javadoc-root}/org/jminor/framework/plugins/jasperreports/model/JasperReportsEntityDataSource.html[JasperReportsEntityDataSource] class, which is constructed around an iterator.
+
+The EntityPanel class provides straight forward methods for viewing reports using methods provided by the EntityModel class for filling them. Both these classes rely on static utility classes for doing the actual work so you are not bound by the EntityPanel and EntityModel classes for viewing reports, they simply provide the easiest way of doing so.
+
+=== JDBC Reports
+
+Using a report based on a SQL query, {javadoc-root}/org/jminor/framework/plugins/jasperreports/model/JasperReportsWrapper.html[JasperReportsWrapper] and {javadoc-root}/org/jminor/framework/plugins/jasperreports/ui/JasperReportsUIWrapper.html[JasperReportsUIWrapper] is the simplest way of viewing a report using JMinor, just add a method similar to the one below to a EntityPanel subclass. You can then create an action calling that method and put it in for example the table popup menu as described in the [[documentation:manual#adding_a_print_action[adding a print action] section.
+
+[source,java]
+----
+public void viewCustomerReport() throws Exception {
+  List<Entity> selectedCustomers = getModel().getTableModel().getSelectedItems();
+  if (selectedCustomers.getSize() == 0)
+    return;
+
+  String reportPath = System.getProperty(Configuration.REPORT_PATH) + "/customer_report.jasper";
+  Collection<Object> customerIds = Entities.getValues(selectedCustomers, Store.CUSTOMER_ID);
+  Map<String, Object> reportParameters = new HashMap<String, Object>();
+  reportParameters.put("CUSTOMER_IDS", customerIds);
+
+  viewJdbcReport(new JasperReportsWrapper(reportPath, reportParameters), new JasperReportsUIWrapper(),  "Customer Report");
+}
+----
+
+=== JRDataSource Reports
+
+The JRDataSource implementation provided by the JasperReportsEntityDataSource simply iterates through the iterator received via the constructor and retrieves the field values from the underlying entities. For this to work you must design the report using field names that correspond to the property IDs, so using the Store domain example from above the fields in a report showing the available items would have to be named 'name', 'is_active', 'category_code' etc. If you need to use a field that does not correspond to a property in the underlying entity, f.ex. when combining two fields into one you must override the __getFieldValue()__ method and handle that special case there.
+
+[source,java]
+----
+@Override
+public Object getFieldValue(JRField jrField) {
+  if (jrField.getName().equals("name_category_code") {
+    Entity currentRecord = getCurrentEntity();
+
+    return currentRecord.getString(Store.ITEM_NAME) + " - "
+             + currentRecord.getAsString(Store.ITEM_CATEGORY_CODE);
+  }
+
+  return super.getFieldValue(jrField);
+}
+----
+
+The way you view the report is just like in the jdbc report example above except you use the __viewReport()__ method instead of __viewJdbcReport()__.
+
+=== Examples
+
+  * [[documentation:tutorials:empdept#application_ui_layer[EmpDept UI layer]
