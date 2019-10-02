@@ -21,31 +21,33 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
+ext.mainClass = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+
 test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
     systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.petstore.domain.Petstore"
 }
 
 startScripts {
-    mainClassName = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+    mainClassName = mainClass
 }
 
 clientRemoteScript {
-    mainClassName = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+    mainClassName = mainClass
 }
 
 clientHttpScript {
-    mainClassName = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+    mainClassName = mainClass
 }
 
 runClientLocal {
-    main = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+    main = mainClass
 }
 
 runClientRemote {
-    main = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+    main = mainClass
 }
 
 runClientHttp {
-    main = 'org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel'
+    main = mainClass
 }

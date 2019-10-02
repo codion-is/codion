@@ -21,13 +21,15 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
+ext.mainClass = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
+
 test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
     systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser"
 }
 
 startScripts {
-    mainClassName = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
+    mainClassName = mainClass
     //overwrite the defaults to leave out initScript
     defaultJvmOpts = [
             '-Djminor.client.connectionType=local',
@@ -40,15 +42,15 @@ startScripts {
 }
 
 clientRemoteScript {
-    mainClassName = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
+    mainClassName = mainClass
 }
 
 clientHttpScript {
-    mainClassName = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
+    mainClassName = mainClass
 }
 
 runClientLocal {
-    main = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
+    main = mainClass
     //overwrite the defaults to leave out initScript
     systemProperties = [
             'jminor.client.connectionType': 'local',
@@ -61,9 +63,9 @@ runClientLocal {
 }
 
 runClientRemote {
-    main = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
+    main = mainClass
 }
 
 runClientHttp {
-    main = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
+    main = mainClass
 }

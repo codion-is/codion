@@ -6,7 +6,7 @@ plugins {
 ext {
     slf4jApiVersion = '1.7.25'
     logbackVersion = '1.2.3'
-    h2Version = '1.4.198'
+    h2Version = '1.4.199'
     jsonVersion = '20180130'
     jcalendarVersion = '1.4'
     jcommonVersion = '1.0.24'
@@ -31,7 +31,8 @@ ext {
     }
 }
 
-file("${projectDir}/common/core/src/main/resources" + project.versionPropertiesFile).withInputStream { project.versionProperties.load(it) }
+file("${projectDir}/common/core/src/main/resources" +
+        project.versionPropertiesFile).withInputStream { project.versionProperties.load(it) }
 
 allprojects {
     project.version = project.versionProperties.getProperty('version')
@@ -129,14 +130,7 @@ configure(project.frameworkModules) {
             property "sonar.projectVersion", project.version
             property "sonar.java.source", "1.8"
             property "sonar.sourceEncoding", "UTF-8"
-            property "sonar.exclusions", "**/*module-info.java,**/*TestDomain.java"
-        }
-    }
-
-    clean {
-        //clean intellij output dir as well
-        doLast {
-            file('out').deleteDir()
+            property "sonar.exclusions", "**/*TestDomain.java"
         }
     }
 

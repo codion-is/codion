@@ -16,31 +16,33 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
+ext.mainClass = 'org.jminor.framework.demos.world.client.ui.WorldAppPanel'
+
 test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
     systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.world.domain.World"
 }
 
 startScripts {
-    mainClassName = 'org.jminor.framework.demos.world.client.ui.WorldAppPanel'
+    mainClassName = mainClass
 }
 
 clientRemoteScript {
-    mainClassName = 'org.jminor.framework.demos.world.client.ui.WorldAppPanel'
+    mainClassName = mainClass
 }
 
 clientHttpScript {
-    mainClassName = 'org.jminor.framework.demos.world.client.ui.WorldAppPanel'
+    mainClassName = mainClass
 }
 
 runClientLocal {
-    main = 'org.jminor.framework.demos.world.client.ui.WorldAppPanel'
+    main = mainClass
 }
 
 runClientRemote {
-    main = 'org.jminor.framework.demos.world.client.ui.WorldAppPanel'
+    main = mainClass
 }
 
 runClientHttp {
-    main = 'org.jminor.framework.demos.world.client.ui.WorldAppPanel'
+    main = mainClass
 }

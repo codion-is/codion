@@ -39,6 +39,9 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
+ext.mainClass = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
+ext.loadTestMainClass = 'org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
+
 test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
     systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.empdept.domain.EmpDept"
@@ -64,27 +67,27 @@ task buildReports(dependsOn: 'compileJava') {
 classes.dependsOn buildReports
 
 startScripts {
-    mainClassName = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
+    mainClassName = mainClass
 }
 
 clientRemoteScript {
-    mainClassName = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
+    mainClassName = mainClass
 }
 
 clientHttpScript {
-    mainClassName = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
+    mainClassName = mainClass
 }
 
 loadTestRemoteScript {
-    mainClassName = 'org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
+    mainClassName = loadTestMainClass
 }
 
 loadTestHttpScript {
-    mainClassName = 'org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
+    mainClassName = loadTestMainClass
 }
 
 runClientLocal {
-    main = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
+    main = mainClass
 }
 
 task runClientLocalFX(type: JavaExec) {
@@ -104,7 +107,7 @@ task runClientLocalFX(type: JavaExec) {
 }
 
 runClientRemote {
-    main = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
+    main = mainClass
     systemProperties = [
             'jminor.client.connectionType'    : 'remote',
             'jminor.server.hostname'          : 'localhost',
@@ -116,7 +119,7 @@ runClientRemote {
 }
 
 runClientHttp {
-    main = 'org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel'
+    main = mainClass
     systemProperties = [
             'jminor.client.connectionType': 'http',
             'jminor.client.http.secure'   : 'false',
@@ -127,7 +130,7 @@ runClientHttp {
 }
 
 runLoadTestRemote {
-    main = 'org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
+    main = loadTestMainClass
     systemProperties = [
             'jminor.client.connectionType'    : 'remote',
             'jminor.server.hostname'          : 'localhost',
@@ -139,7 +142,7 @@ runLoadTestRemote {
 }
 
 runLoadTestHttp {
-    main = 'org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest'
+    main = loadTestMainClass
     systemProperties = [
             'jminor.client.connectionType': 'http',
             'jminor.client.http.secure'   : 'false',
