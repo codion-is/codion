@@ -20,6 +20,7 @@ dependencies {
 }
 
 ext {
+    mainClass = "$moduleName/org.jminor.framework.demos.world.client.ui.WorldAppPanel"
     testAddModules = ['org.jminor.framework.db.test', 'org.jminor.swing.framework.ui.test']
     testAddReads = ['org.jminor.framework.demos.world': 'org.jminor.framework.db.test,org.jminor.swing.framework.ui.test']
 }
@@ -42,7 +43,7 @@ test {
 
 task runClientLocal(type: ModularJavaExec) {
     group 'run'
-    main = "$moduleName/org.jminor.framework.demos.world.client.ui.WorldAppPanel"
+    main = mainClass
     systemProperties = [
             'jminor.client.connectionType': 'local',
             'jminor.db.type'              : 'h2',
@@ -56,7 +57,7 @@ task runClientLocal(type: ModularJavaExec) {
 
 task runClientRemote(type: ModularJavaExec) {
     group 'run'
-    main = "$moduleName/org.jminor.framework.demos.world.client.ui.WorldAppPanel"
+    main = mainClass
     systemProperties = [
             'jminor.client.connectionType'    : 'remote',
             'jminor.server.hostname'          : 'localhost',
@@ -68,7 +69,7 @@ task runClientRemote(type: ModularJavaExec) {
 
 task runClientHttp(type: ModularJavaExec) {
     group 'run'
-    main = "$moduleName/org.jminor.framework.demos.world.client.ui.WorldAppPanel"
+    main = mainClass
     systemProperties = [
             'jminor.client.connectionType': 'http',
             'jminor.client.http.secure'   : 'false',

@@ -25,6 +25,8 @@ dependencies {
 }
 
 ext {
+    mainClass = "$moduleName/org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel"
+    loadTestMainClass = "$moduleName/org.jminor.framework.demos.schemabrowser.testing.SchemaBrowserLoadTest"
     testAddModules = ['org.jminor.framework.db.test']
     testAddReads = ['org.jminor.framework.demos.schemabrowser': 'org.jminor.framework.db.test']
 }
@@ -47,7 +49,7 @@ test {
 
 task runClientLocal(type: ModularJavaExec) {
     group 'run'
-    main = "$moduleName/org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel"
+    main = mainClass
     systemProperties = [
             'jminor.client.connectionType': 'local',
             'jminor.db.type'              : 'h2',
@@ -60,7 +62,7 @@ task runClientLocal(type: ModularJavaExec) {
 
 task runClientRemote(type: ModularJavaExec) {
     group 'run'
-    main = "$moduleName/org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel"
+    main = mainClass
     systemProperties = [
             'jminor.client.connectionType'    : 'remote',
             'jminor.server.hostname'          : 'localhost',
@@ -72,7 +74,7 @@ task runClientRemote(type: ModularJavaExec) {
 
 task runClientHttp(type: ModularJavaExec) {
     group 'run'
-    main = "$moduleName/org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel"
+    main = mainClass
     systemProperties = [
             'jminor.client.connectionType': 'http',
             'jminor.client.http.secure'   : 'false',
@@ -83,7 +85,7 @@ task runClientHttp(type: ModularJavaExec) {
 
 task runLoadTestRemote(type: ModularJavaExec) {
     group 'run'
-    main = "$moduleName/org.jminor.framework.demos.schemabrowser.testing.SchemaBrowserLoadTest"
+    main = loadTestMainClass
     systemProperties = [
             'jminor.client.connectionType'    : 'remote',
             'jminor.server.hostname'          : 'localhost',
@@ -95,7 +97,7 @@ task runLoadTestRemote(type: ModularJavaExec) {
 
 task runLoadTestHttp(type: ModularJavaExec) {
     group 'run'
-    main = "$moduleName/org.jminor.framework.demos.schemabrowser.testing.SchemaBrowserLoadTest"
+    main = loadTestMainClass
     systemProperties = [
             'jminor.client.connectionType': 'http',
             'jminor.client.http.secure'   : 'false',

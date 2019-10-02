@@ -20,11 +20,6 @@ repositories {
     jcenter()
 }
 
-//clean intellij output dir as well
-clean.doLast {
-    file('out').deleteDir()
-}
-
 sonarqube {
     skipProject = true
 }
@@ -35,7 +30,8 @@ dependencies {
 }
 
 configurations {
-    /** A configuration with a single jar file containing the domain model (and server classes) */
+    /** A configuration with a single jar file containing the application domain model
+     * (and server classes), used by the Framework Server module when running the server*/
     domain
 }
 
