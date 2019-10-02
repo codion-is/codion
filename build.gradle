@@ -16,7 +16,6 @@ ext {
     jaxbApiVersion = '2.3.0'
     javaxActivationVersion = '1.2.0'
     junitVersion = '5.5.1'
-    jacocoVersion = '0.8.4'
     //jasperreports
     jasperReportsVersion = '6.9.0'
     commonsLoggingVersion = '1.2'
@@ -175,10 +174,6 @@ configure(project.frameworkModules) {
         systemProperty "jminor.unittest.username", "scott"
         systemProperty "jminor.unittest.password", "tiger"
     }.dependsOn createServerKeystore
-
-    jacoco {
-        toolVersion = "${jacocoVersion}"
-    }
 }
 
 apply plugin: 'project-report'
