@@ -18,18 +18,15 @@ To listen to Events you use the {url-javadoc}/org/jminor/common/EventListener.ht
 
 [source,java]
 ----
-Event<String> event = Events.event();
+Event<String> event = Events.event(); # <1>
 
-event.addDataListener(new EventDataListener<>() {
-  @Override
-  public void eventOccurred(final String data) {
-    System.out.println("Event happened: " + data);
-  }
-});
+event.addDataListener(data -> System.out.println("Event happened: " + data)); # <2>
 
 event.fire();//writes out "Event happened: null";
 event.fire("data");//writes out "Event happened: data";
 ----
+<1> Initialize the Event
+<2> Add a listener
 
 === State ===
 
@@ -39,12 +36,14 @@ States are instantiated via the {url-javadoc}/org/jminor/common/States.html[Stat
 
 [source,java]
 ----
-State state = States.state(false);
+State state = States.state(false); # <1>
 
-state.addListener(() -> System.out.println("State changed"));
+state.addListener(() -> System.out.println("State changed")); # <2>
 
 state.set(true);//prints out "State changed";
 ----
+<1> Initialize the State with initial value 'false'
+<2> Add a listener
 
 Any *Action* object can be linked to a *State* object via the *UiUtil.linkToEnabledState* method, where the action's *enabled* status is synchronized with the state.
 
