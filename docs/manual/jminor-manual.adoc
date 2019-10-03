@@ -394,9 +394,9 @@ Provides the background color for entity property cells when displayed in a tabl
 
 [source,java]
 ----
-define("entityID", [...]).setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
+define("entityId", [...]).setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
       public Object getBackgroundColor(final Entity entity, final Property property) {
-        if (property.is("colorPropertyID") && entity.getString("colorPropertyID").equals("CYAN")) {
+        if (property.is("colorPropertyId") && entity.getString("colorPropertyId").equals("CYAN")) {
           return Color.CYAN;
         }
 
@@ -501,7 +501,7 @@ The following methods all have default implementations which are based on random
 * {javadoc-root}/org/jminor/framework/domain/testing/EntityTestUnit.html#initializeTestEntity-java.lang.String-[initializeTestEntity] should return a entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
 * {javadoc-root}/org/jminor/framework/domain/testing/EntityTestUnit.html#modifyEntity-org.jminor.framework.domain.Entity-[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the db layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
 
-To run the full CRUD test for a domain entity you need to call the __testEntity(String entityID)__ method with the id of the given entity as parameter. You can either create a single __testDomain()__ method and call the __testEntity__ method in turn for each entityID or create a single __testEntityName__ for each domain entity, as we do in the example below.
+To run the full CRUD test for a domain entity you need to call the __testEntity(String entityId)__ method with the id of the given entity as parameter. You can either create a single __testDomain()__ method and call the __testEntity__ method in turn for each entityId or create a single __testEntityName__ for each domain entity, as we do in the example below.
 
 [source,java]
 ----
@@ -523,7 +523,7 @@ public class TestStore extends EntityTestUnit {
   }
 
   @Override
-  protected void initializeReferenceEntity(String entityID) throws Exception {
+  protected void initializeReferenceEntity(String entityId) throws Exception {
     //see if the currently running test requires an ADDRESS entity
     if (entityIDs.contains(Store.T_ADDRESS)) {
       Entity address = new Entity(Store.ADDRESS);

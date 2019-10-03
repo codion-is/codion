@@ -232,7 +232,7 @@ public final class TextUtil {
       contents.append(String.join(delimiter, line)).append(Util.LINE_SEPARATOR);
     }
     //remove the last line separator
-    contents.replace(contents.length() - 1, contents.length(), "");
+    contents.replace(contents.length() - Util.LINE_SEPARATOR.length(), contents.length(), "");
 
     return contents.toString();
   }
