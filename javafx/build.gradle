@@ -12,8 +12,8 @@ dependencies {
 
     implementation "org.json:json:${jsonVersion}"
 
-    testCompile 'org.testfx:testfx-core:4.0.15-alpha'
-    testCompile "org.testfx:testfx-junit5:4.0.15-alpha"
+    testCompile 'org.testfx:testfx-core:4.0.16-alpha'
+    testCompile "org.testfx:testfx-junit5:4.0.16-alpha"
 
     testRuntimeOnly project(':jminor-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"

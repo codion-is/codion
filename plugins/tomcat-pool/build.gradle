@@ -2,8 +2,8 @@ dependencies {
     api project(':jminor-common-core')
     api project(':jminor-common-db')
 
-    implementation 'org.apache.tomcat:tomcat-jdbc:9.0.22'
-    implementation 'org.apache.tomcat:tomcat-juli:9.0.22'
+    implementation 'org.apache.tomcat:tomcat-jdbc:9.0.26'
+    implementation 'org.apache.tomcat:tomcat-juli:9.0.26'
 
     testImplementation project(':jminor-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
