@@ -10,6 +10,8 @@ import org.jminor.framework.domain.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 public final class WorldTest extends EntityTestUnit {
 
   private static final User UNIT_TEST_USER = new User(
@@ -36,8 +38,8 @@ public final class WorldTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeTestEntity(final String entityId) {
-    final Entity entity = super.initializeTestEntity(entityId);
+  protected Entity initializeTestEntity(final String entityId, final Map<String, Entity> foreignKeyEntities) {
+    final Entity entity = super.initializeTestEntity(entityId, foreignKeyEntities);
     if (entityId.equals(World.T_COUNTRY)) {
       entity.put(World.COUNTRY_CODE, "XXX");
       entity.put(World.COUNTRY_CONTINENT, "Asia");
@@ -47,15 +49,15 @@ public final class WorldTest extends EntityTestUnit {
   }
 
   @Override
-  protected void modifyEntity(final Entity testEntity) {
-    super.modifyEntity(testEntity);
+  protected void modifyEntity(final Entity testEntity, final Map<String, Entity> foreignKeyEntities) {
+    super.modifyEntity(testEntity, foreignKeyEntities);
     if (testEntity.is(World.T_COUNTRY)) {
       testEntity.put(World.COUNTRY_CONTINENT, "Europe");
     }
   }
 
   @Override
-  protected Entity initializeReferenceEntity(final String entityId) {
+  protected Entity initializeReferenceEntity(final String entityId, final Map<String, Entity> foreignKeyEntities) {
     switch (entityId) {
       case World.T_COUNTRY:
         final Entity iceland = getDomain().entity(World.T_COUNTRY);
@@ -69,7 +71,7 @@ public final class WorldTest extends EntityTestUnit {
         return reykjavik;
     }
 
-    return super.initializeReferenceEntity(entityId);
+    return super.initializeReferenceEntity(entityId, foreignKeyEntities);
   }
 
   @Override

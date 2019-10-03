@@ -5,7 +5,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.javamodularity:moduleplugin:1.4.0"
+        classpath "org.javamodularity:moduleplugin:1.6.0"
     }
 }
 
@@ -27,6 +27,7 @@ sonarqube {
 dependencies {
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
 }
 
 configurations {
@@ -48,11 +49,18 @@ artifacts {
 }
 
 test {
+    moduleOptions {
+        addExports = [
+                'org.junit.platform.commons/org.junit.platform.commons.util': 'ALL-UNNAMED',
+                'org.junit.platform.commons/org.junit.platform.commons.logging': 'ALL-UNNAMED'
+        ]
+    }
+    useJUnitPlatform()
     systemProperty "jminor.db.type", "h2"
     systemProperty "jminor.db.host", "h2db"
     systemProperty "jminor.db.embedded", "true"
     systemProperty "jminor.db.embeddedInMemory", "true"
-    systemProperty "jminor.db.initScript", "src/test/sql/create_h2_db.sql"
+    systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
     systemProperty "jminor.unittest.username", "scott"
     systemProperty "jminor.unittest.password", "tiger"
 }

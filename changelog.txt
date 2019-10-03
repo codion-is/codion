@@ -5140,3 +5140,4 @@
   org.jminor.common.core module now has a requires transitive dependency on slf4j, slf4j requires clause removed from other modules
   AbstractTableColumnSyncPanel now uses FlexibleGridLayout instead of FlowLayout, which stretches the component to fill all available vertical space
   Documentation migrated from markdown to asciidoc
+  EntityTestUnit refactored, demo domain unit tests fixed

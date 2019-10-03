@@ -26,11 +26,9 @@ import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -55,7 +53,6 @@ public class EntityTestUnit {
   private static final String ENTITY_PARAM = "entity";
 
   private final String domainClass;
-  private final Map<String, Entity> referencedEntities = new HashMap<>();
 
   private EntityConnection connection;
   private Domain domain;
@@ -119,12 +116,12 @@ public class EntityTestUnit {
   public final void testEntity(final String entityId) throws DatabaseException {
     connection.beginTransaction();
     try {
-      initializeReferencedEntities(entityId, new HashSet<>());
+      final Map<String, Entity> foreignKeyEntities = initializeReferencedEntities(entityId, new HashMap<>());
       Entity testEntity = null;
       if (!getDomain().isReadOnly(entityId)) {
-        testEntity = testInsert(Objects.requireNonNull(initializeTestEntity(entityId), "test entity"));
+        testEntity = testInsert(Objects.requireNonNull(initializeTestEntity(entityId, foreignKeyEntities), "test entity"));
         assertNotNull(testEntity.toString());
-        testUpdate(testEntity);
+        testUpdate(testEntity, initializeReferencedEntities(entityId, foreignKeyEntities));
       }
       testSelect(entityId, testEntity);
       if (!getDomain().isReadOnly(entityId)) {
@@ -132,7 +129,6 @@ public class EntityTestUnit {
       }
     }
     finally {
-      referencedEntities.clear();
       connection.rollbackTransaction();
     }
   }
@@ -166,15 +162,13 @@ public class EntityTestUnit {
    * the respective foreign key value in not modified
    * @param domain the domain model
    * @param entity the entity to randomize
-   * @param referenceEntities entities referenced by the given entity via foreign keys
+   * @param foreignKeyEntities the entities referenced via foreign keys
    * @return the entity with randomized values
    */
-  public static Entity randomize(final Domain domain, final Entity entity, final Map<String, Entity> referenceEntities) {
+  public static void randomize(final Domain domain, final Entity entity, final Map<String, Entity> foreignKeyEntities) {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     populateEntity(domain, entity, domain.getWritableColumnProperties(entity.getEntityId(), false, true),
-            property -> getRandomValue(property, referenceEntities));
-
-    return entity;
+            property -> getRandomValue(property, foreignKeyEntities));
   }
 
   /**
@@ -212,81 +206,56 @@ public class EntityTestUnit {
   }
 
   /**
-   * @param entityId the entityId of the the reference entity to retrieve
-   * @return the entity mapped to the given entityId
-   * @see #setReferenceEntity(String, org.jminor.framework.domain.Entity)
-   */
-  protected final Entity getReferenceEntity(final String entityId) {
-    final Entity entity = referencedEntities.get(entityId);
-    if (entity == null) {
-      throw new IllegalArgumentException("No reference entity available of type " + entityId);
-    }
-
-    return entity;
-  }
-
-  /**
-   * Maps the given reference entity to the given entityId
-   * @param entityId the entityId
-   * @param entity the reference entity to map to the given entityId
-   * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
-   * @see #getReferenceEntity(String)
-   */
-  protected final void setReferenceEntity(final String entityId, final Entity entity) throws DatabaseException {
-    if (entity != null && !entity.is(entityId)) {
-      throw new IllegalArgumentException("Reference entity type mismatch: " + entityId + " - " + entity.getEntityId());
-    }
-
-    referencedEntities.put(entityId, entity == null ? null : insertOrSelect(entity));
-  }
-
-  /**
    * This method should return an instance of the entity specified by {@code entityId}
    * @param entityId the entityId for which to initialize an entity instance
+   * @param foreignKeyEntities the entities referenced via foreign keys
    * @return the entity instance to use for testing the entity type
    */
-  protected Entity initializeTestEntity(final String entityId) {
-    return createRandomEntity(getDomain(), entityId, referencedEntities);
+  protected Entity initializeTestEntity(final String entityId, final Map<String, Entity> foreignKeyEntities) {
+    return createRandomEntity(getDomain(), entityId, foreignKeyEntities);
   }
 
   /**
    * Initializes a new Entity of the given type, by default this method creates a Entity filled with random values.
    * @param entityId the entity ID
+   * @param foreignKeyEntities the entities referenced via foreign keys
    * @return a entity of the given type
    */
-  protected Entity initializeReferenceEntity(final String entityId) {
-    return createRandomEntity(getDomain(), entityId, referencedEntities);
+  protected Entity initializeReferenceEntity(final String entityId, final Map<String, Entity> foreignKeyEntities) {
+    return createRandomEntity(getDomain(), entityId, foreignKeyEntities);
   }
 
   /**
    * This method should return {@code testEntity} in a modified state
    * @param testEntity the entity to modify
+   * @param foreignKeyEntities the entities referenced via foreign keys
    */
-  protected void modifyEntity(final Entity testEntity) {
-    randomize(getDomain(), testEntity, referencedEntities);
+  protected void modifyEntity(final Entity testEntity, final Map<String, Entity> foreignKeyEntities) {
+    randomize(getDomain(), testEntity, foreignKeyEntities);
   }
 
   /**
    * Initializes the entities referenced by the entity identified by {@code entityId}
    * @param entityId the ID of the entity for which to initialize the referenced entities
-   * @param visited the entityIds already visited
+   * @param foreignKeyEntities foreign key entities already created
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
-   * @see #initializeReferenceEntity(String) (String, org.jminor.framework.domain.Entity)
+   * @see #initializeReferenceEntity(String, Map)
+   * @return the Entities to reference mapped to their respective foreign key propertyIds
    */
-  @SuppressWarnings({"UnusedDeclaration"})
-  private void initializeReferencedEntities(final String entityId, final Collection<String> visited) throws DatabaseException {
-    visited.add(entityId);
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = new ArrayList<>(getDomain().getForeignKeyProperties(entityId));
-    foreignKeyProperties.sort((o1, o2) -> o1.getForeignEntityId().equals(entityId) ? 1 : 0);
+  private Map<String, Entity> initializeReferencedEntities(final String entityId, final Map<String, Entity> foreignKeyEntities)
+          throws DatabaseException {
     for (final Property.ForeignKeyProperty foreignKeyProperty : getDomain().getForeignKeyProperties(entityId)) {
       final String foreignEntityId = foreignKeyProperty.getForeignEntityId();
-      if (!visited.contains(foreignEntityId)) {
-        initializeReferencedEntities(foreignEntityId, visited);
-      }
-      if (!referencedEntities.containsKey(foreignEntityId)) {
-        setReferenceEntity(foreignEntityId, initializeReferenceEntity(foreignEntityId));
+      if (!foreignKeyEntities.containsKey(foreignEntityId)) {
+        if (!Objects.equals(entityId, foreignEntityId)) {
+          foreignKeyEntities.put(foreignEntityId, null);//short circuit recursion, value replaced below
+          initializeReferencedEntities(foreignEntityId, foreignKeyEntities);
+        }
+        foreignKeyEntities.put(foreignEntityId, insertOrSelect(initializeReferenceEntity(foreignEntityId, foreignKeyEntities)));
       }
     }
+
+    return foreignKeyEntities;
   }
 
   /**
@@ -315,8 +284,8 @@ public class EntityTestUnit {
    */
   private void testSelect(final String entityId, final Entity testEntity) throws DatabaseException {
     if (testEntity != null) {
-      final Entity tmp = connection.selectSingle(testEntity.getKey());
-      assertEquals(testEntity, tmp, "Entity of type " + testEntity.getEntityId() + " failed equals comparison");
+      assertEquals(testEntity, connection.selectSingle(testEntity.getKey()),
+              "Entity of type " + testEntity.getEntityId() + " failed equals comparison");
     }
     else {
       connection.selectMany(getConditions().selectCondition(entityId).setFetchCount(SELECT_FETCH_COUNT));
@@ -326,22 +295,21 @@ public class EntityTestUnit {
   /**
    * Test updating the given entity, if the entity is not modified this test does nothing
    * @param testEntity the entity to test updating
+   * @param foreignKeyEntities the entities referenced via foreign keys
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
-  private void testUpdate(final Entity testEntity) throws DatabaseException {
-    modifyEntity(testEntity);
+  private void testUpdate(final Entity testEntity, final Map<String, Entity> foreignKeyEntities) throws DatabaseException {
+    modifyEntity(testEntity, foreignKeyEntities);
     if (!testEntity.isModified()) {
       return;
     }
 
-    connection.update(Collections.singletonList(testEntity));
-
-    final Entity tmp = connection.selectSingle(testEntity.getOriginalKey());
-    assertEquals(testEntity.getKey(), tmp.getKey());
+    final Entity updated = connection.update(Collections.singletonList(testEntity)).get(0);
+    assertEquals(testEntity.getKey(), updated.getKey());
     for (final Property.ColumnProperty property : getDomain().getColumnProperties(testEntity.getEntityId())) {
       if (!property.isReadOnly() && property.isUpdatable()) {
         final Object beforeUpdate = testEntity.get(property);
-        final Object afterUpdate = tmp.get(property);
+        final Object afterUpdate = updated.get(property);
         assertEquals(beforeUpdate, afterUpdate, "Values of property " + property + " should be equal after update ["
                 + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
                 + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]");
@@ -443,9 +411,7 @@ public class EntityTestUnit {
   }
 
   private static Object getReferenceEntity(final Property.ForeignKeyProperty property, final Map<String, Entity> referenceEntities) {
-    final String referenceEntityId = property.getForeignEntityId();
-
-    return referenceEntities == null ? null : referenceEntities.get(referenceEntityId);
+    return referenceEntities == null ? null : referenceEntities.get(property.getForeignEntityId());
   }
 
   private static Object getRandomListValue(final Property.ValueListProperty property) {

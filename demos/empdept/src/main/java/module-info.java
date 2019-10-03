@@ -16,7 +16,11 @@ module org.jminor.framework.demos.empdept {
   exports org.jminor.framework.demos.empdept.beans
           to org.jminor.swing.framework.model;
   exports org.jminor.framework.demos.empdept.beans.ui
-          to org.jminor.swing.framework.ui;
+          to org.jminor.swing.framework.ui,org.jminor.swing.framework.ui.test;
+  exports org.jminor.framework.demos.empdept.client.ui
+          to org.jminor.swing.framework.ui.test;
   exports org.jminor.framework.demos.empdept.javafx
           to javafx.graphics;
+  exports org.jminor.framework.demos.empdept.server
+          to java.rmi;
 }
