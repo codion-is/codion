@@ -1,0 +1,38 @@
+= JMinor Application Framework
+Björn Darri Sigurðsson <bjorndarri@gmail.com>
+
+:url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
+:dir-tutorials: tutorials
+:dir-manual: manual
+:dir-technical: technical
+:imagesdir: images
+
+image::jminor_logo_medium.png[Logo,200]
+
+== Introduction
+
+* <<introduction.adoc#, Introduction>>.
+
+== Technical
+
+* <<{dir-technical}/project.adoc#, Project>>
+* <<{dir-technical}/client.adoc#, Client>>
+* <<{dir-technical}/server.adoc#, Server>>
+
+== Quickstart
+
+* <<quickstart.adoc#, Quickstart>>.
+
+== Manual
+
+* <<{dir-manual}/jminor-manual.adoc#, JMinor Manual>>.
+
+== API Documentation
+
+* {url-javadoc}/index.html[JMinor Javadocs]
+
+== Tutorials
+
+* <<{dir-tutorials}/empdept.adoc#, EmpDept Tutorial>>.
+* <<{dir-tutorials}/chinook.adoc#, Chinook Tutorial (just code)>>.
+* <<{dir-tutorials}/petstore.adoc#, Petstore Tutorial (just code)>>.

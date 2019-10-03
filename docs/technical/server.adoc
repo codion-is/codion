@@ -1,0 +1,11 @@
+= JMinor Remote Server
+
+== Features
+
+* Firewall friendly; uses one way communications without callbacks and can be configured to serve on a single fixed port
+* Client/server communications SSL encrypted by default
+* Integrated web server for serving Web Start applications and files, based on Jetty
+* All user authentication left to the database
+* Comprehensive administration and monitoring facilities
+* Featherweight server
+* Moderate memory and CPU usage

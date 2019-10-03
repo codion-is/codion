@@ -1,0 +1,57 @@
+= JMinor Application Framework
+
+== Building
+
+The JMinor framework is built with https://gradle.org[Gradle] and includes the https://docs.gradle.org/current/userguide/gradle_wrapper.html[Gradle Wrapper], so assuming you have cloned the repository and worked your way into the project directory you can build the framework by running the following command.
+
+NOTE: This may take a few minutes, depending on the machine.
+
+[code,shell]
+----
+./gradlew build
+----
+
+To install the JMinor framework into your local Maven repository run the following command.
+
+[code,shell]
+----
+./gradlew publishToMavenLocal
+----
+
+== Running the demos
+
+=== Local database connection
+
+You can start by running a client from one of the demo projects (empdept, chinook, petstore or world) with a local database connection, the database is in-memory and is created on launch.
+
+[code,shell]
+----
+./gradlew :jminor-demos-chinook:runClientLocal
+----
+
+=== Remote database connection
+
+To run a client with a remote connection you must first start the remote server.
+
+NOTE: The server runs with an embedded in-memory database created on launch so any changes you make to data will be lost on server shutdown.
+
+[code,shell]
+----
+./gradlew :jminor-framework-server:runServer
+----
+
+Open a new command window and run the following.
+
+[code,shell]
+----
+./gradlew :jminor-demos-chinook:runClientRemote
+----
+
+You can run the <<{dir-manual}/server-monitor.adoc#, Server Monitor>> application to see how the server is behaving, open a new command window and run the following.
+
+[code,shell]
+----
+./gradlew :jminor-swing-framework-server-monitor:runServerMonitor
+----
+
+NOTE: The client handles server restarts gracefully, you can try shutting down the server via the Server Monitor, play around in the client until you get a 'Connection refused' exception. After you restart the server the client simply reconnects.

@@ -1,85 +1,85 @@
 = Chinook: Application tutorial
 
-:javadoc-root: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
-:source-dir: ../../demos/chinook/src/main/java
-:test-source-dir: ../../demos/chinook/src/test/java
-:manual-dir: ../manual
+:url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
+:dir-source: ../../demos/chinook/src/main/java
+:dir-test-source: ../../demos/chinook/src/test/java
+:dir-manual: ../manual
 
 == Domain model
 
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/chinook/domain/Chinook.java[]
+include::{dir-source}/org/jminor/framework/demos/chinook/domain/Chinook.java[]
 ----
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/chinook/domain/impl/ChinookImpl.java[]
+include::{dir-source}/org/jminor/framework/demos/chinook/domain/impl/ChinookImpl.java[]
 ----
 
 == Domain model unit test
 
 [source,java]
 ----
-include::{test-source-dir}/org/jminor/framework/demos/chinook/domain/ChinookTest.java[]
+include::{dir-test-source}/org/jminor/framework/demos/chinook/domain/ChinookTest.java[]
 ----
 
 == Application UI layer
 
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/chinook/beans/ui/AlbumEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/chinook/beans/ui/AlbumEditPanel.java[]
 ----
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/chinook/beans/ui/ArtistEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/chinook/beans/ui/ArtistEditPanel.java[]
 ----
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/chinook/beans/ui/CustomerEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/chinook/beans/ui/CustomerEditPanel.java[]
 ----
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/chinook/beans/ui/EmployeeEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/chinook/beans/ui/EmployeeEditPanel.java[]
 ----
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/chinook/beans/ui/GenreEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/chinook/beans/ui/GenreEditPanel.java[]
 ----
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/chinook/beans/ui/InvoiceLineEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/chinook/beans/ui/InvoiceLineEditPanel.java[]
 ----
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/chinook/beans/ui/InvoiceEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/chinook/beans/ui/InvoiceEditPanel.java[]
 ----
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/chinook/beans/ui/MediaTypeEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/chinook/beans/ui/MediaTypeEditPanel.java[]
 ----
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/chinook/beans/ui/PlaylistEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/chinook/beans/ui/PlaylistEditPanel.java[]
 ----
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/chinook/beans/ui/PlaylistTrackEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/chinook/beans/ui/PlaylistTrackEditPanel.java[]
 ----
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/chinook/beans/ui/TrackEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/chinook/beans/ui/TrackEditPanel.java[]
 ----
 
 == Main application panel
 
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/chinook/client/ui/ChinookAppPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/chinook/client/ui/ChinookAppPanel.java[]
 ----
 
 == Application load test
 
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/chinook/testing/ChinookLoadTest.java[]
+include::{dir-source}/org/jminor/framework/demos/chinook/testing/ChinookLoadTest.java[]
 ----
