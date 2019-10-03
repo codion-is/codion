@@ -1,6 +1,5 @@
 = JMinor Application Framework
 Björn Darri Sigurðsson <bjorndarri@gmail.com>
-
 :url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
 :dir-tutorials: tutorials
 :dir-manual: manual
