@@ -5130,3 +5130,4 @@
   Documentation migrated from markdown to asciidoc
   EntityTestUnit refactored, demo domain unit tests fixed
   TextUtil.getDelimitedString() minor bug fixed
+  EntityTestUnit.getRandomValue() now truncates LocalDateTime and LocalTime to seconds, to prevent comparison errors when the underlying database system truncates on insert
