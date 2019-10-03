@@ -5128,3 +5128,4 @@
   Package names org.jminor.framework.domain.testing and org.jminor.swing.framework.ui.testing to .test to reflect module names
   AbstractTableColumnSyncPanel now uses FlexibleGridLayout instead of FlowLayout, which stretches the component to fill all available vertical space
   Documentation migrated from markdown to asciidoc
+  EntityTestUnit refactored, demo domain unit tests fixed

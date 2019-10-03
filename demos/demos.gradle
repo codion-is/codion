@@ -15,6 +15,7 @@ sonarqube {
 dependencies {
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
 }
 
 configurations {
@@ -36,11 +37,12 @@ artifacts {
 }
 
 test {
+    useJUnitPlatform()
     systemProperty "jminor.db.type", "h2"
     systemProperty "jminor.db.host", "h2db"
     systemProperty "jminor.db.embedded", "true"
     systemProperty "jminor.db.embeddedInMemory", "true"
-    systemProperty "jminor.db.initScript", "src/test/sql/create_h2_db.sql"
+    systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
     systemProperty "jminor.unittest.username", "scott"
     systemProperty "jminor.unittest.password", "tiger"
 }
