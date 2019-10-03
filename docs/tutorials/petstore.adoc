@@ -1,65 +1,65 @@
 = Pet Store: Application tutorial
 
-:javadoc-root: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
-:source-dir: ../../demos/petstore/src/main/java
-:test-source-dir: ../../demos/petstore/src/test/java
-:manual-dir: ../manual
+:url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
+:dir-source: ../../demos/petstore/src/main/java
+:dir-test-source: ../../demos/petstore/src/test/java
+:dir-manual: ../manual
 
 == Domain model
 
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/petstore/domain/Petstore.java[]
+include::{dir-source}/org/jminor/framework/demos/petstore/domain/Petstore.java[]
 ----
 
 == Domain model unit test
 
 [source,java]
 ----
-include::{test-source-dir}/org/jminor/framework/demos/petstore/domain/PetstoreTest.java[]
+include::{dir-test-source}/org/jminor/framework/demos/petstore/domain/PetstoreTest.java[]
 ----
 
 == Application UI layer
 
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/petstore/beans/ui/AddressEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/petstore/beans/ui/AddressEditPanel.java[]
 ----
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/petstore/beans/ui/CategoryEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/petstore/beans/ui/CategoryEditPanel.java[]
 ----
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/petstore/beans/ui/ContactInfoEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/petstore/beans/ui/ContactInfoEditPanel.java[]
 ----
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/petstore/beans/ui/ItemEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/petstore/beans/ui/ItemEditPanel.java[]
 ----
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/petstore/beans/ui/ProductEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/petstore/beans/ui/ProductEditPanel.java[]
 ----
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/petstore/beans/ui/TagItemEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/petstore/beans/ui/TagItemEditPanel.java[]
 ----
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/petstore/beans/ui/TagEditPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/petstore/beans/ui/TagEditPanel.java[]
 ----
 
 == Main application panel
 
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/petstore/client/ui/PetstoreAppPanel.java[]
+include::{dir-source}/org/jminor/framework/demos/petstore/client/ui/PetstoreAppPanel.java[]
 ----
 
 == Application load test
 
 [source,java]
 ----
-include::{source-dir}/org/jminor/framework/demos/petstore/testing/PetstoreLoadTest.java[]
+include::{dir-source}/org/jminor/framework/demos/petstore/testing/PetstoreLoadTest.java[]
 ----

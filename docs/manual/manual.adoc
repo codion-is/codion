@@ -1,21 +1,21 @@
 = JMinor Manual
 
-:javadoc-root: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
-:tutorials-dir: ../tutorials
+:url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
+:dir-tutorials: ../tutorials
 
 == The basics
 
 === Common classes
 
-Two common classes used throughout the framework are the {javadoc-root}/org/jminor/common/Event.html[Event] and {javadoc-root}/org/jminor/common/State.html[State] classes and their respective observers {javadoc-root}/org/jminor/common/EventObserver.html[EventObserver] and {javadoc-root}/org/jminor/common/StateObserver.html[StateObserver] and listeners {javadoc-root}/org/jminor/common/EventListener.html[EventListener] and {javadoc-root}/org/jminor/common/EventInfoListener.html[EventInfoListener].
+Two common classes used throughout the framework are the {url-javadoc}/org/jminor/common/Event.html[Event] and {url-javadoc}/org/jminor/common/State.html[State] classes and their respective observers {url-javadoc}/org/jminor/common/EventObserver.html[EventObserver] and {url-javadoc}/org/jminor/common/StateObserver.html[StateObserver] and listeners {url-javadoc}/org/jminor/common/EventListener.html[EventListener] and {url-javadoc}/org/jminor/common/EventInfoListener.html[EventInfoListener].
 
 === Event ===
 
-The {javadoc-root}/org/jminor/common/Event.html[Event] class is a simple event implementation used throughout the framework to signal object state changes or to indicate that an action is about to start or has ended. Classes typically publish their events via public *addListener* methods. Events are triggered by calling the *fire()* method, with or without a *data* parameter.
+The {url-javadoc}/org/jminor/common/Event.html[Event] class is a simple event implementation used throughout the framework to signal object state changes or to indicate that an action is about to start or has ended. Classes typically publish their events via public *addListener* methods. Events are triggered by calling the *fire()* method, with or without a *data* parameter.
 
-Events are instantiated via the {javadoc-root}/org/jminor/common/Events.html[Events] factory class.
+Events are instantiated via the {url-javadoc}/org/jminor/common/Events.html[Events] factory class.
 
-To listen to Events you use the {javadoc-root}/org/jminor/common/EventListener.html[EventListener] or {javadoc-root}/org/jminor/common/EventDataListener.html[EventDataListener] interfaces.
+To listen to Events you use the {url-javadoc}/org/jminor/common/EventListener.html[EventListener] or {url-javadoc}/org/jminor/common/EventDataListener.html[EventDataListener] interfaces.
 
 [source,java]
 ----
@@ -34,9 +34,9 @@ event.fire("data");//writes out "Event happened: data";
 
 === State ===
 
-The {javadoc-root}/org/jminor/common/State.html[State] class encapsulates a boolean state (active/inactive) and provides a {javadoc-root}/org/jminor/common/StateObserver.html[StateObserver]:
+The {url-javadoc}/org/jminor/common/State.html[State] class encapsulates a boolean state (active/inactive) and provides a {url-javadoc}/org/jminor/common/StateObserver.html[StateObserver]:
 
-States are instantiated via the {javadoc-root}/org/jminor/common/States.html[States] factory class.
+States are instantiated via the {url-javadoc}/org/jminor/common/States.html[States] factory class.
 
 [source,java]
 ----
@@ -71,8 +71,8 @@ state.set(true);
 
 === Introduction
 
-The domain model is based around two interfaces, {javadoc-root}/org/jminor/framework/domain/Entity.html[org.jminor.framework.domain.Entity], which represents a row in a table, and {javadoc-root}/org/jminor/framework/domain/Property.html[org.jminor.framework.domain.Property], which represents columns. The
-{javadoc-root}/org/jminor/framework/domain/Domain.html[org.jminor.framework.domain.Domain] class serves as a container for the domain model definition and as a factory for Entity and Entity.Key objects.
+The domain model is based around two interfaces, {url-javadoc}/org/jminor/framework/domain/Entity.html[org.jminor.framework.domain.Entity], which represents a row in a table, and {url-javadoc}/org/jminor/framework/domain/Property.html[org.jminor.framework.domain.Property], which represents columns. The
+{url-javadoc}/org/jminor/framework/domain/Domain.html[org.jminor.framework.domain.Domain] class serves as a container for the domain model definition and as a factory for Entity and Entity.Key objects.
 
 === Entity
 
@@ -95,7 +95,7 @@ public class Store extends Domain {
 }
 ----
 
-Each column in a table is defined by the {javadoc-root}/org/jminor/framework/domain/Property.html[Property] class or one of its subclasses. The {javadoc-root}/org/jminor/framework/domain/Properties.html[Properties] class provides factory methods for constructing Property objects.
+Each column in a table is defined by the {url-javadoc}/org/jminor/framework/domain/Property.html[Property] class or one of its subclasses. The {url-javadoc}/org/jminor/framework/domain/Properties.html[Properties] class provides factory methods for constructing Property objects.
 The following attributes can be set by using chained method calls:
 __hidden, updatable, readOnly, nullable, defaultValue, maxLength, preferredWidth, description, mnemonic, columnHasDefaultValue, format__
 [source,java]
@@ -164,7 +164,7 @@ public class Store extends Domain {
 
 === Property
 
-{javadoc-root}/org/jminor/framework/domain/Property.html[Property] and its subclasses is used to represent entity properties, these can be transient or based on table columns.
+{url-javadoc}/org/jminor/framework/domain/Property.html[Property] and its subclasses is used to represent entity properties, these can be transient or based on table columns.
 
 [source,java]
 ----
@@ -173,7 +173,7 @@ Properties.transientProperty(CUSTOMER_TOKEN, Types.VARCHAR, "Token")
 
 === ColumnProperty
 
-{javadoc-root}/org/jminor/framework/domain/Property.ColumnProperty.html[ColumnProperty] is used to represent properties that are based on table columns.
+{url-javadoc}/org/jminor/framework/domain/Property.ColumnProperty.html[ColumnProperty] is used to represent properties that are based on table columns.
 
 [source,java]
 ----
@@ -198,7 +198,7 @@ Properties.columnProperty(ID_2, Types.INTEGER).setPrimaryKeyIndex(1),
 
 === ForeignKeyProperty
 
-{javadoc-root}/org/jminor/framework/domain/Property.ForeignKeyProperty.html[ForeignKeyProperty] is a wrapper property used to indicate a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of non-trivial primary keys.
+{url-javadoc}/org/jminor/framework/domain/Property.ForeignKeyProperty.html[ForeignKeyProperty] is a wrapper property used to indicate a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of non-trivial primary keys.
 [source,java]
 ----
 //referring to an entity with a single column primary key
@@ -262,7 +262,7 @@ boolean isActive = entity.getBoolean(CUSTOMER_IS_ACTIVE);
 
 === DenormalizedProperty
 
-{javadoc-root}/org/jminor/framework/domain/Property.DenormalizedProperty.html[DenormalizedProperty] is used for columns that should automatically get their value from a column in a referenced table. This property automatically gets the value from the column in the referenced table when the corresponding reference property value is set.
+{url-javadoc}/org/jminor/framework/domain/Property.DenormalizedProperty.html[DenormalizedProperty] is used for columns that should automatically get their value from a column in a referenced table. This property automatically gets the value from the column in the referenced table when the corresponding reference property value is set.
 [source,java]
 ----
 Properties.denormalizedProperty(CUSTOMER_CITY, CUSTOMER_ADDRESS_FK,
@@ -292,7 +292,7 @@ customer.get(CUSTOMER_CITY);//now this returns "Canastota"
 
 === SubqueryProperty
 
-{javadoc-root}/org/jminor/framework/domain/Property.SubqueryProperty.html[SubqueryProperty] is used to represent properties which get their value from a subquery returning a single value. Note that in the example below __reference_id__ must be available when the query is run, that is, the entity must include that column as a property.
+{url-javadoc}/org/jminor/framework/domain/Property.SubqueryProperty.html[SubqueryProperty] is used to represent properties which get their value from a subquery returning a single value. Note that in the example below __reference_id__ must be available when the query is run, that is, the entity must include that column as a property.
 [source,java]
 ----
 Properties.subqueryProperty(SUBQUERY_PROPERTY_ID, Types.VARCHAR, "Caption",
@@ -301,11 +301,11 @@ Properties.subqueryProperty(SUBQUERY_PROPERTY_ID, Types.VARCHAR, "Caption",
 
 === TransientProperty
 
-{javadoc-root}/org/jminor/framework/domain/Property.TransientProperty.html[TransientProperty] is used to represent a property which is not based on an underlying column, these properties all have a default value of null and can be set and retrieved just like normal properties.
+{url-javadoc}/org/jminor/framework/domain/Property.TransientProperty.html[TransientProperty] is used to represent a property which is not based on an underlying column, these properties all have a default value of null and can be set and retrieved just like normal properties.
 
 === DerivedProperty
 
-{javadoc-root}/org/jminor/framework/domain/Property.DerivedProperty.html[DerivedProperty] is used to represent a transient property which value is derived from one or more properties in the same entity. The value of a derived property is provided via a {javadoc-root}/org/jminor/framework/domain/Property.DerivedProperty.Provider.html[DerivedProperty.Provider] implementation as shown below.
+{url-javadoc}/org/jminor/framework/domain/Property.DerivedProperty.html[DerivedProperty] is used to represent a transient property which value is derived from one or more properties in the same entity. The value of a derived property is provided via a {url-javadoc}/org/jminor/framework/domain/Property.DerivedProperty.Provider.html[DerivedProperty.Provider] implementation as shown below.
 [source,java]
 ----
 Properties.derivedProperty(SUM_ID, Types.INTEGER, "Sum",
@@ -320,11 +320,11 @@ Properties.derivedProperty(SUM_ID, Types.INTEGER, "Sum",
          }, SOURCE_PROPERTY_ID_1, SOURCE_PROPERTY_ID_2),
 ----
 ===== Examples
-* <<{tutorials-dir}/chinook.adoc#Domain-model, Chinook domain model>>
+* <<{dir-tutorials}/chinook.adoc#Domain-model, Chinook domain model>>
 
 == Domain
 
-The *Domain* class serves as a factory class for Entity objects as well as a central repository of entity meta-information (the domain model), each entity type must be defined, by calling {javadoc-root}/org/jminor/framework/domain/Domain.html#define-java.lang.String-org.jminor.framework.domain.Property...-[Domain.define] for each entity. The framework assumes the *entityId* is the table name, unless the *tableName* parameter is specified.
+The *Domain* class serves as a factory class for Entity objects as well as a central repository of entity meta-information (the domain model), each entity type must be defined, by calling {url-javadoc}/org/jminor/framework/domain/Domain.html#define-java.lang.String-org.jminor.framework.domain.Property...-[Domain.define] for each entity. The framework assumes the *entityId* is the table name, unless the *tableName* parameter is specified.
 
 [source,java]
 ----
@@ -360,7 +360,7 @@ The *Domain* class serves as a factory class for Entity objects as well as a cen
 
 === Domain.StringProvider
 
-The {javadoc-root}/org/jminor/framework/domain/Domain.StringProvider.html[Domain.StringProvider] class is for providing __toString()__ implementations entities. This value is f. ex. used when entties are displayed in a ComboBox or as a foreign key values in table views.
+The {url-javadoc}/org/jminor/framework/domain/Domain.StringProvider.html[Domain.StringProvider] class is for providing __toString()__ implementations entities. This value is f. ex. used when entties are displayed in a ComboBox or as a foreign key values in table views.
 
 See the Domain.StringProvider API doc for further information.
 
@@ -368,7 +368,7 @@ See the Domain.StringProvider API doc for further information.
 
 The following classes can come in handy when working with entities.
 
-{javadoc-root}/org/jminor/framework/domain/Domain.Validator.html[Domain.Validator]
+{url-javadoc}/org/jminor/framework/domain/Domain.Validator.html[Domain.Validator]
 
 A default *Entity.Validator* implementation which provides basic range and null validation, can be overridden to provide further validations. Note that validation is performed quite often so it should not perform expensive operations. Validation requiring database access f.ex. belongs in the application model or ui.
 
@@ -388,7 +388,7 @@ define("entityID", [...]).setValidator(new Domain.Validator() {
     });
 ----
 
-{javadoc-root}/org/jminor/framework/domain/Entity.BackgroundColorProvider.html[Entity.BackgroundColorProvider]
+{url-javadoc}/org/jminor/framework/domain/Entity.BackgroundColorProvider.html[Entity.BackgroundColorProvider]
 
 Provides the background color for entity property cells when displayed in a table.
 
@@ -407,7 +407,7 @@ define("entityId", [...]).setBackgroundColorProvider(new Entity.BackgroundColorP
 
 ==== Examples
 
-* <<{tutorials-dir}/empdept.adoc#Domain-model, EmpDept domain model>>
+* <<{dir-tutorials}/empdept.adoc#Domain-model, EmpDept domain model>>
 
 === Entities in action
 
@@ -481,15 +481,15 @@ java -Djminor.db.type=h2 -Djminor.db.embedded=true -Djminor.db.host=h2db/h2 -cp 
 
 ==== Examples
 
-* <<{tutorials-dir}/empdept.adoc#Domain-model, EmpDept domain model>>
-* <<{tutorials-dir}/chinook.adoc#Domain-model, Chinook domain model>>
-* <<{tutorials-dir}/petstore.adoc#Domain-model, Petstore domain model>>
+* <<{dir-tutorials}/empdept.adoc#Domain-model, EmpDept domain model>>
+* <<{dir-tutorials}/chinook.adoc#Domain-model, Chinook domain model>>
+* <<{dir-tutorials}/petstore.adoc#Domain-model, Petstore domain model>>
 
 == Domain model test
 
 === Introduction
 
-To unit test the CRUD operations on the domain model extend {javadoc-root}/org/jminor/framework/domain/test/EntityTestUnit.html[EntityTestUnit].
+To unit test the CRUD operations on the domain model extend {url-javadoc}/org/jminor/framework/domain/test/EntityTestUnit.html[EntityTestUnit].
 
 The unit tests are run within a single transaction which is rolled back after the test finishes, so these tests are pretty much guaranteed to leave no junk data behind.
 
@@ -497,9 +497,9 @@ The unit tests are run within a single transaction which is rolled back after th
 
 The following methods all have default implementations which are based on randomly created property values, based on the constraints set in the domain model, override if the default ones are not working.
 
-* {javadoc-root}/org/jminor/framework/domain/testing/EntityTestUnit.html#initializeReferenceEntity-java.lang.String-[initializeReferenceEntity] should initialize return an instance of the given entity type to use for a foreign key reference required for inserting the entity being tested.
-* {javadoc-root}/org/jminor/framework/domain/testing/EntityTestUnit.html#initializeTestEntity-java.lang.String-[initializeTestEntity] should return a entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
-* {javadoc-root}/org/jminor/framework/domain/testing/EntityTestUnit.html#modifyEntity-org.jminor.framework.domain.Entity-[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the db layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
+* {url-javadoc}/org/jminor/framework/domain/testing/EntityTestUnit.html#initializeReferenceEntity-java.lang.String-[initializeReferenceEntity] should initialize return an instance of the given entity type to use for a foreign key reference required for inserting the entity being tested.
+* {url-javadoc}/org/jminor/framework/domain/testing/EntityTestUnit.html#initializeTestEntity-java.lang.String-[initializeTestEntity] should return a entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
+* {url-javadoc}/org/jminor/framework/domain/testing/EntityTestUnit.html#modifyEntity-org.jminor.framework.domain.Entity-[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the db layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
 
 To run the full CRUD test for a domain entity you need to call the __testEntity(String entityId)__ method with the id of the given entity as parameter. You can either create a single __testDomain()__ method and call the __testEntity__ method in turn for each entityId or create a single __testEntityName__ for each domain entity, as we do in the example below.
 
@@ -584,15 +584,15 @@ public class TestStore extends EntityTestUnit {
 
 ==== Examples ====
 
-* <<{tutorials-dir}/empdept.adoc#Domain-model-unit-test, EmpDept domain model test>>
-* <<{tutorials-dir}/chinook.adoc#Domain-model-unit-test, Chinook domain model test>>
-* <<{tutorials-dir}/petstore.adoc#Domain-model-unit-test, Petstore domain model test>>
+* <<{dir-tutorials}/empdept.adoc#Domain-model-unit-test, EmpDept domain model test>>
+* <<{dir-tutorials}/chinook.adoc#Domain-model-unit-test, Chinook domain model test>>
+* <<{dir-tutorials}/petstore.adoc#Domain-model-unit-test, Petstore domain model test>>
 
 == EntityModel
 
 === Introduction
 
-The {javadoc-root}/org/jminor/framework/model/EntityEditModel.html[EntityEditModel] interface defines the CRUD business logic used by the {javadoc-root}/org/jminor/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] class when entities are being edited, and must be defined for each entity requiring a CRUD user interface. The EntityEditModel works with a single entity instance, called the active entity, which can be set via the {javadoc-root}/org/jminor/framework/model/EntityEditModel.html#setEntity-org.jminor.framework.domain.Entity-[setEntity(Entity entity)] method and retrieved via {javadoc-root}/org/jminor/framework/model/EntityEditModel.html#getEntityCopy--[getEntityCopy()]. The EntityEditModel interface exposes a number of methods for manipulating as well as querying the property values of the active entity, via the {javadoc-root}/org/jminor/common/model/valuemap/ValueMapEditModel.html[ValueMapEditModel] interface which it extends
+The {url-javadoc}/org/jminor/framework/model/EntityEditModel.html[EntityEditModel] interface defines the CRUD business logic used by the {url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] class when entities are being edited, and must be defined for each entity requiring a CRUD user interface. The EntityEditModel works with a single entity instance, called the active entity, which can be set via the {url-javadoc}/org/jminor/framework/model/EntityEditModel.html#setEntity-org.jminor.framework.domain.Entity-[setEntity(Entity entity)] method and retrieved via {url-javadoc}/org/jminor/framework/model/EntityEditModel.html#getEntityCopy--[getEntityCopy()]. The EntityEditModel interface exposes a number of methods for manipulating as well as querying the property values of the active entity, via the {url-javadoc}/org/jminor/common/model/valuemap/ValueMapEditModel.html[ValueMapEditModel] interface which it extends
 
 [source,java]
 ----
@@ -654,7 +654,7 @@ addDetailModel(new CustomerModel(connectionProvider);
 
 === Table model
 
-Each {javadoc-root}/org/jminor/framework/model/EntityModel.html[EntityModel] can contain a single {javadoc-root}/org/jminor/framework/model/EntityTableModel.html[EntityTableModel] instance. This table model can be created automatically by the //EntityModel// or supplied via a constructor argument in case of a specialized implementation.
+Each {url-javadoc}/org/jminor/framework/model/EntityModel.html[EntityModel] can contain a single {url-javadoc}/org/jminor/framework/model/EntityTableModel.html[EntityTableModel] instance. This table model can be created automatically by the //EntityModel// or supplied via a constructor argument in case of a specialized implementation.
 
 [source,java]
 ----
@@ -673,7 +673,7 @@ static class CustomerModel extends SwingEntityModel {
 
 === Edit model
 
-Each {javadoc-root}/org/jminor/framework/model/EntityModel.html[EntityModel] contains a single {javadoc-root}/org/jminor/framework/model/EntityEditModel.html[EntityEditModel] instance. This edit model can be created automatically by the __EntityModel__ or supplied via a constructor argument in case of a specialized implementation.
+Each {url-javadoc}/org/jminor/framework/model/EntityModel.html[EntityModel] contains a single {url-javadoc}/org/jminor/framework/model/EntityEditModel.html[EntityEditModel] instance. This edit model can be created automatically by the __EntityModel__ or supplied via a constructor argument in case of a specialized implementation.
 
 [source,java]
 ----
@@ -712,7 +712,7 @@ protected void bindEvents() {
 ----
 
 === Examples
-* <<{tutorials-dir}/empdept.adoc#Application-model-layer, EmpDept entity models>>
+* <<{dir-tutorials}/empdept.adoc#Application-model-layer, EmpDept entity models>>
 
 == EntityApplicationModel
 
@@ -737,7 +737,7 @@ public class StoreApplicationModel extends SwingEntityApplicationModel {
 
 === Introduction
 
-The application load testing harness is used to see how your application, server and database handle multiple concurrent users. This is done by extending the abstract class {javadoc-root}/org/jminor/swing/framework/tools/EntityLoadTestModel.html[EntityLoadTestModel].
+The application load testing harness is used to see how your application, server and database handle multiple concurrent users. This is done by extending the abstract class {url-javadoc}/org/jminor/swing/framework/tools/EntityLoadTestModel.html[EntityLoadTestModel].
 
 [source,java]
 ----
@@ -774,15 +774,15 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
 
 === Examples
 
-* <<{tutorials-dir}/empdept.adoc#Application-load-test, EmpDept application load test>>
-* <<{tutorials-dir}/chinook.adoc#Application-load-test, Chinook application load test>>
-* <<{tutorials-dir}/petstore.adoc#Application-load-test, Petstore application load test>>
+* <<{dir-tutorials}/empdept.adoc#Application-load-test, EmpDept application load test>>
+* <<{dir-tutorials}/chinook.adoc#Application-load-test, Chinook application load test>>
+* <<{dir-tutorials}/petstore.adoc#Application-load-test, Petstore application load test>>
 
 == EntityPanel
 
 === Introduction
 
-The {javadoc-root}/org/jminor/swing/framework/ui/EntityPanel.html[EntityPanel] is the base UI class for working with entity instances. It usually consists of an {javadoc-root}/org/jminor/swing/framework/ui/EntityTablePanel.html[EntityTablePanel], an {javadoc-root}/org/jminor/swing/framework/ui/EntityEditPanel.html[EntityEditPanel], which contains the controls (text fields, combo boxes and such) for editing an entity instance and a set of detail panels representing the entities having a master/detail relationship with the underlying entity.
+The {url-javadoc}/org/jminor/swing/framework/ui/EntityPanel.html[EntityPanel] is the base UI class for working with entity instances. It usually consists of an {url-javadoc}/org/jminor/swing/framework/ui/EntityTablePanel.html[EntityTablePanel], an {url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html[EntityEditPanel], which contains the controls (text fields, combo boxes and such) for editing an entity instance and a set of detail panels representing the entities having a master/detail relationship with the underlying entity.
 
 ==== EntityEditPanel
 
@@ -831,7 +831,7 @@ public TestPanel extends EntityPanel {
 ----
 
 === Custom actions
-The action mechanism used throughout the JMinor framework is based on the {javadoc-root}/org/jminor/swing/common/ui/control/Control.html[Control] class and its subclasses and the {javadoc-root}/org/jminor/swing/common/ui/control/ControlSet.html[ControlSet] class which, as the name suggests, represents a set of controls. There are two static utility classes for creating and presenting controls, {javadoc-root}/org/jminor/swing/common/ui/control/Controls.html[Controls] and {javadoc-root}/org/jminor/swing/common/ui/control/ControlProvider.html[ControlProvider] respectively.
+The action mechanism used throughout the JMinor framework is based on the {url-javadoc}/org/jminor/swing/common/ui/control/Control.html[Control] class and its subclasses and the {url-javadoc}/org/jminor/swing/common/ui/control/ControlSet.html[ControlSet] class which, as the name suggests, represents a set of controls. There are two static utility classes for creating and presenting controls, {url-javadoc}/org/jminor/swing/common/ui/control/Controls.html[Controls] and {url-javadoc}/org/jminor/swing/common/ui/control/ControlProvider.html[ControlProvider] respectively.
 
 === Controls
 
@@ -898,9 +898,9 @@ public ControlSet getPrintControls() {
 
 === Examples
 
-* <<{tutorials-dir}/empdept.adoc#Main-application-panel, EmpDept application panel>>
-* <<{tutorials-dir}/chinook.adoc#Main-application-panel, Chinook application panel>>
-* <<{tutorials-dir}/petstore.adoc#Main-application-panel, Petstore application panel>>
+* <<{dir-tutorials}/empdept.adoc#Main-application-panel, EmpDept application panel>>
+* <<{dir-tutorials}/chinook.adoc#Main-application-panel, Chinook application panel>>
+* <<{dir-tutorials}/petstore.adoc#Main-application-panel, Petstore application panel>>
 
 == Reporting with JasperReports
 
@@ -908,13 +908,13 @@ public ControlSet getPrintControls() {
 
 JMinor uses a plugin oriented approach to report viewing, and provides an implementation for JasperReports and NextReports.
 
-With the JMinor JasperReports plugin you can either design your report based on a SQL query in which case you use the JasperReportsWrapper class, which facilitates the report being filled using the active database connection or you can design your report around the JRDataSource implementation provided by the {javadoc-root}/org/jminor/framework/plugins/jasperreports/model/JasperReportsEntityDataSource.html[JasperReportsEntityDataSource] class, which is constructed around an iterator.
+With the JMinor JasperReports plugin you can either design your report based on a SQL query in which case you use the JasperReportsWrapper class, which facilitates the report being filled using the active database connection or you can design your report around the JRDataSource implementation provided by the {url-javadoc}/org/jminor/framework/plugins/jasperreports/model/JasperReportsEntityDataSource.html[JasperReportsEntityDataSource] class, which is constructed around an iterator.
 
 The EntityPanel class provides straight forward methods for viewing reports using methods provided by the EntityModel class for filling them. Both these classes rely on static utility classes for doing the actual work so you are not bound by the EntityPanel and EntityModel classes for viewing reports, they simply provide the easiest way of doing so.
 
 === JDBC Reports
 
-Using a report based on a SQL query, {javadoc-root}/org/jminor/framework/plugins/jasperreports/model/JasperReportsWrapper.html[JasperReportsWrapper] and {javadoc-root}/org/jminor/framework/plugins/jasperreports/ui/JasperReportsUIWrapper.html[JasperReportsUIWrapper] is the simplest way of viewing a report using JMinor, just add a method similar to the one below to a EntityPanel subclass. You can then create an action calling that method and put it in for example the table popup menu as described in the <<Adding a print action, adding a print action>> section.
+Using a report based on a SQL query, {url-javadoc}/org/jminor/framework/plugins/jasperreports/model/JasperReportsWrapper.html[JasperReportsWrapper] and {url-javadoc}/org/jminor/framework/plugins/jasperreports/ui/JasperReportsUIWrapper.html[JasperReportsUIWrapper] is the simplest way of viewing a report using JMinor, just add a method similar to the one below to a EntityPanel subclass. You can then create an action calling that method and put it in for example the table popup menu as described in the <<Adding a print action, adding a print action>> section.
 
 [source,java]
 ----
@@ -955,4 +955,4 @@ The way you view the report is just like in the jdbc report example above except
 
 === Examples
 
-* <<{tutorials-dir}/empdept.adoc#Application-ui-layer, EmpDept UI layer>>
+* <<{dir-tutorials}/empdept.adoc#Application-ui-layer, EmpDept UI layer>>

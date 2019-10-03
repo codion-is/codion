@@ -1,0 +1,5 @@
+= JMinor Remote Server Monitor
+
+== Monitoring
+
+The JMinor Server Monitor provides a way to introspect the server.
