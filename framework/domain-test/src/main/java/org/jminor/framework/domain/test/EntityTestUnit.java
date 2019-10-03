@@ -26,6 +26,7 @@ import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -373,9 +374,9 @@ public class EntityTestUnit {
       case Types.DATE:
         return LocalDate.now();
       case Types.TIMESTAMP:
-        return LocalDateTime.now();
+        return LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
       case Types.TIME:
-        return LocalTime.now();
+        return LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
       case Types.DOUBLE:
         return getRandomDouble(property);
       case Types.INTEGER:
