@@ -22,7 +22,7 @@ import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
-import org.jminor.swing.common.ui.textfield.DoubleField;
+import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 
@@ -47,6 +47,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -377,7 +379,13 @@ public class ColumnConditionPanel<K> extends JPanel {
         return new IntegerField(DEFAULT_FIELD_COLUMNS);
       }
       else if (typeClass.equals(Double.class)) {
-        return new DoubleField(DEFAULT_FIELD_COLUMNS);
+        return new DecimalField(DEFAULT_FIELD_COLUMNS);
+      }
+      else if (typeClass.equals(BigDecimal.class)) {
+        final DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance();
+        format.setParseBigDecimal(true);
+
+        return new DecimalField(format, DEFAULT_FIELD_COLUMNS);
       }
       else if (typeClass.equals(Long.class)) {
         return new LongField(DEFAULT_FIELD_COLUMNS);
@@ -405,10 +413,10 @@ public class ColumnConditionPanel<K> extends JPanel {
         ValueLinks.integerValueLink((IntegerField) component, modelValue, false, false, true);
       }
       else if (typeClass.equals(Double.class)) {
-        ValueLinks.doubleValueLink((DoubleField) component, modelValue, false, false, true);
+        ValueLinks.doubleValueLink((DecimalField) component, modelValue, false, false, true);
       }
       else if (typeClass.equals(BigDecimal.class)) {
-        ValueLinks.bigDecimalValueLink((DoubleField) component, modelValue, false, true);
+        ValueLinks.bigDecimalValueLink((DecimalField) component, modelValue, false, true);
       }
       else if (typeClass.equals(Long.class)) {
         ValueLinks.longValueLink((LongField) component, modelValue, false, false, true);

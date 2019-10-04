@@ -3,12 +3,12 @@
  */
 package org.jminor.swing.common.ui.input;
 
-import org.jminor.swing.common.ui.textfield.DoubleField;
+import org.jminor.swing.common.ui.textfield.DecimalField;
 
 /**
  * A InputProvider implementation for double values.
  */
-public final class DoubleInputProvider extends AbstractInputProvider<Double, DoubleField> {
+public final class DoubleInputProvider extends AbstractInputProvider<Double, DecimalField> {
 
   /**
    * Instantiates a new DoubleInputProvider.
@@ -25,7 +25,7 @@ public final class DoubleInputProvider extends AbstractInputProvider<Double, Dou
    * @param maxValue the maximum value
    */
   public DoubleInputProvider(final Double initialValue, final double minValue, final double maxValue) {
-    super(new DoubleField());
+    super(new DecimalField());
     getInputComponent().setRange(minValue, maxValue);
     getInputComponent().setDouble(initialValue);
   }

@@ -6,7 +6,7 @@ package org.jminor.swing.common.ui.control;
 import org.jminor.common.Event;
 import org.jminor.common.Events;
 import org.jminor.swing.common.ui.ValueLinks;
-import org.jminor.swing.common.ui.textfield.DoubleField;
+import org.jminor.swing.common.ui.textfield.DecimalField;
 
 import org.junit.jupiter.api.Test;
 
@@ -30,41 +30,41 @@ public class DoubleValueLinkTest {
     format.setParseBigDecimal(true);
     format.setMaximumFractionDigits(4);
 
-    final DoubleField doubleField = new DoubleField(format);
-    doubleField.setSeparators('.', ',');
+    final DecimalField decimalField = new DecimalField(format);
+    decimalField.setSeparators('.', ',');
 
-    doubleField.setBigDecimal(BigDecimal.valueOf(3.14));
-    assertEquals("3.14", doubleField.getText());
+    decimalField.setBigDecimal(BigDecimal.valueOf(3.14));
+    assertEquals("3.14", decimalField.getText());
 
-    doubleField.setText("42.4242");
-    assertEquals(BigDecimal.valueOf(42.4242), doubleField.getBigDecimal());
+    decimalField.setText("42.4242");
+    assertEquals(BigDecimal.valueOf(42.4242), decimalField.getBigDecimal());
   }
 
   @Test
   public void testDouble() throws Exception {
-    final DoubleField doubleField = new DoubleField();
-    doubleField.setSeparators('.', ',');
-    ValueLinks.doubleValueLink(doubleField, this, "doubleValue", evtDoubleValueChanged, false, true);
-    assertNull(doubleField.getDouble());
+    final DecimalField decimalField = new DecimalField();
+    decimalField.setSeparators('.', ',');
+    ValueLinks.doubleValueLink(decimalField, this, "doubleValue", evtDoubleValueChanged, false, true);
+    assertNull(decimalField.getDouble());
     setDoubleValue(2.2);
-    assertEquals(Double.valueOf(2.2), doubleField.getDouble());
-    doubleField.setText("42.2");
+    assertEquals(Double.valueOf(2.2), decimalField.getDouble());
+    decimalField.setText("42.2");
     assertEquals(Double.valueOf(42.2), doubleValue);
-    doubleField.setText("");
+    decimalField.setText("");
     assertNull(doubleValue);
   }
 
   @Test
   public void testDoublePrimitive() throws Exception {
-    final DoubleField doubleField = new DoubleField();
-    doubleField.setSeparators('.', ',');
-    ValueLinks.doubleValueLink(doubleField, this, "doublePrimitiveValue", evtDoublePrimitiveValueValueChanged, true, true);
-    assertEquals((Double) 0.0, doubleField.getDouble());
+    final DecimalField decimalField = new DecimalField();
+    decimalField.setSeparators('.', ',');
+    ValueLinks.doubleValueLink(decimalField, this, "doublePrimitiveValue", evtDoublePrimitiveValueValueChanged, true, true);
+    assertEquals((Double) 0.0, decimalField.getDouble());
     setDoublePrimitiveValue(2.2);
-    assertEquals(Double.valueOf(2.2), doubleField.getDouble());
-    doubleField.setText("42.2");
+    assertEquals(Double.valueOf(2.2), decimalField.getDouble());
+    decimalField.setText("42.2");
     assertEquals(42.2, doublePrimitiveValue);
-    doubleField.setText("");
+    decimalField.setText("");
     assertEquals(0.0, doublePrimitiveValue);
   }
 

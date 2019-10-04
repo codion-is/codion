@@ -6,7 +6,7 @@ package org.jminor.swing.common.ui;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
-import org.jminor.swing.common.ui.textfield.DoubleField;
+import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 
@@ -167,21 +167,21 @@ public final class ValueLinks {
   }
 
   /**
-   * @param doubleField the double field to link with the value
+   * @param decimalField the decimal field to link with the value
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param usePrimitive if true then the property value is assumed to be a primitive
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void doubleValueLink(final DoubleField doubleField, final Object owner, final String beanPropertyName,
+  public static void doubleValueLink(final DecimalField decimalField, final Object owner, final String beanPropertyName,
                                      final EventObserver<Double> valueChangeEvent, final boolean usePrimitive,
                                      final boolean immediateUpdate) {
-    doubleValueLink(doubleField, owner, beanPropertyName, valueChangeEvent, usePrimitive, false, immediateUpdate);
+    doubleValueLink(decimalField, owner, beanPropertyName, valueChangeEvent, usePrimitive, false, immediateUpdate);
   }
 
   /**
-   * @param doubleField the double field to link with the value
+   * @param decimalField the decimal field to link with the value
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
@@ -189,36 +189,36 @@ public final class ValueLinks {
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void doubleValueLink(final DoubleField doubleField, final Object owner, final String beanPropertyName,
+  public static void doubleValueLink(final DecimalField decimalField, final Object owner, final String beanPropertyName,
                                      final EventObserver<Double> valueChangeEvent, final boolean usePrimitive,
                                      final boolean readOnly, final boolean immediateUpdate) {
-    doubleValueLink(doubleField, Values.beanValue(owner, beanPropertyName, usePrimitive ? double.class : Double.class,
+    doubleValueLink(decimalField, Values.beanValue(owner, beanPropertyName, usePrimitive ? double.class : Double.class,
             valueChangeEvent), usePrimitive, readOnly, immediateUpdate);
   }
 
   /**
-   * @param doubleField the double field to link with the value
+   * @param decimalField the decimal field to link with the value
    * @param value the model value
    * @param usePrimitive if true then the property value is assumed to be a primitive
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void doubleValueLink(final DoubleField doubleField, final Value<Double> value, final boolean usePrimitive,
+  public static void doubleValueLink(final DecimalField decimalField, final Value<Double> value, final boolean usePrimitive,
                                      final boolean readOnly, final boolean immediateUpdate) {
-    doubleField.setEditable(!readOnly);
-    Values.link(value, UiValues.doubleValue(doubleField, usePrimitive, immediateUpdate), readOnly);
+    decimalField.setEditable(!readOnly);
+    Values.link(value, UiValues.doubleValue(decimalField, usePrimitive, immediateUpdate), readOnly);
   }
 
   /**
-   * @param doubleField the double field to link with the value
+   * @param decimalField the decimal field to link with the value
    * @param value the model value
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void bigDecimalValueLink(final DoubleField doubleField, final Value<BigDecimal> value,
+  public static void bigDecimalValueLink(final DecimalField decimalField, final Value<BigDecimal> value,
                                          final boolean readOnly, final boolean immediateUpdate) {
-    doubleField.setEditable(!readOnly);
-    Values.link(value, UiValues.bigDecimalValue(doubleField, immediateUpdate), readOnly);
+    decimalField.setEditable(!readOnly);
+    Values.link(value, UiValues.bigDecimalValue(decimalField, immediateUpdate), readOnly);
   }
 
   /**

@@ -6,7 +6,7 @@ package org.jminor.swing.common.ui;
 import org.jminor.common.DateFormats;
 import org.jminor.common.Value;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
-import org.jminor.swing.common.ui.textfield.DoubleField;
+import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 
@@ -201,34 +201,34 @@ public class UiValuesTest {
 
   @Test
   public void doubleTextUiValue() {
-    final DoubleField doubleField = new DoubleField();
-    doubleField.setSeparators('.', ',');
-    final Value<Double> value = UiValues.doubleValue(doubleField, false, true);
+    final DecimalField decimalField = new DecimalField();
+    decimalField.setSeparators('.', ',');
+    final Value<Double> value = UiValues.doubleValue(decimalField, false, true);
 
     assertNull(value.get());
-    doubleField.setText("122.2");
+    decimalField.setText("122.2");
     assertEquals(Double.valueOf(122.2), value.get());
-    doubleField.setText("");
+    decimalField.setText("");
     assertNull(value.get());
 
     value.set(42.2);
-    assertEquals("42.2", doubleField.getText());
+    assertEquals("42.2", decimalField.getText());
   }
 
   @Test
   public void doublePrimitiveTextUiValue() {
-    final DoubleField doubleField = new DoubleField();
-    doubleField.setSeparators('.', ',');
-    final Value<Double> value = UiValues.doubleValue(doubleField, true, true);
+    final DecimalField decimalField = new DecimalField();
+    decimalField.setSeparators('.', ',');
+    final Value<Double> value = UiValues.doubleValue(decimalField, true, true);
 
     assertEquals(Double.valueOf(0), value.get());
-    doubleField.setText("122.2");
+    decimalField.setText("122.2");
     assertEquals(Double.valueOf(122.2), value.get());
-    doubleField.setText("");
+    decimalField.setText("");
     assertEquals(Double.valueOf(0), value.get());
 
     value.set(42.2);
-    assertEquals("42.2", doubleField.getText());
+    assertEquals("42.2", decimalField.getText());
   }
 
   @Test

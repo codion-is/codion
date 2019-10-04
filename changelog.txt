@@ -5149,3 +5149,5 @@
   Property.isDecimal() added
   Property.BIG_DECIMAL_ROUNDING_MODE configuration value added
   BigDecimal support added using Types.DECIMAL
+  DoubleField renamed to the more appropriate DecimalField
+  BigDecimal support continued (as in, things I missed)
