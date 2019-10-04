@@ -21,6 +21,8 @@ import javafx.scene.control.SelectionModel;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.util.StringConverter;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -111,6 +113,15 @@ public final class PropertyValues {
    */
   public static StringValue<Double> doublePropertyValue(final StringProperty property, final NumberFormat numberFormat) {
     return new DefaultStringValue<>(property, new DoubleConverter(numberFormat));
+  }
+
+  /**
+   * @param property the string property
+   * @param decimalFormat the format to use
+   * @return a BigDecimal {@link StringValue} based on the given string property
+   */
+  public static StringValue<BigDecimal> bigDecimalPropertyValue(final StringProperty property, final DecimalFormat decimalFormat) {
+    return new DefaultStringValue<>(property, new BigDecimalConverter(decimalFormat));
   }
 
   /**
@@ -267,6 +278,38 @@ public final class PropertyValues {
         }
 
         return ((Long) number).doubleValue();
+      }
+      catch (final ParseException e) {
+        return null;
+      }
+    }
+  }
+
+  private static final class BigDecimalConverter extends StringConverter<BigDecimal> {
+
+    private final DecimalFormat numberFormat;
+
+    private BigDecimalConverter(final DecimalFormat numberFormat) {
+      this.numberFormat = numberFormat;
+      this.numberFormat.setParseBigDecimal(true);
+    }
+
+    @Override
+    public String toString(final BigDecimal value) {
+      if (value == null) {
+        return "";
+      }
+
+      return numberFormat.format(value);
+    }
+
+    @Override
+    public BigDecimal fromString(final String value) {
+      if (Util.nullOrEmpty(value)) {
+        return null;
+      }
+      try {
+        return (BigDecimal) parseStrict(numberFormat, value);
       }
       catch (final ParseException e) {
         return null;

@@ -5151,3 +5151,4 @@
   BigDecimal support added using Types.DECIMAL
   DoubleField renamed to the more appropriate DecimalField
   BigDecimal support continued (as in, things I missed)
+  BigDecimal support added to javafx module
