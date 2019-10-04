@@ -16,6 +16,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.text.JTextComponent;
+import java.math.BigDecimal;
 import java.text.Format;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -206,6 +207,18 @@ public final class ValueLinks {
                                      final boolean readOnly, final boolean immediateUpdate) {
     doubleField.setEditable(!readOnly);
     Values.link(value, UiValues.doubleValue(doubleField, usePrimitive, immediateUpdate), readOnly);
+  }
+
+  /**
+   * @param doubleField the double field to link with the value
+   * @param value the model value
+   * @param readOnly if true the component will be read only
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
+   */
+  public static void bigDecimalValueLink(final DoubleField doubleField, final Value<BigDecimal> value,
+                                         final boolean readOnly, final boolean immediateUpdate) {
+    doubleField.setEditable(!readOnly);
+    Values.link(value, UiValues.bigDecimalValue(doubleField, immediateUpdate), readOnly);
   }
 
   /**

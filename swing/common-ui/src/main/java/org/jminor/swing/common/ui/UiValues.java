@@ -36,6 +36,7 @@ import javax.swing.text.JTextComponent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
+import java.math.BigDecimal;
 import java.text.Format;
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -127,6 +128,15 @@ public final class UiValues {
    */
   public static Value<Double> doubleValue(final DoubleField doubleField, final boolean usePrimitive, final boolean immediateUpdate) {
     return new DoubleUIValue(doubleField, usePrimitive, immediateUpdate);
+  }
+
+  /**
+   * @param doubleField the component
+   * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
+   * @return a Value bound to the given component
+   */
+  public static Value<BigDecimal> bigDecimalValue(final DoubleField doubleField, final boolean immediateUpdate) {
+    return new BigDecimalUIValue(doubleField, immediateUpdate);
   }
 
   /**
@@ -405,6 +415,23 @@ public final class UiValues {
       }
 
       return number.doubleValue();
+    }
+  }
+
+  private static final class BigDecimalUIValue extends NumberUIValue<BigDecimal> {
+
+    private BigDecimalUIValue(final DoubleField doubleField, final boolean immediateUpdate) {
+      super(doubleField, false, immediateUpdate);
+    }
+
+    @Override
+    protected void setInternal(final BigDecimal value) {
+      getTextField().setNumber(value);
+    }
+
+    @Override
+    public BigDecimal get() {
+      return (BigDecimal) getNumber();
     }
   }
 

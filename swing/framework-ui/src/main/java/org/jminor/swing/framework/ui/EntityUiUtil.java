@@ -730,6 +730,10 @@ public final class EntityUiUtil {
     else if (property.isDouble()) {
       ValueLinks.doubleValueLink((DoubleField) textField, EditModelValues.value(editModel, property), false, readOnly, immediateUpdate);
     }
+    else if (property.isBigDecimal()) {
+      ValueLinks.bigDecimalValueLink((DoubleField) textField, EditModelValues.value(editModel, property),
+              readOnly, immediateUpdate);
+    }
     else if (property.isLong()) {
       ValueLinks.longValueLink((LongField) textField, EditModelValues.value(editModel, property), false, readOnly, immediateUpdate);
     }
@@ -877,7 +881,7 @@ public final class EntityUiUtil {
     if (property.isInteger()) {
       field = initializeIntField(property);
     }
-    else if (property.isDouble()) {
+    else if (property.isDecimal()) {
       field = initializeDoubleField(property);
     }
     else if (property.isLong()) {

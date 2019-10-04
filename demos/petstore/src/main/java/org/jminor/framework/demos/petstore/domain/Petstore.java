@@ -135,7 +135,7 @@ public final class Petstore extends Domain {
             columnProperty(ITEM_DESCRIPTION, Types.VARCHAR, "Description").setMaxLength(500).setNullable(false),
             columnProperty(ITEM_IMAGE_URL, Types.VARCHAR, "Image URL").setMaxLength(55).setHidden(true),
             columnProperty(ITEM_IMAGE_THUMB_URL, Types.VARCHAR, "Image thumbnail URL").setMaxLength(55).setHidden(true),
-            columnProperty(ITEM_PRICE, Types.DOUBLE, "Price").setNullable(false).setMaximumFractionDigits(2),
+            columnProperty(ITEM_PRICE, Types.DECIMAL, "Price").setNullable(false).setMaximumFractionDigits(2),
             foreignKeyProperty(ITEM_C0NTACT_INFO_FK, "Contact info", T_SELLER_CONTACT_INFO,
                     columnProperty(ITEM_C0NTACT_INFO_ID)).setNullable(false),
             foreignKeyProperty(ITEM_ADDRESS_FK, "Address", T_ADDRESS,

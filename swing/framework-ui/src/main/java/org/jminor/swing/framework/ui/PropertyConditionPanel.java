@@ -86,7 +86,7 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
       if (property.isDateOrTime()) {
         return UiUtil.createFormattedField(DateFormats.getDateMask(model.getDateTimeFormatPattern()));
       }
-      else if (property.isDouble()) {
+      else if (property.isDecimal()) {
         return new DoubleField(DEFAULT_FIELD_COLUMNS);
       }
       else if (property.isInteger()) {
@@ -123,6 +123,9 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
       }
       else if (columnProperty.isDouble()) {
         ValueLinks.doubleValueLink((DoubleField) field, modelValue, false, false, true);
+      }
+      else if (columnProperty.isBigDecimal()) {
+        ValueLinks.bigDecimalValueLink((DoubleField) field, modelValue, false, true);
       }
       else if (columnProperty.isInteger()) {
         ValueLinks.integerValueLink((IntegerField) field, modelValue, false, false, true);

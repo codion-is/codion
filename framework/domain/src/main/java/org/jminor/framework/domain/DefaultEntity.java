@@ -10,6 +10,7 @@ import org.jminor.common.db.valuemap.ValueMap;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.math.BigDecimal;
 import java.text.Format;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -343,6 +344,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   public Double getDouble(final String propertyId) {
     return (Double) get(propertyId);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public BigDecimal getBigDecimal(final String propertyId) {
+    return (BigDecimal) get(propertyId);
   }
 
   /** {@inheritDoc} */
@@ -825,6 +832,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   private static Object prepareValue(final Property property, final Object value) {
     if (value != null && property.isDouble()) {
       return Util.roundDouble((Double) value, property.getMaximumFractionDigits());
+    }
+    if (value != null && property.isBigDecimal()) {
+      return ((BigDecimal) value).setScale(property.getMaximumFractionDigits(), Property.BIG_DECIMAL_ROUNDING_MODE.get());
     }
 
     return value;

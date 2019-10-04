@@ -11,6 +11,7 @@ import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.Format;
@@ -33,6 +34,14 @@ public interface Property extends Attribute, Serializable {
    * Default value: 10
    */
   PropertyValue<Integer> MAXIMUM_FRACTION_DIGITS = Configuration.integerValue("jminor.domain.maximumFractionDigits", DEFAULT_MAXIMUM_FRACTION_DIGITS);
+
+  /**
+   * Specifies the rounding mode used for BigDecimal property values<br>
+   * Value type: Integer<br>
+   * Default value: BigDecimal.ROUND_HALF_EVEN<br>
+   * @see #MAXIMUM_FRACTION_DIGITS
+   */
+  PropertyValue<Integer> BIG_DECIMAL_ROUNDING_MODE = Configuration.integerValue("jminor.domain.bigDecimalRoundingMode", BigDecimal.ROUND_HALF_EVEN);
 
   /**
    * The date format pattern to use when showing time values in tables and when creating default time input fields<br>
@@ -173,6 +182,16 @@ public interface Property extends Attribute, Serializable {
   boolean isDouble();
 
   /**
+   * @return true if this is a BigDecimal property
+   */
+  boolean isBigDecimal();
+
+  /**
+   * @return true if this is a decimal property
+   */
+  boolean isDecimal();
+
+  /**
    * @return true if this is a boolean property
    */
   boolean isBoolean();
@@ -250,7 +269,7 @@ public interface Property extends Attribute, Serializable {
 
   /**
    * @return the maximum number of fraction digits to use for this property value,
-   * only applicable to properties based on Types.DOUBLE
+   * only applicable to properties based on Types.DOUBLE and Types.DECIMAL
    */
   int getMaximumFractionDigits();
 

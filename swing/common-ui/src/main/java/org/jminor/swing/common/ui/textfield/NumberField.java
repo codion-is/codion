@@ -12,6 +12,7 @@ import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -144,6 +145,10 @@ public class NumberField extends JTextField {
       final Number number = getNumber();
 
       return number == null ? null : number.doubleValue();
+    }
+
+    protected final BigDecimal getBigDecimal() {
+      return (BigDecimal) getNumber();
     }
 
     protected final void setText(final String text) {

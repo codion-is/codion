@@ -46,6 +46,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -405,6 +406,9 @@ public class ColumnConditionPanel<K> extends JPanel {
       }
       else if (typeClass.equals(Double.class)) {
         ValueLinks.doubleValueLink((DoubleField) component, modelValue, false, false, true);
+      }
+      else if (typeClass.equals(BigDecimal.class)) {
+        ValueLinks.bigDecimalValueLink((DoubleField) component, modelValue, false, true);
       }
       else if (typeClass.equals(Long.class)) {
         ValueLinks.longValueLink((LongField) component, modelValue, false, false, true);

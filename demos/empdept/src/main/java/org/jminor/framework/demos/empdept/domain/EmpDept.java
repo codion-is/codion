@@ -91,7 +91,7 @@ public final class EmpDept extends Domain {
                     columnProperty(EMPLOYEE_DEPARTMENT))
                     .setNullable(false),
             valueListProperty(EMPLOYEE_JOB, Types.VARCHAR, getString(EMPLOYEE_JOB), JOB_VALUES),
-            columnProperty(EMPLOYEE_SALARY, Types.DOUBLE, getString(EMPLOYEE_SALARY))
+            columnProperty(EMPLOYEE_SALARY, Types.DECIMAL, getString(EMPLOYEE_SALARY))
                     .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
             columnProperty(EMPLOYEE_COMMISSION, Types.DOUBLE, getString(EMPLOYEE_COMMISSION))
                     .setMin(100).setMax(2000).setMaximumFractionDigits(2),

@@ -5134,3 +5134,6 @@
   Some 3d party dependencies upgraded to latest version
   Plugin modules renamed to reflect package names (as is with java11 version)
   Slf4J dependency changed from 'implementation' to 'api'
+  Property.isDecimal() added
+  Property.BIG_DECIMAL_ROUNDING_MODE configuration value added
+  BigDecimal support added using Types.DECIMAL

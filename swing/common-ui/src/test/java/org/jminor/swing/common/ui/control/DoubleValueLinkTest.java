@@ -10,6 +10,10 @@ import org.jminor.swing.common.ui.textfield.DoubleField;
 
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -19,6 +23,22 @@ public class DoubleValueLinkTest {
   private final Event evtDoubleValueChanged = Events.event();
   private double doublePrimitiveValue;
   private final Event evtDoublePrimitiveValueValueChanged = Events.event();
+
+  @Test
+  public void testBigDecimal() {
+    final DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance();
+    format.setParseBigDecimal(true);
+    format.setMaximumFractionDigits(4);
+
+    final DoubleField doubleField = new DoubleField(format);
+    doubleField.setSeparators('.', ',');
+
+    doubleField.setBigDecimal(BigDecimal.valueOf(3.14));
+    assertEquals("3.14", doubleField.getText());
+
+    doubleField.setText("42.4242");
+    assertEquals(BigDecimal.valueOf(42.4242), doubleField.getBigDecimal());
+  }
 
   @Test
   public void testDouble() throws Exception {
