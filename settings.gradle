@@ -99,29 +99,29 @@ project(':jminor-swing-framework-ui-test').projectDir = file('swing/framework-ui
 include 'jminor-swing-framework-server-monitor'
 project(':jminor-swing-framework-server-monitor').projectDir = file('swing/framework-server-monitor')
 
-include 'jminor-plugin-hikari-pool'
-project(':jminor-plugin-hikari-pool').projectDir = file('plugins/hikari-pool')
+include 'jminor-framework-plugins-hikari-pool'
+project(':jminor-framework-plugins-hikari-pool').projectDir = file('plugins/hikari-pool')
 
-include 'jminor-plugin-imagepanel'
-project(':jminor-plugin-imagepanel').projectDir = file('plugins/imagepanel')
+include 'jminor-framework-plugins-imagepanel'
+project(':jminor-framework-plugins-imagepanel').projectDir = file('plugins/imagepanel')
 
-include 'jminor-plugin-jasperreports'
-project(':jminor-plugin-jasperreports').projectDir = file('plugins/jasperreports')
+include 'jminor-framework-plugins-jasperreports'
+project(':jminor-framework-plugins-jasperreports').projectDir = file('plugins/jasperreports')
 
-include 'jminor-plugin-json'
-project(':jminor-plugin-json').projectDir = file('plugins/json')
+include 'jminor-framework-plugins-json'
+project(':jminor-framework-plugins-json').projectDir = file('plugins/json')
 
-include 'jminor-plugin-log4j-proxy'
-project(':jminor-plugin-log4j-proxy').projectDir = file('plugins/log4j-proxy')
+include 'jminor-framework-plugins-log4j-proxy'
+project(':jminor-framework-plugins-log4j-proxy').projectDir = file('plugins/log4j-proxy')
 
-include 'jminor-plugin-logback-proxy'
-project(':jminor-plugin-logback-proxy').projectDir = file('plugins/logback-proxy')
+include 'jminor-framework-plugins-logback-proxy'
+project(':jminor-framework-plugins-logback-proxy').projectDir = file('plugins/logback-proxy')
 
-include 'jminor-plugin-nextreports'
-project(':jminor-plugin-nextreports').projectDir = file('plugins/nextreports')
+include 'jminor-framework-plugins-nextreports'
+project(':jminor-framework-plugins-nextreports').projectDir = file('plugins/nextreports')
 
-include 'jminor-plugin-tomcat-pool'
-project(':jminor-plugin-tomcat-pool').projectDir = file('plugins/tomcat-pool')
+include 'jminor-framework-plugins-tomcat-pool'
+project(':jminor-framework-plugins-tomcat-pool').projectDir = file('plugins/tomcat-pool')
 
 include 'jminor-demos-chinook'
 project(':jminor-demos-chinook').projectDir = file('demos/chinook')

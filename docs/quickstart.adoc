@@ -50,8 +50,8 @@ JMinor uses SLF4J throughout so all you need to do is add a SLF4J bridge for you
 |===
 |Logging|Artifact
 
-|Logback|org.jminor:jminor-plugin-logback-proxy:{jminor-version}
-|Log4j|org.jminor:jminor-plugin-log4j-proxy:{jminor-version}
+|Logback|org.jminor:jminor-framework-plugins-logback-proxy:{jminor-version}
+|Log4j|org.jminor:jminor-framework-plugins-log4j-proxy:{jminor-version}
 |===
 
 == Gradle
@@ -70,7 +70,7 @@ dependencies {
     //H2 JDBC driver
     runtime 'com.h2database:h2:1.4.199'
     //Logging with Logback
-    runtime 'org.jminor11:jminor-framework-plugins-logback-proxy:0.12.3-SNAPSHOT'
+    runtime 'org.jminor:jminor-framework-plugins-logback-proxy:0.12.3-SNAPSHOT'
 
     //Domain model unit testing module
     testCompile 'org.jminor:jminor-framework-domain-test:0.12.3-SNAPSHOT'

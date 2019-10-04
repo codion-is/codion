@@ -6,7 +6,7 @@ dependencies {
     testImplementation project(':jminor-framework-domain-test')
     testImplementation project(':jminor-swing-framework-ui-test')
 
-    runtimeOnly project(':jminor-plugin-logback-proxy')
+    runtimeOnly project(':jminor-framework-plugins-logback-proxy')
 
     runtimeOnly project(':jminor-framework-db-local')
     runtimeOnly project(':jminor-framework-db-remote')

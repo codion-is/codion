@@ -10,9 +10,9 @@ dependencies {
 
     implementation project(':jminor-javafx-framework')
 
-    implementation project(':jminor-plugin-jasperreports')
+    implementation project(':jminor-framework-plugins-jasperreports')
 
-    runtimeOnly project(':jminor-plugin-logback-proxy')
+    runtimeOnly project(':jminor-framework-plugins-logback-proxy')
 
     runtimeOnly project(':jminor-framework-db-http')
     runtimeOnly project(':jminor-framework-db-remote')

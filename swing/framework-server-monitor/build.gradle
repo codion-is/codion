@@ -22,7 +22,7 @@ dependencies {
     testRuntimeOnly project(':jminor-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 
-    runtime project(':jminor-plugin-logback-proxy')
+    runtime project(':jminor-framework-plugins-logback-proxy')
 }
 
 mainClassName = 'org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel'
