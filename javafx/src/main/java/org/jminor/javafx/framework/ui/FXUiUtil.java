@@ -61,7 +61,9 @@ import javafx.scene.layout.Priority;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.sql.Types;
+import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -253,6 +255,10 @@ public final class FXUiUtil {
         final StringValue<Double> doubleValue = createDoubleValue(property, (TextField) control);
         doubleValue.set((Double) defaultValue);
         return doubleValue;
+      case Types.DECIMAL:
+        final StringValue<BigDecimal> bigDecimalValue = createBigDecimalValue(property, (TextField) control);
+        bigDecimalValue.set((BigDecimal) defaultValue);
+        return bigDecimalValue;
       case Types.INTEGER:
         final StringValue<Integer> integerValue = createIntegerValue(property, (TextField) control);
         integerValue.set((Integer) defaultValue);
@@ -330,6 +336,7 @@ public final class FXUiUtil {
       case Types.TIMESTAMP:
       case Types.TIME:
       case Types.DOUBLE:
+      case Types.DECIMAL:
       case Types.INTEGER:
       case Types.BIGINT:
       case Types.CHAR:
@@ -517,6 +524,32 @@ public final class FXUiUtil {
   }
 
   /**
+   * Instantiates a {@link TextField} for {@link BigDecimal} values, based on the given property and linked to the given edit model
+   * @param property the property
+   * @param editModel the edit model
+   * @return a {@link TextField} for {@link BigDecimal} values, based on the given property
+   */
+  public static TextField createBigDecimalField(final Property property, final FXEntityEditModel editModel) {
+    return createBigDecimalField(property, editModel, null);
+  }
+
+  /**
+   * Instantiates a {@link TextField} for {@link BigDecimal} values, based on the given property and linked to the given edit model
+   * @param property the property
+   * @param editModel the edit model
+   * @param enabledState the {@link State} instance controlling the enabled state of the text field
+   * @return a {@link TextField} for {@link BigDecimal} values, based on the given property
+   */
+  public static TextField createBigDecimalField(final Property property, final FXEntityEditModel editModel,
+                                                final StateObserver enabledState) {
+    final TextField textField = createTextField(property, enabledState);
+    final StringValue<BigDecimal> propertyValue = createBigDecimalValue(property, textField);
+    Values.link(EditModelValues.value(editModel, property), propertyValue);
+
+    return textField;
+  }
+
+  /**
    * Instantiates a {@link StringValue} for {@link Double} values, based on the given property and linked to the given text field
    * @param property the property
    * @param textField the text field
@@ -525,6 +558,20 @@ public final class FXUiUtil {
   public static StringValue<Double> createDoubleValue(final Property property, final TextField textField) {
     final StringValue<Double> propertyValue = PropertyValues.doublePropertyValue(textField.textProperty(),
             (NumberFormat) property.getFormat());
+    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
+
+    return propertyValue;
+  }
+
+  /**
+   * Instantiates a {@link StringValue} for {@link java.math.BigDecimal} values, based on the given property and linked to the given text field
+   * @param property the property
+   * @param textField the text field
+   * @return a {@link StringValue} for {@link java.math.BigDecimal} values, based on the given property
+   */
+  public static StringValue<BigDecimal> createBigDecimalValue(final Property property, final TextField textField) {
+    final StringValue<BigDecimal> propertyValue = PropertyValues.bigDecimalPropertyValue(textField.textProperty(),
+            (DecimalFormat) property.getFormat());
     textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
 
     return propertyValue;

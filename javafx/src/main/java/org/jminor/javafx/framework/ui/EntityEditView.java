@@ -219,6 +219,9 @@ public abstract class EntityEditView extends BorderPane {
       case Types.DOUBLE:
         textField = FXUiUtil.createDoubleField(getEditModel().getDomain().getProperty(editModel.getEntityId(), propertyId), editModel);
         break;
+      case Types.DECIMAL:
+        textField = FXUiUtil.createBigDecimalField(getEditModel().getDomain().getProperty(editModel.getEntityId(), propertyId), editModel);
+        break;
       case Types.VARCHAR:
         textField = FXUiUtil.createTextField(getEditModel().getDomain().getProperty(editModel.getEntityId(), propertyId), editModel);
         break;
