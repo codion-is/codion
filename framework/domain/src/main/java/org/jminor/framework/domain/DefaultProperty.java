@@ -11,11 +11,13 @@ import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
 import org.jminor.common.db.ValueFetcher;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -191,7 +193,7 @@ class DefaultProperty implements Property {
   /** {@inheritDoc} */
   @Override
   public final boolean isNumerical() {
-    return isInteger() || isDouble() || isLong();
+    return isInteger() || isDecimal() || isLong();
   }
 
   /** {@inheritDoc} */
@@ -246,6 +248,18 @@ class DefaultProperty implements Property {
   @Override
   public final boolean isDouble() {
     return isDouble;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isBigDecimal() {
+    return isType(Types.DECIMAL);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isDecimal() {
+    return isDouble() || isBigDecimal();
   }
 
   /** {@inheritDoc} */
@@ -570,7 +584,10 @@ class DefaultProperty implements Property {
   private Format initializeDefaultFormat() {
     if (isNumerical()) {
       final NumberFormat numberFormat = FormatUtil.getNonGroupingNumberFormat(isInteger());
-      if (isDouble()) {
+      if (isBigDecimal()) {
+        ((DecimalFormat) numberFormat).setParseBigDecimal(true);
+      }
+      if (isDecimal()) {
         numberFormat.setMaximumFractionDigits(Property.MAXIMUM_FRACTION_DIGITS.get());
       }
 
@@ -606,6 +623,8 @@ class DefaultProperty implements Property {
         return Integer.class;
       case Types.DOUBLE:
         return Double.class;
+      case Types.DECIMAL:
+        return BigDecimal.class;
       case Types.DATE:
         return LocalDate.class;
       case Types.TIME:
@@ -853,6 +872,8 @@ class DefaultProperty implements Property {
           return (ValueFetcher) resultSet -> property.fromColumnValue(getLong(resultSet, property.selectIndex));
         case Types.DOUBLE:
           return (ValueFetcher) resultSet -> property.fromColumnValue(getDouble(resultSet, property.selectIndex));
+        case Types.DECIMAL:
+          return (ValueFetcher) resultSet -> property.fromColumnValue(getBigDecimal(resultSet, property.selectIndex));
         case Types.DATE:
           return (ValueFetcher) resultSet -> property.fromColumnValue(getDate(resultSet, property.selectIndex));
         case Types.TIMESTAMP:
@@ -915,6 +936,10 @@ class DefaultProperty implements Property {
       final double value = resultSet.getDouble(columnIndex);
 
       return Double.compare(value, 0) == 0 && resultSet.wasNull() ? null : value;
+    }
+
+    private static BigDecimal getBigDecimal(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      return resultSet.getBigDecimal(columnIndex);
     }
 
     private static String getString(final ResultSet resultSet, final int columnIndex) throws SQLException {

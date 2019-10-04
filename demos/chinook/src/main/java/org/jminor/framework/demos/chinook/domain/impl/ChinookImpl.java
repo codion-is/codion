@@ -202,8 +202,9 @@ public final class ChinookImpl extends Domain implements Chinook {
                     TRACK_MIN_SEC_PROVIDER, TRACK_MILLISECONDS),
             columnProperty(TRACK_BYTES, Types.INTEGER, "Bytes")
                     .setFormat(NumberFormat.getIntegerInstance()),
-            columnProperty(TRACK_UNITPRICE, Types.DOUBLE, "Price")
-                    .setNullable(false))
+            columnProperty(TRACK_UNITPRICE, Types.DECIMAL, "Price")
+                    .setNullable(false)
+                    .setMaximumFractionDigits(2))
             .setKeyGenerator(automaticKeyGenerator("chinook.track"))
             .setOrderBy(orderBy().ascending(TRACK_NAME))
             .setStringProvider(new StringProvider(TRACK_NAME))
@@ -234,7 +235,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .setMaxLength(40),
             columnProperty(INVOICE_BILLINGPOSTALCODE, Types.VARCHAR, "Billing postal code")
                     .setMaxLength(10),
-            columnProperty(INVOICE_TOTAL, Types.DOUBLE, "Total")
+            columnProperty(INVOICE_TOTAL, Types.DECIMAL, "Total")
                     .setMaximumFractionDigits(2)
                     .setHidden(true),
             subqueryProperty(INVOICE_TOTAL_SUB, Types.DOUBLE, "Calculated total", INVOICE_TOTAL_SUBQUERY)

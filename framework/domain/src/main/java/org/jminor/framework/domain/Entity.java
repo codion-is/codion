@@ -13,6 +13,7 @@ import org.jminor.common.db.valuemap.exception.RangeValidationException;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.Format;
@@ -114,12 +115,20 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   /**
    * @param propertyId the ID of the property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId},
-   * assuming it is a Double. Rounds the value before returning it in case
-   * maximumFractionDigits have been specified.
+   * assuming it is a Double.
    * @throws ClassCastException if the value is not a Double instance
    * @see Property#getMaximumFractionDigits()
    */
   Double getDouble(final String propertyId);
+
+  /**
+   * @param propertyId the ID of the property for which to retrieve the value
+   * @return the value of the property identified by {@code propertyId},
+   * assuming it is a BigDecimal.
+   * @throws ClassCastException if the value is not a BigDecimal instance
+   * @see Property#getMaximumFractionDigits()
+   */
+  BigDecimal getBigDecimal(final String propertyId);
 
   /**
    * @param propertyId the ID of the date property for which to retrieve the value

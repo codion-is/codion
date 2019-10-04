@@ -22,6 +22,7 @@ import org.jminor.framework.domain.Property;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.math.BigDecimal;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -378,6 +379,8 @@ public class EntityTestUnit {
         return LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
       case Types.DOUBLE:
         return getRandomDouble(property);
+      case Types.DECIMAL:
+        return BigDecimal.valueOf(getRandomDouble(property));
       case Types.INTEGER:
         return getRandomInteger(property);
       case Types.BIGINT:

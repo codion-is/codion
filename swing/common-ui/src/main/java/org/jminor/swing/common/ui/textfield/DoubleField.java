@@ -3,6 +3,7 @@
  */
 package org.jminor.swing.common.ui.textfield;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 /**
@@ -69,6 +70,21 @@ public final class DoubleField extends NumberField {
    * @param value the value to set
    */
   public void setDouble(final Double value) {
+    ((DoubleDocument) getDocument()).setNumber(value);
+  }
+
+  /**
+   * @return the current value
+   * @see DecimalFormat#setParseBigDecimal(boolean)
+   */
+  public BigDecimal getBigDecimal() {
+    return ((DoubleDocument) getDocument()).getBigDecimal();
+  }
+
+  /**
+   * @param value the value to set
+   */
+  public void setBigDecimal(final BigDecimal value) {
     ((DoubleDocument) getDocument()).setNumber(value);
   }
 

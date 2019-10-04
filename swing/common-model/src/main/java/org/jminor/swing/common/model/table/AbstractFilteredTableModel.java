@@ -19,6 +19,7 @@ import org.jminor.common.model.table.TableSortModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
+import java.math.BigDecimal;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -648,7 +649,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       this.tableModel = tableModel;
       this.format = format;
       final Class columnClass = tableModel.getSortModel().getColumnClass(columnIdentifier);
-      this.numerical = columnClass.equals(Integer.class) || columnClass.equals(Long.class) || columnClass.equals(Double.class);
+      this.numerical = columnClass.equals(Integer.class) || columnClass.equals(Long.class) ||
+              columnClass.equals(Double.class) || columnClass.equals(BigDecimal.class);
     }
 
     @Override
