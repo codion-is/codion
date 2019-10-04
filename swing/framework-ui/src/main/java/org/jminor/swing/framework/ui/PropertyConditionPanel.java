@@ -16,7 +16,7 @@ import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
-import org.jminor.swing.common.ui.textfield.DoubleField;
+import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 
@@ -87,7 +87,7 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
         return UiUtil.createFormattedField(DateFormats.getDateMask(model.getDateTimeFormatPattern()));
       }
       else if (property.isDecimal()) {
-        return new DoubleField(DEFAULT_FIELD_COLUMNS);
+        return new DecimalField(DEFAULT_FIELD_COLUMNS);
       }
       else if (property.isInteger()) {
         return new IntegerField(DEFAULT_FIELD_COLUMNS);
@@ -122,10 +122,10 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
                 model.getDateTimeFormatPattern(), true);
       }
       else if (columnProperty.isDouble()) {
-        ValueLinks.doubleValueLink((DoubleField) field, modelValue, false, false, true);
+        ValueLinks.doubleValueLink((DecimalField) field, modelValue, false, false, true);
       }
       else if (columnProperty.isBigDecimal()) {
-        ValueLinks.bigDecimalValueLink((DoubleField) field, modelValue, false, true);
+        ValueLinks.bigDecimalValueLink((DecimalField) field, modelValue, false, true);
       }
       else if (columnProperty.isInteger()) {
         ValueLinks.integerValueLink((IntegerField) field, modelValue, false, false, true);

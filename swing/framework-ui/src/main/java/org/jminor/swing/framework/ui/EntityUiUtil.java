@@ -41,8 +41,8 @@ import org.jminor.swing.common.ui.combobox.AutoCompletion;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.input.InputProviderPanel;
+import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.DocumentSizeFilter;
-import org.jminor.swing.common.ui.textfield.DoubleField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
@@ -728,10 +728,10 @@ public final class EntityUiUtil {
       ValueLinks.integerValueLink((IntegerField) textField, EditModelValues.value(editModel, property), false, readOnly, immediateUpdate);
     }
     else if (property.isDouble()) {
-      ValueLinks.doubleValueLink((DoubleField) textField, EditModelValues.value(editModel, property), false, readOnly, immediateUpdate);
+      ValueLinks.doubleValueLink((DecimalField) textField, EditModelValues.value(editModel, property), false, readOnly, immediateUpdate);
     }
     else if (property.isBigDecimal()) {
-      ValueLinks.bigDecimalValueLink((DoubleField) textField, EditModelValues.value(editModel, property),
+      ValueLinks.bigDecimalValueLink((DecimalField) textField, EditModelValues.value(editModel, property),
               readOnly, immediateUpdate);
     }
     else if (property.isLong()) {
@@ -882,7 +882,7 @@ public final class EntityUiUtil {
       field = initializeIntField(property);
     }
     else if (property.isDecimal()) {
-      field = initializeDoubleField(property);
+      field = initializeDecimalField(property);
     }
     else if (property.isLong()) {
       field = initializeLongField(property);
@@ -912,8 +912,8 @@ public final class EntityUiUtil {
     return field;
   }
 
-  private static JTextField initializeDoubleField(final Property property) {
-    final DoubleField field = new DoubleField((DecimalFormat) cloneFormat((NumberFormat) property.getFormat()));
+  private static JTextField initializeDecimalField(final Property property) {
+    final DecimalField field = new DecimalField((DecimalFormat) cloneFormat((NumberFormat) property.getFormat()));
     if (property.getMin() != null && property.getMax() != null) {
       field.setRange(Math.min(property.getMin(), 0), property.getMax());
     }

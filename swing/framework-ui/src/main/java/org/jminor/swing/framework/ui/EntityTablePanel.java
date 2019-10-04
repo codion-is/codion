@@ -37,6 +37,7 @@ import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
+import org.jminor.swing.common.ui.input.BigDecimalInputProvider;
 import org.jminor.swing.common.ui.input.BooleanInputProvider;
 import org.jminor.swing.common.ui.input.DoubleInputProvider;
 import org.jminor.swing.common.ui.input.InputProvider;
@@ -91,6 +92,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.print.PrinterException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -1308,6 +1310,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
         return new TemporalInputProvider<>(new LocalTimeInputPanel((LocalTime) currentValue, property.getDateTimeFormatPattern()));
       case Types.DOUBLE:
         return new DoubleInputProvider((Double) currentValue);
+      case Types.DECIMAL:
+        return new BigDecimalInputProvider((BigDecimal) currentValue);
       case Types.INTEGER:
         return new IntegerInputProvider((Integer) currentValue);
       case Types.BIGINT:

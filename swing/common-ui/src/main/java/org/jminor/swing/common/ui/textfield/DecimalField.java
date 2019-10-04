@@ -7,70 +7,70 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 /**
- * A text field for doubles.
+ * A text field for decimals, e.i. Double or BigDecimal.
  */
-public final class DoubleField extends NumberField {
+public final class DecimalField extends NumberField {
 
   private static final int MAXIMUM_FRACTION_DIGITS = 340;
 
   /**
-   * Instantiates a new DoubleField.
+   * Instantiates a new DecimalField.
    */
-  public DoubleField() {
+  public DecimalField() {
     this(0);
   }
 
   /**
-   * Instantiates a new DoubleField
+   * Instantiates a new DecimalField
    * @param columns the number of columns
    */
-  public DoubleField(final int columns) {
+  public DecimalField(final int columns) {
     this(createDefaultFormat(), columns);
   }
 
   /**
-   * Instantiates a new DoubleField
+   * Instantiates a new DecimalField
    * @param format the format to use
    */
-  public DoubleField(final DecimalFormat format) {
+  public DecimalField(final DecimalFormat format) {
     this(format, 0);
   }
 
   /**
-   * Instantiates a new DoubleField
+   * Instantiates a new DecimalField
    * @param format the format to use
    * @param columns the number of columns
    */
-  public DoubleField(final DecimalFormat format, final int columns) {
-    super(new DoubleDocument(format), columns);
+  public DecimalField(final DecimalFormat format, final int columns) {
+    super(new DecimalDocument(format), columns);
   }
 
   /**
    * @return the maximum number of fraction digits this field shows
    */
   public int getMaximumFractionDigits() {
-    return ((DoubleDocument) getDocument()).getMaximumFractionDigits();
+    return ((DecimalDocument) getDocument()).getMaximumFractionDigits();
   }
 
   /**
    * @param maximumFractionDigits the maximum number of fraction digits this field shows
    */
   public void setMaximumFractionDigits(final int maximumFractionDigits) {
-    ((DoubleDocument) getDocument()).setMaximumFractionDigits(maximumFractionDigits);
+    ((DecimalDocument) getDocument()).setMaximumFractionDigits(maximumFractionDigits);
   }
 
   /**
    * @return the current value
    */
   public Double getDouble() {
-    return ((DoubleDocument) getDocument()).getDouble();
+    return ((DecimalDocument) getDocument()).getDouble();
   }
 
   /**
    * @param value the value to set
    */
   public void setDouble(final Double value) {
-    ((DoubleDocument) getDocument()).setNumber(value);
+    ((DecimalDocument) getDocument()).setNumber(value);
   }
 
   /**
@@ -78,14 +78,14 @@ public final class DoubleField extends NumberField {
    * @see DecimalFormat#setParseBigDecimal(boolean)
    */
   public BigDecimal getBigDecimal() {
-    return ((DoubleDocument) getDocument()).getBigDecimal();
+    return ((DecimalDocument) getDocument()).getBigDecimal();
   }
 
   /**
    * @param value the value to set
    */
   public void setBigDecimal(final BigDecimal value) {
-    ((DoubleDocument) getDocument()).setNumber(value);
+    ((DecimalDocument) getDocument()).setNumber(value);
   }
 
   private static DecimalFormat createDefaultFormat() {
@@ -95,10 +95,10 @@ public final class DoubleField extends NumberField {
     return format;
   }
 
-  private static final class DoubleDocument extends NumberDocument {
+  private static final class DecimalDocument extends NumberDocument {
 
-    private DoubleDocument(final DecimalFormat format) {
-      super(new DoubleDocumentFilter(format));
+    private DecimalDocument(final DecimalFormat format) {
+      super(new DecimalDocumentFilter(format));
     }
 
     private int getMaximumFractionDigits() {
@@ -116,9 +116,9 @@ public final class DoubleField extends NumberField {
     }
   }
 
-  private static final class DoubleDocumentFilter extends NumberDocumentFilter {
+  private static final class DecimalDocumentFilter extends NumberDocumentFilter {
 
-    private DoubleDocumentFilter(final DecimalFormat format) {
+    private DecimalDocumentFilter(final DecimalFormat format) {
       super(format);
     }
 

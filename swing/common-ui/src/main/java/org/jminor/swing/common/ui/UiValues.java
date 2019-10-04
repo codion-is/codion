@@ -17,7 +17,7 @@ import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.swing.common.model.DocumentAdapter;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
-import org.jminor.swing.common.ui.textfield.DoubleField;
+import org.jminor.swing.common.ui.textfield.DecimalField;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.textfield.NumberField;
@@ -121,22 +121,22 @@ public final class UiValues {
   }
 
   /**
-   * @param doubleField the component
+   * @param decimalField the component
    * @param usePrimitive if true then the double primitive is used, Double otherwise
    * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
-  public static Value<Double> doubleValue(final DoubleField doubleField, final boolean usePrimitive, final boolean immediateUpdate) {
-    return new DoubleUIValue(doubleField, usePrimitive, immediateUpdate);
+  public static Value<Double> doubleValue(final DecimalField decimalField, final boolean usePrimitive, final boolean immediateUpdate) {
+    return new DoubleUIValue(decimalField, usePrimitive, immediateUpdate);
   }
 
   /**
-   * @param doubleField the component
+   * @param decimalField the component
    * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
-  public static Value<BigDecimal> bigDecimalValue(final DoubleField doubleField, final boolean immediateUpdate) {
-    return new BigDecimalUIValue(doubleField, immediateUpdate);
+  public static Value<BigDecimal> bigDecimalValue(final DecimalField decimalField, final boolean immediateUpdate) {
+    return new BigDecimalUIValue(decimalField, immediateUpdate);
   }
 
   /**
@@ -398,8 +398,8 @@ public final class UiValues {
 
   private static final class DoubleUIValue extends NumberUIValue<Double> {
 
-    private DoubleUIValue(final DoubleField doubleField, final boolean usePrimitive, final boolean immediateUpdate) {
-      super(doubleField, usePrimitive, immediateUpdate);
+    private DoubleUIValue(final DecimalField decimalField, final boolean usePrimitive, final boolean immediateUpdate) {
+      super(decimalField, usePrimitive, immediateUpdate);
     }
 
     @Override
@@ -420,8 +420,8 @@ public final class UiValues {
 
   private static final class BigDecimalUIValue extends NumberUIValue<BigDecimal> {
 
-    private BigDecimalUIValue(final DoubleField doubleField, final boolean immediateUpdate) {
-      super(doubleField, false, immediateUpdate);
+    private BigDecimalUIValue(final DecimalField decimalField, final boolean immediateUpdate) {
+      super(decimalField, false, immediateUpdate);
     }
 
     @Override
