@@ -5133,3 +5133,4 @@
   EntityTestUnit.getRandomValue() now truncates LocalDateTime and LocalTime to seconds, to prevent comparison errors when the underlying database system truncates on insert
   Some 3d party dependencies upgraded to latest version
   Plugin modules renamed to reflect package names (as is with java11 version)
+  Slf4J dependency changed from 'implementation' to 'api'
