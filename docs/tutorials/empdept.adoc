@@ -89,7 +89,7 @@ Now, at some point we are going to be editing the manager property of an employe
 
 NOTE: The foreign key propertyId (EmpDept.EMPLOYEE_MGR_FK) is used when referring to the manager property, very rarely do we have to worry about the underlying reference property (EmpDept.EMPLOYEE_MGR).
 
-We start by callin the super class method which creates an unfiltered {url-javadoc}/org/jminor/framework/model/EntityComboBoxModel.html[EntityComboBoxModel], then we configure the one for the manager foreign key so it only display employees with the job PRESIDENT or MANAGER.
+We start by calling the super class method which creates an unfiltered {url-javadoc}/org/jminor/framework/model/EntityComboBoxModel.html[EntityComboBoxModel], then we configure the one for the manager foreign key so it only display employees with the job PRESIDENT or MANAGER.
 
 [source,java]
 ----
