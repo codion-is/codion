@@ -1,4 +1,5 @@
-= JMinor Manual
+= Manual
+:toc: right
 :url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
 :dir-tutorials: ../tutorials
 
@@ -65,9 +66,7 @@ state.set(true);
 //action.isEnabled() now returns true.
 ----
 
-== Domain model
-
-=== Introduction
+== Domain Model
 
 The domain model is based around two interfaces, {url-javadoc}/org/jminor/framework/domain/Entity.html[org.jminor.framework.domain.Entity], which represents a row in a table, and {url-javadoc}/org/jminor/framework/domain/Property.html[org.jminor.framework.domain.Property], which represents columns. The
 {url-javadoc}/org/jminor/framework/domain/Domain.html[org.jminor.framework.domain.Domain] class serves as a container for the domain model definition and as a factory for Entity and Entity.Key objects.
@@ -95,6 +94,8 @@ public class Store extends Domain {
 }
 ----
 
+=== Property
+
 Each column in a table is defined by the {url-javadoc}/org/jminor/framework/domain/Property.html[Property] class or one of its subclasses. The {url-javadoc}/org/jminor/framework/domain/Properties.html[Properties] class provides factory methods for constructing Property objects.
 The following attributes can be set by using chained method calls:
 __hidden, updatable, readOnly, nullable, defaultValue, maxLength, preferredWidth, description, mnemonic, columnHasDefaultValue, format__
@@ -120,7 +121,7 @@ JMinor supports the following column data types:
 * Character (java.sql.Types.CHAR)
 * Blob (java.sql.Types.BLOB)
 
-=== Property id constants ===
+==== Property id constants
 
 For each column you define a string constant, you can use the actual underlying column name, i.e. 'first_name' or any other string. This constant is used when defining the property based on that column and serves as the property identifier. This __propertyId__ is assumed to be the actual column name when constructing SQL queries unless the column name has been set via __setColumnName()__.
 
@@ -163,16 +164,16 @@ public class Store extends Domain {
 }
 ----
 
-=== Property
+==== Property
 
-{url-javadoc}/org/jminor/framework/domain/Property.html[Property] and its subclasses is used to represent entity properties, these can be transient or based on table columns.
+{url-javadoc}/org/jminor/framework/domain/Property.html[Property] and its subclasses are used to represent entity properties, these can be transient or based on table columns.
 
 [source,java]
 ----
 Properties.transientProperty(CUSTOMER_TOKEN, Types.VARCHAR, "Token")
 ----
 
-=== ColumnProperty
+==== ColumnProperty
 
 {url-javadoc}/org/jminor/framework/domain/Property.ColumnProperty.html[ColumnProperty] is used to represent properties that are based on table columns.
 
@@ -181,7 +182,7 @@ Properties.transientProperty(CUSTOMER_TOKEN, Types.VARCHAR, "Token")
 Properties.columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name")
 ----
 
-=== Primary key
+==== Primary key
 
 Entities must have at least one primary key column property.
 
@@ -197,7 +198,7 @@ Properties.columnProperty(ID_1, Types.INTEGER).setPrimaryKeyIndex(0),
 Properties.columnProperty(ID_2, Types.INTEGER).setPrimaryKeyIndex(1),
 ----
 
-=== ForeignKeyProperty
+==== ForeignKeyProperty
 
 {url-javadoc}/org/jminor/framework/domain/Property.ForeignKeyProperty.html[ForeignKeyProperty] is a wrapper property used to indicate a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of non-trivial primary keys.
 [source,java]
@@ -232,7 +233,7 @@ Properties.foreignKeyProperty(CUSTOMER_ADDRESS_FK, "Address", T_ADDRESS,
         Properties.columnProperty(CUSTOMER_ADDRESS_ID)).setFetchDepth(2)
 ----
 
-=== Boolean Properties
+==== Boolean Properties
 
 For databases supporting *Types.BOOLEAN* you simply use *Properties.columnProperty*.
 [source,java]
@@ -261,7 +262,7 @@ entity.put(CUSTOMER_IS_ACTIVE, true);
 boolean isActive = entity.getBoolean(CUSTOMER_IS_ACTIVE);
 ----
 
-=== DenormalizedProperty
+==== DenormalizedProperty
 
 {url-javadoc}/org/jminor/framework/domain/Property.DenormalizedProperty.html[DenormalizedProperty] is used for columns that should automatically get their value from a column in a referenced table. This property automatically gets the value from the column in the referenced table when the corresponding reference property value is set.
 [source,java]
@@ -291,7 +292,7 @@ customer.put(CUSTOMER_ADDRESS_FK, address);//set the referenced value again
 customer.get(CUSTOMER_CITY);//now this returns "Canastota"
 ----
 
-=== SubqueryProperty
+==== SubqueryProperty
 
 {url-javadoc}/org/jminor/framework/domain/Property.SubqueryProperty.html[SubqueryProperty] is used to represent properties which get their value from a subquery returning a single value. Note that in the example below __reference_id__ must be available when the query is run, that is, the entity must include that column as a property.
 [source,java]
@@ -300,11 +301,11 @@ Properties.subqueryProperty(SUBQUERY_PROPERTY_ID, Types.VARCHAR, "Caption",
         "select field from schema.table where id = reference_id"))
 ----
 
-=== TransientProperty
+==== TransientProperty
 
 {url-javadoc}/org/jminor/framework/domain/Property.TransientProperty.html[TransientProperty] is used to represent a property which is not based on an underlying column, these properties all have a default value of null and can be set and retrieved just like normal properties.
 
-=== DerivedProperty
+==== DerivedProperty
 
 {url-javadoc}/org/jminor/framework/domain/Property.DerivedProperty.html[DerivedProperty] is used to represent a transient property which value is derived from one or more properties in the same entity. The value of a derived property is provided via a {url-javadoc}/org/jminor/framework/domain/Property.DerivedProperty.Provider.html[DerivedProperty.Provider] implementation as shown below.
 [source,java]
@@ -589,7 +590,7 @@ java -Djminor.db.type=h2 -Djminor.db.embedded=true -Djminor.db.host=h2db/h2 -cp 
 * <<{dir-tutorials}/chinook.adoc#Domain-model, Chinook domain model>>
 * <<{dir-tutorials}/petstore.adoc#Domain-model, Petstore domain model>>
 
-== Domain model test
+== Domain Model Unit Testing
 
 === Introduction
 

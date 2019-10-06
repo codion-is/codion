@@ -1,4 +1,5 @@
-= JMinor Remote Server Monitor
+= Server Monitor
+:toc: right
 
 == Monitoring
 

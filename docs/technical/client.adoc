@@ -1,4 +1,5 @@
-= JMinor Application Client
+= Client
+:toc: right
 
 == Features
 

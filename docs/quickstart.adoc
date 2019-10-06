@@ -1,4 +1,5 @@
-= JMinor Quickstart
+= Quickstart
+:toc: right
 :jminor-version: 0.12.3-SNAPSHOT
 
 == Rich client

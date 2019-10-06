@@ -1,4 +1,6 @@
-= JMinor Application Framework
+= Project
+:toc: right
+:dir-manual: ../manual
 
 == Building
 

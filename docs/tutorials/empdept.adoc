@@ -1,5 +1,5 @@
-= JMinor EmpDept Tutorial
-
+= EmpDept Tutorial
+:toc: right
 :url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
 :dir-source: ../../demos/empdept/src/main/java
 :dir-test-source: ../../demos/empdept/src/test/java
