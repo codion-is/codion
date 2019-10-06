@@ -87,7 +87,7 @@ public final class SerializationWhitelist {
     private final Set<String> allowedClassnames = new HashSet<>();
     private final List<String> allowedWildcardClassnames = new ArrayList<>();
 
-    SerializationFilter(final Collection<String>whitelistItems) {
+    SerializationFilter(final Collection<String> whitelistItems) {
       whitelistItems.forEach(whitelistItem -> {
         if (whitelistItem.endsWith(WILDCARD)) {
           allowedWildcardClassnames.add(whitelistItem.substring(0, whitelistItem.length() - 1));
