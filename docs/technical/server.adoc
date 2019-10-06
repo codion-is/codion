@@ -53,7 +53,7 @@ A {url-javadoc}/org/jminor/common/remote/SerializationWhitelist.html[serializati
 jminor.server.serializationFilterWhitelist=config/whitelist.txt
 ----
 
-A whitelist can be created during a server dry-run, by adding the following system property. When the server is shut down a whitelist containing all classes deserialized during the run is written to disk.
+A whitelist can be created during a server dry-run by adding the following system property. The whitelist containing all classes deserialized during the run is written to disk on server shutdown.
 
 [source]
 ----
