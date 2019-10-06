@@ -392,7 +392,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
 
   /**
    * Generates primary key values for entities on insert.
-   * PrimaryKeyGenerators fall into two categories, one in which the primary key value is
+   * KeyGenerators fall into two categories, one in which the primary key value is
    * fetched or generated before the record is inserted and one where the underlying database
    * automatically sets the primary key value on insert, f.ex. with a table trigger or identity columns.
    * Implementations should implement either {@code beforeInsert()} or {@code afterInsert()}
