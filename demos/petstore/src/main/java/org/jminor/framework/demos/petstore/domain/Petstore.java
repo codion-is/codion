@@ -12,13 +12,13 @@ import static org.jminor.framework.domain.Properties.*;
 public final class Petstore extends Domain {
 
   public Petstore() {
-    defineAddress();
-    defineCategory();
-    defineProduct();
-    defineSellerContactInfo();
-    defineItem();
-    defineTag();
-    defineTagItem();
+    address();
+    category();
+    product();
+    sellerContactInfo();
+    item();
+    tag();
+    tagItem();
   }
 
   public static final String VERSION = "@petstore-v1";
@@ -33,7 +33,7 @@ public final class Petstore extends Domain {
   public static final String ADDRESS_LATITUDE = "latitude";
   public static final String ADDRESS_LONGITUDE = "longitude";
 
-  void defineAddress() {
+  void address() {
     define(T_ADDRESS, "petstore.address",
             primaryKeyProperty(ADDRESS_ID),
             columnProperty(ADDRESS_STREET_1, Types.VARCHAR, "Street 1").setMaxLength(55).setNullable(false),
@@ -57,7 +57,7 @@ public final class Petstore extends Domain {
   public static final String CATEGORY_DESCRIPTION = "description";
   public static final String CATEGORY_IMAGE_URL = "imageurl";
 
-  void defineCategory() {
+  void category() {
     define(T_CATEGORY, "petstore.category",
             primaryKeyProperty(CATEGORY_ID),
             columnProperty(CATEGORY_NAME, Types.VARCHAR, "Name").setMaxLength(25).setNullable(false),
@@ -77,7 +77,7 @@ public final class Petstore extends Domain {
   public static final String PRODUCT_DESCRIPTION = "description";
   public static final String PRODUCT_IMAGE_URL = "imageurl";
 
-  void defineProduct() {
+  void product() {
     define(T_PRODUCT, "petstore.product",
             primaryKeyProperty(PRODUCT_ID),
             foreignKeyProperty(PRODUCT_CATEGORY_FK, "Category", T_CATEGORY,
@@ -98,7 +98,7 @@ public final class Petstore extends Domain {
   public static final String SELLER_CONTACT_INFO_LAST_NAME = "lastname";
   public static final String SELLER_CONTACT_INFO_EMAIL = "email";
 
-  void defineSellerContactInfo() {
+  void sellerContactInfo() {
     define(T_SELLER_CONTACT_INFO, "petstore.sellercontactinfo",
             primaryKeyProperty(SELLER_CONTACT_INFO_ID),
             columnProperty(SELLER_CONTACT_INFO_FIRST_NAME, Types.VARCHAR, "First name").setMaxLength(24).setNullable(false),
@@ -126,7 +126,7 @@ public final class Petstore extends Domain {
   public static final String ITEM_C0NTACT_INFO_FK = "contactinfo_fk";
   public static final String ITEM_DISABLED = "disabled";
 
-  void defineItem() {
+  void item() {
     define(T_ITEM, "petstore.item",
             primaryKeyProperty(ITEM_ID),
             foreignKeyProperty(ITEM_PRODUCT_FK, "Product", T_PRODUCT,
@@ -152,7 +152,7 @@ public final class Petstore extends Domain {
   public static final String TAG_TAG = "tag";
   public static final String TAG_REFCOUNT = "refcount";
 
-  void defineTag() {
+  void tag() {
     define(T_TAG, "petstore.tag",
             primaryKeyProperty(TAG_ID),
             columnProperty(TAG_TAG, Types.VARCHAR, "Tag").setMaxLength(30).setNullable(false),
@@ -171,7 +171,7 @@ public final class Petstore extends Domain {
   public static final String TAG_ITEM_ITEM_ID = "itemid";
   public static final String TAG_ITEM_ITEM_FK = "item_fk";
 
-  void defineTagItem() {
+  void tagItem() {
     define(T_TAG_ITEM, "petstore.tag_item",
             foreignKeyProperty(TAG_ITEM_ITEM_FK, "Item", T_ITEM,
                     primaryKeyProperty(TAG_ITEM_ITEM_ID, Types.INTEGER).setPrimaryKeyIndex(0)).setNullable(false),

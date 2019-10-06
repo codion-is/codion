@@ -1,11 +1,71 @@
-= JMinor Remote Server
+= Server
+:toc: right
+:url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
+:dir-source: ../../framework/server
+:source-highlighter: rouge
 
 == Features
 
 * Firewall friendly; uses one way communications without callbacks and can be configured to serve on a single fixed port
-* Client/server communications SSL encrypted by default
 * Integrated web server for serving Web Start applications and files, based on Jetty
 * All user authentication left to the database
 * Comprehensive administration and monitoring facilities
 * Featherweight server
 * Moderate memory and CPU usage
+
+== Security
+
+=== Authentication
+
+The JMinor server does not perform any user authentication by default, it leaves that up the the underlying database. An authentication layer can be added by implementing a {url-javadoc}/org/jminor/common/remote/LoginProxy.html[LoginProxy] and setting the following system property.
+
+[source]
+----
+jminor.server.loginProxyClasses=com.app.server.AppLoginProxy # <1>
+----
+<1> A comma separated list of login proxies
+
+=== SSL encryption
+
+To enable SSL encryption between client and server, create a keystore and truststore pair and set the following system properties.
+
+==== Server side
+
+[source]
+----
+jminor.server.connection.sslEnabled=true # <1>
+javax.net.ssl.keyStore=keystore.jks
+javax.net.ssl.keyStorePassword=password
+----
+<1> This property is 'true' by default, included here for completeness sake
+
+==== Client side
+
+[source]
+----
+javax.net.ssl.trustStore=truststore.jks
+javax.net.ssl.trustStorePassword=password
+----
+
+=== Serialization whitelist
+
+A {url-javadoc}/org/jminor/common/remote/SerializationWhitelist.html[serialization whitelist] can be used by setting the following system property.
+
+[source]
+----
+jminor.server.serializationFilterWhitelist=config/whitelist.txt
+----
+
+A whitelist can be created during a server dry-run by adding the following system property. The whitelist containing all classes deserialized during the run is written to disk on server shutdown.
+
+[source]
+----
+jminor.server.serializationFilterDryRun=true
+----
+
+== Example configuration file
+
+[source]
+----
+include::{dir-source}/src/main/config/h2_embedded.config[]
+----

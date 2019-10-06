@@ -1,9 +1,12 @@
-= JMinor Quickstart
+= Quickstart
+:toc: right
 :jminor-version: 0.12.3-SNAPSHOT
+:source-highlighter: rouge
 
 == Rich client
 JMinor is primarily a Swing based framework, the Swing client is very mature and stable while the JavaFX client is quite rudimentary and still in the 'proof-of-concept' stage. This artifact pulls in all required framework dependencies.
 
+[cols="1,4"]
 |===
 |Client|Artifact
 
@@ -14,6 +17,7 @@ JMinor is primarily a Swing based framework, the Swing client is very mature and
 == Database connectivity
 A JMinor client has three ways of connecting to a database, directly via a local JDBC connection or remotely via RMI or HTTP using the JMinor remote server.
 
+[cols="1,4"]
 |===
 |DB Connection|Artifact
 
@@ -31,6 +35,7 @@ The most used and tested DBMS modules are:
 2. H2 Database
 3. Postgresql
 
+[cols="1,4"]
 |===
 |DBMS|Artifact
 
@@ -47,6 +52,7 @@ The most used and tested DBMS modules are:
 == Logging
 JMinor uses SLF4J throughout so all you need to do is add a SLF4J bridge for your logging framework of choice to your classpath. If you use Logback or Log4J you can use one of the logging-proxy plugins below which will pull in the required dependencies and also allow you to set the logging level in the client.
 
+[cols="1,4"]
 |===
 |Logging|Artifact
 

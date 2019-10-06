@@ -157,13 +157,13 @@ public final class ChinookTutorial {
     //we start a transaction
     connection.beginTransaction();
 
-    //we insert the Entity, the insert() function returns a List
+    //we insert the Entity, the insert() method returns a List
     //containing the primary keys of the inserted records, but
-    //we don't need those right now, so we ignore that
-    //Note that the primary key of the inserted entity is populated
-    //during insert, but that's because we're running with a local
-    //connection, with remote connections you have to select the entity
-    //after insert to get a instance containing the generated key value
+    //we ignore those since we don't need them right now.
+    //Note that the primary key of the entity instance is populated
+    //during insert, that's because we're running with a local connection,
+    //with a remote connections you have to select the entity
+    //after insert to get an instance containing the generated key value
     connection.insert(singletonList(myBand));
 
     //now for our first album
@@ -189,8 +189,8 @@ public final class ChinookTutorial {
     //a single transaction
     connection.update(asList(myBand, album));
 
-    //finally lets clean up after ourselves and our imaginary band and album,
-    //note that here the order of the entities matters, since we can't delete
+    //finally we clean up after ourselves by deleting our imaginary band and album,
+    //note that the order of the entities matters, since we can't delete
     //the artist before the album, this method deletes records in the
     //same order as the are received
     connection.delete(getKeys(asList(album, myBand)));

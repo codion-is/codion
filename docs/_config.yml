@@ -1,0 +1,25 @@
+title: JMinor Application Framework
+email: bjorndarri@gmail.com
+description: >-
+  JMinor Application Framework
+baseurl: ""
+url: "http://jminor.org"
+twitter_username: bjorndarri
+github_username:  bjorndarri
+
+# theme: minima
+theme: minima
+plugins:
+  - jekyll-asciidoc
+
+exclude:
+  - vendor
+  - .bundle
+  - .sass-cache/
+  - .jekyll-cache/
+  - Gemfile
+  - Gemfile.lock
+
+asciidoctor:
+  base_dir: docs
+  safe: unsafe

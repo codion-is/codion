@@ -1,4 +1,6 @@
-= JMinor Remote Server Monitor
+= Server Monitor
+:toc: right
+:source-highlighter: rouge
 
 == Monitoring
 

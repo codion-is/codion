@@ -1,6 +1,8 @@
-= JMinor Manual
+= Manual
+:toc: right
 :url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
 :dir-tutorials: ../tutorials
+:source-highlighter: rouge
 
 == The basics
 
@@ -53,7 +55,7 @@ Any *Action* object can be linked to a *State* object via the *UiUtil.linkToEnab
 State state = States.state();
 
 Action action = new AbstractAction("action") {
-  public void actionPerformed(final ActionEvent e) {}
+  public void actionPerformed(ActionEvent e) {}
 };
 
 UiUtil.linkToEnabledState(state, action);
@@ -65,9 +67,7 @@ state.set(true);
 //action.isEnabled() now returns true.
 ----
 
-== Domain model
-
-=== Introduction
+== Domain Model
 
 The domain model is based around two interfaces, {url-javadoc}/org/jminor/framework/domain/Entity.html[org.jminor.framework.domain.Entity], which represents a row in a table, and {url-javadoc}/org/jminor/framework/domain/Property.html[org.jminor.framework.domain.Property], which represents columns. The
 {url-javadoc}/org/jminor/framework/domain/Domain.html[org.jminor.framework.domain.Domain] class serves as a container for the domain model definition and as a factory for Entity and Entity.Key objects.
@@ -95,6 +95,8 @@ public class Store extends Domain {
 }
 ----
 
+=== Property
+
 Each column in a table is defined by the {url-javadoc}/org/jminor/framework/domain/Property.html[Property] class or one of its subclasses. The {url-javadoc}/org/jminor/framework/domain/Properties.html[Properties] class provides factory methods for constructing Property objects.
 The following attributes can be set by using chained method calls:
 __hidden, updatable, readOnly, nullable, defaultValue, maxLength, preferredWidth, description, mnemonic, columnHasDefaultValue, format__
@@ -108,19 +110,19 @@ Properties.columnProperty(PROPERTY_ID, Types.INTEGER, "Caption")
 
 JMinor supports the following column data types:
 
-  * Integer (java.sql.Types.INTEGER)
-  * Double (java.sql.Types.DOUBLE)
-  * Long (java.sql.Types.BIGINT)
-  * BigDecimal (java.sql.Types.DECIMAL)
-  * LocalDateTime (java.sql.Types.TIMESTAMP)
-  * LocalDate (java.sql.Types.DATE)
-  * LocalTime (java.sql.Types.TIME)
-  * String (java.sql.Types.VARCHAR)
-  * Boolean (java.sql.Types.BOOLEAN)
-  * Character (java.sql.Types.CHAR)
-  * Blob (java.sql.Types.BLOB)
+* Integer (java.sql.Types.INTEGER)
+* Double (java.sql.Types.DOUBLE)
+* Long (java.sql.Types.BIGINT)
+* BigDecimal (java.sql.Types.DECIMAL)
+* LocalDateTime (java.sql.Types.TIMESTAMP)
+* LocalDate (java.sql.Types.DATE)
+* LocalTime (java.sql.Types.TIME)
+* String (java.sql.Types.VARCHAR)
+* Boolean (java.sql.Types.BOOLEAN)
+* Character (java.sql.Types.CHAR)
+* Blob (java.sql.Types.BLOB)
 
-=== Property id constants ===
+==== Property id constants
 
 For each column you define a string constant, you can use the actual underlying column name, i.e. 'first_name' or any other string. This constant is used when defining the property based on that column and serves as the property identifier. This __propertyId__ is assumed to be the actual column name when constructing SQL queries unless the column name has been set via __setColumnName()__.
 
@@ -163,16 +165,16 @@ public class Store extends Domain {
 }
 ----
 
-=== Property
+==== Property
 
-{url-javadoc}/org/jminor/framework/domain/Property.html[Property] and its subclasses is used to represent entity properties, these can be transient or based on table columns.
+{url-javadoc}/org/jminor/framework/domain/Property.html[Property] and its subclasses are used to represent entity properties, these can be transient or based on table columns.
 
 [source,java]
 ----
 Properties.transientProperty(CUSTOMER_TOKEN, Types.VARCHAR, "Token")
 ----
 
-=== ColumnProperty
+==== ColumnProperty
 
 {url-javadoc}/org/jminor/framework/domain/Property.ColumnProperty.html[ColumnProperty] is used to represent properties that are based on table columns.
 
@@ -181,7 +183,7 @@ Properties.transientProperty(CUSTOMER_TOKEN, Types.VARCHAR, "Token")
 Properties.columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name")
 ----
 
-=== Primary key
+==== Primary key
 
 Entities must have at least one primary key column property.
 
@@ -197,7 +199,7 @@ Properties.columnProperty(ID_1, Types.INTEGER).setPrimaryKeyIndex(0),
 Properties.columnProperty(ID_2, Types.INTEGER).setPrimaryKeyIndex(1),
 ----
 
-=== ForeignKeyProperty
+==== ForeignKeyProperty
 
 {url-javadoc}/org/jminor/framework/domain/Property.ForeignKeyProperty.html[ForeignKeyProperty] is a wrapper property used to indicate a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of non-trivial primary keys.
 [source,java]
@@ -232,7 +234,7 @@ Properties.foreignKeyProperty(CUSTOMER_ADDRESS_FK, "Address", T_ADDRESS,
         Properties.columnProperty(CUSTOMER_ADDRESS_ID)).setFetchDepth(2)
 ----
 
-=== Boolean Properties
+==== Boolean Properties
 
 For databases supporting *Types.BOOLEAN* you simply use *Properties.columnProperty*.
 [source,java]
@@ -261,7 +263,7 @@ entity.put(CUSTOMER_IS_ACTIVE, true);
 boolean isActive = entity.getBoolean(CUSTOMER_IS_ACTIVE);
 ----
 
-=== DenormalizedProperty
+==== DenormalizedProperty
 
 {url-javadoc}/org/jminor/framework/domain/Property.DenormalizedProperty.html[DenormalizedProperty] is used for columns that should automatically get their value from a column in a referenced table. This property automatically gets the value from the column in the referenced table when the corresponding reference property value is set.
 [source,java]
@@ -291,7 +293,7 @@ customer.put(CUSTOMER_ADDRESS_FK, address);//set the referenced value again
 customer.get(CUSTOMER_CITY);//now this returns "Canastota"
 ----
 
-=== SubqueryProperty
+==== SubqueryProperty
 
 {url-javadoc}/org/jminor/framework/domain/Property.SubqueryProperty.html[SubqueryProperty] is used to represent properties which get their value from a subquery returning a single value. Note that in the example below __reference_id__ must be available when the query is run, that is, the entity must include that column as a property.
 [source,java]
@@ -300,28 +302,29 @@ Properties.subqueryProperty(SUBQUERY_PROPERTY_ID, Types.VARCHAR, "Caption",
         "select field from schema.table where id = reference_id"))
 ----
 
-=== TransientProperty
+==== TransientProperty
 
 {url-javadoc}/org/jminor/framework/domain/Property.TransientProperty.html[TransientProperty] is used to represent a property which is not based on an underlying column, these properties all have a default value of null and can be set and retrieved just like normal properties.
 
-=== DerivedProperty
+==== DerivedProperty
 
 {url-javadoc}/org/jminor/framework/domain/Property.DerivedProperty.html[DerivedProperty] is used to represent a transient property which value is derived from one or more properties in the same entity. The value of a derived property is provided via a {url-javadoc}/org/jminor/framework/domain/Property.DerivedProperty.Provider.html[DerivedProperty.Provider] implementation as shown below.
 [source,java]
 ----
 Properties.derivedProperty(SUM_ID, Types.INTEGER, "Sum",
          new Property.DerivedProperty.Provider() {
-           public Object getValue(final Map<String, Object> linkedValues) {
+           public Object getValue(Map<String, Object> linkedValues) {
              //linkedValues contains the values of the linked properties
-             final Integer linkedOne = (Integer) linkedValues.get(SOURCE_PROPERTY_ID_1);
-             final Integer linkedTwo = (Integer) linkedValues.get(SOURCE_PROPERTY_ID_2);
+             Integer linkedOne = (Integer) linkedValues.get(SOURCE_PROPERTY_ID_1);
+             Integer linkedTwo = (Integer) linkedValues.get(SOURCE_PROPERTY_ID_2);
 
              return linkedOne + linkedTwo;
            }
          }, SOURCE_PROPERTY_ID_1, SOURCE_PROPERTY_ID_2),
 ----
+
 ==== Examples
-* <<{dir-tutorials}/chinook.adoc#Domain-model, Chinook domain model>>
+* <<{dir-tutorials}/chinook.adoc#domain-model, Chinook domain model>>
 
 == Domain
 
@@ -359,34 +362,134 @@ The *Domain* class serves as a factory class for Entity objects as well as a cen
 }
 ----
 
+=== Entity.KeyProvider
+
+The framework provides implementations for most common primary key generation strategies, sequence (with or without trigger) and auto-increment columns.
+
+==== Auto-increment
+
+This assumes the underlying primary key column is either an auto-increment column or is populated from a sequence using a trigger during insert.
+For auto-increment columns the **valueSource** parameter should be the table name and for a sequence/trigger it should be the sequence name.
+
+[source,java]
+----
+//Auto increment column in the 'store.customer' table
+define(Store.T_CUSTOMER
+    Properties.primaryKeyProperty(Store.CUSTOMER_ID)
+    ...
+).setKeyGenerator(automaticKeyGenerator("store.customer"));
+
+//Trigger and sequence named 'store.customer_seq'
+define(Store.T_CUSTOMER
+    Properties.primaryKeyProperty(Store.CUSTOMER_ID)
+    ...
+).setKeyGenerator(automaticKeyGenerator("store.customer_seq"));
+----
+
+==== Sequence
+
+When sequences are used without triggers the framework can fetch the value from a sequence before insert.
+
+[source,java]
+----
+//Sequence named 'store.customer_seq' without a trigger
+define(Store.T_CUSTOMER
+    Properties.primaryKeyProperty(Store.CUSTOMER_ID)
+    ...
+).setKeyGenerator(sequenceKeyGenerator("store.customer_seq"));
+----
+
+==== Queried
+
+The framework can select new primary key values from a query.
+
+[source,java]
+----
+//Using a query returning the new value
+define(Store.T_CUSTOMER
+    Properties.primaryKeyProperty(Store.CUSTOMER_ID)
+    ...
+).setKeyGenerator(queriedKeyGenerator(
+    "select new_id
+     from store.id_values
+     where table_name = 'store.customer'"));
+----
+
+==== Increment
+
+The framework can automatically increment the primary key value by selecting the maximum value and add one, this is very simplistic, not transaction safe and is not recommended for use anywhere but the simplest demos.
+
+[source,java]
+----
+define(Store.T_CUSTOMER
+    Properties.primaryKeyProperty(Store.CUSTOMER_ID)
+    ...
+).setKeyGenerator(incrementKeyGenerator("store.customer_seq"));
+----
+
+==== Custom
+
+You can provide a custom key generator strategy by implementing a {url-javadoc}/org/jminor/framework/domain/Entity.KeyGenerator.html[KeyGenerator].
+
 === Domain.StringProvider
 
 The {url-javadoc}/org/jminor/framework/domain/Domain.StringProvider.html[Domain.StringProvider] class is for providing __toString()__ implementations entities. This value is f. ex. used when entties are displayed in a ComboBox or as a foreign key values in table views.
 
-See the Domain.StringProvider API doc for further information.
+[source,java]
+----
+define(Store.T_CUSTOMER
+...
+).setStringProvider(
+    new StringProvider(Store.CUSTOMER_LAST_NAME)
+        .addText(", ")
+        .addValue(Store.CUSTOMER_FIRST_NAME)));
+----
 
-=== Helper classes
-
-The following classes can come in handy when working with entities.
-
-{url-javadoc}/org/jminor/framework/domain/Domain.Validator.html[Domain.Validator]
-
-A default *Entity.Validator* implementation which provides basic range and null validation, can be overridden to provide further validations. Note that validation is performed quite often so it should not perform expensive operations. Validation requiring database access f.ex. belongs in the application model or ui.
+For more complex toString() implementations you can implement a custom {url-javadoc}/org/jminor/framework/domain/Entity.ToString.html[Entity.ToString].
 
 [source,java]
 ----
-define("entityID", [...]).setValidator(new Domain.Validator() {
+define(Store.T_CUSTOMER
+...
+).setStringProvider(customer -> {
+    StringBuilder builder =
+       new StringBuilder(customer.getString(CUSTOMER_LASTNAME))
+    .append(", ").append(customer.getString(CUSTOMER_LASTNAME));
+
+    if (!customer.isValueNull(CUSTOMER_EMAIL)) {
+        builder.append(" <")
+        .append(customer.getString(CUSTOMER_EMAIL))
+        .append(">");
+    }
+
+    return builder.toString();
+});
+----
+
+=== Validation
+
+Custom validation of Entities is done by implementing a {url-javadoc}/org/jminor/framework/domain/Domain.Validator.html[Domain.Validator].
+
+The default *Entity.Validator* implementation provides basic range and null validation, can be overridden to provide further validations. Note that validation is performed quite often so it should not perform expensive operations. Validation requiring database access f.ex. belongs in the application model or ui.
+
+[source,java]
+----
+define("entityID",
+...
+).setValidator(new Domain.Validator() {
       @Override
-      public void validate(Entity entity, Property property) throws ValidationException {
+    public void validate(Entity entity, Property property)
+        throws ValidationException {
         super.validate(entity, property);
 
         Object value = entity.get(property);
 
         if (!isValid(value)) {
-          throw new ValidationException(property.getPropertyId(), value, value + " is invalid");
+          throw new ValidationException(property.getPropertyId(),
+              value, value + " is invalid");
         }
-      }
-    });
+    }
+});
 ----
 
 {url-javadoc}/org/jminor/framework/domain/Entity.BackgroundColorProvider.html[Entity.BackgroundColorProvider]
@@ -395,20 +498,22 @@ Provides the background color for entity property cells when displayed in a tabl
 
 [source,java]
 ----
-define("entityId", [...]).setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
-      public Object getBackgroundColor(final Entity entity, final Property property) {
+define("entityId",
+...
+).setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
+    public Object getBackgroundColor(Entity entity, Property property) {
         if (property.is("colorPropertyId") && entity.getString("colorPropertyId").equals("CYAN")) {
           return Color.CYAN;
         }
 
         return null;
-      }
-    });
+    }
+});
 ----
 
 ==== Examples
 
-* <<{dir-tutorials}/empdept.adoc#Domain-model, EmpDept domain model>>
+* <<{dir-tutorials}/empdept.adoc#domain-model, EmpDept domain model>>
 
 === Entities in action
 
@@ -482,11 +587,11 @@ java -Djminor.db.type=h2 -Djminor.db.embedded=true -Djminor.db.host=h2db/h2 -cp 
 
 ==== Examples
 
-* <<{dir-tutorials}/empdept.adoc#Domain-model, EmpDept domain model>>
-* <<{dir-tutorials}/chinook.adoc#Domain-model, Chinook domain model>>
-* <<{dir-tutorials}/petstore.adoc#Domain-model, Petstore domain model>>
+* <<{dir-tutorials}/empdept.adoc#domain-model, EmpDept domain model>>
+* <<{dir-tutorials}/chinook.adoc#domain-model, Chinook domain model>>
+* <<{dir-tutorials}/petstore.adoc#domain-model, Petstore domain model>>
 
-== Domain model test
+== Domain Model Unit Testing
 
 === Introduction
 
@@ -585,9 +690,9 @@ public class TestStore extends EntityTestUnit {
 
 ==== Examples ====
 
-* <<{dir-tutorials}/empdept.adoc#Domain-model-unit-test, EmpDept domain model test>>
-* <<{dir-tutorials}/chinook.adoc#Domain-model-unit-test, Chinook domain model test>>
-* <<{dir-tutorials}/petstore.adoc#Domain-model-unit-test, Petstore domain model test>>
+* <<{dir-tutorials}/empdept.adoc#domain-model-unit-test, EmpDept domain model test>>
+* <<{dir-tutorials}/chinook.adoc#domain-model-unit-test, Chinook domain model test>>
+* <<{dir-tutorials}/petstore.adoc#domain-model-unit-test, Petstore domain model test>>
 
 == EntityModel
 
@@ -713,7 +818,7 @@ protected void bindEvents() {
 ----
 
 === Examples
-* <<{dir-tutorials}/empdept.adoc#Application-model-layer, EmpDept entity models>>
+* <<{dir-tutorials}/empdept.adoc#application-model-layer, EmpDept entity models>>
 
 == EntityApplicationModel
 
@@ -727,7 +832,7 @@ When implementing this class you must provide a constructor taking a single Enti
 ----
 public class StoreApplicationModel extends SwingEntityApplicationModel {
 
-  public StoreApplicationModel(final EntityConnectionProvider connectionProvider) {
+  public StoreApplicationModel(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
     addEntityModel(new CustomerModel(connectionProvider));
   }
@@ -751,9 +856,9 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
   }
 
   @Override
-  protected void performWork(final StoreAppModel application) {
+  protected void performWork(StoreAppModel application) {
     try {
-      final EntityModel customerModel = application.getMainApplicationModels().iterator().next();
+      EntityModel customerModel = application.getMainApplicationModels().iterator().next();
       customerModel.getTableModel().clearSelection();
       customerModel.refresh();
     }
@@ -775,9 +880,9 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
 
 === Examples
 
-* <<{dir-tutorials}/empdept.adoc#Application-load-test, EmpDept application load test>>
-* <<{dir-tutorials}/chinook.adoc#Application-load-test, Chinook application load test>>
-* <<{dir-tutorials}/petstore.adoc#Application-load-test, Petstore application load test>>
+* <<{dir-tutorials}/empdept.adoc#application-load-test, EmpDept application load test>>
+* <<{dir-tutorials}/chinook.adoc#application-load-test, Chinook application load test>>
+* <<{dir-tutorials}/petstore.adoc#application-load-test, Petstore application load test>>
 
 == EntityPanel
 
@@ -792,7 +897,7 @@ When instantiating an EntityPanel you can supply an EntityEditPanel instance as 
 ----
 public class CustomerEditPanel extends EntityEditPanel {
 
-  public CustomerEditPanel(final SwingEntityEditModel editModel) {
+  public CustomerEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 
@@ -899,9 +1004,9 @@ public ControlSet getPrintControls() {
 
 === Examples
 
-* <<{dir-tutorials}/empdept.adoc#Main-application-panel, EmpDept application panel>>
-* <<{dir-tutorials}/chinook.adoc#Main-application-panel, Chinook application panel>>
-* <<{dir-tutorials}/petstore.adoc#Main-application-panel, Petstore application panel>>
+* <<{dir-tutorials}/empdept.adoc#main-application-panel, EmpDept application panel>>
+* <<{dir-tutorials}/chinook.adoc#main-application-panel, Chinook application panel>>
+* <<{dir-tutorials}/petstore.adoc#main-application-panel, Petstore application panel>>
 
 == Reporting with JasperReports
 
@@ -956,4 +1061,4 @@ The way you view the report is just like in the jdbc report example above except
 
 === Examples
 
-* <<{dir-tutorials}/empdept.adoc#Application-ui-layer, EmpDept UI layer>>
+* <<{dir-tutorials}/empdept.adoc#application-ui-layer, EmpDept UI layer>>

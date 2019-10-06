@@ -1,4 +1,6 @@
-= JMinor Application Client
+= Client
+:toc: right
+:source-highlighter: rouge
 
 == Features
 
