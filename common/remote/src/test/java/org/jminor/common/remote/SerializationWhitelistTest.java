@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server;
+package org.jminor.common.remote;
 
 import org.junit.jupiter.api.Test;
 import sun.misc.ObjectInputFilter;

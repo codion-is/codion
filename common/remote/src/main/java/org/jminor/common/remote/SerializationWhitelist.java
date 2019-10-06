@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server;
+package org.jminor.common.remote;
 
 import org.jminor.common.FileUtil;
 import org.jminor.common.Util;
@@ -30,7 +30,7 @@ public final class SerializationWhitelist {
 
   private SerializationWhitelist() {}
 
-  static void configureSerializationWhitelist(final String whitelist, final Boolean dryRun) {
+  public static void configureSerializationWhitelist(final String whitelist, final Boolean dryRun) {
     if (!Util.nullOrEmpty(whitelist)) {
       try (final Stream<String> stream = Files.lines(Paths.get(whitelist))) {
         sun.misc.ObjectInputFilter.Config.setSerialFilter(dryRun ? new SerializationFilterDryRun() : new SerializationFilter(stream.collect(Collectors.toSet())));
@@ -43,7 +43,7 @@ public final class SerializationWhitelist {
     }
   }
 
-  static void writeSerializationWhitelist(final String whitelist) {
+  public static void writeSerializationWhitelist(final String whitelist) {
     final sun.misc.ObjectInputFilter serialFilter = sun.misc.ObjectInputFilter.Config.getSerialFilter();
     if (serialFilter instanceof SerializationFilterDryRun) {
       writeDryRunWhitelist(whitelist, (SerializationFilterDryRun) serialFilter);

@@ -25,6 +25,7 @@ import org.jminor.common.remote.ConnectionRequest;
 import org.jminor.common.remote.ConnectionValidator;
 import org.jminor.common.remote.LoginProxy;
 import org.jminor.common.remote.RemoteClient;
+import org.jminor.common.remote.SerializationWhitelist;
 import org.jminor.common.remote.Server;
 import org.jminor.common.remote.ServerException;
 import org.jminor.common.remote.Servers;
