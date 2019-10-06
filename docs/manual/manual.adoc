@@ -53,7 +53,7 @@ Any *Action* object can be linked to a *State* object via the *UiUtil.linkToEnab
 State state = States.state();
 
 Action action = new AbstractAction("action") {
-  public void actionPerformed(final ActionEvent e) {}
+  public void actionPerformed(ActionEvent e) {}
 };
 
 UiUtil.linkToEnabledState(state, action);
@@ -108,17 +108,17 @@ Properties.columnProperty(PROPERTY_ID, Types.INTEGER, "Caption")
 
 JMinor supports the following column data types:
 
-  * Integer (java.sql.Types.INTEGER)
-  * Double (java.sql.Types.DOUBLE)
-  * Long (java.sql.Types.BIGINT)
-  * BigDecimal (java.sql.Types.DECIMAL)
-  * LocalDateTime (java.sql.Types.TIMESTAMP)
-  * LocalDate (java.sql.Types.DATE)
-  * LocalTime (java.sql.Types.TIME)
-  * String (java.sql.Types.VARCHAR)
-  * Boolean (java.sql.Types.BOOLEAN)
-  * Character (java.sql.Types.CHAR)
-  * Blob (java.sql.Types.BLOB)
+* Integer (java.sql.Types.INTEGER)
+* Double (java.sql.Types.DOUBLE)
+* Long (java.sql.Types.BIGINT)
+* BigDecimal (java.sql.Types.DECIMAL)
+* LocalDateTime (java.sql.Types.TIMESTAMP)
+* LocalDate (java.sql.Types.DATE)
+* LocalTime (java.sql.Types.TIME)
+* String (java.sql.Types.VARCHAR)
+* Boolean (java.sql.Types.BOOLEAN)
+* Character (java.sql.Types.CHAR)
+* Blob (java.sql.Types.BLOB)
 
 === Property id constants ===
 
@@ -311,15 +311,16 @@ Properties.subqueryProperty(SUBQUERY_PROPERTY_ID, Types.VARCHAR, "Caption",
 ----
 Properties.derivedProperty(SUM_ID, Types.INTEGER, "Sum",
          new Property.DerivedProperty.Provider() {
-           public Object getValue(final Map<String, Object> linkedValues) {
+           public Object getValue(Map<String, Object> linkedValues) {
              //linkedValues contains the values of the linked properties
-             final Integer linkedOne = (Integer) linkedValues.get(SOURCE_PROPERTY_ID_1);
-             final Integer linkedTwo = (Integer) linkedValues.get(SOURCE_PROPERTY_ID_2);
+             Integer linkedOne = (Integer) linkedValues.get(SOURCE_PROPERTY_ID_1);
+             Integer linkedTwo = (Integer) linkedValues.get(SOURCE_PROPERTY_ID_2);
 
              return linkedOne + linkedTwo;
            }
          }, SOURCE_PROPERTY_ID_1, SOURCE_PROPERTY_ID_2),
 ----
+
 ==== Examples
 * <<{dir-tutorials}/chinook.adoc#Domain-model, Chinook domain model>>
 
@@ -359,34 +360,134 @@ The *Domain* class serves as a factory class for Entity objects as well as a cen
 }
 ----
 
+=== Entity.KeyProvider
+
+The framework provides implementations for most common primary key generation strategies, sequence (with or without trigger) and auto-increment columns.
+
+==== Auto-increment
+
+This assumes the underlying primary key column is either an auto-increment column or is populated from a sequence using a trigger during insert.
+For auto-increment columns the **valueSource** parameter should be the table name and for a sequence/trigger it should be the sequence name.
+
+[source,java]
+----
+//Auto increment column in the 'store.customer' table
+define(Store.T_CUSTOMER
+    Properties.primaryKeyProperty(Store.CUSTOMER_ID)
+    ...
+).setKeyGenerator(automaticKeyGenerator("store.customer"));
+
+//Trigger and sequence named 'store.customer_seq'
+define(Store.T_CUSTOMER
+    Properties.primaryKeyProperty(Store.CUSTOMER_ID)
+    ...
+).setKeyGenerator(automaticKeyGenerator("store.customer_seq"));
+----
+
+==== Sequence
+
+When sequences are used without triggers the framework can fetch the value from a sequence before insert.
+
+[source,java]
+----
+//Sequence named 'store.customer_seq' without a trigger
+define(Store.T_CUSTOMER
+    Properties.primaryKeyProperty(Store.CUSTOMER_ID)
+    ...
+).setKeyGenerator(sequenceKeyGenerator("store.customer_seq"));
+----
+
+==== Queried
+
+The framework can select new primary key values from a query.
+
+[source,java]
+----
+//Using a query returning the new value
+define(Store.T_CUSTOMER
+    Properties.primaryKeyProperty(Store.CUSTOMER_ID)
+    ...
+).setKeyGenerator(queriedKeyGenerator(
+    "select new_id
+     from store.id_values
+     where table_name = 'store.customer'"));
+----
+
+==== Increment
+
+The framework can automatically increment the primary key value by selecting the maximum value and add one, this is very simplistic, not transaction safe and is not recommended for use anywhere but the simplest demos.
+
+[source,java]
+----
+define(Store.T_CUSTOMER
+    Properties.primaryKeyProperty(Store.CUSTOMER_ID)
+    ...
+).setKeyGenerator(incrementKeyGenerator("store.customer_seq"));
+----
+
+==== Custom
+
+You can provide a custom key generator strategy by implementing a {url-javadoc}/org/jminor/framework/domain/Entity.KeyGenerator.html[KeyGenerator].
+
 === Domain.StringProvider
 
 The {url-javadoc}/org/jminor/framework/domain/Domain.StringProvider.html[Domain.StringProvider] class is for providing __toString()__ implementations entities. This value is f. ex. used when entties are displayed in a ComboBox or as a foreign key values in table views.
 
-See the Domain.StringProvider API doc for further information.
+[source,java]
+----
+define(Store.T_CUSTOMER
+...
+).setStringProvider(
+    new StringProvider(Store.CUSTOMER_LAST_NAME)
+        .addText(", ")
+        .addValue(Store.CUSTOMER_FIRST_NAME)));
+----
 
-=== Helper classes
-
-The following classes can come in handy when working with entities.
-
-{url-javadoc}/org/jminor/framework/domain/Domain.Validator.html[Domain.Validator]
-
-A default *Entity.Validator* implementation which provides basic range and null validation, can be overridden to provide further validations. Note that validation is performed quite often so it should not perform expensive operations. Validation requiring database access f.ex. belongs in the application model or ui.
+For more complex toString() implementations you can implement a custom {url-javadoc}/org/jminor/framework/domain/Entity.ToString.html[Entity.ToString].
 
 [source,java]
 ----
-define("entityID", [...]).setValidator(new Domain.Validator() {
+define(Store.T_CUSTOMER
+...
+).setStringProvider(customer -> {
+    StringBuilder builder =
+       new StringBuilder(customer.getString(CUSTOMER_LASTNAME))
+    .append(", ").append(customer.getString(CUSTOMER_LASTNAME));
+
+    if (!customer.isValueNull(CUSTOMER_EMAIL)) {
+        builder.append(" <")
+        .append(customer.getString(CUSTOMER_EMAIL))
+        .append(">");
+    }
+
+    return builder.toString();
+});
+----
+
+=== Validation
+
+Custom validation of Entities is done by implementing a {url-javadoc}/org/jminor/framework/domain/Domain.Validator.html[Domain.Validator].
+
+The default *Entity.Validator* implementation provides basic range and null validation, can be overridden to provide further validations. Note that validation is performed quite often so it should not perform expensive operations. Validation requiring database access f.ex. belongs in the application model or ui.
+
+[source,java]
+----
+define("entityID",
+...
+).setValidator(new Domain.Validator() {
       @Override
-      public void validate(Entity entity, Property property) throws ValidationException {
+    public void validate(Entity entity, Property property)
+        throws ValidationException {
         super.validate(entity, property);
 
         Object value = entity.get(property);
 
         if (!isValid(value)) {
-          throw new ValidationException(property.getPropertyId(), value, value + " is invalid");
+          throw new ValidationException(property.getPropertyId(),
+              value, value + " is invalid");
         }
-      }
-    });
+    }
+});
 ----
 
 {url-javadoc}/org/jminor/framework/domain/Entity.BackgroundColorProvider.html[Entity.BackgroundColorProvider]
@@ -395,15 +496,17 @@ Provides the background color for entity property cells when displayed in a tabl
 
 [source,java]
 ----
-define("entityId", [...]).setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
-      public Object getBackgroundColor(final Entity entity, final Property property) {
+define("entityId",
+...
+).setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
+    public Object getBackgroundColor(Entity entity, Property property) {
         if (property.is("colorPropertyId") && entity.getString("colorPropertyId").equals("CYAN")) {
           return Color.CYAN;
         }
 
         return null;
-      }
-    });
+    }
+});
 ----
 
 ==== Examples
@@ -727,7 +830,7 @@ When implementing this class you must provide a constructor taking a single Enti
 ----
 public class StoreApplicationModel extends SwingEntityApplicationModel {
 
-  public StoreApplicationModel(final EntityConnectionProvider connectionProvider) {
+  public StoreApplicationModel(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
     addEntityModel(new CustomerModel(connectionProvider));
   }
@@ -751,9 +854,9 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
   }
 
   @Override
-  protected void performWork(final StoreAppModel application) {
+  protected void performWork(StoreAppModel application) {
     try {
-      final EntityModel customerModel = application.getMainApplicationModels().iterator().next();
+      EntityModel customerModel = application.getMainApplicationModels().iterator().next();
       customerModel.getTableModel().clearSelection();
       customerModel.refresh();
     }
@@ -792,7 +895,7 @@ When instantiating an EntityPanel you can supply an EntityEditPanel instance as 
 ----
 public class CustomerEditPanel extends EntityEditPanel {
 
-  public CustomerEditPanel(final SwingEntityEditModel editModel) {
+  public CustomerEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 

@@ -1,0 +1,6 @@
+= JMinor Application Framework
+:url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
+
+== Database layer
+
+The JMinor database layer is extremely thin, it doesn't perform any joins and provides no access to DBMS specific funtionality except primary key generation via {url-javadoc}/org/jminor/framework/domain/Entity.KeyGenerator.html[KeyGenerator] strategies. The framework provides implementations for the most common strategies, sequences (with or without triggers) and auto increment columns.

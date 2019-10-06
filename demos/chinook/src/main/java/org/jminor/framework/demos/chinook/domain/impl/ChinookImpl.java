@@ -139,8 +139,15 @@ public final class ChinookImpl extends Domain implements Chinook {
                     columnProperty(CUSTOMER_SUPPORTREPID, Types.BIGINT)))
             .setKeyGenerator(automaticKeyGenerator("chinook.customer"))
             .setOrderBy(orderBy().ascending(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME))
-            .setStringProvider(new StringProvider(CUSTOMER_LASTNAME)
-                    .addText(", ").addValue(CUSTOMER_FIRSTNAME))
+            .setStringProvider(customer -> {
+              final StringBuilder builder = new StringBuilder(customer.getString(CUSTOMER_LASTNAME))
+                      .append(", ").append(customer.getString(CUSTOMER_FIRSTNAME));
+              if (!customer.isValueNull(CUSTOMER_EMAIL)) {
+                builder.append(" <").append(customer.getString(CUSTOMER_EMAIL)).append(">");
+              }
+
+              return builder.toString();
+            })
             .setSearchPropertyIds(CUSTOMER_FIRSTNAME, CUSTOMER_LASTNAME, CUSTOMER_EMAIL)
             .setCaption("Customers");
   }
