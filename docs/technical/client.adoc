@@ -1,5 +1,6 @@
 = Client
 :toc: right
+:source-highlighter: rouge
 
 == Features
 

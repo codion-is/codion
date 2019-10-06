@@ -4,6 +4,7 @@
 :dir-source: ../../demos/petstore/src/main/java
 :dir-test-source: ../../demos/petstore/src/test/java
 :dir-manual: ../manual
+:source-highlighter: rouge
 
 == Domain model
 

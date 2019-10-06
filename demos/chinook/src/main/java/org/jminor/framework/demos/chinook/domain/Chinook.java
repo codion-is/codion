@@ -5,11 +5,6 @@ package org.jminor.framework.demos.chinook.domain;
 
 import org.jminor.framework.domain.Property;
 
-/**
- * User: darri
- * Date: 2.1.2018
- * Time: 18:23
- */
 public interface Chinook {
 
   String T_ARTIST = "artist@chinook";

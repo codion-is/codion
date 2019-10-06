@@ -1,10 +1,10 @@
 = Chinook Tutorial
 :toc: right
-
 :url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
 :dir-source: ../../demos/chinook/src/main/java
 :dir-test-source: ../../demos/chinook/src/test/java
 :dir-manual: ../manual
+:source-highlighter: rouge
 
 == Domain model
 

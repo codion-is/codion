@@ -1,6 +1,7 @@
 = Database
 :toc: right
 :url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
+:source-highlighter: rouge
 
 == Database layer
 
