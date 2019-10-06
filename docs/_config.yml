@@ -7,11 +7,14 @@ url: "http://jminor.org"
 twitter_username: bjorndarri
 github_username:  bjorndarri
 
+# theme: minima
 theme: minima
 plugins:
   - jekyll-asciidoc
 
 exclude:
+  - vendor
+  - .bundle
   - .sass-cache/
   - .jekyll-cache/
   - Gemfile
