@@ -278,7 +278,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         final List<Entity> updatedEntities = new ArrayList<>(entities.size());
         for (final Map.Entry<String, List<Entity>> mappedEntitiesMapEntry : mappedEntities.entrySet()) {
           final String entityId = mappedEntitiesMapEntry.getKey();
-          final Collection<Entity> toUpdate = mappedEntitiesMapEntry.getValue();
+          final List<Entity> toUpdate = mappedEntitiesMapEntry.getValue();
           final String tableName = domain.getTableName(entityId);
           final List<Property.ColumnProperty> updateColumnProperties = updateProperties.computeIfAbsent(entityId,
                   e -> domain.getWritableColumnProperties(entityId, true, false));
