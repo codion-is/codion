@@ -834,7 +834,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     List<Property> getProperties();
 
     /**
-     * @return true if this entity contains any properties which values are derived to other properties
+     * @return true if this entity contains any properties which values are derived from other properties
      */
     boolean hasDerivedProperties();
 
