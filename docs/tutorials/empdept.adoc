@@ -35,14 +35,14 @@ In this section we add a constructor, calling the two methods which define the d
 include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=63..68]
 ----
 
-Next we add the method defining the department entity. *Entity.Definition* instances are provided by the {url-javadoc}/org/jminor/framework/domain/Domain.html[Domain] class, via the *define* method which comes in two flavours, one which assumes the *entityId* contains the underlying table name and one which does not, and therefore requires an additional *tableName* parameter. We use the former below. Note that we fetch caption strings for the properties from the i18n bundle via *getString()*. In a single language model we would simply use "Caption" instead, see <<chinook.adoc#Domain-model, Chinook domain model>>. For an overview of the *Property* class see <<{dir-manual}/manual.adoc#Property, Manual#Property>>. The *Entity.Definition* class provides chained setters for setting entity attributes, such as the primary key value source. Here we set *idSource* to *IdSource.NONE* since the department number is not generated but rather set manually, the so-called *stringProvider* which is responsible for providing *toString()* implementations for entities, the *smallDataset* attribute which hints that it is OK to automatically base ComboBoxes on the entity and we also set the *caption*. In this case we simply have the department string provider return the department name.
+Next we add the method defining the department entity. *Entity.Definition* instances are provided by the {url-javadoc}/org/jminor/framework/domain/Domain.html[Domain] class, via the *define* method which comes in two flavours, one which assumes the *entityId* contains the underlying table name and one which does not, and therefore requires an additional *tableName* parameter. We use the former below. Note that we fetch caption strings for the properties from the i18n bundle via *getString()*. In a single language model we would simply use "Caption" instead, see <<chinook.adoc#domain-model, Chinook domain model>>. For an overview of the *Property* class see <<{dir-manual}/manual.adoc#property, Manual#Property>>. The *Entity.Definition* class provides chained setters for setting entity attributes, such as the primary key value source. Here we set *idSource* to *IdSource.NONE* since the department number is not generated but rather set manually, the so-called *stringProvider* which is responsible for providing *toString()* implementations for entities, the *smallDataset* attribute which hints that it is OK to automatically base ComboBoxes on the entity and we also set the *caption*. In this case we simply have the department string provider return the department name.
 
 [source,java]
 ----
 include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=69..83]
 ----
 
-Next we define the employee entity. Here we set the *keyGenerator* to *Entities.incrementKeyGenerator(T_EMPLOYEE, EMPLOYEE_ID)* which, as the name suggests, simply increments the maximum column value by one (__N.B. this is a very simplistic implementation which is absolutely not transaction safe__). Here we also introduce the <<{dir-manual}/manual.adoc#ForeignKeyProperty, ForeignKeyProperty>>, the *orderBy*, as well as a *BackgroundColorProvider* which is responsible for providing a custom color for a entity instance.
+Next we define the employee entity. Here we set the *keyGenerator* to *Entities.incrementKeyGenerator(T_EMPLOYEE, EMPLOYEE_ID)* which, as the name suggests, simply increments the maximum column value by one (__N.B. this is a very simplistic implementation which is absolutely not transaction safe__). Here we also introduce the <<{dir-manual}/manual.adoc#foreignkeyproperty, ForeignKeyProperty>>, the *orderBy*, as well as a *BackgroundColorProvider* which is responsible for providing a custom color for a entity instance.
 
 [source,java]
 ----
@@ -97,7 +97,7 @@ We start by calling the super class method which creates an unfiltered {url-java
 include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=24..42]
 ----
 
-Finally we bind a couple of events, for further information see <<{dir-manual}/manual.adoc#Event-binding, Manual#Event binding>>.
+Finally we bind a couple of events, for further information see <<{dir-manual}/manual.adoc#event-binding, Manual#Event binding>>.
 
 [source,java]
 ----
@@ -131,7 +131,7 @@ A class extending *EntityTablePanel* must provide a constructor taking a single 
 include::{dir-source}/org/jminor/framework/demos/empdept/beans/ui/DepartmentTablePanel.java[lines=20..25]
 ----
 
-We create a method for viewing a report, which is called via an action we'll initialize in the next step. For further information about report viewing and printing see <<{dir-manual}/manual.adoc#Reporting-with-JasperReports, Manual#Reporting with JasperReports>>.
+We create a method for viewing a report, which is called via an action we'll initialize in the next step. For further information about report viewing and printing see <<{dir-manual}/manual.adoc#reporting-with-jasperreports, Manual#Reporting with JasperReports>>.
 
 [source,java]
 ----

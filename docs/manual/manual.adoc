@@ -324,7 +324,7 @@ Properties.derivedProperty(SUM_ID, Types.INTEGER, "Sum",
 ----
 
 ==== Examples
-* <<{dir-tutorials}/chinook.adoc#Domain-model, Chinook domain model>>
+* <<{dir-tutorials}/chinook.adoc#domain-model, Chinook domain model>>
 
 == Domain
 
@@ -513,7 +513,7 @@ define("entityId",
 
 ==== Examples
 
-* <<{dir-tutorials}/empdept.adoc#Domain-model, EmpDept domain model>>
+* <<{dir-tutorials}/empdept.adoc#domain-model, EmpDept domain model>>
 
 === Entities in action
 
@@ -587,9 +587,9 @@ java -Djminor.db.type=h2 -Djminor.db.embedded=true -Djminor.db.host=h2db/h2 -cp 
 
 ==== Examples
 
-* <<{dir-tutorials}/empdept.adoc#Domain-model, EmpDept domain model>>
-* <<{dir-tutorials}/chinook.adoc#Domain-model, Chinook domain model>>
-* <<{dir-tutorials}/petstore.adoc#Domain-model, Petstore domain model>>
+* <<{dir-tutorials}/empdept.adoc#domain-model, EmpDept domain model>>
+* <<{dir-tutorials}/chinook.adoc#domain-model, Chinook domain model>>
+* <<{dir-tutorials}/petstore.adoc#domain-model, Petstore domain model>>
 
 == Domain Model Unit Testing
 
@@ -690,9 +690,9 @@ public class TestStore extends EntityTestUnit {
 
 ==== Examples ====
 
-* <<{dir-tutorials}/empdept.adoc#Domain-model-unit-test, EmpDept domain model test>>
-* <<{dir-tutorials}/chinook.adoc#Domain-model-unit-test, Chinook domain model test>>
-* <<{dir-tutorials}/petstore.adoc#Domain-model-unit-test, Petstore domain model test>>
+* <<{dir-tutorials}/empdept.adoc#domain-model-unit-test, EmpDept domain model test>>
+* <<{dir-tutorials}/chinook.adoc#domain-model-unit-test, Chinook domain model test>>
+* <<{dir-tutorials}/petstore.adoc#domain-model-unit-test, Petstore domain model test>>
 
 == EntityModel
 
@@ -818,7 +818,7 @@ protected void bindEvents() {
 ----
 
 === Examples
-* <<{dir-tutorials}/empdept.adoc#Application-model-layer, EmpDept entity models>>
+* <<{dir-tutorials}/empdept.adoc#application-model-layer, EmpDept entity models>>
 
 == EntityApplicationModel
 
@@ -880,9 +880,9 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
 
 === Examples
 
-* <<{dir-tutorials}/empdept.adoc#Application-load-test, EmpDept application load test>>
-* <<{dir-tutorials}/chinook.adoc#Application-load-test, Chinook application load test>>
-* <<{dir-tutorials}/petstore.adoc#Application-load-test, Petstore application load test>>
+* <<{dir-tutorials}/empdept.adoc#application-load-test, EmpDept application load test>>
+* <<{dir-tutorials}/chinook.adoc#application-load-test, Chinook application load test>>
+* <<{dir-tutorials}/petstore.adoc#application-load-test, Petstore application load test>>
 
 == EntityPanel
 
@@ -1004,9 +1004,9 @@ public ControlSet getPrintControls() {
 
 === Examples
 
-* <<{dir-tutorials}/empdept.adoc#Main-application-panel, EmpDept application panel>>
-* <<{dir-tutorials}/chinook.adoc#Main-application-panel, Chinook application panel>>
-* <<{dir-tutorials}/petstore.adoc#Main-application-panel, Petstore application panel>>
+* <<{dir-tutorials}/empdept.adoc#main-application-panel, EmpDept application panel>>
+* <<{dir-tutorials}/chinook.adoc#main-application-panel, Chinook application panel>>
+* <<{dir-tutorials}/petstore.adoc#main-application-panel, Petstore application panel>>
 
 == Reporting with JasperReports
 
@@ -1061,4 +1061,4 @@ The way you view the report is just like in the jdbc report example above except
 
 === Examples
 
-* <<{dir-tutorials}/empdept.adoc#Application-ui-layer, EmpDept UI layer>>
+* <<{dir-tutorials}/empdept.adoc#application-ui-layer, EmpDept UI layer>>
