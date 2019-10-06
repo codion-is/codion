@@ -10,6 +10,7 @@ import org.jminor.framework.domain.Entity;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -70,7 +71,7 @@ public class EntityJSONParserTest {
     mgr30.put(TestDomain.EMP_ID, -30);
     mgr30.put(TestDomain.EMP_JOB, "MANAGER");
     mgr30.put(TestDomain.EMP_NAME, "MGR NAME");
-    mgr30.put(TestDomain.EMP_SALARY, 2500.5);
+    mgr30.put(TestDomain.EMP_SALARY, BigDecimal.valueOf(2500.5));
 
     final Entity mgr50 = DOMAIN.entity(TestDomain.T_EMP);
     mgr50.put(TestDomain.EMP_COMMISSION, 500.5);
@@ -79,7 +80,7 @@ public class EntityJSONParserTest {
     mgr50.put(TestDomain.EMP_ID, -50);
     mgr50.put(TestDomain.EMP_JOB, "MANAGER");
     mgr50.put(TestDomain.EMP_NAME, "MGR2 NAME");
-    mgr50.put(TestDomain.EMP_SALARY, 2500.5);
+    mgr50.put(TestDomain.EMP_SALARY, BigDecimal.valueOf(2500.5));
 
     final Entity emp1 = DOMAIN.entity(TestDomain.T_EMP);
     emp1.put(TestDomain.EMP_COMMISSION, 500.5);
@@ -89,7 +90,7 @@ public class EntityJSONParserTest {
     emp1.put(TestDomain.EMP_JOB, "CLERK");
     emp1.put(TestDomain.EMP_MGR_FK, mgr30);
     emp1.put(TestDomain.EMP_NAME, "A NAME");
-    emp1.put(TestDomain.EMP_SALARY, 2500.5);
+    emp1.put(TestDomain.EMP_SALARY, BigDecimal.valueOf(2500.55));
 
     jsonString = parser.serialize(Collections.singletonList(emp1));
     assertTrue(emp1.valuesEqual(parser.deserialize(jsonString).get(0)));
@@ -109,7 +110,7 @@ public class EntityJSONParserTest {
     emp1.put(TestDomain.EMP_JOB, "ANALYST");
     emp1.put(TestDomain.EMP_MGR_FK, mgr50);
     emp1.put(TestDomain.EMP_NAME, "ANOTHER NAME");
-    emp1.put(TestDomain.EMP_SALARY, 3500.5);
+    emp1.put(TestDomain.EMP_SALARY, BigDecimal.valueOf(3500.5));
     emp1.put(TestDomain.EMP_HIREDATE, newHiredate);
 
     jsonString = parser.serialize(Collections.singletonList(emp1));
@@ -122,7 +123,7 @@ public class EntityJSONParserTest {
     assertEquals(mgr30, emp1Deserialized.getOriginal(TestDomain.EMP_MGR_FK));
     assertEquals(hiredate, emp1Deserialized.getOriginal(TestDomain.EMP_HIREDATE));
     assertEquals("A NAME", emp1Deserialized.getOriginal(TestDomain.EMP_NAME));
-    assertEquals(2500.5, emp1Deserialized.getOriginal(TestDomain.EMP_SALARY));
+    assertEquals(BigDecimal.valueOf(2500.55), emp1Deserialized.getOriginal(TestDomain.EMP_SALARY));
 
     assertTrue(((Entity) emp1Deserialized.getOriginal(TestDomain.EMP_DEPARTMENT_FK)).valuesEqual(dept10));
     assertTrue(((Entity) emp1Deserialized.getOriginal(TestDomain.EMP_MGR_FK)).valuesEqual(mgr30));
@@ -135,7 +136,7 @@ public class EntityJSONParserTest {
     emp2.put(TestDomain.EMP_JOB, "CLERK");
     emp2.put(TestDomain.EMP_MGR_FK, mgr50);
     emp2.put(TestDomain.EMP_NAME, "NAME");
-    emp2.put(TestDomain.EMP_SALARY, 3500.5);
+    emp2.put(TestDomain.EMP_SALARY, BigDecimal.valueOf(3500.5));
 
     parser = new EntityJSONParser(DOMAIN);
 

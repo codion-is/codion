@@ -5153,3 +5153,4 @@
   BigDecimal support continued (as in, things I missed)
   BigDecimal support added to javafx module
   SerializationWhitelist moved to common.remote module
+  EntityJSONParser now handles BigDecimal values

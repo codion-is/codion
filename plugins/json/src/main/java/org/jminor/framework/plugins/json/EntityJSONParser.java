@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -211,6 +212,9 @@ public final class EntityJSONParser implements Serializer<Entity> {
     if (property instanceof Property.ForeignKeyProperty) {
       return toJSONObject((Entity) value);
     }
+    if (property.isBigDecimal()) {
+      return ((BigDecimal) value).toString();
+    }
     if (property.isTime()) {
       final LocalTime time = (LocalTime) value;
       return jsonTimeFormat.format(time);
@@ -335,6 +339,9 @@ public final class EntityJSONParser implements Serializer<Entity> {
     }
     else if (property.isInteger()) {
       return propertyValues.getInt(property.getPropertyId());
+    }
+    else if (property.isBigDecimal()) {
+      return propertyValues.getBigDecimal(property.getPropertyId());
     }
     else if (property instanceof Property.ForeignKeyProperty) {
       return parseEntity(propertyValues.getJSONObject(property.getPropertyId()));

@@ -61,7 +61,7 @@ public final class TestDomain extends Domain {
                     .setNullable(false),
             Properties.valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
                     Arrays.asList(new Item("ANALYST"), new Item("CLERK"), new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN"))),
-            Properties.columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY)
+            Properties.columnProperty(EMP_SALARY, Types.DECIMAL, EMP_SALARY)
                     .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
             Properties.columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
                     .setMin(100).setMax(2000).setMaximumFractionDigits(2),
