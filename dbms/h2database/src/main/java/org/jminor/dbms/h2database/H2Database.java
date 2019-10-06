@@ -208,7 +208,7 @@ public final class H2Database extends AbstractDatabase {
       final Properties properties = new Properties();
       properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
       for (final String scriptPath : scriptPaths) {
-        final String url = (inMemory ? URL_PREFIX_MEM : URL_PREFIX_FILE) + databaseName
+        final String url = (inMemory ? URL_PREFIX_MEM : URL_PREFIX_FILE) + (databaseName == null ? "h2db" : databaseName)
                 + ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + scriptPath.replace("\\", "/") + "'";
         try {
           DriverManager.getConnection(url, properties).close();
