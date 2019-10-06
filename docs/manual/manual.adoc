@@ -79,6 +79,8 @@ a string constant which must be unique within the domain. The simplest way to de
 
 Defining the *entityId* as a static string constant in the domain class is recommended.
 
+NOTE: The *entityId* constant does not have to be the table name, you can use whatever identifying string you want and specify the table name separately.
+
 [source,java]
 ----
 /*
@@ -109,6 +111,7 @@ JMinor supports the following column data types:
   * Integer (java.sql.Types.INTEGER)
   * Double (java.sql.Types.DOUBLE)
   * Long (java.sql.Types.BIGINT)
+  * BigDecimal (java.sql.Types.DECIMAL)
   * LocalDateTime (java.sql.Types.TIMESTAMP)
   * LocalDate (java.sql.Types.DATE)
   * LocalTime (java.sql.Types.TIME)
@@ -117,9 +120,9 @@ JMinor supports the following column data types:
   * Character (java.sql.Types.CHAR)
   * Blob (java.sql.Types.BLOB)
 
-=== Property Id constants ===
+=== Property id constants ===
 
-For each column you define a string constant containing the column name, i.e. 'first_name'. This constant is used when defining the property based on that column and serves as the property identifier. This __propertyId__ is used as column name when constructing SQL queries unless the column name is set via __setColumnName()__.
+For each column you define a string constant, you can use the actual underlying column name, i.e. 'first_name' or any other string. This constant is used when defining the property based on that column and serves as the property identifier. This __propertyId__ is assumed to be the actual column name when constructing SQL queries unless the column name has been set via __setColumnName()__.
 
 [source,java]
 ----
@@ -317,7 +320,7 @@ Properties.derivedProperty(SUM_ID, Types.INTEGER, "Sum",
            }
          }, SOURCE_PROPERTY_ID_1, SOURCE_PROPERTY_ID_2),
 ----
-===== Examples
+==== Examples
 * <<{dir-tutorials}/chinook.adoc#Domain-model, Chinook domain model>>
 
 == Domain
