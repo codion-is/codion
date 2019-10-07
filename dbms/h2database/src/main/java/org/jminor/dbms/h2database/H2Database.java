@@ -31,6 +31,7 @@ public final class H2Database extends AbstractDatabase {
   private static final int REFERENTIAL_INTEGRITY_ERROR_CHILD_EXISTS = 23503;
   private static final int REFERENTIAL_INTEGRITY_ERROR_PARENT_MISSING = 23506;
   private static final int UNIQUE_CONSTRAINT_ERROR = 23505;
+  private static final String DEFAULT_EMBEDDED_DATABASE_NAME = "h2db";
 
   private static boolean sharedDatabaseInitialized = false;
 
@@ -66,9 +67,9 @@ public final class H2Database extends AbstractDatabase {
    * @param embeddedInMemory if true then this instance is memory based
    */
   public H2Database(final String databaseName, final boolean embeddedInMemory) {
-    super(Type.H2, DRIVER_CLASS_NAME, databaseName, null, null, true);
-    initializeSharedDatabase(databaseName, TextUtil.parseCommaSeparatedValues(Database.DATABASE_INIT_SCRIPT.get()), embeddedInMemory);
+    super(Type.H2, DRIVER_CLASS_NAME, getEmbeddedName(databaseName, embeddedInMemory), null, null, true);
     this.embeddedInMemory = embeddedInMemory;
+    initializeSharedDatabase(TextUtil.parseCommaSeparatedValues(Database.DATABASE_INIT_SCRIPT.get()));
   }
 
   /**
@@ -103,8 +104,8 @@ public final class H2Database extends AbstractDatabase {
   public H2Database(final String databaseName, final String initScript, final boolean embeddedInMemory) {
     super(Type.H2, DRIVER_CLASS_NAME, Objects.requireNonNull(databaseName, "databaseName"),
             null, null, true);
-    initializeDatabase(databaseName, initScript == null ? null : Collections.singletonList(initScript), embeddedInMemory);
     this.embeddedInMemory = embeddedInMemory;
+    initializeDatabase(initScript == null ? null : Collections.singletonList(initScript));
   }
 
   /** {@inheritDoc} */
@@ -195,20 +196,21 @@ public final class H2Database extends AbstractDatabase {
   /**
    * Initializes a shared H2 database instance
    */
-  private static synchronized void initializeSharedDatabase(final String databaseName, final List<String> scriptPaths,
-                                                            final boolean inMemory) {
-    if (!sharedDatabaseInitialized) {
-      initializeDatabase(databaseName, scriptPaths, inMemory);
-      sharedDatabaseInitialized = true;
+  private void initializeSharedDatabase(final List<String> scriptPaths) {
+    synchronized (H2Database.class) {
+      if (!sharedDatabaseInitialized) {
+        initializeDatabase(scriptPaths);
+        sharedDatabaseInitialized = true;
+      }
     }
   }
 
-  private static void initializeDatabase(final String databaseName, final List<String> scriptPaths, final boolean inMemory) {
-    if (!Util.nullOrEmpty(scriptPaths) && (inMemory || !Files.exists(Paths.get(databaseName + ".h2.db")))) {
+  private void initializeDatabase(final List<String> scriptPaths) {
+    if (!Util.nullOrEmpty(scriptPaths) && (embeddedInMemory || !Files.exists(Paths.get(getHost() + ".h2.db")))) {
       final Properties properties = new Properties();
       properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
       for (final String scriptPath : scriptPaths) {
-        final String url = (inMemory ? URL_PREFIX_MEM : URL_PREFIX_FILE) + (databaseName == null ? "h2db" : databaseName)
+        final String url = (embeddedInMemory ? URL_PREFIX_MEM : URL_PREFIX_FILE) + getHost()
                 + ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + scriptPath.replace("\\", "/") + "'";
         try {
           DriverManager.getConnection(url, properties).close();
@@ -218,5 +220,17 @@ public final class H2Database extends AbstractDatabase {
         }
       }
     }
+  }
+
+  /**
+   * Handle the case where {@link Database#DATABASE_HOST} is not specified for in-memory databases
+   * @return DEFAULT_EMBEDDED_DATABASE_NAME in case this is an in-memory database and databaseName is null
+   */
+  private static String getEmbeddedName(final String databaseName, final boolean embeddedInMemory) {
+    if (embeddedInMemory) {
+      return databaseName == null ? DEFAULT_EMBEDDED_DATABASE_NAME : databaseName;
+    }
+
+    return databaseName;
   }
 }
