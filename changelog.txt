@@ -5154,3 +5154,4 @@
   BigDecimal support added to javafx module
   SerializationWhitelist moved to common.remote module
   EntityJSONParser now handles BigDecimal values
+  Entities.getKeys() parameter now List<Entity>, iteration no longer stream based
