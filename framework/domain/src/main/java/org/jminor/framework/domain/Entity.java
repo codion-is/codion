@@ -392,13 +392,13 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
 
   /**
    * Generates primary key values for entities on insert.
-   * PrimaryKeyGenerators fall into two categories, one in which the primary key value is
+   * KeyGenerators fall into two categories, one in which the primary key value is
    * fetched or generated before the record is inserted and one where the underlying database
    * automatically sets the primary key value on insert, f.ex. with a table trigger or identity columns.
-   * Implementations should implement either {@code beforeInsert()} or {@code afterInsert()}
-   * and leave the other one empty. {@code isAutoIncrement()} returns true if the database
-   * generates primary key values automatically, this implies that {@code afterInsert()}
-   * should be used, fetching the generated primary key value and updating the entity instance accordingly.
+   * Implementations should override either {@code beforeInsert()} or {@code afterInsert()}.
+   * {@code isAutoIncrement()} returns true if the database generates primary key values automatically,
+   * this implies that {@code afterInsert()} should be used, fetching the generated primary key value
+   * and updating the entity instance accordingly.
    */
   interface KeyGenerator {
 
@@ -834,7 +834,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     List<Property> getProperties();
 
     /**
-     * @return true if this entity contains any properties which values are derived to other properties
+     * @return true if this entity contains any properties which values are derived from other properties
      */
     boolean hasDerivedProperties();
 

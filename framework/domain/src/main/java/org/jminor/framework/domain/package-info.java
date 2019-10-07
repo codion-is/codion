@@ -8,6 +8,7 @@
  * {@link org.jminor.framework.domain.Property#TIMESTAMP_FORMAT}<br>
  * {@link org.jminor.framework.domain.Property#DATE_FORMAT}<br>
  * {@link org.jminor.framework.domain.Property#FOREIGN_KEY_FETCH_DEPTH}<br>
+ * {@link org.jminor.framework.domain.Property#BIG_DECIMAL_ROUNDING_MODE}<br>
  * {@link org.jminor.framework.domain.Property#WILDCARD_CHARACTER}
  */
 package org.jminor.framework.domain;
