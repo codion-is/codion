@@ -52,6 +52,9 @@ public final class AbstractEntityConnectionProviderTest {
 
     provider.setUser(null);
     assertThrows(IllegalStateException.class, provider::getConnection);
+
+    assertThrows(IllegalArgumentException.class, () -> provider.setClientId(null));
+    assertThrows(IllegalArgumentException.class, () -> provider.setDomainClassName(null));
   }
 
   private static final class TestProvider extends AbstractEntityConnectionProvider {

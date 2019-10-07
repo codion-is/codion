@@ -156,6 +156,7 @@ public interface EntityConnectionProvider<T extends EntityConnection> {
    * Disconnects the underlying connection if connected.
    * @param domainClassName the name of the class specifying the domain model for this connection provider
    * @return this EntityConnectionProvider instance
+   * @throws IllegalArgumentException in case {@code domainClassName} is null
    */
   EntityConnectionProvider setDomainClassName(final String domainClassName);
 
@@ -168,6 +169,7 @@ public interface EntityConnectionProvider<T extends EntityConnection> {
    * Disconnects the underlying connection if connected.
    * @param clientId the UUID identifying this client connection
    * @return this EntityConnectionProvider instance
+   * @throws IllegalArgumentException in case {@code clientId} is null
    */
   EntityConnectionProvider setClientId(final UUID clientId);
 

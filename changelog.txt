@@ -5144,3 +5144,4 @@
   EntityJSONParser now handles BigDecimal values
   Entities.getKeys() parameter now List<Entity>, iteration no longer stream based
   H2Database, handle null database name for in-memory databases
+  AbstractEntityConnectionProvider.setDomainClassName() and setClientId() null parameter handling improved with better error messages
