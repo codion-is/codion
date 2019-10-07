@@ -135,7 +135,8 @@ public final class EntityTableConditionPanel extends JPanel {
   }
 
   /**
-   * Allows the user to select one of the available condition panels for keyboard input focus
+   * Allows the user to select one of the available condition panels for keyboard input focus,
+   * if only one condition panel is available that one is selected automatically.
    */
   public void selectConditionPanel() {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
