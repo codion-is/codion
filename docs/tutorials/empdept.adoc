@@ -83,10 +83,10 @@ We must provide a constructor with a single *EntityConnectionProvider* parameter
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=17..23]
+include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=18..21]
 ----
 
-Now, at some point we are going to be editing the manager property of an employee which means we'll need a value list of managers. We override *createForeignKeyComboBoxModel* in order to provide a specialized combo box model for the manager property.
+At some point we are going to be editing the manager property of an employee which means we'll need a value list of managers. We override *createForeignKeyComboBoxModel* in order to provide a specialized combo box model for the manager property.
 
 NOTE: The foreign key propertyId (EmpDept.EMPLOYEE_MGR_FK) is used when referring to the manager property, very rarely do we have to worry about the underlying reference property (EmpDept.EMPLOYEE_MGR).
 
@@ -94,7 +94,7 @@ We start by calling the super class method which creates an unfiltered {url-java
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=24..42]
+include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=23..41]
 ----
 
 Finally we bind a couple of events, for further information see <<{dir-manual}/manual.adoc#event-binding, Manual#Event binding>>.
