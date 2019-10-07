@@ -26,11 +26,11 @@ image::jminor_logo_medium.png[Logo,200]
 
 == Manual
 
-* <<{dir-manual}/manual.adoc#, JMinor Manual>>.
+* <<{dir-manual}/manual.adoc#, Manual>>.
 
 == API Documentation
 
-* {url-javadoc}/index.html[JMinor Javadocs]
+* {url-javadoc}/index.html[Javadocs]
 
 == Tutorials
 

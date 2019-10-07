@@ -32,7 +32,7 @@ public final class ArtistAlbumTutorial {
   public static final String ALBUM_ALBUMID = "albumid";
   public static final String ALBUM_TITLE = "title";
   public static final String ALBUM_ARTISTID = "artistid";
-  public static final String ALBUM_ARTISTID_FK = "artist_fk";
+  public static final String ALBUM_ARTIST_FK = "artist_fk";
 
   public static final class Chinook extends Domain {
     public Chinook() {
@@ -47,14 +47,14 @@ public final class ArtistAlbumTutorial {
 
       define(T_ALBUM,
               primaryKeyProperty(ALBUM_ALBUMID),
-              foreignKeyProperty(ALBUM_ARTISTID_FK, "Artist", T_ARTIST,
+              foreignKeyProperty(ALBUM_ARTIST_FK, "Artist", T_ARTIST,
                       columnProperty(ALBUM_ARTISTID))
                       .setNullable(false),
               columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
                       .setNullable(false).setMaxLength(160))
               .setKeyGenerator(automaticKeyGenerator(T_ALBUM))
               .setStringProvider(new StringProvider()
-                      .addValue(ALBUM_ARTISTID_FK).addText(" - ").addValue(ALBUM_TITLE))
+                      .addValue(ALBUM_ARTIST_FK).addText(" - ").addValue(ALBUM_TITLE))
               .setCaption("Albums");
     }
   }
@@ -82,13 +82,13 @@ public final class ArtistAlbumTutorial {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusProperty(ALBUM_ARTISTID_FK);
-      final EntityComboBox artistComboBox = createForeignKeyComboBox(ALBUM_ARTISTID_FK);
+      setInitialFocusProperty(ALBUM_ARTIST_FK);
+      final EntityComboBox artistComboBox = createForeignKeyComboBox(ALBUM_ARTIST_FK);
       setPreferredWidth(artistComboBox, 160);
       final JTextField titleField = createTextField(ALBUM_TITLE);
       titleField.setColumns(15);
       setLayout(new GridLayout(2, 1, 5, 5));
-      addPropertyPanel(ALBUM_ARTISTID_FK);
+      addPropertyPanel(ALBUM_ARTIST_FK);
       addPropertyPanel(ALBUM_TITLE);
     }
   }
