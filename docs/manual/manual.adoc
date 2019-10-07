@@ -1,8 +1,6 @@
 = Manual
 :toc: right
-:url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
 :dir-tutorials: ../tutorials
-:source-highlighter: rouge
 
 == The basics
 

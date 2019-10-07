@@ -1,7 +1,6 @@
 = Project
 :toc: right
 :dir-manual: ../manual
-:source-highlighter: rouge
 
 == Building
 

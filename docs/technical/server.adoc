@@ -1,8 +1,6 @@
 = Server
 :toc: right
-:url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
 :dir-source: ../../framework/server
-:source-highlighter: rouge
 
 == Features
 
@@ -63,7 +61,9 @@ A whitelist can be created during a server dry-run by adding the following syste
 jminor.server.serializationFilterDryRun=true
 ----
 
-== Example configuration file
+== Configuration
+
+=== Example configuration file
 
 [source]
 ----

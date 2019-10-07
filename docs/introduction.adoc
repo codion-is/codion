@@ -1,6 +1,5 @@
 = Introduction
 :toc: right
-:source-highlighter: rouge
 
 == Introduction
 Way back in 2004 I was assigned the task of writing a link:++https://en.wikipedia.org/wiki/Create,_read,_update_and_delete++[CRUD] application for a small department in the research institute where I work as a programmer. Two or three people would use this application to enter research data into a database. I started the project using a rich client framework recommended by a collegue but after a week of what felt like banging my head against a rock I decided to scrap what I had and start over, without a framework, using just link:++https://en.wikipedia.org/wiki/Java_Platform,_Standard_Edition++[Java SE] components, https://en.wikipedia.org/wiki/Java_Database_Connectivity[JDBC], https://en.wikipedia.org/wiki/Swing_(Java)[Swing] and https://en.wikipedia.org/wiki/Java_remote_method_invocation[RMI].
