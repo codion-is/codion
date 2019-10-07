@@ -1,10 +1,9 @@
 = EmpDept Tutorial
 :toc: right
-:url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
 :dir-source: ../../demos/empdept/src/main/java
 :dir-test-source: ../../demos/empdept/src/test/java
 :dir-manual: ../manual
-:source-highlighter: rouge
+:dir-technical: ../technical
 
 == Domain model
 
@@ -73,7 +72,7 @@ Here are the parameters required for running the EmpDept test on the default H2 
 
 -Djminor.db.host=h2db/h2
 
-For further information on parameters required for running JMinor applications see [[documentation:technical:client#configuration|client configuration]] and [[documentation:technical:server#configuration|server configuration]].
+For further information on parameters required for running JMinor applications see <<{dir-technical}/client.adoc#configuration, client configuration>> and <<{dir-technical}/server.adoc#configuration, server configuration>>.
 
 == Application model layer
 
