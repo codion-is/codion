@@ -341,14 +341,16 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
   }
 
   /**
-   * Displays a dialog allowing the user the select a input component which should receive the keyboard focus
+   * Displays a dialog allowing the user the select a input component which should receive the keyboard focus,
+   * if only one input component is available then that component is selected automatically.
    * @see #includeComponentSelectionPropertyId(String)
    * @see #requestComponentFocus(String)
    */
   public void selectInputComponent() {
     final List<String> propertyIds = getSelectComponentPropertyIds();
     final List<Property> properties = Properties.sort(editModel.getDomain().getProperties(getEditModel().getEntityId(), propertyIds));
-    final Property property = UiUtil.selectValue(this, properties, Messages.get(Messages.SELECT_INPUT_FIELD));
+    final Property property = properties.size() == 1 ?  properties.get(0) :
+            UiUtil.selectValue(this, properties, Messages.get(Messages.SELECT_INPUT_FIELD));
     if (property != null) {
       requestComponentFocus(property.getPropertyId());
     }
