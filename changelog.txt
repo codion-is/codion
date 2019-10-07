@@ -5155,3 +5155,4 @@
   SerializationWhitelist moved to common.remote module
   EntityJSONParser now handles BigDecimal values
   Entities.getKeys() parameter now List<Entity>, iteration no longer stream based
+  H2Database, handle null database name for in-memory databases
