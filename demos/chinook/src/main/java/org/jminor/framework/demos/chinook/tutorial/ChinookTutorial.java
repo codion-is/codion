@@ -21,6 +21,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.jminor.framework.demos.chinook.tutorial.ChinookTutorial.Chinook.*;
 import static org.jminor.framework.domain.Entities.getKeys;
 import static org.jminor.framework.domain.Properties.*;
 
@@ -33,17 +34,17 @@ public final class ChinookTutorial {
   public static final class Chinook extends Domain {
 
     //string constants for the table ('T_' prefix) and for each column
-    private static final String T_ARTIST = "chinook.artist";
-    private static final String ARTIST_ID = "artistid";
-    private static final String ARTIST_NAME = "name";
+    public static final String T_ARTIST = "chinook.artist";
+    public static final String ARTIST_ID = "artistid";
+    public static final String ARTIST_NAME = "name";
 
     //string constants for the table ('T_' prefix), for each column
     //and one for the foreign key relation
-    private static final String T_ALBUM = "chinook.album";
-    private static final String ALBUM_ALBUMID = "albumid";
-    private static final String ALBUM_TITLE = "title";
-    private static final String ALBUM_ARTISTID = "artistid";
-    private static final String ALBUM_ARTISTID_FK = "artist_fk";
+    public static final String T_ALBUM = "chinook.album";
+    public static final String ALBUM_ALBUMID = "albumid";
+    public static final String ALBUM_TITLE = "title";
+    public static final String ALBUM_ARTISTID = "artistid";
+    public static final String ALBUM_ARTISTID_FK = "artist_fk";
 
     public Chinook() {
       //define an entity based on the table 'chinook.artist'
@@ -95,29 +96,29 @@ public final class ChinookTutorial {
     //select the artist Metallica by name, the selectSingle() method
     //throws RecordNotFoundException if no record is found and a regular
     //DatabaseException with a relevant message if more than one are found
-    final Entity metallica = connection.selectSingle(Chinook.T_ARTIST,
-            Chinook.ARTIST_NAME, "Metallica");
+    final Entity metallica = connection.selectSingle(T_ARTIST,
+            ARTIST_NAME, "Metallica");
 
     //select all albums by Metallica, by using selectMany() with the
     //Metallica Entity as condition value, basically asking for the
     //records where the given foreign key references that specific Entity
     //selectMany() returns an empty list if none are found
-    final List<Entity> albums = connection.selectMany(Chinook.T_ALBUM,
-            Chinook.ALBUM_ARTISTID_FK, metallica);
+    final List<Entity> albums = connection.selectMany(T_ALBUM,
+            ALBUM_ARTISTID_FK, metallica);
     albums.forEach(System.out::println);
 
     //for more complex queries we use a EntitySelectCondition, provided
     //by a EntityConditions instance based on the domain model
     final EntityConditions conditions = connectionProvider.getConditions();
     //we create a select condition, where we specify the id of the entity
-    //we're selecting, the id of the property we're searching, the type
-    //of condition and the value. We also set the order by clause.
+    //we're selecting, the id of the property we're searching by, the type
+    //of condition and the value.
     final EntitySelectCondition artistsStartingWithAnCondition =
-            conditions.selectCondition(Chinook.T_ARTIST,
-                    Chinook.ARTIST_NAME, Condition.Type.LIKE, "An%");
-    //and finally we set the order by clause
+            conditions.selectCondition(T_ARTIST,
+                    ARTIST_NAME, Condition.Type.LIKE, "An%");
+    //and we set the order by clause
     artistsStartingWithAnCondition.setOrderBy(
-            Domain.orderBy().ascending(Chinook.ARTIST_NAME));
+            Domain.orderBy().ascending(ARTIST_NAME));
 
     final List<Entity> artistsStartingWithAn =
             connection.selectMany(artistsStartingWithAnCondition);
@@ -125,12 +126,10 @@ public final class ChinookTutorial {
 
     //create a select condition
     final EntitySelectCondition albumsByArtistsStartingWithAnCondition =
-            conditions.selectCondition(Chinook.T_ALBUM,
-                    Chinook.ALBUM_ARTISTID_FK, Condition.Type.LIKE, artistsStartingWithAn);
-    albumsByArtistsStartingWithAnCondition.setOrderBy(
-            Domain.orderBy()
-                    .ascending(Chinook.ALBUM_ARTISTID)
-                    .descending(Chinook.ALBUM_TITLE));
+            conditions.selectCondition(T_ALBUM,
+                    ALBUM_ARTISTID_FK, Condition.Type.LIKE, artistsStartingWithAn);
+    albumsByArtistsStartingWithAnCondition.setOrderBy(Domain.orderBy()
+            .ascending(ALBUM_ARTISTID).descending(ALBUM_TITLE));
 
     final List<Entity> albumsByArtistsStartingWithAn =
             connection.selectMany(albumsByArtistsStartingWithAnCondition);
@@ -149,10 +148,10 @@ public final class ChinookTutorial {
     final EntityConnection connection = connectionProvider.getConnection();
     final Domain domain = connectionProvider.getDomain();
 
-    //lets create a new artist
-    final Entity myBand = domain.entity(Chinook.T_ARTIST);
+    //lets create a new band
+    final Entity myBand = domain.entity(T_ARTIST);
     //and give the band a name
-    myBand.put(Chinook.ARTIST_NAME, "My band name");
+    myBand.put(ARTIST_NAME, "My band name");
 
     //we start a transaction
     connection.beginTransaction();
@@ -164,14 +163,15 @@ public final class ChinookTutorial {
     //during insert, that's because we're running with a local connection,
     //with a remote connections you have to select the entity
     //after insert to get an instance containing the generated key value
+    //or use the key received via the return value
     connection.insert(singletonList(myBand));
 
     //now for our first album
-    final Entity album = domain.entity(Chinook.T_ALBUM);
+    final Entity album = domain.entity(T_ALBUM);
     //set the album artist by setting the artist foreign key to my band
-    album.put(Chinook.ALBUM_ARTISTID_FK, myBand);
+    album.put(ALBUM_ARTISTID_FK, myBand);
     //and set the title
-    album.put(Chinook.ALBUM_TITLE, "My first album");
+    album.put(ALBUM_TITLE, "My first album");
 
     //and insert the album
     connection.insert(singletonList(album));
@@ -180,8 +180,8 @@ public final class ChinookTutorial {
     connection.commitTransaction();
 
     //lets rename our album and our band as well
-    myBand.put(Chinook.ARTIST_NAME, "A proper name");
-    album.put(Chinook.ALBUM_TITLE, "A proper title");
+    myBand.put(ARTIST_NAME, "A proper name");
+    album.put(ALBUM_TITLE, "A proper title");
 
     //and perform the update, note that we only have to use transactions
     //when we're performing multiple insert/update or delete calls,

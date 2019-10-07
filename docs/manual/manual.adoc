@@ -433,7 +433,7 @@ You can provide a custom key generator strategy by implementing a {url-javadoc}/
 
 === Domain.StringProvider
 
-The {url-javadoc}/org/jminor/framework/domain/Domain.StringProvider.html[Domain.StringProvider] class is for providing __toString()__ implementations entities. This value is f. ex. used when entties are displayed in a ComboBox or as a foreign key values in table views.
+The {url-javadoc}/org/jminor/framework/domain/Domain.StringProvider.html[Domain.StringProvider] class is for providing __toString()__ implementations for entities. This value is f. ex. used when entties are displayed in a ComboBox or as a foreign key values in table views.
 
 [source,java]
 ----
@@ -470,7 +470,7 @@ define(Store.T_CUSTOMER
 
 Custom validation of Entities is done by implementing a {url-javadoc}/org/jminor/framework/domain/Domain.Validator.html[Domain.Validator].
 
-The default *Entity.Validator* implementation provides basic range and null validation, can be overridden to provide further validations. Note that validation is performed quite often so it should not perform expensive operations. Validation requiring database access f.ex. belongs in the application model or ui.
+The default *Entity.Validator* implementation provides basic range and null validation and can be extended to provide further validations. Note that validation is performed quite often so it should not perform expensive operations. Validation requiring database access f.ex. belongs in the application model or ui.
 
 [source,java]
 ----
