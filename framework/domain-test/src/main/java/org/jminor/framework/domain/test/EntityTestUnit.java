@@ -63,9 +63,10 @@ public class EntityTestUnit {
   /**
    * Instantiates a new EntityTestUnit.
    * @param domainClass the name of the domain model class
+   * @throws NullPointerException in case domainClass is null
    */
   public EntityTestUnit(final String domainClass) {
-    this.domainClass = domainClass;
+    this.domainClass = Objects.requireNonNull(domainClass, "domainClass");
   }
 
   /**
@@ -311,9 +312,16 @@ public class EntityTestUnit {
       if (!property.isReadOnly() && property.isUpdatable()) {
         final Object beforeUpdate = testEntity.get(property);
         final Object afterUpdate = updated.get(property);
-        assertEquals(beforeUpdate, afterUpdate, "Values of property " + property + " should be equal after update ["
+        final String message = "Values of property " + property + " should be equal after update ["
                 + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
-                + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]");
+                + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]";
+        if (property.isBigDecimal()) {//special case, scale is not necessarily the same, hence not equal
+          assertTrue((afterUpdate == beforeUpdate) || (afterUpdate != null
+                  && ((BigDecimal) afterUpdate).compareTo((BigDecimal) beforeUpdate) == 0));
+        }
+        else {
+          assertEquals(beforeUpdate, afterUpdate, message);
+        }
       }
     }
   }
