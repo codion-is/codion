@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
- */
 package org.jminor.framework.demos.chinook.tutorial;
 
 import org.jminor.common.User;
@@ -55,7 +52,7 @@ public final class ChinookTutorial {
               .setKeyGenerator(automaticKeyGenerator("chinook.artist"))
               .setStringProvider(new Domain.StringProvider(ARTIST_NAME))
               .setSmallDataset(true)
-              .setCaption("Album");
+              .setCaption("Artist");
 
       //define an entity based on the table 'chinook.album'
       define(T_ALBUM,
