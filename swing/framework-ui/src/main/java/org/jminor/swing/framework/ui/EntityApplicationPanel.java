@@ -135,12 +135,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public static final PropertyValue<Integer> TAB_PLACEMENT = Configuration.integerValue("jminor.swing.tabPlacement", JTabbedPane.TOP);
 
+  private static final String DEFAULT_USERNAME_PROPERTY = "org.jminor.swing.framework.ui.defaultUsername";
   private static final String LOOK_AND_FEEL_PROPERTY = "org.jminor.swing.framework.ui.LookAndFeel";
   private static final String FONT_SIZE_PROPERTY = "org.jminor.swing.framework.ui.FontSize";
   private static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
   private static final Dimension MINIMUM_HELP_WINDOW_SIZE = new Dimension(600, 750);
   private static final double HELP_DIALOG_SCREEN_SIZE_RATIO = 0.1;
 
+  private final String applicationDefaultUsernameProperty;
   private final String applicationLookAndFeelProperty;
   private final String applicationFontSizeProperty;
 
@@ -172,6 +174,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   public EntityApplicationPanel(final ApplicationFrameProvider frameProvider) {
     this.frameProvider = frameProvider;
+    this.applicationDefaultUsernameProperty = DEFAULT_USERNAME_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationLookAndFeelProperty = LOOK_AND_FEEL_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationFontSizeProperty = FONT_SIZE_PROPERTY + "#" + getClass().getSimpleName();
     setUncaughtExceptionHandler();
@@ -1217,9 +1220,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case a login dialog is cancelled
    */
   protected User getUser(final String frameCaption, final User defaultUser, final ImageIcon applicationIcon) {
-    final String defaultUserName = EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name");
-    final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? new User(PreferencesUtil.getDefaultUserName(getApplicationIdentifier(),
-            defaultUserName), null) : defaultUser);
+    final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? new User(getDefaultUsername(), null) : defaultUser);
     final String loginTitle = (!Util.nullOrEmpty(frameCaption) ? (frameCaption + " - ") : "") + Messages.get(Messages.LOGIN);
     final User user = loginPanel.showLoginPanel(null, loginTitle, applicationIcon);
     if (Util.nullOrEmpty(user.getUsername())) {
@@ -1233,12 +1234,20 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Saves the username so that it can be used as default the next time this application is started.
    * @param username the username
    */
-  protected void saveDefaultUserName(final String username) {
-    PreferencesUtil.setDefaultUserName(getApplicationIdentifier(), username);
+  protected void saveDefaultUsername(final String username) {
+    PreferencesUtil.putUserPreference(applicationDefaultUsernameProperty, username);
   }
 
   /**
-   * Returns a String identifying the type of application this EntityApplicationPanel represents,
+   * @return a default username previously saved to user preferences or the OS username
+   */
+  protected String getDefaultUsername() {
+    return PreferencesUtil.getUserPreference(applicationDefaultUsernameProperty,
+            EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name"));
+  }
+
+  /**
+   * Returns a String identifying the application this EntityApplicationPanel represents,
    * by default the full class name is returned.
    * @return a String identifying the application type this panel represents
    */
@@ -1304,7 +1313,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
           startupDialog.dispose();
         }
         if (EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
-          saveDefaultUserName(connectionProvider.getUser().getUsername());
+          saveDefaultUsername(connectionProvider.getUser().getUsername());
         }
         this.frameTitle = getFrameTitle(frameCaption, connectionProvider);
         final JFrame frame = prepareFrame(this.frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
