@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
- */
 package org.jminor.framework.demos.chinook.tutorial;
 
 import org.jminor.common.User;
@@ -44,7 +41,7 @@ public final class ChinookTutorial {
     public static final String ALBUM_ALBUMID = "albumid";
     public static final String ALBUM_TITLE = "title";
     public static final String ALBUM_ARTISTID = "artistid";
-    public static final String ALBUM_ARTISTID_FK = "artist_fk";
+    public static final String ALBUM_ARTIST_FK = "artist_fk";
 
     public Chinook() {
       //define an entity based on the table 'chinook.artist'
@@ -55,19 +52,19 @@ public final class ChinookTutorial {
               .setKeyGenerator(automaticKeyGenerator("chinook.artist"))
               .setStringProvider(new Domain.StringProvider(ARTIST_NAME))
               .setSmallDataset(true)
-              .setCaption("Album");
+              .setCaption("Artist");
 
       //define an entity based on the table 'chinook.album'
       define(T_ALBUM,
               primaryKeyProperty(ALBUM_ALBUMID),
               columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
                       .setNullable(false).setMaxLength(160),
-              foreignKeyProperty(ALBUM_ARTISTID_FK, "Artist", T_ARTIST,
+              foreignKeyProperty(ALBUM_ARTIST_FK, "Artist", T_ARTIST,
                       columnProperty(ALBUM_ARTISTID))
                       .setNullable(false))
               .setKeyGenerator(automaticKeyGenerator("chinook.album"))
               .setStringProvider(new StringProvider()
-                      .addValue(ALBUM_ARTISTID_FK).addText(" - ").addValue(ALBUM_TITLE))
+                      .addValue(ALBUM_ARTIST_FK).addText(" - ").addValue(ALBUM_TITLE))
               .setCaption("Album");
     }
   }
@@ -104,7 +101,7 @@ public final class ChinookTutorial {
     //records where the given foreign key references that specific Entity
     //selectMany() returns an empty list if none are found
     final List<Entity> albums = connection.selectMany(T_ALBUM,
-            ALBUM_ARTISTID_FK, metallica);
+            ALBUM_ARTIST_FK, metallica);
     albums.forEach(System.out::println);
 
     //for more complex queries we use a EntitySelectCondition, provided
@@ -127,7 +124,7 @@ public final class ChinookTutorial {
     //create a select condition
     final EntitySelectCondition albumsByArtistsStartingWithAnCondition =
             conditions.selectCondition(T_ALBUM,
-                    ALBUM_ARTISTID_FK, Condition.Type.LIKE, artistsStartingWithAn);
+                    ALBUM_ARTIST_FK, Condition.Type.LIKE, artistsStartingWithAn);
     albumsByArtistsStartingWithAnCondition.setOrderBy(Domain.orderBy()
             .ascending(ALBUM_ARTISTID).descending(ALBUM_TITLE));
 
@@ -169,7 +166,7 @@ public final class ChinookTutorial {
     //now for our first album
     final Entity album = domain.entity(T_ALBUM);
     //set the album artist by setting the artist foreign key to my band
-    album.put(ALBUM_ARTISTID_FK, myBand);
+    album.put(ALBUM_ARTIST_FK, myBand);
     //and set the title
     album.put(ALBUM_TITLE, "My first album");
 
