@@ -12,37 +12,11 @@ import java.util.prefs.Preferences;
  */
 public final class PreferencesUtil {
 
-  /**
-   * The name of the preferences key used to save the default username
-   */
-  public static final String PREFERENCE_DEFAULT_USERNAME = "jminor.username";
-
   private static final String KEY = "key";
 
   private static Preferences userPreferences;
 
   private PreferencesUtil() {}
-
-  /**
-   * Retrieves the default username for the given application identifier saved in preferences, if any
-   * @param applicationIdentifier the application identifier
-   * @param defaultName the name to use if none is found in the preferences
-   * @return the default username
-   */
-  public static String getDefaultUserName(final String applicationIdentifier, final String defaultName) {
-    return getUserPreference(Objects.requireNonNull(applicationIdentifier, "applicationIdentifier")
-            + "." + PREFERENCE_DEFAULT_USERNAME, defaultName);
-  }
-
-  /**
-   * Saves the default username for the given application identifier
-   * @param applicationIdentifier the application identifier
-   * @param username the username
-   */
-  public static void setDefaultUserName(final String applicationIdentifier, final String username) {
-    Objects.requireNonNull(applicationIdentifier, "applicationIdentifier");
-    putUserPreference(applicationIdentifier + "." + PREFERENCE_DEFAULT_USERNAME, username);
-  }
 
   /**
    * @param key the key identifying the preference

@@ -5158,3 +5158,5 @@
   H2Database, handle null database name for in-memory databases
   AbstractEntityConnectionProvider.setDomainClassName() and setClientId() null parameter handling improved with better error messages
   EntityEditPanel.selectInputField() no longer displays selection list if only one input field is available
+  EntityApplicationPanel no longer uses getApplicationIdentifier() when saving the default username to user preferences (key could be too long)
+  PreferencesUtil.setDefaultUsername() and getDefaultUsername() removed
