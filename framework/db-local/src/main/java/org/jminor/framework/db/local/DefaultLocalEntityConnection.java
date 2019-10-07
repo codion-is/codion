@@ -1436,7 +1436,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       this.entityId = entityId;
       this.columnProperties = domain.getColumnProperties(entityId);
       this.transientProperties = domain.getTransientProperties(entityId);
-      this.hasTransientProperties = !Util.nullOrEmpty(this.transientProperties);
+      this.hasTransientProperties = !this.transientProperties.isEmpty();
       this.propertyCount = domain.getProperties(entityId).size();
     }
 

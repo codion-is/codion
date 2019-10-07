@@ -479,16 +479,16 @@ public class Domain implements Serializable {
   /**
    * @param entityId the entity id
    * @param includeHidden true if hidden properties should be included in the result
-   * @return a collection containing the properties found in the entity identified by {@code entityId}
+   * @return a list containing the properties found in the entity identified by {@code entityId}
    */
-  public final Collection<Property> getProperties(final String entityId, final boolean includeHidden) {
+  public final List<Property> getProperties(final String entityId, final boolean includeHidden) {
     return includeHidden ? getProperties(entityId) : getVisibleProperties(entityId);
   }
 
   /**
    * @param entityId the entity id
    * @return a list containing all database properties found in the entity identified by {@code entityId},
-   * that is, properties that map to database columns
+   * that is, properties that map to database columns, an empty list if none exist
    */
   public final List<Property.ColumnProperty> getColumnProperties(final String entityId) {
     return getDefinition(entityId).getColumnProperties();
@@ -497,7 +497,7 @@ public class Domain implements Serializable {
   /**
    * @param entityId the entity id
    * @return a list containing all transient database properties found in the entity identified by {@code entityId},
-   * that is, properties that do not map to database columns
+   * that is, properties that do not map to database columns, an empty list if none exist
    */
   public final List<Property.TransientProperty> getTransientProperties(final String entityId) {
     return getDefinition(entityId).getTransientProperties();
@@ -506,7 +506,7 @@ public class Domain implements Serializable {
   /**
    * @param entityId the entity id
    * @return a list containing all the foreign key properties found in the entity
-   * identified by {@code entityId}
+   * identified by {@code entityId}, en empty list if none exist
    */
   public final List<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityId) {
     return getDefinition(entityId).getForeignKeyProperties();

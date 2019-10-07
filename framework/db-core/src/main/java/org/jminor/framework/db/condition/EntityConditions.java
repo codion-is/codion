@@ -311,7 +311,7 @@ public final class EntityConditions {
                                                                 final Condition.Type conditionType, final Collection values) {
     Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
     Objects.requireNonNull(conditionType, CONDITION_TYPE_PARAM);
-    final List<Entity.Key> keys = getEntityKeys(values);
+    final List<Entity.Key> keys = getKeys(values);
     if (foreignKeyProperty.isCompositeKey()) {
       return createCompositeKeyCondition(foreignKeyProperty.getProperties(),
               domain.getPrimaryKeyProperties(foreignKeyProperty.getForeignEntityId()), conditionType, keys);
@@ -397,7 +397,7 @@ public final class EntityConditions {
     return conditionSet;
   }
 
-  private static List<Entity.Key> getEntityKeys(final Object value) {
+  private static List<Entity.Key> getKeys(final Object value) {
     final List<Entity.Key> keys = new ArrayList<>();
     if (value instanceof Collection) {
       if (((Collection) value).isEmpty()) {
@@ -497,7 +497,6 @@ public final class EntityConditions {
       stream.writeObject(condition);
     }
 
-    @SuppressWarnings({"unchecked"})
     private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
       entityId = (String) stream.readObject();
       condition = (Condition<Property.ColumnProperty>) stream.readObject();
