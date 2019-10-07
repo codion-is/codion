@@ -101,8 +101,11 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
   @Override
   public final EntityConnectionProvider setDomainClassName(final String domainClassName) {
     synchronized (lock) {
+      if (Util.nullOrEmpty(domainClassName)) {
+        throw new IllegalArgumentException("Domain class name must be specified");
+      }
       disconnect();
-      this.domainClassName = Objects.requireNonNull(domainClassName);
+      this.domainClassName = domainClassName;
 
       return this;
     }
@@ -120,8 +123,11 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
   @Override
   public final EntityConnectionProvider setClientId(final UUID clientId) {
     synchronized (lock) {
+      if (clientId == null) {
+        throw new IllegalArgumentException("Client id must be specified");
+      }
       disconnect();
-      this.clientId = Objects.requireNonNull(clientId);
+      this.clientId = clientId;
 
       return this;
     }
