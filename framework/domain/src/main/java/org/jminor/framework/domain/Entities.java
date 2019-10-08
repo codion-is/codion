@@ -68,7 +68,7 @@ public final class Entities {
 
   /**
    * Returns all {@link Property.ColumnProperty}s which value is missing or the original value differs from the one in the comparison
-   * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison} 
+   * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
    * @param includeReadOnlyProperties if true then readOnly properties are included in the comparison
@@ -79,9 +79,9 @@ public final class Entities {
     //BLOB property values are not loaded, so we can't compare those
     return comparison.keySet().stream().filter(property ->
             property instanceof Property.ColumnProperty
-            && (!property.isReadOnly() || includeReadOnlyProperties)
-            && !property.isType(Types.BLOB)
-            && isValueMissingOrModified(entity, comparison, property.getPropertyId()))
+                    && (!property.isReadOnly() || includeReadOnlyProperties)
+                    && !property.isType(Types.BLOB)
+                    && isValueMissingOrModified(entity, comparison, property.getPropertyId()))
             .map(property -> (Property.ColumnProperty) property).collect(Collectors.toList());
   }
 
@@ -133,10 +133,10 @@ public final class Entities {
    * @param <T> the value type
    * @param propertyId the id of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the property value
-   * @return a Collection containing the values of the property with the given id from the given entities,
+   * @return a List containing the values of the property with the given id from the given entities,
    * null values are included
    */
-  public static <T> Collection<T> getValues(final String propertyId, final Collection<Entity> entities) {
+  public static <T> List<T> getValues(final String propertyId, final Collection<Entity> entities) {
     return getValues(propertyId, entities, true);
   }
 
@@ -146,11 +146,11 @@ public final class Entities {
    * @param propertyId the id of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the property value
    * @param includeNullValues if true then null values are included
-   * @return a Collection containing the values of the property with the given id from the given entities
+   * @return a List containing the values of the property with the given id from the given entities
    */
-  public static <T> Collection<T> getValues(final String propertyId, final Collection<Entity> entities,
-                                            final boolean includeNullValues) {
-    return collectValues(new ArrayList<T>(entities == null ? 0 : entities.size()), propertyId, entities, includeNullValues);
+  public static <T> List<T> getValues(final String propertyId, final Collection<Entity> entities,
+                                      final boolean includeNullValues) {
+    return (List<T>) collectValues(new ArrayList<T>(entities == null ? 0 : entities.size()), propertyId, entities, includeNullValues);
   }
 
   /**
@@ -159,9 +159,9 @@ public final class Entities {
    * @param <T> the value type
    * @param propertyId the id of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the values
-   * @return a Collection containing the distinct property values, excluding null values
+   * @return a List containing the distinct property values, excluding null values
    */
-  public static <T> Collection<T> getDistinctValues(final String propertyId, final Collection<Entity> entities) {
+  public static <T> List<T> getDistinctValues(final String propertyId, final Collection<Entity> entities) {
     return getDistinctValues(propertyId, entities, false);
   }
 
@@ -172,11 +172,11 @@ public final class Entities {
    * @param propertyId the id of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the values
    * @param includeNullValue if true then null is considered a value
-   * @return a Collection containing the distinct property values
+   * @return a List containing the distinct property values
    */
-  public static <T> Collection<T> getDistinctValues(final String propertyId, final Collection<Entity> entities,
+  public static <T> List<T> getDistinctValues(final String propertyId, final Collection<Entity> entities,
                                                     final boolean includeNullValue) {
-    return collectValues(new HashSet<T>(), propertyId, entities, includeNullValue);
+    return new ArrayList<>(collectValues(new HashSet<T>(), propertyId, entities, includeNullValue));
   }
 
   /**
