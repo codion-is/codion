@@ -9,10 +9,4 @@ JMinor is a minimalistic full-stack Java rich client CRUD application framework 
 * Clients are run with either a local JDBC connection or served by a featherweight RMI server.
 * Integrated JasperReports support.
 
-<<docs/introduction.adoc#[], Introduction>>
-
-<<docs/quickstart.adoc#[], Quickstart>>
-
-<<docs/project.adoc#[], Project>>
-
 <<docs/index.adoc#[], Documentation>>
