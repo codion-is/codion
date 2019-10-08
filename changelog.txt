@@ -5149,3 +5149,4 @@
   EntityApplicationPanel no longer uses getApplicationIdentifier() when saving the default username to user preferences (key could be too long)
   PreferencesUtil.setDefaultUsername() and getDefaultUsername() removed
   EntityTestUnit, special equals handling for BigDecimal property values, plus some minor refactoring and javadoc improvements
+  Entities.getValues() and getDistinctValues() now return List instead of Collection
