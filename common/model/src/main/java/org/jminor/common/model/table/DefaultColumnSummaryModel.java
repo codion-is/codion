@@ -8,10 +8,11 @@ import org.jminor.common.EventDataListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 /**
  * A default ColumnSummaryModel implementation.
@@ -71,11 +72,11 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
   @Override
   public final List<Summary> getAvailableSummaries() {
     if (valueProvider.isNumerical()) {
-      return Arrays.asList(ColumnSummary.NONE, ColumnSummary.SUM, ColumnSummary.AVERAGE, ColumnSummary.MINIMUM,
+      return asList(ColumnSummary.NONE, ColumnSummary.SUM, ColumnSummary.AVERAGE, ColumnSummary.MINIMUM,
               ColumnSummary.MAXIMUM, ColumnSummary.MINIMUM_MAXIMUM);
     }
 
-    return Collections.emptyList();
+    return emptyList();
   }
 
   /** {@inheritDoc} */

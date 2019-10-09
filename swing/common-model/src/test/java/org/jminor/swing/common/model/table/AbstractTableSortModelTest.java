@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AbstractTableSortModelTest {
@@ -25,12 +25,12 @@ public class AbstractTableSortModelTest {
     secondColumn.setIdentifier(1);
     final TableColumn thirdColumn = new TableColumn(2);
     thirdColumn.setIdentifier(2);
-    final TestTableSortModel model = new TestTableSortModel(Arrays.asList(firstColumn, secondColumn, thirdColumn));
+    final TestTableSortModel model = new TestTableSortModel(asList(firstColumn, secondColumn, thirdColumn));
 
     final Row firstRow = new Row(1, 2, null);
     final Row secondRow = new Row(1, 2, 5);
     final Row thirdRow = new Row(1, 3, 6);
-    final List<Row> items = Arrays.asList(firstRow, secondRow, thirdRow);
+    final List<Row> items = asList(firstRow, secondRow, thirdRow);
 
     model.sort(items);
     assertEquals(0, items.indexOf(firstRow));
@@ -79,7 +79,7 @@ public class AbstractTableSortModelTest {
   public void nonComparableColumnClass() {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final AbstractTableSortModel<ArrayList, Integer> model = new AbstractTableSortModel<ArrayList, Integer>(Collections.singletonList(column)) {
+    final AbstractTableSortModel<ArrayList, Integer> model = new AbstractTableSortModel<ArrayList, Integer>(singletonList(column)) {
       @Override
       public Class getColumnClass(final Integer columnIdentifier) {
         return ArrayList.class;
@@ -90,7 +90,7 @@ public class AbstractTableSortModelTest {
         return rowObject.toString();
       }
     };
-    final List<ArrayList> collections = Arrays.asList(new ArrayList(), new ArrayList());
+    final List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
     model.setSortingDirective(0, SortingDirective.DESCENDING, false);
     model.sort(collections);
   }

@@ -31,6 +31,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Collections.emptyList;
+
 /**
  * An {@link ObservableList} based on a {@link Entity}
  */
@@ -213,7 +215,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
       return result;
     }
 
-    return Collections.emptyList();
+    return emptyList();
   }
 
   /** {@inheritDoc} */

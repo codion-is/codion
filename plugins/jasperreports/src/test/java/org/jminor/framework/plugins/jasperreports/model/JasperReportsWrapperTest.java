@@ -16,9 +16,9 @@ import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -37,7 +37,7 @@ public class JasperReportsWrapperTest {
                     System.getProperty("jminor.db.initScript")))
             .setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
     final HashMap<String, Object> reportParameters = new HashMap<>();
-    reportParameters.put("DEPTNO", Arrays.asList(10, 20));
+    reportParameters.put("DEPTNO", asList(10, 20));
     final JasperPrint print = EntityReportUtil.fillReport(
             new JasperReportsWrapper(REPORT_PATH, reportParameters),
             connectionProvider).getResult();

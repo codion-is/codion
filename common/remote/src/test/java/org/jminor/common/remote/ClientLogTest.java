@@ -6,9 +6,9 @@ package org.jminor.common.remote;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.UUID;
 
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -18,10 +18,10 @@ public final class ClientLogTest {
   public void clientLog() {
     final UUID uuid = UUID.randomUUID();
     final LocalDateTime currentTime = LocalDateTime.now();
-    final ClientLog log = new ClientLog(uuid, currentTime, Collections.emptyList());
+    final ClientLog log = new ClientLog(uuid, currentTime, emptyList());
     assertEquals(uuid, log.getClientId());
     assertEquals(currentTime, log.getConnectionCreationDate());
-    assertEquals(log, new ClientLog(uuid, currentTime, Collections.emptyList()));
+    assertEquals(log, new ClientLog(uuid, currentTime, emptyList()));
     assertEquals(uuid.hashCode(), log.hashCode());
     assertTrue(log.getEntries().isEmpty());
   }

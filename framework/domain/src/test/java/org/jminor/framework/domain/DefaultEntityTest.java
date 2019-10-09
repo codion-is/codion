@@ -13,9 +13,9 @@ import java.io.IOException;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityTest {
@@ -43,7 +43,7 @@ public class DefaultEntityTest {
             LocalDateTime.now(), true, referencedEntityValue);
     entity.put(TestDomain.DETAIL_STRING, "a new String value");
     final File tmp = File.createTempFile("DefaultEntityTest", "serialization");
-    FileUtil.serializeToFile(Collections.singletonList(entity), tmp);
+    FileUtil.serializeToFile(singletonList(entity), tmp);
     final List<Object> fromFile = FileUtil.deserializeFromFile(tmp);
     assertEquals(1, fromFile.size());
     final Entity entityFromFile = (Entity) fromFile.get(0);
@@ -55,7 +55,7 @@ public class DefaultEntityTest {
 
     final Entity.Key key = entity.getKey();
     final File tmp2 = File.createTempFile("DefaultEntityTest", "serialization");
-    FileUtil.serializeToFile(Collections.singletonList(key), tmp2);
+    FileUtil.serializeToFile(singletonList(key), tmp2);
     final List<Object> keyFromFile = FileUtil.deserializeFromFile(tmp2);
     assertEquals(1, keyFromFile.size());
     assertEquals(key, keyFromFile.get(0));

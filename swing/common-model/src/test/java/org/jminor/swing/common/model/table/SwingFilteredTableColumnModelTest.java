@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SwingFilteredTableColumnModelTest {
@@ -75,7 +75,7 @@ public class SwingFilteredTableColumnModelTest {
     column3.setIdentifier(3);
 
     final SwingFilteredTableColumnModel<Integer> columnModel =
-            new SwingFilteredTableColumnModel<>(Arrays.asList(column0, column1, column2, column3), null);
+            new SwingFilteredTableColumnModel<>(asList(column0, column1, column2, column3), null);
 
     columnModel.setColumns(1, 3);
     assertTrue(columnModel.isColumnVisible(1));
@@ -118,6 +118,6 @@ public class SwingFilteredTableColumnModelTest {
     column.setIdentifier(0);
     final ColumnConditionModel<Integer> filterModel = new DefaultColumnConditionModel<>(0, String.class, "%");
 
-    return new SwingFilteredTableColumnModel<>(Collections.singletonList(column), Collections.singletonList(filterModel));
+    return new SwingFilteredTableColumnModel<>(singletonList(column), singletonList(filterModel));
   }
 }

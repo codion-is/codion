@@ -6,16 +6,16 @@ package org.jminor.common.remote;
 import org.junit.jupiter.api.Test;
 import sun.misc.ObjectInputFilter;
 
-import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class SerializationWhitelistTest {
 
   @Test
   public void test() {
-    final List<String> whitelistItems = Arrays.asList(
+    final List<String> whitelistItems = asList(
             "org.jminor.common.Value",
             "org.jminor.common.State*",
             "org.jminor.common.i18n.*"

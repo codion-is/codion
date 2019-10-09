@@ -7,9 +7,10 @@ import org.jminor.common.DateFormats;
 import org.jminor.common.Item;
 
 import java.sql.Types;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 public final class TestDomain extends Domain {
 
@@ -80,7 +81,7 @@ public final class TestDomain extends Domain {
 
   public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
 
-  private static final List<Item> ITEMS = Arrays.asList(new Item(0, "0"), new Item(1, "1"),
+  private static final List<Item> ITEMS = asList(new Item(0, "0"), new Item(1, "1"),
           new Item(2, "2"), new Item(3, "3"));
 
   void detail() {
@@ -171,7 +172,7 @@ public final class TestDomain extends Domain {
                     Properties.columnProperty(EMP_DEPARTMENT))
                     .setNullable(false),
             Properties.valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
-                    Arrays.asList(new Item("ANALYST"), new Item("CLERK"),
+                    asList(new Item("ANALYST"), new Item("CLERK"),
                             new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN"))),
             Properties.columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY)
                     .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),

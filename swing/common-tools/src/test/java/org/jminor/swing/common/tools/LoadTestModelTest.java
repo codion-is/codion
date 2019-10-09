@@ -8,9 +8,9 @@ import org.jminor.common.model.CancelException;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LoadTestModelTest {
@@ -169,7 +169,7 @@ public class LoadTestModelTest {
 
     public TestLoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor,
                              final int applicationBatchSize, final int warningTime) {
-      super(user, Arrays.asList(SCENARIO, SCENARIO_II), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
+      super(user, asList(SCENARIO, SCENARIO_II), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
     }
 
     @Override

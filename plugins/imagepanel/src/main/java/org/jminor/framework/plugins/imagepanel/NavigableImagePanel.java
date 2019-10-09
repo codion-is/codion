@@ -24,10 +24,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.ResourceBundle;
+
+import static java.util.Arrays.asList;
 
 /**
  * {@code NavigableImagePanel} is a lightweight container displaying
@@ -819,7 +820,7 @@ public class NavigableImagePanel extends JPanel {
     final Hashtable<String, Object> properties = new Hashtable<>();
     final String[] propertyNames = image.getPropertyNames();
     if (propertyNames != null && propertyNames.length > 0) {
-      Arrays.asList(propertyNames).forEach(propertyName -> properties.put(propertyName, image.getProperty(propertyName)));
+      asList(propertyNames).forEach(propertyName -> properties.put(propertyName, image.getProperty(propertyName)));
     }
 
     return properties;

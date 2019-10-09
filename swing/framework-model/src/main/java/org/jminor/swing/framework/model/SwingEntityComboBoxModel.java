@@ -20,13 +20,15 @@ import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 /**
  * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.
@@ -265,7 +267,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
         setFilterCondition(rejectAllCondition);
       }
       else {
-        setForeignKeyFilterEntities(foreignKeyPropertyId, selected == null ? Collections.emptyList() : Collections.singletonList(selected));
+        setForeignKeyFilterEntities(foreignKeyPropertyId, selected == null ? emptyList() : singletonList(selected));
       }
     });
     addSelectionListener(selected -> {

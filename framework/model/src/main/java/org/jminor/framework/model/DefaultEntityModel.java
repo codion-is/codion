@@ -25,6 +25,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+
 /**
  * A default EntityModel implementation.
  *
@@ -507,10 +510,10 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     }
     else {
       if (editModel.isEntityNew()) {
-        activeEntities = Collections.emptyList();
+        activeEntities = emptyList();
       }
       else {
-        activeEntities = Collections.singletonList(editModel.getEntityCopy());
+        activeEntities = singletonList(editModel.getEntityCopy());
       }
     }
     return activeEntities;

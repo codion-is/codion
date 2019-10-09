@@ -7,7 +7,6 @@ import org.jminor.common.TextUtil;
 import org.jminor.common.Util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,6 +17,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.
@@ -403,7 +405,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   @Override
   public Collection<String> getSearchPropertyIds() {
     if (searchPropertyIds == null) {
-      return Collections.emptyList();
+      return emptyList();
     }
     return Collections.unmodifiableCollection(searchPropertyIds);
   }
@@ -422,7 +424,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
       }
     }
 
-    this.searchPropertyIds = Arrays.asList(searchPropertyIds);
+    this.searchPropertyIds = asList(searchPropertyIds);
     return this;
   }
 
@@ -455,7 +457,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   public Collection<Property.DerivedProperty> getDerivedProperties(final String property) {
     final Collection<Property.DerivedProperty> derived = derivedProperties.get(property);
     if (derived == null) {
-      return Collections.emptyList();
+      return emptyList();
     }
     return derived;
   }

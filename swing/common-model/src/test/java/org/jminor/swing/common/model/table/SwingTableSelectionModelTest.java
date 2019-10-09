@@ -6,10 +6,10 @@ package org.jminor.swing.common.model.table;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.table.TableColumn;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SwingTableSelectionModelTest {
@@ -17,10 +17,10 @@ public class SwingTableSelectionModelTest {
   private final SwingTableSelectionModel<String> testModel;
 
   public SwingTableSelectionModelTest() {
-    final List<String> data = Arrays.asList("A", "B", "C");
+    final List<String> data = asList("A", "B", "C");
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final AbstractTableSortModel<String, Integer> sortModel = new AbstractTableSortModel<String, Integer>(Collections.singletonList(column)) {
+    final AbstractTableSortModel<String, Integer> sortModel = new AbstractTableSortModel<String, Integer>(singletonList(column)) {
       @Override
       public Class getColumnClass(final Integer columnIdentifier) {
         return String.class;

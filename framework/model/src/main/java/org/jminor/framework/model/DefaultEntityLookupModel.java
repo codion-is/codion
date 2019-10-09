@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static java.util.Collections.singletonList;
+
 /**
  * A default EntityLookupModel implementation
  */
@@ -153,7 +155,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /** {@inheritDoc} */
   @Override
   public final void setSelectedEntity(final Entity entity) {
-    setSelectedEntities(entity != null ? Collections.singletonList(entity) : null);
+    setSelectedEntities(entity != null ? singletonList(entity) : null);
   }
 
   /** {@inheritDoc} */

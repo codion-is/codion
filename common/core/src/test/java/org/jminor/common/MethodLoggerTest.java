@@ -10,9 +10,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MethodLoggerTest {
@@ -83,7 +83,7 @@ public class MethodLoggerTest {
     final MethodLogger.Entry entry2 = logger.getEntries().get(1);
     assertEquals("method2", entry2.getMethod());
 
-    assertTrue(logger.getEntries().containsAll(Arrays.asList(entry, entry2)));
+    assertTrue(logger.getEntries().containsAll(asList(entry, entry2)));
   }
 
   @Test

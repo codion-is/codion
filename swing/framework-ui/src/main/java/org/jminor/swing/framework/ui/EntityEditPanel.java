@@ -61,14 +61,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 /**
  * A UI component based on a {@link EntityEditModel}.
@@ -713,7 +714,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     }
     catch (final ReferentialIntegrityException e) {
       if (referentialIntegrityErrorHandling == EntityTablePanel.ReferentialIntegrityErrorHandling.DEPENDENCIES) {
-        EntityTablePanel.showDependenciesDialog(Collections.singletonList(editModel.getEntityCopy()),
+        EntityTablePanel.showDependenciesDialog(singletonList(editModel.getEntityCopy()),
                 getEditModel().getConnectionProvider(), this);
       }
       else {
@@ -2071,7 +2072,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
     if (controlCodes == null || controlCodes.length == 0) {
       return;
     }
-    final Collection<ControlCode> codes = Arrays.asList(controlCodes);
+    final Collection<ControlCode> codes = asList(controlCodes);
     if (!editModel.isReadOnly()) {
       setupEditControls(codes);
     }

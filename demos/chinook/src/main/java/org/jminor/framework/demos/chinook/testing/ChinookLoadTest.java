@@ -23,11 +23,11 @@ import org.jminor.swing.framework.tools.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.ChinookApplicationModel> {
@@ -206,7 +206,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
           };
 
   public ChinookLoadTest() {
-    super(UNIT_TEST_USER, Arrays.asList(VIEW_GENRE, VIEW_CUSTOMER_REPORT, VIEW_INVOICE, VIEW_ALBUM,
+    super(UNIT_TEST_USER, asList(VIEW_GENRE, VIEW_CUSTOMER_REPORT, VIEW_INVOICE, VIEW_ALBUM,
             UPDATE_TOTALS, INSERT_DELETE_ALBUM));
   }
 

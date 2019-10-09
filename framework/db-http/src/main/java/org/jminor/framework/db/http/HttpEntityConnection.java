@@ -45,15 +45,16 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.UUID;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 /**
  * A Http based {@link EntityConnection} implementation based on EntityService
@@ -385,7 +386,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public List<Entity> selectMany(final String entityId, final String propertyId, final Object... values)
           throws DatabaseException {
-    return selectMany(conditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, Arrays.asList(values)));
+    return selectMany(conditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, asList(values)));
   }
 
   /** {@inheritDoc} */
@@ -444,7 +445,7 @@ final class HttpEntityConnection implements EntityConnection {
     Objects.requireNonNull(blobPropertyId, "blobPropertyId");
     Objects.requireNonNull(blobData, "blobData");
     try {
-      handleResponse(execute(createHttpPost("writeBlob", Arrays.asList(primaryKey, blobPropertyId, blobData))));
+      handleResponse(execute(createHttpPost("writeBlob", asList(primaryKey, blobPropertyId, blobData))));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -461,7 +462,7 @@ final class HttpEntityConnection implements EntityConnection {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobPropertyId, "blobPropertyId");
     try {
-      return handleResponse(execute(createHttpPost("readBlob", Arrays.asList(primaryKey, blobPropertyId))));
+      return handleResponse(execute(createHttpPost("readBlob", asList(primaryKey, blobPropertyId))));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -489,7 +490,7 @@ final class HttpEntityConnection implements EntityConnection {
                                 final Object... arguments) throws Exception {
     return handleResponse(execute(createHttpPost(createURIBuilder(path)
                     .addParameter(operationIdParam, operationId),
-            Util.notNull(arguments) ? Arrays.asList(arguments) : Collections.emptyList())));
+            Util.notNull(arguments) ? asList(arguments) : emptyList())));
   }
 
   private CloseableHttpResponse execute(final HttpUriRequest operation) throws IOException {

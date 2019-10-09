@@ -99,7 +99,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -107,6 +106,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
+
+import static java.util.Collections.singletonList;
 
 /**
  * The EntityTablePanel is a UI class based on the EntityTableModel class.
@@ -962,7 +963,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
     final Control searchControl = Controls.control(() -> {
       lookupModel.refresh();
       if (lookupModel.getRowCount() > 0) {
-        lookupModel.getSelectionModel().setSelectedIndexes(Collections.singletonList(0));
+        lookupModel.getSelectionModel().setSelectedIndexes(singletonList(0));
         entityTablePanel.getJTable().requestFocusInWindow();
       }
       else {

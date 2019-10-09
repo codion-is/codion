@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class PropertyStoreTest {
@@ -41,19 +41,19 @@ public final class PropertyStoreTest {
     assertFalse(store.containsProperty(stringValue.getProperty()));
     assertNull(System.getProperty(stringValue.getProperty()));
 
-    final PropertyValue<List<String>> stringListValue = store.propertyListValue("stringlist.property", Collections.emptyList(), Objects::toString, Objects::toString);
+    final PropertyValue<List<String>> stringListValue = store.propertyListValue("stringlist.property", emptyList(), Objects::toString, Objects::toString);
     assertTrue(store.containsProperty(stringListValue.getProperty()));
 
     assertTrue(stringListValue.get().contains("value1"));
     assertTrue(stringListValue.get().contains("value2"));
     assertTrue(stringListValue.get().contains("value3"));
 
-    stringListValue.set(Collections.emptyList());
+    stringListValue.set(emptyList());
     assertEquals("", store.getProperty(stringListValue.getProperty()));
     stringListValue.set(null);
     assertFalse(store.containsProperty(stringListValue.getProperty()));
 
-    final PropertyValue<List<Integer>> integerListValue = store.propertyListValue("intlist.property", Collections.emptyList(), Integer::parseInt, Objects::toString);
+    final PropertyValue<List<Integer>> integerListValue = store.propertyListValue("intlist.property", emptyList(), Integer::parseInt, Objects::toString);
     assertTrue(store.containsProperty(integerListValue.getProperty()));
 
     assertTrue(integerListValue.get().contains(1));
@@ -86,10 +86,10 @@ public final class PropertyStoreTest {
     assertTrue(intPropertyValues.contains("0"));
     assertTrue(intPropertyValues.contains("44"));
 
-    stringListValue.set(Collections.emptyList());
+    stringListValue.set(emptyList());
 
     stringValue.set("newValue");
-    stringListValue.set(Arrays.asList("value4", "value5", "value6"));
+    stringListValue.set(asList("value4", "value5", "value6"));
     integerListValue.set(null);
     intValue1.set(24);
     intValue2.set(25);
@@ -135,7 +135,7 @@ public final class PropertyStoreTest {
     assertEquals(3.14, doubleValue.get());
     doubleValue.set(null);
     assertNull(doubleValue.get());
-    final PropertyValue<List<String>> listValue = store.propertyListValue("stringlist.property", Arrays.asList("value1", "value2"), Objects::toString, Objects::toString);
+    final PropertyValue<List<String>> listValue = store.propertyListValue("stringlist.property", asList("value1", "value2"), Objects::toString, Objects::toString);
     final List<String> strings = listValue.get();
     assertTrue(strings.contains("value1"));
     assertTrue(strings.contains("value2"));
@@ -149,8 +149,8 @@ public final class PropertyStoreTest {
 
     store.propertyValue("test", "test");
     assertThrows(IllegalArgumentException.class, () -> store.propertyValue("test", "test"));
-    store.propertyListValue("testList", Collections.emptyList(), Objects::toString, Objects::toString);
-    assertThrows(IllegalArgumentException.class, () -> store.propertyListValue("testList", Collections.emptyList(), Objects::toString, Objects::toString));
+    store.propertyListValue("testList", emptyList(), Objects::toString, Objects::toString);
+    assertThrows(IllegalArgumentException.class, () -> store.propertyListValue("testList", emptyList(), Objects::toString, Objects::toString));
 
     assertThrows(IllegalArgumentException.class, () -> store.setProperty("test", "bla"));
     assertThrows(IllegalArgumentException.class, () -> store.setProperty("testList", "bla;bla"));

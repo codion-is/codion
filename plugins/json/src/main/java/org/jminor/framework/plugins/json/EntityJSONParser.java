@@ -20,10 +20,11 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Collections.emptyList;
 
 /**
  * A class responsible for serializing Entity related objects to and from the JSON format.
@@ -238,7 +239,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
    */
   public List<Entity> deserializeEntities(final String jsonString) {
     if (Util.nullOrEmpty(jsonString)) {
-      return Collections.emptyList();
+      return emptyList();
     }
 
     final JSONArray jsonArray = new JSONArray(jsonString);
@@ -257,7 +258,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
    */
   public List<Entity.Key> deserializeKeys(final String jsonString) {
     if (Util.nullOrEmpty(jsonString)) {
-      return Collections.emptyList();
+      return emptyList();
     }
 
     final JSONArray jsonArray = new JSONArray(jsonString);

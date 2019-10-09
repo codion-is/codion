@@ -5,10 +5,10 @@ package org.jminor.common;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -76,7 +76,7 @@ public final class VersionTest {
     final Version version3 = new Version(1, 0, 1);
     final Version version4 = new Version(1, 1, 0);
 
-    final List<Version> versions = Arrays.asList(version3, version4, version0, version2, version1);
+    final List<Version> versions = asList(version3, version4, version0, version2, version1);
     Collections.sort(versions);
 
     assertEquals(0, versions.indexOf(version0));

@@ -6,13 +6,14 @@ package org.jminor.framework.domain;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntitiesTest {
@@ -48,22 +49,22 @@ public final class EntitiesTest {
   @Test
   public void isKeyModified() {
     assertFalse(Entities.isKeyModified(null));
-    assertFalse(Entities.isKeyModified(Collections.emptyList()));
+    assertFalse(Entities.isKeyModified(emptyList()));
 
     final Entity department = domain.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, 1);
     department.put(TestDomain.DEPARTMENT_NAME, "name");
     department.put(TestDomain.DEPARTMENT_LOCATION, "loc");
-    assertFalse(Entities.isKeyModified(Collections.singletonList(department)));
+    assertFalse(Entities.isKeyModified(singletonList(department)));
 
     department.put(TestDomain.DEPARTMENT_NAME, "new name");
-    assertFalse(Entities.isKeyModified(Collections.singletonList(department)));
+    assertFalse(Entities.isKeyModified(singletonList(department)));
 
     department.put(TestDomain.DEPARTMENT_ID, 2);
-    assertTrue(Entities.isKeyModified(Collections.singletonList(department)));
+    assertTrue(Entities.isKeyModified(singletonList(department)));
 
     department.revert(TestDomain.DEPARTMENT_ID);
-    assertFalse(Entities.isKeyModified(Collections.singletonList(department)));
+    assertFalse(Entities.isKeyModified(singletonList(department)));
   }
 
   @Test
@@ -134,7 +135,7 @@ public final class EntitiesTest {
     propertyValues = Entities.getValues(property.getPropertyId(), entityList);
     assertTrue(propertyValues.containsAll(values));
     assertTrue(Entities.getValues(TestDomain.DEPARTMENT_ID, null).isEmpty());
-    assertTrue(Entities.getValues(TestDomain.DEPARTMENT_ID, Collections.emptyList()).isEmpty());
+    assertTrue(Entities.getValues(TestDomain.DEPARTMENT_ID, emptyList()).isEmpty());
   }
 
   @Test
@@ -199,7 +200,7 @@ public final class EntitiesTest {
     dept2.put(TestDomain.DEPARTMENT_NAME, "name2");
     dept2.put(TestDomain.DEPARTMENT_LOCATION, "loc2");
 
-    final String[][] strings = Entities.getStringValueArray(domain.getColumnProperties(TestDomain.T_DEPARTMENT), Arrays.asList(dept1, dept2));
+    final String[][] strings = Entities.getStringValueArray(domain.getColumnProperties(TestDomain.T_DEPARTMENT), asList(dept1, dept2));
     assertEquals("1", strings[0][0]);
     assertEquals("name1", strings[0][1]);
     assertEquals("loc1", strings[0][2]);
@@ -219,7 +220,7 @@ public final class EntitiesTest {
     dept2.put(TestDomain.DEPARTMENT_LOCATION, "location2");
     dept2.put(TestDomain.DEPARTMENT_NAME, "name2");
 
-    final List<Entity> copies = Entities.copyEntities(Arrays.asList(dept1, dept2));
+    final List<Entity> copies = Entities.copyEntities(asList(dept1, dept2));
     assertNotSame(copies.get(0), dept1);
     assertTrue(copies.get(0).valuesEqual(dept1));
     assertNotSame(copies.get(1), dept2);
@@ -289,7 +290,7 @@ public final class EntitiesTest {
     final Entity three = domain.entity(TestDomain.T_DETAIL);
     final Entity four = domain.entity(TestDomain.T_EMP);
 
-    final Collection<Entity> entities = Arrays.asList(one, two, three, four);
+    final Collection<Entity> entities = asList(one, two, three, four);
     final Map<String, List<Entity>> map = Entities.mapToEntityId(entities);
 
     Collection<Entity> mapped = map.get(TestDomain.T_EMP);
@@ -335,7 +336,7 @@ public final class EntitiesTest {
     three.put(TestDomain.DETAIL_ID, 3L);
     three.put(TestDomain.DETAIL_STRING, "zz");
 
-    final List<Entity> entities = Arrays.asList(one, two, three);
+    final List<Entity> entities = asList(one, two, three);
 
     final Map<String, Object> values = new HashMap<>();
     values.put(TestDomain.DETAIL_STRING, "b");

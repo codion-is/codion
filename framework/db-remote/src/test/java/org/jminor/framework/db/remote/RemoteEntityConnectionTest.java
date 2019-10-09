@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class RemoteEntityConnectionTest {
@@ -26,11 +27,11 @@ public class RemoteEntityConnectionTest {
       final Class[] parameterTypes = localDbMethod.getParameterTypes();
       boolean found = false;
       for (final Method remoteDbMethod : remoteConnectionClass.getDeclaredMethods()) {
-        final Collection<Class> exceptionTypes = Arrays.asList(remoteDbMethod.getExceptionTypes());
+        final Collection<Class> exceptionTypes = asList(remoteDbMethod.getExceptionTypes());
         if (remoteDbMethod.getReturnType().equals(localDbMethod.getReturnType())
                 && remoteDbMethod.getName().equals(localDbMethod.getName())
                 && Arrays.equals(remoteDbMethod.getParameterTypes(), parameterTypes)
-                && exceptionTypes.containsAll(Arrays.asList(localDbMethod.getExceptionTypes()))) {
+                && exceptionTypes.containsAll(asList(localDbMethod.getExceptionTypes()))) {
           found = true;
         }
       }

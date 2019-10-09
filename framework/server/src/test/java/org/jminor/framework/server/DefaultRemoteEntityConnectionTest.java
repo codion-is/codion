@@ -28,10 +28,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -116,7 +116,7 @@ public class DefaultRemoteEntityConnectionTest {
 
       registry = LocateRegistry.getRegistry("localhost");
       registry.rebind(serviceName, adapter);
-      final Collection<String> boundNames = Arrays.asList(registry.list());
+      final Collection<String> boundNames = asList(registry.list());
       assertTrue(boundNames.contains(serviceName));
 
       final DefaultRemoteEntityConnection finalAdapter = adapter;

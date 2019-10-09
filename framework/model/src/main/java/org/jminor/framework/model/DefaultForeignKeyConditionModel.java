@@ -10,7 +10,9 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
 import java.util.Collection;
-import java.util.Collections;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 /**
  * A default ForeignKeyConditionModel implementation.
@@ -73,10 +75,10 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
   public Collection<Entity> getConditionEntities() {
     final Object upperBound = getUpperBound();
     if (upperBound instanceof Entity) {
-      return Collections.singletonList((Entity) upperBound);
+      return singletonList((Entity) upperBound);
     }
     //noinspection unchecked
-    return upperBound == null ? Collections.emptyList() : (Collection<Entity>) upperBound;
+    return upperBound == null ? emptyList() : (Collection<Entity>) upperBound;
   }
 
   /** {@inheritDoc} */
@@ -87,7 +89,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
       return entityConditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), (Collection) upperBound);
     }
 
-    return entityConditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), Collections.singletonList(upperBound));
+    return entityConditions.foreignKeyCondition(getColumnIdentifier(), getConditionType(), singletonList(upperBound));
   }
 
   /** {@inheritDoc} */
@@ -134,7 +136,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
       if (!isUpdatingModel()) {
         final Object upperBound = getUpperBound();
         if (upperBound instanceof Entity) {
-          entityLookupModel.setSelectedEntities(Collections.singletonList((Entity) upperBound));
+          entityLookupModel.setSelectedEntities(singletonList((Entity) upperBound));
         }
         else {
           entityLookupModel.setSelectedEntities((Collection<Entity>) upperBound);

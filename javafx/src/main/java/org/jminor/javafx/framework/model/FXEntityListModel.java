@@ -29,9 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,6 +39,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 /**
  * A JavaFX implementation of {@link EntityTableModel}.
@@ -409,7 +410,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final void setColumns(final String... propertyIds) {
-    final List<String> propertyIdList = Arrays.asList(propertyIds);
+    final List<String> propertyIdList = asList(propertyIds);
     new ArrayList<>(columns).forEach(column -> {
       if (!propertyIdList.contains(((PropertyTableColumn) column).getProperty().getPropertyId())) {
         columns.remove(column);
@@ -451,7 +452,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   @Override
   protected List<Entity> performQuery() {
     if (!conditionModel.isEnabled() && queryConditionRequiredState.get()) {
-      return Collections.emptyList();
+      return emptyList();
     }
 
     try {

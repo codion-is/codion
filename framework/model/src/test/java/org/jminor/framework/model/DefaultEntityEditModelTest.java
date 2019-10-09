@@ -25,9 +25,9 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultEntityEditModelTest {
@@ -80,7 +80,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.refreshEntity();
       employeeEditModel.setEntity(employee);
       employee.put(TestDomain.EMP_NAME, "NOONE");
-      connection.update(Collections.singletonList(employee));
+      connection.update(singletonList(employee));
       employeeEditModel.refreshEntity();
       assertEquals("NOONE", employeeEditModel.get(TestDomain.EMP_NAME));
     }
@@ -303,7 +303,7 @@ public final class DefaultEntityEditModelTest {
       tmpDept.put(TestDomain.DEPARTMENT_LOCATION, "Limbo");
       tmpDept.put(TestDomain.DEPARTMENT_NAME, "Judgment");
 
-      final Entity department = employeeEditModel.getConnectionProvider().getConnection().selectSingle(employeeEditModel.getConnectionProvider().getConnection().insert(Collections.singletonList(tmpDept)).get(0));
+      final Entity department = employeeEditModel.getConnectionProvider().getConnection().selectSingle(employeeEditModel.getConnectionProvider().getConnection().insert(singletonList(tmpDept)).get(0));
 
       employeeEditModel.put(TestDomain.EMP_DEPARTMENT_FK, department);
 
@@ -342,7 +342,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER"));
       employeeEditModel.put(TestDomain.EMP_NAME, "BJORN");
-      final List<Entity> toUpdate = Collections.singletonList(employeeEditModel.getEntityCopy());
+      final List<Entity> toUpdate = singletonList(employeeEditModel.getEntityCopy());
       final EventDataListener<EntityEditModel.UpdateEvent> listener = data ->
               assertEquals(toUpdate, new ArrayList<>(data.getUpdatedEntities().values()));
       employeeEditModel.addAfterUpdateListener(listener);
@@ -367,7 +367,7 @@ public final class DefaultEntityEditModelTest {
       assertTrue(employeeEditModel.delete(new ArrayList<>()).isEmpty());
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER"));
-      final List<Entity> toDelete = Collections.singletonList(employeeEditModel.getEntityCopy());
+      final List<Entity> toDelete = singletonList(employeeEditModel.getEntityCopy());
       employeeEditModel.addAfterDeleteListener(data -> assertEquals(toDelete, data.getDeletedEntities()));
       employeeEditModel.setDeleteAllowed(false);
       assertFalse(employeeEditModel.isDeleteAllowed());

@@ -15,10 +15,12 @@ import org.jminor.common.model.table.SelectionModel;
 
 import javax.swing.DefaultListSelectionModel;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 /**
  * A default table selection model implementation
@@ -121,7 +123,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   @Override
   public List<Integer> getSelectedIndexes() {
     if (isSelectionEmpty()) {
-      return Collections.emptyList();
+      return emptyList();
     }
 
     return IntStream.rangeClosed(getMinSelectionIndex(), getMaxSelectionIndex())
@@ -163,7 +165,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   /** {@inheritDoc} */
   @Override
   public void setSelectedItem(final R item) {
-    setSelectedItems(Collections.singletonList(item));
+    setSelectedItems(singletonList(item));
   }
 
   /** {@inheritDoc} */
@@ -178,7 +180,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   /** {@inheritDoc} */
   @Override
   public void addSelectedItem(final R item) {
-    addSelectedItems(Collections.singletonList(item));
+    addSelectedItems(singletonList(item));
   }
 
   /** {@inheritDoc} */
@@ -191,7 +193,7 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   /** {@inheritDoc} */
   @Override
   public void removeSelectedItem(final R item) {
-    removeSelectedItems(Collections.singletonList(item));
+    removeSelectedItems(singletonList(item));
   }
 
   /** {@inheritDoc} */

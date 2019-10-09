@@ -72,11 +72,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 /**
  * A factory class for UI related things.
@@ -224,7 +226,7 @@ public final class FXUiUtil {
       }
       else if (control instanceof EntityLookupField) {
         final Value<Collection<Entity>> entityValue = PropertyValues.lookupValue(((EntityLookupField) control).getModel());
-        entityValue.set(defaultValue == null ? Collections.emptyList() : Collections.singletonList((Entity) defaultValue));
+        entityValue.set(defaultValue == null ? emptyList() : singletonList((Entity) defaultValue));
         return entityValue;
       }
     }

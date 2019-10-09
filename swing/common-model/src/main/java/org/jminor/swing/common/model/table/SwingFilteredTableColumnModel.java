@@ -16,13 +16,15 @@ import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import static java.util.Arrays.asList;
+import static java.util.Arrays.fill;
 
 /**
  * A TableColumnModel handling hidden columns
@@ -65,7 +67,7 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
     }
     this.columns = Collections.unmodifiableList(columns);
     this.columnIndexCache = new int[columns.size()];
-    Arrays.fill(this.columnIndexCache, -1);
+    fill(this.columnIndexCache, -1);
     for (final TableColumn column : columns) {
       addColumn(column);
     }
@@ -116,7 +118,7 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
   @Override
   public final void setColumns(final C... columnIdentifiers) {
     if (columnIdentifiers != null) {
-      final List<C> identifiers = Arrays.asList(columnIdentifiers);
+      final List<C> identifiers = asList(columnIdentifiers);
       int columnIndex = 0;
       for (final C identifier : identifiers) {
         setColumnVisible(identifier, true);
@@ -234,15 +236,15 @@ public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel im
     addColumnModelListener(new TableColumnModelListener() {
       @Override
       public void columnAdded(final TableColumnModelEvent e) {
-        Arrays.fill(columnIndexCache, -1);
+        fill(columnIndexCache, -1);
       }
       @Override
       public void columnRemoved(final TableColumnModelEvent e) {
-        Arrays.fill(columnIndexCache, -1);
+        fill(columnIndexCache, -1);
       }
       @Override
       public void columnMoved(final TableColumnModelEvent e) {
-        Arrays.fill(columnIndexCache, -1);
+        fill(columnIndexCache, -1);
       }
       @Override
       public void columnMarginChanged(final ChangeEvent e) {/*Not required*/}

@@ -15,10 +15,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+
+import static java.util.Collections.singletonList;
 
 /**
  * A Database implementation based on the H2 database.
@@ -105,7 +106,7 @@ public final class H2Database extends AbstractDatabase {
     super(Type.H2, DRIVER_CLASS_NAME, Objects.requireNonNull(databaseName, "databaseName"),
             null, null, true);
     this.embeddedInMemory = embeddedInMemory;
-    initializeDatabase(initScript == null ? null : Collections.singletonList(initScript));
+    initializeDatabase(initScript == null ? null : singletonList(initScript));
   }
 
   /** {@inheritDoc} */

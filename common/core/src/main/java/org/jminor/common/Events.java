@@ -5,9 +5,10 @@ package org.jminor.common;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Objects;
+
+import static java.util.Collections.emptyList;
 
 /**
  * A factory class for Event objects.
@@ -144,7 +145,7 @@ public final class Events {
     private Collection<EventListener> getEventListeners() {
       synchronized (lock) {
         if (listeners == null) {
-          return Collections.emptyList();
+          return emptyList();
         }
 
         return new ArrayList<>(listeners);
@@ -154,7 +155,7 @@ public final class Events {
     private Collection<EventDataListener<T>> getEventDataListeners() {
       synchronized (lock) {
         if (dataListeners == null) {
-          return Collections.emptyList();
+          return emptyList();
         }
 
         return new ArrayList<>(dataListeners);

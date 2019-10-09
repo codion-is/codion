@@ -52,10 +52,11 @@ import java.net.URISyntaxException;
 import java.rmi.registry.Registry;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityServletServerTest {
@@ -219,7 +220,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("insert");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.singletonList(department))));
+    httpPost.setEntity(new ByteArrayEntity(Util.serialize(singletonList(department))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     final List<Entity.Key> queryKeys = deserializeResponse(response);
@@ -240,7 +241,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("insert");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.singletonList(department))));
+    httpPost.setEntity(new ByteArrayEntity(Util.serialize(singletonList(department))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     final List<Entity.Key> keys = deserializeResponse(response);
@@ -255,7 +256,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("update");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.singletonList(department))));
+    httpPost.setEntity(new ByteArrayEntity(Util.serialize(singletonList(department))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryEntities = deserializeResponse(response);
@@ -300,7 +301,7 @@ public class EntityServletServerTest {
     uriBuilder.setPath("function")
             .addParameter("functionId", TestDomain.FUNCTION_ID);
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.emptyList())));
+    httpPost.setEntity(new ByteArrayEntity(Util.serialize(emptyList())));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
@@ -309,7 +310,7 @@ public class EntityServletServerTest {
     uriBuilder.setPath("procedure")
             .addParameter("procedureId", TestDomain.PROCEDURE_ID);
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.emptyList())));
+    httpPost.setEntity(new ByteArrayEntity(Util.serialize(emptyList())));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
@@ -325,7 +326,7 @@ public class EntityServletServerTest {
     uriBuilder.setPath("procedure")
             .addParameter("procedureId", TestDomain.PROCEDURE_ID);
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Util.serialize(Collections.emptyList())));
+    httpPost.setEntity(new ByteArrayEntity(Util.serialize(emptyList())));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(401, response.getStatusLine().getStatusCode());
     response.close();

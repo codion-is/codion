@@ -25,6 +25,8 @@ import java.util.Properties;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
+
 /**
  * Provides configuration values which sync with a central configuration store as well as system properties,
  * which can be written to file.
@@ -173,7 +175,7 @@ public final class PropertyStore {
     }
 
     final DefaultPropertyValue<List<V>> value = new DefaultPropertyValue<>(property, defaultValue,
-            stringValue -> stringValue == null ? Collections.emptyList() :
+            stringValue -> stringValue == null ? emptyList() :
                     Arrays.stream(stringValue.split(VALUE_SEPARATOR)).map(decoder).collect(Collectors.toList()),
             valueList -> valueList.stream().map(encoder).collect(Collectors.joining(VALUE_SEPARATOR)));
     propertyValues.put(property, value);

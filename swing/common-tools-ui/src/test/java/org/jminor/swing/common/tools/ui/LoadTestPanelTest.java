@@ -9,8 +9,7 @@ import org.jminor.swing.common.tools.LoadTestModel;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -33,7 +32,7 @@ public class LoadTestPanelTest {
 
     public TestLoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor,
                              final int applicationBatchSize, final int warningTime) {
-      super(user, Collections.emptyList(), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
+      super(user, emptyList(), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
     }
 
     @Override

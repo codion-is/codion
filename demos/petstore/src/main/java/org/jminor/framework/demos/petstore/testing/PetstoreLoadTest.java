@@ -14,7 +14,8 @@ import org.jminor.swing.framework.tools.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import java.util.Collections;
+
+import static java.util.Collections.singletonList;
 
 public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppPanel.PetstoreApplicationModel> {
 
@@ -23,7 +24,7 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppPanel
           System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   public PetstoreLoadTest() {
-    super(UNIT_TEST_USER, Collections.singletonList(new AbstractUsageScenario<PetstoreAppPanel.PetstoreApplicationModel>("selectRecords") {
+    super(UNIT_TEST_USER, singletonList(new AbstractUsageScenario<PetstoreAppPanel.PetstoreApplicationModel>("selectRecords") {
       @Override
       protected void performScenario(final PetstoreAppPanel.PetstoreApplicationModel application) {
         final SwingEntityModel categoryModel = application.getEntityModels().iterator().next();

@@ -22,7 +22,6 @@ import javax.swing.table.TableColumn;
 import java.math.BigDecimal;
 import java.text.Format;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -33,6 +32,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
+
+import static java.util.Arrays.asList;
 
 /**
  * A TableModel implementation that supports filtering, searching and sorting.
@@ -574,7 +575,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     sortModel.addSortingStateChangedListener(this::sortContents);
     addTableModelListener(e -> {
       if (e.getType() == TableModelEvent.DELETE) {
-        rowsDeletedEvent.eventOccurred(Arrays.asList(e.getFirstRow(), e.getLastRow()));
+        rowsDeletedEvent.eventOccurred(asList(e.getFirstRow(), e.getLastRow()));
       }
     });
   }

@@ -71,10 +71,11 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+
+import static java.util.Collections.emptyList;
 
 /**
  * A static utility class concerned with UI related tasks.
@@ -179,7 +180,7 @@ public final class EntityUiUtil {
       return lookupModel.getSelectedEntities();
     }
 
-    return Collections.emptyList();
+    return emptyList();
   }
 
   /**

@@ -17,8 +17,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.emptyList;
 
 /**
  * A load test implementation for testing database queries.
@@ -146,7 +147,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
      * @return a list of parameters for the next query run
      */
     protected List<Object> getParameters() {
-      return Collections.emptyList();
+      return emptyList();
     }
 
     private void setStatementParameters(final PreparedStatement statement) throws SQLException {

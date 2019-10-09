@@ -8,11 +8,11 @@ import org.jminor.framework.domain.Domain;
 
 import java.awt.Color;
 import java.sql.Types;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import static java.util.Arrays.asList;
 import static org.jminor.framework.domain.Properties.*;
 
 /**
@@ -57,7 +57,7 @@ public final class EmpDept extends Domain {
   /**Property identifier for the denormalized department location property*/
   public static final String EMPLOYEE_DEPARTMENT_LOCATION = "location";
 
-  public static final List<Item> JOB_VALUES = Arrays.asList(
+  public static final List<Item> JOB_VALUES = asList(
           new Item("ANALYST"), new Item("CLERK"), new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN"));
 
   /** Initializes this domain model */
