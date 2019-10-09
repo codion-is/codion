@@ -17,12 +17,13 @@ import java.sql.Types;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DomainTest {
@@ -84,7 +85,7 @@ public class DomainTest {
   @Test
   public void sortProperties() {
     final List<Property> properties = Properties.sort(domain.getProperties(TestDomain.T_EMP,
-            Arrays.asList(TestDomain.EMP_HIREDATE, TestDomain.EMP_COMMISSION,
+            asList(TestDomain.EMP_HIREDATE, TestDomain.EMP_COMMISSION,
                     TestDomain.EMP_SALARY, TestDomain.EMP_JOB)));
     assertEquals(TestDomain.EMP_COMMISSION, properties.get(0).getPropertyId());
     assertEquals(TestDomain.EMP_HIREDATE, properties.get(1).getPropertyId());
@@ -112,7 +113,7 @@ public class DomainTest {
     assertTrue(properties.contains(domain.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID)));
     assertTrue(properties.contains(domain.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
 
-    final Collection<Property> noProperties = domain.getProperties(TestDomain.T_DEPARTMENT, Collections.emptyList());
+    final Collection<Property> noProperties = domain.getProperties(TestDomain.T_DEPARTMENT, emptyList());
     assertEquals(0, noProperties.size());
   }
 
@@ -198,7 +199,7 @@ public class DomainTest {
     final Property id = domain.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID);
     final Property location = domain.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_LOCATION);
     final Property name = domain.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
-    final List<Property> properties = domain.getProperties(TestDomain.T_DEPARTMENT, Arrays.asList(TestDomain.DEPARTMENT_LOCATION, TestDomain.DEPARTMENT_NAME));
+    final List<Property> properties = domain.getProperties(TestDomain.T_DEPARTMENT, asList(TestDomain.DEPARTMENT_LOCATION, TestDomain.DEPARTMENT_NAME));
     assertEquals(2, properties.size());
     assertFalse(properties.contains(id));
     assertTrue(properties.contains(location));
@@ -345,7 +346,7 @@ public class DomainTest {
     emp.put(TestDomain.EMP_HIREDATE, LocalDateTime.now());
     emp.put(TestDomain.EMP_SALARY, 1200.0);
     final Domain.Validator validator = new Domain.Validator();
-    assertDoesNotThrow(() -> validator.validate(Collections.singletonList(emp)));
+    assertDoesNotThrow(() -> validator.validate(singletonList(emp)));
     emp.put(TestDomain.EMP_NAME, "LooooongName");
     assertThrows(LengthValidationException.class, () -> validator.validate(emp));
   }
@@ -359,7 +360,7 @@ public class DomainTest {
     emp.put(TestDomain.EMP_SALARY, 1200d);
     emp.put(TestDomain.EMP_COMMISSION, 300d);
     final Domain.Validator validator = new Domain.Validator();
-    assertDoesNotThrow(() -> validator.validate(Collections.singletonList(emp)));
+    assertDoesNotThrow(() -> validator.validate(singletonList(emp)));
     emp.put(TestDomain.EMP_COMMISSION, 10d);
     assertThrows(RangeValidationException.class, () -> validator.validate(emp));
     emp.put(TestDomain.EMP_COMMISSION, 2100d);

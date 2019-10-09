@@ -17,10 +17,11 @@ import org.jminor.common.db.valuemap.ValueMap;
 import org.jminor.common.db.valuemap.exception.ValidationException;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import static java.util.Collections.singletonList;
 
 /**
  * A default ValueMapEditModel implementation, handling value change events and validation
@@ -135,7 +136,7 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
   /** {@inheritDoc} */
   @Override
   public final void validate(final ValueMap<K, V> valueMap) throws ValidationException {
-    validate(Collections.singletonList(valueMap));
+    validate(singletonList(valueMap));
   }
 
   /** {@inheritDoc} */

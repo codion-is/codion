@@ -16,10 +16,11 @@ import org.jminor.swing.common.tools.ui.LoadTestPanel;
 
 import javax.swing.UIManager;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnectionProvider> {
 
@@ -28,7 +29,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
           System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   public EmpDeptServletLoadTest(final User user) {
-    super(user, Arrays.asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()),
+    super(user, asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()),
             5000, 2, 10, 500);
     setWeight(UpdateLocation.NAME, 2);
     setWeight(SelectDepartment.NAME, 4);
@@ -71,7 +72,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
         final List<Entity> departments = client.getConnection().selectMany(conditions.selectCondition(EmpDept.T_DEPARTMENT));
         final Entity entity = departments.get(new Random().nextInt(departments.size()));
         entity.put(EmpDept.DEPARTMENT_LOCATION, TextUtil.createRandomString(10, 13));
-        client.getConnection().update(Collections.singletonList(entity));
+        client.getConnection().update(singletonList(entity));
       }
       catch (final Exception e) {
         throw new ScenarioException(e);
@@ -135,7 +136,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
         department.put(EmpDept.DEPARTMENT_NAME, TextUtil.createRandomString(4, 8));
         department.put(EmpDept.DEPARTMENT_LOCATION, TextUtil.createRandomString(5, 10));
 
-        client.getConnection().insert(Collections.singletonList(department));
+        client.getConnection().insert(singletonList(department));
       }
       catch (final Exception e) {
         throw new ScenarioException(e);
@@ -166,7 +167,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
         employee.put(EmpDept.EMPLOYEE_HIREDATE, LocalDate.now());
         employee.put(EmpDept.EMPLOYEE_COMMISSION, random.nextDouble() * 500);
 
-        client.getConnection().insert(Collections.singletonList(employee));
+        client.getConnection().insert(singletonList(employee));
       }
       catch (final Exception e) {
         throw new ScenarioException(e);

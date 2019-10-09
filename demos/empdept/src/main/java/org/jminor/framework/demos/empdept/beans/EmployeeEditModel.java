@@ -10,8 +10,9 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
-import java.util.Arrays;
 import java.util.Objects;
+
+import static java.util.Arrays.asList;
 
 public final class EmployeeEditModel extends SwingEntityEditModel {
 
@@ -34,7 +35,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
       //Only select the president and managers from the database
       comboBoxModel.setSelectConditionProvider(() ->
               getConnectionProvider().getConditions().propertyCondition(EmpDept.T_EMPLOYEE,
-                      EmpDept.EMPLOYEE_JOB, Condition.Type.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
+                      EmpDept.EMPLOYEE_JOB, Condition.Type.LIKE, asList("MANAGER", "PRESIDENT")));
     }
 
     return comboBoxModel;

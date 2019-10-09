@@ -20,10 +20,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testfx.api.FxToolkit;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ObservableEntityListTest {
@@ -48,7 +48,7 @@ public final class ObservableEntityListTest {
     list.refresh();
     assertEquals(4, list.size());
     list.setSelectCondition(new EntityConditions(DOMAIN).propertyCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME,
-            Condition.Type.NOT_LIKE, Arrays.asList("SALES", "OPERATIONS")));
+            Condition.Type.NOT_LIKE, asList("SALES", "OPERATIONS")));
     list.refresh();
     assertEquals(2, list.size());
   }
@@ -108,7 +108,7 @@ public final class ObservableEntityListTest {
     assertTrue(list.getSingleSelectionObserver().get());
     assertFalse(list.getMultipleSelectionObserver().get());
 
-    list.getSelectionModel().setSelectedItems(Arrays.asList(sales, operations));
+    list.getSelectionModel().setSelectedItems(asList(sales, operations));
     assertFalse(list.getSelectionEmptyObserver().get());
     assertFalse(list.getSingleSelectionObserver().get());
     assertTrue(list.getMultipleSelectionObserver().get());

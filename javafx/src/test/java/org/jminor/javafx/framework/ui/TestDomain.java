@@ -8,7 +8,8 @@ import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Properties;
 
 import java.sql.Types;
-import java.util.Arrays;
+
+import static java.util.Arrays.asList;
 
 public final class TestDomain extends Domain {
 
@@ -60,7 +61,7 @@ public final class TestDomain extends Domain {
                     Properties.columnProperty(EMP_DEPARTMENT))
                     .setNullable(false),
             Properties.valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
-                    Arrays.asList(new Item("ANALYST"), new Item("CLERK"), new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN"))),
+                    asList(new Item("ANALYST"), new Item("CLERK"), new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN"))),
             Properties.columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY)
                     .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
             Properties.columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)

@@ -16,8 +16,8 @@ import org.junit.jupiter.api.Test;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PropertyConditionTest {
@@ -58,20 +58,20 @@ public class PropertyConditionTest {
     //string, between
     value = "min";
     String value2 = "max";
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.WITHIN_RANGE, Arrays.asList(value, value2));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.WITHIN_RANGE, asList(value, value2));
     assertEquals("(colName >= ? and colName <= ?)", testCrit.getWhereClause());
 
     //string, outside
     value = "min";
     value2 = "max";
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.OUTSIDE_RANGE, Arrays.asList(value, value2));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.OUTSIDE_RANGE, asList(value, value2));
     assertEquals("(colName <= ? or colName >= ?)", testCrit.getWhereClause());
 
     //string, in
     value = "min";
     value2 = "max";
     String value3 = "bla";
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.LIKE, Arrays.asList(value, value2, value3));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.LIKE, asList(value, value2, value3));
     assertEquals("(colName in (?, ?, ?))", testCrit.getWhereClause());
 
     //
@@ -108,20 +108,20 @@ public class PropertyConditionTest {
     //string, between
     value = "min";
     value2 = "max";
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.WITHIN_RANGE, false, Arrays.asList(value, value2));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.WITHIN_RANGE, false, asList(value, value2));
     assertEquals("(upper(colName) >= upper(?) and upper(colName) <= upper(?))", testCrit.getWhereClause());
 
     //string, outside
     value = "min";
     value2 = "max";
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.OUTSIDE_RANGE, false, Arrays.asList(value, value2));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.OUTSIDE_RANGE, false, asList(value, value2));
     assertEquals("(upper(colName) <= upper(?) or upper(colName) >= upper(?))", testCrit.getWhereClause());
 
     //string, in
     value = "min";
     value2 = "max";
     value3 = "bla";
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.LIKE, false, Arrays.asList(value, value2, value3));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.LIKE, false, asList(value, value2, value3));
     assertEquals("(upper(colName) in (upper(?), upper(?), upper(?)))", testCrit.getWhereClause());
   }
 
@@ -141,15 +141,15 @@ public class PropertyConditionTest {
     assertEquals("colName <> ?", testCrit.getWhereClause());
 
     //between
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.WITHIN_RANGE, Arrays.asList(2, 4));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.WITHIN_RANGE, asList(2, 4));
     assertEquals("(colName >= ? and colName <= ?)", testCrit.getWhereClause());
 
     //outside
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.OUTSIDE_RANGE, Arrays.asList(2, 4));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.OUTSIDE_RANGE, asList(2, 4));
     assertEquals("(colName <= ? or colName >= ?)", testCrit.getWhereClause());
 
     //in
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.LIKE, Arrays.asList(2, 3, 4));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.LIKE, asList(2, 3, 4));
     assertEquals("(colName in (?, ?, ?))", testCrit.getWhereClause());
   }
 
@@ -169,15 +169,15 @@ public class PropertyConditionTest {
     assertEquals("colName <> ?", testCrit.getWhereClause());
 
     //between
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.WITHIN_RANGE, Arrays.asList(2.2, 4.2));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.WITHIN_RANGE, asList(2.2, 4.2));
     assertEquals("(colName >= ? and colName <= ?)", testCrit.getWhereClause());
 
     //outside
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.OUTSIDE_RANGE, Arrays.asList(2.2, 4.2));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.OUTSIDE_RANGE, asList(2.2, 4.2));
     assertEquals("(colName <= ? or colName >= ?)", testCrit.getWhereClause());
 
     //in
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.LIKE, Arrays.asList(2.2, 3.2, 4.2));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.LIKE, asList(2.2, 3.2, 4.2));
     assertEquals("(colName in (?, ?, ?))", testCrit.getWhereClause());
   }
 
@@ -196,15 +196,15 @@ public class PropertyConditionTest {
     assertEquals("colName <> ?", testCrit.getWhereClause());
 
     //between
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.WITHIN_RANGE, Arrays.asList('a', 'd'));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.WITHIN_RANGE, asList('a', 'd'));
     assertEquals("(colName >= ? and colName <= ?)", testCrit.getWhereClause());
 
     //outside
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.OUTSIDE_RANGE, Arrays.asList('d', 'f'));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.OUTSIDE_RANGE, asList('d', 'f'));
     assertEquals("(colName <= ? or colName >= ?)", testCrit.getWhereClause());
 
     //in
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.LIKE, Arrays.asList('a', 'b', 'c'));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.LIKE, asList('a', 'b', 'c'));
     assertEquals("(colName in (?, ?, ?))", testCrit.getWhereClause());
   }
 
@@ -249,18 +249,18 @@ public class PropertyConditionTest {
 
     //string, between
     final LocalDate value2 = LocalDate.parse("10-09-2001", dateFormat);
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.WITHIN_RANGE, Arrays.asList(value, value2));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.WITHIN_RANGE, asList(value, value2));
     requiredValue = "(colName >= ? and colName <= ?)";
     assertEquals(requiredValue, testCrit.getWhereClause());
 
     //string, outside
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.OUTSIDE_RANGE, Arrays.asList(value, value2));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.OUTSIDE_RANGE, asList(value, value2));
     requiredValue = "(colName <= ? or colName >= ?)";
     assertEquals(requiredValue, testCrit.getWhereClause());
 
     //string, in
     final LocalDate value3 = LocalDate.parse("12-10-2001", dateFormat);
-    testCrit = entityConditions.propertyCondition(property, Condition.Type.LIKE, Arrays.asList(value, value2, value3));
+    testCrit = entityConditions.propertyCondition(property, Condition.Type.LIKE, asList(value, value2, value3));
     requiredValue = "(colName in (?, ?, ?))";
     assertEquals(requiredValue, testCrit.getWhereClause());
   }
@@ -280,7 +280,7 @@ public class PropertyConditionTest {
     assertEquals("((colName1 like ? or colName2 <= ?) and colName3 <> ?)", set2.getWhereClause());
 
     final Property.ColumnProperty property4 = Properties.columnProperty("colName4", Types.CHAR);
-    final Condition<Property.ColumnProperty> condition4 = entityConditions.propertyCondition(property4, Condition.Type.LIKE, Arrays.asList('a', 'b', 'c'));
+    final Condition<Property.ColumnProperty> condition4 = entityConditions.propertyCondition(property4, Condition.Type.LIKE, asList('a', 'b', 'c'));
     final Condition.Set set3 = Conditions.conditionSet(Conjunction.OR, set2, condition4);
     assertEquals("(((colName1 like ? or colName2 <= ?) and colName3 <> ?)"
             + " or (colName4 in (?, ?, ?)))", set3.getWhereClause());

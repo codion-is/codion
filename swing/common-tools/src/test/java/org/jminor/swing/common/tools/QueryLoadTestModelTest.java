@@ -10,10 +10,10 @@ import org.jminor.common.db.exception.DatabaseException;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class QueryLoadTestModelTest {
@@ -26,7 +26,7 @@ public final class QueryLoadTestModelTest {
           new QueryLoadTestModel.QueryScenario("selectEmployees", "select * from scott.emp where ename not like ?") {
             @Override
             protected List<Object> getParameters() {
-              return Collections.singletonList("ADAMS");
+              return singletonList("ADAMS");
             }
           };
   private static final QueryLoadTestModel.QueryScenario SELECT_DEPARTMENTS =
@@ -34,7 +34,7 @@ public final class QueryLoadTestModelTest {
   @Test
   public void test() throws DatabaseException {
     final QueryLoadTestModel loadTest = new QueryLoadTestModel(createTestDatabaseInstance(), UNIT_TEST_USER,
-            Arrays.asList(SELECT_DEPARTMENTS, SELECT_EMPLOYEE));
+            asList(SELECT_DEPARTMENTS, SELECT_EMPLOYEE));
     loadTest.setMinimumThinkTime(10);
     loadTest.setMaximumThinkTime(30);
     loadTest.setLoginDelayFactor(0);

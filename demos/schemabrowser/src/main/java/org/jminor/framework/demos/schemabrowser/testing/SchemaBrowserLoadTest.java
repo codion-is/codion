@@ -14,7 +14,8 @@ import org.jminor.swing.framework.tools.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import java.util.Collections;
+
+import static java.util.Collections.singletonList;
 
 public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
@@ -35,7 +36,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
   };
 
   public SchemaBrowserLoadTest() {
-    super(UNIT_TEST_USER, Collections.singletonList(SCENARIO));
+    super(UNIT_TEST_USER, singletonList(SCENARIO));
   }
 
   @Override

@@ -12,8 +12,9 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.rmi.RemoteException;
-import java.util.Arrays;
 import java.util.Collection;
+
+import static java.util.Arrays.asList;
 
 /**
  * A default DialogExceptionHandler implementation
@@ -33,7 +34,7 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
   /** {@inheritDoc} */
   @Override
   public void displayException(final Throwable exception, final Window dialogParent) {
-    final Throwable rootCause = unwrapExceptions(exception, Arrays.asList(RemoteException.class, RuntimeException.class,
+    final Throwable rootCause = unwrapExceptions(exception, asList(RemoteException.class, RuntimeException.class,
             InvocationTargetException.class, ExceptionInInitializerError.class, UndeclaredThrowableException.class));
     if (rootCause instanceof CancelException) {
       return;

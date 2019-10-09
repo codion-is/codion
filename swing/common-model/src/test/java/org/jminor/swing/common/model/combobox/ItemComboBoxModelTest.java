@@ -7,9 +7,9 @@ import org.jminor.common.Item;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -24,7 +24,7 @@ public class ItemComboBoxModelTest {
     final Item<Integer> cThree = new Item<>(3, "CThree");
     final Item<Integer> dFour = new Item<>(4, "DFour");
 
-    final List<Item<Integer>> items = Arrays.asList(nullItem, cThree, bTwo, aOne, dFour);
+    final List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
     final ItemComboBoxModel<Integer> model = new ItemComboBoxModel<Integer>(items) {
       @Override
       protected List<Item<Integer>> initializeContents() {
@@ -62,7 +62,7 @@ public class ItemComboBoxModelTest {
     assertEquals(3, model.indexOf(3));
     assertEquals(4, model.indexOf(4));
 
-    //test unsorted final List<Item<Integer>> items = Arrays.asList(nullItem, cThree, bTwo, aOne, dFour);
+    //test unsorted final List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
     final ItemComboBoxModel<Integer> unsortedModel = new ItemComboBoxModel<Integer>(null, items) {
       @Override
       protected List<Item<Integer>> initializeContents() {

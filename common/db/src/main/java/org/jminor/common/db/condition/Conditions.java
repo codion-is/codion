@@ -10,9 +10,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 /**
  * A factory class for {@link Condition} instances
@@ -99,8 +100,7 @@ public final class Conditions {
   public static <T extends Column> Condition.Set<T> conditionSet(final Conjunction conjunction, final Condition<T> firstCondition,
                                                                  final Condition<T> secondCondition, final Condition<T> thirdCondition,
                                                                  final Condition<T> fourthCondition, final Condition<T> fifthCondition) {
-    return conditionSet(conjunction, Arrays.asList(firstCondition, secondCondition, thirdCondition, fourthCondition,
-            fifthCondition));
+    return conditionSet(conjunction, asList(firstCondition, secondCondition, thirdCondition, fourthCondition, fifthCondition));
   }
 
   /**

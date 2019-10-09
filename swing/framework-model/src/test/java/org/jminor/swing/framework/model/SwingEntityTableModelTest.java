@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class SwingEntityTableModelTest extends AbstractEntityTableModelTest<SwingEntityEditModel, SwingEntityTableModel> {
@@ -104,7 +105,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
             TestDomain.DEPARTMENT_ID, 10);
     final Property.ForeignKeyProperty deptFkProperty = DOMAIN.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
     employeeTableModel.setForeignKeyConditionValues(deptFkProperty,
-            Collections.singletonList(accounting));
+            singletonList(accounting));
     assertEquals(7, employeeTableModel.getRowCount());
     employeeTableModel.clear();
     employeeTableModel.setRefreshOnForeignKeyConditionValuesSet(false);

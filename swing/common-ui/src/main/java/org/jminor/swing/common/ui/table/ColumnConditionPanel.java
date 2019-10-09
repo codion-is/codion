@@ -52,9 +52,10 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
+
+import static java.util.Arrays.asList;
 
 /**
  * A UI implementation for ColumnConditionModel
@@ -149,7 +150,7 @@ public class ColumnConditionPanel<K> extends JPanel {
                               final JComponent lowerBoundField, final Condition.Type... conditionTypes) {
     Objects.requireNonNull(conditionModel, "conditionModel");
     this.conditionModel = conditionModel;
-    this.conditionTypes = conditionTypes == null ? Arrays.asList(Condition.Type.values()) : Arrays.asList(conditionTypes);
+    this.conditionTypes = conditionTypes == null ? asList(Condition.Type.values()) : asList(conditionTypes);
     this.conditionTypeCombo = initializeConditionTypeComboBox();
     this.upperBoundField = upperBoundField;
     this.lowerBoundField = lowerBoundField;

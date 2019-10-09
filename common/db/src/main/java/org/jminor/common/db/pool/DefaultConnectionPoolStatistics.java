@@ -6,8 +6,9 @@ package org.jminor.common.db.pool;
 import org.jminor.common.User;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.emptyList;
 
 /**
  * A default ConnectionPoolStatistics implementation
@@ -25,7 +26,7 @@ public final class DefaultConnectionPoolStatistics implements ConnectionPoolStat
   private int connectionsDestroyed;
   private long creationDate;
 
-  private List<ConnectionPoolState> fineGrainedStatistics = Collections.emptyList();
+  private List<ConnectionPoolState> fineGrainedStatistics = emptyList();
   private long resetDate;
   private int connectionRequests;
   private int requestsPerSecond;

@@ -8,11 +8,12 @@ import org.jminor.common.Util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import static java.util.Collections.emptyList;
 
 /**
  * A class for mapping between entities and corresponding bean classes
@@ -118,7 +119,7 @@ public class EntityBeanMapper {
    */
   public List<Entity> toEntities(final List beans) throws InvocationTargetException, IllegalAccessException {
     if (Util.nullOrEmpty(beans)) {
-      return Collections.emptyList();
+      return emptyList();
     }
     final List<Entity> result = new ArrayList<>(beans.size());
     for (final Object bean : beans) {
@@ -163,7 +164,7 @@ public class EntityBeanMapper {
   public List<Object> toBeans(final List<Entity> entities) throws InvocationTargetException,
           NoSuchMethodException, InstantiationException, IllegalAccessException {
     if (Util.nullOrEmpty(entities)) {
-      return Collections.emptyList();
+      return emptyList();
     }
     final List<Object> beans = new ArrayList<>(entities.size());
     for (final Entity entity : entities) {

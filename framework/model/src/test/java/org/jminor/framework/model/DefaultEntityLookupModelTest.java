@@ -19,11 +19,12 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultEntityLookupModelTest {
@@ -55,19 +56,19 @@ public final class DefaultEntityLookupModelTest {
 
   @Test
   public void lookupWithNoLookupProperties() {
-    assertThrows(IllegalStateException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, Collections.emptyList()).performQuery());
+    assertThrows(IllegalStateException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, emptyList()).performQuery());
   }
 
   @Test
   public void constructorNonStringLookupProperty() {
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
-            Collections.singletonList(DOMAIN.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_COMMISSION))));
+            singletonList(DOMAIN.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_COMMISSION))));
   }
 
   @Test
   public void constructorIncorrectEntityLookupProperty() {
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
-            Collections.singletonList(DOMAIN.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME))));
+            singletonList(DOMAIN.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME))));
   }
 
   @Test
@@ -82,7 +83,7 @@ public final class DefaultEntityLookupModelTest {
   @Test
   public void setSelectedEntitiesMultipleNotAllowed() {
     lookupModel.getMultipleSelectionAllowedValue().set(false);
-    final Collection<Entity> entities = Arrays.asList(DOMAIN.entity(TestDomain.T_EMP), DOMAIN.entity(TestDomain.T_EMP));
+    final Collection<Entity> entities = asList(DOMAIN.entity(TestDomain.T_EMP), DOMAIN.entity(TestDomain.T_EMP));
     assertThrows(IllegalArgumentException.class, () -> lookupModel.setSelectedEntities(entities));
   }
 
@@ -93,10 +94,10 @@ public final class DefaultEntityLookupModelTest {
     final Entity employee = DOMAIN.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_NAME, "Darri");
     employee.put(TestDomain.EMP_JOB, "CLERK");
-    lookupModel.setSelectedEntities(Collections.singletonList(employee));
+    lookupModel.setSelectedEntities(singletonList(employee));
     assertEquals(lookupModel.getSearchString(), "CLERK");
     lookupModel.setToStringProvider(null);
-    lookupModel.setSelectedEntities(Collections.singletonList(employee));
+    lookupModel.setSelectedEntities(singletonList(employee));
     assertEquals(lookupModel.getSearchString(), "Darri");
   }
 
@@ -213,7 +214,7 @@ public final class DefaultEntityLookupModelTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    lookupProperties = Arrays.asList(DOMAIN.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME),
+    lookupProperties = asList(DOMAIN.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME),
             DOMAIN.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB));
     lookupModel = new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, lookupProperties);
 
@@ -274,6 +275,6 @@ public final class DefaultEntityLookupModelTest {
     emp4.put(TestDomain.EMP_NAME, "Andrew");
     emp4.put(TestDomain.EMP_SALARY, 1000d);
 
-    CONNECTION_PROVIDER.getConnection().insert(Arrays.asList(dept, emp, emp2, emp3, emp4));
+    CONNECTION_PROVIDER.getConnection().insert(asList(dept, emp, emp2, emp3, emp4));
   }
 }

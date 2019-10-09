@@ -26,12 +26,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 /**
  * A ClientUserMonitor for monitoring connected clients and users connected to a server
@@ -229,7 +231,7 @@ public final class ClientUserMonitor {
             }
           }
           else {
-            addItems(Collections.singletonList(newUserInfo), true, false);
+            addItems(singletonList(newUserInfo), true, false);
           }
         }
         sortContents();
@@ -408,7 +410,7 @@ public final class ClientUserMonitor {
       connectionCount.setIdentifier(CONNECTION_COUNT_COLUMN);
       connectionCount.setHeaderValue("Connections");
 
-      return Arrays.asList(username, clientType, clientVersion, frameworkVersion, host, lastSeen, connectionCount);
+      return asList(username, clientType, clientVersion, frameworkVersion, host, lastSeen, connectionCount);
     }
   }
 

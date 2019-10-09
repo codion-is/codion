@@ -10,11 +10,11 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class TextUtilTest {
@@ -24,7 +24,7 @@ public final class TextUtilTest {
     final String one = "björn";
     final String two = "bjö rn";
     final String three = "björ n";
-    List<String> strings = Arrays.asList(one, two, three);
+    List<String> strings = asList(one, two, three);
 
     Comparator<String> collator = TextUtil.getSpaceAwareCollator();
     strings.sort(collator);
@@ -36,7 +36,7 @@ public final class TextUtilTest {
     final String five = "þe";
     final String six = "æi";
     final String seven = "aj";
-    strings = Arrays.asList(four, five, six, seven);
+    strings = asList(four, five, six, seven);
 
     collator = TextUtil.getSpaceAwareCollator(new Locale("is"));
     strings.sort(collator);
@@ -120,7 +120,7 @@ public final class TextUtilTest {
     final String one = "Bláskuggi";
     final String two = "Blá skuggi";
     final String three = "Blár skuggi";
-    final List<String> values = Arrays.asList(one, two, three);
+    final List<String> values = asList(one, two, three);
     TextUtil.collate(values);
     assertEquals(0, values.indexOf(two));
     assertEquals(1, values.indexOf(three));
@@ -134,7 +134,7 @@ public final class TextUtilTest {
     final String d = "Davíð Arnar";
     final String dNoSpace = "DavíðArnar";
     final String a = "Arnór Jón";
-    final List<String> items = Arrays.asList(b, d, a, bNoSpace, dNoSpace);
+    final List<String> items = asList(b, d, a, bNoSpace, dNoSpace);
     TextUtil.collateSansSpaces(Collator.getInstance(), items);
     assertEquals(0, items.indexOf(a));
     assertEquals(1, items.indexOf(b));

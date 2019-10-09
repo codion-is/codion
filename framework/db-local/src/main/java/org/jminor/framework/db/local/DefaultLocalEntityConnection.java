@@ -44,9 +44,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -56,6 +54,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 /**
  * A default LocalEntityConnection implementation
@@ -209,7 +211,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
     if (Util.nullOrEmpty(entities)) {
-      return Collections.emptyList();
+      return emptyList();
     }
     checkReadOnly(entities);
 
@@ -451,7 +453,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity> selectMany(final String entityId, final String propertyId, final Object... values) throws DatabaseException {
-    return selectMany(entityConditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, values == null ? null : Arrays.asList(values)));
+    return selectMany(entityConditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, values == null ? null : asList(values)));
   }
 
   /** {@inheritDoc} */
@@ -500,7 +502,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(Databases.createLogMessage(getUser(), selectSQL, Arrays.asList(propertyId, condition), e, null));
+        LOG.error(Databases.createLogMessage(getUser(), selectSQL, asList(propertyId, condition), e, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
@@ -578,13 +580,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     catch (final DatabaseException e) {
       exception = e;
-      LOG.error(Databases.createLogMessage(getUser(), functionId, arguments == null ? null : Arrays.asList(arguments), e, null));
+      LOG.error(Databases.createLogMessage(getUser(), functionId, arguments == null ? null : asList(arguments), e, null));
       throw e;
     }
     finally {
       final MethodLogger.Entry entry = logExit("executeFunction: " + functionId, exception, null);
       if (LOG.isDebugEnabled()) {
-        LOG.debug(Databases.createLogMessage(getUser(), "", arguments == null ? null : Arrays.asList(arguments), exception, entry));
+        LOG.debug(Databases.createLogMessage(getUser(), "", arguments == null ? null : asList(arguments), exception, entry));
       }
     }
   }
@@ -601,13 +603,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     catch (final DatabaseException e) {
       exception = e;
-      LOG.error(Databases.createLogMessage(getUser(), procedureId, arguments == null ? null : Arrays.asList(arguments), e, null));
+      LOG.error(Databases.createLogMessage(getUser(), procedureId, arguments == null ? null : asList(arguments), e, null));
       throw e;
     }
     finally {
       final MethodLogger.Entry entry = logExit("executeProcedure: " + procedureId, exception, null);
       if (LOG.isDebugEnabled()) {
-        LOG.debug(Databases.createLogMessage(getUser(), "", arguments == null ? null : Arrays.asList(arguments), exception, entry));
+        LOG.debug(Databases.createLogMessage(getUser(), "", arguments == null ? null : asList(arguments), exception, entry));
       }
     }
   }
@@ -629,13 +631,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final ReportException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(Databases.createLogMessage(getUser(), null, Collections.singletonList(reportWrapper.getReportName()), e, null));
+        LOG.error(Databases.createLogMessage(getUser(), null, singletonList(reportWrapper.getReportName()), e, null));
         throw e;
       }
       finally {
         final MethodLogger.Entry logEntry = logExit("fillReport", exception, null);
         if (LOG.isDebugEnabled()) {
-          LOG.debug(Databases.createLogMessage(getUser(), null, Collections.singletonList(reportWrapper.getReportName()), exception, logEntry));
+          LOG.debug(Databases.createLogMessage(getUser(), null, singletonList(reportWrapper.getReportName()), exception, logEntry));
         }
       }
     }

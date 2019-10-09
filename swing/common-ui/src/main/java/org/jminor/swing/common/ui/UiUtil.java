@@ -109,10 +109,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -123,6 +121,11 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
+
+import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 /**
  * A static utility class.
@@ -359,10 +362,10 @@ public final class UiUtil {
     if (option == JFileChooser.APPROVE_OPTION) {
       final List<File> selectedFiles;
       if (multiSelection) {
-        selectedFiles = Arrays.asList(fileChooserOpen.getSelectedFiles());
+        selectedFiles = asList(fileChooserOpen.getSelectedFiles());
       }
       else {
-        selectedFiles = Collections.singletonList(fileChooserOpen.getSelectedFile());
+        selectedFiles = singletonList(fileChooserOpen.getSelectedFile());
       }
       if (!selectedFiles.isEmpty()) {
         return selectedFiles;
@@ -1315,7 +1318,7 @@ public final class UiUtil {
   public static <T> T selectValue(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle,
                                   final T defaultSelection) {
     final List<T> selected = selectValues(dialogOwner, values, dialogTitle, true,
-            defaultSelection == null ? Collections.emptyList() : Collections.singletonList(defaultSelection));
+            defaultSelection == null ? emptyList() : singletonList(defaultSelection));
     if (selected.isEmpty()) {
       return null;
     }
@@ -1332,7 +1335,7 @@ public final class UiUtil {
    * @param <T> the type of values being selected
    */
   public static <T> List<T> selectValues(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle) {
-    return selectValues(dialogOwner, values, dialogTitle, false, Collections.emptyList());
+    return selectValues(dialogOwner, values, dialogTitle, false, emptyList());
   }
 
   /**
@@ -1410,7 +1413,7 @@ public final class UiUtil {
     try {
       final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
 
-      return Arrays.stream(transferSupport.getDataFlavors())
+      return stream(transferSupport.getDataFlavors())
               .anyMatch(flavor -> flavor.isFlavorJavaFileListType() || flavor.equals(nixFileDataFlavor));
     }
     catch (final ClassNotFoundException e) {
@@ -1432,7 +1435,7 @@ public final class UiUtil {
         if (flavor.isFlavorJavaFileListType()) {
           final List<File> files = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
 
-          return files.isEmpty() ? Collections.emptyList() : files;
+          return files.isEmpty() ? emptyList() : files;
         }
       }
       //the code below is for handling unix/linux

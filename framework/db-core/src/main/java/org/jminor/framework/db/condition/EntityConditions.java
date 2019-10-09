@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+
 /**
  * A class for creating query conditions.
  */
@@ -49,7 +52,7 @@ public final class EntityConditions {
    * @return a select condition based on the given key
    */
   public EntitySelectCondition selectCondition(final Entity.Key key) {
-    return selectCondition(Collections.singletonList(Objects.requireNonNull(key, "key")));
+    return selectCondition(singletonList(Objects.requireNonNull(key, "key")));
   }
 
   /**
@@ -105,7 +108,7 @@ public final class EntityConditions {
    * @return a condition specifying the entity with the given primary key
    */
   public EntityCondition condition(final Entity.Key key) {
-    return condition(Collections.singletonList(key));
+    return condition(singletonList(key));
   }
 
   /**
@@ -192,7 +195,7 @@ public final class EntityConditions {
         return foreignKeyCondition((Property.ForeignKeyProperty) property, conditionType, (Collection) value);
       }
 
-      return foreignKeyCondition((Property.ForeignKeyProperty) property, conditionType, Collections.singletonList(value));
+      return foreignKeyCondition((Property.ForeignKeyProperty) property, conditionType, singletonList(value));
     }
     if (!(property instanceof Property.ColumnProperty)) {
       throw new IllegalArgumentException(property + " is not a " + Property.ColumnProperty.class.getSimpleName());
@@ -240,7 +243,7 @@ public final class EntityConditions {
    */
   public Condition<Property.ColumnProperty> foreignKeyCondition(final String entityId, final String foreignKeyPropertyId,
                                                                 final Condition.Type conditionType, final Entity value) {
-    return foreignKeyCondition(entityId, foreignKeyPropertyId, conditionType, Collections.singletonList(value));
+    return foreignKeyCondition(entityId, foreignKeyPropertyId, conditionType, singletonList(value));
   }
 
   /**
@@ -254,7 +257,7 @@ public final class EntityConditions {
    */
   public Condition<Property.ColumnProperty> foreignKeyCondition(final String entityId, final String foreignKeyPropertyId,
                                                                 final Condition.Type conditionType, final Entity.Key value) {
-    return foreignKeyCondition(entityId, foreignKeyPropertyId, conditionType, Collections.singletonList(value));
+    return foreignKeyCondition(entityId, foreignKeyPropertyId, conditionType, singletonList(value));
   }
 
   /**
@@ -282,7 +285,7 @@ public final class EntityConditions {
    */
   public Condition<Property.ColumnProperty> foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
                                                                 final Condition.Type conditionType, final Entity value) {
-    return foreignKeyCondition(foreignKeyProperty, conditionType, Collections.singletonList(value));
+    return foreignKeyCondition(foreignKeyProperty, conditionType, singletonList(value));
   }
 
   /**
@@ -295,7 +298,7 @@ public final class EntityConditions {
    */
   public Condition<Property.ColumnProperty> foreignKeyCondition(final Property.ForeignKeyProperty foreignKeyProperty,
                                                                 final Condition.Type conditionType, final Entity.Key value) {
-    return foreignKeyCondition(foreignKeyProperty, conditionType, Collections.singletonList(value));
+    return foreignKeyCondition(foreignKeyProperty, conditionType, singletonList(value));
   }
 
   /**
@@ -333,7 +336,7 @@ public final class EntityConditions {
    * @throws NullPointerException in case the condition string is null
    */
   public static Condition<Property.ColumnProperty> stringCondition(final String conditionString) {
-    return stringCondition(conditionString, Collections.emptyList(), Collections.emptyList());
+    return stringCondition(conditionString, emptyList(), emptyList());
   }
 
   /**
@@ -465,12 +468,12 @@ public final class EntityConditions {
 
     @Override
     public List getValues() {
-      return condition == null ? Collections.emptyList() : condition.getValues();
+      return condition == null ? emptyList() : condition.getValues();
     }
 
     @Override
     public List<Property.ColumnProperty> getColumns() {
-      return condition == null ? Collections.emptyList() : condition.getColumns();
+      return condition == null ? emptyList() : condition.getColumns();
     }
 
     @Override
@@ -785,7 +788,7 @@ public final class EntityConditions {
     @Override
     public List getValues() {
       if (isNullCondition) {
-        return Collections.emptyList();
+        return emptyList();
       }//null condition, uses 'x is null', not 'x = ?'
 
       return values;
@@ -794,7 +797,7 @@ public final class EntityConditions {
     @Override
     public List<Property.ColumnProperty> getColumns() {
       if (isNullCondition) {
-        return Collections.emptyList();
+        return emptyList();
       }//null condition, uses 'x is null', not 'x = ?'
 
       return Collections.nCopies(values.size(), property);
@@ -879,7 +882,7 @@ public final class EntityConditions {
         values = new ArrayList((Collection) value);
       }
       else {
-        values = Collections.singletonList(value);
+        values = singletonList(value);
       }
       if (values.isEmpty()) {
         throw new IllegalArgumentException("No values specified for PropertyCondition: " + property);

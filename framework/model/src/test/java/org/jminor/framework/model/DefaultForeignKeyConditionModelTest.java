@@ -13,11 +13,11 @@ import org.jminor.framework.domain.Entity;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -32,7 +32,7 @@ public class DefaultForeignKeyConditionModelTest {
   public void getSearchEntitiesLookupModel() throws DatabaseException {
     final Domain domain = CONNECTION_PROVIDER.getDomain();
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER,
-            Collections.singletonList(CONNECTION_PROVIDER.getDomain().getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
+            singletonList(CONNECTION_PROVIDER.getDomain().getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
     final ForeignKeyConditionModel conditionModel = new DefaultForeignKeyConditionModel(
             CONNECTION_PROVIDER.getConditions(),
             domain.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK), lookupModel);
@@ -43,7 +43,7 @@ public class DefaultForeignKeyConditionModelTest {
     assertTrue(searchEntities.contains(sales));
     assertEquals("deptno = ?", conditionModel.getCondition().getWhereClause());
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
-    final List<Entity> salesAccounting = Arrays.asList(sales, accounting);
+    final List<Entity> salesAccounting = asList(sales, accounting);
     lookupModel.setSelectedEntities(salesAccounting);
     assertTrue(conditionModel.getConditionEntities().contains(sales));
     assertTrue(conditionModel.getConditionEntities().contains(accounting));

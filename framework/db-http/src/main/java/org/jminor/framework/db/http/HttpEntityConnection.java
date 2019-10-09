@@ -32,7 +32,6 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -41,6 +40,9 @@ import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 /**
  * A Http based {@link EntityConnection} implementation based on EntityService
@@ -365,7 +367,7 @@ final class HttpEntityConnection implements EntityConnection {
   @Override
   public List<Entity> selectMany(final String entityId, final String propertyId, final Object... values)
           throws DatabaseException {
-    return selectMany(conditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, Arrays.asList(values)));
+    return selectMany(conditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, asList(values)));
   }
 
   /** {@inheritDoc} */
@@ -468,7 +470,7 @@ final class HttpEntityConnection implements EntityConnection {
   private List executeOperation(final String path, final String operationIdParam, final String operationId,
                                 final Object... arguments) throws Exception {
     return handleResponse(execute(createRequest(path + "?" + operationIdParam + "=" + operationId,
-            Util.notNull(arguments) ? Arrays.asList(arguments) : Collections.emptyList())));
+            Util.notNull(arguments) ? Arrays.asList(arguments) : emptyList())));
   }
 
   private HttpResponse execute(final HttpRequest operation) throws Exception {

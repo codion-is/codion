@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FileUtilTest {
@@ -41,7 +41,7 @@ public class FileUtilTest {
 
   @Test
   public void serialize() throws IOException, ClassNotFoundException {
-    final List<Integer> ints = Arrays.asList(1, 2, 3, 4);
+    final List<Integer> ints = asList(1, 2, 3, 4);
     final File file = File.createTempFile("FileUtilTest.serialize", ".txt");
     file.deleteOnExit();
 

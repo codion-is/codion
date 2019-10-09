@@ -16,10 +16,10 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityApplicationPanelTest {
@@ -65,7 +65,7 @@ public class EntityApplicationPanelTest {
     final EntityApplicationPanel<SwingEntityApplicationModel> panel = new EntityApplicationPanel<SwingEntityApplicationModel>() {
       @Override
       protected List<EntityPanel> initializeEntityPanels(final SwingEntityApplicationModel applicationModel) {
-        return Collections.singletonList(new EntityPanel(applicationModel.getEntityModel(TestDomain.T_EMP)));
+        return singletonList(new EntityPanel(applicationModel.getEntityModel(TestDomain.T_EMP)));
       }
       @Override
       protected SwingEntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {

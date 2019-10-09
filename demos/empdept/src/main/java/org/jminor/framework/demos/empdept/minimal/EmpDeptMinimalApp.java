@@ -23,8 +23,9 @@ import org.jminor.swing.framework.ui.EntityPanelProvider;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.sql.Types;
-import java.util.Arrays;
 import java.util.Locale;
+
+import static java.util.Arrays.asList;
 
 /**
  * EmpDept minimal application demo
@@ -104,7 +105,7 @@ public class EmpDeptMinimalApp {
       final EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
       if (foreignKeyProperty.is("mgr_fk")) {
         comboBoxModel.setSelectConditionProvider(() -> new EntityConditions(getDomain()).propertyCondition(
-                "scott.emp", "job", Condition.Type.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
+                "scott.emp", "job", Condition.Type.LIKE, asList("MANAGER", "PRESIDENT")));
         comboBoxModel.refresh();
       }
 

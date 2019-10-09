@@ -9,8 +9,9 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 /**
  * A Logback LoggerProxy implementation
@@ -35,6 +36,6 @@ public final class LogbackProxy implements LoggerProxy {
   /** {@inheritDoc} */
   @Override
   public List getLogLevels() {
-    return Arrays.asList(Level.OFF, Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR);
+    return asList(Level.OFF, Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR);
   }
 }

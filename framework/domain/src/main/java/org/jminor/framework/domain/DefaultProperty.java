@@ -24,10 +24,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 /**
  * A default Property implementation
@@ -985,7 +987,7 @@ class DefaultProperty implements Property {
      */
     DefaultForeignKeyProperty(final String propertyId, final String caption, final String foreignEntityId,
                               final ColumnProperty columnProperty) {
-      this(propertyId, caption, foreignEntityId, Collections.singletonList(columnProperty));
+      this(propertyId, caption, foreignEntityId, singletonList(columnProperty));
     }
 
     /**
@@ -1200,7 +1202,7 @@ class DefaultProperty implements Property {
       if (Util.nullOrEmpty(sourcePropertyIds)) {
         throw new IllegalArgumentException("No source propertyIds, a derived property must be derived from one or more existing properties");
       }
-      this.sourcePropertyIds = Arrays.asList(sourcePropertyIds);
+      this.sourcePropertyIds = asList(sourcePropertyIds);
       super.setReadOnly(true);
     }
 

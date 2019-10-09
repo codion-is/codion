@@ -53,12 +53,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
+
+import static java.util.Collections.emptyList;
 
 /**
  * A UI component based on the EntityLookupModel.
@@ -446,7 +447,7 @@ public final class EntityLookupField extends JTextField {
       final SwingEntityTableModel tableModel = new SwingEntityTableModel(model.getEntityId(), model.getConnectionProvider()) {
         @Override
         protected List<Entity> performQuery() {
-          return Collections.emptyList();
+          return emptyList();
         }
       };
       this.tablePanel = new EntityTablePanel(tableModel);

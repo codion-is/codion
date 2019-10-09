@@ -13,11 +13,11 @@ import org.junit.jupiter.api.Test;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SwingFilteredComboBoxModelTest {
@@ -259,14 +259,14 @@ public class SwingFilteredComboBoxModelTest {
         return id == ((Data) o).id;
       }
     }
-    List<Data> contents = Arrays.asList(new Data(1, "1"), new Data(2, "2"), new Data(3, "3"));
+    List<Data> contents = asList(new Data(1, "1"), new Data(2, "2"), new Data(3, "3"));
 
     final SwingFilteredComboBoxModel<Data> model = new SwingFilteredComboBoxModel();
     model.setContents(contents);
     model.setSelectedItem(contents.get(1));
     assertEquals("2", model.getSelectedValue().data);
 
-    contents = Arrays.asList(new Data(1, "1"), new Data(2, "22"), new Data(3, "3"));
+    contents = asList(new Data(1, "1"), new Data(2, "22"), new Data(3, "3"));
 
     model.setContents(contents);
     assertEquals("22", model.getSelectedValue().data);

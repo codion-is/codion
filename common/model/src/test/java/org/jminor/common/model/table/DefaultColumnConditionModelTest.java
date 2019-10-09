@@ -9,10 +9,10 @@ import org.jminor.common.db.condition.Condition;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultColumnConditionModelTest {
@@ -118,8 +118,8 @@ public class DefaultColumnConditionModelTest {
 
     assertThrows(IllegalArgumentException.class, () -> model.setLowerBound(1));
     assertThrows(IllegalArgumentException.class, () -> model.setUpperBound(1d));
-    assertThrows(IllegalArgumentException.class, () -> model.setLowerBound(Arrays.asList("2", 1)));
-    assertThrows(IllegalArgumentException.class, () -> model.setUpperBound(Arrays.asList("1", true)));
+    assertThrows(IllegalArgumentException.class, () -> model.setLowerBound(asList("2", 1)));
+    assertThrows(IllegalArgumentException.class, () -> model.setUpperBound(asList("1", true)));
   }
 
   @Test
@@ -201,7 +201,7 @@ public class DefaultColumnConditionModelTest {
   public void multiConditionString() {
     final DefaultColumnConditionModel<String> conditionModel = new DefaultColumnConditionModel<>("test", String.class, "%");
 
-    final Collection<String> strings = Arrays.asList("abc", "def");
+    final Collection<String> strings = asList("abc", "def");
     conditionModel.setUpperBound(strings);
 
     assertEquals(strings, conditionModel.getUpperBound());

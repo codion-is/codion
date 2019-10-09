@@ -19,12 +19,12 @@ import org.jminor.framework.domain.Entity;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -58,7 +58,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     final TableModel deptTableModel = departmentModel.getTableModel();
     final Entity.Key operationsKey = DOMAIN.key(TestDomain.T_DEPARTMENT);
     operationsKey.put(TestDomain.DEPARTMENT_ID, 40);//operations
-    deptTableModel.setSelectedByKey(Collections.singletonList(operationsKey));
+    deptTableModel.setSelectedByKey(singletonList(operationsKey));
 
     assertFalse(deptTableModel.getSelectionModel().isSelectionEmpty());
     deptEditModel.put(TestDomain.DEPARTMENT_ID, 80);
@@ -143,7 +143,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
       return;
     }
     departmentModel.refresh();
-    departmentModel.getTableModel().getSelectionModel().setSelectedIndexes(Arrays.asList(1, 2, 3));
+    departmentModel.getTableModel().getSelectionModel().setSelectedIndexes(asList(1, 2, 3));
     assertFalse(departmentModel.getTableModel().getSelectionModel().isSelectionEmpty());
     assertFalse(departmentModel.getEditModel().isEntityNew());
     departmentModel.getEditModel().setEntity(null);
@@ -288,11 +288,11 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     emp.put(TestDomain.EMP_NAME, "NewName");
 
     final EntityModel model = createDepartmentModelWithoutDetailModel();
-    model.getEditModel().insert(Arrays.asList(dept, emp));
+    model.getEditModel().insert(asList(dept, emp));
     assertTrue(model.getTableModel().contains(dept, true));
     assertFalse(model.getTableModel().contains(emp, true));
 
-    model.getEditModel().delete(Arrays.asList(dept, emp));
+    model.getEditModel().delete(asList(dept, emp));
 
     assertFalse(model.getTableModel().contains(dept, true));
   }

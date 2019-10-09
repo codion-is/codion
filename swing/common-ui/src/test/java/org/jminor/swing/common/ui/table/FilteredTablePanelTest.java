@@ -14,11 +14,11 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.TableColumn;
 import java.awt.AWTException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FilteredTablePanelTest {
@@ -48,7 +48,7 @@ public class FilteredTablePanelTest {
     final TestAbstractFilteredTableModel tableModel = createTestModel();
     final FilteredTablePanel<String, Integer> panel = new FilteredTablePanel<>(tableModel);
 
-    tableModel.addItemsAt(Arrays.asList("darri", "dac", "dansinn", "dlabo"), 0);
+    tableModel.addItemsAt(asList("darri", "dac", "dansinn", "dlabo"), 0);
 
     final JTextField searchField = panel.getSearchField();
 
@@ -100,7 +100,7 @@ public class FilteredTablePanelTest {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
     final ColumnConditionModel<Integer> filterModel = new DefaultColumnConditionModel<>(0, String.class, "%");
-    return new TestAbstractFilteredTableModel(new AbstractTableSortModel<String, Integer>(Collections.singletonList(column)) {
+    return new TestAbstractFilteredTableModel(new AbstractTableSortModel<String, Integer>(singletonList(column)) {
       @Override
       public Class getColumnClass(final Integer columnIdentifier) {
         return String.class;
@@ -119,7 +119,7 @@ public class FilteredTablePanelTest {
 
         return super.initializeColumnComparator(columnIdentifier);
       }
-    }, Collections.singletonList(filterModel));
+    }, singletonList(filterModel));
   }
 
   public static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<String, Integer> {
@@ -132,7 +132,7 @@ public class FilteredTablePanelTest {
     @Override
     protected void doRefresh() {
       clear();
-      addItems(Arrays.asList(ITEMS), true, false);
+      addItems(asList(ITEMS), true, false);
     }
 
     @Override

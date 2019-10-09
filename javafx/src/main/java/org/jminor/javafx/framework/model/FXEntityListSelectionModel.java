@@ -21,6 +21,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+
 /**
  * A JavaFX {@link SelectionModel} implementation
  */
@@ -155,7 +158,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   @Override
   public void removeSelectedIndex(final int index) {
     if (selectionModel instanceof MultipleSelectionModel) {
-      removeSelectedIndexes(Collections.singletonList(index));
+      removeSelectedIndexes(singletonList(index));
     }
     else {
       if (selectionModel.selectedIndexProperty().get() == index) {
@@ -178,7 +181,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   /** {@inheritDoc} */
   @Override
   public void removeSelectedItem(final Entity item) {
-    removeSelectedItems(Collections.singletonList(item));
+    removeSelectedItems(singletonList(item));
   }
 
   /** {@inheritDoc} */
@@ -217,10 +220,10 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
       return Collections.unmodifiableList(new ArrayList<>(((MultipleSelectionModel<Entity>) selectionModel).getSelectedIndices()));
     }
     else if (selectionModel.isEmpty()) {
-      return Collections.emptyList();
+      return emptyList();
     }
 
-    return Collections.singletonList(selectionModel.selectedIndexProperty().get());
+    return singletonList(selectionModel.selectedIndexProperty().get());
   }
 
   /** {@inheritDoc} */
@@ -277,10 +280,10 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
       return Collections.unmodifiableList(new ArrayList<>(((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems()));
     }
     else if (selectionModel.isEmpty()) {
-      return Collections.emptyList();
+      return emptyList();
     }
 
-    return Collections.singletonList(selectionModel.getSelectedItem());
+    return singletonList(selectionModel.getSelectedItem());
   }
 
   /** {@inheritDoc} */

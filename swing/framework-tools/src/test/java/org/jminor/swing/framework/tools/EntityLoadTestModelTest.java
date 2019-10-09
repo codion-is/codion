@@ -19,8 +19,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.rmi.registry.LocateRegistry;
-import java.util.Arrays;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityLoadTestModelTest {
@@ -58,7 +58,7 @@ public class EntityLoadTestModelTest {
   private static final class TestLoadTestModel extends EntityLoadTestModel<DefaultEntityApplicationModel> {
 
     public TestLoadTestModel() {
-      super(UNIT_TEST_USER, Arrays.asList(new EntityLoadTestModel.AbstractEntityUsageScenario<DefaultEntityApplicationModel>("1") {
+      super(UNIT_TEST_USER, asList(new EntityLoadTestModel.AbstractEntityUsageScenario<DefaultEntityApplicationModel>("1") {
         @Override
         protected void performScenario(final DefaultEntityApplicationModel application) throws ScenarioException {}
       }, new EntityLoadTestModel.AbstractEntityUsageScenario<DefaultEntityApplicationModel>("2") {

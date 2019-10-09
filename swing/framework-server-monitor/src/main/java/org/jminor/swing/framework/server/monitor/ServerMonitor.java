@@ -28,12 +28,13 @@ import java.rmi.registry.LocateRegistry;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import static java.util.Collections.emptyList;
 
 /**
  * A ServerMonitor
@@ -202,7 +203,7 @@ public final class ServerMonitor {
    */
   public List getLoggingLevels() {
     if (loggerProxy == null) {
-      return Collections.emptyList();
+      return emptyList();
     }
 
     return loggerProxy.getLogLevels();

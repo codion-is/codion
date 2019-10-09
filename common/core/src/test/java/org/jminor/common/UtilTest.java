@@ -8,12 +8,14 @@ import org.junit.jupiter.api.Test;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class UtilTest {
@@ -112,8 +114,8 @@ public final class UtilTest {
   @Test
   public void nullOrEmpty() {
     assertTrue(Util.nullOrEmpty((Collection[]) null));
-    assertTrue(Util.nullOrEmpty(Collections.singletonList(""), null));
-    assertTrue(Util.nullOrEmpty(Collections.singletonList(""), Collections.emptyList()));
+    assertTrue(Util.nullOrEmpty(singletonList(""), null));
+    assertTrue(Util.nullOrEmpty(singletonList(""), emptyList()));
 
     final Map<Integer, String> map = new HashMap<>();
     map.put(1, "1");
@@ -125,8 +127,8 @@ public final class UtilTest {
     assertTrue(Util.nullOrEmpty("sadf", null));
     assertTrue(Util.nullOrEmpty("asdf", ""));
 
-    assertFalse(Util.nullOrEmpty(Collections.singletonList("1")));
-    assertFalse(Util.nullOrEmpty(Arrays.asList("1", "2")));
+    assertFalse(Util.nullOrEmpty(singletonList("1")));
+    assertFalse(Util.nullOrEmpty(asList("1", "2")));
 
     assertFalse(Util.nullOrEmpty("asdf"));
     assertFalse(Util.nullOrEmpty("asdf", "wefs"));

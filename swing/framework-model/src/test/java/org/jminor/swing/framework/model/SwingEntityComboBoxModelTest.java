@@ -18,12 +18,12 @@ import org.jminor.framework.model.TestDomain;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class SwingEntityComboBoxModelTest {
@@ -79,7 +79,7 @@ public final class SwingEntityComboBoxModelTest {
   public void setForeignKeyFilterEntities() throws Exception {
     comboBoxModel.refresh();
     final Entity blake = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "BLAKE");
-    comboBoxModel.setForeignKeyFilterEntities(TestDomain.EMP_MGR_FK, Collections.singletonList(blake));
+    comboBoxModel.setForeignKeyFilterEntities(TestDomain.EMP_MGR_FK, singletonList(blake));
     assertEquals(5, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
       final Entity item = comboBoxModel.getElementAt(i);
@@ -87,7 +87,7 @@ public final class SwingEntityComboBoxModelTest {
     }
 
     final Entity sales = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-    comboBoxModel.setForeignKeyFilterEntities(TestDomain.EMP_DEPARTMENT_FK, Collections.singletonList(sales));
+    comboBoxModel.setForeignKeyFilterEntities(TestDomain.EMP_DEPARTMENT_FK, singletonList(sales));
     assertEquals(2, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
       final Entity item = comboBoxModel.getElementAt(i);

@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test;
 
 import java.text.Format;
 import java.text.NumberFormat;
-import java.util.Arrays;
 import java.util.Collection;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultColumnSummaryModelTest {
@@ -28,7 +28,7 @@ public class DefaultColumnSummaryModelTest {
     }
     @Override
     public Collection getValues() {
-      return Arrays.asList(1, 2, 3, null, 4, 5);
+      return asList(1, 2, 3, null, 4, 5);
     }
     @Override
     public boolean isValueSubset() {
@@ -47,7 +47,7 @@ public class DefaultColumnSummaryModelTest {
     }
     @Override
     public Collection getValues() {
-      return Arrays.asList(1.1, 2.2, 3.3, null, 4.4, 5.5);
+      return asList(1.1, 2.2, 3.3, null, 4.4, 5.5);
     }
     @Override
     public boolean isValueSubset() {

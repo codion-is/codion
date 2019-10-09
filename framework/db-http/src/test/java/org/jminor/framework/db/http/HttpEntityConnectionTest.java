@@ -24,14 +24,14 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.registry.Registry;
 import java.sql.Connection;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class HttpEntityConnectionTest {
@@ -85,7 +85,7 @@ public final class HttpEntityConnectionTest {
     entity.put(TestDomain.DEPARTMENT_ID, 33);
     entity.put(TestDomain.DEPARTMENT_NAME, "name");
     entity.put(TestDomain.DEPARTMENT_LOCATION, "loc");
-    final List<Entity.Key> keys = connection.insert(Collections.singletonList(entity));
+    final List<Entity.Key> keys = connection.insert(singletonList(entity));
     assertEquals(1, keys.size());
     assertEquals(33, keys.get(0).getFirstValue());
     connection.delete(keys);
@@ -95,7 +95,7 @@ public final class HttpEntityConnectionTest {
   public void selectByKey() throws IOException, DatabaseException {
     final Entity.Key key = connection.getDomain().key(TestDomain.T_DEPARTMENT);
     key.put(TestDomain.DEPARTMENT_ID, 10);
-    final List<Entity> depts = connection.selectMany(Collections.singletonList(key));
+    final List<Entity> depts = connection.selectMany(singletonList(key));
     assertEquals(1, depts.size());
   }
 
@@ -106,7 +106,7 @@ public final class HttpEntityConnectionTest {
     final Entity.Key empKey = connection.getDomain().key(TestDomain.T_EMP);
     empKey.put(TestDomain.EMP_ID, 8);
 
-    final List<Entity> selected = connection.selectMany(Arrays.asList(deptKey, empKey));
+    final List<Entity> selected = connection.selectMany(asList(deptKey, empKey));
     assertEquals(2, selected.size());
   }
 
@@ -120,7 +120,7 @@ public final class HttpEntityConnectionTest {
   public void update() throws IOException, DatabaseException {
     Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     department.put(TestDomain.DEPARTMENT_NAME, "TEstING");
-    connection.update(Collections.singletonList(department));
+    connection.update(singletonList(department));
     department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID, department.get(TestDomain.DEPARTMENT_ID));
     assertEquals("TEstING", department.getString(TestDomain.DEPARTMENT_NAME));
   }
@@ -130,8 +130,8 @@ public final class HttpEntityConnectionTest {
     final Entity employee = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "ADAMS");
     try {
       connection.beginTransaction();
-      connection.delete(Collections.singletonList(employee.getKey()));
-      final List<Entity> selected = connection.selectMany(Collections.singletonList(employee.getKey()));
+      connection.delete(singletonList(employee.getKey()));
+      final List<Entity> selected = connection.selectMany(singletonList(employee.getKey()));
       assertTrue(selected.isEmpty());
     }
     finally {
@@ -147,9 +147,9 @@ public final class HttpEntityConnectionTest {
     empKey.put(TestDomain.EMP_ID, 1);
     try {
       connection.beginTransaction();
-      assertEquals(2, connection.selectMany(Arrays.asList(deptKey, empKey)).size());
-      connection.delete(Arrays.asList(deptKey, empKey));
-      final List<Entity> selected = connection.selectMany(Arrays.asList(deptKey, empKey));
+      assertEquals(2, connection.selectMany(asList(deptKey, empKey)).size());
+      connection.delete(asList(deptKey, empKey));
+      final List<Entity> selected = connection.selectMany(asList(deptKey, empKey));
       assertTrue(selected.isEmpty());
     }
     finally {
@@ -160,8 +160,7 @@ public final class HttpEntityConnectionTest {
   @Test
   public void selectDependentEntities() throws IOException, DatabaseException {
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-    final Map<String, Collection<Entity>> dependentEntities = connection.selectDependentEntities(Collections
-            .singletonList(department));
+    final Map<String, Collection<Entity>> dependentEntities = connection.selectDependentEntities(singletonList(department));
     assertNotNull(dependentEntities);
     assertTrue(dependentEntities.containsKey(TestDomain.T_EMP));
     assertFalse(dependentEntities.get(TestDomain.T_EMP).isEmpty());

@@ -17,10 +17,10 @@ import org.jminor.framework.domain.Property;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityTableConditionModelTest {
@@ -92,7 +92,7 @@ public class DefaultEntityTableConditionModelTest {
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     assertFalse(conditionModel.isEnabled(TestDomain.EMP_DEPARTMENT_FK));
-    boolean searchStateChanged = conditionModel.setConditionValues(TestDomain.EMP_DEPARTMENT_FK, Arrays.asList(sales, accounting));
+    boolean searchStateChanged = conditionModel.setConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
     assertTrue(searchStateChanged);
     assertTrue(conditionModel.isEnabled(TestDomain.EMP_DEPARTMENT_FK));
     assertTrue(((ForeignKeyConditionModel) conditionModel.getPropertyConditionModel(TestDomain.EMP_DEPARTMENT_FK)).getConditionEntities().contains(sales));
@@ -107,7 +107,7 @@ public class DefaultEntityTableConditionModelTest {
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     assertFalse(conditionModel.isEnabled(TestDomain.EMP_DEPARTMENT_FK));
-    conditionModel.setConditionValues(TestDomain.EMP_DEPARTMENT_FK, Arrays.asList(sales, accounting));
+    conditionModel.setConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
     assertTrue(conditionModel.isEnabled(TestDomain.EMP_DEPARTMENT_FK));
     conditionModel.clearPropertyConditionModels();
     assertFalse(conditionModel.isEnabled(TestDomain.EMP_DEPARTMENT_FK));
@@ -118,7 +118,7 @@ public class DefaultEntityTableConditionModelTest {
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     assertFalse(conditionModel.isEnabled(TestDomain.EMP_DEPARTMENT_FK));
-    conditionModel.setConditionValues(TestDomain.EMP_DEPARTMENT_FK, Arrays.asList(sales, accounting));
+    conditionModel.setConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
     final PropertyConditionModel nameConditionModel = conditionModel.getPropertyConditionModel(TestDomain.EMP_NAME);
     nameConditionModel.setLikeValue("SCOTT");
     assertEquals("(ename = ? and (deptno in (?, ?)))", conditionModel.getCondition().getWhereClause());

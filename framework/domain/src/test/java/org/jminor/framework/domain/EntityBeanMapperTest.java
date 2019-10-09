@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityBeanMapperTest {
@@ -32,7 +32,7 @@ public class EntityBeanMapperTest {
     department.put(TestDomain.DEPARTMENT_LOCATION, deptLocation);
     department.put(TestDomain.DEPARTMENT_ACTIVE, deptActive);
 
-    final List<Object> deptBeans = beanMapper.toBeans(Collections.singletonList(department));
+    final List<Object> deptBeans = beanMapper.toBeans(singletonList(department));
     final DepartmentBean departmentBean = (DepartmentBean) deptBeans.get(0);
     assertEquals(deptNo, departmentBean.getDeptNo());
     assertEquals(deptName, departmentBean.getName());
@@ -57,7 +57,7 @@ public class EntityBeanMapperTest {
     employee.put(TestDomain.EMP_NAME, name);
     employee.put(TestDomain.EMP_SALARY, salary);
 
-    final List<Object> empBeans = beanMapper.toBeans(Collections.singletonList(employee));
+    final List<Object> empBeans = beanMapper.toBeans(singletonList(employee));
     final EmployeeBean employeeBean = (EmployeeBean) empBeans.get(0);
     assertEquals(id, employeeBean.getId());
     assertEquals(commission, employeeBean.getCommission());
@@ -88,7 +88,7 @@ public class EntityBeanMapperTest {
     departmentBean.setName(deptName);
     departmentBean.setActive(deptActive);
 
-    final List<Entity> departments = beanMapper.toEntities(Collections.singletonList(departmentBean));
+    final List<Entity> departments = beanMapper.toEntities(singletonList(departmentBean));
     final Entity department = departments.get(0);
     assertEquals(deptNo, department.get(TestDomain.DEPARTMENT_ID));
     assertEquals(deptName, department.get(TestDomain.DEPARTMENT_NAME));
@@ -113,7 +113,7 @@ public class EntityBeanMapperTest {
     employeeBean.setName(name);
     employeeBean.setSalary(salary);
 
-    final List<Entity> employees = beanMapper.toEntities(Collections.singletonList(employeeBean));
+    final List<Entity> employees = beanMapper.toEntities(singletonList(employeeBean));
     final Entity employee = employees.get(0);
     assertEquals(id, employee.get(TestDomain.EMP_ID));
     assertEquals(commission, employee.get(TestDomain.EMP_COMMISSION));

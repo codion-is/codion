@@ -9,9 +9,10 @@ import org.jminor.common.db.valuemap.ValueMap;
 
 import java.sql.Types;
 import java.text.Collator;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import static java.util.Arrays.asList;
 
 /**
  * A Property factory class.
@@ -99,7 +100,7 @@ public final class Properties {
   public static Property.ForeignKeyProperty foreignKeyProperty(final String propertyId, final String caption,
                                                                final String foreignEntityId,
                                                                final Property.ColumnProperty[] columnProperties) {
-    return new DefaultProperty.DefaultForeignKeyProperty(propertyId, caption, foreignEntityId, Arrays.asList(columnProperties));
+    return new DefaultProperty.DefaultForeignKeyProperty(propertyId, caption, foreignEntityId, asList(columnProperties));
   }
 
   /**

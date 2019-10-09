@@ -8,8 +8,9 @@ import org.jminor.common.model.table.DefaultColumnConditionModel;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Property;
 
-import java.util.Arrays;
 import java.util.Collection;
+
+import static java.util.Arrays.asList;
 
 /**
  * A class for searching a set of entities based on a property.
@@ -47,7 +48,7 @@ public class DefaultPropertyConditionModel extends DefaultColumnConditionModel<P
   @Override
   public final Condition<Property.ColumnProperty> getCondition() {
     return getConditionType().getValues().equals(Condition.Type.Values.TWO) ?
-            entityConditions.propertyCondition(getColumnIdentifier(), getConditionType(), isCaseSensitive(), Arrays.asList(getLowerBound(), getUpperBound())) :
+            entityConditions.propertyCondition(getColumnIdentifier(), getConditionType(), isCaseSensitive(), asList(getLowerBound(), getUpperBound())) :
             entityConditions.propertyCondition(getColumnIdentifier(), getConditionType(), isCaseSensitive(), getUpperBound());
   }
 

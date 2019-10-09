@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityConnectionServerTest {
@@ -74,8 +75,7 @@ public class DefaultEntityConnectionServerTest {
     final Domain domain = connection.getDomain();
     final EntityConditions conditions = new EntityConditions(domain);
     final Condition<Property.ColumnProperty> condition = conditions.stringCondition("mgr > ?",
-            Collections.singletonList(4),
-            Collections.singletonList(domain.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_MGR)));
+            singletonList(4), singletonList(domain.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_MGR)));
 
     connection.selectMany(conditions.selectCondition(TestDomain.T_EMP, condition));
 

@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.JPanel;
 import javax.swing.table.TableColumn;
-import java.util.Arrays;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AbstractTableColumnSyncPanelTest {
@@ -19,7 +19,7 @@ public class AbstractTableColumnSyncPanelTest {
   private final SwingFilteredTableColumnModel columnModel;
 
   public AbstractTableColumnSyncPanelTest() {
-    columnModel = new SwingFilteredTableColumnModel(Arrays.asList(new TableColumn(0, 20), new TableColumn(2, 20)), null);
+    columnModel = new SwingFilteredTableColumnModel(asList(new TableColumn(0, 20), new TableColumn(2, 20)), null);
     panel = new TableColumnSyncPanelImpl(columnModel);
   }
 

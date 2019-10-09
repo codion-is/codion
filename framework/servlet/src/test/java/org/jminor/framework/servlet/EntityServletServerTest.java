@@ -32,10 +32,11 @@ import java.rmi.registry.Registry;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityServletServerTest {
@@ -159,7 +160,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/insert"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Collections.singletonList(department)))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(singletonList(department)))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
@@ -180,7 +181,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/insert"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Collections.singletonList(department)))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(singletonList(department)))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
@@ -196,7 +197,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/update"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Collections.singletonList(department)))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(singletonList(department)))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
@@ -241,7 +242,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/function?functionId=" + TestDomain.FUNCTION_ID))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Collections.emptyList()))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(emptyList()))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
@@ -250,7 +251,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/procedure?procedureId=" + TestDomain.PROCEDURE_ID))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(Collections.emptyList()))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Util.serialize(emptyList()))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());

@@ -7,8 +7,7 @@ import org.jminor.common.db.exception.DatabaseException;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -21,7 +20,7 @@ public final class ConnectionPoolsTest {
   @Test
   public void initializeConnectionPools() throws DatabaseException, ClassNotFoundException {
     ConnectionPools.initializeConnectionPools(new DefaultConnectionPoolProvider(), Databases.getInstance(),
-            Collections.singletonList(UNIT_TEST_USER));
+            singletonList(UNIT_TEST_USER));
     assertNotNull(ConnectionPools.getConnectionPool(UNIT_TEST_USER));
     ConnectionPools.closeConnectionPools();
     assertNull(ConnectionPools.getConnectionPool(UNIT_TEST_USER));

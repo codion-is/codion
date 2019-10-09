@@ -28,12 +28,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
+import static java.util.Arrays.asList;
 
 /**
  * A model class for generating entity definitions.
@@ -151,7 +152,7 @@ public final class EntityGeneratorModel {
     tableColumn.setIdentifier(TABLE_COLUMN_ID);
     tableColumn.setHeaderValue("Table");
 
-    return new TableModel(Arrays.asList(schemaColumn, tableColumn), metaData, schema, catalog);
+    return new TableModel(asList(schemaColumn, tableColumn), metaData, schema, catalog);
   }
 
   private void bindEvents() {
@@ -357,7 +358,7 @@ public final class EntityGeneratorModel {
             return rowObject.getTableName();
           }
         }
-      }, Arrays.asList(new DefaultColumnConditionModel<>(0, String.class, "%"),
+      }, asList(new DefaultColumnConditionModel<>(0, String.class, "%"),
               new DefaultColumnConditionModel<>(1, String.class, "%")));
       this.metaData = metaData;
       this.schema = schema;

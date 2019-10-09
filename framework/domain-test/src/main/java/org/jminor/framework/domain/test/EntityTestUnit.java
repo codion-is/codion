@@ -29,13 +29,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -267,7 +267,7 @@ public class EntityTestUnit {
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
   private Entity testInsert(final Entity testEntity) throws DatabaseException {
-    final List<Entity.Key> keys = connection.insert(Collections.singletonList(testEntity));
+    final List<Entity.Key> keys = connection.insert(singletonList(testEntity));
     try {
       return connection.selectSingle(keys.get(0));
     }
@@ -306,7 +306,7 @@ public class EntityTestUnit {
       return;
     }
 
-    final Entity updated = connection.update(Collections.singletonList(testEntity)).get(0);
+    final Entity updated = connection.update(singletonList(testEntity)).get(0);
     assertEquals(testEntity.getKey(), updated.getKey());
     for (final Property.ColumnProperty property : getDomain().getColumnProperties(testEntity.getEntityId())) {
       if (!property.isReadOnly() && property.isUpdatable()) {
@@ -332,7 +332,7 @@ public class EntityTestUnit {
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
   private void testDelete(final Entity testEntity) throws DatabaseException {
-    connection.delete(Entities.getKeys(Collections.singletonList(testEntity)));
+    connection.delete(Entities.getKeys(singletonList(testEntity)));
 
     boolean caught = false;
     try {
@@ -352,13 +352,13 @@ public class EntityTestUnit {
    */
   private Entity insertOrSelect(final Entity entity) throws DatabaseException {
     if (!entity.isKeyNull()) {
-      final List<Entity> selected = connection.selectMany(Collections.singletonList(entity.getKey()));
+      final List<Entity> selected = connection.selectMany(singletonList(entity.getKey()));
       if (!selected.isEmpty()) {
         return selected.get(0);
       }
     }
 
-    return connection.selectSingle(connection.insert(Collections.singletonList(entity)).get(0));
+    return connection.selectSingle(connection.insert(singletonList(entity)).get(0));
   }
 
   /**

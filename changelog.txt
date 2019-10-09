@@ -5164,3 +5164,4 @@
   Entities.getValues() and getDistinctValues() now return List instead of Collection
   h2database module removed from a few testRuntimeOnly configurations where it was unnecessary
   Demo module-infos and builds fixed for running tests
+  Static import added for Collections.singletonList(), Collections.emptyList() and Arrays.asList()
