@@ -6,7 +6,4 @@ dependencies {
     api project(':jminor-swing-common-model')
 
     runtimeOnly "com.toedter:jcalendar:${jcalendarVersion}"
-
-    testRuntimeOnly project(':jminor-dbms-h2database')
-    testRuntimeOnly "com.h2database:h2:${h2Version}"
 }

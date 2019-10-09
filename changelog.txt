@@ -5150,3 +5150,4 @@
   PreferencesUtil.setDefaultUsername() and getDefaultUsername() removed
   EntityTestUnit, special equals handling for BigDecimal property values, plus some minor refactoring and javadoc improvements
   Entities.getValues() and getDistinctValues() now return List instead of Collection
+  h2database module removed from a few testRuntimeOnly configurations where it was unnecessary

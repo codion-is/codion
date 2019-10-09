@@ -5,7 +5,4 @@ dependencies {
     api project(':jminor-framework-db-core')
 
     api "org.json:json:${jsonVersion}"
-
-    testRuntimeOnly project(':jminor-dbms-h2database')
-    testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
