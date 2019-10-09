@@ -29,6 +29,11 @@ ext {
     loadTestMainClass = "$moduleName/org.jminor.framework.demos.schemabrowser.testing.SchemaBrowserLoadTest"
     testAddModules = ['org.jminor.framework.db.test']
     testAddReads = ['org.jminor.framework.demos.schemabrowser': 'org.jminor.framework.db.test']
+    testAddExports = [
+            'org.jminor.framework.demos.schemabrowser/org.jminor.framework.demos.schemabrowser.domain': 'org.jminor.framework.db.local',
+            'org.junit.platform.commons/org.junit.platform.commons.util': 'ALL-UNNAMED',
+            'org.junit.platform.commons/org.junit.platform.commons.logging': 'ALL-UNNAMED'
+    ]
 }
 
 compileTestJava {
@@ -42,6 +47,7 @@ test {
     moduleOptions {
         addModules = testAddModules
         addReads = testAddReads
+        addExports = testAddExports
     }
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
     systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser"

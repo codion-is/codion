@@ -5,6 +5,4 @@ module org.jminor.framework.demos.petstore {
 
   exports org.jminor.framework.demos.petstore.beans.ui
           to org.jminor.swing.framework.ui;
-  exports org.jminor.framework.demos.petstore.domain
-          to org.jminor.framework.db.local;
 }

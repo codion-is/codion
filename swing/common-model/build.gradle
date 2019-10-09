@@ -2,22 +2,3 @@ dependencies {
     api project(':jminor-common-core')
     api project(':jminor-common-model')
 }
-
-ext {
-    testAddModules = ['java.sql']
-    testAddReads = ['org.jminor.swing.common.model': 'java.sql']
-}
-
-compileTestJava {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
-}
-
-test {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
-}

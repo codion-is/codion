@@ -52,6 +52,12 @@ ext {
     loadTestMainClass = "$moduleName/org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest"
     testAddModules = ['org.jminor.swing.framework.ui.test']
     testAddReads = ['org.jminor.framework.demos.empdept': 'org.jminor.swing.framework.ui.test']
+    testAddExports = [
+            'org.jminor.framework.demos.empdept/org.jminor.framework.demos.empdept.beans.ui': 'org.jminor.swing.framework.ui,org.jminor.swing.framework.ui.test',
+            'org.jminor.framework.demos.empdept/org.jminor.framework.demos.empdept.client.ui': 'org.jminor.swing.framework.ui.test',
+            'org.junit.platform.commons/org.junit.platform.commons.util': 'ALL-UNNAMED',
+            'org.junit.platform.commons/org.junit.platform.commons.logging': 'ALL-UNNAMED'
+    ]
 }
 
 javafx {
@@ -70,6 +76,7 @@ test {
     moduleOptions {
         addModules = testAddModules
         addReads = testAddReads
+        addExports = testAddExports
     }
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
     systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.empdept.domain.EmpDept"
