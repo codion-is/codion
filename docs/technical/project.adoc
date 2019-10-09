@@ -22,9 +22,11 @@ gradlew publishToMavenLocal
 
 == Running the demos
 
+NOTE: The demos use an embedded in-memory database, so changes to data do not persist.
+
 === Local database connection
 
-You can start by running a client from one of the demo projects (empdept, chinook, petstore or world) with a local database connection, the database is in-memory and is created on launch.
+You can start by running a client from one of the demo projects (empdept, chinook, petstore or world) with a local database connection.
 
 [source,shell]
 ----
@@ -34,8 +36,6 @@ gradlew :jminor-demos-chinook:runClientLocal
 === Remote database connection
 
 In order to run a client with a remote connection we must first start the remote server.
-
-NOTE: The server runs with an embedded in-memory database created on launch so any changes you make to data will be lost on server shutdown.
 
 [source,shell]
 ----
