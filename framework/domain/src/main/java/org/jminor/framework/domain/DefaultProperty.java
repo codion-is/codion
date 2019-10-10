@@ -869,27 +869,29 @@ class DefaultProperty implements Property {
       }
       switch (property.columnType) {
         case Types.INTEGER:
-          return (ValueFetcher) resultSet -> property.fromColumnValue(getInteger(resultSet, property.selectIndex));
+          return resultSet -> property.fromColumnValue(getInteger(resultSet, property.selectIndex));
         case Types.BIGINT:
-          return (ValueFetcher) resultSet -> property.fromColumnValue(getLong(resultSet, property.selectIndex));
+          return resultSet -> property.fromColumnValue(getLong(resultSet, property.selectIndex));
         case Types.DOUBLE:
-          return (ValueFetcher) resultSet -> property.fromColumnValue(getDouble(resultSet, property.selectIndex));
+          return resultSet -> property.fromColumnValue(getDouble(resultSet, property.selectIndex));
         case Types.DECIMAL:
-          return (ValueFetcher) resultSet -> property.fromColumnValue(getBigDecimal(resultSet, property.selectIndex));
+          return resultSet -> property.fromColumnValue(getBigDecimal(resultSet, property.selectIndex));
         case Types.DATE:
-          return (ValueFetcher) resultSet -> property.fromColumnValue(getDate(resultSet, property.selectIndex));
+          return resultSet -> property.fromColumnValue(getDate(resultSet, property.selectIndex));
         case Types.TIMESTAMP:
-          return (ValueFetcher) resultSet -> property.fromColumnValue(getTimestamp(resultSet, property.selectIndex));
+          return resultSet -> property.fromColumnValue(getTimestamp(resultSet, property.selectIndex));
         case Types.TIME:
-          return (ValueFetcher) resultSet -> property.fromColumnValue(getTime(resultSet, property.selectIndex));
+          return resultSet -> property.fromColumnValue(getTime(resultSet, property.selectIndex));
         case Types.VARCHAR:
-          return (ValueFetcher) resultSet -> property.fromColumnValue(getString(resultSet, property.selectIndex));
+          return resultSet -> property.fromColumnValue(getString(resultSet, property.selectIndex));
         case Types.BOOLEAN:
-          return (ValueFetcher) resultSet -> property.fromColumnValue(getBoolean(resultSet, property.selectIndex));
+          return resultSet -> property.fromColumnValue(getBoolean(resultSet, property.selectIndex));
         case Types.CHAR:
-          return (ValueFetcher) resultSet -> property.fromColumnValue(getCharacter(resultSet, property.selectIndex));
+          return resultSet -> property.fromColumnValue(getCharacter(resultSet, property.selectIndex));
         case Types.BLOB:
-          return (ValueFetcher) resultSet -> null;
+          return resultSet -> null;
+        case Types.JAVA_OBJECT:
+          return resultSet -> resultSet.getObject(property.selectIndex);
         default:
           throw new IllegalArgumentException("Unsupported SQL value type: " + property.columnType);
       }

@@ -50,5 +50,15 @@ VALUES (8, 'KING', 'PRESIDENT', NULL, '1981-11-17', 5000, NULL, 10),
 
 commit;
 
+create table scott.uuid_test_default (
+  id uuid default random_uuid(),
+  data varchar(20)
+);
+
+create table scott.uuid_test_no_default (
+  id uuid,
+  data varchar(20)
+);
+
 create user scott password 'tiger';
 alter user scott admin true;

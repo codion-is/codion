@@ -424,6 +424,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
       INCREMENT(false, false),
       /**
        * The primary key value is automatically created by the underlying database
+       * or the key generator implementation
        */
       AUTOMATIC(false, true);
 
@@ -467,10 +468,21 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * The default version does nothing, override to implement.
      * @param entity the entity to prepare
      * @param connection the connection to use
-     * @param statement the insert statement
+     * @param insertStatement the insert statement
      * @throws SQLException in case of an exception
      */
-    default void afterInsert(final Entity entity, final DatabaseConnection connection, final Statement statement) throws SQLException {/*for overriding*/}
+    default void afterInsert(final Entity entity, final DatabaseConnection connection, final Statement insertStatement) throws SQLException {/*for overriding*/}
+
+    /**
+     * Specifies whether the insert statement should return the primary key column values via the resulting
+     * {@link Statement#getGeneratedKeys()} resultSet, accessible in {@link #afterInsert(Entity, DatabaseConnection, Statement)}.
+     * The default implementation returns false.
+     * @return true if the primary key column values should be returned via the insert statement resultSet
+     * @see java.sql.Connection#prepareStatement(String, String[])
+     */
+    default boolean returnPrimaryKeyValues() {
+      return false;
+    }
 
     /**
      * @return the key generator type

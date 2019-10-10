@@ -233,7 +233,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           populateStatementPropertiesAndValues(true, entity, insertColumnProperties, statementProperties, statementValues);
 
           insertSQL = createInsertSQL(domain.getTableName(entityId), statementProperties);
-          statement = prepareStatement(insertSQL);
+          statement = prepareStatement(insertSQL, keyGenerator.returnPrimaryKeyValues() ? getPrimaryKeyColumnNames(entityId) : null);
           executePreparedUpdate(statement, insertSQL, statementProperties, statementValues);
           keyGenerator.afterInsert(entity, connection, statement);
 
@@ -950,13 +950,32 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private PreparedStatement prepareStatement(final String sqlStatement) throws SQLException {
+    return prepareStatement(sqlStatement, null);
+  }
+
+  private PreparedStatement prepareStatement(final String sqlStatement, final String[] returnColumns) throws SQLException {
     try {
       logAccess("prepareStatement", new Object[] {sqlStatement});
-      return connection.getConnection().prepareStatement(sqlStatement);
+      if (returnColumns == null) {
+        return connection.getConnection().prepareStatement(sqlStatement);
+      }
+      else {
+        return connection.getConnection().prepareStatement(sqlStatement, returnColumns);
+      }
     }
     finally {
       logExit("prepareStatement", null, null);
     }
+  }
+
+  private String[] getPrimaryKeyColumnNames(final String entityId) {
+    final List<Property.ColumnProperty> primaryKeyProperties = domain.getPrimaryKeyProperties(entityId);
+    final String[] columnNames = new String[primaryKeyProperties.size()];
+    for (int i = 0; i < primaryKeyProperties.size(); i++) {
+      columnNames[i] = primaryKeyProperties.get(i).getColumnName();
+    }
+
+    return columnNames;
   }
 
   private List<Entity> packResult(final ResultIterator<Entity> iterator) throws SQLException {

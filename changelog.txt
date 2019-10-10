@@ -5152,3 +5152,5 @@
   Entities.getValues() and getDistinctValues() now return List instead of Collection
   h2database module removed from a few testRuntimeOnly configurations where it was unnecessary
   Static import added for Collections.singletonList(), Collections.emptyList() and Arrays.asList()
+  Support for Types.JAVA_OBJECT added, useful for UUID primary key columns for example
+  Entity.KeyGenerator.returnPrimaryKeyValues() added for custom primary key generation strategies
