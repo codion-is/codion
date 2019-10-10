@@ -82,7 +82,7 @@ We must provide a constructor with a single *EntityConnectionProvider* parameter
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=18..21]
+include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=17..22]
 ----
 
 At some point we are going to be editing the manager property of an employee which means we'll need a value list of managers. We override *createForeignKeyComboBoxModel* in order to provide a specialized combo box model for the manager property.
@@ -93,14 +93,14 @@ We start by calling the super class method which creates an unfiltered {url-java
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=23..41]
+include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=24..42]
 ----
 
 Finally we bind a couple of events, for further information see <<{dir-manual}/manual.adoc#event-binding, Manual#Event binding>>.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=43..61]
+include::{dir-source}/org/jminor/framework/demos/empdept/beans/EmployeeEditModel.java[lines=44..61]
 ----
 
 == Application UI layer
