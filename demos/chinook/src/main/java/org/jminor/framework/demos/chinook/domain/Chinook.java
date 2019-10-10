@@ -5,6 +5,8 @@ package org.jminor.framework.demos.chinook.domain;
 
 import org.jminor.framework.domain.Property;
 
+import java.math.BigDecimal;
+
 public interface Chinook {
 
   String T_ARTIST = "artist@chinook";
@@ -115,12 +117,12 @@ public interface Chinook {
   Property.DerivedProperty.Provider INVOICELINE_TOTAL_PROVIDER =
           linkedValues -> {
             final Integer quantity = (Integer) linkedValues.get(INVOICELINE_QUANTITY);
-            final Double unitPrice = (Double) linkedValues.get(INVOICELINE_UNITPRICE);
+            final BigDecimal unitPrice = (BigDecimal) linkedValues.get(INVOICELINE_UNITPRICE);
             if (unitPrice == null || quantity == null) {
               return null;
             }
 
-            return quantity * unitPrice;
+            return unitPrice.multiply(BigDecimal.valueOf(quantity));
           };
 
   String T_PLAYLIST = "playlist@chinook";
