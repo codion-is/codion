@@ -4,10 +4,16 @@
 package org.jminor.framework.db.local;
 
 import org.jminor.common.Item;
+import org.jminor.common.db.DatabaseConnection;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Properties;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
+import java.util.UUID;
 
 import static java.util.Arrays.asList;
 
@@ -16,6 +22,8 @@ public final class TestDomain extends Domain {
   public TestDomain() {
     department();
     employee();
+    uuidTestDefaultValue();
+    uuidTestNoDefaultValue();
     registerDomain();
   }
 
@@ -83,5 +91,54 @@ public final class TestDomain extends Domain {
             .setKeyGenerator(incrementKeyGenerator("scott.emp", "empno"))
             .setSearchPropertyIds(EMP_NAME, EMP_JOB)
             .setCaption("Employee");
+  }
+
+  public static final String T_UUID_TEST_DEFAULT = "scott.uuid_test_default";
+  public static final String UUID_TEST_DEFAULT_ID = "id";
+  public static final String UUID_TEST_DEFAULT_DATA = "data";
+
+  private void uuidTestDefaultValue() {
+    final Entity.KeyGenerator uuidKeyGenerator = new Entity.KeyGenerator() {
+      @Override
+      public void afterInsert(final Entity entity, final DatabaseConnection connection, final Statement insertStatement) throws SQLException {
+        final ResultSet generatedKeys = insertStatement.getGeneratedKeys();
+        if (generatedKeys.next()) {
+          entity.put(UUID_TEST_DEFAULT_ID, generatedKeys.getObject(1));
+        }
+      }
+      @Override
+      public boolean returnPrimaryKeyValues() {
+        return true;
+      }
+      @Override
+      public Type getType() {
+        return Type.AUTOMATIC;
+      }
+    };
+    define(T_UUID_TEST_DEFAULT,
+            Properties.primaryKeyProperty(UUID_TEST_DEFAULT_ID, Types.JAVA_OBJECT, "Id"),
+            Properties.columnProperty(UUID_TEST_DEFAULT_DATA, Types.VARCHAR, "Data"))
+            .setKeyGenerator(uuidKeyGenerator);
+  }
+
+  public static final String T_UUID_TEST_NO_DEFAULT = "scott.uuid_test_no_default";
+  public static final String UUID_TEST_NO_DEFAULT_ID = "id";
+  public static final String UUID_TEST_NO_DEFAULT_DATA = "data";
+
+  private void uuidTestNoDefaultValue() {
+    final Entity.KeyGenerator uuidKeyGenerator = new Entity.KeyGenerator() {
+      @Override
+      public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
+        entity.put(UUID_TEST_NO_DEFAULT_ID, UUID.randomUUID());
+      }
+      @Override
+      public Type getType() {
+        return Type.AUTOMATIC;
+      }
+    };
+    define(T_UUID_TEST_NO_DEFAULT,
+            Properties.primaryKeyProperty(UUID_TEST_NO_DEFAULT_ID, Types.JAVA_OBJECT, "Id"),
+            Properties.columnProperty(UUID_TEST_NO_DEFAULT_DATA, Types.VARCHAR, "Data"))
+            .setKeyGenerator(uuidKeyGenerator);
   }
 }

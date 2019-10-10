@@ -1393,7 +1393,7 @@ public class Domain implements Serializable {
     }
 
     @Override
-    public void afterInsert(final Entity entity, final DatabaseConnection connection, final Statement statement) throws SQLException {
+    public void afterInsert(final Entity entity, final DatabaseConnection connection, final Statement insertStatement) throws SQLException {
       queryAndSet(entity, getPrimaryKeyProperty(entity.getEntityId()), connection);
     }
 

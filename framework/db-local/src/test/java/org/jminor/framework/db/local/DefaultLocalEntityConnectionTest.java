@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -718,6 +719,24 @@ public class DefaultLocalEntityConnectionTest {
 
     fromDb = connection.readBlob(scott.getKey(), TestDomain.EMP_DATA);
     assertArrayEquals(newBytes, fromDb);
+  }
+
+  @Test
+  public void testUUIDPrimaryKeyColumnWithDefaultValue() throws DatabaseException {
+    final Entity entity = DOMAIN.entity(TestDomain.T_UUID_TEST_DEFAULT);
+    entity.put(TestDomain.UUID_TEST_DEFAULT_DATA, "test");
+    connection.insert(singletonList(entity));
+    assertNotNull((UUID) entity.get(TestDomain.UUID_TEST_DEFAULT_ID));
+    assertEquals("test", entity.getString(TestDomain.UUID_TEST_DEFAULT_DATA));
+  }
+
+  @Test
+  public void testUUIDPrimaryKeyColumnWithoutDefaultValue() throws DatabaseException {
+    final Entity entity = DOMAIN.entity(TestDomain.T_UUID_TEST_NO_DEFAULT);
+    entity.put(TestDomain.UUID_TEST_NO_DEFAULT_DATA, "test");
+    connection.insert(singletonList(entity));
+    assertNotNull((UUID) entity.get(TestDomain.UUID_TEST_NO_DEFAULT_ID));
+    assertEquals("test", entity.getString(TestDomain.UUID_TEST_NO_DEFAULT_DATA));
   }
 
   private static DefaultLocalEntityConnection initializeConnection() throws DatabaseException {
