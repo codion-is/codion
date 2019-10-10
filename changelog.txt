@@ -5167,3 +5167,4 @@
   Static import added for Collections.singletonList(), Collections.emptyList() and Arrays.asList()
   Support for Types.JAVA_OBJECT added, useful for UUID primary key columns for example
   Entity.KeyGenerator.returnPrimaryKeyValues() added for custom primary key generation strategies
+  UiValues, ValueLinks, usePrimitive replace with nullable where applicable, usePrimitive leftover parameters renamed to isPrimitive

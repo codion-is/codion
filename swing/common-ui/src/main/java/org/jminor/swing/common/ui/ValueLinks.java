@@ -127,14 +127,14 @@ public final class ValueLinks {
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param usePrimitive if true then the property value is assumed to be a primitive
+   * @param isPrimitive if true then the property value is assumed to be a primitive
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void integerValueLink(final IntegerField integerField, final Object owner, final String beanPropertyName,
-                                      final EventObserver<Integer> valueChangeEvent, final boolean usePrimitive,
+                                      final EventObserver<Integer> valueChangeEvent, final boolean isPrimitive,
                                       final boolean immediateUpdate) {
-    integerValueLink(integerField, Values.beanValue(owner, beanPropertyName, usePrimitive ? int.class : Integer.class,
-            valueChangeEvent), usePrimitive, false, immediateUpdate);
+    integerValueLink(integerField, Values.beanValue(owner, beanPropertyName, isPrimitive ? int.class : Integer.class,
+            valueChangeEvent), !isPrimitive, false, immediateUpdate);
   }
 
   /**
@@ -142,28 +142,28 @@ public final class ValueLinks {
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param usePrimitive if true then the property value is assumed to be a primitive
+   * @param isPrimitive if true then the property value is assumed to be a primitive
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void integerValueLink(final IntegerField integerField, final Object owner, final String beanPropertyName,
-                                      final EventObserver<Integer> valueChangeEvent, final boolean usePrimitive,
+                                      final EventObserver<Integer> valueChangeEvent, final boolean isPrimitive,
                                       final boolean readOnly, final boolean immediateUpdate) {
-    integerValueLink(integerField, Values.beanValue(owner, beanPropertyName, usePrimitive ? int.class : Integer.class,
-            valueChangeEvent), usePrimitive, readOnly, immediateUpdate);
+    integerValueLink(integerField, Values.beanValue(owner, beanPropertyName, isPrimitive ? int.class : Integer.class,
+            valueChangeEvent), !isPrimitive, readOnly, immediateUpdate);
   }
 
   /**
    * @param integerField the int field to link with the value
    * @param value the model value
-   * @param usePrimitive if true then the property value is assumed to be a primitive
+   * @param nullable if false then 0 is used instead of null
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void integerValueLink(final IntegerField integerField, final Value<Integer> value, final boolean usePrimitive,
+  public static void integerValueLink(final IntegerField integerField, final Value<Integer> value, final boolean nullable,
                                       final boolean readOnly, final boolean immediateUpdate) {
     integerField.setEditable(!readOnly);
-    Values.link(value, UiValues.integerValue(integerField, usePrimitive, immediateUpdate), readOnly);
+    Values.link(value, UiValues.integerValue(integerField, nullable, immediateUpdate), readOnly);
   }
 
   /**
@@ -171,13 +171,13 @@ public final class ValueLinks {
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param usePrimitive if true then the property value is assumed to be a primitive
+   * @param isPrimitive if true then the property value is assumed to be a primitive
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void doubleValueLink(final DecimalField decimalField, final Object owner, final String beanPropertyName,
-                                     final EventObserver<Double> valueChangeEvent, final boolean usePrimitive,
+                                     final EventObserver<Double> valueChangeEvent, final boolean isPrimitive,
                                      final boolean immediateUpdate) {
-    doubleValueLink(decimalField, owner, beanPropertyName, valueChangeEvent, usePrimitive, false, immediateUpdate);
+    doubleValueLink(decimalField, owner, beanPropertyName, valueChangeEvent, isPrimitive, false, immediateUpdate);
   }
 
   /**
@@ -185,28 +185,28 @@ public final class ValueLinks {
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param usePrimitive if true then the property value is assumed to be a primitive
+   * @param isPrimitive if true then the property value is assumed to be a primitive
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void doubleValueLink(final DecimalField decimalField, final Object owner, final String beanPropertyName,
-                                     final EventObserver<Double> valueChangeEvent, final boolean usePrimitive,
+                                     final EventObserver<Double> valueChangeEvent, final boolean isPrimitive,
                                      final boolean readOnly, final boolean immediateUpdate) {
-    doubleValueLink(decimalField, Values.beanValue(owner, beanPropertyName, usePrimitive ? double.class : Double.class,
-            valueChangeEvent), usePrimitive, readOnly, immediateUpdate);
+    doubleValueLink(decimalField, Values.beanValue(owner, beanPropertyName, isPrimitive ? double.class : Double.class,
+            valueChangeEvent), !isPrimitive, readOnly, immediateUpdate);
   }
 
   /**
    * @param decimalField the decimal field to link with the value
    * @param value the model value
-   * @param usePrimitive if true then the property value is assumed to be a primitive
+   * @param nullable if false then 0 is used instead of null
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void doubleValueLink(final DecimalField decimalField, final Value<Double> value, final boolean usePrimitive,
+  public static void doubleValueLink(final DecimalField decimalField, final Value<Double> value, final boolean nullable,
                                      final boolean readOnly, final boolean immediateUpdate) {
     decimalField.setEditable(!readOnly);
-    Values.link(value, UiValues.doubleValue(decimalField, usePrimitive, immediateUpdate), readOnly);
+    Values.link(value, UiValues.doubleValue(decimalField, nullable, immediateUpdate), readOnly);
   }
 
   /**
@@ -226,13 +226,13 @@ public final class ValueLinks {
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param usePrimitive if true then the property value is assumed to be a primitive
+   * @param isPrimitive if true then the property value is assumed to be a primitive
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void longValueLink(final LongField longField, final Object owner, final String beanPropertyName,
-                                   final EventObserver<Long> valueChangeEvent, final boolean usePrimitive,
+                                   final EventObserver<Long> valueChangeEvent, final boolean isPrimitive,
                                    final boolean immediateUpdate) {
-    longValueLink(longField, owner, beanPropertyName, valueChangeEvent, usePrimitive, false, immediateUpdate);
+    longValueLink(longField, owner, beanPropertyName, valueChangeEvent, isPrimitive, false, immediateUpdate);
   }
 
   /**
@@ -240,28 +240,28 @@ public final class ValueLinks {
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param usePrimitive if true then the property value is assumed to be a primitive
+   * @param isPrimitive if true then the property value is assumed to be a primitive
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void longValueLink(final LongField longField, final Object owner, final String beanPropertyName,
-                                   final EventObserver<Long> valueChangeEvent, final boolean usePrimitive,
+                                   final EventObserver<Long> valueChangeEvent, final boolean isPrimitive,
                                    final boolean readOnly, final boolean immediateUpdate) {
-    longValueLink(longField, Values.beanValue(owner, beanPropertyName, usePrimitive ? long.class : Long.class,
-            valueChangeEvent), usePrimitive, readOnly, immediateUpdate);
+    longValueLink(longField, Values.beanValue(owner, beanPropertyName, isPrimitive ? long.class : Long.class,
+            valueChangeEvent), !isPrimitive, readOnly, immediateUpdate);
   }
 
   /**
    * @param longField the long field to link with the value
    * @param value the model value
-   * @param usePrimitive if true then the property value is assumed to be a primitive
+   * @param nullable if false then 0 is used instead of null
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void longValueLink(final LongField longField, final Value<Long> value, final boolean usePrimitive,
+  public static void longValueLink(final LongField longField, final Value<Long> value, final boolean nullable,
                                    final boolean readOnly, final boolean immediateUpdate) {
     longField.setEditable(!readOnly);
-    Values.link(value, UiValues.longValue(longField, usePrimitive, immediateUpdate), readOnly);
+    Values.link(value, UiValues.longValue(longField, nullable, immediateUpdate), readOnly);
   }
 
   /**
