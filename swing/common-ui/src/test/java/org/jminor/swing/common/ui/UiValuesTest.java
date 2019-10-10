@@ -142,7 +142,7 @@ public class UiValuesTest {
   @Test
   public void integerTextUiValue() {
     final IntegerField integerField = new IntegerField();
-    final Value<Integer> value = UiValues.integerValue(integerField, false, true);
+    final Value<Integer> value = UiValues.integerValue(integerField, true, true);
 
     assertNull(value.get());
     integerField.setText("122");
@@ -157,7 +157,7 @@ public class UiValuesTest {
   @Test
   public void integerPrimitiveTextUiValue() {
     final IntegerField integerField = new IntegerField();
-    final Value<Integer> value = UiValues.integerValue(integerField, true, true);
+    final Value<Integer> value = UiValues.integerValue(integerField, false, true);
 
     assertEquals(Integer.valueOf(0), value.get());
     integerField.setText("122");
@@ -172,7 +172,7 @@ public class UiValuesTest {
   @Test
   public void longTextUiValue() {
     final LongField longField = new LongField();
-    final Value<Long> value = UiValues.longValue(longField, false, true);
+    final Value<Long> value = UiValues.longValue(longField, true, true);
 
     assertNull(value.get());
     longField.setText("122");
@@ -187,7 +187,7 @@ public class UiValuesTest {
   @Test
   public void longPrimitiveTextUiValue() {
     final LongField longField = new LongField();
-    final Value<Long> value = UiValues.longValue(longField, true, true);
+    final Value<Long> value = UiValues.longValue(longField, false, true);
 
     assertEquals(Long.valueOf(0), value.get());
     longField.setText("122");
@@ -203,7 +203,7 @@ public class UiValuesTest {
   public void doubleTextUiValue() {
     final DecimalField decimalField = new DecimalField();
     decimalField.setSeparators('.', ',');
-    final Value<Double> value = UiValues.doubleValue(decimalField, false, true);
+    final Value<Double> value = UiValues.doubleValue(decimalField, true, true);
 
     assertNull(value.get());
     decimalField.setText("122.2");
@@ -219,7 +219,7 @@ public class UiValuesTest {
   public void doublePrimitiveTextUiValue() {
     final DecimalField decimalField = new DecimalField();
     decimalField.setSeparators('.', ',');
-    final Value<Double> value = UiValues.doubleValue(decimalField, true, true);
+    final Value<Double> value = UiValues.doubleValue(decimalField, false, true);
 
     assertEquals(Double.valueOf(0), value.get());
     decimalField.setText("122.2");

@@ -122,16 +122,16 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
                 model.getDateTimeFormatPattern(), true);
       }
       else if (columnProperty.isDouble()) {
-        ValueLinks.doubleValueLink((DecimalField) field, modelValue, false, false, true);
+        ValueLinks.doubleValueLink((DecimalField) field, modelValue, true, false, true);
       }
       else if (columnProperty.isBigDecimal()) {
         ValueLinks.bigDecimalValueLink((DecimalField) field, modelValue, false, true);
       }
       else if (columnProperty.isInteger()) {
-        ValueLinks.integerValueLink((IntegerField) field, modelValue, false, false, true);
+        ValueLinks.integerValueLink((IntegerField) field, modelValue, true, false, true);
       }
       else if (columnProperty.isLong()) {
-        ValueLinks.longValueLink((LongField) field, modelValue, false, false, true);
+        ValueLinks.longValueLink((LongField) field, modelValue, true, false, true);
       }
       else if (!(columnProperty instanceof Property.ForeignKeyProperty)) {//entity based properties are bound in the model
         ValueLinks.textValueLink((JTextField) field, modelValue, null, true, false);

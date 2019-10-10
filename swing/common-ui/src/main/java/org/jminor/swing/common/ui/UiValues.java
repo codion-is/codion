@@ -88,12 +88,12 @@ public final class UiValues {
 
   /**
    * @param integerField the component
-   * @param usePrimitive if true then the int primitive is used, Integer otherwise
+   * @param nullable if false then the resulting Value returns 0 instead of null
    * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
-  public static Value<Integer> integerValue(final IntegerField integerField, final boolean usePrimitive, final boolean immediateUpdate) {
-    return new IntUIValue(integerField, usePrimitive, immediateUpdate);
+  public static Value<Integer> integerValue(final IntegerField integerField, final boolean nullable, final boolean immediateUpdate) {
+    return new IntUIValue(integerField, nullable, immediateUpdate);
   }
 
   /**
@@ -122,12 +122,12 @@ public final class UiValues {
 
   /**
    * @param decimalField the component
-   * @param usePrimitive if true then the double primitive is used, Double otherwise
+   * @param nullable if false then the resulting Value returns 0 instead of null
    * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
-  public static Value<Double> doubleValue(final DecimalField decimalField, final boolean usePrimitive, final boolean immediateUpdate) {
-    return new DoubleUIValue(decimalField, usePrimitive, immediateUpdate);
+  public static Value<Double> doubleValue(final DecimalField decimalField, final boolean nullable, final boolean immediateUpdate) {
+    return new DoubleUIValue(decimalField, nullable, immediateUpdate);
   }
 
   /**
@@ -141,12 +141,12 @@ public final class UiValues {
 
   /**
    * @param longField the component
-   * @param usePrimitive if true then the double primitive is used, Long otherwise
+   * @param nullable if false then the resulting Value returns 0 instead of null
    * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
-  public static Value<Long> longValue(final LongField longField, final boolean usePrimitive, final boolean immediateUpdate) {
-    return new LongUIValue(longField, usePrimitive, immediateUpdate);
+  public static Value<Long> longValue(final LongField longField, final boolean nullable, final boolean immediateUpdate) {
+    return new LongUIValue(longField, nullable, immediateUpdate);
   }
 
   /**
@@ -334,15 +334,15 @@ public final class UiValues {
     }
   }
 
-  private abstract static class NumberUIValue<T> extends UIValue<T> {
-    private final NumberField textField;
-    private final boolean usePrimitive;
+  private abstract static class NumberUIValue<T extends Number> extends UIValue<T> {
+    private final NumberField numberField;
+    private final boolean nullable;
 
-    private NumberUIValue(final NumberField textField, final boolean usePrimitive, final boolean immediateUpdate) {
-      this.textField = textField;
-      this.usePrimitive = usePrimitive;
+    private NumberUIValue(final NumberField numberField, final boolean nullable, final boolean immediateUpdate) {
+      this.numberField = numberField;
+      this.nullable = nullable;
       if (immediateUpdate) {
-        textField.getDocument().addDocumentListener(new DocumentAdapter() {
+        numberField.getDocument().addDocumentListener(new DocumentAdapter() {
           @Override
           public final void contentsChanged(final DocumentEvent e) {
             fireChangeEvent();
@@ -350,7 +350,7 @@ public final class UiValues {
         });
       }
       else {
-        textField.addFocusListener(new FocusAdapter() {
+        numberField.addFocusListener(new FocusAdapter() {
           @Override
           public void focusLost(final FocusEvent e) {
             if (!e.isTemporary()) {
@@ -361,35 +361,36 @@ public final class UiValues {
       }
     }
 
-    protected final boolean isUsePrimitive() {
-      return usePrimitive;
+    @Override
+    public final boolean isNullable() {
+      return nullable;
     }
 
-    protected final NumberField getTextField() {
-      return textField;
+    protected final NumberField getNumberField() {
+      return numberField;
     }
 
-    protected Number getNumber() {
-      return textField.getNumber();
+    protected final Number getNumber() {
+      return numberField.getNumber();
     }
   }
 
   private static final class IntUIValue extends NumberUIValue<Integer> {
 
-    private IntUIValue(final IntegerField integerField, final boolean usePrimitive, final boolean immediateUpdate) {
-      super(integerField, usePrimitive, immediateUpdate);
+    private IntUIValue(final IntegerField integerField, final boolean nullable, final boolean immediateUpdate) {
+      super(integerField, nullable, immediateUpdate);
     }
 
     @Override
     protected void setInternal(final Integer value) {
-      getTextField().setNumber(value);
+      getNumberField().setNumber(value);
     }
 
     @Override
     public Integer get() {
       final Number number = getNumber();
       if (number == null) {
-        return isUsePrimitive() ? 0 : null;
+        return isNullable() ? null : 0;
       }
 
       return number.intValue();
@@ -398,20 +399,20 @@ public final class UiValues {
 
   private static final class DoubleUIValue extends NumberUIValue<Double> {
 
-    private DoubleUIValue(final DecimalField decimalField, final boolean usePrimitive, final boolean immediateUpdate) {
-      super(decimalField, usePrimitive, immediateUpdate);
+    private DoubleUIValue(final DecimalField decimalField, final boolean nullable, final boolean immediateUpdate) {
+      super(decimalField, nullable, immediateUpdate);
     }
 
     @Override
     protected void setInternal(final Double value) {
-      getTextField().setNumber(value);
+      getNumberField().setNumber(value);
     }
 
     @Override
     public Double get() {
       final Number number = getNumber();
       if (number == null) {
-        return isUsePrimitive() ? 0d : null;
+        return isNullable() ? null : 0d;
       }
 
       return number.doubleValue();
@@ -421,12 +422,12 @@ public final class UiValues {
   private static final class BigDecimalUIValue extends NumberUIValue<BigDecimal> {
 
     private BigDecimalUIValue(final DecimalField decimalField, final boolean immediateUpdate) {
-      super(decimalField, false, immediateUpdate);
+      super(decimalField, true, immediateUpdate);
     }
 
     @Override
     protected void setInternal(final BigDecimal value) {
-      getTextField().setNumber(value);
+      getNumberField().setNumber(value);
     }
 
     @Override
@@ -437,20 +438,20 @@ public final class UiValues {
 
   private static final class LongUIValue extends NumberUIValue<Long> {
 
-    private LongUIValue(final LongField longField, final boolean usePrimitive, final boolean immediateUpdate) {
-      super(longField, usePrimitive, immediateUpdate);
+    private LongUIValue(final LongField longField, final boolean nullable, final boolean immediateUpdate) {
+      super(longField, nullable, immediateUpdate);
     }
 
     @Override
     protected void setInternal(final Long value) {
-      getTextField().setNumber(value);
+      getNumberField().setNumber(value);
     }
 
     @Override
     public Long get() {
       final Number number = getNumber();
       if (number == null) {
-        return isUsePrimitive() ? 0L : null;
+        return isNullable() ? null : 0L;
       }
 
       return number.longValue();

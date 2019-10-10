@@ -726,17 +726,17 @@ public final class EntityUiUtil {
       ValueLinks.textValueLink(textField, EditModelValues.value(editModel, property), property.getFormat(), immediateUpdate, readOnly);
     }
     else if (property.isInteger()) {
-      ValueLinks.integerValueLink((IntegerField) textField, EditModelValues.value(editModel, property), false, readOnly, immediateUpdate);
+      ValueLinks.integerValueLink((IntegerField) textField, EditModelValues.value(editModel, property), true, readOnly, immediateUpdate);
     }
     else if (property.isDouble()) {
-      ValueLinks.doubleValueLink((DecimalField) textField, EditModelValues.value(editModel, property), false, readOnly, immediateUpdate);
+      ValueLinks.doubleValueLink((DecimalField) textField, EditModelValues.value(editModel, property), true, readOnly, immediateUpdate);
     }
     else if (property.isBigDecimal()) {
       ValueLinks.bigDecimalValueLink((DecimalField) textField, EditModelValues.value(editModel, property),
               readOnly, immediateUpdate);
     }
     else if (property.isLong()) {
-      ValueLinks.longValueLink((LongField) textField, EditModelValues.value(editModel, property), false, readOnly, immediateUpdate);
+      ValueLinks.longValueLink((LongField) textField, EditModelValues.value(editModel, property), true, readOnly, immediateUpdate);
     }
     else if (property.isDate()) {
       ValueLinks.localDateValueLink((JFormattedTextField) textField, EditModelValues.value(editModel, property),
