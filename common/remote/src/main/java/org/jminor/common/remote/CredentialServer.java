@@ -129,13 +129,6 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
     return new DefaultCredentialsProvider();
   }
 
-  /**
-   * Performs a authentication lookup on localhost via a {@link CredentialServer}.
-   * @param programArguments the arguments list in which to search for the autentication token [authenticationToke:123-123-123]
-   * @return the User credentials associated with the {@code authenticationToken}, null if no token was found in the
-   * arguments list, if the user credentials have expired or if no authentication server is running
-   * @see CredentialServer
-   */
   private static final class DefaultCredentialsProvider implements CredentialsProvider {
 
     /** {@inheritDoc} */
