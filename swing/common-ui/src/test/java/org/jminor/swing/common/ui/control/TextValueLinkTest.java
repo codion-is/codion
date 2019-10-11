@@ -16,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TextValueLinkTest {
 
   private String stringValue;
-  private final Event<String> evtStringValueChanged = Events.event();
+  private final Event<String> stringValueChangedEvent = Events.event();
 
   @Test
   public void testNullInitialValue() throws Exception {
     stringValue = null;
     final JTextField textField = new JTextField();
-    ValueLinks.textValueLink(textField, this, "stringValue", evtStringValueChanged);
+    ValueLinks.textValueLink(textField, this, "stringValue", stringValueChangedEvent);
     assertNull(stringValue);
     assertEquals("", textField.getText());
     setStringValue("hello");
@@ -34,7 +34,7 @@ public class TextValueLinkTest {
 
     final JTextField textField2 = new JTextField();
     stringValue = "test";
-    ValueLinks.textValueLink(textField2, this, "stringValue", evtStringValueChanged, true);
+    ValueLinks.textValueLink(textField2, this, "stringValue", stringValueChangedEvent, true);
     assertEquals("test", textField2.getText());
     assertFalse(textField2.isEditable());
   }
@@ -43,7 +43,7 @@ public class TextValueLinkTest {
   public void testNonNullInitialValue() throws Exception {
     stringValue = "name";
     final JTextField textField = new JTextField();
-    ValueLinks.textValueLink(textField, this, "stringValue", evtStringValueChanged);
+    ValueLinks.textValueLink(textField, this, "stringValue", stringValueChangedEvent);
     assertEquals("name", textField.getText());
     textField.setText("darri");
     assertFalse(getStringValue().isEmpty());
@@ -60,6 +60,6 @@ public class TextValueLinkTest {
 
   public void setStringValue(final String stringValue) {
     this.stringValue = stringValue;
-    evtStringValueChanged.fire();
+    stringValueChangedEvent.fire();
   }
 }

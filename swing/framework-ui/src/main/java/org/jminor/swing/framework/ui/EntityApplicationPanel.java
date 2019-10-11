@@ -273,8 +273,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * fires: evtAlwaysOnTopChanged
    * @param value the new value
+   * @see #addAlwaysOnTopListener(EventDataListener)
    */
   public final void setAlwaysOnTop(final boolean value) {
     final Window parent = getParentWindow();

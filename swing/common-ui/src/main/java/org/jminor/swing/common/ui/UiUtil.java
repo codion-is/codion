@@ -1468,7 +1468,7 @@ public final class UiUtil {
       if (component.isShowing() && (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
         SwingUtilities.getWindowAncestor(component).addWindowFocusListener(new WindowAdapter() {
           @Override
-          public void windowGainedFocus(final WindowEvent evt) {
+          public void windowGainedFocus(final WindowEvent windowEvent) {
             component.requestFocus();
             if (onFocusAction != null) {
               onFocusAction.actionPerformed(new ActionEvent(component, 0, "onFocusAction"));

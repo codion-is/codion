@@ -20,9 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class DoubleValueLinkTest {
 
   private Double doubleValue;
-  private final Event evtDoubleValueChanged = Events.event();
+  private final Event doubleValueChangedEvent = Events.event();
   private double doublePrimitiveValue;
-  private final Event evtDoublePrimitiveValueValueChanged = Events.event();
+  private final Event doublePrimitiveValueValueChangedEvent = Events.event();
 
   @Test
   public void testBigDecimal() {
@@ -44,7 +44,7 @@ public class DoubleValueLinkTest {
   public void testDouble() throws Exception {
     final DecimalField decimalField = new DecimalField();
     decimalField.setSeparators('.', ',');
-    ValueLinks.doubleValueLink(decimalField, this, "doubleValue", evtDoubleValueChanged, false, true);
+    ValueLinks.doubleValueLink(decimalField, this, "doubleValue", doubleValueChangedEvent, false, true);
     assertNull(decimalField.getDouble());
     setDoubleValue(2.2);
     assertEquals(Double.valueOf(2.2), decimalField.getDouble());
@@ -58,7 +58,7 @@ public class DoubleValueLinkTest {
   public void testDoublePrimitive() throws Exception {
     final DecimalField decimalField = new DecimalField();
     decimalField.setSeparators('.', ',');
-    ValueLinks.doubleValueLink(decimalField, this, "doublePrimitiveValue", evtDoublePrimitiveValueValueChanged, true, true);
+    ValueLinks.doubleValueLink(decimalField, this, "doublePrimitiveValue", doublePrimitiveValueValueChangedEvent, true, true);
     assertEquals((Double) 0.0, decimalField.getDouble());
     setDoublePrimitiveValue(2.2);
     assertEquals(Double.valueOf(2.2), decimalField.getDouble());
@@ -74,7 +74,7 @@ public class DoubleValueLinkTest {
 
   public void setDoubleValue(final Double doubleValue) {
     this.doubleValue = doubleValue;
-    evtDoubleValueChanged.fire();
+    doubleValueChangedEvent.fire();
   }
 
   public double getDoublePrimitiveValue() {
@@ -83,6 +83,6 @@ public class DoubleValueLinkTest {
 
   public void setDoublePrimitiveValue(final double doublePrimitiveValue) {
     this.doublePrimitiveValue = doublePrimitiveValue;
-    evtDoublePrimitiveValueValueChanged.fire();
+    doublePrimitiveValueValueChangedEvent.fire();
   }
 }

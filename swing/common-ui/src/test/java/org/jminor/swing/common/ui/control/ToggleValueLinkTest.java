@@ -17,12 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ToggleValueLinkTest {
 
   private boolean booleanValue;
-  private final Event evtBooleanValueChanged = Events.event();
+  private final Event booleanValueChangedEvent = Events.event();
 
   @Test
   public void test() throws Exception {
     final JCheckBox checkBox = new JCheckBox();
-    ValueLinks.toggleValueLink(checkBox.getModel(), this, "booleanValue", evtBooleanValueChanged);
+    ValueLinks.toggleValueLink(checkBox.getModel(), this, "booleanValue", booleanValueChangedEvent);
     assertFalse(checkBox.isSelected());
     setBooleanValue(true);
     assertTrue(checkBox.isSelected());
@@ -36,6 +36,6 @@ public class ToggleValueLinkTest {
 
   public void setBooleanValue(final boolean booleanValue) {
     this.booleanValue = booleanValue;
-    evtBooleanValueChanged.fire();
+    booleanValueChangedEvent.fire();
   }
 }

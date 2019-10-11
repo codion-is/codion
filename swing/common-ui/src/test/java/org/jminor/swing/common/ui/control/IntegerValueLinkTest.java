@@ -16,14 +16,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class IntegerValueLinkTest {
 
   private Integer integerValue;
-  private final Event<Integer> evtIntegerValueChanged = Events.event();
+  private final Event<Integer> integerValueChangedEvent = Events.event();
   private int intValue;
-  private final Event<Integer> evtIntValueChanged = Events.event();
+  private final Event<Integer> intValueChangedEvent = Events.event();
 
   @Test
   public void testInteger() throws Exception {
     final IntegerField integerField = new IntegerField();
-    ValueLinks.integerValueLink(integerField, this, "integerValue", evtIntegerValueChanged, false, true);
+    ValueLinks.integerValueLink(integerField, this, "integerValue", integerValueChangedEvent, false, true);
     assertNull(integerField.getInteger());
     setIntegerValue(2);
     assertEquals(2, integerField.getInteger().intValue());
@@ -36,7 +36,7 @@ public class IntegerValueLinkTest {
   @Test
   public void testInt() throws Exception {
     final IntegerField integerField = new IntegerField();
-    ValueLinks.integerValueLink(integerField, this, "intValue", evtIntValueChanged, true, true);
+    ValueLinks.integerValueLink(integerField, this, "intValue", intValueChangedEvent, true, true);
     assertEquals((Integer) 0, integerField.getInteger());
     setIntValue(2);
     assertEquals(2, integerField.getInteger().intValue());
@@ -52,7 +52,7 @@ public class IntegerValueLinkTest {
 
   public void setIntegerValue(final Integer integerValue) {
     this.integerValue = integerValue;
-    evtIntegerValueChanged.fire(this.integerValue);
+    integerValueChangedEvent.fire(this.integerValue);
   }
 
   public int getIntValue() {
@@ -61,6 +61,6 @@ public class IntegerValueLinkTest {
 
   public void setIntValue(final int intValue) {
     this.intValue = intValue;
-    evtIntValueChanged.fire(this.intValue);
+    intValueChangedEvent.fire(this.intValue);
   }
 }

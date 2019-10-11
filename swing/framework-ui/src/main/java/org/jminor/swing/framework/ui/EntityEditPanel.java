@@ -2168,7 +2168,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
       this.panelProvider = panelProvider;
       this.connectionProvider = connectionProvider;
       this.listener = listener;
-      this.component.addPropertyChangeListener("enabled", evt -> setEnabled((Boolean) evt.getNewValue()));
+      this.component.addPropertyChangeListener("enabled", changeEvent -> setEnabled((Boolean) changeEvent.getNewValue()));
       setEnabled(component.isEnabled());
     }
 
