@@ -42,7 +42,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
     final StateObserver selectionNotEmptyObserver = getEntityTableModel().getSelectionModel()
             .getSelectionEmptyObserver().getReversedObserver();
     printControlSet.add(Controls.control(this::viewEmployeeReport,
-            EmpDept.getString(EmpDept.EMPLOYEE_REPORT), selectionNotEmptyObserver));
+            "Employee Report", selectionNotEmptyObserver));
 
     return printControlSet;
   }

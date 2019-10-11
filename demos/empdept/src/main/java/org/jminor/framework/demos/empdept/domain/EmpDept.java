@@ -9,8 +9,6 @@ import org.jminor.framework.domain.Domain;
 import java.awt.Color;
 import java.sql.Types;
 import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import static java.util.Arrays.asList;
 import static org.jminor.framework.domain.Properties.*;
@@ -19,16 +17,6 @@ import static org.jminor.framework.domain.Properties.*;
  * This class contains the specification for the EmpDept application domain model
  */
 public final class EmpDept extends Domain {
-
-  private static final ResourceBundle bundle =
-          ResourceBundle.getBundle("org.jminor.framework.demos.empdept.domain.EmpDept", Locale.getDefault());
-
-  /**Used for i18n*/
-  public static final String DEPARTMENT = "department";
-  public static final String EMPLOYEE = "employee";
-  public static final String NONE = "none";
-  public static final String EMPLOYEE_REPORT = "employee_report";
-  public static final String IMPORT_JSON = "import_json";
 
   /**Entity identifier for the table scott.dept*/
   public static final String T_DEPARTMENT = "scott.dept";
@@ -58,7 +46,8 @@ public final class EmpDept extends Domain {
   public static final String EMPLOYEE_DEPARTMENT_LOCATION = "location";
 
   public static final List<Item> JOB_VALUES = asList(
-          new Item("ANALYST"), new Item("CLERK"), new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN"));
+          new Item("ANALYST"), new Item("CLERK"), new Item("MANAGER"),
+          new Item("PRESIDENT"), new Item("SALESMAN"));
 
   /** Initializes this domain model */
   public EmpDept() {
@@ -69,44 +58,44 @@ public final class EmpDept extends Domain {
   void department() {
     /*Defining the entity type T_DEPARTMENT*/
     define(T_DEPARTMENT,
-            primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, getString(DEPARTMENT_ID))
+            primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, "Department no.")
                     .setUpdatable(true).setNullable(false),
-            columnProperty(DEPARTMENT_NAME, Types.VARCHAR, getString(DEPARTMENT_NAME))
+            columnProperty(DEPARTMENT_NAME, Types.VARCHAR, "Department name")
                     .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
-            columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, getString(DEPARTMENT_LOCATION))
+            columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, "Location")
                     .setPreferredColumnWidth(150).setMaxLength(13))
             .setSmallDataset(true)
             .setOrderBy(orderBy().ascending(DEPARTMENT_NAME))
             .setStringProvider(new StringProvider(DEPARTMENT_NAME))
-            .setCaption(getString(DEPARTMENT));
+            .setCaption("Departments");
   }
 
   void employee() {
     /*Defining the entity type T_EMPLOYEE*/
     define(T_EMPLOYEE,
-            primaryKeyProperty(EMPLOYEE_ID, Types.INTEGER, getString(EMPLOYEE_ID)),
-            columnProperty(EMPLOYEE_NAME, Types.VARCHAR, getString(EMPLOYEE_NAME))
+            primaryKeyProperty(EMPLOYEE_ID, Types.INTEGER, "Employee no."),
+            columnProperty(EMPLOYEE_NAME, Types.VARCHAR, "Name")
                     .setMaxLength(10).setNullable(false),
-            foreignKeyProperty(EMPLOYEE_DEPARTMENT_FK, getString(EMPLOYEE_DEPARTMENT_FK), T_DEPARTMENT,
+            foreignKeyProperty(EMPLOYEE_DEPARTMENT_FK, "Department", T_DEPARTMENT,
                     columnProperty(EMPLOYEE_DEPARTMENT))
                     .setNullable(false),
-            valueListProperty(EMPLOYEE_JOB, Types.VARCHAR, getString(EMPLOYEE_JOB), JOB_VALUES),
-            columnProperty(EMPLOYEE_SALARY, Types.DECIMAL, getString(EMPLOYEE_SALARY))
+            valueListProperty(EMPLOYEE_JOB, Types.VARCHAR, "Job", JOB_VALUES),
+            columnProperty(EMPLOYEE_SALARY, Types.DECIMAL, "Salary")
                     .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
-            columnProperty(EMPLOYEE_COMMISSION, Types.DOUBLE, getString(EMPLOYEE_COMMISSION))
+            columnProperty(EMPLOYEE_COMMISSION, Types.DOUBLE, "Commission")
                     .setMin(100).setMax(2000).setMaximumFractionDigits(2),
-            foreignKeyProperty(EMPLOYEE_MGR_FK, getString(EMPLOYEE_MGR_FK), T_EMPLOYEE,
+            foreignKeyProperty(EMPLOYEE_MGR_FK, "Manager", T_EMPLOYEE,
                     columnProperty(EMPLOYEE_MGR)),
-            columnProperty(EMPLOYEE_HIREDATE, Types.DATE, getString(EMPLOYEE_HIREDATE))
+            columnProperty(EMPLOYEE_HIREDATE, Types.DATE, "Hiredate")
                     .setNullable(false),
             denormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
-                    getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
-                    getString(DEPARTMENT_LOCATION)).setPreferredColumnWidth(100))
+                    getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION), "Location")
+                    .setPreferredColumnWidth(100))
             .setKeyGenerator(incrementKeyGenerator(T_EMPLOYEE, EMPLOYEE_ID))
             .setOrderBy(orderBy().ascending(EMPLOYEE_DEPARTMENT, EMPLOYEE_NAME))
             .setSearchPropertyIds(EMPLOYEE_NAME)
             .setStringProvider(new StringProvider(EMPLOYEE_NAME))
-            .setCaption(getString(EMPLOYEE))
+            .setCaption("Employee")
             .setBackgroundColorProvider((entity, property) -> {
               if (property.is(EMPLOYEE_JOB) && "MANAGER".equals(entity.get(EMPLOYEE_JOB))) {
                 return Color.CYAN;
@@ -114,9 +103,5 @@ public final class EmpDept extends Domain {
 
               return null;
             });
-  }
-
-  public static String getString(final String key) {
-    return bundle.getString(key);
   }
 }

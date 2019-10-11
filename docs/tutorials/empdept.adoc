@@ -7,52 +7,39 @@
 
 == Domain model
 
-We start by creating a class named EmpDept in a package of our choosing, extending Domain. This first section contains a few optional fields, which are included here for demonstration purposes, **bundle** and the i18n constants.
-[source,java]
-----
-include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=16..32]
-----
-
-Next we define the constants required for the department {url-javadoc}/org/jminor/framework/domain/Entity.html[Entity], which is based on the SCOTT.DEPT table. One constant defines the entity itself and will be referred to as the *entityId* (here prefixed with T_), the other three represent the columns in the table and will be referred to as *propertyIds*. The entityId in this example contains the actual table name (scott.dept), but the table name can be specified via a __tableName__ parameter when the entity is defined. The propertyIds contain the actual column names from the table, but that is not required either.
+We start by creating a class named EmpDept in a package of our choosing, extending Domain and define the constants required for the department {url-javadoc}/org/jminor/framework/domain/Entity.html[Entity], which is based on the SCOTT.DEPT table. One constant defines the entity itself and will be referred to as the *entityId* (here prefixed with T_), the other three represent the columns in the table and will be referred to as *propertyIds*. The entityId in this example contains the actual table name (scott.dept), but the table name can be specified via a __tableName__ parameter when the entity is defined. The propertyIds contain the actual column names from the table, but that is not required either.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=33..40]
+include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=16..27]
 ----
 
 Next we define the constants required for the employee entity, which is based on the EMP table. Here there are two additional propertyIds with _FK suffixes, we'll use these later when we specify the foreign key properties for the employee entity.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=41..62]
+include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=29..50]
 ----
 
 In this section we add a constructor, calling the two methods which define the domain entities
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=63..68]
+include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=52..56]
 ----
 
 Next we add the method defining the department entity. *Entity.Definition* instances are provided by the {url-javadoc}/org/jminor/framework/domain/Domain.html[Domain] class, via the *define* method which comes in two flavours, one which assumes the *entityId* contains the underlying table name and one which does not, and therefore requires an additional *tableName* parameter. We use the former below. Note that we fetch caption strings for the properties from the i18n bundle via *getString()*. In a single language model we would simply use "Caption" instead, see <<chinook.adoc#domain-model, Chinook domain model>>. For an overview of the *Property* class see <<{dir-manual}/manual.adoc#property, Manual#Property>>. The *Entity.Definition* class provides chained setters for setting entity attributes, such as the primary key value source. Here we set *idSource* to *IdSource.NONE* since the department number is not generated but rather set manually, the so-called *stringProvider* which is responsible for providing *toString()* implementations for entities, the *smallDataset* attribute which hints that it is OK to automatically base ComboBoxes on the entity and we also set the *caption*. In this case we simply have the department string provider return the department name.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=69..83]
+include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=58..71]
 ----
 
 Next we define the employee entity. Here we set the *keyGenerator* to *Entities.incrementKeyGenerator(T_EMPLOYEE, EMPLOYEE_ID)* which, as the name suggests, simply increments the maximum column value by one (__N.B. this is a very simplistic implementation which is absolutely not transaction safe__). Here we also introduce the <<{dir-manual}/manual.adoc#foreignkeyproperty, ForeignKeyProperty>>, the *orderBy*, as well as a *BackgroundColorProvider* which is responsible for providing a custom color for a entity instance.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=84..117]
-----
-
-At last there is the *getString()* method for retrieving i18n strings from the resource bundle.
-
-[source,java]
-----
-include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=118..122]
+include::{dir-source}/org/jminor/framework/demos/empdept/domain/EmpDept.java[lines=73..107]
 ----
 
 == Domain model unit test
