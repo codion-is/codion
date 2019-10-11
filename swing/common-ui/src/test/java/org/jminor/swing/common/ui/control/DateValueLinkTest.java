@@ -22,9 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class DateValueLinkTest {
 
-  private final Event<LocalTime> evtTimeValueChanged = Events.event();
-  private final Event<LocalDate> evtDateValueChanged = Events.event();
-  private final Event<LocalDateTime> evtTimestampValueChanged = Events.event();
+  private final Event<LocalTime> timeValueChangedEvent = Events.event();
+  private final Event<LocalDate> dateValueChangedEvent = Events.event();
+  private final Event<LocalDateTime> timestampValueChangedEvent = Events.event();
 
   private LocalTime timeValue;
   private LocalDate dateValue;
@@ -36,7 +36,7 @@ public class DateValueLinkTest {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 
     final JFormattedTextField textField = UiUtil.createFormattedField(DateFormats.getDateMask(format));
-    ValueLinks.localTimeValueLink(textField, this, "time", evtTimeValueChanged, false, format, true);
+    ValueLinks.localTimeValueLink(textField, this, "time", timeValueChangedEvent, false, format, true);
     assertEquals("__:__", textField.getText());
 
     final LocalTime date = LocalTime.parse("22:42", formatter);
@@ -54,7 +54,7 @@ public class DateValueLinkTest {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.SHORT_DOT);
 
     final JFormattedTextField textField = UiUtil.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_DOT));
-    ValueLinks.localDateValueLink(textField, this, "date", evtDateValueChanged, false, DateFormats.SHORT_DOT, true);
+    ValueLinks.localDateValueLink(textField, this, "date", dateValueChangedEvent, false, DateFormats.SHORT_DOT, true);
     assertEquals("__.__.____", textField.getText());
 
     final LocalDate date = LocalDate.parse("03.10.1975", formatter);
@@ -72,7 +72,7 @@ public class DateValueLinkTest {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.SHORT_TIMESTAMP);
 
     final JFormattedTextField textField = UiUtil.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_TIMESTAMP));
-    ValueLinks.localDateTimeValueLink(textField, this, "timestamp", evtTimestampValueChanged, false, DateFormats.SHORT_TIMESTAMP, true);
+    ValueLinks.localDateTimeValueLink(textField, this, "timestamp", timestampValueChangedEvent, false, DateFormats.SHORT_TIMESTAMP, true);
     assertEquals("__-__-__ __:__", textField.getText());
 
     final LocalDateTime date = LocalDateTime.parse("03-10-75 10:34", formatter);
@@ -91,7 +91,7 @@ public class DateValueLinkTest {
 
   public void setTimestamp(final LocalDateTime timestamp) {
     this.timestamp = timestamp;
-    evtTimestampValueChanged.fire();
+    timestampValueChangedEvent.fire();
   }
 
   public LocalDate getDate() {
@@ -100,7 +100,7 @@ public class DateValueLinkTest {
 
   public void setDate(final LocalDate dateValue) {
     this.dateValue = dateValue;
-    evtDateValueChanged.fire();
+    dateValueChangedEvent.fire();
   }
 
   public LocalTime getTime() {
@@ -109,6 +109,6 @@ public class DateValueLinkTest {
 
   public void setTime(final LocalTime timeValue) {
     this.timeValue = timeValue;
-    evtTimeValueChanged.fire();
+    timeValueChangedEvent.fire();
   }
 }

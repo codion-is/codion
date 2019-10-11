@@ -1594,13 +1594,13 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   private static class FocusActivationListener implements PropertyChangeListener {
     @Override
-    public void propertyChange(final PropertyChangeEvent evt) {
-      final EntityEditPanel editPanelParent = UiUtil.getParentOfType((Component) evt.getNewValue(), EntityEditPanel.class);
+    public void propertyChange(final PropertyChangeEvent changeEvent) {
+      final EntityEditPanel editPanelParent = UiUtil.getParentOfType((Component) changeEvent.getNewValue(), EntityEditPanel.class);
       if (editPanelParent != null) {
         editPanelParent.setActive(true);
       }
       else {
-        final EntityPanel parent = UiUtil.getParentOfType((Component) evt.getNewValue(), EntityPanel.class);
+        final EntityPanel parent = UiUtil.getParentOfType((Component) changeEvent.getNewValue(), EntityPanel.class);
         if (parent != null && parent.getEditPanel() != null) {
           parent.getEditPanel().setActive(true);
         }
