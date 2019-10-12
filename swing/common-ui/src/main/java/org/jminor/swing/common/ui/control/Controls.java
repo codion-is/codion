@@ -194,7 +194,7 @@ public final class Controls {
     else {
       buttonModel = new JToggleButton.ToggleButtonModel();
     }
-    Values.link(Values.beanValue(owner, beanPropertyName, tristate ? Boolean.class : boolean.class, changeEvent), UiValues.booleanValue(buttonModel));
+    Values.link(Values.propertyValue(owner, beanPropertyName, tristate ? Boolean.class : boolean.class, changeEvent), UiValues.booleanValue(buttonModel));
 
     return new ToggleControl(caption, buttonModel, enabledState);
   }

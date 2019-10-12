@@ -5156,3 +5156,4 @@
   Entity.KeyGenerator.returnPrimaryKeyValues() added for custom primary key generation strategies
   UiValues, ValueLinks, usePrimitive replace with nullable where applicable, usePrimitive leftover parameters renamed to isPrimitive
   Some minor variable renamings
+  Value.beanValue() renamed to propertyValue()

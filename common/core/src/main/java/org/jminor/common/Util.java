@@ -334,9 +334,9 @@ public class Util {
   }
 
   /**
-   * @param valueType the class of the value for the given bean property
-   * @param property the name of the bean property for which to retrieve the set method
-   * @param valueOwner a bean instance
+   * @param valueType the class of the value for the given property
+   * @param property the name of the property for which to retrieve the set method
+   * @param valueOwner an instance
    * @return the method used to set the value of the linked property
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
@@ -345,9 +345,9 @@ public class Util {
   }
 
   /**
-   * @param valueType the class of the value for the given bean property
-   * @param property the name of the bean property for which to retrieve the set method
-   * @param ownerClass the bean class
+   * @param valueType the class of the value for the given property
+   * @param property the name of the property for which to retrieve the set method
+   * @param ownerClass the class
    * @return the method used to set the value of the linked property
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
@@ -361,9 +361,9 @@ public class Util {
   }
 
   /**
-   * @param valueType the class of the value for the given bean property
-   * @param property the name of the bean property for which to retrieve the get method
-   * @param valueOwner a bean instance
+   * @param valueType the class of the value for the given property
+   * @param property the name of the property for which to retrieve the get method
+   * @param valueOwner an instance
    * @return the method used to get the value of the linked property
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
@@ -372,9 +372,9 @@ public class Util {
   }
 
   /**
-   * @param valueType the class of the value for the given bean property
-   * @param property the name of the bean property for which to retrieve the get method
-   * @param ownerClass the bean class
+   * @param valueType the class of the value for the given property
+   * @param property the name of the property for which to retrieve the get method
+   * @param ownerClass the class
    * @return the method used to get the value of the linked property
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */

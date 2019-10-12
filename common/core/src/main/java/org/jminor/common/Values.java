@@ -44,17 +44,17 @@ public final class Values {
   }
 
   /**
-   * Instantiates a new Value based on a bean property
+   * Instantiates a new Value based on a class property
    * @param owner the property owner
-   * @param beanPropertyName the name of the bean property
-   * @param valueClass the class of the bean value
-   * @param valueChangeEvent an event which fires each time the bean value changes
+   * @param propertyName the name of the property
+   * @param valueClass the value class
+   * @param valueChangeEvent an event which fires each time the value changes
    * @param <V> type to wrap
-   * @return a Value for the given bean property
+   * @return a Value for the given property
    */
-  public static <V> Value<V> beanValue(final Object owner, final String beanPropertyName, final Class<V> valueClass,
-                                       final EventObserver<V> valueChangeEvent) {
-    return new BeanValue<>(owner, beanPropertyName, valueClass, valueChangeEvent);
+  public static <V> Value<V> propertyValue(final Object owner, final String propertyName, final Class<V> valueClass,
+                                           final EventObserver<V> valueChangeEvent) {
+    return new PropertyValue<>(owner, propertyName, valueClass, valueChangeEvent);
   }
 
   /**
@@ -152,14 +152,14 @@ public final class Values {
     }
   }
 
-  private static final class BeanValue<V> implements Value<V> {
+  private static final class PropertyValue<V> implements Value<V> {
 
     private final EventObserver<V> changeEvent;
     private final Object valueOwner;
     private final Method getMethod;
     private Method setMethod;
 
-    private BeanValue(final Object valueOwner, final String propertyName, final Class valueClass, final EventObserver<V> changeEvent) {
+    private PropertyValue(final Object valueOwner, final String propertyName, final Class valueClass, final EventObserver<V> changeEvent) {
       if (Util.nullOrEmpty(propertyName)) {
         throw new IllegalArgumentException("propertyName is null or an empty string");
       }
@@ -169,7 +169,7 @@ public final class Values {
         this.getMethod = Util.getGetMethod(valueClass, propertyName, valueOwner);
       }
       catch (final NoSuchMethodException e) {
-        throw new IllegalArgumentException("Bean property get method for " + propertyName + ", type: " + valueClass +
+        throw new IllegalArgumentException("Get method for property " + propertyName + ", type: " + valueClass +
                 " not found in class " + valueOwner.getClass().getName(), e);
       }
       try {
@@ -196,7 +196,7 @@ public final class Values {
     @Override
     public void set(final V value) {
       if (setMethod == null) {
-        throw new IllegalStateException("Bean property set method not found: " + getMethod.getName());
+        throw new IllegalStateException("Set method for property not found: " + getMethod.getName());
       }
       try {
         setMethod.invoke(valueOwner, value);
