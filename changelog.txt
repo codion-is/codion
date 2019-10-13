@@ -5160,3 +5160,4 @@
   StateObserver.getChangeObserver() removed
   Manual demo module added for code examples used in the manual
   EntityEditPanel.InsertEntityAction now uses the default domain model caption if none is specified
+  Petstore demo now demonstrates usage of setColumnName()
