@@ -25,6 +25,8 @@ import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 
+import static org.jminor.swing.common.ui.UpdateTrigger.KEYSTROKE;
+
 /**
  * A column condition panel based on the the Property class.
  */
@@ -110,31 +112,31 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Property.
         ValueLinks.selectedItemValueLink((JComboBox) field, modelValue);
       }
       else if (columnProperty.isTime()) {
-        ValueLinks.localTimeValueLink((JFormattedTextField) field, modelValue, false,
-                model.getDateTimeFormatPattern(), true);
+        ValueLinks.localTimeValueLink((JFormattedTextField) field, modelValue,
+                model.getDateTimeFormatPattern(), KEYSTROKE);
       }
       else if (columnProperty.isDate()) {
-        ValueLinks.localDateValueLink((JFormattedTextField) field, modelValue, false,
-                model.getDateTimeFormatPattern(), true);
+        ValueLinks.localDateValueLink((JFormattedTextField) field, modelValue,
+                model.getDateTimeFormatPattern(), KEYSTROKE);
       }
       else if (columnProperty.isTimestamp()) {
-        ValueLinks.localDateTimeValueLink((JFormattedTextField) field, modelValue, false,
-                model.getDateTimeFormatPattern(), true);
+        ValueLinks.localDateTimeValueLink((JFormattedTextField) field, modelValue,
+                model.getDateTimeFormatPattern(), KEYSTROKE);
       }
       else if (columnProperty.isDouble()) {
-        ValueLinks.doubleValueLink((DecimalField) field, modelValue, true, false, true);
+        ValueLinks.doubleValueLink((DecimalField) field, modelValue, true, KEYSTROKE);
       }
       else if (columnProperty.isBigDecimal()) {
-        ValueLinks.bigDecimalValueLink((DecimalField) field, modelValue, false, true);
+        ValueLinks.bigDecimalValueLink((DecimalField) field, modelValue, KEYSTROKE);
       }
       else if (columnProperty.isInteger()) {
-        ValueLinks.integerValueLink((IntegerField) field, modelValue, true, false, true);
+        ValueLinks.integerValueLink((IntegerField) field, modelValue, true, KEYSTROKE);
       }
       else if (columnProperty.isLong()) {
-        ValueLinks.longValueLink((LongField) field, modelValue, true, false, true);
+        ValueLinks.longValueLink((LongField) field, modelValue, true, KEYSTROKE);
       }
       else if (!(columnProperty instanceof Property.ForeignKeyProperty)) {//entity based properties are bound in the model
-        ValueLinks.textValueLink((JTextField) field, modelValue, null, true, false);
+        ValueLinks.textValueLink((JTextField) field, modelValue, null, KEYSTROKE);
       }
     }
 

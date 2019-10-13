@@ -5174,3 +5174,4 @@
   Manual demo module added for code examples used in the manual
   EntityEditPanel.InsertEntityAction now uses the default domain model caption if none is specified
   Petstore demo now demonstrates usage of setColumnName()
+  UiValues and related classes, major refactoring, readOnly and immediateUpdate parameters merged into UpdateTrigger enum

@@ -5,6 +5,9 @@ package org.jminor.swing.common.ui.control;
 
 import org.jminor.common.Event;
 import org.jminor.common.Events;
+import org.jminor.common.Value;
+import org.jminor.common.Values;
+import org.jminor.swing.common.ui.UpdateTrigger;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 
@@ -23,20 +26,24 @@ public class IntegerValueLinkTest {
   @Test
   public void testInteger() throws Exception {
     final IntegerField integerField = new IntegerField();
-    ValueLinks.integerValueLink(integerField, this, "integerValue", integerValueChangedEvent, false, true);
+    final Value<Integer> integerPropertyValue = Values.propertyValue(this, "integerValue",
+            Integer.class, integerValueChangedEvent);
+    ValueLinks.integerValueLink(integerField, integerPropertyValue, true, UpdateTrigger.KEYSTROKE);
     assertNull(integerField.getInteger());
     setIntegerValue(2);
     assertEquals(2, integerField.getInteger().intValue());
     integerField.setText("42");
-    assertEquals(42, integerValue.intValue());
+    assertEquals(42, this.integerValue.intValue());
     integerField.setText("");
-    assertNull(integerValue);
+    assertNull(this.integerValue);
   }
 
   @Test
   public void testInt() throws Exception {
     final IntegerField integerField = new IntegerField();
-    ValueLinks.integerValueLink(integerField, this, "intValue", intValueChangedEvent, true, true);
+        final Value<Integer> integerPropertyValue = Values.propertyValue(this, "intValue",
+            int.class, intValueChangedEvent);
+    ValueLinks.integerValueLink(integerField, integerPropertyValue, false, UpdateTrigger.KEYSTROKE);
     assertEquals((Integer) 0, integerField.getInteger());
     setIntValue(2);
     assertEquals(2, integerField.getInteger().intValue());

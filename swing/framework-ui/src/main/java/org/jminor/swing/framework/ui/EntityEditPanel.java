@@ -26,6 +26,7 @@ import org.jminor.swing.common.ui.DialogExceptionHandler;
 import org.jminor.swing.common.ui.TemporalInputPanel;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.UpdateTrigger;
 import org.jminor.swing.common.ui.checkbox.TristateCheckBox;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
@@ -1116,7 +1117,8 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return a JTextArea bound to the property
    */
   protected final JTextArea createTextArea(final String propertyId, final int rows, final int columns) {
-    return createTextArea(propertyId, rows, columns, isReadOnly(propertyId));
+    return createTextArea(propertyId, rows, columns, isReadOnly(propertyId) ?
+            UpdateTrigger.READ_ONLY : UpdateTrigger.KEYSTROKE);
   }
 
   /**
@@ -1124,11 +1126,12 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param propertyId the ID of the property to bind
    * @param rows the number of rows in the text area
    * @param columns the number of columns in the text area
-   * @param readOnly if true the component will be read only
+   * @param updateTrigger when the component should update the value
    * @return a JTextArea bound to the property
    */
-  protected final JTextArea createTextArea(final String propertyId, final int rows, final int columns, final boolean readOnly) {
-    return createTextArea(propertyId, rows, columns, readOnly, null);
+  protected final JTextArea createTextArea(final String propertyId, final int rows, final int columns,
+                                           final UpdateTrigger updateTrigger) {
+    return createTextArea(propertyId, rows, columns, updateTrigger, null);
   }
 
   /**
@@ -1136,14 +1139,14 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param propertyId the ID of the property to bind
    * @param rows the number of rows in the text area
    * @param columns the number of columns in the text area
-   * @param readOnly if true the component will be read only
+   * @param updateTrigger when the component should update the value
    * @param enabledState a state indicating when this text area should be enabled
    * @return a JTextArea bound to the property
    */
-  protected final JTextArea createTextArea(final String propertyId, final int rows, final int columns, final boolean readOnly,
-                                           final StateObserver enabledState) {
+  protected final JTextArea createTextArea(final String propertyId, final int rows, final int columns,
+                                           final UpdateTrigger updateTrigger, final StateObserver enabledState) {
     final Property property = editModel.getDomain().getProperty(editModel.getEntityId(), propertyId);
-    final JTextArea textArea = EntityUiUtil.createTextArea(property, editModel, rows, columns, readOnly, enabledState);
+    final JTextArea textArea = EntityUiUtil.createTextArea(property, editModel, rows, columns, updateTrigger, enabledState);
     setComponent(propertyId, textArea);
 
     return textArea;
@@ -1155,72 +1158,43 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return a TextInputPanel bound to the property
    */
   protected final TextInputPanel createTextInputPanel(final String propertyId) {
-    return createTextInputPanel(propertyId, isReadOnly(propertyId));
+    return createTextInputPanel(propertyId, isReadOnly(propertyId) ?
+            UpdateTrigger.READ_ONLY : UpdateTrigger.KEYSTROKE, true);
   }
 
   /**
    * Creates a TextInputPanel bound to the property identified by {@code propertyId}.
    * @param propertyId the ID of the property to bind
-   * @param readOnly if true the component will be read only
-   * @return a TextInputPanel bound to the property
-   */
-  protected final TextInputPanel createTextInputPanel(final String propertyId, final boolean readOnly) {
-    return createTextInputPanel(propertyId, readOnly, true);
-  }
-
-  /**
-   * Creates a TextInputPanel bound to the property identified by {@code propertyId}.
-   * @param propertyId the ID of the property to bind
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
-   * otherwise it is updated when the component looses focus.
-   * @return a TextInputPanel bound to the property
-   */
-  protected final TextInputPanel createTextInputPanel(final String propertyId, final boolean readOnly,
-                                                      final boolean immediateUpdate) {
-    return createTextInputPanel(propertyId, readOnly, immediateUpdate, true);
-  }
-
-  /**
-   * Creates a TextInputPanel bound to the property identified by {@code propertyId}.
-   * @param propertyId the ID of the property to bind
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
-   * otherwise it is updated when the component looses focus.
+   * @param updateTrigger when the component should update the value
    * @param buttonFocusable specifies whether the edit button should be focusable.
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final String propertyId, final boolean readOnly,
-                                                      final boolean immediateUpdate, final boolean buttonFocusable) {
-    return createTextInputPanel(editModel.getDomain().getProperty(editModel.getEntityId(), propertyId), readOnly,
-            immediateUpdate, buttonFocusable);
+  protected final TextInputPanel createTextInputPanel(final String propertyId, final UpdateTrigger updateTrigger,
+                                                      final boolean buttonFocusable) {
+    return createTextInputPanel(editModel.getDomain().getProperty(editModel.getEntityId(), propertyId),
+            updateTrigger, buttonFocusable);
   }
 
   /**
    * Creates a TextInputPanel bound to the property identified by {@code propertyId}.
    * @param property the property to bind
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
-   * otherwise it is updated when the component looses focus.
+   * @param updateTrigger when the component should update the value
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final Property property, final boolean readOnly,
-                                                      final boolean immediateUpdate) {
-    return createTextInputPanel(property, readOnly, immediateUpdate, true);
+  protected final TextInputPanel createTextInputPanel(final Property property, final UpdateTrigger updateTrigger) {
+    return createTextInputPanel(property, updateTrigger, true);
   }
 
   /**
    * Creates a TextInputPanel bound to the property identified by {@code propertyId}.
    * @param property the property to bind
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
-   * otherwise it is updated when the component looses focus.
+   * @param updateTrigger when the component should update the value
    * @param buttonFocusable specifies whether the edit button should be focusable.
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final Property property, final boolean readOnly,
-                                                      final boolean immediateUpdate, final boolean buttonFocusable) {
-    final TextInputPanel inputPanel = EntityUiUtil.createTextInputPanel(property, editModel, readOnly, immediateUpdate, buttonFocusable);
+  protected final TextInputPanel createTextInputPanel(final Property property, final UpdateTrigger updateTrigger,
+                                                      final boolean buttonFocusable) {
+    final TextInputPanel inputPanel = EntityUiUtil.createTextInputPanel(property, editModel, updateTrigger, buttonFocusable);
     setComponent(property.getPropertyId(), inputPanel.getTextField());
 
     return inputPanel;
@@ -1258,7 +1232,8 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final TemporalInputPanel createDateInputPanel(final String propertyId, final boolean includeButton,
                                                           final StateObserver enabledState) {
-    return createDateInputPanel(propertyId, includeButton, enabledState, isReadOnly(propertyId));
+    return createDateInputPanel(propertyId, includeButton, enabledState,
+            isReadOnly(propertyId) ? UpdateTrigger.READ_ONLY : UpdateTrigger.KEYSTROKE);
   }
 
   /**
@@ -1266,13 +1241,13 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param propertyId the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
-   * @param readOnly if true the component will be read only
+   * @param updateTrigger when the component should update the value
    * @return a DateInputPanel bound to the property
    */
   protected final TemporalInputPanel createDateInputPanel(final String propertyId, final boolean includeButton,
-                                                          final StateObserver enabledState, final boolean readOnly) {
+                                                          final StateObserver enabledState, final UpdateTrigger updateTrigger) {
     return createDateInputPanel(editModel.getDomain().getProperty(editModel.getEntityId(), propertyId),
-            includeButton, enabledState, readOnly);
+            includeButton, enabledState, updateTrigger);
   }
 
   /**
@@ -1303,7 +1278,8 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final TemporalInputPanel createDateInputPanel(final Property property, final boolean includeButton,
                                                           final StateObserver enabledState) {
-    return createDateInputPanel(property, includeButton, enabledState, isReadOnly(property.getPropertyId()));
+    return createDateInputPanel(property, includeButton, enabledState,
+            isReadOnly(property.getPropertyId()) ? UpdateTrigger.READ_ONLY : UpdateTrigger.KEYSTROKE);
   }
 
   /**
@@ -1311,12 +1287,12 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param property the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
-   * @param readOnly if true the component will be read only
+   * @param updateTrigger when the component should update the value
    * @return a DateInputPanel bound to the property
    */
   protected final TemporalInputPanel createDateInputPanel(final Property property, final boolean includeButton,
-                                                          final StateObserver enabledState, final boolean readOnly) {
-    final TemporalInputPanel panel = EntityUiUtil.createDateInputPanel(property, editModel, readOnly, includeButton, enabledState);
+                                                          final StateObserver enabledState, final UpdateTrigger updateTrigger) {
+    final TemporalInputPanel panel = EntityUiUtil.createDateInputPanel(property, editModel, updateTrigger, includeButton, enabledState);
     setComponent(property.getPropertyId(), panel);
 
     return panel;
@@ -1328,78 +1304,58 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final String propertyId) {
-    return createTextField(propertyId, isReadOnly(propertyId));
+    return createTextField(propertyId, isReadOnly(propertyId) ? UpdateTrigger.READ_ONLY : UpdateTrigger.KEYSTROKE);
   }
 
   /**
    * Creates a JTextField bound to the property identified by {@code propertyId}
    * @param propertyId the ID of the property to bind
-   * @param readOnly if true the component will be read only
+   * @param updateTrigger when the component should update the value
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyId, final boolean readOnly) {
-    return createTextField(propertyId, readOnly, true);
+  protected final JTextField createTextField(final String propertyId, final UpdateTrigger updateTrigger) {
+    return createTextField(propertyId, updateTrigger, null);
   }
 
   /**
    * Creates a JTextField bound to the property identified by {@code propertyId}
    * @param propertyId the ID of the property to bind
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
-   * otherwise it is updated when the component looses focus.
-   * @return a text field bound to the property
-   */
-  protected final JTextField createTextField(final String propertyId, final boolean readOnly,
-                                             final boolean immediateUpdate) {
-    return createTextField(propertyId, readOnly, immediateUpdate, null);
-  }
-
-  /**
-   * Creates a JTextField bound to the property identified by {@code propertyId}
-   * @param propertyId the ID of the property to bind
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
-   * otherwise it is updated when the component looses focus.
+   * @param updateTrigger when the component should update the value
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyId, final boolean readOnly,
-                                             final boolean immediateUpdate, final String maskString) {
-    return createTextField(propertyId, readOnly, immediateUpdate, maskString, null);
+  protected final JTextField createTextField(final String propertyId, final UpdateTrigger updateTrigger,
+                                             final String maskString) {
+    return createTextField(propertyId, updateTrigger, maskString, null);
   }
 
   /**
    * Creates a JTextField bound to the property identified by {@code propertyId}
    * @param propertyId the ID of the property to bind
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
-   * otherwise it is updated when the component looses focus.
+   * @param updateTrigger when the component should update the value
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @param enabledState a state for controlling the enabled state of the component
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyId, final boolean readOnly,
-                                             final boolean immediateUpdate, final String maskString,
-                                             final StateObserver enabledState) {
-    return createTextField(propertyId, readOnly, immediateUpdate, maskString, enabledState, false);
+  protected final JTextField createTextField(final String propertyId, final UpdateTrigger updateTrigger,
+                                             final String maskString, final StateObserver enabledState) {
+    return createTextField(propertyId, updateTrigger, maskString, enabledState, false);
   }
 
   /**
    * Creates a JTextField bound to the property identified by {@code propertyId}
    * @param propertyId the ID of the property to bind
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
-   * otherwise it is updated when the component looses focus.
+   * @param updateTrigger when the component should update the value
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @param enabledState a state for controlling the enabled state of the component
    * @param valueIncludesLiteralCharacters only applicable if {@code maskString} is specified
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyId, final boolean readOnly,
-                                             final boolean immediateUpdate, final String maskString,
-                                             final StateObserver enabledState, final boolean valueIncludesLiteralCharacters) {
+  protected final JTextField createTextField(final String propertyId, final UpdateTrigger updateTrigger,
+                                             final String maskString, final StateObserver enabledState,
+                                             final boolean valueIncludesLiteralCharacters) {
     return createTextField(editModel.getDomain().getProperty(editModel.getEntityId(), propertyId),
-            readOnly, maskString, immediateUpdate, enabledState, valueIncludesLiteralCharacters);
+            updateTrigger, maskString, enabledState, valueIncludesLiteralCharacters);
   }
 
   /**
@@ -1408,64 +1364,57 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final Property property) {
-    return createTextField(property, isReadOnly(property.getPropertyId()));
+    return createTextField(property, isReadOnly(property.getPropertyId()) ? UpdateTrigger.READ_ONLY : UpdateTrigger.KEYSTROKE);
   }
 
   /**
    * Creates a JTextField bound to the given property
    * @param property the property to bind
-   * @param readOnly if true the component will be read only
+   * @param updateTrigger when the component should update the value
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final Property property, final boolean readOnly) {
-    return createTextField(property, readOnly, null, true);
+  protected final JTextField createTextField(final Property property, final UpdateTrigger updateTrigger) {
+    return createTextField(property, null, updateTrigger);
   }
 
   /**
    * Creates a JTextField bound to the given property
    * @param property the property to bind
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
-   * otherwise it is updated when the component looses focus.
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
+   * @param updateTrigger when the component should update the value
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final Property property, final boolean readOnly,
-                                             final String maskString, final boolean immediateUpdate) {
-    return createTextField(property, readOnly, maskString, immediateUpdate, null);
+  protected final JTextField createTextField(final Property property, final String maskString,
+                                             final UpdateTrigger updateTrigger) {
+    return createTextField(property, maskString, updateTrigger, null);
   }
 
   /**
    * Creates a JTextField bound to the given property
    * @param property the ID of the property to bind
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
-   * otherwise it is updated when the component looses focus.
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
+   * @param updateTrigger when the component should update the value
    * @param enabledState a state for controlling the enabled state of the component
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final Property property, final boolean readOnly,
-                                             final String maskString, final boolean immediateUpdate,
-                                             final StateObserver enabledState) {
-    return createTextField(property, readOnly, maskString, immediateUpdate, enabledState, false);
+  protected final JTextField createTextField(final Property property, final String maskString,
+                                             final UpdateTrigger updateTrigger, final StateObserver enabledState) {
+    return createTextField(property, updateTrigger, maskString, enabledState, false);
   }
 
   /**
    * Creates a JTextField bound to the given property
    * @param property the property to bind
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
-   * otherwise it is updated when the component looses focus.
+   * @param updateTrigger when the component should update the value
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @param enabledState a state for controlling the enabled state of the component
    * @param valueIncludesLiteralCharacters only applicable if {@code maskString} is specified
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final Property property, final boolean readOnly,
-                                             final String maskString, final boolean immediateUpdate,
-                                             final StateObserver enabledState, final boolean valueIncludesLiteralCharacters) {
-    final JTextField textField = EntityUiUtil.createTextField(property, editModel, readOnly, maskString, immediateUpdate,
+  protected final JTextField createTextField(final Property property, final UpdateTrigger updateTrigger,
+                                             final String maskString, final StateObserver enabledState,
+                                             final boolean valueIncludesLiteralCharacters) {
+    final JTextField textField = EntityUiUtil.createTextField(property, editModel,  maskString, updateTrigger,
             enabledState, valueIncludesLiteralCharacters);
     setComponent(property.getPropertyId(), textField);
 

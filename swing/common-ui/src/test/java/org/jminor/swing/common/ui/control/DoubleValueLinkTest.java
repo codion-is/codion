@@ -5,6 +5,9 @@ package org.jminor.swing.common.ui.control;
 
 import org.jminor.common.Event;
 import org.jminor.common.Events;
+import org.jminor.common.Value;
+import org.jminor.common.Values;
+import org.jminor.swing.common.ui.UpdateTrigger;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.textfield.DecimalField;
 
@@ -44,28 +47,32 @@ public class DoubleValueLinkTest {
   public void testDouble() throws Exception {
     final DecimalField decimalField = new DecimalField();
     decimalField.setSeparators('.', ',');
-    ValueLinks.doubleValueLink(decimalField, this, "doubleValue", doubleValueChangedEvent, false, true);
+    final Value doublePropertyValue = Values.propertyValue(this, "doubleValue",
+            Double.class, doubleValueChangedEvent);
+    ValueLinks.doubleValueLink(decimalField, doublePropertyValue, true, UpdateTrigger.KEYSTROKE);
     assertNull(decimalField.getDouble());
     setDoubleValue(2.2);
     assertEquals(Double.valueOf(2.2), decimalField.getDouble());
     decimalField.setText("42.2");
-    assertEquals(Double.valueOf(42.2), doubleValue);
+    assertEquals(Double.valueOf(42.2), this.doubleValue);
     decimalField.setText("");
-    assertNull(doubleValue);
+    assertNull(this.doubleValue);
   }
 
   @Test
   public void testDoublePrimitive() throws Exception {
     final DecimalField decimalField = new DecimalField();
     decimalField.setSeparators('.', ',');
-    ValueLinks.doubleValueLink(decimalField, this, "doublePrimitiveValue", doublePrimitiveValueValueChangedEvent, true, true);
+    final Value doublePrimitivePropertyValue = Values.propertyValue(this, "doublePrimitiveValue",
+            double.class, doublePrimitiveValueValueChangedEvent);
+    ValueLinks.doubleValueLink(decimalField, doublePrimitivePropertyValue, false, UpdateTrigger.KEYSTROKE);
     assertEquals((Double) 0.0, decimalField.getDouble());
     setDoublePrimitiveValue(2.2);
     assertEquals(Double.valueOf(2.2), decimalField.getDouble());
     decimalField.setText("42.2");
-    assertEquals(42.2, doublePrimitiveValue);
+    assertEquals(42.2, this.doublePrimitiveValue);
     decimalField.setText("");
-    assertEquals(0.0, doublePrimitiveValue);
+    assertEquals(0.0, this.doublePrimitiveValue);
   }
 
   public Double getDoubleValue() {

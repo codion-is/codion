@@ -6,6 +6,7 @@ package org.jminor.swing.framework.ui;
 import org.jminor.common.Event;
 import org.jminor.common.EventDataListener;
 import org.jminor.common.Events;
+import org.jminor.common.Values;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
@@ -256,7 +257,8 @@ public final class EntityTableConditionPanel extends JPanel {
     final JButton simpleSearchButton = new JButton(simpleSearchControl);
     simpleSearchTextField.addActionListener(simpleSearchControl);
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());
-    ValueLinks.textValueLink(simpleSearchTextField, conditionModel, "simpleConditionString", conditionModel.getSimpleConditionStringObserver());
+    ValueLinks.textValueLink(simpleSearchTextField, Values.propertyValue(conditionModel, "simpleConditionString",
+            String.class, conditionModel.getSimpleConditionStringObserver()));
     panel.setBorder(BorderFactory.createTitledBorder(MESSAGES.getString("condition")));
     panel.add(simpleSearchTextField, BorderLayout.CENTER);
     panel.add(simpleSearchButton, BorderLayout.EAST);
