@@ -56,44 +56,45 @@ public final class UiValues {
   /**
    * @param textComponent the component
    * @param dateFormat the date format
-   * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateTrigger when the component should update the value
    * @return a Value bound to the given component
    */
-  public static Value<LocalDate> localDateValue(final JFormattedTextField textComponent, final String dateFormat,
-                                                final boolean immediateUpdate) {
-    return new TemporalUiValue<>(textComponent, dateFormat, immediateUpdate, LocalDate::parse);
+  public static Value<LocalDate> localDateValue(final JFormattedTextField textComponent,
+                                                final String dateFormat, final UpdateTrigger updateTrigger) {
+    return new TemporalUiValue<>(textComponent, dateFormat, updateTrigger, LocalDate::parse);
   }
 
   /**
    * @param textComponent the component
    * @param dateFormat the date format
-   * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateTrigger when the component should update the value
    * @return a Value bound to the given component
    */
-  public static Value<LocalTime> localTimeValue(final JFormattedTextField textComponent, final String dateFormat,
-                                                final boolean immediateUpdate) {
-    return new TemporalUiValue<>(textComponent, dateFormat, immediateUpdate, LocalTime::parse);
+  public static Value<LocalTime> localTimeValue(final JFormattedTextField textComponent,
+                                                final String dateFormat, final UpdateTrigger updateTrigger) {
+    return new TemporalUiValue<>(textComponent, dateFormat, updateTrigger, LocalTime::parse);
   }
 
   /**
    * @param textComponent the component
    * @param dateFormat the date format
-   * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateTrigger when the component should update the value
    * @return a Value bound to the given component
    */
-  public static Value<LocalDateTime> localDateTimeValue(final JFormattedTextField textComponent, final String dateFormat,
-                                                        final boolean immediateUpdate) {
-    return new TemporalUiValue<>(textComponent, dateFormat, immediateUpdate, LocalDateTime::parse);
+  public static Value<LocalDateTime> localDateTimeValue(final JFormattedTextField textComponent,
+                                                        final String dateFormat, final UpdateTrigger updateTrigger) {
+    return new TemporalUiValue<>(textComponent, dateFormat, updateTrigger, LocalDateTime::parse);
   }
 
   /**
    * @param integerField the component
    * @param nullable if false then the resulting Value returns 0 instead of null
-   * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateTrigger when the component should update the value
    * @return a Value bound to the given component
    */
-  public static Value<Integer> integerValue(final IntegerField integerField, final boolean nullable, final boolean immediateUpdate) {
-    return new IntUIValue(integerField, nullable, immediateUpdate);
+  public static Value<Integer> integerValue(final IntegerField integerField, final boolean nullable,
+                                            final UpdateTrigger updateTrigger) {
+    return new IntUIValue(integerField, nullable, updateTrigger);
   }
 
   /**
@@ -123,40 +124,43 @@ public final class UiValues {
   /**
    * @param decimalField the component
    * @param nullable if false then the resulting Value returns 0 instead of null
-   * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateTrigger when the component should update the value
    * @return a Value bound to the given component
    */
-  public static Value<Double> doubleValue(final DecimalField decimalField, final boolean nullable, final boolean immediateUpdate) {
-    return new DoubleUIValue(decimalField, nullable, immediateUpdate);
+  public static Value<Double> doubleValue(final DecimalField decimalField, final boolean nullable,
+                                          final UpdateTrigger updateTrigger) {
+    return new DoubleUIValue(decimalField, nullable, updateTrigger);
   }
 
   /**
    * @param decimalField the component
-   * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateTrigger when the component should update the value
    * @return a Value bound to the given component
    */
-  public static Value<BigDecimal> bigDecimalValue(final DecimalField decimalField, final boolean immediateUpdate) {
-    return new BigDecimalUIValue(decimalField, immediateUpdate);
+  public static Value<BigDecimal> bigDecimalValue(final DecimalField decimalField, final UpdateTrigger updateTrigger) {
+    return new BigDecimalUIValue(decimalField, updateTrigger);
   }
 
   /**
    * @param longField the component
    * @param nullable if false then the resulting Value returns 0 instead of null
-   * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateTrigger when the component should update the value
    * @return a Value bound to the given component
    */
-  public static Value<Long> longValue(final LongField longField, final boolean nullable, final boolean immediateUpdate) {
-    return new LongUIValue(longField, nullable, immediateUpdate);
+  public static Value<Long> longValue(final LongField longField, final boolean nullable,
+                                      final UpdateTrigger updateTrigger) {
+    return new LongUIValue(longField, nullable, updateTrigger);
   }
 
   /**
    * @param textComponent the component
    * @param format the format
-   * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
+   * @param updateTrigger when the component should update the value
    * @return a Value bound to the given component
    */
-  public static Value<String> textValue(final JTextComponent textComponent, final Format format, final boolean immediateUpdate) {
-    return new TextUIValue<>(textComponent, format, immediateUpdate);
+  public static Value<String> textValue(final JTextComponent textComponent, final Format format,
+                                        final UpdateTrigger updateTrigger) {
+    return new TextUIValue<>(textComponent, format, updateTrigger);
   }
 
   /**
@@ -169,11 +173,11 @@ public final class UiValues {
 
   /**
    * @param <V> the value type
-   * @param box the combo box
+   * @param comboBox the combo box
    * @return a Value bound to the given component
    */
-  public static <V> Value<V> selectedItemValue(final JComboBox<V> box) {
-    return new SelectedItemUIValue<>(box);
+  public static <V> Value<V> selectedItemValue(final JComboBox<V> comboBox) {
+    return new SelectedItemUIValue<>(comboBox);
   }
 
   private abstract static class UIValue<V> implements Value<V> {
@@ -225,7 +229,7 @@ public final class UiValues {
     private final JFormattedTextField.AbstractFormatter formatter;
     private final Format format;
 
-    private TextUIValue(final JTextComponent textComponent, final Format format, final boolean immediateUpdate) {
+    private TextUIValue(final JTextComponent textComponent, final Format format, final UpdateTrigger updateTrigger) {
       this.document = textComponent.getDocument();
       if (textComponent instanceof JFormattedTextField) {
         this.formatter = ((JFormattedTextField) textComponent).getFormatter();
@@ -234,7 +238,7 @@ public final class UiValues {
         this.formatter = null;
       }
       this.format = format == null ? FormatUtil.NULL_FORMAT : format;
-      if (immediateUpdate) {
+      if (updateTrigger == UpdateTrigger.KEYSTROKE) {
         document.addDocumentListener(new DocumentAdapter() {
           @Override
           public final void contentsChanged(final DocumentEvent e) {
@@ -338,10 +342,10 @@ public final class UiValues {
     private final NumberField numberField;
     private final boolean nullable;
 
-    private NumberUIValue(final NumberField numberField, final boolean nullable, final boolean immediateUpdate) {
+    private NumberUIValue(final NumberField numberField, final boolean nullable, final UpdateTrigger updateTrigger) {
       this.numberField = numberField;
       this.nullable = nullable;
-      if (immediateUpdate) {
+      if (updateTrigger == UpdateTrigger.KEYSTROKE) {
         numberField.getDocument().addDocumentListener(new DocumentAdapter() {
           @Override
           public final void contentsChanged(final DocumentEvent e) {
@@ -366,8 +370,8 @@ public final class UiValues {
       return nullable;
     }
 
-    protected final NumberField getNumberField() {
-      return numberField;
+    protected void setNumber(final Number number) {
+      numberField.setNumber(number);
     }
 
     protected final Number getNumber() {
@@ -377,13 +381,13 @@ public final class UiValues {
 
   private static final class IntUIValue extends NumberUIValue<Integer> {
 
-    private IntUIValue(final IntegerField integerField, final boolean nullable, final boolean immediateUpdate) {
-      super(integerField, nullable, immediateUpdate);
+    private IntUIValue(final IntegerField integerField, final boolean nullable, final UpdateTrigger updateTrigger) {
+      super(integerField, nullable, updateTrigger);
     }
 
     @Override
     protected void setInternal(final Integer value) {
-      getNumberField().setNumber(value);
+      setNumber(value);
     }
 
     @Override
@@ -399,13 +403,13 @@ public final class UiValues {
 
   private static final class DoubleUIValue extends NumberUIValue<Double> {
 
-    private DoubleUIValue(final DecimalField decimalField, final boolean nullable, final boolean immediateUpdate) {
-      super(decimalField, nullable, immediateUpdate);
+    private DoubleUIValue(final DecimalField decimalField, final boolean nullable, final UpdateTrigger updateTrigger) {
+      super(decimalField, nullable, updateTrigger);
     }
 
     @Override
     protected void setInternal(final Double value) {
-      getNumberField().setNumber(value);
+      setNumber(value);
     }
 
     @Override
@@ -421,13 +425,13 @@ public final class UiValues {
 
   private static final class BigDecimalUIValue extends NumberUIValue<BigDecimal> {
 
-    private BigDecimalUIValue(final DecimalField decimalField, final boolean immediateUpdate) {
-      super(decimalField, true, immediateUpdate);
+    private BigDecimalUIValue(final DecimalField decimalField, final UpdateTrigger updateTrigger) {
+      super(decimalField, true, updateTrigger);
     }
 
     @Override
     protected void setInternal(final BigDecimal value) {
-      getNumberField().setNumber(value);
+      setNumber(value);
     }
 
     @Override
@@ -438,13 +442,13 @@ public final class UiValues {
 
   private static final class LongUIValue extends NumberUIValue<Long> {
 
-    private LongUIValue(final LongField longField, final boolean nullable, final boolean immediateUpdate) {
-      super(longField, nullable, immediateUpdate);
+    private LongUIValue(final LongField longField, final boolean nullable, final UpdateTrigger updateTrigger) {
+      super(longField, nullable, updateTrigger);
     }
 
     @Override
     protected void setInternal(final Long value) {
-      getNumberField().setNumber(value);
+      setNumber(value);
     }
 
     @Override
@@ -463,8 +467,8 @@ public final class UiValues {
     private final DateFormats.DateParser<T> dateParser;
 
     private TemporalUiValue(final JFormattedTextField textComponent, final String dateFormat,
-                            final boolean immediateUpdate, final DateFormats.DateParser<T> dateParser) {
-      super(textComponent, null, immediateUpdate);
+                            final UpdateTrigger updateTrigger, final DateFormats.DateParser<T> dateParser) {
+      super(textComponent, null, updateTrigger);
       this.formatter = DateTimeFormatter.ofPattern(dateFormat);
       this.dateParser = dateParser;
     }

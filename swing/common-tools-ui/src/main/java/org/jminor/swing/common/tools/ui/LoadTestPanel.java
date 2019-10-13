@@ -5,10 +5,12 @@ package org.jminor.swing.common.tools.ui;
 
 import org.jminor.common.User;
 import org.jminor.common.Util;
+import org.jminor.common.Values;
 import org.jminor.swing.common.tools.ItemRandomizer;
 import org.jminor.swing.common.tools.LoadTest;
 import org.jminor.swing.common.tools.LoadTestModel;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.UpdateTrigger;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -195,8 +197,8 @@ public final class LoadTestPanel extends JPanel {
   private JPanel initializeApplicationPanel() {
     final IntegerField applicationCountField = new IntegerField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
-    ValueLinks.integerValueLink(applicationCountField, loadTestModel, "applicationCount", loadTestModel.applicationCountObserver(), true, true, true);
-
+    ValueLinks.integerValueLink(applicationCountField, Values.propertyValue(loadTestModel, "applicationCount",
+            int.class, loadTestModel.applicationCountObserver()), false, UpdateTrigger.KEYSTROKE);
     final JPanel applicationPanel = new JPanel(UiUtil.createBorderLayout());
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
 

@@ -30,303 +30,109 @@ public final class ValueLinks {
   private ValueLinks() {}
 
   /**
-   * Links a date bean value with a given text component
-   * @param textComponent the text component to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param readOnly if true the component will be read only
-   * @param dateFormat the data format
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
-   */
-  public static void localDateValueLink(final JFormattedTextField textComponent, final Object owner,
-                                        final String propertyName, final EventObserver<LocalDate> valueChangeEvent,
-                                        final boolean readOnly, final String dateFormat, final boolean immediateUpdate) {
-    localDateValueLink(textComponent, Values.propertyValue(owner, propertyName, LocalDate.class,
-            valueChangeEvent), readOnly, dateFormat, immediateUpdate);
-  }
-
-  /**
    * Links a date value with a given text component
    * @param textComponent the text component to link with the value
    * @param value the model value
-   * @param readOnly if true the component will be read only
    * @param dateFormat the data format
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
+   * @param updateTrigger when the component should update the value
    */
   public static void localDateValueLink(final JFormattedTextField textComponent, final Value<LocalDate> value,
-                                        final boolean readOnly, final String dateFormat, final boolean immediateUpdate) {
-    textComponent.setEditable(!readOnly);
-    Values.link(value, UiValues.localDateValue(textComponent, dateFormat, immediateUpdate), readOnly);
-  }
-
-  /**
-   * Links a date bean value with a given text component
-   * @param textComponent the text component to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param readOnly if true the component will be read only
-   * @param dateFormat the data format
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
-   */
-  public static void localTimeValueLink(final JFormattedTextField textComponent, final Object owner,
-                                        final String propertyName, final EventObserver<LocalTime> valueChangeEvent,
-                                        final boolean readOnly, final String dateFormat, final boolean immediateUpdate) {
-    localTimeValueLink(textComponent, Values.propertyValue(owner, propertyName, LocalTime.class,
-            valueChangeEvent), readOnly, dateFormat, immediateUpdate);
+                                        final String dateFormat, final UpdateTrigger updateTrigger) {
+    textComponent.setEditable(updateTrigger != UpdateTrigger.READ_ONLY);
+    Values.link(value, UiValues.localDateValue(textComponent, dateFormat, updateTrigger), updateTrigger == UpdateTrigger.READ_ONLY);
   }
 
   /**
    * Links a date value with a given text component
    * @param textComponent the text component to link with the value
    * @param value the model value
-   * @param readOnly if true the component will be read only
    * @param dateFormat the data format
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
+   * @param updateTrigger when the component should update the value
    */
   public static void localTimeValueLink(final JFormattedTextField textComponent, final Value<LocalTime> value,
-                                        final boolean readOnly, final String dateFormat, final boolean immediateUpdate) {
-    textComponent.setEditable(!readOnly);
-    Values.link(value, UiValues.localTimeValue(textComponent, dateFormat, immediateUpdate), readOnly);
-  }
-
-  /**
-   * Links a date bean value with a given text component
-   * @param textComponent the text component to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param readOnly if true the component will be read only
-   * @param dateFormat the data format
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
-   */
-  public static void localDateTimeValueLink(final JFormattedTextField textComponent, final Object owner,
-                                            final String propertyName, final EventObserver<LocalDateTime> valueChangeEvent,
-                                            final boolean readOnly, final String dateFormat, final boolean immediateUpdate) {
-    localDateTimeValueLink(textComponent, Values.propertyValue(owner, propertyName, LocalDateTime.class,
-            valueChangeEvent), readOnly, dateFormat, immediateUpdate);
+                                        final String dateFormat, final UpdateTrigger updateTrigger) {
+    textComponent.setEditable(updateTrigger != UpdateTrigger.READ_ONLY);
+    Values.link(value, UiValues.localTimeValue(textComponent, dateFormat, updateTrigger), updateTrigger == UpdateTrigger.READ_ONLY);
   }
 
   /**
    * Links a date value with a given text component
    * @param textComponent the text component to link with the value
    * @param value the model value
-   * @param readOnly if true the component will be read only
    * @param dateFormat the data format
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
+   * @param updateTrigger when the component should update the value
    */
   public static void localDateTimeValueLink(final JFormattedTextField textComponent, final Value<LocalDateTime> value,
-                                            final boolean readOnly, final String dateFormat, final boolean immediateUpdate) {
-    textComponent.setEditable(!readOnly);
-    Values.link(value, UiValues.localDateTimeValue(textComponent, dateFormat, immediateUpdate), readOnly);
-  }
-
-  /**
-   * @param integerField the int field to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param isPrimitive if true then the property value is assumed to be a primitive
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
-   */
-  public static void integerValueLink(final IntegerField integerField, final Object owner, final String propertyName,
-                                      final EventObserver<Integer> valueChangeEvent, final boolean isPrimitive,
-                                      final boolean immediateUpdate) {
-    integerValueLink(integerField, Values.propertyValue(owner, propertyName, isPrimitive ? int.class : Integer.class,
-            valueChangeEvent), !isPrimitive, false, immediateUpdate);
-  }
-
-  /**
-   * @param integerField the int field to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param isPrimitive if true then the property value is assumed to be a primitive
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
-   */
-  public static void integerValueLink(final IntegerField integerField, final Object owner, final String propertyName,
-                                      final EventObserver<Integer> valueChangeEvent, final boolean isPrimitive,
-                                      final boolean readOnly, final boolean immediateUpdate) {
-    integerValueLink(integerField, Values.propertyValue(owner, propertyName, isPrimitive ? int.class : Integer.class,
-            valueChangeEvent), !isPrimitive, readOnly, immediateUpdate);
+                                            final String dateFormat, final UpdateTrigger updateTrigger) {
+    textComponent.setEditable(updateTrigger != UpdateTrigger.READ_ONLY);
+    Values.link(value, UiValues.localDateTimeValue(textComponent, dateFormat, updateTrigger), updateTrigger == UpdateTrigger.READ_ONLY);
   }
 
   /**
    * @param integerField the int field to link with the value
    * @param value the model value
    * @param nullable if false then 0 is used instead of null
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
+   * @param updateTrigger when the component should update the value
    */
   public static void integerValueLink(final IntegerField integerField, final Value<Integer> value, final boolean nullable,
-                                      final boolean readOnly, final boolean immediateUpdate) {
-    integerField.setEditable(!readOnly);
-    Values.link(value, UiValues.integerValue(integerField, nullable, immediateUpdate), readOnly);
-  }
-
-  /**
-   * @param decimalField the decimal field to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param isPrimitive if true then the property value is assumed to be a primitive
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
-   */
-  public static void doubleValueLink(final DecimalField decimalField, final Object owner, final String propertyName,
-                                     final EventObserver<Double> valueChangeEvent, final boolean isPrimitive,
-                                     final boolean immediateUpdate) {
-    doubleValueLink(decimalField, owner, propertyName, valueChangeEvent, isPrimitive, false, immediateUpdate);
-  }
-
-  /**
-   * @param decimalField the decimal field to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param isPrimitive if true then the property value is assumed to be a primitive
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
-   */
-  public static void doubleValueLink(final DecimalField decimalField, final Object owner, final String propertyName,
-                                     final EventObserver<Double> valueChangeEvent, final boolean isPrimitive,
-                                     final boolean readOnly, final boolean immediateUpdate) {
-    doubleValueLink(decimalField, Values.propertyValue(owner, propertyName, isPrimitive ? double.class : Double.class,
-            valueChangeEvent), !isPrimitive, readOnly, immediateUpdate);
+                                      final UpdateTrigger updateTrigger) {
+    integerField.setEditable(updateTrigger != UpdateTrigger.READ_ONLY);
+    Values.link(value, UiValues.integerValue(integerField, nullable, updateTrigger), updateTrigger == UpdateTrigger.READ_ONLY);
   }
 
   /**
    * @param decimalField the decimal field to link with the value
    * @param value the model value
    * @param nullable if false then 0 is used instead of null
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
+   * @param updateTrigger when the component should update the value
    */
   public static void doubleValueLink(final DecimalField decimalField, final Value<Double> value, final boolean nullable,
-                                     final boolean readOnly, final boolean immediateUpdate) {
-    decimalField.setEditable(!readOnly);
-    Values.link(value, UiValues.doubleValue(decimalField, nullable, immediateUpdate), readOnly);
+                                     final UpdateTrigger updateTrigger) {
+    decimalField.setEditable(updateTrigger != UpdateTrigger.READ_ONLY);
+    Values.link(value, UiValues.doubleValue(decimalField, nullable, updateTrigger), updateTrigger == UpdateTrigger.READ_ONLY);
   }
 
   /**
    * @param decimalField the decimal field to link with the value
    * @param value the model value
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
+   * @param updateTrigger when the component should update the value
    */
   public static void bigDecimalValueLink(final DecimalField decimalField, final Value<BigDecimal> value,
-                                         final boolean readOnly, final boolean immediateUpdate) {
-    decimalField.setEditable(!readOnly);
-    Values.link(value, UiValues.bigDecimalValue(decimalField, immediateUpdate), readOnly);
-  }
-
-  /**
-   * @param longField the long field to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param isPrimitive if true then the property value is assumed to be a primitive
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
-   */
-  public static void longValueLink(final LongField longField, final Object owner, final String propertyName,
-                                   final EventObserver<Long> valueChangeEvent, final boolean isPrimitive,
-                                   final boolean immediateUpdate) {
-    longValueLink(longField, owner, propertyName, valueChangeEvent, isPrimitive, false, immediateUpdate);
-  }
-
-  /**
-   * @param longField the long field to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param isPrimitive if true then the property value is assumed to be a primitive
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
-   */
-  public static void longValueLink(final LongField longField, final Object owner, final String propertyName,
-                                   final EventObserver<Long> valueChangeEvent, final boolean isPrimitive,
-                                   final boolean readOnly, final boolean immediateUpdate) {
-    longValueLink(longField, Values.propertyValue(owner, propertyName, isPrimitive ? long.class : Long.class,
-            valueChangeEvent), !isPrimitive, readOnly, immediateUpdate);
+                                         final UpdateTrigger updateTrigger) {
+    decimalField.setEditable(updateTrigger != UpdateTrigger.READ_ONLY);
+    Values.link(value, UiValues.bigDecimalValue(decimalField, updateTrigger), updateTrigger == UpdateTrigger.READ_ONLY);
   }
 
   /**
    * @param longField the long field to link with the value
    * @param value the model value
    * @param nullable if false then 0 is used instead of null
-   * @param readOnly if true the component will be read only
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
+   * @param updateTrigger when the component should update the value
    */
   public static void longValueLink(final LongField longField, final Value<Long> value, final boolean nullable,
-                                   final boolean readOnly, final boolean immediateUpdate) {
-    longField.setEditable(!readOnly);
-    Values.link(value, UiValues.longValue(longField, nullable, immediateUpdate), readOnly);
+                                   final UpdateTrigger updateTrigger) {
+    longField.setEditable(updateTrigger != UpdateTrigger.READ_ONLY);
+    Values.link(value, UiValues.longValue(longField, nullable, updateTrigger), updateTrigger == UpdateTrigger.READ_ONLY);
   }
 
   /**
    * @param textComponent the text component to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param value the value to link with the component
    */
-  public static void textValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
-                                   final EventObserver<String> valueChangeEvent) {
-    textValueLink(textComponent, owner, propertyName, valueChangeEvent, false);
-  }
-
-  /**
-   * @param textComponent the text component to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param readOnly if true the component will be read only
-   */
-  public static void textValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
-                                   final EventObserver<String> valueChangeEvent, final boolean readOnly) {
-    textValueLink(textComponent, owner, propertyName, valueChangeEvent, null, readOnly);
-  }
-
-  /**
-   * @param textComponent the text component to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param format the format to use when displaying the linked value
-   * @param readOnly if true the component will be read only
-   */
-  public static void textValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
-                                   final EventObserver<String> valueChangeEvent, final Format format,
-                                   final boolean readOnly) {
-    textValueLink(textComponent, owner, propertyName, valueChangeEvent, format, true, readOnly);
-  }
-
-  /**
-   * @param textComponent the text component to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param format the format to use when displaying the linked value, null if no formatting should be performed
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
-   * @param readOnly if true the component will be read only
-   */
-  public static void textValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
-                                   final EventObserver<String> valueChangeEvent, final Format format,
-                                   final boolean immediateUpdate, final boolean readOnly) {
-    textValueLink(textComponent, Values.propertyValue(owner, propertyName, String.class, valueChangeEvent), format, immediateUpdate, readOnly);
+  public static void textValueLink(final JTextComponent textComponent, final Value<String> value) {
+    textValueLink(textComponent, value, null, UpdateTrigger.KEYSTROKE);
   }
 
   /**
    * @param textComponent the text component to link with the value
    * @param value the value to link with the component
    * @param format the format to use when displaying the linked value, null if no formatting should be performed
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
-   * @param readOnly if true the component will be read only
+   * @param updateTrigger when the component should update the value
    */
   public static void textValueLink(final JTextComponent textComponent, final Value<String> value, final Format format,
-                                   final boolean immediateUpdate, final boolean readOnly) {
-    textComponent.setEditable(!readOnly);
-    Values.link(value, UiValues.textValue(textComponent, format, immediateUpdate), readOnly);
+                                   final UpdateTrigger updateTrigger) {
+    textComponent.setEditable(updateTrigger != UpdateTrigger.READ_ONLY);
+    Values.link(value, UiValues.textValue(textComponent, format, updateTrigger), updateTrigger == UpdateTrigger.READ_ONLY);
   }
 
   /**
@@ -388,49 +194,49 @@ public final class ValueLinks {
 
   /**
    * @param <V> the value type
-   * @param box the combo box to link with the value
+   * @param comboBox the combo box to link with the value
    * @param owner the value owner
    * @param propertyName the property name
    * @param valueClass the value class
    * @param valueChangeEvent an EventObserver notified each time the value changes
    */
-  public static <V> void selectedItemValueLink(final JComboBox<V> box, final Object owner, final String propertyName,
+  public static <V> void selectedItemValueLink(final JComboBox<V> comboBox, final Object owner, final String propertyName,
                                                final Class<V> valueClass, final EventObserver<V> valueChangeEvent) {
-    selectedItemValueLink(box, owner, propertyName, valueClass, valueChangeEvent, false);
+    selectedItemValueLink(comboBox, owner, propertyName, valueClass, valueChangeEvent, false);
   }
 
   /**
    * @param <V> the value type
-   * @param box the combo box to link with the value
+   * @param comboBox the combo box to link with the value
    * @param owner the value owner
    * @param propertyName the property name
    * @param valueClass the value class
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param readOnly if true the component will be read only
    */
-  public static <V> void selectedItemValueLink(final JComboBox<V> box, final Object owner, final String propertyName,
+  public static <V> void selectedItemValueLink(final JComboBox<V> comboBox, final Object owner, final String propertyName,
                                                final Class<V> valueClass, final EventObserver<V> valueChangeEvent,
                                                final boolean readOnly) {
-    selectedItemValueLink(box, Values.propertyValue(owner, propertyName, valueClass, valueChangeEvent), readOnly);
+    selectedItemValueLink(comboBox, Values.propertyValue(owner, propertyName, valueClass, valueChangeEvent), readOnly);
   }
 
   /**
    * @param <V> the value type
-   * @param box the combo box to link with the value
+   * @param comboBox the combo box to link with the value
    * @param value the model value
    */
-  public static <V> void selectedItemValueLink(final JComboBox<V> box, final Value<V> value) {
-    Values.link(value, UiValues.selectedItemValue(box), false);
+  public static <V> void selectedItemValueLink(final JComboBox<V> comboBox, final Value<V> value) {
+    Values.link(value, UiValues.selectedItemValue(comboBox), false);
   }
 
   /**
    * @param <V> the value type
-   * @param box the combo box to link with the value
+   * @param comboBox the combo box to link with the value
    * @param value the model value
    * @param readOnly if true the component will be read only
    */
-  public static <V> void selectedItemValueLink(final JComboBox<V> box, final Value<V> value, final boolean readOnly) {
-    Values.link(value, UiValues.selectedItemValue(box), readOnly);
+  public static <V> void selectedItemValueLink(final JComboBox<V> comboBox, final Value<V> value, final boolean readOnly) {
+    Values.link(value, UiValues.selectedItemValue(comboBox), readOnly);
   }
 
   /**

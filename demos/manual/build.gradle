@@ -12,3 +12,29 @@ dependencies {
     runtimeOnly project(':jminor-dbms-h2database')
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
+
+ext.mainClass = 'org.jminor.framework.demos.manual.EventState'
+
+startScripts {
+    mainClassName = mainClass
+}
+
+clientRemoteScript {
+    mainClassName = mainClass
+}
+
+clientHttpScript {
+    mainClassName = mainClass
+}
+
+runClientLocal {
+    main = mainClass
+}
+
+runClientRemote {
+    main = mainClass
+}
+
+runClientHttp {
+    main = mainClass
+}

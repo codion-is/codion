@@ -6,7 +6,10 @@ package org.jminor.swing.common.ui.control;
 import org.jminor.common.DateFormats;
 import org.jminor.common.Event;
 import org.jminor.common.Events;
+import org.jminor.common.Value;
+import org.jminor.common.Values;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.UpdateTrigger;
 import org.jminor.swing.common.ui.ValueLinks;
 
 import org.junit.jupiter.api.Test;
@@ -36,7 +39,9 @@ public class DateValueLinkTest {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 
     final JFormattedTextField textField = UiUtil.createFormattedField(DateFormats.getDateMask(format));
-    ValueLinks.localTimeValueLink(textField, this, "time", timeValueChangedEvent, false, format, true);
+    final Value<LocalTime> timePropertyValue = Values.propertyValue(this, "time",
+            LocalTime.class, timeValueChangedEvent);
+    ValueLinks.localTimeValueLink(textField, timePropertyValue, format, UpdateTrigger.KEYSTROKE);
     assertEquals("__:__", textField.getText());
 
     final LocalTime date = LocalTime.parse("22:42", formatter);
@@ -54,7 +59,9 @@ public class DateValueLinkTest {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.SHORT_DOT);
 
     final JFormattedTextField textField = UiUtil.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_DOT));
-    ValueLinks.localDateValueLink(textField, this, "date", dateValueChangedEvent, false, DateFormats.SHORT_DOT, true);
+    final Value<LocalDate> datePropertyValue = Values.propertyValue(this, "date",
+            LocalDate.class, dateValueChangedEvent);
+    ValueLinks.localDateValueLink(textField, datePropertyValue, DateFormats.SHORT_DOT, UpdateTrigger.KEYSTROKE);
     assertEquals("__.__.____", textField.getText());
 
     final LocalDate date = LocalDate.parse("03.10.1975", formatter);
@@ -72,7 +79,9 @@ public class DateValueLinkTest {
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.SHORT_TIMESTAMP);
 
     final JFormattedTextField textField = UiUtil.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_TIMESTAMP));
-    ValueLinks.localDateTimeValueLink(textField, this, "timestamp", timestampValueChangedEvent, false, DateFormats.SHORT_TIMESTAMP, true);
+    final Value<LocalDateTime> timestampPropertyValue = Values.propertyValue(this, "timestamp",
+            LocalDateTime.class, timestampValueChangedEvent);
+    ValueLinks.localDateTimeValueLink(textField, timestampPropertyValue, DateFormats.SHORT_TIMESTAMP, UpdateTrigger.KEYSTROKE);
     assertEquals("__-__-__ __:__", textField.getText());
 
     final LocalDateTime date = LocalDateTime.parse("03-10-75 10:34", formatter);
@@ -80,9 +89,9 @@ public class DateValueLinkTest {
     setTimestamp(date);
     assertEquals("03-10-75 10:34", textField.getText());
     textField.setText("03-03-83 11:42");
-    assertEquals(LocalDateTime.parse("03-03-83 11:42", formatter), timestamp);
+    assertEquals(LocalDateTime.parse("03-03-83 11:42", formatter), this.timestamp);
     textField.setText("");
-    assertNull(timestamp);
+    assertNull(this.timestamp);
   }
 
   public LocalDateTime getTimestamp() {

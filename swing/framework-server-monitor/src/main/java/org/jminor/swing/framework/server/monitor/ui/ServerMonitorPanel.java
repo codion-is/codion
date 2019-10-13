@@ -4,7 +4,9 @@
 package org.jminor.swing.framework.server.monitor.ui;
 
 import org.jminor.common.TaskScheduler;
+import org.jminor.common.Values;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.UpdateTrigger;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.IntegerField;
@@ -203,7 +205,8 @@ public final class ServerMonitorPanel extends JPanel {
     final IntegerField connectionCountField = new IntegerField(4);
     connectionCountField.setEditable(false);
     connectionCountField.setHorizontalAlignment(JLabel.CENTER);
-    ValueLinks.integerValueLink(connectionCountField, model, "connectionCount", model.getStatisticsUpdatedObserver(), true, true, true);
+    ValueLinks.integerValueLink(connectionCountField, Values.propertyValue(model, "connectionCount",
+            int.class, model.getStatisticsUpdatedObserver()), false, UpdateTrigger.READ_ONLY);
 
     return connectionCountField;
   }
@@ -212,7 +215,8 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextField memoryField = new JTextField(8);
     memoryField.setEditable(false);
     memoryField.setHorizontalAlignment(JLabel.CENTER);
-    ValueLinks.textValueLink(memoryField, model, "memoryUsage", model.getStatisticsUpdatedObserver(), true);
+    ValueLinks.textValueLink(memoryField, Values.propertyValue(model, "memoryUsage", String.class,
+            model.getStatisticsUpdatedObserver()), null, UpdateTrigger.READ_ONLY);
 
     return memoryField;
   }
