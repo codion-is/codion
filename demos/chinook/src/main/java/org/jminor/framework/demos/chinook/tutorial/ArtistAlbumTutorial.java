@@ -4,7 +4,6 @@ import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
@@ -20,8 +19,11 @@ import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static org.jminor.framework.domain.Properties.*;
+import static org.jminor.swing.common.ui.UiUtil.getScreenSizeRatio;
 import static org.jminor.swing.common.ui.UiUtil.setPreferredWidth;
 
+//When running this make sure the project root directory is the
+//working directory, due to a relative path to a db init script
 public final class ArtistAlbumTutorial {
 
   public static final String T_ARTIST = "chinook.artist";
@@ -99,7 +101,7 @@ public final class ArtistAlbumTutorial {
     protected SwingEntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
       final SwingEntityModel artistModel = new SwingEntityModel(T_ARTIST, connectionProvider);
       final SwingEntityModel albumModel = new SwingEntityModel(T_ALBUM, connectionProvider);
-      artistModel.addDetailModels(albumModel);
+      artistModel.addDetailModel(albumModel);
       artistModel.refresh();
 
       final SwingEntityApplicationModel applicationModel = new SwingEntityApplicationModel(connectionProvider);
@@ -126,6 +128,6 @@ public final class ArtistAlbumTutorial {
     Database.DATABASE_INIT_SCRIPT.set("demos/chinook/src/main/sql/create_schema.sql");
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(Chinook.class.getName());
     new ApplicationPanel().startApplication("Artists and Albums", null, false,
-            UiUtil.getScreenSizeRatio(0.5), new User("scott", "tiger".toCharArray()));
+            getScreenSizeRatio(0.5), new User("scott", "tiger".toCharArray()));
   }
 }

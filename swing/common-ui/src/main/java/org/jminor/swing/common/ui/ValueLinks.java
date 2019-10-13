@@ -33,16 +33,16 @@ public final class ValueLinks {
    * Links a date bean value with a given text component
    * @param textComponent the text component to link with the value
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param readOnly if true the component will be read only
    * @param dateFormat the data format
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void localDateValueLink(final JFormattedTextField textComponent, final Object owner,
-                                        final String beanPropertyName, final EventObserver<LocalDate> valueChangeEvent,
+                                        final String propertyName, final EventObserver<LocalDate> valueChangeEvent,
                                         final boolean readOnly, final String dateFormat, final boolean immediateUpdate) {
-    localDateValueLink(textComponent, Values.beanValue(owner, beanPropertyName, LocalDate.class,
+    localDateValueLink(textComponent, Values.propertyValue(owner, propertyName, LocalDate.class,
             valueChangeEvent), readOnly, dateFormat, immediateUpdate);
   }
 
@@ -64,16 +64,16 @@ public final class ValueLinks {
    * Links a date bean value with a given text component
    * @param textComponent the text component to link with the value
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param readOnly if true the component will be read only
    * @param dateFormat the data format
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void localTimeValueLink(final JFormattedTextField textComponent, final Object owner,
-                                        final String beanPropertyName, final EventObserver<LocalTime> valueChangeEvent,
+                                        final String propertyName, final EventObserver<LocalTime> valueChangeEvent,
                                         final boolean readOnly, final String dateFormat, final boolean immediateUpdate) {
-    localTimeValueLink(textComponent, Values.beanValue(owner, beanPropertyName, LocalTime.class,
+    localTimeValueLink(textComponent, Values.propertyValue(owner, propertyName, LocalTime.class,
             valueChangeEvent), readOnly, dateFormat, immediateUpdate);
   }
 
@@ -95,16 +95,16 @@ public final class ValueLinks {
    * Links a date bean value with a given text component
    * @param textComponent the text component to link with the value
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param readOnly if true the component will be read only
    * @param dateFormat the data format
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void localDateTimeValueLink(final JFormattedTextField textComponent, final Object owner,
-                                            final String beanPropertyName, final EventObserver<LocalDateTime> valueChangeEvent,
+                                            final String propertyName, final EventObserver<LocalDateTime> valueChangeEvent,
                                             final boolean readOnly, final String dateFormat, final boolean immediateUpdate) {
-    localDateTimeValueLink(textComponent, Values.beanValue(owner, beanPropertyName, LocalDateTime.class,
+    localDateTimeValueLink(textComponent, Values.propertyValue(owner, propertyName, LocalDateTime.class,
             valueChangeEvent), readOnly, dateFormat, immediateUpdate);
   }
 
@@ -125,31 +125,31 @@ public final class ValueLinks {
   /**
    * @param integerField the int field to link with the value
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param isPrimitive if true then the property value is assumed to be a primitive
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void integerValueLink(final IntegerField integerField, final Object owner, final String beanPropertyName,
+  public static void integerValueLink(final IntegerField integerField, final Object owner, final String propertyName,
                                       final EventObserver<Integer> valueChangeEvent, final boolean isPrimitive,
                                       final boolean immediateUpdate) {
-    integerValueLink(integerField, Values.beanValue(owner, beanPropertyName, isPrimitive ? int.class : Integer.class,
+    integerValueLink(integerField, Values.propertyValue(owner, propertyName, isPrimitive ? int.class : Integer.class,
             valueChangeEvent), !isPrimitive, false, immediateUpdate);
   }
 
   /**
    * @param integerField the int field to link with the value
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param isPrimitive if true then the property value is assumed to be a primitive
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void integerValueLink(final IntegerField integerField, final Object owner, final String beanPropertyName,
+  public static void integerValueLink(final IntegerField integerField, final Object owner, final String propertyName,
                                       final EventObserver<Integer> valueChangeEvent, final boolean isPrimitive,
                                       final boolean readOnly, final boolean immediateUpdate) {
-    integerValueLink(integerField, Values.beanValue(owner, beanPropertyName, isPrimitive ? int.class : Integer.class,
+    integerValueLink(integerField, Values.propertyValue(owner, propertyName, isPrimitive ? int.class : Integer.class,
             valueChangeEvent), !isPrimitive, readOnly, immediateUpdate);
   }
 
@@ -169,30 +169,30 @@ public final class ValueLinks {
   /**
    * @param decimalField the decimal field to link with the value
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param isPrimitive if true then the property value is assumed to be a primitive
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void doubleValueLink(final DecimalField decimalField, final Object owner, final String beanPropertyName,
+  public static void doubleValueLink(final DecimalField decimalField, final Object owner, final String propertyName,
                                      final EventObserver<Double> valueChangeEvent, final boolean isPrimitive,
                                      final boolean immediateUpdate) {
-    doubleValueLink(decimalField, owner, beanPropertyName, valueChangeEvent, isPrimitive, false, immediateUpdate);
+    doubleValueLink(decimalField, owner, propertyName, valueChangeEvent, isPrimitive, false, immediateUpdate);
   }
 
   /**
    * @param decimalField the decimal field to link with the value
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param isPrimitive if true then the property value is assumed to be a primitive
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void doubleValueLink(final DecimalField decimalField, final Object owner, final String beanPropertyName,
+  public static void doubleValueLink(final DecimalField decimalField, final Object owner, final String propertyName,
                                      final EventObserver<Double> valueChangeEvent, final boolean isPrimitive,
                                      final boolean readOnly, final boolean immediateUpdate) {
-    doubleValueLink(decimalField, Values.beanValue(owner, beanPropertyName, isPrimitive ? double.class : Double.class,
+    doubleValueLink(decimalField, Values.propertyValue(owner, propertyName, isPrimitive ? double.class : Double.class,
             valueChangeEvent), !isPrimitive, readOnly, immediateUpdate);
   }
 
@@ -224,30 +224,30 @@ public final class ValueLinks {
   /**
    * @param longField the long field to link with the value
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param isPrimitive if true then the property value is assumed to be a primitive
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void longValueLink(final LongField longField, final Object owner, final String beanPropertyName,
+  public static void longValueLink(final LongField longField, final Object owner, final String propertyName,
                                    final EventObserver<Long> valueChangeEvent, final boolean isPrimitive,
                                    final boolean immediateUpdate) {
-    longValueLink(longField, owner, beanPropertyName, valueChangeEvent, isPrimitive, false, immediateUpdate);
+    longValueLink(longField, owner, propertyName, valueChangeEvent, isPrimitive, false, immediateUpdate);
   }
 
   /**
    * @param longField the long field to link with the value
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param isPrimitive if true then the property value is assumed to be a primitive
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void longValueLink(final LongField longField, final Object owner, final String beanPropertyName,
+  public static void longValueLink(final LongField longField, final Object owner, final String propertyName,
                                    final EventObserver<Long> valueChangeEvent, final boolean isPrimitive,
                                    final boolean readOnly, final boolean immediateUpdate) {
-    longValueLink(longField, Values.beanValue(owner, beanPropertyName, isPrimitive ? long.class : Long.class,
+    longValueLink(longField, Values.propertyValue(owner, propertyName, isPrimitive ? long.class : Long.class,
             valueChangeEvent), !isPrimitive, readOnly, immediateUpdate);
   }
 
@@ -267,53 +267,53 @@ public final class ValueLinks {
   /**
    * @param textComponent the text component to link with the value
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    */
-  public static void textValueLink(final JTextComponent textComponent, final Object owner, final String beanPropertyName,
+  public static void textValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
                                    final EventObserver<String> valueChangeEvent) {
-    textValueLink(textComponent, owner, beanPropertyName, valueChangeEvent, false);
+    textValueLink(textComponent, owner, propertyName, valueChangeEvent, false);
   }
 
   /**
    * @param textComponent the text component to link with the value
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param readOnly if true the component will be read only
    */
-  public static void textValueLink(final JTextComponent textComponent, final Object owner, final String beanPropertyName,
+  public static void textValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
                                    final EventObserver<String> valueChangeEvent, final boolean readOnly) {
-    textValueLink(textComponent, owner, beanPropertyName, valueChangeEvent, null, readOnly);
+    textValueLink(textComponent, owner, propertyName, valueChangeEvent, null, readOnly);
   }
 
   /**
    * @param textComponent the text component to link with the value
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param format the format to use when displaying the linked value
    * @param readOnly if true the component will be read only
    */
-  public static void textValueLink(final JTextComponent textComponent, final Object owner, final String beanPropertyName,
+  public static void textValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
                                    final EventObserver<String> valueChangeEvent, final Format format,
                                    final boolean readOnly) {
-    textValueLink(textComponent, owner, beanPropertyName, valueChangeEvent, format, true, readOnly);
+    textValueLink(textComponent, owner, propertyName, valueChangeEvent, format, true, readOnly);
   }
 
   /**
    * @param textComponent the text component to link with the value
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param format the format to use when displaying the linked value, null if no formatting should be performed
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    * @param readOnly if true the component will be read only
    */
-  public static void textValueLink(final JTextComponent textComponent, final Object owner, final String beanPropertyName,
+  public static void textValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
                                    final EventObserver<String> valueChangeEvent, final Format format,
                                    final boolean immediateUpdate, final boolean readOnly) {
-    textValueLink(textComponent, Values.beanValue(owner, beanPropertyName, String.class, valueChangeEvent), format, immediateUpdate, readOnly);
+    textValueLink(textComponent, Values.propertyValue(owner, propertyName, String.class, valueChangeEvent), format, immediateUpdate, readOnly);
   }
 
   /**
@@ -357,24 +357,24 @@ public final class ValueLinks {
   /**
    * @param buttonModel the button model to link with the value
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    */
-  public static void toggleValueLink(final ButtonModel buttonModel, final Object owner, final String beanPropertyName,
+  public static void toggleValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
                                      final EventObserver<Boolean> valueChangeEvent) {
-    toggleValueLink(buttonModel, owner, beanPropertyName, valueChangeEvent, false);
+    toggleValueLink(buttonModel, owner, propertyName, valueChangeEvent, false);
   }
 
   /**
    * @param buttonModel the button model to link with the value
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param readOnly if true the component will be read only
    */
-  public static void toggleValueLink(final ButtonModel buttonModel, final Object owner, final String beanPropertyName,
+  public static void toggleValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
                                      final EventObserver<Boolean> valueChangeEvent, final boolean readOnly) {
-    toggleValueLink(buttonModel, Values.beanValue(owner, beanPropertyName, boolean.class, valueChangeEvent), readOnly);
+    toggleValueLink(buttonModel, Values.propertyValue(owner, propertyName, boolean.class, valueChangeEvent), readOnly);
   }
 
   /**
@@ -390,28 +390,28 @@ public final class ValueLinks {
    * @param <V> the value type
    * @param box the combo box to link with the value
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueClass the value class
    * @param valueChangeEvent an EventObserver notified each time the value changes
    */
-  public static <V> void selectedItemValueLink(final JComboBox<V> box, final Object owner, final String beanPropertyName,
+  public static <V> void selectedItemValueLink(final JComboBox<V> box, final Object owner, final String propertyName,
                                                final Class<V> valueClass, final EventObserver<V> valueChangeEvent) {
-    selectedItemValueLink(box, owner, beanPropertyName, valueClass, valueChangeEvent, false);
+    selectedItemValueLink(box, owner, propertyName, valueClass, valueChangeEvent, false);
   }
 
   /**
    * @param <V> the value type
    * @param box the combo box to link with the value
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueClass the value class
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param readOnly if true the component will be read only
    */
-  public static <V> void selectedItemValueLink(final JComboBox<V> box, final Object owner, final String beanPropertyName,
+  public static <V> void selectedItemValueLink(final JComboBox<V> box, final Object owner, final String propertyName,
                                                final Class<V> valueClass, final EventObserver<V> valueChangeEvent,
                                                final boolean readOnly) {
-    selectedItemValueLink(box, Values.beanValue(owner, beanPropertyName, valueClass, valueChangeEvent), readOnly);
+    selectedItemValueLink(box, Values.propertyValue(owner, propertyName, valueClass, valueChangeEvent), readOnly);
   }
 
   /**
@@ -435,26 +435,26 @@ public final class ValueLinks {
 
   /**
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @return a SpinnerNumberModel based on the value
    */
-  public static SpinnerNumberModel intSpinnerValueLink(final Object owner, final String beanPropertyName,
+  public static SpinnerNumberModel intSpinnerValueLink(final Object owner, final String propertyName,
                                                        final EventObserver<Integer> valueChangeEvent) {
-    return intSpinnerValueLink(owner, beanPropertyName, valueChangeEvent, false);
+    return intSpinnerValueLink(owner, propertyName, valueChangeEvent, false);
   }
 
   /**
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param readOnly if true the value link will be read only
    * @return a SpinnerNumberModel based on the value
    */
-  public static SpinnerNumberModel intSpinnerValueLink(final Object owner, final String beanPropertyName,
+  public static SpinnerNumberModel intSpinnerValueLink(final Object owner, final String propertyName,
                                                        final EventObserver<Integer> valueChangeEvent, final boolean readOnly) {
     final SpinnerNumberModel numberModel = new SpinnerNumberModel();
-    intSpinnerValueLink(owner, beanPropertyName, valueChangeEvent, numberModel, readOnly);
+    intSpinnerValueLink(owner, propertyName, valueChangeEvent, numberModel, readOnly);
 
     return numberModel;
   }
@@ -481,14 +481,14 @@ public final class ValueLinks {
 
   /**
    * @param owner the value owner
-   * @param beanPropertyName the property name
+   * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param spinnerModel the spinner model to use
    * @param readOnly if true the value link will be read only
    */
-  public static void intSpinnerValueLink(final Object owner, final String beanPropertyName, final EventObserver<Integer> valueChangeEvent,
+  public static void intSpinnerValueLink(final Object owner, final String propertyName, final EventObserver<Integer> valueChangeEvent,
                                          final SpinnerNumberModel spinnerModel, final boolean readOnly) {
-    intSpinnerValueLink(spinnerModel, Values.beanValue(owner, beanPropertyName, int.class, valueChangeEvent), readOnly);
+    intSpinnerValueLink(spinnerModel, Values.propertyValue(owner, propertyName, int.class, valueChangeEvent), readOnly);
   }
 
   /**

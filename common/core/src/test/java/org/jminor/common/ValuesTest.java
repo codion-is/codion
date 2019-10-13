@@ -68,7 +68,7 @@ public class ValuesTest {
   @Test
   public void linkValues() {
     final AtomicInteger modelValueEventCounter = new AtomicInteger();
-    final Value<Integer> modelValue = Values.beanValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
+    final Value<Integer> modelValue = Values.propertyValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue);
     modelValue.getChangeObserver().addListener(modelValueEventCounter::incrementAndGet);
@@ -102,7 +102,7 @@ public class ValuesTest {
   @Test
   public void linkValuesReadOnly() {
     final AtomicInteger modelValueEventCounter = new AtomicInteger();
-    final Value<Integer> modelValue = Values.beanValue(this, "intValue", Integer.class, integerValueChange.getObserver());
+    final Value<Integer> modelValue = Values.propertyValue(this, "intValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue, true);
     modelValue.getChangeObserver().addListener(modelValueEventCounter::incrementAndGet);
@@ -178,28 +178,28 @@ public class ValuesTest {
   }
 
   @Test
-  public void beanValueNoGetter() {
-    assertThrows(IllegalArgumentException.class, () -> Values.beanValue(this, "nonexistent", Integer.class, integerValueChange.getObserver()));
+  public void propertyValueNoGetter() {
+    assertThrows(IllegalArgumentException.class, () -> Values.propertyValue(this, "nonexistent", Integer.class, integerValueChange.getObserver()));
   }
 
   @Test
-  public void beanValueNoOwner() {
-    assertThrows(NullPointerException.class, () -> Values.beanValue(null, "integerValue", Integer.class, integerValueChange.getObserver()));
+  public void propertyValueNoOwner() {
+    assertThrows(NullPointerException.class, () -> Values.propertyValue(null, "integerValue", Integer.class, integerValueChange.getObserver()));
   }
 
   @Test
-  public void beanValueNoPropertyName() {
-    assertThrows(IllegalArgumentException.class, () -> Values.beanValue(this, null, Integer.class, integerValueChange.getObserver()));
+  public void propertyValueNoPropertyName() {
+    assertThrows(IllegalArgumentException.class, () -> Values.propertyValue(this, null, Integer.class, integerValueChange.getObserver()));
   }
 
   @Test
-  public void beanValueNoValueClass() {
-    assertThrows(NullPointerException.class, () -> Values.beanValue(this, "integerValue", null, integerValueChange.getObserver()));
+  public void propertyValueNoValueClass() {
+    assertThrows(NullPointerException.class, () -> Values.propertyValue(this, "integerValue", null, integerValueChange.getObserver()));
   }
 
   @Test
-  public void setReadOnly() {
-    final Value<Integer> modelValue = Values.beanValue(this, "intValue", Integer.class, integerValueChange.getObserver());
+  public void setReadOnlyPropertyValue() {
+    final Value<Integer> modelValue = Values.propertyValue(this, "intValue", Integer.class, integerValueChange.getObserver());
     assertThrows(IllegalStateException.class, () -> modelValue.set(42));
   }
 }
