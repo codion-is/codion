@@ -1,0 +1,14 @@
+apply from: '../demos.gradle'
+
+dependencies {
+    implementation project(':jminor-swing-framework-ui')
+
+    runtimeOnly project(':jminor-framework-plugins-logback-proxy')
+
+    runtimeOnly project(':jminor-framework-db-local')
+    runtimeOnly project(':jminor-framework-db-remote')
+    runtimeOnly project(':jminor-framework-db-http')
+
+    runtimeOnly project(':jminor-dbms-h2database')
+    runtimeOnly "com.h2database:h2:${h2Version}"
+}

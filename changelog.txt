@@ -5171,3 +5171,4 @@
   Some minor variable renamings
   Values.beanValue() renamed to propertyValue()
   StateObserver.getChangeObserver() removed
+  Manual demo module added for code examples used in the manual
