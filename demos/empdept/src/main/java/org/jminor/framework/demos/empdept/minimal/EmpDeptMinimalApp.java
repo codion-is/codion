@@ -196,13 +196,11 @@ public class EmpDeptMinimalApp {
     @Override
     protected void setupEntityPanelProviders() {
       //now, let's assemble our application
-      final EntityPanelProvider departmentProvider = new EntityPanelProvider("scott.dept",
-              getModel().getDomain().getCaption("scott.dept"))
+      final EntityPanelProvider departmentProvider = new EntityPanelProvider("scott.dept")
               .setEditPanelClass(DepartmentEditPanel.class);
       final SwingEntityModelProvider employeeModelProvider = new SwingEntityModelProvider("scott.emp")
               .setEditModelClass(EmployeeEditModel.class);
-      final EntityPanelProvider employeeProvider = new EntityPanelProvider(employeeModelProvider,
-              getModel().getDomain().getCaption("scott.emp"))
+      final EntityPanelProvider employeeProvider = new EntityPanelProvider(employeeModelProvider)
               .setEditPanelClass(EmployeeEditPanel.class);
       departmentProvider.addDetailPanelProvider(employeeProvider);
 

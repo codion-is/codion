@@ -2181,7 +2181,9 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
         lastInsertedEntities.addAll(data.getInsertedEntities());
       });
       final JOptionPane pane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-      final JDialog dialog = pane.createDialog(component, panelProvider.getCaption());
+      final JDialog dialog = pane.createDialog(component, panelProvider.getCaption() == null ?
+              connectionProvider.getDomain().getCaption(panelProvider.getEntityId()) :
+              panelProvider.getCaption());
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       UiUtil.addInitialFocusHack(editPanel, new InitialFocusAction(editPanel));
       dialog.setVisible(true);

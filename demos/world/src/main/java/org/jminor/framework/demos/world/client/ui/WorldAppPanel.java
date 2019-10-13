@@ -10,7 +10,6 @@ import org.jminor.framework.demos.world.beans.ui.CityEditPanel;
 import org.jminor.framework.demos.world.beans.ui.CountryEditPanel;
 import org.jminor.framework.demos.world.beans.ui.CountryLanguageEditPanel;
 import org.jminor.framework.demos.world.domain.World;
-import org.jminor.framework.domain.Domain;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
@@ -23,12 +22,11 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppPanel.Wo
 
   @Override
   protected void setupEntityPanelProviders() {
-    final Domain domain = getModel().getDomain();
-    final EntityPanelProvider countryPanelProvider = new EntityPanelProvider(World.T_COUNTRY, domain.getCaption(World.T_COUNTRY));
+    final EntityPanelProvider countryPanelProvider = new EntityPanelProvider(World.T_COUNTRY);
     countryPanelProvider.setEditPanelClass(CountryEditPanel.class);
-    final EntityPanelProvider cityPanelProvider = new EntityPanelProvider(World.T_CITY, domain.getCaption(World.T_CITY));
+    final EntityPanelProvider cityPanelProvider = new EntityPanelProvider(World.T_CITY);
     cityPanelProvider.setEditPanelClass(CityEditPanel.class);
-    final EntityPanelProvider countryLanguagePanelProvider = new EntityPanelProvider(World.T_COUNTRYLANGUAGE, domain.getCaption(World.T_COUNTRYLANGUAGE));
+    final EntityPanelProvider countryLanguagePanelProvider = new EntityPanelProvider(World.T_COUNTRYLANGUAGE);
     countryLanguagePanelProvider.setEditPanelClass(CountryLanguageEditPanel.class);
     countryPanelProvider.addDetailPanelProvider(cityPanelProvider);
     countryPanelProvider.addDetailPanelProvider(countryLanguagePanelProvider);
