@@ -22,7 +22,6 @@ import org.jminor.framework.demos.chinook.beans.ui.PlaylistEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.PlaylistTrackEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.TrackEditPanel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
-import org.jminor.framework.domain.Domain;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
@@ -54,23 +53,22 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPane
    */
   @Override
   protected void setupEntityPanelProviders() {
-    final Domain domain = getModel().getDomain();
-    final EntityPanelProvider trackProvider = new EntityPanelProvider(T_TRACK, domain.getCaption(T_TRACK));
+    final EntityPanelProvider trackProvider = new EntityPanelProvider(T_TRACK);
     trackProvider.setEditPanelClass(TrackEditPanel.class);
 
-    final EntityPanelProvider customerProvider = new EntityPanelProvider(T_CUSTOMER, domain.getCaption(T_CUSTOMER));
+    final EntityPanelProvider customerProvider = new EntityPanelProvider(T_CUSTOMER);
     customerProvider.setEditPanelClass(CustomerEditPanel.class);
     customerProvider.setTablePanelClass(CustomerTablePanel.class);
 
-    final EntityPanelProvider genreProvider = new EntityPanelProvider(T_GENRE, domain.getCaption(T_GENRE));
+    final EntityPanelProvider genreProvider = new EntityPanelProvider(T_GENRE);
     genreProvider.setEditPanelClass(GenreEditPanel.class);
     genreProvider.addDetailPanelProvider(trackProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
 
-    final EntityPanelProvider mediaTypeProvider = new EntityPanelProvider(T_MEDIATYPE, domain.getCaption(T_MEDIATYPE));
+    final EntityPanelProvider mediaTypeProvider = new EntityPanelProvider(T_MEDIATYPE);
     mediaTypeProvider.setEditPanelClass(MediaTypeEditPanel.class);
     mediaTypeProvider.addDetailPanelProvider(trackProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
 
-    final EntityPanelProvider employeeProvider = new EntityPanelProvider(T_EMPLOYEE, domain.getCaption(T_EMPLOYEE));
+    final EntityPanelProvider employeeProvider = new EntityPanelProvider(T_EMPLOYEE);
     employeeProvider.setEditPanelClass(EmployeeEditPanel.class);
     employeeProvider.addDetailPanelProvider(customerProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
 

@@ -7,7 +7,6 @@ import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
-import org.jminor.framework.domain.Domain;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
@@ -20,20 +19,14 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 
   @Override
   protected void setupEntityPanelProviders() {
-    final Domain domain = getModel().getDomain();
-    final EntityPanelProvider columnConstraintProvider = new EntityPanelProvider(SchemaBrowser.T_COLUMN_CONSTRAINT,
-            domain.getCaption(SchemaBrowser.T_COLUMN_CONSTRAINT));
-    final EntityPanelProvider constraintProvider = new EntityPanelProvider(SchemaBrowser.T_CONSTRAINT,
-            domain.getCaption(SchemaBrowser.T_CONSTRAINT));
+    final EntityPanelProvider columnConstraintProvider = new EntityPanelProvider(SchemaBrowser.T_COLUMN_CONSTRAINT);
+    final EntityPanelProvider constraintProvider = new EntityPanelProvider(SchemaBrowser.T_CONSTRAINT);
     constraintProvider.addDetailPanelProvider(columnConstraintProvider);
-    final EntityPanelProvider columnProvider = new EntityPanelProvider(SchemaBrowser.T_COLUMN,
-            domain.getCaption(SchemaBrowser.T_COLUMN));
-    final EntityPanelProvider dbObjectProvider = new EntityPanelProvider(SchemaBrowser.T_TABLE,
-            domain.getCaption(SchemaBrowser.T_TABLE));
+    final EntityPanelProvider columnProvider = new EntityPanelProvider(SchemaBrowser.T_COLUMN);
+    final EntityPanelProvider dbObjectProvider = new EntityPanelProvider(SchemaBrowser.T_TABLE);
     dbObjectProvider.addDetailPanelProvider(columnProvider);
     dbObjectProvider.addDetailPanelProvider(constraintProvider);
-    final EntityPanelProvider schemaProvider = new EntityPanelProvider(SchemaBrowser.T_SCHEMA,
-            domain.getCaption(SchemaBrowser.T_SCHEMA));
+    final EntityPanelProvider schemaProvider = new EntityPanelProvider(SchemaBrowser.T_SCHEMA);
     schemaProvider.addDetailPanelProvider(dbObjectProvider).setDetailSplitPanelResizeWeight(0.3);
     addEntityPanelProvider(schemaProvider);
   }

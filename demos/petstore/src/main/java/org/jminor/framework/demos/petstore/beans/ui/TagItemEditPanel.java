@@ -11,8 +11,6 @@ import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
 
-import java.awt.Dimension;
-
 import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_ITEM_ITEM_FK;
 import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_ITEM_TAG_FK;
 
@@ -25,14 +23,14 @@ public class TagItemEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     setLayout(new FlexibleGridLayout(2, 1, 5, 5));
-    EntityComboBox box = createForeignKeyComboBox(TAG_ITEM_ITEM_FK);
-    setInitialFocusComponent(box);
-    box.setPopupWidth(240);
-    box.setPreferredSize(new Dimension(180, UiUtil.getPreferredTextFieldHeight()));
+    final EntityComboBox itemBox = createForeignKeyComboBox(TAG_ITEM_ITEM_FK);
+    setInitialFocusComponent(itemBox);
+    itemBox.setPopupWidth(240);
+    UiUtil.setPreferredWidth(itemBox, 180);
     addPropertyPanel(TAG_ITEM_ITEM_FK);
-    box = createForeignKeyComboBox(TAG_ITEM_TAG_FK);
-    add(createPropertyPanel(TAG_ITEM_TAG_FK, UiUtil.createEastButtonPanel(box,
-            createEditPanelAction(box, new EntityPanelProvider(Petstore.T_TAG,
-                    getEditModel().getDomain().getCaption(Petstore.T_TAG)).setEditPanelClass(TagEditPanel.class)), false)));
+    final EntityComboBox itemTagBox = createForeignKeyComboBox(TAG_ITEM_TAG_FK);
+    add(createPropertyPanel(TAG_ITEM_TAG_FK, UiUtil.createEastButtonPanel(itemTagBox,
+            createEditPanelAction(itemTagBox, new EntityPanelProvider(Petstore.T_TAG)
+                    .setEditPanelClass(TagEditPanel.class)), false)));
   }
 }

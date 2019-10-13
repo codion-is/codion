@@ -6,7 +6,7 @@ package org.jminor.framework.demos.petstore.testing;
 import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel;
+import org.jminor.framework.demos.petstore.client.PetstoreAppModel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.swing.common.tools.ui.LoadTestPanel;
 import org.jminor.swing.framework.model.SwingEntityModel;
@@ -17,16 +17,16 @@ import javax.swing.UIManager;
 
 import static java.util.Collections.singletonList;
 
-public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppPanel.PetstoreApplicationModel> {
+public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel> {
 
   private static final User UNIT_TEST_USER = new User(
           System.getProperty("jminor.unittest.username", "scott"),
           System.getProperty("jminor.unittest.password", "tiger").toCharArray());
 
   public PetstoreLoadTest() {
-    super(UNIT_TEST_USER, singletonList(new AbstractUsageScenario<PetstoreAppPanel.PetstoreApplicationModel>("selectRecords") {
+    super(UNIT_TEST_USER, singletonList(new AbstractUsageScenario<PetstoreAppModel>("selectRecords") {
       @Override
-      protected void performScenario(final PetstoreAppPanel.PetstoreApplicationModel application) {
+      protected void performScenario(final PetstoreAppModel application) {
         final SwingEntityModel categoryModel = application.getEntityModels().iterator().next();
         categoryModel.getTableModel().getSelectionModel().clearSelection();
         categoryModel.refresh();
@@ -38,8 +38,8 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppPanel
   }
 
   @Override
-  protected PetstoreAppPanel.PetstoreApplicationModel initializeApplication() throws CancelException {
-    final PetstoreAppPanel.PetstoreApplicationModel applicationModel = new PetstoreAppPanel.PetstoreApplicationModel(
+  protected PetstoreAppModel initializeApplication() throws CancelException {
+    final PetstoreAppModel applicationModel = new PetstoreAppModel(
             EntityConnectionProviders.connectionProvider().setDomainClassName(Petstore.class.getName())
                     .setClientTypeId(getClass().getSimpleName()).setUser(getUser()));
     final SwingEntityModel categoryModel = applicationModel.getEntityModels().iterator().next();

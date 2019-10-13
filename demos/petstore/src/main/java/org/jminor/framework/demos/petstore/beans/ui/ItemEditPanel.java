@@ -43,11 +43,11 @@ public class ItemEditPanel extends EntityEditPanel {
     addPropertyPanel(ITEM_DESCRIPTION);
     addPropertyPanel(ITEM_PRICE);
     add(createPropertyPanel(ITEM_C0NTACT_INFO_FK, UiUtil.createEastButtonPanel(contactInfoBox,
-            createEditPanelAction(contactInfoBox, new EntityPanelProvider(Petstore.T_SELLER_CONTACT_INFO,
-                    getEditModel().getDomain().getCaption(Petstore.T_SELLER_CONTACT_INFO)).setEditPanelClass(ContactInfoEditPanel.class)), false)));
+            createEditPanelAction(contactInfoBox, new EntityPanelProvider(Petstore.T_SELLER_CONTACT_INFO)
+                    .setEditPanelClass(ContactInfoEditPanel.class)), false)));
     add(createPropertyPanel(ITEM_ADDRESS_FK, UiUtil.createEastButtonPanel(addressBox,
-            createEditPanelAction(addressBox, new EntityPanelProvider(Petstore.T_ADDRESS,
-                    getEditModel().getDomain().getCaption(Petstore.T_ADDRESS)).setEditPanelClass(AddressEditPanel.class)), false)));
+            createEditPanelAction(addressBox, new EntityPanelProvider(Petstore.T_ADDRESS)
+                    .setEditPanelClass(AddressEditPanel.class)), false)));
     addPropertyPanel(ITEM_IMAGE_URL);
     addPropertyPanel(ITEM_IMAGE_THUMB_URL);
     addPropertyPanel(ITEM_DISABLED);
