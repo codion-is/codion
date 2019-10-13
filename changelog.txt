@@ -5157,3 +5157,4 @@
   UiValues, ValueLinks, usePrimitive replace with nullable where applicable, usePrimitive leftover parameters renamed to isPrimitive
   Some minor variable renamings
   Values.beanValue() renamed to propertyValue()
+  StateObserver.getChangeObserver() removed
