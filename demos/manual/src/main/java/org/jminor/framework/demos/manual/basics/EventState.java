@@ -18,6 +18,7 @@ import java.awt.event.ActionEvent;
 public final class EventState {
 
   public static void main(final String[] args) {
+    // tag::event[]
     Event<String> event = Events.event();
 
     // an observer handles the listeners for an Event but can not trigger it
@@ -36,7 +37,9 @@ public final class EventState {
     // Event extends EventObserver so listeneres can be added
     // directly without referring to the EventObserver
     event.addListener(() -> System.out.println("Event"));
+    // end::event[]
 
+    // tag::state[]
     // a boolean state, false by default
     State state = States.state();
 
@@ -57,7 +60,9 @@ public final class EventState {
     // State extends StateObserver so listeners can be added
     // directly without referring to the StateObserver
     state.addListener(() -> System.out.println("State changed"));
+    // end::state[]
 
+    // tag::action[]
     Action action = new AbstractAction("action") {
       public void actionPerformed(ActionEvent e) {}
     };
@@ -69,5 +74,6 @@ public final class EventState {
     state.set(true);
 
     System.out.println(action.isEnabled());// output: true
+    // end::action[]
   }
 }
