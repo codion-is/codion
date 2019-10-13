@@ -14,7 +14,6 @@ public class StatesTest {
   @Test
   public void listeners() {
     final State state = States.state();
-    state.getChangeObserver();
     final AtomicInteger stateChangeCounter = new AtomicInteger();
     final EventListener stateChangeListener = stateChangeCounter::incrementAndGet;
     state.addListener(stateChangeListener);

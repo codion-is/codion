@@ -104,11 +104,6 @@ public final class States {
     }
 
     @Override
-    public final EventObserver<Boolean> getChangeObserver() {
-      return getObserver().getChangeObserver();
-    }
-
-    @Override
     public final void addListener(final EventListener listener) {
       getObserver().addListener(listener);
     }
@@ -285,17 +280,6 @@ public final class States {
     }
 
     @Override
-    public EventObserver<Boolean> getChangeObserver() {
-      synchronized (lock) {
-        if (stateChangedEvent == null) {
-          stateChangedEvent = Events.event();
-        }
-
-        return stateChangedEvent.getObserver();
-      }
-    }
-
-    @Override
     public StateObserver getReversedObserver() {
       synchronized (lock) {
         if (reversedStateObserver == null) {
@@ -308,22 +292,32 @@ public final class States {
 
     @Override
     public void addListener(final EventListener listener) {
-      getChangeObserver().addListener(listener);
+      getEventObserver().addListener(listener);
     }
 
     @Override
     public void removeListener(final EventListener listener) {
-      getChangeObserver().removeListener(listener);
+      getEventObserver().removeListener(listener);
     }
 
     @Override
     public void addDataListener(final EventDataListener<Boolean> listener) {
-      getChangeObserver().addDataListener(listener);
+      getEventObserver().addDataListener(listener);
     }
 
     @Override
     public void removeDataListener(final EventDataListener listener) {
-      getChangeObserver().removeDataListener(listener);
+      getEventObserver().removeDataListener(listener);
+    }
+
+    private EventObserver<Boolean> getEventObserver() {
+      synchronized (lock) {
+        if (stateChangedEvent == null) {
+          stateChangedEvent = Events.event();
+        }
+
+        return stateChangedEvent.getObserver();
+      }
     }
 
     private void notifyObservers(final boolean previousValue, final boolean newValue) {
