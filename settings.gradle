@@ -129,6 +129,9 @@ project(':jminor-demos-chinook').projectDir = file('demos/chinook')
 include 'jminor-demos-empdept'
 project(':jminor-demos-empdept').projectDir = file('demos/empdept')
 
+include 'jminor-demos-manual'
+project(':jminor-demos-manual').projectDir = file('demos/manual')
+
 include 'jminor-demos-petstore'
 project(':jminor-demos-petstore').projectDir = file('demos/petstore')
 
