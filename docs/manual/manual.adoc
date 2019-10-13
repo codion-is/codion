@@ -3,11 +3,13 @@
 :dir-tutorials: ../tutorials
 :dir-source: ../../demos/manual/src/main/java
 
+NOTE: The code used throughout this manual is available in the 'manual' demo module included in the project.
+
 == The basics
 
 === Common classes
 
-Two common classes used throughout the framework are the {url-javadoc}/org/jminor/common/Event.html[Event] and {url-javadoc}/org/jminor/common/State.html[State] classes and their respective observers {url-javadoc}/org/jminor/common/EventObserver.html[EventObserver] and {url-javadoc}/org/jminor/common/StateObserver.html[StateObserver] and listeners {url-javadoc}/org/jminor/common/EventListener.html[EventListener] and {url-javadoc}/org/jminor/common/EventInfoListener.html[EventInfoListener].
+Two common classes used throughout the framework are the {url-javadoc}/org/jminor/common/Event.html[Event] and {url-javadoc}/org/jminor/common/State.html[State] classes, their respective observers {url-javadoc}/org/jminor/common/EventObserver.html[EventObserver] and {url-javadoc}/org/jminor/common/StateObserver.html[StateObserver] and listeners {url-javadoc}/org/jminor/common/EventListener.html[EventListener] and {url-javadoc}/org/jminor/common/EventInfoListener.html[EventInfoListener].
 
 === Event ===
 
@@ -19,7 +21,7 @@ To listen to Events you use the {url-javadoc}/org/jminor/common/EventListener.ht
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[lines=21..38]
+include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[tags=event]
 ----
 
 === State ===
@@ -30,14 +32,14 @@ States are instantiated via the {url-javadoc}/org/jminor/common/States.html[Stat
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[lines=40..59]
+include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[tags=state]
 ----
 
 Any *Action* object can be linked to a *State* object via the *UiUtil.linkToEnabledState* method, where the action's *enabled* status is synchronized with the state.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[lines=61..71]
+include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[tags=action]
 ----
 
 == Domain Model
