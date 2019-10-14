@@ -3,6 +3,7 @@
 :dir-tutorials: ../tutorials
 :dir-source: ../../demos/manual/src/main/java
 :dir-source-world: ../../demos/world/src/main/java
+:dir-source-petstore: ../../demos/petstore/src/main/java
 
 NOTE: The code used throughout this manual is available in the 'manual' demo module included in the project.
 
@@ -407,56 +408,7 @@ Using the Entity class is rather straight forward.
 
 [source,java]
 ----
-//initialize the domain model by instantiating the domain model class
-Store store = new Store();
-
-//Initialize a database connection provider using the domain model, user credentials scott/tiger and application identifier TestApp
-EntityConnectionProvider connectionProvider = EntityConnectionProviders.createConnectionProvider(
-             store, new User("scott", "tiger".toCharArray()), "TestApp");
-
-EntityConnection connection = connectionProvider.getConnection();
-
-//Initialize a new entity representing the table STORE.ADDRESS
-Entity address = store.entity(Store.T_ADDRESS);
-
-//Set the value of the column ID to 42
-address.put(Store.ADDRESS_ID, 42);
-//Set the value of the column STREET to "Elm Street"
-address.put(Store.ADDRESS_STREET, "Elm Street");
-//Set the value of the column CITY to "Seattle"
-address.put(Store.ADDRESS_CITY, "Seattle");
-
-//Insert the address entity
-connection.insert(Collections.singletonList(address));
-
-//Initialize a new entity representing the table STORE.CUSTOMER
-Entity customer = store.entity(Store.T_CUSTOMER);
-
-//Set the value of the column ID to 42
-customer.put(Store.CUSTOMER_ID, 42);
-//Set the value of the column FIRST_NAME to John
-customer.put(Store.CUSTOMER_FIRST_NAME, "John");
-//Set the value of the column LAST_NAME to Doe
-customer.put(Store.CUSTOMER_LAST_NAME, "Doe");
-//Set the reference value ADDRESS
-customer.put(Store.CUSTOMER_ADDRESS_FK, address);
-//Set the value of the column IS_ACTIVE to true
-customer.put(Store.CUSTOMER_IS_ACTIVE, true);
-
-//Insert the entity representing the customer John Doe,
-//receiving the primary key of the new record in a list as a return value
-List<Entity.Key> key = connection.insert(Collections.singletonList(customer));
-
-//Retrieve the ID value
-Integer id = customer.getInteger(Store.CUSTOMER_ID);
-//Retrieve the first name value
-String firstName = customer.getString(Store.CUSTOMER_FIRST_NAME);
-
-//Select the entity from the database by primary key
-Entity customerByKey = connection.selectSingle(key.get(0));
-
-//Select entities representing the table STORE.CUSTOMER by first name
-List<Entity> entitiesByFirstName = connection.selectMany(Store.T_CUSTOMER, Store.CUSTOMER_FIRST_NAME, "Björn");
+include::{dir-source-petstore}/org/jminor/framework/demos/petstore/manual/EntitiesInAction.java[tags=entitiesInAction]
 ----
 
 ==== Examples
