@@ -36,16 +36,13 @@ public final class Petstore extends Domain {
             primaryKeyProperty(ADDRESS_ID)
                     .setColumnName("addressid"),
             columnProperty(ADDRESS_STREET_1, Types.VARCHAR, ADDRESS_STREET_1)
-                    .setColumnName("street1")
-                    .setMaxLength(55).setNullable(false),
+                    .setColumnName("street1").setMaxLength(55).setNullable(false),
             columnProperty(ADDRESS_STREET_2, Types.VARCHAR, ADDRESS_STREET_2)
                     .setColumnName("street2").setMaxLength(55),
             columnProperty(ADDRESS_CITY, Types.VARCHAR, ADDRESS_CITY)
-                    .setColumnName("city")
-                    .setMaxLength(55).setNullable(false),
+                    .setColumnName("city").setMaxLength(55).setNullable(false),
             columnProperty(ADDRESS_STATE, Types.VARCHAR, ADDRESS_STATE)
-                    .setColumnName("state")
-                    .setMaxLength(25).setNullable(false),
+                    .setColumnName("state").setMaxLength(25).setNullable(false),
             columnProperty(ADDRESS_ZIP, Types.INTEGER, ADDRESS_ZIP)
                     .setColumnName("zip").setNullable(false),
             columnProperty(ADDRESS_LATITUDE, Types.DOUBLE, ADDRESS_LATITUDE)
@@ -96,8 +93,7 @@ public final class Petstore extends Domain {
                     .setColumnName("productid"),
             foreignKeyProperty(PRODUCT_CATEGORY_FK, PRODUCT_CATEGORY_FK, T_CATEGORY,
                     columnProperty(PRODUCT_CATEGORY_ID)
-                            .setColumnName("categoryid"))
-                    .setNullable(false),
+                            .setColumnName("categoryid")).setNullable(false),
             columnProperty(PRODUCT_NAME, Types.VARCHAR, PRODUCT_NAME)
                     .setColumnName("name").setMaxLength(25).setNullable(false),
             columnProperty(PRODUCT_DESCRIPTION, Types.VARCHAR, PRODUCT_DESCRIPTION)
@@ -169,12 +165,10 @@ public final class Petstore extends Domain {
             columnProperty(ITEM_PRICE, Types.DECIMAL, ITEM_PRICE)
                     .setColumnName("price").setNullable(false).setMaximumFractionDigits(2),
             foreignKeyProperty(ITEM_C0NTACT_INFO_FK, ITEM_C0NTACT_INFO_FK, T_SELLER_CONTACT_INFO,
-                    columnProperty(ITEM_C0NTACT_INFO_ID)
-                            .setColumnName("contactinfo_contactinfoid"))
+                    columnProperty(ITEM_C0NTACT_INFO_ID).setColumnName("contactinfo_contactinfoid"))
                     .setNullable(false),
             foreignKeyProperty(ITEM_ADDRESS_FK, "Address", T_ADDRESS,
-                    columnProperty(ITEM_ADDRESS_ID)
-                            .setColumnName("address_addressid"))
+                    columnProperty(ITEM_ADDRESS_ID).setColumnName("address_addressid"))
                     .setNullable(false),
             booleanProperty(ITEM_DISABLED, Types.INTEGER, ITEM_DISABLED, 1, 0)
                     .setColumnName("disabled").setDefaultValue(false))
@@ -216,12 +210,12 @@ public final class Petstore extends Domain {
     define(T_TAG_ITEM, "petstore.tag_item",
             foreignKeyProperty(TAG_ITEM_ITEM_FK, TAG_ITEM_ITEM_FK, T_ITEM,
                     primaryKeyProperty(TAG_ITEM_ITEM_ID)
-                            .setColumnName("itemid")
-                            .setPrimaryKeyIndex(0)).setNullable(false),
+                            .setColumnName("itemid").setPrimaryKeyIndex(0))
+                    .setNullable(false),
             foreignKeyProperty(TAG_ITEM_TAG_FK, TAG_ITEM_TAG_FK, T_TAG,
                     primaryKeyProperty(TAG_ITEM_TAG_ID)
-                            .setColumnName("tagid")
-                            .setPrimaryKeyIndex(1)).setNullable(false))
+                            .setColumnName("tagid").setPrimaryKeyIndex(1))
+                    .setNullable(false))
             .setStringProvider(new StringProvider(TAG_ITEM_ITEM_FK)
                     .addText(" - ").addValue(TAG_ITEM_TAG_FK))
             .setCaption("Item tags");

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.demos.chinook.tutorial;
 
 import org.jminor.common.User;

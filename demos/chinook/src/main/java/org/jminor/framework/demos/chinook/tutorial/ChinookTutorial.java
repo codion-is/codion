@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.demos.chinook.tutorial;
 
 import org.jminor.common.User;
@@ -24,6 +27,8 @@ import static org.jminor.framework.domain.Properties.*;
 
 /**
  * A tutorial class for demonstration purposes.
+ * When running this make sure the project root directory is the
+ * working directory, due to a relative path to a db init script
  */
 public final class ChinookTutorial {
 
@@ -195,19 +200,19 @@ public final class ChinookTutorial {
     connectionProvider.disconnect();
   }
 
+  /** @return an embedded in-memory H2 database instance */
+  private static Database createDatabase() {
+    configureDatabase();
+    // Creates an instance based on the configuration values
+    return Databases.getInstance();
+  }
+
   /** Configures the embedded in-memory H2 database */
   private static void configureDatabase() {
     // Configure the datababase
     Database.DATABASE_TYPE.set(Database.Type.H2.toString());
     Database.DATABASE_EMBEDDED_IN_MEMORY.set(true);
     Database.DATABASE_INIT_SCRIPT.set("demos/chinook/src/main/sql/create_schema.sql");
-  }
-
-  /** @return an embedded in-memory H2 database instance */
-  private static Database createDatabase() {
-    configureDatabase();
-    // Creates an instance based on the configuration values
-    return Databases.getInstance();
   }
 
   /** @return a test User */
