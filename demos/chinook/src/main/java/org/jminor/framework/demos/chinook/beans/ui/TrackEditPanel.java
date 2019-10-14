@@ -4,7 +4,6 @@
 package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.UpdateTrigger;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
@@ -49,10 +48,10 @@ public class TrackEditPanel extends EntityEditPanel {
     bytesField.setGroupingUsed(true);
     bytesField.setColumns(18);
     createTextField(TRACK_UNITPRICE).setColumns(18);
-    final JTextField durationField = createTextField(TRACK_MINUTES_SECONDS_DERIVED, UpdateTrigger.READ_ONLY);
+    final JTextField durationField = createTextField(TRACK_MINUTES_SECONDS_DERIVED);
     final JPanel durationPanel = new JPanel(new GridLayout(1, 2, 5, 5));
     durationPanel.add(createPropertyPanel(TRACK_MILLISECONDS, millisecondsField));
-    durationPanel.add(createPropertyPanel(new JLabel("(min/sec)"), durationField, true));
+    durationPanel.add(createPropertyPanel(new JLabel("(min/sec)"), durationField));
 
     setLayout(new FlexibleGridLayout(4, 2, 5, 5, true, false));
     addPropertyPanel(TRACK_ALBUMID_FK);

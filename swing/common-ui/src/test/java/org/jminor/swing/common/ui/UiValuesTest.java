@@ -20,6 +20,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -33,7 +34,7 @@ public class UiValuesTest {
   public void localTimeUiValue() {
     final String format = "HH:mm";
     final JFormattedTextField textField = UiUtil.createFormattedField(DateFormats.getDateMask(format));//HH:mm
-    final Value<LocalTime> value = UiValues.localTimeValue(textField, format, UpdateTrigger.KEYSTROKE);
+    final Value<LocalTime> value = UiValues.localTimeValue(textField, format);
 
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 
@@ -55,7 +56,7 @@ public class UiValuesTest {
   @Test
   public void localDateUiValue() {
     final JFormattedTextField textField = UiUtil.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_DASH));//dd-MM-yyyy
-    final Value<LocalDate> value = UiValues.localDateValue(textField, DateFormats.SHORT_DASH, UpdateTrigger.KEYSTROKE);
+    final Value<LocalDate> value = UiValues.localDateValue(textField, DateFormats.SHORT_DASH);
 
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.SHORT_DASH);
 
@@ -76,7 +77,7 @@ public class UiValuesTest {
   @Test
   public void localDateTimeUiValue() {
     final JFormattedTextField textField = UiUtil.createFormattedField(DateFormats.getDateMask(DateFormats.TIMESTAMP));//dd-MM-yyyy HH:mm
-    final Value<LocalDateTime> value = UiValues.localDateTimeValue(textField, DateFormats.TIMESTAMP, UpdateTrigger.KEYSTROKE);
+    final Value<LocalDateTime> value = UiValues.localDateTimeValue(textField, DateFormats.TIMESTAMP);
 
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DateFormats.TIMESTAMP);
 
@@ -142,7 +143,7 @@ public class UiValuesTest {
   @Test
   public void integerTextUiValue() {
     final IntegerField integerField = new IntegerField();
-    final Value<Integer> value = UiValues.integerValue(integerField, true, UpdateTrigger.KEYSTROKE);
+    final Value<Integer> value = UiValues.integerValue(integerField, true);
 
     assertNull(value.get());
     integerField.setText("122");
@@ -157,7 +158,7 @@ public class UiValuesTest {
   @Test
   public void integerPrimitiveTextUiValue() {
     final IntegerField integerField = new IntegerField();
-    final Value<Integer> value = UiValues.integerValue(integerField, false, UpdateTrigger.KEYSTROKE);
+    final Value<Integer> value = UiValues.integerValue(integerField, false);
 
     assertEquals(Integer.valueOf(0), value.get());
     integerField.setText("122");
@@ -172,7 +173,7 @@ public class UiValuesTest {
   @Test
   public void longTextUiValue() {
     final LongField longField = new LongField();
-    final Value<Long> value = UiValues.longValue(longField, true, UpdateTrigger.KEYSTROKE);
+    final Value<Long> value = UiValues.longValue(longField, true);
 
     assertNull(value.get());
     longField.setText("122");
@@ -187,7 +188,7 @@ public class UiValuesTest {
   @Test
   public void longPrimitiveTextUiValue() {
     final LongField longField = new LongField();
-    final Value<Long> value = UiValues.longValue(longField, false, UpdateTrigger.KEYSTROKE);
+    final Value<Long> value = UiValues.longValue(longField, false);
 
     assertEquals(Long.valueOf(0), value.get());
     longField.setText("122");
@@ -203,7 +204,7 @@ public class UiValuesTest {
   public void doubleTextUiValue() {
     final DecimalField decimalField = new DecimalField();
     decimalField.setSeparators('.', ',');
-    final Value<Double> value = UiValues.doubleValue(decimalField, true, UpdateTrigger.KEYSTROKE);
+    final Value<Double> value = UiValues.doubleValue(decimalField, true);
 
     assertNull(value.get());
     decimalField.setText("122.2");
@@ -219,7 +220,7 @@ public class UiValuesTest {
   public void doublePrimitiveTextUiValue() {
     final DecimalField decimalField = new DecimalField();
     decimalField.setSeparators('.', ',');
-    final Value<Double> value = UiValues.doubleValue(decimalField, false, UpdateTrigger.KEYSTROKE);
+    final Value<Double> value = UiValues.doubleValue(decimalField, false);
 
     assertEquals(Double.valueOf(0), value.get());
     decimalField.setText("122.2");
@@ -232,9 +233,26 @@ public class UiValuesTest {
   }
 
   @Test
+  public void bigDecimalTextUiValue() {
+    final DecimalField decimalField = new DecimalField();
+    decimalField.setParseBigDecimal(true);
+    decimalField.setSeparators('.', ',');
+    final Value<BigDecimal> value = UiValues.bigDecimalValue(decimalField);
+
+    assertNull(value.get());
+    decimalField.setText("122.2");
+    assertEquals(BigDecimal.valueOf(122.2), value.get());
+    decimalField.setText("");
+    assertNull(value.get());
+
+    value.set(BigDecimal.valueOf(42.2));
+    assertEquals("42.2", decimalField.getText());
+  }
+
+  @Test
   public void textUiValueKeystroke() {
     final JTextField textField = new JTextField();
-    final Value<String> value = UiValues.textValue(textField, null, UpdateTrigger.KEYSTROKE);
+    final Value<String> value = UiValues.textValue(textField);
 
     assertNull(value.get());
     textField.setText("hello there");

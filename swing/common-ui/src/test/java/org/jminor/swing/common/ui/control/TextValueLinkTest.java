@@ -7,7 +7,6 @@ import org.jminor.common.Event;
 import org.jminor.common.Events;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
-import org.jminor.swing.common.ui.UpdateTrigger;
 import org.jminor.swing.common.ui.ValueLinks;
 
 import org.junit.jupiter.api.Test;
@@ -40,9 +39,8 @@ public class TextValueLinkTest {
     final JTextField textField2 = new JTextField();
     this.stringValue = "test";
     ValueLinks.textValueLink(textField2, Values.propertyValue(this, "stringValue",
-            String.class, stringValueChangedEvent), null, UpdateTrigger.READ_ONLY);
+            String.class, stringValueChangedEvent));
     assertEquals("test", textField2.getText());
-    assertFalse(textField2.isEditable());
   }
 
   @Test

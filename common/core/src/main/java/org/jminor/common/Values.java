@@ -104,11 +104,11 @@ public final class Values {
    * Links the two values together so that changes in one are reflected in the other
    * @param originalValue the original value
    * @param linkedValue the linked value
-   * @param readOnly if true the original value is not updated if the linked value changes
+   * @param oneWay if true the original value is not updated if the linked value changes
    * @param <V> the value type
    */
-  public static <V> void link(final Value<V> originalValue, final Value<V> linkedValue, final boolean readOnly) {
-    new ValueLink<>(originalValue, linkedValue, readOnly);
+  public static <V> void link(final Value<V> originalValue, final Value<V> linkedValue, final boolean oneWay) {
+    new ValueLink<>(originalValue, linkedValue, oneWay);
   }
 
   private static final class DefaultValue<V> implements Value<V> {
@@ -290,22 +290,23 @@ public final class Values {
 
     /**
      * Instantiates a new ValueLink
-     * @param originalValue the value wrapper for the linked value
+     * @param originalValue the original value
      * @param linkedValue the value to link to the original value
-     * @param readOnly if true then this link will be uni-directional
+     * @param oneWay if true then this link will be uni-directional, that is, changes in
+     * the linked value do not trigger a change in the original value
      */
-    private ValueLink(final Value<V> originalValue, final Value<V> linkedValue, final boolean readOnly) {
+    private ValueLink(final Value<V> originalValue, final Value<V> linkedValue, final boolean oneWay) {
       this.originalValue = Objects.requireNonNull(originalValue, "originalValue");
       this.linkedValue = Objects.requireNonNull(linkedValue, "linkedValue");
       this.linkedValue.set(this.originalValue.get());
-      bindEvents(originalValue, linkedValue, readOnly);
+      bindEvents(originalValue, linkedValue, oneWay);
     }
 
-    private void bindEvents(final Value<V> originalValue, final Value<V> linkedValue, final boolean readOnly) {
+    private void bindEvents(final Value<V> originalValue, final Value<V> linkedValue, final boolean oneWay) {
       if (originalValue.getChangeObserver() != null) {
         originalValue.getChangeObserver().addListener(() -> updateLinkedValue(originalValue, linkedValue));
       }
-      if (!readOnly && linkedValue.getChangeObserver() != null) {
+      if (!oneWay && linkedValue.getChangeObserver() != null) {//todo changeObserver null?
         linkedValue.getChangeObserver().addListener(() -> updateOriginalValue(originalValue, linkedValue));
       }
     }

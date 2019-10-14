@@ -59,6 +59,13 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
     return button;
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public final void setEditable(final boolean editable) {
+    super.setEditable(editable);
+    getCalendarButton().setEnabled(editable);
+  }
+
   private void displayCalendar() {
     LocalDate currentValue = null;
     try {

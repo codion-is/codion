@@ -20,7 +20,6 @@ import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 import org.jminor.swing.common.ui.SwingMessages;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.UiValues;
-import org.jminor.swing.common.ui.UpdateTrigger;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.Controls;
@@ -186,7 +185,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void linkToModel() {
-    Values.link(model.getSearchStringValue(), UiValues.textValue(this, null, UpdateTrigger.KEYSTROKE));
+    Values.link(model.getSearchStringValue(), UiValues.textValue(this));
     model.getSearchStringValue().getChangeObserver().addDataListener(data -> updateColors());
     model.addSelectedEntitiesListener(data -> setCaretPosition(0));
   }
@@ -335,7 +334,7 @@ public final class EntityLookupField extends JTextField {
       final SizedDocument document = new SizedDocument();
       document.setMaxLength(1);
       final JTextField multipleValueSeparatorField = new JTextField(document, "", 1);
-      ValueLinks.textValueLink(multipleValueSeparatorField, lookupModel.getMultipleItemSeparatorValue(), null, UpdateTrigger.KEYSTROKE);
+      ValueLinks.textValueLink(multipleValueSeparatorField, lookupModel.getMultipleItemSeparatorValue());
 
       final JPanel generalSettingsPanel = new JPanel(UiUtil.createGridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));

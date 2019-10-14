@@ -56,12 +56,30 @@ public final class UiValues {
   /**
    * @param textComponent the component
    * @param dateFormat the date format
+   * @return a Value bound to the given component
+   */
+  public static Value<LocalDate> localDateValue(final JFormattedTextField textComponent, final String dateFormat) {
+    return localDateValue(textComponent, dateFormat, UpdateTrigger.KEYSTROKE);
+  }
+
+  /**
+   * @param textComponent the component
+   * @param dateFormat the date format
    * @param updateTrigger when the component should update the value
    * @return a Value bound to the given component
    */
   public static Value<LocalDate> localDateValue(final JFormattedTextField textComponent,
                                                 final String dateFormat, final UpdateTrigger updateTrigger) {
     return new TemporalUiValue<>(textComponent, dateFormat, updateTrigger, LocalDate::parse);
+  }
+
+  /**
+   * @param textComponent the component
+   * @param dateFormat the date format
+   * @return a Value bound to the given component
+   */
+  public static Value<LocalTime> localTimeValue(final JFormattedTextField textComponent, final String dateFormat) {
+    return localTimeValue(textComponent, dateFormat, UpdateTrigger.KEYSTROKE);
   }
 
   /**
@@ -78,12 +96,30 @@ public final class UiValues {
   /**
    * @param textComponent the component
    * @param dateFormat the date format
+   * @return a Value bound to the given component
+   */
+  public static Value<LocalDateTime> localDateTimeValue(final JFormattedTextField textComponent, final String dateFormat) {
+    return localDateTimeValue(textComponent, dateFormat, UpdateTrigger.KEYSTROKE);
+  }
+
+  /**
+   * @param textComponent the component
+   * @param dateFormat the date format
    * @param updateTrigger when the component should update the value
    * @return a Value bound to the given component
    */
-  public static Value<LocalDateTime> localDateTimeValue(final JFormattedTextField textComponent,
-                                                        final String dateFormat, final UpdateTrigger updateTrigger) {
+  public static Value<LocalDateTime> localDateTimeValue(final JFormattedTextField textComponent, final String dateFormat,
+                                                        final UpdateTrigger updateTrigger) {
     return new TemporalUiValue<>(textComponent, dateFormat, updateTrigger, LocalDateTime::parse);
+  }
+
+  /**
+   * @param integerField the component
+   * @param nullable if false then the resulting Value returns 0 instead of null
+   * @return a Value bound to the given component
+   */
+  public static Value<Integer> integerValue(final IntegerField integerField, final boolean nullable) {
+    return integerValue(integerField, nullable, UpdateTrigger.KEYSTROKE);
   }
 
   /**
@@ -124,12 +160,29 @@ public final class UiValues {
   /**
    * @param decimalField the component
    * @param nullable if false then the resulting Value returns 0 instead of null
+   * @return a Value bound to the given component
+   */
+  public static Value<Double> doubleValue(final DecimalField decimalField, final boolean nullable) {
+    return doubleValue(decimalField, nullable, UpdateTrigger.KEYSTROKE);
+  }
+
+  /**
+   * @param decimalField the component
+   * @param nullable if false then the resulting Value returns 0 instead of null
    * @param updateTrigger when the component should update the value
    * @return a Value bound to the given component
    */
   public static Value<Double> doubleValue(final DecimalField decimalField, final boolean nullable,
                                           final UpdateTrigger updateTrigger) {
     return new DoubleUIValue(decimalField, nullable, updateTrigger);
+  }
+
+  /**
+   * @param decimalField the component
+   * @return a Value bound to the given component
+   */
+  public static Value<BigDecimal> bigDecimalValue(final DecimalField decimalField) {
+    return bigDecimalValue(decimalField, UpdateTrigger.KEYSTROKE);
   }
 
   /**
@@ -144,12 +197,39 @@ public final class UiValues {
   /**
    * @param longField the component
    * @param nullable if false then the resulting Value returns 0 instead of null
+   * @return a Value bound to the given component
+   */
+  public static Value<Long> longValue(final LongField longField, final boolean nullable) {
+    return longValue(longField, nullable, UpdateTrigger.KEYSTROKE);
+  }
+
+  /**
+   * @param longField the component
+   * @param nullable if false then the resulting Value returns 0 instead of null
    * @param updateTrigger when the component should update the value
    * @return a Value bound to the given component
    */
   public static Value<Long> longValue(final LongField longField, final boolean nullable,
                                       final UpdateTrigger updateTrigger) {
     return new LongUIValue(longField, nullable, updateTrigger);
+  }
+
+  /**
+   * @param textComponent the component
+   * @param format the format
+   * @return a Value bound to the given component
+   */
+  public static Value<String> textValue(final JTextComponent textComponent) {
+    return textValue(textComponent, null);
+  }
+
+  /**
+   * @param textComponent the component
+   * @param format the format
+   * @return a Value bound to the given component
+   */
+  public static Value<String> textValue(final JTextComponent textComponent, final Format format) {
+    return textValue(textComponent, format, UpdateTrigger.KEYSTROKE);
   }
 
   /**

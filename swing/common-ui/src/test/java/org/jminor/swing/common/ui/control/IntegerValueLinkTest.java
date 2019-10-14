@@ -7,7 +7,6 @@ import org.jminor.common.Event;
 import org.jminor.common.Events;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
-import org.jminor.swing.common.ui.UpdateTrigger;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 
@@ -28,7 +27,7 @@ public class IntegerValueLinkTest {
     final IntegerField integerField = new IntegerField();
     final Value<Integer> integerPropertyValue = Values.propertyValue(this, "integerValue",
             Integer.class, integerValueChangedEvent);
-    ValueLinks.integerValueLink(integerField, integerPropertyValue, true, UpdateTrigger.KEYSTROKE);
+    ValueLinks.integerValueLink(integerField, integerPropertyValue, true);
     assertNull(integerField.getInteger());
     setIntegerValue(2);
     assertEquals(2, integerField.getInteger().intValue());
@@ -43,7 +42,7 @@ public class IntegerValueLinkTest {
     final IntegerField integerField = new IntegerField();
         final Value<Integer> integerPropertyValue = Values.propertyValue(this, "intValue",
             int.class, intValueChangedEvent);
-    ValueLinks.integerValueLink(integerField, integerPropertyValue, false, UpdateTrigger.KEYSTROKE);
+    ValueLinks.integerValueLink(integerField, integerPropertyValue, false);
     assertEquals((Integer) 0, integerField.getInteger());
     setIntValue(2);
     assertEquals(2, integerField.getInteger().intValue());

@@ -88,6 +88,14 @@ public final class DecimalField extends NumberField {
     ((DecimalDocument) getDocument()).setNumber(value);
   }
 
+  /**
+   *  Sets whether this field parses a BigDecimal
+   * @param parseBigDecimal if true then this field parses a BigDecimal
+   */
+  public void setParseBigDecimal(final boolean parseBigDecimal) {
+    ((DecimalFormat) ((DecimalDocument) getDocument()).getFormat()).setParseBigDecimal(parseBigDecimal);
+  }
+
   private static DecimalFormat createDefaultFormat() {
     final DecimalFormat format = new DecimalFormat();
     format.setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
