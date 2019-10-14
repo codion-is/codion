@@ -2,6 +2,7 @@
 :toc: right
 :dir-tutorials: ../tutorials
 :dir-source: ../../demos/manual/src/main/java
+:dir-source-world: ../../demos/world/src/main/java
 
 NOTE: The code used throughout this manual is available in the 'manual' demo module included in the project.
 
@@ -45,40 +46,27 @@ include::{dir-source}/org/jminor/framework/demos/manual/basics/EventState.java[t
 == Domain Model
 
 The domain model is based around two interfaces, {url-javadoc}/org/jminor/framework/domain/Entity.html[org.jminor.framework.domain.Entity], which represents a row in a table, and {url-javadoc}/org/jminor/framework/domain/Property.html[org.jminor.framework.domain.Property], which represents columns. The
-{url-javadoc}/org/jminor/framework/domain/Domain.html[org.jminor.framework.domain.Domain] class serves as a container for the domain model definition and as a factory for Entity and Entity.Key objects.
+{url-javadoc}/org/jminor/framework/domain/Domain.html[org.jminor.framework.domain.Domain] class serves as a container for the domain model and as a factory for Entity and Entity.Key objects.
 
-=== Entity
+=== Entities
 
-An Entity object represents a row in a table and maps each column value to its respective property. Each type of Entity is identified by a *entityId*,
-a string constant which must be unique within the domain. The simplest way to define a unique *entityId* is to use the underlying table name.
+A row in a table is represented by the Entity class, a map like structure, which maps column values to the property representing each column. Each table is represented by a single entity type, identified by a *entityId*, a String unique within the domain.
 
-Defining the *entityId* as a static string constant in the domain class is recommended.
+NOTE: Typically the *entityId* constant contains the underlying table name, but you can use whatever identifying string you want and specify the table name via a *tableName* parameter when defining the entity.
 
-NOTE: The *entityId* constant does not have to be the table name, you can use whatever identifying string you want and specify the table name separately.
+=== Properties
+
+Each column in a table is represented by the {url-javadoc}/org/jminor/framework/domain/Property.html[Property] class or one of its subclasses. The {url-javadoc}/org/jminor/framework/domain/Properties.html[Properties] class provides factory methods for constructing Property objects and is usually statically imported, as will be assumed in the following examples. Each Property is identified by a *propertyId*, a String, unique within the Entity.
+
+NOTE: Typically the *propertyId* contains the underlying column name, but as with the *entityId* you can use whatever value you want and specify the column name via *setColumnName()* when instantiating the Property.
+
+==== Example
+
+String constants for the Entities and Properties in the World demo, here the *entityIds* have a *T_* prefix (for __Type__ or __Table__) whereas the *propertyIds* are prefixed by their respective table names.
 
 [source,java]
 ----
-/*
- * The Store class defines the domain model for the Store application
- */
-public class Store extends Domain {
-  //the full name of the table, will serve as the entityId for the Entity based on this table
-  public static final String T_ADDRESS = "store.address";
-
-  //the full name of the table, will serve as the entityId for the Entity based on this table
-  public static final String T_CUSTOMER = "store.customer";
-}
-----
-
-=== Property
-
-Each column in a table is defined by the {url-javadoc}/org/jminor/framework/domain/Property.html[Property] class or one of its subclasses. The {url-javadoc}/org/jminor/framework/domain/Properties.html[Properties] class provides factory methods for constructing Property objects.
-The following attributes can be set by using chained method calls:
-__hidden, updatable, readOnly, nullable, defaultValue, maxLength, preferredWidth, description, mnemonic, columnHasDefaultValue, format__
-[source,java]
-----
-Properties.columnProperty(PROPERTY_ID, Types.INTEGER, "Caption")
-              .setNullable(false).setDescription("This is a non-nullable property")
+include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=entityAndPropertyIds]
 ----
 
 ==== Supported data types
@@ -97,139 +85,85 @@ JMinor supports the following column data types:
 * Character (java.sql.Types.CHAR)
 * Blob (java.sql.Types.BLOB)
 
-==== Property id constants
-
-For each column you define a string constant, you can use the actual underlying column name, i.e. 'first_name' or any other string. This constant is used when defining the property based on that column and serves as the property identifier. This __propertyId__ is assumed to be the actual column name when constructing SQL queries unless the column name has been set via __setColumnName()__.
-
-[source,java]
-----
-/*
- * The Store class defines the domain model for the Store application
- */
-public class Store extends Domain {
-  //the full name of the table, will serve as the entityId for the Entity based on this table
-  public static final String T_ADDRESS = "store.address";
-
-  //Property constant identifying the column ID in the ADDRESS table
-  public static final String ADDRESS_ID = "id";
-  //Property constant identifying the column STREET in the ADDRESS table
-  public static final String ADDRESS_STREET = "street";
-  //Property constant identifying the column CITY in the ADDRESS table
-  public static final String ADDRESS_CITY = "city";
-
-  //the full name of the table, will serve as the entityId for the Entity based on this table
-  public static final String T_CUSTOMER = "store.customer";
-
-  //Property constant identifying the column ID in the CUSTOMER table
-  public static final String CUSTOMER_ID = "id";
-  //Property constant identifying the column FIRST_NAME in the CUSTOMER table
-  public static final String CUSTOMER_FIRST_NAME = "first_name";
-  //Property constant identifying the column LAST_NAME in the CUSTOMER table
-  public static final String CUSTOMER_LAST_NAME = "last_name";
-  //Property constant identifying the foreign key referencing the ADDRESS entity,
-  //the value is somewhat arbitrary since it does not map to a column
-  public static final String CUSTOMER_ADDRESS_FK = "address_fk";
-  //Property constant identifying the column referencing the STORE.ADDRESS table
-  public static final String CUSTOMER_ADDRESS_ID = "address_id";
-  //Property constant identifying the column IS_ACTIVE in the CUSTOMER table
-  public static final String CUSTOMER_IS_ACTIVE = "is_active";
-  //Property constant identifying the denormalized column CITY in the CUSTOMER table
-  public static final String CUSTOMER_CITY = "city";
-  //Property constant identifying a derived property CUSTOMER entity
-  public static final String CUSTOMER_DERIVED = "derived";
-}
-----
-
 ==== Property
 
 {url-javadoc}/org/jminor/framework/domain/Property.html[Property] and its subclasses are used to represent entity properties, these can be transient or based on table columns.
-
-[source,java]
-----
-Properties.transientProperty(CUSTOMER_TOKEN, Types.VARCHAR, "Token")
-----
-
-==== ColumnProperty
-
-{url-javadoc}/org/jminor/framework/domain/Property.ColumnProperty.html[ColumnProperty] is used to represent properties that are based on table columns.
-
-[source,java]
-----
-Properties.columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name")
-----
 
 ==== Primary key
 
 Entities must have at least one primary key column property.
 
 The only requirement is that the primary key properties represent a unique column combination for the underlying table, it does not have to correspond to an actual table primary key, although that is of course preferable. The framework does not enforce uniqueness for these properties, so a unique or primary key on the corresponding table columns is strongly recommended.
-[source,java]
+
+[source,java,indent=0]
 ----
-Properties.primaryKeyProperty(CUSTOMER_ID)//by default Types.INTEGER and primaryKeyIndex 0
+include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=primaryKey]
 ----
-If the primary key is comprised of more than one column you must set the primary key index.
-[source,java]
+
+In case of composite primary keys you create a ColumnProperty and specify the primary key index. Note that in the example below the column with primary key index 0 is a foreign key column and wrapped in a foreignKeyProperty(), which are discussed a bit later.
+
+[source,java,indent=0]
 ----
-Properties.columnProperty(ID_1, Types.INTEGER).setPrimaryKeyIndex(0),
-Properties.columnProperty(ID_2, Types.INTEGER).setPrimaryKeyIndex(1),
+include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=compositePrimaryKey]
+----
+
+==== ColumnProperty
+
+{url-javadoc}/org/jminor/framework/domain/Property.ColumnProperty.html[ColumnProperty] is used to represent properties that are based on table columns.
+
+[source,java,indent=0]
+----
+include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=columnProperty]
 ----
 
 ==== ForeignKeyProperty
 
-{url-javadoc}/org/jminor/framework/domain/Property.ForeignKeyProperty.html[ForeignKeyProperty] is a wrapper property used to indicate a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of non-trivial primary keys.
+{url-javadoc}/org/jminor/framework/domain/Property.ForeignKeyProperty.html[ForeignKeyProperty] is a wrapper property used to indicate a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of composite primary keys.
+
+[source,java,indent=0]
+----
+include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=foreignKeyPropertyCountry]
+----
+
+Referring to an entity with composite primary key
+
 [source,java]
 ----
-//referring to an entity with a single column primary key
-Properties.foreignKeyProperty(CUSTOMER_ADDRESS_FK, "Address", T_ADDRESS,
-        Properties.columnProperty(CUSTOMER_ADDRESS_ID))
-
-//referring to an entity with a dual column primary key
-Properties.foreignKeyProperty(MASTER_FK, "Master", T_MASTER,
+foreignKeyProperty(MASTER_FK, "Master", T_MASTER,
         new Property.ColumnProperty[] {
-                Properties.columnProperty(MASTER_ID_1),
-                Properties.columnProperty(MASTER_ID_2)
+                columnProperty(MASTER_ID_1),
+                columnProperty(MASTER_ID_2)
         });
-----
-
-In this example CUSTOMER_ADDRESS_FK is the ID of the foreign key property and can be used to retrieve the actual entity being referred to.
-[source,java]
-----
-Entity address = customer.getForeignKey(CUSTOMER_ADDRESS_FK);
-----
-CUSTOMER_ADDRESS_ID is the actual column used as foreign key and retrieving that will simply return the reference id value.
-[source,java]
-----
-Integer addressId = customer.getInteger(CUSTOMER_ADDRESS_ID);
-----
-By default one level of foreign key values is eagerly fetched during selects, this can be overridden via __setFetchDepth()__. Note that the example below does not really make sense since the ADDRESS entity doesn't have any foreign keys, but if id did the entities referred to via these keys would be eagerly loaded.
-[source,java]
-----
-//referring to an entity with a single column primary key
-Properties.foreignKeyProperty(CUSTOMER_ADDRESS_FK, "Address", T_ADDRESS,
-        Properties.columnProperty(CUSTOMER_ADDRESS_ID)).setFetchDepth(2)
 ----
 
 ==== Boolean Properties
 
 For databases supporting *Types.BOOLEAN* you simply use *Properties.columnProperty*.
-[source,java]
+
+[source,java,indent=0]
 ----
-Properties.columnProperty(CUSTOMER_IS_ACTIVE, Types.BOOLEAN, "Is active")
+include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=booleanProperty]
 ----
+
 For databases lacking native boolean support we use the *Properties.booleanProperty* method, specifying the actual true/false values.
+
 [source,java]
 ----
-Properties.booleanProperty(CUSTOMER_IS_ACTIVE, Types.INTEGER, "Is active", 1, 0)
+booleanProperty(CUSTOMER_IS_ACTIVE, Types.INTEGER, "Is active", 1, 0)
 ----
+
 For boolean columns using unconventional types you can specify the true and false values.
+
 [source,java]
 ----
-Properties.booleanProperty(CUSTOMER_IS_ACTIVE, Types.VARCHAR, "Is active", "true", "false")
+booleanProperty(CUSTOMER_IS_ACTIVE, Types.VARCHAR, "Is active", "true", "false")
 ----
+
 [source,java]
 ----
-Properties.booleanProperty(CUSTOMER_IS_ACTIVE, Types.CHAR, "Is active", 'T', 'F')
+booleanProperty(CUSTOMER_IS_ACTIVE, Types.CHAR, "Is active", 'T', 'F')
 ----
+
 Note that boolean properties always use the boolean Java type, the framework handles translating to and from the actual column values.
 [source,java]
 ----
@@ -238,12 +172,21 @@ entity.put(CUSTOMER_IS_ACTIVE, true);
 boolean isActive = entity.getBoolean(CUSTOMER_IS_ACTIVE);
 ----
 
+==== DenormalizedViewProperty
+
+An entity can include a property value from a entity referenced via foreign key, by defining a denormalized view property.
+
+[source,java,indent=0]
+----
+include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=denormalizedViewProperty]
+----
+
 ==== DenormalizedProperty
 
 {url-javadoc}/org/jminor/framework/domain/Property.DenormalizedProperty.html[DenormalizedProperty] is used for columns that should automatically get their value from a column in a referenced table. This property automatically gets the value from the column in the referenced table when the corresponding reference property value is set.
 [source,java]
 ----
-Properties.denormalizedProperty(CUSTOMER_CITY, CUSTOMER_ADDRESS_FK,
+denormalizedProperty(CUSTOMER_CITY, CUSTOMER_ADDRESS_FK,
         getProperty(T_ADDRESS, ADDRESS_CITY), "City")
 ----
 
@@ -284,58 +227,26 @@ Properties.subqueryProperty(SUBQUERY_PROPERTY_ID, Types.VARCHAR, "Caption",
 ==== DerivedProperty
 
 {url-javadoc}/org/jminor/framework/domain/Property.DerivedProperty.html[DerivedProperty] is used to represent a transient property which value is derived from one or more properties in the same entity. The value of a derived property is provided via a {url-javadoc}/org/jminor/framework/domain/Property.DerivedProperty.Provider.html[DerivedProperty.Provider] implementation as shown below.
-[source,java]
-----
-Properties.derivedProperty(SUM_ID, Types.INTEGER, "Sum",
-         new Property.DerivedProperty.Provider() {
-           public Object getValue(Map<String, Object> linkedValues) {
-             //linkedValues contains the values of the linked properties
-             Integer linkedOne = (Integer) linkedValues.get(SOURCE_PROPERTY_ID_1);
-             Integer linkedTwo = (Integer) linkedValues.get(SOURCE_PROPERTY_ID_2);
 
-             return linkedOne + linkedTwo;
-           }
-         }, SOURCE_PROPERTY_ID_1, SOURCE_PROPERTY_ID_2),
+[source,java,indent=0]
+----
+include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=derivedProperty]
+----
+
+=== Domain
+
+Each entity type is defined by calling {url-javadoc}/org/jminor/framework/domain/Domain.html#define-java.lang.String-org.jminor.framework.domain.Property...-[Domain.define] for each entity. The framework assumes the *entityId* is the table name, unless the *tableName* parameter is specified.
+
+[source,java,indent=0]
+----
+include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=defineCity]
 ----
 
 ==== Examples
+* <<{dir-tutorials}/world.adoc#domain-model, World domain model>>
+* <<{dir-tutorials}/empdept.adoc#domain-model, EmpDept domain model>>
 * <<{dir-tutorials}/chinook.adoc#domain-model, Chinook domain model>>
-
-== Domain
-
-The *Domain* class serves as a factory class for Entity objects as well as a central repository of entity meta-information (the domain model), each entity type must be defined, by calling {url-javadoc}/org/jminor/framework/domain/Domain.html#define-java.lang.String-org.jminor.framework.domain.Property...-[Domain.define] for each entity. The framework assumes the *entityId* is the table name, unless the *tableName* parameter is specified.
-
-[source,java]
-----
-//public class Store continued
-
-  public Store() {
-    //Defining the entity that represents the table STORE.ADDRESS,
-    //with a property for each column in the table, identified by their respective constants
-    define(T_ADDRESS,
-        Properties.primaryKeyProperty(ADDRESS_ID),
-        Properties.columnProperty(ADDRESS_STREET, Types.VARCHAR, "Street"),
-        Properties.columnProperty(ADDRESS_CITY, Types.VARCHAR, "City"))
-        .setStringProvider(new StringProvider(ADDRESS_STREET).addText(" - ").addValue(ADDRESS_CITY)
-    );
-
-    //Defining the entity that represents the table STORE.CUSTOMER,
-    //with a property for each column in the table, identified by their respective constants
-    define(T_CUSTOMER,
-        Properties.primaryKeyProperty(CUSTOMER_ID),
-        Properties.columnProperty(CUSTOMER_FIRST_NAME, Types.VARCHAR, "First name").setDescription("The first name of the customer"),
-        Properties.columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name").setDescription("The last name of the customer"),
-        Properties.foreignKeyProperty(CUSTOMER_ADDRESS_FK, "Address", T_ADDRESS,
-            Properties.columnProperty(CUSTOMER_ADDRESS_ID)).setNullable(false),
-        Properties.booleanProperty(CUSTOMER_IS_ACTIVE, Types.VARCHAR, "Is active", "true", "false").setDefaultValue(true),
-        Properties.denormalizedProperty(CUSTOMER_CITY, T_ADDRESS,
-            getProperty(T_ADDRESS, ADDRESS_CITY), "City"),
-        Properties.transientProperty(CUSTOMER_TRANSIENT, Types.VARCHAR, "Transient"))
-        .setStringProvider(new StringProvider(CUSTOMER_LAST_NAME).addText(", ").addValue(CUSTOMER_FIRST_NAME)
-    );
-  }
-}
-----
+* <<{dir-tutorials}/petstore.adoc#domain-model, Petstore domain model>>
 
 === Entity.KeyProvider
 
@@ -350,13 +261,13 @@ For auto-increment columns the **valueSource** parameter should be the table nam
 ----
 //Auto increment column in the 'store.customer' table
 define(Store.T_CUSTOMER
-    Properties.primaryKeyProperty(Store.CUSTOMER_ID)
+    primaryKeyProperty(Store.CUSTOMER_ID)
     ...
 ).setKeyGenerator(automaticKeyGenerator("store.customer"));
 
 //Trigger and sequence named 'store.customer_seq'
 define(Store.T_CUSTOMER
-    Properties.primaryKeyProperty(Store.CUSTOMER_ID)
+    primaryKeyProperty(Store.CUSTOMER_ID)
     ...
 ).setKeyGenerator(automaticKeyGenerator("store.customer_seq"));
 ----
@@ -369,7 +280,7 @@ When sequences are used without triggers the framework can fetch the value from 
 ----
 //Sequence named 'store.customer_seq' without a trigger
 define(Store.T_CUSTOMER
-    Properties.primaryKeyProperty(Store.CUSTOMER_ID)
+    primaryKeyProperty(Store.CUSTOMER_ID)
     ...
 ).setKeyGenerator(sequenceKeyGenerator("store.customer_seq"));
 ----
@@ -382,7 +293,7 @@ The framework can select new primary key values from a query.
 ----
 //Using a query returning the new value
 define(Store.T_CUSTOMER
-    Properties.primaryKeyProperty(Store.CUSTOMER_ID)
+    primaryKeyProperty(Store.CUSTOMER_ID)
     ...
 ).setKeyGenerator(queriedKeyGenerator(
     "select new_id
@@ -397,7 +308,7 @@ The framework can automatically increment the primary key value by selecting the
 [source,java]
 ----
 define(Store.T_CUSTOMER
-    Properties.primaryKeyProperty(Store.CUSTOMER_ID)
+    primaryKeyProperty(Store.CUSTOMER_ID)
     ...
 ).setKeyGenerator(incrementKeyGenerator("store.customer_seq"));
 ----
@@ -546,18 +457,6 @@ Entity customerByKey = connection.selectSingle(key.get(0));
 
 //Select entities representing the table STORE.CUSTOMER by first name
 List<Entity> entitiesByFirstName = connection.selectMany(Store.T_CUSTOMER, Store.CUSTOMER_FIRST_NAME, "Björn");
-----
-
-=== EntityGenerator
-
-Using the EntityGenerator tool you can quickly generate a domain class containing the property Id constants for a given database schema as well as basic entity definitions.
-
-The required command line arguments are: schema_name domain_class_package_name username password
-Additionally you can add a comma seperated list of tables to include.
-
-[source,bash]
-----
-java -Djminor.db.type=h2 -Djminor.db.embedded=true -Djminor.db.host=h2db/h2 -cp dist/jminor.jar:lib/h2-1.1.114.jar:lib/log4j-1.2.15.jar:lib/jcalendar-1.3.2.jar org.jminor.swing.framework.tools.ui.EntityGenerator PETSTORE org.petstore.domain.Petstore scott tiger
 ----
 
 ==== Examples
