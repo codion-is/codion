@@ -4,11 +4,12 @@
 package org.jminor.framework.demos.world.beans.ui;
 
 import org.jminor.framework.demos.world.domain.World;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import java.awt.GridLayout;
+
+import static org.jminor.swing.common.ui.UiUtil.setPreferredWidth;
 
 public final class CountryLanguageEditPanel extends EntityEditPanel {
 
@@ -21,16 +22,16 @@ public final class CountryLanguageEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(World.COUNTRYLANGUAGE_COUNTRYCODE_FK);
+    setInitialFocusProperty(World.COUNTRYLANGUAGE_COUNTRY_FK);
 
-    UiUtil.setPreferredWidth(createForeignKeyComboBox(World.COUNTRYLANGUAGE_COUNTRYCODE_FK), COMBOBOX_WIDTH);
+    setPreferredWidth(createForeignKeyComboBox(World.COUNTRYLANGUAGE_COUNTRY_FK), COMBOBOX_WIDTH);
     createTextField(World.COUNTRYLANGUAGE_LANGUAGE).setColumns(TEXT_FIELD_COLUMNS);
     createCheckBox(World.COUNTRYLANGUAGE_ISOFFICIAL, null, false);
     createTextField(World.COUNTRYLANGUAGE_PERCENTAGE);
 
     setLayout(new GridLayout(2, 4, 5, 5));
 
-    addPropertyPanel(World.COUNTRYLANGUAGE_COUNTRYCODE_FK);
+    addPropertyPanel(World.COUNTRYLANGUAGE_COUNTRY_FK);
     addPropertyPanel(World.COUNTRYLANGUAGE_LANGUAGE);
     addPropertyPanel(World.COUNTRYLANGUAGE_ISOFFICIAL);
     addPropertyPanel(World.COUNTRYLANGUAGE_PERCENTAGE);

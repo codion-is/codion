@@ -1,0 +1,43 @@
+= World Tutorial
+:toc: right
+:dir-source: ../../demos/world/src/main/java
+:dir-test-source: ../../demos/world/src/test/java
+:dir-manual: ../manual
+
+== Domain model
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/world/domain/World.java[]
+----
+
+== Domain model unit test
+
+[source,java]
+----
+include::{dir-test-source}/org/jminor/framework/demos/world/domain/WorldTest.java[]
+----
+
+== Application UI layer
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/world/beans/ui/CityEditPanel.java[]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/world/beans/ui/CountryEditPanel.java[]
+----
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/world/beans/ui/CountryLanguageEditPanel.java[]
+----
+
+== Main application panel
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/world/client/ui/WorldAppPanel.java[]
+----

@@ -4,11 +4,12 @@
 package org.jminor.framework.demos.world.beans.ui;
 
 import org.jminor.framework.demos.world.domain.World;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import java.awt.GridLayout;
+
+import static org.jminor.swing.common.ui.UiUtil.setPreferredWidth;
 
 public final class CityEditPanel extends EntityEditPanel {
 
@@ -21,16 +22,16 @@ public final class CityEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(World.CITY_COUNTRYCODE_FK);
+    setInitialFocusProperty(World.CITY_COUNTRY_FK);
 
-    UiUtil.setPreferredWidth(createForeignKeyComboBox(World.CITY_COUNTRYCODE_FK), COMBOBOX_WIDTH);
+    setPreferredWidth(createForeignKeyComboBox(World.CITY_COUNTRY_FK), COMBOBOX_WIDTH);
     createTextField(World.CITY_NAME).setColumns(TEXT_FIELD_COLUMNS);
     createTextField(World.CITY_DISTRICT).setColumns(TEXT_FIELD_COLUMNS);
     createTextField(World.CITY_POPULATION);
 
     setLayout(new GridLayout(2, 2, 5, 5));
 
-    addPropertyPanel(World.CITY_COUNTRYCODE_FK);
+    addPropertyPanel(World.CITY_COUNTRY_FK);
     addPropertyPanel(World.CITY_NAME);
     addPropertyPanel(World.CITY_DISTRICT);
     addPropertyPanel(World.CITY_POPULATION);

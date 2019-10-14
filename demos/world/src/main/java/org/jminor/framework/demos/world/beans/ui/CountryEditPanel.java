@@ -4,11 +4,13 @@
 package org.jminor.framework.demos.world.beans.ui;
 
 import org.jminor.framework.demos.world.domain.World;
-import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import java.awt.GridLayout;
+
+import static org.jminor.swing.common.ui.UiUtil.makeUpperCase;
+import static org.jminor.swing.common.ui.UiUtil.setPreferredWidth;
 
 public final class CountryEditPanel extends EntityEditPanel {
 
@@ -23,11 +25,11 @@ public final class CountryEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusProperty(World.COUNTRY_CODE);
 
-    UiUtil.makeUpperCase(createTextField(World.COUNTRY_CODE)).setColumns(TEXT_FIELD_COLUMNS);
-    UiUtil.makeUpperCase(createTextField(World.COUNTRY_CODE2)).setColumns(TEXT_FIELD_COLUMNS);
+    makeUpperCase(createTextField(World.COUNTRY_CODE)).setColumns(TEXT_FIELD_COLUMNS);
+    makeUpperCase(createTextField(World.COUNTRY_CODE2)).setColumns(TEXT_FIELD_COLUMNS);
     createTextField(World.COUNTRY_NAME).setColumns(TEXT_FIELD_COLUMNS);
-    UiUtil.setPreferredWidth(createPropertyComboBox(World.COUNTRY_CONTINENT), COMBOBOX_WIDTH);
-    UiUtil.setPreferredWidth(createPropertyComboBox(World.COUNTRY_REGION), COMBOBOX_WIDTH);
+    setPreferredWidth(createPropertyComboBox(World.COUNTRY_CONTINENT), COMBOBOX_WIDTH);
+    setPreferredWidth(createPropertyComboBox(World.COUNTRY_REGION), COMBOBOX_WIDTH);
     createTextField(World.COUNTRY_SURFACEAREA);
     createTextField(World.COUNTRY_INDEPYEAR);
     createTextField(World.COUNTRY_POPULATION);
@@ -35,9 +37,9 @@ public final class CountryEditPanel extends EntityEditPanel {
     createTextField(World.COUNTRY_GNP);
     createTextField(World.COUNTRY_GNPOLD);
     createTextField(World.COUNTRY_LOCALNAME).setColumns(TEXT_FIELD_COLUMNS);
-    UiUtil.setPreferredWidth(createPropertyComboBox(World.COUNTRY_GOVERNMENTFORM), COMBOBOX_WIDTH);
+    setPreferredWidth(createPropertyComboBox(World.COUNTRY_GOVERNMENTFORM), COMBOBOX_WIDTH);
     createTextField(World.COUNTRY_HEADOFSTATE).setColumns(TEXT_FIELD_COLUMNS);
-    UiUtil.setPreferredWidth(createForeignKeyComboBox(World.COUNTRY_CAPITAL_FK), COMBOBOX_WIDTH);
+    setPreferredWidth(createForeignKeyComboBox(World.COUNTRY_CAPITAL_FK), COMBOBOX_WIDTH);
 
     setLayout(new GridLayout(4, 5, 5, 5));
 
