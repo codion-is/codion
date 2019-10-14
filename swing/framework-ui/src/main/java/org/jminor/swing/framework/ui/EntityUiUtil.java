@@ -35,7 +35,6 @@ import org.jminor.swing.common.ui.LocalTimeInputPanel;
 import org.jminor.swing.common.ui.TemporalInputPanel;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.UpdateTrigger;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.checkbox.TristateCheckBox;
 import org.jminor.swing.common.ui.combobox.AutoCompletion;
@@ -528,26 +527,26 @@ public final class EntityUiUtil {
    * Creates a panel with a date input field and a button for opening a date input dialog
    * @param property the property
    * @param editModel the edit model to bind with the value
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param includeButton if true then a button for opening a date input dialog is included (only available for LocalDate)
    * @return a date input panel
    */
   public static TemporalInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
-                                                        final UpdateTrigger updateTrigger, final boolean includeButton) {
-    return createDateInputPanel(property, editModel, updateTrigger, includeButton, null);
+                                                        final boolean updateOnKeystroke, final boolean includeButton) {
+    return createDateInputPanel(property, editModel, updateOnKeystroke, includeButton, null);
   }
 
   /**
    * Creates a panel with a date input field and a button for opening a date input dialog (if applicable)
    * @param property the property
    * @param editModel the edit model to bind with the value
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param includeCalendarButton if true then a button for opening a calendar dialog is included
    * @param enabledState the state controlling the enabled state of the panel
    * @return a date input panel
    */
   public static TemporalInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
-                                                        final UpdateTrigger updateTrigger, final boolean includeCalendarButton,
+                                                        final boolean updateOnKeystroke, final boolean includeCalendarButton,
                                                         final StateObserver enabledState) {
     Objects.requireNonNull(property, PROPERTY_PARAM_NAME);
     if (!property.isDateOrTime()) {
@@ -556,7 +555,7 @@ public final class EntityUiUtil {
 
     final String formatString = property.getDateTimeFormatPattern();
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, editModel,
-            DateFormats.getDateMask(formatString), updateTrigger, enabledState);
+            DateFormats.getDateMask(formatString), updateOnKeystroke, enabledState);
     if (property.isDate()) {
       final LocalDateInputPanel panel = new LocalDateInputPanel(field, formatString, includeCalendarButton, enabledState);
       if (panel.getCalendarButton() != null && EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
@@ -579,15 +578,15 @@ public final class EntityUiUtil {
    * Creates a panel with a text field and a button for opening a dialog with a text area
    * @param property the property
    * @param editModel the edit model to bind with the value
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param buttonFocusable if true then the dialog button is focusable
    * @return a text input panel
    */
   public static TextInputPanel createTextInputPanel(final Property property, final EntityEditModel editModel,
-                                                    final UpdateTrigger updateTrigger, final boolean buttonFocusable) {
+                                                    final boolean updateOnKeystroke, final boolean buttonFocusable) {
     Objects.requireNonNull(property, PROPERTY_PARAM_NAME);
     Objects.requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
-    final JTextField field = createTextField(property, editModel, null, updateTrigger);
+    final JTextField field = createTextField(property, editModel, null, updateOnKeystroke);
     final TextInputPanel panel = new TextInputPanel(field, property.getCaption(), null, buttonFocusable);
     panel.setMaxLength(property.getMaxLength());
     if (panel.getButton() != null && EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
@@ -601,12 +600,12 @@ public final class EntityUiUtil {
    * Creates a text area based on the given property
    * @param property the property
    * @param editModel the edit model to bind with the value
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a text area
    */
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
-                                         final UpdateTrigger updateTrigger) {
-    return createTextArea(property, editModel, -1, -1, updateTrigger);
+                                         final boolean updateOnKeystroke) {
+    return createTextArea(property, editModel, -1, -1, updateOnKeystroke);
   }
 
   /**
@@ -615,12 +614,12 @@ public final class EntityUiUtil {
    * @param editModel the edit model to bind with the value
    * @param rows the number of rows
    * @param columns the number of columns
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a text area
    */
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
-                                         final int rows, final int columns, final UpdateTrigger updateTrigger) {
-    return createTextArea(property, editModel, rows, columns, updateTrigger, null);
+                                         final int rows, final int columns, final boolean updateOnKeystroke) {
+    return createTextArea(property, editModel, rows, columns, updateOnKeystroke, null);
   }
 
   /**
@@ -629,12 +628,12 @@ public final class EntityUiUtil {
    * @param editModel the edit model to bind with the value
    * @param rows the number of rows
    * @param columns the number of columns
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param enabledState a state indicating when the text area should be enabled
    * @return a text area
    */
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
-                                         final int rows, final int columns, final UpdateTrigger updateTrigger,
+                                         final int rows, final int columns, final boolean updateOnKeystroke,
                                          final StateObserver enabledState) {
     Objects.requireNonNull(property, PROPERTY_PARAM_NAME);
     Objects.requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
@@ -653,7 +652,7 @@ public final class EntityUiUtil {
       UiUtil.linkToEnabledState(enabledState, textArea);
     }
 
-    ValueLinks.textValueLink(textArea, EditModelValues.value(editModel, property), null, updateTrigger);
+    ValueLinks.textValueLink(textArea, EditModelValues.value(editModel, property), null, updateOnKeystroke);
     ValueLinkValidators.addValidator(property, textArea, editModel);
     textArea.setToolTipText(property.getDescription());
 
@@ -667,7 +666,7 @@ public final class EntityUiUtil {
    * @return a text field for the given property
    */
   public static JTextField createTextField(final Property property, final EntityEditModel editModel) {
-    return createTextField(property, editModel, null, UpdateTrigger.KEYSTROKE);
+    return createTextField(property, editModel, null, true);
   }
 
   /**
@@ -675,12 +674,12 @@ public final class EntityUiUtil {
    * @param property the property
    * @param editModel the edit model to bind with the value
    * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a text field for the given property
    */
   public static JTextField createTextField(final Property property, final EntityEditModel editModel,
-                                           final String formatMaskString, final UpdateTrigger updateTrigger) {
-    return createTextField(property, editModel, formatMaskString, updateTrigger, null);
+                                           final String formatMaskString, final boolean updateOnKeystroke) {
+    return createTextField(property, editModel, formatMaskString, updateOnKeystroke, null);
   }
 
   /**
@@ -688,14 +687,14 @@ public final class EntityUiUtil {
    * @param property the property
    * @param editModel the edit model to bind with the value
    * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param enabledState the state controlling the enabled state of the panel
    * @return a text field for the given property
    */
   public static JTextField createTextField(final Property property, final EntityEditModel editModel,
-                                           final String formatMaskString, final UpdateTrigger updateTrigger,
+                                           final String formatMaskString, final boolean updateOnKeystroke,
                                            final StateObserver enabledState) {
-    return createTextField(property, editModel, formatMaskString, updateTrigger, enabledState, false);
+    return createTextField(property, editModel, formatMaskString, updateOnKeystroke, enabledState, false);
   }
 
   /**
@@ -703,14 +702,14 @@ public final class EntityUiUtil {
    * @param property the property
    * @param editModel the edit model to bind with the value
    * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param enabledState the state controlling the enabled state of the panel
    * @param valueContainsLiteralCharacters whether or not the value should contain any literal characters
    * associated with a the format mask
    * @return a text field for the given property
    */
   public static JTextField createTextField(final Property property, final EntityEditModel editModel,
-                                           final String formatMaskString, final UpdateTrigger updateTrigger,
+                                           final String formatMaskString, final boolean updateOnKeystroke,
                                            final StateObserver enabledState,
                                            final boolean valueContainsLiteralCharacters) {
     Objects.requireNonNull(property, PROPERTY_PARAM_NAME);
@@ -718,31 +717,31 @@ public final class EntityUiUtil {
     checkProperty(property, editModel);
     final JTextField textField = initializeTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     if (property.isString()) {
-      ValueLinks.textValueLink(textField, EditModelValues.value(editModel, property), property.getFormat(), updateTrigger);
+      ValueLinks.textValueLink(textField, EditModelValues.value(editModel, property), property.getFormat(), updateOnKeystroke);
     }
     else if (property.isInteger()) {
-      ValueLinks.integerValueLink((IntegerField) textField, EditModelValues.value(editModel, property), true, updateTrigger);
+      ValueLinks.integerValueLink((IntegerField) textField, EditModelValues.value(editModel, property), true, updateOnKeystroke);
     }
     else if (property.isDouble()) {
-      ValueLinks.doubleValueLink((DecimalField) textField, EditModelValues.value(editModel, property), true, updateTrigger);
+      ValueLinks.doubleValueLink((DecimalField) textField, EditModelValues.value(editModel, property), true, updateOnKeystroke);
     }
     else if (property.isBigDecimal()) {
-      ValueLinks.bigDecimalValueLink((DecimalField) textField, EditModelValues.value(editModel, property), updateTrigger);
+      ValueLinks.bigDecimalValueLink((DecimalField) textField, EditModelValues.value(editModel, property), updateOnKeystroke);
     }
     else if (property.isLong()) {
-      ValueLinks.longValueLink((LongField) textField, EditModelValues.value(editModel, property), true, updateTrigger);
+      ValueLinks.longValueLink((LongField) textField, EditModelValues.value(editModel, property), true, updateOnKeystroke);
     }
     else if (property.isDate()) {
       ValueLinks.localDateValueLink((JFormattedTextField) textField, EditModelValues.value(editModel, property),
-              property.getDateTimeFormatPattern(), updateTrigger);
+              property.getDateTimeFormatPattern(), updateOnKeystroke);
     }
     else if (property.isTime()) {
       ValueLinks.localTimeValueLink((JFormattedTextField) textField, EditModelValues.value(editModel, property),
-              property.getDateTimeFormatPattern(), updateTrigger);
+              property.getDateTimeFormatPattern(), updateOnKeystroke);
     }
     else if (property.isTimestamp()) {
       ValueLinks.localDateTimeValueLink((JFormattedTextField) textField, EditModelValues.value(editModel, property),
-              property.getDateTimeFormatPattern(), updateTrigger);
+              property.getDateTimeFormatPattern(), updateOnKeystroke);
     }
     else {
       throw new IllegalArgumentException("Not a text based property: " + property);

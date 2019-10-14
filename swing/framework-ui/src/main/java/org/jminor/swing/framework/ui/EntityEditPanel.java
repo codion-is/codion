@@ -26,7 +26,6 @@ import org.jminor.swing.common.ui.DialogExceptionHandler;
 import org.jminor.swing.common.ui.TemporalInputPanel;
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.UpdateTrigger;
 import org.jminor.swing.common.ui.checkbox.TristateCheckBox;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
@@ -1117,7 +1116,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return a JTextArea bound to the property
    */
   protected final JTextArea createTextArea(final String propertyId, final int rows, final int columns) {
-    return createTextArea(propertyId, rows, columns, UpdateTrigger.KEYSTROKE);
+    return createTextArea(propertyId, rows, columns, true);
   }
 
   /**
@@ -1125,12 +1124,12 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param propertyId the ID of the property to bind
    * @param rows the number of rows in the text area
    * @param columns the number of columns in the text area
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a JTextArea bound to the property
    */
   protected final JTextArea createTextArea(final String propertyId, final int rows, final int columns,
-                                           final UpdateTrigger updateTrigger) {
-    return createTextArea(propertyId, rows, columns, updateTrigger, null);
+                                           final boolean updateOnKeystroke) {
+    return createTextArea(propertyId, rows, columns, updateOnKeystroke, null);
   }
 
   /**
@@ -1138,14 +1137,14 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param propertyId the ID of the property to bind
    * @param rows the number of rows in the text area
    * @param columns the number of columns in the text area
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param enabledState a state indicating when this text area should be enabled
    * @return a JTextArea bound to the property
    */
   protected final JTextArea createTextArea(final String propertyId, final int rows, final int columns,
-                                           final UpdateTrigger updateTrigger, final StateObserver enabledState) {
+                                           final boolean updateOnKeystroke, final StateObserver enabledState) {
     final Property property = editModel.getDomain().getProperty(editModel.getEntityId(), propertyId);
-    final JTextArea textArea = EntityUiUtil.createTextArea(property, editModel, rows, columns, updateTrigger, enabledState);
+    final JTextArea textArea = EntityUiUtil.createTextArea(property, editModel, rows, columns, updateOnKeystroke, enabledState);
     textArea.setEditable(!isReadOnly(propertyId));
     setComponent(propertyId, textArea);
 
@@ -1158,42 +1157,42 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return a TextInputPanel bound to the property
    */
   protected final TextInputPanel createTextInputPanel(final String propertyId) {
-    return createTextInputPanel(propertyId, UpdateTrigger.KEYSTROKE, true);
+    return createTextInputPanel(propertyId, true, true);
   }
 
   /**
    * Creates a TextInputPanel bound to the property identified by {@code propertyId}.
    * @param propertyId the ID of the property to bind
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param buttonFocusable specifies whether the edit button should be focusable.
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final String propertyId, final UpdateTrigger updateTrigger,
+  protected final TextInputPanel createTextInputPanel(final String propertyId, final boolean updateOnKeystroke,
                                                       final boolean buttonFocusable) {
     return createTextInputPanel(editModel.getDomain().getProperty(editModel.getEntityId(), propertyId),
-            updateTrigger, buttonFocusable);
+            updateOnKeystroke, buttonFocusable);
   }
 
   /**
    * Creates a TextInputPanel bound to the property identified by {@code propertyId}.
    * @param property the property to bind
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final Property property, final UpdateTrigger updateTrigger) {
-    return createTextInputPanel(property, updateTrigger, true);
+  protected final TextInputPanel createTextInputPanel(final Property property, final boolean updateOnKeystroke) {
+    return createTextInputPanel(property, updateOnKeystroke, true);
   }
 
   /**
    * Creates a TextInputPanel bound to the property identified by {@code propertyId}.
    * @param property the property to bind
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param buttonFocusable specifies whether the edit button should be focusable.
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final Property property, final UpdateTrigger updateTrigger,
+  protected final TextInputPanel createTextInputPanel(final Property property, final boolean updateOnKeystroke,
                                                       final boolean buttonFocusable) {
-    final TextInputPanel inputPanel = EntityUiUtil.createTextInputPanel(property, editModel, updateTrigger, buttonFocusable);
+    final TextInputPanel inputPanel = EntityUiUtil.createTextInputPanel(property, editModel, updateOnKeystroke, buttonFocusable);
     inputPanel.getTextField().setEditable(!isReadOnly(property.getPropertyId()));
     setComponent(property.getPropertyId(), inputPanel.getTextField());
 
@@ -1232,7 +1231,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final TemporalInputPanel createDateInputPanel(final String propertyId, final boolean includeButton,
                                                           final StateObserver enabledState) {
-    return createDateInputPanel(propertyId, includeButton, enabledState, UpdateTrigger.KEYSTROKE);
+    return createDateInputPanel(propertyId, includeButton, enabledState, true);
   }
 
   /**
@@ -1240,13 +1239,13 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param propertyId the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a DateInputPanel bound to the property
    */
   protected final TemporalInputPanel createDateInputPanel(final String propertyId, final boolean includeButton,
-                                                          final StateObserver enabledState, final UpdateTrigger updateTrigger) {
+                                                          final StateObserver enabledState, final boolean updateOnKeystroke) {
     return createDateInputPanel(editModel.getDomain().getProperty(editModel.getEntityId(), propertyId),
-            includeButton, enabledState, updateTrigger);
+            includeButton, enabledState, updateOnKeystroke);
   }
 
   /**
@@ -1277,7 +1276,7 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    */
   protected final TemporalInputPanel createDateInputPanel(final Property property, final boolean includeButton,
                                                           final StateObserver enabledState) {
-    return createDateInputPanel(property, includeButton, enabledState, UpdateTrigger.KEYSTROKE);
+    return createDateInputPanel(property, includeButton, enabledState, true);
   }
 
   /**
@@ -1285,12 +1284,12 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @param property the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a DateInputPanel bound to the property
    */
   protected final TemporalInputPanel createDateInputPanel(final Property property, final boolean includeButton,
-                                                          final StateObserver enabledState, final UpdateTrigger updateTrigger) {
-    final TemporalInputPanel panel = EntityUiUtil.createDateInputPanel(property, editModel, updateTrigger, includeButton, enabledState);
+                                                          final StateObserver enabledState, final boolean updateOnKeystroke) {
+    final TemporalInputPanel panel = EntityUiUtil.createDateInputPanel(property, editModel, updateOnKeystroke, includeButton, enabledState);
     panel.setEditable(!isReadOnly(property.getPropertyId()));
     setComponent(property.getPropertyId(), panel);
 
@@ -1303,58 +1302,58 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final String propertyId) {
-    return createTextField(propertyId, UpdateTrigger.KEYSTROKE);
+    return createTextField(propertyId, true);
   }
 
   /**
    * Creates a JTextField bound to the property identified by {@code propertyId}
    * @param propertyId the ID of the property to bind
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyId, final UpdateTrigger updateTrigger) {
-    return createTextField(propertyId, updateTrigger, null);
+  protected final JTextField createTextField(final String propertyId, final boolean updateOnKeystroke) {
+    return createTextField(propertyId, updateOnKeystroke, null);
   }
 
   /**
    * Creates a JTextField bound to the property identified by {@code propertyId}
    * @param propertyId the ID of the property to bind
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyId, final UpdateTrigger updateTrigger,
+  protected final JTextField createTextField(final String propertyId, final boolean updateOnKeystroke,
                                              final String maskString) {
-    return createTextField(propertyId, updateTrigger, maskString, null);
+    return createTextField(propertyId, updateOnKeystroke, maskString, null);
   }
 
   /**
    * Creates a JTextField bound to the property identified by {@code propertyId}
    * @param propertyId the ID of the property to bind
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @param enabledState a state for controlling the enabled state of the component
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyId, final UpdateTrigger updateTrigger,
+  protected final JTextField createTextField(final String propertyId, final boolean updateOnKeystroke,
                                              final String maskString, final StateObserver enabledState) {
-    return createTextField(propertyId, updateTrigger, maskString, enabledState, false);
+    return createTextField(propertyId, updateOnKeystroke, maskString, enabledState, false);
   }
 
   /**
    * Creates a JTextField bound to the property identified by {@code propertyId}
    * @param propertyId the ID of the property to bind
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @param enabledState a state for controlling the enabled state of the component
    * @param valueIncludesLiteralCharacters only applicable if {@code maskString} is specified
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyId, final UpdateTrigger updateTrigger,
+  protected final JTextField createTextField(final String propertyId, final boolean updateOnKeystroke,
                                              final String maskString, final StateObserver enabledState,
                                              final boolean valueIncludesLiteralCharacters) {
     return createTextField(editModel.getDomain().getProperty(editModel.getEntityId(), propertyId),
-            updateTrigger, maskString, enabledState, valueIncludesLiteralCharacters);
+            updateOnKeystroke, maskString, enabledState, valueIncludesLiteralCharacters);
   }
 
   /**
@@ -1363,57 +1362,57 @@ public abstract class EntityEditPanel extends JPanel implements DialogExceptionH
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final Property property) {
-    return createTextField(property, UpdateTrigger.KEYSTROKE);
+    return createTextField(property, true);
   }
 
   /**
    * Creates a JTextField bound to the given property
    * @param property the property to bind
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final Property property, final UpdateTrigger updateTrigger) {
-    return createTextField(property, null, updateTrigger);
+  protected final JTextField createTextField(final Property property, final boolean updateOnKeystroke) {
+    return createTextField(property, null, updateOnKeystroke);
   }
 
   /**
    * Creates a JTextField bound to the given property
    * @param property the property to bind
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final Property property, final String maskString,
-                                             final UpdateTrigger updateTrigger) {
-    return createTextField(property, maskString, updateTrigger, null);
+                                             final boolean updateOnKeystroke) {
+    return createTextField(property, maskString, updateOnKeystroke, null);
   }
 
   /**
    * Creates a JTextField bound to the given property
    * @param property the ID of the property to bind
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param enabledState a state for controlling the enabled state of the component
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final Property property, final String maskString,
-                                             final UpdateTrigger updateTrigger, final StateObserver enabledState) {
-    return createTextField(property, updateTrigger, maskString, enabledState, false);
+                                             final boolean updateOnKeystroke, final StateObserver enabledState) {
+    return createTextField(property, updateOnKeystroke, maskString, enabledState, false);
   }
 
   /**
    * Creates a JTextField bound to the given property
    * @param property the property to bind
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @param enabledState a state for controlling the enabled state of the component
    * @param valueIncludesLiteralCharacters only applicable if {@code maskString} is specified
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final Property property, final UpdateTrigger updateTrigger,
+  protected final JTextField createTextField(final Property property, final boolean updateOnKeystroke,
                                              final String maskString, final StateObserver enabledState,
                                              final boolean valueIncludesLiteralCharacters) {
-    final JTextField textField = EntityUiUtil.createTextField(property, editModel,  maskString, updateTrigger,
+    final JTextField textField = EntityUiUtil.createTextField(property, editModel,  maskString, updateOnKeystroke,
             enabledState, valueIncludesLiteralCharacters);
     textField.setEditable(!isReadOnly(property.getPropertyId()));
     setComponent(property.getPropertyId(), textField);
