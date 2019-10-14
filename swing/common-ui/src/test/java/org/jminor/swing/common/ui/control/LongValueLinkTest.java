@@ -7,7 +7,6 @@ import org.jminor.common.Event;
 import org.jminor.common.Events;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
-import org.jminor.swing.common.ui.UpdateTrigger;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.textfield.LongField;
 
@@ -28,7 +27,7 @@ public class LongValueLinkTest {
     final LongField longField = new LongField();
     final Value<Long> longPropertyValue = Values.propertyValue(this, "longValue",
             Long.class, longValueChangedEvent);
-    ValueLinks.longValueLink(longField, longPropertyValue, true, UpdateTrigger.KEYSTROKE);
+    ValueLinks.longValueLink(longField, longPropertyValue, true);
     assertNull(longField.getLong());
     setLongValue(2L);
     assertEquals(2, longField.getLong().longValue());
@@ -43,7 +42,7 @@ public class LongValueLinkTest {
     final LongField longField = new LongField();
     final Value<Long> longPrimitivePropertyValue = Values.propertyValue(this, "longPrimitiveValue",
             long.class, longPrimitiveValueChangedEvent);
-    ValueLinks.longValueLink(longField, longPrimitivePropertyValue, false, UpdateTrigger.KEYSTROKE);
+    ValueLinks.longValueLink(longField, longPrimitivePropertyValue, false);
     assertEquals(Long.valueOf(0), longField.getLong());
     setLongPrimitiveValue(2);
     assertEquals(2, longField.getLong().longValue());

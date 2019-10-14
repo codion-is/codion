@@ -149,6 +149,7 @@ public final class TextInputPanel extends JPanel {
     textArea.setPreferredSize(textAreaSize);
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
+    textArea.setEditable(textField.isEditable());
     final Control okControl = Controls.control(() -> textField.setText(textArea.getText()),
             Messages.get(Messages.OK), null, null, Messages.get(Messages.OK_MNEMONIC).charAt(0));
     UiUtil.displayInDialog(textField, new JScrollPane(textArea), dialogTitle, okControl);

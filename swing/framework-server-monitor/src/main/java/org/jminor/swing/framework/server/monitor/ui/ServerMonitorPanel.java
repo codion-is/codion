@@ -6,7 +6,6 @@ package org.jminor.swing.framework.server.monitor.ui;
 import org.jminor.common.TaskScheduler;
 import org.jminor.common.Values;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.UpdateTrigger;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.textfield.IntegerField;
@@ -206,7 +205,7 @@ public final class ServerMonitorPanel extends JPanel {
     connectionCountField.setEditable(false);
     connectionCountField.setHorizontalAlignment(JLabel.CENTER);
     ValueLinks.integerValueLink(connectionCountField, Values.propertyValue(model, "connectionCount",
-            int.class, model.getStatisticsUpdatedObserver()), false, UpdateTrigger.READ_ONLY);
+            int.class, model.getStatisticsUpdatedObserver()), false);
 
     return connectionCountField;
   }
@@ -216,7 +215,7 @@ public final class ServerMonitorPanel extends JPanel {
     memoryField.setEditable(false);
     memoryField.setHorizontalAlignment(JLabel.CENTER);
     ValueLinks.textValueLink(memoryField, Values.propertyValue(model, "memoryUsage", String.class,
-            model.getStatisticsUpdatedObserver()), null, UpdateTrigger.READ_ONLY);
+            model.getStatisticsUpdatedObserver()));
 
     return memoryField;
   }

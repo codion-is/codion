@@ -383,7 +383,7 @@ public final class EntityUiUtil {
       public ValueObserver<String> getValueObserver() {
         return Values.valueObserver(this);
       }
-    }, null, UpdateTrigger.READ_ONLY);
+    });
 
     return textField;
   }

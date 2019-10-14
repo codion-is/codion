@@ -10,7 +10,6 @@ import org.jminor.swing.common.tools.ItemRandomizer;
 import org.jminor.swing.common.tools.LoadTest;
 import org.jminor.swing.common.tools.LoadTestModel;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.common.ui.UpdateTrigger;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -198,7 +197,7 @@ public final class LoadTestPanel extends JPanel {
     final IntegerField applicationCountField = new IntegerField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
     ValueLinks.integerValueLink(applicationCountField, Values.propertyValue(loadTestModel, "applicationCount",
-            int.class, loadTestModel.applicationCountObserver()), false, UpdateTrigger.KEYSTROKE);
+            int.class, loadTestModel.applicationCountObserver()), false);
     final JPanel applicationPanel = new JPanel(UiUtil.createBorderLayout());
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
 

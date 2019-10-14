@@ -34,12 +34,33 @@ public final class ValueLinks {
    * @param textComponent the text component to link with the value
    * @param value the model value
    * @param dateFormat the data format
+   */
+  public static void localDateValueLink(final JFormattedTextField textComponent, final Value<LocalDate> value,
+                                        final String dateFormat) {
+    localDateValueLink(textComponent, value, dateFormat, UpdateTrigger.KEYSTROKE);
+  }
+
+  /**
+   * Links a date value with a given text component
+   * @param textComponent the text component to link with the value
+   * @param value the model value
+   * @param dateFormat the data format
    * @param updateTrigger when the component should update the value
    */
   public static void localDateValueLink(final JFormattedTextField textComponent, final Value<LocalDate> value,
                                         final String dateFormat, final UpdateTrigger updateTrigger) {
-    textComponent.setEditable(updateTrigger != UpdateTrigger.READ_ONLY);
-    Values.link(value, UiValues.localDateValue(textComponent, dateFormat, updateTrigger), updateTrigger == UpdateTrigger.READ_ONLY);
+    Values.link(value, UiValues.localDateValue(textComponent, dateFormat, updateTrigger));
+  }
+
+  /**
+   * Links a date value with a given text component
+   * @param textComponent the text component to link with the value
+   * @param value the model value
+   * @param dateFormat the data format
+   */
+  public static void localTimeValueLink(final JFormattedTextField textComponent, final Value<LocalTime> value,
+                                        final String dateFormat) {
+    localTimeValueLink(textComponent, value, dateFormat, UpdateTrigger.KEYSTROKE);
   }
 
   /**
@@ -51,8 +72,18 @@ public final class ValueLinks {
    */
   public static void localTimeValueLink(final JFormattedTextField textComponent, final Value<LocalTime> value,
                                         final String dateFormat, final UpdateTrigger updateTrigger) {
-    textComponent.setEditable(updateTrigger != UpdateTrigger.READ_ONLY);
-    Values.link(value, UiValues.localTimeValue(textComponent, dateFormat, updateTrigger), updateTrigger == UpdateTrigger.READ_ONLY);
+    Values.link(value, UiValues.localTimeValue(textComponent, dateFormat, updateTrigger));
+  }
+
+  /**
+   * Links a date value with a given text component
+   * @param textComponent the text component to link with the value
+   * @param value the model value
+   * @param dateFormat the data format
+   */
+  public static void localDateTimeValueLink(final JFormattedTextField textComponent, final Value<LocalDateTime> value,
+                                            final String dateFormat) {
+    localDateTimeValueLink(textComponent, value, dateFormat, UpdateTrigger.KEYSTROKE);
   }
 
   /**
@@ -64,8 +95,16 @@ public final class ValueLinks {
    */
   public static void localDateTimeValueLink(final JFormattedTextField textComponent, final Value<LocalDateTime> value,
                                             final String dateFormat, final UpdateTrigger updateTrigger) {
-    textComponent.setEditable(updateTrigger != UpdateTrigger.READ_ONLY);
-    Values.link(value, UiValues.localDateTimeValue(textComponent, dateFormat, updateTrigger), updateTrigger == UpdateTrigger.READ_ONLY);
+    Values.link(value, UiValues.localDateTimeValue(textComponent, dateFormat, updateTrigger));
+  }
+
+  /**
+   * @param integerField the int field to link with the value
+   * @param value the model value
+   * @param nullable if false then 0 is used instead of null
+   */
+  public static void integerValueLink(final IntegerField integerField, final Value<Integer> value, final boolean nullable) {
+    integerValueLink(integerField, value, nullable, UpdateTrigger.KEYSTROKE);
   }
 
   /**
@@ -76,8 +115,16 @@ public final class ValueLinks {
    */
   public static void integerValueLink(final IntegerField integerField, final Value<Integer> value, final boolean nullable,
                                       final UpdateTrigger updateTrigger) {
-    integerField.setEditable(updateTrigger != UpdateTrigger.READ_ONLY);
-    Values.link(value, UiValues.integerValue(integerField, nullable, updateTrigger), updateTrigger == UpdateTrigger.READ_ONLY);
+    Values.link(value, UiValues.integerValue(integerField, nullable, updateTrigger));
+  }
+
+  /**
+   * @param decimalField the decimal field to link with the value
+   * @param value the model value
+   * @param nullable if false then 0 is used instead of null
+   */
+  public static void doubleValueLink(final DecimalField decimalField, final Value<Double> value, final boolean nullable) {
+    doubleValueLink(decimalField, value, nullable, UpdateTrigger.KEYSTROKE);
   }
 
   /**
@@ -88,8 +135,15 @@ public final class ValueLinks {
    */
   public static void doubleValueLink(final DecimalField decimalField, final Value<Double> value, final boolean nullable,
                                      final UpdateTrigger updateTrigger) {
-    decimalField.setEditable(updateTrigger != UpdateTrigger.READ_ONLY);
-    Values.link(value, UiValues.doubleValue(decimalField, nullable, updateTrigger), updateTrigger == UpdateTrigger.READ_ONLY);
+    Values.link(value, UiValues.doubleValue(decimalField, nullable, updateTrigger));
+  }
+
+  /**
+   * @param decimalField the decimal field to link with the value
+   * @param value the model value
+   */
+  public static void bigDecimalValueLink(final DecimalField decimalField, final Value<BigDecimal> value) {
+    bigDecimalValueLink(decimalField, value, UpdateTrigger.KEYSTROKE);
   }
 
   /**
@@ -99,8 +153,16 @@ public final class ValueLinks {
    */
   public static void bigDecimalValueLink(final DecimalField decimalField, final Value<BigDecimal> value,
                                          final UpdateTrigger updateTrigger) {
-    decimalField.setEditable(updateTrigger != UpdateTrigger.READ_ONLY);
-    Values.link(value, UiValues.bigDecimalValue(decimalField, updateTrigger), updateTrigger == UpdateTrigger.READ_ONLY);
+    Values.link(value, UiValues.bigDecimalValue(decimalField, updateTrigger));
+  }
+
+  /**
+   * @param longField the long field to link with the value
+   * @param value the model value
+   * @param nullable if false then 0 is used instead of null
+   */
+  public static void longValueLink(final LongField longField, final Value<Long> value, final boolean nullable) {
+    longValueLink(longField, value, nullable, UpdateTrigger.KEYSTROKE);
   }
 
   /**
@@ -111,8 +173,7 @@ public final class ValueLinks {
    */
   public static void longValueLink(final LongField longField, final Value<Long> value, final boolean nullable,
                                    final UpdateTrigger updateTrigger) {
-    longField.setEditable(updateTrigger != UpdateTrigger.READ_ONLY);
-    Values.link(value, UiValues.longValue(longField, nullable, updateTrigger), updateTrigger == UpdateTrigger.READ_ONLY);
+    Values.link(value, UiValues.longValue(longField, nullable, updateTrigger));
   }
 
   /**
@@ -131,8 +192,7 @@ public final class ValueLinks {
    */
   public static void textValueLink(final JTextComponent textComponent, final Value<String> value, final Format format,
                                    final UpdateTrigger updateTrigger) {
-    textComponent.setEditable(updateTrigger != UpdateTrigger.READ_ONLY);
-    Values.link(value, UiValues.textValue(textComponent, format, updateTrigger), updateTrigger == UpdateTrigger.READ_ONLY);
+    Values.link(value, UiValues.textValue(textComponent, format, updateTrigger));
   }
 
   /**

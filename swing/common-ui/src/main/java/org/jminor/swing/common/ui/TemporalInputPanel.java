@@ -84,6 +84,13 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   /**
+   * @param editable if true then editing is enabled in this panel
+   */
+  public void setEditable(final boolean editable) {
+    inputField.setEditable(editable);
+  }
+
+  /**
    * @return the formatter
    */
   protected final DateTimeFormatter getFormatter() {

@@ -56,7 +56,6 @@ import java.util.Collection;
 import java.util.Objects;
 
 import static java.util.Arrays.asList;
-import static org.jminor.swing.common.ui.UpdateTrigger.KEYSTROKE;
 
 /**
  * A UI implementation for ColumnConditionModel
@@ -412,31 +411,31 @@ public class ColumnConditionPanel<K> extends JPanel {
       final Value modelValue = upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue();
       final Class typeClass = columnConditionModel.getTypeClass();
       if (typeClass.equals(Integer.class)) {
-        ValueLinks.integerValueLink((IntegerField) component, modelValue, true, KEYSTROKE);
+        ValueLinks.integerValueLink((IntegerField) component, modelValue, true);
       }
       else if (typeClass.equals(Double.class)) {
-        ValueLinks.doubleValueLink((DecimalField) component, modelValue, true, KEYSTROKE);
+        ValueLinks.doubleValueLink((DecimalField) component, modelValue, true);
       }
       else if (typeClass.equals(BigDecimal.class)) {
-        ValueLinks.bigDecimalValueLink((DecimalField) component, modelValue, KEYSTROKE);
+        ValueLinks.bigDecimalValueLink((DecimalField) component, modelValue);
       }
       else if (typeClass.equals(Long.class)) {
-        ValueLinks.longValueLink((LongField) component, modelValue, true, KEYSTROKE);
+        ValueLinks.longValueLink((LongField) component, modelValue, true);
       }
       else if (typeClass.equals(LocalTime.class)) {
         ValueLinks.localTimeValueLink((JFormattedTextField) component, modelValue,
-                columnConditionModel.getDateTimeFormatPattern(), KEYSTROKE);
+                columnConditionModel.getDateTimeFormatPattern());
       }
       else if (typeClass.equals(LocalDateTime.class)) {
         ValueLinks.localDateTimeValueLink((JFormattedTextField) component, modelValue,
-                columnConditionModel.getDateTimeFormatPattern(), KEYSTROKE);
+                columnConditionModel.getDateTimeFormatPattern());
       }
       else if (typeClass.equals(LocalDate.class)) {
         ValueLinks.localDateValueLink((JFormattedTextField) component, modelValue,
-                columnConditionModel.getDateTimeFormatPattern(), KEYSTROKE);
+                columnConditionModel.getDateTimeFormatPattern());
       }
       else {
-        ValueLinks.textValueLink((JTextField) component, modelValue, null, KEYSTROKE);
+        ValueLinks.textValueLink((JTextField) component, modelValue);
       }
     }
   }
