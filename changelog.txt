@@ -5176,3 +5176,4 @@
   Petstore demo now demonstrates usage of setColumnName()
   UiValues and related classes, major refactoring, readOnly and immediateUpdate parameters merged into UpdateTrigger enum
   UiValues and related classes refactoring continued, UpdateTrigger.READ_ONLY removed
+  UpdateTrigger replace with updateOnKeystroke boolean parameter

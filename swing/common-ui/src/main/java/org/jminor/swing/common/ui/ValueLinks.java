@@ -37,7 +37,7 @@ public final class ValueLinks {
    */
   public static void localDateValueLink(final JFormattedTextField textComponent, final Value<LocalDate> value,
                                         final String dateFormat) {
-    localDateValueLink(textComponent, value, dateFormat, UpdateTrigger.KEYSTROKE);
+    localDateValueLink(textComponent, value, dateFormat, true);
   }
 
   /**
@@ -45,11 +45,11 @@ public final class ValueLinks {
    * @param textComponent the text component to link with the value
    * @param value the model value
    * @param dateFormat the data format
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    */
   public static void localDateValueLink(final JFormattedTextField textComponent, final Value<LocalDate> value,
-                                        final String dateFormat, final UpdateTrigger updateTrigger) {
-    Values.link(value, UiValues.localDateValue(textComponent, dateFormat, updateTrigger));
+                                        final String dateFormat, final boolean updateOnKeystroke) {
+    Values.link(value, UiValues.localDateValue(textComponent, dateFormat, updateOnKeystroke));
   }
 
   /**
@@ -60,7 +60,7 @@ public final class ValueLinks {
    */
   public static void localTimeValueLink(final JFormattedTextField textComponent, final Value<LocalTime> value,
                                         final String dateFormat) {
-    localTimeValueLink(textComponent, value, dateFormat, UpdateTrigger.KEYSTROKE);
+    localTimeValueLink(textComponent, value, dateFormat, true);
   }
 
   /**
@@ -68,11 +68,11 @@ public final class ValueLinks {
    * @param textComponent the text component to link with the value
    * @param value the model value
    * @param dateFormat the data format
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    */
   public static void localTimeValueLink(final JFormattedTextField textComponent, final Value<LocalTime> value,
-                                        final String dateFormat, final UpdateTrigger updateTrigger) {
-    Values.link(value, UiValues.localTimeValue(textComponent, dateFormat, updateTrigger));
+                                        final String dateFormat, final boolean updateOnKeystroke) {
+    Values.link(value, UiValues.localTimeValue(textComponent, dateFormat, updateOnKeystroke));
   }
 
   /**
@@ -83,7 +83,7 @@ public final class ValueLinks {
    */
   public static void localDateTimeValueLink(final JFormattedTextField textComponent, final Value<LocalDateTime> value,
                                             final String dateFormat) {
-    localDateTimeValueLink(textComponent, value, dateFormat, UpdateTrigger.KEYSTROKE);
+    localDateTimeValueLink(textComponent, value, dateFormat, true);
   }
 
   /**
@@ -91,11 +91,11 @@ public final class ValueLinks {
    * @param textComponent the text component to link with the value
    * @param value the model value
    * @param dateFormat the data format
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    */
   public static void localDateTimeValueLink(final JFormattedTextField textComponent, final Value<LocalDateTime> value,
-                                            final String dateFormat, final UpdateTrigger updateTrigger) {
-    Values.link(value, UiValues.localDateTimeValue(textComponent, dateFormat, updateTrigger));
+                                            final String dateFormat, final boolean updateOnKeystroke) {
+    Values.link(value, UiValues.localDateTimeValue(textComponent, dateFormat, updateOnKeystroke));
   }
 
   /**
@@ -104,18 +104,18 @@ public final class ValueLinks {
    * @param nullable if false then 0 is used instead of null
    */
   public static void integerValueLink(final IntegerField integerField, final Value<Integer> value, final boolean nullable) {
-    integerValueLink(integerField, value, nullable, UpdateTrigger.KEYSTROKE);
+    integerValueLink(integerField, value, nullable, true);
   }
 
   /**
    * @param integerField the int field to link with the value
    * @param value the model value
    * @param nullable if false then 0 is used instead of null
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    */
   public static void integerValueLink(final IntegerField integerField, final Value<Integer> value, final boolean nullable,
-                                      final UpdateTrigger updateTrigger) {
-    Values.link(value, UiValues.integerValue(integerField, nullable, updateTrigger));
+                                      final boolean updateOnKeystroke) {
+    Values.link(value, UiValues.integerValue(integerField, nullable, updateOnKeystroke));
   }
 
   /**
@@ -124,18 +124,18 @@ public final class ValueLinks {
    * @param nullable if false then 0 is used instead of null
    */
   public static void doubleValueLink(final DecimalField decimalField, final Value<Double> value, final boolean nullable) {
-    doubleValueLink(decimalField, value, nullable, UpdateTrigger.KEYSTROKE);
+    doubleValueLink(decimalField, value, nullable, true);
   }
 
   /**
    * @param decimalField the decimal field to link with the value
    * @param value the model value
    * @param nullable if false then 0 is used instead of null
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    */
   public static void doubleValueLink(final DecimalField decimalField, final Value<Double> value, final boolean nullable,
-                                     final UpdateTrigger updateTrigger) {
-    Values.link(value, UiValues.doubleValue(decimalField, nullable, updateTrigger));
+                                     final boolean updateOnKeystroke) {
+    Values.link(value, UiValues.doubleValue(decimalField, nullable, updateOnKeystroke));
   }
 
   /**
@@ -143,17 +143,17 @@ public final class ValueLinks {
    * @param value the model value
    */
   public static void bigDecimalValueLink(final DecimalField decimalField, final Value<BigDecimal> value) {
-    bigDecimalValueLink(decimalField, value, UpdateTrigger.KEYSTROKE);
+    bigDecimalValueLink(decimalField, value, true);
   }
 
   /**
    * @param decimalField the decimal field to link with the value
    * @param value the model value
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    */
   public static void bigDecimalValueLink(final DecimalField decimalField, final Value<BigDecimal> value,
-                                         final UpdateTrigger updateTrigger) {
-    Values.link(value, UiValues.bigDecimalValue(decimalField, updateTrigger));
+                                         final boolean updateOnKeystroke) {
+    Values.link(value, UiValues.bigDecimalValue(decimalField, updateOnKeystroke));
   }
 
   /**
@@ -162,18 +162,18 @@ public final class ValueLinks {
    * @param nullable if false then 0 is used instead of null
    */
   public static void longValueLink(final LongField longField, final Value<Long> value, final boolean nullable) {
-    longValueLink(longField, value, nullable, UpdateTrigger.KEYSTROKE);
+    longValueLink(longField, value, nullable, true);
   }
 
   /**
    * @param longField the long field to link with the value
    * @param value the model value
    * @param nullable if false then 0 is used instead of null
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    */
   public static void longValueLink(final LongField longField, final Value<Long> value, final boolean nullable,
-                                   final UpdateTrigger updateTrigger) {
-    Values.link(value, UiValues.longValue(longField, nullable, updateTrigger));
+                                   final boolean updateOnKeystroke) {
+    Values.link(value, UiValues.longValue(longField, nullable, updateOnKeystroke));
   }
 
   /**
@@ -181,18 +181,18 @@ public final class ValueLinks {
    * @param value the value to link with the component
    */
   public static void textValueLink(final JTextComponent textComponent, final Value<String> value) {
-    textValueLink(textComponent, value, null, UpdateTrigger.KEYSTROKE);
+    textValueLink(textComponent, value, null, true);
   }
 
   /**
    * @param textComponent the text component to link with the value
    * @param value the value to link with the component
    * @param format the format to use when displaying the linked value, null if no formatting should be performed
-   * @param updateTrigger when the component should update the value
+   * @param updateOnKeystroke if true then the value is updated on each keystroke, otherwise on focus lost
    */
   public static void textValueLink(final JTextComponent textComponent, final Value<String> value, final Format format,
-                                   final UpdateTrigger updateTrigger) {
-    Values.link(value, UiValues.textValue(textComponent, format, updateTrigger));
+                                   final boolean updateOnKeystroke) {
+    Values.link(value, UiValues.textValue(textComponent, format, updateOnKeystroke));
   }
 
   /**
