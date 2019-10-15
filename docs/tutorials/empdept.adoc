@@ -59,7 +59,7 @@ Here are the parameters required for running the EmpDept test on the default H2 
 
 -Djminor.db.host=h2db/h2
 
-For further information on parameters required for running JMinor applications see <<{dir-technical}/client.adoc#configuration, client configuration>> and <<{dir-technical}/server.adoc#configuration, server configuration>>.
+For further information on parameters required for running JMinor applications see <<{dir-technical}/client-configuration.adoc#, client configuration>> and <<{dir-technical}/server.adoc#configuration, server configuration>>.
 
 == Application model layer
 
@@ -207,5 +207,5 @@ include::{dir-source}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPan
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/testing/EmpDeptLoadTest.java[lines=4..]
+include::{dir-source}/org/jminor/framework/demos/empdept/testing/EmpDeptLoadTest.java[lines=4..-1]
 ----

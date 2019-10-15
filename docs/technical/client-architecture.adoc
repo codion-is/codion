@@ -82,5 +82,5 @@ include::{dir-source}/org/jminor/framework/demos/chinook/tutorial/ClientArchitec
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/tutorial/ClientArchitecture.java[lines=4..]
+include::{dir-source}/org/jminor/framework/demos/chinook/tutorial/ClientArchitecture.java[lines=4..-1]
 ----
