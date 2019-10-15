@@ -24,6 +24,10 @@ asciidoctor:
   base_dir: docs
   safe: unsafe
   attributes:
+    - imagesdir=/images
     - jminor-version=0.12.3-SNAPSHOT
     - source-highlighter=rouge
     - url-javadoc=https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
+
+keep_files:
+  - images

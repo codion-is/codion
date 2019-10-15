@@ -1,6 +1,5 @@
 = Client
 :toc: right
-:dir-source: ../../demos
 
 == Features
 
@@ -15,12 +14,3 @@
 * Extensive searching and filtering capabilities
 * Flexible keyboard-centric UI based on tab and split panes, detachable panels and toolbars
 * Detailed logging of client actions
-
-== Configuration
-
-=== Example configuration file
-
-[source]
-----
-include::{dir-source}/chinook/src/main/config/h2db.config[]
-----
