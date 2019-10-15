@@ -23,6 +23,7 @@ import org.jminor.swing.framework.tools.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -183,7 +184,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
                   trackEditModel.put(TRACK_BYTES, 10000000);
                   trackEditModel.put(TRACK_COMPOSER, "Composer");
                   trackEditModel.put(TRACK_MILLISECONDS, 1000000);
-                  trackEditModel.put(TRACK_UNITPRICE, 2d);
+                  trackEditModel.put(TRACK_UNITPRICE, BigDecimal.valueOf(2));
                   trackEditModel.put(TRACK_GENREID_FK, genreComboBoxModel.getSelectedValue());
                   trackEditModel.put(TRACK_MEDIATYPEID_FK, mediaTypeComboBoxModel.getSelectedValue());
                   trackEditModel.insert();
