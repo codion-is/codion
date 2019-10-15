@@ -305,15 +305,15 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   /**
    * Returns true if a null value is mapped to the given property or if no mapping is found.
    * In case of foreign key properties the value of the underlying reference property is checked.
-   * @param key the key
-   * @return true if the value mapped to the given key is null or no value is mapped
+   * @param propertyId the ID of the property
+   * @return true if the value mapped to the given property is null or no value is mapped
    */
   boolean isNull(final String propertyId);
 
   /**
    * Returns true if a this Entity contains a non-null value mapped to the given property
    * In case of foreign key properties the value of the underlying reference property is checked.
-   * @param key the key
+   * @param propertyId the ID of the property
    * @return true if a non-null value is mapped to the given property
    */
   boolean isNotNull(final String propertyId);
