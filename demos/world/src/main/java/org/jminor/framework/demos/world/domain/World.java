@@ -7,8 +7,9 @@ import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 
 import java.sql.Types;
-import java.text.NumberFormat;
 
+import static java.text.NumberFormat.getIntegerInstance;
+import static java.text.NumberFormat.getNumberInstance;
 import static org.jminor.common.Util.notNull;
 import static org.jminor.framework.domain.Properties.*;
 
@@ -76,7 +77,7 @@ public final class World extends Domain {
                     .setMaxLength(20),
             columnProperty(CITY_POPULATION, Types.INTEGER, "Population")
                     .setNullable(false)
-                    .setFormat(NumberFormat.getIntegerInstance()))
+                    .setFormat(getIntegerInstance()))
             .setKeyGenerator(sequenceKeyGenerator("world.city_seq"))
             .setOrderBy(orderBy().ascending(CITY_NAME))
             .setSearchPropertyIds(CITY_NAME)
@@ -103,22 +104,22 @@ public final class World extends Domain {
                     .setNullable(false),
             columnProperty(COUNTRY_SURFACEAREA, Types.DOUBLE, "Surface area")
                     .setNullable(false)
-                    .setFormat(NumberFormat.getNumberInstance())
+                    .setFormat(getNumberInstance())
                     .setMaximumFractionDigits(2),
             columnProperty(COUNTRY_INDEPYEAR, Types.INTEGER, "Indep. year")
                     .setMin(-200).setMax(2500),
             columnProperty(COUNTRY_POPULATION, Types.INTEGER, "Population")
                     .setNullable(false)
-                    .setFormat(NumberFormat.getIntegerInstance()),
+                    .setFormat(getIntegerInstance()),
             columnProperty(COUNTRY_LIFEEXPECTANCY, Types.DOUBLE, "Life expectancy")
                     .setMaximumFractionDigits(1)
                     .setMin(0).setMax(99),
             // end::columnProperty[]
             columnProperty(COUNTRY_GNP, Types.DOUBLE, "GNP")
-                    .setFormat(NumberFormat.getNumberInstance())
+                    .setFormat(getNumberInstance())
                     .setMaximumFractionDigits(2),
             columnProperty(COUNTRY_GNPOLD, Types.DOUBLE, "GNP old")
-                    .setFormat(NumberFormat.getNumberInstance())
+                    .setFormat(getNumberInstance())
                     .setMaximumFractionDigits(2),
             columnProperty(COUNTRY_LOCALNAME, Types.VARCHAR, "Local name")
                     .setNullable(false)
@@ -133,7 +134,7 @@ public final class World extends Domain {
             // tag::denormalizedViewProperty[]
             denormalizedViewProperty(COUNTRY_CAPITAL_POPULATION, COUNTRY_CAPITAL_FK,
                     getProperty(T_CITY, CITY_POPULATION), "Capital pop.")
-                    .setFormat(NumberFormat.getIntegerInstance()),
+                    .setFormat(getIntegerInstance()),
             // end::denormalizedViewProperty[]
             columnProperty(COUNTRY_CODE2, Types.VARCHAR, "Code2")
                     .setNullable(false)
@@ -175,7 +176,7 @@ public final class World extends Domain {
 
               return null;
             }, COUNTRYLANGUAGE_COUNTRY_FK, COUNTRYLANGUAGE_PERCENTAGE)
-                    .setFormat(NumberFormat.getIntegerInstance())
+                    .setFormat(getIntegerInstance())
             // end::derivedProperty[]
     ).setOrderBy(orderBy().ascending(COUNTRYLANGUAGE_LANGUAGE).descending(COUNTRYLANGUAGE_PERCENTAGE))
             .setCaption("Language");
