@@ -343,7 +343,7 @@ define(Store.T_CUSTOMER
        new StringBuilder(customer.getString(CUSTOMER_LASTNAME))
     .append(", ").append(customer.getString(CUSTOMER_LASTNAME));
 
-    if (!customer.isValueNull(CUSTOMER_EMAIL)) {
+    if (customer.isNotNull(CUSTOMER_EMAIL)) {
         builder.append(" <")
         .append(customer.getString(CUSTOMER_EMAIL))
         .append(">");

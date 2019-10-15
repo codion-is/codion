@@ -242,7 +242,7 @@ public final class EntitiesTest {
     }
     Entities.put(TestDomain.DEPARTMENT_ID, null, collection);
     for (final Entity entity : collection) {
-      assertTrue(entity.isValueNull(TestDomain.DEPARTMENT_ID));
+      assertTrue(entity.isNull(TestDomain.DEPARTMENT_ID));
     }
   }
 
@@ -309,7 +309,8 @@ public final class EntitiesTest {
     final Entity dept = domain.entity(TestDomain.T_DEPARTMENT);
     for (final Property property : domain.getProperties(TestDomain.T_DEPARTMENT, true)) {
       assertFalse(dept.containsKey(property));
-      assertTrue(dept.isValueNull(property));
+      assertTrue(dept.isNull(property));
+      assertFalse(dept.isNotNull(property));
     }
     for (final Property property : domain.getProperties(TestDomain.T_DEPARTMENT, true)) {
       dept.put(property, null);
@@ -318,7 +319,8 @@ public final class EntitiesTest {
     assertFalse(dept.isModified());
     for (final Property property : domain.getProperties(TestDomain.T_DEPARTMENT, true)) {
       assertTrue(dept.containsKey(property));
-      assertTrue(dept.isValueNull(property));
+      assertTrue(dept.isNull(property));
+      assertFalse(dept.isNotNull(property));
     }
   }
 

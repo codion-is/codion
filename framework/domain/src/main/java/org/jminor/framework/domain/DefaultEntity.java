@@ -228,15 +228,16 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return super.get(property);
   }
 
-  /**
-   * Returns true if the value associated with the given property is null. In case of foreign key properties
-   * the value of the underlying reference property is checked.
-   * @param propertyId the property ID
-   * @return true if the value associated with the property is null
-   */
+  /** {@inheritDoc} */
   @Override
-  public boolean isValueNull(final String propertyId) {
-    return isValueNull(getProperty(propertyId));
+  public boolean isNull(final String propertyId) {
+    return isNull(getProperty(propertyId));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isNotNull(final String propertyId) {
+    return !isNull(propertyId);
   }
 
   /**
@@ -246,13 +247,13 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @return true if the value associated with the property is null
    */
   @Override
-  public boolean isValueNull(final Property property) {
+  public boolean isNull(final Property property) {
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (property instanceof Property.ForeignKeyProperty) {
       return isForeignKeyNull((Property.ForeignKeyProperty) property);
     }
 
-    return super.isValueNull(property);
+    return super.isNull(property);
   }
 
   /** {@inheritDoc} */
@@ -545,11 +546,11 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
     final List<Property.ColumnProperty> properties = foreignKeyProperty.getProperties();
     if (properties.size() == 1) {
-      return isValueNull(properties.get(0));
+      return isNull(properties.get(0));
     }
     final List<Property.ColumnProperty> foreignProperties = domain.getPrimaryKeyProperties(foreignKeyProperty.getForeignEntityId());
     for (int i = 0; i < properties.size(); i++) {
-      if (!foreignProperties.get(i).isNullable() && isValueNull(properties.get(i))) {
+      if (!foreignProperties.get(i).isNullable() && isNull(properties.get(i))) {
         return true;
       }
     }
@@ -1060,8 +1061,13 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     }
 
     @Override
-    public boolean isValueNull(final String propertyId) {
-      return super.isValueNull(definition.getPrimaryKeyPropertyMap().get(propertyId));
+    public boolean isNull(final String propertyId) {
+      return super.isNull(definition.getPrimaryKeyPropertyMap().get(propertyId));
+    }
+
+    @Override
+    public boolean isNotNull(final String propertyId) {
+      return !isNull(propertyId);
     }
 
     @Override

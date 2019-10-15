@@ -412,7 +412,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     if (!includeReadOnlyValues && property.isReadOnly()) {
       return false;
     }
-    if (!includeNullValues && entity.isValueNull(property)) {
+    if (!includeNullValues && entity.isNull(property)) {
       return false;
     }
 

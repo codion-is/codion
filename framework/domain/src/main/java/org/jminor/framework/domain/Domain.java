@@ -1076,7 +1076,7 @@ public class Domain implements Serializable {
 
       @Override
       public String toString(final Entity entity) {
-        if (entity.isValueNull(propertyId)) {
+        if (entity.isNull(propertyId)) {
           return "";
         }
 
@@ -1097,7 +1097,7 @@ public class Domain implements Serializable {
 
       @Override
       public String toString(final Entity entity) {
-        if (entity.isValueNull(foreignKeyProperty)) {
+        if (entity.isNull(foreignKeyProperty)) {
           return "";
         }
 
@@ -1224,7 +1224,7 @@ public class Domain implements Serializable {
     public final void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
       Objects.requireNonNull(entity, ENTITY_PARAM);
       Objects.requireNonNull(property, PROPERTY_PARAM);
-      if (entity.isValueNull(property)) {
+      if (entity.isNull(property)) {
         return;
       }
 
@@ -1244,7 +1244,7 @@ public class Domain implements Serializable {
     public final void performNullValidation(final Entity entity, final Property property) throws NullValidationException {
       Objects.requireNonNull(entity, ENTITY_PARAM);
       Objects.requireNonNull(property, PROPERTY_PARAM);
-      if (!isNullable(entity, property) && entity.isValueNull(property)) {
+      if (!isNullable(entity, property) && entity.isNull(property)) {
         if ((entity.getKey().isNull() || entity.getOriginalKey().isNull()) && !(property instanceof Property.ForeignKeyProperty)) {
           //a new entity being inserted, allow null for columns with default values and auto generated primary key values
           final boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
@@ -1264,7 +1264,7 @@ public class Domain implements Serializable {
     public void performLengthValidation(final Entity entity, final Property property) throws LengthValidationException {
       Objects.requireNonNull(entity, ENTITY_PARAM);
       Objects.requireNonNull(property, PROPERTY_PARAM);
-      if (entity.isValueNull(property)) {
+      if (entity.isNull(property)) {
         return;
       }
 
@@ -1341,7 +1341,7 @@ public class Domain implements Serializable {
     @Override
     public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
       final Property.ColumnProperty primaryKeyProperty = getPrimaryKeyProperty(entity.getEntityId());
-      if (entity.isValueNull(primaryKeyProperty)) {
+      if (entity.isNull(primaryKeyProperty)) {
         queryAndSet(entity, primaryKeyProperty, connection);
       }
     }
@@ -1368,7 +1368,7 @@ public class Domain implements Serializable {
     @Override
     public void beforeInsert(final Entity entity, final DatabaseConnection connection) throws SQLException {
       final Property.ColumnProperty primaryKeyProperty = getPrimaryKeyProperty(entity.getEntityId());
-      if (entity.isValueNull(primaryKeyProperty)) {
+      if (entity.isNull(primaryKeyProperty)) {
         queryAndSet(entity, primaryKeyProperty, connection);
       }
     }

@@ -1428,7 +1428,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> imple
   private void viewImageForSelected(final String imagePathPropertyId) {
     try {
       final Entity selected = getTableModel().getSelectionModel().getSelectedItem();
-      if (!selected.isValueNull(imagePathPropertyId)) {
+      if (selected.isNotNull(imagePathPropertyId)) {
         viewImage(selected.getString(imagePathPropertyId));
       }
     }

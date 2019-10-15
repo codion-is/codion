@@ -170,7 +170,7 @@ public final class World extends Domain {
             derivedProperty(COUNTRYLANGUAGE_NO_OF_SPEAKERS, Types.INTEGER, "No. of speakers", sourceValues -> {
               final Double percentage = (Double) sourceValues.get(COUNTRYLANGUAGE_PERCENTAGE);
               final Entity country = (Entity) sourceValues.get(COUNTRYLANGUAGE_COUNTRY_FK);
-              if (notNull(percentage, country) && !country.isValueNull(COUNTRY_POPULATION)) {
+              if (notNull(percentage, country) && country.isNotNull(COUNTRY_POPULATION)) {
                 return country.getInteger(COUNTRY_POPULATION) * (percentage / 100);
               }
 

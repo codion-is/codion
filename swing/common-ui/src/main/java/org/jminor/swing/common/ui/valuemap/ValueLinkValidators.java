@@ -109,8 +109,8 @@ public final class ValueLinkValidators {
       return editModel.isNullable(key);
     }
 
-    protected boolean isModelValueNull() {
-      return editModel.isValueNull(key);
+    protected boolean isNull() {
+      return editModel.isNull(key);
     }
 
     /**
@@ -197,7 +197,7 @@ public final class ValueLinkValidators {
       final JTextComponent textComponent = (JTextComponent) getComponent();
       final boolean enabled = textComponent.isEnabled();
       final boolean stringEqualsMask = textComponent.getText().equals(maskString);
-      final boolean validInput = !isModelValueNull() || (stringEqualsMask && isNullable());
+      final boolean validInput = !isNull() || (stringEqualsMask && isNullable());
       final String validationMessage = getValidationMessage();
       if (validInput && validationMessage == null) {
         textComponent.setBackground(enabled ? VALID_ENABLED_BACKGROUND_COLOR : VALID_DISABLED_BACKGROUND_COLOR);

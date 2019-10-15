@@ -408,8 +408,14 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<Pr
 
   /** {@inheritDoc} */
   @Override
-  public boolean isValueNull(final String propertyId) {
-    return isValueNull(getDomain().getProperty(entityId, propertyId));
+  public boolean isNull(final String propertyId) {
+    return isNull(getDomain().getProperty(entityId, propertyId));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isNotNull(final String propertyId) {
+    return !isNull(propertyId);
   }
 
   /** {@inheritDoc} */

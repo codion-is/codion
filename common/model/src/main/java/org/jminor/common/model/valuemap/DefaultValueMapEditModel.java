@@ -105,8 +105,14 @@ public class DefaultValueMapEditModel<K extends Attribute, V> implements ValueMa
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isValueNull(final K key) {
-    return valueMap.isValueNull(key);
+  public final boolean isNull(final K key) {
+    return valueMap.isNull(key);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isNotNull(final K key) {
+    return !isNull(key);
   }
 
   /** {@inheritDoc} */

@@ -74,8 +74,14 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public boolean isValueNull(final K key) {
+  public boolean isNull(final K key) {
     return get(key) == null;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isNotNull(final K key) {
+    return !isNull(key);
   }
 
   /** {@inheritDoc} */
@@ -453,7 +459,7 @@ public class DefaultValueMap<K extends Attribute, V> implements ValueMap<K, V> {
     @Override
     public void validate(final V valueMap, final K key) throws ValidationException {
       Objects.requireNonNull(valueMap, "valueMap");
-      if (valueMap.isValueNull(key) && !isNullable(valueMap, key)) {
+      if (valueMap.isNull(key) && !isNullable(valueMap, key)) {
         throw new NullValidationException(key, MESSAGES.getString("value_missing") + ": " + key);
       }
     }

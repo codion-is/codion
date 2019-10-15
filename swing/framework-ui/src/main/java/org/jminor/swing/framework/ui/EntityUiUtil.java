@@ -1071,7 +1071,7 @@ public final class EntityUiUtil {
         final String prefix = "[" + property.getTypeClass().getSimpleName().substring(0, 1)
                 + (property instanceof Property.DerivedProperty ? "*" : "")
                 + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
-        final String value = entity.isValueNull(property) ? "<null>" : entity.getAsString(property);
+        final String value = entity.isNull(property) ? "<null>" : entity.getAsString(property);
         final boolean longValue = value != null && value.length() > maxValueLength;
         final StringBuilder builder = new StringBuilder(prefix).append(property).append(": ");
         if (longValue) {
