@@ -48,7 +48,7 @@ The most used and tested DBMS modules are:
 |===
 
 == Logging
-JMinor uses SLF4J throughout so all you need to do is add a SLF4J bridge for your logging framework of choice to your classpath. If you use Logback or Log4J you can use one of the logging-proxy plugins below which will pull in the required dependencies and also allow you to set the logging level in the client.
+JMinor uses SLF4J throughout so all you need to do is add a SLF4J bridge for your logging framework of choice to the classpath. If you use Logback or Log4J you can use one of the logging-proxy plugins below which will pull in the required dependencies and provide a main-menu action in the client for setting the logging level.
 
 [cols="1,4"]
 |===
