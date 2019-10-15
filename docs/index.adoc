@@ -32,6 +32,10 @@ image::jminor_logo_medium.png[Logo,200]
 
 == Tutorials
 
-* <<{dir-tutorials}/empdept.adoc#, EmpDept Tutorial>>.
-* <<{dir-tutorials}/chinook.adoc#, Chinook Tutorial (just code)>>.
-* <<{dir-tutorials}/petstore.adoc#, Petstore Tutorial (just code)>>.
+* Basics
+** <<{dir-tutorials}/chinook-entities.adoc#, Entities>>.
+* Clients
+** <<{dir-tutorials}/empdept.adoc#, EmpDept Tutorial>>.
+** <<{dir-tutorials}/chinook-minimal.adoc#, Chinook Minimal>>.
+** <<{dir-tutorials}/chinook.adoc#, Chinook Tutorial Full (just code)>>.
+** <<{dir-tutorials}/petstore.adoc#, Petstore Tutorial (just code)>>.

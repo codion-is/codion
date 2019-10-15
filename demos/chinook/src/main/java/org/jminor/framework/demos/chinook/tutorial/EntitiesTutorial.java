@@ -15,33 +15,34 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
 
 import java.sql.Types;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.demos.chinook.tutorial.ChinookTutorial.Chinook.*;
+import static org.jminor.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
 import static org.jminor.framework.domain.Entities.getKeys;
 import static org.jminor.framework.domain.Properties.*;
 
 /**
- * A tutorial class for demonstration purposes.
- * When running this make sure the project root directory is the
+ * When running this make sure the chinook demo module directory is the
  * working directory, due to a relative path to a db init script
  */
-public final class ChinookTutorial {
+public final class EntitiesTutorial {
 
   /** The domain class, which contains the domain model definition */
   public static final class Chinook extends Domain {
 
-    //string constants for the table ('T_' prefix) and for each column
+    //string constants for the table entityId ('T_' prefix)
+    //and a propertyId for each column
     public static final String T_ARTIST = "chinook.artist";
     public static final String ARTIST_ID = "artistid";
     public static final String ARTIST_NAME = "name";
 
-    //string constants for the table ('T_' prefix), for each column
-    //and one for the foreign key relation
+    //string constants for the table entityId ('T_' prefix),
+    //and a propertyId for each column one for the foreign key relation
     public static final String T_ALBUM = "chinook.album";
     public static final String ALBUM_ALBUMID = "albumid";
     public static final String ALBUM_TITLE = "title";
@@ -49,24 +50,33 @@ public final class ChinookTutorial {
     public static final String ALBUM_ARTIST_FK = "artist_fk";
 
     public Chinook() {
-      //define an entity based on the table 'chinook.artist'
-      define(T_ARTIST,
-              primaryKeyProperty(ARTIST_ID),
-              columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
-                      .setNullable(false).setMaxLength(120))
+      //define properties for the columns in the table 'chinook.artist'
+      Property artistId = primaryKeyProperty(ARTIST_ID);
+      Property artistName = columnProperty(ARTIST_NAME, Types.VARCHAR, "Name");
+      artistName.setNullable(false).setMaxLength(120);
+
+      //define an entity based on the table 'chinook.artist',
+      //with the above properties
+      define(T_ARTIST, artistId, artistName)
               .setKeyGenerator(automaticKeyGenerator("chinook.artist"))
-              .setStringProvider(new Domain.StringProvider(ARTIST_NAME))
+              .setStringProvider(new StringProvider(ARTIST_NAME))
               .setSmallDataset(true)
               .setCaption("Artist");
 
-      //define an entity based on the table 'chinook.album'
-      define(T_ALBUM,
-              primaryKeyProperty(ALBUM_ALBUMID),
-              columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
-                      .setNullable(false).setMaxLength(160),
+      //define properties for the columns in the table 'chinook.album'
+      Property albumId = primaryKeyProperty(ALBUM_ALBUMID);
+      Property albumTitle = columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title");
+      albumTitle.setNullable(false).setMaxLength(160);
+      //we wrap the actual 'artistid' column property in a foreign key
+      //referencing the entity identified by T_ARTIST
+      Property albumArtist =
               foreignKeyProperty(ALBUM_ARTIST_FK, "Artist", T_ARTIST,
-                      columnProperty(ALBUM_ARTISTID))
-                      .setNullable(false))
+                      columnProperty(ALBUM_ARTISTID));
+      albumArtist.setNullable(false);
+
+      //define an entity based on the table 'chinook.album',
+      //with the above properties
+      define(T_ALBUM, albumId, albumTitle, albumArtist)
               .setKeyGenerator(automaticKeyGenerator("chinook.album"))
               .setStringProvider(new StringProvider()
                       .addValue(ALBUM_ARTIST_FK).addText(" - ").addValue(ALBUM_TITLE))
@@ -85,7 +95,7 @@ public final class ChinookTutorial {
     //initialize a connection provider, this class is responsible
     //for supplying a valid connection or throwing an exception
     //in case a connection can not be established
-    final EntityConnectionProvider connectionProvider =
+    EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(createDatabase())
                     .setDomainClassName(Chinook.class.getName())
                     .setUser(createUser());
@@ -93,48 +103,51 @@ public final class ChinookTutorial {
     //fetch the connection from the provider, note that the provider always
     //returns the same connection or a new one if the previous one has been
     //disconnected or has become invalid for some reason
-    final EntityConnection connection = connectionProvider.getConnection();
+    EntityConnection connection = connectionProvider.getConnection();
 
     //select the artist Metallica by name, the selectSingle() method
     //throws RecordNotFoundException if no record is found and a regular
     //DatabaseException with a relevant message if more than one are found
-    final Entity metallica = connection.selectSingle(T_ARTIST,
-            ARTIST_NAME, "Metallica");
+    Entity metallica =
+            connection.selectSingle(T_ARTIST, ARTIST_NAME, "Metallica");
 
     //select all albums by Metallica, by using selectMany() with the
     //Metallica Entity as condition value, basically asking for the
     //records where the given foreign key references that specific Entity
     //selectMany() returns an empty list if none are found
-    final List<Entity> albums = connection.selectMany(T_ALBUM,
-            ALBUM_ARTIST_FK, metallica);
+    List<Entity> albums =
+            connection.selectMany(T_ALBUM, ALBUM_ARTIST_FK, metallica);
+
     albums.forEach(System.out::println);
 
     //for more complex queries we use a EntitySelectCondition, provided
     //by a EntityConditions instance based on the domain model
-    final EntityConditions conditions = connectionProvider.getConditions();
+    EntityConditions conditions = connectionProvider.getConditions();
     //we create a select condition, where we specify the id of the entity
     //we're selecting, the id of the property we're searching by, the type
     //of condition and the value.
-    final EntitySelectCondition artistsStartingWithAnCondition =
+    EntitySelectCondition artistsCondition =
             conditions.selectCondition(T_ARTIST,
                     ARTIST_NAME, Condition.Type.LIKE, "An%");
     //and we set the order by clause
-    artistsStartingWithAnCondition.setOrderBy(
+    artistsCondition.setOrderBy(
             Domain.orderBy().ascending(ARTIST_NAME));
 
-    final List<Entity> artistsStartingWithAn =
-            connection.selectMany(artistsStartingWithAnCondition);
+    List<Entity> artistsStartingWithAn =
+            connection.selectMany(artistsCondition);
+
     artistsStartingWithAn.forEach(System.out::println);
 
     //create a select condition
-    final EntitySelectCondition albumsByArtistsStartingWithAnCondition =
+    EntitySelectCondition albumsCondition =
             conditions.selectCondition(T_ALBUM,
                     ALBUM_ARTIST_FK, Condition.Type.LIKE, artistsStartingWithAn);
-    albumsByArtistsStartingWithAnCondition.setOrderBy(Domain.orderBy()
+    albumsCondition.setOrderBy(Domain.orderBy()
             .ascending(ALBUM_ARTISTID).descending(ALBUM_TITLE));
 
-    final List<Entity> albumsByArtistsStartingWithAn =
-            connection.selectMany(albumsByArtistsStartingWithAnCondition);
+    List<Entity> albumsByArtistsStartingWithAn =
+            connection.selectMany(albumsCondition);
+
     albumsByArtistsStartingWithAn.forEach(System.out::println);
 
     //disconnects the underlying connection
@@ -142,16 +155,18 @@ public final class ChinookTutorial {
   }
 
   private static void modifyingEntities() throws DatabaseException {
-    final EntityConnectionProvider connectionProvider =
+    EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(createDatabase())
                     .setDomainClassName(Chinook.class.getName())
                     .setUser(createUser());
 
-    final EntityConnection connection = connectionProvider.getConnection();
-    final Domain domain = connectionProvider.getDomain();
+    EntityConnection connection = connectionProvider.getConnection();
+
+    //this Domain object serves as a factory for Entity instances
+    Domain domain = connectionProvider.getDomain();
 
     //lets create a new band
-    final Entity myBand = domain.entity(T_ARTIST);
+    Entity myBand = domain.entity(T_ARTIST);
     //and give the band a name
     myBand.put(ARTIST_NAME, "My band name");
 
@@ -169,7 +184,7 @@ public final class ChinookTutorial {
     connection.insert(singletonList(myBand));
 
     //now for our first album
-    final Entity album = domain.entity(T_ALBUM);
+    Entity album = domain.entity(T_ALBUM);
     //set the album artist by setting the artist foreign key to my band
     album.put(ALBUM_ARTIST_FK, myBand);
     //and set the title
@@ -212,7 +227,7 @@ public final class ChinookTutorial {
     // Configure the datababase
     Database.DATABASE_TYPE.set(Database.Type.H2.toString());
     Database.DATABASE_EMBEDDED_IN_MEMORY.set(true);
-    Database.DATABASE_INIT_SCRIPT.set("demos/chinook/src/main/sql/create_schema.sql");
+    Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
   }
 
   /** @return a test User */
