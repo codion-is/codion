@@ -29,5 +29,7 @@ asciidoctor:
     - source-highlighter=rouge
     - url-javadoc=https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
 
+# this and the imagesdir attribute above
+# are for the asciidoctor-diagram plugin
 keep_files:
   - images

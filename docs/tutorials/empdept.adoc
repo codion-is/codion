@@ -207,5 +207,5 @@ include::{dir-source}/org/jminor/framework/demos/empdept/client/ui/EmpDeptAppPan
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/testing/EmpDeptLoadTest.java[]
+include::{dir-source}/org/jminor/framework/demos/empdept/testing/EmpDeptLoadTest.java[lines=4..]
 ----

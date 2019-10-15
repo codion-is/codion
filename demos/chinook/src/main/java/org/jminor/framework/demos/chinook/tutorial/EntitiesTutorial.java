@@ -85,21 +85,10 @@ public final class EntitiesTutorial {
   }
 
   /**
-   * Demonstrates how a {@link EntityConnection} is created and used
-   * to select Entity instances.
-   * @see #createDatabase()
-   * @see #createUser()
-   * @throws DatabaseException in case of a exception
+   * Demonstrates how to use a {@link EntityConnection} to select Entity instances.
+   * @throws DatabaseException in case of an exception
    */
-  private static void selectingEntities() throws DatabaseException {
-    //initialize a connection provider, this class is responsible
-    //for supplying a valid connection or throwing an exception
-    //in case a connection can not be established
-    EntityConnectionProvider connectionProvider =
-            new LocalEntityConnectionProvider(createDatabase())
-                    .setDomainClassName(Chinook.class.getName())
-                    .setUser(createUser());
-
+  private static void selectingEntities(EntityConnectionProvider connectionProvider) throws DatabaseException {
     //fetch the connection from the provider, note that the provider always
     //returns the same connection or a new one if the previous one has been
     //disconnected or has become invalid for some reason
@@ -149,17 +138,13 @@ public final class EntitiesTutorial {
             connection.selectMany(albumsCondition);
 
     albumsByArtistsStartingWithAn.forEach(System.out::println);
-
-    //disconnects the underlying connection
-    connectionProvider.disconnect();
   }
 
-  private static void modifyingEntities() throws DatabaseException {
-    EntityConnectionProvider connectionProvider =
-            new LocalEntityConnectionProvider(createDatabase())
-                    .setDomainClassName(Chinook.class.getName())
-                    .setUser(createUser());
-
+  /**
+   * Demonstrates how to use a {@link EntityConnection} to modify Entity instances.
+   * @throws DatabaseException in case of an exception
+   */
+  private static void modifyingEntities(EntityConnectionProvider connectionProvider) throws DatabaseException {
     EntityConnection connection = connectionProvider.getConnection();
 
     //this Domain object serves as a factory for Entity instances
@@ -211,32 +196,25 @@ public final class EntitiesTutorial {
     //the artist before the album, this method deletes records in the
     //same order as the are received
     connection.delete(getKeys(asList(album, myBand)));
-
-    connectionProvider.disconnect();
   }
 
-  /** @return an embedded in-memory H2 database instance */
-  private static Database createDatabase() {
-    configureDatabase();
-    // Creates an instance based on the configuration values
-    return Databases.getInstance();
-  }
-
-  /** Configures the embedded in-memory H2 database */
-  private static void configureDatabase() {
+  public static void main(final String[] args) throws DatabaseException {
     // Configure the datababase
     Database.DATABASE_TYPE.set(Database.Type.H2.toString());
     Database.DATABASE_EMBEDDED_IN_MEMORY.set(true);
     Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
-  }
+    //initialize a connection provider, this class is responsible
+    //for supplying a valid connection or throwing an exception
+    //in case a connection can not be established
+    EntityConnectionProvider connectionProvider =
+            new LocalEntityConnectionProvider(Databases.getInstance())
+                    .setDomainClassName(Chinook.class.getName())
+                    .setUser(new User("scott", "tiger".toCharArray()));
 
-  /** @return a test User */
-  private static User createUser() {
-    return new User("scott", "tiger".toCharArray());
-  }
+    selectingEntities(connectionProvider);
 
-  public static void main(final String[] args) throws DatabaseException {
-    selectingEntities();
-    modifyingEntities();
+    modifyingEntities(connectionProvider);
+
+    connectionProvider.disconnect();
   }
 }
