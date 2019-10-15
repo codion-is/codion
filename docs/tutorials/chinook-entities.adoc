@@ -1,0 +1,10 @@
+= Entity Basics
+:toc: right
+:dir-source: ../../demos/chinook/src/main/java
+
+Entity basics, selecting and modifying.
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/chinook/tutorial/EntitiesTutorial.java[]
+----

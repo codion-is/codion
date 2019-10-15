@@ -5,7 +5,11 @@ package org.jminor.framework.demos.manual.basics;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Just making sure the tutorials are runnable
+ */
 public final class EventStateTest {
+
   @Test
   public void test() {
     EventState.main(new String[0]);

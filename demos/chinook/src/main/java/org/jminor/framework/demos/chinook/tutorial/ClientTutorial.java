@@ -11,35 +11,37 @@ import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
-import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
 
-import javax.swing.JTextField;
 import java.awt.GridLayout;
 import java.sql.Types;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
+import static org.jminor.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
 import static org.jminor.framework.domain.Properties.*;
 import static org.jminor.swing.common.ui.UiUtil.getScreenSizeRatio;
 import static org.jminor.swing.common.ui.UiUtil.setPreferredWidth;
 
-//When running this make sure the project root directory is the
-//working directory, due to a relative path to a db init script
-public final class ArtistAlbumTutorial {
-
-  public static final String T_ARTIST = "chinook.artist";
-  public static final String ARTIST_ID = "artistid";
-  public static final String ARTIST_NAME = "name";
-
-  public static final String T_ALBUM = "chinook.album";
-  public static final String ALBUM_ALBUMID = "albumid";
-  public static final String ALBUM_TITLE = "title";
-  public static final String ALBUM_ARTISTID = "artistid";
-  public static final String ALBUM_ARTIST_FK = "artist_fk";
+/**
+ * When running this make sure the chinook demo module directory is the
+ * working directory, due to a relative path to a db init script
+ */
+public final class ClientTutorial {
 
   public static final class Chinook extends Domain {
+
+    public static final String T_ARTIST = "chinook.artist";
+    public static final String ARTIST_ID = "artistid";
+    public static final String ARTIST_NAME = "name";
+
+    public static final String T_ALBUM = "chinook.album";
+    public static final String ALBUM_ALBUMID = "albumid";
+    public static final String ALBUM_TITLE = "title";
+    public static final String ALBUM_ARTISTID = "artistid";
+    public static final String ALBUM_ARTIST_FK = "artist_fk";
+
     public Chinook() {
       define(T_ARTIST,
               primaryKeyProperty(ARTIST_ID),
@@ -73,8 +75,7 @@ public final class ArtistAlbumTutorial {
     @Override
     protected void initializeUI() {
       setInitialFocusProperty(ARTIST_NAME);
-      final JTextField nameField = createTextField(ARTIST_NAME);
-      nameField.setColumns(15);
+      createTextField(ARTIST_NAME).setColumns(15);
       addPropertyPanel(ARTIST_NAME);
     }
   }
@@ -88,10 +89,8 @@ public final class ArtistAlbumTutorial {
     @Override
     protected void initializeUI() {
       setInitialFocusProperty(ALBUM_ARTIST_FK);
-      final EntityComboBox artistComboBox = createForeignKeyComboBox(ALBUM_ARTIST_FK);
-      setPreferredWidth(artistComboBox, 160);
-      final JTextField titleField = createTextField(ALBUM_TITLE);
-      titleField.setColumns(15);
+      setPreferredWidth(createForeignKeyComboBox(ALBUM_ARTIST_FK), 160);
+      createTextField(ALBUM_TITLE).setColumns(15);
       setLayout(new GridLayout(2, 1, 5, 5));
       addPropertyPanel(ALBUM_ARTIST_FK);
       addPropertyPanel(ALBUM_TITLE);
@@ -128,7 +127,7 @@ public final class ArtistAlbumTutorial {
   public static void main(final String[] args) {
     Database.DATABASE_TYPE.set(Database.Type.H2.toString());
     Database.DATABASE_EMBEDDED_IN_MEMORY.set(true);
-    Database.DATABASE_INIT_SCRIPT.set("demos/chinook/src/main/sql/create_schema.sql");
+    Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(Chinook.class.getName());
     new ApplicationPanel().startApplication("Artists and Albums", null, false,
             getScreenSizeRatio(0.5), new User("scott", "tiger".toCharArray()));

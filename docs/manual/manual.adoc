@@ -123,7 +123,7 @@ include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[t
 
 [source,java,indent=0]
 ----
-include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=foreignKeyPropertyCountry]
+include::{dir-source-world}/org/jminor/framework/demos/world/domain/World.java[tags=foreignKeyPropertyCapital]
 ----
 
 Referring to an entity with composite primary key
