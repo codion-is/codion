@@ -6,5 +6,5 @@ Below you'll find a full (albeit simple) CRUD client for two tables, chinook.art
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/tutorial/ClientTutorial.java[lines=4..]
+include::{dir-source}/org/jminor/framework/demos/chinook/tutorial/ClientTutorial.java[lines=4..-1]
 ----

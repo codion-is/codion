@@ -8,36 +8,36 @@
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/domain/World.java[lines=4..]
+include::{dir-source}/org/jminor/framework/demos/world/domain/World.java[lines=4..-1]
 ----
 
 == Domain model unit test
 
 [source,java]
 ----
-include::{dir-test-source}/org/jminor/framework/demos/world/domain/WorldTest.java[lines=4..]
+include::{dir-test-source}/org/jminor/framework/demos/world/domain/WorldTest.java[lines=4..-1]
 ----
 
 == Application UI layer
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/beans/ui/CityEditPanel.java[lines=4..]
+include::{dir-source}/org/jminor/framework/demos/world/beans/ui/CityEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/beans/ui/CountryEditPanel.java[lines=4..]
+include::{dir-source}/org/jminor/framework/demos/world/beans/ui/CountryEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/beans/ui/CountryLanguageEditPanel.java[lines=4..]
+include::{dir-source}/org/jminor/framework/demos/world/beans/ui/CountryLanguageEditPanel.java[lines=4..-1]
 ----
 
 == Main application panel
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/world/client/ui/WorldAppPanel.java[lines=4..]
+include::{dir-source}/org/jminor/framework/demos/world/client/ui/WorldAppPanel.java[lines=4..-1]
 ----
