@@ -67,7 +67,14 @@ public interface ValueMap<K extends Attribute, V> extends ValueProvider<K, V>, V
    * @param key the key
    * @return true if the value mapped to the given key is null
    */
-  boolean isValueNull(final K key);
+  boolean isNull(final K key);
+
+  /**
+   * Returns true if a this ValueMap contains a non-null value mapped to the given key
+   * @param key the key
+   * @return true if the value mapped to the given key is not null
+   */
+  boolean isNotNull(final K key);
 
   /**
    * Returns true if this ValueMap contains a value for the given key, that value can be null.

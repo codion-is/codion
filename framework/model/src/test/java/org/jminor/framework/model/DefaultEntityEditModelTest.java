@@ -120,7 +120,8 @@ public final class DefaultEntityEditModelTest {
     Entity dept = employeeEditModel.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);
     employeeEditModel.put(TestDomain.EMP_DEPARTMENT_FK, null);
     //set the reference key property value
-    assertTrue(employeeEditModel.isValueNull(TestDomain.EMP_DEPARTMENT_FK));
+    assertTrue(employeeEditModel.isNull(TestDomain.EMP_DEPARTMENT_FK));
+    assertFalse(employeeEditModel.isNotNull(TestDomain.EMP_DEPARTMENT_FK));
     employeeEditModel.put(TestDomain.EMP_DEPARTMENT, dept.get(TestDomain.DEPARTMENT_ID));
     assertFalse(employeeEditModel.getEntityCopy().isLoaded(TestDomain.EMP_DEPARTMENT_FK));
     dept = employeeEditModel.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);

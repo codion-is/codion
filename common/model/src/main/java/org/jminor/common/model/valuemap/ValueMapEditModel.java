@@ -80,7 +80,13 @@ public interface ValueMapEditModel<K extends Attribute, V> {
    * @param key the key
    * @return true if the value of the given key is null
    */
-  boolean isValueNull(final K key);
+  boolean isNull(final K key);
+
+  /**
+   * @param key the key
+   * @return true if the value of the given key is not null
+   */
+  boolean isNotNull(final K key);
 
   /**
    * Sets the given value in the underlying value map

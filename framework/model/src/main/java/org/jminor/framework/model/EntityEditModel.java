@@ -110,7 +110,13 @@ public interface EntityEditModel extends ValueMapEditModel<Property, Object>, Re
    * @param propertyId the ID of the property
    * @return true if the value of the given property is null
    */
-  boolean isValueNull(final String propertyId);
+  boolean isNull(final String propertyId);
+
+  /**
+   * @param propertyId the ID of the property
+   * @return true if the value of the given property is not null
+   */
+  boolean isNotNull(final String propertyId);
 
   /**
    * Sets the given value in the underlying value map

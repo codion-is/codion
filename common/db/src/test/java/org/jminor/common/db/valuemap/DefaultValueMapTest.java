@@ -31,12 +31,15 @@ public class DefaultValueMapTest {
     assertNotEquals(map, attr1);
     assertEquals(0, map.size());
     assertFalse(map.containsKey(attr1));
+    assertFalse(map.isNotNull(attr1));
     map.put(attr1, null);
     assertTrue(map.containsKey(attr1));
-    assertTrue(map.isValueNull(attr1));
+    assertTrue(map.isNull(attr1));
+    assertFalse(map.isNotNull(attr1));
     assertEquals("", map.getAsString(attr1));
     map.put(attr1, attr1);
-    assertFalse(map.isValueNull(attr1));
+    assertFalse(map.isNull(attr1));
+    assertTrue(map.isNotNull(attr1));
     assertEquals(attr1, map.get(attr1));
     assertNull(map.remove(attr2));
     final Object value = map.remove(attr1);
@@ -69,7 +72,8 @@ public class DefaultValueMapTest {
     assertTrue(valueMap.containsKey(attr1));
     assertEquals(Integer.valueOf(1), valueMap.get(attr1));
     assertEquals(Integer.valueOf(1), valueMap.getOriginal(attr1));
-    assertFalse(valueMap.isValueNull(attr1));
+    assertFalse(valueMap.isNull(attr1));
+    assertTrue(valueMap.isNotNull(attr1));
     assertFalse(valueMap.isModified());
     assertFalse(valueMap.isModified(attr1));
 
@@ -100,7 +104,7 @@ public class DefaultValueMapTest {
     assertFalse(valueMap.isModified(attr1));
 
     valueMap.put(attr1, null);
-    assertTrue(valueMap.isValueNull(attr1));
+    assertTrue(valueMap.isNull(attr1));
     assertTrue(valueMap.isModified());
     assertTrue(valueMap.isModified(attr1));
     valueMap.revert(attr1);

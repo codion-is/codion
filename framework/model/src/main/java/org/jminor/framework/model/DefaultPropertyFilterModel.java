@@ -24,7 +24,7 @@ public class DefaultPropertyFilterModel extends DefaultColumnConditionModel<Prop
   @Override
   protected final Comparable getComparable(final Object object) {
     final Entity entity = (Entity) object;
-    if (entity.isValueNull(getColumnIdentifier())) {
+    if (entity.isNull(getColumnIdentifier())) {
       return null;
     }
 

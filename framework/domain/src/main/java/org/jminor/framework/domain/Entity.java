@@ -303,11 +303,20 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   void save(final String propertyId);
 
   /**
-   * Returns true if a null value is mapped to the given property.
-   * @param propertyId the ID of the property
-   * @return true if the value mapped to the given property is null
+   * Returns true if a null value is mapped to the given property or if no mapping is found.
+   * In case of foreign key properties the value of the underlying reference property is checked.
+   * @param key the key
+   * @return true if the value mapped to the given key is null or no value is mapped
    */
-  boolean isValueNull(final String propertyId);
+  boolean isNull(final String propertyId);
+
+  /**
+   * Returns true if a this Entity contains a non-null value mapped to the given property
+   * In case of foreign key properties the value of the underlying reference property is checked.
+   * @param key the key
+   * @return true if a non-null value is mapped to the given property
+   */
+  boolean isNotNull(final String propertyId);
 
   /**
    * Returns true if this Entity contains a value for the given property, that value can be null.
@@ -350,11 +359,18 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
     boolean isNull();
 
     /**
-     * Returns true if a null value is mapped to the given property.
+     * Returns true if a null value is mapped to the given property or no mapping exists.
      * @param propertyId the propertyId
-     * @return true if the value mapped to the given property is null
+     * @return true if the value mapped to the given property is null or none exists
      */
-    boolean isValueNull(final String propertyId);
+    boolean isNull(final String propertyId);
+
+    /**
+     * Returns true if a non-null value is mapped to the given property.
+     * @param propertyId the propertyId
+     * @return true if a non-null value is mapped to the given property
+     */
+    boolean isNotNull(final String propertyId);
 
     /**
      * @return true if this primary key is based on a single integer column

@@ -142,7 +142,7 @@ public final class ChinookImpl extends Domain implements Chinook {
             .setStringProvider(customer -> {
               final StringBuilder builder = new StringBuilder(customer.getString(CUSTOMER_LASTNAME))
                       .append(", ").append(customer.getString(CUSTOMER_FIRSTNAME));
-              if (!customer.isValueNull(CUSTOMER_EMAIL)) {
+              if (customer.isNotNull(CUSTOMER_EMAIL)) {
                 builder.append(" <").append(customer.getString(CUSTOMER_EMAIL)).append(">");
               }
 
