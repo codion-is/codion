@@ -1,0 +1,12 @@
+= Client
+:toc: right
+:dir-source: ../../demos
+
+== Configuration
+
+=== Example configuration file
+
+[source]
+----
+include::{dir-source}/chinook/src/main/config/h2db.config[]
+----

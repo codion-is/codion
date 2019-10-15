@@ -15,7 +15,9 @@ image::jminor_logo_medium.png[Logo,200]
 == Technical
 
 * <<{dir-technical}/project.adoc#, Project>>
-* <<{dir-technical}/client.adoc#, Client>>
+* <<{dir-technical}/client-features.adoc#, Client>>
+** <<{dir-technical}/client-architecture.adoc#, Architecture>>
+** <<{dir-technical}/client-configuration.adoc#, Configuration>>
 * <<{dir-technical}/server.adoc#, Server>>
 
 == Quickstart
