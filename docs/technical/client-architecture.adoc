@@ -1,4 +1,6 @@
 = JMinor Client Architecture
+:toc: right
+:dir-source: ../../demos/chinook/src/main/java
 
 == UI
 
@@ -59,3 +61,26 @@
 |+-------------------------------------------------------+ |
 +----------------------------------------------------------+
 ....
+
+== Assembly
+
+=== EntityModel
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/chinook/tutorial/ClientArchitecture.java[tags=entityModel]
+----
+
+=== EntityPanel
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/chinook/tutorial/ClientArchitecture.java[tags=entityPanel]
+----
+
+== Full Example
+
+[source,java]
+----
+include::{dir-source}/org/jminor/framework/demos/chinook/tutorial/ClientArchitecture.java[lines=4..]
+----
