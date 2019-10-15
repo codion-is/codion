@@ -50,7 +50,7 @@ public final class EntitiesTutorial {
     public static final String ALBUM_ARTIST_FK = "artist_fk";
 
     public Chinook() {
-      //define properties for the columns in the table 'chinook.artist'
+      //create properties for the columns in the table 'chinook.artist'
       Property artistId = primaryKeyProperty(ARTIST_ID);
       Property artistName = columnProperty(ARTIST_NAME, Types.VARCHAR, "Name");
       artistName.setNullable(false).setMaxLength(120);
@@ -63,7 +63,7 @@ public final class EntitiesTutorial {
               .setSmallDataset(true)
               .setCaption("Artist");
 
-      //define properties for the columns in the table 'chinook.album'
+      //create properties for the columns in the table 'chinook.album'
       Property albumId = primaryKeyProperty(ALBUM_ALBUMID);
       Property albumTitle = columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title");
       albumTitle.setNullable(false).setMaxLength(160);

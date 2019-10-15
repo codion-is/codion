@@ -245,7 +245,7 @@ public final class ChinookImpl extends Domain implements Chinook {
             columnProperty(INVOICE_TOTAL, Types.DECIMAL, "Total")
                     .setMaximumFractionDigits(2)
                     .setHidden(true),
-            subqueryProperty(INVOICE_TOTAL_SUB, Types.DOUBLE, "Calculated total", INVOICE_TOTAL_SUBQUERY)
+            subqueryProperty(INVOICE_TOTAL_SUB, Types.DECIMAL, "Calculated total", INVOICE_TOTAL_SUBQUERY)
                     .setMaximumFractionDigits(2))
             .setKeyGenerator(automaticKeyGenerator("chinook.invoice"))
             .setOrderBy(orderBy().ascending(INVOICE_CUSTOMERID).descending(INVOICE_INVOICEDATE))

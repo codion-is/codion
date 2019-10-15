@@ -15,6 +15,7 @@ import org.jminor.swing.common.tools.LoadTestModel;
 import org.jminor.swing.common.tools.ui.LoadTestPanel;
 
 import javax.swing.UIManager;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
@@ -163,7 +164,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
         employee.put(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
         employee.put(EmpDept.EMPLOYEE_NAME, TextUtil.createRandomString(5, 10));
         employee.put(EmpDept.EMPLOYEE_JOB, EmpDept.JOB_VALUES.get(random.nextInt(EmpDept.JOB_VALUES.size())).getValue());
-        employee.put(EmpDept.EMPLOYEE_SALARY, (double) random.nextInt(1000) + 1000);
+        employee.put(EmpDept.EMPLOYEE_SALARY, BigDecimal.valueOf(random.nextInt(1000) + 1000));
         employee.put(EmpDept.EMPLOYEE_HIREDATE, LocalDate.now());
         employee.put(EmpDept.EMPLOYEE_COMMISSION, random.nextDouble() * 500);
 
