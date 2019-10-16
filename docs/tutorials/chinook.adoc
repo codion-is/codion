@@ -1,5 +1,4 @@
 = Chinook Tutorial
-:toc: right
 :dir-source: ../../demos/chinook/src/main/java
 :dir-test-source: ../../demos/chinook/src/test/java
 :dir-manual: ../manual

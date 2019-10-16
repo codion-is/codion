@@ -1,6 +1,6 @@
 = Server
-:toc: right
 :dir-source: ../../framework/server
+:url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
 
 == Features
 

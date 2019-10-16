@@ -1,5 +1,4 @@
 = JMinor Client Architecture
-:toc: right
 :dir-source: ../../demos/chinook/src/main/java
 
 == UI
