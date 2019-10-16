@@ -18,7 +18,8 @@ import javax.swing.Icon;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A factory class for Control objects.
@@ -314,7 +315,7 @@ public final class Controls {
 
     private CommandControl(final Control.Command command, final String name, final StateObserver enabledObserver) {
       super(name, enabledObserver);
-      this.command = Objects.requireNonNull(command);
+      this.command = requireNonNull(command);
     }
 
     @Override

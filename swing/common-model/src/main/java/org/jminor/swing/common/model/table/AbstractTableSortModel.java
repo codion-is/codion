@@ -16,8 +16,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A default TableSortModel implementation
@@ -221,7 +222,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     private final int priority;
 
     private DefaultSortingState(final SortingDirective directive, final int priority) {
-      Objects.requireNonNull(directive, "direction");
+      requireNonNull(directive, "direction");
       this.directive = directive;
       this.priority = priority;
     }

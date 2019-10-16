@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A default Server implementation.
  * @param <T> the type of remote interface served by this server
@@ -147,10 +149,10 @@ public abstract class AbstractServer<T extends Remote, A extends Remote>
     if (shuttingDown) {
       throw ServerException.loginException("Server is shutting down");
     }
-    Objects.requireNonNull(connectionRequest, "connectionRequest");
-    Objects.requireNonNull(connectionRequest.getUser(), "user");
-    Objects.requireNonNull(connectionRequest.getClientId(), "clientId");
-    Objects.requireNonNull(connectionRequest.getClientTypeId(), "clientTypeId");
+    requireNonNull(connectionRequest, "connectionRequest");
+    requireNonNull(connectionRequest.getUser(), "user");
+    requireNonNull(connectionRequest.getClientId(), "clientId");
+    requireNonNull(connectionRequest.getClientTypeId(), "clientTypeId");
 
     getConnectionValidator(connectionRequest.getClientTypeId()).validate(connectionRequest);
     final LoginProxy clientLoginProxy = getLoginProxy(connectionRequest.getClientTypeId());

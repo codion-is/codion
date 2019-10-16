@@ -62,8 +62,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ResourceBundle;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A UI component based on a FilteredTableModel.
@@ -176,7 +177,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
    */
   public FilteredTablePanel(final AbstractFilteredTableModel<R, C> tableModel,
                             final ColumnConditionPanelProvider<C> conditionPanelProvider) {
-    this(new JTable(Objects.requireNonNull(tableModel, "tableModel"), tableModel.getColumnModel(),
+    this(new JTable(requireNonNull(tableModel, "tableModel"), tableModel.getColumnModel(),
             (ListSelectionModel) tableModel.getSelectionModel()), conditionPanelProvider);
   }
 
@@ -192,7 +193,7 @@ public class FilteredTablePanel<R, C> extends JPanel {
    * @see FilteredTableModel#getSelectionModel()
    */
   public FilteredTablePanel(final JTable table, final ColumnConditionPanelProvider<C> conditionPanelProvider) {
-    Objects.requireNonNull(table, "table");
+    requireNonNull(table, "table");
     this.table = table;
     this.tableModel = (AbstractFilteredTableModel<R, C>) table.getModel();
     this.conditionPanelProvider = conditionPanelProvider;

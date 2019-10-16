@@ -7,8 +7,9 @@ import org.jminor.common.db.AbstractDatabase;
 import org.jminor.common.db.Database;
 
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.Properties;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A SQLite embedded database implementation, quite experimental, based on the xerial/sqlite-jdbc driver.
@@ -35,7 +36,7 @@ public final class SQLiteDatabase extends AbstractDatabase {
    */
   public SQLiteDatabase(final String databaseFilePath) {
     super(Type.SQLITE, DRIVER_CLASS_NAME);
-    this.databaseFilePath = Objects.requireNonNull(databaseFilePath, "databaseFilePath");
+    this.databaseFilePath = requireNonNull(databaseFilePath, "databaseFilePath");
   }
 
   /** {@inheritDoc} */

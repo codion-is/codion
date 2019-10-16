@@ -6,8 +6,9 @@ package org.jminor.dbms.postgresql;
 import org.jminor.common.db.AbstractDatabase;
 
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.Properties;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Database implementation based on the PostgreSQL database.
@@ -36,20 +37,20 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
    * @param database the database name
    */
   public PostgreSQLDatabase(final String host, final Integer port, final String database) {
-    super(Type.POSTGRESQL, DRIVER_CLASS_NAME, Objects.requireNonNull(host, "host"),
-            Objects.requireNonNull(port, "port"), Objects.requireNonNull(database, "database"), false);
+    super(Type.POSTGRESQL, DRIVER_CLASS_NAME, requireNonNull(host, "host"),
+            requireNonNull(port, "port"), requireNonNull(database, "database"), false);
   }
 
   /** {@inheritDoc} */
   @Override
   public String getAutoIncrementQuery(final String idSource) {
-    return "select currval('" + Objects.requireNonNull(idSource, "idSource") + "')";
+    return "select currval('" + requireNonNull(idSource, "idSource") + "')";
   }
 
   /** {@inheritDoc} */
   @Override
   public String getSequenceQuery(final String sequenceName) {
-    return "select nextval('" + Objects.requireNonNull(sequenceName, "sequenceName") + "')";
+    return "select nextval('" + requireNonNull(sequenceName, "sequenceName") + "')";
   }
 
   /** {@inheritDoc} */

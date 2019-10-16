@@ -7,7 +7,6 @@ import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel;
-import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.EntityApplicationModel;
@@ -49,7 +48,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
                 selectRandomRows(invoiceModel.getTableModel(), RANDOM.nextInt(6) + 2);
                 final SwingEntityTableModel invoiceLineTableModel = invoiceModel.getDetailModel(T_INVOICELINE).getTableModel();
                 final List<Entity> invoiceLines = invoiceLineTableModel.getAllItems();
-                Entities.put(Chinook.INVOICELINE_QUANTITY, RANDOM.nextInt(4) + 1, invoiceLines);
+                Entities.put(INVOICELINE_QUANTITY, RANDOM.nextInt(4) + 1, invoiceLines);
 
                 invoiceLineTableModel.update(invoiceLines);
 

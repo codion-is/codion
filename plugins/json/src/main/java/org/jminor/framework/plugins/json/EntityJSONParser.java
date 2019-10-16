@@ -4,7 +4,6 @@
 package org.jminor.framework.plugins.json;
 
 import org.jminor.common.Serializer;
-import org.jminor.common.Util;
 import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -25,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Collections.emptyList;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A class responsible for serializing Entity related objects to and from the JSON format.
@@ -132,7 +132,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
   @Override
   public String serialize(final List<Entity> entities) throws SerializeException {
     try {
-      if (Util.nullOrEmpty(entities)) {
+      if (nullOrEmpty(entities)) {
         return "";
       }
 
@@ -170,7 +170,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * @return a JSON string representation of the given entity keys
    */
   public String serializeKeys(final Collection<Entity.Key> keys) {
-    if (Util.nullOrEmpty(keys)) {
+    if (nullOrEmpty(keys)) {
       return "";
     }
 
@@ -238,7 +238,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * @return a List containing the Entity instances represented by the given JSON string
    */
   public List<Entity> deserializeEntities(final String jsonString) {
-    if (Util.nullOrEmpty(jsonString)) {
+    if (nullOrEmpty(jsonString)) {
       return emptyList();
     }
 
@@ -257,7 +257,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * @return a List containing the Entity.Key instances represented by the given JSON string
    */
   public List<Entity.Key> deserializeKeys(final String jsonString) {
-    if (Util.nullOrEmpty(jsonString)) {
+    if (nullOrEmpty(jsonString)) {
       return emptyList();
     }
 

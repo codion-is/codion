@@ -8,12 +8,13 @@ import org.jminor.common.Event;
 import org.jminor.common.Events;
 import org.jminor.common.PropertyValue;
 import org.jminor.common.User;
-import org.jminor.common.Util;
 import org.jminor.common.remote.Server;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A monitor for the EntityConnectionServer
@@ -46,7 +47,7 @@ public final class EntityServerMonitor {
    * @throws RemoteException in case of an exception
    */
   public EntityServerMonitor(final String hostNames, final int registryPort) throws RemoteException {
-    if (Util.nullOrEmpty(hostNames)) {
+    if (nullOrEmpty(hostNames)) {
       throw new IllegalArgumentException("No server host names specified for server monitor");
     }
     for (final String hostname : hostNames.split(",")) {

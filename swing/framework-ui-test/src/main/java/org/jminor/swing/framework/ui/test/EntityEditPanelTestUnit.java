@@ -6,7 +6,7 @@ package org.jminor.swing.framework.ui.test;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A base class for testing a {@link EntityEditPanel}
@@ -23,8 +23,8 @@ public abstract class EntityEditPanelTestUnit {
    */
   protected EntityEditPanelTestUnit(final SwingEntityEditModel editModel,
                                     final Class<? extends EntityEditPanel> editPanelClass) {
-    Objects.requireNonNull(editModel, "editModel");
-    Objects.requireNonNull(editPanelClass, "editPanelClass");
+    requireNonNull(editModel, "editModel");
+    requireNonNull(editPanelClass, "editPanelClass");
     this.editModel = editModel;
     this.editPanelClass = editPanelClass;
   }

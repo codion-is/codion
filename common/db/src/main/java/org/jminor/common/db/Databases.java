@@ -13,7 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Utility class for {@link Database} implementations and misc. database related things.
@@ -116,8 +117,8 @@ public final class Databases {
    * @return true if the connection is valid
    */
   public static boolean isValid(final Connection connection, final Database database, final int timeoutInSeconds) {
-    Objects.requireNonNull(connection, "connection");
-    Objects.requireNonNull(database, "database");
+    requireNonNull(connection, "connection");
+    requireNonNull(database, "database");
     try {
       if (database.supportsIsValid()) {
         return connection.isValid(timeoutInSeconds);

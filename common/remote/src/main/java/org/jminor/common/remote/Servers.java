@@ -25,8 +25,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
+
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A utility class for working with Server instances.
@@ -125,7 +127,7 @@ public final class Servers {
    */
   public static void resolveTrustStoreFromClasspath(final String temporaryFileNamePrefix) {
     final String value = Server.TRUSTSTORE.get();
-    if (Util.nullOrEmpty(value)) {
+    if (nullOrEmpty(value)) {
       LOG.debug("No trust store specified via {}", Server.JAVAX_NET_TRUSTSTORE);
       return;
     }
@@ -249,8 +251,8 @@ public final class Servers {
      * @param databaseUser the user to use when connecting to the underlying database
      */
     private DefaultRemoteClient(final ConnectionRequest connectionRequest, final User databaseUser) {
-      this.connectionRequest = Objects.requireNonNull(connectionRequest, "connectionRequest");
-      this.databaseUser = Objects.requireNonNull(databaseUser, "databaseUser");
+      this.connectionRequest = requireNonNull(connectionRequest, "connectionRequest");
+      this.databaseUser = requireNonNull(databaseUser, "databaseUser");
     }
 
     @Override

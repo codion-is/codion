@@ -5,13 +5,14 @@ package org.jminor.swing.common.ui.control;
 
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
-import org.jminor.common.Util;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A set of Actions/Controls, includes separators.
@@ -229,7 +230,7 @@ public final class ControlSet extends Control {
    * @return true if this control set has a name
    */
   public boolean hasName() {
-    return !Util.nullOrEmpty(getName());
+    return !nullOrEmpty(getName());
   }
 
   /**

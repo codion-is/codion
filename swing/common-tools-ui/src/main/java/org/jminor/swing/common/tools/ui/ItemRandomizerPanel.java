@@ -30,7 +30,8 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A default UI for the ItemRandomizer class.
@@ -51,7 +52,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * @throws NullPointerException in case itemRandomizer is null
    */
   public ItemRandomizerPanel(final ItemRandomizer<T> itemRandomizer) {
-    Objects.requireNonNull(itemRandomizer, "itemRandomizer");
+    requireNonNull(itemRandomizer, "itemRandomizer");
     this.model = itemRandomizer;
     initializeUI();
   }

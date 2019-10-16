@@ -9,10 +9,10 @@ import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A default ColumnSummaryModel implementation.
@@ -55,7 +55,7 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
     if (isLocked()) {
       throw new IllegalStateException("Summary model is locked");
     }
-    Objects.requireNonNull(summary, "summary");
+    requireNonNull(summary, "summary");
     if (!this.summary.equals(summary)) {
       this.summary = summary;
       summaryChangedEvent.fire(this.summary);

@@ -15,8 +15,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A central application model class.
@@ -40,7 +41,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
    * @throws NullPointerException in case connectionProvider is null
    */
   public DefaultEntityApplicationModel(final EntityConnectionProvider connectionProvider) {
-    Objects.requireNonNull(connectionProvider, "connectionProvider");
+    requireNonNull(connectionProvider, "connectionProvider");
     this.connectionProvider = connectionProvider;
     if (SCHEDULE_CONNECTION_VALIDATION.get()) {
       validityCheckScheduler.start();
@@ -54,7 +55,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
   /** {@inheritDoc} */
   @Override
   public final void login(final User user) {
-    Objects.requireNonNull(user, "user");
+    requireNonNull(user, "user");
     connectionProvider.setUser(user);
     refresh();
     handleLogin();
@@ -95,7 +96,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
   /** {@inheritDoc} */
   @Override
   public final void addEntityModels(final M... entityModels) {
-    Objects.requireNonNull(entityModels, "entityModels");
+    requireNonNull(entityModels, "entityModels");
     for (final M entityModel : entityModels) {
       addEntityModel(entityModel);
     }

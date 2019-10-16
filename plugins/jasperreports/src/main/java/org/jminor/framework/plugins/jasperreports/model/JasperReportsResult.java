@@ -8,7 +8,8 @@ import org.jminor.common.db.reports.ReportResult;
 import net.sf.jasperreports.engine.JasperPrint;
 
 import java.io.Serializable;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Jasper Reports result wrapper.
@@ -21,7 +22,7 @@ public final class JasperReportsResult implements ReportResult<JasperPrint>, Ser
    * @param jasperPrint the print object wrapped by this report result
    */
   public JasperReportsResult(final JasperPrint jasperPrint) {
-    Objects.requireNonNull(jasperPrint, "jasperPrint");
+    requireNonNull(jasperPrint, "jasperPrint");
     this.jasperPrint = jasperPrint;
   }
 

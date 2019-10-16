@@ -25,6 +25,8 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A simple credential server for one-time authentication tokens for applications running on localhost.
  * Setting the following before the server is constructed is recommended:
@@ -142,7 +144,7 @@ public final class CredentialServer extends UnicastRemoteObject implements Crede
         final Remote credentialService = Servers.getRegistry(Registry.REGISTRY_PORT).lookup(CredentialService.class.getSimpleName());
         LOG.debug("CredentialService found: " + credentialService);
 
-        return ((CredentialService) credentialService).getUser(Objects.requireNonNull(authenticationToken, AUTHENTICATION_TOKEN_PREFIX));
+        return ((CredentialService) credentialService).getUser(requireNonNull(authenticationToken, AUTHENTICATION_TOKEN_PREFIX));
       }
       catch (final NotBoundException | RemoteException e) {
         LOG.debug("No CredentialService found", e);

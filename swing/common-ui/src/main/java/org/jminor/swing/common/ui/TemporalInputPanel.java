@@ -14,7 +14,8 @@ import java.awt.event.FocusEvent;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A panel for Temporal input
@@ -37,9 +38,9 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
   public TemporalInputPanel(final JFormattedTextField inputField, final String dateFormat,
                             final DateFormats.DateParser<T> dateParser, final StateObserver enabledState) {
     super(new BorderLayout());
-    this.inputField = Objects.requireNonNull(inputField, "inputField");
-    this.dateFormat = Objects.requireNonNull(dateFormat, "dateFormat");
-    this.dateParser = Objects.requireNonNull(dateParser, "dateParser");
+    this.inputField = requireNonNull(inputField, "inputField");
+    this.dateFormat = requireNonNull(dateFormat, "dateFormat");
+    this.dateParser = requireNonNull(dateParser, "dateParser");
     this.formatter = DateTimeFormatter.ofPattern(dateFormat);
     add(inputField, BorderLayout.CENTER);
     addFocusListener(new InputFocusAdapter(inputField));

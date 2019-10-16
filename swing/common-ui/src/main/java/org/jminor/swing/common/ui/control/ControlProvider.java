@@ -20,7 +20,8 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import java.awt.GridLayout;
 import java.util.List;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Provides UI controls based on the Control class and its descendants.
@@ -354,8 +355,8 @@ public final class ControlProvider {
    * @param controlSet the control set
    */
   private static void iterate(final ControlIterator controlIterator, final ControlSet controlSet) {
-    Objects.requireNonNull(controlIterator, "controlIterator");
-    Objects.requireNonNull(controlSet, "controlSet");
+    requireNonNull(controlIterator, "controlIterator");
+    requireNonNull(controlSet, "controlSet");
     for (final Action action : controlSet.getActions()) {
       if (action == null) {
         controlIterator.handleSeparator();

@@ -6,7 +6,7 @@ package org.jminor.javafx.framework.model;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.model.DefaultEntityModel;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A JavaFX {@link org.jminor.framework.model.EntityEditModel} implementation
@@ -29,7 +29,7 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
    * @throws IllegalArgumentException in case editModel is null
    */
   public FXEntityModel(final FXEntityEditModel editModel) {
-    this(Objects.requireNonNull(editModel), new FXEntityListModel(editModel.getEntityId(), editModel.getConnectionProvider()));
+    this(requireNonNull(editModel), new FXEntityListModel(editModel.getEntityId(), editModel.getConnectionProvider()));
   }
 
   /**
@@ -38,7 +38,7 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
    * @param listModel the {@link FXEntityListModel} to use
    */
   public FXEntityModel(final FXEntityListModel listModel) {
-    this(Objects.requireNonNull(listModel).getEditModel() == null ? new FXEntityEditModel(listModel.getEntityId(),
+    this(requireNonNull(listModel).getEditModel() == null ? new FXEntityEditModel(listModel.getEntityId(),
             listModel.getConnectionProvider()) : listModel.getEditModel(), listModel);
   }
 

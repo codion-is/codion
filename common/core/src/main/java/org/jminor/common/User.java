@@ -8,7 +8,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A class encapsulating a username and password.
@@ -26,7 +27,7 @@ public final class User implements Serializable {
    * @param password the password
    */
   public User(final String username, final char[] password) {
-    Objects.requireNonNull(username, "username");
+    requireNonNull(username, "username");
     this.username = username;
     setPassword(password);
   }
@@ -85,7 +86,7 @@ public final class User implements Serializable {
    * @return a User with the given username and password
    */
   public static User parseUser(final String userPassword) {
-    final String[] split = Objects.requireNonNull(userPassword).split(":");
+    final String[] split = requireNonNull(userPassword).split(":");
     if (split.length < 2) {
       throw new IllegalArgumentException("Expecting a string with a single ':' as delimiter");
     }

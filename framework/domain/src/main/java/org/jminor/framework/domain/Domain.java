@@ -31,9 +31,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
+
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A repository specifying the {@link Entity.Definition}s for a given domain.
@@ -88,7 +92,7 @@ public class Domain implements Serializable {
    * @param domainId the domain identifier
    */
   public Domain(final String domainId) {
-    this.domainId = Objects.requireNonNull(domainId, "domainId");
+    this.domainId = requireNonNull(domainId, "domainId");
   }
 
   /**
@@ -96,7 +100,7 @@ public class Domain implements Serializable {
    * @param domain the domain to copy
    */
   public Domain(final Domain domain) {
-    this.domainId = Objects.requireNonNull(domain).domainId;
+    this.domainId = requireNonNull(domain).domainId;
     this.entityDefinitions.putAll(domain.entityDefinitions);
   }
 
@@ -209,15 +213,15 @@ public class Domain implements Serializable {
    * no primary key property is specified
    */
   public final Entity.Definition define(final String entityId, final String tableName, final Property... properties) {
-    Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
-    Objects.requireNonNull(tableName, "tableName");
+    requireNonNull(entityId, ENTITY_ID_PARAM);
+    requireNonNull(tableName, "tableName");
     if (entityDefinitions.containsKey(entityId) && !ALLOW_REDEFINE_ENTITY.get()) {
       throw new IllegalArgumentException("Entity has already been defined: " + entityId + ", for table: " + tableName);
     }
     final Map<String, Property> propertyMap = initializePropertyMap(domainId, entityId, properties);
-    final List<Property.ColumnProperty> columnProperties = Collections.unmodifiableList(getColumnProperties(propertyMap.values()));
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = Collections.unmodifiableList(getForeignKeyProperties(propertyMap.values()));
-    final List<Property.TransientProperty> transientProperties = Collections.unmodifiableList(getTransientProperties(propertyMap.values()));
+    final List<Property.ColumnProperty> columnProperties = unmodifiableList(getColumnProperties(propertyMap.values()));
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = unmodifiableList(getForeignKeyProperties(propertyMap.values()));
+    final List<Property.TransientProperty> transientProperties = unmodifiableList(getTransientProperties(propertyMap.values()));
 
     final DefaultEntityDefinition entityDefinition = new DefaultEntityDefinition(domainId, entityId,
             tableName, propertyMap, columnProperties, foreignKeyProperties, transientProperties);
@@ -235,7 +239,7 @@ public class Domain implements Serializable {
    */
   public final Collection<Property.ColumnProperty> getSearchProperties(final String entityId) {
     return getDefinition(entityId).getSearchPropertyIds().stream().map(propertyId ->
-            getColumnProperty(entityId, propertyId)).collect(Collectors.toList());
+            getColumnProperty(entityId, propertyId)).collect(toList());
   }
 
   /**
@@ -409,7 +413,7 @@ public class Domain implements Serializable {
             .filter(property -> !property.isReadOnly() &&
                     (includeNonUpdatable || property.isUpdatable()) &&
                     (includePrimaryKeyProperties || !property.isPrimaryKeyProperty()))
-            .collect(Collectors.toList());
+            .collect(toList());
   }
 
   /**
@@ -418,7 +422,7 @@ public class Domain implements Serializable {
    * in the entity identified by {@code entityId}
    */
   public final List<Property> getVisibleProperties(final String entityId) {
-    Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
+    requireNonNull(entityId, ENTITY_ID_PARAM);
     return getDefinition(entityId).getVisibleProperties();
   }
 
@@ -444,8 +448,8 @@ public class Domain implements Serializable {
    * @throws IllegalArgumentException in case no such property exists
    */
   public final Property getProperty(final String entityId, final String propertyId) {
-    Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
-    Objects.requireNonNull(propertyId, PROPERTY_ID_PARAM);
+    requireNonNull(entityId, ENTITY_ID_PARAM);
+    requireNonNull(propertyId, PROPERTY_ID_PARAM);
     final Property property = getDefinition(entityId).getPropertyMap().get(propertyId);
     if (property == null) {
       throw new IllegalArgumentException("Property '" + propertyId + "' not found in entity: " + entityId);
@@ -461,10 +465,10 @@ public class Domain implements Serializable {
    * the entity identified by {@code entityId}
    */
   public final List<Property> getProperties(final String entityId, final Collection<String> propertyIds) {
-    Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
-    Objects.requireNonNull(propertyIds, "propertyIds");
+    requireNonNull(entityId, ENTITY_ID_PARAM);
+    requireNonNull(propertyIds, "propertyIds");
 
-    return propertyIds.stream().map(propertyId -> getProperty(entityId, propertyId)).collect(Collectors.toList());
+    return propertyIds.stream().map(propertyId -> getProperty(entityId, propertyId)).collect(toList());
   }
 
   /**
@@ -493,7 +497,7 @@ public class Domain implements Serializable {
    */
   public final List<Property.ColumnProperty> getColumnProperties(final String entityId,
                                                                  final Collection<String> propertyIds) {
-    return propertyIds.stream().map(propertyId -> getColumnProperty(entityId, propertyId)).collect(Collectors.toList());
+    return propertyIds.stream().map(propertyId -> getColumnProperty(entityId, propertyId)).collect(toList());
   }
 
   /**
@@ -572,7 +576,7 @@ public class Domain implements Serializable {
    */
   public final List<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityId, final String foreignEntityId) {
     return getForeignKeyProperties(entityId).stream().filter(foreignKeyProperty ->
-            foreignKeyProperty.getForeignEntityId().equals(foreignEntityId)).collect(Collectors.toList());
+            foreignKeyProperty.getForeignEntityId().equals(foreignEntityId)).collect(toList());
   }
 
   /**
@@ -854,7 +858,7 @@ public class Domain implements Serializable {
    * @throws IllegalArgumentException in case no entity with the given id has been defined
    */
   protected final Entity.Definition getDefinition(final String entityId) {
-    final Entity.Definition definition = entityDefinitions.get(Objects.requireNonNull(entityId, ENTITY_ID_PARAM));
+    final Entity.Definition definition = entityDefinitions.get(requireNonNull(entityId, ENTITY_ID_PARAM));
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityId);
     }
@@ -872,7 +876,7 @@ public class Domain implements Serializable {
     }
     checkIfPrimaryKeyIsSpecified(entityId, propertyMap);
 
-    return Collections.unmodifiableMap(propertyMap);
+    return unmodifiableMap(propertyMap);
   }
 
   private void initializeForeignKeyProperty(final String domainId, final String entityId, final Map<String, Property> propertyMap,
@@ -941,18 +945,18 @@ public class Domain implements Serializable {
 
   private static List<Property.ForeignKeyProperty> getForeignKeyProperties(final Collection<Property> properties) {
     return properties.stream().filter(property -> property instanceof Property.ForeignKeyProperty)
-            .map(property -> (Property.ForeignKeyProperty) property).collect(Collectors.toList());
+            .map(property -> (Property.ForeignKeyProperty) property).collect(toList());
   }
 
   private static List<Property.ColumnProperty> getColumnProperties(final Collection<Property> properties) {
     return properties.stream().filter(property -> property instanceof Property.ColumnProperty)
-            .map(property -> (Property.ColumnProperty) property).collect(Collectors.toList());
+            .map(property -> (Property.ColumnProperty) property).collect(toList());
   }
 
   private static List<Property.TransientProperty> getTransientProperties(final Collection<Property> properties) {
     return properties.stream().filter(property -> property instanceof Property.TransientProperty)
             .map(property -> (Property.TransientProperty) property)
-            .collect(Collectors.toList());
+            .collect(toList());
   }
 
   /**
@@ -997,9 +1001,9 @@ public class Domain implements Serializable {
     /** {@inheritDoc} */
     @Override
     public String toString(final Entity entity) {
-      Objects.requireNonNull(entity, ENTITY_PARAM);
+      requireNonNull(entity, ENTITY_PARAM);
 
-      return valueProviders.stream().map(valueProvider -> valueProvider.toString(entity)).collect(Collectors.joining());
+      return valueProviders.stream().map(valueProvider -> valueProvider.toString(entity)).collect(joining());
     }
 
     /**
@@ -1008,7 +1012,7 @@ public class Domain implements Serializable {
      * @return this {@link StringProvider} instance
      */
     public StringProvider addValue(final String propertyId) {
-      Objects.requireNonNull(propertyId, PROPERTY_ID_PARAM);
+      requireNonNull(propertyId, PROPERTY_ID_PARAM);
       valueProviders.add(new StringValueProvider(propertyId));
       return this;
     }
@@ -1020,8 +1024,8 @@ public class Domain implements Serializable {
      * @return this {@link StringProvider} instance
      */
     public StringProvider addFormattedValue(final String propertyId, final Format format) {
-      Objects.requireNonNull(propertyId, PROPERTY_ID_PARAM);
-      Objects.requireNonNull(format, "format");
+      requireNonNull(propertyId, PROPERTY_ID_PARAM);
+      requireNonNull(format, "format");
       valueProviders.add(new FormattedValueProvider(propertyId, format));
       return this;
     }
@@ -1035,8 +1039,8 @@ public class Domain implements Serializable {
      */
     public StringProvider addForeignKeyValue(final Property.ForeignKeyProperty foreignKeyProperty,
                                              final String propertyId) {
-      Objects.requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-      Objects.requireNonNull(propertyId, PROPERTY_ID_PARAM);
+      requireNonNull(foreignKeyProperty, "foreignKeyProperty");
+      requireNonNull(propertyId, PROPERTY_ID_PARAM);
       valueProviders.add(new ForeignKeyValueProvider(foreignKeyProperty, propertyId));
       return this;
     }
@@ -1191,7 +1195,7 @@ public class Domain implements Serializable {
      */
     @Override
     public void validate(final Entity entity) throws ValidationException {
-      Objects.requireNonNull(entity, ENTITY_PARAM);
+      requireNonNull(entity, ENTITY_PARAM);
       for (final Property property : entity.getProperties()) {
         if (!property.isReadOnly()) {
           validate(entity, property);
@@ -1202,7 +1206,7 @@ public class Domain implements Serializable {
     /** {@inheritDoc} */
     @Override
     public void validate(final Entity entity, final Property property) throws ValidationException {
-      Objects.requireNonNull(entity, ENTITY_PARAM);
+      requireNonNull(entity, ENTITY_PARAM);
       if (performNullValidation && !isForeignKeyProperty(property)) {
         performNullValidation(entity, property);
       }
@@ -1217,8 +1221,8 @@ public class Domain implements Serializable {
     /** {@inheritDoc} */
     @Override
     public final void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
-      Objects.requireNonNull(entity, ENTITY_PARAM);
-      Objects.requireNonNull(property, PROPERTY_PARAM);
+      requireNonNull(entity, ENTITY_PARAM);
+      requireNonNull(property, PROPERTY_PARAM);
       if (entity.isNull(property)) {
         return;
       }
@@ -1237,8 +1241,8 @@ public class Domain implements Serializable {
     /** {@inheritDoc} */
     @Override
     public final void performNullValidation(final Entity entity, final Property property) throws NullValidationException {
-      Objects.requireNonNull(entity, ENTITY_PARAM);
-      Objects.requireNonNull(property, PROPERTY_PARAM);
+      requireNonNull(entity, ENTITY_PARAM);
+      requireNonNull(property, PROPERTY_PARAM);
       if (!isNullable(entity, property) && entity.isNull(property)) {
         if ((entity.getKey().isNull() || entity.getOriginalKey().isNull()) && !(property instanceof Property.ForeignKeyProperty)) {
           //a new entity being inserted, allow null for columns with default values and auto generated primary key values
@@ -1257,8 +1261,8 @@ public class Domain implements Serializable {
     /** {@inheritDoc} */
     @Override
     public void performLengthValidation(final Entity entity, final Property property) throws LengthValidationException {
-      Objects.requireNonNull(entity, ENTITY_PARAM);
-      Objects.requireNonNull(property, PROPERTY_PARAM);
+      requireNonNull(entity, ENTITY_PARAM);
+      requireNonNull(property, PROPERTY_PARAM);
       if (entity.isNull(property)) {
         return;
       }
@@ -1271,7 +1275,7 @@ public class Domain implements Serializable {
       }
     }
 
-    private boolean isPrimaryKeyPropertyWithoutAutoGenerate(final Entity entity, final Property property) {
+    private static boolean isPrimaryKeyPropertyWithoutAutoGenerate(final Entity entity, final Property property) {
       return (property instanceof Property.ColumnProperty
               && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) && entity.getKeyGeneratorType().isManual();
     }
@@ -1418,11 +1422,11 @@ public class Domain implements Serializable {
 
     @Override
     public List<OrderByProperty> getOrderByProperties() {
-      return Collections.unmodifiableList(orderByProperties);
+      return unmodifiableList(orderByProperties);
     }
 
     private void add(final boolean descending, final String... propertyIds) {
-      Objects.requireNonNull(propertyIds, "propertyIds");
+      requireNonNull(propertyIds, "propertyIds");
       for (final String propertyId : propertyIds) {
         final OrderByProperty property = new DefaultOrderByProperty(propertyId, descending);
         if (orderByProperties.contains(property)) {
@@ -1440,7 +1444,7 @@ public class Domain implements Serializable {
       private final boolean descending;
 
       private DefaultOrderByProperty(final String propertyId, final boolean descending) {
-        this.propertyId = Objects.requireNonNull(propertyId, PROPERTY_ID_PARAM);
+        this.propertyId = requireNonNull(propertyId, PROPERTY_ID_PARAM);
         this.descending = descending;
       }
 

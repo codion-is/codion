@@ -6,6 +6,9 @@ package org.jminor.common;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Util.nullOrEmpty;
+
 /**
  * A factory class for {@link Value} objects
  */
@@ -160,11 +163,11 @@ public final class Values {
     private Method setMethod;
 
     private PropertyValue(final Object valueOwner, final String propertyName, final Class valueClass, final EventObserver<V> changeEvent) {
-      if (Util.nullOrEmpty(propertyName)) {
+      if (nullOrEmpty(propertyName)) {
         throw new IllegalArgumentException("propertyName is null or an empty string");
       }
       try {
-        this.valueOwner = Objects.requireNonNull(valueOwner, "valueOwner");
+        this.valueOwner = requireNonNull(valueOwner, "valueOwner");
         this.changeEvent = changeEvent;
         this.getMethod = Util.getGetMethod(valueClass, propertyName, valueOwner);
       }
@@ -233,7 +236,7 @@ public final class Values {
     private final State state;
 
     private StateValue(final State state) {
-      this.state = Objects.requireNonNull(state);
+      this.state = requireNonNull(state);
     }
 
     @Override
@@ -296,8 +299,8 @@ public final class Values {
      * the linked value do not trigger a change in the original value
      */
     private ValueLink(final Value<V> originalValue, final Value<V> linkedValue, final boolean oneWay) {
-      this.originalValue = Objects.requireNonNull(originalValue, "originalValue");
-      this.linkedValue = Objects.requireNonNull(linkedValue, "linkedValue");
+      this.originalValue = requireNonNull(originalValue, "originalValue");
+      this.linkedValue = requireNonNull(linkedValue, "linkedValue");
       this.linkedValue.set(this.originalValue.get());
       bindEvents(originalValue, linkedValue, oneWay);
     }
@@ -341,7 +344,7 @@ public final class Values {
     private final Value<V> value;
 
     private DefaultValueObserver(final Value<V> value) {
-      this.value = Objects.requireNonNull(value, "value");
+      this.value = requireNonNull(value, "value");
     }
 
     @Override

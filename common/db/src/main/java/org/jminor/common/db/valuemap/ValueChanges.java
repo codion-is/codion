@@ -5,7 +5,7 @@ package org.jminor.common.db.valuemap;
 
 import org.jminor.common.db.Attribute;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Factory class for {@link ValueChange} instances
@@ -59,7 +59,7 @@ public final class ValueChanges {
      * @param initialization true if the value was being initialized, as in, no previous value existed
      */
     private DefaultValueChange(final K key, final V currentValue, final V previousValue, final boolean initialization) {
-      this.key = Objects.requireNonNull(key, "key");
+      this.key = requireNonNull(key, "key");
       this.currentValue = currentValue;
       this.previousValue = previousValue;
       this.initialization = initialization;

@@ -9,6 +9,8 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A class encapsulating a value and a caption representing the value.
  * @param <T> the type of the value
@@ -38,7 +40,7 @@ public final class Item<T> implements Comparable<Item>, Serializable {
    */
   public Item(final T value, final String caption) {
     this.value = value;
-    this.caption = Objects.requireNonNull(caption, "caption");
+    this.caption = requireNonNull(caption, "caption");
   }
 
   /**

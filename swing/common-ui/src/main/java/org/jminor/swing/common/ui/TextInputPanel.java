@@ -16,7 +16,8 @@ import javax.swing.JTextField;
 import javax.swing.text.Document;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A panel that includes a JTextField in a BorderLayout.CENTER position and a button in BorderLayout.EAST
@@ -64,7 +65,7 @@ public final class TextInputPanel extends JPanel {
    */
   public TextInputPanel(final JTextField textField, final String dialogTitle,
                         final Dimension textAreaSize, final boolean buttonFocusable) {
-    Objects.requireNonNull(textField, "textComponent");
+    requireNonNull(textField, "textComponent");
     this.dialogTitle = dialogTitle;
     this.textField = textField;
     this.textAreaSize = textAreaSize == null ? UiUtil.getScreenSizeRatio(DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO) : textAreaSize;

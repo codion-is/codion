@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import static org.jminor.common.Util.nullOrEmpty;
+
 /**
  * A method call logger allowing logging of nested method calls.
  * TODO this class should be able to handle/recover from incorrect usage, not crash the application
@@ -340,7 +342,7 @@ public final class MethodLogger {
       final LocalDateTime accessDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(accessTime), TimeZone.getDefault().toZoneId());
       if (isComplete()) {
         stringBuilder.append(indentString).append(TIMESTAMP_FORMATTER.format(accessDateTime)).append(" @ ").append(method).append(
-                !Util.nullOrEmpty(accessMessage) ? (": " + accessMessage) : "").append("\n");
+                !nullOrEmpty(accessMessage) ? (": " + accessMessage) : "").append("\n");
         final LocalDateTime exitDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(exitTime), TimeZone.getDefault().toZoneId());
         stringBuilder.append(indentString).append(TIMESTAMP_FORMATTER.format(exitDateTime)).append(" > ")
                 .append(MICROSECONDS_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(getDuration()))).append(" μs")
@@ -351,7 +353,7 @@ public final class MethodLogger {
       }
       else {
         stringBuilder.append(indentString).append(TIMESTAMP_FORMATTER.format(accessDateTime)).append(" @ ").append(method).append(
-                !Util.nullOrEmpty(accessMessage) ? (": " + accessMessage) : "");
+                !nullOrEmpty(accessMessage) ? (": " + accessMessage) : "");
       }
 
       return stringBuilder.toString();

@@ -3,7 +3,6 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.common.Util;
 import org.jminor.common.Values;
 import org.jminor.common.i18n.Messages;
 import org.jminor.framework.domain.Entity;
@@ -21,6 +20,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
 import java.util.List;
+
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A {@link TextField} allowing entity lookup based on the text entered
@@ -73,7 +74,7 @@ public final class EntityLookupField extends TextField {
   private void performLookup(final boolean promptUser) {
     try {
       performingLookup = true;
-      if (Util.nullOrEmpty(model.getSearchString())) {
+      if (nullOrEmpty(model.getSearchString())) {
         model.setSelectedEntities(null);
       }
       else {

@@ -29,9 +29,9 @@ import javafx.scene.control.SelectionMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * An {@link ObservableList} based on a {@link Entity}
@@ -122,7 +122,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     if (this.selectionModel != null) {
       throw new IllegalStateException("Selection model has already been set");
     }
-    this.selectionModel = new FXEntityListSelectionModel(Objects.requireNonNull(selectionModel));
+    this.selectionModel = new FXEntityListSelectionModel(requireNonNull(selectionModel));
     if (selectionModel instanceof MultipleSelectionModel) {
       ((MultipleSelectionModel<Entity>) selectionModel).setSelectionMode(SelectionMode.MULTIPLE);
     }

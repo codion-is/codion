@@ -53,9 +53,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
-import java.util.Objects;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A UI implementation for ColumnConditionModel
@@ -148,7 +148,7 @@ public class ColumnConditionPanel<K> extends JPanel {
   public ColumnConditionPanel(final ColumnConditionModel<K> conditionModel, final boolean includeToggleEnabledButton,
                               final boolean includeToggleAdvancedConditionButton, final JComponent upperBoundField,
                               final JComponent lowerBoundField, final Condition.Type... conditionTypes) {
-    Objects.requireNonNull(conditionModel, "conditionModel");
+    requireNonNull(conditionModel, "conditionModel");
     this.conditionModel = conditionModel;
     this.conditionTypes = conditionTypes == null ? asList(Condition.Type.values()) : asList(conditionTypes);
     this.conditionTypeCombo = initializeConditionTypeComboBox();
@@ -350,7 +350,7 @@ public class ColumnConditionPanel<K> extends JPanel {
     private final ColumnConditionModel columnConditionModel;
 
     private DefaultInputFieldProvider(final ColumnConditionModel columnConditionModel) {
-      Objects.requireNonNull(columnConditionModel, "columnConditionModel");
+      requireNonNull(columnConditionModel, "columnConditionModel");
       this.columnConditionModel = columnConditionModel;
     }
 

@@ -15,7 +15,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A default DatabaseConnection implementation, which wraps a standard JDBC Connection object.
@@ -62,8 +63,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    */
   public DefaultDatabaseConnection(final Database database, final User user,
                                    final int validityCheckTimeout) throws DatabaseException {
-    this.database = Objects.requireNonNull(database, "database");
-    this.user = Objects.requireNonNull(user, "user");
+    this.database = requireNonNull(database, "database");
+    this.user = requireNonNull(user, "user");
     this.validityCheckTimeout = validityCheckTimeout;
     initialize(database.createConnection(user));
   }
@@ -91,9 +92,9 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    */
   public DefaultDatabaseConnection(final Database database, final Connection connection,
                                    final int validityCheckTimeout) throws DatabaseException {
-    this.database = Objects.requireNonNull(database, "database");
+    this.database = requireNonNull(database, "database");
     this.validityCheckTimeout = validityCheckTimeout;
-    initialize(Objects.requireNonNull(connection, "connection"));
+    initialize(requireNonNull(connection, "connection"));
     this.user = getUser(connection);
   }
 

@@ -12,7 +12,8 @@ import org.jminor.framework.model.DefaultEntityEditModel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A JavaFX implementation of {@link org.jminor.framework.model.EntityEditModel}
@@ -58,7 +59,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    * @see #createForeignKeyListModel(Property.ForeignKeyProperty)
    */
   public final FXEntityListModel getForeignKeyListModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Objects.requireNonNull(foreignKeyProperty);
+    requireNonNull(foreignKeyProperty);
 
     return foreignKeyListModels.computeIfAbsent(foreignKeyProperty, k -> createForeignKeyListModel(foreignKeyProperty));
   }
@@ -69,7 +70,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    * @return a new {@link FXEntityListModel} based on the given property
    */
   public FXEntityListModel createForeignKeyListModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Objects.requireNonNull(foreignKeyProperty);
+    requireNonNull(foreignKeyProperty);
     return new FXEntityListModel(foreignKeyProperty.getForeignEntityId(), getConnectionProvider());
     //todo
 //    if (getValidator().isNullable(getEntity(), foreignKeyProperty.getPropertyId())) {

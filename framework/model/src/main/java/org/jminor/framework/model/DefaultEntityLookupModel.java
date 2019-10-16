@@ -11,11 +11,9 @@ import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.TextUtil;
-import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.Values;
 import org.jminor.common.db.condition.Condition;
-import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntityConditions;
@@ -32,9 +30,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Util.nullOrEmpty;
+import static org.jminor.common.db.condition.Conditions.conditionSet;
 
 /**
  * A default EntityLookupModel implementation
@@ -102,9 +102,9 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    */
   public DefaultEntityLookupModel(final String entityId, final EntityConnectionProvider connectionProvider,
                                   final Collection<Property.ColumnProperty> lookupProperties) {
-    Objects.requireNonNull(entityId, "entityId");
-    Objects.requireNonNull(connectionProvider, "connectionProvider");
-    Objects.requireNonNull(lookupProperties, "lookupProperties");
+    requireNonNull(entityId, "entityId");
+    requireNonNull(connectionProvider, "connectionProvider");
+    requireNonNull(lookupProperties, "lookupProperties");
     validateLookupProperties(entityId, lookupProperties);
     this.connectionProvider = connectionProvider;
     this.entityConditions = connectionProvider.getConditions();
@@ -136,7 +136,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /** {@inheritDoc} */
   @Override
   public void setResultSorter(final Comparator<Entity> resultSorter) {
-    Objects.requireNonNull(resultSorter, "resultSorter");
+    requireNonNull(resultSorter, "resultSorter");
     this.resultSorter = resultSorter;
   }
 
@@ -161,7 +161,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /** {@inheritDoc} */
   @Override
   public final void setSelectedEntities(final Collection<Entity> entities) {
-    if (Util.nullOrEmpty(entities) && this.selectedEntities.isEmpty()) {
+    if (nullOrEmpty(entities) && this.selectedEntities.isEmpty()) {
       return;
     }//no change
     if (entities != null && entities.size() > 1 && !multipleSelectionAllowedValue.get()) {
@@ -244,7 +244,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   @Override
   public final boolean searchStringRepresentsSelected() {
     final String selectedAsString = toString(getSelectedEntities());
-    return (selectedEntities.isEmpty() && Util.nullOrEmpty(searchStringValue.get()))
+    return (selectedEntities.isEmpty() && nullOrEmpty(searchStringValue.get()))
             || !selectedEntities.isEmpty() && selectedAsString.equals(searchStringValue.get());
   }
 
@@ -303,7 +303,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     if (lookupProperties.isEmpty()) {
       throw new IllegalStateException("No search properties provided for lookup model: " + entityId);
     }
-    final Condition.Set<Property.ColumnProperty> baseCondition = Conditions.conditionSet(Conjunction.OR);
+    final Condition.Set<Property.ColumnProperty> baseCondition = conditionSet(Conjunction.OR);
     final String[] lookupTexts = multipleSelectionAllowedValue.get() ? searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
     for (final Property.ColumnProperty lookupProperty : lookupProperties) {
       for (final String rawLookupText : lookupTexts) {
@@ -317,7 +317,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     }
 
     return entityConditions.selectCondition(entityId, additionalConditionProvider == null ? baseCondition :
-            Conditions.conditionSet(Conjunction.AND, additionalConditionProvider.getCondition(), baseCondition))
+            conditionSet(Conjunction.AND, additionalConditionProvider.getCondition(), baseCondition))
             .setOrderBy(connectionProvider.getDomain().getOrderBy(entityId));
   }
 

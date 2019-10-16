@@ -35,6 +35,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A model class for generating entity definitions.
@@ -275,7 +276,7 @@ public final class EntityGeneratorModel {
     if ("Types.DOUBLE".equals(column.getColumnTypeName()) && column.getDecimalDigits() >= 1) {
       builder.append(Util.LINE_SEPARATOR).append("                .setMaximumFractionDigits(").append(column.getDecimalDigits()).append(")");
     }
-    if (!Util.nullOrEmpty(column.getComment())) {
+    if (!nullOrEmpty(column.getComment())) {
       builder.append(Util.LINE_SEPARATOR).append("                .setDescription(").append(column.getComment()).append(")");
     }
 

@@ -12,8 +12,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.awt.Window;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A SwingWorker implementation which displays a progress bar in a modal dialog
@@ -89,7 +90,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
    * @return this {@link ProgressWorker} instance
    */
   public final ProgressWorker<T> addOnSuccessListener(final EventDataListener<T> successListener) {
-    Objects.requireNonNull(successListener);
+    requireNonNull(successListener);
     addPropertyChangeListener(changeEvent -> {
       if (changeEvent.getPropertyName().equals(STATE_PROPERTY) && changeEvent.getNewValue().equals(StateValue.DONE)) {
         try {

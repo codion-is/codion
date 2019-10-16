@@ -117,7 +117,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
@@ -126,6 +125,8 @@ import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A static utility class.
@@ -352,7 +353,7 @@ public final class UiUtil {
     fileChooserOpen.setSelectedFiles(new File[] {new File("")});
     fileChooserOpen.removeChoosableFileFilter(fileChooserOpen.getFileFilter());
     fileChooserOpen.setMultiSelectionEnabled(multiSelection);
-    if (!Util.nullOrEmpty(startDir) && new File(startDir).exists()) {
+    if (!nullOrEmpty(startDir) && new File(startDir).exists()) {
       fileChooserOpen.setCurrentDirectory(new File(startDir));
     }
     if (dialogTitle != null) {
@@ -412,7 +413,7 @@ public final class UiUtil {
     fileChooserSave.removeChoosableFileFilter(fileChooserSave.getFileFilter());
     fileChooserSave.setMultiSelectionEnabled(false);
     final File startDirectory;
-    if (!Util.nullOrEmpty(startDir) && new File(startDir).exists()) {
+    if (!nullOrEmpty(startDir) && new File(startDir).exists()) {
       startDirectory = new File(startDir);
     }
     else {
@@ -635,8 +636,8 @@ public final class UiUtil {
    * @param components the components
    */
   public static void linkToEnabledState(final StateObserver enabledState, final boolean includeFocusable, final JComponent... components) {
-    Objects.requireNonNull(components, "components");
-    Objects.requireNonNull(enabledState, "enabledState");
+    requireNonNull(components, "components");
+    requireNonNull(enabledState, "enabledState");
     for (final JComponent component : components) {
       if (component != null) {
         component.setEnabled(enabledState.get());
@@ -1255,7 +1256,7 @@ public final class UiUtil {
    */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
                                  final boolean onKeyRelease, final Action action) {
-    Objects.requireNonNull(component, "component");
+    requireNonNull(component, "component");
     Object actionName = null;
     if (action != null) {
       actionName = action.getValue(Action.NAME);
@@ -1274,7 +1275,7 @@ public final class UiUtil {
    * @param valueCollectionProvider provides the values for the lookup dialog
    */
   public static void addLookupDialog(final JTextField textField, final ValueCollectionProvider valueCollectionProvider) {
-    Objects.requireNonNull(valueCollectionProvider);
+    requireNonNull(valueCollectionProvider);
     addKeyEvent(textField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, Controls.control(() -> {
       final Object value = selectValue(textField, valueCollectionProvider.values());
       if (value != null) {
@@ -1575,7 +1576,7 @@ public final class UiUtil {
                                         final String successMessage, final String failTitle,
                                         final ControlSet buttonControls, final JPanel northPanel, final Control.Command task) {
     runWithProgressBar(dialogParent, progressBarTitle, task, () -> {
-      if (!Util.nullOrEmpty(successMessage)) {
+      if (!nullOrEmpty(successMessage)) {
         JOptionPane.showMessageDialog(getParentWindow(dialogParent), successMessage, null, JOptionPane.INFORMATION_MESSAGE);
       }
     }, exception -> {
@@ -1807,7 +1808,7 @@ public final class UiUtil {
   }
 
   private static String getParentPath(final String text) {
-    if (Util.nullOrEmpty(text)) {
+    if (nullOrEmpty(text)) {
       return null;
     }
     try {
@@ -2294,7 +2295,7 @@ public final class UiUtil {
      */
     private void emailErrorReport() {
       final String address = JOptionPane.showInputDialog(MESSAGES.getString("input_email_address"));
-      if (Util.nullOrEmpty(address)) {
+      if (nullOrEmpty(address)) {
         return;
       }
       try {

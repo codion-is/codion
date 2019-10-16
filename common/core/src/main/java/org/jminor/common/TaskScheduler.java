@@ -3,11 +3,12 @@
  */
 package org.jminor.common;
 
-import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A task scheduler based on a {@link ScheduledExecutorService}, scheduled at a fixed rate,
@@ -78,11 +79,11 @@ public final class TaskScheduler {
     if (initialDelay < 0) {
       throw new IllegalArgumentException("Initial delay can not be negative");
     }
-    this.task = Objects.requireNonNull(task, "task");
+    this.task = requireNonNull(task, "task");
     this.interval = interval;
     this.initialDelay = initialDelay;
-    this.timeUnit = Objects.requireNonNull(timeUnit, "timeUnit");
-    this.threadFactory = Objects.requireNonNull(threadFactory, "threadFactory");
+    this.timeUnit = requireNonNull(timeUnit, "timeUnit");
+    this.threadFactory = requireNonNull(threadFactory, "threadFactory");
   }
 
   /**

@@ -7,7 +7,7 @@ import org.jminor.common.db.reports.ReportDataWrapper;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Jasper Reports data wrapper.
@@ -20,7 +20,7 @@ public final class JasperReportsDataWrapper implements ReportDataWrapper<JRDataS
    * @param dataSource the underlying datasource
    */
   public JasperReportsDataWrapper(final JRDataSource dataSource) {
-    Objects.requireNonNull(dataSource, "dataSource");
+    requireNonNull(dataSource, "dataSource");
     this.dataSource = dataSource;
   }
 

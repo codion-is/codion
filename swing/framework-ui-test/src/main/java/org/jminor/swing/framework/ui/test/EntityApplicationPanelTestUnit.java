@@ -7,7 +7,7 @@ import org.jminor.common.User;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A class for testing {@link EntityApplicationPanel} classes
@@ -23,8 +23,8 @@ public class EntityApplicationPanelTestUnit {
    * @param user the user
    */
   protected EntityApplicationPanelTestUnit(final Class<? extends EntityApplicationPanel> panelClass, final User user) {
-    Objects.requireNonNull(panelClass, "panelClass");
-    Objects.requireNonNull(user, "user");
+    requireNonNull(panelClass, "panelClass");
+    requireNonNull(user, "user");
     this.panelClass = panelClass;
     this.user = user;
   }

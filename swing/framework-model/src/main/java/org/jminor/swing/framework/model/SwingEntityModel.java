@@ -6,7 +6,7 @@ package org.jminor.swing.framework.model;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.model.DefaultEntityModel;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Swing implementation of {@link org.jminor.framework.model.EntityModel}
@@ -18,8 +18,8 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
    * @param connectionProvider a EntityConnectionProvider
    */
   public SwingEntityModel(final String entityId, final EntityConnectionProvider connectionProvider) {
-    this(new SwingEntityEditModel(Objects.requireNonNull(entityId, "entityId"),
-            Objects.requireNonNull(connectionProvider, "connectionProvider")));
+    this(new SwingEntityEditModel(requireNonNull(entityId, "entityId"),
+            requireNonNull(connectionProvider, "connectionProvider")));
   }
 
   /**

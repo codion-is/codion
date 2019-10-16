@@ -9,7 +9,6 @@ import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.FormatUtil;
 import org.jminor.common.Item;
-import org.jminor.common.Util;
 import org.jminor.common.Value;
 import org.jminor.common.ValueObserver;
 import org.jminor.common.Values;
@@ -45,6 +44,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
+
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A factory class for Value instances based on UI components
@@ -375,7 +376,7 @@ public final class UiValues {
      * @return a value from the given text, or null if the parsing did not yield a valid value
      */
     protected V valueFromText(final String text) {
-      if (Util.nullOrEmpty(text)) {
+      if (nullOrEmpty(text)) {
         return null;
       }
 
@@ -563,7 +564,7 @@ public final class UiValues {
 
     @Override
     protected T valueFromText(final String text) {
-      if (Util.nullOrEmpty(text)) {
+      if (nullOrEmpty(text)) {
         return null;
       }
 

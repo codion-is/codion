@@ -86,8 +86,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ResourceBundle;
+
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A central application panel class.
@@ -200,7 +202,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return this application panel instance
    */
   public final EntityApplicationPanel<M> addEntityPanelProviders(final EntityPanelProvider... panelProviders) {
-    Objects.requireNonNull(panelProviders, "panelProviders");
+    requireNonNull(panelProviders, "panelProviders");
     for (final EntityPanelProvider panelProvider : panelProviders) {
       addEntityPanelProvider(panelProvider);
     }
@@ -223,7 +225,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return this application panel instance
    */
   public final EntityApplicationPanel<M> addSupportPanelProviders(final EntityPanelProvider... panelProviders) {
-    Objects.requireNonNull(panelProviders, "panelProviders");
+    requireNonNull(panelProviders, "panelProviders");
     for (final EntityPanelProvider panelProvider : panelProviders) {
       addSupportPanelProvider(panelProvider);
     }
@@ -853,7 +855,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @throws CancelException in case the initialization is cancelled
    */
   protected final void initialize(final M applicationModel) {
-    Objects.requireNonNull(applicationModel, "applicationModel");
+    requireNonNull(applicationModel, "applicationModel");
     this.applicationModel = applicationModel;
     clearEntityPanelProviders();
     setupEntityPanelProviders();
@@ -1221,9 +1223,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected User getUser(final String frameCaption, final User defaultUser, final ImageIcon applicationIcon) {
     final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? new User(getDefaultUsername(), null) : defaultUser);
-    final String loginTitle = (!Util.nullOrEmpty(frameCaption) ? (frameCaption + " - ") : "") + Messages.get(Messages.LOGIN);
+    final String loginTitle = (!nullOrEmpty(frameCaption) ? (frameCaption + " - ") : "") + Messages.get(Messages.LOGIN);
     final User user = loginPanel.showLoginPanel(null, loginTitle, applicationIcon);
-    if (Util.nullOrEmpty(user.getUsername())) {
+    if (nullOrEmpty(user.getUsername())) {
       throw new IllegalArgumentException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
     }
 
@@ -1434,7 +1436,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private static String getUsername(final String username) {
     final String usernamePrefix = EntityApplicationModel.USERNAME_PREFIX.get();
-    if (!Util.nullOrEmpty(usernamePrefix) && username.toUpperCase().startsWith(usernamePrefix.toUpperCase())) {
+    if (!nullOrEmpty(usernamePrefix) && username.toUpperCase().startsWith(usernamePrefix.toUpperCase())) {
       return username.substring(usernamePrefix.length());
     }
 
@@ -1451,7 +1453,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     private final Domain domain;
 
     private EntityDependencyTreeNode(final String entityId, final Domain domain) {
-      super(Objects.requireNonNull(entityId, "entityId"));
+      super(requireNonNull(entityId, "entityId"));
       this.domain = domain;
     }
 

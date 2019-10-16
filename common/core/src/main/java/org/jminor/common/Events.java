@@ -6,9 +6,9 @@ package org.jminor.common;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A factory class for Event objects.
@@ -117,7 +117,7 @@ public final class Events {
     @Override
     public void addDataListener(final EventDataListener<T> listener) {
       synchronized (lock) {
-        getDataListeners().add(Objects.requireNonNull(listener, "listener"));
+        getDataListeners().add(requireNonNull(listener, "listener"));
       }
     }
 
@@ -131,7 +131,7 @@ public final class Events {
     @Override
     public void addListener(final EventListener listener) {
       synchronized (lock) {
-        getListeners().add(Objects.requireNonNull(listener, "listener"));
+        getListeners().add(requireNonNull(listener, "listener"));
       }
     }
 

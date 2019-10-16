@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.Util;
 import org.jminor.common.db.valuemap.ValueMap;
 
 import java.sql.Types;
@@ -16,7 +15,11 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+import static org.jminor.common.Util.map;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * Helper class for working with Entity instances and related classes
@@ -46,7 +49,7 @@ public final class Entities {
    * @return true if any of the given entities has a modified primary key
    */
   public static boolean isKeyModified(final Collection<Entity> entities) {
-    if (Util.nullOrEmpty(entities)) {
+    if (nullOrEmpty(entities)) {
       return false;
     }
 
@@ -61,9 +64,9 @@ public final class Entities {
    * @see Entity#isModified()
    */
   public static List<Entity> getModifiedEntities(final Collection<Entity> entities) {
-    Objects.requireNonNull(entities, ENTITIES_PARAM);
+    requireNonNull(entities, ENTITIES_PARAM);
 
-    return entities.stream().filter(ValueMap::isModified).collect(Collectors.toList());
+    return entities.stream().filter(ValueMap::isModified).collect(toList());
   }
 
   /**
@@ -82,7 +85,7 @@ public final class Entities {
                     && (!property.isReadOnly() || includeReadOnlyProperties)
                     && !property.isType(Types.BLOB)
                     && isValueMissingOrModified(entity, comparison, property.getPropertyId()))
-            .map(property -> (Property.ColumnProperty) property).collect(Collectors.toList());
+            .map(property -> (Property.ColumnProperty) property).collect(toList());
   }
 
   /**
@@ -101,7 +104,7 @@ public final class Entities {
    * @return a List containing the primary keys of the given entities
    */
   public static List<Entity.Key> getKeys(final List<Entity> entities, final boolean originalValue) {
-    Objects.requireNonNull(entities, ENTITIES_PARAM);
+    requireNonNull(entities, ENTITIES_PARAM);
     final List<Entity.Key> keys = new ArrayList<>(entities.size());
     for (int i = 0; i < entities.size(); i++) {
       final Entity entity = entities.get(i);
@@ -118,7 +121,7 @@ public final class Entities {
    * @return the actual property values of the given keys
    */
   public static <T> List<T> getValues(final List<Entity.Key> keys) {
-    Objects.requireNonNull(keys, "keys");
+    requireNonNull(keys, "keys");
     final List<T> list = new ArrayList<>(keys.size());
     for (int i = 0; i < keys.size(); i++) {
       final Entity.Key key = keys.get(i);
@@ -176,7 +179,7 @@ public final class Entities {
    */
   public static <T> List<T> getDistinctValues(final String propertyId, final Collection<Entity> entities,
                                                     final boolean includeNullValue) {
-    return new ArrayList<>(collectValues(new HashSet<T>(), propertyId, entities, includeNullValue));
+    return new ArrayList<>(collectValues(new HashSet<>(), propertyId, entities, includeNullValue));
   }
 
   /**
@@ -189,7 +192,7 @@ public final class Entities {
    */
   public static Map<Entity.Key, Object> put(final String propertyId, final Object value,
                                             final Collection<Entity> entities) {
-    Objects.requireNonNull(entities, ENTITIES_PARAM);
+    requireNonNull(entities, ENTITIES_PARAM);
     final Map<Entity.Key, Object> previousValues = new HashMap<>(entities.size());
     for (final Entity entity : entities) {
       previousValues.put(entity.getKey(), entity.put(propertyId, value));
@@ -204,7 +207,7 @@ public final class Entities {
    * @return the mapped entities
    */
   public static Map<Entity.Key, Entity> mapToKey(final Collection<Entity> entities) {
-    Objects.requireNonNull(entities, ENTITIES_PARAM);
+    requireNonNull(entities, ENTITIES_PARAM);
     final Map<Entity.Key, Entity> entityMap = new HashMap<>();
     for (final Entity entity : entities) {
       entityMap.put(entity.getKey(), entity);
@@ -222,7 +225,7 @@ public final class Entities {
    * @return a Map of entities mapped to property value
    */
   public static <K> LinkedHashMap<K, List<Entity>> mapToValue(final String propertyId, final Collection<Entity> entities) {
-    return Util.map(entities, value -> (K) value.get(propertyId));
+    return map(entities, value -> (K) value.get(propertyId));
   }
 
   /**
@@ -232,7 +235,7 @@ public final class Entities {
    * @return a Map of entities mapped to entityId
    */
   public static LinkedHashMap<String, List<Entity>> mapToEntityId(final Collection<Entity> entities) {
-    return Util.map(entities, Entity::getEntityId);
+    return map(entities, Entity::getEntityId);
   }
 
   /**
@@ -242,7 +245,7 @@ public final class Entities {
    * @return a Map of entity keys mapped to entityId
    */
   public static LinkedHashMap<String, List<Entity.Key>> mapKeysToEntityId(final Collection<Entity.Key> keys) {
-    return Util.map(keys, Entity.Key::getEntityId);
+    return map(keys, Entity.Key::getEntityId);
   }
 
   /**
@@ -289,9 +292,9 @@ public final class Entities {
    * @return deep copies of the entities, in the same order as they are received
    */
   public static List<Entity> copyEntities(final List<Entity> entities) {
-    Objects.requireNonNull(entities, ENTITIES_PARAM);
+    requireNonNull(entities, ENTITIES_PARAM);
 
-    return entities.stream().map(entity -> (Entity) entity.getCopy()).collect(Collectors.toList());
+    return entities.stream().map(entity -> (Entity) entity.getCopy()).collect(toList());
   }
 
   /**
@@ -302,7 +305,7 @@ public final class Entities {
    */
   public static List<Entity> getEntitiesByValue(final Collection<Entity> entities, final Map<String, Object> values) {
     final List<Entity> result = new ArrayList<>();
-    for (final Entity entity : Objects.requireNonNull(entities, ENTITIES_PARAM)) {
+    for (final Entity entity : requireNonNull(entities, ENTITIES_PARAM)) {
       boolean equal = true;
       for (final Map.Entry<String, Object> entries : values.entrySet()) {
         final String propertyId = entries.getKey();
@@ -327,9 +330,9 @@ public final class Entities {
    * @return true if the values of the given properties are equal in the given entities
    */
   public static boolean equal(final Entity entityOne, final Entity entityTwo, final String... propertyIds) {
-    Objects.requireNonNull(entityOne);
-    Objects.requireNonNull(entityTwo);
-    Objects.requireNonNull(propertyIds);
+    requireNonNull(entityOne);
+    requireNonNull(entityTwo);
+    requireNonNull(propertyIds);
     if (propertyIds.length == 0) {
       throw new IllegalArgumentException("No properties provided for equality check");
     }
@@ -367,9 +370,9 @@ public final class Entities {
 
   private static <T> Collection<T> collectValues(final Collection<T> collection, final String propertyId,
                                                  final Collection<Entity> entities, final boolean includeNullValues) {
-    Objects.requireNonNull(collection);
-    Objects.requireNonNull(propertyId);
-    if (!Util.nullOrEmpty(entities)) {
+    requireNonNull(collection);
+    requireNonNull(propertyId);
+    if (!nullOrEmpty(entities)) {
       for (final Entity entity : entities) {
         final Object value = entity.get(propertyId);
         if (value != null || includeNullValues) {

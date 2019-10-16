@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A class for mapping between entities and corresponding bean classes
@@ -43,8 +43,8 @@ public class EntityBeanMapper {
    * @param entityId the id of the entity represented by the given bean class
    */
   public final void setEntityId(final Class beanClass, final String entityId) {
-    Objects.requireNonNull(beanClass, BEAN_CLASS_PARAM);
-    Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
+    requireNonNull(beanClass, BEAN_CLASS_PARAM);
+    requireNonNull(entityId, ENTITY_ID_PARAM);
     entityIdMap.put(beanClass, entityId);
   }
 
@@ -53,7 +53,7 @@ public class EntityBeanMapper {
    * @return the entityId of the entity represented by the given bean class, null if none is specified
    */
   public final String getEntityId(final Class beanClass) {
-    Objects.requireNonNull(beanClass, BEAN_CLASS_PARAM);
+    requireNonNull(beanClass, BEAN_CLASS_PARAM);
     return entityIdMap.get(beanClass);
   }
 
@@ -63,7 +63,7 @@ public class EntityBeanMapper {
    * @throws IllegalArgumentException in case no bean class has been defined for the given entityId
    */
   public final Class getBeanClass(final String entityId) {
-    Objects.requireNonNull(entityId, ENTITY_ID_PARAM);
+    requireNonNull(entityId, ENTITY_ID_PARAM);
     for (final Map.Entry<Class, String> entry : entityIdMap.entrySet()) {
       if (entry.getValue().equals(entityId)) {
         return entry.getKey();
@@ -81,9 +81,9 @@ public class EntityBeanMapper {
    * @throws NoSuchMethodException if the required setter/getter methods are not found
    */
   public final void setProperty(final Class beanClass, final String propertyId, final String propertyName) throws NoSuchMethodException {
-    Objects.requireNonNull(beanClass, BEAN_CLASS_PARAM);
-    Objects.requireNonNull(propertyId, PROPERTY_ID_PARAM);
-    Objects.requireNonNull(propertyName, PROPERTY_NAME_PARAM);
+    requireNonNull(beanClass, BEAN_CLASS_PARAM);
+    requireNonNull(propertyId, PROPERTY_ID_PARAM);
+    requireNonNull(propertyName, PROPERTY_NAME_PARAM);
     final Map<String, GetterSetter> beanPropertyMap = propertyMap.computeIfAbsent(beanClass, k -> new HashMap<>());
     final Property property = domain.getProperty(getEntityId(beanClass), propertyId);
     final Method getter = Util.getGetMethod(property.getTypeClass(), propertyName, beanClass);
@@ -99,7 +99,7 @@ public class EntityBeanMapper {
    * @throws IllegalAccessException if a required method is not accessible
    */
   public Entity toEntity(final Object bean) throws InvocationTargetException, IllegalAccessException {
-    Objects.requireNonNull(bean, "bean");
+    requireNonNull(bean, "bean");
     final Entity entity = domain.entity(getEntityId(bean.getClass()));
     final Map<String, GetterSetter> beanPropertyMap = propertyMap.get(bean.getClass());
     for (final Map.Entry<String, GetterSetter> propertyEntry : beanPropertyMap.entrySet()) {
@@ -140,7 +140,7 @@ public class EntityBeanMapper {
    */
   public Object toBean(final Entity entity) throws NoSuchMethodException,
           InvocationTargetException, IllegalAccessException, InstantiationException {
-    Objects.requireNonNull(entity, "entity");
+    requireNonNull(entity, "entity");
     final Class beanClass = getBeanClass(entity.getEntityId());
     final Object bean = beanClass.getConstructor().newInstance();
     final Map<String, GetterSetter> beanPropertyMap = propertyMap.get(beanClass);

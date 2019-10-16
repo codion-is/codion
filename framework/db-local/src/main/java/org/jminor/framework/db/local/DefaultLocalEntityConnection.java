@@ -6,15 +6,10 @@ package org.jminor.framework.db.local;
 import org.jminor.common.Conjunction;
 import org.jminor.common.MethodLogger;
 import org.jminor.common.User;
-import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.DatabaseConnections;
-import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultIterator;
 import org.jminor.common.db.ResultPacker;
-import org.jminor.common.db.condition.Condition;
-import org.jminor.common.db.condition.Conditions;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
@@ -50,13 +45,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Util.nullOrEmpty;
+import static org.jminor.common.db.DatabaseConnections.createConnection;
+import static org.jminor.common.db.Databases.*;
+import static org.jminor.common.db.condition.Condition.Type.LIKE;
+import static org.jminor.common.db.condition.Conditions.conditionSet;
+import static org.jminor.framework.db.condition.EntityConditions.stringCondition;
 import static org.jminor.framework.domain.Entities.*;
 
 /**
@@ -101,8 +102,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    */
   DefaultLocalEntityConnection(final Domain domain, final Database database, final User user, final boolean optimisticLocking,
                                final boolean limitForeignKeyFetchDepth, final int validityCheckTimeout) throws DatabaseException {
-    this.domain = Objects.requireNonNull(domain, "domain");
-    this.connection = DatabaseConnections.createConnection(database, user, validityCheckTimeout);
+    this.domain = requireNonNull(domain, "domain");
+    this.connection = createConnection(database, user, validityCheckTimeout);
     this.entityConditions = new EntityConditions(domain);
     this.optimisticLocking = optimisticLocking;
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
@@ -122,8 +123,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    */
   DefaultLocalEntityConnection(final Domain domain, final Database database, final Connection connection, final boolean optimisticLocking,
                                final boolean limitForeignKeyFetchDepth, final int validityCheckTimeout) throws DatabaseException {
-    this.domain = Objects.requireNonNull(domain, "domain");
-    this.connection = DatabaseConnections.createConnection(database, connection, validityCheckTimeout);
+    this.domain = requireNonNull(domain, "domain");
+    this.connection = createConnection(database, connection, validityCheckTimeout);
     this.entityConditions = new EntityConditions(domain);
     this.optimisticLocking = optimisticLocking;
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
@@ -209,7 +210,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
-    if (Util.nullOrEmpty(entities)) {
+    if (nullOrEmpty(entities)) {
       return emptyList();
     }
     checkReadOnly(entities);
@@ -248,11 +249,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(Databases.createLogMessage(getUser(), insertSQL, statementValues, e, null));
+        LOG.error(createLogMessage(getUser(), insertSQL, statementValues, e, null));
         throw translateInsertUpdateSQLException(e);
       }
       finally {
-        Databases.closeSilently(statement);
+        closeSilently(statement);
       }
     }
   }
@@ -260,7 +261,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity> update(final List<Entity> entities) throws DatabaseException {
-    if (Util.nullOrEmpty(entities)) {
+    if (nullOrEmpty(entities)) {
       return entities;
     }
     checkReadOnly(entities);
@@ -315,7 +316,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(Databases.createLogMessage(getUser(), updateSQL, statementValues, e, null));
+        LOG.error(createLogMessage(getUser(), updateSQL, statementValues, e, null));
         throw translateInsertUpdateSQLException(e);
       }
       catch (final RecordModifiedException e) {
@@ -325,11 +326,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final UpdateException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(Databases.createLogMessage(getUser(), updateSQL, statementValues, e, null));
+        LOG.error(createLogMessage(getUser(), updateSQL, statementValues, e, null));
         throw e;
       }
       finally {
-        Databases.closeSilently(statement);
+        closeSilently(statement);
       }
     }
   }
@@ -337,7 +338,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public void delete(final EntityCondition condition) throws DatabaseException {
-    Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
+    requireNonNull(condition, CONDITION_PARAM_NAME);
     checkReadOnly(condition.getEntityId());
 
     PreparedStatement statement = null;
@@ -351,11 +352,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(Databases.createLogMessage(getUser(), deleteSQL, condition.getValues(), e, null));
+        LOG.error(createLogMessage(getUser(), deleteSQL, condition.getValues(), e, null));
         throw translateDeleteSQLException(e);
       }
       finally {
-        Databases.closeSilently(statement);
+        closeSilently(statement);
       }
     }
   }
@@ -363,7 +364,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public void delete(final List<Entity.Key> entityKeys) throws DatabaseException {
-    if (Util.nullOrEmpty(entityKeys)) {
+    if (nullOrEmpty(entityKeys)) {
       return;
     }
 
@@ -389,11 +390,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(Databases.createLogMessage(getUser(), deleteSQL, entityKeys, e, null));
+        LOG.error(createLogMessage(getUser(), deleteSQL, entityKeys, e, null));
         throw translateDeleteSQLException(e);
       }
       finally {
-        Databases.closeSilently(statement);
+        closeSilently(statement);
       }
     }
   }
@@ -401,7 +402,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
-    return selectSingle(entityConditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, value));
+    return selectSingle(entityConditions.selectCondition(entityId, propertyId, LIKE, value));
   }
 
   /** {@inheritDoc} */
@@ -427,7 +428,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
-    if (Util.nullOrEmpty(keys)) {
+    if (nullOrEmpty(keys)) {
       return new ArrayList<>(0);
     }
 
@@ -454,7 +455,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Entity> selectMany(final String entityId, final String propertyId, final Object... values) throws DatabaseException {
-    return selectMany(entityConditions.selectCondition(entityId, propertyId, Condition.Type.LIKE, values == null ? null : asList(values)));
+    return selectMany(entityConditions.selectCondition(entityId, propertyId, LIKE, values == null ? null : asList(values)));
   }
 
   /** {@inheritDoc} */
@@ -484,19 +485,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public List<Object> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
-    Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
+    requireNonNull(condition, CONDITION_PARAM_NAME);
     if (domain.getSelectQuery(condition.getEntityId()) != null) {
       throw new UnsupportedOperationException("selectValues is not implemented for entities with custom select queries");
     }
     final Property.ColumnProperty property = domain.getColumnProperty(condition.getEntityId(), propertyId);
     final String columnName = property.getColumnName();
     final EntityCondition entityCondition = entityConditions.condition(condition.getEntityId(),
-            Conditions.conditionSet(Conjunction.AND, condition.getCondition(), EntityConditions.stringCondition(columnName + " is not null")));
+            conditionSet(Conjunction.AND, condition.getCondition(), stringCondition(columnName + " is not null")));
     final String selectSQL = createSelectSQL(domain.getSelectTableName(condition.getEntityId()), "distinct " + columnName,
             WHERE + entityCondition.getWhereClause(), columnName);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
-    Databases.QUERY_COUNTER.count(selectSQL);
+    QUERY_COUNTER.count(selectSQL);
     synchronized (connection) {
       try {
         statement = prepareStatement(selectSQL);
@@ -508,12 +509,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(Databases.createLogMessage(getUser(), selectSQL, asList(propertyId, condition), e, null));
+        LOG.error(createLogMessage(getUser(), selectSQL, asList(propertyId, condition), e, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
-        Databases.closeSilently(resultSet);
-        Databases.closeSilently(statement);
+        closeSilently(resultSet);
+        closeSilently(statement);
       }
     }
   }
@@ -521,18 +522,18 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   /** {@inheritDoc} */
   @Override
   public int selectRowCount(final EntityCondition condition) throws DatabaseException {
-    Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
+    requireNonNull(condition, CONDITION_PARAM_NAME);
     final String query = getSelectSQL(condition, connection.getDatabase(),
             domain.getPrimaryKeyProperties(condition.getEntityId()));
     final String selectSQL = createSelectSQL("(" + query + ") alias", "count(*)", null, null);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
-    Databases.QUERY_COUNTER.count(selectSQL);
+    QUERY_COUNTER.count(selectSQL);
     synchronized (connection) {
       try {
         statement = prepareStatement(selectSQL);
         resultSet = executePreparedSelect(statement, selectSQL, condition);
-        final List<Integer> result = Databases.INTEGER_RESULT_PACKER.pack(resultSet, -1);
+        final List<Integer> result = INTEGER_RESULT_PACKER.pack(resultSet, -1);
         commitIfTransactionIsNotOpen();
         if (result.isEmpty()) {
           throw new SQLException("Row count query returned no value");
@@ -542,12 +543,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(Databases.createLogMessage(getUser(), selectSQL, condition.getValues(), e, null));
+        LOG.error(createLogMessage(getUser(), selectSQL, condition.getValues(), e, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
-        Databases.closeSilently(resultSet);
-        Databases.closeSilently(statement);
+        closeSilently(resultSet);
+        closeSilently(statement);
       }
     }
   }
@@ -556,7 +557,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException {
     final Map<String, Collection<Entity>> dependencyMap = new HashMap<>();
-    if (Util.nullOrEmpty(entities)) {
+    if (nullOrEmpty(entities)) {
       return dependencyMap;
     }
 
@@ -565,7 +566,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     for (final Property.ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
       if (!foreignKeyReference.isSoftReference()) {
         final List<Entity> dependencies = selectMany(entityConditions.selectCondition(foreignKeyReference.getEntityId(),
-                foreignKeyReference.getPropertyId(), Condition.Type.LIKE, entities));
+                foreignKeyReference.getPropertyId(), LIKE, entities));
         if (!dependencies.isEmpty()) {
           dependencyMap.put(foreignKeyReference.getEntityId(), dependencies);
         }
@@ -587,13 +588,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     catch (final DatabaseException e) {
       exception = e;
-      LOG.error(Databases.createLogMessage(getUser(), functionId, arguments == null ? null : asList(arguments), e, null));
+      LOG.error(createLogMessage(getUser(), functionId, arguments == null ? null : asList(arguments), e, null));
       throw e;
     }
     finally {
       final MethodLogger.Entry entry = logExit("executeFunction: " + functionId, exception, null);
       if (LOG.isDebugEnabled()) {
-        LOG.debug(Databases.createLogMessage(getUser(), "", arguments == null ? null : asList(arguments), exception, entry));
+        LOG.debug(createLogMessage(getUser(), "", arguments == null ? null : asList(arguments), exception, entry));
       }
     }
   }
@@ -610,13 +611,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     catch (final DatabaseException e) {
       exception = e;
-      LOG.error(Databases.createLogMessage(getUser(), procedureId, arguments == null ? null : asList(arguments), e, null));
+      LOG.error(createLogMessage(getUser(), procedureId, arguments == null ? null : asList(arguments), e, null));
       throw e;
     }
     finally {
       final MethodLogger.Entry entry = logExit("executeProcedure: " + procedureId, exception, null);
       if (LOG.isDebugEnabled()) {
-        LOG.debug(Databases.createLogMessage(getUser(), "", arguments == null ? null : asList(arguments), exception, entry));
+        LOG.debug(createLogMessage(getUser(), "", arguments == null ? null : asList(arguments), exception, entry));
       }
     }
   }
@@ -638,13 +639,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final ReportException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(Databases.createLogMessage(getUser(), null, singletonList(reportWrapper.getReportName()), e, null));
+        LOG.error(createLogMessage(getUser(), null, singletonList(reportWrapper.getReportName()), e, null));
         throw e;
       }
       finally {
         final MethodLogger.Entry logEntry = logExit("fillReport", exception, null);
         if (LOG.isDebugEnabled()) {
-          LOG.debug(Databases.createLogMessage(getUser(), null, singletonList(reportWrapper.getReportName()), exception, logEntry));
+          LOG.debug(createLogMessage(getUser(), null, singletonList(reportWrapper.getReportName()), exception, logEntry));
         }
       }
     }
@@ -663,7 +664,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             " = ?" + WHERE_SPACE_PREFIX + condition.getWhereClause();
     final List<Object> values = new ArrayList<>();
     final List<Property.ColumnProperty> properties = new ArrayList<>();
-    Databases.QUERY_COUNTER.count(sql);
+    QUERY_COUNTER.count(sql);
     synchronized (connection) {
       SQLException exception = null;
       PreparedStatement statement = null;
@@ -683,14 +684,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(Databases.createLogMessage(getUser(), sql, values, exception, null));
+        LOG.error(createLogMessage(getUser(), sql, values, exception, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
-        Databases.closeSilently(statement);
+        closeSilently(statement);
         final MethodLogger.Entry logEntry = logExit("writeBlob", exception, null);
         if (LOG.isDebugEnabled()) {
-          LOG.debug(Databases.createLogMessage(getUser(), sql, values, exception, logEntry));
+          LOG.debug(createLogMessage(getUser(), sql, values, exception, logEntry));
         }
       }
     }
@@ -710,7 +711,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final EntityCondition condition = entityConditions.condition(primaryKey);
     final String sql = "select " + property.getColumnName() + " from " +
             domain.getTableName(primaryKey.getEntityId()) + WHERE_SPACE_PREFIX + condition.getWhereClause();
-    Databases.QUERY_COUNTER.count(sql);
+    QUERY_COUNTER.count(sql);
     synchronized (connection) {
       try {
         logAccess("readBlob", new Object[] {sql});
@@ -728,15 +729,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(Databases.createLogMessage(getUser(), sql, condition.getValues(), exception, null));
+        LOG.error(createLogMessage(getUser(), sql, condition.getValues(), exception, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
-        Databases.closeSilently(statement);
-        Databases.closeSilently(resultSet);
+        closeSilently(statement);
+        closeSilently(resultSet);
         final MethodLogger.Entry logEntry = logExit("readBlob", exception, null);
         if (LOG.isDebugEnabled()) {
-          LOG.debug(Databases.createLogMessage(getUser(), sql, condition.getValues(), exception, logEntry));
+          LOG.debug(createLogMessage(getUser(), sql, condition.getValues(), exception, logEntry));
         }
       }
     }
@@ -819,7 +820,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private List<Entity> doSelectMany(final EntitySelectCondition condition, final int currentForeignKeyFetchDepth,
                                     final List<Property.ColumnProperty> columnProperties) throws SQLException {
-    Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
+    requireNonNull(condition, CONDITION_PARAM_NAME);
     final List<Entity> result;
     try (final ResultIterator<Entity> iterator = createIterator(condition, columnProperties)) {
       result = packResult(iterator);
@@ -844,7 +845,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    */
   private void setForeignKeys(final List<Entity> entities, final EntitySelectCondition condition,
                               final int currentForeignKeyFetchDepth) throws SQLException {
-    if (Util.nullOrEmpty(entities)) {
+    if (nullOrEmpty(entities)) {
       return;
     }
     final List<Property.ForeignKeyProperty> foreignKeyProperties = domain.getForeignKeyProperties(entities.get(0).getEntityId());
@@ -897,7 +898,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private ResultIterator<Entity> createIterator(final EntityCondition condition,
                                                 final List<Property.ColumnProperty> columnProperties) throws SQLException {
-    Objects.requireNonNull(condition, CONDITION_PARAM_NAME);
+    requireNonNull(condition, CONDITION_PARAM_NAME);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     String selectSQL = null;
@@ -911,9 +912,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
               domain.getTransientProperties(condition.getEntityId())));
     }
     catch (final SQLException e) {
-      Databases.closeSilently(resultSet);
-      Databases.closeSilently(statement);
-      LOG.error(Databases.createLogMessage(getUser(), selectSQL, condition.getValues(), e, null));
+      closeSilently(resultSet);
+      closeSilently(statement);
+      LOG.error(createLogMessage(getUser(), selectSQL, condition.getValues(), e, null));
       throw e;
     }
   }
@@ -921,7 +922,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private int executePreparedUpdate(final PreparedStatement statement, final String sqlStatement,
                                     final List<Property.ColumnProperty> properties, final List values) throws SQLException {
     SQLException exception = null;
-    Databases.QUERY_COUNTER.count(sqlStatement);
+    QUERY_COUNTER.count(sqlStatement);
     try {
       logAccess("executePreparedUpdate", new Object[] {sqlStatement, values});
       setParameterValues(statement, values, properties);
@@ -934,7 +935,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     finally {
       final MethodLogger.Entry entry = logExit("executePreparedUpdate", exception, null);
       if (LOG.isDebugEnabled()) {
-        LOG.debug(Databases.createLogMessage(getUser(), sqlStatement, values, exception, entry));
+        LOG.debug(createLogMessage(getUser(), sqlStatement, values, exception, entry));
       }
     }
   }
@@ -942,7 +943,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private ResultSet executePreparedSelect(final PreparedStatement statement, final String sqlStatement,
                                           final EntityCondition condition) throws SQLException {
     SQLException exception = null;
-    Databases.QUERY_COUNTER.count(sqlStatement);
+    QUERY_COUNTER.count(sqlStatement);
     final List values = condition.getValues();
     try {
       logAccess("executePreparedSelect", values == null ? new Object[] {sqlStatement} : new Object[] {sqlStatement, values});
@@ -956,7 +957,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     finally {
       final MethodLogger.Entry entry = logExit("executePreparedSelect", exception, null);
       if (LOG.isDebugEnabled()) {
-        LOG.debug(Databases.createLogMessage(getUser(), sqlStatement, values, exception, entry));
+        LOG.debug(createLogMessage(getUser(), sqlStatement, values, exception, entry));
       }
     }
   }
@@ -1079,7 +1080,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static void setParameterValues(final PreparedStatement statement, final List values,
                                          final List<Property.ColumnProperty> parameterProperties) throws SQLException {
-    if (Util.nullOrEmpty(values) || statement.getParameterMetaData().getParameterCount() == 0) {
+    if (nullOrEmpty(values) || statement.getParameterMetaData().getParameterCount() == 0) {
       return;
     }
     if (parameterProperties == null || parameterProperties.size() != values.size()) {
@@ -1281,10 +1282,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static String createSelectSQL(final String tableName, final String columns, final String whereCondition,
                                         final String orderByClause) {
     final StringBuilder sql = new StringBuilder("select ").append(columns).append(" from ").append(tableName);
-    if (!Util.nullOrEmpty(whereCondition)) {
+    if (!nullOrEmpty(whereCondition)) {
       sql.append(" ").append(whereCondition);
     }
-    if (!Util.nullOrEmpty(orderByClause)) {
+    if (!nullOrEmpty(orderByClause)) {
       sql.append(" order by ").append(orderByClause);
     }
 
@@ -1390,7 +1391,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     private String getEntityConditionString(final EntityCondition condition) {
       final StringBuilder builder = new StringBuilder(condition.getEntityId());
       final String whereClause = condition.getWhereClause();
-      if (!Util.nullOrEmpty(whereClause)) {
+      if (!nullOrEmpty(whereClause)) {
         builder.append(",").append(WHERE_SPACE_PREFIX).append(whereClause);
       }
       final List values = condition.getValues();
@@ -1467,14 +1468,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
     @Override
     public void close() {
-      Databases.closeSilently(resultSet);
-      Databases.closeSilently(statement);
+      closeSilently(resultSet);
+      closeSilently(statement);
     }
   }
 
   /**
    * Handles packing Entity query results.
-   * Loads all database property values except for foreign key properties (Property.ForeignKeyProperty).
    */
   private final class EntityResultPacker implements ResultPacker<Entity> {
 
@@ -1482,9 +1482,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     private final List<Property.ColumnProperty> columnProperties;
     private final List<Property.TransientProperty> transientProperties;
 
-    /**
-     * Instantiates a new EntityResultPacker.
-     */
     private EntityResultPacker(final String entityId,
                                final List<Property.ColumnProperty> columnProperties,
                                final List<Property.TransientProperty> transientProperties) {

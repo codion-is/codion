@@ -73,9 +73,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A static utility class concerned with UI related tasks.
@@ -200,7 +200,7 @@ public final class EntityUiUtil {
    * @return a JLabel for the given property
    */
   public static JLabel createLabel(final Property property, final int horizontalAlignment) {
-    Objects.requireNonNull(property, PROPERTY_PARAM_NAME);
+    requireNonNull(property, PROPERTY_PARAM_NAME);
     final JLabel label = new JLabel(property.getCaption(), horizontalAlignment);
     if (property.getMnemonic() != null) {
       label.setDisplayedMnemonic(property.getMnemonic());
@@ -244,7 +244,7 @@ public final class EntityUiUtil {
    */
   public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel,
                                          final StateObserver enabledState, final boolean includeCaption) {
-    Objects.requireNonNull(property, PROPERTY_PARAM_NAME);
+    requireNonNull(property, PROPERTY_PARAM_NAME);
     checkProperty(property, editModel);
     if (!property.isBoolean()) {
       throw new IllegalArgumentException("Boolean property required for createCheckBox");
@@ -265,8 +265,8 @@ public final class EntityUiUtil {
    */
   public static TristateCheckBox createTristateCheckBox(final Property property, final EntityEditModel editModel,
                                                         final StateObserver enabledState, final boolean includeCaption) {
-    Objects.requireNonNull(property, PROPERTY_PARAM_NAME);
-    Objects.requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
+    requireNonNull(property, PROPERTY_PARAM_NAME);
+    requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
     checkProperty(property, editModel);
     if (!property.isBoolean() || !property.isNullable()) {
       throw new IllegalArgumentException("Nullable boolean property required for createTristateCheckBox");
@@ -321,8 +321,8 @@ public final class EntityUiUtil {
    */
   public static EntityComboBox createForeignKeyComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
                                                         final EntityEditModel editModel, final StateObserver enabledState) {
-    Objects.requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
-    Objects.requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
+    requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
+    requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
     checkProperty(foreignKeyProperty, editModel);
     final EntityComboBoxModel boxModel = ((SwingEntityEditModel) editModel).getForeignKeyComboBoxModel(foreignKeyProperty);
     boxModel.refresh();
@@ -349,8 +349,8 @@ public final class EntityUiUtil {
    */
   public static JTextField createForeignKeyField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                  final EntityEditModel editModel) {
-    Objects.requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
-    Objects.requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
+    requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
+    requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
     checkProperty(foreignKeyProperty, editModel);
     final JTextField textField = new JTextField();
     textField.setEditable(false);
@@ -407,8 +407,8 @@ public final class EntityUiUtil {
    */
   public static EntityLookupField createForeignKeyLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                               final EntityEditModel editModel, final StateObserver enabledState) {
-    Objects.requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
-    Objects.requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
+    requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
+    requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
     final EntityLookupModel lookupModel = editModel.getForeignKeyLookupModel(foreignKeyProperty);
     final EntityLookupField lookupField = new EntityLookupField(lookupModel);
     if (EntityEditPanel.TRANSFER_FOCUS_ON_ENTER.get()) {
@@ -506,7 +506,7 @@ public final class EntityUiUtil {
   public static SteppedComboBox createComboBox(final Property property, final EntityEditModel editModel,
                                                final ComboBoxModel model, final StateObserver enabledState,
                                                final boolean editable) {
-    Objects.requireNonNull(property, PROPERTY_PARAM_NAME);
+    requireNonNull(property, PROPERTY_PARAM_NAME);
     checkProperty(property, editModel);
     final SteppedComboBox comboBox = new SteppedComboBox(model);
     comboBox.setEditable(editable);
@@ -548,7 +548,7 @@ public final class EntityUiUtil {
   public static TemporalInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
                                                         final boolean updateOnKeystroke, final boolean includeCalendarButton,
                                                         final StateObserver enabledState) {
-    Objects.requireNonNull(property, PROPERTY_PARAM_NAME);
+    requireNonNull(property, PROPERTY_PARAM_NAME);
     if (!property.isDateOrTime()) {
       throw new IllegalArgumentException("Property " + property + " is not a date or time property");
     }
@@ -584,8 +584,8 @@ public final class EntityUiUtil {
    */
   public static TextInputPanel createTextInputPanel(final Property property, final EntityEditModel editModel,
                                                     final boolean updateOnKeystroke, final boolean buttonFocusable) {
-    Objects.requireNonNull(property, PROPERTY_PARAM_NAME);
-    Objects.requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
+    requireNonNull(property, PROPERTY_PARAM_NAME);
+    requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
     final JTextField field = createTextField(property, editModel, null, updateOnKeystroke);
     final TextInputPanel panel = new TextInputPanel(field, property.getCaption(), null, buttonFocusable);
     panel.setMaxLength(property.getMaxLength());
@@ -635,8 +635,8 @@ public final class EntityUiUtil {
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
                                          final int rows, final int columns, final boolean updateOnKeystroke,
                                          final StateObserver enabledState) {
-    Objects.requireNonNull(property, PROPERTY_PARAM_NAME);
-    Objects.requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
+    requireNonNull(property, PROPERTY_PARAM_NAME);
+    requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
     checkProperty(property, editModel);
     if (!property.isString()) {
       throw new IllegalArgumentException("Cannot create a text area for a non-string property");
@@ -712,8 +712,8 @@ public final class EntityUiUtil {
                                            final String formatMaskString, final boolean updateOnKeystroke,
                                            final StateObserver enabledState,
                                            final boolean valueContainsLiteralCharacters) {
-    Objects.requireNonNull(property, PROPERTY_PARAM_NAME);
-    Objects.requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
+    requireNonNull(property, PROPERTY_PARAM_NAME);
+    requireNonNull(editModel, EDIT_MODEL_PARAM_NAME);
     checkProperty(property, editModel);
     final JTextField textField = initializeTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     if (property.isString()) {

@@ -11,8 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.Properties;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Database implementation based on the Derby database.
@@ -43,7 +44,7 @@ public final class DerbyDatabase extends AbstractDatabase {
    * @param databaseName the path to the database files
    */
   public DerbyDatabase(final String databaseName) {
-    super(Type.DERBY, EMBEDDED_DRIVER_CLASS_NAME, Objects.requireNonNull(databaseName, "databaseName"),
+    super(Type.DERBY, EMBEDDED_DRIVER_CLASS_NAME, requireNonNull(databaseName, "databaseName"),
             null, null, true);
   }
 
@@ -54,8 +55,8 @@ public final class DerbyDatabase extends AbstractDatabase {
    * @param sid the service identifier
    */
   public DerbyDatabase(final String host, final Integer port, final String sid) {
-    super(Type.DERBY, DRIVER_CLASS_NAME, Objects.requireNonNull(host, "host"), Objects.requireNonNull(port),
-            Objects.requireNonNull(sid, "sid"), false);
+    super(Type.DERBY, DRIVER_CLASS_NAME, requireNonNull(host, "host"), requireNonNull(port),
+            requireNonNull(sid, "sid"), false);
   }
 
   /** {@inheritDoc} */
@@ -67,7 +68,7 @@ public final class DerbyDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getAutoIncrementQuery(final String idSource) {
-    return AUTO_INCREMENT_QUERY + Objects.requireNonNull(idSource, "idSource");
+    return AUTO_INCREMENT_QUERY + requireNonNull(idSource, "idSource");
   }
 
   /** {@inheritDoc} */

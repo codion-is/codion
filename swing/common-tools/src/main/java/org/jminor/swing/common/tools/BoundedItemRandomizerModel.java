@@ -5,7 +5,8 @@ package org.jminor.swing.common.tools;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A ItemRandomizer with the added constraint that the total item weights can not exceed a defined maximum.
@@ -41,7 +42,7 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
     if (boundedWeight <= 0) {
       throw new IllegalArgumentException("Bounded weight must be a positive integer");
     }
-    if (Objects.requireNonNull(items, "items").isEmpty()) {
+    if (requireNonNull(items, "items").isEmpty()) {
       throw new IllegalArgumentException("Items must not be empty");
     }
 

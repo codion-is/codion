@@ -14,7 +14,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A factory class for providing and managing ConnectionPool instances
@@ -39,8 +40,8 @@ public final class ConnectionPools {
   public static synchronized void initializeConnectionPools(final Class<? extends ConnectionPoolProvider> connectionPoolProviderClass,
                                                             final Database database, final Collection<User> users,
                                                             final int validityCheckTimeout) throws DatabaseException {
-    Objects.requireNonNull(database, "database");
-    Objects.requireNonNull(users, "users");
+    requireNonNull(database, "database");
+    requireNonNull(users, "users");
     for (final User user : users) {
       final ConnectionPoolProvider poolProvider = initializeConnectionPoolProvider(connectionPoolProviderClass, database, user, validityCheckTimeout);
       CONNECTION_POOLS.put(user, poolProvider.createConnectionPool(user, database));

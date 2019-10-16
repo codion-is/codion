@@ -11,9 +11,10 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Database implementation based on the Oracle database.
@@ -72,20 +73,20 @@ public final class OracleDatabase extends AbstractDatabase {
    * @param sid the service identifier
    */
   public OracleDatabase(final String host, final Integer port, final String sid) {
-    super(Type.ORACLE, DRIVER_CLASS_NAME, Objects.requireNonNull(host, "host"),
-            Objects.requireNonNull(port, "port"), Objects.requireNonNull(sid, "sid"));
+    super(Type.ORACLE, DRIVER_CLASS_NAME, requireNonNull(host, "host"),
+            requireNonNull(port, "port"), requireNonNull(sid, "sid"));
   }
 
   /** {@inheritDoc} */
   @Override
   public String getAutoIncrementQuery(final String idSource) {
-    return "select " + Objects.requireNonNull(idSource, "idSource") + ".currval from dual";
+    return "select " + requireNonNull(idSource, "idSource") + ".currval from dual";
   }
 
   /** {@inheritDoc} */
   @Override
   public String getSequenceQuery(final String sequenceName) {
-    return "select " + Objects.requireNonNull(sequenceName, "sequenceName") + ".nextval from dual";
+    return "select " + requireNonNull(sequenceName, "sequenceName") + ".nextval from dual";
   }
 
   /** {@inheritDoc} */

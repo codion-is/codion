@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A JavaFX implementation of {@link EntityTableModel}.
@@ -83,7 +84,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   public FXEntityListModel(final String entityId, final EntityConnectionProvider connectionProvider,
                            final EntityTableConditionModel conditionModel) {
     super(entityId, connectionProvider);
-    Objects.requireNonNull(conditionModel);
+    requireNonNull(conditionModel);
     if (!conditionModel.getEntityId().equals(entityId)) {
       throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + conditionModel.getEntityId()
               + ", tableModel: " + entityId);
@@ -104,7 +105,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final void setEditModel(final FXEntityEditModel editModel) {
-    Objects.requireNonNull(editModel, "editModel");
+    requireNonNull(editModel, "editModel");
     if (this.editModel != null) {
       throw new IllegalStateException("Edit model has already been set");
     }
@@ -320,7 +321,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final void update(final List<Entity> entities) throws ValidationException, DatabaseException {
-    Objects.requireNonNull(entities);
+    requireNonNull(entities);
     if (!isUpdateAllowed()) {
       throw new IllegalStateException("Updating is not allowed via this table model");
     }
@@ -352,7 +353,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final FXEntityListModel setInsertAction(final InsertAction insertAction) {
-    Objects.requireNonNull(insertAction);
+    requireNonNull(insertAction);
     this.insertAction = insertAction;
     return this;
   }

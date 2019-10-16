@@ -21,6 +21,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.jminor.common.Util.nullOrEmpty;
+
 /**
  * Implements a serialization whitelist for Java 8
  */
@@ -31,7 +33,7 @@ public final class SerializationWhitelist {
   private SerializationWhitelist() {}
 
   public static void configureSerializationWhitelist(final String whitelist, final Boolean dryRun) {
-    if (!Util.nullOrEmpty(whitelist)) {
+    if (!nullOrEmpty(whitelist)) {
       try (final Stream<String> stream = Files.lines(Paths.get(whitelist))) {
         sun.misc.ObjectInputFilter.Config.setSerialFilter(dryRun ? new SerializationFilterDryRun() : new SerializationFilter(stream.collect(Collectors.toSet())));
         LOG.debug("Serialization filter whitelist set: " + whitelist + " (dry run: " + dryRun + ")");
@@ -51,7 +53,7 @@ public final class SerializationWhitelist {
   }
 
   private static void writeDryRunWhitelist(final String whitelist, final SerializationFilterDryRun serialFilter) {
-    if (!Util.nullOrEmpty(whitelist)) {
+    if (!nullOrEmpty(whitelist)) {
       try {
         final File file = new File(whitelist);
         file.createNewFile();

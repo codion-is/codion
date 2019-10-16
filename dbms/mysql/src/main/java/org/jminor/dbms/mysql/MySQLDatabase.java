@@ -6,8 +6,9 @@ package org.jminor.dbms.mysql;
 import org.jminor.common.db.AbstractDatabase;
 
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.Properties;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Database implementation based on the MySQL database.
@@ -35,8 +36,8 @@ public final class MySQLDatabase extends AbstractDatabase {
    * @param dbname the db name
    */
   public MySQLDatabase(final String host, final Integer port, final String dbname) {
-    super(Type.MYSQL, DRIVER_CLASS_NAME, Objects.requireNonNull(host, "host"),
-            Objects.requireNonNull(port, "port"), Objects.requireNonNull(dbname, "dbname"));
+    super(Type.MYSQL, DRIVER_CLASS_NAME, requireNonNull(host, "host"),
+            requireNonNull(port, "port"), requireNonNull(dbname, "dbname"));
   }
 
   /** {@inheritDoc} */

@@ -3,12 +3,13 @@
  */
 package org.jminor.dbms.sqlserver;
 
-import org.jminor.common.Util;
 import org.jminor.common.db.AbstractDatabase;
 
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.Properties;
+
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A Database implementation based on the SQL Server (2000 or higher) database.
@@ -38,8 +39,8 @@ public final class SQLServerDatabase extends AbstractDatabase {
    * @param databaseName the database name
    */
   public SQLServerDatabase(final String host, final Integer port, final String databaseName) {
-    super(Type.SQLSERVER, DRIVER_CLASS_NAME, Objects.requireNonNull(host, "host"),
-            Objects.requireNonNull(port, "port"), Objects.requireNonNull(databaseName, "databaseName"), false);
+    super(Type.SQLSERVER, DRIVER_CLASS_NAME, requireNonNull(host, "host"),
+            requireNonNull(port, "port"), requireNonNull(databaseName, "databaseName"), false);
   }
 
   /** {@inheritDoc} */
@@ -64,7 +65,7 @@ public final class SQLServerDatabase extends AbstractDatabase {
   @Override
   public String getURL(final Properties connectionProperties) {
     final String sid = getSid();
-    return URL_PREFIX + getHost() + ":" + getPort() + (!Util.nullOrEmpty(sid) ? ";databaseName=" + sid : "") + getUrlAppend();
+    return URL_PREFIX + getHost() + ":" + getPort() + (!nullOrEmpty(sid) ? ";databaseName=" + sid : "") + getUrlAppend();
   }
 
   /** {@inheritDoc} */

@@ -10,7 +10,8 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 
 import javax.swing.JComponent;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A class responsible for displaying a JasperReport
@@ -23,7 +24,7 @@ public final class JasperReportsUIWrapper implements ReportUIWrapper<JasperPrint
    */
   @Override
   public JComponent createReportComponent(final ReportResult<JasperPrint> result) {
-    Objects.requireNonNull(result, "result");
+    requireNonNull(result, "result");
     return new JRViewer(result.getResult());
   }
 }

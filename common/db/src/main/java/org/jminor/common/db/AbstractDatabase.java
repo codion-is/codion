@@ -4,7 +4,6 @@
 package org.jminor.common.db;
 
 import org.jminor.common.User;
-import org.jminor.common.Util;
 import org.jminor.common.db.exception.AuthenticationException;
 import org.jminor.common.db.exception.DatabaseException;
 
@@ -14,8 +13,10 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.Properties;
+
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * A default abstract implementation of the Database interface.
@@ -98,7 +99,7 @@ public abstract class AbstractDatabase implements Database {
   public AbstractDatabase(final Type databaseType, final String driverClassName, final String host, final Integer port,
                           final String sid, final boolean embedded) {
     loadDriver(driverClassName);
-    this.databaseType = Objects.requireNonNull(databaseType, "databaseType");
+    this.databaseType = requireNonNull(databaseType, "databaseType");
     this.driverClassName = driverClassName;
     this.host = host;
     this.port = port;
@@ -155,7 +156,7 @@ public abstract class AbstractDatabase implements Database {
   /** {@inheritDoc} */
   @Override
   public final Connection createConnection(final User user) throws DatabaseException {
-    if (Util.nullOrEmpty(Objects.requireNonNull(user, "user").getUsername())) {
+    if (nullOrEmpty(requireNonNull(user, "user").getUsername())) {
       throw new IllegalArgumentException("Username must be specified");
     }
     final Properties connectionProperties = new Properties();
@@ -223,9 +224,9 @@ public abstract class AbstractDatabase implements Database {
     if (connectionProperties != null) {
       final String username = (String) connectionProperties.get(USER_PROPERTY);
       final String password = (String) connectionProperties.get(PASSWORD_PROPERTY);
-      if (!Util.nullOrEmpty(username)) {
+      if (!nullOrEmpty(username)) {
         authenticationInfo = USER_PROPERTY + "=" + username;
-        if (!Util.nullOrEmpty(password)) {
+        if (!nullOrEmpty(password)) {
           authenticationInfo += ";" + PASSWORD_PROPERTY + "=" + password;
         }
       }
@@ -286,7 +287,7 @@ public abstract class AbstractDatabase implements Database {
    */
   private static void loadDriver(final String driverClassName) {
     try {
-      Class.forName(Objects.requireNonNull(driverClassName, "driverClassName"));
+      Class.forName(requireNonNull(driverClassName, "driverClassName"));
     }
     catch (final ClassNotFoundException e) {
       LOG.warn(driverClassName + " not found on classpath", e);

@@ -7,7 +7,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A factory class for {@link State} objects.
@@ -136,7 +137,7 @@ public final class States {
     private final Conjunction conjunction;
 
     private DefaultAggregateState(final Conjunction conjunction) {
-      this.conjunction = Objects.requireNonNull(conjunction, "conjunction");
+      this.conjunction = requireNonNull(conjunction, "conjunction");
     }
 
     private DefaultAggregateState(final Conjunction conjunction, final StateObserver... states) {
@@ -168,7 +169,7 @@ public final class States {
 
     @Override
     public void addState(final StateObserver state) {
-      Objects.requireNonNull(state, "state");
+      requireNonNull(state, "state");
       synchronized (lock) {
         if (findListener(state) == null) {
           final boolean value = get();
@@ -180,7 +181,7 @@ public final class States {
 
     @Override
     public void removeState(final StateObserver state) {
-      Objects.requireNonNull(state, "state");
+      requireNonNull(state, "state");
       synchronized (lock) {
         final boolean value = get();
         final AggregateStateListener listener = findListener(state);

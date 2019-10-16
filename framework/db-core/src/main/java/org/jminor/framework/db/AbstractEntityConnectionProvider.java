@@ -7,7 +7,6 @@ import org.jminor.common.Event;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.User;
-import org.jminor.common.Util;
 import org.jminor.common.Version;
 import org.jminor.framework.db.condition.EntityConditions;
 import org.jminor.framework.domain.Domain;
@@ -15,8 +14,10 @@ import org.jminor.framework.domain.Domain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
 import java.util.UUID;
+
+import static java.util.Objects.requireNonNull;
+import static org.jminor.common.Util.nullOrEmpty;
 
 /**
  * An abstract EntityConnectionProvider implementation.
@@ -89,7 +90,7 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
   @Override
   public final String getDomainClassName() {
     synchronized (lock) {
-      if (Util.nullOrEmpty(domainClassName)) {
+      if (nullOrEmpty(domainClassName)) {
         throw new IllegalArgumentException("Domain class name has not been specified");
       }
 
@@ -101,7 +102,7 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
   @Override
   public final EntityConnectionProvider setDomainClassName(final String domainClassName) {
     synchronized (lock) {
-      if (Util.nullOrEmpty(domainClassName)) {
+      if (nullOrEmpty(domainClassName)) {
         throw new IllegalArgumentException("Domain class name must be specified");
       }
       disconnect();
@@ -137,7 +138,7 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
   @Override
   public final String getClientTypeId() {
     synchronized (lock) {
-      if (Util.nullOrEmpty(clientTypeId)) {
+      if (nullOrEmpty(clientTypeId)) {
         throw new IllegalArgumentException("Client type id has not been specified");
       }
 
@@ -150,7 +151,7 @@ public abstract class AbstractEntityConnectionProvider<T extends EntityConnectio
   public final EntityConnectionProvider setClientTypeId(final String clientTypeId) {
     synchronized (lock) {
       disconnect();
-      this.clientTypeId = Objects.requireNonNull(clientTypeId);
+      this.clientTypeId = requireNonNull(clientTypeId);
 
       return this;
     }
