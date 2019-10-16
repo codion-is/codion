@@ -462,8 +462,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   public List<Entity> selectMany(final EntitySelectCondition condition) throws DatabaseException {
     synchronized (connection) {
       try {
-        final List<Entity> result = doSelectMany(condition, 0,
-                domain.getColumnProperties(condition.getEntityId()));
+        final List<Property.ColumnProperty> columnProperties =
+                condition.getSelectPropertyIds().isEmpty() ?
+                        domain.getColumnProperties(condition.getEntityId()) :
+                        domain.getColumnProperties(condition.getEntityId(),
+                                condition.getSelectPropertyIds());
+        final List<Entity> result = doSelectMany(condition, 0, columnProperties);
         if (!isTransactionOpen() && !condition.isForUpdate()) {
           commitQuietly();
         }

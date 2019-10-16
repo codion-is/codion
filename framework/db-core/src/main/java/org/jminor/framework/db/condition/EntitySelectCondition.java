@@ -5,6 +5,8 @@ package org.jminor.framework.db.condition;
 
 import org.jminor.framework.domain.Entity;
 
+import java.util.List;
+
 /**
  * A class encapsulating select query parameters.
  */
@@ -91,4 +93,20 @@ public interface EntitySelectCondition extends EntityCondition {
    * @return this EntitySelectCondition instance
    */
   EntitySelectCondition setForeignKeyFetchDepthLimit(final int fetchDepthLimit);
+
+  /**
+   * Sets the properties to include in the resulting Entities,
+   * including the column properties involved in a foreign key
+   * causes the foreign key values to be populated.
+   * Note that these must be ColumnProperty ids
+   * @param propertyIds the property ids
+   * @return this EntitySelectCondition instance
+   */
+  EntitySelectCondition setSelectPropertyIds(final String... propertyIds);
+
+  /**
+   * @return the ids of the properties to include in the query result,
+   * an empty list if all should be included
+   */
+  List<String> getSelectPropertyIds();
 }

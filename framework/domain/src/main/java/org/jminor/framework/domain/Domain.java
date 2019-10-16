@@ -478,11 +478,22 @@ public class Domain implements Serializable {
 
   /**
    * @param entityId the entity id
-   * @return a list containing all database properties found in the entity identified by {@code entityId},
+   * @return a list containing all column properties found in the entity identified by {@code entityId},
    * that is, properties that map to database columns, an empty list if none exist
    */
   public final List<Property.ColumnProperty> getColumnProperties(final String entityId) {
     return getDefinition(entityId).getColumnProperties();
+  }
+
+  /**
+   * @param entityId the entity id
+   * @param propertyIds the ids of the properties to retrieve
+   * @return a list containing all column properties found in the entity identified by {@code entityId},
+   * that is, properties that map to database columns, an empty list if none exist
+   */
+  public final List<Property.ColumnProperty> getColumnProperties(final String entityId,
+                                                                 final Collection<String> propertyIds) {
+    return propertyIds.stream().map(propertyId -> getColumnProperty(entityId, propertyId)).collect(Collectors.toList());
   }
 
   /**

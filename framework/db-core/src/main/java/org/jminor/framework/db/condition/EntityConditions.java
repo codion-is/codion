@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
@@ -514,6 +515,7 @@ public final class EntityConditions {
 
     private EntityCondition condition;
     private HashMap<String, Integer> foreignKeyFetchDepthLimits;
+    private List<String> selectPropertyIds;
 
     private Entity.OrderBy orderBy;
     private int fetchCount = -1;
@@ -642,6 +644,17 @@ public final class EntityConditions {
     }
 
     @Override
+    public EntitySelectCondition setSelectPropertyIds(final String... propertyIds) {
+      this.selectPropertyIds = asList(propertyIds);
+      return this;
+    }
+
+    @Override
+    public List<String> getSelectPropertyIds() {
+      return selectPropertyIds == null ? emptyList() : selectPropertyIds;
+    }
+
+    @Override
     public boolean isForUpdate() {
       return forUpdate;
     }
@@ -658,6 +671,7 @@ public final class EntityConditions {
       stream.writeInt(fetchCount);
       stream.writeBoolean(forUpdate);
       stream.writeObject(foreignKeyFetchDepthLimits);
+      stream.writeObject(selectPropertyIds);
       stream.writeObject(condition);
       stream.writeInt(limit);
       stream.writeInt(offset);
@@ -669,6 +683,7 @@ public final class EntityConditions {
       fetchCount = stream.readInt();
       forUpdate = stream.readBoolean();
       foreignKeyFetchDepthLimits = (HashMap<String, Integer>) stream.readObject();
+      selectPropertyIds = (List<String>) stream.readObject();
       condition = (EntityCondition) stream.readObject();
       limit = stream.readInt();
       offset = stream.readInt();
