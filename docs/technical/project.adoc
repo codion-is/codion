@@ -1,5 +1,4 @@
 = Project
-:toc: right
 :dir-manual: ../manual
 
 == Building

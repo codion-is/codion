@@ -1,5 +1,4 @@
 = Server Monitor
-:toc: right
 
 == Monitoring
 

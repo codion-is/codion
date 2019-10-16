@@ -1,9 +1,9 @@
 = Manual
-:toc: right
 :dir-tutorials: ../tutorials
 :dir-source: ../../demos/manual/src/main/java
 :dir-source-world: ../../demos/world/src/main/java
 :dir-source-petstore: ../../demos/petstore/src/main/java
+:url-javadoc: https://heima.hafro.is/~darri/jminor_wiki_data/project/docs/api
 
 NOTE: The code used throughout this manual is available in the 'manual' demo module included in the project.
 
@@ -11,7 +11,7 @@ NOTE: The code used throughout this manual is available in the 'manual' demo mod
 
 === Common classes
 
-Two common classes used throughout the framework are the {url-javadoc}/org/jminor/common/Event.html[Event] and {url-javadoc}/org/jminor/common/State.html[State] classes, their respective observers {url-javadoc}/org/jminor/common/EventObserver.html[EventObserver] and {url-javadoc}/org/jminor/common/StateObserver.html[StateObserver] and listeners {url-javadoc}/org/jminor/common/EventListener.html[EventListener] and {url-javadoc}/org/jminor/common/EventInfoListener.html[EventInfoListener].
+Two common classes used throughout the framework are the {url-javadoc}/org/jminor/common/Event.html[Event] and {url-javadoc}/org/jminor/common/State.html[State] classes, their respective observers {url-javadoc}/org/jminor/common/EventObserver.html[EventObserver] and {url-javadoc}/org/jminor/common/StateObserver.html[StateObserver] and listeners {url-javadoc}/org/jminor/common/EventListener.html[EventListener] and {url-javadoc}/org/jminor/common/EventDataListener.html[EventDataListener].
 
 === Event ===
 

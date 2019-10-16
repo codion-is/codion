@@ -1,5 +1,4 @@
 = Quickstart
-:toc: right
 
 == Rich client
 JMinor is primarily a Swing based framework, the Swing client is very mature and stable while the JavaFX client is quite rudimentary and still in the 'proof-of-concept' stage. This artifact pulls in all required framework dependencies.

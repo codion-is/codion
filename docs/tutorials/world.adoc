@@ -1,5 +1,4 @@
 = World Tutorial
-:toc: right
 :dir-source: ../../demos/world/src/main/java
 :dir-test-source: ../../demos/world/src/test/java
 :dir-manual: ../manual

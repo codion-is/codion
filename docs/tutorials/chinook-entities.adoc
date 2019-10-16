@@ -1,5 +1,4 @@
 = Entity Basics
-:toc: right
 :dir-source: ../../demos/chinook/src/main/java
 
 Entity basics, selecting and modifying.
