@@ -660,7 +660,6 @@ class DefaultProperty implements Property {
     private final transient ResultPacker<Object> resultPacker;
     private transient String columnName;
     private transient ValueConverter<Object, Object> valueConverter;
-    private transient int selectIndex = -1;
     private transient boolean groupingColumn = false;
     private transient boolean aggregateColumn = false;
 
@@ -728,16 +727,6 @@ class DefaultProperty implements Property {
     @Override
     public boolean isDenormalized() {
       return false;
-    }
-
-    @Override
-    public final void setSelectIndex(final int selectIndex) {
-      this.selectIndex = selectIndex;
-    }
-
-    @Override
-    public final int getSelectIndex() {
-      return selectIndex;
     }
 
     @Override
@@ -833,8 +822,8 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public final Object fetchValue(final ResultSet resultSet) throws SQLException {
-      return valueFetcher.fetchValue(resultSet);
+    public final Object fetchValue(final ResultSet resultSet, final int index) throws SQLException {
+      return valueFetcher.fetchValue(resultSet, index);
     }
 
     @Override
@@ -869,29 +858,29 @@ class DefaultProperty implements Property {
       }
       switch (property.columnType) {
         case Types.INTEGER:
-          return resultSet -> property.fromColumnValue(getInteger(resultSet, property.selectIndex));
+          return (resultSet, index) -> property.fromColumnValue(getInteger(resultSet, index));
         case Types.BIGINT:
-          return resultSet -> property.fromColumnValue(getLong(resultSet, property.selectIndex));
+          return (resultSet, index) -> property.fromColumnValue(getLong(resultSet, index));
         case Types.DOUBLE:
-          return resultSet -> property.fromColumnValue(getDouble(resultSet, property.selectIndex));
+          return (resultSet, index) -> property.fromColumnValue(getDouble(resultSet, index));
         case Types.DECIMAL:
-          return resultSet -> property.fromColumnValue(getBigDecimal(resultSet, property.selectIndex));
+          return (resultSet, index) -> property.fromColumnValue(getBigDecimal(resultSet, index));
         case Types.DATE:
-          return resultSet -> property.fromColumnValue(getDate(resultSet, property.selectIndex));
+          return (resultSet, index) -> property.fromColumnValue(getDate(resultSet, index));
         case Types.TIMESTAMP:
-          return resultSet -> property.fromColumnValue(getTimestamp(resultSet, property.selectIndex));
+          return (resultSet, index) -> property.fromColumnValue(getTimestamp(resultSet, index));
         case Types.TIME:
-          return resultSet -> property.fromColumnValue(getTime(resultSet, property.selectIndex));
+          return (resultSet, index) -> property.fromColumnValue(getTime(resultSet, index));
         case Types.VARCHAR:
-          return resultSet -> property.fromColumnValue(getString(resultSet, property.selectIndex));
+          return (resultSet, index) -> property.fromColumnValue(getString(resultSet, index));
         case Types.BOOLEAN:
-          return resultSet -> property.fromColumnValue(getBoolean(resultSet, property.selectIndex));
+          return (resultSet, index) -> property.fromColumnValue(getBoolean(resultSet, index));
         case Types.CHAR:
-          return resultSet -> property.fromColumnValue(getCharacter(resultSet, property.selectIndex));
+          return (resultSet, index) -> property.fromColumnValue(getCharacter(resultSet, index));
         case Types.BLOB:
-          return resultSet -> null;
+          return (resultSet, index) -> null;
         case Types.JAVA_OBJECT:
-          return resultSet -> resultSet.getObject(property.selectIndex);
+          return ResultSet::getObject;
         default:
           throw new IllegalArgumentException("Unsupported SQL value type: " + property.columnType);
       }

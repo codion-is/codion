@@ -339,15 +339,6 @@ public class Domain implements Serializable {
 
   /**
    * @param entityId the entity id
-   * @return the query string used to select entities identified by {@code entityId}
-   * @throws IllegalArgumentException if the entity is undefined
-   */
-  public final String getSelectColumnsString(final String entityId) {
-    return getDefinition(entityId).getSelectColumnsString();
-  }
-
-  /**
-   * @param entityId the entity id
    * @return the primary key generator for entities identified by {@code entityId}
    * @throws IllegalArgumentException if the entity is undefined
    */
@@ -943,15 +934,8 @@ public class Domain implements Serializable {
   }
 
   private static List<Property.ColumnProperty> getColumnProperties(final Collection<Property> properties) {
-    final List<Property.ColumnProperty> columnProperties = properties.stream()
-            .filter(property -> property instanceof Property.ColumnProperty)
+    return properties.stream().filter(property -> property instanceof Property.ColumnProperty)
             .map(property -> (Property.ColumnProperty) property).collect(Collectors.toList());
-
-    for (int idx = 0; idx < columnProperties.size(); idx++) {
-      columnProperties.get(idx).setSelectIndex(idx + 1);
-    }
-
-    return columnProperties;
   }
 
   private static List<Property.TransientProperty> getTransientProperties(final Collection<Property> properties) {

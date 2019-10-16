@@ -5166,3 +5166,4 @@
   UpdateTrigger replace with updateOnKeystroke boolean parameter
   ValueMap, Entity, Entity.Key, ValueMapEditModel and EntityEditModel, isValueNull() renamed to isNull(), isNotNull() added
 0.12.4
+  Query columns now dynamic, ColumnProperty.selectIndex and Entity.Definition.selectColumnsString removed

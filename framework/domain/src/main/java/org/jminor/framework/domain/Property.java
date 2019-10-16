@@ -425,17 +425,6 @@ public interface Property extends Attribute, Serializable {
     ColumnProperty setUpdatable(final boolean updatable);
 
     /**
-     * @return the index of this property in a select query
-     */
-    int getSelectIndex();
-
-    /**
-     * Sets the index to use when fetching the value of this column from a result set
-     * @param selectIndex the index of this column in a result set
-     */
-    void setSelectIndex(final int selectIndex);
-
-    /**
      * @param columnHasDefaultValue specifies whether or not the underlying column has a default value
      * @return this Property instance
      */
@@ -516,10 +505,11 @@ public interface Property extends Attribute, Serializable {
     /**
      * Fetches a value for this property from a ResultSet
      * @param resultSet the ResultSet
+     * @param index the index of the column to fetch
      * @return a single value fetched from the given ResultSet
      * @throws java.sql.SQLException in case of an exception
      */
-    Object fetchValue(final ResultSet resultSet) throws SQLException;
+    Object fetchValue(final ResultSet resultSet, final int index) throws SQLException;
 
     /**
      * Set a value converter, for converting to and from a sql representation of the value

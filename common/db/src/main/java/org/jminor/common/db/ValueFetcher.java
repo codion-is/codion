@@ -15,8 +15,9 @@ public interface ValueFetcher<T> {
   /**
    * Fetches a single value from a ResultSet
    * @param resultSet the ResultSet
+   * @param index the index of the column to fetch
    * @return a single value fetched from the given ResultSet
    * @throws java.sql.SQLException in case of an exception
    */
-  T fetchValue(final ResultSet resultSet) throws SQLException;
+  T fetchValue(final ResultSet resultSet, final int index) throws SQLException;
 }
