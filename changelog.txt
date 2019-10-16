@@ -5165,3 +5165,4 @@
   UiValues and related classes refactoring continued, UpdateTrigger.READ_ONLY removed
   UpdateTrigger replace with updateOnKeystroke boolean parameter
   ValueMap, Entity, Entity.Key, ValueMapEditModel and EntityEditModel, isValueNull() renamed to isNull(), isNotNull() added
+0.12.4
