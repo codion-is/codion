@@ -296,6 +296,28 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
+  public void selectManyPropertyIds() throws Exception {
+    final List<Entity> emps = connection.selectMany(ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP)
+            .setSelectPropertyIds(TestDomain.EMP_ID, TestDomain.EMP_JOB, TestDomain.EMP_DEPARTMENT));
+    for (final Entity emp : emps) {
+      assertTrue(emp.containsKey(TestDomain.EMP_ID));
+      assertTrue(emp.containsKey(TestDomain.EMP_JOB));
+      assertTrue(emp.containsKey(TestDomain.EMP_DEPARTMENT_FK));
+      assertFalse(emp.containsKey(TestDomain.EMP_COMMISSION));
+      assertFalse(emp.containsKey(TestDomain.EMP_HIREDATE));
+      assertFalse(emp.containsKey(TestDomain.EMP_NAME));
+      assertFalse(emp.containsKey(TestDomain.EMP_SALARY));
+    }
+  }
+
+  @Test
+  public void selectManyInvalidPropertyIds() throws Exception {
+    assertThrows(IllegalArgumentException.class, () ->
+            connection.selectMany(ENTITY_CONDITIONS.selectCondition(TestDomain.T_EMP)
+                    .setSelectPropertyIds(TestDomain.EMP_ID, TestDomain.EMP_JOB, TestDomain.EMP_DEPARTMENT_FK)));
+  }
+
+  @Test
   public void selectManyInvalidColumn() throws Exception {
     assertThrows(DatabaseException.class, () -> connection.selectMany(ENTITY_CONDITIONS.selectCondition(TestDomain.T_DEPARTMENT,
             ENTITY_CONDITIONS.stringCondition("no_column is null"))));

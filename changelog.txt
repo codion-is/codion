@@ -5170,3 +5170,5 @@
   DefaultLocalEntityConnection.lockAndCheckForUpdate() uses only writable properties
   Dynamic query column improvements
   Select for update now uses the tableName instead of the selectTableName, since that could possibly be a view not supporting select for update (looking at you postgresql)
+  EntitySelectCondition.setSelectProperties() and getSelectProperties() added
+  DefaultLocalEntityConnection.selectMany(EntitySelectCondition) now restricts the selected properties to the ones specified in the above
